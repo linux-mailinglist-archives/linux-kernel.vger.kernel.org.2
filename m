@@ -2,186 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF85334D5DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EF934D5DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhC2RPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S230297AbhC2RQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhC2RPQ (ORCPT
+        with ESMTP id S231228AbhC2RQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:15:16 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5689FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:15:14 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id s21so6330034pjq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4EOZ8Sb48l4lF5h6fA0NMs053uNtaYhsr8erjsTM8FY=;
-        b=dJa0dz3LkHSAQnB1HnfNX988JAywvpjQ2nQa+OOmU1Q1d2DwIEnZq29hhBDzKdRxXE
-         H2+gweAaru8FyL51vYdLZqQk+LlgGHXWU2s0AkLYMYDGjnZcmDOvU8R/mKFAC+qU1vIX
-         XPAyDzVe8NSuyaZAg0cXmd0jGKW4a2IDnsE1zs/Ez/37HUKafd/J/R1ziPJCuX+I4Dpf
-         Tw0jZTkcRBH3XrdNeYIA3KmJtNNy2CR8lFZ8Dx508atoQ9r9BethZLU06XK+K63gTZ+l
-         2+FqHVY9ZlBOQ7IBm6r/u4vCEUGjGPj33ZrHyK8p+/GuDZNRufuBgGCB6P0PiBFmDIx3
-         BvRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4EOZ8Sb48l4lF5h6fA0NMs053uNtaYhsr8erjsTM8FY=;
-        b=QB1L8IDCcEedyNaU6kSeropw0PkQpv2mELiusPKebq7lcSbOQuPn0eyv/+GIUxBm5v
-         bcS9GeYDKFKSjR9u/U6dGztxZYZOceL3x5sSrQmknruDK41ugLSnyKsm4CLR7Jb6wnmA
-         ravTQejy0efnw46XnRo9rVxsZKRjto1bL/iRaxfn6nejVH+KpqX4jiQF3/cSSHEQmM2e
-         II4t1h/3wbj2AM0T+odM/tuF1KtnrYsiAogZZG8+GdiDyN8ahLeVO2WOTKUyHYMgI8uS
-         Qj/9Y80olvvfIKo4w8wI6uM5lUbnyDrhb0nl4gvHwo11z52PYN4DAGOwkDnXxexBjMNJ
-         OwBA==
-X-Gm-Message-State: AOAM530+FNuHdDNuHP5o16kqCWANpLNdWj4TnIW4d3I6605P9I8tFv2d
-        OB3L9dQvcJYIqwmIS0vJoVW4Eg==
-X-Google-Smtp-Source: ABdhPJwUSjt0rB7FD0ZPLYYja1hZE1EpzcLffmT9z2Qr4zlV7MsvSmN97Oxmu4wf1Gm80JBrMXnHnQ==
-X-Received: by 2002:a17:90b:3884:: with SMTP id mu4mr152309pjb.128.1617038113480;
-        Mon, 29 Mar 2021 10:15:13 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id d2sm7379997pgp.47.2021.03.29.10.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 10:15:12 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 17:15:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] KVM: X86: Properly account for guest CPU time when
- considering context tracking
-Message-ID: <YGILHM7CHpjXtxaH@google.com>
-References: <1617011036-11734-1-git-send-email-wanpengli@tencent.com>
+        Mon, 29 Mar 2021 13:16:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5A6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:16:04 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQvUe-0008Bk-Cw; Mon, 29 Mar 2021 19:16:00 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQvUe-0007Vq-2L; Mon, 29 Mar 2021 19:16:00 +0200
+Date:   Mon, 29 Mar 2021 19:15:59 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v6 6/7] pwm: pca9685: Restrict period change for
+ prescaler users
+Message-ID: <20210329171559.rfelpt42shlebct5@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-6-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="axmib6bx2qpqrpz4"
 Content-Disposition: inline
-In-Reply-To: <1617011036-11734-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <20210329125707.182732-6-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Thomas
 
-On Mon, Mar 29, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831 
-> reported that the guest time remains 0 when running a while true 
-> loop in the guest.
-> 
-> The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it 
-> belongs") moves guest_exit_irqoff() close to vmexit breaks the 
-> tick-based time accouting when the ticks that happen after IRQs are 
-> disabled are incorrectly accounted to the host/system time. This is 
-> because we exit the guest state too early.
-> 
-> vtime-based time accounting is tied to context tracking, keep the 
-> guest_exit_irqoff() around vmexit code when both vtime-based time 
-> accounting and specific cpu is context tracking mode active. 
-> Otherwise, leave guest_exit_irqoff() after handle_exit_irqoff() 
-> and explicit IRQ window for tick-based time accouting.
-> 
-> Fixes: 87fa7f3e98a131 ("x86/kvm: Move context tracking where it belongs")
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 3 ++-
->  arch/x86/kvm/vmx/vmx.c | 3 ++-
->  arch/x86/kvm/x86.c     | 2 ++
->  3 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 58a45bb..55fb5ce 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3812,7 +3812,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  	 * into world and some more.
->  	 */
->  	lockdep_hardirqs_off(CALLER_ADDR0);
-> -	guest_exit_irqoff();
-> +	if (vtime_accounting_enabled_this_cpu())
-> +		guest_exit_irqoff();
->  
->  	instrumentation_begin();
->  	trace_hardirqs_off_finish();
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 32cf828..85695b3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6689,7 +6689,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  	 * into world and some more.
->  	 */
->  	lockdep_hardirqs_off(CALLER_ADDR0);
-> -	guest_exit_irqoff();
-> +	if (vtime_accounting_enabled_this_cpu())
-> +		guest_exit_irqoff();
+--axmib6bx2qpqrpz4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This looks ok, as CONFIG_CONTEXT_TRACKING and CONFIG_VIRT_CPU_ACCOUNTING_GEN are
-selected by CONFIG_NO_HZ_FULL=y, and can't be enabled independently, e.g. the
-rcu_user_exit() call won't be delayed because it will never be called in the
-!vtime case.  But it still feels wrong poking into those details, e.g. it'll
-be weird and/or wrong guest_exit_irqoff() gains stuff that isn't vtime specific.
-Maybe that will never happen though?  And of course, my hack alternative also
-pokes into the details[*].
+On Mon, Mar 29, 2021 at 02:57:06PM +0200, Clemens Gruber wrote:
+> @@ -330,14 +345,22 @@ static int pca9685_pwm_apply(struct pwm_chip *chip,=
+ struct pwm_device *pwm,
+> =20
+>  	if (!state->enabled || duty < 1) {
+>  		pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
+> +		clear_bit(pwm->hwpwm, pca->prescaler_users);
 
-Thomas, do you have an input on the least awful way to handle this?  My horrible
-hack was to force PF_VCPU around the window where KVM handles IRQs after guest
-exit.
+Hmm, so if "my" channel runs at say
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d9f931c63293..6ddf341cd755 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9118,6 +9118,13 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	vcpu->mode = OUTSIDE_GUEST_MODE;
- 	smp_wmb();
+	.duty_cycle =3D 2539520 ns
+	.period =3D 5079040 ns
 
-+	/*
-+	 * Temporarily pretend this task is running a vCPU when potentially
-+	 * processing an IRQ exit, including the below opening of an IRQ
-+	 * window.  Tick-based accounting of guest time relies on PF_VCPU
-+	 * being set when the tick IRQ handler runs.
-+	 */
-+	current->flags |= PF_VCPU;
- 	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
+and I call pwm_apply_state(mypwm, { .duty_cycle =3D 0, .period =3D 5079040,
+enabled =3D true }); it might happen that another channel modifies the
+period and I won't be able to return to the initial setting.
 
- 	/*
-@@ -9132,6 +9139,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	++vcpu->stat.exits;
- 	local_irq_disable();
- 	kvm_after_interrupt(vcpu);
-+	current->flags &= ~PF_VCPU;
+So I think it's sensible to only clear the user bit if the PWM is
+disabled, but not if it is configured for duty_cycle =3D 0.
 
- 	if (lapic_in_kernel(vcpu)) {
- 		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+Does this make sense?
 
-[*]https://lkml.kernel.org/r/20210206004218.312023-1-seanjc@google.com
+Best regards
+Uwe
 
->  	instrumentation_begin();
->  	trace_hardirqs_off_finish();
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index fe806e8..234c8b3 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9185,6 +9185,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  	++vcpu->stat.exits;
->  	local_irq_disable();
->  	kvm_after_interrupt(vcpu);
-> +	if (!vtime_accounting_enabled_this_cpu())
-> +		guest_exit_irqoff();
->  
->  	if (lapic_in_kernel(vcpu)) {
->  		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
-> -- 
-> 2.7.4
-> 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--axmib6bx2qpqrpz4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiC0wACgkQwfwUeK3K
+7AlkBgf/ZsIVifdArIudb+NAdINg7Trcn1pB1kFTd+KLscaLK5SsgfynrgY9Wspu
+zTNGm71C8o17Yw24uyrAhUZF1Vt7BMFjaPPhOulBFEKVWDDkmm6XoB8WP96djYH8
+fhg1pjZ/EvM8CmYZqmfnGnMDO2huSZNWlj8a1V7gPyzFKflZ1Jy82+K/SCvlQVSQ
+B0yYhvLF/rHPCqWvS1u2OJVZJ5jpzM0MsgmOHXqka+Y+u2FaRI1dg+M9AVRBOPsi
+lF183kQLJEaiMlJAuzPp8KWd30WTb2I7Mcy8tv4TY9PTg6TpUqmRc4oCB/5cBIt6
+LeXwv0Rz3KJkQeBK8bnF2NQj8LmwZA==
+=gKsr
+-----END PGP SIGNATURE-----
+
+--axmib6bx2qpqrpz4--
