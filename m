@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEBD34C6C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE7C34CC35
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhC2IJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49048 "EHLO mail.kernel.org"
+        id S236849AbhC2I5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231947AbhC2IFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A156193A;
-        Mon, 29 Mar 2021 08:05:43 +0000 (UTC)
+        id S234826AbhC2IhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A58619BB;
+        Mon, 29 Mar 2021 08:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005144;
-        bh=Stt3el1RGNMbuP8ddki3DXmtkzJ91OnqXkPeQd9NlEk=;
+        s=korg; t=1617007005;
+        bh=iBauD/YwGNRCek8/X8z7f22gVG1rUIanDYdTEaY0FK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndKaaju6F0TPFvDpck37ZTgAnaT/sTmvAyOOuwRSzr5U6zLspzPvNSez7d/ofwWqX
-         ni93gMZMYo9cu98q+4ZJQ2u2HAEVWn662Jdh4rt/I9Paw7dRDbQbOoRhq4o/+Y/afT
-         utT601UBVU/ZdXJi+sxuCP66sSsdplCdbwsprIN4=
+        b=lXIs4aq72ZfceE/DpfUx4Uw0GuoH3VXNPCb5Ne5sku96AN4oSyMRFrwabO5hHd5IL
+         eMWs0ymZgQERB+LxLCFVR3b8XGSo1mwoeId0Ww65HOTS2HGOWkD0MnqoB2TZ7cktEt
+         /sn7dq+Um8J4aBFaBBgTeRvvpEaYs0eZLktqG+xQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 41/59] mac80211: fix rate mask reset
+Subject: [PATCH 5.11 185/254] selftests: forwarding: vxlan_bridge_1d: Fix vxlan ecn decapsulate value
 Date:   Mon, 29 Mar 2021 09:58:21 +0200
-Message-Id: <20210329075610.239979344@linuxfoundation.org>
+Message-Id: <20210329075639.212662413@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+[ Upstream commit 5aa3c334a449bab24519c4967f5ac2b3304c8dcf ]
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+The ECN bit defines ECT(1) = 1, ECT(0) = 2. So inner 0x02 + outer 0x01
+should be inner ECT(0) + outer ECT(1). Based on the description of
+__INET_ECN_decapsulate, the final decapsulate value should be
+ECT(1). So fix the test expect value to 0x01.
 
-Change the comparison accordingly.
+Before the fix:
+TEST: VXLAN: ECN decap: 01/02->0x02                                 [FAIL]
+        Expected to capture 10 packets, got 0.
 
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
+After the fix:
+TEST: VXLAN: ECN decap: 01/02->0x01                                 [ OK ]
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: a0b61f3d8ebf ("selftests: forwarding: vxlan_bridge_1d: Add an ECN decap test")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 0b82d8da4ab0..0563bde0c285 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2752,14 +2752,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
- 
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
- 
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
+diff --git a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
+index ce6bea9675c0..0ccb1dda099a 100755
+--- a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
++++ b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
+@@ -658,7 +658,7 @@ test_ecn_decap()
+ 	# In accordance with INET_ECN_decapsulate()
+ 	__test_ecn_decap 00 00 0x00
+ 	__test_ecn_decap 01 01 0x01
+-	__test_ecn_decap 02 01 0x02
++	__test_ecn_decap 02 01 0x01
+ 	__test_ecn_decap 01 03 0x03
+ 	__test_ecn_decap 02 03 0x03
+ 	test_ecn_decap_error
 -- 
 2.30.1
 
