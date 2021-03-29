@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3134CC32
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856EE34C5B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236531AbhC2I5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
+        id S231897AbhC2ICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234753AbhC2IhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 565B3619B4;
-        Mon, 29 Mar 2021 08:36:31 +0000 (UTC)
+        id S231696AbhC2IBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A9DC6196B;
+        Mon, 29 Mar 2021 08:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006992;
-        bh=I7tKOGsbe5V0mucBGg0MXsh1Rye+IwgHZCt6+ozJDBM=;
+        s=korg; t=1617004893;
+        bh=/jt0XSGV3vMZZ6FQnOS0o1YKXs8W7am7YVo5IW5Ndew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H8DfK92ALiRMcSyRgwTSEun8j7yjdrG4VsZAyjxvFLvyR6eiwvy598/0s17UrevdE
-         BkwFaUvsJrXQqUMykg1Rqv6x/g+lXTDAVH7jjwGlFtz/6Pmqbqslvqo3WwTbix9EwL
-         Vfan0tkPxKUvYdg6PKDnTU0S/moWNLFu0oCfojzs=
+        b=PQQ1mV3mCCPpRsgDA4ksCnSz1wBXIRSw3OPv3Qbf4pPmHlMsot6UC38uuEsPSy/df
+         kaQ8nF9d9K3yI/iq86rbFH818OULTMpP20s//JqMJABxkykjMSFR8CPt0/Tqpy77Q8
+         pFnal2WnTOyM7j/DJYYK8DeHg+5pxEr9lHi6bhpE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 180/254] igb: check timestamp validity
+        stable@vger.kernel.org, Martin Willi <martin@strongswan.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.4 31/33] can: dev: Move device back to init netns on owning netns delete
 Date:   Mon, 29 Mar 2021 09:58:16 +0200
-Message-Id: <20210329075639.060632325@linuxfoundation.org>
+Message-Id: <20210329075606.263280897@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,154 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Martin Willi <martin@strongswan.org>
 
-[ Upstream commit f0a03a026857d6c7766eb7d5835edbf5523ca15c ]
+commit 3a5ca857079ea022e0b1b17fc154f7ad7dbc150f upstream.
 
-Add a couple of checks to make sure timestamping is on and that the
-timestamp value from DMA is valid. This avoids any functional issues
-that could come from a misinterpreted time stamp.
+When a non-initial netns is destroyed, the usual policy is to delete
+all virtual network interfaces contained, but move physical interfaces
+back to the initial netns. This keeps the physical interface visible
+on the system.
 
-One of the functions changed doesn't need a return value added because
-there was no value in checking from the calling locations.
+CAN devices are somewhat special, as they define rtnl_link_ops even
+if they are physical devices. If a CAN interface is moved into a
+non-initial netns, destroying that netns lets the interface vanish
+instead of moving it back to the initial netns. default_device_exit()
+skips CAN interfaces due to having rtnl_link_ops set. Reproducer:
 
-While here, fix a couple of reverse christmas tree issues next to
-the code being changed.
+  ip netns add foo
+  ip link set can0 netns foo
+  ip netns delete foo
 
-Fixes: f56e7bba22fa ("igb: Pull timestamp from fragment before adding it to skb")
-Fixes: 9cbc948b5a20 ("igb: add XDP support")
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+WARNING: CPU: 1 PID: 84 at net/core/dev.c:11030 ops_exit_list+0x38/0x60
+CPU: 1 PID: 84 Comm: kworker/u4:2 Not tainted 5.10.19 #1
+Workqueue: netns cleanup_net
+[<c010e700>] (unwind_backtrace) from [<c010a1d8>] (show_stack+0x10/0x14)
+[<c010a1d8>] (show_stack) from [<c086dc10>] (dump_stack+0x94/0xa8)
+[<c086dc10>] (dump_stack) from [<c086b938>] (__warn+0xb8/0x114)
+[<c086b938>] (__warn) from [<c086ba10>] (warn_slowpath_fmt+0x7c/0xac)
+[<c086ba10>] (warn_slowpath_fmt) from [<c0629f20>] (ops_exit_list+0x38/0x60)
+[<c0629f20>] (ops_exit_list) from [<c062a5c4>] (cleanup_net+0x230/0x380)
+[<c062a5c4>] (cleanup_net) from [<c0142c20>] (process_one_work+0x1d8/0x438)
+[<c0142c20>] (process_one_work) from [<c0142ee4>] (worker_thread+0x64/0x5a8)
+[<c0142ee4>] (worker_thread) from [<c0148a98>] (kthread+0x148/0x14c)
+[<c0148a98>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+
+To properly restore physical CAN devices to the initial netns on owning
+netns exit, introduce a flag on rtnl_link_ops that can be set by drivers.
+For CAN devices setting this flag, default_device_exit() considers them
+non-virtual, applying the usual namespace move.
+
+The issue was introduced in the commit mentioned below, as at that time
+CAN devices did not have a dellink() operation.
+
+Fixes: e008b5fc8dc7 ("net: Simplfy default_device_exit and improve batching.")
+Link: https://lore.kernel.org/r/20210302122423.872326-1-martin@strongswan.org
+Signed-off-by: Martin Willi <martin@strongswan.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igb/igb.h      |  4 +--
- drivers/net/ethernet/intel/igb/igb_main.c | 11 ++++----
- drivers/net/ethernet/intel/igb/igb_ptp.c  | 31 ++++++++++++++++++-----
- 3 files changed, 32 insertions(+), 14 deletions(-)
+ drivers/net/can/dev.c   |    1 +
+ include/net/rtnetlink.h |    2 ++
+ net/core/dev.c          |    2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
-index aaa954aae574..7bda8c5edea5 100644
---- a/drivers/net/ethernet/intel/igb/igb.h
-+++ b/drivers/net/ethernet/intel/igb/igb.h
-@@ -748,8 +748,8 @@ void igb_ptp_suspend(struct igb_adapter *adapter);
- void igb_ptp_rx_hang(struct igb_adapter *adapter);
- void igb_ptp_tx_hang(struct igb_adapter *adapter);
- void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb);
--void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
--			 struct sk_buff *skb);
-+int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
-+			struct sk_buff *skb);
- int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
- int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
- void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 03f78fdb0dcd..de0fab0e7ce2 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -8319,9 +8319,10 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
- 		return NULL;
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -1054,6 +1054,7 @@ static void can_dellink(struct net_devic
  
- 	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
--		igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb);
--		xdp->data += IGB_TS_HDR_LEN;
--		size -= IGB_TS_HDR_LEN;
-+		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
-+			xdp->data += IGB_TS_HDR_LEN;
-+			size -= IGB_TS_HDR_LEN;
-+		}
- 	}
- 
- 	/* Determine available headroom for copy */
-@@ -8382,8 +8383,8 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
- 
- 	/* pull timestamp out of packet data */
- 	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
--		igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb);
--		__skb_pull(skb, IGB_TS_HDR_LEN);
-+		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
-+			__skb_pull(skb, IGB_TS_HDR_LEN);
- 	}
- 
- 	/* update buffer offset */
-diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
-index 7cc5428c3b3d..86a576201f5f 100644
---- a/drivers/net/ethernet/intel/igb/igb_ptp.c
-+++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
-@@ -856,6 +856,9 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
- 	dev_kfree_skb_any(skb);
- }
- 
-+#define IGB_RET_PTP_DISABLED 1
-+#define IGB_RET_PTP_INVALID 2
-+
- /**
-  * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
-  * @q_vector: Pointer to interrupt specific structure
-@@ -864,19 +867,29 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ static struct rtnl_link_ops can_link_ops __read_mostly = {
+ 	.kind		= "can",
++	.netns_refund	= true,
+ 	.maxtype	= IFLA_CAN_MAX,
+ 	.policy		= can_policy,
+ 	.setup		= can_setup,
+--- a/include/net/rtnetlink.h
++++ b/include/net/rtnetlink.h
+@@ -28,6 +28,7 @@ static inline int rtnl_msg_family(const
   *
-  * This function is meant to retrieve a timestamp from the first buffer of an
-  * incoming frame.  The value is stored in little endian format starting on
-- * byte 8.
-+ * byte 8
-+ *
-+ * Returns: 0 if success, nonzero if failure
-  **/
--void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
--			 struct sk_buff *skb)
-+int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
-+			struct sk_buff *skb)
- {
--	__le64 *regval = (__le64 *)va;
- 	struct igb_adapter *adapter = q_vector->adapter;
-+	__le64 *regval = (__le64 *)va;
- 	int adjust = 0;
+  *	@list: Used internally
+  *	@kind: Identifier
++ *	@netns_refund: Physical device, move to init_net on netns exit
+  *	@maxtype: Highest device specific netlink attribute number
+  *	@policy: Netlink policy for device specific attribute validation
+  *	@validate: Optional validation function for netlink/changelink parameters
+@@ -81,6 +82,7 @@ struct rtnl_link_ops {
+ 	unsigned int		(*get_num_tx_queues)(void);
+ 	unsigned int		(*get_num_rx_queues)(void);
  
-+	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
-+		return IGB_RET_PTP_DISABLED;
-+
- 	/* The timestamp is recorded in little endian format.
- 	 * DWORD: 0        1        2        3
- 	 * Field: Reserved Reserved SYSTIML  SYSTIMH
- 	 */
-+
-+	/* check reserved dwords are zero, be/le doesn't matter for zero */
-+	if (regval[0])
-+		return IGB_RET_PTP_INVALID;
-+
- 	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
- 				   le64_to_cpu(regval[1]));
++	bool			netns_refund;
+ 	int			slave_maxtype;
+ 	const struct nla_policy	*slave_policy;
+ 	int			(*slave_validate)(struct nlattr *tb[],
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -7773,7 +7773,7 @@ static void __net_exit default_device_ex
+ 			continue;
  
-@@ -896,6 +909,8 @@ void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
- 	}
- 	skb_hwtstamps(skb)->hwtstamp =
- 		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
-+
-+	return 0;
- }
+ 		/* Leave virtual devices for the generic cleanup */
+-		if (dev->rtnl_link_ops)
++		if (dev->rtnl_link_ops && !dev->rtnl_link_ops->netns_refund)
+ 			continue;
  
- /**
-@@ -906,13 +921,15 @@ void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
-  * This function is meant to retrieve a timestamp from the internal registers
-  * of the adapter and store it in the skb.
-  **/
--void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector,
--			 struct sk_buff *skb)
-+void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb)
- {
- 	struct igb_adapter *adapter = q_vector->adapter;
- 	struct e1000_hw *hw = &adapter->hw;
--	u64 regval;
- 	int adjust = 0;
-+	u64 regval;
-+
-+	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
-+		return;
- 
- 	/* If this bit is set, then the RX registers contain the time stamp. No
- 	 * other packet will be time stamped until we read these registers, so
--- 
-2.30.1
-
+ 		/* Push remaining network devices to init_net */
 
 
