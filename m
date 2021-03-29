@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA4334D349
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B374634D34C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhC2PFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:05:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15033 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhC2PFi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:05:38 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8G692hljzPm24;
-        Mon, 29 Mar 2021 23:02:57 +0800 (CST)
-Received: from localhost (10.174.179.96) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
- 23:05:26 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <yuehaibing@huawei.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] ASoC: dwc: Fix -Wmissing-prototypes warnings
-Date:   Mon, 29 Mar 2021 23:05:24 +0800
-Message-ID: <20210329150524.18184-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S230374AbhC2PG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:06:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46836 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230286AbhC2PGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:06:15 -0400
+IronPort-SDR: PKtnDDvBDJR80BaLe4+MJ6AfmDrhrYmiFhUAKzJpTHxJhiRrIKjaiJ055WWX8178VmpeEuRsO+
+ MT6mf0sFVxaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255562071"
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="255562071"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:06:13 -0700
+IronPort-SDR: 545zvjtY9dG69WL9Ut7H/wMK+vDtjZmeAt2GKqPonMpv8o8JoGWp7DhNbafFxL0OqS+jLIAsQz
+ asQHcfWxs7fg==
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="417704531"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:06:10 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 29 Mar 2021 18:06:07 +0300
+Date:   Mon, 29 Mar 2021 18:06:07 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] thunderbolt: Fix a leak in tb_retimer_add()
+Message-ID: <20210329150607.GJ2542@lahna.fi.intel.com>
+References: <YGFulvAa5Kz6HTsd@mwanda>
+ <20210329130220.GY2356281@nvidia.com>
+ <20210329144323.GI2542@lahna.fi.intel.com>
+ <20210329145405.GD2356281@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329145405.GD2356281@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-while CONFIG_SND_DESIGNWARE_PCM is not set, building with W=1 shows this:
+On Mon, Mar 29, 2021 at 11:54:05AM -0300, Jason Gunthorpe wrote:
+> On Mon, Mar 29, 2021 at 05:43:23PM +0300, Mika Westerberg wrote:
+> 
+> > The nvm is a separate (physical Linux) device that gets added under this
+> > one. It cannot be added before AFAICT.
+> 
+> Hum, yes, but then it is odd that a parent is holding sysfs attributes
+> that refer to a child.
 
-sound/soc/dwc/local.h:127:6: warning: no previous prototype for ‘dw_pcm_push_tx’ [-Wmissing-prototypes]
- void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
-      ^~~~~~~~~~~~~~
-sound/soc/dwc/local.h:128:6: warning: no previous prototype for ‘dw_pcm_pop_rx’ [-Wmissing-prototypes]
- void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
-      ^~~~~~~~~~~~~
-sound/soc/dwc/local.h:129:5: warning: no previous prototype for ‘dw_pcm_register’ [-Wmissing-prototypes]
- int dw_pcm_register(struct platform_device *pdev)
-     ^~~~~~~~~~~~~~~
+Well the child (NVMem) comes from completely different subsystem that
+does not have a concept of "authentication" or anythin similar. This is
+what we add on top. We actually exposer two NVMem devices under each
+retimer: one that is the current active one, and then the one that is
+used to write the new firmware image.
 
-Change these to inline functions to fix the warnings.
+> > The code you refer actually looks like this:
+> > 
+> > static ssize_t nvm_authenticate_store(struct device *dev,
+> >  	struct device_attribute *attr, const char *buf, size_t count)
+> > {
+> > 	...
+> >         if (!mutex_trylock(&rt->tb->lock)) {
+> >                 ret = restart_syscall();
+> >                 goto exit_rpm;
+> >         }
+> 
+> Is that lock held during tb_retimer_nvm_add() I looked for a bit and
+> didn't find something. So someplace more than 4 call site above
+> mandatory locking is being held?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/dwc/local.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Yes it is. It is called from tb_scan_port() where that lock is held.
 
-diff --git a/sound/soc/dwc/local.h b/sound/soc/dwc/local.h
-index 91dc70a826f8..1c361eb6127e 100644
---- a/sound/soc/dwc/local.h
-+++ b/sound/soc/dwc/local.h
-@@ -124,9 +124,9 @@ void dw_pcm_push_tx(struct dw_i2s_dev *dev);
- void dw_pcm_pop_rx(struct dw_i2s_dev *dev);
- int dw_pcm_register(struct platform_device *pdev);
- #else
--void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
--void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
--int dw_pcm_register(struct platform_device *pdev)
-+static inline void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
-+static inline void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
-+static inline int dw_pcm_register(struct platform_device *pdev)
- {
- 	return -EINVAL;
- }
--- 
-2.17.1
+> static void tb_retimer_remove(struct tb_retimer *rt)
+> {
+> 	dev_info(&rt->dev, "retimer disconnected\n");
+> 	tb_nvm_free(rt->nvm);
+> 	device_unregister(&rt->dev);
+> }
+> 
+> Here too?
 
+Yes.
+
+> And this is why it is all trylock because it deadlocks with unregister
+> otherwise?
+
+I tried to explain it in 09f11b6c99fe ("thunderbolt: Take domain lock in
+switch sysfs attribute callbacks"), except that at that time we did not
+have retimers exposed but the same applies here too.
