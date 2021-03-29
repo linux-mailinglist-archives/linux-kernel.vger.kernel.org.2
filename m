@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8E34C5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6134C752
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhC2IDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S232553AbhC2IOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhC2ICb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B104C6197C;
-        Mon, 29 Mar 2021 08:02:27 +0000 (UTC)
+        id S230364AbhC2IIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE88361938;
+        Mon, 29 Mar 2021 08:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004948;
-        bh=RMOjAYX1vm174Y9ksn1z6Hf+kiX9gRDRZjgDW5Hq9zA=;
+        s=korg; t=1617005318;
+        bh=sXnRPHr0FhJAX0X7M0EATilAKgmtpfNIuhcP3QuKYyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JylIPaWI8l5xW4iR/HN0BTQIehAK9MWXf77XYcEqSYKgjIAgWqmQnoCUgOikIZI/s
-         5E4iMri3P54WZflIgQ6i5sM7VLVBJ6P+DQpMunfoJxBRxCb6L5DZTIpmYhLYy20BTP
-         /drz3/0AiAbUlGHkResw7yIM+tz/QaA/VFgNMt08=
+        b=bYhVkqQPF95M9wGVf9Bs7vmxreUP/5jZg0L3BjutxP9O9rDQmb+Lb/jnFuDGPaX9q
+         dj0cO3OfNrHFX3Md+SABkzTvUokbJPOoDhWwApHdJgjr6Lkct9JoNHuAz0OZ/xBrkG
+         n/RlMVMNdiAiSgnMRckO/NO6pWa9rwLttYwdLn8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/53] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
+Subject: [PATCH 4.19 07/72] net: tehuti: fix error return code in bdx_probe()
 Date:   Mon, 29 Mar 2021 09:57:43 +0200
-Message-Id: <20210329075607.827279356@linuxfoundation.org>
+Message-Id: <20210329075610.540117883@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Rothenpieler <timo@rothenpieler.org>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
+[ Upstream commit 38c26ff3048af50eee3fcd591921357ee5bfd9ee ]
 
-This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
-With the default being m, it's impossible to build the module into the
-kernel.
+When bdx_read_mac() fails, no error return code of bdx_probe()
+is assigned.
+To fix this bug, err is assigned with -EFAULT as error return code.
 
-Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/tehuti/tehuti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
-index c3428767332c..55ebf9f4a824 100644
---- a/fs/nfs/Kconfig
-+++ b/fs/nfs/Kconfig
-@@ -132,7 +132,7 @@ config PNFS_OBJLAYOUT
- config PNFS_FLEXFILE_LAYOUT
- 	tristate
- 	depends on NFS_V4_1 && NFS_V3
--	default m
-+	default NFS_V4
- 
- config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
- 	string "NFSv4.1 Implementation ID Domain"
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index dc966ddb6d81..358f911fcd9d 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -2056,6 +2056,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		/*bdx_hw_reset(priv); */
+ 		if (bdx_read_mac(priv)) {
+ 			pr_err("load MAC address failed\n");
++			err = -EFAULT;
+ 			goto err_out_iomap;
+ 		}
+ 		SET_NETDEV_DEV(ndev, &pdev->dev);
 -- 
 2.30.1
 
