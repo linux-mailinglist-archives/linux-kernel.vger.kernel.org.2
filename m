@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1370E34CE5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439CC34CE64
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhC2K7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S232909AbhC2LAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232514AbhC2K7d (ORCPT
+        with ESMTP id S232580AbhC2LAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:59:33 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A09C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:59:32 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id o2so4210229plg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:59:32 -0700 (PDT)
+        Mon, 29 Mar 2021 07:00:39 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B287BC061574;
+        Mon, 29 Mar 2021 04:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7rs4sxhIzTtx/zF2Svpj68x4K4PKdIJdNkL7SpT6Ivs=;
-        b=M7zcqYs/Gzqpp+6MMHvXly3Zq/rM6OKwF5FdniupYwWafJc4/RAP6a2EbBFyO8Zec8
-         5KqhmS+mEqutR5E+SgKHSW5dBxe+bGW4PQ7IrSW/BrN+H7t9X6O4pmdKf6pn5wCLMcn1
-         wM+xgDZVH6+r9J2Fl3p+hIEfGcvoyDz20E8WLBcvXfa6JBoI0XdQBuC4k5YjDrB4SK+t
-         8qRo0w+tTSQJiX9ws9f+/1zbiPTU+jMMpj3o6QarsOUHBD19WRDGyVFJQluOo2hHOcKP
-         ewYpiY+xeMvyx3gncrPwp9mHzUsW45Xmv4lDkJPAS9SxoVAsy+F4Simj7x6336vDDy92
-         fqVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7rs4sxhIzTtx/zF2Svpj68x4K4PKdIJdNkL7SpT6Ivs=;
-        b=BUsN3QW3ghBCQAsQAAoUa0caZt/QpA9mR74rBYNGsgTbdvoJVa5TEwwE2DmefaD15e
-         RMeKNzuTLDaQmZ/TXtv+2z70hxy0hZ+BMNbKaNqJBkKM8cLpn9qDbeIuYUWgwjvWBHVa
-         dEH5w9oOXVdFSJtLcGDL/YA42y4K4FKxstHopSQMu0fiPVJgXiF/w0hblGtt46+N+MMj
-         J1BFQGQCfCm+F+jguQ8zHQCydBhq/DqU1dlCsZ4zvUxTtKIQRZS+/Hu41NywkMF1ltcv
-         ns8zh3OtjLntJkV8uNHHBvQqE996rv10OHKJuV5F4uWNowPX3uPBEWadoVfO0SQdGrNC
-         o93w==
-X-Gm-Message-State: AOAM5311KOn8srGYi4oPGFGo70G92V2Aq6UXx+1seu5jGC+qUAnBVcLa
-        z5aFDCdZgtXB+o/DJ9Y8UpzYia833c56TLa24Lk=
-X-Google-Smtp-Source: ABdhPJz2gw0TRSdced4QtFsmv1RCnPq8zBL1wZgDXzL75HUVNI4tRdoNZBcekqeCklJ+STO/YnbVtdRitRtVvDOSIi4=
-X-Received: by 2002:a17:902:7883:b029:e7:32bd:6b97 with SMTP id
- q3-20020a1709027883b02900e732bd6b97mr15703209pll.0.1617015572028; Mon, 29 Mar
- 2021 03:59:32 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=6WGqTp8LlJ
+        59ua+GVPvEnMczMwTS+/11WKeKOjgGhoM=; b=Shxtg7AXlGvy+aTBuQuhlIRvat
+        EmNogThRBfqgGDUw848aj+v8AtTHJJ58E88tQrIV7DF/Wy4nEU2yCYNJlH4czxse
+        2kiMDZqbP5EX/uZSMDWCg7rpKQGr/J1GKEkvHsdP2J6jvcArWSZvCehi1flnBkgz
+        nEYtfV+lt7azcc+mc=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3_39Hs2Fgv+xmAA--.569S4;
+        Mon, 29 Mar 2021 19:00:23 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     j@w1.fi, kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] wireless: hostap: Fix a use after free in hostap_80211_rx
+Date:   Mon, 29 Mar 2021 04:00:21 -0700
+Message-Id: <20210329110021.7497-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210327203218.119372-1-mat.jonczyk@o2.pl> <20210327211322.121708-1-mat.jonczyk@o2.pl>
- <20210327232551.GA20783@1wt.eu> <87lfa8cchf.ffs@nanos.tec.linutronix.de>
- <20210328061837.GA22710@1wt.eu> <CAHp75Ve_Yhs3ib5yk=d-+bhb4vHpx-j6D4jGGBKuD2k1qv38Vg@mail.gmail.com>
- <20210328215807.GA26428@1wt.eu>
-In-Reply-To: <20210328215807.GA26428@1wt.eu>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 13:59:15 +0300
-Message-ID: <CAHp75VfHeDd-Q_N=+CFg_yiesibkk_f20PH7jHMhp=4er+uOEQ@mail.gmail.com>
-Subject: Re: Testers wanted: Atom netbooks with x86_64 disabled by BIOS
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Mateusz Jonczyk <mat.jonczyk@o2.pl>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygD3_39Hs2Fgv+xmAA--.569S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur17Ww4UZry5ZrWDWrWrAFb_yoW8XFyfpF
+        Z5Cay3Krn8JF1UA34xXF1xCFyrXa1UJas3WFyUC3WF9Fn8XFn5K3sY9FyUKF15W39Yk3Wf
+        JFs8tw47AasxG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbU5r5UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 12:58 AM Willy Tarreau <w@1wt.eu> wrote:
->
-> On Sun, Mar 28, 2021 at 11:14:05PM +0300, Andy Shevchenko wrote:
-> > On Sunday, March 28, 2021, Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > > Hi Thomas,
-> > >
-> > > On Sun, Mar 28, 2021 at 03:07:24AM +0200, Thomas Gleixner wrote:
-> > > > On Sun, Mar 28 2021 at 00:25, Willy Tarreau wrote:
-> > > > > On Sat, Mar 27, 2021 at 10:13:22PM +0100, Mateusz Jonczyk wrote:
-> > > > > FWIW I tested on my ASUS 1025C which runs on an Atom N2600 forced to
-> > > > > 32-bit. I had already tried in the past but wanted to give it a try
-> > > > > again in case I'd have missed anything. Sadly it didn't work, I'm
-> > > > > still getting the "requires an x86-64 CPU" message.
-> > > > >
-> > > > > Given these machines were really cheap, I've always suspected that they
-> > > > > employ cheaper, low-grade CPUs, possibly having been subject to reduced
-> > > > > tests where x86_64-specific parts were not even verified and might be
-> > > > > defective. This may explain why they forcefully disable long mode
-> > > there,
-> > > > > but that's just speculation.
-> > > >
-> > > > There are some of these '32bit only' CPUs out there in the wild which
-> > > > actually support long mode. Some of them even do not have the long mode
-> > > > CPUID bit fused out.
-> > >
-> > > Yes, I'm aware of this as well. We might even have talked to the same
-> > > "victim" :-)
-> > >
-> > > > But whether it works is a different story:
-> > > >
-> > > >   - If the CPUID bit is on, then the chance is high, but it runs out of
-> > > >     spec (guarantee wise)
-> > > >
-> > > >   - If it's off is still might work by some definition of work as they
-> > > >     might have fused off more or there are actual defects in some 64bit
-> > > >     only area which are irrelevant when in 32bit mode.
-> > > >
-> > > > Even if it could work perfectly fine, the BIOS/SMM/ucode can prevent
-> > > > switching to long mode.
-> > > >
-> > > > It's a lost cause.
-> > >
-> > > I agree. While I bought this netbook to have a 64-bit CPU and was extremely
-> > > disappointed,
-> >
-> >
-> > Where did you get an idea that it had 64-bit SoC from?
->
-> It's an N2600, and I bought this laptop because N2600 supports 64-bit
-> (and do have another mini-itx motherboard at work with the same CPU
-> on it working pretty well in 64-bit):
->
->    https://ark.intel.com/content/www/us/en/ark/products/58916/intel-atom-processor-n2600-1m-cache-1-6-ghz.html
+Function hostap_80211_rx() calls prism2_rx_80211(..,skb,..). In
+prism2_rx_80211, i found that the skb could be freed by dev_kfree_skb_any(skb)
+and return 0. Also could be freed by netif_rx(skb) when netif_rx return
+NET_RX_DROP.
 
-Wow, TIL. :-)
+But after called the prism2_rx_80211(..,skb,..), the skb is used by skb->len.
 
-> > Atom Based 64-bit ones are Bay Trail, Cherry Trail, Tangier (Merrifield),
-> > Anniedale (Moorefield) and all based on Skylake family (Apollo Lake,
-> > Broxton, Gemini Lake, ...).
->
-> Well, to be honest, I've never been able to remind (nor sort) all these
-> totally crazy names. The day someone gives me a mnemotechnic hint to
-> remind them and their ordering, that will make me reconsider them. For
-> now they're all "something lake", and I find it particularly difficult
-> to map them to SKUs.
+As the new skb->len is returned by prism2_rx_80211(), my patch uses a variable
+len to repalce skb->len. According to another useage of prism2_rx_80211 in
+monitor_rx().
 
-It took me a few years to be on trend with those names, that's how
-Wikipedia [1] helps.
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/wireless/intersil/hostap/hostap_80211_rx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[1]: https://en.wikipedia.org/wiki/List_of_Intel_Atom_microprocessors
-
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c b/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
+index 61be822f90b5..a45ee7b35533 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
+@@ -1016,10 +1016,10 @@ void hostap_80211_rx(struct net_device *dev, struct sk_buff *skb,
+ 			if (local->hostapd && local->apdev) {
+ 				/* Send IEEE 802.1X frames to the user
+ 				 * space daemon for processing */
+-				prism2_rx_80211(local->apdev, skb, rx_stats,
++				int len = prism2_rx_80211(local->apdev, skb, rx_stats,
+ 						PRISM2_RX_MGMT);
+ 				local->apdevstats.rx_packets++;
+-				local->apdevstats.rx_bytes += skb->len;
++				local->apdevstats.rx_bytes += len;
+ 				goto rx_exit;
+ 			}
+ 		} else if (!frame_authorized) {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
+
