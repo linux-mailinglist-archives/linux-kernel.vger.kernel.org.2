@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E6F34D0F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A434D0FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhC2NHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:07:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230213AbhC2NGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:06:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 365C7B473;
-        Mon, 29 Mar 2021 13:06:33 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 15:06:32 +0200 (CEST)
-From:   Richard Biener <rguenther@suse.de>
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-cc:     Jiri Slaby <jslaby@suse.cz>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: perf does not resolve plt symbols from libstdc++ right (.plt.sec
- problem)
-In-Reply-To: <CAMe9rOpwCwOb0u8n-k1OnBSc+4kTnqM_5GVhN_qYd0SjH_8xJg@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2103291457400.17979@zhemvz.fhfr.qr>
-References: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz> <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz> <nycvar.YFH.7.76.2103291136070.17979@zhemvz.fhfr.qr> <CAMe9rOpwCwOb0u8n-k1OnBSc+4kTnqM_5GVhN_qYd0SjH_8xJg@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231371AbhC2NIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:08:36 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:40568 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhC2NIP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:08:15 -0400
+Received: by mail-vs1-f42.google.com with SMTP id v29so2373826vsi.7;
+        Mon, 29 Mar 2021 06:08:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+63Txv4HMbvp0BnWBDVOQtdOyhYc/l6Vd8gKqugtRUg=;
+        b=jTQwNPQwnmSHkZqGRH9yuehUpf7vW9QZDsE4PTWc8kT4ZGuJqKeMRczRV2C5EVUnS6
+         A+hVUaPo8pVVlFsP1Ik2z9h8674ynp6XkeIlriqpChQJWV1VSkCXcUK/GKYuYLsySUNO
+         L2Wzwh6wvZLnptxswNKw/pk5Ccx5Zxj6MCEtz3Ei/L+MQH1nfqZm8mTjH+Su/Afq2cy6
+         HJUrtgdApjbwvLmFGT+6/L3KKctwWe77PpWb+ywzvKVl0tJ08R4N9qdulsheDXagQx0N
+         vcv5H/Gt7Ur35PBXkKX3FUSvkxSfOK5P4X+6w8xfaogjGgEzmMbIktvSmFnhTt25Ed1H
+         7gIw==
+X-Gm-Message-State: AOAM532qEsM/0CQXHi7I10ryEEG8VimC+xSAZKZcE6Iqq98YcCIq974i
+        CeHFfdd/Hg/6wWLu0KHO2c3HUwY4MUpRNuvrf6I=
+X-Google-Smtp-Source: ABdhPJzSsijhkAmkKkskweEa8lEzgCTgNfIY/32SCSndupArW0/sIyCoCsuKkrnFuR8hNy59Iot842IbVBU1vsBfpcE=
+X-Received: by 2002:a67:efd0:: with SMTP id s16mr14526105vsp.3.1617023294693;
+ Mon, 29 Mar 2021 06:08:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1609908220-831296595-1617023193=:17979"
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-4-aford173@gmail.com>
+ <CAMuHMdXjQV7YrW5T_P4tkJk_d44NNTQ8Eu7v2ReESjg6R3tvfw@mail.gmail.com> <CAHCN7xLWDx_AjtN7=moJ6VFsimuf16AJOhrxEryvdw5VnKsJwA@mail.gmail.com>
+In-Reply-To: <CAHCN7xLWDx_AjtN7=moJ6VFsimuf16AJOhrxEryvdw5VnKsJwA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Mar 2021 15:08:03 +0200
+Message-ID: <CAMuHMdUG4gmaVvbg13TMcA8+FL5-7+Qxmdh3X+CNCJQdq_vPkQ@mail.gmail.com>
+Subject: Re: [PATCH V3 4/5] net: ethernet: ravb: Enable optional refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Adam,
 
----1609908220-831296595-1617023193=:17979
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 29 Mar 2021, H.J. Lu wrote:
-
-> On Mon, Mar 29, 2021 at 2:38 AM Richard Biener <rguenther@suse.de> wrote:
-> >
-> > On Mon, 29 Mar 2021, Jiri Slaby wrote:
-> >
-> > > Any ideas on this?
+On Mon, Mar 29, 2021 at 2:45 PM Adam Ford <aford173@gmail.com> wrote:
+> On Thu, Mar 4, 2021 at 2:08 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> > > For devices that use a programmable clock for the AVB reference clock,
+> > > the driver may need to enable them.  Add code to find the optional clock
+> > > and enable it when available.
 > > >
-> > > On 11. 01. 21, 7:31, Jiri Slaby wrote:
-> > > > Hi,
-> > > >
-> > > > this e-mails is a follow-up of my report at:
-> > > > https://bugzilla.suse.com/show_bug.cgi?id=1180681
-> > > >
-> > > > There is a problem with *@plt symbols in some libraries, they are unresolved
-> > > > by perf (memcmp@plt in this case):
-> > > >  >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0
-> > > >             l [.] 0x00000000000a51a0
-> > > >
-> > > > On the other hand, plt symbols in other libraries are fine (memset@plt in
-> > > > this case):
-> > > >  >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10
-> > > >             l [.] memset@plt
-> > > >
-> > > > I dumped memcmp's .plt.rela entries in perf:
-> > > > /usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 hdr=10
-> > > > entry=10
-> > > > /usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10
-> > > > entry=10
-> > > >
-> > > > The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 0xa1070
-> > > > (perf's computed) = 0x4130.
-> > > >
-> > > > The problem is perf assumes nth entry of .plt.rela to correspond to nth
-> > > > function in .plt, but memcmp is in .plt.sec in libstdc++.so:
-> > > >
-> > > >  >Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
-> > > >  >     Offset             Info             Type               Symbol's
-> > > > Value  Symbol's Name + Addend
-> > > >  > ...
-> > > >  > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT
-> > > > 0000000000000000 memcmp@GLIBC_2.2.5 + 0
-> > > >
-> > > > Perf does this with the rela entries:
-> > > > https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385
-> > > >
-> > > > It takes a symbol index from sym.r_info. Then it resolves its name from
-> > > > .dynsym, appending "@plt" to it. Then this name is added to perf's symbol
-> > > > table along with address which is computed as .rela.plt index multiplied by
-> > > > entry size (shdr_plt.sh_entsize) plus plt header (shdr_plt.sh_entsize on
-> > > > x86_64 too).
-> > > >
-> > > > And from this comes (almost) the offset above:
-> > > >  >$ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
-> > > >  >  12 .plt          00003fb0  000000000009e020  000000000009e020
-> > > > 0009e020  2**4
-> > > >  >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160
-> > > > 000a2160  2**4
-> > > >
-> > > > 0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds
-> > > > shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry
-> > > > (header).
-> > > >
-> > > > Richard writes:
-> > > > ======
-> > > > .plt.sec is IIRC the "second" (sec) PLT entry - the one that will be used on
-> > > > the second call (and on).  This is used / emitted for ELF object
-> > > > instrumented for Intel CET.  The details escape me for the moment but I hope
-> > > > the x86 ABI documents this (and the constraints) in detail.
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
 > >
-> > I just checked and the x86_64 psABI doesn't say anything about .plt.sec
-> 
-> The second PLT is documented in section 13.2 Dynamic Linking in x86-64
-> psABI.  Please see elf_x86_64_get_synthetic_symtab in binutils for PLT symbol
-> processing.
+> > Thanks for your patch!
+> >
+> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > > @@ -2148,6 +2148,13 @@ static int ravb_probe(struct platform_device *pdev)
+> > >                 goto out_release;
+> > >         }
+> > >
+> > > +       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+> > > +       if (IS_ERR(priv->refclk)) {
+> > > +               error = PTR_ERR(priv->refclk);
+> > > +               goto out_release;
+> > > +       }
+> > > +       clk_prepare_enable(priv->refclk);
+> > > +
+> >
+> > Shouldn't the reference clock be disabled in case of any failure below?
+> >
+> I'll generate a V4.
+>
+> Should I just regenerate this patch since it seems like the rest are
+> OK, or should I regenerate the whole series?
 
-Hmm, google pointed me to https://gitlab.com/x86-psABIs/ and that
-version does not have a section 13 (but the last is section 12 on MPX).
-There's also references to a pdf which contain the section but
-that's on github and the github page says gitlab is the home...
-So I'm a bit confused here.
+As the DT bindings haven't been applied yet, I think it would be
+best if you would send a v4 with just the patches for the netdev
+tree (i.e. DT bindings patch 1 and driver patch 4).
 
-Richard.
+I will take the DT patches from this series, once the bindings have been
+accepted.
+
+Thank you!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Richard Biener <rguenther@suse.de>
-SUSE Software Solutions Germany GmbH, Maxfeldstrasse 5, 90409 Nuernberg,
-Germany; GF: Felix Imendörffer; HRB 36809 (AG Nuernberg)
----1609908220-831296595-1617023193=:17979--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
