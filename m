@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9774634D058
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5F934D05C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhC2MsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:48:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231208AbhC2MsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:48:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617022096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=StRb7UVN5Yp/VEOKdrPoTELQdTs1f4wblUD2484mrPw=;
-        b=UQJoXHai4wj6yoX5tj4sjSFmdrezsvYdwgFpr9lGqtdOWAwKNhXaecwjLIPvz2r2pwQ6JL
-        S8wAOxqTsm/v7NfeysbtgBIxmblcvv+wTc8jiL7Sh8yeLZ6pbU84DMtueBnxc4FFJnsZhZ
-        5m9lPQdLPJQZtHwAmJ6iSKNk3A04MY8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-1cfcLZwAN1m63PTtdQ7PHQ-1; Mon, 29 Mar 2021 08:48:12 -0400
-X-MC-Unique: 1cfcLZwAN1m63PTtdQ7PHQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6593A1018F74;
-        Mon, 29 Mar 2021 12:48:10 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D58719C45;
-        Mon, 29 Mar 2021 12:48:05 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wei Huang <wei.huang2@amd.com>, Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/vPMU: Forbid reading from MSR_F15H_PERF MSRs when guest doesn't have X86_FEATURE_PERFCTR_CORE
-Date:   Mon, 29 Mar 2021 14:48:04 +0200
-Message-Id: <20210329124804.170173-1-vkuznets@redhat.com>
+        id S231445AbhC2Ms4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:48:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231401AbhC2Msk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:48:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617022119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oVEktv1cqih9pweZwfNrelV7WGFmRKyYQ1G30+rLI5U=;
+        b=Df4DlQ04wTdK2JfTB4b3/FJ+zdB5757N4KzGJ/wMv91lN6EDMMv4xj+oWEl9C6qZDLYyFK
+        mZZ2kTvNI4h6oF4SRO+119IjS7uWOMiKuMwXGoTUywCyvCNUWjd018JmvTRNCZjRKVmRVY
+        t5Dn8lZbqq+SaoGegHV9+Tti3YwzXB4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EBF97B46C;
+        Mon, 29 Mar 2021 12:48:38 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 14:48:37 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Andrey Ignatov <rdna@fb.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Modify the explanation and documentation related to
+ watchdog thread
+Message-ID: <YGHMpT2h4iSgIhxj@alley>
+References: <1616554602-1857-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616554602-1857-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSR_F15H_PERF_CTL0-5, MSR_F15H_PERF_CTR0-5 MSRs have a CPUID bit assigned
-to them (X86_FEATURE_PERFCTR_CORE) and when it wasn't exposed to the guest
-the correct behavior is to inject #GP an not just return zero.
+On Wed 2021-03-24 10:56:39, Wang Qing wrote:
+> "watchdog/%u" threads has be replaced by cpu_stop_work, So we need to modify 
+> the explanation and documentation related to this.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  .../admin-guide/kernel-per-CPU-kthreads.rst          | 20 --------------------
+>  kernel/watchdog.c                                    | 12 ++++--------
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/x86.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+It would be nice to update also
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fe806e894212..125453155ede 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3381,6 +3381,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		msr_info->data = 0;
- 		break;
- 	case MSR_F15H_PERF_CTL0 ... MSR_F15H_PERF_CTR5:
-+		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
-+			return kvm_pmu_get_msr(vcpu, msr_info);
-+		if (!msr_info->host_initiated)
-+			return 1;
-+		msr_info->data = 0;
-+		break;
- 	case MSR_K7_EVNTSEL0 ... MSR_K7_EVNTSEL3:
- 	case MSR_K7_PERFCTR0 ... MSR_K7_PERFCTR3:
- 	case MSR_P6_PERFCTR0 ... MSR_P6_PERFCTR1:
--- 
-2.30.2
+     Documentation/admin-guide/sysctl/kernel.rst
+     Documentation/admin-guide/lockup-watchdogs.rst
 
+Anyway, the changes in this patch looks good. Feel free
+to use:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
