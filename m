@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E4834D8B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984D034D8BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhC2T7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231938AbhC2T6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:58:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8856E61976;
-        Mon, 29 Mar 2021 19:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617047917;
-        bh=O4yG+QcLTsHGlbXDAjCrViOg6xBSlg1/SH28druab+U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ci58Obfs1vK49MmrrP1rL5Z6S5bF8mw2eDAy6QJAAgNPZ3rfGiM4ZXsDiIu5DxzH8
-         btHm9uHgeDDfnPVf/l+2yvXhZDbiSXB469JdFUnjV07UFsToMYo7TmuVz/2CwCSJsR
-         S2l7Eeg7V3e2ZM7pZaNyIzm/kk4KLilGB6jQiGNd3ovdofpmP0eLExBCGj+FUv/3tE
-         oTN7JKo+wv2JRvGaA+qSV3QXhHEIJQB8j8FXtkaGfzh8mr9SiORdtvpb2yUx6eTy4J
-         hVl1MEyxnGZ2Dx6fvKX59vFKP9vf+J44nQ/nqR0zg52fXleAUBYtMRJMStBZSIl2Ui
-         tY3Es/kMZYMQg==
-From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND 1/2] ASoC: amd: update spdx license for acp machine driver
-Date:   Mon, 29 Mar 2021 20:58:11 +0100
-Message-Id: <161704724764.10039.1962173442335521261.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
+        id S231859AbhC2UAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231843AbhC2T7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 15:59:38 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976F4C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:59:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id g25so7236353wmh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DKVpcQ+QpAoXvlyjRMhAGyT+Qqak2JfgZMLiBaSa29E=;
+        b=YJPerRzl5+2JaKjv1Eb55P40KGWj7y6pfAam3YE3y8qhoEgUMMSGIdVfB6lepj10yJ
+         D9JgvhbtBcvf8hfGDmq8z3Zv50QkNtIZMKlL7qEOsF0W8nlkcRq2Gz4nkYLLJ4Opvwcy
+         GeQxTIHi0wGIiu/1stxEX8XdpEX32jglLEn2f5JXz86HT81AdRitSFe+KAw4HGbMqphK
+         DL1N4R+sQxYSbcUqJpXZk6egdDmBADKsmQ/uJ+kUO2jfcDoV/VEjpB4e2hoPxcjqs62B
+         jlYp0Woty23AO0P9Hdodnyz6GSb0jC1JbWGj8zhE4+rI4qkYA+zhreLGydVxQMXtRKcv
+         NAiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DKVpcQ+QpAoXvlyjRMhAGyT+Qqak2JfgZMLiBaSa29E=;
+        b=gEpcr8y4fkcs5g6iNxKmeZrGijAcpm5NyG6vdPJfBKNlGcmXIJHjtrUzNQnOA+Lm19
+         smxQx6n0aZMWc6C9PqlLz2DIl+O5del41YGye+Pgh2HkQO77wipOPAIcKJCR/H7tYN9Y
+         z2MGTDDZwp4W/t33peu09e4iO9KJypsfwKn5oSLJ6iQSzCtUWfdWRBj6TJCZaHeTXnlK
+         8bIMG/GtsJ0LcajZNuuW7aIUECS8sXF/Fi8xF4Qf6ZkaMnyKSeI+ePPf5WVmKoFRgyN0
+         NsLd4RHRttB7YM9EqQsQFqBxPbvO58cczdL4Xrhyr9Sx10x2LJwmcG7EsZwwIFakyGSH
+         pp7A==
+X-Gm-Message-State: AOAM531TDRABy9oNGe2tdiUBWLbfI9PoKvEZRMa3ZghRRmcLV2MtSM6n
+        GswKI9fGPVbzSguf0vgMzEKvxA==
+X-Google-Smtp-Source: ABdhPJxY4+UJ5NboEvKsiKSfoZc8oEQ4w+NW1XvxfFLt4qF5Y5WCR92gIYO1xNtxtzr0yNW21PC1TQ==
+X-Received: by 2002:a7b:cbcd:: with SMTP id n13mr624923wmi.112.1617047977314;
+        Mon, 29 Mar 2021 12:59:37 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id l6sm32426474wrn.3.2021.03.29.12.59.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 12:59:36 -0700 (PDT)
+Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
+To:     Laurent Dufour <ldufour@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org
+References: <20210326191720.138155-1-dima@arista.com>
+ <f97f3ff9-6ae2-64cc-fada-49fcac34ae47@linux.ibm.com>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <50b7a78a-76e6-7d28-5324-a3ada9c43019@arista.com>
+Date:   Mon, 29 Mar 2021 20:59:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <f97f3ff9-6ae2-64cc-fada-49fcac34ae47@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 22:14:30 +0530, Vijendar Mukunda wrote:
-> update SPDX license for acp machine driver.
+On 3/29/21 4:14 PM, Laurent Dufour wrote:
+> Le 26/03/2021 à 20:17, Dmitry Safonov a écrit :
+>> Since commit 511157ab641e ("powerpc/vdso: Move vdso datapage up front")
+>> VVAR page is in front of the VDSO area. In result it breaks CRIU
+>> (Checkpoint Restore In Userspace) [1], where CRIU expects that "[vdso]"
+>> from /proc/../maps points at ELF/vdso image, rather than at VVAR data
+>> page.
+>> Laurent made a patch to keep CRIU working (by reading aux vector).
+>> But I think it still makes sence to separate two mappings into different
+>> VMAs. It will also make ppc64 less "special" for userspace and as
+>> a side-bonus will make VVAR page un-writable by debugger (which
+>> previously
+>> would COW page and can be unexpected).
+>>
+>> I opportunistically Cc stable on it: I understand that usually such
+>> stuff isn't a stable material, but that will allow us in CRIU have
+>> one workaround less that is needed just for one release (v5.11) on
+>> one platform (ppc64), which we otherwise have to maintain.
+>> I wouldn't go as far as to say that the commit 511157ab641e is ABI
+>> regression as no other userspace got broken, but I'd really appreciate
+>> if it gets backported to v5.11 after v5.12 is released, so as not
+>> to complicate already non-simple CRIU-vdso code. Thanks!
+>>
+>> Cc: Andrei Vagin <avagin@gmail.com>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: stable@vger.kernel.org # v5.11
+>> [1]: https://github.com/checkpoint-restore/criu/issues/1417
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>> Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> I run the CRIU's test suite and except the usual suspects, all the tests
+> passed.
+> 
+> Tested-by: Laurent Dufour <ldufour@linux.ibm.com>
 
-Applied to
+Thank you, Laurent!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: amd: update spdx license for acp machine driver
-      commit: 23f23db29ac996a824dce2b3a800c7a002f1c480
-[2/2] ASoC: amd: fix acpi dependency kernel warning
-      commit: d463cead11ace05c81de31a0fb9c2507c5c1d0a2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+          Dmitry
