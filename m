@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAF934C7A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEBD34C6C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhC2IQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:16:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54318 "EHLO mail.kernel.org"
+        id S231459AbhC2IJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:09:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232403AbhC2IKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:10:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10AF46196E;
-        Mon, 29 Mar 2021 08:10:31 +0000 (UTC)
+        id S231947AbhC2IFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A156193A;
+        Mon, 29 Mar 2021 08:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005432;
-        bh=Ml4y9bHf7XklWxUPh29tC6OcUJc0s/Dd11vTEoq3Yk4=;
+        s=korg; t=1617005144;
+        bh=Stt3el1RGNMbuP8ddki3DXmtkzJ91OnqXkPeQd9NlEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pVb2Wl55sGcUphjuZHvLCr9QgqpDo1Ct54irDYtCFjZGkYWCx1Zz+4H4hIMyICWCT
-         8IJ5ToOfUFRgYMnIWuzpWl1NlnmHfwiCVF1T6sJ/TuQX5K8a16biL88ONNuvdYwE+M
-         lqVbMUlJcTaeDTf7+1JOd68m6MCNDaMrmww4/OFE=
+        b=ndKaaju6F0TPFvDpck37ZTgAnaT/sTmvAyOOuwRSzr5U6zLspzPvNSez7d/ofwWqX
+         ni93gMZMYo9cu98q+4ZJQ2u2HAEVWn662Jdh4rt/I9Paw7dRDbQbOoRhq4o/+Y/afT
+         utT601UBVU/ZdXJi+sxuCP66sSsdplCdbwsprIN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Dureghello <angelo@kernel-space.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 44/72] can: flexcan: flexcan_chip_freeze(): fix chip freeze for missing bitrate
-Date:   Mon, 29 Mar 2021 09:58:20 +0200
-Message-Id: <20210329075611.740847544@linuxfoundation.org>
+Subject: [PATCH 4.14 41/59] mac80211: fix rate mask reset
+Date:   Mon, 29 Mar 2021 09:58:21 +0200
+Message-Id: <20210329075610.239979344@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Dureghello <angelo@kernel-space.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 47c5e474bc1e1061fb037d13b5000b38967eb070 ]
+[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
 
-For cases when flexcan is built-in, bitrate is still not set at
-registering. So flexcan_chip_freeze() generates:
+Coverity reported the strange "if (~...)" condition that's
+always true. It suggested that ! was intended instead of ~,
+but upon further analysis I'm convinced that what really was
+intended was a comparison to 0xff/0xffff (in HT/VHT cases
+respectively), since this indicates that all of the rates
+are enabled.
 
-[    1.860000] *** ZERO DIVIDE ***   FORMAT=4
-[    1.860000] Current process id is 1
-[    1.860000] BAD KERNEL TRAP: 00000000
-[    1.860000] PC: [<402e70c8>] flexcan_chip_freeze+0x1a/0xa8
+Change the comparison accordingly.
 
-To allow chip freeze, using an hardcoded timeout when bitrate is still
-not set.
+I'm guessing this never really mattered because a reset to
+not having a rate mask is basically equivalent to having a
+mask that enables all rates.
 
-Fixes: ec15e27cc890 ("can: flexcan: enable RX FIFO after FRZ/HALT valid")
-Link: https://lore.kernel.org/r/20210315231510.650593-1-angelo@kernel-space.org
-Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
-[mkl: use if instead of ? operator]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
+Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ net/mac80211/cfg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index cb6bc2058542..d4dfa0247ebb 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -422,9 +422,15 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
- static int flexcan_chip_freeze(struct flexcan_priv *priv)
- {
- 	struct flexcan_regs __iomem *regs = priv->regs;
--	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
-+	unsigned int timeout;
-+	u32 bitrate = priv->can.bittiming.bitrate;
- 	u32 reg;
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 0b82d8da4ab0..0563bde0c285 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -2752,14 +2752,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
+ 			continue;
  
-+	if (bitrate)
-+		timeout = 1000 * 1000 * 10 / bitrate;
-+	else
-+		timeout = FLEXCAN_TIMEOUT_US / 10;
-+
- 	reg = priv->read(&regs->mcr);
- 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
- 	priv->write(reg, &regs->mcr);
+ 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
+-			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
+ 				sdata->rc_has_mcs_mask[i] = true;
+ 				break;
+ 			}
+ 		}
+ 
+ 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
+-			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
+ 				sdata->rc_has_vht_mcs_mask[i] = true;
+ 				break;
+ 			}
 -- 
 2.30.1
 
