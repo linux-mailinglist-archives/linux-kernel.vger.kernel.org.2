@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B132534CB23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869B434CC53
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbhC2Inm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
+        id S233187AbhC2JAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233391AbhC2IZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F564619B9;
-        Mon, 29 Mar 2021 08:25:17 +0000 (UTC)
+        id S235006AbhC2Ihx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC59C61582;
+        Mon, 29 Mar 2021 08:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006318;
-        bh=rY+5YFDpKMuDRgvs9u29FTM8ifiJUWOzdDt6+CSIXHs=;
+        s=korg; t=1617007073;
+        bh=PxMKnjmEzLv7mm0zhH4T+gmw83uwBCRxAgQrhIa79o8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t2CzrRusj1Ok1bnu/CgzGYU19cFp1VYpUrOT7QBNDVXPJ3TaID09yENcA6MzsxjnC
-         G0/YC85jq3sRL1TQTjkd2vK3Q9/ShlNW1zfUu72v07ewoL0YiEM4SXAo4c2nmjIV54
-         OdwatpVdqOrIxcw6N8okR7V/23ZHioto6dZx+AEg=
+        b=NBJBYBexWtTcM9vQoWeobvIJjgxgTb/X58not3OJ2Ltn/BtCKmouHytcmqRUvuPeM
+         8c6eF9oKrzJf9Zv+U/aNnE198pXAVSWyegAJKt6K8CwlDhacIwbUzIZpdoS7fT2JCD
+         4roTLB9ZyVvwUlta1jusFer108sD9bsfXtJ2+ULM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 197/221] ACPI: scan: Use unique number for instance_no
+Subject: [PATCH 5.11 212/254] net: Consolidate common blackhole dst ops
 Date:   Mon, 29 Mar 2021 09:58:48 +0200
-Message-Id: <20210329075635.697080747@linuxfoundation.org>
+Message-Id: <20210329075640.068992922@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,136 +40,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit eb50aaf960e3bedfef79063411ffd670da94b84b ]
+[ Upstream commit c4c877b2732466b4c63217baad05c96f775912c7 ]
 
-The decrementation of acpi_device_bus_id->instance_no
-in acpi_device_del() is incorrect, because it may cause
-a duplicate instance number to be allocated next time
-a device with the same acpi_device_bus_id is added.
+Move generic blackhole dst ops to the core and use them from both
+ipv4_dst_blackhole_ops and ip6_dst_blackhole_ops where possible. No
+functional change otherwise. We need these also in other locations
+and having to define them over and over again is not great.
 
-Replace above mentioned approach by using IDA framework.
-
-While at it, define the instance range to be [0, 4096).
-
-Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
-Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/internal.h |  6 +++++-
- drivers/acpi/scan.c     | 33 ++++++++++++++++++++++++++++-----
- include/acpi/acpi_bus.h |  1 +
- 3 files changed, 34 insertions(+), 6 deletions(-)
+ include/net/dst.h | 11 +++++++++++
+ net/core/dst.c    | 38 ++++++++++++++++++++++++++++++++++++++
+ net/ipv4/route.c  | 45 ++++++++-------------------------------------
+ net/ipv6/route.c  | 36 +++++++++---------------------------
+ 4 files changed, 66 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index aee023ad0237..a958ad60a339 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -9,6 +9,8 @@
- #ifndef _ACPI_INTERNAL_H_
- #define _ACPI_INTERNAL_H_
- 
-+#include <linux/idr.h>
-+
- #define PREFIX "ACPI: "
- 
- int early_acpi_osi_init(void);
-@@ -96,9 +98,11 @@ void acpi_scan_table_handler(u32 event, void *table, void *context);
- 
- extern struct list_head acpi_bus_id_list;
- 
-+#define ACPI_MAX_DEVICE_INSTANCES	4096
-+
- struct acpi_device_bus_id {
- 	const char *bus_id;
--	unsigned int instance_no;
-+	struct ida instance_ida;
- 	struct list_head node;
- };
- 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 27292697d6a5..b47f14ac75ae 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -482,9 +482,8 @@ static void acpi_device_del(struct acpi_device *device)
- 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
- 		if (!strcmp(acpi_device_bus_id->bus_id,
- 			    acpi_device_hid(device))) {
--			if (acpi_device_bus_id->instance_no > 0)
--				acpi_device_bus_id->instance_no--;
--			else {
-+			ida_simple_remove(&acpi_device_bus_id->instance_ida, device->pnp.instance_no);
-+			if (ida_is_empty(&acpi_device_bus_id->instance_ida)) {
- 				list_del(&acpi_device_bus_id->node);
- 				kfree_const(acpi_device_bus_id->bus_id);
- 				kfree(acpi_device_bus_id);
-@@ -635,6 +634,21 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
- 	return NULL;
+diff --git a/include/net/dst.h b/include/net/dst.h
+index 10f0a8399867..8d7cf51766c4 100644
+--- a/include/net/dst.h
++++ b/include/net/dst.h
+@@ -533,4 +533,15 @@ static inline void skb_dst_update_pmtu_no_confirm(struct sk_buff *skb, u32 mtu)
+ 		dst->ops->update_pmtu(dst, NULL, skb, mtu, false);
  }
  
-+static int acpi_device_set_name(struct acpi_device *device,
-+				struct acpi_device_bus_id *acpi_device_bus_id)
++struct dst_entry *dst_blackhole_check(struct dst_entry *dst, u32 cookie);
++void dst_blackhole_update_pmtu(struct dst_entry *dst, struct sock *sk,
++			       struct sk_buff *skb, u32 mtu, bool confirm_neigh);
++void dst_blackhole_redirect(struct dst_entry *dst, struct sock *sk,
++			    struct sk_buff *skb);
++u32 *dst_blackhole_cow_metrics(struct dst_entry *dst, unsigned long old);
++struct neighbour *dst_blackhole_neigh_lookup(const struct dst_entry *dst,
++					     struct sk_buff *skb,
++					     const void *daddr);
++unsigned int dst_blackhole_mtu(const struct dst_entry *dst);
++
+ #endif /* _NET_DST_H */
+diff --git a/net/core/dst.c b/net/core/dst.c
+index 0c01bd8d9d81..5f6315601776 100644
+--- a/net/core/dst.c
++++ b/net/core/dst.c
+@@ -237,6 +237,44 @@ void __dst_destroy_metrics_generic(struct dst_entry *dst, unsigned long old)
+ }
+ EXPORT_SYMBOL(__dst_destroy_metrics_generic);
+ 
++struct dst_entry *dst_blackhole_check(struct dst_entry *dst, u32 cookie)
 +{
-+	struct ida *instance_ida = &acpi_device_bus_id->instance_ida;
-+	int result;
-+
-+	result = ida_simple_get(instance_ida, 0, ACPI_MAX_DEVICE_INSTANCES, GFP_KERNEL);
-+	if (result < 0)
-+		return result;
-+
-+	device->pnp.instance_no = result;
-+	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
-+	return 0;
++	return NULL;
 +}
 +
- int acpi_device_add(struct acpi_device *device,
- 		    void (*release)(struct device *))
- {
-@@ -669,7 +683,9 @@ int acpi_device_add(struct acpi_device *device,
- 
- 	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
- 	if (acpi_device_bus_id) {
--		acpi_device_bus_id->instance_no++;
-+		result = acpi_device_set_name(device, acpi_device_bus_id);
-+		if (result)
-+			goto err_unlock;
- 	} else {
- 		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
- 					     GFP_KERNEL);
-@@ -685,9 +701,16 @@ int acpi_device_add(struct acpi_device *device,
- 			goto err_unlock;
- 		}
- 
-+		ida_init(&acpi_device_bus_id->instance_ida);
++u32 *dst_blackhole_cow_metrics(struct dst_entry *dst, unsigned long old)
++{
++	return NULL;
++}
 +
-+		result = acpi_device_set_name(device, acpi_device_bus_id);
-+		if (result) {
-+			kfree(acpi_device_bus_id);
-+			goto err_unlock;
-+		}
++struct neighbour *dst_blackhole_neigh_lookup(const struct dst_entry *dst,
++					     struct sk_buff *skb,
++					     const void *daddr)
++{
++	return NULL;
++}
 +
- 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
- 	}
--	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
++void dst_blackhole_update_pmtu(struct dst_entry *dst, struct sock *sk,
++			       struct sk_buff *skb, u32 mtu,
++			       bool confirm_neigh)
++{
++}
++EXPORT_SYMBOL_GPL(dst_blackhole_update_pmtu);
++
++void dst_blackhole_redirect(struct dst_entry *dst, struct sock *sk,
++			    struct sk_buff *skb)
++{
++}
++EXPORT_SYMBOL_GPL(dst_blackhole_redirect);
++
++unsigned int dst_blackhole_mtu(const struct dst_entry *dst)
++{
++	unsigned int mtu = dst_metric_raw(dst, RTAX_MTU);
++
++	return mtu ? : dst->dev->mtu;
++}
++EXPORT_SYMBOL_GPL(dst_blackhole_mtu);
++
+ static struct dst_ops md_dst_ops = {
+ 	.family =		AF_UNSPEC,
+ };
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index e26652ff7059..983b4db1868f 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -2682,44 +2682,15 @@ out:
+ 	return rth;
+ }
  
- 	if (device->parent)
- 		list_add_tail(&device->node, &device->parent->children);
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 6d1879bf9440..37dac195adbb 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -233,6 +233,7 @@ struct acpi_pnp_type {
+-static struct dst_entry *ipv4_blackhole_dst_check(struct dst_entry *dst, u32 cookie)
+-{
+-	return NULL;
+-}
+-
+-static unsigned int ipv4_blackhole_mtu(const struct dst_entry *dst)
+-{
+-	unsigned int mtu = dst_metric_raw(dst, RTAX_MTU);
+-
+-	return mtu ? : dst->dev->mtu;
+-}
+-
+-static void ipv4_rt_blackhole_update_pmtu(struct dst_entry *dst, struct sock *sk,
+-					  struct sk_buff *skb, u32 mtu,
+-					  bool confirm_neigh)
+-{
+-}
+-
+-static void ipv4_rt_blackhole_redirect(struct dst_entry *dst, struct sock *sk,
+-				       struct sk_buff *skb)
+-{
+-}
+-
+-static u32 *ipv4_rt_blackhole_cow_metrics(struct dst_entry *dst,
+-					  unsigned long old)
+-{
+-	return NULL;
+-}
+-
+ static struct dst_ops ipv4_dst_blackhole_ops = {
+-	.family			=	AF_INET,
+-	.check			=	ipv4_blackhole_dst_check,
+-	.mtu			=	ipv4_blackhole_mtu,
+-	.default_advmss		=	ipv4_default_advmss,
+-	.update_pmtu		=	ipv4_rt_blackhole_update_pmtu,
+-	.redirect		=	ipv4_rt_blackhole_redirect,
+-	.cow_metrics		=	ipv4_rt_blackhole_cow_metrics,
+-	.neigh_lookup		=	ipv4_neigh_lookup,
++	.family			= AF_INET,
++	.default_advmss		= ipv4_default_advmss,
++	.neigh_lookup		= ipv4_neigh_lookup,
++	.check			= dst_blackhole_check,
++	.cow_metrics		= dst_blackhole_cow_metrics,
++	.update_pmtu		= dst_blackhole_update_pmtu,
++	.redirect		= dst_blackhole_redirect,
++	.mtu			= dst_blackhole_mtu,
+ };
  
- struct acpi_device_pnp {
- 	acpi_bus_id bus_id;		/* Object name */
-+	int instance_no;		/* Instance number of this object */
- 	struct acpi_pnp_type type;	/* ID type */
- 	acpi_bus_address bus_address;	/* _ADR */
- 	char *unique_id;		/* _UID */
+ struct dst_entry *ipv4_blackhole_route(struct net *net, struct dst_entry *dst_orig)
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 188e114b29b4..0bbfaa55e3c8 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -258,34 +258,16 @@ static struct dst_ops ip6_dst_ops_template = {
+ 	.confirm_neigh		=	ip6_confirm_neigh,
+ };
+ 
+-static unsigned int ip6_blackhole_mtu(const struct dst_entry *dst)
+-{
+-	unsigned int mtu = dst_metric_raw(dst, RTAX_MTU);
+-
+-	return mtu ? : dst->dev->mtu;
+-}
+-
+-static void ip6_rt_blackhole_update_pmtu(struct dst_entry *dst, struct sock *sk,
+-					 struct sk_buff *skb, u32 mtu,
+-					 bool confirm_neigh)
+-{
+-}
+-
+-static void ip6_rt_blackhole_redirect(struct dst_entry *dst, struct sock *sk,
+-				      struct sk_buff *skb)
+-{
+-}
+-
+ static struct dst_ops ip6_dst_blackhole_ops = {
+-	.family			=	AF_INET6,
+-	.destroy		=	ip6_dst_destroy,
+-	.check			=	ip6_dst_check,
+-	.mtu			=	ip6_blackhole_mtu,
+-	.default_advmss		=	ip6_default_advmss,
+-	.update_pmtu		=	ip6_rt_blackhole_update_pmtu,
+-	.redirect		=	ip6_rt_blackhole_redirect,
+-	.cow_metrics		=	dst_cow_metrics_generic,
+-	.neigh_lookup		=	ip6_dst_neigh_lookup,
++	.family			= AF_INET6,
++	.default_advmss		= ip6_default_advmss,
++	.neigh_lookup		= ip6_dst_neigh_lookup,
++	.check			= ip6_dst_check,
++	.destroy		= ip6_dst_destroy,
++	.cow_metrics		= dst_cow_metrics_generic,
++	.update_pmtu		= dst_blackhole_update_pmtu,
++	.redirect		= dst_blackhole_redirect,
++	.mtu			= dst_blackhole_mtu,
+ };
+ 
+ static const u32 ip6_template_metrics[RTAX_MAX] = {
 -- 
 2.30.1
 
