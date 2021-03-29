@@ -2,103 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D8734D5F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B6C34D608
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC2RXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhC2RW7 (ORCPT
+        id S230220AbhC2R2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:28:31 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:36854 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhC2R2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:22:59 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B6C061574;
-        Mon, 29 Mar 2021 10:22:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id z2so13648093wrl.5;
-        Mon, 29 Mar 2021 10:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0gRNq2eAkLmvH+yhlKLcp66Rj3Ad23U42HOwmj/mbKU=;
-        b=o5L/FHD2NRooZuUKXAkhJ9dRTYHC3RMSTsceG8wztcrJsP7EMSq7y5Crqjv8h2R6Yq
-         O4Ugy7Zgk4scwcFGcajgSiAbLMJA4FseEr6YARUzJp5eAVgcBLMp+rbgFbEqNkttrGup
-         FkpSJb6BgNvUbIE5GU4AzUoFvmYfQ/N2ufTfkO0IXNuq63NEdjIr6AfJ9L+CUYGhZpgU
-         eo6q8qTKyShLEQCJwegudNC13GDvUADhB4ypmDfQnGa///GLjw8LqA3ewBNrDXFSlkQ2
-         STj277reA/bn9I862J7kaP+aH/h2SYhPQPstdzPVBGueQpK9eb387ajVZiWI3nC2oUxW
-         pyhg==
+        Mon, 29 Mar 2021 13:28:25 -0400
+Received: by mail-io1-f43.google.com with SMTP id f19so13576005ion.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0gRNq2eAkLmvH+yhlKLcp66Rj3Ad23U42HOwmj/mbKU=;
-        b=WdDHrrAPS+IQAQcgs670O3hb5oRE7kGpLvlj51vkLlhS0voyBzK0+2/k40vbX0Sik1
-         6OMGsRbpBzps220preLFkLpWtIDQZh+90DKjGz4xi+j96oIGD7Ruwn173b0XFG7oQ0kS
-         McawhSOJpKWfVJKR4y+JE6ve4sB5pDcHyMnOrO6DD+ec5iQsUtUmXU6LoH4oi6T1eKFq
-         5a0QjeekN/PgwzlnM2mQASFZKYaMIFDIPpgHl4fTYNTIm3zDjRTaJsWDN15cgAaHdRLw
-         futK6hjo51oanycvYPX8Au1KlcU2tQpAVap08PdGEryBz8nLP8229ZPyZcfpvc/XxE9g
-         6pBw==
-X-Gm-Message-State: AOAM533nZsh+GWicNWwPPIAoFINbE83SfwvlZjOV9r4687AhJ4NNFe58
-        VKRlePr7dPh6V+SO5xE8Ci4wXpfysTH8XBdQ
-X-Google-Smtp-Source: ABdhPJy/EMYWJxvna4g7gKFWJ4d0RX84xR2gk+FxfoXe60VFXgHaTZBcoxtDpG19Q2rIIs8ws980+A==
-X-Received: by 2002:a5d:4b43:: with SMTP id w3mr21801254wrs.406.1617038577756;
-        Mon, 29 Mar 2021 10:22:57 -0700 (PDT)
-Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
-        by smtp.gmail.com with ESMTPSA id z15sm29379926wrw.50.2021.03.29.10.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 10:22:57 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: mt8173: fix wrong power-domain phandle of
- pmic
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1616048328-13579-1-git-send-email-chunfeng.yun@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <55dd47f2-f961-4228-a13a-fa90193f9cbf@gmail.com>
-Date:   Mon, 29 Mar 2021 19:22:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nkzt5ca+QTI2PdMNoQrVYUu19ObnRjYQ/LdWspjTQOA=;
+        b=ZIsFrrwKXqPJ+JoOBx+dKxNdMuFH5Nr0ZaEOkv3ugoN6ur81yeS81YoPweQ83ekNJY
+         mcmheM7GGE3PX/asMPyk2YIXdDxz7kI/PtvK+RwZtUM+y71AkDYFnngThvTrwmVoK43F
+         M1Q8wzlLbVtj822QL/mP/xI2pwCRtCqCDcGcjZkqn+U2rSYmezwRdKODWAFo+9Jc1lvG
+         wQ5VBm/iOdKINzBtySCYRstaHwsyHbkdYhSS3osaJnHlbWmFVgUr7Eb4E5XMlwafHRuC
+         Q/G0HAr72FVEb9NVGw9hPs7/luesoCL2QWqoK5fYaLiyQ75IPcosf0vSdkk4siqQJYS8
+         lPaA==
+X-Gm-Message-State: AOAM532mSl1+UvvOpHRF2RoJvpkN4vBL6FqXh5ZRgP7liC9H68f6PzH8
+        14lx3jo9VfmiC8IHPPLkmIk=
+X-Google-Smtp-Source: ABdhPJxW6JdM2bXLojdubZTuopcLdyZe28g3PcUDHgAwrq2Vhm7NvakTtgSqMCd/hxKe4m6b5oyPdQ==
+X-Received: by 2002:a05:6602:2348:: with SMTP id r8mr21193050iot.77.1617038905185;
+        Mon, 29 Mar 2021 10:28:25 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id z10sm7541252ilq.38.2021.03.29.10.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 10:28:24 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 17:28:23 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rfc 2/4] percpu: split __pcpu_balance_workfn()
+Message-ID: <YGION8fYFy0uVVlm@google.com>
+References: <20210324190626.564297-1-guro@fb.com>
+ <20210324190626.564297-3-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1616048328-13579-1-git-send-email-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324190626.564297-3-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 18/03/2021 07:18, Chunfeng Yun wrote:
-> Due to power domain controller is added, the power domain's
-> phanle is also changed from 'scpsys' to 'spm', but forget to
-> modify pmic node's
+On Wed, Mar 24, 2021 at 12:06:24PM -0700, Roman Gushchin wrote:
+> __pcpu_balance_workfn() became fairly big and hard to follow, but in
+> fact it consists of two fully independent parts, responsible for
+> the destruction of excessive free chunks and population of necessarily
+> amount of free pages.
 > 
-> Fixes: 8b6562644df9 ("arm64: dts: mediatek: Add mt8173 power domain controller")
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-
-Applied to v5.12-next/dts64
-Thanks!
-
+> In order to simplify the code and prepare for adding of a new
+> functionality, split it in two functions:
+> 
+>   1) pcpu_balance_free,
+>   2) pcpu_balance_populated.
+> 
+> Move the taking/releasing of the pcpu_alloc_mutex to an upper level
+> to keep the current synchronization in place.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 > ---
->  arch/arm64/boot/dts/mediatek/mt8173-evb.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  mm/percpu.c | 46 +++++++++++++++++++++++++++++-----------------
+>  1 file changed, 29 insertions(+), 17 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts b/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
-> index 6dffada2e66b..28aa634c9780 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
-> @@ -294,7 +294,7 @@
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 78c55c73fa28..015d076893f5 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1930,31 +1930,22 @@ void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
+>  }
 >  
->  &pwrap {
->  	/* Only MT8173 E1 needs USB power domain */
-> -	power-domains = <&scpsys MT8173_POWER_DOMAIN_USB>;
-> +	power-domains = <&spm MT8173_POWER_DOMAIN_USB>;
+>  /**
+> - * __pcpu_balance_workfn - manage the amount of free chunks and populated pages
+> + * pcpu_balance_free - manage the amount of free chunks
+>   * @type: chunk type
+>   *
+> - * Reclaim all fully free chunks except for the first one.  This is also
+> - * responsible for maintaining the pool of empty populated pages.  However,
+> - * it is possible that this is called when physical memory is scarce causing
+> - * OOM killer to be triggered.  We should avoid doing so until an actual
+> - * allocation causes the failure as it is possible that requests can be
+> - * serviced from already backed regions.
+> + * Reclaim all fully free chunks except for the first one.
+>   */
+> -static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
+> +static void pcpu_balance_free(enum pcpu_chunk_type type)
+>  {
+> -	/* gfp flags passed to underlying allocators */
+> -	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+>  	LIST_HEAD(to_free);
+>  	struct list_head *pcpu_slot = pcpu_chunk_list(type);
+>  	struct list_head *free_head = &pcpu_slot[pcpu_nr_slots - 1];
+>  	struct pcpu_chunk *chunk, *next;
+> -	int slot, nr_to_pop, ret;
 >  
->  	pmic: mt6397 {
->  		compatible = "mediatek,mt6397";
+>  	/*
+>  	 * There's no reason to keep around multiple unused chunks and VM
+>  	 * areas can be scarce.  Destroy all free chunks except for one.
+>  	 */
+> -	mutex_lock(&pcpu_alloc_mutex);
+>  	spin_lock_irq(&pcpu_lock);
+>  
+>  	list_for_each_entry_safe(chunk, next, free_head, list) {
+> @@ -1982,6 +1973,25 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
+>  		pcpu_destroy_chunk(chunk);
+>  		cond_resched();
+>  	}
+> +}
+> +
+> +/**
+> + * pcpu_balance_populated - manage the amount of populated pages
+> + * @type: chunk type
+> + *
+> + * Maintain a certain amount of populated pages to satisfy atomic allocations.
+> + * It is possible that this is called when physical memory is scarce causing
+> + * OOM killer to be triggered.  We should avoid doing so until an actual
+> + * allocation causes the failure as it is possible that requests can be
+> + * serviced from already backed regions.
+> + */
+> +static void pcpu_balance_populated(enum pcpu_chunk_type type)
+> +{
+> +	/* gfp flags passed to underlying allocators */
+> +	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+> +	struct list_head *pcpu_slot = pcpu_chunk_list(type);
+> +	struct pcpu_chunk *chunk;
+> +	int slot, nr_to_pop, ret;
+>  
+>  	/*
+>  	 * Ensure there are certain number of free populated pages for
+> @@ -2051,8 +2061,6 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
+>  			goto retry_pop;
+>  		}
+>  	}
+> -
+> -	mutex_unlock(&pcpu_alloc_mutex);
+>  }
+>  
+>  /**
+> @@ -2149,14 +2157,18 @@ static void pcpu_shrink_populated(enum pcpu_chunk_type type)
+>   * pcpu_balance_workfn - manage the amount of free chunks and populated pages
+>   * @work: unused
+>   *
+> - * Call __pcpu_balance_workfn() for each chunk type.
+> + * Call pcpu_balance_free() and pcpu_balance_populated() for each chunk type.
+>   */
+>  static void pcpu_balance_workfn(struct work_struct *work)
+>  {
+>  	enum pcpu_chunk_type type;
+>  
+> -	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++)
+> -		__pcpu_balance_workfn(type);
+> +	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++) {
+> +		mutex_lock(&pcpu_alloc_mutex);
+> +		pcpu_balance_free(type);
+> +		pcpu_balance_populated(type);
+> +		mutex_unlock(&pcpu_alloc_mutex);
+> +	}
+>  }
+>  
+>  /**
+> -- 
+> 2.30.2
 > 
+
+Reviewed-by: Dennis Zhou <dennis@kernel.org>
+
+This makes sense. If you want me to pick this and the last patch up
+first I can. Otherwise, do you mind moving this to the front of the
+stack because it is a clean up?
+
+Thanks,
+Dennis
