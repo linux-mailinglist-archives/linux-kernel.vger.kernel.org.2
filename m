@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C2034D0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA7434D0CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhC2NAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:00:43 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:37845 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhC2NAV (ORCPT
+        id S231300AbhC2NBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:01:10 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:36660 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231696AbhC2NAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:00:21 -0400
-Received: by mail-lf1-f42.google.com with SMTP id q29so18230982lfb.4;
-        Mon, 29 Mar 2021 06:00:20 -0700 (PDT)
+        Mon, 29 Mar 2021 09:00:43 -0400
+Received: by mail-lf1-f46.google.com with SMTP id n138so18315493lfa.3;
+        Mon, 29 Mar 2021 06:00:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5cuEkWsts5CYm8tzF18/ipAE9RcejE/Tr2lA/A3e7EE=;
-        b=H68mRpgK2wqtwKVL52A/XK7Q/psxP1kT4vZXek4/O7+Hyr6ZqvGgvnMwEOqOVf9i5C
-         nse/T0qD1ZRqICvnkEqlJkLU+6paQJKqqgzBd65CJnxRQvlUVCbP2K2ZmKXgW30x2eAZ
-         c/4+Hknuxy2BMRprffs3msV6j86f69SHLzcNMiXHA7cVpyKY/SvCCvK6HZ+WFLtNYykU
-         6LOnSsEHuFiye/gJ/WdQq1l1YJRjDC5lyFs9iUDtxRS50vorytcI7y7DpfTW+8s0o7pW
-         W6dn8HkRLPBBrCk4dgBjqFZh3qYvas4eE9YTCO+Ydc9q2Bn33CO+rDMvlO3b+7si0w3D
-         esAQ==
-X-Gm-Message-State: AOAM5326ZRLZizV+wcFyjc1DyvTg2+fo2yS4j7ZzDPJOYRNjvIoy3eN5
-        KGCex+p6WE+1Gtf3jcUfV24=
-X-Google-Smtp-Source: ABdhPJx2mlhd+2xIytYJ0VJGbLsLlnBBpw0YSunyfF6gdod0AB0h5RWeVDJ8g1oRHK+9q7NueHtPMA==
-X-Received: by 2002:ac2:5444:: with SMTP id d4mr16866969lfn.126.1617022819870;
-        Mon, 29 Mar 2021 06:00:19 -0700 (PDT)
+        bh=jl5sxaMxshBxOQhJcLRE6/WC1n/x+UyQBmzvk4vkGn8=;
+        b=C9ifwNoE46tT6a/kihoFzxbxyqZV0KwbQ5t82emn1VZ6gxMRNtJjV573IryHwdkuIg
+         GBQd8umr0YI/HYcPYzmznfHeOUJVKaoErlYTLeSsuoW4moRTqPo9dL7VfqU2VmWLdvJD
+         8yJJPOYLYcHgcgCE2s3wJK3JI9kmBZWDcTTNPV7uSpCjVT8kBif7o9u5Cjoc2idnAaGA
+         edi7MDQq5+iPzynbtNbT9gbwU/pGRs6xD084orj2+ChWMdPzA1CUFNwIGxqnle2222kn
+         ZIc2hTERS2vvWCaMfogbV962aapGKN6+7YOt3PcXt5bLo7YYgKnBqrGBatymnU7GfzZG
+         Nn2A==
+X-Gm-Message-State: AOAM533z5tJ9C4yG8PK56A52a9SVerGGzFYCaMcZN5iHccpWSLMXXKmc
+        pqbWeeuvVPhIkU8n01JxoHg=
+X-Google-Smtp-Source: ABdhPJzUVglK4TxF/+iZT6czriknMBN4zIS7c6Yp7px5EL/OeV1OZKHZvf8WseTJRAZj+mGwYU3L4A==
+X-Received: by 2002:a19:5d8:: with SMTP id 207mr16333354lff.232.1617022842206;
+        Mon, 29 Mar 2021 06:00:42 -0700 (PDT)
 Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id m6sm1917321lfb.150.2021.03.29.06.00.18
+        by smtp.gmail.com with ESMTPSA id z129sm1828400lfa.127.2021.03.29.06.00.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:00:19 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 16:00:13 +0300
+        Mon, 29 Mar 2021 06:00:41 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 16:00:35 +0300
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+Cc:     Lee Jones <lee.jones@linaro.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Subject: [PATCH v5 16/19] regulator: bd71815: use ramp-delay helper
-Message-ID: <31db9c2bf1e9e1883d8caf4bf3b90475a8a1166e.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org
+Subject: [PATCH v5 17/19] clk: bd718x7: Add support for clk gate on ROHM
+ BD71815 PMIC
+Message-ID: <80805567d924a665d1053c71413260bf103326bd.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,77 +54,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use generic regamp ramp-delay helper function instead of implementing own.
+ROHM BD71815 also provide clk signal for RTC. Add control
+for gating this clock.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 ---
-Changes since v4:
- - new patch
- drivers/regulator/bd71815-regulator.c | 37 +++++----------------------
- 1 file changed, 6 insertions(+), 31 deletions(-)
+Changes since v3:
+ - No changes
+ drivers/clk/clk-bd718x7.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
-index b1448e34c629..00bab1307c14 100644
---- a/drivers/regulator/bd71815-regulator.c
-+++ b/drivers/regulator/bd71815-regulator.c
-@@ -264,36 +264,7 @@ static int buck12_set_hw_dvs_levels(struct device_node *np,
-  * 10: 2.50mV/usec	10mV 4uS
-  * 11: 1.25mV/usec	10mV 8uS
-  */
--static int bd7181x_buck12_set_ramp_delay(struct regulator_dev *rdev,
--					 int ramp_delay)
--{
--	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
--	int id = rdev->desc->id;
--	unsigned int ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
--
--	switch (ramp_delay) {
--	case 1 ... 1250:
--		ramp_value = BD71815_BUCK_RAMPRATE_1P25MV;
--		break;
--	case 1251 ... 2500:
--		ramp_value = BD71815_BUCK_RAMPRATE_2P50MV;
--		break;
--	case 2501 ... 5000:
--		ramp_value = BD71815_BUCK_RAMPRATE_5P00MV;
--		break;
--	case 5001 ... 10000:
--		ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
--		break;
--	default:
--		ramp_value = BD71815_BUCK_RAMPRATE_10P00MV;
--		dev_err(pmic->dev,
--			"%s: ramp_delay: %d not supported, setting 10000mV//us\n",
--			rdev->desc->name, ramp_delay);
--	}
--
--	return regmap_update_bits(pmic->regmap, BD71815_REG_BUCK1_MODE + id*0x1,
--			BD71815_BUCK_RAMPRATE_MASK, ramp_value << 6);
--}
-+static const unsigned int bd7181x_ramp_table[] = { 1250, 2500, 5000, 10000 };
+diff --git a/drivers/clk/clk-bd718x7.c b/drivers/clk/clk-bd718x7.c
+index 17d90e09f1c0..d9e70e506d18 100644
+--- a/drivers/clk/clk-bd718x7.c
++++ b/drivers/clk/clk-bd718x7.c
+@@ -13,6 +13,8 @@
+ #include <linux/regmap.h>
  
- static int bd7181x_led_set_current_limit(struct regulator_dev *rdev,
- 					int min_uA, int max_uA)
-@@ -429,7 +400,7 @@ static const struct regulator_ops bd7181x_buck12_regulator_ops = {
- 	.set_voltage_sel = bd7181x_buck12_set_voltage_sel,
- 	.get_voltage_sel = bd7181x_buck12_get_voltage_sel,
- 	.set_voltage_time_sel = regulator_set_voltage_time_sel,
--	.set_ramp_delay = bd7181x_buck12_set_ramp_delay,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
+ /* clk control registers */
++/* BD71815 */
++#define BD71815_REG_OUT32K	0x1d
+ /* BD70528 */
+ #define BD70528_REG_OUT32K	0x2c
+ /* BD71828 */
+@@ -118,6 +120,10 @@ static int bd71837_clk_probe(struct platform_device *pdev)
+ 		c->reg = BD70528_REG_OUT32K;
+ 		c->mask = CLK_OUT_EN_MASK;
+ 		break;
++	case ROHM_CHIP_TYPE_BD71815:
++		c->reg = BD71815_REG_OUT32K;
++		c->mask = CLK_OUT_EN_MASK;
++		break;
+ 	default:
+ 		dev_err(&pdev->dev, "Unknown clk chip\n");
+ 		return -EINVAL;
+@@ -146,6 +152,7 @@ static const struct platform_device_id bd718x7_clk_id[] = {
+ 	{ "bd71847-clk", ROHM_CHIP_TYPE_BD71847 },
+ 	{ "bd70528-clk", ROHM_CHIP_TYPE_BD70528 },
+ 	{ "bd71828-clk", ROHM_CHIP_TYPE_BD71828 },
++	{ "bd71815-clk", ROHM_CHIP_TYPE_BD71815 },
+ 	{ },
  };
+ MODULE_DEVICE_TABLE(platform, bd718x7_clk_id);
+@@ -161,6 +168,6 @@ static struct platform_driver bd71837_clk = {
+ module_platform_driver(bd71837_clk);
  
- static const struct regulator_ops bd7181x_led_regulator_ops = {
-@@ -499,6 +470,10 @@ static const struct regulator_ops bd7181x_led_regulator_ops = {
- 			.vsel_mask = 0x3f,				\
- 			.enable_reg = (ereg),				\
- 			.enable_mask = 0x04,				\
-+			.ramp_reg = (ereg),				\
-+			.ramp_mask = BD71815_BUCK_RAMPRATE_MASK,	\
-+			.ramp_delay_table = bd7181x_ramp_table,		\
-+			.n_ramp_values = ARRAY_SIZE(bd7181x_ramp_table),\
- 			.of_parse_cb = buck12_set_hw_dvs_levels,	\
- 		},							\
- 		.dvs = (_dvs),						\
+ MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
+-MODULE_DESCRIPTION("BD71837/BD71847/BD70528 chip clk driver");
++MODULE_DESCRIPTION("BD718(15/18/28/37/47/50) and BD70528 chip clk driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:bd718xx-clk");
 -- 
 2.25.4
 
