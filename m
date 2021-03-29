@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547F634D1C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D763C34D1C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhC2Nru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S231982AbhC2NsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhC2Nrh (ORCPT
+        with ESMTP id S231952AbhC2Nrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:47:37 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7378FC061574;
-        Mon, 29 Mar 2021 06:47:36 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x16so12927042wrn.4;
-        Mon, 29 Mar 2021 06:47:36 -0700 (PDT)
+        Mon, 29 Mar 2021 09:47:43 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B32CC061574;
+        Mon, 29 Mar 2021 06:47:43 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id v4so12899193wrp.13;
+        Mon, 29 Mar 2021 06:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W351MbtZPqv7qJ77tVXfGqMA3tn9hsjpLQoPGH58vV8=;
-        b=kv9ZybA80zOhmjIBaoGreSnFdPukXvit1IprLD7Pj8qvKyCG8ihu/NxhFgwvitOqHi
-         dq5d8RnhSkjLBM6wEqSPE+4KSOApPXXvgleqU5k69B9rqOa+b/ZBstCyRoYLN7ZS4/OU
-         cFUedqJrQK+OlhQE9E6P2IE2AxlqGOtmiKbHKwSX7tPBvSz9t1wSloGR2LFkvzu34gIP
-         X8GhRbpV4w2bRsfwXl7OYzwDP0GSSVLZBrXJ0e+1b7GswWv9eGPWvPQyC5dLilbfPse1
-         DUYCohPbFZHsJUb82fcaosrC7kGPWquSYV+otG/sqeaRAYLMW42ngT6QMoDepk5K5PKL
-         rDNg==
+        bh=LDEzUvKkjAIAvpEGtHLesvgMticNcLTXLAP3FMyOp20=;
+        b=QgMv/ynDdRRfWLLD1H+6oPildJRa0NtXPSoikSLeCdIBE9YYdG9IhWa3D0NHkYueHe
+         8chQPBQz5nGPtY9fgNvn9APGFCv6tmTskaHuxDYLAJmQQ9a8TDj+H/Mds222JcgNMPdn
+         UH2Jvu2nq9lc8DlHoRfJveHMdC8kgU/2tB7M65tY41CEth45jvkrap7CtyHshYRJ3VBx
+         aDhyqbRUyg7O/cZBPJsVP7uLx3UMHWekrJOYgJhUIk93zpV+YhvS3Ky0ydwFcirY0E6p
+         Zf7IN+mNu9Sf9MUFmyPW/CWXNWJWotMApizLID1AuUkyC5hb4QK1H++JUgU1QdLJKel2
+         rFIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=W351MbtZPqv7qJ77tVXfGqMA3tn9hsjpLQoPGH58vV8=;
-        b=ialkakzskpngyZas7BpWTlga4gHkMIODShwShtnU/q+Saa2C928iOnSyj2HzpDKazy
-         pURzvnZbcIOh3JC8v8JmaDMYdIkPgsNirb66ZgaCk27fNJ4AqQAYw2ZtZDknYwGvckbR
-         /9SZij1xTZ9uE1F7GJHgJfTwmCXyTMkSEokD06WiKhu088sPvuzJu0bmvyGpGtsJvJ9o
-         zlxloY8Pjqmy7bnAFz3shS4qxoerp7M63r8QysU+tyjQEk26WSbY7wzhiq2AZrefJbwm
-         x9gGO0Ipv8iSQYLqx3/jMUjf5SuOlSlGlzLpBhwWFlbErOXbSd6/yWTKHwIorPgewn40
-         YmLA==
-X-Gm-Message-State: AOAM530jBARqdLyyWJWu7YQEWXIs+2D6djIA2zL+dl31rMqDExXfAr/q
-        N3AqoCnI29O8pavugew/klHrGdEDANXosQ==
-X-Google-Smtp-Source: ABdhPJxXGO9R/wMWd+TlB3G9feBlnxdBno7a47GaOgQqdLwM1OVa5hsBBhlZM+crSXpVxfzoxa6z2w==
-X-Received: by 2002:adf:c10a:: with SMTP id r10mr29868077wre.40.1617025655240;
-        Mon, 29 Mar 2021 06:47:35 -0700 (PDT)
+        bh=LDEzUvKkjAIAvpEGtHLesvgMticNcLTXLAP3FMyOp20=;
+        b=Gw7agG7ejgAYb4JEpUGJlIA7SFmfvPPhfTiUTW6eHkhpCHKyEZ03Y294/WtclBmR65
+         3PjjSHhc0jAkznw+LerjMUvYtTru1msGTqaEH9MyPfNzn/PCON4zxP+OaeEdLrFKPynQ
+         vVqE+nS+cWIUfoWbxg4ISSdgvGcIn79XZPNvccVIMxk4iHc55RQjTA3Rc5idZ72asnJp
+         M2HkFCL7ZxQ0KvUECDs079jzkSHKj1DsS2NYOJQitzu3UTo3JI07Zrh1djyLpDuSnsGz
+         lIB7ZFq7VKPRWKE0iQX5sD+Qx9u9FOv6KG3VTUVU4IdNQ/ZRSt2NsrTcHjAxBAmizb7k
+         ijbQ==
+X-Gm-Message-State: AOAM531GhMOMRBkm1G7/i6hAmTtjMgxnqGIWX14Hun7YNbOXbwDxADex
+        bUVuIQeqZBwiF2qCK0fY1uMmDzSdWa/YcQ==
+X-Google-Smtp-Source: ABdhPJyzByzyqLM6tlsL+vq+denDIyXkVf9F+7u6Otbf7WudUQp4OKErhkmujtGBPS5iAhA+nISOvg==
+X-Received: by 2002:adf:fd48:: with SMTP id h8mr29064992wrs.229.1617025662200;
+        Mon, 29 Mar 2021 06:47:42 -0700 (PDT)
 Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
-        by smtp.gmail.com with ESMTPSA id x25sm28790150wmj.14.2021.03.29.06.47.34
+        by smtp.gmail.com with ESMTPSA id y205sm30561793wmc.18.2021.03.29.06.47.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 06:47:34 -0700 (PDT)
-Subject: Re: [PATCH v5 12/13] arm: dts: mt7623: harmonize node names and
+        Mon, 29 Mar 2021 06:47:41 -0700 (PDT)
+Subject: Re: [PATCH v5 13/13] arm: dts: mt2701: harmonize node names and
  compatibles
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
@@ -63,14 +63,14 @@ Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-usb@vger.kernel.org
 References: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
- <20210316092232.9806-12-chunfeng.yun@mediatek.com>
+ <20210316092232.9806-13-chunfeng.yun@mediatek.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <a262f3aa-4a79-da90-81e4-6a3b2a9c7828@gmail.com>
-Date:   Mon, 29 Mar 2021 15:47:33 +0200
+Message-ID: <b6e523bb-8991-b5e8-576d-55190e7fc49f@gmail.com>
+Date:   Mon, 29 Mar 2021 15:47:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210316092232.9806-12-chunfeng.yun@mediatek.com>
+In-Reply-To: <20210316092232.9806-13-chunfeng.yun@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,107 +85,71 @@ On 16/03/2021 10:22, Chunfeng Yun wrote:
 > 
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
+
 Applied now to v5.12-next/dts32
 
 > ---
 > v2~v5: no changes
 > ---
->  arch/arm/boot/dts/mt7623.dtsi  | 26 ++++++++++++++------------
->  arch/arm/boot/dts/mt7623n.dtsi |  4 ++--
->  2 files changed, 16 insertions(+), 14 deletions(-)
+>  arch/arm/boot/dts/mt2701.dtsi | 19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-> index aea6809500d7..3c11f7cfcc40 100644
-> --- a/arch/arm/boot/dts/mt7623.dtsi
-> +++ b/arch/arm/boot/dts/mt7623.dtsi
-> @@ -787,8 +787,9 @@
->  		};
+> diff --git a/arch/arm/boot/dts/mt2701.dtsi b/arch/arm/boot/dts/mt2701.dtsi
+> index fade14284017..4776f85d6d5b 100644
+> --- a/arch/arm/boot/dts/mt2701.dtsi
+> +++ b/arch/arm/boot/dts/mt2701.dtsi
+> @@ -607,7 +607,7 @@
 >  	};
 >  
-> -	pcie0_phy: pcie-phy@1a149000 {
-> -		compatible = "mediatek,generic-tphy-v1";
-> +	pcie0_phy: t-phy@1a149000 {
-> +		compatible = "mediatek,mt7623-tphy",
-> +			     "mediatek,generic-tphy-v1";
->  		reg = <0 0x1a149000 0 0x0700>;
->  		#address-cells = <2>;
->  		#size-cells = <2>;
-> @@ -804,8 +805,9 @@
->  		};
->  	};
->  
-> -	pcie1_phy: pcie-phy@1a14a000 {
-> -		compatible = "mediatek,generic-tphy-v1";
-> +	pcie1_phy: t-phy@1a14a000 {
-> +		compatible = "mediatek,mt7623-tphy",
-> +			     "mediatek,generic-tphy-v1";
->  		reg = <0 0x1a14a000 0 0x0700>;
->  		#address-cells = <2>;
->  		#size-cells = <2>;
-> @@ -823,7 +825,7 @@
->  
->  	usb1: usb@1a1c0000 {
->  		compatible = "mediatek,mt7623-xhci",
-> -			     "mediatek,mt8173-xhci";
-> +			     "mediatek,mtk-xhci";
+>  	usb0: usb@1a1c0000 {
+> -		compatible = "mediatek,mt8173-xhci";
+> +		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
 >  		reg = <0 0x1a1c0000 0 0x1000>,
 >  		      <0 0x1a1c4700 0 0x0100>;
 >  		reg-names = "mac", "ippc";
-> @@ -836,9 +838,9 @@
+> @@ -620,8 +620,9 @@
 >  		status = "disabled";
 >  	};
 >  
-> -	u3phy1: usb-phy@1a1c4000 {
-> -		compatible = "mediatek,mt7623-u3phy",
-> -			     "mediatek,mt2701-u3phy";
-> +	u3phy1: t-phy@1a1c4000 {
-> +		compatible = "mediatek,mt7623-tphy",
+> -	u3phy0: usb-phy@1a1c4000 {
+> -		compatible = "mediatek,mt2701-u3phy";
+> +	u3phy0: t-phy@1a1c4000 {
+> +		compatible = "mediatek,mt2701-tphy",
 > +			     "mediatek,generic-tphy-v1";
 >  		reg = <0 0x1a1c4000 0 0x0700>;
 >  		#address-cells = <2>;
 >  		#size-cells = <2>;
-> @@ -864,7 +866,7 @@
+> @@ -646,7 +647,7 @@
+>  	};
 >  
->  	usb2: usb@1a240000 {
->  		compatible = "mediatek,mt7623-xhci",
-> -			     "mediatek,mt8173-xhci";
-> +			     "mediatek,mtk-xhci";
+>  	usb1: usb@1a240000 {
+> -		compatible = "mediatek,mt8173-xhci";
+> +		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
 >  		reg = <0 0x1a240000 0 0x1000>,
 >  		      <0 0x1a244700 0 0x0100>;
 >  		reg-names = "mac", "ippc";
-> @@ -877,9 +879,9 @@
+> @@ -659,8 +660,9 @@
 >  		status = "disabled";
 >  	};
 >  
-> -	u3phy2: usb-phy@1a244000 {
-> -		compatible = "mediatek,mt7623-u3phy",
-> -			     "mediatek,mt2701-u3phy";
-> +	u3phy2: t-phy@1a244000 {
-> +		compatible = "mediatek,mt7623-tphy",
+> -	u3phy1: usb-phy@1a244000 {
+> -		compatible = "mediatek,mt2701-u3phy";
+> +	u3phy1: t-phy@1a244000 {
+> +		compatible = "mediatek,mt2701-tphy",
 > +			     "mediatek,generic-tphy-v1";
 >  		reg = <0 0x1a244000 0 0x0700>;
 >  		#address-cells = <2>;
 >  		#size-cells = <2>;
-> diff --git a/arch/arm/boot/dts/mt7623n.dtsi b/arch/arm/boot/dts/mt7623n.dtsi
-> index 1880ac9e32cf..bcb0846e29fd 100644
-> --- a/arch/arm/boot/dts/mt7623n.dtsi
-> +++ b/arch/arm/boot/dts/mt7623n.dtsi
-> @@ -246,7 +246,7 @@
+> @@ -700,8 +702,9 @@
 >  		status = "disabled";
 >  	};
 >  
-> -	mipi_tx0: mipi-dphy@10010000 {
-> +	mipi_tx0: dsi-phy@10010000 {
->  		compatible = "mediatek,mt7623-mipi-tx",
->  			     "mediatek,mt2701-mipi-tx";
->  		reg = <0 0x10010000 0 0x90>;
-> @@ -265,7 +265,7 @@
->  		status = "disabled";
->  	};
->  
-> -	hdmi_phy: phy@10209100 {
-> +	hdmi_phy: hdmi-phy@10209100 {
->  		compatible = "mediatek,mt7623-hdmi-phy",
->  			     "mediatek,mt2701-hdmi-phy";
->  		reg = <0 0x10209100 0 0x24>;
+> -	u2phy0: usb-phy@11210000 {
+> -		compatible = "mediatek,generic-tphy-v1";
+> +	u2phy0: t-phy@11210000 {
+> +		compatible = "mediatek,mt2701-tphy",
+> +			     "mediatek,generic-tphy-v1";
+>  		reg = <0 0x11210000 0 0x0800>;
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
 > 
