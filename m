@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEE434CB2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A55134CAF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbhC2IoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        id S234835AbhC2IlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhC2I0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:26:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8003B619BC;
-        Mon, 29 Mar 2021 08:25:47 +0000 (UTC)
+        id S232754AbhC2IRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C37BC619C2;
+        Mon, 29 Mar 2021 08:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006348;
-        bh=HKAJRd6zJIMAV11utaQkOKpyX7HG55LD4h3oDTTA7f8=;
+        s=korg; t=1617005788;
+        bh=jVpHT3HT7JE/3luCOdYVQh/Sr8a+M6O3OHX17rPfMoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sDx07xqnsPJMpwLv9uhTmZlmkoBo+So9WYdzR7l3x3EGth/UkRSP6dTVVj8uh4rSI
-         J23eWCP6Ay9h4z5d9FsvDHfH2KvDiHgCCTgF40zrdkCkQCctKUDHQXSIK0rz7gFgHD
-         7ofrRiyKDI52GteT3Ibb0wJmhOjxqTOYa7+Uin70=
+        b=A+RPZSlpvEYFEBvyo9G3cUIXY/+X/h67weXBg8jzgh9et3SCJh6IsHhxwlMvax6ys
+         vVZL779H8AiD1GxDZObEzfspSVut3l10Yn5boGohp1O1iNYfgNgJWyJ1pCpvRn5vZN
+         Woah6UnmNnMqXTKwN3le8ejm9ceSSCRV1Ou9olsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.10 207/221] locking/mutex: Fix non debug version of mutex_lock_io_nested()
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.4 110/111] ext4: add reclaim checks to xattr code
 Date:   Mon, 29 Mar 2021 09:58:58 +0200
-Message-Id: <20210329075636.023373758@linuxfoundation.org>
+Message-Id: <20210329075618.863448796@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jan Kara <jack@suse.cz>
 
-commit 291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7 upstream.
+commit 163f0ec1df33cf468509ff38cbcbb5eb0d7fac60 upstream.
 
-If CONFIG_DEBUG_LOCK_ALLOC=n then mutex_lock_io_nested() maps to
-mutex_lock() which is clearly wrong because mutex_lock() lacks the
-io_schedule_prepare()/finish() invocations.
+Syzbot is reporting that ext4 can enter fs reclaim from kvmalloc() while
+the transaction is started like:
 
-Map it to mutex_lock_io().
+  fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+  might_alloc include/linux/sched/mm.h:193 [inline]
+  slab_pre_alloc_hook mm/slab.h:493 [inline]
+  slab_alloc_node mm/slub.c:2817 [inline]
+  __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+  kmalloc_node include/linux/slab.h:575 [inline]
+  kvmalloc_node+0x61/0xf0 mm/util.c:587
+  kvmalloc include/linux/mm.h:781 [inline]
+  ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+  ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+  ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+  ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+  ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+  ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
 
-Fixes: f21860bac05b ("locking/mutex, sched/wait: Fix the mutex_lock_io_nested() define")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/878s6fshii.fsf@nanos.tec.linutronix.de
+This should be impossible since transaction start sets PF_MEMALLOC_NOFS.
+Add some assertions to the code to catch if something isn't working as
+expected early.
+
+Link: https://lore.kernel.org/linux-ext4/000000000000563a0205bafb7970@google.com/
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210222171626.21884-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/mutex.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/xattr.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -185,7 +185,7 @@ extern void mutex_lock_io(struct mutex *
- # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
- # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
- # define mutex_lock_nest_lock(lock, nest_lock) mutex_lock(lock)
--# define mutex_lock_io_nested(lock, subclass) mutex_lock(lock)
-+# define mutex_lock_io_nested(lock, subclass) mutex_lock_io(lock)
- #endif
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -1476,6 +1476,9 @@ ext4_xattr_inode_cache_find(struct inode
+ 	if (!ce)
+ 		return NULL;
  
- /*
++	WARN_ON_ONCE(ext4_handle_valid(journal_current_handle()) &&
++		     !(current->flags & PF_MEMALLOC_NOFS));
++
+ 	ea_data = ext4_kvmalloc(value_len, GFP_NOFS);
+ 	if (!ea_data) {
+ 		mb_cache_entry_put(ea_inode_cache, ce);
+@@ -2342,6 +2345,7 @@ ext4_xattr_set_handle(handle_t *handle,
+ 			error = -ENOSPC;
+ 			goto cleanup;
+ 		}
++		WARN_ON_ONCE(!(current->flags & PF_MEMALLOC_NOFS));
+ 	}
+ 
+ 	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
 
 
