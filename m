@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2784634D771
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF5534D6D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhC2Shu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:37:50 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:64458 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhC2Shi (ORCPT
+        id S231435AbhC2SRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhC2SRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:37:38 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id 182b48a7b900cf93; Mon, 29 Mar 2021 20:37:37 +0200
-Received: from kreacher.localnet (89-64-81-131.dynamic.chello.pl [89.64.81.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 357E1669165;
-        Mon, 29 Mar 2021 20:37:36 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
-Subject: [PATCH v1 2/5] cpuidle: Use s64 as exit_latency_ns and target_residency_ns data type
-Date:   Mon, 29 Mar 2021 20:15:19 +0200
-Message-ID: <1850839.PYKUYFuaPT@kreacher>
-In-Reply-To: <2764850.e9J7NaK4W3@kreacher>
-References: <2764850.e9J7NaK4W3@kreacher>
+        Mon, 29 Mar 2021 14:17:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EC1C061574;
+        Mon, 29 Mar 2021 11:17:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=w3n6ycLm4n1SSQiOYkwgaV89Fzkl7RLAkF0UMWzZ4G8=; b=fczFwQn+vQmCM2aZFnLhYBGEcH
+        +8PH+ZyVcqWv8pyDuJOSRivWTXdTA7tIOUPwlQc/+9Vh5psUQTFY+49M5B+p4eTfzkul/u2g/ZhTj
+        26Yj3N+ZvF/ZdI8qBVOHO2hZY7A7X/M6Z4vK2iKSJdhEooHLpVCGvUyi8zEzTRtBwGFOuB1q4qVFJ
+        YFdN8Ou1eY9j/x7p+JiDSq2XvsU5vq9GzSX32cp+m+GttY1BtXz4HploGBaGGyhilOJQ3E6oamMji
+        biLUzthJWb4Ziy2hQPk6OhZd1ZFMgS3siRlJIclt5xLDYkfRnVhcHEz2w3vsraXCWzjzjN2Dl9ovH
+        XbHF78ng==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQwQc-0010mF-Mx; Mon, 29 Mar 2021 18:16:04 +0000
+Subject: Re: [PATCH] usb: dwc3: st: fix incorrect kernel-doc comment syntax in
+ file
+To:     Aditya Srivastava <yashsri421@gmail.com>,
+        patrice.chotard@foss.st.com
+Cc:     lukas.bulwahn@gmail.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329132014.24304-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dfdf5685-30f6-4fad-f9e8-8605dce3668d@infradead.org>
+Date:   Mon, 29 Mar 2021 11:15:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedguddvkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrudefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrudefuddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepthhglhigsehlihhnuhhtrhhonhhigidruggvpdhrtghp
- thhtohepgidvtddulegtfihmsehsthhfgidrtggr
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+In-Reply-To: <20210329132014.24304-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On 3/29/21 6:20 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/usb/dwc3/dwc3-st.c follows this syntax, but the
+> content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> "warning: expecting prototype for dwc3(). Prototype was for CLKRST_CTRL() instead"
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-Subsequent changes will cause the exit_latency_ns and target_residency_ns
-fields in struct cpuidle_state to be used in computations in which data
-type conversions to u64 may turn a negative number close to zero into
-a verly large positive number leading to incorrect results.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-In preparation for that, change the data type of the fields mentioned
-above to s64, but ensure that they will not be negative themselves.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/driver.c |    4 ++++
- include/linux/cpuidle.h  |    4 ++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-Index: linux-pm/include/linux/cpuidle.h
-===================================================================
---- linux-pm.orig/include/linux/cpuidle.h
-+++ linux-pm/include/linux/cpuidle.h
-@@ -49,8 +49,8 @@ struct cpuidle_state {
- 	char		name[CPUIDLE_NAME_LEN];
- 	char		desc[CPUIDLE_DESC_LEN];
- 
--	u64		exit_latency_ns;
--	u64		target_residency_ns;
-+	s64		exit_latency_ns;
-+	s64		target_residency_ns;
- 	unsigned int	flags;
- 	unsigned int	exit_latency; /* in US */
- 	int		power_usage; /* in mW */
-Index: linux-pm/drivers/cpuidle/driver.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/driver.c
-+++ linux-pm/drivers/cpuidle/driver.c
-@@ -181,9 +181,13 @@ static void __cpuidle_driver_init(struct
- 		 */
- 		if (s->target_residency > 0)
- 			s->target_residency_ns = s->target_residency * NSEC_PER_USEC;
-+		else if (s->target_residency_ns < 0)
-+			s->target_residency_ns = 0;
- 
- 		if (s->exit_latency > 0)
- 			s->exit_latency_ns = s->exit_latency * NSEC_PER_USEC;
-+		else if (s->exit_latency_ns < 0)
-+			s->exit_latency_ns =  0;
- 	}
- }
- 
+> ---
+> * Applies perfectly on next-20210326
+> 
+>  drivers/usb/dwc3/dwc3-st.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-st.c b/drivers/usb/dwc3/dwc3-st.c
+> index b06b7092b1a2..166b5bde45cb 100644
+> --- a/drivers/usb/dwc3/dwc3-st.c
+> +++ b/drivers/usb/dwc3/dwc3-st.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+> -/**
+> +/*
+>   * dwc3-st.c Support for dwc3 platform devices on ST Microelectronics platforms
+>   *
+>   * This is a small driver for the dwc3 to provide the glue logic
+> 
 
 
+-- 
+~Randy
 
