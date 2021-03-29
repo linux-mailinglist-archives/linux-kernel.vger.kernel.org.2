@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1F834C9C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B341134C9BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhC2Ict (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37344 "EHLO mail.kernel.org"
+        id S234287AbhC2Icm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhC2IUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232419AbhC2IUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C201761959;
-        Mon, 29 Mar 2021 08:20:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9036161613;
+        Mon, 29 Mar 2021 08:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006022;
-        bh=0IXQZf3dDztMvaSdtq5qt7YZM/yfrIAaDdJhNr36Yog=;
+        s=korg; t=1617006025;
+        bh=LCfOYbdDrWCE+GJPVozw9HGEGOggj0If07yc6i7jxEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nj1UCvXQG4R4s8ip+hTrgar5p8mq4TpDntRHe8plHaGyykRXjFaC1tbRIbVJmnKID
-         kvXqyTdowMcfHjfJOxDETNqCoH861aQ2/CDmy1C732T9ZeimwFOU/lQIVVQhpWgQ1w
-         AyeVdk1wHDn3TPbF29ZL3eRBp6OMlUd9vwUKIyDE=
+        b=n3ETSvgnWhVtLcMZRh0YJlItRw0WXcb55td8KlAjNOxeZ/dYDJthyP/XKmOB9FGv3
+         sOKH3ozhe/HRIFoUItuP7xrihzLiHgDqy4kOwCTwAqsVJavk10ersCNY1b2LAkInn4
+         7Ku9IR5E22mXa/qabOx+BpZlBpivqkb6XNSgQFDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JeongHyeon Lee <jhs2.lee@samsung.com>,
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 089/221] dm verity: fix DM_VERITY_OPTS_MAX value
-Date:   Mon, 29 Mar 2021 09:57:00 +0200
-Message-Id: <20210329075632.183656895@linuxfoundation.org>
+Subject: [PATCH 5.10 090/221] dm ioctl: fix out of bounds array access when no devices
+Date:   Mon, 29 Mar 2021 09:57:01 +0200
+Message-Id: <20210329075632.214146695@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
@@ -39,33 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JeongHyeon Lee <jhs2.lee@samsung.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 160f99db943224e55906dd83880da1a704c6e6b9 upstream.
+commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
 
-Three optional parameters must be accepted at once in a DM verity table, e.g.:
-  (verity_error_handling_mode) (ignore_zero_block) (check_at_most_once)
-Fix this to be possible by incrementing DM_VERITY_OPTS_MAX.
+If there are not any dm devices, we need to zero the "dev" argument in
+the first structure dm_name_list. However, this can cause out of
+bounds write, because the "needed" variable is zero and len may be
+less than eight.
 
-Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
-Fixes: 843f38d382b1 ("dm verity: add 'check_at_most_once' option to only validate hashes once")
+Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
+too small to hold the "nl->dev" value.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-verity-target.c |    2 +-
+ drivers/md/dm-ioctl.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -34,7 +34,7 @@
- #define DM_VERITY_OPT_IGN_ZEROES	"ignore_zero_blocks"
- #define DM_VERITY_OPT_AT_MOST_ONCE	"check_at_most_once"
- 
--#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC + \
-+#define DM_VERITY_OPTS_MAX		(3 + DM_VERITY_OPTS_FEC + \
- 					 DM_VERITY_ROOT_HASH_VERIFICATION_OPTS)
- 
- static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -529,7 +529,7 @@ static int list_devices(struct file *fil
+ 	 * Grab our output buffer.
+ 	 */
+ 	nl = orig_nl = get_result_buffer(param, param_size, &len);
+-	if (len < needed) {
++	if (len < needed || len < sizeof(nl->dev)) {
+ 		param->flags |= DM_BUFFER_FULL_FLAG;
+ 		goto out;
+ 	}
 
 
