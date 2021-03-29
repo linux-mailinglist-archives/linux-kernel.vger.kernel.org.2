@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAFB34C1C7
+	by mail.lfdr.de (Postfix) with ESMTP id BA5C034C1C8
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhC2CAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        id S231317AbhC2CA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhC2CAB (ORCPT
+        with ESMTP id S231134AbhC2CAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:00:01 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9633FC0613B2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:00 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id s11so2811046pfm.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:00 -0700 (PDT)
+        Sun, 28 Mar 2021 22:00:02 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03D1C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:01 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q5so8856171pfh.10
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pensando.io; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mL/Sgm8OGhZihxh03UyCmsmL8yCcjUpcxd2H6bufsHY=;
-        b=095Rb/mA+bz6rmgdwwcROxOk/3nzhc8aRr0R4BqxblwDjisXnLSQjqO9tSnAg0ejf9
-         JZUj7aquG1nkrrxifH31UUtS5j0JBGHfIqVph6zjQE6e+GVZC738Tv8RxwZsCcUaKaG5
-         d+w7uCpp9T6l3Yk1RVdbhoM3d2JtRrTCxAEBe+LG+8UV1TCKp+W45G34SXHr8NpqrnsY
-         JSpAucw0od/0H/zuW5XKzIOFDioHsvxzI3GrtTg0N+b046gX9YgADfomX8P3dmpnONF/
-         Bv15Fppgvn+TvIa4sh0U3F379CjbY0WeIBqxXRcttA3f0KU7B4YQUcAIvuWvtvfkl9kd
-         F2Cw==
+        bh=e7eNiGvucTSfZ9YPwtIS0pxm8LPJi6oD0Avh087H1AU=;
+        b=TUKF30VWRRBveRfhTx4XCTSt/6C1xFFD2llv8DleYNKMD5oOX79pVbO1s+WVZXKbTn
+         GgMxHB7vKeTb09mxLijtXhhDfLp/Z2PXl+bPxRmLLTL5fbz6tTFBTl7PtB3RZMqKkpzz
+         KRN2Yb4W+cnlZMjOr6fJy/sJw/jTyI7ikJLUzlQrzAe6ll3YFxVoOPI9I7Ch2WYoHzrh
+         eEM7aGNGoANmY2i8AdBK6H7CWmxMvYyuvwSyVWKDgNoQ3lh22ih8RMp0ubYUBMNMo8up
+         0/IGnzXdAyAI7cpLxIm/DRBtwHj2Oid+Bl1m74Fu/nVRRGy8fQ+uDyN9zmTrf1aNL7yY
+         bHJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=mL/Sgm8OGhZihxh03UyCmsmL8yCcjUpcxd2H6bufsHY=;
-        b=nzx/tAFFNMQdp6X5KaUtPlvZfgB0HSLdWlJlgyBh3PbQl5tRjCqN25kV4V2GkVaMhw
-         4Dcdb9gP93yxwvIjq5esjkkh/7iGDNrw5lTPpdf0fXasZ6Bm+34SjR2VIuVORF44HHmC
-         RsfrvRpu3J0jVWcTqxSwH0dFcJE2j01zc+F1K1H4WihWtr1PjoXpH8K/K/LK5RjHbo1A
-         m72ivNlJ4y1Bn+T67R6kJcv88nWjO9/WW6r5iLleWFzQRcAa0yqbXAklLKSxAoAr5wI6
-         vn8tZ72I4NbW3DLQ4m2h65nGQrcWVDnr+zpBeSeHajWTjcIrMmCSa0W/1rEstZsFsTr9
-         y52A==
-X-Gm-Message-State: AOAM533I8q6nCPWf8+f2fCDmWzB02ryRtVyAr6cdbNSDLNS99zGz+ZcF
-        u30P5YUgUDYZoz7cG/g2OM2kew==
-X-Google-Smtp-Source: ABdhPJx32RmJJaqZeTXIHjzlYssXHCff5jyhobLMMVxqZkvUDN3yAu/IJhImuD3o/YB/6hzzaChuNw==
-X-Received: by 2002:aa7:848b:0:b029:1ef:4e98:6bb6 with SMTP id u11-20020aa7848b0000b02901ef4e986bb6mr23143917pfn.58.1616983199972;
-        Sun, 28 Mar 2021 18:59:59 -0700 (PDT)
+        bh=e7eNiGvucTSfZ9YPwtIS0pxm8LPJi6oD0Avh087H1AU=;
+        b=YEx7p+X0Nzhewm+PyRaEYUnFWUqGrojwZLLhlaCQtH/3XT2vOER8aoxp1hydNdZHUs
+         OiK+Cq4LzNTaFCoPTsaCUJj067E2bRDEpw5Ij1CwdUT0h4wxY7XVx8xUJMQNA0dxFH+s
+         2e2qbtcIU/y+pkfk/bdumSjXqTFuXvFNH+iMPyoVB02ReMQnSc9pcaJtV3cdqun7j+5i
+         ozt7L3qyR/N1uxZgGy+EqgY9FDy5WZHCrAeUR2YTmW2Rc2v9aQHUyhleQAdR96jM/j50
+         KKqTIqbbzkOEQO90zwYnRDbxoia1Ut+yZZ5F2EMk2NrAQA2clVMkCt4my4p0Taj76jHl
+         ZwBQ==
+X-Gm-Message-State: AOAM533zxxokqfA9RJJZQwA7kXQzKqm0j0jTV56Sq6NjYhA+CU9GPI+5
+        Q5A/zfs4vk21yXGFu8SqarDIlA==
+X-Google-Smtp-Source: ABdhPJz9qDrbHCn527IB9JHPAQJvkbN/YiK5DlwRYEaTjNNr5wbaltSygdeQhh7YIiOdzSji0D1ZDg==
+X-Received: by 2002:a63:30b:: with SMTP id 11mr22031174pgd.245.1616983201423;
+        Sun, 28 Mar 2021 19:00:01 -0700 (PDT)
 Received: from platform-dev1.pensando.io ([12.226.153.42])
-        by smtp.gmail.com with ESMTPSA id w37sm14728027pgl.13.2021.03.28.18.59.58
+        by smtp.gmail.com with ESMTPSA id w37sm14728027pgl.13.2021.03.28.19.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 18:59:59 -0700 (PDT)
+        Sun, 28 Mar 2021 19:00:01 -0700 (PDT)
 From:   Brad Larson <brad@pensando.io>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
@@ -55,9 +55,9 @@ Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
         brad@pensando.io, linux-gpio@vger.kernel.org,
         linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/13] dt-bindings: spi: cadence-qspi: Add support for Pensando Elba SoC
-Date:   Sun, 28 Mar 2021 18:59:35 -0700
-Message-Id: <20210329015938.20316-11-brad@pensando.io>
+Subject: [PATCH v2 11/13] dt-bindings: gpio: Add Pensando Elba SoC support
+Date:   Sun, 28 Mar 2021 18:59:36 -0700
+Message-Id: <20210329015938.20316-12-brad@pensando.io>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210329015938.20316-1-brad@pensando.io>
 References: <20210329015938.20316-1-brad@pensando.io>
@@ -65,248 +65,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new vendor Pensando Systems Elba SoC compatible
-string and convert to json-schema.
+The Pensando Elba SoC gpio driver provides control
+of four chip selects on two SPI busses.
 
 Signed-off-by: Brad Larson <brad@pensando.io>
 ---
- .../bindings/spi/cadence-quadspi.txt          |  68 --------
- .../bindings/spi/cadence-quadspi.yaml         | 153 ++++++++++++++++++
- 2 files changed, 153 insertions(+), 68 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+ .../bindings/gpio/pensando,elba-spics.yaml    | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/pensando,elba-spics.yaml
 
-diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
-deleted file mode 100644
-index 8ace832a2d80..000000000000
---- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
-+++ /dev/null
-@@ -1,68 +0,0 @@
--* Cadence Quad SPI controller
--
--Required properties:
--- compatible : should be one of the following:
--	Generic default - "cdns,qspi-nor".
--	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
--	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
--	For Intel LGM SoC - "intel,lgm-qspi", "cdns,qspi-nor".
--- reg : Contains two entries, each of which is a tuple consisting of a
--	physical address and length. The first entry is the address and
--	length of the controller register set. The second entry is the
--	address and length of the QSPI Controller data area.
--- interrupts : Unit interrupt specifier for the controller interrupt.
--- clocks : phandle to the Quad SPI clock.
--- cdns,fifo-depth : Size of the data FIFO in words.
--- cdns,fifo-width : Bus width of the data FIFO in bytes.
--- cdns,trigger-address : 32-bit indirect AHB trigger address.
--
--Optional properties:
--- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
--- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
--  the read data rather than the QSPI clock. Make sure that QSPI return
--  clock is populated on the board before using this property.
--
--Optional subnodes:
--Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
--custom properties:
--- cdns,read-delay : Delay for read capture logic, in clock cycles
--- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
--                  mode chip select outputs are de-asserted between
--		  transactions.
--- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
--                  de-activated and the activation of another.
--- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
--                  transaction and deasserting the device chip select
--		  (qspi_n_ss_out).
--- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
--                  and first bit transfer.
--- resets	: Must contain an entry for each entry in reset-names.
--		  See ../reset/reset.txt for details.
--- reset-names	: Must include either "qspi" and/or "qspi-ocp".
--
--Example:
--
--	qspi: spi@ff705000 {
--		compatible = "cdns,qspi-nor";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0xff705000 0x1000>,
--		      <0xffa00000 0x1000>;
--		interrupts = <0 151 4>;
--		clocks = <&qspi_clk>;
--		cdns,is-decoded-cs;
--		cdns,fifo-depth = <128>;
--		cdns,fifo-width = <4>;
--		cdns,trigger-address = <0x00000000>;
--		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
--		reset-names = "qspi", "qspi-ocp";
--
--		flash0: n25q00@0 {
--			...
--			cdns,read-delay = <4>;
--			cdns,tshsl-ns = <50>;
--			cdns,tsd2d-ns = <50>;
--			cdns,tchsh-ns = <4>;
--			cdns,tslch-ns = <4>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+diff --git a/Documentation/devicetree/bindings/gpio/pensando,elba-spics.yaml b/Documentation/devicetree/bindings/gpio/pensando,elba-spics.yaml
 new file mode 100644
-index 000000000000..94d631045153
+index 000000000000..c93b481d4ad3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-@@ -0,0 +1,153 @@
-+# SPDX-License-Identifier: GPL-2.0-only
++++ b/Documentation/devicetree/bindings/gpio/pensando,elba-spics.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
++$id: http://devicetree.org/schemas/gpio/pensando,elba-spics.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cadence Quad SPI controller
++title: Pensando Elba SPI Chip Select Driver
++
++description: |
++  The Pensando Elba SoC provides four SPI bus chip selects.
 +
 +maintainers:
-+  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 +  - Brad Larson <brad@pensando.io>
 +
 +properties:
++  $nodename:
++    pattern: "^spics@[0-9a-f]+$"
++  
 +  compatible:
-+    contains:
-+      enum:
-+        - cdns,qspi-nor       # Generic default
-+        - ti,k2g-qspi         # TI 66AK2G SoC
-+        - ti,am654-ospi       # TI AM654 SoC
-+        - intel,lgm-qspi      # Intel LGM SoC
-+        - pensando,cdns-qspi  # Pensando Elba SoC
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
++    const: pensando,elba-spics
 +
 +  reg:
-+    minItems: 2
-+    maxItems: 2
-+    description: |
-+      Contains two entries, each of which is a tuple consisting of a
-+      physical address and length. The first entry is the address and
-+      length of the controller register set. The second entry is the
-+      address and length of the QSPI Controller data area.
-+
-+  interrupts:
 +    maxItems: 1
-+    description: Unit interrupt specifier for the controller interrupt
 +
-+  clocks:
-+    description: phandle to the Quad SPI clock
++  gpio-controller: true
 +
-+  cdns,fifo-depth:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Size of the data FIFO in words
-+
-+  cdns,fifo-width:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Bus width of the data FIFO in bytes
-+
-+  cdns,trigger-address:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: 32-bit indirect AHB trigger address
-+
-+  cdns,is-decoded-cs:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Flag to indicate whether decoder is used or not
-+
-+  cdns,rclk-en:
-+    description:
-+      Flag to indicate that QSPI return clock is used to latch the
-+      read data rather than the QSPI clock. Make sure that QSPI return
-+      clock is populated on the board before using this property
-+    $ref: /schemas/types.yaml#/definitions/flag
-+
-+  # Subnodes of the Cadence Quad SPI controller are spi slave nodes 
-+  # with additional custom properties
-+  cdns,read-delay:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Delay for read capture logic, in clock cycles
-+
-+  cdns,tshsl-ns:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Delay in nanoseconds for the length that the master mode chip
-+      select outputs are de-asserted between transactions
-+
-+  cdns,tsd2d-ns:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Delay in nanoseconds between one chip select being de-activated
-+      and the activation of another.
-+
-+  cdns,tchsh-ns:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Delay in nanoseconds between last bit of current transaction and
-+      deasserting the device chip select (qspi_n_ss_out).
-+
-+  cdns,tslch-ns:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Delay in nanoseconds between setting qspi_n_ss_out low and first
-+      bit transfer.
-+
-+  resets:
-+    items:
-+      - description: qspi reset
-+      - description: qspi-ocp reset
-+
-+  reset-names:
-+    items:
-+      - const: qspi
-+      - const: qspi-ocp
++  "#gpio-cells":
++    const: 2
 +
 +required:
 +  - compatible
 +  - reg
-+  - interrupts
-+  - clocks
-+  - cdns,fifo-depth
-+  - cdns,fifo-width
-+  - cdns,trigger-address
-+
-+patternProperties:
-+  "^.*@[0-9]+$":
-+    type: object
++  - gpio-controller
++  - "#gpio-cells"
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/reset/altr,rst-mgr-a10.h>
-+    qspi: spi@ff705000 {
-+        compatible = "cdns,qspi-nor";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        reg = <0xff705000 0x1000>,
-+              <0xffa00000 0x1000>;
-+        interrupts = <0 151 4>;
-+        clocks = <&qspi_clk>;
-+        cdns,is-decoded-cs;
-+        cdns,fifo-depth = <128>;
-+        cdns,fifo-width = <4>;
-+        cdns,trigger-address = <0x00000000>;
-+        resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
-+        reset-names = "qspi", "qspi-ocp";
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
 +
-+        flash0: mt25q@0 {
-+                compatible = "jdec,spi-nor";
-+                reg = <0>;
-+                spi-max-frequency = <40000000>;
-+                spi-rx-bus-width = <2>;
-+                m25p,fast-read;
-+                cdns,read-delay = <0>;
-+                cdns,tshsl-ns = <0>;
-+                cdns,tsd2d-ns = <0>;
-+                cdns,tchsh-ns = <0>;
-+                cdns,tslch-ns = <0>;
++        spics: spics@307c2468 {
++            compatible = "pensando,elba-spics";
++            reg = <0x0 0x307c2468 0x0 0x4>;
++            gpio-controller;
++            #gpio-cells = <2>;
 +        };
 +    };
 -- 
