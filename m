@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1B34C99C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9366F34CBA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhC2IaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35994 "EHLO mail.kernel.org"
+        id S235612AbhC2Iux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233395AbhC2ITT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD6B761878;
-        Mon, 29 Mar 2021 08:19:18 +0000 (UTC)
+        id S234628AbhC2IdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3045619C4;
+        Mon, 29 Mar 2021 08:32:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005959;
-        bh=06AdV+JkCI79bqE8VrXjJjhz6t24lXG9Wq7P9wAxE/M=;
+        s=korg; t=1617006756;
+        bh=M3KYt+TlfZnvsm8VNCnDn0ffL3wX6K17cGMUOCTW83g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPJd4iDQAUhgJMHx0b/7QIWV+GVM0/m+iqVj7A3jkLJiwA+wt7JFFisR1tUynxuJT
-         uiOe6gWgklWW713xAaS8L4mjYKG9/XSUog/NFM4RDjDs1xmswbY9gDZhZ2emw2zc1T
-         dq6qDUvNNErr/cYmdrmeOyCWnM3OHZND0dfuUK3c=
+        b=IzxMnlF7troDGpicE4CSS7ScEb/WHneO82liLmHw/kweYZ+d+UVF8b76GY//RY+4/
+         mTmJa1ZHMykSnWdfoTOi55BTmX7xBxjCsHG9u+FkyHBZsEyL6Rfb123A7KsB8PDNJj
+         vpCZvtAJSNgAI/y+CHMfeCGtKtzTklymVup2FFys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 031/221] irqchip/ingenic: Add support for the JZ4760
-Date:   Mon, 29 Mar 2021 09:56:02 +0200
-Message-Id: <20210329075630.210350350@linuxfoundation.org>
+        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 047/254] drm/amdgpu: fb BO should be ttm_bo_type_device
+Date:   Mon, 29 Mar 2021 09:56:03 +0200
+Message-Id: <20210329075634.722132915@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Nirmoy Das <nirmoy.das@amd.com>
 
-[ Upstream commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60 ]
+[ Upstream commit 521f04f9e3ffc73ef96c776035f8a0a31b4cdd81 ]
 
-Add support for the interrupt controller found in the JZ4760 SoC, which
-works exactly like the one in the JZ4770.
+FB BO should not be ttm_bo_type_kernel type and
+amdgpufb_create_pinned_object() pins the FB BO anyway.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210307172014.73481-2-paul@crapouillou.net
+Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-ingenic-tcu.c | 1 +
- drivers/irqchip/irq-ingenic.c     | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
-index 7a7222d4c19c..b938d1d04d96 100644
---- a/drivers/irqchip/irq-ingenic-tcu.c
-+++ b/drivers/irqchip/irq-ingenic-tcu.c
-@@ -179,5 +179,6 @@ static int __init ingenic_tcu_irq_init(struct device_node *np,
- }
- IRQCHIP_DECLARE(jz4740_tcu_irq, "ingenic,jz4740-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4725b_tcu_irq, "ingenic,jz4725b-tcu", ingenic_tcu_irq_init);
-+IRQCHIP_DECLARE(jz4760_tcu_irq, "ingenic,jz4760-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4770_tcu_irq, "ingenic,jz4770-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(x1000_tcu_irq, "ingenic,x1000-tcu", ingenic_tcu_irq_init);
-diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
-index b61a8901ef72..ea36bb00be80 100644
---- a/drivers/irqchip/irq-ingenic.c
-+++ b/drivers/irqchip/irq-ingenic.c
-@@ -155,6 +155,7 @@ static int __init intc_2chip_of_init(struct device_node *node,
- {
- 	return ingenic_intc_of_init(node, 2);
- }
-+IRQCHIP_DECLARE(jz4760_intc, "ingenic,jz4760-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4770_intc, "ingenic,jz4770-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4775_intc, "ingenic,jz4775-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4780_intc, "ingenic,jz4780-intc", intc_2chip_of_init);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+index 0bf7d36c6686..5b716404eee1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+@@ -146,7 +146,7 @@ static int amdgpufb_create_pinned_object(struct amdgpu_fbdev *rfbdev,
+ 	size = mode_cmd->pitches[0] * height;
+ 	aligned_size = ALIGN(size, PAGE_SIZE);
+ 	ret = amdgpu_gem_object_create(adev, aligned_size, 0, domain, flags,
+-				       ttm_bo_type_kernel, NULL, &gobj);
++				       ttm_bo_type_device, NULL, &gobj);
+ 	if (ret) {
+ 		pr_err("failed to allocate framebuffer (%d)\n", aligned_size);
+ 		return -ENOMEM;
 -- 
 2.30.1
 
