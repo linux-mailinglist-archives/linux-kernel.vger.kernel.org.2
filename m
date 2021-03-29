@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB81034C3E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D8834C3E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhC2Gdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:33:50 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25892 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhC2GdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:33:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616999596; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=ZmRlckaWX/ArhLo3bdNLwB5yRvV3JcbXClzcLYpuUiI=; b=xgvfuZylI0Tu7NSDndizt5wR0rJ2FoV+oX97RawdmG5x+N8KO9T81gdapLeivjff9qErcEiN
- vMFQrM9aHn+JWSgb9yAW6f6sfG+FTvgzBkG2sZ3fP/DziiD8EpfRwCq8Tkl1HczEQCbVMLd1
- Mm0D3Y8ioHB5atrBqDmYrfBUzTs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 606174a8876af85fc43ba303 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 06:33:12
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82362C433C6; Mon, 29 Mar 2021 06:33:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF3FEC433CA;
-        Mon, 29 Mar 2021 06:33:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF3FEC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V3 5/5] arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support node
-Date:   Mon, 29 Mar 2021 12:02:26 +0530
-Message-Id: <addf491d4a89bad576d273e9fe3152eaec8aebac.1616997837.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1616651305.git.schowdhu@codeaurora.org>
-References: <cover.1616651305.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1616997837.git.schowdhu@codeaurora.org>
-References: <cover.1616997837.git.schowdhu@codeaurora.org>
+        id S229502AbhC2Gev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230504AbhC2Gef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 02:34:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 377056192B;
+        Mon, 29 Mar 2021 06:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616999675;
+        bh=pG64FB9rWovZQplGtwnKbEowT24yQaVuAwZw82YgEGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rMxe+QBYAVmedAAlAj9m7ayc0pQrClYyyMyDUnn5p7vuHDudjo4ivpJFWZ6/jnjuy
+         uhwTy8+kP1qCW/ekLsRlwWr/zO7IF2dgCpVtAvpbh+wfpoRqntC/DAR+6t+Tl5Z4CN
+         cdYT7WImi5szh693yk9loi3udsqdQ3IAG3DnE45GI7tO+YaBwEh9bg2IVzPjoa4jnB
+         lVvRSDImw3yJNDbxg5193wcV1rW+B657WpiOrPNwNs6zCl/1sd8bIfW3eakuF3MJLb
+         2sd/YKaUlios5/zL0Lv1JyisqEUSt2NA2+6DGnjmEpbYYrG0rEBTUlqVpNXM0IqyBI
+         NYkB4mWjrRcng==
+Date:   Mon, 29 Mar 2021 09:34:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Hyunsoon Kim <h10.kim@samsung.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, dseok.yi@samsung.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: add ___GFP_NOINIT flag which disables zeroing on
+ alloc
+Message-ID: <YGF09yYtxeNj4Bcc@unreal>
+References: <CGME20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f@epcas2p3.samsung.com>
+ <1616995751-83180-1-git-send-email-h10.kim@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616995751-83180-1-git-send-email-h10.kim@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DCC(Data Capture and Compare) device tree node entry along with
-the addresses for register regions.
+On Mon, Mar 29, 2021 at 02:29:10PM +0900, Hyunsoon Kim wrote:
+> This patch allows programmer to avoid zero initialization on page
+> allocation even when the kernel config "CONFIG_INIT_ON_ALLOC_DEFAULT"
+> is enabled. The configuration is made to prevent uninitialized
+> heap memory flaws, and Android has applied this for security and
+> deterministic execution times. Please refer to below.
+> 
+> https://android-review.googlesource.com/c/kernel/common/+/1235132
+> 
+> However, there is a case that the zeroing page memory is unnecessary
+> when the page is used on specific purpose and will be zeroed
+> automatically by hardware that accesses the memory through DMA.
+> For instance, page allocation used for IP packet reception from Exynos
+> modem is solely used for packet reception. Although the page will be
+> freed eventually and reused for some other purpose, initialization at
+> that moment of reuse will be sufficient to avoid uninitialized heap
+> memory flaws. To support this kind of control, this patch creates new
+> gfp type called ___GFP_NOINIT, that allows no zeroing at the moment
+> of page allocation, called by many related APIs such as page_frag_alloc,
+> alloc_pages, etc.
+> 
+> Signed-off-by: Hyunsoon Kim <h10.kim@samsung.com>
+> ---
+>  include/linux/gfp.h | 2 ++
+>  include/linux/mm.h  | 4 +++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+Let's assume that we will use this new flag, and users are smart enough
+to figure when it needs to be used, what will be the performance gain?
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index e5bb17b..ba6acf4 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -654,6 +654,13 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		dcc@10a2000 {
-+			compatible = "qcom,sm8150-dcc", "qcom,dcc";
-+			reg = <0x0 0x010a2000 0x0 0x1000>,
-+			      <0x0 0x010ad000 0x0 0x3000>;
-+			reg-names = "dcc", "dcc-ram";
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Thanks
