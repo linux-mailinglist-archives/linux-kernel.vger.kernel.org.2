@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A4634D481
+	by mail.lfdr.de (Postfix) with ESMTP id D066B34D482
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhC2QHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:07:22 -0400
-Received: from mail-ej1-f49.google.com ([209.85.218.49]:42838 "EHLO
-        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhC2QGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:06:51 -0400
-Received: by mail-ej1-f49.google.com with SMTP id hq27so20286060ejc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:06:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R3DGCLzA96F2hSo9UAJwDmXVtZ3GtX89wEcmJ815Uf0=;
-        b=MqRZ32Mfxq44MorPAEWHgKnYEUSvWPxh9jdHI5CkuZuy+yIGwZGeJlnm6gJHzrVCCi
-         tjNT5njq2BSDXDZqNkJ5TdkDiTwx27XETWJfx8l9xyyFS/0NJsQ7BAoM9TpDUo/HWbki
-         KE8VPOUzRIFhsjjNu6FZUhOze0t5tkkdHCngBa4BhxAKgD3t18U/+GgevIvPhr2gTwkq
-         93wEr8Nyxknovdf1rhHHUovtCpCx/Og2djgO0pf9Sk98yNs/pcTEKYGp2E1TZgOx3kjx
-         vkucA7I3/rJuIQv9EpmrLWK0XqaqlRdHf1ugT2ly6BN3G8K4K+wHIXsHox1+iBBKswtO
-         1M+g==
-X-Gm-Message-State: AOAM532LsT4plBeH7tlOifNCRpIdGPxoDkQA/HnP+oLMbAReXad8TOLn
-        ciCJ70ycenR40U+IeNYUVF03GJF7fZmBfpYBenq/O3wZ
-X-Google-Smtp-Source: ABdhPJy9FbUSdbgeqSAmCGmxd7wiApuZjzIrGifd5hwMK6y1xRcxdBfidKu2HnCvuSRneCcidfuvSnsF+9jt/+Wcjsg=
-X-Received: by 2002:a17:906:6d01:: with SMTP id m1mr19449942ejr.501.1617034010211;
- Mon, 29 Mar 2021 09:06:50 -0700 (PDT)
+        id S231197AbhC2QH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:07:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:56346 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhC2QGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:06:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4987C142F;
+        Mon, 29 Mar 2021 09:06:52 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 971D63F719;
+        Mon, 29 Mar 2021 09:06:49 -0700 (PDT)
+Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210312151902.17853-1-steven.price@arm.com>
+ <20210312151902.17853-3-steven.price@arm.com>
+ <20210327152324.GA28167@arm.com> <20210328122131.GB17535@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
+Date:   Mon, 29 Mar 2021 17:06:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-15-chang.seok.bae@intel.com> <87o8fda2ye.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkZEWTsqhXLC+qiQ49c2xn7GDF95PfTBi0rw1FnE--JKQ@mail.gmail.com>
- <87r1jyaxum.ffs@nanos.tec.linutronix.de> <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
-In-Reply-To: <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Mon, 29 Mar 2021 12:06:38 -0400
-Message-ID: <CAJvTdKm4qKw8D8b+NokBsdiE5yBj=LTiH50VuxJY2aAL8qQq6g@mail.gmail.com>
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
- first use of dynamic user state
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210328122131.GB17535@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:43 AM Len Brown <lenb@kernel.org> wrote:
->
-> On Mon, Mar 29, 2021 at 9:33 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> > > I found the author of this passage, and he agreed to revise it to say this
-> > > was targeted primarily at VMMs.
-> >
-> > Why would this only a problem for VMMs?
->
-> VMMs may have to emulate different hardware for different guest OS's,
-> and they would likely "context switch" XCR0 to achieve that.
->
-> As switching XCR0 at run-time would confuse the heck out of user-space,
-> it was not imagined that a bare-metal OS would do that.
+On 28/03/2021 13:21, Catalin Marinas wrote:
+> On Sat, Mar 27, 2021 at 03:23:24PM +0000, Catalin Marinas wrote:
+>> On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
+>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>> index 77cb2d28f2a4..b31b7a821f90 100644
+>>> --- a/arch/arm64/kvm/mmu.c
+>>> +++ b/arch/arm64/kvm/mmu.c
+>>> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>   	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>>>   		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>>>   							   &pfn, &fault_ipa);
+>>> +
+>>> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
+>>> +		/*
+>>> +		 * VM will be able to see the page's tags, so we must ensure
+>>> +		 * they have been initialised. if PG_mte_tagged is set, tags
+>>> +		 * have already been initialised.
+>>> +		 */
+>>> +		struct page *page = pfn_to_page(pfn);
+>>> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
+>>> +
+>>> +		for (i = 0; i < nr_pages; i++, page++) {
+>>> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+>>> +				mte_clear_page_tags(page_address(page));
+>>> +		}
+>>> +	}
+>>
+>> This pfn_valid() check may be problematic. Following commit eeb0753ba27b
+>> ("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
+>> true for ZONE_DEVICE memory but such memory is allowed not to support
+>> MTE.
+> 
+> Some more thinking, this should be safe as any ZONE_DEVICE would be
+> mapped as untagged memory in the kernel linear map. It could be slightly
+> inefficient if it unnecessarily tries to clear tags in ZONE_DEVICE,
+> untagged memory. Another overhead is pfn_valid() which will likely end
+> up calling memblock_is_map_memory().
+> 
+> However, the bigger issue is that Stage 2 cannot disable tagging for
+> Stage 1 unless the memory is Non-cacheable or Device at S2. Is there a
+> way to detect what gets mapped in the guest as Normal Cacheable memory
+> and make sure it's only early memory or hotplug but no ZONE_DEVICE (or
+> something else like on-chip memory)?  If we can't guarantee that all
+> Cacheable memory given to a guest supports tags, we should disable the
+> feature altogether.
 
-to clarify...
-*switching* XCR0 on context switch is slow, but perfectly legal.
+In stage 2 I believe we only have two types of mapping - 'normal' or 
+DEVICE_nGnRE (see stage2_map_set_prot_attr()). Filtering out the latter 
+is a case of checking the 'device' variable, and makes sense to avoid 
+the overhead you describe.
 
-*changing* XCR0 during the lifetime of a process, in any of its tasks,
-on any of its CPUs, will confuse any software that uses xgetbv/XCR0
-to calculate the size of XSAVE buffers for userspace threading.
+This should also guarantee that all stage-2 cacheable memory supports 
+tags, as kvm_is_device_pfn() is simply !pfn_valid(), and pfn_valid() 
+should only be true for memory that Linux considers "normal".
 
+>> I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
+>> even without virtualisation.
+> 
+> I haven't checked all the code paths but I don't think we can get a
+> MAP_ANONYMOUS mapping of ZONE_DEVICE memory as we normally need a file
+> descriptor.
+> 
 
--- 
-Len Brown, Intel Open Source Technology Center
+I certainly hope this is the case - it's the weird corner cases of 
+device drivers that worry me. E.g. I know i915 has a "hidden" mmap 
+behind an ioctl (see i915_gem_mmap_ioctl(), although this case is fine - 
+it's MAP_SHARED). Mali's kbase did something similar in the past.
+
+Steve
