@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3B934CE05
+	by mail.lfdr.de (Postfix) with ESMTP id 88F9334CE06
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhC2Ki0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:38:26 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:47982 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbhC2KiG (ORCPT
+        id S232118AbhC2Ki2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:38:28 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15032 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhC2KiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:38:06 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F88DP4njmz1qt3f;
-        Mon, 29 Mar 2021 12:37:57 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F88DP3XYVz1r1M0;
-        Mon, 29 Mar 2021 12:37:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id qHhjco2SiS_B; Mon, 29 Mar 2021 12:37:56 +0200 (CEST)
-X-Auth-Info: SY4jm4BlGYZhw3PVScWDgiAb4jYC06Zb+UoxBWZYT/IpA/DcokoI2XiNNWuYVXSw
-Received: from igel.home (ppp-46-244-184-171.dynamic.mnet-online.de [46.244.184.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 29 Mar 2021 12:37:56 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id E93BA2C3258; Mon, 29 Mar 2021 12:37:55 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-References: <20201209094916.17383-1-zong.li@sifive.com>
-        <87v99qyjaz.fsf@igel.home>
-        <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
-        <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
-        <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home>
-        <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
-        <87a6qrk2pw.fsf@igel.home>
-        <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
-        <874kgyfetu.fsf@igel.home>
-        <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
-X-Yow:  I feel like I'm in a Toilet Bowl with a thumbtack in my forehead!!
-Date:   Mon, 29 Mar 2021 12:37:55 +0200
-In-Reply-To: <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
-        (Zong Li's message of "Mon, 29 Mar 2021 18:18:42 +0800")
-Message-ID: <87h7kukzy4.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Mon, 29 Mar 2021 06:38:18 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F889j5xQyzNrLs;
+        Mon, 29 Mar 2021 18:35:37 +0800 (CST)
+Received: from [10.174.187.192] (10.174.187.192) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 18:38:04 +0800
+Subject: Re: [RFC PATCH 1/3] irqchip/gic-v3: Make use of ICC_SGI1R IRM bit
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <zhukeqian1@huawei.com>
+References: <20210329085210.11524-1-wangjingyi11@huawei.com>
+ <20210329085210.11524-2-wangjingyi11@huawei.com>
+ <87wntqqo6s.wl-maz@kernel.org>
+From:   Jingyi Wang <wangjingyi11@huawei.com>
+Message-ID: <7e44b7a1-4a12-86bf-4651-aa6a03c4f832@huawei.com>
+Date:   Mon, 29 Mar 2021 18:38:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87wntqqo6s.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.192]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mär 29 2021, Zong Li wrote:
 
-> Yes, I could get the network problem by using the defconfig you
-> provided, the system hung up when executing 'ifconfig' immediately
-> after installing macb driver module, the network can work by only
-> reverting the commit 732374a0b440d9a79c8412f318a25cd37ba6f4e2. But the
-> network is fine by using the mainline's defconfig, this is a little
-> bit weird, I will check that and try to find the difference.
 
-My guess would be that it is an init dependency problem between the phy
-driver and the clock driver, which causes the clock to be enabled too
-late.
+On 3/29/2021 5:55 PM, Marc Zyngier wrote:
+> On Mon, 29 Mar 2021 09:52:08 +0100,
+> Jingyi Wang <wangjingyi11@huawei.com> wrote:
+>>
+>> IRM, bit[40] in ICC_SGI1R, determines how the generated SGIs
+>> are distributed to PEs. If the bit is set, interrupts are routed
+>> to all PEs in the system excluding "self". We use cpumask to
+>> determine if this bit should be set and make use of that.
+>>
+>> This will reduce vm trap when broadcast IPIs are sent.
+> 
+> I remember writing similar code about 4 years ago, only to realise
+> what:
+> 
+> - the cost of computing the resulting mask is pretty high for large
+> machines
+> - Linux almost never sends broadcast IPIs, so the complexity was all
+> in vain
+> 
+> What changed? Please provide supporting data showing how many IPIs we
+> actually save, and for which workload.
+Maybe we can implement send_IPI_allbutself hooks as other some other 
+archs instead of computing cpumask here?
 
-Andreas.
+>>
+>> Signed-off-by: Jingyi Wang <wangjingyi11@huawei.com>
+>> ---
+>>   drivers/irqchip/irq-gic-v3.c | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+>> index eb0ee356a629..8ecc1b274ea8 100644
+>> --- a/drivers/irqchip/irq-gic-v3.c
+>> +++ b/drivers/irqchip/irq-gic-v3.c
+>> @@ -1127,6 +1127,7 @@ static void gic_send_sgi(u64 cluster_id, u16 tlist, unsigned int irq)
+>>   static void gic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask)
+>>   {
+>>   	int cpu;
+>> +	cpumask_t tmp;
+>>   
+>>   	if (WARN_ON(d->hwirq >= 16))
+>>   		return;
+>> @@ -1137,6 +1138,17 @@ static void gic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask)
+>>   	 */
+>>   	wmb();
+>>   
+>> +	if (!cpumask_and(&tmp, mask, cpumask_of(smp_processor_id()))) {
+> 
+> Are you sure this does the right thing? This is checking that the
+> current CPU is not part of the mask. But it not checking that the mask
+> is actually "all but self".
+> 
+> This means you are potentially sending IPIs to CPUs that are not part
+> of the mask, making performance potentially worse.
+> 
+> Thanks,
+> 
+> 	M.
+> 
+I will fix that,thanks.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+>> +		/* Set Interrupt Routing Mode bit */
+>> +		u64 val;
+>> +		val = (d->hwirq) << ICC_SGI1R_SGI_ID_SHIFT;
+>> +		val |= BIT_ULL(ICC_SGI1R_IRQ_ROUTING_MODE_BIT);
+>> +		gic_write_sgi1r(val);
+>> +
+>> +		isb();
+>> +		return;
+>> +	}
+>> +
+>>   	for_each_cpu(cpu, mask) {
+>>   		u64 cluster_id = MPIDR_TO_SGI_CLUSTER_ID(cpu_logical_map(cpu));
+>>   		u16 tlist;
+>> -- 
+>> 2.19.1
+>>
+>>
+> 
