@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0581A34C2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075A134C2E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhC2FQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S231185AbhC2FQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhC2FQD (ORCPT
+        with ESMTP id S230210AbhC2FQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:16:03 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E20C061574;
-        Sun, 28 Mar 2021 22:16:02 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id g24so8554675qts.6;
-        Sun, 28 Mar 2021 22:16:02 -0700 (PDT)
+        Mon, 29 Mar 2021 01:16:07 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25F0C061574;
+        Sun, 28 Mar 2021 22:16:06 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id f12so8576642qtq.4;
+        Sun, 28 Mar 2021 22:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qrac6Y8n7VJp0ETI9GDKy6Zy5spiCaL0e3a0AJeAsJw=;
-        b=va5JCICcydH63gN0PTtUNguBea12LnzZBpuWl4fBHLQ24hAod08cBWRTJukCeAyNIG
-         2LPFwemzFzMyTDq8ehDNgh0vgD5y28PNIxcL3bFkdPaHZzAAzKrZddZz84PgVB3C/mof
-         SkB2txXHV4FbcVYhaYebAfA+zhyGhM6X5s/wCs9mWjwTyqzDCgmDBDfvt8AOoCLNlTjM
-         zhxAPm9HQ60IuUZFeLAjgEuKxnLpnWHObPekJ1eI0nqCfL33ARHRdH2ozQUbaWlEw4t5
-         DDg1m20U89bAl3rXD4bKj8kbMQSvbrph6/J3chqsfHnwS/ee62jk8thfUDf7ZDUgIhBX
-         4JxQ==
+        bh=0V7C1T9wNQmTU6i5HIXBF5gA9OtBRPctbZANANjFuT4=;
+        b=DSVtt547zwKQ0vfocNWsj9CnGzbGhQmAOHfy4mD3S0WucmO1u8zdeO2UWpJ9vrc3xF
+         P9efShKAc3vYGeTLh+54G2O4yWBXKMm+tILz6RZktD9YbqQGqZzUL/klItSRIrWAHOly
+         ZRZ81xbcRbdXpqgYAnjd8PnY1OaaktPZ7613t3+eTsE8u332NH309XDOlqllcgutpos9
+         Oq2/9TTsVX342VaLDTu1p1MqKR6MVafjMeVMQzbvRJzApSwyuIK/SjfslOEVfPLJPyQJ
+         SFr807luiWgZu3fZw/b5zPXhIlQABLnT4WeI8X6i8clN7Q9XExCxPfKa1bAjfhGGGQDo
+         rQ2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qrac6Y8n7VJp0ETI9GDKy6Zy5spiCaL0e3a0AJeAsJw=;
-        b=tZl7KR+SnWFSuiB22b0NazWRDFToPLM4RPeoEe9wVl49TGTLfegqq0YP+G5xKWNWBt
-         CsA5ihUxfNQLw0iYlkG8Px0VU32/98sAJSLbPNewnlIybPefs1QbbL8JrPsXidwPr9ku
-         G0XcumlPWSP7LtSLoHuOsOKnzNRH/sXE+YO6dJ5ZSioUc3H9d+ceZUaVSxX+neA/yjA5
-         BlUfqctRK6xsz+XuRnMhFjCf2h9wErsaVRV6YA4eItKdjdCxpfCsyByqLxNeHGebcX/c
-         GT+w25gDn10M13XZ/A6slcTSauKkmk7iF0A1Pws6V/8q4OQm8tcs1j1YWZBugOusjmBR
-         9D5w==
-X-Gm-Message-State: AOAM531/0z6RU5/aBrnCd5j0LCH4/wunbBk187YydFvJRLOkZcjig5oT
-        J7zEDEU1N3a4HPN5uc57gxg=
-X-Google-Smtp-Source: ABdhPJxDvI2aPHPNx8ed2o0+nvEAL5XLq6bJF3ZSxgmogXSlKVnIHcAPdGgWbWoh+yiF6fBsX2Kyeg==
-X-Received: by 2002:ac8:6e85:: with SMTP id c5mr20693234qtv.299.1616994962102;
-        Sun, 28 Mar 2021 22:16:02 -0700 (PDT)
+        bh=0V7C1T9wNQmTU6i5HIXBF5gA9OtBRPctbZANANjFuT4=;
+        b=mlB9IFH/ftxLpdATnNLeccq3D73uGquhcWGMK25cxQx7WyAtG2XJUIh6b+2wFQcDMM
+         8FeCk3G5E6vC1tBsg/AnJCGP28/V+i8VxYY+zmjxsgdt4jaf3ZL4fteFDSjESgamKok8
+         AaOsFXl34VDt0sAWImTpF9vMppvP55002Ldjlo4QXCoR+lBH8KJWqHTCqYIWWnzMnq6W
+         uaMjVoP482Gku7OnIJeRfkC3DKT9B/ZuoSLJDFt/+PukWiJhalpdWk4CGWWILiLjXNll
+         T4je/0eZBrrRzvupSGx0d36m7jAcufoAgnyI2mULxnhvSYv56DWxGnIqgHqO8RL5VpXv
+         m2vg==
+X-Gm-Message-State: AOAM533pXqSw+RqkiGvUTUOhGbXmaPs8aEC+CClrtzNmGbUVNR+Kqdqx
+        Y8W4a5VtK+ieTB7iXRNjKNQ=
+X-Google-Smtp-Source: ABdhPJx/8PKrdDMLVejl0xPcfgBYMTWCgq/jsH7aKmtzElL9byReR2YGcYCRGCzo3Mp3KFRUYjwnFA==
+X-Received: by 2002:ac8:44a6:: with SMTP id a6mr21757871qto.269.1616994965960;
+        Sun, 28 Mar 2021 22:16:05 -0700 (PDT)
 Received: from localhost.localdomain ([156.146.37.195])
-        by smtp.gmail.com with ESMTPSA id z124sm12993181qke.36.2021.03.28.22.15.58
+        by smtp.gmail.com with ESMTPSA id z124sm12993181qke.36.2021.03.28.22.16.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 22:16:01 -0700 (PDT)
+        Sun, 28 Mar 2021 22:16:05 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
 To:     corbet@lwn.net, linux-doc@vger.kernel.org
 Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 11/23] virt: user_mode_linux_howto_v2.rst: Few typo fixes
-Date:   Mon, 29 Mar 2021 10:42:47 +0530
-Message-Id: <f5a9688aa0254f60512b711fc8813e005d8cb89f.1616992679.git.unixbhaskar@gmail.com>
+Subject: [PATCH 12/23] v4l: hist-v4l2.rst: Fix a typo
+Date:   Mon, 29 Mar 2021 10:42:48 +0530
+Message-Id: <6a3c604c9818b80ec269379a8cc2a45153cd28e4.1616992679.git.unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1616992679.git.unixbhaskar@gmail.com>
 References: <cover.1616992679.git.unixbhaskar@gmail.com>
@@ -64,65 +64,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/absense/absence/
-s/sripts/scripts/
-s/resultion/resolution/
-s/desireable/desirable/
+
+s/directon/director/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- Documentation/virt/uml/user_mode_linux_howto_v2.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/userspace-api/media/v4l/hist-v4l2.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-index 312e431695d9..0e1371c3e235 100644
---- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-+++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-@@ -317,7 +317,7 @@ Shared Options
- * ``v6=[0,1]`` to specify if a v6 connection is desired for all
-   transports which operate over IP. Additionally, for transports that
-   have some differences in the way they operate over v4 and v6 (for example
--  EoL2TPv3), sets the correct mode of operation. In the absense of this
-+  EoL2TPv3), sets the correct mode of operation. In the absence of this
-   option, the socket type is determined based on what do the src and dst
-   arguments resolve/parse to.
+diff --git a/Documentation/userspace-api/media/v4l/hist-v4l2.rst b/Documentation/userspace-api/media/v4l/hist-v4l2.rst
+index 28a2750d5c8c..7061496126ad 100644
+--- a/Documentation/userspace-api/media/v4l/hist-v4l2.rst
++++ b/Documentation/userspace-api/media/v4l/hist-v4l2.rst
+@@ -47,7 +47,7 @@ Codec API was released.
+ 1998-11-08: Many minor changes. Most symbols have been renamed. Some
+ material changes to struct v4l2_capability.
 
-@@ -726,7 +726,7 @@ kernel.  When you boot UML, you'll see a line like::
+-1998-11-12: The read/write directon of some ioctls was misdefined.
++1998-11-12: The read/write director of some ioctls was misdefined.
 
-    mconsole initialized on /home/jdike/.uml/umlNJ32yL/mconsole
-
--If you specify a unique machine id one the UML command line, i.e.
-+If you specify a unique machine id one the UML command line, i.e.
- ``umid=debian``, you'll see this::
-
-    mconsole initialized on /home/jdike/.uml/debian/mconsole
-@@ -1073,7 +1073,7 @@ If you have something to contribute such as a patch, a bugfix, a
- new feature, please send it to ``linux-um@lists.infradead.org``
-
- Please follow all standard Linux patch guidelines such as cc-ing
--relevant maintainers and run ``./sripts/checkpatch.pl`` on your patch.
-+relevant maintainers and run ``./scripts/checkpatch.pl`` on your patch.
- For more details see ``Documentation/process/submitting-patches.rst``
-
- Note - the list does not accept HTML or attachments, all emails must
-@@ -1131,7 +1131,7 @@ This is a typical picture from a mostly idle UML instance
- * The sequence of ptrace calls is part of MMU emulation and runnin the
-   UML userspace
- * ``timer_settime`` is part of the UML high res timer subsystem mapping
--  timer requests from inside UML onto the host high resultion timers.
-+  timer requests from inside UML onto the host high resolution timers.
- * ``clock_nanosleep`` is UML going into idle (similar to the way a PC
-   will execute an ACPI idle).
-
-@@ -1195,7 +1195,7 @@ between a driver and the host at the UML command line is OK
- security-wise. Allowing it as a loadable module parameter
- isn't.
-
--If such functionality is desireable for a particular application
-+If such functionality is desirable for a particular application
- (e.g. loading BPF "firmware" for raw socket network transports),
- it should be off by default and should be explicitly turned on
- as a command line parameter at startup.
+ 1998-11-14: ``V4L2_PIX_FMT_RGB24`` changed to ``V4L2_PIX_FMT_BGR24``,
+ and ``V4L2_PIX_FMT_RGB32`` changed to ``V4L2_PIX_FMT_BGR32``. Audio
 --
 2.26.3
 
