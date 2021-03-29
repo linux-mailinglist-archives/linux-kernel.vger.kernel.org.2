@@ -2,113 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497C934C49B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6E234C49C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhC2HJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:09:11 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:46480 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC2HJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:09:06 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id 5B25444A022C;
-        Mon, 29 Mar 2021 09:08:59 +0200 (CEST)
-MIME-Version: 1.0
-Date:   Mon, 29 Mar 2021 09:08:59 +0200
-From:   Robin van der Gracht <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 16/17] auxdisplay: ht16k33: Add support for segment
- displays
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210322144848.1065067-17-geert@linux-m68k.org>
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
- <20210322144848.1065067-17-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <2868cd091dc6ff0cab14b5da07f89984@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+        id S231132AbhC2HJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:09:52 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42205 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229873AbhC2HJd (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:09:33 -0400
+IronPort-SDR: 6ghwyP7c+DTwziECI+3wEwOBE4Dlt8I/rmWXH3RyqdPSLqL9ZE3DDvmuIte2dHNuEzUWGQGUyL
+ PVlFPy9FM2Pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="170895413"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="170895413"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:09:32 -0700
+IronPort-SDR: 9y3o4pZzF1F4AeXLRBxzyw1oRrMOMYrkwz3q4jWv3PsAfBBzsx7MT6sP3t4RowLcgPI70td6df
+ UlVREcP9DAgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="444679957"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:09:30 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf vendor events: Add missing model numbers
+Date:   Mon, 29 Mar 2021 15:09:03 +0800
+Message-Id: <20210329070903.8894-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Geert,
+Kernel has supported COMETLAKE/COMETLAKE_L to use the SKYLAKE
+events and supported TIGERLAKE_L/TIGERLAKE/ROCKETLAKE to use
+the ICELAKE events. But pmu-events mapfile.csv is missing
+these model numbers.
 
-On 2021-03-22 15:48, Geert Uytterhoeven wrote:
-> The Holtek HT16K33 LED controller is not only used for driving
-> dot-matrix displays, but also for driving segment displays.
-> 
-> Add support for 4-digit 7-segment and quad 14-segment alphanumeric
-> displays, like the Adafruit 7-segment and 14-segment display backpack
-> and FeatherWing expansion boards.  Use the character line display core
-> support to display a message, which will be scrolled if it doesn't fit.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> The 7-segment support is based on schematics, and untested on actual
-> hardware.
-> ---
->  drivers/auxdisplay/ht16k33.c | 198 +++++++++++++++++++++++++++++++++--
->  1 file changed, 191 insertions(+), 7 deletions(-)
-> 
-...
-> 
-> +static int ht16k33_seg_probe(struct i2c_client *client,
-> +			     struct ht16k33_priv *priv, uint32_t brightness)
-> +{
-> +	struct ht16k33_seg *seg = &priv->seg;
-> +	struct device *dev = &client->dev;
-> +	int err;
-> +
-> +	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
-> +	if (err)
-> +		return err;
-> +
-> +	switch (priv->type) {
-> +	case DISP_MATRIX:
-> +		/* not handled here */
-> +		break;
+Now add the missing model numbers to mapfile.csv.
 
-This 'case' shouldn't happen. Having said that, the break here will 
-still
-cause the linedisp_register() function to be called for the DISP_MATRIX 
-type.
-If you'd like to handle this case, a return (or setting 'err') should
-prevent this.
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/pmu-events/arch/x86/mapfile.csv | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> +
-> +	case DISP_QUAD_7SEG:
-> +		INIT_DELAYED_WORK(&priv->work, ht16k33_seg7_update);
-> +		seg->map.seg7 = initial_map_seg7;
-> +		seg->map_size = sizeof(seg->map.seg7);
-> +		err = device_create_file(dev, &dev_attr_map_seg7);
-> +		break;
-> +
-> +	case DISP_QUAD_14SEG:
-> +		INIT_DELAYED_WORK(&priv->work, ht16k33_seg14_update);
-> +		seg->map.seg14 = initial_map_seg14;
-> +		seg->map_size = sizeof(seg->map.seg14);
-> +		err = device_create_file(dev, &dev_attr_map_seg14);
-> +		break;
-> +	}
-> +	if (err)
-> +		return err;
-> +
-> +	err = linedisp_register(&seg->linedisp, dev, 4, seg->curr,
-> +				ht16k33_linedisp_update);
-> +	if (err)
-> +		goto err_remove_map_file;
-> +
-> +	return 0;
+diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
+index 2f2a209e87e1..6455f06f35d3 100644
+--- a/tools/perf/pmu-events/arch/x86/mapfile.csv
++++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
+@@ -24,6 +24,7 @@ GenuineIntel-6-1F,v2,nehalemep,core
+ GenuineIntel-6-1A,v2,nehalemep,core
+ GenuineIntel-6-2E,v2,nehalemex,core
+ GenuineIntel-6-[4589]E,v24,skylake,core
++GenuineIntel-6-A[56],v24,skylake,core
+ GenuineIntel-6-37,v13,silvermont,core
+ GenuineIntel-6-4D,v13,silvermont,core
+ GenuineIntel-6-4C,v13,silvermont,core
+@@ -35,6 +36,8 @@ GenuineIntel-6-55-[01234],v1,skylakex,core
+ GenuineIntel-6-55-[56789ABCDEF],v1,cascadelakex,core
+ GenuineIntel-6-7D,v1,icelake,core
+ GenuineIntel-6-7E,v1,icelake,core
++GenuineIntel-6-8[CD],v1,icelake,core
++GenuineIntel-6-A7,v1,icelake,core
+ GenuineIntel-6-86,v1,tremontx,core
+ AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
+ AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
+-- 
+2.17.1
 
-Groetjes/Kind regards,
-Robin van der Gracht
