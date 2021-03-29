@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC70934CC1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E4434CBCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbhC2Izf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:55:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
+        id S236248AbhC2IxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234493AbhC2IgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:36:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E20056196E;
-        Mon, 29 Mar 2021 08:35:46 +0000 (UTC)
+        id S233848AbhC2IeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAD7861581;
+        Mon, 29 Mar 2021 08:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006947;
-        bh=BTO/1GcwPwTQ+bImPfQvbJjmHspcXcCTBFt3552rWbc=;
+        s=korg; t=1617006857;
+        bh=HXxFCLh2hjF3+l+5onHlVjICg7eGsqXjours8iywO+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ny4y/vz//DX7csMrUPuP+rGVCeYPOUFhlnVtd2yms0ENKwqZLmvgY8wIOolo0IWU+
-         7x621e9oSau0z85IioHCo8CiuiV2HY+yYuHJr1s8J/YAqXKt1FIVRXdQcbAW1s+5sI
-         68Kl4+EYimgLUxQy13KiIp8XEKuHYjT9hka44bfA=
+        b=zZmRW8qEwvGocTAqur8kBjNXqPEtHnoH/D56/O6wrG5Nz6dh6edRDvrRaiZ6t5YpW
+         3dCdDi5aNZWtld5+GjTCR23P5ALO2hN0O/jhjRI5FeEiX2aAatKfdo+bNsMuv6MGWq
+         jajfbXDzul7E6dRGmmmn2COfoB7bdREqGre13UmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>, Oz Shlomo <ozsh@nvidia.com>,
-        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Maor Dickman <maord@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 118/254] net/mlx5e: Dont match on Geneve options in case option masks are all zero
-Date:   Mon, 29 Mar 2021 09:57:14 +0200
-Message-Id: <20210329075637.096323692@linuxfoundation.org>
+Subject: [PATCH 5.11 119/254] net/mlx5e: E-switch, Fix rate calculation division
+Date:   Mon, 29 Mar 2021 09:57:15 +0200
+Message-Id: <20210329075637.128614467@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -42,43 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Dickman <maord@nvidia.com>
+From: Parav Pandit <parav@nvidia.com>
 
-[ Upstream commit 385d40b042e60aa0b677d7b400a0fefb44bcbaf4 ]
+[ Upstream commit 8b90d897823b28a51811931f3bdc79f8df79407e ]
 
-The cited change added offload support for Geneve options without verifying
-the validity of the options masks, this caused offload of rules with match
-on Geneve options with class,type and data masks which are zero to fail.
+do_div() returns reminder, while cited patch wanted to use
+quotient.
+Fix it by using quotient.
 
-Fix by ignoring the match on Geneve options in case option masks are
-all zero.
-
-Fixes: 9272e3df3023 ("net/mlx5e: Geneve, Add support for encap/decap flows offload")
+Fixes: 0e22bfb7c046 ("net/mlx5e: E-switch, Fix rate calculation for overflow")
+Signed-off-by: Parav Pandit <parav@nvidia.com>
 Signed-off-by: Maor Dickman <maord@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Reviewed-by: Oz Shlomo <ozsh@nvidia.com>
-Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c
-index e472ed0eacfb..7ed3f9f79f11 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c
-@@ -227,6 +227,10 @@ static int mlx5e_tc_tun_parse_geneve_options(struct mlx5e_priv *priv,
- 	option_key = (struct geneve_opt *)&enc_opts.key->data[0];
- 	option_mask = (struct geneve_opt *)&enc_opts.mask->data[0];
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index 717fbaa6ce73..e9b7da05f14a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -5040,7 +5040,8 @@ static int apply_police_params(struct mlx5e_priv *priv, u64 rate,
+ 	 */
+ 	if (rate) {
+ 		rate = (rate * BITS_PER_BYTE) + 500000;
+-		rate_mbps = max_t(u64, do_div(rate, 1000000), 1);
++		do_div(rate, 1000000);
++		rate_mbps = max_t(u32, rate, 1);
+ 	}
  
-+	if (option_mask->opt_class == 0 && option_mask->type == 0 &&
-+	    !memchr_inv(option_mask->opt_data, 0, option_mask->length * 4))
-+		return 0;
-+
- 	if (option_key->length > max_tlv_option_data_len) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "Matching on GENEVE options: unsupported option len");
+ 	err = mlx5_esw_modify_vport_rate(esw, vport_num, rate_mbps);
 -- 
 2.30.1
 
