@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F1334C5CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F7734CBE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhC2IC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43828 "EHLO mail.kernel.org"
+        id S236742AbhC2Iye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231783AbhC2IBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83D386196B;
-        Mon, 29 Mar 2021 08:01:48 +0000 (UTC)
+        id S234166AbhC2Ifp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8398619C1;
+        Mon, 29 Mar 2021 08:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004909;
-        bh=0gKLLVIRJWhIHFvivJy0eQKipnuQ6vBS+4w/XlrwzBA=;
+        s=korg; t=1617006918;
+        bh=nWwZMBbHDGySQIls979FUmWdlGjDxo5ApWKN9T37VD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JWU3Lh1frnmKN24VnXMkazcJ9eaWnOfDJEylE8zdEqlDMq6e8Eut6lMaJ6eKLmJ/W
-         1U6BB5KBMV9juZQo3SNyy+F6TsMNstIyFe/kTnk/UGZJVdbWJytu4pTWD2f0RE6FPX
-         0gFDgmxrB5E3wAT8BbRkhgGYXv4Uu/Au7squ/1qE=
+        b=cQh13/fER5+OanO6e4ljnm3ijQIbS6qE35rif9V5GuojlTRSWsmCsavM/ToaRPrlD
+         f+amoGjvuSuylsnfstBOWgsYpm+pAAP6ZIuYoftrevTDLx5po8beFp7v2016CZixvg
+         6/KgRIfTy1oeJiQj5cvz59DGFDGp0R5bPcpLIAWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Angelo Dureghello <angelo@kernel-space.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 11/53] atm: uPD98402: fix incorrect allocation
+Subject: [PATCH 5.11 150/254] can: flexcan: flexcan_chip_freeze(): fix chip freeze for missing bitrate
 Date:   Mon, 29 Mar 2021 09:57:46 +0200
-Message-Id: <20210329075607.923709532@linuxfoundation.org>
+Message-Id: <20210329075638.135306988@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Angelo Dureghello <angelo@kernel-space.org>
 
-[ Upstream commit 3153724fc084d8ef640c611f269ddfb576d1dcb1 ]
+[ Upstream commit 47c5e474bc1e1061fb037d13b5000b38967eb070 ]
 
-dev->dev_data is set in zatm.c, calling zatm_start() will overwrite this
-dev->dev_data in uPD98402_start() and a subsequent PRIV(dev)->lock
-(i.e dev->phy_data->lock) will result in a null-ptr-dereference.
+For cases when flexcan is built-in, bitrate is still not set at
+registering. So flexcan_chip_freeze() generates:
 
-I believe this is a typo and what it actually want to do is to allocate
-phy_data instead of dev_data.
+[    1.860000] *** ZERO DIVIDE ***   FORMAT=4
+[    1.860000] Current process id is 1
+[    1.860000] BAD KERNEL TRAP: 00000000
+[    1.860000] PC: [<402e70c8>] flexcan_chip_freeze+0x1a/0xa8
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+To allow chip freeze, using an hardcoded timeout when bitrate is still
+not set.
+
+Fixes: ec15e27cc890 ("can: flexcan: enable RX FIFO after FRZ/HALT valid")
+Link: https://lore.kernel.org/r/20210315231510.650593-1-angelo@kernel-space.org
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+[mkl: use if instead of ? operator]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/uPD98402.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/atm/uPD98402.c b/drivers/atm/uPD98402.c
-index 5120a96b3a89..b2f4e8df1591 100644
---- a/drivers/atm/uPD98402.c
-+++ b/drivers/atm/uPD98402.c
-@@ -210,7 +210,7 @@ static void uPD98402_int(struct atm_dev *dev)
- static int uPD98402_start(struct atm_dev *dev)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 2893297555eb..a9502fbc6dd6 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -697,9 +697,15 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
+ static int flexcan_chip_freeze(struct flexcan_priv *priv)
  {
- 	DPRINTK("phy_start\n");
--	if (!(dev->dev_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
-+	if (!(dev->phy_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
- 		return -ENOMEM;
- 	spin_lock_init(&PRIV(dev)->lock);
- 	memset(&PRIV(dev)->sonet_stats,0,sizeof(struct k_sonet_stats));
+ 	struct flexcan_regs __iomem *regs = priv->regs;
+-	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
++	unsigned int timeout;
++	u32 bitrate = priv->can.bittiming.bitrate;
+ 	u32 reg;
+ 
++	if (bitrate)
++		timeout = 1000 * 1000 * 10 / bitrate;
++	else
++		timeout = FLEXCAN_TIMEOUT_US / 10;
++
+ 	reg = priv->read(&regs->mcr);
+ 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
+ 	priv->write(reg, &regs->mcr);
 -- 
 2.30.1
 
