@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62E334DC05
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE16A34DC0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhC2Wo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:44:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39638 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhC2Wox (ORCPT
+        id S231922AbhC2WqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhC2Wpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:44:53 -0400
-Date:   Mon, 29 Mar 2021 22:44:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617057881;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1xmTU8qdCMGobX0Aubpcpv6tYqUIZ1MyetwU8YF1Nco=;
-        b=CJGCD0jv0L7lx+5B14ELL7VgixvdYC1V1yycbwHAQdq3EvXwoE1kILxfv4LLgIVjeCwO8j
-        t9TI8a34a9jB7mdHHhjCpMEExq66eRoMzs1LnhCBKsp0cucJ/ik775xb7LakWhmdIMhOMK
-        EkAXhpZwTBEyP1/9uryMgUmgT2Btunogbg2nB/bdHEdVHQXR4il5j3NxGtrg984toGYn3X
-        bKHzOrs//ctUI6LWVpRStFkLsm9h7FaZdkQoUfO/9SDSys75xw1vB6u1PkYHSm1zB6S/Jk
-        pAQzVN9ti05gnwvSrU8B+N5TfcyCkz5KWw58LDD/HuetfbDniSWHqL/s9FCi4g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617057881;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1xmTU8qdCMGobX0Aubpcpv6tYqUIZ1MyetwU8YF1Nco=;
-        b=+zWC9bqsuYm3eX9B9ADmwEuR8yVOiGDhON9P67nesYvdpeQEbfWvCJey4AHNI54wwWMkma
-        oFAL25yBVU3+3sCg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/vector: Add a sanity check to prevent IRQ2 allocations
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210318192819.795280387@linutronix.de>
-References: <20210318192819.795280387@linutronix.de>
+        Mon, 29 Mar 2021 18:45:32 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796EAC061762;
+        Mon, 29 Mar 2021 15:45:32 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so245977wma.0;
+        Mon, 29 Mar 2021 15:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ETElOIEjdVlntEPGKFfKH5hdv13+jUzKgNis+gv7d0Y=;
+        b=I+IhwZ48NFnJUjuO1Rzmhhhm1o+iYydBzUK7BfQjz7PysEuDydE9oYAzwgHCCcZ3RS
+         kYgmh0XTuAZ1Imyp/i87qIoiDc1He1bhpNK9V44KTHI7tieMsa1DoVg3KIX5KaXfXmY9
+         sxIlZLQiwm1BTE+4GH2rsYUAyNWszWhQIGG8iWGjit1sT9QnmAjDMtn6wIqS42BIb96r
+         hHcKdnvjM/yItitQ5aFtNpmVGsB7PT6R3efYlpaluS9dsYVltdqqWYYkdzS2aMAHp/Je
+         1+kyTYDZgYooTfcNS37EKmvoGYP5F6DyVgVFu9rvEiWDnNKe2b+07Scg0rWsA8ukMq82
+         fYGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ETElOIEjdVlntEPGKFfKH5hdv13+jUzKgNis+gv7d0Y=;
+        b=NyG2J5iCFIDp4UiCNwb7DkvMn/kljOJ6ec+SVVC6jLJi/G4/i+vgUP7NoNpIRR/A2k
+         pzToP9AkUCfra+0Jn6S+SjG5Rw5ejH3Qb8m80UFKKcQRUelaecrF4RC9dixNpte1I+I0
+         vPf/7j/A1sVF4P6ul54Vmu7UHSgQCHrb4AqUtNo4Il+ZYo8UAY/d+wWN+Ak9kYzlNbeU
+         Qr7AnOJdikZrGEQNwdU+kTLaf0D4fe8JDauGhGwXi2+72iOvnKHTex/xuA4K5sLV9w6Q
+         IAYjhz1VEQnimR34MAimbsNNLLQgkqkxT243U14MrMJyTimKYVCoPp7gB3UYFmSoOSD+
+         A+pQ==
+X-Gm-Message-State: AOAM530JUxpZoQyQXApxwXdlSjHbmt1DIMNGiwDCIAexgS6E7LVJOA2T
+        Rl57NNehoHdvcgAj8V57gtR2GB3ZBFM=
+X-Google-Smtp-Source: ABdhPJxyRVPH6LZ09xytzgreMLOzWL84xbVukFnYvZDzbBVKV7qUeIJj/aFitR0isTzjCLSK7EtWow==
+X-Received: by 2002:a7b:c8d9:: with SMTP id f25mr1012593wml.157.1617057931268;
+        Mon, 29 Mar 2021 15:45:31 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.103])
+        by smtp.gmail.com with ESMTPSA id g5sm32251362wrq.30.2021.03.29.15.45.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 15:45:30 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] software node: Introduce SOFTWARE_NODE_REFERENCE()
+ helper macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
+ <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
+Date:   Mon, 29 Mar 2021 23:45:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <161705788092.29796.9852234771468172792.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+Hi Andy
 
-Commit-ID:     9a98bc2cf08a095367449b3548c3d9ad4ad2cd20
-Gitweb:        https://git.kernel.org/tip/9a98bc2cf08a095367449b3548c3d9ad4ad2cd20
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 18 Mar 2021 20:26:48 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 30 Mar 2021 00:39:12 +02:00
+On 29/03/2021 16:12, Andy Shevchenko wrote:
+> This is useful to assign software node reference with arguments
+> in a common way. Moreover, we have already couple of users that
+> may be converted. And by the fact, one of them is moved right here
+> to use the helper.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: no changes
+>  drivers/base/test/property-entry-test.c | 11 ++---------
+>  include/linux/property.h                | 13 ++++++++-----
+>  2 files changed, 10 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/base/test/property-entry-test.c b/drivers/base/test/property-entry-test.c
+> index abe03315180f..c2e455d46ffd 100644
+> --- a/drivers/base/test/property-entry-test.c
+> +++ b/drivers/base/test/property-entry-test.c
+> @@ -370,15 +370,8 @@ static void pe_test_reference(struct kunit *test)
+>  	};
+>  
+>  	static const struct software_node_ref_args refs[] = {
+> -		{
+> -			.node = &nodes[0],
+> -			.nargs = 0,
+> -		},
+> -		{
+> -			.node = &nodes[1],
+> -			.nargs = 2,
+> -			.args = { 3, 4 },
+> -		},
+> +		SOFTWARE_NODE_REFERENCE(&nodes[0]),
+> +		SOFTWARE_NODE_REFERENCE(&nodes[1], 3, 4),
+>  	};
+>  
+>  	const struct property_entry entries[] = {
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index dd4687b56239..0d876316e61d 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -254,6 +254,13 @@ struct software_node_ref_args {
+>  	u64 args[NR_FWNODE_REFERENCE_ARGS];
+>  };
+>  
+> +#define SOFTWARE_NODE_REFERENCE(_ref_, ...)			\
+> +(const struct software_node_ref_args) {				\
+> +	.node = _ref_,						\
+> +	.nargs = ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1,	\
+> +	.args = { __VA_ARGS__ },				\
+> +}
+> +
+>  /**
+>   * struct property_entry - "Built-in" device property representation.
+>   * @name: Name of the property.
+> @@ -362,11 +369,7 @@ struct property_entry {
+>  	.name = _name_,							\
+>  	.length = sizeof(struct software_node_ref_args),		\
+>  	.type = DEV_PROP_REF,						\
+> -	{ .pointer = &(const struct software_node_ref_args) {		\
+> -		.node = _ref_,						\
+> -		.nargs = ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1,	\
+> -		.args = { __VA_ARGS__ },				\
+> -	} },								\
+> +	{ .pointer = &SOFTWARE_NODE_REFERENCE(_ref_, ##__VA_ARGS__), },	\
+>  }
 
-x86/vector: Add a sanity check to prevent IRQ2 allocations
 
-To prevent another incidental removal of the IRQ2 ignore logic in the
-IO/APIC code going unnoticed add a sanity check. Add some commentry at the
-other place which ignores IRQ2 while at it.
+What are the .args intended to be used for? I actually had it in mind to
+replace this with a simple pointer to a struct software_node, because I
+can't see any users of them and the fact that it's actually storing a
+pointer to a new variable is something that confused me for a good long
+time when I wrote the cio2-bridge (though that's mostly due to my
+relative inexperience of course, but still)
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210318192819.795280387@linutronix.de
-
----
- arch/x86/kernel/apic/vector.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-index 3c9c749..9b75a70 100644
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -543,6 +543,14 @@ static int x86_vector_alloc_irqs(struct irq_domain *domain, unsigned int virq,
- 	if ((info->flags & X86_IRQ_ALLOC_CONTIGUOUS_VECTORS) && nr_irqs > 1)
- 		return -ENOSYS;
- 
-+	/*
-+	 * Catch any attempt to touch the cascade interrupt on a PIC
-+	 * equipped system.
-+	 */
-+	if (WARN_ON_ONCE(info->flags & X86_IRQ_ALLOC_LEGACY &&
-+			 virq == PIC_CASCADE_IR))
-+		return -EINVAL;
-+
- 	for (i = 0; i < nr_irqs; i++) {
- 		irqd = irq_domain_get_irq_data(domain, virq + i);
- 		BUG_ON(!irqd);
-@@ -745,6 +753,11 @@ void __init lapic_assign_system_vectors(void)
- 
- 	/* Mark the preallocated legacy interrupts */
- 	for (i = 0; i < nr_legacy_irqs(); i++) {
-+		/*
-+		 * Don't touch the cascade interrupt. It's unusable
-+		 * on PIC equipped machines. See the large comment
-+		 * in the IO/APIC code.
-+		 */
- 		if (i != PIC_CASCADE_IR)
- 			irq_matrix_assign(vector_matrix, ISA_IRQ_VECTOR(i));
- 	}
+>  
+>  struct property_entry *
