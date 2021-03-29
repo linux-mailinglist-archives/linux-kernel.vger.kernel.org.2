@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAE934CE10
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B8E34CE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhC2Kkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231842AbhC2Kkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:40:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21FDF6192B;
-        Mon, 29 Mar 2021 10:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617014430;
-        bh=1bwAu+A9nWc4hRxv9ICbykOqZtzSHWV2ft8Sxgq3Vfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFxHNRM/LWArdKC+besjAV5l9HY6/NBl5bhm0hyzhXDdjUoAPj4NzmSuXZ9dfvhTh
-         t6b9F4BYadHNNMg9EY0k7+cLHsOs93gOTt0hR1GQtWTYaW7WhodYiQJVFCwieKx0K7
-         kHu3cwE4DoNnNQOjZj6oQFcvqAPCM5XnPFlFTJcw=
-Date:   Mon, 29 Mar 2021 12:40:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH v9 4/4] docs: ABI: Add sysfs documentation interface of
- dw-xdata-pcie driver
-Message-ID: <YGGunNguZTiRS8FP@kroah.com>
-References: <cover.1617011831.git.gustavo.pimentel@synopsys.com>
- <5840637a206dd1287caf142a0dbedf0dac9ccd48.1617011831.git.gustavo.pimentel@synopsys.com>
- <YGGnC8LouF+paZ6G@kroah.com>
- <DM5PR12MB18353C0E6935F94C457F9595DA7E9@DM5PR12MB1835.namprd12.prod.outlook.com>
+        id S232593AbhC2KmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231889AbhC2Klz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:41:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F030FC061574;
+        Mon, 29 Mar 2021 03:41:54 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id g10so4193887plt.8;
+        Mon, 29 Mar 2021 03:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rHBLv22li+Y93cVWlMkPprlgmJPyM4H/Pq7TZ5iR8qE=;
+        b=H4IKakm9kmDi2KnvEIC35pNPRV6sCXKafabaRGc7Sqjgmp34gBYPxVGUS1CWxutZzV
+         GlRKpfMSoRKzJV3iyeSkmW4ihEcLu992qQdqTq8JQvTy4vbZXG8lKcSsqejK3E5ybKVd
+         vciPnu4lfI+7t4fhxzyccyEp+v96q0eSjnTKHEC7JJyCyNlqsxJelwk797VmEJNYPL/U
+         oVXk36FmEDiCYCBkPqPGx9KIT4COiLJDCFPBduihw2VcSc3MAih5ja3yy2QRfgAD/Gjz
+         dMDXcrvp7YzwQT5Y39P7r2naxfoMDxIRZBIv44raw0Axv2xfjdPTSW0Plq4wSlaWxUwt
+         UmIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rHBLv22li+Y93cVWlMkPprlgmJPyM4H/Pq7TZ5iR8qE=;
+        b=QjFiSFLsDYN3xFw/dhyYotTneHIMeo8smUEm61935Yo9Cb3VgH8Jv+2IH8+Q67+v6a
+         cPxTskVhuyBNJbomNs18KL9iI2JAUQ2NHHCXqvAV3dUUHiWlfnNg+JzxINgo0YtzCyio
+         xQmGH25if/cFaF45aMgO37cyD91avKL1/GecWDXAneqxsMLtpw4mHCc34CDe+VOHBq11
+         WX/O6FJCI/e24puZ1f8FtTdoH5io6IANcC5IG8SnzZ5UrCVna4y/JNpL6GQYPeyEjzfi
+         9AO6Rx/6DESfYOqp8n+Fv3Iy0d1hTEUibwbH+PuH9yGzVdqDao1U0GL4PGWeeC1PD2We
+         zsSA==
+X-Gm-Message-State: AOAM532SFzZZOpUn1kKhjLQBH8exUwWhgN5+K9kyQkCkUaxKVGy1JpZn
+        /SQGI2acOaj/816VcjIIO5+w6phbEq1Zdyhg9dg=
+X-Google-Smtp-Source: ABdhPJxqUWx3prtUg6VjM14MCrWLRzRkLydqMsobi69dqWIobFrGRTqKt7qf6Skw33pS6A6x5C4+ZtUd8zYg0vwUahw=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr26891397pjb.129.1617014514572;
+ Mon, 29 Mar 2021 03:41:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR12MB18353C0E6935F94C457F9595DA7E9@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-2-brad@pensando.io>
+In-Reply-To: <20210329015938.20316-2-brad@pensando.io>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 13:41:38 +0300
+Message-ID: <CAHp75VczOyiD+F9MDqdZdZGhAFF5Kh5U7CAmTj+i-Fy7KZsEog@mail.gmail.com>
+Subject: Re: [PATCH v2 01/13] gpio: Add Elba SoC gpio driver for spi cs control
+To:     Brad Larson <brad@pensando.io>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:25:25AM +0000, Gustavo Pimentel wrote:
-> On Mon, Mar 29, 2021 at 11:8:11, Greg Kroah-Hartman 
-> <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Mon, Mar 29, 2021 at 11:59:40AM +0200, Gustavo Pimentel wrote:
-> > > This patch describes the sysfs interface implemented on the dw-xdata-pcie
-> > > driver.
-> > > 
-> > > Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-driver-xdata | 46 ++++++++++++++++++++++++++++
-> > >  1 file changed, 46 insertions(+)
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-driver-xdata b/Documentation/ABI/testing/sysfs-driver-xdata
-> > > new file mode 100644
-> > > index 00000000..66af19a
-> > > --- /dev/null
-> > > +++ b/Documentation/ABI/testing/sysfs-driver-xdata
-> > > @@ -0,0 +1,46 @@
-> > > +What:		/sys/class/misc/drivers/dw-xdata-pcie.<device>/write
-> > > +Date:		April 2021
-> > > +KernelVersion:	5.13
-> > > +Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> > > +Description:	Allows the user to enable the PCIe traffic generator which
-> > > +		will create write TLPs frames - from the Root Complex to the
-> > > +		Endpoint direction.
-> > > +		Usage e.g.
-> > > +		 echo 1 > /sys/class/misc/dw-xdata-pcie.<device>/write
-> > 
-> > Again, this does not match the code.  Either fix the code (which I
-> > recommend), or change this and the other sysfs descriptions of writing
-> > values here.
-> 
-> I've commented about this previously, but I didn't get feedback on it, 
-> therefore I assumed that justification was okay.
-> I will change the code to accept only the "1" input on the *_store()
+On Mon, Mar 29, 2021 at 5:01 AM Brad Larson <brad@pensando.io> wrote:
+>
+> This GPIO driver is for the Pensando Elba SoC which
+> provides control of four chip selects on two SPI busses.
 
-Why not use the built-in function to parse "1/y/Y" that the kernel
-provides for this type of thing?
+Same comments as per v1.
+NAK from me until we get settled in that discussion.
 
-thanks,
+...
 
-greg k-h
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Pensando Elba SoC SPI chip-select driver");
+
+It's funny, you told it can't be a module and you add a dead code. Be
+somehow consistent, please.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
