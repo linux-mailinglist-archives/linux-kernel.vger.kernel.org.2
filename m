@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB3334D25B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCAC34D25F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhC2O12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:27:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20396 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230424AbhC2O1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:27:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617028040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EqaKeR15hrRm51GbIjdwaRPlkul2MMX60iIFRxZ1Rns=;
-        b=SN2S1VhjdaBmncB0xfmpDCmLnjXo1X+2JeG/yV1aFrZdwdwAhze8MPN7jpkFwJAIUQBD0R
-        Hm9aU3aPK1CP4SUzrw5dgOG6cVApAyantKPDFkiF9IcG3KKYTVw5z5VzL9sHFMGA6Vy0HD
-        waL3LLLOiBGvD6xRCjWoODLeR/F9QqM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-UHzIechdPAaIBPxsNiYvwg-1; Mon, 29 Mar 2021 10:27:16 -0400
-X-MC-Unique: UHzIechdPAaIBPxsNiYvwg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230487AbhC2O16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:27:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230287AbhC2O1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:27:53 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C40D8874998;
-        Mon, 29 Mar 2021 14:27:13 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B271B60916;
-        Mon, 29 Mar 2021 14:27:07 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 29 Mar 2021 16:27:13 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 16:27:06 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marco Elver <elver@google.com>, alexander.shishkin@linux.intel.com,
-        acme@kernel.org, mingo@redhat.com, jolsa@redhat.com,
-        mark.rutland@arm.com, namhyung@kernel.org, tglx@linutronix.de,
-        glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-kselftest@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v3 06/11] perf: Add support for SIGTRAP on perf events
-Message-ID: <20210329142705.GA24849@redhat.com>
-References: <20210324112503.623833-1-elver@google.com>
- <20210324112503.623833-7-elver@google.com>
- <YFxGb+QHEumZB6G8@elver.google.com>
- <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 631CF6195B;
+        Mon, 29 Mar 2021 14:27:50 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 15:27:56 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
+        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
+Subject: Re: [PATCH 02/10] platform/x86: toshiba_acpi: use
+ devm_add_action_or_reset() for singleton clear
+Message-ID: <20210329152756.2e698014@jic23-huawei>
+In-Reply-To: <20210324125548.45983-3-aardelean@deviqon.com>
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+        <20210324125548.45983-3-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/29, Peter Zijlstra wrote:
->
-> On Thu, Mar 25, 2021 at 09:14:39AM +0100, Marco Elver wrote:
-> > @@ -6395,6 +6395,13 @@ static void perf_sigtrap(struct perf_event *event)
-> >  {
-> >  	struct kernel_siginfo info;
-> >
-> > +	/*
-> > +	 * This irq_work can race with an exiting task; bail out if sighand has
-> > +	 * already been released in release_task().
-> > +	 */
-> > +	if (!current->sighand)
-> > +		return;
+On Wed, 24 Mar 2021 14:55:40 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-This is racy. If "current" has already passed exit_notify(), current->parent
-can do release_task() and destroy current->sighand right after the check.
+> The only reason to do this is to enforce the ordering of deinitialization,
+> when the conversion of the device-managed functions is done.
+> 
+> The singleton object should be cleared right before it is free'd.
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
-> Urgh.. I'm not entirely sure that check is correct, but I always forget
-> the rules with signal. It could be we ought to be testing PF_EXISTING
-> instead.
+Whilst this might help get towards your goal, I'm curious to why
+this singleton actually needs to exist in the first place.
 
-Agreed, PF_EXISTING check makes more sense in any case, the exiting task
-can't receive the signal anyway.
+It doesn't feel like it would be very hard to remove.
+1) embed the kbd_bl_work in struct toshiba_acpi_dev with appropriate changes to it's init.
+   use container_of() magic to get to that. 
+2) For the toshiba_iio_accel_read_raw() stash a copy of the pointer in iio_priv(indio_dev)
+   Note that I'm very suspicious of existing sizeing of the private region. 
+3) For miscdevice handling you should be able to use container_of() to get to the
+   toshiba_acpi_dev structure from file->private_data
 
-Oleg.
+There are a few places where the struct toshiba_acpi_dev will need passing into functions
+that currently get it from the global, plus one place where I'm fairly sure an element
+of that structure gets set twice in a row via different copies of the pointer.
+
+Also nice to not use dev as the name for struct toshiba_acpi_dev * as that is
+makes for some confusing code when we have a bunch of struct device * in use
+as well.
+
+So this is fine, but kind of feels like the code shouldn't be there in the first place!
+
+Jonathan
+
+> ---
+>  drivers/platform/x86/toshiba_acpi.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+> index 6d298810b7bf..c5284601bc2a 100644
+> --- a/drivers/platform/x86/toshiba_acpi.c
+> +++ b/drivers/platform/x86/toshiba_acpi.c
+> @@ -2995,9 +2995,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
+>  		rfkill_destroy(dev->wwan_rfk);
+>  	}
+>  
+> -	if (toshiba_acpi)
+> -		toshiba_acpi = NULL;
+> -
+>  	return 0;
+>  }
+>  
+> @@ -3012,6 +3009,11 @@ static const char *find_hci_method(acpi_handle handle)
+>  	return NULL;
+>  }
+>  
+> +static void toshiba_acpi_singleton_clear(void *data)
+> +{
+> +	toshiba_acpi = NULL;
+> +}
+> +
+>  static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  {
+>  	struct device *parent = &acpi_dev->dev;
+> @@ -3035,6 +3037,13 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  	dev = devm_kzalloc(parent, sizeof(*dev), GFP_KERNEL);
+>  	if (!dev)
+>  		return -ENOMEM;
+> +
+> +	ret = devm_add_action_or_reset(parent,
+> +				       toshiba_acpi_singleton_clear,
+> +				       NULL);
+> +	if (ret)
+> +		return ret;
+> +
+>  	dev->acpi_dev = acpi_dev;
+>  	dev->method_hci = hci_method;
+>  	dev->miscdev.minor = MISC_DYNAMIC_MINOR;
 
