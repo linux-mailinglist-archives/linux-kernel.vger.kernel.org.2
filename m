@@ -2,143 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE7934D079
+	by mail.lfdr.de (Postfix) with ESMTP id 393AE34D078
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhC2MxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhC2Mwt (ORCPT
+        id S231258AbhC2MxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:53:10 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:39733 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhC2Mwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:52:49 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BCBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:52:49 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id c16so12980082oib.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=07ucOofB7zcsGyyJKm4ISf4GrAIYGQtWh34ROBldfO0=;
-        b=m6uYSUXR41iZftxZ34b6fmS1fMT8pEqiWXwwDOCn8Sv6Dw99hw75B7AfcGYCACTZPF
-         vqN93QI9aYr/4paDyJp0awudvn7Hvm011xidjb6/PQglC2bUXDyS6aNZQ3EqtXRry7Dr
-         rNKQM7lxZYtXpQaea9iipxQfXaN7Qje9uiYAxvxhHXjaW3APtzuXWdMVWXpmYQcCAKQQ
-         YZPigamhsYPI3RwQdla76FQ7U2Kg6bLifac0k7vZyMn6EC89BiJuko38pmsqadZjIjlm
-         dWOX2IpfezqP/XT7w6Mz0yMNwWgmIDehoZMGoi1+1cGLkgHRraXrJDuK6jzWaGBhn/20
-         r/rg==
+        Mon, 29 Mar 2021 08:52:47 -0400
+Received: by mail-lj1-f178.google.com with SMTP id u4so15800394ljo.6;
+        Mon, 29 Mar 2021 05:52:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=07ucOofB7zcsGyyJKm4ISf4GrAIYGQtWh34ROBldfO0=;
-        b=Zt6rblNZF0P1J20ApcWaOzQ0chWlCfOYagbAk3o/xSfEneZXjYGNGvg/eUU/iYQm7/
-         0PfRh7kRiZ4l1Og7//4AA63tEKxBa/n9u3Sq6SW8dD6opMkRUpU3uv4s1X66xOPh8Qys
-         NrHQETWRtoB4BFSB9yGkjPMbjD3PyX+JXMkvNR1kFM/0IpKoi/PU3iHyG9eGL9ZbdyMS
-         xkE3sEknvH80kJCHCfKBX8PMh5XTkoMHEi5qArduJKt6Nd5x3acUsef+vWd1EkKMvIxo
-         CHr4qvUnJplWDRq+AFE7tddcxyDiRNnAg+tluBADg+1AsWdrTv9sovpaRGzLZRUnaues
-         L5pw==
-X-Gm-Message-State: AOAM533k1DIh2+deacx7I19CKzAX5TXmoPo5+Q9br78m4CEKyg8P/tgU
-        cYBZcJRN4Ya7q9Ztvgj6cX1Yn7BMUh1SFjVBhzs=
-X-Google-Smtp-Source: ABdhPJwSgqoYesmnzxQv7RTswuIW99BsMBTJL3fQ7GzxugnClX4mVwd7y3z0J+hR0Vvz+xWxOPXXhP2RnakqDEE3XlM=
-X-Received: by 2002:a05:6808:94:: with SMTP id s20mr18336337oic.25.1617022369122;
- Mon, 29 Mar 2021 05:52:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=LEWOJQo0ScWW9gMKS9BFT8XbagVRAoDPPfXmEAzKL2o=;
+        b=G/XE2UNdyaFRC3UMZBOt6GnTq/94ht7hLQ4CJrF5YR11d9WVyM261d+7UR2c7O/Zhu
+         S4iiF6vpSBkNTd//xIoRlfOdvi8/dHDeXBQO3MUqN7kjAc3ZvEdeNgGnGxcPLO5vbRXY
+         0rhY+58ivQ2nH7wSzHPKlqeGCqWKSIcN7giRbJHuc6oiVlLQzsK3inn890iHIRJwZh0C
+         ZcWQVuIok/TvqwuW20nOWS6dTVYGedx17l5Su77FlNUtTInElNRCE5X1ROzHCrDF0svy
+         xKG88GIqBGRV9mOJWmKRHh665ND9caMoj2drP73UHHTBuGsFWsvRAqcoKbr6FiW37wlx
+         YExw==
+X-Gm-Message-State: AOAM532vqjE3AB4dmYbRNj+ezcAbN8Cg31qjSHKcIKQupjmk2oEtowIJ
+        iEJzh4VYtX/HA+/1IYXKa6vJAyjvZEV8Bw==
+X-Google-Smtp-Source: ABdhPJxwYqWnOKoTHfOWNrGF8vHYrCaQfZ61QGiufXGr1JL9JEisUdhMSBl+yclZD00e7d5bOvUuHQ==
+X-Received: by 2002:a2e:508:: with SMTP id 8mr17906649ljf.207.1617022365549;
+        Mon, 29 Mar 2021 05:52:45 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id j15sm1822394lfm.138.2021.03.29.05.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:52:44 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 15:52:38 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: [PATCH v5 00/19] Support ROHM BD71815 PMIC
+Message-ID: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz> <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz>
- <nycvar.YFH.7.76.2103291136070.17979@zhemvz.fhfr.qr>
-In-Reply-To: <nycvar.YFH.7.76.2103291136070.17979@zhemvz.fhfr.qr>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Mon, 29 Mar 2021 05:52:13 -0700
-Message-ID: <CAMe9rOpwCwOb0u8n-k1OnBSc+4kTnqM_5GVhN_qYd0SjH_8xJg@mail.gmail.com>
-Subject: Re: perf does not resolve plt symbols from libstdc++ right (.plt.sec problem)
-To:     Richard Biener <rguenther@suse.de>
-Cc:     Jiri Slaby <jslaby@suse.cz>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:38 AM Richard Biener <rguenther@suse.de> wrote:
->
-> On Mon, 29 Mar 2021, Jiri Slaby wrote:
->
-> > Any ideas on this?
-> >
-> > On 11. 01. 21, 7:31, Jiri Slaby wrote:
-> > > Hi,
-> > >
-> > > this e-mails is a follow-up of my report at:
-> > > https://bugzilla.suse.com/show_bug.cgi?id=1180681
-> > >
-> > > There is a problem with *@plt symbols in some libraries, they are unresolved
-> > > by perf (memcmp@plt in this case):
-> > >  >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0
-> > >             l [.] 0x00000000000a51a0
-> > >
-> > > On the other hand, plt symbols in other libraries are fine (memset@plt in
-> > > this case):
-> > >  >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10
-> > >             l [.] memset@plt
-> > >
-> > > I dumped memcmp's .plt.rela entries in perf:
-> > > /usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 hdr=10
-> > > entry=10
-> > > /usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10
-> > > entry=10
-> > >
-> > > The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 0xa1070
-> > > (perf's computed) = 0x4130.
-> > >
-> > > The problem is perf assumes nth entry of .plt.rela to correspond to nth
-> > > function in .plt, but memcmp is in .plt.sec in libstdc++.so:
-> > >
-> > >  >Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
-> > >  >     Offset             Info             Type               Symbol's
-> > > Value  Symbol's Name + Addend
-> > >  > ...
-> > >  > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT
-> > > 0000000000000000 memcmp@GLIBC_2.2.5 + 0
-> > >
-> > > Perf does this with the rela entries:
-> > > https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385
-> > >
-> > > It takes a symbol index from sym.r_info. Then it resolves its name from
-> > > .dynsym, appending "@plt" to it. Then this name is added to perf's symbol
-> > > table along with address which is computed as .rela.plt index multiplied by
-> > > entry size (shdr_plt.sh_entsize) plus plt header (shdr_plt.sh_entsize on
-> > > x86_64 too).
-> > >
-> > > And from this comes (almost) the offset above:
-> > >  >$ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
-> > >  >  12 .plt          00003fb0  000000000009e020  000000000009e020
-> > > 0009e020  2**4
-> > >  >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160
-> > > 000a2160  2**4
-> > >
-> > > 0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds
-> > > shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry
-> > > (header).
-> > >
-> > > Richard writes:
-> > > ======
-> > > .plt.sec is IIRC the "second" (sec) PLT entry - the one that will be used on
-> > > the second call (and on).  This is used / emitted for ELF object
-> > > instrumented for Intel CET.  The details escape me for the moment but I hope
-> > > the x86 ABI documents this (and the constraints) in detail.
->
-> I just checked and the x86_64 psABI doesn't say anything about .plt.sec
+Patch series introducing support for ROHM BD71815 PMIC
 
-The second PLT is documented in section 13.2 Dynamic Linking in x86-64
-psABI.  Please see elf_x86_64_get_synthetic_symtab in binutils for PLT symbol
-processing.
+ROHM BD71815 is a power management IC used in some battery powered
+systems. It contains regulators, GPO(s), charger + coulomb counter, RTC
+and a clock gate.
+
+All regulators can be controlled via I2C. LDO4 can additionally be set to
+be enabled/disabled by a GPIO. LDO3 voltage could be selected from two
+voltages written into separate VSEL reisters using GPIO but this mode is
+not supported by driver. On top of that the PMIC has the typical HW
+state machine which is present also on many other ROHM PMICs.
+
+IC contains two GPOs - but one of the GPOs is marked as GND in
+data-sheet. Thus the driver by default only exposes one GPO. The second
+GPO can be enabled by special DT property.
+
+RTC is almost similar to what is on BD71828. For currently used features
+only the register address offset to RTC block differs.
+
+The charger driver is not included in this series. ROHM has a charger
+driver with some fuel-gauging logig written in but this is not included
+here. I am working on separating the logic from HW specific driver and
+supporting both BD71815 and BD71828 chargers in separate patch series.
+
+Changelog v5:
+  Regulator:
+  - Added regmap helper for regulator ramp-delay and taken it in use
+    (patches 13, 14, 16 - they can be just dropped if ramp-delay helper is not
+    a good idea. Patch 15 implements old-fashioned ramp-delay)
+  GPIO:
+  - styling changes to GPIO (Mostly suggested by Andy)
+  - implemented init_valid_mask (but can't count on it yet)
+Changelog v4:
+  - Sorted ROHM chip ID enum
+  - Statcized DVS structures in regulator driver
+  - Minor styling for regulator driver
+  - rebased on v5.12-rc4
+Changelog v3:
+  - GPIO clean-up as suggested by Bartosz
+  - MFD clean-up as suggested by Lee
+  - clk-mode dt-binding handling in MFD driver corrected to reflect new
+    property values.
+  - Dropped already applied patches
+  - Rebased on v5.12-rc2
+Changelog v2:
+  - Rebased on top of v5.11-rc3
+  - Added another "preliminary patch" which fixes HW-dvs voltage
+    handling (patch 1)
+  - split regulator patch to two.
+  - changed dt-binding patch ordering.
+  regulators:
+    - staticized probe
+    - removed some unnecessary defines
+    - updated comments
+    - split rohm-regulator patch adding SNVS and supporting simple
+      linear mapping into two - one adding support for mapping, other
+      adding SNVS.
+  GPIO:
+    - removed unnecessary headers
+    - clarified dev/parent->dev usage
+    - removed forgotten #define DEBUG
+  dt-bindings:
+    - changed patch order to meet ref-dependencies
+    - added missing regulator nodes
+    - changed string property for clk mode to tristated
+  MFD:
+    - header cleanups.
+  CLK:
+    - fixed commit message
+
+--
+
+Matti Vaittinen (19):
+  rtc: bd70528: Do not require parent data
+  mfd: bd718x7: simplify by cleaning unnecessary device data
+  dt_bindings: bd71828: Add clock output mode
+  dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
+  dt_bindings: mfd: Add ROHM BD71815 PMIC
+  mfd: Add ROHM BD71815 ID
+  mfd: Sort ROHM chip ID list for better readability
+  mfd: Support for ROHM BD71815 PMIC core
+  gpio: support ROHM BD71815 GPOs
+  regulator: helpers: Export helper voltage listing
+  regulator: rohm-regulator: linear voltage support
+  regulator: rohm-regulator: Support SNVS HW state.
+  regulator: Add regmap helper for ramp-delay setting
+  regulator: bd718x7, bd71828: Use ramp-delay helper
+  regulator: Support ROHM BD71815 regulators
+  regulator: bd71815: use ramp-delay helper
+  clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
+  rtc: bd70528: Support RTC on ROHM BD71815
+  MAINTAINERS: Add ROHM BD71815AGW
+
+ .../bindings/mfd/rohm,bd71815-pmic.yaml       | 201 ++++++
+ .../bindings/mfd/rohm,bd71828-pmic.yaml       |   6 +
+ .../regulator/rohm,bd71815-regulator.yaml     | 116 ++++
+ MAINTAINERS                                   |   3 +
+ drivers/clk/clk-bd718x7.c                     |   9 +-
+ drivers/gpio/Kconfig                          |  10 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-bd71815.c                   | 193 ++++++
+ drivers/mfd/Kconfig                           |  15 +-
+ drivers/mfd/rohm-bd71828.c                    | 486 +++++++++----
+ drivers/mfd/rohm-bd718x7.c                    |  43 +-
+ drivers/regulator/Kconfig                     |  11 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/bd71815-regulator.c         | 651 ++++++++++++++++++
+ drivers/regulator/bd71828-regulator.c         |  51 +-
+ drivers/regulator/bd718x7-regulator.c         |  60 +-
+ drivers/regulator/helpers.c                   | 101 ++-
+ drivers/regulator/rohm-regulator.c            |  23 +-
+ drivers/rtc/Kconfig                           |   6 +-
+ drivers/rtc/rtc-bd70528.c                     | 104 +--
+ include/linux/mfd/rohm-bd71815.h              | 562 +++++++++++++++
+ include/linux/mfd/rohm-bd71828.h              |   3 +
+ include/linux/mfd/rohm-bd718x7.h              |  13 -
+ include/linux/mfd/rohm-generic.h              |  15 +-
+ include/linux/regulator/driver.h              |   7 +
+ 25 files changed, 2393 insertions(+), 298 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+ create mode 100644 drivers/gpio/gpio-bd71815.c
+ create mode 100644 drivers/regulator/bd71815-regulator.c
+ create mode 100644 include/linux/mfd/rohm-bd71815.h
+
+
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
+-- 
+2.25.4
+
 
 -- 
-H.J.
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
