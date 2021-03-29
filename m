@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDE034CF23
+	by mail.lfdr.de (Postfix) with ESMTP id F206A34CF25
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhC2LdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        id S231239AbhC2LdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhC2LcW (ORCPT
+        with ESMTP id S231246AbhC2Lcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:32:22 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888ECC061574;
-        Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d8so4250978plh.11;
-        Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
+        Mon, 29 Mar 2021 07:32:35 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE892C061756;
+        Mon, 29 Mar 2021 04:32:34 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 184so15479776ljf.9;
+        Mon, 29 Mar 2021 04:32:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TwCNUI2IXe0SVeP2zDv3NgU8ThjpzCczkm9IKaW8+e8=;
-        b=IXWW2R9psjyfQ6Hz2lQvPrDrJrz+3VXwIqSnc4PtQ2IXYha/GI7nchwVVoH6WVcQd+
-         oajcG6o9tU2oAqMpL79GOmq3z6rfDlTTYaf3Pw9+SLwfm/5k3ezBrpgerx5q0hruTbWZ
-         YHBoKoe/AI/17stjEY7A+EzjT+5fSX8mgV57LIH17I85mFbRVY1o1KcwWtSZXUnuz4Ux
-         rjRhvNh3pJUhUiQIKimLi22s8jVZ8VZlURb69uz+icJ6gvJSbFybIydYhLgCMnOMhVvF
-         tqHAJEu6CeZha3tFo7V2E0RxIWllpD6bDcs5+BUVH5BJplcdg8swFhlMXMaDxntIVfag
-         XQaA==
+        bh=wP4DyzXGEWscis2PnBMl856XQ/xuNm8C5c+x9Cchs3I=;
+        b=nmIR2RhXBTEMdtnD9RfREZa6V3uiSn5LkEPrB6hCMiw8mkNXz+8kv+glbrrT5IvtmG
+         i4jZO92YD6c6viuxIl6SU769YJKx03IHhjeJOAwi21QEVmsn0zmloWi3+UxJ848bNeWj
+         RwjqyFNrsZO48jAwbAm6uOOliRI6qtcn7H9uCeDXRNRWyxAO9VyFYqpl8sYjY0vASpiS
+         2cPdXWkU9fRmsM7w+IxvQ+xq5/TW7Ahi65WWPuiDDHlXCDPR1aJ5Ha5TDpQjigjH4NKA
+         1zGwt7pamQqPEjmEHT4ZVMHhzBv0oAXQqHA2TcT9RtYz0RvgMLTBDzsqoK7ttFW+SSff
+         LTVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TwCNUI2IXe0SVeP2zDv3NgU8ThjpzCczkm9IKaW8+e8=;
-        b=asKZ7odExHsxnioBC+f5wbFiLBj1uaBs8BTg2K070erdTL5KVF44x4Yx+AorAe87aY
-         s3llVTstgOIxF3nmSiYGDef4Q5u+PYf4LReYGBGTGYrxoUAQ1evdIfNkQcZyqYi70pjp
-         QLdwcHudfVe9tupe3I2pQud9+TUdPhmghYCGGbW/21Rj0CwTvqx88umWD2BiYWw0EQqo
-         lQWwGZM4ZC7sIFpwKp9+E0+lb3y1asSZu/FsMfDaAnZVsiNF5NatP0IfUpGctFvTPdiA
-         G7zyAFwFpTNCVRPdrE6ghbO3XsJLP83k1bvLS8hvlImsBVpUFxCCDyKJqXITSDpbF6vD
-         VgUQ==
-X-Gm-Message-State: AOAM531ywTRwPpVZe63YHjTxyv3/KCbXFF1wBZTMOOJU2rv4cHbSyp8l
-        ALnnDq9Z0f9IIzCfJLVZd4nbKEyEZXWWc3xbCJkvLNVzagekOg==
-X-Google-Smtp-Source: ABdhPJzunwKWuEyrRiU1hdw/Vg8CKcbpCoNEivUT68tHY55yxPhzuKcqXufpft0DDp/CwLsJb5nwG8RGYjLB29cu+7Q=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr26657786pjr.228.1617017542094;
- Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
+        bh=wP4DyzXGEWscis2PnBMl856XQ/xuNm8C5c+x9Cchs3I=;
+        b=ll1STDS+mN4qhMEYE3N/jnxUmJrWKtYcrk/blJoioxSPFnPjWm0Zj1Bh/kUfOcwdLk
+         UrLPcKJRJ6TW58w7dKflT5vUPI3oQ9bfF2uKaLEUKpdCOq+67TyYGy8uDyi1LLNSF5va
+         U0nj352KtkMd/r81TnCT6zddX4r4B1eL15AuntKGnFpGnl9l4bRBA18xZqtmm8PxmAvF
+         kYfeLEsRL66GKDiudohKhc0EawtczOwdrlj5YPbPUxn/D2utP56rhbVwbvVAbd4yZhCf
+         Efhwvvax124XqDEIJPPKJkxkQoyBuWg7i7jgMZKC6/t362ifBTEfyisL01pW+4yuBrxc
+         NJgQ==
+X-Gm-Message-State: AOAM531Pi7LxXJ+etK/o4ckKkH02fo+ILRvmJNZyYqC8KQnT5+NnFRbf
+        PsiKUl714ekP/8vnQSIOL+THIon+noQxJ4qHlJg=
+X-Google-Smtp-Source: ABdhPJwtNl5H83+Ry/1rs3MY1ARJ4RbAgLiWuVAt7Sdn5uGrzBeW1ifiKPWUScU9z/wWKcKv0D7SApbzE0hZeN216Cc=
+X-Received: by 2002:a2e:575c:: with SMTP id r28mr17631140ljd.347.1617017553361;
+ Mon, 29 Mar 2021 04:32:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329194719.6d37fe53@canb.auug.org.au>
-In-Reply-To: <20210329194719.6d37fe53@canb.auug.org.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 14:32:06 +0300
-Message-ID: <CAHp75VdSUVLknw11BcmZY=tLmOKYZWjUeo7PokMEHHSbm--qng@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- gpio-brgl tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210329112819.64043-1-s.riedmueller@phytec.de>
+In-Reply-To: <20210329112819.64043-1-s.riedmueller@phytec.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 29 Mar 2021 08:32:21 -0300
+Message-ID: <CAOMZO5AxkToaa3wFbx2KP6AyAnWVYKVsKOs-mgNMZLOzo3miuA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ARM: dts: imx6: pfla02: Fix USB vbus enable pinmuxing
+To:     Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 12:07 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->
->   include/linux/bitmap.h
->
-> between commit:
->
->   f7d5fbad07a4 ("lib: bitmap: order includes alphabetically")
->
-> from the gpio-brgl tree and commit:
->
->   f3b90426c407 ("kernel.h: drop inclusion in bitmap.h")
->
-> from the akpm-current tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Hi Stefan,
 
-Looks good to me, thanks, Stephen!
+On Mon, Mar 29, 2021 at 8:28 AM Stefan Riedmueller
+<s.riedmueller@phytec.de> wrote:
 
-> diff --cc include/linux/bitmap.h
-> index 73d039476fa4,6cbcd9d9edd2..000000000000
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@@ -4,12 -4,11 +4,13 @@@
->
->   #ifndef __ASSEMBLY__
->
-> + #include <linux/align.h>
->  -#include <linux/types.h>
->   #include <linux/bitops.h>
-> - #include <linux/kernel.h>
-> + #include <linux/limits.h>
->   #include <linux/string.h>
->  +#include <linux/types.h>
->  +
->  +struct device;
->
->   /*
->    * bitmaps provide bit arrays that consume one or more unsigned
+> -               pinctrl_usbh1: usbh1grp {
+> +               pinctrl_usbh1_vbus: usbh1vbusgrp {
+>                         fsl,pins = <
+> -                               MX6QDL_PAD_GPIO_0__USB_H1_PWR           0x80000000
+> +                               MX6QDL_PAD_GPIO_0__GPIO1_IO00           0x80000000
 
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+While you are on it, could you please use avoid the usage of
+0x80000000 and explicitly pass the default value instead?
