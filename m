@@ -2,146 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB2234D770
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D5034D70C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhC2Shp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:37:45 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:46042 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhC2Shf (ORCPT
+        id S231535AbhC2S1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhC2S1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:37:35 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id 090bfece032b69b7; Mon, 29 Mar 2021 20:37:33 +0200
-Received: from kreacher.localnet (89-64-81-131.dynamic.chello.pl [89.64.81.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id E72FC669165;
-        Mon, 29 Mar 2021 20:37:31 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
-Subject: [PATCH v1 4/5] cpuidle: teo: Take negative "sleep length" values into account
-Date:   Mon, 29 Mar 2021 20:21:43 +0200
-Message-ID: <8741445.CDJkKcVGEf@kreacher>
-In-Reply-To: <2764850.e9J7NaK4W3@kreacher>
-References: <2764850.e9J7NaK4W3@kreacher>
+        Mon, 29 Mar 2021 14:27:03 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DFEEC061574;
+        Mon, 29 Mar 2021 11:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=TtLVGU3fdGFUnspw6rWTgvkrU7WnO/Si+O2feWCXEJ0=; b=PzuqL32U8LFDO
+        BDoLS9X6KUhf/FnGgOT84hR9gjiMXS62xNjlTlMAbCCVAzspdbC39z5WYHRgl8qF
+        eGFEU+04M0WG98v6Xhu5epUnPsANchst09f0TdMqxe/ppET33slA01s86jxWht8s
+        PHxpwEl0CoAHCyBOl0hTSWIlQM9WHA=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3EjgG2JgN_FpAA--.35355S2;
+        Tue, 30 Mar 2021 02:26:40 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:21:44 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 0/9] riscv: improve self-protection
+Message-ID: <20210330022144.150edc6e@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedguddvkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrudefudenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrudefuddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepthhglhigsehlihhnuhhtrhhonhhigidruggvpdhrtghp
- thhtohepgidvtddulegtfihmsehsthhfgidrtggr
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDX3EjgG2JgN_FpAA--.35355S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8Xr4Dpr
+        s0kry5ZrWrCrn3CF1ayrykur1fXwsYg3yagrsrC34rJw4avFWUZwn5Xwn3tr98XFy0gF9a
+        kF45u34Ykr18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F
+        4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU84KZJ
+        UUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Modify the TEO governor to take possible negative return values of
-tick_nohz_get_next_hrtimer() into account by changing the data type
-of some variables used by it to s64 which allows it to carry out
-computations without potentially problematic data type conversions
-into u64.
+patch1 is a trivial improvement patch to move some functions to .init
+section
 
-Also change the computations in teo_select() so that the negative
-values themselves are handled in a natural way to avoid adding extra
-negative value checks to that function.
+Then following patches improve self-protection by:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Marking some variables __ro_after_init
+Constifing some variables
+Enabling ARCH_HAS_STRICT_MODULE_RWX
 
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -100,8 +100,8 @@ struct teo_idle_state {
-  * @intervals: Saved idle duration values.
-  */
- struct teo_cpu {
--	u64 time_span_ns;
--	u64 sleep_length_ns;
-+	s64 time_span_ns;
-+	s64 sleep_length_ns;
- 	struct teo_idle_state states[CPUIDLE_STATE_MAX];
- 	int interval_idx;
- 	u64 intervals[INTERVALS];
-@@ -214,7 +214,7 @@ static bool teo_time_ok(u64 interval_ns)
-  */
- static int teo_find_shallower_state(struct cpuidle_driver *drv,
- 				    struct cpuidle_device *dev, int state_idx,
--				    u64 duration_ns)
-+				    s64 duration_ns)
- {
- 	int i;
- 
-@@ -240,10 +240,10 @@ static int teo_select(struct cpuidle_dri
- {
- 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
- 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
--	u64 duration_ns;
-+	int max_early_idx, prev_max_early_idx, constraint_idx, idx0, idx, i;
- 	unsigned int hits, misses, early_hits;
--	int max_early_idx, prev_max_early_idx, constraint_idx, idx, i;
- 	ktime_t delta_tick;
-+	s64 duration_ns;
- 
- 	if (dev->last_state_idx >= 0) {
- 		teo_update(drv, dev);
-@@ -262,6 +262,7 @@ static int teo_select(struct cpuidle_dri
- 	prev_max_early_idx = -1;
- 	constraint_idx = drv->state_count;
- 	idx = -1;
-+	idx0 = idx;
- 
- 	for (i = 0; i < drv->state_count; i++) {
- 		struct cpuidle_state *s = &drv->states[i];
-@@ -322,6 +323,7 @@ static int teo_select(struct cpuidle_dri
- 			idx = i; /* first enabled state */
- 			hits = cpu_data->states[i].hits;
- 			misses = cpu_data->states[i].misses;
-+			idx0 = i;
- 		}
- 
- 		if (s->target_residency_ns > duration_ns)
-@@ -374,11 +376,16 @@ static int teo_select(struct cpuidle_dri
- 
- 	if (idx < 0) {
- 		idx = 0; /* No states enabled. Must use 0. */
--	} else if (idx > 0) {
-+	} else if (idx > idx0) {
- 		unsigned int count = 0;
- 		u64 sum = 0;
- 
- 		/*
-+		 * The target residencies of at least two different enabled idle
-+		 * states are less than or equal to the current expected idle
-+		 * duration.  Try to refine the selection using the most recent
-+		 * measured idle duration values.
-+		 *
- 		 * Count and sum the most recent idle duration values less than
- 		 * the current expected idle duration value.
- 		 */
-@@ -426,7 +433,8 @@ static int teo_select(struct cpuidle_dri
- 		 * till the closest timer including the tick, try to correct
- 		 * that.
- 		 */
--		if (idx > 0 && drv->states[idx].target_residency_ns > delta_tick)
-+		if (idx > idx0 &&
-+		    drv->states[idx].target_residency_ns > delta_tick)
- 			idx = teo_find_shallower_state(drv, dev, idx, delta_tick);
- 	}
- 
+Jisheng Zhang (9):
+  riscv: add __init section marker to some functions
+  riscv: Mark some global variables __ro_after_init
+  riscv: Constify sys_call_table
+  riscv: Constify sbi_ipi_ops
+  riscv: kprobes: Implement alloc_insn_page()
+  riscv: bpf: Move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
+  riscv: bpf: Avoid breaking W^X
+  riscv: module: Create module allocations without exec permissions
+  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
 
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/smp.h       |  4 ++--
+ arch/riscv/include/asm/syscall.h   |  2 +-
+ arch/riscv/kernel/module.c         |  2 +-
+ arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
+ arch/riscv/kernel/sbi.c            | 10 +++++-----
+ arch/riscv/kernel/smp.c            |  6 +++---
+ arch/riscv/kernel/syscall_table.c  |  2 +-
+ arch/riscv/kernel/time.c           |  2 +-
+ arch/riscv/kernel/traps.c          |  2 +-
+ arch/riscv/kernel/vdso.c           |  4 ++--
+ arch/riscv/mm/init.c               | 12 ++++++------
+ arch/riscv/mm/kasan_init.c         |  6 +++---
+ arch/riscv/mm/ptdump.c             |  2 +-
+ arch/riscv/net/bpf_jit_comp64.c    | 13 -------------
+ arch/riscv/net/bpf_jit_core.c      | 14 ++++++++++++++
+ 16 files changed, 50 insertions(+), 40 deletions(-)
+
+-- 
+2.31.0
 
 
