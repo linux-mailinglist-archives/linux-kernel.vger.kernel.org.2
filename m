@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36A834CAEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F374D34C65F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhC2Ik5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50624 "EHLO mail.kernel.org"
+        id S232192AbhC2IHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:07:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232411AbhC2IHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 645E161976;
-        Mon, 29 Mar 2021 08:07:15 +0000 (UTC)
+        id S232118AbhC2IES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:04:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5677561932;
+        Mon, 29 Mar 2021 08:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005236;
-        bh=vrO7KwDpMMsX+cWn8BeQo8ANif15unkmHNpJ8fJCPBo=;
+        s=korg; t=1617005057;
+        bh=hxKPIy9xQ4pAbVLd6IuSOXfvIsSt1TcXC72K92hLpB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z+e9XyM5gC6YXMsWRtNWWhHMW7/o+b9QKCpAa70l0Qt/uN8LKuhH/+U9cmg5hLhlJ
-         zfyPNSjaRCEvcHQS/cBduCy4BsJBQxqRRYB6nJ/btJBYXkBeNUgVz1MsaXipL+ryh2
-         vLCMYFmkCgE3G24Q7I/ZlGfDD/YCcAYzZuWS00H4=
+        b=cTXnMxQXdAr7rIOOrBTUsffH+vLqBSyIup12q52fvY+RbSl7n5BNhLUBm/eb7fhF3
+         kQqJN3Bvts4t2/T63dfQDTVeW3cuC0RN5/TA4kRWOx2HSQg+PSQbjzuXbrQoa1kuhQ
+         XPvIl0aYupHvwJGBCKSfxMsPHziciJPqZSCW9pjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/72] net: wan: fix error return code of uhdlc_init()
+Subject: [PATCH 4.14 10/59] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
 Date:   Mon, 29 Mar 2021 09:57:50 +0200
-Message-Id: <20210329075610.749731111@linuxfoundation.org>
+Message-Id: <20210329075609.240501218@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Timo Rothenpieler <timo@rothenpieler.org>
 
-[ Upstream commit 62765d39553cfd1ad340124fe1e280450e8c89e2 ]
+[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
 
-When priv->rx_skbuff or priv->tx_skbuff is NULL, no error return code of
-uhdlc_init() is assigned.
-To fix this bug, ret is assigned with -ENOMEM in these cases.
+This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
+With the default being m, it's impossible to build the module into the
+kernel.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/fsl_ucc_hdlc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/nfs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wan/fsl_ucc_hdlc.c b/drivers/net/wan/fsl_ucc_hdlc.c
-index 9ab04ef532f3..5df6e85e7ccb 100644
---- a/drivers/net/wan/fsl_ucc_hdlc.c
-+++ b/drivers/net/wan/fsl_ucc_hdlc.c
-@@ -201,14 +201,18 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
- 	priv->rx_skbuff = kcalloc(priv->rx_ring_size,
- 				  sizeof(*priv->rx_skbuff),
- 				  GFP_KERNEL);
--	if (!priv->rx_skbuff)
-+	if (!priv->rx_skbuff) {
-+		ret = -ENOMEM;
- 		goto free_ucc_pram;
-+	}
+diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
+index ac3e06367cb6..e55f86713948 100644
+--- a/fs/nfs/Kconfig
++++ b/fs/nfs/Kconfig
+@@ -127,7 +127,7 @@ config PNFS_BLOCK
+ config PNFS_FLEXFILE_LAYOUT
+ 	tristate
+ 	depends on NFS_V4_1 && NFS_V3
+-	default m
++	default NFS_V4
  
- 	priv->tx_skbuff = kcalloc(priv->tx_ring_size,
- 				  sizeof(*priv->tx_skbuff),
- 				  GFP_KERNEL);
--	if (!priv->tx_skbuff)
-+	if (!priv->tx_skbuff) {
-+		ret = -ENOMEM;
- 		goto free_rx_skbuff;
-+	}
- 
- 	priv->skb_curtx = 0;
- 	priv->skb_dirtytx = 0;
+ config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
+ 	string "NFSv4.1 Implementation ID Domain"
 -- 
 2.30.1
 
