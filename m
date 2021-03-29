@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386ED34D780
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D2134D781
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhC2Sl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhC2SlV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:41:21 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC736C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:41:21 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id j25so10456629pfe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aYL/dbQ14QTXXMSkWSQ/z+qzj6yL6Ve3lzeO159+/Vc=;
-        b=ILRNFBaUrvYS27aWFLaYXO8LPj6pKTA2SBD59ksr9Fpfa7kG44gHIoQIIeiA0uW0DT
-         INDEJxHCxLo9mNI1mXPwmIRMdAheSsDUl9E7dL0goqI8aLORifPfviS8NWFxCGPsRDpU
-         h2HExNb2DqeqeKKnXrybXZvXygAADq2smXaJA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aYL/dbQ14QTXXMSkWSQ/z+qzj6yL6Ve3lzeO159+/Vc=;
-        b=al22hv0KCA0NX4/byGJzQi5PDtzBSJk1Mwg8fN3thoOM5+kZNkhq388V+aypEQaFbu
-         CusPchPv5DBCnDcAFYpaFpbUBmZl9150ToVb9zKhf+TbJ/TFZkff1+F0Z3hzS3rm/aGq
-         Fhp3CkOZJqPOWN5amlxwq3Hnt4UhzeGHex+irYAsftpe1s0NWhr9SMcDVWr9ZdoNJDrE
-         qIJZhr/ZW6hSSNnIfM43XOvW4K/uFOwmKXCG95fl46tCrD1mEBfOaTAjcEeXL9Bb9BHn
-         HORiafagMXihFFXUPXhKnFUasqjxRPZ6wYW4aXKa0V9V39HF9mWFm+IMUinNV/DPQE+G
-         Mokw==
-X-Gm-Message-State: AOAM533VPZkJNL1CJUs0I1/hysSq9v++QqP3WqvJcNJvZyh+hef3WKLj
-        PXhs9Lvd2gvSCIPp9VhaV9LlZQ==
-X-Google-Smtp-Source: ABdhPJxjjtBRwQY4aFK1R1QLvwpTRJ9D0T4m5/43mE5p+szS6JXZVD5wBPAm/iQ4MzX4uEt8W4cEIA==
-X-Received: by 2002:aa7:8a19:0:b029:1f6:6839:7211 with SMTP id m25-20020aa78a190000b02901f668397211mr25877536pfa.40.1617043281318;
-        Mon, 29 Mar 2021 11:41:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id mm12sm196929pjb.49.2021.03.29.11.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 11:41:20 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 11:41:18 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/6] stack: Optionally randomize kernel stack offset
- each syscall
-Message-ID: <202103291139.54AA7CDE@keescook>
-References: <20210319212835.3928492-1-keescook@chromium.org>
- <20210319212835.3928492-4-keescook@chromium.org>
- <87eefzcpc4.ffs@nanos.tec.linutronix.de>
+        id S230503AbhC2Smb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231426AbhC2Sl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:41:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E9BA60C3D
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617043316;
+        bh=qD8DVxXjuG5oFwjixu2nTmjbMNhSN50oQsq45QyDSR4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gzekNXiy/LsR92rA3cwoQQpjN1UsdrMzc+0JqHT/YEyM3kOSx35B1wfxx4o7kYIxW
+         Kn61/yeHu+8A6Tke38HWVx0ff1IUfdYbg4erItEXYacU7NuH6yCq8B+vPEvBdIT/+N
+         H0Tevn1NsvgitJRRMZZFHYBRIgk1D8cz95IbLb+6fPVteKNY9HbC4CKF3hf8WIDvOf
+         I/JIMdmWmRBa4Zb/c9T3urt3QDMYwD9+oonZu+VFexWvbFyO7YYLOtl9zCYh8yHn5L
+         nolsImpGruo6aNLY6UKjD7WcVwERF8aKXmROe8HCAWuuT7tjmEDzu4NdnTNxzFWKbq
+         1/D4lAOw3vCNQ==
+Received: by mail-ej1-f52.google.com with SMTP id u9so20998560ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:41:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532pv5U2ds9kqqq4ivIWOKVNYlDt71xrKUWJfM7hExZmRY7tSnvX
+        cCa8GFi14zJpc/fSGyM0Phgo5yx2iSMn037tSQ==
+X-Google-Smtp-Source: ABdhPJwzl025RO7iS5jhgrL1DacHi3iVQceN+e8l1oRX/n1T6lxw+CzeM+53nWpDYFIP6oTn48MTMzC4bNfV+WLBaq0=
+X-Received: by 2002:a17:906:5e01:: with SMTP id n1mr29979915eju.359.1617043314784;
+ Mon, 29 Mar 2021 11:41:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eefzcpc4.ffs@nanos.tec.linutronix.de>
+References: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
+ <20210329020746.GA250550@roeck-us.net> <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
+In-Reply-To: <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 29 Mar 2021 13:41:42 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKxLy3Gc8d1Q23AQaWTKLmc_a28tokZZ08rHnV2qU0iew@mail.gmail.com>
+Message-ID: <CAL_JsqKxLy3Gc8d1Q23AQaWTKLmc_a28tokZZ08rHnV2qU0iew@mail.gmail.com>
+Subject: Re: Linux 5.12-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 04:42:03PM +0200, Thomas Gleixner wrote:
-> On Fri, Mar 19 2021 at 14:28, Kees Cook wrote:
-> > +/*
-> > + * Do not use this anywhere else in the kernel. This is used here because
-> > + * it provides an arch-agnostic way to grow the stack with correct
-> > + * alignment. Also, since this use is being explicitly masked to a max of
-> > + * 10 bits, stack-clash style attacks are unlikely. For more details see
-> > + * "VLAs" in Documentation/process/deprecated.rst
-> 
-> VLAs are bad, VLAs to the rescue! :)
+n Mon, Mar 29, 2021 at 1:05 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Mar 28, 2021 at 7:07 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > This is not really a new problem. I enabled devicetree unit tests
+> > in the openrisc kernel and was rewarded with a crash.
+> > https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+> > has all the glorious details.
+>
+> Hmm.
+>
+> I'm not sure I love that patch.
+>
+> I don't think the patch is _wrong_ per se, but if that "require 8 byte
+> alignment" is a problem, then this seems to be papering over the issue
+> rather than fixing it.
+>
+> So your patch protects from a NULL pointer dereference, but the
+> underlying issue seems to be a regression, and the fix sounds like the
+> kernel shouldn't be so strict about alignment requirements.
 
-I'm aware of the irony, but luto's idea really makes things easy. As
-documented there, though, this has a hard-coded (low) upper bound, so
-it's not like "regular" VLA use.
+In the interest of the DT unittests not panicking and halting boot, I
+think we should handle NULL pointer.
 
-> 
-> > + * The asm statement is designed to convince the compiler to keep the
-> > + * allocation around even after "ptr" goes out of scope.
-> > + */
-> > +void *__builtin_alloca(size_t size);
-> > +
-> > +#define add_random_kstack_offset() do {					\
-> > +	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
-> > +				&randomize_kstack_offset)) {		\
-> > +		u32 offset = this_cpu_read(kstack_offset);              \
-> 
-> Not that it matters on x86, but as this has to be called in the
-> interrupt disabled region of the syscall entry, shouldn't this be a
-> raw_cpu_read(). The asm-generic version has a preempt_disable/enable
-> pair around the raw read for native wordsize reads, otherwise a
-> irqsave/restore pair.
-> 
-> __this_cpu_read() is fine as well, but that has an sanity check before
-> the raw read when CONFIG_DEBUG_PREEMPT is on, which is harmless but
-> also pointless in this case.
-> 
-> Probably the same for the counterpart this_cpu_write().
+> I guess we could make ARCH_SLAB_MINALIGN be at least 8 (perhaps only
+> if the allocations is >= 8) but honestly, I don't think libfdt merits
+> making such a big change. Small allocations are actually not uncommon
+> in the kernel, and on 32-bit architectures I think 4-byte allocations
+> are normal.
+>
+> So I'd be inclined to just remove the new
+>
+>         /* The device tree must be at an 8-byte aligned address */
+>         if ((uintptr_t)fdt & 7)
+>                 return -FDT_ERR_ALIGNMENT;
+>
+> check in scripts/dtc/libfdt/fdt.c which I assume is the source of the
+> problem. Rob?
 
-Oh! Excellent point. I think this will make a big difference on arm64. I
-will adjust and test.
+That is the source, but I'd rather not remove it as we try to avoid
+any modifications from upstream. And we've found a couple of cases of
+not following documented alignment requirements.
 
--- 
-Kees Cook
+> Your patch to then avoid the NULL pointer dereference seems to be then
+> an additional safety, but not fixing the actual regression.
+
+I think the right fix is not using kmemdup which copies the unittest dtb.
+
+Rob
