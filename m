@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C9234DC61
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A2234DC6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhC2XYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S231300AbhC2XZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhC2XYc (ORCPT
+        with ESMTP id S230362AbhC2XZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:24:32 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAD9C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:24:31 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id kt15so21930413ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:24:31 -0700 (PDT)
+        Mon, 29 Mar 2021 19:25:09 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40381C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:25:09 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 12so7374677wmf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XF4To2Y7zgtF2QAVYiT7BBwCvauONTod77W3/2lXGW8=;
-        b=Vsx9drBV7ccArQSqmDPqC+lTIb/A77ziMCx5iPDxYzAHz5bdXrgSzOciH2G+olKEzH
-         JH+aiwgu7Hdc7Js/CFjZeYUNpwx0+EJ4WO1eE2x1fsFGzMOLBuWvUcrIpPIC/BzArvmG
-         SoSbsrr1a84pxS45T+LCHCPrZ4YT1EgHckSDx8IT4d9M/APuB7pnuC8BPH8hgLx1YKnX
-         8mmS8RFApDIqRbHB5XlYzw5cDHp5hIR3/bxLlGci8wVKnPeuvAPgpq7rHtbNCE/aUyzk
-         mUztjRYlXDhIeGmczBxkjzDSdIyVqVIUQsrF4xS7Qy5pZtzbw/waLYA0DM0/VC+iNd0Y
-         Zt3g==
+        d=arista.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gvWBHRQ4dmNlAUqlBpgyV+LGIhnFLsa/5M1EOOKR94E=;
+        b=Nr3ds1bAUpbG9U6miXNRzbQ1LRVbDehZ2ZuwSnSWHLI0LjXKeSTA18tddSNKKFuQws
+         iM8kBFmUNkz6xlUiVSQbAWMRYjs43oz3GCq1aeVSseKsBxsMiL+36Yf69vUAcsFgfuX/
+         jj8NWlcJbXAjqGxxzjwb12AvuCc19SsnNS0P/eAvmn0Zi5kwXV/te0gJzBSwOnD2B8C4
+         qSt0Ry2OkDbVMTWI79Dmc++kJFJlyXck6I4Q8IiIK8GE4/zB9Vrq8YY0JwuJ1hLvaH2K
+         51wyqMQElQUsxEvh49eIC42NCj2AEEgtDehY4jyaLKlc42TM26M5klHRxxyeMQcOQDVP
+         noQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XF4To2Y7zgtF2QAVYiT7BBwCvauONTod77W3/2lXGW8=;
-        b=gNMK9thvbJ7uRM3dgXfuC5MZ8SF/Fi4RaaVIQ0Vzuos03CV7LwtMcjVy0eZYHqa9Dn
-         6ROflvcYNdPzrGFb4tUs1S8iX7ge9P6eldLOJ6b0AVdW+IDQQPbNf2qqc7Z5g1YfKCxJ
-         QfBMzrZP3Bqri9F3zzABl56ifDSIEHT2I40ezdMqOPD3llec/Ncku7cFZjbQndJlnwO4
-         TdMj8PQTQUmmno7bvt7t2GiufD4WorcYsTK/+M9FWQVIuPVlYp6sBl+hHp5GjP0/ovmj
-         MMK2hqSXjPBLP1Kn1WAkfk7Wek7mUyWluxCMeLwc2gJpPACswgDgiDsrbxhxzphuRWaF
-         MU8w==
-X-Gm-Message-State: AOAM532om1+ycekkJ9EI6lv7S00pZQ+MwUXHpV4J5faBuBjXEqBKvc5n
-        5Qd7Ih4Gwl46QmrZAErHFj9wPULVbLwpcl5oK/ZjlQ==
-X-Google-Smtp-Source: ABdhPJzf7VrSfLTELhnrW6mwobm/98+lZofBo3iswIzq94rBp2GFqTi32x/lL+dUXpEu98/zFDAR5BEkXvlHn9IcDz4=
-X-Received: by 2002:a17:906:ae88:: with SMTP id md8mr29769425ejb.264.1617060270344;
- Mon, 29 Mar 2021 16:24:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gvWBHRQ4dmNlAUqlBpgyV+LGIhnFLsa/5M1EOOKR94E=;
+        b=CGD+4kHdU9BurDA8oOHcfFBv2JzoIyyrpiHTmP3x67N6m9dz9tgWd8UB8+cjSlbWfw
+         IrNIXCHYSpGL+NiMjYNdo7gbFFS8hfE8jOvchxsMg3+aLhBjWtnrHTWz0RVdtqwkUuCb
+         Jxu4o6jasNVFtSELc52PQMQDaiq9UcUixycJXYKAMRtb3JArDYzKNli+3L42gyGnQVYS
+         4huwWieCfa3mQOukn9idcDxY6KLEcAH3JqBpSaMKDcG/fSqfhlq4ym6sP3h4DV24gKwu
+         QrEo0tSvmavSul0tUs6H36XtLaRE8eUfWDlrIgPmdmFi7GAE25MAts4hozzl1PmliUOO
+         FFMA==
+X-Gm-Message-State: AOAM531AKeGV2jMgmM0CbLTEOEw5Fo6xcEjvnJMK8n5jRtrp+tS0TSiC
+        KW0S2NK7LeGwhayK5xfoWMgxMky/ggVbuIf6
+X-Google-Smtp-Source: ABdhPJwME6tVWZ3CgqlQk2+a7FRLosmhGeD6rmBASHnofcgCCKN4B/5z2HMtQmTyBEX9I3nszitmew==
+X-Received: by 2002:a7b:c4d1:: with SMTP id g17mr1129751wmk.101.1617060307675;
+        Mon, 29 Mar 2021 16:25:07 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id m17sm32759518wrx.92.2021.03.29.16.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 16:25:07 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        netdev@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] xfrm/compat: Cleanup WARN()s that can be user-triggered
+Date:   Tue, 30 Mar 2021 00:25:06 +0100
+Message-Id: <20210329232506.232142-1-dima@arista.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
- <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com> <CAPcyv4g8=kGoQiY14CDEZryb-7T1_tePnC_-21w-wTfA7fQcDg@mail.gmail.com>
- <20210325143419.GK2710221@ziepe.ca>
-In-Reply-To: <20210325143419.GK2710221@ziepe.ca>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 29 Mar 2021 16:24:19 -0700
-Message-ID: <CAPcyv4hHHFD4cvdRmajWgYbXU5-o-jF-o6D5ud-rg4dWNqt5Ag@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
- get_user_pages_fast() path
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Joao Martins <joao.m.martins@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 7:34 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Mar 18, 2021 at 10:03:06AM -0700, Dan Williams wrote:
-> > Yes. I still need to answer the question of whether mapping
-> > invalidation triggers longterm pin holders to relinquish their hold,
-> > but that's a problem regardless of whether gup-fast is supported or
-> > not.
->
-> It does not, GUP users do not interact with addres_space or mmu
-> notifiers
->
+Replace WARN_ONCE() that can be triggered from userspace with
+pr_warn_once(). Those still give user a hint what's the issue.
 
-Ok, but the SIGKILL from the memory_failure() will drop the pin?
+I've left WARN()s that are not possible to trigger with current
+code-base and that would mean that the code has issues:
+- relying on current compat_msg_min[type] <= xfrm_msg_min[type]
+- expected 4-byte padding size difference between
+  compat_msg_min[type] and xfrm_msg_min[type]
+- compat_policy[type].len <= xfrma_policy[type].len
+(for every type)
 
-Can memory_failure() find the right processes to kill if the memory
-registration has been passed by SCM_RIGHTS?
+Reported-by: syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com
+Fixes: 5f3eea6b7e8f ("xfrm/compat: Attach xfrm dumps to 64=>32 bit translator")
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: netdev@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ net/xfrm/xfrm_compat.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
+index d8e8a11ca845..a20aec9d7393 100644
+--- a/net/xfrm/xfrm_compat.c
++++ b/net/xfrm/xfrm_compat.c
+@@ -216,7 +216,7 @@ static struct nlmsghdr *xfrm_nlmsg_put_compat(struct sk_buff *skb,
+ 	case XFRM_MSG_GETSADINFO:
+ 	case XFRM_MSG_GETSPDINFO:
+ 	default:
+-		WARN_ONCE(1, "unsupported nlmsg_type %d", nlh_src->nlmsg_type);
++		pr_warn_once("unsupported nlmsg_type %d\n", nlh_src->nlmsg_type);
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 	}
+ 
+@@ -277,7 +277,7 @@ static int xfrm_xlate64_attr(struct sk_buff *dst, const struct nlattr *src)
+ 		return xfrm_nla_cpy(dst, src, nla_len(src));
+ 	default:
+ 		BUILD_BUG_ON(XFRMA_MAX != XFRMA_IF_ID);
+-		WARN_ONCE(1, "unsupported nla_type %d", src->nla_type);
++		pr_warn_once("unsupported nla_type %d\n", src->nla_type);
+ 		return -EOPNOTSUPP;
+ 	}
+ }
+@@ -315,8 +315,10 @@ static int xfrm_alloc_compat(struct sk_buff *skb, const struct nlmsghdr *nlh_src
+ 	struct sk_buff *new = NULL;
+ 	int err;
+ 
+-	if (WARN_ON_ONCE(type >= ARRAY_SIZE(xfrm_msg_min)))
++	if (type >= ARRAY_SIZE(xfrm_msg_min)) {
++		pr_warn_once("unsupported nlmsg_type %d\n", nlh_src->nlmsg_type);
+ 		return -EOPNOTSUPP;
++	}
+ 
+ 	if (skb_shinfo(skb)->frag_list == NULL) {
+ 		new = alloc_skb(skb->len + skb_tailroom(skb), GFP_ATOMIC);
+@@ -378,6 +380,10 @@ static int xfrm_attr_cpy32(void *dst, size_t *pos, const struct nlattr *src,
+ 	struct nlmsghdr *nlmsg = dst;
+ 	struct nlattr *nla;
+ 
++	/* xfrm_user_rcv_msg_compat() relies on fact that 32-bit messages
++	 * have the same len or shorted than 64-bit ones.
++	 * 32-bit translation that is bigger than 64-bit original is unexpected.
++	 */
+ 	if (WARN_ON_ONCE(copy_len > payload))
+ 		copy_len = payload;
+ 
+-- 
+2.31.0
+
