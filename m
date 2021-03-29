@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A246B34CA06
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1039334CA0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhC2IdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37406 "EHLO mail.kernel.org"
+        id S234773AbhC2Idg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232230AbhC2IUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:20:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94F0261974;
-        Mon, 29 Mar 2021 08:20:29 +0000 (UTC)
+        id S233014AbhC2IUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:20:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CE4061964;
+        Mon, 29 Mar 2021 08:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006030;
-        bh=EOcZtP1C9tkTuNpv/wXJe1TtdV70nAmD3KSU5vRAPBg=;
+        s=korg; t=1617006051;
+        bh=P/OFSjQAwsXIXLJPAKu1SZ6A04vfJzoRTPx4IfTHktY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nX6cjCa1BAvktToZODB6gturfrrIkLwG/igB+2d0j0l1pa5SZ5RGnvpiwnOWi0cJf
-         WUi0F3cXJafwWAjJA1mh+Vyno2VF366+DafWXpvOR15SxtE8vypsydYCAEzzAt4WTA
-         mTaNirenzsR/wC4m+Ey+/c08LGe4FNYtrNDcKQJI=
+        b=1bTzvET3x0cjIBT/5llmH8y/1Fvjqk6xSJvA0GjYmJ+BPRnuMcwxUFvTu7JHJNVxC
+         sOO05nV2nKwgnxbSaNPg8oPVvcdqWN0w+tW9i6nH/oalAYjqW32nFYa8lW4Pbt/GwP
+         jV+BDzktgguVcfB3dq6A4jZ0+2ednnwI50lHvcjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 065/221] netsec: restore phy power state after controller reset
-Date:   Mon, 29 Mar 2021 09:56:36 +0200
-Message-Id: <20210329075631.356378032@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.10 066/221] platform/x86: intel-vbtn: Stop reporting SW_DOCK events
+Date:   Mon, 29 Mar 2021 09:56:37 +0200
+Message-Id: <20210329075631.385559835@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
@@ -39,50 +38,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mian Yousaf Kaukab <ykaukab@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 804741ac7b9f2fdebe3740cb0579cb8d94d49e60 upstream.
+commit 538d2dd0b9920334e6596977a664e9e7bac73703 upstream.
 
-Since commit 8e850f25b581 ("net: socionext: Stop PHY before resetting
-netsec") netsec_netdev_init() power downs phy before resetting the
-controller. However, the state is not restored once the reset is
-complete. As a result it is not possible to bring up network on a
-platform with Broadcom BCM5482 phy.
+Stop reporting SW_DOCK events because this breaks suspend-on-lid-close.
 
-Fix the issue by restoring phy power state after controller reset is
-complete.
+SW_DOCK should only be reported for docking stations, but all the DSDTs in
+my DSDT collection which use the intel-vbtn code, always seem to use this
+for 2-in-1s / convertibles and set SW_DOCK=1 when in laptop-mode (in tandem
+with setting SW_TABLET_MODE=0).
 
-Fixes: 8e850f25b581 ("net: socionext: Stop PHY before resetting netsec")
+This causes userspace to think the laptop is docked to a port-replicator
+and to disable suspend-on-lid-close, which is undesirable.
+
+Map the dock events to KEY_IGNORE to avoid this broken SW_DOCK reporting.
+
+Note this may theoretically cause us to stop reporting SW_DOCK on some
+device where the 0xCA and 0xCB intel-vbtn events are actually used for
+reporting docking to a classic docking-station / port-replicator but
+I'm not aware of any such devices.
+
+Also the most important thing is that we only report SW_DOCK when it
+reliably reports being docked to a classic docking-station without any
+false positives, which clearly is not the case here. If there is a
+chance of reporting false positives then it is better to not report
+SW_DOCK at all.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321163513.72328-1-hdegoede@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/socionext/netsec.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/platform/x86/intel-vbtn.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -1708,14 +1708,17 @@ static int netsec_netdev_init(struct net
- 		goto err1;
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -47,8 +47,16 @@ static const struct key_entry intel_vbtn
+ };
  
- 	/* set phy power down */
--	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR) |
--		BMCR_PDOWN;
--	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR);
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR,
-+			 data | BMCR_PDOWN);
- 
- 	ret = netsec_reset_hardware(priv, true);
- 	if (ret)
- 		goto err2;
- 
-+	/* Restore phy power state */
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+
- 	spin_lock_init(&priv->desc_ring[NETSEC_RING_TX].lock);
- 	spin_lock_init(&priv->desc_ring[NETSEC_RING_RX].lock);
- 
+ static const struct key_entry intel_vbtn_switchmap[] = {
+-	{ KE_SW,     0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
+-	{ KE_SW,     0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
++	/*
++	 * SW_DOCK should only be reported for docking stations, but DSDTs using the
++	 * intel-vbtn code, always seem to use this for 2-in-1s / convertibles and set
++	 * SW_DOCK=1 when in laptop-mode (in tandem with setting SW_TABLET_MODE=0).
++	 * This causes userspace to think the laptop is docked to a port-replicator
++	 * and to disable suspend-on-lid-close, which is undesirable.
++	 * Map the dock events to KEY_IGNORE to avoid this broken SW_DOCK reporting.
++	 */
++	{ KE_IGNORE, 0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
++	{ KE_IGNORE, 0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
+ 	{ KE_SW,     0xCC, { .sw = { SW_TABLET_MODE, 1 } } },	/* Tablet */
+ 	{ KE_SW,     0xCD, { .sw = { SW_TABLET_MODE, 0 } } },	/* Laptop */
+ };
 
 
