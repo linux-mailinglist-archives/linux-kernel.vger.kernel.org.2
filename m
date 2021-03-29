@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC2C34C389
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D9D34C395
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhC2GIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:08:36 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35494 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC2GIP (ORCPT
+        id S230266AbhC2GKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:10:20 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23036 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229706AbhC2GJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:08:15 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5rrrN107848;
-        Mon, 29 Mar 2021 06:08:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=R+JGjlBwrbZXzxMGadFoiOE/AboavnCWBSLV2LWuS/M=;
- b=0ag0kgtlKyhEAyHorgwZM4C7UMLX3tflqVSXNdN1w6DtNuB2QDiMVdWb4lBw7aV+BT29
- PJbdg+jheVelvCEGolmbXeRjXGJsYSYfk0fuQ59flPlUr8wCwyIGFkngXeUf3gCM2WuL
- jBEHqkGolbnoW4sLkMyUyIAzPQSt1Mi/oZeNrSWoMhnvO1cR3dFWbfYRwhBdDWs29W3r
- UbUegi+iGBF5gbNxpIxFx3M7A9zvAGaTHLxUqSRpmumA8qIOJLJNkztw/ETOIqwLONbB
- 0+ewSH8wlJINAfw7NzpBAYeFxJjhbfm7bx40D2cIK4WqLS70mnDg9/zm59re0BvaxixV 9Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 37hvnm2bjb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 06:08:11 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5tV0p066458;
-        Mon, 29 Mar 2021 06:08:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 37je9mxtgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 06:08:09 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12T689bC018061;
-        Mon, 29 Mar 2021 06:08:09 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 28 Mar 2021 23:08:08 -0700
-Date:   Mon, 29 Mar 2021 09:08:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Kranthi Kuntala <kranthi.kuntala@intel.com>
-Cc:     Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 2/2] thunderbolt: Fix off by one in tb_port_find_retimer()
-Message-ID: <YGFuwRKm0iurFAtI@mwanda>
+        Mon, 29 Mar 2021 02:09:53 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T5t1kH017111;
+        Mon, 29 Mar 2021 08:09:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=qep9y4/69l92YA1EjW2kQGKevET5+Foel7W2OczJ070=;
+ b=johFUWX2y9lH9QYZYBRwzdER9y8NxfR5PUssJWLCbRewF3xTWju8M0HN66CQX93sNDfs
+ G5kj0MIY50ExifSDKBbjKSP8Z35NuZzd0Ym/grgl0ySOouWQH8Uj8OUSZGknAmbVf+Zr
+ HsoPs7qKjk7SNHOz8T/Ijm3B6SFbS78IrS/J7cCCKZY9n+7ngbiBIgqPSyxvmBVUzrHc
+ rKQwNxITKXvU69j2iuoVLQwDXx6mLcq14Z3B5tP7JbRnaJ07q+NuzOVp0YmLLZh72zEz
+ BQKHxiTTMUEzPcqGDu91+l2SwGZqYSXpOlUjsRSNjRJ1MtDvZZZH2FavtjbilqyCqJWC 0w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37jvdmjm9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 08:09:10 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB905100040;
+        Mon, 29 Mar 2021 08:09:08 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B181D221772;
+        Mon, 29 Mar 2021 08:09:08 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar 2021 08:09:08
+ +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <wsa@kernel.org>, <robh+dt@kernel.org>
+CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <alain.volmat@foss.st.com>
+Subject: [PATCH v3 0/2] i2c: stm32f7: add SMBus-Alert support
+Date:   Mon, 29 Mar 2021 08:09:03 +0200
+Message-ID: <1616998145-28278-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGFulvAa5Kz6HTsd@mwanda>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103290047
-X-Proofpoint-GUID: r2VsRpKZnRk7xHLCaEUM7MpBZcn4ZASy
-X-Proofpoint-ORIG-GUID: r2VsRpKZnRk7xHLCaEUM7MpBZcn4ZASy
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103290047
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_02:2021-03-26,2021-03-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This array uses 1-based indexing so it corrupts memory one element
-beyond of the array.  Fix it by making the array one element larger.
+This serie adds support for SMBus Alert on the STM32F7.
+A new binding st,smbus-alert is added in order to differenciate
+with the existing smbus binding.
 
-Fixes: dacb12877d92 ("thunderbolt: Add support for on-board retimers")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+SMBA alert control and status logic must be enabled along with
+SMBALERT# pin configured via pinctrl in the device tree. This is the
+rational for adding "st,smbus-alert" property.
+
 ---
- drivers/thunderbolt/retimer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3:
+use lore.kernel.org links instead of marc.info
 
-diff --git a/drivers/thunderbolt/retimer.c b/drivers/thunderbolt/retimer.c
-index 7a5d61604c8b..c44fad2b9fbb 100644
---- a/drivers/thunderbolt/retimer.c
-+++ b/drivers/thunderbolt/retimer.c
-@@ -406,7 +406,7 @@ static struct tb_retimer *tb_port_find_retimer(struct tb_port *port, u8 index)
-  */
- int tb_retimer_scan(struct tb_port *port)
- {
--	u32 status[TB_MAX_RETIMER_INDEX] = {};
-+	u32 status[TB_MAX_RETIMER_INDEX + 1] = {};
- 	int ret, i, last_idx = 0;
- 
- 	if (!port->cap_usb4)
+v2:
+When SMBUS alert isn't available on the board (SMBA unused), this
+logic musn't be enabled. Enabling it unconditionally wrongly lead to get
+SMBA interrupts.
+So, add "st,smbus-alert" dedicated binding to have a smbus alert with a
+consistent pin configuration in DT.
+
+Alain Volmat (2):
+  dt-bindings: i2c: stm32f7: add st,smbus-alert binding for SMBus Alert
+  i2c: stm32f7: add SMBus-Alert support
+
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |  5 ++
+ drivers/i2c/busses/i2c-stm32f7.c              | 73 +++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+
 -- 
-2.30.2
+2.17.1
 
