@@ -2,190 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA03C34C3CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290F34C3D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhC2G1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:27:37 -0400
-Received: from mga18.intel.com ([134.134.136.126]:5006 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhC2G1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:27:08 -0400
-IronPort-SDR: vpCikbkuZBwXaGjvxRZ9Tb0NVgx0ey/+rIFDGks3t5BfF1q7BxOqXOMe2kE7nRIOowzSqBQuS4
- ceqrFoGqsFcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="179030156"
-X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
-   d="scan'208";a="179030156"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 23:27:07 -0700
-IronPort-SDR: C55Yv/wcT4TNJESa9QMS+A9xypbRgFYWcf7BBW0vRprWTUw3EW9+BJ9KnzMJzAMgqaBE2LAYkA
- UqOaE6lC5DrA==
-X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
-   d="scan'208";a="609616892"
-Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 23:27:04 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFC] NUMA balancing: reduce TLB flush via delaying mapping on hint page fault
-Date:   Mon, 29 Mar 2021 14:26:51 +0800
-Message-Id: <20210329062651.2487905-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230258AbhC2GdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:33:12 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23236 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhC2GdE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 02:33:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616999584; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=oiHaIhlTw6rdY/eG8o6o068eoRZ8/VbUZDj7L5CPEUU=; b=lx7VSBYOdAtvAdc8QL/CM2BhS3Cm1Mk+5fLQoFbIM6fyUfikQSUA/J1ydqutssYbxOBVMg/f
+ 3iH75fZTRYzsBVobGBu1kOq2Pt/GN/3z3WqwBsxk7lokE29zCs1OBPwUyiNl/Kz8I6izzsa/
+ /koXymX2oBdldXi/I4PdFzXAxLg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6061748d3f0cbfdaf2090d9a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 06:32:45
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AB945C433C6; Mon, 29 Mar 2021 06:32:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51B6BC433CA;
+        Mon, 29 Mar 2021 06:32:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51B6BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
+From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Subject: [PATCH V3 0/5] Add driver support for Data Capture and Compare Engine(DCC) for SM8150
+Date:   Mon, 29 Mar 2021 12:02:21 +0530
+Message-Id: <cover.1616651305.git.schowdhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For NUMA balancing, in hint page fault handler, the faulting page will
-be migrated to the accessing node if necessary.  During the migration,
-TLB will be shot down on all CPUs that the process has run on
-recently.  Because in the hint page fault handler, the PTE will be
-made accessible before the migration is tried.  The overhead of TLB
-shooting down is high, so it's better to be avoided if possible.  In
-fact, if we delay mapping the page in PTE until migration, that can be
-avoided.  This is what this patch doing.
+DCC(Data Capture and Compare) is a DMA engine designed for debugging purposes.In case of a system
+crash or manual software triggers by the user the DCC hardware stores the value at the register
+addresses which can be used for debugging purposes.The DCC driver provides the user with sysfs
+interface to configure the register addresses.The options that the DCC hardware provides include
+reading from registers,writing to registers,first reading and then writing to registers and looping
+through the values of the same register.
 
-We have tested the patch with the pmbench memory accessing benchmark
-on a 2-socket Intel server, and found that the number of the TLB
-shooting down IPI reduces up to 99% (from ~6.0e6 to ~2.3e4) if NUMA
-balancing is triggered (~8.8e6 pages migrated).  The benchmark score
-has no visible changes.
+In certain cases a register write needs to be executed for accessing the rest of the registers,
+also the user might want to record the changing values of a register with time for which he has the
+option to use the loop feature.
 
-Known issues:
+The options mentioned above are exposed to the user by sysfs files once the driver is probed.The
+details and usage of this sysfs files are documented in Documentation/ABI/testing/sysfs-driver-dcc.
 
-For the multiple threads applications, it's possible that the page is
-accessed by 2 threads almost at the same time.  In the original
-implementation, the second thread may go accessing the page directly
-because the first thread has installed the accessible PTE.  While with
-this patch, there will be a window that the second thread will find
-the PTE is still inaccessible.  But the difference between the
-accessible window is small.  Because the page will be made
-inaccessible soon for migrating.
+As an example let us consider a couple of debug scenarios where DCC has been proved to be effective
+for debugging purposes:-
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Matthew Wilcox" <willy@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Arjun Roy <arjunroy@google.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
----
- mm/memory.c | 54 +++++++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 22 deletions(-)
+i)TimeStamp Related Issue
 
-diff --git a/mm/memory.c b/mm/memory.c
-index d3273bd69dbb..a9a8ed1ac06c 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4148,29 +4148,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 		goto out;
- 	}
- 
--	/*
--	 * Make it present again, Depending on how arch implementes non
--	 * accessible ptes, some can allow access by kernel mode.
--	 */
--	old_pte = ptep_modify_prot_start(vma, vmf->address, vmf->pte);
-+	/* Get the normal PTE  */
-+	old_pte = ptep_get(vmf->pte);
- 	pte = pte_modify(old_pte, vma->vm_page_prot);
--	pte = pte_mkyoung(pte);
--	if (was_writable)
--		pte = pte_mkwrite(pte);
--	ptep_modify_prot_commit(vma, vmf->address, vmf->pte, old_pte, pte);
--	update_mmu_cache(vma, vmf->address, vmf->pte);
- 
- 	page = vm_normal_page(vma, vmf->address, pte);
--	if (!page) {
--		pte_unmap_unlock(vmf->pte, vmf->ptl);
--		return 0;
--	}
-+	if (!page)
-+		goto out_map;
- 
- 	/* TODO: handle PTE-mapped THP */
--	if (PageCompound(page)) {
--		pte_unmap_unlock(vmf->pte, vmf->ptl);
--		return 0;
--	}
-+	if (PageCompound(page))
-+		goto out_map;
- 
- 	/*
- 	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
-@@ -4180,7 +4168,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	 * pte_dirty has unpredictable behaviour between PTE scan updates,
- 	 * background writeback, dirty balancing and application behaviour.
- 	 */
--	if (!pte_write(pte))
-+	if (was_writable)
- 		flags |= TNF_NO_GROUP;
- 
- 	/*
-@@ -4194,23 +4182,45 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	page_nid = page_to_nid(page);
- 	target_nid = numa_migrate_prep(page, vma, vmf->address, page_nid,
- 			&flags);
--	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 	if (target_nid == NUMA_NO_NODE) {
- 		put_page(page);
--		goto out;
-+		goto out_map;
- 	}
-+	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 
- 	/* Migrate to the requested node */
- 	if (migrate_misplaced_page(page, vma, target_nid)) {
- 		page_nid = target_nid;
- 		flags |= TNF_MIGRATED;
--	} else
-+	} else {
- 		flags |= TNF_MIGRATE_FAIL;
-+		vmf->pte = pte_offset_map(vmf->pmd, vmf->address);
-+		spin_lock(vmf->ptl);
-+		if (unlikely(!pte_same(*vmf->pte, vmf->orig_pte))) {
-+			pte_unmap_unlock(vmf->pte, vmf->ptl);
-+			goto out;
-+		}
-+		goto out_map;
-+	}
- 
- out:
- 	if (page_nid != NUMA_NO_NODE)
- 		task_numa_fault(last_cpupid, page_nid, 1, flags);
- 	return 0;
-+out_map:
-+	/*
-+	 * Make it present again, Depending on how arch implementes non
-+	 * accessible ptes, some can allow access by kernel mode.
-+	 */
-+	old_pte = ptep_modify_prot_start(vma, vmf->address, vmf->pte);
-+	pte = pte_modify(old_pte, vma->vm_page_prot);
-+	pte = pte_mkyoung(pte);
-+	if (was_writable)
-+		pte = pte_mkwrite(pte);
-+	ptep_modify_prot_commit(vma, vmf->address, vmf->pte, old_pte, pte);
-+	update_mmu_cache(vma, vmf->address, vmf->pte);
-+	pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	goto out;
- }
- 
- static inline vm_fault_t create_huge_pmd(struct vm_fault *vmf)
--- 
-2.30.2
+On SC7180, there was a coresight timestamp issue where it would occasionally be all 0 instead of proper
+timestamp values.
+
+Proper timestamp:
+Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
+
+Zero timestamp:
+Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+
+Now this is a non-fatal issue and doesn't need a system reset, but still needs
+to be rootcaused and fixed for those who do care about coresight etm traces.
+Since this is a timestamp issue, we would be looking for any timestamp related
+clocks and such.
+
+o we get all the clk register details from IP documentation and configure it
+via DCC config syfs node. Before that we set the current linked list.
+
+/* Set the current linked list */
+echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+
+/* Program the linked list with the addresses */
+echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+..... and so on for other timestamp related clk registers
+
+/* Other way of specifying is in "addr len" pair, in below case it
+specifies to capture 4 words starting 0x10C004 */
+
+echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+
+/* Enable DCC */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+
+/* Run the timestamp test for working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram1.bin
+
+/* Run the timestamp test for non-working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram2.bin
+
+Get the parser from [1] and checkout the latest branch.
+
+/* Parse the SRAM bin */
+python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+
+Sample parsed output of dcc_sram1.bin:
+
+<hwioDump version="1">
+        <timestamp>03/14/21</timestamp>
+	        <generator>Linux DCC Parser</generator>
+		        <chip name="None" version="None">
+				<register address="0x0010c004" value="0x80000000" />
+				<register address="0x0010c008" value="0x00000008" />
+				<register address="0x0010c00c" value="0x80004220" />
+				<register address="0x0010c010" value="0x80000000" />
+			</chip>
+	<next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+</hwioDump>
+
+ii)NOC register errors
+
+A particular class of registers called NOC which are functional registers was reporting
+errors while logging the values.To trace these errors the DCC has been used effectively.
+The steps followed were similar to the ones mentioned above.
+In addition to NOC registers a few other dependent registers were configured in DCC to
+monitor it's values during a crash. A look at the dependent register values revealed that
+the crash was happening due to a secured access to one of these dependent registers.
+All these debugging activity and finding the root cause was achieved using DCC.
+
+DCC parser is available at the following open source location
+
+https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+
+Souradeep Chowdhury (5):
+  dt-bindings: Added the yaml bindings for DCC
+  soc: qcom: dcc:Add driver support for Data Capture and Compare
+    unit(DCC)
+  DCC: Added the sysfs entries for DCC(Data Capture and Compare) driver
+  MAINTAINERS:Add the entry for DCC(Data Capture and Compare) driver
+    support
+  arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
+    node
+
+ Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
+ .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   49 +
+ MAINTAINERS                                        |    8 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |    7 +
+ drivers/soc/qcom/Kconfig                           |    8 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/dcc.c                             | 1549 ++++++++++++++++++++
+ 7 files changed, 1736 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+ create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+ create mode 100644 drivers/soc/qcom/dcc.c
+
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
