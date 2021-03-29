@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5334C70B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E406A34C770
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhC2ILx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:11:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49960 "EHLO mail.kernel.org"
+        id S232972AbhC2IP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:15:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231725AbhC2IGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46D9A619B4;
-        Mon, 29 Mar 2021 08:06:40 +0000 (UTC)
+        id S232431AbhC2IJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA4926196F;
+        Mon, 29 Mar 2021 08:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005200;
-        bh=Sepos0qn7ogREQUQReaVRdvkH4LNy6TqoeWdQ4e0K/U=;
+        s=korg; t=1617005369;
+        bh=GzB8llCquj1+MipWymbs+k+dLIhrFJ9xP+0aBS0BkJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wl6OZryCLGuYzSr1Pa7Kroo84rFlGgrQXADhjF0JRI2kQ2S26ljNDTRyy5Q3bYOBl
-         1D5/eMUB8KbJFR7xM6TpQ2o0bbeTXv6gIF4pT/NlHDkWDSPZ0SP2xZ9uVc0iQ1nAgE
-         QcOAjqQXY0QUDDme66vU9bolbST7GXVxt7u9IScY=
+        b=lZJAKx/is65beUIsd12a7Yt4htdUauCk9zh8pQmT0ZidJIVaLKD+3iH4Bn9RmNfrX
+         VvJn3u+OsRzNMTfZQjSKpM4CxuRrXUnyCq/ciuvfZbuCTCxgCvL8Vrl5hEj3YIcJ++
+         GS02riiW/ZK0GrHqn2dD4JS0geLCjuxIaTakJeuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 34/59] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
-Date:   Mon, 29 Mar 2021 09:58:14 +0200
-Message-Id: <20210329075610.009394028@linuxfoundation.org>
+Subject: [PATCH 4.19 39/72] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
+Date:   Mon, 29 Mar 2021 09:58:15 +0200
+Message-Id: <20210329075611.584618727@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
-index 6b03c8553e59..65deaf8f3004 100644
+index b9309302c29e..16653e94009e 100644
 --- a/drivers/net/ethernet/intel/e1000e/82571.c
 +++ b/drivers/net/ethernet/intel/e1000e/82571.c
-@@ -917,6 +917,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
+@@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
  	} else {
  		data &= ~IGP02E1000_PM_D0_LPLU;
  		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
