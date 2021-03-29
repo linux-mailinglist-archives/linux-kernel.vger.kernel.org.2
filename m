@@ -2,236 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE1434C397
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E31E34C3B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhC2GK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:10:29 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36488 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230226AbhC2GKB (ORCPT
+        id S229971AbhC2GPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:15:10 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:54353 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229441AbhC2GPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:10:01 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T5phSa015177;
-        Mon, 29 Mar 2021 08:09:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=cPJXGlx5Hs3xNFzQhMYTUi/aRSASy6bQtvoOjjtlKUA=;
- b=rgObmZhb3gvu/bFAx4ibpsD6QCTu2hUxt1Ds0TbQajSFwKKcGUYAON5zRGCtyDaoRnWa
- YRBmeY+yIFfCQAs3WDELX4o4VXQzijVEbB4UYXzw8R7t9Qog1AwXPur8sEJ5n87DNfae
- iGdYcH1ukuEk/lFLkR5KVikCURlnldukkQ76tw6NeSzJsqVIEq36rFSrKgUc4leKGWCj
- x5/khgD6jneZuWpoCNqVIJTJm5lS0G2en1tEQsz7q/fHIHcxjsdHWtePhcCPAnfejZE/
- Y5vy2r6HHHKPoTCUQEcGzBmQ7u5X7RmE5Okvo0uWcLt37kRKLdxePAeA8/Kl++TKpSes JQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37k04nhy7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 08:09:10 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9C41F10003D;
-        Mon, 29 Mar 2021 08:09:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 841A3221775;
-        Mon, 29 Mar 2021 08:09:09 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar 2021 08:09:09
- +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <wsa@kernel.org>, <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <alain.volmat@foss.st.com>
-Subject: [PATCH v3 2/2] i2c: stm32f7: add SMBus-Alert support
-Date:   Mon, 29 Mar 2021 08:09:05 +0200
-Message-ID: <1616998145-28278-3-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616998145-28278-1-git-send-email-alain.volmat@foss.st.com>
-References: <1616998145-28278-1-git-send-email-alain.volmat@foss.st.com>
+        Mon, 29 Mar 2021 02:15:00 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 00B8E5C007B;
+        Mon, 29 Mar 2021 02:15:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 29 Mar 2021 02:15:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=kcWXdogmp335G1CcpzZxRZDVY5U
+        I+zhyXcj+rDT8BfM=; b=nVfF42qWCSux9egJ+c2GSZik5yM5E9n084/PfLQk+xP
+        +GlGE7MMiflLlm/ZVQ7yPlgZF5U4RHyaXw5hjguuQGP2nkW+HWs+p8ARV2d7zojf
+        f3oI48dBZhXmDfUd5bavG8VYFJ/P3Z0gOX/xqMlIHkvdpN6rkRvpXaNEs65xc53M
+        0r+7jvqkcmpwU5R0odoo6LPFnpO2eynCqfiv+HH0Vwbz3Oc+JT77MaFFFmfr2QtJ
+        qMCiyFsrbmHtWxNRum0btEzVsOctgboKcC0GQUsLO4zy5nQG2iwpTsWk4kj1WukL
+        9hY6wwYk9g5WRpGiX3r7HRYyCF28V8GPjx9jcynugfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=kcWXdo
+        gmp335G1CcpzZxRZDVY5UI+zhyXcj+rDT8BfM=; b=EYQ6u8kWSWfQXwZfWRV8F8
+        EBApicDpDp1GLlzTT/d6t1/wnQuBS21NSEaqOe8bappmPdZogpBPBrSPvHkHqsIv
+        zJr1OzrETPS2AqSX6uaDdXp1MdEJUyDMZ1kIhFGXmsDvTm2aPBjEIBs1ZF9XNeBi
+        TgKIJgEHDi4FqdRynWFGv4lHcwwFxY0P3eUjItsVoen7LCmyT2MctfBmYRRV5ePz
+        2TmLI9cDYyTASXMgA5o1M0Yy5z1kwISciVMPSeSfL5nB3upreKZwWbZwR8Nfwy6n
+        FGMNtchVDB3WKUOu/4QnGt1MH81eHJpo1mL/akSRa3mWzAoha6BbH0ECh8DbGxsQ
+        ==
+X-ME-Sender: <xms:YnBhYIQ3NWg1gVpVvT3viMvY6elMoykDY23mKvsgbPi-LsH9Lpm_6A>
+    <xme:YnBhYFxXLxwqaN0mbBWIDKPVT68xa649jtOR6c5Q3N8cN6wBPM5U0CoMgVKuBis37
+    wQk8lXFipGnpA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehjedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:YnBhYF0y1dA89kM4ttnPqh4edUnE6n5xL5MvtcfcBtt0JWJoViUyCw>
+    <xmx:YnBhYMBrpc6t_Y7dIHRG9T9Cqsywxh_6cbccJ40K5ifPE0P_LjLU_g>
+    <xmx:YnBhYBglgay7rY5EvY3CL2YjmkQKxL39PEH5vjSqOAJPpW4BRQ29sA>
+    <xmx:Y3BhYBejFGZygZ1HDlVg2Y-8s0rR9T5m7i0suvKpFwAZ4bf7d7dKUg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D3592240054;
+        Mon, 29 Mar 2021 02:14:57 -0400 (EDT)
+Date:   Mon, 29 Mar 2021 08:14:50 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tomislav Denis <tomislav.denis@avl.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the staging tree
+Message-ID: <YGFwWq//sh6onrUH@kroah.com>
+References: <20210329165525.32d51a3a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-29_02:2021-03-26,2021-03-29 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329165525.32d51a3a@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the SMBus-Alert protocol to the STM32F7 that has
-dedicated control and status logic.
+On Mon, Mar 29, 2021 at 04:55:25PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the staging tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_read_reg':
+> drivers/iio/adc/ti-ads131e08.c:180:5: error: 'struct spi_transfer' has no member named 'delay_usecs'
+>   180 |    .delay_usecs = st->sdecode_delay_us,
+>       |     ^~~~~~~~~~~
+> drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_write_reg':
+> drivers/iio/adc/ti-ads131e08.c:206:5: error: 'struct spi_transfer' has no member named 'delay_usecs'
+>   206 |    .delay_usecs = st->sdecode_delay_us,
+>       |     ^~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   d935eddd2799 ("iio: adc: Add driver for Texas Instruments ADS131E0x ADC family")
+> 
+> interacting with commit
+> 
+>   3ab1cce55337 ("spi: core: remove 'delay_usecs' field from spi_transfer")
+> 
+> from the spi tree.
+> 
+> I have applied the following merge fix patch.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 29 Mar 2021 16:51:22 +1100
+> Subject: [PATCH] iio: adc: merge fix for "spi: core: remove 'delay_usecs'
+>  field from spi_transfer"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/iio/adc/ti-ads131e08.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ti-ads131e08.c b/drivers/iio/adc/ti-ads131e08.c
+> index 0060d5f0abb0..764dab087b41 100644
+> --- a/drivers/iio/adc/ti-ads131e08.c
+> +++ b/drivers/iio/adc/ti-ads131e08.c
+> @@ -177,7 +177,10 @@ static int ads131e08_read_reg(struct ads131e08_state *st, u8 reg)
+>  		{
+>  			.tx_buf = &st->tx_buf,
+>  			.len = 2,
+> -			.delay_usecs = st->sdecode_delay_us,
+> +			.delay = {
+> +				.value = st->sdecode_delay_us,
+> +				.unit = SPI_DELAY_UNIT_USECS,
+> +			},
+>  		}, {
+>  			.rx_buf = &st->rx_buf,
+>  			.len = 1,
+> @@ -203,7 +206,10 @@ static int ads131e08_write_reg(struct ads131e08_state *st, u8 reg, u8 value)
+>  		{
+>  			.tx_buf = &st->tx_buf,
+>  			.len = 3,
+> -			.delay_usecs = st->sdecode_delay_us,
+> +			.delay = {
+> +				.value = st->sdecode_delay_us,
+> +				.unit = SPI_DELAY_UNIT_USECS,
+> +			},
+>  		}
+>  	};
+>  
+> -- 
+> 2.30.0
+> 
 
-If SMBus-Alert is used, the SMBALERT# pin must be configured as alternate
-function for I2C Alert.
+Thanks for the fix, looks correct to me.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-
----
-v2: - rely on st,smbus-alert binding instead of smbus
----
- drivers/i2c/busses/i2c-stm32f7.c | 73 ++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index c62c815b88eb..bd840cd2b9e4 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -51,6 +51,7 @@
- 
- /* STM32F7 I2C control 1 */
- #define STM32F7_I2C_CR1_PECEN			BIT(23)
-+#define STM32F7_I2C_CR1_ALERTEN			BIT(22)
- #define STM32F7_I2C_CR1_SMBHEN			BIT(20)
- #define STM32F7_I2C_CR1_WUPEN			BIT(18)
- #define STM32F7_I2C_CR1_SBC			BIT(16)
-@@ -125,6 +126,7 @@
- 				(((n) & STM32F7_I2C_ISR_ADDCODE_MASK) >> 17)
- #define STM32F7_I2C_ISR_DIR			BIT(16)
- #define STM32F7_I2C_ISR_BUSY			BIT(15)
-+#define STM32F7_I2C_ISR_ALERT			BIT(13)
- #define STM32F7_I2C_ISR_PECERR			BIT(11)
- #define STM32F7_I2C_ISR_ARLO			BIT(9)
- #define STM32F7_I2C_ISR_BERR			BIT(8)
-@@ -138,6 +140,7 @@
- #define STM32F7_I2C_ISR_TXE			BIT(0)
- 
- /* STM32F7 I2C Interrupt Clear */
-+#define STM32F7_I2C_ICR_ALERTCF			BIT(13)
- #define STM32F7_I2C_ICR_PECCF			BIT(11)
- #define STM32F7_I2C_ICR_ARLOCF			BIT(9)
- #define STM32F7_I2C_ICR_BERRCF			BIT(8)
-@@ -283,6 +286,17 @@ struct stm32f7_i2c_msg {
- 	u8 smbus_buf[I2C_SMBUS_BLOCK_MAX + 3] __aligned(4);
- };
- 
-+/**
-+ * struct stm32f7_i2c_alert - SMBus alert specific data
-+ * @setup: platform data for the smbus_alert i2c client
-+ * @ara: I2C slave device used to respond to the SMBus Alert with Alert
-+ * Response Address
-+ */
-+struct stm32f7_i2c_alert {
-+	struct i2c_smbus_alert_setup setup;
-+	struct i2c_client *ara;
-+};
-+
- /**
-  * struct stm32f7_i2c_dev - private data of the controller
-  * @adap: I2C adapter for this controller
-@@ -312,6 +326,7 @@ struct stm32f7_i2c_msg {
-  * @wakeup_src: boolean to know if the device is a wakeup source
-  * @smbus_mode: states that the controller is configured in SMBus mode
-  * @host_notify_client: SMBus host-notify client
-+ * @alert: SMBus alert specific data
-  */
- struct stm32f7_i2c_dev {
- 	struct i2c_adapter adap;
-@@ -340,6 +355,7 @@ struct stm32f7_i2c_dev {
- 	bool wakeup_src;
- 	bool smbus_mode;
- 	struct i2c_client *host_notify_client;
-+	struct stm32f7_i2c_alert *alert;
- };
- 
- /*
-@@ -1616,6 +1632,13 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 		f7_msg->result = -EINVAL;
- 	}
- 
-+	if (status & STM32F7_I2C_ISR_ALERT) {
-+		dev_dbg(dev, "<%s>: SMBus alert received\n", __func__);
-+		writel_relaxed(STM32F7_I2C_ICR_ALERTCF, base + STM32F7_I2C_ICR);
-+		i2c_handle_smbus_alert(i2c_dev->alert->ara);
-+		return IRQ_HANDLED;
-+	}
-+
- 	if (!i2c_dev->slave_running) {
- 		u32 mask;
- 		/* Disable interrupts */
-@@ -1982,6 +2005,42 @@ static void stm32f7_i2c_disable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
- 	}
- }
- 
-+static int stm32f7_i2c_enable_smbus_alert(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	struct stm32f7_i2c_alert *alert;
-+	struct i2c_adapter *adap = &i2c_dev->adap;
-+	struct device *dev = i2c_dev->dev;
-+	void __iomem *base = i2c_dev->base;
-+
-+	alert = devm_kzalloc(dev, sizeof(*alert), GFP_KERNEL);
-+	if (!alert)
-+		return -ENOMEM;
-+
-+	alert->ara = i2c_new_smbus_alert_device(adap, &alert->setup);
-+	if (IS_ERR(alert->ara))
-+		return PTR_ERR(alert->ara);
-+
-+	i2c_dev->alert = alert;
-+
-+	/* Enable SMBus Alert */
-+	stm32f7_i2c_set_bits(base + STM32F7_I2C_CR1, STM32F7_I2C_CR1_ALERTEN);
-+
-+	return 0;
-+}
-+
-+static void stm32f7_i2c_disable_smbus_alert(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	struct stm32f7_i2c_alert *alert = i2c_dev->alert;
-+	void __iomem *base = i2c_dev->base;
-+
-+	if (alert) {
-+		/* Disable SMBus Alert */
-+		stm32f7_i2c_clr_bits(base + STM32F7_I2C_CR1,
-+				     STM32F7_I2C_CR1_ALERTEN);
-+		i2c_unregister_device(alert->ara);
-+	}
-+}
-+
- static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
- {
- 	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
-@@ -2169,6 +2228,16 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (of_property_read_bool(pdev->dev.of_node, "st,smbus-alert")) {
-+		ret = stm32f7_i2c_enable_smbus_alert(i2c_dev);
-+		if (ret) {
-+			dev_err(i2c_dev->dev,
-+				"failed to enable SMBus alert protocol (%d)\n",
-+				ret);
-+			goto i2c_disable_smbus_host;
-+		}
-+	}
-+
- 	dev_info(i2c_dev->dev, "STM32F7 I2C-%d bus adapter\n", adap->nr);
- 
- 	pm_runtime_mark_last_busy(i2c_dev->dev);
-@@ -2176,6 +2245,9 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+i2c_disable_smbus_host:
-+	stm32f7_i2c_disable_smbus_host(i2c_dev);
-+
- i2c_adapter_remove:
- 	i2c_del_adapter(adap);
- 
-@@ -2210,6 +2282,7 @@ static int stm32f7_i2c_remove(struct platform_device *pdev)
- {
- 	struct stm32f7_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
- 
-+	stm32f7_i2c_disable_smbus_alert(i2c_dev);
- 	stm32f7_i2c_disable_smbus_host(i2c_dev);
- 
- 	i2c_del_adapter(&i2c_dev->adap);
--- 
-2.17.1
-
+greg k-h
