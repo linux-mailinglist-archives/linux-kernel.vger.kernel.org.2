@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AD034D40A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1499E34D40B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhC2PgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:36:19 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58871 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231332AbhC2Pfs (ORCPT
+        id S231363AbhC2PgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhC2Pf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:35:48 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 4A48B1805;
-        Mon, 29 Mar 2021 11:35:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 29 Mar 2021 11:35:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=kofpni9LHJyfoAVFAxd5HEtYVIK
-        sHiMa+Wxaf55fK4g=; b=Y9U9r2ccQLGi5aSRjxH4q2VCLeY7mIPjZ4EqeF8/UMj
-        elrNFA7cmpMF3a5zFI8DCLMV7E0QHX7v8/+4T3ojuSGTjI7RJKeENtqIuNo7qLmb
-        gV/pA6CLwxNA1JSM2LT1BHDYmjqtVrDctqsBlVexpEGLqPRvti2KLAUw7Y9A8SfA
-        qVvNSNPPW0afmOQ0gQXOyZdi02cutmCucV5w3BMjwCPTy1cjkaC5fOt/+A69x0Ev
-        DpAVfeyPNcrDPjS1TtBHqBt5N1a6tVL2yBbb0PyZ9wLSei1CK/jiSQYOcfjOiVGV
-        Sy90QNTUQEmsIOTlygTzfhYxO78fG63ciJ3KVXWGTBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=kofpni
-        9LHJyfoAVFAxd5HEtYVIKsHiMa+Wxaf55fK4g=; b=BgaYflm3a8yffYmMloF7VQ
-        aRh2XmhOHawWxMWdvEZjQ9p31sbIiakSqKyeaRmp387QCbo/4EBxQMzbjmtiRmXq
-        OKFUmKLqmEloSQbdqkP14xdWgi9rD54RyjssdyJjcW3DWub1xWqvwVR/A4lh307a
-        5BU3hMv08x6o7W5PX9oNUdIHkZYRTdJu3xd6wFuZiTnu1f6kq5KxYZNhlhCMKbUs
-        WzNmxlTemQtFDCh8mXqaAZfC8ez5NtZNUGsomahzANjzJgKPcL+asFS7dsTqnMgq
-        3UMs0COQSD4TtThgqx+y+/vwWFQzzIgqNXH4zUrGozHlyZgecR68vhSSAAQK7G9Q
-        ==
-X-ME-Sender: <xms:0PNhYKRmLIQ5Z-18l3qbTJEdlWye460xvVlgpdTev4lRyze22at9Dw>
-    <xme:0PNhYPuMxGq1koGV-6iPFOQALNHYQNgV6It92F_v2_x_MdHjx2R_NbeThATVp17wD
-    dWFuAFKp8nuP_QYYSE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepjeeuieelleeivedvhfdvjeetledvtefhleejjeeiueejjeeileevudeftddv
-    ledtnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppeeltddrkeelrdeike
-    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    mhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:0PNhYEt-4k6Vvv9BrsB4f9K5OwOuPNaWY-aMVcJwQCeNbZyRd3jqHg>
-    <xmx:0PNhYNwUtky4AC7qacLTCrU17duhRjfwFoTqE8IaNiTQE5LjW7ohlA>
-    <xmx:0PNhYCiTE1K-F5deCIymelW503ZEiNncitzAUP6r7kPDze5QaHBXcg>
-    <xmx:0fNhYC0RsgjHQRZO9o9qwmKsQGCZYnmHCwxUSM1p20loH74EFB42BA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 16348108006C;
-        Mon, 29 Mar 2021 11:35:43 -0400 (EDT)
-Date:   Mon, 29 Mar 2021 17:35:41 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] drm: DON'T require each CRTC to have a unique primary
- plane
-Message-ID: <20210329153541.a3yil2aqsrtf2nlj@gilmour>
-References: <20210327112214.10252-1-paul@crapouillou.net>
- <20210329140731.tvkfxic4fu47v3rz@gilmour>
- <S1LQQQ.K5HO8ISMBGA02@crapouillou.net>
+        Mon, 29 Mar 2021 11:35:57 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A58C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:35:57 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v8so4570960plz.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fx+rvtB644CNXiO/TUepH6reSL0YwAJ6JLaNdbj/zqw=;
+        b=cStsAmX+CX7QfYY/KS6OnFxrlo2nfPeUwg6CbUvhQohZQgsy1+uSmf9N0jRadpK1yc
+         MbR5i2te9cFq5CevUInBlFqTmpqOiNiqBJz3G518yt6dHUO/EBxEJa+umll5oZvu2ty5
+         dD+I0S8qknryLb8iN8nnURLOFlgi7b4bddooPIRAX2WiaCKmva3J2DuTSgmwOYkPjpP/
+         gjcaa2Mzve5BVOXj1HIbTvNB82qsOkht69ii+pat0V8ZzgxHiKwVjzbeK9TmmU/NUvvI
+         z5LKeS39lgkcFMBl7BWKtHcNIexVnEdh5t4Bid3rbNQ5qPkVBgqS0j3SQTG9kbL0MnJw
+         C7ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fx+rvtB644CNXiO/TUepH6reSL0YwAJ6JLaNdbj/zqw=;
+        b=pykFUw5VvJrzBo+lNfqNYTVoasWrkry8XGSama6n8uFE6tT+VnCZiWyZ2K/ihWBAT5
+         DS4xAC3LydF18OYp5aA4rSlJigI1kelK50wYFll/VwW7PS1di9CttYKBb8KBFpY21z5A
+         7yomy8TktIHnPG1Ibpc9z9/rGxjtI5qi6nCIwmdClovxYwiXkaCcWvhqRMXV53RrFxA4
+         N88nJihQQSgpGoqllTCHyefm9nh+1Ozw9x5YQPUxx7VqW+KofBEHhqUA/aLwlP9RQ4Hl
+         pMPS//TR8CEMoPtS8vC7uYbPyMq/dkqyF4uCeDwygdu3cphrbHEUyFfok5/6wfM/PsNE
+         jt4g==
+X-Gm-Message-State: AOAM530OaY5+rm8nOHs8oXfuAGwgVNfQy8qzopQRqqJE3FJVtSmKoHr7
+        J9W0RDqFJ5nKCu+3ySkwUGmNBpnv0xVdxs/kUOYuQA==
+X-Google-Smtp-Source: ABdhPJwq/8+p3NQEz0kNU6ag4EEvC72RBQlT9kJNJWT4uT6gkgdj12pJdnQw3k9i2ztRvrsw0wCmM1en+r6DHFZBvLw=
+X-Received: by 2002:a17:902:bb83:b029:e5:dacc:9035 with SMTP id
+ m3-20020a170902bb83b02900e5dacc9035mr28859471pls.80.1617032156468; Mon, 29
+ Mar 2021 08:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ox5m2kdae4pdeh7p"
-Content-Disposition: inline
-In-Reply-To: <S1LQQQ.K5HO8ISMBGA02@crapouillou.net>
+References: <20210329082416.40b7f449@canb.auug.org.au> <CAC0gqY5+tcmNOoRrjiNMsffWbrQEF_pwjvne-oP+sGbr+84suA@mail.gmail.com>
+ <CADnq5_PXCSDmU7YKQVawZSk10RjCBT-XoxPYNGt78x1ShbiXOA@mail.gmail.com>
+In-Reply-To: <CADnq5_PXCSDmU7YKQVawZSk10RjCBT-XoxPYNGt78x1ShbiXOA@mail.gmail.com>
+From:   Mark Yacoub <markyacoub@google.com>
+Date:   Mon, 29 Mar 2021 11:35:42 -0400
+Message-ID: <CAC0gqY6r1dXtWtftfWWn3L3vdSHs2P67pWc9epRhr_K-6FqMLg@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the amdgpu tree
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Awesome, thank you so much Alex!
 
---ox5m2kdae4pdeh7p
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 29, 2021 at 04:15:28PM +0100, Paul Cercueil wrote:
-> Hi Maxime,
->=20
-> Le lun. 29 mars 2021 =E0 16:07, Maxime Ripard <maxime@cerno.tech> a =E9cr=
-it :
-> > On Sat, Mar 27, 2021 at 11:22:14AM +0000, Paul Cercueil wrote:
-> > >  The ingenic-drm driver has two mutually exclusive primary planes
-> > >  already; so the fact that a CRTC must have one and only one primary
-> > >  plane is an invalid assumption.
-> >=20
-> > I mean, no? It's been documented for a while that a CRTC should only
-> > have a single primary, so I'd say that the invalid assumption was that
-> > it was possible to have multiple primary planes for a CRTC.
->=20
-> Documented where?
->=20
-> I did read the doc of "enum drm_plane_type" in <drm/drm_plane.h>, and the
-> DRM_PLANE_TYPE_PRIMARY describes my two planes, so I went with that.
-
-At least since 4.9, this was in the documentation generated for DRM:
-https://elixir.bootlin.com/linux/v4.9.263/source/drivers/gpu/drm/drm_plane.=
-c#L43
-
-Maxime
-
---ox5m2kdae4pdeh7p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYGHzzQAKCRDj7w1vZxhR
-xSgcAQDa8LPGxsVyYp+FHXSppe9HTW99P41ux9jSeGDbunQB9AD+LqQ/2UIcPOcb
-uFrNSAR7loZGx5J70GpTipxYKy6/FgQ=
-=OPxg
------END PGP SIGNATURE-----
-
---ox5m2kdae4pdeh7p--
+On Mon, Mar 29, 2021 at 11:35 AM Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> Hi Mark.  I've fixed this up in my tree.
+>
+> Alex
+>
+> On Mon, Mar 29, 2021 at 10:18 AM Mark Yacoub <markyacoub@google.com> wrote:
+> >
+> > oh this sucks. I'll look into my config and fix it. Thanks Stephen for
+> > bringing it to my attention!
+> >
+> > On Sun, Mar 28, 2021 at 5:24 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > Commit
+> > >
+> > >   0ea5088407fa ("drm/amdgpu: Ensure that the modifier requested is supported by plane.")
+> > >
+> > > is missing a Signed-off-by from its author.
+> > >
+> > > The author is "Mark Yacoub <markyacoub@google.com>", but the SOB is
+> > > "default avatarMark Yacoub <markyacoub@chromium.org>" :-(
+> > >
+> > > --
+> > > Cheers,
+> > > Stephen Rothwell
