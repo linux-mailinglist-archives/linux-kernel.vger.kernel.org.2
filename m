@@ -2,57 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4093234D034
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E5F34D03C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhC2Mhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:37:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:14562 "EHLO mga14.intel.com"
+        id S231442AbhC2Mim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231358AbhC2Mh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:37:29 -0400
-IronPort-SDR: XREZLtT3BB/3fRrkpdZvrwpakCT/QtdzxgjQJHfFeDn3AhH71bwicLP63jehyjKPRzrEw0bKdX
- FQaxlKEBtjnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="191004499"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="191004499"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 05:37:24 -0700
-IronPort-SDR: /+J6HvRxBQxW4sZsyEngjxUIX+Ql8DZXBF/uW6BtUVFU0v3tjJUH7H25mR18WZCrJAANo6yLnX
- 51S96F37XMhg==
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="454541595"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 05:37:22 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lQr8y-00H12o-LN; Mon, 29 Mar 2021 15:37:20 +0300
-Date:   Mon, 29 Mar 2021 15:37:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH v1 1/3] mux: gpio: Use bitmap API instead of direct
- assignment
-Message-ID: <YGHKACcDvMVRchFJ@smile.fi.intel.com>
-References: <20210326172401.33685-1-andriy.shevchenko@linux.intel.com>
+        id S231450AbhC2MiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:38:21 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E99E06195C;
+        Mon, 29 Mar 2021 12:38:17 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 13:38:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
+        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
+Subject: Re: [PATCH 00/10] platform/x86: toshiba_acpi: move acpi add/remove
+ to device-managed routines
+Message-ID: <20210329133824.1a1fad6f@jic23-huawei>
+In-Reply-To: <20210324125548.45983-1-aardelean@deviqon.com>
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326172401.33685-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 07:23:59PM +0200, Andy Shevchenko wrote:
-> Assigning bitmaps like it's done in the driver might be error prone.
-> Fix this by using bitmap API.
+On Wed, 24 Mar 2021 14:55:38 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-Peter, are you okay with the patches?
-Should I reroute them to Greg?
+> This changeset tries to do a conversion of the toshiba_acpi driver to use
+> only device-managed routines. The driver registers as a singleton, so no
+> more than one device can be registered at a time.
+> 
+> My main intent here is to try to convert the iio_device_alloc() and
+> iio_device_register() to their devm_ variants.
+> 
+> Usually, when converting a registration call to device-managed variant, the
+> init order must be preserved. And the deregistration order must be a mirror
+> of the registration (in reverse order).
+> 
+> This change tries to do that, by using devm_ variants where available and
+> devm_add_action_or_reset() where this isn't possible.
+> Some deregistration ordering is changed, because it wasn't exactly
+> mirroring (in reverse) the init order.
+> 
+> For the IIO subsystem, the toshiba_acpi driver is the only user of
+> iio_device_alloc(). If this changeset is accepted (after discussion), I
+> will propose to remove the iio_device_alloc() function.
+> 
+> While I admit this may look like an overzealous effort to use devm_
+> everywhere (in IIO at least), for me it's a fun/interesting excercise.
+hmm. I am dubious about 'removing' the support for non devm_ in the long
+run because it can lead to requiring fiddly changes in existing drivers
+(like this one :) and I don't want to put that barrier in front of anyone
+using IIO.
 
--- 
-With Best Regards,
-Andy Shevchenko
+However, I'm more than happy to see them used in very few drivers and
+nice warning text added to suggest people might want to look at whether
+then can move to a device managed probe flow
 
+Jonathan
+
+> 
+> Alexandru Ardelean (10):
+>   platform/x86: toshiba_acpi: bind life-time of toshiba_acpi_dev to
+>     parent
+>   platform/x86: toshiba_acpi: use devm_add_action_or_reset() for
+>     singleton clear
+>   platform/x86: toshiba_acpi: bind registration of miscdev object to
+>     parent
+>   platform/x86: toshiba_acpi: use device-managed functions for input
+>     device
+>   platform/x86: toshiba_acpi: register backlight with device-managed
+>     variant
+>   platform/x86: toshiba_acpi: use devm_led_classdev_register() for LEDs
+>   platform/x86: toshiba_acpi: use device-managed functions for
+>     accelerometer
+>   platform/x86: toshiba_acpi: use device-managed for wwan_rfkill
+>     management
+>   platform/x86: toshiba_acpi: use device-managed for sysfs removal
+>   platform/x86: toshiba_acpi: bind proc entries creation to parent
+> 
+>  drivers/platform/x86/toshiba_acpi.c | 249 +++++++++++++++++-----------
+>  1 file changed, 150 insertions(+), 99 deletions(-)
+> 
 
