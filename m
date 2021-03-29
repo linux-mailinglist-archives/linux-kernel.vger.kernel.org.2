@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA4034D4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B1C34D4BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhC2QUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:20:51 -0400
-Received: from mail-dm6nam11on2078.outbound.protection.outlook.com ([40.107.223.78]:31905
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230248AbhC2QUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230244AbhC2QUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 29 Mar 2021 12:20:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J06dUG6mb2Z0HEmDVVcINJ0BMs0EFtmjpOhhQ/qtZU9eNN5GQ1oEQsMdVQyJjJeEYLX7EZj1qcOLLrdvNx3odx7Ga305Sog2eLZ+3ew7qXzBlubKxKRf3cePeGJC/aNKx8nrv32uKg75xdAhdQCgZ6KOHWZG8VV4GLNyItxYxh111e4atI3VpxLgkuBM7VTfX1a2670e/Z+1ZHX6QmBhqlaiNuAbakAbeEiauXDR0VT1oTZZ9x/LVm+0vz3z9G5HUgYYvF9bBNCwTJNMlZ4J5q/LvFhPsQskVMaB4eeUb3BbY4fdodeS2ifqpI9f0SbEtO9DVnYewJCYp3FwDpIQ3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yA0XV+Gknyqig2JLsiLL3A/TgDtxmHbHg/MTSn9A2wQ=;
- b=EZ1UfGlgXfq9Csuy51pj0TDJt4fPKgEadTq7b36F0Drr3SHpOJRsOq5Na8ioH47SpbwEbejCsCWiH6PLiT1BwEC763XQpChxhYfrvEaQ3qmXZnQbpi4gRbwpMIPahWzWV09TfOqpA7UpagbGNR1unA+TGApgno6cqUGtweZZHyOpx4Dp8qiJX1rwu5BnFzfit15qRGXJut1Xh8MEzCfilTjWUnr5whvDqD7QL1qCS+x4r0sYYEx6YRJlzv4XHVovWd6ZDoMGAHje2biToXU2hU881UfQVOr6Qsgpmxb42D+RFCrjyuxbXYv9hNYCDw1H5NRiNt/5V8pCXOG/ICw/BA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=roeck-us.net smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yA0XV+Gknyqig2JLsiLL3A/TgDtxmHbHg/MTSn9A2wQ=;
- b=nm/QSmGz0+5bLA8gHaO4rQabbjCCqrBKjo0oTo9lnMyvPSJc2RhjSPUV0R5IJjIZKHL4BmePGUB+R9r5T5blHJi+rKE8huPSglLeS+VlaxrTCHtHCzA0r1gyt4bCmaMZhKGpxVuVpROqQFJvhG2jMdL4ncBjaPWy7mnfs7NxKeo=
-Received: from CY4PR22CA0044.namprd22.prod.outlook.com (2603:10b6:903:ed::30)
- by DM5PR02MB3702.namprd02.prod.outlook.com (2603:10b6:4:b3::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.33; Mon, 29 Mar
- 2021 16:20:12 +0000
-Received: from CY1NAM02FT014.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:ed:cafe::e) by CY4PR22CA0044.outlook.office365.com
- (2603:10b6:903:ed::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend
- Transport; Mon, 29 Mar 2021 16:20:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT014.mail.protection.outlook.com (10.152.75.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 16:20:12 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 29 Mar 2021 09:20:00 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Mon, 29 Mar 2021 09:20:00 -0700
-Envelope-to: git@xilinx.com,
- linux@roeck-us.net,
- wim@linux-watchdog.org,
- linux-watchdog@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [172.23.80.241] (port=50308 helo=xhdsneeli40x.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <srinivas.neeli@xilinx.com>)
-        id 1lQucR-0002qR-DO; Mon, 29 Mar 2021 09:19:59 -0700
-From:   Srinivas Neeli <srinivas.neeli@xilinx.com>
-To:     <linux@roeck-us.net>, <shubhraj@xilinx.com>, <sgoud@xilinx.com>,
-        <michal.simek@xilinx.com>
-CC:     <wim@linux-watchdog.org>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>
-Subject: [PATCH V2 5/5] watchdog: of_xilinx_wdt: Skip printing pointer value
-Date:   Mon, 29 Mar 2021 21:49:39 +0530
-Message-ID: <20210329161939.37680-6-srinivas.neeli@xilinx.com>
-X-Mailer: git-send-email 2.9.1
-In-Reply-To: <20210329161939.37680-1-srinivas.neeli@xilinx.com>
-References: <20210329161939.37680-1-srinivas.neeli@xilinx.com>
+Received: from mail.kernel.org ([198.145.29.99]:37210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230373AbhC2QT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:19:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B86A961581;
+        Mon, 29 Mar 2021 16:19:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617034799;
+        bh=dGnCcl2HoA3NAkBzINwsXE0G5XK/4b9V3Ban3IDHg88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OkLzbe3QDGc1oMRtw5aruwVpi0ycj9OCNunY6J0QBr2Fi89tQ5rXRo6/qIc9yhr4A
+         TnsIqf7T1wqbC8GALzht716qBrUD2OnJcTQVwDcx9NsUMC6FC0dBpcmeN7j4hteSQD
+         LBym5ykEJkdE5oQ+MqvHGCGFpg95zqSM2sV4uYVwBseyRBvnk+yrBVjPfCY1tki9ir
+         rOlR53NOOSLz/5pnqlaZUcwEnIGeWXt9XCfEARQqX/7rL6k45NUhlKyB2m8bYTTVCz
+         4jvuSIvfqYdU/vlhzd+83qmcwM+uqtd3c6/gLsOfBukBRd4cu+YH9/DPatU8KQ8nH5
+         ky7No+8Au3lQA==
+Date:   Mon, 29 Mar 2021 17:19:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
+Message-ID: <20210329161948.GF5166@sirena.org.uk>
+References: <20210326191906.43567-1-jim2101024@gmail.com>
+ <20210326191906.43567-3-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e9416ba6-76a9-414b-d9d5-08d8f2ce87b3
-X-MS-TrafficTypeDiagnostic: DM5PR02MB3702:
-X-Microsoft-Antispam-PRVS: <DM5PR02MB3702D7D2B3BBAF25A24BC803AF7E9@DM5PR02MB3702.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: igpZQrgbM9HBXjUVkLzHI2O7FV3YKAaxpridshMbOEfqBN+kwwTrRlEX3DgwtpVuOs5bfS1z5jcjzjx7tdWbG4NzdB360DIckqL1HuqevMe3BgJGkA9ALLt3H8orpNfwgr1LyhSlz2rJvADEQh7rs9yIIZ35EryulIeUTYIoNUU/LmfKJFePe3LfRSz0GpSWtVMhLCopBx6486ekbrOc5mvdPx+pj7oxqfmDHRjas0yUimiSMYXq89PfOdE15JxAFcDIvMstD7BE/2LRE1YPjy219cYw587PfJe+YoyABTj+dC7qTfA+30vebzfE/TGKOz9JAk83o6alqDJU/zltd28JBdxWdyV4CJicbBjnv8HVbv88wFk3QJdko3c8NNTYpiKVfleNcL19lZ07dUeWO0M+Hsy7hnzLa9BfE4TfkLYt/kAC1LkH4Qv+F2mgK4Lm9AxdsfN/H0P7Htld7hQvx05nWdnMD+C/54me5Y4Fo3oAxAKayFo7Zp9D3Le+vqW5xHfBYIaXCmG7O8QTmCRzKhP1tz50mpnc9LMI9Z9L+Ix7Kc6iHIrytvSZ5LPUkbugvQ5YvL+nDjp5ipA0OpHl9si2qBvZxdLkueSCO2FJ0tlOEesDV01LxIRqyTRTsGiEE2OAFJ1ml1yESFq7UzWJNYYa1pRdvzkrFp1tAygA353zkLyG4UDGlU6RHWTOrjWx
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(46966006)(36840700001)(8936002)(478600001)(26005)(36860700001)(107886003)(6636002)(82310400003)(426003)(82740400003)(9786002)(36906005)(54906003)(8676002)(186003)(7696005)(2906002)(110136005)(316002)(70206006)(36756003)(6666004)(4744005)(70586007)(5660300002)(336012)(356005)(4326008)(1076003)(2616005)(44832011)(83380400001)(7636003)(47076005)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 16:20:12.6181
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9416ba6-76a9-414b-d9d5-08d8f2ce87b3
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT014.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3702
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9ADF8FXzFeE7X4jE"
+Content-Disposition: inline
+In-Reply-To: <20210326191906.43567-3-jim2101024@gmail.com>
+X-Cookie: Never give an inch!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"%p" is not printing the pointer value.
-In driver, printing pointer value is not useful so avoiding print.
 
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/watchdog/of_xilinx_wdt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--9ADF8FXzFeE7X4jE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/watchdog/of_xilinx_wdt.c b/drivers/watchdog/of_xilinx_wdt.c
-index afbff79cce42..3318544366b8 100644
---- a/drivers/watchdog/of_xilinx_wdt.c
-+++ b/drivers/watchdog/of_xilinx_wdt.c
-@@ -245,8 +245,8 @@ static int xwdt_probe(struct platform_device *pdev)
- 
- 	clk_disable(xdev->clk);
- 
--	dev_info(dev, "Xilinx Watchdog Timer at %p with timeout %ds\n",
--		 xdev->base, xilinx_wdt_wdd->timeout);
-+	dev_info(dev, "Xilinx Watchdog Timer with timeout %ds\n",
-+		 xilinx_wdt_wdd->timeout);
- 
- 	platform_set_drvdata(pdev, xdev);
- 
--- 
-2.9.1
+On Fri, Mar 26, 2021 at 03:19:00PM -0400, Jim Quinlan wrote:
 
+> Control of EP regulators by the RC is needed because of the chicken-and-egg
+> situation: although the regulator is "owned" by the EP and would be best
+> handled on its driver, the EP cannot be discovered and probed unless its
+> regulator is already turned on.
+
+Ideally the driver core would have a way for buses to register devices
+pre physical enumeration and give drivers a callback that could be used
+to do whatever is needed to trigger enumeration, letting the bus then
+match newly physically enumerated devices with the software enumerated
+struct devices.  Soundwire has something in this area for a bus level
+solution.
+
+--9ADF8FXzFeE7X4jE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBh/iMACgkQJNaLcl1U
+h9CvUQf/S+WYaVzUIqvnb0K6nY7Y7Tu7+dSYNItIsI9PpgGSQjVigAJvpvWuMQc1
+0KS2Py/C77GDOsx0pEBX5hoLAU98BjvW+sjJTRCU2hjICoPtwEMrvVsmM7XzzFk1
+rL1PXwJUgmlEzmknREWDe6VGAR5ddIke+9VdS5CBw2+d7HFviUb6bIyKBWPnm97+
+El8J6IK37KCBy56NGGg3fqPwjFEZxy4oKyO7tklbqUi2qjweSsMR188Pw490LIYQ
+54DjSMJY5ZoiLSkA+qJiB2vuCl7+Vtc6eQfsm4gio+rYxdYIduu685jrAfrYxopT
+He2MtwZwq1ks96Kt7R/FFDtZm7xCRQ==
+=0N2B
+-----END PGP SIGNATURE-----
+
+--9ADF8FXzFeE7X4jE--
