@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD51334D3FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3480334D3FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhC2PdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
+        id S231281AbhC2PdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhC2Pcw (ORCPT
+        with ESMTP id S230266AbhC2PdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:32:52 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5076EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:32:52 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so12636004ota.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:32:52 -0700 (PDT)
+        Mon, 29 Mar 2021 11:33:04 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BB8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:33:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j18so13314401wra.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:33:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J0PX3YGiA1lRp5I9tvaB7FhBfF0VCV3+C5FuFXW+3N8=;
-        b=R7qAXPo48MkDyupC5FF0SAnrIPYqalufQi9jEF/AyiXeGdwtpjQKC2IISZQTDm0Ljy
-         18iydmPuOnu4AqvRU50XKLjmTke58w2qa/CvRl56PD5Ip2u56geTp4QOPM0QDP9EFAbh
-         DuKRql5xpAoKDSIwtkKbW4LnwQFO6UhJVqAa27TGm+ZokArrK8RIqyXIUtU/Wn8pTU1I
-         BtU8omQwOIzfYpnhggk3SEr2k6QV9MTpNWvFN+eNLhgMfu153v9z9LQVSUPwT5guljTk
-         PDQa+NKbRwzKA3wDy6tk9zegryjuiaUfn51ag1I8Ky+QCyDiRUIarOPV7aoFwhbXdeD/
-         ECwA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6S59QvVKMEA7QZNeRiH/vZL9UgEuqddM2QtPabiSR8Q=;
+        b=krqbhuOQUCF06c9G5rFIWOgWukje7i42PIxNHOoDCRMY3ECy74CSt4d7QsZKGE52iV
+         YlELxYZfM1zHCREEZlQM1F+lNa1lh6gMY8+MZ6IR712yHgVNPrR/RF8fpFdZ3+Fc8mvV
+         6EZOGxeaF9b6vxPl1cGWC3AA5NCcieErs8Cqw9dvQ+kmpcQ6BE4aDwJKztE0mVaEWeFa
+         wT0XXFveMTf26ZO/6H9Z/g+HphlUqdvz1Rhnk8a9yIenZ3BujGUedBTlE1r8KFRzlvUh
+         XajKk1zUBFnjum8BmgGARuL/E8Qt8d7hzZ9caB/JQKv3qta6kErXjJrD1v9suu2aumXc
+         o7PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J0PX3YGiA1lRp5I9tvaB7FhBfF0VCV3+C5FuFXW+3N8=;
-        b=BvrlGg7YLU1fnJ+/BavWF+zQjzBUOsyytYQfizdKHTohCEb5NSjRh0p0/NxO9Lwwvq
-         v0YtXP/u7ANE2PZtUx7jbo4CGK0Dn6+qdYbzdr6ld2MsZAdpmrmvkIyuK9MT7h5yM3/z
-         LwfmmQRYO3YnB+nfQ1xhFoS9ooT3vZpGJJY1lv9YIIexY+DyEuFE/AY6SFXZs/SiQzdl
-         YXLBdogPlE5l0FYfWc7u6mqBbSgww/m8Up5wXzg42u4eKUj7Mk9DPB5L60CdyAQOWOx9
-         ekZiSTmY0Cm11cT4e+YIVB801zNZ8xwvhazFCDgCY0ATPGDDWE21rLW9WM0UpZHiGIQs
-         3EJA==
-X-Gm-Message-State: AOAM532VQmZO+OX1lN2aW4zqgmgqc1LWMul9kO+FAFqg2Y+PF9NInSaX
-        +d9Zm72DeW96ZrpwCfQEEHuOBi3NVBQNG2Zrz7E=
-X-Google-Smtp-Source: ABdhPJxOsimt6cr4luFOFVZJ1XwLCVtQsyBX4tfE7t6HW5CPDFCtTqM68H6vH2Q/ipFoOCqxTayhzNmhx7KLfgaHZbk=
-X-Received: by 2002:a05:6830:408f:: with SMTP id x15mr23976678ott.132.1617031971817;
- Mon, 29 Mar 2021 08:32:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210328053504.164301-1-diego.viola@gmail.com>
-In-Reply-To: <20210328053504.164301-1-diego.viola@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 29 Mar 2021 11:32:41 -0400
-Message-ID: <CADnq5_OTU-zVsKTOmxGMEhvTWrGUAVoqhFoQvjg-4ryQmi5xew@mail.gmail.com>
-Subject: Re: [TRIVIAL] drm/amd/display: fix typo: liason -> liaison
-To:     Diego Viola <diego.viola@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Jiri Kosina <trivial@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6S59QvVKMEA7QZNeRiH/vZL9UgEuqddM2QtPabiSR8Q=;
+        b=CmsGEbxpA6ffHY2+GeQTyECkcXt2aj00rF1XMmABcFNZoW3B87JLMALp3lRnbODoiM
+         SqNVrXDJkiYMujitgjEOP3se3/TuxRx2u7YcgiFAh9N7lsDtaQ/a4126vC1HChiEvxYv
+         OvcfdWS8KaqDLSjfS1RzjqB496mSNo7SbZWIwgZZ8gll2tT6GyCiivWKfI0Co1DsU3St
+         RX84KK6dTSEglK2c3txihf0j7P2Xn3P8imgFG3IBZ8OahHPgZQAaWQvgDZFnyP/+ottW
+         V0dCnjsP5sUjaKUNMO7MqbDTY97+Q3wlYu3BoAvQo7wptBTKpvyuMl1cZ7FLGOuNzoWE
+         Llvg==
+X-Gm-Message-State: AOAM532ifmQBe7pgkjebl/nbvW/LPIuQ7KimhzWUl22M24SR6i17W+uq
+        ATRj3F5fErSoFeD55nqOpeo=
+X-Google-Smtp-Source: ABdhPJwm5DBW5AJ1gpDpOlcDBiySR4KqOD2ncs88GWPolI3TDxRgp4K/jQFr2xrL1nc74QSrUC+94Q==
+X-Received: by 2002:adf:bb4c:: with SMTP id x12mr12293184wrg.271.1617031982409;
+        Mon, 29 Mar 2021 08:33:02 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id v18sm31634589wrf.41.2021.03.29.08.33.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 08:33:01 -0700 (PDT)
+Subject: Re: [PATCH 1/2] drivers/clocksource/mediatek: Split mediatek drivers
+ into 2 files
+To:     Evan Benn <evanbenn@chromium.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        linux-arm-kernel@lists.infradead.org,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        linux-mediatek@lists.infradead.org,
+        Alexey Klimov <alexey.klimov@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>
+References: <20210318160414.1.Ia2a09ce93b47eac45308205820db0938d47604df@changeid>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <1f4dd7b1-3bb5-51eb-f980-e2ba41f43823@gmail.com>
+Date:   Mon, 29 Mar 2021 17:33:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210318160414.1.Ia2a09ce93b47eac45308205820db0938d47604df@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
 
-On Sun, Mar 28, 2021 at 1:35 AM Diego Viola <diego.viola@gmail.com> wrote:
->
-> Signed-off-by: Diego Viola <diego.viola@gmail.com>
+On 18/03/2021 06:04, Evan Benn wrote:
+> mtk_gpt and mtk_syst drivers for mt6577 and mt6765 devices were not
+> sharing any code. So split them into separate files.
+> 
+> Signed-off-by: Evan Benn <evanbenn@chromium.org>
 > ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 573cf17262da..1b4b4f508662 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -121,7 +121,7 @@ MODULE_FIRMWARE(FIRMWARE_NAVI12_DMCU);
->   * DOC: overview
->   *
->   * The AMDgpu display manager, **amdgpu_dm** (or even simpler,
-> - * **dm**) sits between DRM and DC. It acts as a liason, converting DRM
-> + * **dm**) sits between DRM and DC. It acts as a liaison, converting DRM
->   * requests into DC requests, and DC responses into DRM responses.
->   *
->   * The root control structure is &struct amdgpu_display_manager.
-> --
-> 2.31.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+>  arch/arm/mach-mediatek/Kconfig                |   3 +-
+>  arch/arm64/Kconfig.platforms                  |   3 +-
+>  drivers/clocksource/Kconfig                   |  13 +-
+>  drivers/clocksource/Makefile                  |   3 +-
+>  ...mer-mediatek.c => timer-mediatek-mt6577.c} | 100 -------------
+>  drivers/clocksource/timer-mediatek-mt6765.c   | 135 ++++++++++++++++++
+>  6 files changed, 151 insertions(+), 106 deletions(-)
+>  rename drivers/clocksource/{timer-mediatek.c => timer-mediatek-mt6577.c} (69%)
+>  create mode 100644 drivers/clocksource/timer-mediatek-mt6765.c
+> 
+[...]
+> diff --git a/drivers/clocksource/timer-mediatek-mt6765.c b/drivers/clocksource/timer-mediatek-mt6765.c
+> new file mode 100644
+> index 000000000000..b4f22f226feb
+> --- /dev/null
+> +++ b/drivers/clocksource/timer-mediatek-mt6765.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Mediatek SoCs General-Purpose Timer handling.
+> + *
+> + * Copyright (C) 2014 Matthias Brugger
+> + *
+> + * Matthias Brugger <matthias.bgg@gmail.com>
+
+The mt6765 was written by Stanley, I think we should reflcet that. Please see:
+e3af677607d9 ("clocksource/drivers/timer-mediatek: Add support for system timer")
+
+Regards,
+Matthias
