@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183FC34D495
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED9D34D499
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhC2QMu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 12:12:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:52406 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230362AbhC2QMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:12:21 -0400
-IronPort-SDR: BDhejDPbmdXwwlp3p2IQOWnQR69O2wwfhPzF/W4NojeH7cNnWsRXN5f7CT1LCT0Qb77Uhwney0
- xqxZxyhnDdKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="188311718"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="188311718"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 09:12:19 -0700
-IronPort-SDR: Ywc2bagZ1nzzoME6LaH3jnzZ1I16yUvRE+5CK+GulRa/bf8ymgaHUvA4Kie3og30AEuRfYQOSc
- StATGDkHWnAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="454618452"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga001.jf.intel.com with ESMTP; 29 Mar 2021 09:12:18 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 29 Mar 2021 09:12:17 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 29 Mar 2021 09:12:16 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Mon, 29 Mar 2021 09:12:16 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-CC:     "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] x86/mce/dev-mcelog: Fix potential memory access error
-Thread-Topic: [PATCH] x86/mce/dev-mcelog: Fix potential memory access error
-Thread-Index: AQHXJIDSM+kFcRvHZ0aVR9xYGcvpeqqbIiLg
-Date:   Mon, 29 Mar 2021 16:12:16 +0000
-Message-ID: <745eaeb668bc43deb8eb7db7a3342691@intel.com>
-References: <1617011360-102531-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1617011360-102531-1-git-send-email-yang.lee@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
+        id S231201AbhC2QNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhC2QND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:13:03 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43262C061574;
+        Mon, 29 Mar 2021 09:13:02 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 12so6888427wmf.5;
+        Mon, 29 Mar 2021 09:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vumQFbft4TUafDDrGaQYDL2MVOcmMkJAnn1vxeYAC5E=;
+        b=ffNu/g88ZA6KOYVXv8Lsu6lVSv0qtWWmEHUdeUR4wT94EBzXxxW9HCfzLRSqpjBLKr
+         8GxL6K/RyLmxg/n4ZB0MG971BDRCVsAuslPPQZY+L7DZkgnQVbI07kPqmWeiDpq2eYqk
+         F16RrwcKxTA5rEttuftCPCX7d9X3D9XjM17eRQLmXmP0wwQxSXUq5hKdr8XMaUlV2r4+
+         3Opn5bEqYh38J/lUQF744l57/8Nlw5L7KZMjjYdIdvNAGeEF5eeKb57lqLlZ33dthW8/
+         +zk/qBafapF0a9YLtdUyMeXzWXifmSGY/rGuo3jeOmpobSLhtKTV349M2rd6MZscaJHq
+         EPSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vumQFbft4TUafDDrGaQYDL2MVOcmMkJAnn1vxeYAC5E=;
+        b=Oeq33FMLwA56Fkff2/Fe9DgBzD210kNWT7tUJOs3rh6cgg1uOMkq0QnZ6CMA9EuUiW
+         X6U8Z9Z/OogwSQ1/LOUYTTcUYzv9P46/aWhlucC36HqK3Kcy11NqUJrHkdFUn/jLswO2
+         D0Alp0LqOX9ENaBoCIpZ5losuc0Tti6spO2ezojRifyFUdOs0M/fWW6WMqU5tr2xb+hE
+         lx0SCtcJh70vDqeCPZjLQL9itr3lhq+9nGgTdSDltKQ9pvbTheH5BTLGrnneZxEix8Fx
+         MKRfC2TX9qphFcserpuy8Vumv1lgtbuJJ+j3Fr3hD886IOyfuHT0EiCidq90ef36TZAU
+         JMIA==
+X-Gm-Message-State: AOAM531PvhOQjdlKiF2EU/bCZsLSJD3ik/xYLegVUR/SMPDpfdbDI5Y3
+        MJMQ/G0uAUma2ta0ptj7EN4=
+X-Google-Smtp-Source: ABdhPJzRmUhFza6e/7DKRAMWFBmKOgWUb6fdMECHk398ZIn7NJxTfemfK+CMzjqLk48PjMSfCimDyA==
+X-Received: by 2002:a05:600c:259:: with SMTP id 25mr25764293wmj.5.1617034381001;
+        Mon, 29 Mar 2021 09:13:01 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id a6sm28570964wmm.0.2021.03.29.09.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 09:13:00 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH 0/3] arm64: dts: meson: misc ODROID-N2/N2+ changes
+Date:   Mon, 29 Mar 2021 16:12:53 +0000
+Message-Id: <20210329161256.31171-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--		set_bit(MCE_OVERFLOW, (unsigned long *)&mcelog->flags);
-+		mcelog->flags |= BIT(MCE_OVERFLOW);
+This series cleans-up and submits some minor patches used in HardKernel
+Linux 5.10 and 5.11 images for the ODROID N2/N2+, and fixes a stray tab.
 
-set_bit() is an atomic operation because it might race with the code to
-get and clear this bit:
+Christian Hewitt (1):
+  arm64: dts: meson: remove extra tab from ODROID N2/N2+ ext_mdio node
 
-                do {
-                        flags = mcelog->flags;
-                } while (cmpxchg(&mcelog->flags, flags, 0) != flags);
+Hyeonki Hong (2):
+  arm64: dts: meson: add saradc node to ODROID N2/N2+
+  arm64: dts: meson: add GPIO line names to ODROID N2/N2+
 
-Originally this was needed because mcelog could be called from #MC
-context.
+ .../dts/amlogic/meson-g12b-odroid-n2.dtsi     | 51 ++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
 
-That's all changed now and the machine check notifier chain routines are
-called in a kernel thread. So some other locking (mutex?) could be used
-to protect access to mcelog->flags.
-
--Tony
+-- 
+2.17.1
 
