@@ -2,247 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949D134D5C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359DE34D5A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhC2RKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:10:43 -0400
-Received: from mxout03.lancloud.ru ([45.84.86.113]:47534 "EHLO
-        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhC2RKT (ORCPT
+        id S231134AbhC2RCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC2RBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:10:19 -0400
-X-Greylist: delayed 520 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 13:10:18 EDT
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru 199E920A8A20
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: Mutual debugging of 2 processes can stuck in unkillable stopped
- state
-To:     Oleg Nesterov <oleg@redhat.com>
-CC:     <linux-trace-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <f2f32ffa-52ad-ff67-19d8-95305a70a6f8@omprussia.ru>
- <20210329164900.GB24849@redhat.com>
-From:   Igor Zhbanov <i.zhbanov@omprussia.ru>
-Message-ID: <4124a89e-a62e-0c51-1f46-8409867a626a@omprussia.ru>
-Date:   Mon, 29 Mar 2021 20:01:36 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 29 Mar 2021 13:01:51 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E635C061574;
+        Mon, 29 Mar 2021 10:01:51 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gb6so6324883pjb.0;
+        Mon, 29 Mar 2021 10:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3KaU2X8BYBo2iEYrCYnDX7Io7zwEGngt8bXiDSOA3dU=;
+        b=Kg42A+C8lwb0lncwa2RQMG/aGsCwIFedHnSNQ5tAzBoKpV7+4z32DzKBLqagztyFcR
+         5foEL4IWF1C2q3jlXjdsh7nliv2yDPKhtPOIpnPICy4j8l0aMeZoXyAQyrTmUcL32PAB
+         b3XxiYzpReNucgoVjwzRn+OFrqbtj07XYipNt6AhQ8uemiICKdx+rPfhBi2AfDs7HQ4J
+         xWAdzSQlZGkbN7nHm5QkqXUCiO9A7gorZVuGXwdS8EyAeO9CrvEH8NBGLWktcPooXpeJ
+         q4LxzdRWU9wkxHOF0Mhl0aJKJy2nDI6nVYe6jeAVrr5lgPsx+AOfGkRFnsCHsCSEmOHH
+         Re0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3KaU2X8BYBo2iEYrCYnDX7Io7zwEGngt8bXiDSOA3dU=;
+        b=Pw7docRGW/AJJl653krYWmO7Ldv5byPNrMVn4FY7Rk8kOaT7oGwPmJO9q+hZVhzcDh
+         O7Y1NeylzqgELkM+N7+R1OK0TMWub61QrtIUWLOyiOJoTBITqerP2LNYua+JHf/+BhJw
+         +aHyjG3lE4fIiF6Y+JCj4WhGoj4WxwlNd5TicknvmYvwALkp/MG7UjOp0Y+LsE5+hjF1
+         vNKQMBXPHi1kUQ66N36HWpq13euhqeBhjGvufpOT0FeUjRB5yxFQQeCmUQ5Tn1qn98gg
+         1c7CD5+yFyaErAmxeWF84WqSf7FSgeu5fOfYs9TgUtUs8Acf44fu3ua2sBn3SdnFfpfA
+         z6Ig==
+X-Gm-Message-State: AOAM532HgDxETakxLXCrC/PvUc5XQ86cVe1BMwgPvEaEQFnDQPzpKOyM
+        HOd0INU2snlEq/mAaJ0gsSJ+mVkOask=
+X-Google-Smtp-Source: ABdhPJzLqubBwMwApiffsPDmTZ/4mHx8yGrQUWgZKoYE3ro/5jmcfBk2I7198NgYttUDrK18m1+TqQ==
+X-Received: by 2002:a17:90a:bb81:: with SMTP id v1mr62162pjr.123.1617037310528;
+        Mon, 29 Mar 2021 10:01:50 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w3sm43671pjg.7.2021.03.29.10.01.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 10:01:50 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] PCI: brcmstb: Use reset/rearm instead of
+ deassert/assert
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210312204556.5387-1-jim2101024@gmail.com>
+ <20210312204556.5387-3-jim2101024@gmail.com>
+ <20210329161040.GB9677@lpieralisi>
+ <71903454-c20c-31f7-aaee-0d05eb22db7f@gmail.com>
+ <20210329165847.GA10454@lpieralisi>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e602340f-c13d-0cda-25cf-960dd546857e@gmail.com>
+Date:   Mon, 29 Mar 2021 10:01:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210329164900.GB24849@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210329165847.GA10454@lpieralisi>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To LFEX15.lancloud.ru
- (fd00:f066::45)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleg!
-
-I've tried both 5.3.18 and 5.10.0. The behavior is the same.
-The important thing is to run "exec strace -p ..." on the second terminal
-to create the loop A->B->A.
-
-So the last line from the first strace we see is:
-ptrace(PTRACE_SEIZE, 1990, NULL, PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
-
-I.e. it printed the syscall prior to its execution and hanged after the
-execution.
-
-izh@suse2:~> ps awux|grep strace
-izh       1891  0.0  0.0  24752  3828 pts/1    ts+  19:52   0:00 strace -p 1990
-izh       1990  0.0  0.0  24752  3628 pts/0    t+   19:53   0:00 strace -p 1891
-
-izh@suse2:~> kill 1990 1891
-izh@suse2:~> kill -9 1990 1891
-
-izh@suse2:~> sudo cat /proc/1891/stack
-[sudo] password for root:
-[<0>] ptrace_stop+0x14a/0x260
-[<0>] ptrace_do_notify+0x91/0xb0
-[<0>] ptrace_notify+0x4e/0x70
-[<0>] do_exit+0x910/0xb70
-[<0>] do_group_exit+0x3a/0xa0
-[<0>] get_signal+0x124/0x800
-[<0>] arch_do_signal_or_restart+0xa9/0x290
-[<0>] exit_to_user_mode_prepare+0xe7/0x1a0
-[<0>] syscall_exit_to_user_mode+0x18/0x40
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-izh@suse2:~> sudo cat /proc/1990/stack
-[<0>] ptrace_stop+0x14a/0x260
-[<0>] ptrace_do_notify+0x91/0xb0
-[<0>] ptrace_notify+0x4e/0x70
-[<0>] do_exit+0x910/0xb70
-[<0>] do_group_exit+0x3a/0xa0
-[<0>] get_signal+0x124/0x800
-[<0>] arch_do_signal_or_restart+0xa9/0x290
-[<0>] exit_to_user_mode_prepare+0xe7/0x1a0
-[<0>] syscall_exit_to_user_mode+0x18/0x40
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-izh@suse2:~> cat /proc/1891/status
-Name:   strace
-Umask:  0022
-State:  t (tracing stop)
-Tgid:   1891
-Ngid:   0
-Pid:    1891
-PPid:   1890
-TracerPid:      1990
-Uid:    1000    1000    1000    1000
-Gid:    100     100     100     100
-FDSize: 256
-Groups: 100
-NStgid: 1891
-NSpid:  1891
-NSpgid: 1891
-NSsid:  1891
-VmPeak:    24752 kB
-VmSize:    24752 kB
-VmLck:         0 kB
-VmPin:         0 kB
-VmHWM:      3828 kB
-VmRSS:      3828 kB
-RssAnon:             520 kB
-RssFile:            3308 kB
-RssShmem:              0 kB
-VmData:      284 kB
-VmStk:       132 kB
-VmExe:      1108 kB
-VmLib:      2828 kB
-VmPTE:        80 kB
-VmSwap:        0 kB
-HugetlbPages:          0 kB
-CoreDumping:    0
-THP_enabled:    1
-Threads:        1
-SigQ:   4/15639
-SigPnd: 0000000000000000
-ShdPnd: 0000000000014100
-SigBlk: 0000000000002000
-SigIgn: 0000000000300000
-SigCgt: 0000000180007007
-CapInh: 0000000000000000
-CapPrm: 0000000000000000
-CapEff: 0000000000000000
-CapBnd: 000001ffffffffff
-CapAmb: 0000000000000000
-NoNewPrivs:     0
-Seccomp:        0
-Seccomp_filters:        0
-Speculation_Store_Bypass:       vulnerable
-SpeculationIndirectBranch:      always enabled
-Cpus_allowed:   7
-Cpus_allowed_list:      0-2
-Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
-Mems_allowed_list:      0
-voluntary_ctxt_switches:        1561
-nonvoluntary_ctxt_switches:     7
-
-izh@suse2:~> cat /proc/1990/status
-Name:   strace
-Umask:  0022
-State:  t (tracing stop)
-Tgid:   1990
-Ngid:   0
-Pid:    1990
-PPid:   1847
-TracerPid:      1891
-Uid:    1000    1000    1000    1000
-Gid:    100     100     100     100
-FDSize: 256
-Groups: 100
-NStgid: 1990
-NSpid:  1990
-NSpgid: 1990
-NSsid:  1847
-VmPeak:    24752 kB
-VmSize:    24752 kB
-VmLck:         0 kB
-VmPin:         0 kB
-VmHWM:      3628 kB
-VmRSS:      3628 kB
-RssAnon:             520 kB
-RssFile:            3108 kB
-RssShmem:              0 kB
-VmData:      284 kB
-VmStk:       132 kB
-VmExe:      1108 kB
-VmLib:      2828 kB
-VmPTE:        88 kB
-VmSwap:        0 kB
-HugetlbPages:          0 kB
-CoreDumping:    0
-THP_enabled:    1
-Threads:        1
-SigQ:   4/15639
-SigPnd: 0000000000000000
-ShdPnd: 0000000000014100
-SigBlk: 0000000000002000
-SigIgn: 0000000000300000
-SigCgt: 0000000180007007
-CapInh: 0000000000000000
-CapPrm: 0000000000000000
-CapEff: 0000000000000000
-CapBnd: 000001ffffffffff
-CapAmb: 0000000000000000
-NoNewPrivs:     0
-Seccomp:        0
-Seccomp_filters:        0
-Speculation_Store_Bypass:       vulnerable
-SpeculationIndirectBranch:      always enabled
-Cpus_allowed:   7
-Cpus_allowed_list:      0-2
-Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
-Mems_allowed_list:      0
-voluntary_ctxt_switches:        180
-nonvoluntary_ctxt_switches:     848
-
-On 29.03.2021 19:49, Oleg Nesterov wrote:
-> On 03/29, Igor Zhbanov wrote:
+On 3/29/21 9:58 AM, Lorenzo Pieralisi wrote:
+> On Mon, Mar 29, 2021 at 09:50:13AM -0700, Florian Fainelli wrote:
+>> On 3/29/21 9:10 AM, Lorenzo Pieralisi wrote:
+>>> On Fri, Mar 12, 2021 at 03:45:55PM -0500, Jim Quinlan wrote:
+>>>> The Broadcom STB PCIe RC uses a reset control "rescal" for certain chips.
+>>>> The "rescal" implements a "pulse reset" so using assert/deassert is wrong
+>>>> for this device.  Instead, we use reset/rearm.  We need to use rearm so
+>>>> that we can reset it after a suspend/resume cycle; w/o using "rearm", the
+>>>> "rescal" device will only ever fire once.
+>>>>
+>>>> Of course for suspend/resume to work we also need to put the reset/rearm
+>>>> calls in the suspend and resume routines.
+>>>
+>>> Actually - I am sorry but it looks like you will have to split the patch
+>>> in two since this is two logical changes.
 >>
->> Mutual debugging of 2 processes can stuck in unkillable stopped state
+>> I do not believe this can be easily split, since there is currently a
+>> misused of the reset controller API and this patch fixes all call sites
+>> at once. It would not really make sense to fix probe/remove and then
+>> leave suspend/resume broken in the same manner.
 > 
-> can't reproduce and can't understand...
+> Right - I was reading the previous versions of the set, it makes sense
+> to keep it in one logical change.
 > 
->> Hi!
->>
->> When one process, let's say "A", is tracing the another process "B", and the
->> process "B" is trying to attach to the process "A", then both of them are
->> getting stuck in the "t+" state. And they are ignoring all of the signals
->> including the SIGKILL,
-> 
-> Why do you think so? What is your kernel version?
-> 
-> "t" means TASK_TRACED, SIGKILL should wake it up and terminate.
-> 
->> so it is not possible to terminate them without
->> a reboot.
->>
->> To reproduce:
->> 1) Run two terminals
->> 2) Attach with "strace -p ..." from the first terminal to the shell (bash) of
->>     the second terminal.
->> 3) In the second terminal run "exec strace -p ..." to attach to the PID of the
->>     first strace.
->>
->> Then you'll see that the second strace is hanging without any output. And the
->> first strace will output following and hang too:
->> ptrace(PTRACE_SEIZE, 11795, NULL,
->>         PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
->>
->> (The 11795 is the PID of the first strace itself.)
->>
->> And in the process list you will see following:
->> ps awux | grep strace
->> user   11776  0.0  0.0  24752  2248 pts/3    t+   13:53   0:00 strace -p 11795
->> user   11795  0.0  0.0  24752  3888 pts/1    t+   13:54   0:00 strace -p 11776
-> 
-> OK, may be they sleep in PTRACE_EVENT_EXIT? After you tried to send SIGKILL?
-> 
-> please show us the output from "cat /proc/{11795,11776}/stack". And
-> "cat /proc/{11795,11776}/status" just in case.
+> Do you want me to take it or you prefer an ACK so that it can go via
+> a different tree ?
+
+I would be comfortable with you taking this via the PCI driver trees, we
+would want an Ack from Jens that he is okay with taking the ahci_brcm.c
+change as well through your tree.
+
+Thank you!
+-- 
+Florian
