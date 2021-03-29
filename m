@@ -2,54 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBC034CB16
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C2234CC6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhC2InR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
+        id S236398AbhC2JCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233203AbhC2IZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 435B26196E;
-        Mon, 29 Mar 2021 08:24:58 +0000 (UTC)
+        id S234942AbhC2Ihi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3147461879;
+        Mon, 29 Mar 2021 08:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006299;
-        bh=D2c0yfhlEE5amncLHwFC5M34mtZgt7/IViBZIwaeAF4=;
+        s=korg; t=1617007057;
+        bh=9IfONxfl7zOM+uNS+hW2gVz03E0r6Wo4qXb85vEd4j4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1bAwTDNkh5i9PldoCRRbwQvs4sgDPKpJflijxyXdj3T67uMC7amYt4H4LQVKRsExX
-         tn5vHzGdxhVLfyR3vdOjxLfchgkRd5CCN7HILDSci4rSOyu7D49RWd/Ho0wgrUcKv7
-         O6SM54RvgXWC8XzmmLuCWmobU5zF6rMOERl6AhrU=
+        b=lMu24Knxl5QyMTXsVvAMAJkoY/lsI8yXZUyOVzooAA76Le6/t8ciM9brnIliNL05y
+         zGWhvGg4LyJ0fCjMQkh7SP6e6KYXxARf5ErpTqoybUtwaQ808vHkM6nuG+kwvl604n
+         dtS2RK2h0ZTnKJ7B5auMQa5JDttDDN51BBRWNevM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        teawater <teawaterz@linux.alibaba.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/221] arm64/mm: define arch_get_mappable_range()
+Subject: [PATCH 5.11 206/254] net: bridge: dont notify switchdev for local FDB addresses
 Date:   Mon, 29 Mar 2021 09:58:42 +0200
-Message-Id: <20210329075635.502877514@linuxfoundation.org>
+Message-Id: <20210329075639.863747060@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,81 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+[ Upstream commit 6ab4c3117aec4e08007d9e971fa4133e1de1082d ]
 
-This overrides arch_get_mappable_range() on arm64 platform which will be
-used with recently added generic framework.  It drops
-inside_linear_region() and subsequent check in arch_add_memory() which are
-no longer required.  It also adds a VM_BUG_ON() check that would ensure
-that mhp_range_allowed() has already been called.
+As explained in this discussion:
+https://lore.kernel.org/netdev/20210117193009.io3nungdwuzmo5f7@skbuf/
 
-Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: teawater <teawaterz@linux.alibaba.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+the switchdev notifiers for FDB entries managed to have a zero-day bug.
+The bridge would not say that this entry is local:
+
+ip link add br0 type bridge
+ip link set swp0 master br0
+bridge fdb add dev swp0 00:01:02:03:04:05 master local
+
+and the switchdev driver would be more than happy to offload it as a
+normal static FDB entry. This is despite the fact that 'local' and
+non-'local' entries have completely opposite directions: a local entry
+is locally terminated and not forwarded, whereas a static entry is
+forwarded and not locally terminated. So, for example, DSA would install
+this entry on swp0 instead of installing it on the CPU port as it should.
+
+There is an even sadder part, which is that the 'local' flag is implicit
+if 'static' is not specified, meaning that this command produces the
+same result of adding a 'local' entry:
+
+bridge fdb add dev swp0 00:01:02:03:04:05 master
+
+I've updated the man pages for 'bridge', and after reading it now, it
+should be pretty clear to any user that the commands above were broken
+and should have never resulted in the 00:01:02:03:04:05 address being
+forwarded (this behavior is coherent with non-switchdev interfaces):
+https://patchwork.kernel.org/project/netdevbpf/cover/20210211104502.2081443-1-olteanv@gmail.com/
+If you're a user reading this and this is what you want, just use:
+
+bridge fdb add dev swp0 00:01:02:03:04:05 master static
+
+Because switchdev should have given drivers the means from day one to
+classify FDB entries as local/non-local, but didn't, it means that all
+drivers are currently broken. So we can just as well omit the switchdev
+notifications for local FDB entries, which is exactly what this patch
+does to close the bug in stable trees. For further development work
+where drivers might want to trap the local FDB entries to the host, we
+can add a 'bool is_local' to br_switchdev_fdb_call_notifiers(), and
+selectively make drivers act upon that bit, while all the others ignore
+those entries if the 'is_local' bit is set.
+
+Fixes: 6b26b51b1d13 ("net: bridge: Add support for notifying devices about FDB add/del")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/mmu.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ net/bridge/br_switchdev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 6aabf1eced31..0635803463a5 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1445,16 +1445,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
- }
- 
--static bool inside_linear_region(u64 start, u64 size)
-+struct range arch_get_mappable_range(void)
+diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
+index 015209bf44aa..3c42095fa75f 100644
+--- a/net/bridge/br_switchdev.c
++++ b/net/bridge/br_switchdev.c
+@@ -123,6 +123,8 @@ br_switchdev_fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
  {
-+	struct range mhp_range;
-+
- 	/*
- 	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
- 	 * accommodating both its ends but excluding PAGE_END. Max physical
- 	 * range which can be mapped inside this linear mapping range, must
- 	 * also be derived from its end points.
- 	 */
--	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
--	       (start + size - 1) <= __pa(PAGE_END - 1);
-+	mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
-+	mhp_range.end =  __pa(PAGE_END - 1);
-+	return mhp_range;
- }
+ 	if (!fdb->dst)
+ 		return;
++	if (test_bit(BR_FDB_LOCAL, &fdb->flags))
++		return;
  
- int arch_add_memory(int nid, u64 start, u64 size,
-@@ -1462,11 +1465,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
- {
- 	int ret, flags = 0;
- 
--	if (!inside_linear_region(start, size)) {
--		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
--		return -EINVAL;
--	}
--
-+	VM_BUG_ON(!mhp_range_allowed(start, size, true));
- 	if (rodata_full || debug_pagealloc_enabled())
- 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
+ 	switch (type) {
+ 	case RTM_DELNEIGH:
 -- 
 2.30.1
 
