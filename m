@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54F834CC3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1791934C760
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbhC2I56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:57:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        id S231441AbhC2IO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:14:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234882AbhC2Iha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ED261581;
-        Mon, 29 Mar 2021 08:37:00 +0000 (UTC)
+        id S232354AbhC2IJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2BD561477;
+        Mon, 29 Mar 2021 08:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007020;
-        bh=IJNgelM50h95wEQJOuS/zBn3+TZ9z3APLfoIBV8bF0o=;
+        s=korg; t=1617005350;
+        bh=5jfMjQVQa+Jz/Cu6Mly0VKQNQ/tjZGovQqeqfgKaLcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pCIQfQ2rr8fkDkCf7UYDYSFn7Ny98Fj2qUns+G54wTzIeHI3X27hWW+uBWlu6rqQg
-         AhKZ4QK1dZQSdjqxIFW0rGMVggtu+LNXGreiZjFxU7qB5kAoxiGk7ThC2bCKE9R04y
-         fQqS7Vh8kYl47RNKdobZmi/6aZlsA0vj9dDIiB34=
+        b=IDDi0uMw2NT2R0bIXITsKqwUm7WmaioT8FOY5bnM7WHpZf+I7XOWGgOBbhDJsH3ZQ
+         B/q54L8Vb4NuzSE5wHQmdlbi91BVKo1tGeNqZ0DCkrqSdSQaalgRypbcgA1x5rk/f4
+         TR9vZyoH95X81nS/ZCXnkIRosiGLLKdn4FSj964w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Alexander Naumann <alexandernaumann@gmx.de>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Belisko Marek <marek.belisko@gmail.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 190/254] platform/x86: dell-wmi-sysman: Fix possible NULL pointer deref on exit
+Subject: [PATCH 4.19 50/72] net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
 Date:   Mon, 29 Mar 2021 09:58:26 +0200
-Message-Id: <20210329075639.363754680@linuxfoundation.org>
+Message-Id: <20210329075611.930390137@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit c59ab4cedab70a1a117a2dba3c48bb78e66c55ca ]
+[ Upstream commit 014dfa26ce1c647af09bf506285ef67e0e3f0a6b ]
 
-It is possible for release_attributes_data() to get called when the
-main_dir_kset has not been created yet, move the removal of the bios-reset
-sysfs attr to under a if (main_dir_kset) check to avoid a NULL pointer
-deref.
+MTU cannot be changed on dwmac-sun8i. (ip link set eth0 mtu xxx returning EINVAL)
+This is due to tx_fifo_size being 0, since this value is used to compute valid
+MTU range.
+Like dwmac-sunxi (with commit 806fd188ce2a ("net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes"))
+dwmac-sun8i need to have tx and rx fifo sizes set.
+I have used values from datasheets.
+After this patch, setting a non-default MTU (like 1000) value works and network is still useable.
 
-Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
-Cc: Divya Bharathi <Divya_Bharathi@dell.com>
-Cc: Mario Limonciello <mario.limonciello@dell.com>
-Reported-by: Alexander Naumann <alexandernaumann@gmx.de>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210321115901.35072-3-hdegoede@redhat.com
+Tested-on: sun8i-h3-orangepi-pc
+Tested-on: sun8i-r40-bananapi-m2-ultra
+Tested-on: sun50i-a64-bananapi-m64
+Tested-on: sun50i-h5-nanopi-neo-plus2
+Tested-on: sun50i-h6-pine-h64
+Fixes: 9f93ac8d408 ("net-next: stmmac: Add dwmac-sun8i")
+Reported-by: Belisko Marek <marek.belisko@gmail.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/dell-wmi-sysman/sysman.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-index c1997db74cca..8b251b2c37a2 100644
---- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-@@ -225,12 +225,6 @@ static int create_attributes_level_sysfs_files(void)
- 	return ret;
- }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+index 1e5e831718db..4382deaeb570 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -1179,6 +1179,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
+ 	plat_dat->init = sun8i_dwmac_init;
+ 	plat_dat->exit = sun8i_dwmac_exit;
+ 	plat_dat->setup = sun8i_dwmac_setup;
++	plat_dat->tx_fifo_size = 4096;
++	plat_dat->rx_fifo_size = 16384;
  
--static void release_reset_bios_data(void)
--{
--	sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
--	sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &pending_reboot.attr);
--}
--
- static ssize_t wmi_sysman_attr_show(struct kobject *kobj, struct attribute *attr,
- 				    char *buf)
- {
-@@ -373,8 +367,6 @@ static void destroy_attribute_objs(struct kset *kset)
-  */
- static void release_attributes_data(void)
- {
--	release_reset_bios_data();
--
- 	mutex_lock(&wmi_priv.mutex);
- 	exit_enum_attributes();
- 	exit_int_attributes();
-@@ -386,12 +378,13 @@ static void release_attributes_data(void)
- 		wmi_priv.authentication_dir_kset = NULL;
- 	}
- 	if (wmi_priv.main_dir_kset) {
-+		sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
-+		sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &pending_reboot.attr);
- 		destroy_attribute_objs(wmi_priv.main_dir_kset);
- 		kset_unregister(wmi_priv.main_dir_kset);
- 		wmi_priv.main_dir_kset = NULL;
- 	}
- 	mutex_unlock(&wmi_priv.mutex);
--
- }
- 
- /**
+ 	ret = sun8i_dwmac_init(pdev, plat_dat->bsp_priv);
+ 	if (ret)
 -- 
 2.30.1
 
