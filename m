@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EDD34D7E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9E834D7F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhC2TM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231747AbhC2TMo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:12:44 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B1DC061574;
-        Mon, 29 Mar 2021 12:12:44 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso6403976pjb.4;
-        Mon, 29 Mar 2021 12:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VqmrqS9bYW6O07iO29RrCfsxL/rVo6MfLhKLYM4/bmY=;
-        b=i/36GcN3FAqyybntN9xWr3tHD9Iuv6FH9B/gzTXdLAIMbNLUUyTj4iO4Q2JUyfXPEc
-         7piSsBemwv2OGyCxH3nylU3UG+39Cx/UqiWi2WElTBoT5YnrIsUjhv6CJNd7ix1RG7GA
-         7PHATlIsYl0XXJ3DwhyxMcol4kXe1KdZa6UmwyVdDB0uTvAWs3jMEpBxomGDW2/ERwb3
-         0DLSQzyT2hsAGsUg3MrZRmiZiKayrb/BZtuuxU+HmsJZGAf5rYwaY6xUh41jqAftfXol
-         ygCms8jRCO3xulhs5ddauB8Zi7+Ebh22ZV9CmgcJvrHu9khpqVYXxzhDwk4TgHlZesdF
-         sFhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VqmrqS9bYW6O07iO29RrCfsxL/rVo6MfLhKLYM4/bmY=;
-        b=Ue+r2wn7+guaOEZhWpc2ozLB5F1wB40sTssADMv+S381AKxKZcRlO9R9XP6ZORVMT4
-         nVsdA6tSUjKJeBrW84eVDyWS2fHP6dMIhSD7jKeEFJXD/CtnoFu+hkQecctZBMw7dN24
-         xZvpUHdp+09Q+Ha+jHhcCQCZCKL2NDAG5+k937Ht0SXBfPLcIwMk21ZN1NdJNdJIMHRB
-         Opq8OrSGEuDbP1JOwn2ElPGbtvVXG92aPfO/BmLOlkV1+cEhGIGsaaP2B6UxZN6ae6v+
-         knuSZ9CEw5GoO4jat9vbHsOhRpFgkHiMgpJxt8gxlMoTTAUKLZQwZd4y7nkB4K8/ALhp
-         QjdA==
-X-Gm-Message-State: AOAM533dT3y7ZG1oqkvh9k7rXZ3TpjqfIRzPrC1ud4XRE0UAoI/SeBAt
-        jVEZv3PnWocVkzWqLbRSyj8=
-X-Google-Smtp-Source: ABdhPJy3xqP0sm/creOp7ptgS0yO06WmtQUwQYJGixr+JkDVNSEYSHQNvF1rsDcrddbX2Vffrc16iA==
-X-Received: by 2002:a17:90b:ecd:: with SMTP id gz13mr563826pjb.219.1617045163851;
-        Mon, 29 Mar 2021 12:12:43 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a82a:a913:988c:7480])
-        by smtp.gmail.com with ESMTPSA id x2sm17624845pgb.89.2021.03.29.12.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:12:42 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 12:12:39 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v4 05/10] Input: wacom_i2c - Add support for distance and
- tilt x/y
-Message-ID: <YGImp7Fc/hjG4PFV@google.com>
-References: <20210326015229.141-1-alistair@alistair23.me>
- <20210326015229.141-5-alistair@alistair23.me>
+        id S231524AbhC2TOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:14:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230271AbhC2TOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 15:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36C9461936;
+        Mon, 29 Mar 2021 19:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617045243;
+        bh=ToS0MidpfphiNtS55x67RiSvWClxRs/ZhbXeO1EBtAw=;
+        h=In-Reply-To:References:Subject:From:To:Date:From;
+        b=oQfZOPcCqmdWePI7Lw64BaJIMp8Fg02xLSjbmILupDBGx799hmQd5C/AhhnXHzQPh
+         Fo5TIF3XxWugMx0k7kmS8Ub6sBSGHfY8Pu5uk3SgFlHTuHOhPS0/l2ulNsQzLRsyry
+         iQUpHuII7FhbQZDUyDqx5our/WCk8VKvumz8VEwUPLkHxyZoFrJ+iG5/NBTnpIgHhe
+         ba8T5QPdvcUOTLUrJhsIQt0T3nqIJYvxBhwZ9gmmxDPeT8QDBvAgZcJoNndcspOyw8
+         RvPJunEY33GrQTQsxgpSTYG+qxr+qMtywMxS3CcMthZ2PpH3T2TYfJFvaAew8UQeGF
+         MW7BaGRcOa81g==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326015229.141-5-alistair@alistair23.me>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <91d016e59bab9d9175168a63e7bcd81fdb69b549.1615954046.git.greentime.hu@sifive.com>
+References: <cover.1615954045.git.greentime.hu@sifive.com> <91d016e59bab9d9175168a63e7bcd81fdb69b549.1615954046.git.greentime.hu@sifive.com>
+Subject: Re: [PATCH v2 2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     alex.dewar90@gmail.com, aou@eecs.berkeley.edu, bhelgaas@google.com,
+        devicetree@vger.kernel.org, erik.danie@sifive.com,
+        greentime.hu@sifive.com, hayashi.kunihiko@socionext.com,
+        helgaas@kernel.org, hes@sifive.com, jh80.chung@samsung.com,
+        khilman@baylibre.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-riscv@lists.infradead.org, lorenzo.pieralisi@arm.com,
+        mturquette@baylibre.com, p.zabel@pengutronix.de,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        vidyas@nvidia.com, zong.li@sifive.com
+Date:   Mon, 29 Mar 2021 12:14:02 -0700
+Message-ID: <161704524201.3012082.13807741329367593907@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:52:25PM -0400, Alistair Francis wrote:
-> This is based on the out of tree rM2 driver.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  drivers/input/touchscreen/wacom_i2c.c | 25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index ee1829dd35f4..3b4bc514dc3f 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -22,12 +22,16 @@
->  #define WACOM_CMD_QUERY3	0x02
->  #define WACOM_CMD_THROW0	0x05
->  #define WACOM_CMD_THROW1	0x00
-> -#define WACOM_QUERY_SIZE	19
-> +#define WACOM_QUERY_SIZE	22
->  
->  struct wacom_features {
->  	int x_max;
->  	int y_max;
->  	int pressure_max;
-> +	int distance_max;
-> +	int distance_physical_max;
-> +	int tilt_x_max;
-> +	int tilt_y_max;
->  	char fw_version;
->  };
->  
-> @@ -79,6 +83,10 @@ static int wacom_query_device(struct i2c_client *client,
->  	features->y_max = get_unaligned_le16(&data[5]);
->  	features->pressure_max = get_unaligned_le16(&data[11]);
->  	features->fw_version = get_unaligned_le16(&data[13]);
-> +	features->distance_max = data[15];
-> +	features->distance_physical_max = data[16];
-> +	features->tilt_x_max = get_unaligned_le16(&data[17]);
-> +	features->tilt_y_max = get_unaligned_le16(&data[19]);
+Quoting Greentime Hu (2021-03-17 23:08:09)
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index 71ab75a46491..f094df93d911 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -173,7 +173,7 @@ config RESET_SCMI
+> =20
+>  config RESET_SIMPLE
+>         bool "Simple Reset Controller Driver" if COMPILE_TEST
+> -       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTE=
+K || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC
+> +       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTE=
+K || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC || RISCV
 
-Do other models also support distance and tilt? If not, this needs to be
-made conditional.
+This conflicts. Can this default be part of the riscv defconfig instead?
 
-Thanks.
-
-
--- 
-Dmitry
+>         help
+>           This enables a simple reset controller driver for reset lines t=
+hat
+>           that can be asserted and deasserted by toggling bits in a conti=
+guous,
+> @@ -187,6 +187,7 @@ config RESET_SIMPLE
+>            - RCC reset controller in STM32 MCUs
+>            - Allwinner SoCs
+>            - ZTE's zx2967 family
+> +          - SiFive FU740 SoCs
+> =20
+>  config RESET_STM32MP157
+>         bool "STM32MP157 Reset Driver" if COMPILE_TEST
