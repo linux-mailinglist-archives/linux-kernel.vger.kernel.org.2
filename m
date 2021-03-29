@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A73C34C77E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A5334CC80
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhC2IPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:15:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53562 "EHLO mail.kernel.org"
+        id S237214AbhC2JDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231892AbhC2IJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A861461974;
-        Mon, 29 Mar 2021 08:09:48 +0000 (UTC)
+        id S234575AbhC2IjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62AA561990;
+        Mon, 29 Mar 2021 08:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005389;
-        bh=42/7lWKhpEmXlFmh/ED9v3yD1FATDEwV3jJQWIKbVds=;
+        s=korg; t=1617007146;
+        bh=eB0f3E9CYhRZX991dzExvF66ssWPY14C7K+Ls8IDR2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YVFhLoTIwxeu8+bl5JyffVq5Lcf3ZkCKoEXveuK8easJLtEOSLAMFi+i6rvGGRWWT
-         KjQRsA/0MmhfGy2WlfBYC3nqgSPTIpu9DqBWNWqzZHLMhMqoc1uNe6GpBGzo5x/QWS
-         CrpWBAsoIvB4yH3bLJsjs4AlIpoxcMKQPoG7xHcY=
+        b=TUb/A3oS6CPsgsRYAPxSxqaraayCqif3/07bsfKwpK+fXc47Mnre3SKmx1DwUvG98
+         wapgY4Hf8L9VMLEZkvEn7S2+felv6IRnC2o8FwGgKfvpgO6ZMZDqUa980WbuCHvmJO
+         ioKVm3nnJoiLjfUeYOHP4mpcuzW4PBLKRPKmhRL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 63/72] scsi: qedi: Fix error return code of qedi_alloc_global_queues()
+Subject: [PATCH 5.11 203/254] mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources"
 Date:   Mon, 29 Mar 2021 09:58:39 +0200
-Message-Id: <20210329075612.358641911@linuxfoundation.org>
+Message-Id: <20210329075639.772545376@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit f69953837ca5d98aa983a138dc0b90a411e9c763 ]
+[ Upstream commit a61f4661fba404418a7c77e86586dc52a58a93c6 ]
 
-When kzalloc() returns NULL to qedi->global_queues[i], no error return code
-of qedi_alloc_global_queues() is assigned.  To fix this bug, status is
-assigned with -ENOMEM in this case.
+The structures are used as place holders, so they are modified at run-time.
+Obviously they may not be constants.
 
-Link: https://lore.kernel.org/r/20210308033024.27147-1-baijiaju1990@gmail.com
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+  BUG: unable to handle page fault for address: d0643220
+  ...
+  CPU: 0 PID: 110 Comm: modprobe Not tainted 5.11.0+ #1
+  Hardware name: Intel Corp. QUARK/GalileoGen2, BIOS 0x01000200 01/01/2014
+  EIP: intel_quark_mfd_probe+0x93/0x1c0 [intel_quark_i2c_gpio]
+
+This partially reverts the commit c4a164f41554d2899bed94bdcc499263f41787b4.
+
+While at it, add a comment to avoid similar changes in the future.
+
+Fixes: c4a164f41554 ("mfd: Constify static struct resources")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Tested-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index e201c163ea1c..fe26144d390a 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1559,6 +1559,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
- 		if (!qedi->global_queues[i]) {
- 			QEDI_ERR(&qedi->dbg_ctx,
- 				 "Unable to allocation global queue %d.\n", i);
-+			status = -ENOMEM;
- 			goto mem_alloc_failure;
- 		}
+diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+index fe8ca945f367..b67cb0a3ab05 100644
+--- a/drivers/mfd/intel_quark_i2c_gpio.c
++++ b/drivers/mfd/intel_quark_i2c_gpio.c
+@@ -72,7 +72,8 @@ static const struct dmi_system_id dmi_platform_info[] = {
+ 	{}
+ };
  
+-static const struct resource intel_quark_i2c_res[] = {
++/* This is used as a place holder and will be modified at run-time */
++static struct resource intel_quark_i2c_res[] = {
+ 	[INTEL_QUARK_IORES_MEM] = {
+ 		.flags = IORESOURCE_MEM,
+ 	},
+@@ -85,7 +86,8 @@ static struct mfd_cell_acpi_match intel_quark_acpi_match_i2c = {
+ 	.adr = MFD_ACPI_MATCH_I2C,
+ };
+ 
+-static const struct resource intel_quark_gpio_res[] = {
++/* This is used as a place holder and will be modified at run-time */
++static struct resource intel_quark_gpio_res[] = {
+ 	[INTEL_QUARK_IORES_MEM] = {
+ 		.flags = IORESOURCE_MEM,
+ 	},
 -- 
 2.30.1
 
