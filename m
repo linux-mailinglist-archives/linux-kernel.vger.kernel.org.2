@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D1634C5F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70BA34C69F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhC2IER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:04:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
+        id S231549AbhC2IIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231886AbhC2ICo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D42D961969;
-        Mon, 29 Mar 2021 08:02:38 +0000 (UTC)
+        id S231785AbhC2IFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7975E619AE;
+        Mon, 29 Mar 2021 08:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004959;
-        bh=B1oFKhjHXtF9vGhkEdjpyyyEs3Xc0KF1fHanLndLQd0=;
+        s=korg; t=1617005106;
+        bh=cPtpdCwZKVRc8k84qWAHSiZocYWCCmPitO+YUJc2QEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2LhuU/IdXn+Gvf8eiAUeXFrAZkT/codAk7qqM8t7L+5U+ocZhrivze7IYxh+xos/
-         iQhO+rMom9//i+pgVC2dfHHtkWiprW8BMXJKU2UozZawbPpGdE93JZZne7wj2AvRzI
-         YzelThCylKmAeyw4qugLBD8yGSjgelxw4DNOrHmU=
+        b=1nE2OhAtdmlAtay6QWvRwHMz5aLpY78GJkMwWQ/YjuFw829w+yAS0wIZwt6rDeJbW
+         dEs7j8xAcqXJOZYFQF/mNGOF4WbO2VKg5By6njAGZlNOzCpnjgGR7yJ7LYuGMYKRUX
+         OIivJs/X7kgNZEzHdyfRIbMNaD/Sy5F6DjkZOhjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 30/53] mac80211: fix rate mask reset
+        stable@vger.kernel.org,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.14 25/59] arm64: dts: ls1012a: mark crypto engine dma coherent
 Date:   Mon, 29 Mar 2021 09:58:05 +0200
-Message-Id: <20210329075608.516972853@linuxfoundation.org>
+Message-Id: <20210329075609.715433564@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Horia Geantă <horia.geanta@nxp.com>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+commit ba8da03fa7dff59d9400250aebd38f94cde3cb0f upstream.
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+Crypto engine (CAAM) on LS1012A platform is configured HW-coherent,
+mark accordingly the DT node.
 
-Change the comparison accordingly.
+Lack of "dma-coherent" property for an IP that is configured HW-coherent
+can lead to problems, similar to what has been reported for LS1046A.
 
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
-
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.12+
+Fixes: 85b85c569507 ("arm64: dts: ls1012a: add crypto node")
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 1a13715b9a59..f37fbc71fc1d 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2681,14 +2681,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+@@ -164,6 +164,7 @@
+ 			ranges = <0x0 0x00 0x1700000 0x100000>;
+ 			reg = <0x00 0x1700000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++			dma-coherent;
  
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
- 
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
--- 
-2.30.1
-
+ 			sec_jr0: jr@10000 {
+ 				compatible = "fsl,sec-v5.4-job-ring",
 
 
