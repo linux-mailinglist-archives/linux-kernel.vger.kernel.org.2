@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E825E34C581
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB38734CC68
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhC2IAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42042 "EHLO mail.kernel.org"
+        id S236320AbhC2JC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231469AbhC2IAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A06561974;
-        Mon, 29 Mar 2021 08:00:23 +0000 (UTC)
+        id S234559AbhC2IgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BD7761A0A;
+        Mon, 29 Mar 2021 08:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004824;
-        bh=A7Dod5oX9lcDvyzu55/c1vP1GrYr53ekQ6EyH788SmE=;
+        s=korg; t=1617006952;
+        bh=Jvs8TPoftQgiAHSGIQRTNmP/+YFUSdSAJ0TJq4mD6Ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U9voqCYgO6SpOFXmt9+q9tNvKIhdOlw0QcnyXSZNKiG1PVGuiiAk4H+2ex2sheSYc
-         uBwrDeW/RpKNjZnQQdmAA9UsTxx/Kb4iFW8vn5XC7YDdZv2JU+zcaGToFrnhuGAkC0
-         QwXkEVZjqUHUNiCJ8Lg0XrBgQtADrwnpBGOBFGZo=
+        b=N0fVZ4yWanetQBmnfp4O9b6OfgIo6oGP43VYqJ/mAM5OhnkjdIwkH4hPkpALVglSW
+         wgRAzvbD+sbj2RmD/AX/Zn7VS+6ldUt8EXoB9wTjNtiJo+0O8vx0mj3RX+waxEohdv
+         KmkBFSzTBNVfvHh2ilWF0G42J7stA/qznDmnVs6I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 16/33] squashfs: fix inode lookup sanity checks
-Date:   Mon, 29 Mar 2021 09:58:01 +0200
-Message-Id: <20210329075605.788613551@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 166/254] netfilter: nftables: report EOPNOTSUPP on unsupported flowtable flags
+Date:   Mon, 29 Mar 2021 09:58:02 +0200
+Message-Id: <20210329075638.630914350@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit c1b2028315c6b15e8d6725e0d5884b15887d3daa upstream.
+[ Upstream commit 7e6136f1b7272b2202817cff37ada355eb5e6784 ]
 
-When mouting a squashfs image created without inode compression it fails
-with: "unable to read inode lookup table"
+Error was not set accordingly.
 
-It turns out that the BLOCK_OFFSET is missing when checking the
-SQUASHFS_METADATA_SIZE agaist the actual size.
-
-Link: https://lkml.kernel.org/r/20210226092903.1473545-1-sean@geanix.com
-Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8bb69f3b2918 ("netfilter: nf_tables: add flowtable offload control plane")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/export.c      |    8 ++++++--
- fs/squashfs/squashfs_fs.h |    1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ net/netfilter/nf_tables_api.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/squashfs/export.c
-+++ b/fs/squashfs/export.c
-@@ -165,14 +165,18 @@ __le64 *squashfs_read_inode_lookup_table
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end
-+		    || (end - start) >
-+		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 8ee9f40cc0ea..2aae0df0d70d 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6929,8 +6929,10 @@ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
+ 	if (nla[NFTA_FLOWTABLE_FLAGS]) {
+ 		flowtable->data.flags =
+ 			ntohl(nla_get_be32(nla[NFTA_FLOWTABLE_FLAGS]));
+-		if (flowtable->data.flags & ~NFT_FLOWTABLE_MASK)
++		if (flowtable->data.flags & ~NFT_FLOWTABLE_MASK) {
++			err = -EOPNOTSUPP;
+ 			goto err3;
++		}
  	}
  
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= lookup_table_start ||
-+	    (lookup_table_start - start) >
-+	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
---- a/fs/squashfs/squashfs_fs.h
-+++ b/fs/squashfs/squashfs_fs.h
-@@ -30,6 +30,7 @@
- 
- /* size of metadata (inode and directory) blocks */
- #define SQUASHFS_METADATA_SIZE		8192
-+#define SQUASHFS_BLOCK_OFFSET		2
- 
- /* default size of block device I/O */
- #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
+ 	write_pnet(&flowtable->data.net, net);
+-- 
+2.30.1
+
 
 
