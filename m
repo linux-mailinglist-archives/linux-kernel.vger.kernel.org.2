@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2706734C243
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 05:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5A734C247
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 05:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhC2DkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 23:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbhC2DkH (ORCPT
+        id S230213AbhC2Dpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 23:45:49 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15368 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhC2Dpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 23:40:07 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81430C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 20:40:07 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id t5so5848510qvs.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 20:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=t+xrhMH6Gr2A3zI8Lcey2uhccYuzey1LBxw8FGRBr38=;
-        b=GlrshGa0JheYxNSV53Bg30loaFV1EoaqTDeQ4sNl5yMfy0XcZRrlxMtdMSPW1A7Yf4
-         EbTgvKP2xqK9gpYlJKevK6F099bP6A7MjXe561/2v+ADngUOs3cryvs85OYWgtjJZXfk
-         1iQoDgHm2qxjio8Y9Ymp80ANC43PudXOfx/WUcIOvInOgXAy7VcIgWyRsm98QhImbst5
-         +/1tM1ELbjLI5lHjScnDyL90S4FRIHjiUbfHkrmzex7q+YurcZfSlSqSK3bSb3xrZVAs
-         MnNvbTC7Hmn51U/oVHggPrGZ47AxohQwlQ8dtGXWZ4z6bqbTVeScW2T0abx16japHG9X
-         wOPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=t+xrhMH6Gr2A3zI8Lcey2uhccYuzey1LBxw8FGRBr38=;
-        b=mw+VxAgp2WYHVdoty0JGHTKEmWb2xw48psGz5Uf0y2XQstbcdg+rHfgpuYZWWIfucw
-         2wi7ABshLMlwaTU2wOzh3Y2XAk0aZI5fXMkuZiOp45eQHobPp086df7sww2acMwvjHSV
-         tMHKc+QRPkIum1PLAryAduXhyyccyyfSHE7aRpk0Sxtg+LtGV5cuuB9Rjio9s6kbwWvt
-         U2MM2qP6bseRQMZ+fGWasWhSm5tkVAudoBwXS+419NrXZOmEo5ak1C6fO5F8Vnoi4ghk
-         sYjIcKHNI7adw5fOcOTNbo6sgnNOLVLwREFkEDumoU2RHtOTOpgZoxmNDaLENnK53RSG
-         VhLQ==
-X-Gm-Message-State: AOAM530S1BUBMXKrdO1XWdg2i+8k0Tm6yZsc2MUK+3720G9w/nwTAkyk
-        4zaF+ERj97umRZy9/NOpRxaCifoUWKHFdfm8owkSZg==
-X-Google-Smtp-Source: ABdhPJwtzOJzKprrFyS651SYxqerVpA4YQVKn1jE961aUbyTUomzkbGS4bOkuGuS6qbJozSOfhU9WUXqdidGPMyRNcE=
-X-Received: by 2002:a0c:dd14:: with SMTP id u20mr24167583qvk.13.1616989206452;
- Sun, 28 Mar 2021 20:40:06 -0700 (PDT)
+        Sun, 28 Mar 2021 23:45:33 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F7z273cjpz9sJy;
+        Mon, 29 Mar 2021 11:43:27 +0800 (CST)
+Received: from huawei.com (10.67.174.78) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
+ 11:45:23 +0800
+From:   Chen Lifu <chenlifu@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <valentin.schneider@arm.com>, <maz@kernel.org>,
+        <dbrazdil@google.com>, <mark.rutland@arm.com>,
+        <wangkefeng.wang@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <heying24@huawei.com>, <yuehaibing@huawei.com>,
+        <weiyongjun1@huawei.com>, <johnny.chenyi@huawei.com>,
+        Chen Lifu <chenlifu@huawei.com>
+Subject: [PATCH v2 -next] arm64: smp: Add missing prototype for some smp.c functions
+Date:   Mon, 29 Mar 2021 11:43:43 +0800
+Message-ID: <20210329034343.183974-1-chenlifu@huawei.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210328172147.GA19252@arm.com>
+References: <20210328172147.GA19252@arm.com>
 MIME-Version: 1.0
-References: <cover.1615954045.git.greentime.hu@sifive.com> <8008af6d86737b74020d7d8f9c3fbc9b500e9993.1615954046.git.greentime.hu@sifive.com>
- <20210323203508.GA1251968@robh.at.kernel.org>
-In-Reply-To: <20210323203508.GA1251968@robh.at.kernel.org>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Mon, 29 Mar 2021 11:39:54 +0800
-Message-ID: <CAHCEehKw2Sb6DN-hQCZB8-ARuaOf47mmzS18Fqm1amr4sXVCRg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-To:     Rob Herring <robh@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>, sboyd@kernel.org,
-        lorenzo.pieralisi@arm.com, Philipp Zabel <p.zabel@pengutronix.de>,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.78]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8824=E6=97=A5 =
-=E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=884:35=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Thu, Mar 18, 2021 at 02:08:11PM +0800, Greentime Hu wrote:
-> > Add PCIe host controller DT bindings of SiFive FU740.
-> >
-> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> > ---
-> >  .../bindings/pci/sifive,fu740-pcie.yaml       | 119 ++++++++++++++++++
-> >  1 file changed, 119 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-=
-pcie.yaml
-[...]
-> > +examples:
-> > +  - |
-> > +    pcie@e00000000 {
-> > +        #address-cells =3D <3>;
-> > +        #interrupt-cells =3D <1>;
-> > +        #size-cells =3D <2>;
-> > +        compatible =3D "sifive,fu740-pcie";
-> > +        reg =3D <0xe 0x00000000 0x1 0x0
->
-> Humm, 4GB for DBI space? The DWC controller doesn't have that much
-> space, and the kernel will map *all* of that. That's not an
-> insignificant amount of memory just for page tables.
+In commit eb631bb5bf5b
+("arm64: Support arch_irq_work_raise() via self IPIs") a new
+function "arch_irq_work_raise" was added without a prototype.
 
-Thank you for review and point this out. :)
+In commit d914d4d49745
+("arm64: Implement panic_smp_self_stop()") a new
+function "panic_smp_self_stop" was added without a prototype.
 
-I check the spec description for DBI in DWC_pcie_ctl_dm_databook.pdf
-section 3.15 3.16 and table 3-17.
+We get the following warnings on W=1:
+arch/arm64/kernel/smp.c:842:6: warning: no previous prototype
+for ‘arch_irq_work_raise’ [-Wmissing-prototypes]
+arch/arm64/kernel/smp.c:862:6: warning: no previous prototype
+for ‘panic_smp_self_stop’ [-Wmissing-prototypes]
 
-I think CX_SRIOV_ENABLE and CX_ARI_ENABLE will be set to 0 because
-these 2 are endpoint mode features.
-Single Root I/O Virtualization (SR-IOV) This section describes the
-SR-IOV features implemented in EP mode. The parameter for enabling
-SR-IOV is CX_SRIOV_ENABLE
-Alternative Routing-ID Interpretation (ARI) ARI allows an endpoint to
-support more than eight physical functions (PFs). ARI is enabled by
-the CX_ARI_ENABLE parameter.
+Fix the warnings by:
+1. Adding the prototype for 'arch_irq_work_raise' in irq_work.h
+2. Adding the prototype for 'panic_smp_self_stop' in smp.h
 
-So based on Table 3-17, we will need to map 2GB(bit30) instead of 4GB(bit31=
-).
+Signed-off-by: Chen Lifu <chenlifu@huawei.com>
+---
+v2:
+- move the prototype for 'panic_smp_self_stop' to smp.h
+ arch/arm64/include/asm/irq_work.h | 2 ++
+ arch/arm64/include/asm/smp.h      | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/arm64/include/asm/irq_work.h b/arch/arm64/include/asm/irq_work.h
+index a1020285ea75..81bbfa3a035b 100644
+--- a/arch/arm64/include/asm/irq_work.h
++++ b/arch/arm64/include/asm/irq_work.h
+@@ -2,6 +2,8 @@
+ #ifndef __ASM_IRQ_WORK_H
+ #define __ASM_IRQ_WORK_H
+ 
++extern void arch_irq_work_raise(void);
++
+ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return true;
+diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+index bcb01ca15325..0e357757c0cc 100644
+--- a/arch/arm64/include/asm/smp.h
++++ b/arch/arm64/include/asm/smp.h
+@@ -145,6 +145,7 @@ bool cpus_are_stuck_in_kernel(void);
+ 
+ extern void crash_smp_send_stop(void);
+ extern bool smp_crash_stop_failed(void);
++extern void panic_smp_self_stop(void);
+ 
+ #endif /* ifndef __ASSEMBLY__ */
+ 
+-- 
+2.17.1
+
