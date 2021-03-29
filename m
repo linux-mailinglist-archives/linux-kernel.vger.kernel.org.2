@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8E634CD6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A875934CD87
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhC2J4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:56:55 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:59109 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231901AbhC2J4f (ORCPT
+        id S232282AbhC2KBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:01:19 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:53767 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232642AbhC2KBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:56:35 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 893075C008F;
-        Mon, 29 Mar 2021 05:56:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 29 Mar 2021 05:56:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=hlmPwDW0xIb+jOtVKY6Nlely5rp4huLJ54bPI4YY1
-        7c=; b=lPrMq7DF/wVe7vN+IpzPFVw30uJIRCaBYUvhB/A+k7tg7F2w8k5S4MAJN
-        B65s7ZpYrggNic5ZWMH3HApKD/FL7LgvGaia8EdPnBxIuARXjPmOzGzgu+AsNQYr
-        uUU39nUjM2rBiZV4pl1RSfrAv1j6JmUL1n1jYg5YkRhjVYd5I1nwgxaFDTE6179x
-        oAZT6Qmmv70+ykTKDsBtwj86opiEnfzjbEUhfyXxxsMft1aLEP4MAkJ9vKQR99mG
-        P9FkGzH8F4Zo1aUNkyUrL8kevooUvcbqIsH1PSWU5OTggx/R8uH/Zu4879Tko3Z4
-        c/N/CvXFGD0pdP9rj0RZIOb1CfDcQ==
-X-ME-Sender: <xms:UqRhYPwUMZO0Pu2_gB_aXKpgPDsD5HbNqyhXzIMy-0tmvtizbr8w4A>
-    <xme:UqRhYHRzBu1EidtSKZC54AL3IO2B6WFVn-247gtP8Dzil5Fsf1ll-KUJ13-2ZmAfH
-    FZUzCydyt0Q_NeMSg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptgfghfggufffkfhfjgfvofesthhqmhdthhdtjeenucfhrhhomhepffgrphhh
-    nhgvucfrrhgvshhtohhnqdfmvghnuggrlhcuoeguphhksehnohhntggvfihorhgurdhorh
-    hgqeenucggtffrrghtthgvrhhnpeejuedugfdtkeevjeeitdejueefteduvefhgfejffev
-    gfeihfdtvedvffetgeeuveenucfkphepkedvrdekvddrvddukedrudegtdenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeguphhksehnohhntggv
-    fihorhgurdhorhhg
-X-ME-Proxy: <xmx:UqRhYJW4ybXMYwCrflmC23VXKJBIv519v-mFAFyNPeniw_hUZd3QmQ>
-    <xmx:UqRhYJjh-Ea5l3aPmcLtajFp2gc5TN8rptFpFOSVxdF8MD127b_XPw>
-    <xmx:UqRhYBBiCtfktkLOJK30-N74k4utfN5tB2q2aUEGq5n88bb8xzL6wQ>
-    <xmx:UqRhYEOhWQSHmUGIIUdhshoJSOGohsHYPOIoMZwiPl3JB89fHFBCBA>
-Received: from [192.168.178.60] (dslc-082-082-218-140.pools.arcor-ip.net [82.82.218.140])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E722224005A;
-        Mon, 29 Mar 2021 05:56:33 -0400 (EDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Daphne Preston-Kendal <dpk@nonceword.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an error when TAI has not been configured
-Date:   Mon, 29 Mar 2021 11:56:31 +0200
-Message-Id: <2505F20D-ED84-4B36-9504-8A8C756C992E@nonceword.org>
-References: <YGGbAIoCKDbZLQQ0@localhost>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-In-Reply-To: <YGGbAIoCKDbZLQQ0@localhost>
-To:     Miroslav Lichvar <mlichvar@redhat.com>
-X-Mailer: iPhone Mail (18D52)
+        Mon, 29 Mar 2021 06:01:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617012061; x=1648548061;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NPEbe7QL1i+Cz7ANKxkJSqSzieTdku4UjfQnVlN+dWo=;
+  b=dKcDe7INVxbKmCcea0EgecxyaZ2oeYW7bsl7HHKrkwEuh/m3TJdFt0e0
+   Erl5IStEhZ5URAsqmDwPO/h2xfy5rXiqJCYeu7kl4Y7hsnu96rVS53JoJ
+   bY/EVKjFAVZeAfYC5sPuqumAiNlubCbng777FhTLuzAUjhiguoiOK264t
+   BJ6CXlpuDFEYmTQ7G5kRlgp7baAr9ecO1dgleZVcESAaVfZR+U3Ktm5SD
+   Z6YfFKbVmKnCXNqpJRhdxcocVZ1FhACMsw/XNqHazSCFTGI1rgntvpWDX
+   q3Ort9/1yyr58e3Amfgucu9jnLpTaU9ov9rA4vXhbZFJw0/yXqUQWkz5f
+   g==;
+IronPort-SDR: kpcxMRp5GIBnV+zYR+DpUjgGArnI8DbFp9FwGfDJ1kS3DHgNiHXbPEcCNcu5MahfZPI9lh9DAo
+ fsskIxTJnJjZ3KgGbRKrwT+N5+LoAelmLEemNEWzU4Q/pTHZCdNip5S8J4NM54PzdA6omsSEwG
+ GU/gfczNj9jXsWIzTXe1Ovw53Z9wWxvitP/Xo3e1zIFZjA+gtOSH/p2f3Ej8r+hiPiGPmC5EvZ
+ ddKWVJjsQh4N61WeB5hFdDiNVoVJLHMFvfcLpNIwkiE3gJpnGSDdIbs8w9tEuG2MkBUlbTK2+P
+ efU=
+X-IronPort-AV: E=Sophos;i="5.81,287,1610434800"; 
+   d="scan'208";a="111696104"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Mar 2021 03:01:01 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 29 Mar 2021 03:01:00 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 29 Mar 2021 03:00:58 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        <emil.velikov@collabora.com>, <ezequiel@collabora.com>
+Subject: [PATCH 0/7] ARM: configs: at91: updates to defconfigs
+Date:   Mon, 29 Mar 2021 11:56:38 +0200
+Message-ID: <cover.1617010856.git.nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29 Mar 2021, at 11:16, Miroslav Lichvar <mlichvar@redhat.com> wrote:
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> =EF=BB=BFOn Fri, Mar 26, 2021 at 08:28:59PM -0700, Richard Cochran wrote:
->> Using ntpd on Debian, the service will set the offset, but only after
->> synchronization with the upstream server has been established, and
->> this takes about five minutes, IIRC.
->=20
-> With the iburst option it shouldn't take more than 10 seconds. There
-> might be an issue wrt stepping the clock when the initial offset is
-> large. In Fedora and derived distros using chrony by default the
-> TAI-UTC offset should be set right on the first update of the clock as
-> expected.
+Hi,
 
-Yeah, I personally am not really concerned about the immediate post-boot env=
-ironment. As long as it=E2=80=99s ready by the time userland services are st=
-arting, I think most applications that need TAI will be satisfied.
+I collected some of the defconfig modifications that we carry in our vendor
+tree for some time. They are interesting for both users and validation process as
+most are part of validation plans or CI.
 
->> Getting back to the original point of the kernel returning an error,
->> I don't see a need for this.  Applications that require correct leap
->> seconds can simply call adjtimex() and wait until the initial zero
->> value is changed by ntpd/etc to the correct offset.  That isn't
->> fundamentally harder than calling clock_gettime() and waiting until
->> the error would go away.
->=20
-> There are at least two issues with handling a zero offset as a special
-> value. One is that zero could potentially be a valid value in distant
-> future.
+Don't hesitate to indicate missing pieces to add to this serries.
 
-Since even a single negative leap second was, until recently, considered (qu=
-ite literally) astronomically unlikely, and even now (where the earth is spi=
-nning faster than ever hitherto expected) the most likely scenario by far se=
-ems to be that it=E2=80=99ll just be a longer wait than usual for the next p=
-ositive leap second, I=E2=80=99d say minus 37 leap seconds is a prospect for=
- the very very distant future indeed. But in theory, yes.
+The base of this serries are patches by Emil Velikov as part of "[PATCH v2
+00/10] Microship SAMA5D4 VPU support et al" and not included here. They will be
+part of pull-request to ARM-SOC.
 
-> The other is that the kernel updates the offset when a leap
-> second is inserted/deleted even if the original offset is zero, so
-> checking for zero (in the kernel or an application) works only until
-> the first leap second after boot.
+Best regards,
+  Nicolas
 
-This is a problem and definitely speaks for having a way to tell whether CLO=
-CK_TAI has been set up at all.
 
-> The kernel would need to set a flag that the offset was set. Returning
-> an error in clock_gettime() until the offset is set sounds reasonable
-> to me, but I have no idea how many of the existing applications it
-> would break.
+Codrin Ciubotariu (1):
+  ARM: configs: at91: sama5: Add audio MIKROE PROTO board
 
-Given that CLOCK_TAI doesn=E2=80=99t exist except on Linux, any portable Uni=
-x application is likely to have a fallback of some kind, though perhaps only=
- at compile time.
+Nicolas Ferre (4):
+  ARM: configs: at91: sama5: MCP16502 regulator as built-in
+  ARM: configs: at91: Add mtd tests as modules
+  ARM: configs: at91: Add USB Video webcam class
+  ARM: configs: at91: Modernize UBI defconfig part
 
-Daphne Preston-Kendal
+Razvan Stefanescu (2):
+  ARM: configs: at91: sama5: PIOBU as built-in
+  ARM: configs: at91: sama5: Enable LAN78XX as module
 
+ arch/arm/configs/at91_dt_defconfig |  5 ++++-
+ arch/arm/configs/sama5_defconfig   | 11 ++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+-- 
+2.31.1
 
