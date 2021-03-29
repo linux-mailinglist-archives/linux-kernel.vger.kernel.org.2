@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9A134D68B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1B334D690
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhC2SCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
+        id S230298AbhC2SE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhC2SCr (ORCPT
+        with ESMTP id S229861AbhC2SED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:02:47 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58838C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:46 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id k8so13645537iop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:46 -0700 (PDT)
+        Mon, 29 Mar 2021 14:04:03 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7385C061574;
+        Mon, 29 Mar 2021 11:04:02 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id o19so15232473edc.3;
+        Mon, 29 Mar 2021 11:04:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Au5y7OoRawkUEJFPbHpW7802nDwRo0nj5nxIyw0Dfa8=;
-        b=Zyv3esmbX3USPfY9NAG7q5qJ25C5cUmKUK84xtlRwZWvmEl9I9Vqc5cxJLsk1TUGi2
-         MHGmzk+I9z1q7ecO1VPAa36DUoII1M34Y5/YSt73CTOgG2rthe8T+jq+pM+TT+wZ/ouH
-         wMDgcJ7f8eOshtxjUXzmZ8WIqfIJyGirgIKQ66p9iWswBXj2B+Cdaff6XyJ3OyCeiqR/
-         R1CRqn/hHZAOAEOFQoDV936hEf9CcA2fqSS7viWb85sEjL1LveJTJQkbxoO10OIgo98T
-         oJOqBG0G/D261zEsXroGXVguWv00cRCPbeGpnOpJtvg4yLd69XejIXoU5GJNJxjD64P/
-         VA6g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=91f+t4KKqAvvbgMruzc8afBLkhYSXYPNhwopXJ4FvVA=;
+        b=p6FRuPHxYfTgUMm71UKWithIReDTZW6SeruOWNV5sOveBvkwcHbRXfHKWUKErqFjv4
+         VnseLfIZ+uJXbhBFCOgoZiIF2USLUIHX8guz67aa7SeGe11LtVAGOftJ8rpQYzABxZv0
+         NBGKe3elev+KxtqxnS/kfj6uTohaKbXdcMYSJgcmQP/m93VQC0iZ5hAhIGx0Vm3NOhd/
+         fz6BPNiXsw7YJn8r+AIL+RtgZ1wnaaiCC4DYk44V8NMxun+pnLMhD/XuSL9iBWztZI3T
+         dFVtrMO23I9KORs2uL48iAYqFmQXkBmVF0QeRvWJntphdGHVrrY0CyCA0WqebLbC+C2w
+         k8cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Au5y7OoRawkUEJFPbHpW7802nDwRo0nj5nxIyw0Dfa8=;
-        b=iD8G+IkS+s0vIZ3wff3Pdvrpj26ezVwAkci651xxiIpFlLWZ/S8gTvoCv6aO3poaaf
-         8OyuYDrb9pNkyrCbT1ri1y0AWV1OeDbH3YypW7Sbe/ixNmqqCDepAZ7HyIwKMfbxy8G8
-         5fsBPMHJsQ6Ciu92+iqJ3y/yYZjLbswdRP6I+6dqYTieYGyd1VVnElATyhjz6mvWqFLc
-         Au7XfGSPrrbzpwLlK81ji74iUySjdCRLHqOTT++Y1rq6kkgp3R4NRpSQQ7n1mEX++tV9
-         2YwZUd9zknw/KSzSgKvixMDoxriSyf1F6jsHv8Ua71C7EcQDtFSNa/WIsQ6Tro8/6w0k
-         ObqQ==
-X-Gm-Message-State: AOAM532IraxO3C6DvtPxD+DHaGDAudUxINhD/3L3j/I56Xnv0CyDtEMW
-        gMNekTPRcLVlVCkavH4A/YnNxuyhouYC/QOxQ+n3uQ==
-X-Google-Smtp-Source: ABdhPJxZkJRqw/QeGv+RrSKRBGLc4oFkV6J1+/TGuuqVGXQHnaoEB7kMLbeNK26s3AKHKzDMmyeObLY3VW0lugoGEc8=
-X-Received: by 2002:a05:6602:1c9:: with SMTP id w9mr20873871iot.201.1617040964939;
- Mon, 29 Mar 2021 11:02:44 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=91f+t4KKqAvvbgMruzc8afBLkhYSXYPNhwopXJ4FvVA=;
+        b=CB5n52rXqQFTIDnmWNX2m20U3omZVqpHF5I0byisE1F2XE6l+uRsi2eqzoVA1lN5aT
+         2A3IEiDyxwHSfOXkG6r+pmsCzEBm0keq0dFdr9jQ0BdzzqoEmII90rp0U7ry/gy90tlz
+         JPs6lCKGecd89ujVgGO4vAPL7QoRKGDz5nt81vOcIEVfeT6isYX1XwYJah/z8Ks5Uwwc
+         IdIRCjQ/Y1b4Sb6h4BrU52disESgPRnrG54V4dFyXrDR69TJifVzzBb6wUDnszSc34S1
+         BpZ/kFhmzoZbA4QSp8LLZM4H97wv9bVOWS+8vAFVJQjmEfL85Fqg7PItqWknYZLiVz3I
+         sYJA==
+X-Gm-Message-State: AOAM532HZSoGDAMQApf5U5hQbbBCSNtdL2hVdUHEGPz0Au1xOt4mtSgh
+        6ccYVPqgO/W9LrpCdtn7Lr7fUpxRJh8=
+X-Google-Smtp-Source: ABdhPJySGC280M1HDveYNoXLySwn5Qy7wl8t1bmn1rG2whFdiva4yYtWd0vkZ3aI0+Zv6ITZX6kE+Q==
+X-Received: by 2002:aa7:db53:: with SMTP id n19mr30446881edt.330.1617041041521;
+        Mon, 29 Mar 2021 11:04:01 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd? ([2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd])
+        by smtp.gmail.com with ESMTPSA id cf4sm9446313edb.19.2021.03.29.11.04.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 11:04:01 -0700 (PDT)
+Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
+To:     =?UTF-8?B?WOKEuSBSdW95YW8=?= <xry111@mengyan1223.wang>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        =?UTF-8?Q?Dan_Hor=c3=a1k?= <dan@danny.cz>,
+        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org
+References: <20210329175348.26859-1-xry111@mengyan1223.wang>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
+Date:   Mon, 29 Mar 2021 20:04:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <cover.1616135353.git.xji@analogixsemi.com> <189a637c87827f78c433a053e3c2129ebec73188.1616135353.git.xji@analogixsemi.com>
- <CAMavQKLN04F2rzu7J121N4GvQKh7kq9yXGk+fBSUjsC2nbiSiA@mail.gmail.com> <20210329102710.GA1930154@anxtwsw-Precision-3640-Tower>
-In-Reply-To: <20210329102710.GA1930154@anxtwsw-Precision-3640-Tower>
-From:   Sean Paul <sean@poorly.run>
-Date:   Mon, 29 Mar 2021 14:02:08 -0400
-Message-ID: <CAMavQKJHakp0ZfHFEy77r8wHY+3uaP-6Ab2ren6vA46njpjx3g@mail.gmail.com>
-Subject: Re: [PATCH v6 4/5] drm/bridge: anx7625: add HDCP support
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Foss <robert.foss@linaro.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        devel@driverdev.osuosl.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sheng Pan <span@analogixsemi.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Torsten Duwe <duwe@lst.de>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210329175348.26859-1-xry111@mengyan1223.wang>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 6:27 AM Xin Ji <xji@analogixsemi.com> wrote:
+Am 29.03.21 um 19:53 schrieb Xℹ Ruoyao:
+> If the initial value of `num_entires` (calculated at line 1654) is not
+> an integral multiple of `AMDGPU_GPU_PAGES_IN_CPU_PAGE`, in line 1681 a
+> value greater than the initial value will be assigned to it.  That causes
+> `start > last + 1` after line 1708.  Then in the next iteration an
+> underflow happens at line 1654.  It causes message
 >
-> On Thu, Mar 25, 2021 at 02:19:23PM -0400, Sean Paul wrote:
-> > On Fri, Mar 19, 2021 at 2:35 AM Xin Ji <xji@analogixsemi.com> wrote:
-> > >
-> > > Add HDCP feature, enable HDCP function through chip internal key
-> > > and downstream's capability.
-> > >
-> > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > > ---
+>      *ERROR* Couldn't update BO_VA (-12)
+>
+> printed in kernel log, and GPU hanging.
+>
+> Fortify the criteria of the loop to fix this issue.
 
-/snip
+NAK the value of num_entries must always be a multiple of 
+AMDGPU_GPU_PAGES_IN_CPU_PAGE or otherwise we corrupt the page tables.
 
-> > >  static void anx7625_dp_start(struct anx7625_data *ctx)
-> > >  {
-> > >         int ret;
-> > > @@ -643,6 +787,9 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
-> > >                 return;
-> > >         }
-> > >
-> > > +       /* HDCP config */
-> > > +       anx7625_hdcp_setting(ctx);
-> >
-> > You should really use the "Content Protection" property to
-> > enable/disable HDCP instead of force-enabling it at all times.
-> >
-> > Sean
-> Hi Sean, it's hard to implement "Content Protection" property, we have
-> implemented HDCP in firmware, it is not compatible with it. We don't
-> have interface to get Downstream Cert.
-> Thanks,
-> Xin
+How do you trigger that?
 
-Hi Xin,
-I'm sorry, I don't understand what you mean when you say you don't
-have an interface to get Downstream Cert.
+Christian.
 
-The Content Protection property is just a means through which
-userspace can turn on and turn off HDCP when it needs. As far as I can
-tell, your patch turns on HDCP when the display is enabled and leaves
-it on until it is disabled. This is undesirable since it forces HDCP
-on the user.
+>
+> BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+> Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
+> Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> Reported-by: Dan Horák <dan@danny.cz>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> index ad91c0c3c423..cee0cc9c8085 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
+>   		}
+>   		start = tmp;
+>   
+> -	} while (unlikely(start != last + 1));
+> +	} while (unlikely(start < last + 1));
+>   
+>   	r = vm->update_funcs->commit(&params, fence);
+>   
+>
+> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
 
-Is it impossible to enable/disable HDCP outside of display
-enable/disable on your hardware?
-
-Thanks,
-
-Sean
-
-> >
-> > > +
-> > >         if (ctx->pdata.is_dpi)
-> > >                 ret = anx7625_dpi_config(ctx);
-> > >         else
-
-/snip
