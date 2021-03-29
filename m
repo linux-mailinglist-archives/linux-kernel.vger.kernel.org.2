@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5823C34C329
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C282D34C326
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhC2Fre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
+        id S230444AbhC2Fpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhC2FrP (ORCPT
+        with ESMTP id S230416AbhC2Fpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:47:15 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FE4C061574;
-        Sun, 28 Mar 2021 22:47:14 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id l4so17469660ejc.10;
-        Sun, 28 Mar 2021 22:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bXlnApRgNcMIGT76ZQV04rA/bCo848YrNvuPlqGQpvQ=;
-        b=t5H1cq6mR2J0tNuRkpuD+P0HTf9//Q22IVkgTelMDLHB/+bIZG7ylZ2HP/w7E5HXkY
-         bfV25OEHAbbMQkyZbBctBs/eTnc3jSKTZn8R2WzQCnlaArK6aqjJYFPtrpv91BSk7tH1
-         gncpjD5X4FwLEn8q3Z6LZh6PElzsHQoEjkT1pa74GNuuBeIACZj+BfUswV+MJ37IMCjn
-         u4q5JI0Bm11dyaR9j1kgWKI6heTey/cgjNE/eoOxo3d5+1DLxmtAozDWZ6zTDN4dzOog
-         A9x7UZbvFtczgl9u+NsFfVx1wSBV2fwhI1VTVd3iz5qBtZRfQTlrRPoHdZ7Kh6SkZbJU
-         Y2hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bXlnApRgNcMIGT76ZQV04rA/bCo848YrNvuPlqGQpvQ=;
-        b=QTV8AdGIRKFMom2tY6BHyZS6GmNgXvGMOphus4JGLjlKHOX+3HjqDd4/Fm+OoRTmBo
-         8vHLnmm8RkngS9Dpc87i0/0qA0iIx3Qxzkzt6exrGlWouxPhZdQ8wdtiJAvyh+maEKsE
-         aWWHrRDVFdIoJuAF/vvdIM97JtscN1oHXgZdY3TvR4ekT1jTBo//c/FV+IM/iWsp2lof
-         T1ktO9j7cTy61aQYIOxUQWdo6sc0mSg+O5Oly5QlgCr/bpLCj+vc7Z7ZOfNPXWY8KmYp
-         3YIpMZc+mtAtYKxvZP3JB7EsuWYvhrbAjq9I+49SGuudqsYRZUQbGgcp0+bIlSVj3U4G
-         yNnw==
-X-Gm-Message-State: AOAM5302XW+CoRp31SCXRj5+DkfYJfq1NAb/ypzkvcoEwA4pr0PNIDrY
-        m83D4APgXQG3PsSvFkr9wd8tY1FV0biRPzkPgKWBdUG7
-X-Google-Smtp-Source: ABdhPJwsXHthTgYYf5UWRTTp8fSSNWg4ScWBunwhAhbFWXal+Dh9hBCdEvFYZ0Zi1hquu/AVrO97JjiZ4rJHejGMElM=
-X-Received: by 2002:aa7:d316:: with SMTP id p22mr26038498edq.107.1616996231621;
- Sun, 28 Mar 2021 22:37:11 -0700 (PDT)
+        Mon, 29 Mar 2021 01:45:40 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386A9C061574;
+        Sun, 28 Mar 2021 22:45:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F81YC0YG8z9sRf;
+        Mon, 29 Mar 2021 16:37:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616996224;
+        bh=qwsrCthDVSbJ/Gv6/5UKZO6OtEvwh0KrkhLvKvq5l0o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AjFI6b1sEeL3JbNqYFpybI9tR3UdP3rw0k8go3K7lF5LzoKjsGtu2bZambJOfB0Dv
+         /MSQmBQoTgmZalSCMzx/E4p0LeQww6lPqc/SENUjvE58o2v1bQMtbnDY9xfjmuhEKh
+         CU54mmQU+BlNoZnwpa4iWsaqRPJb1TcemdEss0CkCtJC0srxQZfJqGdPCvMtfVH/r7
+         FGHqSFfpq4E1Gq+G43in9fCxpifYqBqEOkZAIc3AgzxnMHwZO7oOSR1nf4j1t37y9C
+         OunVT/KHIshlv0R+RQoXyPF9g3nIkDW3Z/wV3FbHb1uCcXOU7hc0QOPAPupIGiTC13
+         5U5kwN3picC2g==
+Date:   Mon, 29 Mar 2021 16:37:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the staging tree with the scmi tree
+Message-ID: <20210329163700.673b51e9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <cover.1616992679.git.unixbhaskar@gmail.com> <b103bd6a8bcdad7f90806dbe7680017235cf1d9c.1616992679.git.unixbhaskar@gmail.com>
-In-Reply-To: <b103bd6a8bcdad7f90806dbe7680017235cf1d9c.1616992679.git.unixbhaskar@gmail.com>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Sun, 28 Mar 2021 22:37:00 -0700
-Message-ID: <CAMo8BfKj+ojEbc1ZJ6QL+f9Sq+7oZeqVNMu6nTP=OSbrqD2XOg@mail.gmail.com>
-Subject: Re: [PATCH 01/23] atomctl.rst: A typo fix
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.biKiUG0_tD30u8yzvX01BR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 10:18 PM Bhaskar Chowdhury
-<unixbhaskar@gmail.com> wrote:
->
-> s/controlers/controllers/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Documentation/xtensa/atomctl.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/xtensa/atomctl.rst b/Documentation/xtensa/atomctl.rst
-> index 1ecbd0ba9a2e..a0efab2abe8f 100644
-> --- a/Documentation/xtensa/atomctl.rst
-> +++ b/Documentation/xtensa/atomctl.rst
-> @@ -23,7 +23,7 @@ doing a Cached (WB) transaction and use the Memory RCW for un-cached
->  operations.
->
->  For systems without an coherent cache controller, non-MX, we always
-> -use the memory controllers RCW, thought non-MX controlers likely
-> +use the memory controllers RCW, thought non-MX controllers likely
+--Sig_/.biKiUG0_tD30u8yzvX01BR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In this line you could also do s/thought/though/.
+Hi all,
 
--- 
-Thanks.
--- Max
+Today's linux-next merge of the staging tree got a conflict in:
+
+  drivers/iio/common/scmi_sensors/scmi_iio.c
+
+between commit:
+
+  fc91d6b6f0ba ("iio/scmi: port driver to the new scmi_sensor_proto_ops int=
+erface")
+
+from the scmi tree and commit:
+
+  1b33dfa5d5f1 ("Merge remote-tracking branch 'local/ib-iio-scmi-5.12-rc2-t=
+ake3' into togreg")
+
+from the staging tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/iio/common/scmi_sensors/scmi_iio.c
+index b4bdc3f3a946,63e4cec9de5e..000000000000
+--- a/drivers/iio/common/scmi_sensors/scmi_iio.c
++++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+@@@ -501,23 -528,9 +501,9 @@@ static int scmi_iio_set_sampling_freq_a
+  	return 0;
+  }
+ =20
+- static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+- {
+- 	struct iio_buffer *buffer;
+-=20
+- 	buffer =3D devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+- 	if (!buffer)
+- 		return -ENOMEM;
+-=20
+- 	iio_device_attach_buffer(scmi_iiodev, buffer);
+- 	scmi_iiodev->modes |=3D INDIO_BUFFER_SOFTWARE;
+- 	scmi_iiodev->setup_ops =3D &scmi_iio_buffer_ops;
+- 	return 0;
+- }
+-=20
+ -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ -					 struct scmi_handle *handle,
+ -					 const struct scmi_sensor_info *sensor_info)
+ +static struct iio_dev *
+ +scmi_alloc_iiodev(struct scmi_device *sdev, struct scmi_protocol_handle *=
+ph,
+ +		  const struct scmi_sensor_info *sensor_info)
+  {
+  	struct iio_chan_spec *iio_channels;
+  	struct scmi_iio_priv *sensor;
+
+--Sig_/.biKiUG0_tD30u8yzvX01BR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhZ3wACgkQAVBC80lX
+0Gx9Owf8DQqZOiMwR4oxq+2MutYO7PrRcUYhvoZ7CapDE8LksClbIQy8twfMD1Ib
+9Hr9LE4xAPIk/LaZEz2j8cFea53eZupvwy7bTIYh816xLppH9ZlQMpAbwHznWhsG
+TJ8mbgchMx3/D507hjdDj08fGZfotZsia4g4pLceLxAf0unL43HXHt+S4iEVm7et
+XYp6sgNKYItXQMddUUSOhN0xYkh9gD15grtzalAhjtB9xwxXZigS1Taw3dHO5BFJ
+Vxvtxk6S4ycp+vJ1huuW517/olaOmj04xW5rLW6iB1Ppk7m+6uR6FYuvZY+AoJtG
+JMTBRVMhdUpw5Cge5Jbx+34bCsP9uA==
+=5SZd
+-----END PGP SIGNATURE-----
+
+--Sig_/.biKiUG0_tD30u8yzvX01BR--
