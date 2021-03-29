@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4DE34D689
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9A134D68B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhC2SCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35088 "EHLO
+        id S230280AbhC2SCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbhC2SCL (ORCPT
+        with ESMTP id S230213AbhC2SCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:02:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BE1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:10 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQwDH-0004Gs-73; Mon, 29 Mar 2021 20:02:07 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQwDG-0001XY-IO; Mon, 29 Mar 2021 20:02:06 +0200
-Date:   Mon, 29 Mar 2021 20:02:06 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
-Message-ID: <20210329180206.rejl32uajslpvbgi@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-4-clemens.gruber@pqgruber.com>
- <20210329170357.par7c3izvtmtovlj@pengutronix.de>
- <YGILdjZBCc2vVlRd@workstation.tuxnet>
+        Mon, 29 Mar 2021 14:02:47 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58838C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:46 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k8so13645537iop.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Au5y7OoRawkUEJFPbHpW7802nDwRo0nj5nxIyw0Dfa8=;
+        b=Zyv3esmbX3USPfY9NAG7q5qJ25C5cUmKUK84xtlRwZWvmEl9I9Vqc5cxJLsk1TUGi2
+         MHGmzk+I9z1q7ecO1VPAa36DUoII1M34Y5/YSt73CTOgG2rthe8T+jq+pM+TT+wZ/ouH
+         wMDgcJ7f8eOshtxjUXzmZ8WIqfIJyGirgIKQ66p9iWswBXj2B+Cdaff6XyJ3OyCeiqR/
+         R1CRqn/hHZAOAEOFQoDV936hEf9CcA2fqSS7viWb85sEjL1LveJTJQkbxoO10OIgo98T
+         oJOqBG0G/D261zEsXroGXVguWv00cRCPbeGpnOpJtvg4yLd69XejIXoU5GJNJxjD64P/
+         VA6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Au5y7OoRawkUEJFPbHpW7802nDwRo0nj5nxIyw0Dfa8=;
+        b=iD8G+IkS+s0vIZ3wff3Pdvrpj26ezVwAkci651xxiIpFlLWZ/S8gTvoCv6aO3poaaf
+         8OyuYDrb9pNkyrCbT1ri1y0AWV1OeDbH3YypW7Sbe/ixNmqqCDepAZ7HyIwKMfbxy8G8
+         5fsBPMHJsQ6Ciu92+iqJ3y/yYZjLbswdRP6I+6dqYTieYGyd1VVnElATyhjz6mvWqFLc
+         Au7XfGSPrrbzpwLlK81ji74iUySjdCRLHqOTT++Y1rq6kkgp3R4NRpSQQ7n1mEX++tV9
+         2YwZUd9zknw/KSzSgKvixMDoxriSyf1F6jsHv8Ua71C7EcQDtFSNa/WIsQ6Tro8/6w0k
+         ObqQ==
+X-Gm-Message-State: AOAM532IraxO3C6DvtPxD+DHaGDAudUxINhD/3L3j/I56Xnv0CyDtEMW
+        gMNekTPRcLVlVCkavH4A/YnNxuyhouYC/QOxQ+n3uQ==
+X-Google-Smtp-Source: ABdhPJxZkJRqw/QeGv+RrSKRBGLc4oFkV6J1+/TGuuqVGXQHnaoEB7kMLbeNK26s3AKHKzDMmyeObLY3VW0lugoGEc8=
+X-Received: by 2002:a05:6602:1c9:: with SMTP id w9mr20873871iot.201.1617040964939;
+ Mon, 29 Mar 2021 11:02:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="noem5j55dbfdgb7z"
-Content-Disposition: inline
-In-Reply-To: <YGILdjZBCc2vVlRd@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <cover.1616135353.git.xji@analogixsemi.com> <189a637c87827f78c433a053e3c2129ebec73188.1616135353.git.xji@analogixsemi.com>
+ <CAMavQKLN04F2rzu7J121N4GvQKh7kq9yXGk+fBSUjsC2nbiSiA@mail.gmail.com> <20210329102710.GA1930154@anxtwsw-Precision-3640-Tower>
+In-Reply-To: <20210329102710.GA1930154@anxtwsw-Precision-3640-Tower>
+From:   Sean Paul <sean@poorly.run>
+Date:   Mon, 29 Mar 2021 14:02:08 -0400
+Message-ID: <CAMavQKJHakp0ZfHFEy77r8wHY+3uaP-6Ab2ren6vA46njpjx3g@mail.gmail.com>
+Subject: Re: [PATCH v6 4/5] drm/bridge: anx7625: add HDCP support
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        devel@driverdev.osuosl.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sheng Pan <span@analogixsemi.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Torsten Duwe <duwe@lst.de>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 6:27 AM Xin Ji <xji@analogixsemi.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 02:19:23PM -0400, Sean Paul wrote:
+> > On Fri, Mar 19, 2021 at 2:35 AM Xin Ji <xji@analogixsemi.com> wrote:
+> > >
+> > > Add HDCP feature, enable HDCP function through chip internal key
+> > > and downstream's capability.
+> > >
+> > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > ---
 
---noem5j55dbfdgb7z
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+/snip
 
-On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
-> On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
-> > > The PCA9685 supports staggered LED output ON times to minimize current
-> > > surges and reduce EMI.
-> > > When this new option is enabled, the ON times of each channel are
-> > > delayed by channel number x counter range / 16, which avoids asserting
-> > > all enabled outputs at the same counter value while still maintaining
-> > > the configured duty cycle of each output.
-> > >=20
-> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> >=20
-> > Is there a reason to not want this staggered output? If it never hurts I
-> > suggest to always stagger and drop the dt property.
->=20
-> There might be applications where you want multiple outputs to assert at
-> the same time / to be synchronized.
-> With staggered outputs mode always enabled, this would no longer be
-> possible as they are spread out according to their channel number.
->=20
-> Not sure how often that usecase is required, but just enforcing the
-> staggered mode by default sounds risky to me.
+> > >  static void anx7625_dp_start(struct anx7625_data *ctx)
+> > >  {
+> > >         int ret;
+> > > @@ -643,6 +787,9 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
+> > >                 return;
+> > >         }
+> > >
+> > > +       /* HDCP config */
+> > > +       anx7625_hdcp_setting(ctx);
+> >
+> > You should really use the "Content Protection" property to
+> > enable/disable HDCP instead of force-enabling it at all times.
+> >
+> > Sean
+> Hi Sean, it's hard to implement "Content Protection" property, we have
+> implemented HDCP in firmware, it is not compatible with it. We don't
+> have interface to get Downstream Cert.
+> Thanks,
+> Xin
 
-There is no such guarantee in the PWM framework, so I don't think we
-need to fear breaking setups. Thierry?
+Hi Xin,
+I'm sorry, I don't understand what you mean when you say you don't
+have an interface to get Downstream Cert.
 
-One reason we might not want staggering is if we have a consumer who
-cares about config transitions. (This however is moot it the hardware
-doesn't provide sane transitions even without staggering.)
+The Content Protection property is just a means through which
+userspace can turn on and turn off HDCP when it needs. As far as I can
+tell, your patch turns on HDCP when the display is enabled and leaves
+it on until it is disabled. This is undesirable since it forces HDCP
+on the user.
 
-Did I already ask about races in this driver? I assume there is a
-free running counter and the ON and OFF registers just define where in
-the period the transitions happen, right? Given that changing ON and OFF
-needs two register writes probably all kind of strange things can
-happen, right? (Example thought: for simplicity's sake I assume ON is
-always 0. Then if you want to change from OFF =3D 0xaaa to OFF =3D 0xccc we
-might see a period with 0xacc. Depending on how the hardware works we
-might even see 4 edges in a single period then.)
+Is it impossible to enable/disable HDCP outside of display
+enable/disable on your hardware?
 
-Best regards
-Uwe
+Thanks,
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Sean
 
---noem5j55dbfdgb7z
-Content-Type: application/pgp-signature; name="signature.asc"
+> >
+> > > +
+> > >         if (ctx->pdata.is_dpi)
+> > >                 ret = anx7625_dpi_config(ctx);
+> > >         else
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiFhoACgkQwfwUeK3K
-7AmvxQf+Kp1rfako1h3M55rltPehAc3AA2Mm7QgxbFli1DO8l1yv/rHyDhoWqVGW
-OnGEYoCJvn3mvjJVWPHgnjwFQBoHDgsrClihzVNX+2oqM9arkRnDbZ3QE6QnBIBI
-eGo+kSSfsQIv7uUEyL2m2CuHivqDIGsS8khw6LdoTHzvp13vK/ICGm5zVKiRBkE2
-bFSrKsuBn89LN+uYjULYcDs0nWtd61ah6ULENwttDvihVedCK55JxkFxLNUg5XRS
-0SYZBvuTwjQeepWttbVCiLtpHL+dbc39ZYNQcSo7G7lS1bgj2WGTVVdb+x5xuAeC
-jJwGG+TgKT6QA9h41S/8Y9lzUyWT1w==
-=QR6o
------END PGP SIGNATURE-----
-
---noem5j55dbfdgb7z--
+/snip
