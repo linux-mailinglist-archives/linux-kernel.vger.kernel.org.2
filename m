@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAC834DC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CE234DC67
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhC2XZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:25:30 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:46376 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhC2XZB (ORCPT
+        id S231163AbhC2XZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:25:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54204 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhC2XZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:25:01 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNIwoQ153749;
-        Mon, 29 Mar 2021 23:24:21 GMT
+        Mon, 29 Mar 2021 19:25:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNOK3s074256;
+        Mon, 29 Mar 2021 23:24:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
- b=JyTDHQf7k9I1YjCEB7TIMjVqCbi6QtC8u243HxRy/HaLxrVLUH1I6c0K/f/PgZsXs5St
- acN/ZqHcissDPVNwsv4QhMvcjYRAf2gqRaUn01vPeFlWpENMyscdSUz6zACOsmFcQTl7
- zC2rgKSJO/1/oZpe44fFCDF1IFxYY81RtS9WwmmPmxcTJ5rXnRaZA8Bt6eRdZPAz2ur3
- ECvGcDgcOuC/sCiWYJmQj1lAdCDwPRYRoxxKgyvITSs+F+n6uRXBoBosSgFMZgYNVNU2
- jeI5SsCykbKKdj+ObI/y+OVWj+zbdq9fJ60OdYf/Fnyt6Y3QIFRnTc+77HldH5rwexVY 9w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 37ht7bdbr5-1
+ s=corp-2020-01-29; bh=l1MGVnvXX5XZLTEdq/dQIWxlrE3poh+6I2f5BNcsii4=;
+ b=uIHiavUBmeKuOAlCmHZqhvUCgqEk65uH0DVTNDK1Vn3ChgQiO3JIq3ndhPKAjkwuQ3Fe
+ wpnAXEj/poPWszozq5LP+fteYwk2JjWzK8F7uVpsQRNGUdCECJSe3wbf/YgvXjLsJvDk
+ adxn2iQevIadVR36imVl/YpYu9BRzz+ZtBmpJus+gu71XzjyAFG63y3gBo/Fy5f+cly2
+ Jvq8e3DalCgD0HiXKmVvNUut8jbp5X+J4w34FmVHTFZsMythdc2JqmkqlmDC7bKEOW3x
+ 5nOczE6oGz8ObbDz220pC102Z2wxVSEjAjABZgTQGCNPAqe4ucL9HdQe4QZY35447m/q Iw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37hwbnd6tx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 23:24:20 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNFYFk055873;
-        Mon, 29 Mar 2021 23:24:20 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
-        by aserp3030.oracle.com with ESMTP id 37je9p06mw-1
+        Mon, 29 Mar 2021 23:24:23 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNEmAx088315;
+        Mon, 29 Mar 2021 23:24:22 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+        by aserp3020.oracle.com with ESMTP id 37jekxsr9s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 23:24:20 +0000
+        Mon, 29 Mar 2021 23:24:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bqg2lHTur8yQyoZ5r1CubbEBTJ4q9/T1DAOd2/6mMDjtw67f3cqHZ7otrGA38E4n8GP8IzaT5KCYXL23bCHF40r4Z3riZSJSUT8pETMFftigYh50c2sLjGJCa6dt7mykXmW0yINjA+DESWtQ1PfF/j/P84yDUu927bd9gUQJgXvbNRCY6G7mkSfGziW/mkaGi+9gf0R4JlPmLAdcvipp1PtmNWG+XmhCAgturTgnww9DZNO+j4ih4EY/LY+Wev2Efm8/XtsaU+Ir8yE53cteiNwobndE6HL1Uc+zskaF9k1UvIgI30P5AL73czwIbsFmJLCoibyhHciZERxMsGO3TQ==
+ b=eaVPK3Lel/jzpUmXy83SnPGXXiRDmWlEE99HnsiaKf1oqsQfriZBHzwRbQokjmeb51gA6SwiVnmlZFXhVNIbTWmIc6r8HWCgMvvkdZgu9f+yTT2Fvq8B8kEHvRYaqpTkI5uXl6CFu/NnHau4fGC5N7nIqsu08tlOLnUhbPS1YBzt1+qBtpU4hFCpMKeqGSotJxnJVLKW3TQDsvD9xeneTb7ajtQMqfGFWjVDIuOdkiixFfTbocLfQ9WtDOOeAaULkn9zS692z+b4qOnuTGEG2al2NZk+5mKul0JKkFxqX1fL513hqYqVgjAKQontLPc48yvIzgy8HYk8Us65muXUQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
- b=D5eF2YS+Hfeu3PnSfNKB/+gSADLdApPbZlRbPr++fjYO2JLKCjM/YC0peCo+n7/TxXvgRzPzQTz5pTOUZ29Z5k57uBlqhEry+wIzeigizch9UBvibiCrk0JoEoAm0Tj5QZmbGd0HXIkjW1Pea6dHXo8mqZO2I2ixlYsfvShQrm6Yrd2dO9B2UmvQhke2d74KKPZb+ue8B0YPadcGnLl458TnlEKXA8gpH9xZUXFHd9HBpNv8Qm7nHGG+Hgpv7mdj1vQML1W8siIbCXRyzX2C+gv7qf+evjcAIUL9ykyUFYlJpIMVuPKJEO2G9s0tXcFWsvc9GdL1FBA+H65/daEv9g==
+ bh=l1MGVnvXX5XZLTEdq/dQIWxlrE3poh+6I2f5BNcsii4=;
+ b=fONDyymA3JT4mCHgGmsm75qmSuH3Psx6jGEH7s92LcgGD7am3lPvw2hsd46bPJX9xSi/S3FoeIrTvlCcUDsFyctwUDUFrhnWaZq+b10ybqv/c4vb04duN+AHxaEioxTm7tmsJjORVcW8Wx2qhK64znU+XfCWwxhKD1HAc/83BPpv2BHYWdSM5XhYnyrK6NsxoJVwERzMSHolee96LS0IhElFzqDLVQ2cA6bCHq7wtmbTjCEhaH0jcgkYsFVrL7Igl2jXvTGh8jdOrKFQTNXiYZHpx7VyPJp3rzFg7YOpZyNhYN0K1bMCOhAXMWE7XzomByJN3j2Dl4JmUxYZ2zu+pQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
- b=sby6V7cP1Kabc14igMr67e/ykN533VXMKN9XJc9ZFlo4CWYei9+9Lx1gUS8svTfR1erHGqW0Ewq9CvdPEv+oZG2vEd+WO57YxvON/qo40FFxovcKCNVZUsnZscTgxazRdBRm18dcOVREB18n0LKKy+aiivPca30WZByVqBX2XB0=
+ bh=l1MGVnvXX5XZLTEdq/dQIWxlrE3poh+6I2f5BNcsii4=;
+ b=kWwncddqXQoZWQLsWiyL/wBglKhe3ZZYlnerFMySroiPiCaZNbUUlkdwZtj1duf7+rvGA8YC/PlyUJTHsdEQwoj45Ll5EKrVppeGpwaRg2rwnFpSbtgV9EGa/12oxEWUk09+Phrjp5Z/mzXn4Z0ZNhouF+SBpAOdIK1oeWNAh0Y=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BY5PR10MB4148.namprd10.prod.outlook.com (2603:10b6:a03:211::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Mon, 29 Mar
- 2021 23:24:18 +0000
+ 2021 23:24:20 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 23:24:18 +0000
+ 23:24:20 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
@@ -82,9 +82,9 @@ Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
         Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v2 1/8] mm/cma: change cma mutex to irq safe spinlock
-Date:   Mon, 29 Mar 2021 16:23:55 -0700
-Message-Id: <20210329232402.575396-2-mike.kravetz@oracle.com>
+Subject: [PATCH v2 2/8] hugetlb: no need to drop hugetlb_lock to call cma_release
+Date:   Mon, 29 Mar 2021 16:23:56 -0700
+Message-Id: <20210329232402.575396-3-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210329232402.575396-1-mike.kravetz@oracle.com>
 References: <20210329232402.575396-1-mike.kravetz@oracle.com>
@@ -96,221 +96,95 @@ X-ClientProxiedBy: MWHPR10CA0065.namprd10.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MWHPR10CA0065.namprd10.prod.outlook.com (2603:10b6:300:2c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 23:24:17 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR10CA0065.namprd10.prod.outlook.com (2603:10b6:300:2c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 23:24:19 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e9ef4317-bd97-4616-4d6f-08d8f309c667
+X-MS-Office365-Filtering-Correlation-Id: 368e27ce-c047-4a42-cbd4-08d8f309c7be
 X-MS-TrafficTypeDiagnostic: BY5PR10MB4148:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB414868E4A0E859A71BFE666CE27E9@BY5PR10MB4148.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <BY5PR10MB4148D442626930E817545610E27E9@BY5PR10MB4148.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UxOv8S+tQU5gxfDaj+DmZnvZ/pYidg5LzArqQn7OO/R2bPfzgtvz4MKalpWIKa4WKs+l05VvunCrp6N15b4aWAQinGJQZnOFL1NOOqeryd07oMKhjjn73SXRVhDJ3uCvyAkcIyNbviPyq11SRVyvCjCghBl6/Wc0jIJiEcCIqrKaqLiiFvMEPdNGxHE0BoDJZwj46ox55t+vjyBigIyrkFL8kh/zRJAdEuO60E/BLFoFhx15jAR8M9bMPKU1ybGDsM4tlqBHYyzyKUTmT2JPio7Je5H0jbv6KrFczZG/l64XkHAfQochtYVzkeVTzQOiVueqJJ3OKYmom2uevTGjCbuQq7p0ozYvWe5nBCW1ZynnBAKTVBWZ9MNNmK+dT/fMFNs81d4YjdPp9CCCEucUcQ7QTQm53FIpQDi4xEricx6G0nn55o+9+0BghrkuqXgtbtq842Ck39rA3SjVVWAzZDVr/1v5MgIIdO+D39qLTkx+E+NSxFqLG7Kl8lcNTJP7pAZ7d/dlaF8K9AT7NbjWOOvzicgx30OpEZbEWxWq+dcF2PEnJ5nt9yTZG0cfTS9j97sumWY/vRsxFTRGvk6HYSf1H5c7+J6RoPuBJk8O8rTTlBMW7Y57+fgZNYkfypmOVYyTpsRHv36uhvF4oYb+0Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39860400002)(16526019)(44832011)(52116002)(26005)(2616005)(36756003)(186003)(7696005)(7416002)(956004)(478600001)(4326008)(6486002)(54906003)(6666004)(86362001)(5660300002)(66946007)(66556008)(1076003)(66476007)(83380400001)(38100700001)(8676002)(316002)(8936002)(2906002)(107886003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+TIliutXksls0XFOEchQDlU3IuGWwL/lvpmGbPVzG5e3Xs7qn+0OB2cwObu7?=
- =?us-ascii?Q?2PTQRa/6jVpEzZK7xPg+rRIoKqHJSUd+r0SHxwPAk+TT3x4vJuDtb+GCY0RA?=
- =?us-ascii?Q?j41UVbC9iDrwwMgBY86m+nwUUPOBufTeVfqTGxjCmKsQHYnLu033Iyk4H4ye?=
- =?us-ascii?Q?FucZQmI/2oHgTfoqbE724SKlkmhXRT/MHddAsao7n+uLB7HOtiOkPeYWLSbk?=
- =?us-ascii?Q?qu/CFZXjd3m88fxpVwjgF9iIj5CED1ynSCgyDXqiS6d6cRH9GpuYkV1xac/B?=
- =?us-ascii?Q?L9KEeqMNxjoAgv/87VTCb44cqeNLJ2FDkjlVs8pxB4SHrZs5DIxYqRFh2QT9?=
- =?us-ascii?Q?akTfLu9DrMxtcMIyG2F/9J6N+Ye64FxFIEzr4zlp994iI+6AmHxXwzSyDbNN?=
- =?us-ascii?Q?V3togVc1mx/ZQFzyKNUyMgMvMuRs/Bf0jVIj3ykx3pXv3S3NOj23+EmZa8+J?=
- =?us-ascii?Q?L7oU9OXQboLr1dCU1etpc9Nn/S6o2+p0RUefCL5GxThmhWnIEKC0HbinFHtR?=
- =?us-ascii?Q?VBGzFDdQ2r1HVlDxxO2zXOZe1VybuqinjnhFibLAng8ckzr4hD5VAq2SBpYZ?=
- =?us-ascii?Q?Oy4LNvx/5R6SKbdhmFML78fzmlckXgNbMMwtjwxsFm/FeuTRxKIZZqgxBVj+?=
- =?us-ascii?Q?KyIW5NpfU/wj9e3Lqcx9Hevuy/pdXthWbnQ/gHh+3z9lowc51PyNzJXB987V?=
- =?us-ascii?Q?KnyhwjR8r28woOuBq6At7olv9Kq2xMWq9NwGd5AOQGCk1T96fkF7pBJi6rG6?=
- =?us-ascii?Q?/YJHxXttxfz3Dt8cubFKpt2RwTEDzXTPcD80p4ORNiAr5DnYtfv3exm7hF/7?=
- =?us-ascii?Q?DcQoVkUV3Nhj7DkKlb7CfjDEdfmhUGKYbVmfOiREWop+p9FcR7WOSd7tPszJ?=
- =?us-ascii?Q?5ETJLYRZyP1xW15ZYncgsjXKIuujFtJfSStqjgfKmCZ50yMKXyNUIgNktC+J?=
- =?us-ascii?Q?dQ5gPqMgSttZmb80f5FzJvlzixCN9w9AsjEt0YadjNjQ1eC+MS26qMXL8Wwe?=
- =?us-ascii?Q?0swVHh58iFvzo4uqZkPOyrjrhkWSJUXorgUyDr05VNOyhAqjJx6zXmTWAH9Q?=
- =?us-ascii?Q?5vZxifWv7dOJENnucwsEmCfWoC4SHkc9XKoEJ2si9+BLmyjEBJujKGye3i0t?=
- =?us-ascii?Q?XJjBe/3EU1KNrSoxrMZ0vs+n1GaTy9Rb2KckXQCFECCwDZK9A1jVWeZwDe8G?=
- =?us-ascii?Q?YjhJH+1BoU17e5xJq/a1GT/eVWkjRIIO8ZIOPH2U7P9Gn1p46aBK1hdkjhp9?=
- =?us-ascii?Q?vebw7upSrQDFTmY7NrfzuZGD8EVQDeqEpf8TJmI16LBg/QQeWfZp7NizWBj2?=
- =?us-ascii?Q?xLLA1rDn1PftkzFbciSOMCSl?=
+X-Microsoft-Antispam-Message-Info: s8FJa9kgKwidrG/8eR+gcO+oOGscanrAjo3YLk9neddh2u09XxOE/hIEO6hwShModqlB+L7vKGbWR2UMSChpM+jmqNaCLrMCEOEFFGAstD8vWSStrcnwois+aIq8OR8jZhAIApeV/4t/erk5Ho16je0KhrmLb9Ri5QazC/xuEjL2bDJ6SC0u5Z2JWYPx2j1vnVuNh9Di1iCV8foe5N9j4QjFw20ZVJ+m+5lkG8FoOoSWyXE/9ILwFsz8xcTRXXn/sRDaYD7nZDF552BKcR5G1MKsCnDtFvsQxvJ147gS3abazBD5A0nYDTr0znEfNW0OmFs54IjOmMYtmfT9K6ViZo3h6DODz6q6nzYiiBrfvrHnab0kS9wyORfgfCvcN6+ZN2cQJaNspsXHCfBs4bbB0060CGWxEJW9Cw3vLKhIMXVCQzbiWUp2oiRzUKS3n0dV6A104Fqp0fdP6mqTlVLn8OITu8VX4jZ8NTGcVBmD93mwkrH+rHuiWeZsXMK54A6R1FUq/RduPetTIy8DOViruNnfAY/Z++HYU/dtHrYyYlUJUGA3QtzM9zif8vf60hNfXmqeGNdMSVtayLCUoop5yQZln8d65wEPi+IiuSsZk+M9++4AvydUPOCOIHuI6orWEAEmcn8BNUO50BDZcX34WA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39860400002)(16526019)(44832011)(52116002)(26005)(2616005)(36756003)(186003)(7696005)(7416002)(956004)(478600001)(4326008)(6486002)(54906003)(6666004)(86362001)(5660300002)(66946007)(66556008)(1076003)(4744005)(66476007)(83380400001)(38100700001)(8676002)(316002)(8936002)(2906002)(107886003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PYEke/HQphU4VhSHbPr419OVppvRl5PmOw95hXzlC+YLmRsgtqPikmUivV2x?=
+ =?us-ascii?Q?EefTgZ9LD1Dq6YdlJ5UjgaXZBgvSSPlnf5KUP+DU+TrRGznZnW4zANZcPzzB?=
+ =?us-ascii?Q?RJAyXx90r44cxICtLXkmHrj9t3Qw6jrT5rGyXdVdjPU54PMA+kQmUw7Uawwi?=
+ =?us-ascii?Q?cA7uYrefAZkrwsNQ/ef3hOP6mxFL+oLV5KVu9ayc6/ZAUye0SY2d+b4l4lEY?=
+ =?us-ascii?Q?oFNARVC4LxpO6L2LPmYwlh09TJm8us/BPiRK1ETOtRLcqHduLVXYiP5WAHYC?=
+ =?us-ascii?Q?UrpJtDgT1fvks9VU75MrdDNpq+BaX+ZTKkQLRCFEBqDT4vPWWQetWEXmHW7R?=
+ =?us-ascii?Q?mqdUPD7s/y1oWCK4NOWpF07WspzdCW52qvcpO3l5xJeGiY5O7wJ8szLdcvy4?=
+ =?us-ascii?Q?S4NhOAQ+uFZCwIRyC1Q3ZbNIqejVZ57bc8ehcBNX9G1vXE8VTrl4Oxda25yH?=
+ =?us-ascii?Q?zTdlVgGSnmE4cFMqGSTHmHGGFRU4KWGjEqYM2B9unQIc4DPiBz+WWO1nhiOq?=
+ =?us-ascii?Q?ty6Kmyv246Ty+RKvTeH0r89a0lpzhzW+waAOEBZUcfxE2afpT6nyD9nog5md?=
+ =?us-ascii?Q?2hjxsmBJxODItJnDCBw4KSJIHVsNlmVeV2lvTKoEc0FWJFoAzt6hRnj89sfo?=
+ =?us-ascii?Q?7lPlPuhHY5x64vE44euefm+jdxuRQfoZs4WV1lM6xGBbvj0GVIgxyY3Z2eQD?=
+ =?us-ascii?Q?7KI8lOh90ewfVxg+LCqGsL/Snl5VziUuoj3S+qQWgZmcdBpDkhEoHfh7b9T6?=
+ =?us-ascii?Q?1arI5aMuL+FLF8IZlbdy7TeQrkAr4eek5MzfS7PT+IBfoB1E/pCLkir1F7WM?=
+ =?us-ascii?Q?3f7TIeCDeM1AcpNplqW4DhTYKcB19fde6hksY5F8mPYLc5BeFUs7L/ZhvgIE?=
+ =?us-ascii?Q?EMJwpStlVoKhDE9nksvsRzLw3FHiH/QehSoH8O8XZbt0TTQffurDls9aEPSy?=
+ =?us-ascii?Q?Dq/Pj8XO9IOmwoalz4i8/UueRXvRwBAwrlRdxhiucNvy7fblSwjOq4bZW1X4?=
+ =?us-ascii?Q?bWk610NSTr0RgbGzq69VE1gO08sMw++bHBFh0QohAb4x8+el3alu1pegxg2h?=
+ =?us-ascii?Q?3NiPggqCbmqJvA3iF8wAhAjr3rgEXeQgG0bb6ukfk8IRUZbEji4x/JXkgRln?=
+ =?us-ascii?Q?GrSRP95Eyd4haocXbijcP2Sm7jK0mz+oOvp+dkHWxdagJ46J2wvRrLLdUtP/?=
+ =?us-ascii?Q?xnj5/AJjtZOj7JoC3S6xbto7UYtuNVzOzs8dLOAiVOpzZ+HscVkjggUDaNCU?=
+ =?us-ascii?Q?8p9IlF533TM1Ed/8SdcYVmiiKo78BnUxjSd+D+yZNQwyRbalNK25+aYLFqt3?=
+ =?us-ascii?Q?nzAaizWhOAhdwU1AzBdIxwQM?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9ef4317-bd97-4616-4d6f-08d8f309c667
+X-MS-Exchange-CrossTenant-Network-Message-Id: 368e27ce-c047-4a42-cbd4-08d8f309c7be
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 23:24:18.2904
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 23:24:20.6411
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3JoasxsPKAUBepD+ogeDZHCApTRfeP8ZZGSbHxkrNa2Zlcoo2GgnYcUwZ5XfMk11IW24sfr+PrHc9V7+xTZEQg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: UhWYsA2ZT7xXWxHBPhclqrpKw00b4SgIV2mbikpzi/+TMko6+x7Cp+CXaVoZI8W8IXcde5iKzIWTyoWVLtyySg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4148
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
  definitions=main-2103290173
-X-Proofpoint-GUID: XDF7oFZfr-wMC_Zy1E4FC0_fKoGFD3LS
-X-Proofpoint-ORIG-GUID: XDF7oFZfr-wMC_Zy1E4FC0_fKoGFD3LS
+X-Proofpoint-GUID: rYtRNA97Q4qVHxkxfj7CUsMR25DaKGHx
+X-Proofpoint-ORIG-GUID: rYtRNA97Q4qVHxkxfj7CUsMR25DaKGHx
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
- clxscore=1015 mlxscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 clxscore=1015
+ phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103290173
+ definitions=main-2103290174
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ideally, cma_release could be called from any context.  However, that is
-not possible because a mutex is used to protect the per-area bitmap.
-Change the bitmap to an irq safe spinlock.
+Now that cma_release is non-blocking and irq safe, there is no need to
+drop hugetlb_lock before calling.
 
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/cma.c       | 20 +++++++++++---------
- mm/cma.h       |  2 +-
- mm/cma_debug.c | 10 ++++++----
- 3 files changed, 18 insertions(+), 14 deletions(-)
+ mm/hugetlb.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/mm/cma.c b/mm/cma.c
-index b2393b892d3b..80875fd4487b 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -24,7 +24,6 @@
- #include <linux/memblock.h>
- #include <linux/err.h>
- #include <linux/mm.h>
--#include <linux/mutex.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
- #include <linux/log2.h>
-@@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
- 			     unsigned int count)
- {
- 	unsigned long bitmap_no, bitmap_count;
-+	unsigned long flags;
- 
- 	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
- 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
- 
--	mutex_lock(&cma->lock);
-+	spin_lock_irqsave(&cma->lock, flags);
- 	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
--	mutex_unlock(&cma->lock);
-+	spin_unlock_irqrestore(&cma->lock, flags);
- }
- 
- static void __init cma_activate_area(struct cma *cma)
-@@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
- 	     pfn += pageblock_nr_pages)
- 		init_cma_reserved_pageblock(pfn_to_page(pfn));
- 
--	mutex_init(&cma->lock);
-+	spin_lock_init(&cma->lock);
- 
- #ifdef CONFIG_CMA_DEBUGFS
- 	INIT_HLIST_HEAD(&cma->mem_head);
-@@ -391,8 +391,9 @@ static void cma_debug_show_areas(struct cma *cma)
- 	unsigned long start = 0;
- 	unsigned long nr_part, nr_total = 0;
- 	unsigned long nbits = cma_bitmap_maxno(cma);
-+	unsigned long flags;
- 
--	mutex_lock(&cma->lock);
-+	spin_lock_irqsave(&cma->lock, flags);
- 	pr_info("number of available pages: ");
- 	for (;;) {
- 		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
-@@ -407,7 +408,7 @@ static void cma_debug_show_areas(struct cma *cma)
- 		start = next_zero_bit + nr_zero;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3c3e4baa4156..1d62f0492e7b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1353,14 +1353,8 @@ static void update_and_free_page(struct hstate *h, struct page *page)
+ 	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+ 	set_page_refcounted(page);
+ 	if (hstate_is_gigantic(h)) {
+-		/*
+-		 * Temporarily drop the hugetlb_lock, because
+-		 * we might block in free_gigantic_page().
+-		 */
+-		spin_unlock(&hugetlb_lock);
+ 		destroy_compound_gigantic_page(page, huge_page_order(h));
+ 		free_gigantic_page(page, huge_page_order(h));
+-		spin_lock(&hugetlb_lock);
+ 	} else {
+ 		__free_pages(page, huge_page_order(h));
  	}
- 	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
--	mutex_unlock(&cma->lock);
-+	spin_unlock_irqrestore(&cma->lock, flags);
- }
- #else
- static inline void cma_debug_show_areas(struct cma *cma) { }
-@@ -430,6 +431,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 	unsigned long pfn = -1;
- 	unsigned long start = 0;
- 	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
-+	unsigned long flags;
- 	size_t i;
- 	struct page *page = NULL;
- 	int ret = -ENOMEM;
-@@ -454,12 +456,12 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 		goto out;
- 
- 	for (;;) {
--		mutex_lock(&cma->lock);
-+		spin_lock_irqsave(&cma->lock, flags);
- 		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
- 				bitmap_maxno, start, bitmap_count, mask,
- 				offset);
- 		if (bitmap_no >= bitmap_maxno) {
--			mutex_unlock(&cma->lock);
-+			spin_unlock_irqrestore(&cma->lock, flags);
- 			break;
- 		}
- 		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
-@@ -468,7 +470,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 		 * our exclusive use. If the migration fails we will take the
- 		 * lock again and unmark it.
- 		 */
--		mutex_unlock(&cma->lock);
-+		spin_unlock_irqrestore(&cma->lock, flags);
- 
- 		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
- 		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-diff --git a/mm/cma.h b/mm/cma.h
-index 68ffad4e430d..2c775877eae2 100644
---- a/mm/cma.h
-+++ b/mm/cma.h
-@@ -15,7 +15,7 @@ struct cma {
- 	unsigned long   count;
- 	unsigned long   *bitmap;
- 	unsigned int order_per_bit; /* Order of pages represented by one bit */
--	struct mutex    lock;
-+	spinlock_t	lock;
- #ifdef CONFIG_CMA_DEBUGFS
- 	struct hlist_head mem_head;
- 	spinlock_t mem_head_lock;
-diff --git a/mm/cma_debug.c b/mm/cma_debug.c
-index d5bf8aa34fdc..6379cfbfd568 100644
---- a/mm/cma_debug.c
-+++ b/mm/cma_debug.c
-@@ -35,11 +35,12 @@ static int cma_used_get(void *data, u64 *val)
- {
- 	struct cma *cma = data;
- 	unsigned long used;
-+	unsigned long flags;
- 
--	mutex_lock(&cma->lock);
-+	spin_lock_irqsave(&cma->lock, flags);
- 	/* pages counter is smaller than sizeof(int) */
- 	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
--	mutex_unlock(&cma->lock);
-+	spin_unlock_irqrestore(&cma->lock, flags);
- 	*val = (u64)used << cma->order_per_bit;
- 
- 	return 0;
-@@ -52,8 +53,9 @@ static int cma_maxchunk_get(void *data, u64 *val)
- 	unsigned long maxchunk = 0;
- 	unsigned long start, end = 0;
- 	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
-+	unsigned long flags;
- 
--	mutex_lock(&cma->lock);
-+	spin_lock_irqsave(&cma->lock, flags);
- 	for (;;) {
- 		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
- 		if (start >= bitmap_maxno)
-@@ -61,7 +63,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
- 		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
- 		maxchunk = max(end - start, maxchunk);
- 	}
--	mutex_unlock(&cma->lock);
-+	spin_unlock_irqrestore(&cma->lock, flags);
- 	*val = (u64)maxchunk << cma->order_per_bit;
- 
- 	return 0;
 -- 
 2.30.2
 
