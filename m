@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D8034D703
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C46134D730
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhC2SZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        id S231722AbhC2Sau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhC2SZc (ORCPT
+        with ESMTP id S231485AbhC2Sai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:25:32 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6C0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:25:31 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 184so16979739ljf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:25:31 -0700 (PDT)
+        Mon, 29 Mar 2021 14:30:38 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE294C061574;
+        Mon, 29 Mar 2021 11:30:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2dpHV13oSemjijajiv2fnI7bbtHFM2HWjOqGuAvrI7Q=;
-        b=fwE8UUsPQ4os/YO4GSbNy23LUIYQF9jlM57K/WfrhzNXebaNAy/zwy15UyW3Z/K3eW
-         cuLMd4xTn9HHeprw7/7qG+tLyPjEdz9V2mF9nlQ+0iC5IXigwvQpPkNvLtsgL8LYlKhl
-         HI8+UVUXChW4xU0VJ1a7ocPGAKPhDZV67JthPVhOXAmEVJi39bbHDaXzDXMVw0a3/e3N
-         igI/2F3vrQHD6uZG4tgTO8Oz2jhMEF+RzGeXfA28ujli/zIFJsncciPrPedE8CGs7tsf
-         RpgV7sjqXIl815z2oLP7kiorspOg6StAXkknvbjY7H6h5XohOoOW29lfjG12a58RuGC7
-         rxyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2dpHV13oSemjijajiv2fnI7bbtHFM2HWjOqGuAvrI7Q=;
-        b=VvJgHjUU9fzeuKD5gS3blV5ADLibKFwhBtDsbSD1zDWmf9VboNB4F036WvvZEMz3WR
-         UOREhzS4FVUwNWTLCmZAnBOlbo2//Ql7MxlR0C0uJ3ORnP3miHywUMqeH+QUq1C1DFJN
-         cfwE80uibrN9S7AAsYHy+uPdQPMkgwMyYrLTWpwUJgnGI5fy3IzDbox9HV0z3K/JZnTy
-         UHktK0DZ+rQ9Zfzk+o/cU8CZlEL1VSIZljfSQ5ydkMGueC2HocQxSn+NeDKXqeVly/3w
-         vjkVF61ewDT6/AMTDmOmssmjI5h+n2gotEGdA9RYzrmtLnnvkBlQoEG5/gYCGXe/R72x
-         LCKg==
-X-Gm-Message-State: AOAM532IZM3Y/BAQ//bQVDgVRZXmP57B24/S08Ar8wFZ/C4d6OFI487q
-        RacSQDeY62yn4NLvf2p7+9hpCCqgz3JedzmxQE+pTw==
-X-Google-Smtp-Source: ABdhPJxLC6IdXQWzkZo/5A1dFmvrH0DLUo4gNisGLZ/wV81vO8siyCZjD0Bnbd0b8+qDkXOGIJTY8bC8QhyW3wCmURc=
-X-Received: by 2002:a2e:5716:: with SMTP id l22mr18680924ljb.244.1617042330190;
- Mon, 29 Mar 2021 11:25:30 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=Najrrc9y+/48DUXx4/endqtIY6BJkPiOWT
+        uivmMc0is=; b=NaS9q8tOGiaDE2giyGJj/HhBdOzcB3LYDRI0hBV+yDVkKtANcj
+        gpL2dYG897SXSmoXz60Ynj8BqdTBDNVRaJ5cuRGyjkamPcEJ7VRdY7NopN+oSKZU
+        uSxF6gIhzhr9GWBYvd+h8POlcBCn7aOsxRc7Ky7u9/1EIJ8tcoSzUwgNI=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7Ei5HGJgEfdpAA--.51311S2;
+        Tue, 30 Mar 2021 02:30:18 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:25:21 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
+Message-ID: <20210330022521.2a904a8c@xhacker>
+In-Reply-To: <20210330022144.150edc6e@xhacker>
+References: <20210330022144.150edc6e@xhacker>
 MIME-Version: 1.0
-References: <20210322115531.3987555-1-arnd@kernel.org>
-In-Reply-To: <20210322115531.3987555-1-arnd@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 29 Mar 2021 11:25:19 -0700
-Message-ID: <CAKwvOdmNUkS0Hh_9-kvcDoK-UTUOV8hXsQx-R2o_T02fxMhFLQ@mail.gmail.com>
-Subject: Re: [PATCH] lockdep: address clang -Wformat warning printing for %hd
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDn7Ei5HGJgEfdpAA--.51311S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyxtF45CF1ruF48Kr4UArb_yoWkKrg_Z3
+        Wxta4xW3s5Jr4xCr4Durn5Zr1Ikw1FkFs5ur1xurW2y390vr1ftasaq3yrur9xZr4j9rW7
+        WF9rXrWxZw42vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JV
+        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r4j6F4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUciihUU
+        UUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 4:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Clang doesn't like format strings that truncate a 32-bit
-> value to something shorter:
->
-> kernel/locking/lockdep.c:709:4: error: format specifies type 'short' but the argument has type 'int' [-Werror,-Wformat]
->
-> In this case, the warning is a slightly questionable, as it could realize
-> that both class->wait_type_outer and class->wait_type_inner are in fact
-> 8-bit struct members, even though the result of the ?: operator becomes an
-> 'int'.
->
-> However, there is really no point in printing the number as a 16-bit
-> 'short' rather than either an 8-bit or 32-bit number, so just change
-> it to a normal %d.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+We allocate Non-executable pages, then call bpf_jit_binary_lock_ro()
+to enable executable permission after mapping them read-only. This is
+to prepare for STRICT_MODULE_RWX in following patch.
 
->
-> Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/locking/lockdep.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 70bf3e48eae3..bb3b0bc6ee17 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -705,7 +705,7 @@ static void print_lock_name(struct lock_class *class)
->
->         printk(KERN_CONT " (");
->         __print_lock_name(class);
-> -       printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
-> +       printk(KERN_CONT "){%s}-{%d:%d}", usage,
->                         class->wait_type_outer ?: class->wait_type_inner,
->                         class->wait_type_inner);
->  }
-> --
-> 2.29.2
->
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/net/bpf_jit_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index d8da819290b7..0d5099f0dac8 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -152,6 +152,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
+ 
+ 	if (!prog->is_func || extra_pass) {
++		bpf_jit_binary_lock_ro(header);
+ out_offset:
+ 		kfree(ctx->offset);
+ 		kfree(jit_data);
+@@ -169,7 +170,7 @@ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+ 				    BPF_JIT_REGION_END, GFP_KERNEL,
+-				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
++				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+ }
+ 
 -- 
-Thanks,
-~Nick Desaulniers
+2.31.0
+
+
