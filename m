@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A731534C361
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAFE34C36D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhC2Fzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhC2Fzb (ORCPT
+        id S229468AbhC2F4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:56:40 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59584 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhC2F4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:55:31 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78252C061574;
-        Sun, 28 Mar 2021 22:55:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F81yQ5GS5z9sRf;
-        Mon, 29 Mar 2021 16:55:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616997328;
-        bh=ssHqwp0jYzHAWbJb8XxvEzWUtgIJXXwjvOfaG7LTtOw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n53CIR8rKEvMDuYW+6+OQ0sAenTmu7jf+hyeZ2Hn4BK1ALcbwRtcrZP/2iyrxFj+0
-         wfBuMYuDSCfrXbNWkjwX8D6ukBouf77EhPDuoGeBuUgmfaqiNVvbqgxH1k/Tm4PvnL
-         JotjtNGsLcdExBzA2Yr04/+FaIcZ8alR/t2JGieT192HrdiOF4qPnTMjO9kyEYtYW6
-         L2fAn54RdCCsD/xPIlN9UQ7Ctwm4bvGSuiP0x4Vk5FrLYbIdZ0D+CMS71sip3IsxV+
-         upNrSwjDjhxzqi+HLQkgyXUxABOIp6nYiIzCN0fYKS/xckQGFngDo5w8olxEAexk3V
-         s7kKYXsdZzlQQ==
-Date:   Mon, 29 Mar 2021 16:55:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>
-Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tomislav Denis <tomislav.denis@avl.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the staging tree
-Message-ID: <20210329165525.32d51a3a@canb.auug.org.au>
+        Mon, 29 Mar 2021 01:56:19 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5s3gM107989;
+        Mon, 29 Mar 2021 05:55:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=3edm75IWAc+zuu0G5xQYVx5YuLw3zNP6q0YuJG4uQug=;
+ b=Ofu9Z1Gr3IsReMY6uL5trKOQoo9stje/0+IYwfyji+xPndR3dTk410vMDc25rQyiSXhA
+ W8Iu5lE2bIFTiIxdLwTUtPMLhwfmF2eWmwvYVY0cyWko+gDxR41SOok/1otqKPng/I3t
+ JJpZaJDOEOxVqdvJAJVbDHwe5G3PZdyblkHgviqzTeMdAxV2yCvZ/odxwZ0Zw8cCmD+G
+ XkHA6bHUJGdVoqVC8Xcssn1qyFUoEfAc2Gie/mXiaUI8/hDIFZUHRRK5xtkjY7FlbkFb
+ R3++D3CzsK+73FIcKt3nvbxvbU847z6LW7B0SzRHZWLvFpJ2DKu/5Ti3VVbwyFUEfAtT HQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37hvnm2avg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 05:55:47 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5shs3037071;
+        Mon, 29 Mar 2021 05:55:46 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 37jekwqejg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 05:55:46 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12T5thHZ024472;
+        Mon, 29 Mar 2021 05:55:43 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 28 Mar 2021 22:55:42 -0700
+Date:   Mon, 29 Mar 2021 08:55:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Song Liu <song@kernel.org>
+Cc:     Colin King <colin.king@canonical.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: remove redundant assignment of variable id
+Message-ID: <20210329055532.GH1717@kadam>
+References: <20210326194348.623782-1-colin.king@canonical.com>
+ <CAPhsuW4K1RB-kz-Wu32eOFYE=ZwQr7Wr20zuEhhtzK_hr9YGUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gfXdZzMKzQTdW83QzkqYuyL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW4K1RB-kz-Wu32eOFYE=ZwQr7Wr20zuEhhtzK_hr9YGUw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290047
+X-Proofpoint-GUID: TmF5Z4G1P92__m9qvJwvO_Itb1MrUHLQ
+X-Proofpoint-ORIG-GUID: TmF5Z4G1P92__m9qvJwvO_Itb1MrUHLQ
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ clxscore=1011 priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gfXdZzMKzQTdW83QzkqYuyL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Mar 26, 2021 at 01:18:36PM -0700, Song Liu wrote:
+> On Fri, Mar 26, 2021 at 12:45 PM Colin King <colin.king@canonical.com> wrote:
+> >
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > The variable id is being assigned a value that is never
+> > read, the assignment is redundant and can be removed.
+> >
+> > Addresses-Coverity: ("Unused value")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Acked-by: Song Liu <songliubraving@fb.com>
+> 
+> For future patches, please prefix it as [PATCH bpf-next] for
+> [PATCH bpf], based on which tree the patch should apply to.
+> 
 
-Hi all,
+You can keep asking us to do that but it's never going to happen... :P
+I do this for networking but it's a massive pain in the butt and I get
+it wrong 20% of the time.
 
-After merging the staging tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+regards,
+dan carpenter
 
-drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_read_reg':
-drivers/iio/adc/ti-ads131e08.c:180:5: error: 'struct spi_transfer' has no m=
-ember named 'delay_usecs'
-  180 |    .delay_usecs =3D st->sdecode_delay_us,
-      |     ^~~~~~~~~~~
-drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_write_reg':
-drivers/iio/adc/ti-ads131e08.c:206:5: error: 'struct spi_transfer' has no m=
-ember named 'delay_usecs'
-  206 |    .delay_usecs =3D st->sdecode_delay_us,
-      |     ^~~~~~~~~~~
-
-Caused by commit
-
-  d935eddd2799 ("iio: adc: Add driver for Texas Instruments ADS131E0x ADC f=
-amily")
-
-interacting with commit
-
-  3ab1cce55337 ("spi: core: remove 'delay_usecs' field from spi_transfer")
-
-from the spi tree.
-
-I have applied the following merge fix patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 29 Mar 2021 16:51:22 +1100
-Subject: [PATCH] iio: adc: merge fix for "spi: core: remove 'delay_usecs'
- field from spi_transfer"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/iio/adc/ti-ads131e08.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iio/adc/ti-ads131e08.c b/drivers/iio/adc/ti-ads131e08.c
-index 0060d5f0abb0..764dab087b41 100644
---- a/drivers/iio/adc/ti-ads131e08.c
-+++ b/drivers/iio/adc/ti-ads131e08.c
-@@ -177,7 +177,10 @@ static int ads131e08_read_reg(struct ads131e08_state *=
-st, u8 reg)
- 		{
- 			.tx_buf =3D &st->tx_buf,
- 			.len =3D 2,
--			.delay_usecs =3D st->sdecode_delay_us,
-+			.delay =3D {
-+				.value =3D st->sdecode_delay_us,
-+				.unit =3D SPI_DELAY_UNIT_USECS,
-+			},
- 		}, {
- 			.rx_buf =3D &st->rx_buf,
- 			.len =3D 1,
-@@ -203,7 +206,10 @@ static int ads131e08_write_reg(struct ads131e08_state =
-*st, u8 reg, u8 value)
- 		{
- 			.tx_buf =3D &st->tx_buf,
- 			.len =3D 3,
--			.delay_usecs =3D st->sdecode_delay_us,
-+			.delay =3D {
-+				.value =3D st->sdecode_delay_us,
-+				.unit =3D SPI_DELAY_UNIT_USECS,
-+			},
- 		}
- 	};
-=20
---=20
-2.30.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gfXdZzMKzQTdW83QzkqYuyL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBha80ACgkQAVBC80lX
-0GwDzAf5AXnUHssuIz730WHkg4wjQLKpbGeUxZfnnUk56mLnFSNN5XUb7/Y7f3Qo
-h0Un8B55Dn67yPbE1g0b6iHSNZMpwY4CGI2tykI2xoJTMJwK1xlJznCtKp5/BJBH
-TlOVFxX0XORRIqA1WFBsqxbx7aK6EaPjEP0WEIFWu4dtWLjBe8IU92V1C22aKqug
-KuOeKNNKXtrTYLxGlHJv2U8RVGfHX5MDDdCnaW+GPYi4vWBE3NfNd5X10iDC4PQH
-gHXapHdGmfn9d8bvQUs/bfiPcLYMEH1mqlpfzqK24QFJIM5KJW2CNQJU15d7j5W2
-79JlfovnEgi+qpQNc9kl/5X1ZkXSng==
-=vbrZ
------END PGP SIGNATURE-----
-
---Sig_/gfXdZzMKzQTdW83QzkqYuyL--
