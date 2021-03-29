@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A553234CBF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E9D34C6B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236760AbhC2Iyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:54:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
+        id S232554AbhC2IJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233715AbhC2Ifr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F7A0619E8;
-        Mon, 29 Mar 2021 08:35:20 +0000 (UTC)
+        id S232249AbhC2IFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6476461969;
+        Mon, 29 Mar 2021 08:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006920;
-        bh=2Yymh7UoYzvt39/OBVceDQNNT0AXD3CzFp1nOlcBs48=;
+        s=korg; t=1617005132;
+        bh=ideE3VkGpIYHkuOvbwSnSvB/LfLCelCcufnWZ58AuO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tK9OfLf3frSNbe5kXSiYDwXQh3V2jOd026P/oU4512GFKxS3zM2Z2tGQ5hPGMzujb
-         387uSPOl6l6VVBAEcFUvNNrN5M6H73E4erANNtc/oU2gSy54KJcGqc8c+oTyjqcwdX
-         ehMR6Ber1FoDw2dUExidV2zX3J/qInPhZr098I/Y=
+        b=NvSuo9aQgvEja4KiUm92x6wI8MWBKN6oHHq6OoqzM3h11WcEo08yLgtLTZ9F7SbBA
+         N0ZTnRubhCFWtG/+KoX4D4SHaoUzZHZd13Zv6A4Iv35+GOAz8/ZdoftSs4zRfu0kBu
+         85F1D9M0hJi4OVIwQR0XY6mLRbi7FT1JIajLOPrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 151/254] can: kvaser_pciefd: Always disable bus load reporting
+Subject: [PATCH 4.14 07/59] net: tehuti: fix error return code in bdx_probe()
 Date:   Mon, 29 Mar 2021 09:57:47 +0200
-Message-Id: <20210329075638.169218147@linuxfoundation.org>
+Message-Id: <20210329075609.137376053@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 7c6e6bce08f918b64459415f58061d4d6df44994 ]
+[ Upstream commit 38c26ff3048af50eee3fcd591921357ee5bfd9ee ]
 
-Under certain circumstances, when switching from Kvaser's linuxcan driver
-(kvpciefd) to the SocketCAN driver (kvaser_pciefd), the bus load reporting
-is not disabled.
-This is flooding the kernel log with prints like:
-[3485.574677] kvaser_pciefd 0000:02:00.0: Received unexpected packet type 0x00000009
+When bdx_read_mac() fails, no error return code of bdx_probe()
+is assigned.
+To fix this bug, err is assigned with -EFAULT as error return code.
 
-Always put the controller in the expected state, instead of assuming that
-bus load reporting is inactive.
-
-Note: If bus load reporting is enabled when the driver is loaded, you will
-      still get a number of bus load packages (and printouts), before it is
-      disabled.
-
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
-Link: https://lore.kernel.org/r/20210309091724.31262-1-jimmyassarsson@gmail.com
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/kvaser_pciefd.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/tehuti/tehuti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 969cedb9b0b6..0d77c60f775e 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -57,6 +57,7 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_KCAN_STAT_REG 0x418
- #define KVASER_PCIEFD_KCAN_MODE_REG 0x41c
- #define KVASER_PCIEFD_KCAN_BTRN_REG 0x420
-+#define KVASER_PCIEFD_KCAN_BUS_LOAD_REG 0x424
- #define KVASER_PCIEFD_KCAN_BTRD_REG 0x428
- #define KVASER_PCIEFD_KCAN_PWM_REG 0x430
- /* Loopback control register */
-@@ -949,6 +950,9 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
- 		timer_setup(&can->bec_poll_timer, kvaser_pciefd_bec_poll_timer,
- 			    0);
- 
-+		/* Disable Bus load reporting */
-+		iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_BUS_LOAD_REG);
-+
- 		tx_npackets = ioread32(can->reg_base +
- 				       KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
- 		if (((tx_npackets >> KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT) &
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index 163d8d16bc24..75620c3365b3 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -2058,6 +2058,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		/*bdx_hw_reset(priv); */
+ 		if (bdx_read_mac(priv)) {
+ 			pr_err("load MAC address failed\n");
++			err = -EFAULT;
+ 			goto err_out_iomap;
+ 		}
+ 		SET_NETDEV_DEV(ndev, &pdev->dev);
 -- 
 2.30.1
 
