@@ -2,163 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4E934C10D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEA334C111
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhC2BXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:23:34 -0400
-Received: from mail-eopbgr40057.outbound.protection.outlook.com ([40.107.4.57]:6642
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229645AbhC2BXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:23:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NEHeseZhHQe+Igh/JAJDkiNjAXBjRYsc+N2mjwrHGcBARi6tzQm+/rYjMvT88wYmJFHi+wnPMSDK3oiOi3sVGpiI194ZkKoAWysw9zLZlDTwm6x/8MAFc5P7tHeaVgB+NA0MCVry1olMnnyFBglqGp3DCFhfKy+iuCsd5KtMaThIuJG/dEf4f8/iBjg/l/aEbo+4RMTCw1PCGMqm+vBzny5bwB0WYZ29RYEpbNQfDE0LYlCt40XRPJIPkvCFMceqUPEdFQBhu88GxPIHFVadtpzgOELyToD7SAiC3onwjBjTd0Xc8vP8Ykiv/QjFWJRjOoWFvOcnKOYEBboE8K2HBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E8SjPshArWKszn0OK0dnVkiSHvmfnaBSCZNcFqVRJbg=;
- b=dqj3k1YZh/EylbSBUfnPLB7jKt+Y12pi2d99jFusGD1k3IxeBWBAZf0mPqrg2gwIOA4mSSXt/D8cLLp6qrf9uaLt/9u93I+evnkDICibL7qa0nLIAYiWXo8beAFoxUuJRcLFk/o4CPy7+8stIPSchtmUaIFcgVbD/jHNV7uM60t+QaD6VFMXjpy0OLgqCZtnUvonRpuxiju84vhrv5/M8A9C7AbWrzEQm9wavYloWM/95n8EXopSHbBDz313IcmZ+DBpIDAexGU0H73RC2sg5VKaw2+4tw0q58n8t3HvITycLemOgowLwOnddKfobijo88wg+R5RTYdeZh4EgmQohQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E8SjPshArWKszn0OK0dnVkiSHvmfnaBSCZNcFqVRJbg=;
- b=kUh3WdMdiT5Ntd8XJEty53goWv56+8mIh3GAxOldc3GudlFY3Sjx/3yrepfnX1Pp/48+j20/oM5wiSARWhNGDu+TsK0lIMsCzJ9Kd7EBj7ymfgXFok3dwmaY1av+9WKu/sBetm+Pa2MoNWefQAXFCj1GqRoaz0NCQC+hdAzdOJ8=
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com (2603:10a6:803:e3::25)
- by VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Mon, 29 Mar
- 2021 01:23:06 +0000
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::8116:97ef:2fd7:251f]) by VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::8116:97ef:2fd7:251f%7]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 01:23:06 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kw@linux.com" <kw@linux.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE: Re: [PATCH v3 2/3] arm64: dts: imx8mq-evk: add one regulator used
- to power up pcie phy
-Thread-Topic: Re: [PATCH v3 2/3] arm64: dts: imx8mq-evk: add one regulator
- used to power up pcie phy
-Thread-Index: AdckOSg8Q16M1R64S4e+DtU9wjRbPA==
-Date:   Mon, 29 Mar 2021 01:23:06 +0000
-Message-ID: <VI1PR04MB58537DC9AFC8A127AC8B4D458C7E9@VI1PR04MB5853.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ccc466b4-20e8-4d30-6dae-08d8f25134df
-x-ms-traffictypediagnostic: VE1PR04MB6638:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB66389A9680CA1819BFDF4B938C7E9@VE1PR04MB6638.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3uyV19Kb31hTTR9557Q0jXFAC8/iILDloZUl/HpxP1Z2NERjdBbdlnKbB2Vm2vgbwJ9AWnbklOWVfIGh7wh7eNv7i62ivFKs0DfNAUgmxtq0AaRNLeBkYfzAwAP/y6psgl/PEFgPqrtE/q4bhiqPsPXJzmPFJTu4mYucRUS/AJZnLToOF9jOq5By6BHwN50ZD7ZIQrsF/aPxlpg5YWjkAP0gYA8oC56SjsWrcNwcvjyvbRXUZpTUIIqCsu/Jejl3eeNszHOPjhBlqCJmGRzdDAk2B1Q9FdMqwEcHDDaGP9fn53q2JNZAVaZYKGAC3ep4nfR9lxetrbDMjYY5r1WlgeInrCIfPBdpaKkFl4vdfzWXmgvI8K6QEhJ+FKAbItQH6/sHFfM7ToJ1tRKKu7PyldHzuolD0S8zheCDgplj/1sxk26nFVzPdXEKaPNpaiqiLSWmnTfnBBPLs0h22SHnuwfG0jcJHAuQrizz9lCXUQuz0Jz1MP+D4zknGY8OOjrAkvUuK0W4BXgdj5aRGizlQKLkoE8K0xkzm63Qf3oYIo8jDYiyBNXYl4mJQOTaoQo0ZYvxRu1aLGj/EHUEELtWMVAFvUSrA1NRM8Rx2KEWPzvn2uyeKA0nv15WOmIw61mnd7yj2V619lf/mzNIJt/aKr0W+e+CO6jeVBrs75flSC9u4cmsVrizpersNcxJ8/BX
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5853.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(39860400002)(396003)(71200400001)(5660300002)(478600001)(4326008)(7416002)(9686003)(55016002)(186003)(7696005)(83380400001)(8676002)(53546011)(8936002)(6506007)(38100700001)(2906002)(66946007)(76116006)(66476007)(66556008)(64756008)(33656002)(54906003)(66446008)(110136005)(316002)(52536014)(26005)(86362001)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dVdyZmdMR1l3VTNlaVNVMHpFRFVoMGhlS2YvdE80WkhoUzVXRGJjTTE2MHI2?=
- =?utf-8?B?QVBKa0FVTXFLeVhqeFBUaHFFNVhteHdENGxnZzh5anZ3V3pMWE5pbzBKU2VY?=
- =?utf-8?B?eG1pRStPKzhLTzVVZkxKNTdhclpSSmdxc0xLWnRFMDJZa0gwTjI5dGF0VGZV?=
- =?utf-8?B?TmhhQ1I0bHNXL3ZmalB6M0Fiak1PeHp3ZTA4WHhaTE5ROXd1K2ZZUGVObFZS?=
- =?utf-8?B?SFVIS2hiRDJsdGFSNHZodkxYcmJwWVE2aGYxQVJoQndiOUZJK3lYUWF5a0NF?=
- =?utf-8?B?WmhHcU1CdjdSZEV5NjJLVUFIM3VXR2RQM0tJSkhqcUtjQkltM3lRM3QydVlp?=
- =?utf-8?B?K3B6cDBjL1FUZDZScWQzN2xram9icVBxNnZaREFCdjE0TDVJL1ovdm4xdDV2?=
- =?utf-8?B?aGUxa3Zvck1lVkpkL2pBMnM3UVJqbW1ydVhiYitzS2NSVFQ1Y0hYdkRSK3lY?=
- =?utf-8?B?eHhGWXcrNmZtb0oxcFlwbzhpc0JXYy9mNFpaLzE0aE5WcEdrc2k4Ly9RZjF3?=
- =?utf-8?B?NnVWdkFkMXkyODg0dURBZDFyZ1NJZENQWEJrbnQ3cXJ6MThIWE9USnRhdVR5?=
- =?utf-8?B?WEMxZ1lKekdxWGlvT0RZNVV5WUNnVml6MUFqRVBjZys0Z29IWk5vWm9IUTlU?=
- =?utf-8?B?cFkwUjhPc3pGYzdCaUtyaWFEbXcwdm82Z1lmeHIvM2VvZVl0bUxadUx1ZlFy?=
- =?utf-8?B?YVhaamZUY3VSbk91eDRPSTMrUEVvRURsbHF5T3R4SFJkZWk3WGFGVGhkekdY?=
- =?utf-8?B?bWFiWlBieW1jQWxZM0VXOFJnT3JwQlUzQXgxLzlLUjEvOHdhWTRxTldrb212?=
- =?utf-8?B?WEM0QjZabGJHcDZmTHJ4YVF0L25NSTl0eGk1bjBMV2FwMjYrdHh6L3Bzd2Nz?=
- =?utf-8?B?VWMrdDZNUlQ1Rll2NE9leHlnUy9IWDd6c2M4aENIR280Q3gzZlBwZEd1TGlH?=
- =?utf-8?B?ZDhoNzBKbWtRQTJQTk9hY0YvSTd1cU1DNXRWRGxacVlkbk1zalJjZGp2bkY1?=
- =?utf-8?B?YThiNjNKS0cvNkQ4RDNWY2xYSCt1SFJaMW1tZW15S3ZYNVhncHY2bjFpWVBm?=
- =?utf-8?B?TUxRQlViS2FkUXVyMHBKQjBqN0I0OEhwcDUyVkVmOXlZa1B1Z2RJZFdrR09R?=
- =?utf-8?B?Z2V4bS9PNTVvZEt6NlJKWTltMklmUndQZng5ZGhVR0p6eGtwOThSTjY2YTlS?=
- =?utf-8?B?Vmx6eFNzcy9CMkxKVFdtblJuSzRjNEJvQ3BGTlBOUkJXcWVXaDFsanUxeUoz?=
- =?utf-8?B?bExQK011c216azRJcURpd3h4MjNXMTBpUE44T0dsM0RFbE9UQ3h5Mm51VEZ5?=
- =?utf-8?B?d0pZN1VoM202dzVhSmIzSDg4T012Y2Q4bGo5KzRqM2k5VExpQmg5b2txb3Rj?=
- =?utf-8?B?bXFBSmYzMlZKK3hCbFo1UXBwZHFybE9DY3NHaXQxZXFMUVltRzFmenRKY1NF?=
- =?utf-8?B?TmEwemtRMjlGOVl5d3lXaGJuNStTNkVoQk02YjBxeFBiNjhxNGRJRjI4Tmwx?=
- =?utf-8?B?d3d2Qkp6U280RmVLM3ZKR0ZDNG51cU1jaE0zMTVOTHZYQnF0OXJCSmNJMW1P?=
- =?utf-8?B?UkplMWFKRjdvcUxVMGRIK0lianl6QUFqc3k0ZXo3QVlSYytYaWZYMnE2eWp6?=
- =?utf-8?B?ZWVBc1NDQWdQelBqdmRPWDFNTXo5SUJOTHl6ejFZbU1wOWVmTDlxY09uNmRn?=
- =?utf-8?B?RVh4M1NRYjIzdkFkQVZVU3pOamVqVFE3MEVZT0tBOVdsZWFkNmljd2R4TGli?=
- =?utf-8?Q?XsofvrW5h2Yd6XX5nRR6SOsmXU1ee41WTn1EGsr?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231689AbhC2BXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:23:39 -0400
+Received: from sonic313-21.consmr.mail.gq1.yahoo.com ([98.137.65.84]:40861
+        "EHLO sonic313-21.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230470AbhC2BX2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 21:23:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1616981008; bh=t/+ISJ5HXrAlKiul3xBwkVe65r9B8sYHMwSlqDyWszE=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=c0pCPJolOFW7rXGQGr1qmjWyxsz0H4cnwEl6tileaOfLdcpgU4+opOholYDEj/Cr3iteF/ObB8Zr8il0ARFPV/G0y9SbGIfCnGrBBPfxLWoDJiE5CPU6eR6Zy7fgMdnmSM6GIYKI/fc6URegMipGXsNrO/0TVBDNurjpkcVW81XSiUJUJ5bByqXZfwAFgh4jZ/M8kItyMIb0wkxq+AIB8qQdd5pxjS9QWeHrIVCevVzUeQHJwvIjxvbLZ3f40pzLSOXYruJfDc9/zhD3A/1miCNAlOjM7ovh2vm6pQA03XVYx20S0Qexw2K/fqgxzgDIrc1pve1hjbThGBiPBGtH1g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1616981008; bh=/I/6RPssPwK9kvIcYTQVylBSMn2DILL9DVGytGfKZ7x=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=X4gcHHqfTlWZefB+s1xvhoI9C4RxcjYtg0053o1k/+Fjs/PPsDUPzba8iEyVAkyrEI9H5rbFT54RjbJLaDhZxSpecmVOaIMjGSO2TQfd5aanhaieqaMlDv9g+cfbGbDq9NXPrPyy5HZGjtPtgC6YAJxw0m1jqv2NFByNbuMeIu3TpIAaPFkVFtxohk2B4EPkUhtxZOwmJDtDQNgi4y3k1WLkfAAf9DUOqj9+3AUN42v/0p+SMY67GIcX+d3cstkGOH/ZXIO/aOpOa9UaFM/d75RrhetWwW5v7yWSRdBl9Y5JI80eEQhvabm7+Vvx9ns7brqH2OeSEpsZggJ1KMxv5g==
+X-YMail-OSG: mn2SRiwVM1m3IIvxGE4awjm3jmVC9P5H6N_yYu7Q9ZOVSE9IhRm_2h1TLJPX11O
+ Cw.hB0GKXZ3BnJYsojKM9PJR5k4FBHzhb2_OZ8J_4xIWO_5oo_91_6JcjXhf1jYyQEi5ZQzKW7u0
+ PIFpodwcjEtE1FZQslhb_04RT8I3B_UZD5kWRcp0R9ZEsTE2KVqdCTIzStB_dU4vyLm7muGbERrH
+ Di2NEax6XX.nRTI..F5B93qx6DVr7NMlKSgKhjbn2tut09_NCAkr4VOPCq2QwmMczQtJDJoHA8mw
+ 8ndUJnYArA7OhEErI5mQUizfWOyZOb.iJ_WK7EncyL1enAF9kfccP9yrLh8rtVz2JJHcKvcRy31W
+ 5OMlMvm2tVQ0Pl92JinB8Ex2C6fNLT3IKIq0a6qtznR14iUL95bx5fg_iAQWvRFPPmQtclCr5GF1
+ vWHHd.nCTyon_XL3MqDZPFKrNB67CYlms9MR.ijTmvNCqkqu25Ll4NjJy4f.ybxLr60lzRhFXAao
+ dT.QXXxenEwxRqT2s9P1RvFx6UYdbBnPWgXkpLiVEzNomkJBdiSM5lmSI6HBiZVcHmNPFQiuxx2V
+ 6bwjDwhXJl2Dbc7phSAnNHySq4Wy7qQhITRrEiXTr.5SanL6xfqzQNLCAE9Dx0roADrryidS.Thm
+ v1IVtEBdgnEs0lkWbCvX3AXIZWbPYJsXhmCNsQSB5A6KFvjrntCAwHmQA8nfHvHd5zw52J4vU05Z
+ NBcOnh1NsuHZNerHVQ8.6mNksXLbFCpeimazJ.1CBNNLW.ZhdpI9oULA57DZQJENjM.ptoJE5j3e
+ JT9aFiADQ8FkKMpqDoP5TgwODTgz_f1yvQ.RxI2o4.z3SrH2phWZChTK9qKjgNg8dfXb9EkQUuZ3
+ HAoSp9.W6zuSlLuLH.xreZoS68zuyu6YZ_n320ajnrfHaMm1fm2ee3zRzSKtNoGqbns.2advodYe
+ z2jL8TnvRoLE8bMOGYCvy5f.8T6MbiAAXcM725OQQtO6Gn7Qel.i7EOD_nsIhpDQJ4_yeP13Y2bH
+ QoLSwsPi42ZC_bUrw283tsMcQnLY62LRVia4QpZypdQUwacwdc7nM4cpMGuA2c7_1xbjZLsKVpIs
+ HJk1mwWt4WDx5htXTwgI_ENWIzx78Qwv1svd3D3Exelc8Om6sLNby3Bbwb6wiP_ObpCZVC5CZA3O
+ K_HPceicUzNIrapD140hQHbnqhxq07wOScR2TGNspkFDXz3FMuIJoFogYoHQiNhhaMpg2j0_L_4i
+ VNAEYxgjAexN_Zld_l.A3xB6w2gv5YbYXNDPpOAT.KuRnwezCMhpNUEft.5NGQdIQn.0QvbGxRF_
+ 6YpuW5JMxn26tN5nt84oaHU6RlFi2WiLWtRfwA45VDIUzzMadBlh5fNKRvUOYlOb2J_8NCIIoZIY
+ 5jH06_VV4tkTi31DhxyOCD1ve8NNkmeGsesialSicJdPjEpXopqAWKHJBNvsCiRe6CU.9eVaMGRh
+ slVoi6ySq7cs9Jbmhbz7k7NzEnIgJg2HMjWWxp0QE.PELFwNQwL7E_jt4jL_V0Hc9gLYu_tL8dGL
+ 37ftPTJ60uZWM5oiSPoR48IWfFjyfnWaydhHplo1turnv2Pitx9ywyTJo_ho0B6fiGRtW99cbudg
+ PotBRNrjIRrIIF5xWQRiW2KkMYYF8TSx2RdXTGQ5mfcdfzV1UfPs5Fyfsv_aQ3A4lVt_M1Bz4p93
+ Abp7Qpjz_uOYOlKRmReiCodxSI_r.n26V2VGZu1qmGlQ8CfEFgliRiH8mC965TYgr8eTRMc31nAH
+ 4tlkv6JsaIbW5omI7h9pQLRbe0g2yChMYf1QDXl0mKJvSzsAALSm50OwsnCOyXrkOLy.ljeMnFB6
+ SUxYKX6ITZ2gf7TfhqxYIlTiBrLUhi2CweNs14ukKRistGHsctLVSBVGFWLBTdhXSYM4gimsSwwU
+ Pu1IjN3MJNpwyhWhsZ3bP.AicBeoCAwnS3rCBp0KYwLa7W_C3MygIJ1PKP8SDG.Bdv0KwlQYwiui
+ ljLARn0jsuAQXLP5N9NWtnMfXC9JLxSKjYkA6xacXsIWywWZnoLJvh3bBlWwIiaBp.oNmw0uJkJu
+ aFmkJ10MbZYsLylQ7fZ.5wynPPR98BDgWcd3VKoLkVCgvcrZilVDQOL.Bnxl42q6JRapJ5ml9OmX
+ RhbjKZQ6BXLt14PoCvp4KdSJppJe35YYFZ4RpH42YlJjKUhP6kEqvRMaTiC_cWqm81x7TMhCVmee
+ 7PSKYVqg0wkgie_h39z5hffVh5BubJBsKxZh56ozkxiAfpd.kwlneIA.w7uebi7nLaPPUwmzioR9
+ a28QODDj0sl1TDmr7gi_10exTOZxu1GkUKqhgsQETTcxHISNeN5bwbeNhSaQLUcb_8tuTqhdDaCP
+ 2bt4hqk7RcHbdhrD.7yhgI74BBL9HpPgqEmB2kIBLL3SdGRyr6geJSvS4YXrP3QgLGMuKRxASnei
+ Nl2iwfWlSXTFTeOmcO4R1DOSta72me8lOsgQUS5jcdNIBYRszun69wV7QqWGiCserhavQ2ERCzE_
+ jGHv4FBZJbDyngn9xGF.xFWmY5gEA7qI_d1IlZ3uM9UYJRNgY8SBVQTMxyBfRLKBeWMYgBikchw9
+ bh8e_pksrElPmiUSv_Up_GBV.QLSRDWl.oa90CwaqM4gr.wAU2Ru0dbNVGoX7S47D6f7fayP7XD7
+ 5BDGmILxffXTYe.WrU1S0OYE-
+X-Sonic-MF: <hsiangkao@aol.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Mon, 29 Mar 2021 01:23:28 +0000
+Received: by kubenode575.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 3d9d64f8790c67205a0f6cb47abdabe6;
+          Mon, 29 Mar 2021 01:23:26 +0000 (UTC)
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
+        Chao Yu <chao@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH v2 3/4] erofs: introduce on-disk lz4 fs configurations
+Date:   Mon, 29 Mar 2021 09:23:07 +0800
+Message-Id: <20210329012308.28743-4-hsiangkao@aol.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210329012308.28743-1-hsiangkao@aol.com>
+References: <20210329012308.28743-1-hsiangkao@aol.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5853.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccc466b4-20e8-4d30-6dae-08d8f25134df
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2021 01:23:06.5056
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wLtQAUjOadIs08KhNJEVyfXNd5Jfez1NIKFWqvD8f4ODhkgGfhKF0dfdPWDCEhLq1NfGyQLLN8cRgGta1x6oTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6638
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMdWNhcyBTdGFjaCA8bC5zdGFj
-aEBwZW5ndXRyb25peC5kZT4NCj4gU2VudDogRnJpZGF5LCBNYXJjaCAyNiwgMjAyMSA1OjQwIFBN
-DQo+IFRvOiBSaWNoYXJkIFpodSA8aG9uZ3hpbmcuemh1QG54cC5jb20+OyBhbmRyZXcuc21pcm5v
-dkBnbWFpbC5jb207DQo+IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGt3QGxpbnV4LmNvbTsgYmhlbGdh
-YXNAZ29vZ2xlLmNvbTsNCj4gc3RlZmFuQGFnbmVyLmNoOyBsb3JlbnpvLnBpZXJhbGlzaUBhcm0u
-Y29tDQo+IENjOiBsaW51eC1wY2lAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4
-LWlteEBueHAuY29tPjsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBrZXJuZWxAcGVuZ3V0cm9uaXguZGUNCj4g
-U3ViamVjdDogUmU6IFtQQVRDSCB2MyAyLzNdIGFybTY0OiBkdHM6IGlteDhtcS1ldms6IGFkZCBv
-bmUgcmVndWxhdG9yDQo+IHVzZWQgdG8gcG93ZXIgdXAgcGNpZSBwaHkNCj4gQW0gRG9ubmVyc3Rh
-ZywgZGVtIDI1LjAzLjIwMjEgdW0gMTY6NDQgKzA4MDAgc2NocmllYiBSaWNoYXJkIFpodToNCj4g
-PiBCb3RoIDEuOHYgYW5kIDMuM3YgcG93ZXIgc3VwcGxpZXMgY2FuIGJlIHVzZWQgYnkgaS5NWDhN
-USBQQ0llIFBIWS4NCj4gPiBJbiBkZWZhdWx0LCB0aGUgUENJRV9WUEggdm9sdGFnZSBpcyBzdWdn
-ZXN0ZWQgdG8gYmUgMS44diByZWZlciB0byBkYXRhDQo+ID4gc2hlZXQuIFdoZW4gUENJRV9WUEgg
-aXMgc3VwcGxpZWQgYnkgMy4zdiBpbiB0aGUgSFcgc2NoZW1hdGljIGRlc2lnbiwNCj4gPiB0aGUg
-VlJFR19CWVBBU1MgYml0cyBvZiBHUFIgcmVnaXN0ZXJzIHNob3VsZCBiZSBjbGVhcmVkIGZyb20g
-ZGVmYXVsdA0KPiA+IHZhbHVlIDFiJzEgdG8gMWInMC4gVGh1cywgdGhlIGludGVybmFsIDN2MyB0
-byAxdjggdHJhbnNsYXRvciB3b3VsZCBiZQ0KPiA+IHR1cm5lZCBvbi4NCj4gPg0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IFJpY2hhcmQgWmh1IDxob25neGluZy56aHVAbnhwLmNvbT4NCj4gDQo+IFJldmll
-d2VkLWJ5OiBMdWNhcyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4NCj4gDQo+IEkgZ3Vl
-c3MgeW91IG5lZWQgdG8gc3BsaXQgdGhpcyBwYXRjaCBvdXQgb2YgdGhlIHNlcmllcyBhbmQgcG9z
-dCBpdCBmb3IgU2hhd24gdG8NCj4gcGljayB1cCBpbnRvIHRoZSBpbXggRFQgdHJlZSwgYWZ0ZXIg
-dGhlIG90aGVyIHR3byBwYXRjaGVzIG9mIHRoZSBzZXJpZXMgaGF2ZQ0KPiBiZWVuIGFjY2VwdGVk
-IGludG8gdGhlIFBDSWUgdHJlZS4NCltSaWNoYXJkIFpodV0gU3VyZSBpdCBpcy4gU2hhd24gaGFk
-IGJlZW4gaW5jbHVkZWQgaW4gdGhpcyByZXZpZXcgbG9vcC4NCldvdWxkIHNwbGl0IHRoaXMgcGF0
-Y2ggb3V0IG9mIHRoaXMgc2V0LCBhbmQgcG9zdCBpdCBmb3IgU2hhd24gbG9uZWx5LCBhZnRlciB0
-aGUgb3RoZXIgdHdvDQogUGF0Y2hlcyBhcmUgYWNjZXB0ZWQgaW50byB0aGUgUENJZSB0cmVlLg0K
-PiANCj4gUmVnYXJkcywNCj4gTHVjYXMNCj4gDQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9v
-dC9kdHMvZnJlZXNjYWxlL2lteDhtcS1ldmsuZHRzIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9k
-dHMvZnJlZXNjYWxlL2lteDhtcS1ldmsuZHRzDQo+ID4gYi9hcmNoL2FybTY0L2Jvb3QvZHRzL2Zy
-ZWVzY2FsZS9pbXg4bXEtZXZrLmR0cw0KPiA+IGluZGV4IDg1YjA0NTI1M2EwZS4uNGQyMDM1ZTNk
-ZDdjIDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDht
-cS1ldmsuZHRzDQo+ID4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OG1x
-LWV2ay5kdHMNCj4gPiBAQCAtMzE4LDYgKzMxOCw3IEBADQo+ID4gICAgICAgICAgICAgICAgPCZj
-bGsgSU1YOE1RX0NMS19QQ0lFMV9QSFk+LA0KPiA+ICAgICAgICAgICAgICAgIDwmcGNpZTBfcmVm
-Y2xrPjsNCj4gPiAgICAgICBjbG9jay1uYW1lcyA9ICJwY2llIiwgInBjaWVfYXV4IiwgInBjaWVf
-cGh5IiwgInBjaWVfYnVzIjsNCj4gPiArICAgICB2cGgtc3VwcGx5ID0gPCZ2Z2VuNV9yZWc+Ow0K
-PiA+ICAgICAgIHN0YXR1cyA9ICJva2F5IjsNCj4gPiAgfTsNCj4gPg0KPiA+DQo+ID4NCj4gPg0K
-PiANCg0K
+From: Gao Xiang <hsiangkao@redhat.com>
+
+Introduce z_erofs_lz4_cfgs to store all lz4 configurations.
+Currently it's only max_distance, but will be used for new
+features later.
+
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+---
+ fs/erofs/decompressor.c | 15 +++++++++++++--
+ fs/erofs/erofs_fs.h     |  6 ++++++
+ fs/erofs/internal.h     |  8 +++++---
+ fs/erofs/super.c        |  2 +-
+ 4 files changed, 25 insertions(+), 6 deletions(-)
+
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 93411e9df9b6..97538ff24a19 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -29,9 +29,20 @@ struct z_erofs_decompressor {
+ };
+ 
+ int z_erofs_load_lz4_config(struct super_block *sb,
+-			    struct erofs_super_block *dsb)
++			    struct erofs_super_block *dsb,
++			    struct z_erofs_lz4_cfgs *lz4, int size)
+ {
+-	u16 distance = le16_to_cpu(dsb->lz4_max_distance);
++	u16 distance;
++
++	if (lz4) {
++		if (size < sizeof(struct z_erofs_lz4_cfgs)) {
++			erofs_err(sb, "invalid lz4 cfgs, size=%u", size);
++			return -EINVAL;
++		}
++		distance = le16_to_cpu(lz4->max_distance);
++	} else {
++		distance = le16_to_cpu(dsb->lz4_max_distance);
++	}
+ 
+ 	EROFS_SB(sb)->lz4.max_distance_pages = distance ?
+ 					DIV_ROUND_UP(distance, PAGE_SIZE) + 1 :
+diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+index 43467624ae3b..e0f3c0db1f82 100644
+--- a/fs/erofs/erofs_fs.h
++++ b/fs/erofs/erofs_fs.h
+@@ -197,6 +197,12 @@ enum {
+ 	Z_EROFS_COMPRESSION_MAX
+ };
+ 
++/* 14 bytes (+ length field = 16 bytes) */
++struct z_erofs_lz4_cfgs {
++	__le16 max_distance;
++	u8 reserved[12];
++} __packed;
++
+ /*
+  * bit 0 : COMPACTED_2B indexes (0 - off; 1 - on)
+  *  e.g. for 4k logical cluster size,      4B        if compacted 2B is off;
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 1de60992c3dd..46b977f348eb 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -441,7 +441,8 @@ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ int erofs_try_to_free_cached_page(struct address_space *mapping,
+ 				  struct page *page);
+ int z_erofs_load_lz4_config(struct super_block *sb,
+-			    struct erofs_super_block *dsb);
++			    struct erofs_super_block *dsb,
++			    struct z_erofs_lz4_cfgs *lz4, int len);
+ #else
+ static inline void erofs_shrinker_register(struct super_block *sb) {}
+ static inline void erofs_shrinker_unregister(struct super_block *sb) {}
+@@ -450,9 +451,10 @@ static inline void erofs_exit_shrinker(void) {}
+ static inline int z_erofs_init_zip_subsystem(void) { return 0; }
+ static inline void z_erofs_exit_zip_subsystem(void) {}
+ static inline int z_erofs_load_lz4_config(struct super_block *sb,
+-				struct erofs_super_block *dsb)
++				  struct erofs_super_block *dsb,
++				  struct z_erofs_lz4_cfgs *lz4, int len)
+ {
+-	if (dsb->lz4_max_distance) {
++	if (lz4 || dsb->lz4_max_distance) {
+ 		erofs_err(sb, "lz4 algorithm isn't enabled");
+ 		return -EINVAL;
+ 	}
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 3212e4f73f85..1ca8da3f2125 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -189,7 +189,7 @@ static int erofs_read_superblock(struct super_block *sb)
+ 	}
+ 
+ 	/* parse on-disk compression configurations */
+-	ret = z_erofs_load_lz4_config(sb, dsb);
++	ret = z_erofs_load_lz4_config(sb, dsb, NULL, 0);
+ out:
+ 	kunmap(page);
+ 	put_page(page);
+-- 
+2.20.1
+
