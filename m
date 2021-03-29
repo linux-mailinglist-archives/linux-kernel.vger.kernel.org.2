@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9E834D7F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E730734D7F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhC2TOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:14:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
+        id S231684AbhC2TQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:16:10 -0400
+Received: from sauhun.de ([88.99.104.3]:40786 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230271AbhC2TOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:14:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36C9461936;
-        Mon, 29 Mar 2021 19:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617045243;
-        bh=ToS0MidpfphiNtS55x67RiSvWClxRs/ZhbXeO1EBtAw=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=oQfZOPcCqmdWePI7Lw64BaJIMp8Fg02xLSjbmILupDBGx799hmQd5C/AhhnXHzQPh
-         Fo5TIF3XxWugMx0k7kmS8Ub6sBSGHfY8Pu5uk3SgFlHTuHOhPS0/l2ulNsQzLRsyry
-         iQUpHuII7FhbQZDUyDqx5our/WCk8VKvumz8VEwUPLkHxyZoFrJ+iG5/NBTnpIgHhe
-         ba8T5QPdvcUOTLUrJhsIQt0T3nqIJYvxBhwZ9gmmxDPeT8QDBvAgZcJoNndcspOyw8
-         RvPJunEY33GrQTQsxgpSTYG+qxr+qMtywMxS3CcMthZ2PpH3T2TYfJFvaAew8UQeGF
-         MW7BaGRcOa81g==
-Content-Type: text/plain; charset="utf-8"
+        id S230359AbhC2TPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 15:15:38 -0400
+Received: from localhost (p5486ce89.dip0.t-ipconnect.de [84.134.206.137])
+        by pokefinder.org (Postfix) with ESMTPSA id 404B72C00E6;
+        Mon, 29 Mar 2021 21:15:32 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 21:15:31 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: tegra: Improve handling of i2c_recover_bus()
+Message-ID: <20210329191531.GA6654@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329190546.24869-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <91d016e59bab9d9175168a63e7bcd81fdb69b549.1615954046.git.greentime.hu@sifive.com>
-References: <cover.1615954045.git.greentime.hu@sifive.com> <91d016e59bab9d9175168a63e7bcd81fdb69b549.1615954046.git.greentime.hu@sifive.com>
-Subject: Re: [PATCH v2 2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     alex.dewar90@gmail.com, aou@eecs.berkeley.edu, bhelgaas@google.com,
-        devicetree@vger.kernel.org, erik.danie@sifive.com,
-        greentime.hu@sifive.com, hayashi.kunihiko@socionext.com,
-        helgaas@kernel.org, hes@sifive.com, jh80.chung@samsung.com,
-        khilman@baylibre.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-riscv@lists.infradead.org, lorenzo.pieralisi@arm.com,
-        mturquette@baylibre.com, p.zabel@pengutronix.de,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        vidyas@nvidia.com, zong.li@sifive.com
-Date:   Mon, 29 Mar 2021 12:14:02 -0700
-Message-ID: <161704524201.3012082.13807741329367593907@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <20210329190546.24869-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Greentime Hu (2021-03-17 23:08:09)
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index 71ab75a46491..f094df93d911 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -173,7 +173,7 @@ config RESET_SCMI
-> =20
->  config RESET_SIMPLE
->         bool "Simple Reset Controller Driver" if COMPILE_TEST
-> -       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTE=
-K || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC
-> +       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REALTE=
-K || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC || RISCV
 
-This conflicts. Can this default be part of the riscv defconfig instead?
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->         help
->           This enables a simple reset controller driver for reset lines t=
-hat
->           that can be asserted and deasserted by toggling bits in a conti=
-guous,
-> @@ -187,6 +187,7 @@ config RESET_SIMPLE
->            - RCC reset controller in STM32 MCUs
->            - Allwinner SoCs
->            - ZTE's zx2967 family
-> +          - SiFive FU740 SoCs
-> =20
->  config RESET_STM32MP157
->         bool "STM32MP157 Reset Driver" if COMPILE_TEST
+On Mon, Mar 29, 2021 at 10:05:46PM +0300, Dmitry Osipenko wrote:
+> The i2c_recover_bus() returns -EOPNOTSUPP if bus recovery isn't wired up,
+> which the case for older Tegra SoCs at the moment. This error code is then
+> propagated to I2C client and might be confusing, thus return -EIO instead.
+
+Hmm, makes sense. Maybe we should change it in the core? But with EBUSY
+instead?
+
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBiJ08ACgkQFA3kzBSg
+KbZXcQ//b4NDYu49tVixZRw1UuqFH90MPZl+g5ZducdspzSu8V1HRKEV1LZb980q
+JbVxhTb0b1VImvGtmR2uaRTTb2SKGEBbQ8CzlOz9st3PVvukOpycQZSyHNTTJv0p
+m/mYzu9VPrH4HTPqLmXRL2SPD4AGlaFTl+qXr78x6HFRb6u125a4C9zekEAYdi5P
+t4dFBsyEaswHgbGD7W4eAWzav7zFPmmJjjQsvC96gyo/muGplZQEjta33Pi6vSjF
+7xx3R4To8Tbqnq+2pk07IP7hnCann5tsePHcXqbgRxAgCGStNNHCoJxfyUHO5V0t
+flHD//nE0snrOLNBx5JE/wq0UxVefAg+kesDL4YI353CAyN4LX/WhhA2W8j7PQ1T
+9z3MBiiNxFBUSTm3Ck5Ps6CfK2pT9PgJyhOQjoBaBHT06V6RL2cZJdlD+GDzUvXa
+tqfIe0Iu83ZBYb3BdnB8xXIW4MTVSjDNW/8CAWsoMxeFBnTBKnBE6kw8Dh9GGo9A
+B8ZVFj5UmPGh/Gc/eNEVIrPfqacvaqQt1ucAcJY1SmmLw3p2okIwKElgNnIhM/WP
+M5cyUjyGwFUsdEnWiZrusvta0iel+PG75p8W/EpfgRCt0hLLRFUA+U9NHzOigrnl
+LE+lpnas/0ovqKGQ/cs7gv4aH7eOu7PaD8zdNgMaVWvHMen7cf0=
+=nuLF
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
