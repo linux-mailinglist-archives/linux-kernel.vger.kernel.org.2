@@ -2,73 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB3134D8FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4BE34D90A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhC2UUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:20:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43088 "EHLO mail.kernel.org"
+        id S230298AbhC2U2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:28:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47374 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231844AbhC2UUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:20:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EAB6061990;
-        Mon, 29 Mar 2021 20:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617049210;
-        bh=jlCwWmeXYijmJcPJaPtCi0cFsmSyEb1quFTEDPF8e5w=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=s4+ATsuFkqEuE3JTQV0OwV2cppEZFIJ3aWs+gmKxQvpnCHDtbeElsEZ9Jl+REjxwD
-         MzuXd9zwvZ/8RggS/6jtyF79UEjHUXwNeIebx0Gb9yRt7TM0ptE/TGmGrZdW70jWMr
-         Vle34UXLIzEtDWYMOHHs4HllyKGwRf/2bWqZvL9IRNcrxSsze5M6zSHiNC6QoYFuET
-         blTp45p1dKP3Orq7gu4t9zY0vIjd4s4WfPPkHI0gc8OOD9152zLuxxOuLMUMLNNZ40
-         M4KN4c4eLt3ooDN+nVprU+z+xIoy1nhj6iJ5gdhytwPTgtGjfRyBFzE9wuHCXdF45G
-         WOH31nbB6KNjw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E0A7960A5B;
-        Mon, 29 Mar 2021 20:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229555AbhC2U1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:27:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7B70B083;
+        Mon, 29 Mar 2021 20:27:53 +0000 (UTC)
+Received: from localhost (orpheus.olymp [local])
+        by orpheus.olymp (OpenSMTPD) with ESMTPA id 9c5e6201;
+        Mon, 29 Mar 2021 21:27:47 +0100 (WEST)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, dgilbert@redhat.com,
+        seth.forshee@canonical.com
+Subject: Re: [PATCH v2 1/2] fuse: Add support for FUSE_SETXATTR_V2
+References: <20210325151823.572089-1-vgoyal@redhat.com>
+        <20210325151823.572089-2-vgoyal@redhat.com> <YGHqC7bZuh+ytg+p@suse.de>
+        <20210329182408.GE676525@redhat.com>
+Date:   Mon, 29 Mar 2021 21:27:47 +0100
+In-Reply-To: <20210329182408.GE676525@redhat.com> (Vivek Goyal's message of
+        "Mon, 29 Mar 2021 14:24:08 -0400")
+Message-ID: <87eefxk8n0.fsf@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: stmmac: remove redundant dev_err call in
- qcom_ethqos_probe()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161704920991.7047.8155983568330471416.git-patchwork-notify@kernel.org>
-Date:   Mon, 29 Mar 2021 20:20:09 +0000
-References: <1616982572-14473-1-git-send-email-huangguobin4@huawei.com>
-In-Reply-To: <1616982572-14473-1-git-send-email-huangguobin4@huawei.com>
-To:     Huang Guobin <huangguobin4@huawei.com>
-Cc:     vkoul@kernel.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Vivek Goyal <vgoyal@redhat.com> writes:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+> On Mon, Mar 29, 2021 at 03:54:03PM +0100, Luis Henriques wrote:
+>> On Thu, Mar 25, 2021 at 11:18:22AM -0400, Vivek Goyal wrote:
+>> > Fuse client needs to send additional information to file server when
+>> > it calls SETXATTR(system.posix_acl_access). Right now there is no extra
+>> > space in fuse_setxattr_in. So introduce a v2 of the structure which has
+>> > more space in it and can be used to send extra flags.
+>> > 
+>> > "struct fuse_setxattr_in_v2" is only used if file server opts-in for it using
+>> > flag FUSE_SETXATTR_V2 during feature negotiations.
+>> > 
+>> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+>> > ---
+>> >  fs/fuse/acl.c             |  2 +-
+>> >  fs/fuse/fuse_i.h          |  5 ++++-
+>> >  fs/fuse/inode.c           |  4 +++-
+>> >  fs/fuse/xattr.c           | 21 +++++++++++++++------
+>> >  include/uapi/linux/fuse.h | 10 ++++++++++
+>> >  5 files changed, 33 insertions(+), 9 deletions(-)
+>> > 
+>> > diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+>> > index e9c0f916349d..d31260a139d4 100644
+>> > --- a/fs/fuse/acl.c
+>> > +++ b/fs/fuse/acl.c
+>> > @@ -94,7 +94,7 @@ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+>> >  			return ret;
+>> >  		}
+>> >  
+>> > -		ret = fuse_setxattr(inode, name, value, size, 0);
+>> > +		ret = fuse_setxattr(inode, name, value, size, 0, 0);
+>> >  		kfree(value);
+>> >  	} else {
+>> >  		ret = fuse_removexattr(inode, name);
+>> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+>> > index 63d97a15ffde..d00bf0b9a38c 100644
+>> > --- a/fs/fuse/fuse_i.h
+>> > +++ b/fs/fuse/fuse_i.h
+>> > @@ -668,6 +668,9 @@ struct fuse_conn {
+>> >  	/** Is setxattr not implemented by fs? */
+>> >  	unsigned no_setxattr:1;
+>> >  
+>> > +	/** Does file server support setxattr_v2 */
+>> > +	unsigned setxattr_v2:1;
+>> > +
+>> >  	/** Is getxattr not implemented by fs? */
+>> >  	unsigned no_getxattr:1;
+>> >  
+>> > @@ -1170,7 +1173,7 @@ void fuse_unlock_inode(struct inode *inode, bool locked);
+>> >  bool fuse_lock_inode(struct inode *inode);
+>> >  
+>> >  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
+>> > -		  size_t size, int flags);
+>> > +		  size_t size, int flags, unsigned extra_flags);
+>> >  ssize_t fuse_getxattr(struct inode *inode, const char *name, void *value,
+>> >  		      size_t size);
+>> >  ssize_t fuse_listxattr(struct dentry *entry, char *list, size_t size);
+>> > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+>> > index b0e18b470e91..1c726df13f80 100644
+>> > --- a/fs/fuse/inode.c
+>> > +++ b/fs/fuse/inode.c
+>> > @@ -1052,6 +1052,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
+>> >  				fc->handle_killpriv_v2 = 1;
+>> >  				fm->sb->s_flags |= SB_NOSEC;
+>> >  			}
+>> > +			if (arg->flags & FUSE_SETXATTR_V2)
+>> > +				fc->setxattr_v2 = 1;
+>> >  		} else {
+>> >  			ra_pages = fc->max_read / PAGE_SIZE;
+>> >  			fc->no_lock = 1;
+>> > @@ -1095,7 +1097,7 @@ void fuse_send_init(struct fuse_mount *fm)
+>> >  		FUSE_PARALLEL_DIROPS | FUSE_HANDLE_KILLPRIV | FUSE_POSIX_ACL |
+>> >  		FUSE_ABORT_ERROR | FUSE_MAX_PAGES | FUSE_CACHE_SYMLINKS |
+>> >  		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
+>> > -		FUSE_HANDLE_KILLPRIV_V2;
+>> > +		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_V2;
+>> >  #ifdef CONFIG_FUSE_DAX
+>> >  	if (fm->fc->dax)
+>> >  		ia->in.flags |= FUSE_MAP_ALIGNMENT;
+>> > diff --git a/fs/fuse/xattr.c b/fs/fuse/xattr.c
+>> > index 1a7d7ace54e1..f2aae72653dc 100644
+>> > --- a/fs/fuse/xattr.c
+>> > +++ b/fs/fuse/xattr.c
+>> > @@ -12,24 +12,33 @@
+>> >  #include <linux/posix_acl_xattr.h>
+>> >  
+>> >  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
+>> > -		  size_t size, int flags)
+>> > +		  size_t size, int flags, unsigned extra_flags)
+>> >  {
+>> >  	struct fuse_mount *fm = get_fuse_mount(inode);
+>> >  	FUSE_ARGS(args);
+>> >  	struct fuse_setxattr_in inarg;
+>> > +	struct fuse_setxattr_in_v2 inarg_v2;
+>> > +	bool setxattr_v2 = fm->fc->setxattr_v2;
+>> >  	int err;
+>> >  
+>> >  	if (fm->fc->no_setxattr)
+>> >  		return -EOPNOTSUPP;
+>> >  
+>> >  	memset(&inarg, 0, sizeof(inarg));
+>> > -	inarg.size = size;
+>> > -	inarg.flags = flags;
+>> > +	memset(&inarg_v2, 0, sizeof(inarg_v2));
+>> > +	if (setxattr_v2) {
+>> > +		inarg_v2.size = size;
+>> > +		inarg_v2.flags = flags;
+>> > +		inarg_v2.setxattr_flags = extra_flags;
+>> > +	} else {
+>> > +		inarg.size = size;
+>> > +		inarg.flags = flags;
+>> > +	}
+>> >  	args.opcode = FUSE_SETXATTR;
+>> >  	args.nodeid = get_node_id(inode);
+>> >  	args.in_numargs = 3;
+>> > -	args.in_args[0].size = sizeof(inarg);
+>> > -	args.in_args[0].value = &inarg;
+>> > +	args.in_args[0].size = setxattr_v2 ? sizeof(inarg_v2) : sizeof(inarg);
+>> > +	args.in_args[0].value = setxattr_v2 ? &inarg_v2 : (void *)&inarg;
+>> 
+>> And yet another minor:
+>> 
+>> It's a bit awkward to have to cast '&inarg' to 'void *' just because
+>> you're using the ternary operator.  Why not use an 'if' statement instead
+>> for initializing .size and .value?
+>
+> Yes, I had to use (void *), otherwise compiler was complaining about
+> returning different types of pointers. Interesting that compiler
+> expects to return same type of pointer.
 
-On Mon, 29 Mar 2021 09:49:32 +0800 you wrote:
-> From: Guobin Huang <huangguobin4@huawei.com>
-> 
-> There is a error message within devm_ioremap_resource
-> already, so remove the dev_err call to avoid redundant
-> error message.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
-> 
-> [...]
+IIRC, K&R (which I unfortunately don't have at hand right now) says that
+the types of both expressions need to match, so probably a different
+compiler would show the same warning.
 
-Here is the summary with links:
-  - [net-next,v2] net: stmmac: remove redundant dev_err call in qcom_ethqos_probe()
-    https://git.kernel.org/netdev/net-next/c/3d0dbd546345
+Cheers,
+-- 
+Luis
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> I think I am fine with this as well as adding explicit if statement. I
+> guess just a matter of taste. 
+>
+> Miklos, what do you think? If you also prefer if statement instead,
+> I will make changes and post again.
+>
+> Vivek
