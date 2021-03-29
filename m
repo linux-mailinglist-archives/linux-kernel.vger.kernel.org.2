@@ -2,183 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD98534C4BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B3C34C401
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhC2HTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        id S230298AbhC2Gtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhC2HS6 (ORCPT
+        with ESMTP id S230328AbhC2Gtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:18:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB655C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:18:57 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lQmAl-0008RT-Ba; Mon, 29 Mar 2021 09:18:51 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:44b9:f06e:1c40:69b1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 7C0B7602718;
-        Mon, 29 Mar 2021 06:48:51 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 08:48:50 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:2267:16: warning:
- taking address of packed member 'hw_tx_obj' of class or structure
- 'mcp251xfd_tx_obj_load_buf::(anonymous)' may result in an unaligned pointer
- value
-Message-ID: <20210329064850.vh7rlwh7oapjqucj@pengutronix.de>
-References: <202103271812.xDwl25lD-lkp@intel.com>
+        Mon, 29 Mar 2021 02:49:36 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1972C061574;
+        Sun, 28 Mar 2021 23:49:35 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dm8so12990336edb.2;
+        Sun, 28 Mar 2021 23:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dvJrD38+Gd0ZZfT3SZAwY+e98dco9w+l9AERMmUkun4=;
+        b=ew+I8Zx3kLnvSgMLoTHkAJaNu+rvPBxtmPFiLXJz1lS4Tx+N+rBMis1LTjcK9rRx7n
+         2/Tav3DObTgXUf7PbtOWdAgB4s/F1Ie76PLgsyQ1HYFIUWAoviKOYes6dmy/GE0agGyh
+         +1SicMn1MhsCW4Q/8Nfpj+YyExvb1w8F9jKEQPgdqplos5pV3py7PWTEyJ6l3TogDnhX
+         NLp2uq5CavP+ukvEg73Z3axM8efl3Q4z1xbDKp17XSnuOKnrqFLcX+YgYMIiNyoup293
+         6NEm7YDoEdCXL4N2fSNioyFawWwE5gXGKqnCm0V/RgX9XHg4wI4tQi6Go4Kos+xcrih1
+         k7uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dvJrD38+Gd0ZZfT3SZAwY+e98dco9w+l9AERMmUkun4=;
+        b=f36sIXzfymYXWX1+/GLhzFKsTUlFf1OQHc7PONkCD2MaszATrfCxYwV2JHHCMqh8BA
+         XbhRw/N0eQZ3uC9LGMLQjKkjmnLe8NEogj7Cuihm8nZ3WOXaq8f0VKGfeoX3jJfL6gcr
+         s3Rc6ExGAeqfSc3aUNgspobXyyo8nZajnZ5QKKR+KCsI7qO08XNuBn22N8ctOKVwguz/
+         MF77wY+dVGrSmYKVKETuGESfmXWAjlVJMb/0r4KQw59LzbK9HRlx3cGbkRGEdNTmuTzt
+         5LkoIGCsXp/lRsXp+mvRu/JoyhKnvj8jIr6qk99Crm7cT+WQMKveorfpQ59Q7na+iIKR
+         DIFA==
+X-Gm-Message-State: AOAM530JmNdWarBr3pjrsm6S3C/DOwYwit1SRAS8v6kQsSXP0Ea6rVmA
+        lTybXHw1emtVDi7TBp0imDhCjuy/lWM=
+X-Google-Smtp-Source: ABdhPJydy6eDabhN/L6gwqCNv1MYhFf0/Yc5thGJOO9FABN3b0uIVZgU/ie3tTad8ORQ3j1ow6MYgg==
+X-Received: by 2002:aa7:cb90:: with SMTP id r16mr27693945edt.139.1617000573716;
+        Sun, 28 Mar 2021 23:49:33 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id eo22sm7682061ejc.0.2021.03.28.23.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 23:49:32 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 08:49:57 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: nvidia,tegra210-ahub: Add missing
+ child nodes
+Message-ID: <YGF4laeEP3v7bP9X@orome.fritz.box>
+References: <20210326195003.3756394-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="llupkarg5grkzwxh"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ijQsMv6nekEBJq7o"
 Content-Disposition: inline
-In-Reply-To: <202103271812.xDwl25lD-lkp@intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210326195003.3756394-1-robh@kernel.org>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---llupkarg5grkzwxh
-Content-Type: text/plain; charset=utf-8
+--ijQsMv6nekEBJq7o
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 27.03.2021 18:16:14, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   0f4498cef9f5cd18d7c6639a2a902ec1edc5be4e
-> commit: eb79a267c9b3e608e7762a1b221428f37ace3aa3 can: mcp251xfd: rename a=
-ll remaining occurrence to mcp251xfd
-> date:   6 months ago
-> config: mips-randconfig-r035-20210327 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project d50f=
-e9f0d6b9ee61df8830a67ea0a33c27a637e7)
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install mips cross compiling tool for clang build
->         # apt-get install binutils-mips-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git/commit/?id=3Deb79a267c9b3e608e7762a1b221428f37ace3aa3
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/=
-git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout eb79a267c9b3e608e7762a1b221428f37ace3aa3
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
-CH=3Dmips=20
+On Fri, Mar 26, 2021 at 01:50:03PM -0600, Rob Herring wrote:
+> The nvidia,tegra210-ahub binding is missing schema for child nodes. This
+> results in warnings if 'additionalProperties: false' is set (or when the
+> tools implement 'unevaluatedProperties' support). Add the child nodes
+> and reference their schema if one exists.
 >=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Sameer Pujar <spujar@nvidia.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-tegra@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2:
+>  - Also add 'dspk' child node
 >=20
-> All warnings (new ones prefixed by >>):
-
-[...]
-
-> >> drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:2267:16: warning: takin=
-g address of packed member 'hw_tx_obj' of class or structure 'mcp251xfd_tx_=
-obj_load_buf::(anonymous)' may result in an unaligned pointer value [-Waddr=
-ess-of-packed-member]
->                    hw_tx_obj =3D &load_buf->crc.hw_tx_obj;
->                                 ^~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:2269:16: warning: takin=
-g address of packed member 'hw_tx_obj' of class or structure 'mcp251xfd_tx_=
-obj_load_buf::(anonymous)' may result in an unaligned pointer value [-Waddr=
-ess-of-packed-member]
->                    hw_tx_obj =3D &load_buf->nocrc.hw_tx_obj;
->                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
->    4 warnings and 1 error generated.
-
-That warning is technically correct, hw_tx_obj is an unaligned pointer in
-the first warning, but...
-
-> vim +2267 drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> This patch ideally should be applied before this series[1].
 >=20
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2215  static void
-> eb79a267c9b3e6 drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c Marc Kleine=
--Budde 2020-09-30  2216  mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_p=
-riv *priv,
-> eb79a267c9b3e6 drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c Marc Kleine=
--Budde 2020-09-30  2217  			  struct mcp251xfd_tx_obj *tx_obj,
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2218  			  const struct sk_buff *skb,
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2219  			  unsigned int seq)
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2220  {
-[...]
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2265  	load_buf =3D &tx_obj->buf;
-> eb79a267c9b3e6 drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c Marc Kleine=
--Budde 2020-09-30  2266  	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_C=
-RC_TX)
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18 @2267  		hw_tx_obj =3D &load_buf->crc.hw_tx_obj;
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2268  	else
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2269  		hw_tx_obj =3D &load_buf->nocrc.hw_tx_obj;
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2270 =20
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2271  	put_unaligned_le32(id, &hw_tx_obj->id);
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2272  	put_unaligned_le32(flags, &hw_tx_obj->flags);
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2273 =20
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2274  	/* Clear data at end of CAN frame */
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2275  	offset =3D round_down(cfd->len, sizeof(u32));
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2276  	len =3D round_up(can_dlc2len(dlc), sizeof(u32)) -=
- offset;
-> eb79a267c9b3e6 drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c Marc Kleine=
--Budde 2020-09-30  2277  	if (MCP251XFD_SANITIZE_CAN && len)
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2278  		memset(hw_tx_obj->data + offset, 0x0, len);
-> 55e5b97f003e85 drivers/net/can/spi/mcp25xxfd/mcp25xxfd-core.c Marc Kleine=
--Budde 2020-09-18  2279  	memcpy(hw_tx_obj->data, cfd->data, cfd->len);
+> [1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
+> ---
+>  .../bindings/sound/nvidia,tegra210-ahub.yaml     | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 
-=2E..it's only accessed via put_unaligned_* and memset()/memcpy().
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---llupkarg5grkzwxh
+--ijQsMv6nekEBJq7o
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBheE8ACgkQqclaivrt
-76mb/ggAialDT5Q0UmXvRXviok/u+ts9aKl88dZGDQGiTbj0pgWdC1XGgfaJfF7g
-sQEYSG7g9ogJP3hgFMx4NrtWEG24GPDFK7UzHp6adWsyKnAs6vopnO/Q0GZ4fNti
-ZpUL1sPkOgsoblQPQCcj6OQX43wTW+n+QM14/6lZovYO5WrClaXwRROH+zeWvsCH
-ENfZ4GhnGPkRHOqRh5hPBUIEhwrhfCAuyqn9OtshBfGw9hVkp5WliVkztej8e0OU
-O7TbswKA9vbEq7ftxKxiZNFXEPaNUiwxy+yB6Gz2TffkDRfW3sSqDjS51+OYPkha
-HEarrb0BuRtbHxDnLb5lnENlyLssLA==
-=k7CE
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBheJMACgkQ3SOs138+
+s6GRJA//SwwwKllKwUX2o66Qc7knEWeus1NCiU3TvglA4jxSC+pf74q4wyOIWu3y
+T/LTXQBUaDsagPelNfETPnOJbdMbUjpNwHFSy3tsMbmP9LDC9caNOhLHgx5EICdq
+j//Ni9BhTN/GtLQup6XKKoE20g2Z+L9chB/8rh6lIBY98TTImJn5e/dZzEnhs00+
+oIWn7jhIQLGyICN5K3RBbtLaB4gBlIZExABmYOXCRL9Or6ku1KjrNpVFIGlRIn0Z
+FiaxFLJpDGAXITI+M8xVDFg6nEY2k0/iXLTC/dncmuWR7oyIJ3Z0eNB4vos3LNA6
+b9Cchxrx5bkOoGErHtROtPdmuvwFFKwlM1SR782EkuVDUHinVmyndTlF5ax9q/2c
+LK8T8/XPwr8V7Ip2EUxKcnotAsm3YK5KXma2O4pIxHdnFsgnMC4Rcz6WTQCsd1GV
+aMIqtS/7rZb/CyxiHsuJ8BdUWxgl5hT588cGKbVaNWpgGDYdIGpvHwbShnnGb6Ow
+P5O9EeBy93UxjrY5pZVWmBCOEPLuW1fSOhuGc9mYetjy4nJylBy9yDGkPQ6FxlgK
+a2eGJqEx199Gq7TwCpLZcv87mW6Njm4DqJJ4Cu2yp09ig/0uzIfE67RUVKqnVjSi
+DLBMBmqxdPzdjXYAfT7BXy/9TTcUKWR6wmh/LFZhALywMF+uT1Y=
+=znco
 -----END PGP SIGNATURE-----
 
---llupkarg5grkzwxh--
+--ijQsMv6nekEBJq7o--
