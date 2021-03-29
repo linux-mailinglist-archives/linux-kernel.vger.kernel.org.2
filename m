@@ -2,238 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7830034D1FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA83E34D202
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC2N6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:58:54 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:46796 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhC2N6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:58:43 -0400
-Received: by mail-oi1-f175.google.com with SMTP id m13so13114419oiw.13;
-        Mon, 29 Mar 2021 06:58:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9rC/X74azzjRs0pes0OL8Iit7ird9BMRnDmRA641q6s=;
-        b=Jzv4+yEw/AHjEnvl8gLAoA45yepfglIZp75DjBnFGt3WBGrJwtR2bb/HMzksHVaWlA
-         X1ZLPgQwEHxMru8kcsIGUJRFsIaJWci3h8+8nsc1xNh9sYPrX0tHTGPwe06Tb4j5cA48
-         5qc54itWZ2bkqvGAuLvh/ZpTJTQfp9R3LG0IOY4B6kbqsXDJHEFRxRlDSjvLIHSN3/4w
-         Gq01Y/opLHniDtJ1n7K3iprt/Dokp4d5HU7pQ0FIadewN6/jQz0TBhaL/BErZ/jNBSQH
-         mHYwv3hA9nmUHTJ1g6Zc1tDiERm/jhHxu3LzM3Q/ykkq3F2ilVGbMJFbiILnVXyqfILo
-         s+jQ==
-X-Gm-Message-State: AOAM531AaYn4FB+T6sXS3tq+gFQhiGlKyZkwzCqz236pZRdE2euy6J7O
-        Cx5sOSI4GZmDT6O3mtTwIw==
-X-Google-Smtp-Source: ABdhPJxVlDLal90W5oTPDVrZQ7LEnLJ7XkMlsj/bLxyytDHqlctz2hufGT6GQfZKiOBW7lPE6EfWQQ==
-X-Received: by 2002:aca:4d8f:: with SMTP id a137mr18442952oib.132.1617026322769;
-        Mon, 29 Mar 2021 06:58:42 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v30sm4430627otb.23.2021.03.29.06.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:58:40 -0700 (PDT)
-Received: (nullmailer pid 2477089 invoked by uid 1000);
-        Mon, 29 Mar 2021 13:58:38 -0000
-Date:   Mon, 29 Mar 2021 08:58:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
-        matthias.bgg@gmail.com, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        eddie.huang@mediatek.com, jg_poxu@mediatek.com,
-        biao.huang@mediatek.com, hongzhou.yang@mediatek.com,
-        erin.lo@mediatek.com, sean.wang@mediatek.com,
-        seiya.wang@mediatek.com, sj.huang@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 2/6] dt-bindings: pinctrl: mt8195: add binding document
-Message-ID: <20210329135838.GA2473026@robh.at.kernel.org>
-References: <20210329065047.8388-1-zhiyong.tao@mediatek.com>
- <20210329065047.8388-3-zhiyong.tao@mediatek.com>
+        id S229873AbhC2N77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230210AbhC2N74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:59:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1186191B;
+        Mon, 29 Mar 2021 13:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617026395;
+        bh=DCBZz8px5deYRkkddBKC1usc1yFRvfSmu4Va0AsvYFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lhmezTFyYyqJetNwZgFYIibddfOnx/4fzXI6kaAfmGAhQtVVUoNLF2rKZ3JqG8OPG
+         sEu4nxmOdt+jywqMvOyptgYij2cytfhQA+gmJMKVfiB4Z4w9+E9hZqPoc+9ROo4O5y
+         oEovTVtYtif26B/uilKbkBGUim4VrhTr4uFiD8mc=
+Date:   Mon, 29 Mar 2021 15:59:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
+Message-ID: <YGHdWKxeZfp/zxE8@kroah.com>
+References: <20210329075633.135869143@linuxfoundation.org>
+ <20210329075640.480623043@linuxfoundation.org>
+ <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
+ <YGGoHdprUT/AscHa@kroah.com>
+ <CAMj1kXEwMSbS1LC7sPSjSifLF8jYVyGcHvvkf9nfrf-fwo4d9w@mail.gmail.com>
+ <YGHZRHgNJkFH+Eiq@kroah.com>
+ <CAMj1kXFERgODEEmK-ohSErV5At6SJGKU1a6=9ZfeBnFE0ZJ-AA@mail.gmail.com>
+ <YGHbcXMlWAwAjteN@kroah.com>
+ <CA+CK2bCqf7Bw13ibUbUfEtsGikv3Vhye-UTmNo4JgLZ=uAqbmA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329065047.8388-3-zhiyong.tao@mediatek.com>
+In-Reply-To: <CA+CK2bCqf7Bw13ibUbUfEtsGikv3Vhye-UTmNo4JgLZ=uAqbmA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 02:50:43PM +0800, Zhiyong Tao wrote:
-> The commit adds mt8195 compatible node in binding document.
+On Mon, Mar 29, 2021 at 09:53:10AM -0400, Pavel Tatashin wrote:
+> On Mon, Mar 29, 2021 at 9:51 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Mar 29, 2021 at 03:49:19PM +0200, Ard Biesheuvel wrote:
+> > > (+ Pavel)
+> > >
+> > > On Mon, 29 Mar 2021 at 15:42, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Mon, Mar 29, 2021 at 03:08:52PM +0200, Ard Biesheuvel wrote:
+> > > > > On Mon, 29 Mar 2021 at 12:12, Greg Kroah-Hartman
+> > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Mon, Mar 29, 2021 at 03:05:25PM +0530, Naresh Kamboju wrote:
+> > > > > > > On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
+> > > > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > > > >
+> > > > > > > > From: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > > > > >
+> > > > > > > > [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+> > > > > > > >
+> > > > > > > > This overrides arch_get_mappable_range() on arm64 platform which will be
+> > > > > > > > used with recently added generic framework.  It drops
+> > > > > > > > inside_linear_region() and subsequent check in arch_add_memory() which are
+> > > > > > > > no longer required.  It also adds a VM_BUG_ON() check that would ensure
+> > > > > > > > that mhp_range_allowed() has already been called.
+> > > > > > > >
+> > > > > > > > Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
+> > > > > > > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > > > > > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > > > > > > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > > > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > > > > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > > > > > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > > > > > > > Cc: Jason Wang <jasowang@redhat.com>
+> > > > > > > > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > > > > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > > > > > > > Cc: Michal Hocko <mhocko@kernel.org>
+> > > > > > > > Cc: Oscar Salvador <osalvador@suse.de>
+> > > > > > > > Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> > > > > > > > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> > > > > > > > Cc: teawater <teawaterz@linux.alibaba.com>
+> > > > > > > > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > > > > > > > Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> > > > > > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > > > > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > > > > > ---
+> > > > > > > >  arch/arm64/mm/mmu.c | 15 +++++++--------
+> > > > > > > >  1 file changed, 7 insertions(+), 8 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > > > > > > > index 6f0648777d34..92b3be127796 100644
+> > > > > > > > --- a/arch/arm64/mm/mmu.c
+> > > > > > > > +++ b/arch/arm64/mm/mmu.c
+> > > > > > > > @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+> > > > > > > >         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > -static bool inside_linear_region(u64 start, u64 size)
+> > > > > > > > +struct range arch_get_mappable_range(void)
+> > > > > > > >  {
+> > > > > > > > +       struct range mhp_range;
+> > > > > > > > +
+> > > > > > > >         /*
+> > > > > > > >          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+> > > > > > > >          * accommodating both its ends but excluding PAGE_END. Max physical
+> > > > > > > >          * range which can be mapped inside this linear mapping range, must
+> > > > > > > >          * also be derived from its end points.
+> > > > > > > >          */
+> > > > > > > > -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+> > > > > > > > -              (start + size - 1) <= __pa(PAGE_END - 1);
+> > > > > > > > +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> > > > > > > > +       mhp_range.end =  __pa(PAGE_END - 1);
+> > > > > > > > +       return mhp_range;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > >  int arch_add_memory(int nid, u64 start, u64 size,
+> > > > > > > > @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> > > > > > > >  {
+> > > > > > > >         int ret, flags = 0;
+> > > > > > > >
+> > > > > > > > -       if (!inside_linear_region(start, size)) {
+> > > > > > > > -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+> > > > > > > > -               return -EINVAL;
+> > > > > > > > -       }
+> > > > > > > > -
+> > > > > > > > +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > > > > > > >         if (rodata_full || debug_pagealloc_enabled())
+> > > > > > > >                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> > > > > > >
+> > > > > > > The stable rc 5.10 and 5.11 builds failed for arm64 architecture
+> > > > > > > due to below warnings / errors,
+> > > > > > >
+> > > > > > > > Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > > > > >     arm64/mm: define arch_get_mappable_range()
+> > > > > > >
+> > > > > > >
+> > > > > > >   arch/arm64/mm/mmu.c: In function 'arch_add_memory':
+> > > > > > >   arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
+> > > > > > > 'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
+> > > > > > > [-Werror=implicit-function-declaration]
+> > > > > > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > > > > > >                ^
+> > > > > > >   include/linux/build_bug.h:30:63: note: in definition of macro
+> > > > > > > 'BUILD_BUG_ON_INVALID'
+> > > > > > >    #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+> > > > > > >                                                                  ^
+> > > > > > >   arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
+> > > > > > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > > > > > >     ^~~~~~~~~
+> > > > > > >
+> > > > > > > Build link,
+> > > > > > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
+> > > > > > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
+> > > > > >
+> > > > > > thanks, will go drop this, and the patch that was after it in the
+> > > > > > series, from both trees and will push out a -rc2.
+> > > > > >
+> > > > >
+> > > > > Why were these picked up in the first place? I don't see any fixes or
+> > > > > cc:stable tags, and the commit log clearly describes that the change
+> > > > > is preparatory work for enabling arm64 support into a recently
+> > > > > introduced generic framework.
+> > > >
+> > > > This was needed for a follow-on patch in the series that fixed an issue.
+> > > > Specifically it was commit ee7febce0519 ("arm64: mm: correct the inside
+> > > > linear map range during hotplug check")
+> > > >
+> > >
+> > > Yeah, but during the discussion of that patch [0], we pointed out that
+> > > it needed to be rebased because of these new changes. So trying to
+> > > backport this rebased version is obviously not the right approach:
+> > > Pavel's original patch would be much more suitable for that.
+> > >
+> > > Could we have annotated this patch in a better way to make this more obvious?
+> >
+> > Yes, given that there was no annotation on the patch at all to let us
+> > know this :)
+> >
+> > You can say things like "do not apply to stable trees" or "needs total
+> > rework for older kernels" or other fun such things that when we read
+> > them, we know to ask for help.  As it is, the patch provided nothing so
+> > we guessed and got it wrong...
 > 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> ---
->  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 152 ++++++++++++++++++
->  1 file changed, 152 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> new file mode 100644
-> index 000000000000..7915b9568c29
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> @@ -0,0 +1,152 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/pinctrl-mt8195.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek MT8195 Pin Controller
-> +
-> +maintainers:
-> +  - Sean Wang <sean.wang@mediatek.com>
-> +
-> +description: |
-> +  The Mediatek's Pin controller is used to control SoC pins.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt8195-pinctrl
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    description: |
-> +      Number of cells in GPIO specifier. Since the generic GPIO binding is used,
-> +      the amount of cells must be specified as 2. See the below
-> +      mentioned gpio binding representation for description of particular cells.
-> +    const: 2
-> +
-> +  gpio-ranges:
-> +    description: gpio valid number range.
-> +    maxItems: 1
-> +
-> +  reg:
-> +    description: |
-> +      Physical address base for gpio base registers. There are 8 GPIO
-> +      physical address base in mt8195.
-> +    maxItems: 8
-> +
-> +  reg-names:
-> +    description: |
-> +      Gpio base register names.
-> +    maxItems: 8
-> +
-> +  interrupt-controller: true
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupts:
-> +    description: The interrupt outputs to sysirq.
-> +    maxItems: 1
-> +
-> +#PIN CONFIGURATION NODES
-> +patternProperties:
-> +  '^pins':
+> I will send the patch for stable trees with the commit id included as requested.
 
-Normally we're doing '-pins$'.
+Wonderful, thank you so much.
 
-> +    type: object
-> +    description: |
-> +      A pinctrl node should contain at least one subnodes representing the
-> +      pinctrl groups available on the machine. Each subnode will list the
-> +      pins it needs, and how they should be configured, with regard to muxer
-> +      configuration, pullups, drive strength, input enable/disable and
-> +      input schmitt.
-> +      An example of using macro:
-> +      pincontroller {
-> +        /* GPIO0 set as multifunction GPIO0 */
-> +        state_0_node_a {
-
-Use the node name pattern defined.
-
-> +          pinmux = <PINMUX_GPIO0__FUNC_GPIO0>;
-> +        };
-> +        /* GPIO1 set as multifunction CLKM1 */
-> +        state_0_node_b {
-> +          pinmux = <PINMUX_GPIO1__FUNC_CLKM1>;
-> +        };
-> +      };
-> +    $ref: "pinmux-node.yaml"
-> +
-> +    properties:
-> +      pinmux:
-> +        description: |
-> +          Integer array, represents gpio pin number and mux setting.
-> +          Supported pin number and mux varies for different SoCs, and are defined
-> +          as macros in dt-bindings/pinctrl/<soc>-pinfunc.h directly.
-> +
-> +      drive-strength:
-> +        description: |
-> +          It can support some arguments, such as MTK_DRIVE_4mA, MTK_DRIVE_6mA, etc. See
-> +          dt-bindings/pinctrl/mt65xx.h. It can only support 2/4/6/8/10/12/14/16mA in mt8195.
-> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> +
-> +      bias-pull-down: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-disable: true
-> +
-> +      output-high: true
-> +
-> +      output-low: true
-> +
-> +      input-enable: true
-> +
-> +      input-disable: true
-> +
-> +      input-schmitt-enable: true
-> +
-> +      input-schmitt-disable: true
-> +
-> +    required:
-> +      - pinmux
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +            #include <dt-bindings/pinctrl/mt8195-pinfunc.h>
-> +            #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +            pio: pinctrl@10005000 {
-> +                    compatible = "mediatek,mt8195-pinctrl";
-> +                    reg = <0x10005000 0x1000>,
-> +                          <0x11d10000 0x1000>,
-> +                          <0x11d30000 0x1000>,
-> +                          <0x11d40000 0x1000>,
-> +                          <0x11e20000 0x1000>,
-> +                          <0x11e20000 0x1000>,
-> +                          <0x11eb0000 0x1000>,
-> +                          <0x11f40000 0x1000>,
-> +                          <0x1000b000 0x1000>;
-> +                    reg-names = "iocfg0", "iocfg_bm", "iocfg_bl",
-> +                          "iocfg_br", "iocfg_lm", "iocfg_rb",
-> +                          "iocfg_tl", "eint";
-> +                    gpio-controller;
-> +                    #gpio-cells = <2>;
-> +                    gpio-ranges = <&pio 0 0 144>;
-> +                    interrupt-controller;
-> +                    interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH 0>;
-> +                    #interrupt-cells = <2>;
-> +
-> +                    pins {
-> +                      pinmux = <PINMUX_GPIO0__FUNC_GPIO0>;
-> +                      output-low;
-> +                    };
-> +            };
-> -- 
-> 2.18.0
-> 
+greg k-h
