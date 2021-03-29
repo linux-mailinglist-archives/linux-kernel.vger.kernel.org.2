@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2AC34C354
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533BB34C352
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhC2Fwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S229479AbhC2FwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbhC2Fwl (ORCPT
+        with ESMTP id S230420AbhC2Fvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:52:41 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F91C061574;
-        Sun, 28 Mar 2021 22:52:41 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id x16so5939887qvk.3;
-        Sun, 28 Mar 2021 22:52:41 -0700 (PDT)
+        Mon, 29 Mar 2021 01:51:55 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CBDC061574;
+        Sun, 28 Mar 2021 22:51:55 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b83so16585929lfd.11;
+        Sun, 28 Mar 2021 22:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QEBhJRkUldP9MTqtPRl/PdQiaXTH0NuLwpqsVbpBShk=;
-        b=u4EMbSXycOVxaI9gFtksc8Q0DjzCH/304aO/U+g6MfkEtnqLgnEajGG9nGr2SO7H/S
-         nbTtC2vhk0kBSCfV4rXnWsSBh/2CbOf1q5wuFpm6Ey7TZQvl343T6QUBcZdE+s5iIP5s
-         OnvQmAdoZ2zEQdwrkgEHYDSlCF+9sd17heSraLF+kMo43mjmbJP5saMXujT+KyZC/zxK
-         rc0W0GMRPfFJcY8Qaqz5LBOUei2ai39pE+TC9bdeB2Yav28CEhckOpVwIKbdzMhvO+t2
-         DJZifhkwwgreM27rEBv7GGYRP7YfekNf39S2LGYC/hO3Y34yT3VL7RoKhb5XlCOzwx3Q
-         FU2Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RTLEyGYV7yZnyiywVX1eOKOUOm0dlrQWocBPAeC79ME=;
+        b=hNAHBojYISzngalmZZEPtvRBfhgwq4l7m6YkXQek8/1QFA2rul3OVIBvlStI01aBHC
+         hxo9w3v7g05OYpns2vmFULGfBkX3dE1exCo6nX+P4Qc4/JSzgT2VPVSjSUQ2NonW2GYW
+         YDj0OUyKAwGXNc08nvbkhEu/8Xu6D0YL9enJTsggteQnKCOrjK2Onvb8rjCRt4boYdPX
+         Madcp2QIdCcHzrR+lrF9eEtm+54C6WoNmW808AtKEZWFvHGAfrcs6KB+XZdLzL/B45QS
+         0ETnX78rbx3ECTEcNkAsP9sTRdBRwWD7ARh5htEPboxnb4juYxjT9TiQCv8RqcS77diM
+         bULQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=QEBhJRkUldP9MTqtPRl/PdQiaXTH0NuLwpqsVbpBShk=;
-        b=L5W8ydZwR3pQA9sZe4rZXVWjpSvydszxUqr3+R4uN4LOD+aejMD6IGwModKAyv5V9i
-         D1SzN76/KEpsrg2ldqIUZrUtOnIKhomNPwR790ba152yN+9Khl+eLSHnrOZ/gyqxPAQZ
-         mUP3kYeAVPrWoaO5Rg7br6Gz0Rc6LcxPZgU5OiZf52v+k9hw+pO26/+ubWQq2qUj5sr1
-         mKiGbgc4bMndTgljMDlkyNqHrrfXMPs+FUCghaIWZ1HpHgE7MCuPq4y+8cCfuvjxiXEU
-         dhIg1R6Wi7sP8uty0r0PHIafDVMiCp4RER9lOyoL2I4xUupDE8TkcWDWRtwZeEdkGhRB
-         rIMg==
-X-Gm-Message-State: AOAM531eIHZaarNX7IuldO5xU0t+9YUg6kkNdlP/PW59h9E2rTnNaScQ
-        afsVaWZH1jq1TqmiNPrivrE=
-X-Google-Smtp-Source: ABdhPJw1wKFggJtj33zdivqYl1Ft26FlUNEVPyigiHgcrCBRMeeJGnO4nshGrsp0Ah5CrY0oNu6pQQ==
-X-Received: by 2002:a05:6214:20c8:: with SMTP id 8mr23639661qve.15.1616997160403;
-        Sun, 28 Mar 2021 22:52:40 -0700 (PDT)
-Received: from Gentoo ([156.146.37.195])
-        by smtp.gmail.com with ESMTPSA id r23sm2640561qtc.31.2021.03.28.22.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 22:52:39 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 11:22:26 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/23] atomctl.rst: A typo fix
-Message-ID: <YGFrGkOlenyGYKHe@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <cover.1616992679.git.unixbhaskar@gmail.com>
- <b103bd6a8bcdad7f90806dbe7680017235cf1d9c.1616992679.git.unixbhaskar@gmail.com>
- <CAMo8BfKj+ojEbc1ZJ6QL+f9Sq+7oZeqVNMu6nTP=OSbrqD2XOg@mail.gmail.com>
- <CAMo8BfL8bzsVCSez8WUy5E7_izKmhYFB1O2gOXsqcsok65sM=w@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RTLEyGYV7yZnyiywVX1eOKOUOm0dlrQWocBPAeC79ME=;
+        b=hP4rHLicsaiQlU+IRZYmVi/2UEunNLVZUXJW9g5mKBF8Svf8d1EGR+fjrcV/s8ZIXi
+         YJr/ozkJ0qbkZRh/2v6WSjZVjgkf0JExswjcctFP5ATND/5IgOhP1UBcHqC7JRNdTJle
+         MTWMIew8Y7mKKUU77sQ+q4nx0EcFI1cZSDpbJLFZSTNI3XCU5C3H4/IEaalBrvTHuyvV
+         rrWHsAvxKLyC6NJipNzO4r8hCl5ig9nHT1PuJCTbb6A8FIwQdKsfw3DpEbwI45+S7tOE
+         mZVokSjpikQwPz3il02d/E0XeOtd3wSFaUqEiWb4XD8lpct3iI/HJFtGZWRgOgkUZAO6
+         OX/w==
+X-Gm-Message-State: AOAM5311LU49dQjF4PPE82G5ZzSm3QUED69tl1fRDbarK9gS3/g1XSB7
+        dHIQtHNd6aZdtSmhg/XcyAEhZbkeWYc=
+X-Google-Smtp-Source: ABdhPJzUmHX+nuyzaEP26EJ10aru8aZC9ARy5zb2nWO8j/0CzMhFhLBvwpv8cuYyGvkhN9urB6hxlg==
+X-Received: by 2002:a05:6512:36c8:: with SMTP id e8mr14779024lfs.635.1616997113586;
+        Sun, 28 Mar 2021 22:51:53 -0700 (PDT)
+Received: from [10.0.0.42] (91-157-86-200.elisa-laajakaista.fi. [91.157.86.200])
+        by smtp.gmail.com with ESMTPSA id n18sm1360128lfl.148.2021.03.28.22.51.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Mar 2021 22:51:53 -0700 (PDT)
+Subject: Re: [PATCH 14/17] ASoC: ti: omap-abe-twl6040: remove useless
+ assignment
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "open list:OMAP AUDIO SUPPORT" <linux-omap@vger.kernel.org>
+References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
+ <20210326215927.936377-15-pierre-louis.bossart@linux.intel.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <c21d4306-4219-009c-289a-14aa5bb7f241@gmail.com>
+Date:   Mon, 29 Mar 2021 08:52:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0XmWbfFiw7nwpR9E"
-Content-Disposition: inline
-In-Reply-To: <CAMo8BfL8bzsVCSez8WUy5E7_izKmhYFB1O2gOXsqcsok65sM=w@mail.gmail.com>
+In-Reply-To: <20210326215927.936377-15-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---0XmWbfFiw7nwpR9E
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
 
-On 22:38 Sun 28 Mar 2021, Max Filippov wrote:
->On Sun, Mar 28, 2021 at 10:37 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
->>
->> On Sun, Mar 28, 2021 at 10:18 PM Bhaskar Chowdhury
->> <unixbhaskar@gmail.com> wrote:
->> >
->> > s/controlers/controllers/
->> >
->> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> > ---
->> >  Documentation/xtensa/atomctl.rst | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/Documentation/xtensa/atomctl.rst b/Documentation/xtensa/atomctl.rst
->> > index 1ecbd0ba9a2e..a0efab2abe8f 100644
->> > --- a/Documentation/xtensa/atomctl.rst
->> > +++ b/Documentation/xtensa/atomctl.rst
->> > @@ -23,7 +23,7 @@ doing a Cached (WB) transaction and use the Memory RCW for un-cached
->> >  operations.
->> >
->> >  For systems without an coherent cache controller, non-MX, we always
->> > -use the memory controllers RCW, thought non-MX controlers likely
->> > +use the memory controllers RCW, thought non-MX controllers likely
->>
->> In this line you could also do s/thought/though/.
->
->...and s/memory controllers/memory controller's/
->
-Thanks, will do both the mentioned changes in V2..
->--
->Thanks.
->-- Max
+On 3/26/21 11:59 PM, Pierre-Louis Bossart wrote:
+> cppcheck warning:
+> 
+> sound/soc/ti/omap-abe-twl6040.c:173:10: style: Variable 'ret' is
+> assigned a value that is never used. [unreadVariable]
+>  int ret = 0;
+>          ^
 
---0XmWbfFiw7nwpR9E
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
------BEGIN PGP SIGNATURE-----
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/soc/ti/omap-abe-twl6040.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/ti/omap-abe-twl6040.c b/sound/soc/ti/omap-abe-twl6040.c
+> index 16ea039ff865..91cc9a4f44d7 100644
+> --- a/sound/soc/ti/omap-abe-twl6040.c
+> +++ b/sound/soc/ti/omap-abe-twl6040.c
+> @@ -170,7 +170,7 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+>  	struct snd_soc_card *card = rtd->card;
+>  	struct abe_twl6040 *priv = snd_soc_card_get_drvdata(card);
+>  	int hs_trim;
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	/*
+>  	 * Configure McPDM offset cancellation based on the HSOTRIM value from
+> 
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBhaxoACgkQsjqdtxFL
-KRXXIQf9GMsn9znDSebcEheL3vjwgPpRw3wZJIPzeCrjPcrfD2vHVhf03wm8CTef
-WBMZdv38qheb+iYL736Yobj12NNhqNLK2Y3Z9/3XNVYXUJN4aVdwOI9k1+meuMg7
-ge3qvF0h+4B2uptY6c9zLrlJHjzPXCNd4WGVY1BhT+XP9aQMLJ5K8jrsbEBM0C7y
-BArdKjN+In8ajlXxqClBR3w8jofdrrp378enc8UyI71SbB9MGNktzO6nOiTs5P+7
-eYw5KJmsoN9vJqCevSpYa5EQqOOUDRZZEm23d6ERmser25fiOqACCp/PYNz6o6mT
-bdpcRK+WHeLTb6oKpZekG6W9k2ywqw==
-=2DiR
------END PGP SIGNATURE-----
-
---0XmWbfFiw7nwpR9E--
+-- 
+Péter
