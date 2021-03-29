@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479DB34C37C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097E734C380
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhC2GDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:03:39 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:45099 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhC2GDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:03:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616997787;
-  x=1648533787;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=6TtND9PQIr5Ym9feqaAO8smz4OK2c/OlqmLq061Vq+E=;
-  b=XMW1i6Rof+UcYdL2aGtOerRDqu+wfnC7h7cGL15EWCTh5p1w+EEX6GFX
-   P3Njg0jLZFuKc0gw+M0CDlo3kDEr03p5rVJIJTir73Pxj8n94p0ltxH4o
-   aSvLL+aQ3Xl2tYI+8lNwE3QnlI4XvzGwrDhv2lOWTPHj44tCK6ml0wLBJ
-   pxb5JK31mlQJiHh0VUWANr4bFYQFIP9Y39nCqlYR+FYShtgoezThSI4HT
-   mEjoznxqx/shvxSZyebA7gudRVq0/8YCmzbfE0TwRKo6OLX4CtqFJHtR5
-   0zly6bPqyexo9SIwD7mlWo4SYIor7smEzbE4bjckZlO+9MQ0JHf9SOcK/
-   Q==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Rob Herring <robh@kernel.org>, Hermes Zhang <Hermes.Zhang@axis.com>
-CC:     "pavel@ucw.cz" <pavel@ucw.cz>, "dmurphy@ti.com" <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lkml@axis.com" <lkml@axis.com>, kernel <kernel@axis.com>
-Subject: Re: [PATCH v2 1/2] dt-binding: leds: Document leds-multi-gpio
- bindings
-Thread-Topic: [PATCH v2 1/2] dt-binding: leds: Document leds-multi-gpio
- bindings
-Thread-Index: AQHXIgDl2ysDeRaH6UilDJnuafb3DQ==
-Date:   Mon, 29 Mar 2021 06:03:05 +0000
-Message-ID: <f29fa789cef74d869db6728f90f28d50@XBOX01.axis.com>
-References: <20210326052801.17666-1-chenhui.zhang@axis.com>
- <20210326052801.17666-2-chenhui.zhang@axis.com>
- <20210327181222.GA327657@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230180AbhC2GFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:05:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34364 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhC2GFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 02:05:02 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5reg2107765;
+        Mon, 29 Mar 2021 06:04:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tS7z0CuO74FovWAcjBdZdSdavDQLzDTbvMKP+eFw5r8=;
+ b=RBdv8O6ZYWO0qbK8BT437HvzzY4RrjtdCJmpAikAi3xeO9EwS2Hy/ThRbP2K9tXIhx0S
+ ESegPiZkxtdwE1VOs3ApcRpaa84lCGUU8haelsXgzlQW1RcQeNUKMfIfoPjjQeFebo++
+ /lpIWR6dea95E9CcCOAwFoBM7IF2Fp3nK30vxA6kDlwG1lBsxJbthH7MavScdVshAR8a
+ IL9inEBhEWPk1C5MuDorn6GhrElAQutC/7pDqx5IKtIH1pb9qBDXcimFqf7pnVWe5tWr
+ JsxHoN7W+sQdzwDJ0nevejB6dsW34Ls854Nx148EeM9UFiTUvpHuEkMhYpgzvG+a4G3I cg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 37hvnm2bc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 06:04:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T5uc9B144359;
+        Mon, 29 Mar 2021 06:04:51 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 37jefqa3gg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 06:04:51 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12T64nKX010017;
+        Mon, 29 Mar 2021 06:04:49 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 29 Mar 2021 06:04:48 +0000
+Date:   Mon, 29 Mar 2021 09:04:41 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mlxsw: spectrum_router: remove redundant
+ initialization of variable force
+Message-ID: <20210329060441.GI1717@kadam>
+References: <20210327223334.24655-1-colin.king@canonical.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210327223334.24655-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103290047
+X-Proofpoint-GUID: lyzIJdyFaiK-NlX62eQkmGcXXV8Nb9Ai
+X-Proofpoint-ORIG-GUID: lyzIJdyFaiK-NlX62eQkmGcXXV8Nb9Ai
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ clxscore=1011 priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/28/21 2:12 AM, Rob Herring wrote:=0A=
->> +=0A=
->> +  led-gpios:=0A=
->> +    description: Array of one or more GPIOs pins used to control the LE=
-D.=0A=
->> +    minItems: 1=0A=
->> +    maxItems: 8  # Should be enough=0A=
->> +=0A=
->> +  led-states:=0A=
->> +    description: |=0A=
->> +      The array list the supported states here which will map to bright=
-ness=0A=
->> +      from 0 to maximum. Each item in the array will present all the GP=
-IOs=0A=
->> +      value by bit.=0A=
->> +    $ref: /schemas/types.yaml#/definitions/uint8-array=0A=
->> +    minItems: 1=0A=
->> +    maxItems: 256 # Should be enough=0A=
-> Isn't this the same as the standard 'brightness-levels' from backlight =
-=0A=
-> binding? The index is the level and the value is the h/w specific =0A=
-> setting.=0A=
-=0A=
-Yes, it seems same.=0A=
-=0A=
-=0A=
-Best Regards,=0A=
-=0A=
-Hermes=0A=
-=0A=
+On Sat, Mar 27, 2021 at 10:33:34PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable force is being initialized with a value that is
+> never read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> index 6ccaa194733b..ff240e3c29f7 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> @@ -5059,7 +5059,7 @@ mlxsw_sp_nexthop_obj_bucket_adj_update(struct mlxsw_sp *mlxsw_sp,
+>  {
+>  	u16 bucket_index = info->nh_res_bucket->bucket_index;
+>  	struct netlink_ext_ack *extack = info->extack;
+> -	bool force = info->nh_res_bucket->force;
+> +	bool force;
+>  	char ratr_pl_new[MLXSW_REG_RATR_LEN];
+>  	char ratr_pl[MLXSW_REG_RATR_LEN];
+>  	u32 adj_index;
+
+Reverse Christmas tree.
+
+regards,
+dan carpenter
+
