@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE5F34C8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8975634CC7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbhC2IYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:24:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58580 "EHLO mail.kernel.org"
+        id S237144AbhC2JDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:03:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232959AbhC2IP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:15:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7A4E61990;
-        Mon, 29 Mar 2021 08:15:12 +0000 (UTC)
+        id S233953AbhC2IjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E636197C;
+        Mon, 29 Mar 2021 08:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005713;
-        bh=zD1GkdOf/P7MWG/g+J7I/gM8cUod1P1ADIdxMDZZoxE=;
+        s=korg; t=1617007143;
+        bh=VPmFzYTH94jK1g8OOUIIweJz2uveAP7bqSmKgSPeJoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0d02io1+7H8CuMtObk/xvIlzLRe7yTfPBjodCNfLSm7+wBg8u9sOFvfP7NSyozNVJ
-         JiREXepCP6ryFQ/sGaB42pO7CmnA1VHbMSgIG1tT9U+dnOIkXO5rzKK5FwW/T/C55x
-         GKkR4/oiA2udbkfiWRtcbFqzu1I5OpH/O8LtVzFI=
+        b=Z90FjwAYumBYIIkcgCLEp9PUE+4V7B8RrsgOhJ/3i9yFK89EtUgEeYlGSt6yQwyOE
+         yLPnonUda2ocNS7t3JWie7D0WLDO8cdCYvz8Vbs0PQnjI8BZCpffqfBIFALB0i391E
+         HmqHrhziSqaxwB1C/iUohJopsO5JGnA6xSoQZ+wM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tariq Toukan <tariqt@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/111] net/mlx5e: Fix error path for ethtool set-priv-flag
+Subject: [PATCH 5.11 202/254] net/mlx5e: Fix error path for ethtool set-priv-flag
 Date:   Mon, 29 Mar 2021 09:58:38 +0200
-Message-Id: <20210329075618.217889103@linuxfoundation.org>
+Message-Id: <20210329075639.743458322@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,10 +58,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index 01089c2283d7..e09b4a96a1d5 100644
+index fdf5afc8b058..c9d01e705ab2 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -1811,6 +1811,7 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
+@@ -1876,6 +1876,7 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
  {
  	struct mlx5e_priv *priv = netdev_priv(netdev);
  	struct mlx5_core_dev *mdev = priv->mdev;
@@ -69,7 +69,7 @@ index 01089c2283d7..e09b4a96a1d5 100644
  
  	if (!MLX5_CAP_GEN(mdev, cqe_compression))
  		return -EOPNOTSUPP;
-@@ -1820,7 +1821,10 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
+@@ -1885,7 +1886,10 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
  		return -EINVAL;
  	}
  
