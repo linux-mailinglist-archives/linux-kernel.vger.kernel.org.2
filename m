@@ -2,170 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA3D34D850
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3322E34D855
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhC2TeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhC2TeP (ORCPT
+        id S231805AbhC2Tez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:34:55 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:51234 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231759AbhC2TeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:34:15 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A686EC061574;
-        Mon, 29 Mar 2021 12:34:15 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5598E5CC;
-        Mon, 29 Mar 2021 19:34:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5598E5CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1617046455; bh=uzFXcG0h/iYERcvHtbYCNxggA1K+2rAr3AVX/yFCPd8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hdTGzRUX36cS3AH7waEjn9eMbrPj1cCWz1qv0+eWGCZqcpX9jXF3tjIiIMy9cWoPm
-         WuZiviyQ/iwy48hj0CId1CbERQjHPsg4GUs25pFajjfk9I+H0JUhaAetWmgSMRHT/L
-         ulms3pTcjQgJPkMaYlIqmFMbNXJVIV+KrPFPNx4H3DdqiE2bdUtYsxhNWqlR3ZZO++
-         dtMQ9EnQ9/5PebdGSqa7slpq8A/cqhgXSGM45sWOXLh+OStH7JHyrX847A+6BD97yh
-         5ky61eqcz97I97sB3aQ0TmvBUf+ZcV+vC/b4mUzBw+vBLMWtR0TqJbhOsjnLPKcXLi
-         vFs+p08/7DGCg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: kerneldoc and rust (was [PATCH] kernel-doc: better handle '::'
- sequences)
-In-Reply-To: <20210329144204.GF351017@casper.infradead.org>
-References: <20210325184615.08526aed@coco.lan>
- <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
- <87tuozyslu.fsf@meer.lwn.net>
- <20210325191435.GZ1719932@casper.infradead.org>
- <87a6qrx7wf.fsf@meer.lwn.net>
- <20210325221437.GA1719932@casper.infradead.org>
- <87wntux3w7.fsf@meer.lwn.net>
- <20210329144204.GF351017@casper.infradead.org>
-Date:   Mon, 29 Mar 2021 13:34:14 -0600
-Message-ID: <87czvhrbyh.fsf@meer.lwn.net>
+        Mon, 29 Mar 2021 15:34:23 -0400
+Received: by mail-io1-f72.google.com with SMTP id i19so11640560ioh.18
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:34:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OrPDaz0uXlDAGavWdBModoSbr4og33NB13Z6NEmvLrk=;
+        b=U/NQGtWRXFxRd2tECd0Sq8EO/Ls1O9Lq180RqJor/IQ0czc7Mgt+m36Rs1a5HLULtO
+         ZCK9a+tcs0i+one3fqHSsdo8jRztT35TUtdi9ZzIqEbT59IQNsCcUF4LIV0K12rBEhVN
+         l17rv+XybrWYimYHR8LHF+MdGE4DKN7eIU5Dld5h6qFwcgsM0XHzCNuewMfpXfELmj1G
+         PVvFHHZ9Oa1kHyqGr1DMA4PXSVWfFtyBa8LOM4e9o0nnjK9/8k6YOQLdsAJM1V4FZtDX
+         LNsGnzQo6730Ch2P43+Og1xEX7NxJKLqc+XRq2MAIT2bpP3DFjc9tZnTM+eF+3kr506Q
+         aEZg==
+X-Gm-Message-State: AOAM5308AAOxX6z2fUIvanxmExwJD2z4cq/qGySlkJCh8p6TRs5LobqO
+        5/vYXbJ2VFY2t4JhMSOo5ZAlCGGO1PCEX+0zJafly2/hj/Y/
+X-Google-Smtp-Source: ABdhPJz2YO830nGl4M6ePvLGaPzfj1rTapAn96ODgiHyJNjckK5R93z+domwZR0jK4zlRmMBByoYdUBVo5zAEZjMaqEKJvYy0zK3
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a02:5184:: with SMTP id s126mr5484831jaa.107.1617046462357;
+ Mon, 29 Mar 2021 12:34:22 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 12:34:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f964fd05beb1f7d3@google.com>
+Subject: [syzbot] possible deadlock in ip_setsockopt
+From:   syzbot <syzbot+81bff613876f26c198d8@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+Hello,
 
-If we're going to talk about incorporating Rust into the doc system, we
-should probably include some Rust folks - thus, I'm adding Miguel.
+syzbot found the following issue on:
 
-> On Thu, Mar 25, 2021 at 04:30:32PM -0600, Jonathan Corbet wrote:
->> Matthew Wilcox <willy@infradead.org> writes:
->> 
->> We did come to the mutual agreement that teaching kernel-doc to parse
->> Rust code as well was not an ideal solution.  Probably there will be
->> some sort of tool to translate between rustdoc and our sphinx setup.
->> Beyond that, we'll see how it goes.
->
-> In the spirit of groping around for the best solution, I did some looking
-> around at various options, including using rustdoc for .c files (that
-> uses Markdown, which appears to be strictly worse than rST for our
-> purposes).
->
-> So here's my "modest proposal":
->
->  - Similar to our ".. kernel-doc::" invocation in .rst files, handle
->    ".. rustdoc::" (insert weeks of hacking here)
->  - Now add ".. rst-doc::" which parses .c files like [1] kernel-doc
->    does, but interprets a different style of comment and actually does
->    most of the repetitive boring bits for you.
->
-> For example, xa_load:
->
-> /**
->  * xa_load() - Load an entry from an XArray.
->  * @xa: XArray.
->  * @index: index into array.
->  *
->  * Context: Any context.  Takes and releases the RCU lock.
->  * Return: The entry at @index in @xa.
->  */
-> void *xa_load(struct xarray *xa, unsigned long index)
->
-> //rST
-> // Load an entry from an XArray.
-> //
-> // :Context: Any context.  Takes and releases the RCU lock.
-> // :Return: The entry in `xa` at `index`.
-> void *xa_load(struct xarray *xa, unsigned long index)
->
-> (more complex example below [2])
->
-> Things I considered:
->
->  - Explicitly document that this is rST markup instead of Markdown or
->    whatever.
->  - Don't repeat the name of the function.  The tool can figure it out.
+HEAD commit:    1b479fb8 drivers/net/wan/hdlc_fr: Fix a double free in pvc..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1072d3d6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+dashboard link: https://syzkaller.appspot.com/bug?extid=81bff613876f26c198d8
 
-That worries me a wee bit just because a common source of problems is
-kerneldoc comments becoming separated from the functions they describe
-over time.  We finally have tooling to notice that; this seems like a
-step in the other direction.
+Unfortunately, I don't have any reproducer for this issue yet.
 
->  - Don't force documenting each parameter.  Often they are obvious
->    and there's really nothing interesting to say about the parameter.
->    Witness the number of '@foo: The foo' (of type struct foo) that we
->    have scattered throughout the tree.  It's not that the documenter is
->    lazy, it's that there's genuinely nothing to say here.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81bff613876f26c198d8@syzkaller.appspotmail.com
 
-...another failure mode is developers adding parameters and not
-documenting them; this would mask that problem too.
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-rc4-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.3/14381 is trying to acquire lock:
+ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
+ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
+ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
 
->  - Use `interpreted text` to refer to parameters instead of *emphasis* or
->    **strong emphasis**.  The tool can turn that into whatever markup
->    is appropriate.
->  - Use field lists for Context and Return instead of sections.  The markup
->    is simpler to use, and I think the rendered output is better.
->
-> [1] by which i mean "in a completely different way from, but similar in
->     concept"
->
-> [2] More complex example:
->
-> /**
->  * xa_store() - Store this entry in the XArray.
->  * @xa: XArray.
->  * @index: Index into array.
->  * @entry: New entry.
->  * @gfp: Memory allocation flags.
->  *
->  * After this function returns, loads from this index will return @entry.
->  * Storing into an existing multi-index entry updates the entry of every index.
->  * The marks associated with @index are unaffected unless @entry is %NULL.
->  *
->  * Context: Any context.  Takes and releases the xa_lock.
->  * May sleep if the @gfp flags permit.
->  * Return: The old entry at this index on success, xa_err(-EINVAL) if @entry
->  * cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
->  * failed.
->  */
-> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
->
-> //rST
-> // Store an entry in the XArray.
-> //
-> // After this function returns, loads from `index` will return `entry`.
-> // Storing into an existing multi-index entry updates the entry of every index.
-> // The marks associated with `index` are unaffected unless `entry` is ``NULL``.
-> //
-> // :Context: Any context.  Takes and releases the xa_lock.
-> //    May sleep if the `gfp` flags permit.
-> // :Return: The old entry at this index on success, xa_err(-EINVAL) if `entry`
-> //    cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
-> //    failed.
-> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
+but task is already holding lock:
+ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:944 [inline]
+ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: ip_setsockopt+0x1c8/0x3a00 net/ipv4/ip_sockglue.c:1423
 
-Thanks,
+which lock already depends on the new lock.
 
-jon
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (rtnl_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       ip_mc_drop_socket+0x89/0x260 net/ipv4/igmp.c:2671
+       mptcp_release+0xab/0x120 net/mptcp/protocol.c:3438
+       __sock_release+0xcd/0x280 net/socket.c:599
+       sock_close+0x18/0x20 net/socket.c:1258
+       __fput+0x288/0x920 fs/file_table.c:280
+       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+       exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2936 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+       validate_chain kernel/locking/lockdep.c:3674 [inline]
+       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+       lock_acquire kernel/locking/lockdep.c:5510 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+       lock_sock_nested+0xca/0x120 net/core/sock.c:3071
+       lock_sock include/net/sock.h:1600 [inline]
+       do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
+       ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
+       udp_setsockopt+0x76/0xc0 net/ipv4/udp.c:2719
+       __sys_setsockopt+0x2db/0x610 net/socket.c:2117
+       __do_sys_setsockopt net/socket.c:2128 [inline]
+       __se_sys_setsockopt net/socket.c:2125 [inline]
+       __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(rtnl_mutex);
+                               lock(sk_lock-AF_INET);
+                               lock(rtnl_mutex);
+  lock(sk_lock-AF_INET);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.3/14381:
+ #0: ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:944 [inline]
+ #0: ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: ip_setsockopt+0x1c8/0x3a00 net/ipv4/ip_sockglue.c:1423
+
+stack backtrace:
+CPU: 0 PID: 14381 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2127
+ check_prev_add kernel/locking/lockdep.c:2936 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+ validate_chain kernel/locking/lockdep.c:3674 [inline]
+ __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ lock_sock_nested+0xca/0x120 net/core/sock.c:3071
+ lock_sock include/net/sock.h:1600 [inline]
+ do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
+ ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
+ udp_setsockopt+0x76/0xc0 net/ipv4/udp.c:2719
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2117
+ __do_sys_setsockopt net/socket.c:2128 [inline]
+ __se_sys_setsockopt net/socket.c:2125 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd7716d0188 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000466459
+RDX: 0000000000000029 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00000000004bf9fb R08: 0000000000000010 R09: 0000000000000000
+R10: 0000000020000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffec9848caf R14: 00007fd7716d0300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
