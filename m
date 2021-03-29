@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A85334D6D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D648134D6D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhC2SRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        id S230286AbhC2SR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhC2SQz (ORCPT
+        with ESMTP id S231446AbhC2SRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:16:55 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FABC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:16:55 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id h25so9951999pgm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:mime-version:subject:from:in-reply-to:cc
-         :date:message-id:references:to;
-        bh=8BodsD7dsVnt+VzHAjG94w3biZzppe7s1NeC4YW3R/c=;
-        b=GNpIT7nzOTmW1j7uFYG4MsGsQxgaqfSrJP1SkCUw/L5kBaziQANp4Xtap/4+tcFNgC
-         KTvZCQCQVpgIb0fUmLkQ60kWI8HQXJYR6DiQRm4CIU3tIU29oOJJZ+fz+Ocfv5mlWm8x
-         DkEPHuwuZkcS4OKahPd0myLcrYOjKzc6pCbnd6jKrunOdLISD8RsZXHq1DisNJJfQ0gt
-         cMIX92bLePaXILA75sfBZv7pX34Tzjw7R53UoU7TJeFVt5m/Pw3fgpgQJUSVboYdjgGs
-         +CFJcbyeTYn8OpYjuc/wtrHPkmhoJVZn2kGJKbVyDMEBroWuC16FFk0uifhUmu4OJiJw
-         XMEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
-         :from:in-reply-to:cc:date:message-id:references:to;
-        bh=8BodsD7dsVnt+VzHAjG94w3biZzppe7s1NeC4YW3R/c=;
-        b=l7ldRbcEbqReXuGV+BFzqp8URZ98n065eixUxLxHqpCp4qZYBAwf1w78CbzYP6C5XC
-         N5EBu7d0VtXAfrT1r5qfQ0YGnvK5R3XWM0OrMJGQqoc6v4COJwAY4IAAqPFgJY0TbL3p
-         uxVgo6T/fnbF5jq+uEN/1eYjK5wk9tXUMzLfNKAuZjkJmgX6HbjtVJFfk+uVGqq+pF1F
-         2liJlNrVC4iTX3OCKZXEpf6cK2ngEsi6QpUNwCefImQjUQ1h1tuot6cQwteC6D2Cvsmb
-         o6k34pk8G724vNGurlm+m8fKclnM+hdo8S8Q8sRGx/6zY6Niw4zXvS39cYazgmRz8WnP
-         FJWg==
-X-Gm-Message-State: AOAM530f126UpJXCFsnpz1yqfXKLkaS4eVC6pAuGvS+iomSrS54YbD4w
-        F0SCJlXLVwdra9kGnk12mHy+Qg==
-X-Google-Smtp-Source: ABdhPJyUHvY7mzJVm4QtHCpeu+1+8bU5WDlgupz5L/Udp3YcSBGJJ/qR+2++lKVjcX5LitTuRPqOwQ==
-X-Received: by 2002:a63:f959:: with SMTP id q25mr25786650pgk.104.1617041814663;
-        Mon, 29 Mar 2021 11:16:54 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b06a:1311:e806:6d31:5a5:2c5c? ([2600:1010:b06a:1311:e806:6d31:5a5:2c5c])
-        by smtp.gmail.com with ESMTPSA id mp21sm212574pjb.16.2021.03.29.11.16.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 11:16:54 -0700 (PDT)
+        Mon, 29 Mar 2021 14:17:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88145C061574;
+        Mon, 29 Mar 2021 11:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=5H716pK9atAIkvTCo4iJ/NvZkHtVJZfSlEL2AsX8qFM=; b=gdn6/XKLGmVksTKZZUi7dDBHnp
+        8KFQDonVT36XOgMznXvqMUnrMUD1rYpgewESUB3tulYttC3P1f43log8T2vdGV0pXvuGeTWpBBQrH
+        mgRJpepoV2egp6BrNz6fGicj4q+wEMduQCge+15EAs9onQT7sWhWoyeSDbGgNHhdSEk8Pxv6dLqdN
+        bDnwXqHjS/+LAkqz2MtbRBG1Z6JDMw4B9MBnkjC2tVf9izBgFgLlv4RET64/5n9J+S2BkXeCP04sa
+        ZCE2yuvXIs7OjFdffz2F2fZf38/7PTkvl5au98DOHtNXKf/pLaL8hAuDslXavqCByt1A3JE11u3bD
+        iXu1tVBA==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQwSD-00114f-0G; Mon, 29 Mar 2021 18:17:33 +0000
+Subject: Re: [PATCH] usb: dwc3: exynos: fix incorrect kernel-doc comment
+ syntax
+To:     Aditya Srivastava <yashsri421@gmail.com>, balbi@kernel.org
+Cc:     lukas.bulwahn@gmail.com, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski@canonical.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329140318.27742-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <60cc1fc7-9f99-d0ec-6ed6-9eae1784cad3@infradead.org>
+Date:   Mon, 29 Mar 2021 11:17:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210329140318.27742-1-yashsri421@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-From:   Andy Lutomirski <luto@amacapital.net>
-In-Reply-To: <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Date:   Mon, 29 Mar 2021 11:16:52 -0700
-Message-Id: <5F98327E-8EC4-455E-B9E1-74D2F13578C5@amacapital.net>
-References: <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
-To:     Len Brown <lenb@kernel.org>
-X-Mailer: iPhone Mail (18D61)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/29/21 7:03 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/usb/dwc3/dwc3-exynos.c follows this syntax, but the
+> content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> "warning: expecting prototype for dwc3(). Prototype was for DWC3_EXYNOS_MAX_CLOCKS() instead"
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-> On Mar 29, 2021, at 8:47 AM, Len Brown <lenb@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Sat, Mar 27, 2021 at 5:58 AM Greg KH <gregkh@linuxfoundation.o=
-rg> wrote:
->>> On Fri, Mar 26, 2021 at 11:39:18PM -0400, Len Brown wrote:
->>> Hi Andy,
->>> Say a mainline links with a math library that uses AMX without the
->>> knowledge of the mainline.
->=20
-> sorry for the confusion.
->=20
-> mainline =3D main().
->=20
-> ie. the part of the program written by you, and not the library you linked=
- with.
->=20
-> In particular, the library may use instructions that main() doesn't know e=
-xist.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-If we pretend for a bit that AMX were a separate device instead of a part of=
- the CPU, this would be a no brainer: something would be responsible for ope=
-ning a device node or otherwise requesting access to the device.=20
+> ---
+> * Applies perfectly on next-20210326
+> 
+>  drivers/usb/dwc3/dwc3-exynos.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
+> index 90bb022737da..0ecf20eeceee 100644
+> --- a/drivers/usb/dwc3/dwc3-exynos.c
+> +++ b/drivers/usb/dwc3/dwc3-exynos.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/**
+> +/*
+>   * dwc3-exynos.c - Samsung Exynos DWC3 Specific Glue layer
+>   *
+>   * Copyright (c) 2012 Samsung Electronics Co., Ltd.
+> 
 
-Real AMX isn=E2=80=99t so different. Programs acquire access either by sysca=
-ll or by a fault, they use it, and (hopefully) they release it again using T=
-ILERELEASE. The only thing special about it is that, supposedly, acquiring a=
-nd releasing access (at least after the first time) is quite fast.  But hold=
-ing access is *not* free =E2=80=94 despite all your assertions to the contra=
-ry, the kernel *will* correctly context switch it to avoid blowing up power c=
-onsumption, and this will have overhead.
 
-We=E2=80=99ve seen the pattern of programs thinking that, just because somet=
-hing is a CPU insn, it=E2=80=99s free and no thought is needed before using i=
-t. This happened with AVX and AVX512, and it will happen again with AMX. We *=
-still* have a significant performance regression in the kernel due to screwi=
-ng up the AVX state machine, and the only way I know about any of the detail=
-s is that I wrote silly test programs to try to reverse engineer the nonsens=
-ical behavior of the CPUs.
+-- 
+~Randy
 
-I might believe that Intel has figured out how to make a well behaved XSTATE=
- feature after Intel demonstrates at least once that it=E2=80=99s possible. =
- That means full documentation of all the weird issues, no new special cases=
-, and the feature actually making sense in the context of XSTATE.  This has n=
-ot happened.  Let=E2=80=99s list all of them:
-
-- SSE.  Look for all the MXCSR special cases in the pseudocode and tell me w=
-ith a straight face that this one works sensibly.
-
-- AVX.  Also has special cases in the pseudocode. And has transition issues t=
-hat are still problems and still not fully documented. L
-
-- AVX2.  Horrible undocumented performance issues.  Otherwise maybe okay?
-
-- MPX: maybe the best example, but the compat mode part got flubbed and it=E2=
-=80=99s MPX.
-
-- PKRU: Should never have been in XSTATE. (Also, having WRPKRU in the ISA wa=
-s a major mistake, now unfixable, that seriously limits the usefulness of th=
-e whole feature.  I suppose Intel could release PKRU2 with a better ISA and d=
-eprecate the original PKRU, but I=E2=80=99m not holding my breath.)
-
-- AVX512: Yet more uarch-dependent horrible performance issues, and Intel ha=
-s still not responded about documentation.  The web is full of people specul=
-ating differently about when, exactly, using AVX512 breaks performance. This=
- is NAKked in kernel until docs arrive. Also, it broke old user programs.  I=
-f we had noticed a few years ago, AVX512 enablement would have been reverted=
-.
-
-- AMX: This mess.
-
-The current system of automatic user enablement does not work. We need somet=
-hing better.=
