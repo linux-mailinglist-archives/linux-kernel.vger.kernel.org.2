@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C2634CF6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DA434CF75
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhC2LwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S231482AbhC2LxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhC2Lvw (ORCPT
+        with ESMTP id S231388AbhC2Lw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:51:52 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC12C061574;
-        Mon, 29 Mar 2021 04:51:52 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id x126so9665702pfc.13;
-        Mon, 29 Mar 2021 04:51:52 -0700 (PDT)
+        Mon, 29 Mar 2021 07:52:58 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1D0C061574;
+        Mon, 29 Mar 2021 04:52:58 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k8so12564515wrc.3;
+        Mon, 29 Mar 2021 04:52:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=22q/rnIFf04g2bHvYP9IaYNVB6ChoxCOoOAEpANlF8c=;
-        b=PPUECpN3NaU1LOUyfkCBNOjUS7K/DWzfzhdYwYQzBIT7urdLleyKkp2NITseQblARU
-         AjmYDrFj40KoDHE+MH586Q0zI7GdiLzKTUMrfrJpvW9jCHX0IDEy+qU3wk8HIJoUV+Tx
-         VxcxUANtGOBZtQPnmyLdoCL/MwUA/lNQbAs+glDDsvaF5Y9eoMWqX43pCyGEQyenlYtx
-         W6Yv4sApBIioMI6HWQtHrw5QPj390J8tZNk3MGEAvJkISWyyOqg0/ObPKxJRBdJyIp7M
-         9iGFm4lwX4FfCjHI/HDNKKeeh6kAc6qMPVWrat9QBtkdutHgpBJTmF5tP8bkuSrWSjkF
-         Fr9w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rLsjhcNIwCmODv/MBaqanwexjHXK2SK1mKLiMmip+x4=;
+        b=obVQCkr8uCkYLUv2yZfq8PuHxS3ElI8SIHyQRK2mmjbLl/TugiURrhBXWJw+5UFo4X
+         qI0nOMkSDuhXVZ7doMZd5LSiKTnqoA5gIcywuw9Ke6UjEuevL2XtT5DhpiGaMfO+9OxZ
+         HZSJXLF7qf2iv72kc0kxMyTMfam4e6n7dxSqNbzVJwaF4WzVuFHUFKz1k7uSQ9TuIdj7
+         dl63qYplwjTtkATlI4Nu0LquEeOrQALCMslTOalYH2hwG0yJyblAk27PDzr3R9m48px8
+         pQCfhmN3IJ56MM4ffdEfudrTzuZgmv7+jM9Vd1eJOxvnRk/asB1vc/w5IZunkmcftpRw
+         4yrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=22q/rnIFf04g2bHvYP9IaYNVB6ChoxCOoOAEpANlF8c=;
-        b=OH3VZtpk4DHwGHgtD/Q5CRYsjM7VlrKGaWevp7+3zSQt4/MxCZgBBRF/K+/zio1YfW
-         CAlnWvCgNpkqyE4XOY/AzDngRb0pR4JHDZ4PAKx6r61v5RkYinI5wSd467x6olA6h0qO
-         laCgIpdVyH1+gqErvqV9+XTfzHSn5gPIwVABxJHR5j/NvqT7Rj5m0TYu7CLWmYI7jaj5
-         Kei+lKNFxl1j4Q0Mh9lRrlHnkCxPCbtiWat1YA/qiv5Xjh4W2ECX4s+byLvDBrD9aCQs
-         PyVESRA206T1jwjpf+NfQvp1K8S40ZiEPKs/mBpw9d+DtWTtmOO6CjQnsMCYENc8U8C8
-         mwEA==
-X-Gm-Message-State: AOAM530/aJC3ZqFvrO8p+h+5qPMJY2vL8TbLZ+zQKXyjnl2rLmru62ag
-        V5FwNoMXG9hhZZ+YGYzsljDrNQjf/FUtt/AWs3g=
-X-Google-Smtp-Source: ABdhPJxeX2YKkkL1Wn3mbW30JRjOL7XccqnaAdP2WI1jlb4FtEfmc9Etd2/R693+HElvCs17nwB2CpttKjuT4fEOc9M=
-X-Received: by 2002:a63:cb44:: with SMTP id m4mr1003785pgi.4.1617018711823;
- Mon, 29 Mar 2021 04:51:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rLsjhcNIwCmODv/MBaqanwexjHXK2SK1mKLiMmip+x4=;
+        b=pymkqgen/5WcqfuTMG0UJu06GAkn9CaGkstP5WgkG1CjO1AADENEynBPwy6qYifSbN
+         IS3+5yY9B092zIf+QQrBrrqnPuFKpydtYtBum6Q+W2YhlzR79RlBMH9Nt17bnwz3UKPY
+         oc/XIRgIp+VWrPPQGzJ6xb4qsqksp9703VXeHsIfFy+aEgzRzSj8T6NrvWdOERZU5lx1
+         SfAi2YBv/N5iLFJKUIX1i/HnYFnFXU9ICbZxGEQnAxlrdNRFrzwhQZgNVnWXPlw1KKrD
+         KiX+CMdCc4OwaPwOsdM7uTbtTlLkqCertD/GiTdg/iQ2yGn06d2Ldsaqq61GUc4jbDgE
+         rtiw==
+X-Gm-Message-State: AOAM532EtkxnNMoN1Q2cm9sYAbxNd+NcSn/CPIpUG+VVgtExbATTKH5J
+        SzujGsebXIUXNwybM3eEoNw=
+X-Google-Smtp-Source: ABdhPJzbEfFbXJ9fbqn8X3nAKteEObCciLIv/SGMQ5u1ubGJRiRxl62orHY58t646W11wQ7rTr7+rw==
+X-Received: by 2002:adf:d1cd:: with SMTP id b13mr27974972wrd.47.1617018777293;
+        Mon, 29 Mar 2021 04:52:57 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id u17sm29691663wrw.51.2021.03.29.04.52.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 04:52:56 -0700 (PDT)
+Subject: Re: [PATCH v2 1/8] dt-bindings: timer: Add compatible for Mediatek
+ MT8195
+To:     Seiya Wang <seiya.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
+References: <20210319023427.16711-1-seiya.wang@mediatek.com>
+ <20210319023427.16711-3-seiya.wang@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <bf7ad31e-974a-3e0a-12bd-32973c7c3cbd@gmail.com>
+Date:   Mon, 29 Mar 2021 13:52:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
- <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com> <1617018585.10316.9.camel@mhfsdcap03>
-In-Reply-To: <1617018585.10316.9.camel@mhfsdcap03>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 14:51:35 +0300
-Message-ID: <CAHp75Vevt4aLoCj5rFGErPjKYqs=Ve1xohYRzET1cg3LCrb3eA@mail.gmail.com>
-Subject: Re: [PATCH Resend v0 0/6] Mediatek pinctrl patch on mt8195
-To:     zhiyong tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        sean.wang@kernel.org, srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        jg_poxu@mediatek.com, biao.huang@mediatek.com,
-        hongzhou.yang@mediatek.com, erin.lo@mediatek.com,
-        Sean Wang <sean.wang@mediatek.com>, seiya.wang@mediatek.com,
-        Sj Huang <sj.huang@mediatek.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210319023427.16711-3-seiya.wang@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:49 PM zhiyong tao <zhiyong.tao@mediatek.com> wrote:
-> On Mon, 2021-03-29 at 14:35 +0300, Andy Shevchenko wrote:
-> > On Mon, Mar 29, 2021 at 2:32 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
-> > >
-> > > This series includes 6 patches:
-> > > 1.add pinctrl file on mt8195.
-> > > 2.add pinctrl binding document on mt8195.
-> > > 3.add pinctrl device node on mt8195.
-> > > 4.add pinctrl driver on MT8195.
-> > > 5.add pinctrl drive for I2C related pins on MT8195.
-> > > 6.add pinctrl rsel setting on MT8195.
-> >
-> > Patch series w/o version is de facto v1.
-> > Dropping to v0 seems not right.
-> > You missed changelog.
-> >
-> > So, send v2 properly.
-> >
-> > Material to study:
-> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-> >
->
-> Hi Andy,
->
-> There is not any change between v0 and v1. so we send "Resend v0" as v2
-> in this time.Is it also properly? and we send the version which is v3 in
-> next time.
 
-Sounds good to me, just make sure you put a changelog explaining all
-these history twists.
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 19/03/2021 03:34, Seiya Wang wrote:
+> This commit adds dt-binding documentation of timer for Mediatek MT8195 SoC
+> Platform.
+> 
+> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+
+Applied to v5.12-next/dts64
+
+Thanks!
+
+> ---
+>  Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt b/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
+> index 690a9c0966ac..e5c57d6e0186 100644
+> --- a/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
+> +++ b/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
+> @@ -23,6 +23,7 @@ Required properties:
+>  	For those SoCs that use SYST
+>  	* "mediatek,mt8183-timer" for MT8183 compatible timers (SYST)
+>  	* "mediatek,mt8192-timer" for MT8192 compatible timers (SYST)
+> +	* "mediatek,mt8195-timer" for MT8195 compatible timers (SYST)
+>  	* "mediatek,mt7629-timer" for MT7629 compatible timers (SYST)
+>  	* "mediatek,mt6765-timer" for MT6765 and all above compatible timers (SYST)
+>  
+> 
