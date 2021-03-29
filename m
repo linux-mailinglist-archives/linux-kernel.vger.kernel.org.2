@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187BA34C84C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A45034CC43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhC2IVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57116 "EHLO mail.kernel.org"
+        id S237105AbhC2I6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232415AbhC2INR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B1361601;
-        Mon, 29 Mar 2021 08:13:16 +0000 (UTC)
+        id S234911AbhC2Ihe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D82ED6193B;
+        Mon, 29 Mar 2021 08:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005597;
-        bh=gVNplXObPQb+XhU5GsyKH1ohBD+ZhrVsywU0mgklOP8=;
+        s=korg; t=1617007042;
+        bh=bnvZo+zIGgZyYZX34fgg3eoAfBuKhFvhF86T9nmRv/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cH4t0f8W+2BUG8dgd/eMwui3haAv6rQ0prWxHUeJvcl5dOfkMDHQIrV0ZTRb/ym29
-         PRD66kyMkOvdxnMjVQU6iUzXjMRY/21wmgQtzFjJoUKbZYkd4Bi1YSyPQVLuWpPAWp
-         Mk1LXH6NAXg9+JYoeDVN6VYukWbZAOrW13xPIf1Q=
+        b=f12duVa+EkqH+MV2HqHnYR+vUPQ/WyOGi+upgFwLtF5Je3TXfET8ZdDl150BlxBee
+         9tsD12kyCFl6B3B21kedfsoyaThTnCgHNChuTnBq27G3AX9EozMAj0rO44AhFLK4o4
+         ROOgc/+zXP/kKHGJ66pt/lg2fDrE+j41VjcZWmPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JeongHyeon Lee <jhs2.lee@samsung.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 051/111] dm verity: fix DM_VERITY_OPTS_MAX value
-Date:   Mon, 29 Mar 2021 09:57:59 +0200
-Message-Id: <20210329075616.894952038@linuxfoundation.org>
+        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 164/254] ionic: linearize tso skb with too many frags
+Date:   Mon, 29 Mar 2021 09:58:00 +0200
+Message-Id: <20210329075638.572336377@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JeongHyeon Lee <jhs2.lee@samsung.com>
+From: Shannon Nelson <snelson@pensando.io>
 
-commit 160f99db943224e55906dd83880da1a704c6e6b9 upstream.
+[ Upstream commit d2c21422323b06938b3c070361dc544f047489d7 ]
 
-Three optional parameters must be accepted at once in a DM verity table, e.g.:
-  (verity_error_handling_mode) (ignore_zero_block) (check_at_most_once)
-Fix this to be possible by incrementing DM_VERITY_OPTS_MAX.
+We were linearizing non-TSO skbs that had too many frags, but
+we weren't checking number of frags on TSO skbs.  This could
+lead to a bad page reference when we received a TSO skb with
+more frags than the Tx descriptor could support.
 
-Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
-Fixes: 843f38d382b1 ("dm verity: add 'check_at_most_once' option to only validate hashes once")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+v2: use gso_segs rather than yet another division
+    don't rework the check on the nr_frags
+
+Fixes: 0f3154e6bcb3 ("ionic: Add Tx and Rx handling")
+Signed-off-by: Shannon Nelson <snelson@pensando.io>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-verity-target.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/pensando/ionic/ionic_txrx.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -33,7 +33,7 @@
- #define DM_VERITY_OPT_IGN_ZEROES	"ignore_zero_blocks"
- #define DM_VERITY_OPT_AT_MOST_ONCE	"check_at_most_once"
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+index ac4cd5d82e69..b7601cadcb8c 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+@@ -1079,15 +1079,17 @@ static int ionic_tx_descs_needed(struct ionic_queue *q, struct sk_buff *skb)
+ {
+ 	int sg_elems = q->lif->qtype_info[IONIC_QTYPE_TXQ].max_sg_elems;
+ 	struct ionic_tx_stats *stats = q_to_tx_stats(q);
++	int ndescs;
+ 	int err;
  
--#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC + \
-+#define DM_VERITY_OPTS_MAX		(3 + DM_VERITY_OPTS_FEC + \
- 					 DM_VERITY_ROOT_HASH_VERIFICATION_OPTS)
+-	/* If TSO, need roundup(skb->len/mss) descs */
++	/* Each desc is mss long max, so a descriptor for each gso_seg */
+ 	if (skb_is_gso(skb))
+-		return (skb->len / skb_shinfo(skb)->gso_size) + 1;
++		ndescs = skb_shinfo(skb)->gso_segs;
++	else
++		ndescs = 1;
  
- static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
+-	/* If non-TSO, just need 1 desc and nr_frags sg elems */
+ 	if (skb_shinfo(skb)->nr_frags <= sg_elems)
+-		return 1;
++		return ndescs;
+ 
+ 	/* Too many frags, so linearize */
+ 	err = skb_linearize(skb);
+@@ -1096,8 +1098,7 @@ static int ionic_tx_descs_needed(struct ionic_queue *q, struct sk_buff *skb)
+ 
+ 	stats->linearize++;
+ 
+-	/* Need 1 desc and zero sg elems */
+-	return 1;
++	return ndescs;
+ }
+ 
+ static int ionic_maybe_stop_tx(struct ionic_queue *q, int ndescs)
+-- 
+2.30.1
+
 
 
