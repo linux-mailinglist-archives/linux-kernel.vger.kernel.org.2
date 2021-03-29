@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BF134D3CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7854F34D3CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhC2P0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:26:21 -0400
-Received: from mga07.intel.com ([134.134.136.100]:48469 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231346AbhC2PZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:25:53 -0400
-IronPort-SDR: OWG3aUqDZXmGmp0RhPPtLvjohN+t5qIajUeeRotdhuuQRLS1yALSpXptkf4BdwcViJ8y7r8kaH
- U9wWdlJHCPkg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255565714"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="255565714"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:25:52 -0700
-IronPort-SDR: rq1xC6B+ZNCfNwvKuTjI3Ukn5oSNFgV8aADsVbnNANwb9n0N8pt6HOBTo7QeKYM1Sj+NXdP4wx
- scvTUSMC6FqQ==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="606413062"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:25:49 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lQtly-00H3Yz-VK; Mon, 29 Mar 2021 18:25:46 +0300
-Date:   Mon, 29 Mar 2021 18:25:46 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from
- config
-Message-ID: <YGHxejGI2x4X3EEe@smile.fi.intel.com>
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
- <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
- <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
+        id S231309AbhC2P0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhC2P0e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:26:34 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDD4C061574;
+        Mon, 29 Mar 2021 08:26:31 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id g25so6854351wmh.0;
+        Mon, 29 Mar 2021 08:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pVsxfbxI3K7GA4FFYH0yy3ggGjDTL25VjE0xUpkqj58=;
+        b=WXDtbKB0+76S9xXdtQ6UIVOL98eUnJU766WdbNd+xYvGjtL8AOwVQpm9tG+igKGair
+         hk7lm4iFc2636sXASZJi9HHOi/Jv3dokvUDsdU8ZUutqY0YoSrpqlA3NNDlGgnjaCoc4
+         oUM9G1dcGQpjhKtBC0oJDoVQBNYZG+t5eo1nmAsC5TgEwMMGTWBK2UmEHzYyy7V5XWF/
+         2fOowYxTQkzlKH7ils/Dqbi9zfEAF0m6jjx4Sf3KSNWVazCnn4fIQdReIXI364uDdCwQ
+         QVeDjB9y2DmpUj0w/uWOUTnhRFZA8GknPiVaXN5w4d6UphRKdaKYjOkcPytNVQvAI31w
+         3a1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pVsxfbxI3K7GA4FFYH0yy3ggGjDTL25VjE0xUpkqj58=;
+        b=eOG6MHlb+PEYzp3PXwh71b42pA+n4Uj4ZfYgl9qNMRRKY3tqLnsJOumy7UilXJXmrm
+         zza07KVRV4GMAXCnzncfbXzlqcIGHDTiGEOvxB1B2qwON/4NR2oACv8u4151ntSD96M3
+         ZJmo4q3cTmog+FzMLpfR08oIr2lb8H0rJ7faeSJty0GxVxBZL37LJK4txjxuw5XzWKPI
+         g0kE2szemMw8iwAi56ET3u6kxlREXPm00gZAcWm8EPJiNyRD3kT+xpFaS9TOkwZYy1Y6
+         oTTmOXvNjYknEDtYMORAtT6Q8gw6OS3l2TpzsezcTk4gU3IMgitxTfd+ZA18/iuosEZO
+         whCw==
+X-Gm-Message-State: AOAM5325LApivd5ubdjrYJtX9y0FzzKsza2Hq0DK6Z54ehfu7egXQssH
+        cRHyzOm5dxxi/Xg2mryatVHNSm69t6tNwQ==
+X-Google-Smtp-Source: ABdhPJzjfFaDdwLJ9ucjx+qAIuDEy4nFJSnA1nNxnCmsCL449bMsQm0G7Y9a/8Po9VAybCyw92ZR2A==
+X-Received: by 2002:a05:600c:4f44:: with SMTP id m4mr25159222wmq.175.1617031590669;
+        Mon, 29 Mar 2021 08:26:30 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id e17sm34198560wra.65.2021.03.29.08.26.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 08:26:30 -0700 (PDT)
+Subject: Re: [PATCH v2] arm64: dts: mt8183: Add gce client reg for display
+ subcomponents
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210324070842.1037233-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <aa98e29a-3e8e-db22-50e8-e0b8fa496bdf@gmail.com>
+Date:   Mon, 29 Mar 2021 17:26:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210324070842.1037233-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 08:08:52AM -0700, Joe Perches wrote:
-> On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:
-> > On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
-> > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > > 
-> > > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
-> > > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-> > > 
-> > > Make the gpiolib allow drivers to return both so driver developers
-> > > can avoid one of the checkpatch complaints.
-> > 
-> > Internally we are fine to use the ENOTSUPP.
-> > Checkpatch false positives there.
-> > 
-> > I doubt we need this change. Rather checkpatch should rephrase this to
-> > point out that this is only applicable to _user-visible_ error path.
-> > Cc'ed Joe.
+
+
+On 24/03/2021 08:08, Hsin-Yi Wang wrote:
+> Add mediatek,gce-client-reg for mmsys, ccorr, aal, gamma, dither.
 > 
-> Adding CC for Jakub Kicinski who added that particular rule/test.
+> Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Applied to v5.12-next/dts64
+
+Thanks!
+
+> ---
+> v1->v2:
+> Add for mmsys.
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> And the output message report of the rule is merely a suggestion indicating
-> a preference.  It's always up to an individual to accept/reject.
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 80519a145f13..16f4b1fc0fb9 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -983,6 +983,9 @@ mmsys: syscon@14000000 {
+>  			compatible = "mediatek,mt8183-mmsys", "syscon";
+>  			reg = <0 0x14000000 0 0x1000>;
+>  			#clock-cells = <1>;
+> +			mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST>,
+> +				 <&gce 1 CMDQ_THR_PRIO_HIGHEST>;
+> +			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+>  		};
+>  
+>  		ovl0: ovl@14008000 {
+> @@ -1058,6 +1061,7 @@ ccorr0: ccorr@1400f000 {
+>  			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_LOW>;
+>  			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+>  			clocks = <&mmsys CLK_MM_DISP_CCORR0>;
+> +			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xf000 0x1000>;
+>  		};
+>  
+>  		aal0: aal@14010000 {
+> @@ -1067,6 +1071,7 @@ aal0: aal@14010000 {
+>  			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_LOW>;
+>  			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+>  			clocks = <&mmsys CLK_MM_DISP_AAL0>;
+> +			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0 0x1000>;
+>  		};
+>  
+>  		gamma0: gamma@14011000 {
+> @@ -1075,6 +1080,7 @@ gamma0: gamma@14011000 {
+>  			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
+>  			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+>  			clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
+> +			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x1000 0x1000>;
+>  		};
+>  
+>  		dither0: dither@14012000 {
+> @@ -1083,6 +1089,7 @@ dither0: dither@14012000 {
+>  			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_LOW>;
+>  			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+>  			clocks = <&mmsys CLK_MM_DISP_DITHER0>;
+> +			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x2000 0x1000>;
+>  		};
+>  
+>  		dsi0: dsi@14014000 {
 > 
-> At best, perhaps wordsmithing the checkpatch message might be an OK option.
-
-Thanks, Joe!
-
-Jakub, what do you think?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
