@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F1A34CAC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E3434C608
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhC2Ijt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:39:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
+        id S232062AbhC2IEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:04:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233532AbhC2IXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:23:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C9DA61580;
-        Mon, 29 Mar 2021 08:23:33 +0000 (UTC)
+        id S231852AbhC2ICy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:02:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD5361976;
+        Mon, 29 Mar 2021 08:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006213;
-        bh=RjTHXO6Y1HVtNgvT3dwUnJOsHYYDzs5H0UOvVN4LW5M=;
+        s=korg; t=1617004974;
+        bh=/wNnirSHao9qoP2UzFlPgk4Pu6A7oKtvcKyYz+JHZI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BDdUERaNDkIV0z18ipNedtVIJsK2vwMnRt9uktyAXwfNEIPxs6uGouMb675nIrhgQ
-         2IcE81RRMmztVDcQ4HxAmZllwdx4G+dmJquvVOK18Ky0W6qSiNvE7g6va2QuSlwKji
-         /5yZq51EjP7+JqSBScUGUgdh5fncA67e13yx0SWc=
+        b=lwOJIV1gDIoH2+ijtV5XRl2HUhD92ciCLAPvkOKTgu9Z5uEJFo82CNj+eTIThyNWW
+         gE+CoItPAzITl6Oes/LrBdIRKvxltlPW9PCKD/SKncHbMItP4F43QtHVc7aFRnF15x
+         hcbqczthHCi/Xl8l+B3wv1oeB1SNLdIKDWZyxf8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Davies <robdavies1977@gmail.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 159/221] r8152: limit the RX buffer size of RTL8153A for USB 2.0
+Subject: [PATCH 4.9 35/53] perf auxtrace: Fix auxtrace queue conflict
 Date:   Mon, 29 Mar 2021 09:58:10 +0200
-Message-Id: <20210329075634.467235800@linuxfoundation.org>
+Message-Id: <20210329075608.667779509@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hayes Wang <hayeswang@realtek.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit f91a50d8b51b5c8ef1cfb08115a005bba4250507 ]
+[ Upstream commit b410ed2a8572d41c68bd9208555610e4b07d0703 ]
 
-If the USB host controller is EHCI, the throughput is reduced from
-300Mb/s to 60Mb/s, when the rx buffer size is modified from 16K to
-32K.
+The only requirement of an auxtrace queue is that the buffers are in
+time order.  That is achieved by making separate queues for separate
+perf buffer or AUX area buffer mmaps.
 
-According to the EHCI spec, the maximum size of the qTD is 20K.
-Therefore, when the driver uses more than 20K buffer, the latency
-time of EHCI would be increased. And, it let the RTL8153A get worse
-throughput.
+That generally means a separate queue per cpu for per-cpu contexts, and
+a separate queue per thread for per-task contexts.
 
-However, the driver uses alloc_pages() for rx buffer, so I limit
-the rx buffer to 16K rather than 20K.
+When buffers are added to a queue, perf checks that the buffer cpu and
+thread id (tid) match the queue cpu and thread id.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205923
-Fixes: ec5791c202ac ("r8152: separate the rx buffer size")
-Reported-by: Robert Davies <robdavies1977@gmail.com>
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+However, generally, that need not be true, and perf will queue buffers
+correctly anyway, so the check is not needed.
+
+In addition, the check gets erroneously hit when using sample mode to
+trace multiple threads.
+
+Consequently, fix that case by removing the check.
+
+Fixes: e502789302a6 ("perf auxtrace: Add helpers for queuing AUX area tracing data")
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Link: http://lore.kernel.org/lkml/20210308151143.18338-1-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/r8152.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/perf/util/auxtrace.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index d2862071b697..f5010f8ac1ec 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -6519,7 +6519,10 @@ static int rtl_ops_init(struct r8152 *tp)
- 		ops->in_nway		= rtl8153_in_nway;
- 		ops->hw_phy_cfg		= r8153_hw_phy_cfg;
- 		ops->autosuspend_en	= rtl8153_runtime_enable;
--		tp->rx_buf_sz		= 32 * 1024;
-+		if (tp->udev->speed < USB_SPEED_SUPER)
-+			tp->rx_buf_sz	= 16 * 1024;
-+		else
-+			tp->rx_buf_sz	= 32 * 1024;
- 		tp->eee_en		= true;
- 		tp->eee_adv		= MDIO_EEE_1000T | MDIO_EEE_100TX;
- 		break;
+diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+index b87221efdf7e..51fdec9273d7 100644
+--- a/tools/perf/util/auxtrace.c
++++ b/tools/perf/util/auxtrace.c
+@@ -248,10 +248,6 @@ static int auxtrace_queues__add_buffer(struct auxtrace_queues *queues,
+ 		queue->set = true;
+ 		queue->tid = buffer->tid;
+ 		queue->cpu = buffer->cpu;
+-	} else if (buffer->cpu != queue->cpu || buffer->tid != queue->tid) {
+-		pr_err("auxtrace queue conflict: cpu %d, tid %d vs cpu %d, tid %d\n",
+-		       queue->cpu, queue->tid, buffer->cpu, buffer->tid);
+-		return -EINVAL;
+ 	}
+ 
+ 	buffer->buffer_nr = queues->next_buffer_nr++;
 -- 
 2.30.1
 
