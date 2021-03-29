@@ -2,81 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3317034D01A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5D934D01F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhC2McT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:32:19 -0400
-Received: from mga17.intel.com ([192.55.52.151]:11918 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231146AbhC2McM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:32:12 -0400
-IronPort-SDR: 0xQvpAG1mY2cPWEjAPIllAS2rDCicg6XeGm3G7XAkSZ2DL5qg13eb2Mi0K3ArkdDJYJkkYdlex
- apPpo+o0fO8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="171551546"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="171551546"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 05:32:12 -0700
-IronPort-SDR: XNUAT9FGvtKOOmAOJvi+MusdFSjG0rGuN8F+duCts71V2eODpQLH0SNAk5waqN9sVUKzZT1ISZ
- TxXnF3Jl6O9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="515994797"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 29 Mar 2021 05:32:10 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 29 Mar 2021 15:32:09 +0300
-Date:   Mon, 29 Mar 2021 15:32:09 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/12] ARM: s3c: mini2440: Constify the software node
-Message-ID: <YGHIyRu625C/kgRL@kuha.fi.intel.com>
-References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
- <20210329105047.51033-6-heikki.krogerus@linux.intel.com>
- <709e434f-9e35-bdd1-7785-1938b2fb80ee@kernel.org>
+        id S231193AbhC2Mcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:32:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54463 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231124AbhC2McV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:32:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617021140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GD9jR8caEzP+19c9pN1aTSDBAL/jQfepjFuZgZ5AJQg=;
+        b=gjKcIRSlVba2ID5zQO+zobbMmWftiOBcRTz1P0DhFwm/jureTQkNU/UOnwZvTvXcnVeYgF
+        H5XmCqXgG1sGkYogd4m4JgX/MUIcv5ifVXBuWqFS49ctEX2uEMwOdB+qEzVEuGbJ66EjXo
+        5z3yjTYwMFpTD2vsKqkmz9GONjgM/6Y=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-173-sZmjkUOuMryQT9W5sVDgMg-1; Mon, 29 Mar 2021 08:32:18 -0400
+X-MC-Unique: sZmjkUOuMryQT9W5sVDgMg-1
+Received: by mail-ed1-f70.google.com with SMTP id y10so8489061edr.20
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:32:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GD9jR8caEzP+19c9pN1aTSDBAL/jQfepjFuZgZ5AJQg=;
+        b=HluIhmGqvQ8+0BCSixygRC5izVBC2ZF2+0hjB/JGB5efr0VSJPtYEh+1RajIJEsIcz
+         yGoW0Zo13GiGnAGu/prTdTj7g26cKkqdae8R36JRDHCZmLob66gXEwZaYed7JJin9Qj2
+         auDoB5UR9Hokiiruaeqh01ej8pMpn6MLjCZZkBvFGrL9PTsTlgvX5ttoYimYD1fLcsx4
+         jLint4fClpqBLEWhCmReaHYAVezsUBSN0SiyzZ5oMXxHyAcMxC/nwfGzRJA/9xa++D9A
+         mNwemT+6KpRYVvIOOIoH0h5/yQ7rzYsMwu42MtwoaASNJZdINQ6ohC4G8VVt5eVbvOCF
+         uhcQ==
+X-Gm-Message-State: AOAM530dhYewdAjPNJo1KCoy7Duwrml+RchrKUyHn4GJTs21rEkAqU/A
+        kw10ZfJVyT/8Zn5nBXG01vj0gBBYSv78mMOxC6RCgcn3SVrndjtjz4iJSCCQhLnPTGjloHjXyDN
+        f4X/9n2WMq/MRRg4y4NBHsrci
+X-Received: by 2002:aa7:c7c5:: with SMTP id o5mr27815383eds.31.1617021137530;
+        Mon, 29 Mar 2021 05:32:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxB6FtmWkTT1pDy9lNZ/oJD/8n2X2GcodTMfUAO+YgTpSdBjEi/lflWuIuFFQOFO79csJA6Eg==
+X-Received: by 2002:aa7:c7c5:: with SMTP id o5mr27815365eds.31.1617021137301;
+        Mon, 29 Mar 2021 05:32:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w24sm8791315edt.44.2021.03.29.05.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:32:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2925B180293; Mon, 29 Mar 2021 14:32:16 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Vlad Buslov <vladbu@nvidia.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <ygnhh7kugp1t.fsf@nvidia.com>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com> <ygnhh7kugp1t.fsf@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Mar 2021 14:32:16 +0200
+Message-ID: <87ft0eta27.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <709e434f-9e35-bdd1-7785-1938b2fb80ee@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 12:58:41PM +0200, Krzysztof Kozlowski wrote:
-> On 29/03/2021 12:50, Heikki Krogerus wrote:
-> > Additional device properties are always just a part of a
-> > software fwnode. If the device properties are constant, the
-> > software node can also be constant.
-> > 
-> Hi,
-> 
-> Thanks for your work.
-> 
-> I did not get the cover letter nor other patches from this set and I
-> don't see how the i2c uses the swnode. This makes difficult to judge
-> whether this looks reasonable. At least without the context the title
-> looks misleading - you add software_node or change to use software_node
-> instead of constifying it.
+Vlad Buslov <vladbu@nvidia.com> writes:
 
-OK, I'll try to open this up somehow...
+> On Thu 25 Mar 2021 at 14:00, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> This adds functions that wrap the netlink API used for adding,
+>> manipulating, and removing filters and actions. These functions operate
+>> directly on the loaded prog's fd, and return a handle to the filter and
+>> action using an out parameter (id for tc_cls, and index for tc_act).
+>>
+>> The basic featureset is covered to allow for attaching, manipulation of
+>> properties, and removal of filters and actions. Some additional features
+>> like TCA_BPF_POLICE and TCA_RATE for tc_cls have been omitted. These can
+>> added on top later by extending the bpf_tc_cls_opts struct.
+>>
+>> Support for binding actions directly to a classifier by passing them in
+>> during filter creation has also been omitted for now. These actions
+>> have an auto clean up property because their lifetime is bound to the
+>> filter they are attached to. This can be added later, but was omitted
+>> for now as direct action mode is a better alternative to it.
+>>
+>> An API summary:
+>>
+>> The BPF TC-CLS API
+>>
+>> bpf_tc_act_{attach, change, replace}_{dev, block} may be used to attach,
+>> change, and replace SCHED_CLS bpf classifiers. Separate set of functions
+>> are provided for network interfaces and shared filter blocks.
+>>
+>> bpf_tc_cls_detach_{dev, block} may be used to detach existing SCHED_CLS
+>> filter. The bpf_tc_cls_attach_id object filled in during attach,
+>> change, or replace must be passed in to the detach functions for them to
+>> remove the filter and its attached classififer correctly.
+>>
+>> bpf_tc_cls_get_info is a helper that can be used to obtain attributes
+>> for the filter and classififer. The opts structure may be used to
+>> choose the granularity of search, such that info for a specific filter
+>> corresponding to the same loaded bpf program can be obtained. By
+>> default, the first match is returned to the user.
+>>
+>> Examples:
+>>
+>> 	struct bpf_tc_cls_attach_id id = {};
+>> 	struct bpf_object *obj;
+>> 	struct bpf_program *p;
+>> 	int fd, r;
+>>
+>> 	obj = bpf_object_open("foo.o");
+>> 	if (IS_ERR_OR_NULL(obj))
+>> 		return PTR_ERR(obj);
+>>
+>> 	p = bpf_object__find_program_by_title(obj, "classifier");
+>> 	if (IS_ERR_OR_NULL(p))
+>> 		return PTR_ERR(p);
+>>
+>> 	if (bpf_object__load(obj) < 0)
+>> 		return -1;
+>>
+>> 	fd = bpf_program__fd(p);
+>>
+>> 	r = bpf_tc_cls_attach_dev(fd, if_nametoindex("lo"),
+>> 				  BPF_TC_CLSACT_INGRESS, ETH_P_IP,
+>> 				  NULL, &id);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> ... which is roughly equivalent to (after clsact qdisc setup):
+>>   # tc filter add dev lo ingress bpf obj /home/kkd/foo.o sec classifier
+>>
+>> If a user wishes to modify existing options on an attached filter, the
+>> bpf_tc_cls_change_{dev, block} API may be used. Parameters like
+>> chain_index, priority, and handle are ignored in the bpf_tc_cls_opts
+>> struct as they cannot be modified after attaching a filter.
+>>
+>> Example:
+>>
+>> 	/* Optional parameters necessary to select the right filter */
+>> 	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts,
+>> 			    .handle = id.handle,
+>> 			    .priority = id.priority,
+>> 			    .chain_index = id.chain_index)
+>> 	/* Turn on direct action mode */
+>> 	opts.direct_action = true;
+>> 	r = bpf_tc_cls_change_dev(fd, id.ifindex, id.parent_id,
+>> 			          id.protocol, &opts, &id);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	/* Verify that the direct action mode has been set */
+>> 	struct bpf_tc_cls_info info = {};
+>> 	r = bpf_tc_cls_get_info_dev(fd, id.ifindex, id.parent_id,
+>> 			            id.protocol, &opts, &info);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	assert(info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT);
+>>
+>> This would be roughly equivalent to doing:
+>>   # tc filter change dev lo egress prio <p> handle <h> bpf obj /home/kkd/foo.o section classifier da
+>>
+>> ... except a new bpf program will be loaded and replace existing one.
+>>
+>> If a user wishes to either replace an existing filter, or create a new
+>> one with the same properties, they can use bpf_tc_cls_replace_dev. The
+>> benefit of bpf_tc_cls_change is that it fails if no matching filter
+>> exists.
+>>
+>> The BPF TC-ACT API
+>>
+>> bpf_tc_act_{attach, replace} may be used to attach and replace already
+>> attached SCHED_ACT actions. Passing an index of 0 has special meaning,
+>> in that an index will be automatically chosen by the kernel. The index
+>> chosen by the kernel is the return value of these functions in case of
+>> success.
+>>
+>> bpf_tc_act_detach may be used to detach a SCHED_ACT action prog
+>> identified by the index parameter. The index 0 again has a special
+>> meaning, in that passing it will flush all existing SCHED_ACT actions
+>> loaded using the ACT API.
+>>
+>> bpf_tc_act_get_info is a helper to get the required attributes of a
+>> loaded program to be able to manipulate it futher, by passing them
+>> into the aforementioned functions.
+>>
+>> Example:
+>>
+>> 	struct bpf_object *obj;
+>> 	struct bpf_program *p;
+>> 	__u32 index;
+>> 	int fd, r;
+>>
+>> 	obj = bpf_object_open("foo.o");
+>> 	if (IS_ERR_OR_NULL(obj))
+>> 		return PTR_ERR(obj);
+>>
+>> 	p = bpf_object__find_program_by_title(obj, "action");
+>> 	if (IS_ERR_OR_NULL(p))
+>> 		return PTR_ERR(p);
+>>
+>> 	if (bpf_object__load(obj) < 0)
+>> 		return -1;
+>>
+>> 	fd = bpf_program__fd(p);
+>>
+>> 	r = bpf_tc_act_attach(fd, NULL, &index);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	if (bpf_tc_act_detach(index))
+>> 		return -1;
+>>
+>> ... which is equivalent to the following sequence:
+>> 	tc action add action bpf obj /home/kkd/foo.o sec action
+>> 	tc action del action bpf index <idx>
+>
+> How do you handle the locking here? Please note that while
+> RTM_{NEW|GET|DEL}FILTER API has been refactored to handle its own
+> locking internally (and registered with RTNL_FLAG_DOIT_UNLOCKED flag),
+> RTM_{NEW|GET|DEL}ACTION API still expects to be called with rtnl lock
+> taken.
 
-Whenever additional device properties are added to devices by using
-the old device property API (device_add_properties()) that also i2c
-core code uses, in reality a software node is always created to hold
-those properties. It's just always dynamically allocated.
+Huh, locking? This is all userspace code that uses the netlink API...
 
-The goal of this series is to prepare the i2c subsystem and drivers
-for the removal of that old device property API, but I did not see
-that as relevant info for this patch, because even if we did not in
-the end remove that old API, this change is still useful.
+-Toke
 
-The patch does exactly what the subject says. After this we supply the
-device a constant software node instead of a dynamically allocated one.
-
-
-thanks,
-
--- 
-heikki
