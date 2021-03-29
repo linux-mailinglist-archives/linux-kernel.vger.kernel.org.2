@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1862534D6DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FF834D775
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhC2SS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhC2SR4 (ORCPT
+        id S231668AbhC2SiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:38:15 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:60208 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbhC2Shm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:17:56 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3EC5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=8AEiwnSsasg6gLp5dzgvHy4Ekf+YglgM5SFsq1PHSp4=; b=MytSx5WYdNAIS
-        raZizWn3fBGBzqGuCU8LEm7rANsdZA2U6+ZjrFVx2zVFowB/SvEox+M+j1hZiKR7
-        0PzbYC571M5H54l4M+t8RZ4v2YbIlnEAtGwZnvEBKPnESue73FYaTt6dEfPgNvCh
-        lVZ5EqqDukM+TZq7JTqjSzWVvQNcHQ=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnLkqxGWJgMuZpAA--.42274S2;
-        Tue, 30 Mar 2021 02:17:22 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:12:26 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: add do_page_fault and do_trap_break into the kprobes
- blacklist
-Message-ID: <20210330021226.2fc7b2ec@xhacker>
+        Mon, 29 Mar 2021 14:37:42 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 291421c0a50beb6e; Mon, 29 Mar 2021 20:37:41 +0200
+Received: from kreacher.localnet (89-64-81-131.dynamic.chello.pl [89.64.81.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5480F669165;
+        Mon, 29 Mar 2021 20:37:40 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+Subject: [PATCH v1 0/5] cpuidle: Take possible negative "sleep length" values into account
+Date:   Mon, 29 Mar 2021 20:12:39 +0200
+Message-ID: <2764850.e9J7NaK4W3@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAnLkqxGWJgMuZpAA--.42274S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyxKw47Gw4UXFy7JFW7XFb_yoWDKrg_C3
-        Z2k3yfWrWrJa109F97tws3GF40y3sYkF93G3ZFvrWrCFyYgr18Kw45ta15tr1DX34fua97
-        Zr9xXr93G3WIqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbFxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
-        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
-        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
-        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj4
-        0_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
-        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1VbkUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedguddvlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdevgfetueetheekudeuvdduteelvefftdfftdejjeeukeffteeikefgiefghedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedurddufedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurddufedupdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehtghhlgies
+ lhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopeigvddtudeltgifmhesshhtfhigrdgtrg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Hi All,
 
-These two functions are used to implement the kprobes feature so they
-can't be kprobed.
+As follows from the discussion triggered by the patch at
 
-Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/kernel/traps.c | 1 +
- arch/riscv/mm/fault.c     | 1 +
- 2 files changed, 2 insertions(+)
+https://lore.kernel.org/lkml/20210311123708.23501-2-frederic@kernel.org/
 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index 0879b5df11b9..1357abf79570 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -178,6 +178,7 @@ asmlinkage __visible void do_trap_break(struct pt_regs *regs)
- 	else
- 		die(regs, "Kernel BUG");
- }
-+NOKPROBE_SYMBOL(do_trap_break);
- 
- #ifdef CONFIG_GENERIC_BUG
- int is_valid_bugaddr(unsigned long pc)
-diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-index 8f17519208c7..c5dbd55cbf7c 100644
---- a/arch/riscv/mm/fault.c
-+++ b/arch/riscv/mm/fault.c
-@@ -328,3 +328,4 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
- 	}
- 	return;
- }
-+NOKPROBE_SYMBOL(do_page_fault);
--- 
-2.31.0
+the cpuidle governors using tick_nohz_get_sleep_length() assume it to always
+return positive values which is not correct in general.
+
+To address this issues, first document the fact that negative values can
+be returned by tick_nohz_get_sleep_length() (patch [1/5]).  Then, in
+preparation for more substantial changes, change the data type of two
+fields in struct cpuidle_state to s64 so they can be used in computations
+involving negative numbers safely (patch [2/5]).
+
+Next, adjust the teo governor a bit so that negative "sleep length" values
+are counted like zero by it (patch [3/5]) and modify it so as to avoid
+mishandling negative "sleep length" values (patch [4/5]).
+
+Finally, make the menu governor take negative "sleep length" values into
+account properly (patch [5/5]).
+
+Please see the changelogs of the patches for details.
+
+Thanks!
+
 
 
