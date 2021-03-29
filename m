@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6233E34CD90
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEA934CCFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhC2KCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S231685AbhC2JYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhC2J1B (ORCPT
+        with ESMTP id S231522AbhC2JYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:27:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360DEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qZ3M3nbcYig1T0+sNysEy6eKT+TCnQNoW5WfBPGFHhc=; b=Witj7OTUWLQUd8GHfYMEBB4JUF
-        EU4WxwrRURr0mrq9MEhEZCLr5m/6vQjFyrOeHQRMKljvPLPSTe3YnB3H3LybQoqYVFRfNTms9oT/1
-        KJoHeIvMjkPBDWBD6uZiF/VoDf4Uyu3u734FVNoLSIvQZq1JdmwhH6zPBJnqx6I/2/2kYqkC+s7Sj
-        Qln0TGrvpyqEDp2wilKccWI8EqNAUnqL3cdkkbGuNW5t5b5lwfLm+kfxaWuCuCOnIAYbgAexx4xhk
-        vipBUwwd4QQwlWlgeCri+ZzrTB0STT6n6g7Un0NGlvssGYDZn2UK9W0rsp97GWm9BdYARwWCqzdn9
-        8u35KWPw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQoAF-001K1x-Aw; Mon, 29 Mar 2021 09:26:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 918593003E5;
-        Mon, 29 Mar 2021 11:24:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81707207189D6; Mon, 29 Mar 2021 11:24:19 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 11:24:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 00/15] locking/rtmutex: Spring cleaning
-Message-ID: <YGGcww3coJWhDJBT@hirez.programming.kicks-ass.net>
-References: <20210326152929.709289883@linutronix.de>
+        Mon, 29 Mar 2021 05:24:41 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AFAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:24:41 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id r12so2428368vsj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nUqVYbOsgzJvFaHO534MA1Tdm9chX2nN9+FCc/y44XE=;
+        b=Guw+BOMais6EakAu9RohwYoxmmtYPJnwLs/4rXBB+5UKeB5Yk2UrYiXEwnNnkllavH
+         gR+Ayxy4vd3HWHJa9R982DXzyD662Iha+wtjn3IWiK37BiidxzCx7+ACDI+z1HXLucj4
+         ajJUXlLUtrwguVPFucQuJIwHsRtyodYMdnz88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nUqVYbOsgzJvFaHO534MA1Tdm9chX2nN9+FCc/y44XE=;
+        b=AXNxrRxWFc/WiSF8eugJzXJhsib+jphdAACm/iReKxJOJ9AhreJ2WrCd+wwwbFXbzc
+         Cppwiz6O1irLiqDV4M9hZ9gkpL/9vlHkR8Hgh8sNNj/+zf0Ud1Clr1h0+VnND5wJMVYh
+         CoDqO5vyUE6rJYYFUY0LoHAsR789J95nB2tMhWt7D503LR97Njm69L89aFNHjrK4WFyD
+         uIertphZo9foR/gxY1mfXmq5HyHjFyo5gFiosTdc0y7N5AnYHBsEQ0kS9Tgp3s3kEWDr
+         VFOEkgxZkx83xIqwUo8CIqp3rYfYTwaqPahfvojgo0KorQ/E9MR5VgYkIGsc1Jo6t7Sg
+         Rf3w==
+X-Gm-Message-State: AOAM530AA3BG2ZieTyrepwGLHzIqw/99HbC8/2kVShRNEEDwWZWpPwbQ
+        0qsnlxpf3YMhvfWdJ1+oJJRpyDtOhNCrett94XxLbA==
+X-Google-Smtp-Source: ABdhPJyZxxztIJkv/XIaxwQ8J2HG8Af2Yj5L8n64NOybPY5kHyelQ8Yf6zkuJ1gUrjuqCaWQkxiofplCj62NVVMbq+g=
+X-Received: by 2002:a67:63c5:: with SMTP id x188mr1682420vsb.9.1617009880930;
+ Mon, 29 Mar 2021 02:24:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326152929.709289883@linutronix.de>
+References: <20210325193755.294925-1-mszeredi@redhat.com> <20210325193755.294925-4-mszeredi@redhat.com>
+ <YGDGICWI6o+1zhPI@zeniv-ca.linux.org.uk>
+In-Reply-To: <YGDGICWI6o+1zhPI@zeniv-ca.linux.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 29 Mar 2021 11:24:30 +0200
+Message-ID: <CAJfpegun3LHMZ9uVxbf5knZB6w1CnUHHXeYpn_ReCTdXKaFX0w@mail.gmail.com>
+Subject: Re: [PATCH v3 03/18] ovl: stack fileattr ops
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 04:29:29PM +0100, Thomas Gleixner wrote:
->  a/kernel/locking/rtmutex-debug.c |  182 -----------------
->  a/kernel/locking/rtmutex-debug.h |   37 ---
->  a/kernel/locking/rtmutex.h       |   35 ---
->  include/linux/rtmutex.h          |   35 ---
->  kernel/locking/Makefile          |    2 
->  kernel/locking/rtmutex.c         |  402 ++++++++++++++-------------------------
->  kernel/locking/rtmutex_common.h  |  104 +++++-----
->  7 files changed, 202 insertions(+), 595 deletions(-)
+On Sun, Mar 28, 2021 at 8:09 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Thu, Mar 25, 2021 at 08:37:40PM +0100, Miklos Szeredi wrote:
+> > Add stacking for the fileattr operations.
+> >
+> > Add hack for calling security_file_ioctl() for now.  Probably better to
+> > have a pair of specific hooks for these operations.
+>
+> Umm...  Shouldn't you remove the old code from their ->ioctl() instance?
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Will do, once fuse gets converted.
+
+And fuse will get converted, when I manage to decide on the best way to do it:
+
+1) keep a list of open files for each inode, pick random one for doing
+the ioctl (really shouldn't matter which one)
+
+2) do a sequence of open - [sg]et attr - release for each invocation
+
+Thanks,
+Miklos
