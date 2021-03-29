@@ -2,97 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA26034CF2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5951934CF31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhC2Lfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhC2LfX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:35:23 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72808C061574;
-        Mon, 29 Mar 2021 04:35:20 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so5764998pjg.5;
-        Mon, 29 Mar 2021 04:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Umme6mEPlLLIx55BS0/fsIeUWDF0jAkw4yGXSPzrUwc=;
-        b=brFXGjZHymZcp686J9d/6p2f8IT65PLY2NBImZxpbx5+mGPhPaKBwL+hAGI1XLqNWU
-         nB3ac5y5ej+oc5dRA8Y0pIj6Ywpcib2ECoDJLC2AC7wvbvYdBNIXejmAQWr6M9vEYGlm
-         XGemkv431JO08H5OPHM0pLE4OaLfs4vS+eaG3jYmizQU6Ek/eqe2fZMMPClEtpODUkxU
-         ff8NLv9S+KzN+vVr8CMFY1AUwPHgth2vrZrwzcWkfiGTWmzyq3LduA5Vj+v22rldOWtm
-         kZ2wm+it+9TY5ZZQqvWTiplmGjslQJu+WC6YXdO6sU+tlVwqHnkzGskt96p21B1W61QQ
-         Nq0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Umme6mEPlLLIx55BS0/fsIeUWDF0jAkw4yGXSPzrUwc=;
-        b=qgk64eJ5q91nAWLct1CvRHjnemipstaK6m2eCxt/b/CyoSgfkJgEzRfR3LkEEyUdAr
-         m7n5FKydlVvaIBTWWtH77W1n4ROiQyH1Kiv/Gd2fCYpIKvR7llcbJXu3yqZr06AXXFJp
-         APeTTyLz6H5kz9AmyWDde5uBK1h3D/9BLuKveSgO6DSTVOEkLVC1YAKs/70CMilwe5Sg
-         GHkgSR3N83qxHo87U7sN4TSSKo+Hz5R0yYpMvGbXJrGbqsxuF+uXnpdM5hOL2QuVXao/
-         HDqjzcszTM3ilIiRQEMhDU+bvUcoCYaoWBz2ORP1kQHvTvnRe2YsdNauWA3LGdYBiMq+
-         8t2Q==
-X-Gm-Message-State: AOAM530bmUsJKY7Y4qPEBjgUmQwgEkIqASbP2pyvKbt7mFRLjoGXqltp
-        e2zjVf4lBVKO35+ERxnFN/kTMuZGQ2AUJ0Gj33M=
-X-Google-Smtp-Source: ABdhPJw9Z3cD04cZW1D9XRH2rAhuFWVzadwm4hfCMZEGCTzN1BM+n77RrvvFbcEELGixncXb6MLAn2pEtP2QhPhPYic=
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
- z2-20020a170902ee02b02900e65397d79cmr28359551plb.21.1617017720012; Mon, 29
- Mar 2021 04:35:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 14:35:04 +0300
-Message-ID: <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com>
-Subject: Re: [PATCH Resend v0 0/6] Mediatek pinctrl patch on mt8195
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        id S230334AbhC2LgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhC2Lfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8031561585;
+        Mon, 29 Mar 2021 11:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617017736;
+        bh=RyW3IR4mCZ4a1x3PuFB/Yem1Vg3KI5Vac0VJnYicrcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BnuuR9ps/wfdaziIYfDV66/p/SpzIJt7dpq9uAChS48I92kKbj3VO8NTQsZl1mkrM
+         d+aZhENCQXOTtioj2o1/8HVjNv+8YxiRZxtJV1WbRME1h0/APeDEfdvH8JfNHGoMIp
+         n5EBGTwFJxPcbAagb4J6zVrnspRAv8s4JGMlxk1Q=
+Date:   Mon, 29 Mar 2021 13:35:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        sean.wang@kernel.org, srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        jg_poxu@mediatek.com, biao.huang@mediatek.com,
-        hongzhou.yang@mediatek.com, erin.lo@mediatek.com,
-        Sean Wang <sean.wang@mediatek.com>, seiya.wang@mediatek.com,
-        Sj Huang <sj.huang@mediatek.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
+Message-ID: <YGG7hTYP2gGwuBCJ@kroah.com>
+References: <20210329075633.135869143@linuxfoundation.org>
+ <20210329075640.480623043@linuxfoundation.org>
+ <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
+ <YGGoHdprUT/AscHa@kroah.com>
+ <CADYN=9K-rV+efCDBoF4a_rKbg77d1o-uWH1oTgjZ+v-4MUjo5Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADYN=9K-rV+efCDBoF4a_rKbg77d1o-uWH1oTgjZ+v-4MUjo5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:32 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
->
-> This series includes 6 patches:
-> 1.add pinctrl file on mt8195.
-> 2.add pinctrl binding document on mt8195.
-> 3.add pinctrl device node on mt8195.
-> 4.add pinctrl driver on MT8195.
-> 5.add pinctrl drive for I2C related pins on MT8195.
-> 6.add pinctrl rsel setting on MT8195.
+On Mon, Mar 29, 2021 at 01:06:47PM +0200, Anders Roxell wrote:
+> On Mon, 29 Mar 2021 at 12:13, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Mar 29, 2021 at 03:05:25PM +0530, Naresh Kamboju wrote:
+> > > On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > From: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > >
+> > > > [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+> > > >
+> > > > This overrides arch_get_mappable_range() on arm64 platform which will be
+> > > > used with recently added generic framework.  It drops
+> > > > inside_linear_region() and subsequent check in arch_add_memory() which are
+> > > > no longer required.  It also adds a VM_BUG_ON() check that would ensure
+> > > > that mhp_range_allowed() has already been called.
+> > > >
+> > > > Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
+> > > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Cc: Will Deacon <will@kernel.org>
+> > > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > > > Cc: Jason Wang <jasowang@redhat.com>
+> > > > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > > > Cc: Michal Hocko <mhocko@kernel.org>
+> > > > Cc: Oscar Salvador <osalvador@suse.de>
+> > > > Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> > > > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> > > > Cc: teawater <teawaterz@linux.alibaba.com>
+> > > > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > > > Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > ---
+> > > >  arch/arm64/mm/mmu.c | 15 +++++++--------
+> > > >  1 file changed, 7 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > > > index 6f0648777d34..92b3be127796 100644
+> > > > --- a/arch/arm64/mm/mmu.c
+> > > > +++ b/arch/arm64/mm/mmu.c
+> > > > @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+> > > >         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+> > > >  }
+> > > >
+> > > > -static bool inside_linear_region(u64 start, u64 size)
+> > > > +struct range arch_get_mappable_range(void)
+> > > >  {
+> > > > +       struct range mhp_range;
+> > > > +
+> > > >         /*
+> > > >          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+> > > >          * accommodating both its ends but excluding PAGE_END. Max physical
+> > > >          * range which can be mapped inside this linear mapping range, must
+> > > >          * also be derived from its end points.
+> > > >          */
+> > > > -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+> > > > -              (start + size - 1) <= __pa(PAGE_END - 1);
+> > > > +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> > > > +       mhp_range.end =  __pa(PAGE_END - 1);
+> > > > +       return mhp_range;
+> > > >  }
+> > > >
+> > > >  int arch_add_memory(int nid, u64 start, u64 size,
+> > > > @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> > > >  {
+> > > >         int ret, flags = 0;
+> > > >
+> > > > -       if (!inside_linear_region(start, size)) {
+> > > > -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+> > > > -               return -EINVAL;
+> > > > -       }
+> > > > -
+> > > > +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > > >         if (rodata_full || debug_pagealloc_enabled())
+> > > >                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> > >
+> > > The stable rc 5.10 and 5.11 builds failed for arm64 architecture
+> > > due to below warnings / errors,
+> > >
+> > > > Anshuman Khandual <anshuman.khandual@arm.com>
+> > > >     arm64/mm: define arch_get_mappable_range()
+> > >
+> > >
+> > >   arch/arm64/mm/mmu.c: In function 'arch_add_memory':
+> > >   arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
+> > > 'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
+> > > [-Werror=implicit-function-declaration]
+> > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > >                ^
+> > >   include/linux/build_bug.h:30:63: note: in definition of macro
+> > > 'BUILD_BUG_ON_INVALID'
+> > >    #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+> > >                                                                  ^
+> > >   arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
+> > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > >     ^~~~~~~~~
+> > >
+> > > Build link,
+> > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
+> > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
+> >
+> > thanks, will go drop this, and the patch that was after it in the
+> > series, from both trees and will push out a -rc2.
+> >
+> > Note, I used tuxbuild before doing this release, and it does not show
+> > this error in the arm64 defconfigs. What config did you use to trigger
+> > this?
+> 
+> We have a build with CONFIG_MEMORY_HOTPLUG=y enabled too.
+> 
+> This is a way to reproduce it locally:
+> tuxmake --runtime podman --target-arch arm64 --toolchain gcc --kconfig
+> defconfig --kconfig-add CONFIG_MEMORY_HOTPLUG=y
 
-Patch series w/o version is de facto v1.
-Dropping to v0 seems not right.
-You missed changelog.
+Ah, that wasn't expected, but makes sense, thanks.
 
-So, send v2 properly.
+Does 'allmodconfig' also trigger that?  Maybe I'll go add that to my
+build tests for arm64...
 
-Material to study:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+thanks,
 
--- 
-With Best Regards,
-Andy Shevchenko
+greg k-h
