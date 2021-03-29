@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D234D551
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4E634D55B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhC2Qnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:43:42 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:36817 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhC2QnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:43:11 -0400
-Received: by mail-ot1-f51.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso12880345otq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g8kolWYtJW37qJe2Kql1VI2PyddDp+zguMbPA91Z9Us=;
-        b=YmYxeWvYb+XkZo0HRvh1UU8FOR92ZnWCRnb9iDu/hEQAW4nV34xxH6PKwgl5gbnY/D
-         TvofuqW2ocaZMat7FnZIKNzMQzKL/qDKVw16CwwxY9TnMN2dJEKDzmAA7CrPToNnv+AA
-         PYP4DTsM/tccFVzDEs7GPxPnPGc0dRzuTQ5eJDFmhw43gd7VvTdXZH49qBG93b/BxeoT
-         c+0lhxCw358oIzvsJxxsuxKMf5uoS8BUMsSowyVAyDXQmB3PIOf9YyMAeRbk56fce3qD
-         aFxs36cySmhUeDJFPhxFTec9c+muPMwDj8JbhafWuhEbLH+MtK6i9a6b+ic5byvF4Px3
-         3kdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=g8kolWYtJW37qJe2Kql1VI2PyddDp+zguMbPA91Z9Us=;
-        b=hFD5cQg2lC7gCYyL/LaOKEa/zNLfGgene3eJbIpbpiFy565r21Ko2R+U9OSCUve8vW
-         GlSd8qnAr4JRnpBVAq6ryibalSBhETR2N0AyXbNilFHFHOer6WoCapWC56ZNFq6lctJ3
-         Ecvu/CyHjUMz6O3pqt/3+ueFS7NHXwnkC7ALvEmdPDcmoZIoZsyCXUHT4CPZOCaW6XYi
-         EWM0a3/gOjBt4wj5/qex3t2yTdTJqKLfEeZ1QODX2iUiVTaBmBcrG3NyxFk4brO+Dp4s
-         1sD4z+z9Wz4UdH82193qyQGYaDUOfXWwqHVE4Ya2U+3LF0/mXmRJ3Yr3b2TYLNR/wS1F
-         8/9g==
-X-Gm-Message-State: AOAM532EQjyc2igm2eqcbBGuflZ4gWHr25221CitDvlIBnKPHc29ZsHg
-        ghSMsXjPBTB/5VEf6QXSBgkm5tH03ZAzfbkj
-X-Google-Smtp-Source: ABdhPJwptw6MsDBKYxmuoKEkBBpZc8vdD8jwkuFIcX9GOVCs2axBhcFXQ7l96Pw51OJLZjHdnFg+sQ==
-X-Received: by 2002:a9d:8ae:: with SMTP id 43mr22887174otf.162.1617036115301;
-        Mon, 29 Mar 2021 09:41:55 -0700 (PDT)
-Received: from ubuntu-mate-laptop.localnet ([208.64.158.253])
-        by smtp.gmail.com with ESMTPSA id e34sm4480758ote.70.2021.03.29.09.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 09:41:54 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] drivers: pinctrl: qcom: fix Kconfig dependency on GPIOLIB
-Date:   Mon, 29 Mar 2021 12:41:50 -0400
-Message-ID: <12736456.GqETC5XQ6s@ubuntu-mate-laptop>
-In-Reply-To: <CACRpkda2Jbm3DmOhxFyyxDZRrUk01TtPbD+OOG=U7o2mnxEB8A@mail.gmail.com>
-References: <20210225083306.25792-1-julianbraha@gmail.com> <CACRpkda2Jbm3DmOhxFyyxDZRrUk01TtPbD+OOG=U7o2mnxEB8A@mail.gmail.com>
+        id S231314AbhC2QpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:45:22 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:44316 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230286AbhC2QpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:45:07 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id Quy8lKyqctpGHQuyEliOkJ; Mon, 29 Mar 2021 18:42:33 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1617036153; bh=BrNKkRQtWd5xquv9TwU2ha5NNM/KSP7ccLi3tRmSmNo=;
+        h=From;
+        b=X6V3ykASzNscbC0iUVXp9q9q+Y4fNLeRRvcXrndrWb123fjybiBY5SNzbfz9Y1YpV
+         4sqEbhrd8O41ofW4xZhZnvZfERCszHD8brEcjzXtiZsBcaXn5SBTg/JxZmisDewzb1
+         8/8dPqBEPgN21KQukPNHE8zq81dvMdsHzJ1ZDoufAbTYjp/7CChBWeXH8Sv60iIRwp
+         uNoypeC98cUPkd11b9iuTUEjqrZKI9jJIRFMQxv4tWbEpi+MBJDjfxIIs4jAxXSwUJ
+         V2r+N9AGW7MsEQHQXYVtxiJjV961TLU3NlwZlKedAjl1rFJ1TGQ/A0wwGyYxGsDg8f
+         Lz+NInesBXSeQ==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60620379 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=IkcTkHD0fZMA:10 a=wWb8P1eRJa4rfLIeBvsA:9 a=QEXdDO2ut3YA:10
+ a=fCgQI5UlmZDRPDxm0A3o:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Dario Binacchi <dariobin@libero.it>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH v3 0/4] clk: ti: add am33xx spread spectrum clock support
+Date:   Mon, 29 Mar 2021 18:42:17 +0200
+Message-Id: <20210329164222.26794-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfIn27ZCUTmtRp+5x956SWoq43721p+yw9pLk/daDddlqNQ/gz0EePul9ixgUr+xfaol7JtaGqlt16lM+6lUrob04UJPZ1187PdtRMIG9GhvLriHyJWcj
+ vOaA0ECpRQE5zy06Uo1ctYjWpibCahNpI1C177MEuGwHbSKCtevpGCrT5Lg92dLHOw6YGVU9l995kCO9/oLD7tQItD2ArOvLm2VOr5kA1V3WNtXRmfHImbD2
+ LYzYI9knJxkEUQizaVC6DgHwFIHIIkrXBVOc1KR9hrYMkdf5kR+GU/FO9ujMdMSs7yU5pAGIoFotkfKEv6iW6/EYcWeXf4h5J83fQhu7wOxXjiBU6F/SBQWb
+ AtaSNsCZwlsVSRHe6IGY4Jh4beNn3OfZnzjBWbi8CBi1UjUzZe6EPQsPtgg4t72BXxIHE80B7UIlLM4BGw2GMPWlhHYAocy2m1HYvouRRI0dnxPw8rWzTE7b
+ y79QESQJOKoYedTmHipmpznZ6r8NqfkIv09VHixSw07fdSAAawMzq3yB+EvBiF6wdoWjENuu18gaLCHm5iyLjydekC5sDezDkPFyaiK84P2UqGAGK9Xq3hfO
+ p6NiE5ihyjPEnBXwMQ1b5u7faJ231nU9oiM+62QLTw8zyw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, March 2, 2021 9:46:04 AM EDT you wrote:
-> On Thu, Feb 25, 2021 at 9:33 AM Julian Braha <julianbraha@gmail.com> wrote:
-> 
-> > When PINCTRL_MSM is enabled, and GPIOLIB is disabled,
-> > Kbuild gives the following warning:
-> >
-> > WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
-> >   Depends on [n]: GPIOLIB [=n]
-> >   Selected by [y]:
-> >   - PINCTRL_MSM [=y] && PINCTRL [=y] && (ARCH_QCOM || COMPILE_TEST [=y])
-> >
-> > This is because PINCTRL_MSM selects GPIOLIB_IRQCHIP,
-> > without selecting or depending on GPIOLIB, despite
-> > GPIOLIB_IRQCHIP depending on GPIOLIB. Having PINCTRL_MSM
-> > select GPIOLIB will cause a recursive dependency error.
-> >
-> > Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> 
-> Does it work to just:
-> 
-> select GPIOLIB
-> 
-> instead?
-> 
-> The driver needs the library so...
-> 
-> Yours,
-> Linus Walleij
-> 
 
-Hi Linus,
-
-Looks like I confused this patch with another one when 
-I responded last time. This config option cannot select 
-GPIOLIB, because it will cause a recursive dependency 
-error.
-
-Any other ideas?
-
-- Julian Braha
+As reported by the TI spruh73x RM, MPU and LCD modules support spread
+spectrum clocking (SSC) on their output clocks. SSC is used to spread
+the spectral peaking of the clock to reduce any electromagnetic
+interference (EMI) that may be caused due to the clock’s fundamental
+or any of its harmonics.
+The series allows you to enable and adjust the spread spectrum clocking
+for all am33xx PLLs for which it is supported.
 
 
+Changes in v3:
+- Add '-hz' suffix to "ti,ssc-modfreq" binding.
+- Add Tony Lindgren acked tag.
+- Use "ti,ssc-modfreq-hz" binding instead of "ti,ssc-modfreq".
+
+Changes in v2:
+- Remove SSC registers from dpll_core_ck@490 node (SSC is not supported)
+- Add SSC registers to dpll_mpu_ck@488 node.
+- Move the DT changes to the previous patch in the series.
+
+Dario Binacchi (4):
+  clk: ti: fix typo in routine description
+  dt-bindings: ti: dpll: add spread spectrum support
+  ARM: dts: am33xx-clocks: add spread spectrum support
+  clk: ti: add am33xx spread spectrum clock support
+
+ .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++
+ arch/arm/boot/dts/am33xx-clocks.dtsi          |  4 +-
+ drivers/clk/ti/dpll.c                         | 42 +++++++++
+ drivers/clk/ti/dpll3xxx.c                     | 87 ++++++++++++++++++-
+ include/linux/clk/ti.h                        | 24 +++++
+ 5 files changed, 174 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
 
