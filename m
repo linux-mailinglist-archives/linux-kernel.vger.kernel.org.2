@@ -2,180 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AED334C360
+	by mail.lfdr.de (Postfix) with ESMTP id A731534C361
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhC2Fzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        id S230202AbhC2Fzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhC2Fz1 (ORCPT
+        with ESMTP id S229706AbhC2Fzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:55:27 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E50FC061574;
-        Sun, 28 Mar 2021 22:55:27 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id j7so8584074qtx.5;
-        Sun, 28 Mar 2021 22:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3sxooqOLO1y1jfA0hH8Tp6Do4156/VwnStLOftkWolU=;
-        b=Vlx9D3rNBdfV9Twbtu5elSlHPfi5IXXOKF2jGRNyYsk0o4ecYOB2cj/naEcloSDf8R
-         alIWlT36rpUX2jLbRw5jNyCb0r3zkvxNLxY/oU79NVWrIxn4iLG00+Wq2kw7CnCQbDa3
-         Vq5XIMiUAeKSjU0zJhBu0ZfLTacA025RRUEJktbgtvUYntzC2tJxy9ud0yj4A992QfYd
-         E65g7Sytx2VJjQoKcE9L8l3CpsnFO1Ta+UbOF/MzqyHx2L5IPQLP80F+olm2Uu7Gxp2I
-         iEptFFxpwRV3Tm3xQzYlhgiHlGq+3tuOwAAYp16fwL5O+70slP3kGBQQx1aeNOGA+OU6
-         i2Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=3sxooqOLO1y1jfA0hH8Tp6Do4156/VwnStLOftkWolU=;
-        b=sUid0KiCoSwNDDrZploOkd8zKYbn55CKZERWQVqyXajjY/wnEWHMfrFvWDOqE8BKt3
-         u+IrDTwfKpXCENjix/CO3wpzQAwJcqI4GA1GKrWgSZl0EMdPDaWHWQjKoOGrqaozQ3d3
-         XNAUU+GWp7zlKeE7VogHlonUe9AZ6Pxk/1goI2nhfp7Oj941W+RwZxVj1jIrxXZMCmSK
-         43cpu0Bam8XhvY08zwvX/cQ5mB97IBbP1ilowGwU0o6frosei6IcTKUI4FgK40iBPFBc
-         51WwaI5DsPgG2U0xxbLmckbCLXI53YcXyDHQW66ucBjIhdgbP7q/t/7MzwBeRXXVQDpO
-         vTMw==
-X-Gm-Message-State: AOAM530KJHu+8SK0HDigSXaaMs+Ems0spqbuWUHTPAqw5NRlFtpqUOdw
-        5cMTfqcKBau5N5dP8rnjE8qFXKh/LgMsuEae
-X-Google-Smtp-Source: ABdhPJyjMO9PATIBVElUDbHpz1rS/mlZe2xmTsSLkRGrzA/ytq1vxJ2tRlhHienza2FDGcd8/6DVxQ==
-X-Received: by 2002:ac8:6f2e:: with SMTP id i14mr21073963qtv.25.1616997326394;
-        Sun, 28 Mar 2021 22:55:26 -0700 (PDT)
-Received: from Gentoo ([156.146.37.195])
-        by smtp.gmail.com with ESMTPSA id f9sm10448869qto.46.2021.03.28.22.55.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 22:55:25 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 11:25:11 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
-        dave.jiang@intel.com, dan.j.williams@intel.com,
-        rdunlap@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/30] DMA: Mundane typo fixes
-Message-ID: <YGFrvwX8QngvwPbA@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
-        dave.jiang@intel.com, dan.j.williams@intel.com,
-        rdunlap@infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1616971780.git.unixbhaskar@gmail.com>
- <20210329052910.GB26495@lst.de>
+        Mon, 29 Mar 2021 01:55:31 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78252C061574;
+        Sun, 28 Mar 2021 22:55:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F81yQ5GS5z9sRf;
+        Mon, 29 Mar 2021 16:55:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616997328;
+        bh=ssHqwp0jYzHAWbJb8XxvEzWUtgIJXXwjvOfaG7LTtOw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n53CIR8rKEvMDuYW+6+OQ0sAenTmu7jf+hyeZ2Hn4BK1ALcbwRtcrZP/2iyrxFj+0
+         wfBuMYuDSCfrXbNWkjwX8D6ukBouf77EhPDuoGeBuUgmfaqiNVvbqgxH1k/Tm4PvnL
+         JotjtNGsLcdExBzA2Yr04/+FaIcZ8alR/t2JGieT192HrdiOF4qPnTMjO9kyEYtYW6
+         L2fAn54RdCCsD/xPIlN9UQ7Ctwm4bvGSuiP0x4Vk5FrLYbIdZ0D+CMS71sip3IsxV+
+         upNrSwjDjhxzqi+HLQkgyXUxABOIp6nYiIzCN0fYKS/xckQGFngDo5w8olxEAexk3V
+         s7kKYXsdZzlQQ==
+Date:   Mon, 29 Mar 2021 16:55:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Mark Brown <broonie@kernel.org>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tomislav Denis <tomislav.denis@avl.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the staging tree
+Message-ID: <20210329165525.32d51a3a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sWMMWipitTWX5OoP"
-Content-Disposition: inline
-In-Reply-To: <20210329052910.GB26495@lst.de>
+Content-Type: multipart/signed; boundary="Sig_/gfXdZzMKzQTdW83QzkqYuyL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/gfXdZzMKzQTdW83QzkqYuyL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---sWMMWipitTWX5OoP
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Hi all,
 
-On 07:29 Mon 29 Mar 2021, Christoph Hellwig wrote:
->I really don't think these typo patchbomb are that useful.  I'm all
->for fixing typos when working with a subsystem, but I'm not sure these
->patchbombs help anything.
->
-I am sure you are holding the wrong end of the wand and grossly failing to
-understand.
+After merging the staging tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Anyway, I hope I give a heads up ...find "your way" to fix those damn
-thing...it's glaring....
+drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_read_reg':
+drivers/iio/adc/ti-ads131e08.c:180:5: error: 'struct spi_transfer' has no m=
+ember named 'delay_usecs'
+  180 |    .delay_usecs =3D st->sdecode_delay_us,
+      |     ^~~~~~~~~~~
+drivers/iio/adc/ti-ads131e08.c: In function 'ads131e08_write_reg':
+drivers/iio/adc/ti-ads131e08.c:206:5: error: 'struct spi_transfer' has no m=
+ember named 'delay_usecs'
+  206 |    .delay_usecs =3D st->sdecode_delay_us,
+      |     ^~~~~~~~~~~
 
->On Mon, Mar 29, 2021 at 05:22:56AM +0530, Bhaskar Chowdhury wrote:
->> This patch series fixes some trivial and rudimentary spellings in the COMMENT
->> sections.
->>
->> Bhaskar Chowdhury (30):
->>   acpi-dma.c: Fix couple of typos
->>   altera-msgdma.c: Couple of typos fixed
->>   amba-pl08x.c: Fixed couple of typos
->>   bcm-sba-raid.c: Few typos fixed
->>   bcm2835-dma.c: Fix a typo
->>   idma64.c: Fix couple of typos
->>   iop-adma.c: Few typos fixed
->>   mv_xor.c: Fix a typo
->>   mv_xor.h: Fixed a typo
->>   mv_xor_v2.c: Fix a typo
->>   nbpfaxi.c: Fixed a typo
->>   of-dma.c: Fixed a typo
->>   s3c24xx-dma.c: Fix a typo
->>   Revert "s3c24xx-dma.c: Fix a typo"
->>   s3c24xx-dma.c: Few typos fixed
->>   st_fdma.h: Fix couple of typos
->>   ste_dma40_ll.h: Fix a typo
->>   tegra20-apb-dma.c: Fixed a typo
->>   xgene-dma.c: Few spello fixes
->>   at_hdmac.c: Quite a few spello fixes
->>   owl-dma.c: Fix a typo
->>   at_hdmac_regs.h: Couple of typo fixes
->>   dma-jz4780.c: Fix a typo
->>   Kconfig: Change Synopsys to Synopsis
->>   ste_dma40.c: Few spello fixes
->>   dw-axi-dmac-platform.c: Few typos fixed
->>   dpaa2-qdma.c: Fix a typo
->>   usb-dmac.c: Fix a typo
->>   edma.c: Fix a typo
->>   xilinx_dma.c: Fix a typo
->>
->>  drivers/dma/Kconfig                            |  8 ++++----
->>  drivers/dma/acpi-dma.c                         |  4 ++--
->>  drivers/dma/altera-msgdma.c                    |  4 ++--
->>  drivers/dma/amba-pl08x.c                       |  4 ++--
->>  drivers/dma/at_hdmac.c                         | 14 +++++++-------
->>  drivers/dma/at_hdmac_regs.h                    |  4 ++--
->>  drivers/dma/bcm-sba-raid.c                     |  8 ++++----
->>  drivers/dma/bcm2835-dma.c                      |  2 +-
->>  drivers/dma/dma-jz4780.c                       |  2 +-
->>  drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c |  8 ++++----
->>  drivers/dma/idma64.c                           |  4 ++--
->>  drivers/dma/iop-adma.c                         |  6 +++---
->>  drivers/dma/mv_xor.c                           |  2 +-
->>  drivers/dma/mv_xor.h                           |  2 +-
->>  drivers/dma/mv_xor_v2.c                        |  2 +-
->>  drivers/dma/nbpfaxi.c                          |  2 +-
->>  drivers/dma/of-dma.c                           |  2 +-
->>  drivers/dma/owl-dma.c                          |  2 +-
->>  drivers/dma/s3c24xx-dma.c                      |  6 +++---
->>  drivers/dma/sh/shdmac.c                        |  2 +-
->>  drivers/dma/sh/usb-dmac.c                      |  2 +-
->>  drivers/dma/st_fdma.h                          |  4 ++--
->>  drivers/dma/ste_dma40.c                        | 10 +++++-----
->>  drivers/dma/ste_dma40_ll.h                     |  2 +-
->>  drivers/dma/tegra20-apb-dma.c                  |  2 +-
->>  drivers/dma/ti/edma.c                          |  2 +-
->>  drivers/dma/xgene-dma.c                        |  6 +++---
->>  drivers/dma/xilinx/xilinx_dma.c                |  2 +-
->>  28 files changed, 59 insertions(+), 59 deletions(-)
->>
->> --
->> 2.26.3
->---end quoted text---
+Caused by commit
 
---sWMMWipitTWX5OoP
-Content-Type: application/pgp-signature; name="signature.asc"
+  d935eddd2799 ("iio: adc: Add driver for Texas Instruments ADS131E0x ADC f=
+amily")
+
+interacting with commit
+
+  3ab1cce55337 ("spi: core: remove 'delay_usecs' field from spi_transfer")
+
+from the spi tree.
+
+I have applied the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 29 Mar 2021 16:51:22 +1100
+Subject: [PATCH] iio: adc: merge fix for "spi: core: remove 'delay_usecs'
+ field from spi_transfer"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/iio/adc/ti-ads131e08.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/adc/ti-ads131e08.c b/drivers/iio/adc/ti-ads131e08.c
+index 0060d5f0abb0..764dab087b41 100644
+--- a/drivers/iio/adc/ti-ads131e08.c
++++ b/drivers/iio/adc/ti-ads131e08.c
+@@ -177,7 +177,10 @@ static int ads131e08_read_reg(struct ads131e08_state *=
+st, u8 reg)
+ 		{
+ 			.tx_buf =3D &st->tx_buf,
+ 			.len =3D 2,
+-			.delay_usecs =3D st->sdecode_delay_us,
++			.delay =3D {
++				.value =3D st->sdecode_delay_us,
++				.unit =3D SPI_DELAY_UNIT_USECS,
++			},
+ 		}, {
+ 			.rx_buf =3D &st->rx_buf,
+ 			.len =3D 1,
+@@ -203,7 +206,10 @@ static int ads131e08_write_reg(struct ads131e08_state =
+*st, u8 reg, u8 value)
+ 		{
+ 			.tx_buf =3D &st->tx_buf,
+ 			.len =3D 3,
+-			.delay_usecs =3D st->sdecode_delay_us,
++			.delay =3D {
++				.value =3D st->sdecode_delay_us,
++				.unit =3D SPI_DELAY_UNIT_USECS,
++			},
+ 		}
+ 	};
+=20
+--=20
+2.30.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gfXdZzMKzQTdW83QzkqYuyL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBha78ACgkQsjqdtxFL
-KRU5tAgAr1C5zvxnwKv4KhR9L2TClLDXSTaUY3OV1okoqlPp80479+s9NxY1Mdfb
-/dcKAncDa4LJOBe3vtl6RUzicAL+qMybaswSz7tR+hJjZRreWTpKOpeb/4CVZ2oS
-4MHOO6L8fKBFSQtnFKWj0MeNdZzoi+EIxEUKEu3IVZ8LY3Du4rLiiCElBKkxabcV
-v/N/kB9dvtqfHpGvire1GfBXJJGdWfWazs0+72IN4OSQacYtAcjgwALObuOP2Zmc
-hwsQgJQHEoKr2U1dmFaHlOvnU+qNmOmci4hkdVeF5sD7gFFomwXA3xW9USoMo9W1
-1cnEvFduJrGuL/e8jV3xI7KwNQVoUg==
-=XlPQ
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBha80ACgkQAVBC80lX
+0GwDzAf5AXnUHssuIz730WHkg4wjQLKpbGeUxZfnnUk56mLnFSNN5XUb7/Y7f3Qo
+h0Un8B55Dn67yPbE1g0b6iHSNZMpwY4CGI2tykI2xoJTMJwK1xlJznCtKp5/BJBH
+TlOVFxX0XORRIqA1WFBsqxbx7aK6EaPjEP0WEIFWu4dtWLjBe8IU92V1C22aKqug
+KuOeKNNKXtrTYLxGlHJv2U8RVGfHX5MDDdCnaW+GPYi4vWBE3NfNd5X10iDC4PQH
+gHXapHdGmfn9d8bvQUs/bfiPcLYMEH1mqlpfzqK24QFJIM5KJW2CNQJU15d7j5W2
+79JlfovnEgi+qpQNc9kl/5X1ZkXSng==
+=vbrZ
 -----END PGP SIGNATURE-----
 
---sWMMWipitTWX5OoP--
+--Sig_/gfXdZzMKzQTdW83QzkqYuyL--
