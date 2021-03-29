@@ -2,242 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE9834D83A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D7D34D844
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhC2T3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:29:04 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:37390 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhC2T2v (ORCPT
+        id S231873AbhC2T3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231872AbhC2T3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:28:51 -0400
-Received: by mail-io1-f46.google.com with SMTP id b10so13947829iot.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:28:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JfcydJJK9Ew4x9wRFFfjvaaCN7zavPvpQW41uS4gYZw=;
-        b=I4CAUz7q/SUpXkdJRQypSOAlIlmWcXaMJQuwgGRcHg7dxwYvirTeKn1Mt1j86equDN
-         bRcVUXUsDnxAbozxEe2mIM5tvKJLHvKggynodkc3819mLQssUOKYhQo/dS7fxAoUCv+G
-         +cl8yaVAq4b5zbzXbX/6OG9wooVOvFAO6xQgOw/3ydOLBR0SaFgjRtKsCc99Ouz58yXB
-         HxYVvE7fGaHM6LHpl2tqGeKLlliMQ3F+C8Z2rpHZsFHvM6uvMfl9Ew2buFinqxPSaned
-         4TVv3Yv5215VlMkRsBbGYlDkCyxr+KxszUnOaNzo28nWfSGrVq/5SvEZRVTQd1l42SsO
-         tAwQ==
-X-Gm-Message-State: AOAM533qGTy/AVATBJAjoAXwBVCcTuRjEU3zVomPxsmZRLt1FJuna4Bp
-        B3oLhwof1gdpx/Zdd1k2yq6eFOHeMKw=
-X-Google-Smtp-Source: ABdhPJz8qS1XzwjPdX+HKCCi80RmU3mS/RnsAcbUmn0ZLOmP68wN6IhinRywSgLpqZ3AO9v+eZPabg==
-X-Received: by 2002:a6b:7010:: with SMTP id l16mr20462854ioc.96.1617046130694;
-        Mon, 29 Mar 2021 12:28:50 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id h2sm9739557ioj.30.2021.03.29.12.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:28:50 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 19:28:49 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rfc 1/4] percpu: implement partial chunk depopulation
-Message-ID: <YGIqcSUua1cfBijy@google.com>
-References: <20210324190626.564297-1-guro@fb.com>
- <20210324190626.564297-2-guro@fb.com>
- <YGIMdy2t1oLHDC4b@google.com>
- <YGIcgp/shX4HhXOk@carbon.dhcp.thefacebook.com>
+        Mon, 29 Mar 2021 15:29:21 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E70C061574;
+        Mon, 29 Mar 2021 12:29:20 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 005EB1F454DE
+Message-ID: <9a6ce3a1339a5967e17963f54e2148d752b43d97.camel@collabora.com>
+Subject: Re: [PATCH v7 12/13] media: hantro: IMX8M: add variant for G2/HEVC
+ codec
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Mon, 29 Mar 2021 16:29:09 -0300
+In-Reply-To: <20210329065743.11961-13-benjamin.gaignard@collabora.com>
+References: <20210329065743.11961-1-benjamin.gaignard@collabora.com>
+         <20210329065743.11961-13-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGIcgp/shX4HhXOk@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:29:22AM -0700, Roman Gushchin wrote:
-> On Mon, Mar 29, 2021 at 05:20:55PM +0000, Dennis Zhou wrote:
-> > On Wed, Mar 24, 2021 at 12:06:23PM -0700, Roman Gushchin wrote:
-> > > This patch implements partial depopulation of percpu chunks.
-> > > 
-> > > As now, a chunk can be depopulated only as a part of the final
-> > > destruction, when there are no more outstanding allocations. However
-> > > to minimize a memory waste, it might be useful to depopulate a
-> > > partially filed chunk, if a small number of outstanding allocations
-> > > prevents the chunk from being reclaimed.
-> > > 
-> > > This patch implements the following depopulation process: it scans
-> > > over the chunk pages, looks for a range of empty and populated pages
-> > > and performs the depopulation. To avoid races with new allocations,
-> > > the chunk is previously isolated. After the depopulation the chunk is
-> > > returned to the original slot (but is appended to the tail of the list
-> > > to minimize the chances of population).
-> > > 
-> > > Because the pcpu_lock is dropped while calling pcpu_depopulate_chunk(),
-> > > the chunk can be concurrently moved to a different slot. So we need
-> > > to isolate it again on each step. pcpu_alloc_mutex is held, so the
-> > > chunk can't be populated/depopulated asynchronously.
-> > > 
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > ---
-> > >  mm/percpu.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 90 insertions(+)
-> > > 
-> > > diff --git a/mm/percpu.c b/mm/percpu.c
-> > > index 6596a0a4286e..78c55c73fa28 100644
-> > > --- a/mm/percpu.c
-> > > +++ b/mm/percpu.c
-> > > @@ -2055,6 +2055,96 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
-> > >  	mutex_unlock(&pcpu_alloc_mutex);
-> > >  }
-> > >  
-> > > +/**
-> > > + * pcpu_shrink_populated - scan chunks and release unused pages to the system
-> > > + * @type: chunk type
-> > > + *
-> > > + * Scan over all chunks, find those marked with the depopulate flag and
-> > > + * try to release unused pages to the system. On every attempt clear the
-> > > + * chunk's depopulate flag to avoid wasting CPU by scanning the same
-> > > + * chunk again and again.
-> > > + */
-> > > +static void pcpu_shrink_populated(enum pcpu_chunk_type type)
-> > > +{
-> > > +	struct list_head *pcpu_slot = pcpu_chunk_list(type);
-> > > +	struct pcpu_chunk *chunk;
-> > > +	int slot, i, off, start;
-> > > +
-> > > +	spin_lock_irq(&pcpu_lock);
-> > > +	for (slot = pcpu_nr_slots - 1; slot >= 0; slot--) {
-> > > +restart:
-> > > +		list_for_each_entry(chunk, &pcpu_slot[slot], list) {
-> > > +			bool isolated = false;
-> > > +
-> > > +			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH)
-> > > +				break;
-> > > +
-> > 
-> > Deallocation makes me a little worried for the atomic case as now we
-> > could in theory pathologically scan deallocated chunks before finding a
-> > populated one.
-> > 
-> > I wonder if we should do something like once a chunk gets depopulated,
-> > it gets deprioritized and then only once we exhaust looking through
-> > allocated chunks we then find a depopulated chunk and add it back into
-> > the rotation. Possibly just add another set of slots? I guess it adds a
-> > few dimensions to pcpu_slots after the memcg change.
+On Mon, 2021-03-29 at 08:57 +0200, Benjamin Gaignard wrote:
+> Add variant to IMX8M to enable G2/HEVC codec.
+> Define the capabilities for the hardware up to 3840x2160.
+> G2 doesn't have postprocessor, use the same clocks and got it
+> own interruption.
 > 
-> Please, take a look at patch 3 in the series ("percpu: on demand chunk depopulation").
-> Chunks considered to be a good target for the depopulation are in advance
-> marked with a special flag, so we'll actually try to depopulate only
-> few chunks at once. While the total number of chunks is fairly low,
-> I think it should work.
-> 
-> Another option is to link all such chunks into a list and scan over it,
-> instead of iterating over all slots.
-> 
-> Adding new dimensions to pcpu_slots is an option too, but I hope we can avoid
-> this, as it would complicate the code.
-> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Yeah, depopulation has been on the todo list for a while. It adds the
-dimension/opportunity of bin packing by sidelining chunks and I'm
-wondering if that is the right thing to do.
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-Do you have a rough idea of the distribution of # of chunks you're
-seeing?
+> ---
+> version 7:
+>  - Add Philipp Reviewed-by tag.
+> 
+> version 5:
+>  - remove useless postproc fields for G2
+> 
+> version 2:
+> - remove useless clocks
+> 
+>  drivers/staging/media/hantro/hantro_drv.c   |  1 +
+>  drivers/staging/media/hantro/hantro_hw.h    |  1 +
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c | 76 ++++++++++++++++++++-
+>  3 files changed, 76 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 33b8bd38eac1..ed380a8bef93 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -574,6 +574,7 @@ static const struct of_device_id of_hantro_match[] = {
+>  #endif
+>  #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+>         { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> +       { .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
+>  #endif
+>         { /* sentinel */ }
+>  };
+> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> index 5788188aae50..b4e7490bbe45 100644
+> --- a/drivers/staging/media/hantro/hantro_hw.h
+> +++ b/drivers/staging/media/hantro/hantro_hw.h
+> @@ -193,6 +193,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+>  extern const struct hantro_variant rk3328_vpu_variant;
+>  extern const struct hantro_variant rk3288_vpu_variant;
+>  extern const struct hantro_variant imx8mq_vpu_variant;
+> +extern const struct hantro_variant imx8mq_vpu_g2_variant;
+>  
+>  extern const struct hantro_postproc_regs hantro_g1_postproc_regs;
+>  
+> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> index 8d0c3425234b..6de43e0edc36 100644
+> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> @@ -12,6 +12,7 @@
+>  #include "hantro.h"
+>  #include "hantro_jpeg.h"
+>  #include "hantro_g1_regs.h"
+> +#include "hantro_g2_regs.h"
+>  
+>  #define CTRL_SOFT_RESET                0x00
+>  #define RESET_G1               BIT(1)
+> @@ -129,6 +130,26 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
+>         },
+>  };
+>  
+> +static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_NV12,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_HEVC_SLICE,
+> +               .codec_mode = HANTRO_MODE_HEVC_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 3840,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 2160,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +};
+> +
+>  static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>  {
+>         struct hantro_dev *vpu = dev_id;
+> @@ -147,6 +168,24 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>         return IRQ_HANDLED;
+>  }
+>  
+> +static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
+> +{
+> +       struct hantro_dev *vpu = dev_id;
+> +       enum vb2_buffer_state state;
+> +       u32 status;
+> +
+> +       status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
+> +       state = (status & HEVC_REG_INTERRUPT_DEC_RDY_INT) ?
+> +                VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+> +
+> +       vdpu_write(vpu, 0, HEVC_REG_INTERRUPT);
+> +       vdpu_write(vpu, HEVC_REG_CONFIG_DEC_CLK_GATE_E, HEVC_REG_CONFIG);
+> +
+> +       hantro_irq_done(vpu, state);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+>  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
+>  {
+>         struct device_node *np = vpu->dev->of_node;
+> @@ -176,6 +215,13 @@ static void imx8m_vpu_g1_reset(struct hantro_ctx *ctx)
+>         imx8m_soft_reset(vpu, RESET_G1);
+>  }
+>  
+> +static void imx8m_vpu_g2_reset(struct hantro_ctx *ctx)
+> +{
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       imx8m_soft_reset(vpu, RESET_G2);
+> +}
+> +
+>  /*
+>   * Supported codec ops.
+>   */
+> @@ -201,16 +247,28 @@ static const struct hantro_codec_ops imx8mq_vpu_codec_ops[] = {
+>         },
+>  };
+>  
+> +static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
+> +       [HANTRO_MODE_HEVC_DEC] = {
+> +               .run = hantro_g2_hevc_dec_run,
+> +               .reset = imx8m_vpu_g2_reset,
+> +               .init = hantro_hevc_dec_init,
+> +               .exit = hantro_hevc_dec_exit,
+> +       },
+> +};
+> +
+>  /*
+>   * VPU variants.
+>   */
+>  
+>  static const struct hantro_irq imx8mq_irqs[] = {
+>         { "g1", imx8m_vpu_g1_irq },
+> -       { "g2", NULL /* TODO: imx8m_vpu_g2_irq */ },
+>  };
+>  
+> -static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
+> +static const struct hantro_irq imx8mq_g2_irqs[] = {
+> +       { "g2", imx8m_vpu_g2_irq },
+> +};
+> +
+> +static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus"};
+>  
+>  const struct hantro_variant imx8mq_vpu_variant = {
+>         .dec_fmts = imx8m_vpu_dec_fmts,
+> @@ -228,3 +286,17 @@ const struct hantro_variant imx8mq_vpu_variant = {
+>         .clk_names = imx8mq_clk_names,
+>         .num_clocks = ARRAY_SIZE(imx8mq_clk_names),
+>  };
+> +
+> +const struct hantro_variant imx8mq_vpu_g2_variant = {
+> +       .dec_offset = 0x0,
+> +       .dec_fmts = imx8m_vpu_g2_dec_fmts,
+> +       .num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
+> +       .codec = HANTRO_HEVC_DECODER,
+> +       .codec_ops = imx8mq_vpu_g2_codec_ops,
+> +       .init = imx8mq_vpu_hw_init,
+> +       .runtime_resume = imx8mq_runtime_resume,
+> +       .irqs = imx8mq_g2_irqs,
+> +       .num_irqs = ARRAY_SIZE(imx8mq_g2_irqs),
+> +       .clk_names = imx8mq_clk_names,
+> +       .num_clocks = ARRAY_SIZE(imx8mq_clk_names),
+> +};
 
-> > 
-> > > +			for (i = 0, start = -1; i < chunk->nr_pages; i++) {
-> > > +				if (!chunk->nr_empty_pop_pages)
-> > > +					break;
-> > > +
-> > > +				/*
-> > > +				 * If the page is empty and populated, start or
-> > > +				 * extend the [start, i) range.
-> > > +				 */
-> > > +				if (test_bit(i, chunk->populated)) {
-> > > +					off = find_first_bit(
-> > > +						pcpu_index_alloc_map(chunk, i),
-> > > +						PCPU_BITMAP_BLOCK_BITS);
-> > > +					if (off >= PCPU_BITMAP_BLOCK_BITS) {
-> > > +						if (start == -1)
-> > > +							start = i;
-> > > +						continue;
-> > > +					}
-> > 
-> > Here instead of looking at the alloc_map, you can look at the
-> > pcpu_block_md and look for a fully free contig_hint.
-> 
-> Good idea, will try in v2.
-> 
-> > 
-> > > +				}
-> > > +
-> > > +				/*
-> > > +				 * Otherwise check if there is an active range,
-> > > +				 * and if yes, depopulate it.
-> > > +				 */
-> > > +				if (start == -1)
-> > > +					continue;
-> > > +
-> > > +				/*
-> > > +				 * Isolate the chunk, so new allocations
-> > > +				 * wouldn't be served using this chunk.
-> > > +				 * Async releases can still happen.
-> > > +				 */
-> > > +				if (!list_empty(&chunk->list)) {
-> > > +					list_del_init(&chunk->list);
-> > > +					isolated = true;
-> > 
-> > Maybe when freeing a chunk, we should consider just isolating it period
-> > and preventing pcpu_free_area() from being able to add the chunk back
-> > to a pcpu_slot.
-> 
-> You mean to add a check in pcpu_free_area() if the chunks is isolated?
-> Yeah, sounds good to me, will do in v2.
-> 
 
-Could also be done in pcpu_chunk_relocate() so it's clear an isolated
-chunk shouldn't be moved. But I think pcpu_free_area() should be the
-only way the chunk can be moved on the list.
-
-> Thank you!
-> 
-> > 
-> > > +				}
-> > > +
-> > > +				spin_unlock_irq(&pcpu_lock);
-> > > +				pcpu_depopulate_chunk(chunk, start, i);
-> > > +				cond_resched();
-> > > +				spin_lock_irq(&pcpu_lock);
-> > > +
-> > > +				pcpu_chunk_depopulated(chunk, start, i);
-> > > +
-> > > +				/*
-> > > +				 * Reset the range and continue.
-> > > +				 */
-> > > +				start = -1;
-> > > +			}
-> > > +
-> > > +			if (isolated) {
-> > > +				/*
-> > > +				 * The chunk could have been moved while
-> > > +				 * pcpu_lock wasn't held. Make sure we put
-> > > +				 * the chunk back into the slot and restart
-> > > +				 * the scanning.
-> > > +				 */
-> > > +				if (list_empty(&chunk->list))
-> > > +					list_add_tail(&chunk->list,
-> > > +						      &pcpu_slot[slot]);
-> > > +				goto restart;
-> > > +			}
-> > > +		}
-> > > +	}
-> > > +	spin_unlock_irq(&pcpu_lock);
-> > > +}
-> > > +
-> > >  /**
-> > >   * pcpu_balance_workfn - manage the amount of free chunks and populated pages
-> > >   * @work: unused
-> > > -- 
-> > > 2.30.2
-> > > 
