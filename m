@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEC234CA51
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0158D34C5BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhC2Igm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39270 "EHLO mail.kernel.org"
+        id S231464AbhC2ICt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233778AbhC2IWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:22:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCE276044F;
-        Mon, 29 Mar 2021 08:22:24 +0000 (UTC)
+        id S231770AbhC2IBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAAAE6196F;
+        Mon, 29 Mar 2021 08:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006145;
-        bh=UEQoMXZ6WL4a5lcnMnICIkdCGCryPENNnGQhxaMdqrs=;
+        s=korg; t=1617004906;
+        bh=z6fjfAWkHbVDLjL2M6xlYkNM70LTzfCTKgvyHQgM7V0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orrk2BT88LizM5aQe7WTw9sDE1KIt+1Vedlj/F8mgKK64bhAssE+3Mmx0e+0X63Nq
-         3gp/MW3vKnmVxD2YmRXIsNyv98AYULeV74TSWBuamVNmkG0aPZlKjSoUmSyq8iQJ79
-         TTFEl4k1npZ1ckywEBDZg1zNO6oBXVlJkSUTyX2s=
+        b=qTouTXQkrqVryERUycDBT3BraO1e5I0o6Q8zLU2oat+8SDJ0rGgVh+0xJA2jJHeyE
+         iMzrJ/vuUMWGSD+QhQ4RVUJSu3xR9FFJkLvNQb2yZswfSA4HdEmm0yvi36DW0Yqf3H
+         mscoea+laWaf22nlv2TQBE4QQAu5rT2ZoyAbRZ9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 133/221] mac80211: fix rate mask reset
-Date:   Mon, 29 Mar 2021 09:57:44 +0200
-Message-Id: <20210329075633.630474453@linuxfoundation.org>
+Subject: [PATCH 4.9 10/53] net: wan: fix error return code of uhdlc_init()
+Date:   Mon, 29 Mar 2021 09:57:45 +0200
+Message-Id: <20210329075607.892185921@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+[ Upstream commit 62765d39553cfd1ad340124fe1e280450e8c89e2 ]
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+When priv->rx_skbuff or priv->tx_skbuff is NULL, no error return code of
+uhdlc_init() is assigned.
+To fix this bug, ret is assigned with -ENOMEM in these cases.
 
-Change the comparison accordingly.
-
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
-
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wan/fsl_ucc_hdlc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 7276e66ae435..2bf6271d9e3f 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2961,14 +2961,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
+diff --git a/drivers/net/wan/fsl_ucc_hdlc.c b/drivers/net/wan/fsl_ucc_hdlc.c
+index 87bf05a81db5..fc7d28edee07 100644
+--- a/drivers/net/wan/fsl_ucc_hdlc.c
++++ b/drivers/net/wan/fsl_ucc_hdlc.c
+@@ -169,13 +169,17 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
  
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
+ 	priv->rx_skbuff = kzalloc(priv->rx_ring_size * sizeof(*priv->rx_skbuff),
+ 				  GFP_KERNEL);
+-	if (!priv->rx_skbuff)
++	if (!priv->rx_skbuff) {
++		ret = -ENOMEM;
+ 		goto free_ucc_pram;
++	}
  
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
+ 	priv->tx_skbuff = kzalloc(priv->tx_ring_size * sizeof(*priv->tx_skbuff),
+ 				  GFP_KERNEL);
+-	if (!priv->tx_skbuff)
++	if (!priv->tx_skbuff) {
++		ret = -ENOMEM;
+ 		goto free_rx_skbuff;
++	}
+ 
+ 	priv->skb_curtx = 0;
+ 	priv->skb_dirtytx = 0;
 -- 
 2.30.1
 
