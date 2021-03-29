@@ -2,134 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC4634D5CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2931D34D5CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhC2RMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:12:21 -0400
-Received: from mail.pqgruber.com ([52.59.78.55]:57278 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhC2RL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:11:56 -0400
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id CB191C729F1;
-        Mon, 29 Mar 2021 19:11:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617037915;
-        bh=Szu94hAh+X9JbhCN33k24NYs+V2mdbKnJBSTA0PXUpk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SREAclvrF+bcBWaiWV2uGeGXWr2FkHmLLpdtfJkg2MvBq6s/eq8r1UqR0IS+h5D1M
-         D9i2PYWnLcbdh9HY1cb1GwXl+Nz3efae4wRebqO6qpGColSSz/sRWSAJ7nbX0afnRF
-         Ehtt2OEcdGb210kPozWAM1pP1htOxBz3NYXNhNM4=
-Date:   Mon, 29 Mar 2021 19:11:53 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <YGIKWRfT7354nkPX@workstation.tuxnet>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-2-clemens.gruber@pqgruber.com>
- <20210329165429.ookfliw4eq6zz2sg@pengutronix.de>
+        id S230495AbhC2RMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhC2RMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:12:13 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DD7C061574;
+        Mon, 29 Mar 2021 10:12:13 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x13so13604741wrs.9;
+        Mon, 29 Mar 2021 10:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rqpj3tJ8Hp0uec22wW3HCaakBv7Gn530wlfuwOnGxhw=;
+        b=svjoxxu8FXf762k81J7JdAXqRNI+vJYzDQsRHhKReveRENd5hA/nL4sxdOCM8Tpw2b
+         jms8DR+rMzQA+E8eHeSxAVD3gBLZ0fmbX/nOvEs+yhJ9Cd7NHwaNkZp+6OMruZL7M3nM
+         14EtQNaq1ZeRqx4VQSZFvbGHGPL3ZCJLyZudwVwVvev+WX/qHbvM6oZ7IFuRyCWjne47
+         tFZWU54daMIHV/6GmTa5DpzB0aa2HZj6beq9z4vBy8FmPAR6LWLmL1RW32gmhrG/1E77
+         bmiftc2mdowy7poAXlHwHXUi+hKWTLswhIfff4RDuRi+cqB8Ur8iKbAaEVKicuXnjvJh
+         uddQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rqpj3tJ8Hp0uec22wW3HCaakBv7Gn530wlfuwOnGxhw=;
+        b=A652Xc2khtIH0YMmDxHFKjMW+V9Pxv96WwGd8MXflRz2XxAo+EZA9nxNCLvm9G44EM
+         goCIl80rFeQGH6zaW2X7wrYNSgp788fx05em5RDRpRIymPfRS3jBMOzOHvTCEkX72qqK
+         zy1Qm4bIRzarw66uv/G5IPmHfvBBMSfVA/iJ5y34XyxBGiVZcuvy7bys8uJBFGlnFCCO
+         pYFXeJPvYLk/S+96TjDLRHdbWxfeRLQmzd2MWuBE0dpVLCXL2s28hlhlsC56xxJ0AOva
+         qeZPoeerngf0XxODXHWlGZKeZCyUwGGW5qgxPn1pCanVVV7Xb0leVtWF4mFIcex6QGSL
+         TB9Q==
+X-Gm-Message-State: AOAM533euQoBZHrztUTQtFpXRETS4+BQ4uFZ5qipeWUiiHAs+2AK0lQw
+        AQKM0oO9vylG3OyPEUOsXAg=
+X-Google-Smtp-Source: ABdhPJwutr/FGR0+TNlVNDBj+Z8mVQFMNgwXhcRLsKhhcyvZ+gR2gDLvdYZOR88VUK8ix8W0Ot/K+g==
+X-Received: by 2002:a05:6000:137b:: with SMTP id q27mr30057996wrz.168.1617037932014;
+        Mon, 29 Mar 2021 10:12:12 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id g11sm30636553wrw.89.2021.03.29.10.12.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 10:12:11 -0700 (PDT)
+Subject: Re: [v7,2/3] arm64: dts: mt8183: Configure CPU cooling
+To:     Michael Kao <michael.kao@mediatek.com>, fan.chen@mediatek.com,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Kaehlcke <mka@chromium.org>
+References: <20210316070144.28440-1-michael.kao@mediatek.com>
+ <20210316070144.28440-3-michael.kao@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <25e4c77d-7548-a135-3f94-4f6224de1f91@gmail.com>
+Date:   Mon, 29 Mar 2021 19:12:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210316070144.28440-3-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210329165429.ookfliw4eq6zz2sg@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 06:54:29PM +0200, Uwe Kleine-K�nig wrote:
-> On Mon, Mar 29, 2021 at 02:57:02PM +0200, Clemens Gruber wrote:
-> > Implements .get_state to read-out the current hardware state.
-> > 
-> > The hardware readout may return slightly different values than those
-> > that were set in apply due to the limited range of possible prescale and
-> > counter register values.
-> > 
-> > Also note that although the datasheet mentions 200 Hz as default
-> > frequency when using the internal 25 MHz oscillator, the calculated
-> > period from the default prescaler register setting of 30 is 5079040ns.
-> > 
-> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > ---
-> >  drivers/pwm/pwm-pca9685.c | 41 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
-> > 
-> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > index 0ed1013737e3..fb026a25fb61 100644
-> > --- a/drivers/pwm/pwm-pca9685.c
-> > +++ b/drivers/pwm/pwm-pca9685.c
-> > @@ -333,6 +333,46 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> >  	return 0;
-> >  }
-> >  
-> > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +				  struct pwm_state *state)
-> > +{
-> > +	struct pca9685 *pca = to_pca(chip);
-> > +	unsigned long long duty;
-> > +	unsigned int val = 0;
-> > +
-> > +	/* Calculate (chip-wide) period from prescale value */
-> > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > +	state->period = (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
-> > +			(val + 1);
+
+
+On 16/03/2021 08:01, Michael Kao wrote:
+> From: Matthias Kaehlcke <mka@chromium.org>
 > 
-> As we have PCA9685_OSC_CLOCK_MHZ = 25 this is an integer calculation
-> without loss of precision. It might be worth to point that out in a
-> comment. (Otherwise doing the division at the end might be more
-> sensible.)
-
-What comment do you have in mind?
-/* 1 integer multiplication (without loss of precision) at runtime */ ?
-
+> Add two passive trip points at 68°C and 80°C for the CPU temperature.
 > 
-> > +	/* The (per-channel) polarity is fixed */
-> > +	state->polarity = PWM_POLARITY_NORMAL;
-> > +
-> > +	if (pwm->hwpwm >= PCA9685_MAXCHAN) {
-> > +		/*
-> > +		 * The "all LEDs" channel does not support HW readout
-> > +		 * Return 0 and disabled for backwards compatibility
-> > +		 */
-> > +		state->duty_cycle = 0;
-> > +		state->enabled = false;
-> > +		return;
-> > +	}
-> > +
-> > +	duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > +
-> > +	state->enabled = !!duty;
-> > +	if (!state->enabled) {
-> > +		state->duty_cycle = 0;
-> > +		return;
-> > +	} else if (duty == PCA9685_COUNTER_RANGE) {
-> > +		state->duty_cycle = state->period;
-> > +		return;
-> > +	}
-> > +
-> > +	duty *= state->period;
-> > +	state->duty_cycle = duty / PCA9685_COUNTER_RANGE;
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Applied to v5.12-next/dts64
+
+Thanks.
+Matthias
+
+
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 56 ++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
 > 
-> .apply uses ROUND_CLOSEST to calculate duty from state->duty_cycle,
-> still using / here (instead of ROUND_CLOSEST), but again as
-> PCA9685_OSC_CLOCK_MHZ is 25 this calculation doesn't suffer from
-> rounding errors. So if you feed the state returned here into .apply
-> again, there is (as I want it) no change.
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index d3550af06408..1ad0a1d55d53 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -13,6 +13,7 @@
+>  #include <dt-bindings/power/mt8183-power.h>
+>  #include <dt-bindings/reset-controller/mt8183-resets.h>
+>  #include <dt-bindings/phy/phy.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  #include "mt8183-pinfunc.h"
+>  
+>  / {
+> @@ -678,6 +679,61 @@
+>  				polling-delay = <500>;
+>  				thermal-sensors = <&thermal 0>;
+>  				sustainable-power = <5000>;
+> +
+> +				trips {
+> +					threshold: trip-point@0 {
+> +						temperature = <68000>;
+> +						hysteresis = <2000>;
+> +						type = "passive";
+> +					};
+> +
+> +					target: trip-point@1 {
+> +						temperature = <80000>;
+> +						hysteresis = <2000>;
+> +						type = "passive";
+> +					};
+> +
+> +					cpu_crit: cpu-crit {
+> +						temperature = <115000>;
+> +						hysteresis = <2000>;
+> +						type = "critical";
+> +					};
+> +				};
+> +
+> +				cooling-maps {
+> +					map0 {
+> +						trip = <&target>;
+> +						cooling-device = <&cpu0
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu1
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu2
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu3
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>;
+> +						contribution = <3072>;
+> +					};
+> +					map1 {
+> +						trip = <&target>;
+> +						cooling-device = <&cpu4
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu5
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu6
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>,
+> +								 <&cpu7
+> +							THERMAL_NO_LIMIT
+> +							THERMAL_NO_LIMIT>;
+> +						contribution = <1024>;
+> +					};
+> +				};
+>  			};
+>  
+>  			/* The tzts1 ~ tzts6 don't need to polling */
 > 
-> The only annoyance is that if PCA9685_PRESCALE holds a value smaller
-> than 3, .apply() will fail. Not sure there is any saner way to handle
-> this.
-
-According to the datasheet, "The hardware forces a minimum value that
-can be loaded into the PRE_SCALE register at '3'", so there should never
-be anything below 3 in that register.
-
-Thanks for your review!
-
-Clemens
