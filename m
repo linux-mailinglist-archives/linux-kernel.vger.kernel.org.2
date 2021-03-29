@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FB234C5B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB8534CAFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhC2ICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43728 "EHLO mail.kernel.org"
+        id S234583AbhC2ImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231751AbhC2IBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE6B61974;
-        Mon, 29 Mar 2021 08:01:40 +0000 (UTC)
+        id S232585AbhC2IXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C519861601;
+        Mon, 29 Mar 2021 08:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004901;
-        bh=25UboA02eXndeDnz59te/9bC4cvJyc6s1kdDpTMWjFU=;
+        s=korg; t=1617006219;
+        bh=ffgBIZ4vhWgk3gTAttcgT8LCvnRUFSe9UJzLkuJnyrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B8hBlXn8dEkUHKfQbs+pj0tneYKrYdeAYTqNiaOASPoiy1u46MiU0ZeumBaKD/MEY
-         05K3/LYmKrVjH4xqrp+XlrDaopuUiprQAZL8AlbrQi4gSDyTVA5ALjddLxWWLI/l43
-         QSXkR+G7Acet9a4ggQjX/bn0NGP2Se7x8by25+9Y=
+        b=XsrIWW9yEw8BakkmDiqbct5Wvj+JPNZ5rUQXGTxq0cr5mW3cfPSDBha178k/nCUPU
+         bDULHWiOjnmrW5V3PHywo5nezlT4bv7Rq60P5m+QO6IfxXEsxb0B1Q26n/jw2yZBmP
+         rToOQiqGXSpoG2c+iBb/vdMrkJQwvoczPkwW/l4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 27/33] mac80211: fix rate mask reset
+Subject: [PATCH 5.10 161/221] selinux: vsock: Set SID for socket returned by accept()
 Date:   Mon, 29 Mar 2021 09:58:12 +0200
-Message-Id: <20210329075606.132283469@linuxfoundation.org>
+Message-Id: <20210329075634.525785073@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: David Brazdil <dbrazdil@google.com>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+[ Upstream commit 1f935e8e72ec28dddb2dc0650b3b6626a293d94b ]
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+For AF_VSOCK, accept() currently returns sockets that are unlabelled.
+Other socket families derive the child's SID from the SID of the parent
+and the SID of the incoming packet. This is typically done as the
+connected socket is placed in the queue that accept() removes from.
 
-Change the comparison accordingly.
+Reuse the existing 'security_sk_clone' hook to copy the SID from the
+parent (server) socket to the child. There is no packet SID in this
+case.
 
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
-
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/vmw_vsock/af_vsock.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 8360fda24bca..eac20f4ab924 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2448,14 +2448,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
- 
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
- 
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 791955f5e7ec..cf86c1376b1a 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -738,6 +738,7 @@ static struct sock *__vsock_create(struct net *net,
+ 		vsk->buffer_size = psk->buffer_size;
+ 		vsk->buffer_min_size = psk->buffer_min_size;
+ 		vsk->buffer_max_size = psk->buffer_max_size;
++		security_sk_clone(parent, sk);
+ 	} else {
+ 		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
+ 		vsk->owner = get_current_cred();
 -- 
 2.30.1
 
