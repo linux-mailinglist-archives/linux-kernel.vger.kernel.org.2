@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C4934C50B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90ECE34C50D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhC2Her (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:34:47 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:33992 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhC2HeT (ORCPT
+        id S231301AbhC2HgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhC2HgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:34:19 -0400
-Received: by mail-il1-f200.google.com with SMTP id c16so11282989ile.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rkx6f5eZxM8bJf3bhoFtK8wtJFTPJJFa5t60FGLf0/Q=;
-        b=Bbk0gv7IT8SuE+kkYCAvfemO47+LGeGQVflpjyaE4CJNA1dUIgSK2SX0XbR+0YymcR
-         uXwLPogOr4CMIVCnINzpi08RVjO78KJobb+msq341qoANC6OHzcG3i5xu6wGyN+tYSrR
-         c8GmzENPW5o0dFeqqgF/2Un493dImGxak7W70FYfcAitHPoTYhUmPopUo9WDMkz2vfDC
-         BOnttUvsFlHAIBbjgSXti1sfaaP9qk+AqqYPLuNunEO32O5/Mt13yyJdluTou+9iUBXf
-         t0rkAm919nMIb/g/iIZs3+X4df/bZSsl05lnqJDbNimGBjuAbmhHfLGKScexc3gLBfin
-         QTPA==
-X-Gm-Message-State: AOAM533bfxtYcRdeMZrwIryhR8CPXFsYzTPHQPlXPDb1JiuhEuk6udsg
-        c6cIXOs540l9tTf2RlRwFrGeF7/udx8ku35pLhpRp3lqOo6k
-X-Google-Smtp-Source: ABdhPJzYITpmri6/x2Ymkbatr4u8o4D5pL32ACoBzIVypQdBNjw4pvA13SQb2JFhAHLNwpjjb0JknvExUT5m3zQ5XAzWxMFfvIj0
+        Mon, 29 Mar 2021 03:36:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABA5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cP9TiUdhS95/o0i3gV2KAsK0VhJcx78QpoI3jrQSkYw=; b=DtzPiclobr22T2Iqa48D0kED37
+        4D/72lBaaoMnB/pk+N3PW/6O1/y4j01XKO4BSk/UIlQglzok2j54bRLtX9TiwNl4K8yxbkp8ZPsBH
+        iNjsAjlvS09lBtwr0dXGa00zd5WEYCW+Nq9i6PBVuELrMVgyAfg63egrQcoKWmm4RgePS56WKgBas
+        OCMpPgnNq9okIYJn77a/Zp02v2DXuYl4m7e1mcA75Dap/0+c5FjU0qfYh0ccsxoP0yGnhEvg02eDZ
+        jBfwv7u9nuPlzsCOOxiNBKCowXgkpX8cXt+ECea/xYtZPBRH5k8Xg1V5i+ou1g82Tur32hkvZv5w9
+        dVJXGluQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQmQx-001Bac-8r; Mon, 29 Mar 2021 07:35:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6E1B3060EF;
+        Mon, 29 Mar 2021 09:35:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BCDA02071899F; Mon, 29 Mar 2021 09:35:34 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 09:35:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xie XiuQi <xiexiuqi@huawei.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, joe@perches.com
+Subject: Re: [PATCH] sched,psi: fix typo in comment
+Message-ID: <YGGDRtg7cMvQcLjm@hirez.programming.kicks-ass.net>
+References: <20210327124610.7276-1-xiexiuqi@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:694b:: with SMTP id e72mr22964093jac.89.1617003258037;
- Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 00:34:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cbcdca05bea7e829@google.com>
-Subject: [syzbot] WARNING: still has locks held in io_sq_thread
-From:   syzbot <syzbot+796d767eb376810256f5@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210327124610.7276-1-xiexiuqi@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Mar 27, 2021 at 08:46:10PM +0800, Xie XiuQi wrote:
+> s/exceution/execution/
+> s/possibe/possible/
+> s/manupulations/manipulations/
+> 
+> Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
 
-syzbot found the following issue on:
+Xie, if you'd have bothered to check the development tree of the code
+you're patching, you'd have found it's long since fixed.
 
-HEAD commit:    81b1d39f Merge tag '5.12-rc4-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fcce62d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d4e9addca54f3b44
-dashboard link: https://syzkaller.appspot.com/bug?extid=796d767eb376810256f5
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d06ddcd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150764bed00000
+Can we please get a MAINTAINERS entry that indicates the willingness to
+suffer nonsense like this? Then checkpatch will tell people to bugger
+off and I can stop blacklisting people on this.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+796d767eb376810256f5@syzkaller.appspotmail.com
-
-====================================
-WARNING: iou-sqp-8386/8387 still has locks held!
-5.12.0-rc4-syzkaller #0 Not tainted
-------------------------------------
-1 lock held by iou-sqp-8386/8387:
- #0: ffff88801e1d2470 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread+0x24c/0x13a0 fs/io_uring.c:6731
-
-stack backtrace:
-CPU: 1 PID: 8387 Comm: iou-sqp-8386 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- try_to_freeze include/linux/freezer.h:66 [inline]
- get_signal+0x171a/0x2150 kernel/signal.c:2576
- io_sq_thread+0x8d2/0x13a0 fs/io_uring.c:6748
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I'm getting sick and tired of people wasting bandwidth with this
+nonsense.
