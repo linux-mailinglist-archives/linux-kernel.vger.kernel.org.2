@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84EB34D29D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5104634D2A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhC2OmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhC2OmT (ORCPT
+        id S231192AbhC2OoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:44:00 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:38029 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhC2Ona (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:42:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7B4C061574;
-        Mon, 29 Mar 2021 07:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vm5zEBeCPjD/iTb+A5QL77YLz7/wSFqZ0VuA9U9AgEM=; b=kT2Fd56bQGmbq/1CmBtaGTGHVG
-        e2KkNwqoWY0Y/4v5WBRDuuO6zozf1tbLLntGEsGcgeKVozhxzToJX2mVndhVSa0a58LeYqtbPWtN0
-        DdpHSXCo8Jea3ZRN9GEX+xTWg/7xCmvioG9rldxACMgP5V1Erxiddj6WCOggYR+adw6koqOLYbqyc
-        3qQ6f5+jiU2njHRjZkAT6L+rUhKiAHqgVwB3m9uJmkWPPMSH6HovlmoHHvnKmS8CPamLxa+BTDxE5
-        v3e0xmwKJugkN7UiiLfMqsKTkBhMtI7Zg0d/WiODJJk2HrapVdktQC7riVD8xax+ZLVjMe9hF5y16
-        v4OMmQYA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQt5g-001hhO-K7; Mon, 29 Mar 2021 14:42:09 +0000
-Date:   Mon, 29 Mar 2021 15:42:04 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-Message-ID: <20210329144204.GF351017@casper.infradead.org>
-References: <20210325184615.08526aed@coco.lan>
- <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
- <87tuozyslu.fsf@meer.lwn.net>
- <20210325191435.GZ1719932@casper.infradead.org>
- <87a6qrx7wf.fsf@meer.lwn.net>
- <20210325221437.GA1719932@casper.infradead.org>
- <87wntux3w7.fsf@meer.lwn.net>
+        Mon, 29 Mar 2021 10:43:30 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M2ON6-1lUjvz0RAs-003uUs; Mon, 29 Mar 2021 16:43:29 +0200
+Received: by mail-ot1-f53.google.com with SMTP id l12-20020a9d6a8c0000b0290238e0f9f0d8so12487477otq.8;
+        Mon, 29 Mar 2021 07:43:28 -0700 (PDT)
+X-Gm-Message-State: AOAM532uvMY8EljE21lapH2/7LldKK6uwegznfqCJeFfRcOsqfIrfai9
+        nYs6gxwuHOntfqhAMfwla034NbfxCcMuZ0SnAzc=
+X-Google-Smtp-Source: ABdhPJwDfuQ1VWw4ZjwyDlIbIK6oWZGKKq9pe4zrUVJQjeo5yIF0hBfXTzB1YBAQ6P/q5VRxHXE0N4eyuriJEuvTPrk=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr23284514otq.305.1617029007643;
+ Mon, 29 Mar 2021 07:43:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wntux3w7.fsf@meer.lwn.net>
+References: <20210319161956.2838291-2-boqun.feng@gmail.com>
+ <20210319211246.GA250618@bjorn-Precision-5520> <CAK8P3a3qj=9KEN=X2uGCq0TrOGpyPw1Gwipmn=Gqx4LAfqUEDQ@mail.gmail.com>
+ <CAK8P3a07wedojBU6xDKotiOsPR8k2XEXMB1SvJSRpeG++URA5Q@mail.gmail.com> <YGHlA2pXHgyu13T0@boqun-archlinux>
+In-Reply-To: <YGHlA2pXHgyu13T0@boqun-archlinux>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 29 Mar 2021 16:43:13 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3rgu-zU=Ef_Dnmm-kB2rjb4JfRhvCmnLTH6R_ZZ6kHSQ@mail.gmail.com>
+Message-ID: <CAK8P3a3rgu-zU=Ef_Dnmm-kB2rjb4JfRhvCmnLTH6R_ZZ6kHSQ@mail.gmail.com>
+Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:5A1A5wrK/okZsusFyhca8SHl4IQCUEcTfSjTlpUyjej6pwhKNdW
+ 10cCfNwEWX+2gmOsqZ+ZWZH+wLOHyVUYJA2ptiRcd/t8OHMCZJVA4i9yTQd+ORhZu2PtBf4
+ c8x6bubymkTOv9onnJRCLvN++3Be2SaZdJuNptsazTeMADVeC2qUw/RDR9EW7wwu/7ZLSql
+ ojQTY/3BT252KJfULtJoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RzqnA1thXO4=:JHt4+LllJsEHbMzrL3GfDF
+ bePDhE8ExdJwsmOwGZHfVsjIVnNAHmnWJ7S0A9M/d1wU6si2AQAmg0fC6m+7rw6DeVC3PYLgt
+ 7WwZ07VAT+iOrQw7qF9lNcYY1g7GbERwYa6F0H4jBFA1qUYp0Kxim7EERZbtlbDT17HhMxWbN
+ D/CJXXOyjUcm1iOkFhdFWBx9UIbCg6wGUPEhAJI4Xciqu8TNyYaVn7t0iVdv6fT8V8nPl7vzA
+ eZwiX6dSHq5oK+r2hIqnSg1SctYWylRvkOtK2li1dcfPbalau3SHAwBg4cvIJi/Gyjvt4YVGT
+ Jh5txkvy0REN71UTmaM/likkGjFjWDklL9DcB4V+Oa9R0vTfis+0JQ87eVSfX3bkcERNZnKHW
+ yJIZE68XrY43sKoMrou++WpyTJAovvbnaAdYbaJTZsXKhiwQVTL8yoelj7REIK+4GW739aagK
+ ALU0xS9IBcRaDPn6zr2wi6NHnlO3Dota2gx/bZ26T1t+fOOiyIDP3BvxHyupJwVY67gYt4uDc
+ uwnDORgMgB951vzAtQ/JdXCOwzfsUhHBD47PxcYWWqtf0TEV/mRDKrsvyHMKHpYWKiWLiUHs3
+ S6OO+6Nj7O0aGn5IxJv7mKjNGPek3Tjym9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 04:30:32PM -0600, Jonathan Corbet wrote:
-> Matthew Wilcox <willy@infradead.org> writes:
-> 
-> > The rust code is alredy coming though ...
+On Mon, Mar 29, 2021 at 4:32 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> Hi Arnd,
+>
+> On Sat, Mar 20, 2021 at 05:09:10PM +0100, Arnd Bergmann wrote:
+> > On Sat, Mar 20, 2021 at 1:54 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > >      I actually still have a (not really tested) patch series to clean up
+> > > the pci host bridge registration, and this should make this a lot easier
+> > > to add on top.
+> > >
+> > > I should dig that out of my backlog and post for review.
 > >
-> > rust/kernel/buffer.rs:/// A pre-allocated buffer that implements [`core::fmt::Write`].
+> > I've uploaded my series to
+> > https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git
+> > pci-probe-rework-20210320
 > >
-> > so now we have three formats.  Markdown and RST are _very_ similar, but
-> > not identical [1].  Oh, and even better we now have three distinct tools --
-> > kerneldoc, rustdoc and sphinx.  Have the rust people reached out to you
-> > about integrating the various docs?
-> 
-> I have talked with them a bit, yes, but without any clear conclusions at
-> this point.  The Rust world has its own way of doing things with regard
-> to documentation, and I don't want to tell them they can't use it in the
-> kernel context.  So I think there's going to be a certain amount of
-> groping around for the best solution.
-> 
-> We did come to the mutual agreement that teaching kernel-doc to parse
-> Rust code as well was not an ideal solution.  Probably there will be
-> some sort of tool to translate between rustdoc and our sphinx setup.
-> Beyond that, we'll see how it goes.
+> > The purpose of this series is mostly to simplify what variations of
+> > host probe methods exist, towards using pci_host_probe() as the
+> > only method. It does provide some simplifications based on that
+> > that, including a way to universally have access to the pci_host_bridge
+> > pointer during the probe function.
+> >
+>
+> Thanks for the suggestion and code. I spend some time to catch up. Yes,
+> Bjorn and you are correct, the better way is having a 'domain_nr' in the
+> 'pci_host_bridge' and making sure every driver fill that correctly
+> before probe. I definitly will use this approach.
+>
+> However, I may start small: I plan to introduce 'domain_nr' and only
+> fill the field at probe time for PCI_DOMAINS_GENERIC=y archs, and leave
+> other archs and driver alone. (honestly, I was shocked by the number of
+> pci_scan_root_bus_bridge() and pci_host_probe() that I need to adjust if
+> I really want to unify the 'domain_nr' handling for every arch and
+> driver ;-)). This will fulfil my requirement for Hyper-V PCI controller
+> on ARM64. And later on, we can switch each arch to this approach one by
+> one and keep the rest still working.
+>
+> Thoughts?
 
-In the spirit of groping around for the best solution, I did some looking
-around at various options, including using rustdoc for .c files (that
-uses Markdown, which appears to be strictly worse than rST for our
-purposes).
+That sounds reasonable to me, yes. I would also suggest you look
+at my hyperv patch from the branch I mentioned [1] and try to integrate
+that first. I suspect this makes it easier to do the domain rework and
+possibly other changes on top.
 
-So here's my "modest proposal":
+       Arnd
 
- - Similar to our ".. kernel-doc::" invocation in .rst files, handle
-   ".. rustdoc::" (insert weeks of hacking here)
- - Now add ".. rst-doc::" which parses .c files like [1] kernel-doc
-   does, but interprets a different style of comment and actually does
-   most of the repetitive boring bits for you.
-
-For example, xa_load:
-
-/**
- * xa_load() - Load an entry from an XArray.
- * @xa: XArray.
- * @index: index into array.
- *
- * Context: Any context.  Takes and releases the RCU lock.
- * Return: The entry at @index in @xa.
- */
-void *xa_load(struct xarray *xa, unsigned long index)
-
-//rST
-// Load an entry from an XArray.
-//
-// :Context: Any context.  Takes and releases the RCU lock.
-// :Return: The entry in `xa` at `index`.
-void *xa_load(struct xarray *xa, unsigned long index)
-
-(more complex example below [2])
-
-Things I considered:
-
- - Explicitly document that this is rST markup instead of Markdown or
-   whatever.
- - Don't repeat the name of the function.  The tool can figure it out.
- - Don't force documenting each parameter.  Often they are obvious
-   and there's really nothing interesting to say about the parameter.
-   Witness the number of '@foo: The foo' (of type struct foo) that we
-   have scattered throughout the tree.  It's not that the documenter is
-   lazy, it's that there's genuinely nothing to say here.
- - Use `interpreted text` to refer to parameters instead of *emphasis* or
-   **strong emphasis**.  The tool can turn that into whatever markup
-   is appropriate.
- - Use field lists for Context and Return instead of sections.  The markup
-   is simpler to use, and I think the rendered output is better.
-
-[1] by which i mean "in a completely different way from, but similar in
-    concept"
-
-[2] More complex example:
-
-/**
- * xa_store() - Store this entry in the XArray.
- * @xa: XArray.
- * @index: Index into array.
- * @entry: New entry.
- * @gfp: Memory allocation flags.
- *
- * After this function returns, loads from this index will return @entry.
- * Storing into an existing multi-index entry updates the entry of every index.
- * The marks associated with @index are unaffected unless @entry is %NULL.
- *
- * Context: Any context.  Takes and releases the xa_lock.
- * May sleep if the @gfp flags permit.
- * Return: The old entry at this index on success, xa_err(-EINVAL) if @entry
- * cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
- * failed.
- */
-void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
-
-//rST
-// Store an entry in the XArray.
-//
-// After this function returns, loads from `index` will return `entry`.
-// Storing into an existing multi-index entry updates the entry of every index.
-// The marks associated with `index` are unaffected unless `entry` is ``NULL``.
-//
-// :Context: Any context.  Takes and releases the xa_lock.
-//    May sleep if the `gfp` flags permit.
-// :Return: The old entry at this index on success, xa_err(-EINVAL) if `entry`
-//    cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
-//    failed.
-void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
-
+https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/commit/?h=pci-probe-rework-20210320&id=44db8df9d729d
