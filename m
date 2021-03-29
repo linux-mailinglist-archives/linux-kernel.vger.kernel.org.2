@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FBF34D27D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8181334D27F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhC2Oij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:38:39 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:56340 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhC2OiI (ORCPT
+        id S230523AbhC2Oik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhC2Oi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:38:08 -0400
-Date:   Mon, 29 Mar 2021 14:38:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1617028686;
-        bh=lXVx8BFe7viSi/O3aYA/0KSuZphkAL5O14MdOJs613Y=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=xCSPYkcoXRsLnRZ0PBR7sI7hHSR4+m5cBnLbgh7hMAtoEOleop4/rH4Ez62BjxA/i
-         nP1YqXTwxJWctScg5KF+1KOGfowd4FKxz+3+KGy3J21xnDv5IA0TWbKU/3vCWsrpe8
-         pK+2yfgG2/iV5yEBIlRmkfDuCMi0u45lQDF3dbE0=
-To:     Sebastian Reichel <sre@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Timon Baetz <timon.baetz@protonmail.com>
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: [PATCH v2 1/1] power: supply: max8997_charger: Switch to new binding
-Message-ID: <20210329143715.806981-2-timon.baetz@protonmail.com>
-In-Reply-To: <20210329143715.806981-1-timon.baetz@protonmail.com>
-References: <20210329143715.806981-1-timon.baetz@protonmail.com>
+        Mon, 29 Mar 2021 10:38:27 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9249BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:38:26 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id c17so11401856ilj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=gMUDl2DT4mlMGjvIHFxLikScjKSbv5yrWXCd8WwiRWk=;
+        b=G+axpC4H72KmvBBZ1KT7WGzKqwO8IPTuICBGBYDm5QSPcV/M6rs1YFzReciloGayGH
+         +gTm23FEfthOf99Shx5pK3+i4m1YwO1zAfP/fMHCt7cjK1P4K6eVgyNZGGBoMNThpv7g
+         s/Tim3BSI1de9ak4aFjv1R0v8U9EbALQKjPiauvLFX83I1ygUuccH8XHdPEZVVLi/ou9
+         +V+ZPIphEZ8KKmUUQ4Fk+oDxxHMPKboFDWAc52K9lTepKE3UZDUsmS0pXjtmQiBeg126
+         As4ruEnIMNi+yy8ffAmFtMk7LAVl59CFfk4V+isfHT163ihZ4EiKs1EEDEERh6HpbF8c
+         7/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=gMUDl2DT4mlMGjvIHFxLikScjKSbv5yrWXCd8WwiRWk=;
+        b=AywbPj5f+m7y8qDLfp6lSxffAT35z52QXFCbj48kit9sgl8ace0UHC5wotRusQg2Tn
+         fsRowGRSHlw210tYCKmcIHlTBhJvfwKZqP86kq8Qo1X37HgLISvXblUrhAzTDHpceErj
+         hB9LqtdvnNDOcY4WuB8EUXC400vHE2A0BDprmdGvtpMgd/b/OcsWeRizVA7NqFVd10oL
+         AxPzTcCOo9Hx5n7yvs2+a78HLCaBFVx6sMaYRhZqoOSzjcuoYBxgBNy4LE9FDi8WqoJ5
+         IqJsY9q3Dpwdvld0cG8p/xg7aCvz9YKxuOGDe5Rzc0ILL9lwOogWEiMT2kwB8bOGFhTi
+         MCTA==
+X-Gm-Message-State: AOAM53323H4zUgT+xHouXHHTRqEnoIiBjDQN7129+NS4yUbxuRbDhl8u
+        iP0bh10oamGqRmvDR3UGlYcVtuwygBd9sS/94IQgAg==
+X-Google-Smtp-Source: ABdhPJyTUTcTfybs3ErxaQD7yrQGnJw6qndKFVu3+QTtGQKYl6J+4amSJdGH89c2/o1AJXS1MfnSw2WDTP7FxKGpRsc=
+X-Received: by 2002:a05:6e02:149:: with SMTP id j9mr12703235ilr.57.1617028706009;
+ Mon, 29 Mar 2021 07:38:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210326142244.17504-1-unixbhaskar@gmail.com> <20210326153213.GA2009902@xps15>
+ <YF47p68yNRgIpuQU@Gentoo>
+In-Reply-To: <YF47p68yNRgIpuQU@Gentoo>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 29 Mar 2021 08:38:15 -0600
+Message-ID: <CANLsYkw+7tpMPna1tskRip3ceBaYqJJcAwVBoNJqAy+=QUzPHQ@mail.gmail.com>
+Subject: Re: [PATCH] coresight-pmu.h: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get regulator from parent device's node and extcon by name.
+On Fri, 26 Mar 2021 at 13:53, Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+> On 09:32 Fri 26 Mar 2021, Mathieu Poirier wrote:
+> >Hi Bhaskar,
+> >
+> >On Fri, Mar 26, 2021 at 07:52:44PM +0530, Bhaskar Chowdhury wrote:
+> >>
+> >> s/orignally/originally/
+> >
+> >Even if the change is trivial this changelog is insufficient.  Moreover, if you
+> >found the problem with an automated tool, please add the name of the tool to the
+> >changelog.
+> >
+> Oh Hi!
+>
+> I think the changelog is sufficient enough to conveying the triviality of this
+> change.What's the point of writing unnecessary history , when a simple
+> statement can do the work.
+>
 
-Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/power/supply/max8997_charger.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+All I'm asking for is a one line description, nothing more.  Otherwise
+this patch will not get applied.
 
-diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/=
-max8997_charger.c
-index a90c01884026..25207fe2aa68 100644
---- a/drivers/power/supply/max8997_charger.c
-+++ b/drivers/power/supply/max8997_charger.c
-@@ -168,6 +168,7 @@ static int max8997_battery_probe(struct platform_device=
- *pdev)
- =09int ret =3D 0;
- =09struct charger_data *charger;
- =09struct max8997_dev *iodev =3D dev_get_drvdata(pdev->dev.parent);
-+=09struct device_node *np =3D pdev->dev.of_node;
- =09struct i2c_client *i2c =3D iodev->i2c;
- =09struct max8997_platform_data *pdata =3D iodev->pdata;
- =09struct power_supply_config psy_cfg =3D {};
-@@ -237,20 +238,23 @@ static int max8997_battery_probe(struct platform_devi=
-ce *pdev)
- =09=09return PTR_ERR(charger->battery);
- =09}
-
-+=09// grab regulator from parent device's node
-+=09pdev->dev.of_node =3D iodev->dev->of_node;
- =09charger->reg =3D devm_regulator_get_optional(&pdev->dev, "charger");
-+=09pdev->dev.of_node =3D np;
- =09if (IS_ERR(charger->reg)) {
- =09=09if (PTR_ERR(charger->reg) =3D=3D -EPROBE_DEFER)
- =09=09=09return -EPROBE_DEFER;
- =09=09dev_info(&pdev->dev, "couldn't get charger regulator\n");
- =09}
--=09charger->edev =3D extcon_get_edev_by_phandle(&pdev->dev, 0);
--=09if (IS_ERR(charger->edev)) {
--=09=09if (PTR_ERR(charger->edev) =3D=3D -EPROBE_DEFER)
-+=09charger->edev =3D extcon_get_extcon_dev("max8997-muic");
-+=09if (IS_ERR_OR_NULL(charger->edev)) {
-+=09=09if (!charger->edev)
- =09=09=09return -EPROBE_DEFER;
- =09=09dev_info(charger->dev, "couldn't get extcon device\n");
- =09}
-
--=09if (!IS_ERR(charger->reg) && !IS_ERR(charger->edev)) {
-+=09if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
- =09=09INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
- =09=09ret =3D devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_=
-work, charger);
- =09=09if (ret) {
---
-2.25.1
-
-
+> These are hand picked ...there is no point mentioning the tool in the
+> changelog..it is all age old UNIX/Linux tool , nothing special.
+>
+> >Thanks,
+> >Mathieu
+> >
+> >>
+> >> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> >> ---
+> >>  include/linux/coresight-pmu.h | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
+> >> index 4ac5c081af93..2d5c29e3cb8a 100644
+> >> --- a/include/linux/coresight-pmu.h
+> >> +++ b/include/linux/coresight-pmu.h
+> >> @@ -14,7 +14,7 @@
+> >>   * Below are the definition of bit offsets for perf option, and works as
+> >>   * arbitrary values for all ETM versions.
+> >>   *
+> >> - * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
+> >> + * Most of them are originally from ETMv3.5/PTM's ETMCR config, therefore,
+> >>   * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+> >>   * directly use below macros as config bits.
+> >>   */
+> >> --
+> >> 2.26.2
+> >>
