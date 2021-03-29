@@ -2,225 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8435E34CF18
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDE034CF23
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhC2Lbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:31:31 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:46221 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230361AbhC2LbU (ORCPT
+        id S230329AbhC2LdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231520AbhC2LcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:31:20 -0400
-X-UUID: 7a6063db7d364d669e27c75590ecb5ad-20210329
-X-UUID: 7a6063db7d364d669e27c75590ecb5ad-20210329
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 318111783; Mon, 29 Mar 2021 19:31:16 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Mar 2021 19:31:14 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Mar 2021 19:31:13 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
-        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
-        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
-        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
-        <sj.huang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
-Subject: [PATCH Resend v0 6/6] pinctrl: add rsel setting on MT8195
-Date:   Mon, 29 Mar 2021 19:31:03 +0800
-Message-ID: <20210329113103.11003-7-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
-References: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
+        Mon, 29 Mar 2021 07:32:22 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888ECC061574;
+        Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d8so4250978plh.11;
+        Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TwCNUI2IXe0SVeP2zDv3NgU8ThjpzCczkm9IKaW8+e8=;
+        b=IXWW2R9psjyfQ6Hz2lQvPrDrJrz+3VXwIqSnc4PtQ2IXYha/GI7nchwVVoH6WVcQd+
+         oajcG6o9tU2oAqMpL79GOmq3z6rfDlTTYaf3Pw9+SLwfm/5k3ezBrpgerx5q0hruTbWZ
+         YHBoKoe/AI/17stjEY7A+EzjT+5fSX8mgV57LIH17I85mFbRVY1o1KcwWtSZXUnuz4Ux
+         rjRhvNh3pJUhUiQIKimLi22s8jVZ8VZlURb69uz+icJ6gvJSbFybIydYhLgCMnOMhVvF
+         tqHAJEu6CeZha3tFo7V2E0RxIWllpD6bDcs5+BUVH5BJplcdg8swFhlMXMaDxntIVfag
+         XQaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TwCNUI2IXe0SVeP2zDv3NgU8ThjpzCczkm9IKaW8+e8=;
+        b=asKZ7odExHsxnioBC+f5wbFiLBj1uaBs8BTg2K070erdTL5KVF44x4Yx+AorAe87aY
+         s3llVTstgOIxF3nmSiYGDef4Q5u+PYf4LReYGBGTGYrxoUAQ1evdIfNkQcZyqYi70pjp
+         QLdwcHudfVe9tupe3I2pQud9+TUdPhmghYCGGbW/21Rj0CwTvqx88umWD2BiYWw0EQqo
+         lQWwGZM4ZC7sIFpwKp9+E0+lb3y1asSZu/FsMfDaAnZVsiNF5NatP0IfUpGctFvTPdiA
+         G7zyAFwFpTNCVRPdrE6ghbO3XsJLP83k1bvLS8hvlImsBVpUFxCCDyKJqXITSDpbF6vD
+         VgUQ==
+X-Gm-Message-State: AOAM531ywTRwPpVZe63YHjTxyv3/KCbXFF1wBZTMOOJU2rv4cHbSyp8l
+        ALnnDq9Z0f9IIzCfJLVZd4nbKEyEZXWWc3xbCJkvLNVzagekOg==
+X-Google-Smtp-Source: ABdhPJzunwKWuEyrRiU1hdw/Vg8CKcbpCoNEivUT68tHY55yxPhzuKcqXufpft0DDp/CwLsJb5nwG8RGYjLB29cu+7Q=
+X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr26657786pjr.228.1617017542094;
+ Mon, 29 Mar 2021 04:32:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210329194719.6d37fe53@canb.auug.org.au>
+In-Reply-To: <20210329194719.6d37fe53@canb.auug.org.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 14:32:06 +0300
+Message-ID: <CAHp75VdSUVLknw11BcmZY=tLmOKYZWjUeo7PokMEHHSbm--qng@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ gpio-brgl tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides rsel setting on MT8195.
+On Mon, Mar 29, 2021 at 12:07 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>
+>   include/linux/bitmap.h
+>
+> between commit:
+>
+>   f7d5fbad07a4 ("lib: bitmap: order includes alphabetically")
+>
+> from the gpio-brgl tree and commit:
+>
+>   f3b90426c407 ("kernel.h: drop inclusion in bitmap.h")
+>
+> from the akpm-current tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
----
- drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 22 +++++++++++++++++++
- .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 14 ++++++++++++
- .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  | 10 +++++++++
- drivers/pinctrl/mediatek/pinctrl-paris.c      | 16 ++++++++++++++
- 4 files changed, 62 insertions(+)
+Looks good to me, thanks, Stephen!
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-index a7500e18bb1d..66608b8d346a 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-@@ -779,6 +779,25 @@ static const struct mtk_pin_field_calc mt8195_pin_drv_adv_range[] = {
- 	PIN_FIELD_BASE(45, 45, 1, 0x040, 0x10, 9, 3),
- };
- 
-+static const struct mtk_pin_field_calc mt8195_pin_rsel_range[] = {
-+	PIN_FIELD_BASE(8, 8, 4, 0x0c0, 0x10, 15, 3),
-+	PIN_FIELD_BASE(9, 9, 4, 0x0c0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(10, 10, 4, 0x0c0, 0x10, 18, 3),
-+	PIN_FIELD_BASE(11, 11, 4, 0x0c0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(12, 12, 4, 0x0c0, 0x10, 21, 3),
-+	PIN_FIELD_BASE(13, 13, 4, 0x0c0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(14, 14, 4, 0x0c0, 0x10, 24, 3),
-+	PIN_FIELD_BASE(15, 15, 4, 0x0c0, 0x10, 9, 3),
-+	PIN_FIELD_BASE(16, 16, 4, 0x0c0, 0x10, 27, 3),
-+	PIN_FIELD_BASE(17, 17, 4, 0x0c0, 0x10, 12, 3),
-+	PIN_FIELD_BASE(29, 29, 2, 0x080, 0x10, 0, 3),
-+	PIN_FIELD_BASE(30, 30, 2, 0x080, 0x10, 3, 3),
-+	PIN_FIELD_BASE(34, 34, 1, 0x0e0, 0x10, 0, 3),
-+	PIN_FIELD_BASE(35, 35, 1, 0x0e0, 0x10, 3, 3),
-+	PIN_FIELD_BASE(44, 44, 1, 0x0e0, 0x10, 6, 3),
-+	PIN_FIELD_BASE(45, 45, 1, 0x0e0, 0x10, 9, 3),
-+};
-+
- static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_MODE] = MTK_RANGE(mt8195_pin_mode_range),
- 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8195_pin_dir_range),
-@@ -793,6 +812,7 @@ static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_R0] = MTK_RANGE(mt8195_pin_r0_range),
- 	[PINCTRL_PIN_REG_R1] = MTK_RANGE(mt8195_pin_r1_range),
- 	[PINCTRL_PIN_REG_DRV_ADV] = MTK_RANGE(mt8195_pin_drv_adv_range),
-+	[PINCTRL_PIN_REG_RSEL] = MTK_RANGE(mt8195_pin_rsel_range),
- };
- 
- static const char * const mt8195_pinctrl_register_base_names[] = {
-@@ -823,6 +843,8 @@ static const struct mtk_pin_soc mt8195_data = {
- 	.drive_get = mtk_pinconf_drive_get_rev1,
- 	.adv_drive_get = mtk_pinconf_adv_drive_get_raw,
- 	.adv_drive_set = mtk_pinconf_adv_drive_set_raw,
-+	.rsel_set = mtk_pinconf_rsel_set,
-+	.rsel_get = mtk_pinconf_rsel_get,
- };
- 
- static const struct of_device_id mt8195_pinctrl_of_match[] = {
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-index 2b51f4a9b860..d1526d0c6248 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-@@ -1041,6 +1041,20 @@ int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
- }
- EXPORT_SYMBOL_GPL(mtk_pinconf_adv_drive_get_raw);
- 
-+int mtk_pinconf_rsel_set(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 arg)
-+{
-+	return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_RSEL, arg);
-+}
-+EXPORT_SYMBOL_GPL(mtk_pinconf_rsel_set);
-+
-+int mtk_pinconf_rsel_get(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 *val)
-+{
-+	return mtk_hw_get_value(hw, desc, PINCTRL_PIN_REG_RSEL, val);
-+}
-+EXPORT_SYMBOL_GPL(mtk_pinconf_rsel_get);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Sean Wang <sean.wang@mediatek.com>");
- MODULE_DESCRIPTION("Pin configuration library module for mediatek SoCs");
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-index fd5ce9c5dcbd..570e8da7bf38 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-+++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-@@ -67,6 +67,7 @@ enum {
- 	PINCTRL_PIN_REG_DRV_E0,
- 	PINCTRL_PIN_REG_DRV_E1,
- 	PINCTRL_PIN_REG_DRV_ADV,
-+	PINCTRL_PIN_REG_RSEL,
- 	PINCTRL_PIN_REG_MAX,
- };
- 
-@@ -237,6 +238,10 @@ struct mtk_pin_soc {
- 			     const struct mtk_pin_desc *desc, u32 arg);
- 	int (*adv_drive_get)(struct mtk_pinctrl *hw,
- 			     const struct mtk_pin_desc *desc, u32 *val);
-+	int (*rsel_set)(struct mtk_pinctrl *hw,
-+			const struct mtk_pin_desc *desc, u32 arg);
-+	int (*rsel_get)(struct mtk_pinctrl *hw,
-+			const struct mtk_pin_desc *desc, u32 *val);
- 
- 	/* Specific driver data */
- 	void				*driver_data;
-@@ -320,5 +325,10 @@ int mtk_pinconf_adv_drive_set_raw(struct mtk_pinctrl *hw,
- int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
- 				  const struct mtk_pin_desc *desc, u32 *val);
- 
-+int mtk_pinconf_rsel_set(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 arg);
-+int mtk_pinconf_rsel_get(struct mtk_pinctrl *hw,
-+			 const struct mtk_pin_desc *desc, u32 *val);
-+
- bool mtk_is_virt_gpio(struct mtk_pinctrl *hw, unsigned int gpio_n);
- #endif /* __PINCTRL_MTK_COMMON_V2_H */
-diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
-index da1f19288aa6..967288c28232 100644
---- a/drivers/pinctrl/mediatek/pinctrl-paris.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
-@@ -22,6 +22,8 @@
- #define MTK_PIN_CONFIG_PU_ADV	(PIN_CONFIG_END + 3)
- #define MTK_PIN_CONFIG_PD_ADV	(PIN_CONFIG_END + 4)
- #define MTK_PIN_CONFIG_DRV_ADV	(PIN_CONFIG_END + 5)
-+#define MTK_PIN_CONFIG_RSEL	(PIN_CONFIG_END + 6)
-+
- 
- static const struct pinconf_generic_params mtk_custom_bindings[] = {
- 	{"mediatek,tdsel",	MTK_PIN_CONFIG_TDSEL,		0},
-@@ -29,6 +31,7 @@ static const struct pinconf_generic_params mtk_custom_bindings[] = {
- 	{"mediatek,pull-up-adv", MTK_PIN_CONFIG_PU_ADV,		1},
- 	{"mediatek,pull-down-adv", MTK_PIN_CONFIG_PD_ADV,	1},
- 	{"mediatek,drive-strength-adv", MTK_PIN_CONFIG_DRV_ADV,	2},
-+	{"mediatek,rsel",		MTK_PIN_CONFIG_RSEL,	2},
- };
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -38,6 +41,7 @@ static const struct pin_config_item mtk_conf_items[] = {
- 	PCONFDUMP(MTK_PIN_CONFIG_PU_ADV, "pu-adv", NULL, true),
- 	PCONFDUMP(MTK_PIN_CONFIG_PD_ADV, "pd-adv", NULL, true),
- 	PCONFDUMP(MTK_PIN_CONFIG_DRV_ADV, "drive-strength-adv", NULL, true),
-+	PCONFDUMP(MTK_PIN_CONFIG_RSEL, "rsel", NULL, true),
- };
- #endif
- 
-@@ -176,6 +180,12 @@ static int mtk_pinconf_get(struct pinctrl_dev *pctldev,
- 		else
- 			err = -ENOTSUPP;
- 		break;
-+	case MTK_PIN_CONFIG_RSEL:
-+		if (hw->soc->rsel_get)
-+			err = hw->soc->rsel_get(hw, desc, &ret);
-+		else
-+			err = -EOPNOTSUPP;
-+		break;
- 	default:
- 		err = -ENOTSUPP;
- 	}
-@@ -295,6 +305,12 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 		else
- 			err = -ENOTSUPP;
- 		break;
-+	case MTK_PIN_CONFIG_RSEL:
-+		if (hw->soc->rsel_set)
-+			err = hw->soc->rsel_set(hw, desc, arg);
-+		else
-+			err = -EOPNOTSUPP;
-+		break;
- 	default:
- 		err = -ENOTSUPP;
- 	}
+> diff --cc include/linux/bitmap.h
+> index 73d039476fa4,6cbcd9d9edd2..000000000000
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@@ -4,12 -4,11 +4,13 @@@
+>
+>   #ifndef __ASSEMBLY__
+>
+> + #include <linux/align.h>
+>  -#include <linux/types.h>
+>   #include <linux/bitops.h>
+> - #include <linux/kernel.h>
+> + #include <linux/limits.h>
+>   #include <linux/string.h>
+>  +#include <linux/types.h>
+>  +
+>  +struct device;
+>
+>   /*
+>    * bitmaps provide bit arrays that consume one or more unsigned
+
+
+
 -- 
-2.18.0
-
+With Best Regards,
+Andy Shevchenko
