@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BF234D11A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12C234D11E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhC2N2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:28:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46022 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231319AbhC2N2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:28:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1353CB32B;
-        Mon, 29 Mar 2021 13:28:17 +0000 (UTC)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
-        joe.lawrence@redhat.com
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        axboe@kernel.dk, Miroslav Benes <mbenes@suse.cz>
-Subject: [PATCH v2] livepatch: Replace the fake signal sending with TIF_NOTIFY_SIGNAL infrastructure
-Date:   Mon, 29 Mar 2021 15:28:15 +0200
-Message-Id: <20210329132815.10035-1-mbenes@suse.cz>
-X-Mailer: git-send-email 2.30.2
+        id S231435AbhC2N33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:29:29 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:45884 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhC2N3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:29:08 -0400
+Received: by mail-il1-f197.google.com with SMTP id x7so5572535ilp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:29:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=njm30lLdcys9Fbu5KHEo3yxnkqBEADwOZXdym5nv/uc=;
+        b=lhy/r7sJkiXqz4smI5eLx2RZFRVgpI+BGlVUZpgzc04XwS5nFUv6Jwf0aMbUu1wLcQ
+         sM+bqWTvlOto2Sz/EDi7dmwZSPhHd7cBnIxSme1UqgvOeAwCBQ+l3YaHo//lfjsIWhft
+         ZZEbprfTnQQdyFC7zMt1wDEf6/qH7X3BfM849ULP06byO4QNgj6fHhgLPxGb/5g6ueG9
+         +7Chd4XGC1rqR3K34i1QcccOgi64kpGSNgC42hdRLHs6KdR0oxmv8xj9Kh7prPk5MihO
+         5xkZv9jX8jiQfPy0TAUM+paIh6Y36gRy5/Wj0kCeHWT6/3r1y7atyYmEWrQXzapAOHMl
+         aGmA==
+X-Gm-Message-State: AOAM530JkNq8hY4I+eU/ApZavO46dZoAdOWZcLzIRScOUJy/LvvmImmW
+        HkZMU+3MqHgZWOYE+D+sa8FdDVrcFC7G6WuBBjmedkS0M67l
+X-Google-Smtp-Source: ABdhPJwLG42hr66fm/k/yXoQdpdvfBL32PewoWr4++y/gQbAWCA1tHOBg50CsPlF5Ldfq+tTa/zu0oUNO2tDFWos2JiHEHW+ZwP2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:685:: with SMTP id i5mr24439710jab.109.1617024546144;
+ Mon, 29 Mar 2021 06:29:06 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 06:29:06 -0700
+In-Reply-To: <61897224-d54b-9390-6721-57bed6a144e5@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aa874e05beacddfd@google.com>
+Subject: Re: [syzbot] WARNING: still has locks held in io_sq_thread
+From:   syzbot <syzbot+796d767eb376810256f5@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Livepatch sends a fake signal to all remaining blocking tasks of a
-running transition after a set period of time. It uses TIF_SIGPENDING
-flag for the purpose. Commit 12db8b690010 ("entry: Add support for
-TIF_NOTIFY_SIGNAL") added a generic infrastructure to achieve the same.
-Replace our bespoke solution with the generic one.
+Hello,
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Miroslav Benes <mbenes@suse.cz>
----
-v2:
-- #include from kernel/signal.c removed [Petr]
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in kvm_wait
 
- kernel/livepatch/transition.c | 5 ++---
- kernel/signal.c               | 4 +---
- 2 files changed, 3 insertions(+), 6 deletions(-)
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 1 PID: 5134 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 1 PID: 5134 Comm: syz-executor.2 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Code: bf ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 65 c2 0f 04 00 74 01 c3 48 c7 c7 a0 7b 6b 89 c6 05 54 c2 0f 04 01 e8 65 19 bf ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+RSP: 0018:ffffc90002f5f9c0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888023a7d040 RCX: 0000000000000000
+RDX: ffff88801bbcc2c0 RSI: ffffffff815b7375 RDI: fffff520005ebf2a
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b00de R11: 0000000000000000 R12: 0000000000000003
+R13: ffffed100474fa08 R14: 0000000000000001 R15: ffff8880b9f36000
+FS:  000000000293e400(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd20e04f88 CR3: 00000000116b8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_wait arch/x86/kernel/kvm.c:860 [inline]
+ kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
+ pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+ pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+ __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+ spin_lock include/linux/spinlock.h:354 [inline]
+ ext4_lock_group fs/ext4/ext4.h:3383 [inline]
+ __ext4_new_inode+0x384f/0x5570 fs/ext4/ialloc.c:1188
+ ext4_symlink+0x489/0xd50 fs/ext4/namei.c:3347
+ vfs_symlink fs/namei.c:4176 [inline]
+ vfs_symlink+0x10f/0x270 fs/namei.c:4161
+ do_symlinkat+0x27a/0x300 fs/namei.c:4206
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465d67
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 58 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc15a180e8 EFLAGS: 00000206 ORIG_RAX: 0000000000000058
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000465d67
+RDX: 00007ffc15a181d3 RSI: 00000000004bfab2 RDI: 00007ffc15a181c0
+RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffc15a17f80
+R10: 00007ffc15a17e37 R11: 0000000000000206 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 00007ffc15a181c0
 
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index f6310f848f34..3a4beb9395c4 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/cpu.h>
- #include <linux/stacktrace.h>
-+#include <linux/tracehook.h>
- #include "core.h"
- #include "patch.h"
- #include "transition.h"
-@@ -369,9 +370,7 @@ static void klp_send_signals(void)
- 			 * Send fake signal to all non-kthread tasks which are
- 			 * still not migrated.
- 			 */
--			spin_lock_irq(&task->sighand->siglock);
--			signal_wake_up(task, 0);
--			spin_unlock_irq(&task->sighand->siglock);
-+			set_notify_signal(task);
- 		}
- 	}
- 	read_unlock(&tasklist_lock);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f2a1b898da29..604290a8ca89 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -43,7 +43,6 @@
- #include <linux/cn_proc.h>
- #include <linux/compiler.h>
- #include <linux/posix-timers.h>
--#include <linux/livepatch.h>
- #include <linux/cgroup.h>
- #include <linux/audit.h>
- 
-@@ -181,8 +180,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
- 
- void recalc_sigpending(void)
- {
--	if (!recalc_sigpending_tsk(current) && !freezing(current) &&
--	    !klp_patch_pending(current))
-+	if (!recalc_sigpending_tsk(current) && !freezing(current))
- 		clear_thread_flag(TIF_SIGPENDING);
- 
- }
--- 
-2.30.2
+
+Tested on:
+
+commit:         d80a59fb io_uring: drop sqd lock before handling signals f..
+git tree:       git://git.kernel.dk/linux-block io_uring-5.12
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a9b21ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=473f8fc78a7207b4
+dashboard link: https://syzkaller.appspot.com/bug?extid=796d767eb376810256f5
+compiler:       
 
