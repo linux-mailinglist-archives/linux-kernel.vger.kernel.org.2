@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEF934CF88
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF6C34CFA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhC2L7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:59:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41512 "EHLO mx2.suse.de"
+        id S231558AbhC2MC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231614AbhC2L7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:59:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 892A9B3C9;
-        Mon, 29 Mar 2021 11:59:08 +0000 (UTC)
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210327180348.137d8fe2@sf>
- <20210327182144.3213887-1-slyfox@gentoo.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2] mm: page_alloc: ignore init_on_free=1 for
- debug_pagealloc=1
-Message-ID: <ea46d903-d201-5781-1f3c-f8d7fea5070e@suse.cz>
-Date:   Mon, 29 Mar 2021 13:59:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230434AbhC2MBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:01:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2110361930;
+        Mon, 29 Mar 2021 12:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617019314;
+        bh=UT+UrRIVgNhbmAkKeg6HsueNZaK8AB1/0MS5NZZ5NQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MfOCEZUNUnR4dKPxmau5OQU9kxgxhGvwo8N3JR/s148VGWrMMAXEH9mfymMgQHnNI
+         YhluAI+zInviPvrAzt7wGZUmUh24tq3e4VUhcVfmrQG16kSpgI34Eop4Epu9GViqs/
+         IVmw0BZ5JkW63+MoqQ6G98fb6T2mfyqZ3IP+ltAjR0AILOFUyaO7MNL3hyVm/5bPws
+         gCi9d/jWTSzGzH6MVMCsFqvbEQnKc5jTCLn7HLSVlr+Xmmw1KvMQXyicd6Uc2kzljR
+         404UjwjSmNXVdzJce57PFhk1eGmE8j82NwIiXy6V+pb94GZGHpnIFXPED1fvDHqRUM
+         VFkV5eigHQKew==
+Received: by mail-lj1-f175.google.com with SMTP id 15so15680568ljj.0;
+        Mon, 29 Mar 2021 05:01:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531QGLHi1fZ3Kz0L044sDVLidaUegeRgFF5MU8mi9G/8mFRc0JN2
+        R6zrajyHs0YtSKgJncIyrNcsaS8Bnv0AAcOdSY0=
+X-Google-Smtp-Source: ABdhPJzaBfHptHYx2DLdzeLBCg5t7USdDIneRxDhGd2vvHRCAncwdw++SOaq3bmLo7VgUJwtyPywTZc5e3lJtCC4kNI=
+X-Received: by 2002:a2e:9084:: with SMTP id l4mr17142105ljg.498.1617019312425;
+ Mon, 29 Mar 2021 05:01:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210327182144.3213887-1-slyfox@gentoo.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com> <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+In-Reply-To: <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 29 Mar 2021 20:01:41 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+Message-ID: <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/27/21 7:21 PM, Sergei Trofimovich wrote:
-> On !ARCH_SUPPORTS_DEBUG_PAGEALLOC (like ia64) debug_pagealloc=1
-> implies page_poison=on:
-> 
->     if (page_poisoning_enabled() ||
->          (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
->           debug_pagealloc_enabled()))
->             static_branch_enable(&_page_poisoning_enabled);
-> 
-> page_poison=on needs to init_on_free=1.
-> 
-> Before the change id happened too late for the following case:
-> - have PAGE_POISONING=y
-> - have page_poison unset
-> - have !ARCH_SUPPORTS_DEBUG_PAGEALLOC arch (like ia64)
-> - have init_on_free=1
-> - have debug_pagealloc=1
-> 
-> That way we get both keys enabled:
-> - static_branch_enable(&init_on_free);
-> - static_branch_enable(&_page_poisoning_enabled);
-> 
-> which leads to poisoned pages returned for __GFP_ZERO pages.
+On Mon, Mar 29, 2021 at 7:26 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Mar 29, 2021 at 07:19:29PM +0800, Guo Ren wrote:
+> > On Mon, Mar 29, 2021 at 3:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Sat, Mar 27, 2021 at 06:06:38PM +0000, guoren@kernel.org wrote:
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > Some architectures don't have sub-word swap atomic instruction,
+> > > > they only have the full word's one.
+> > > >
+> > > > The sub-word swap only improve the performance when:
+> > > > NR_CPUS < 16K
+> > > >  *  0- 7: locked byte
+> > > >  *     8: pending
+> > > >  *  9-15: not used
+> > > >  * 16-17: tail index
+> > > >  * 18-31: tail cpu (+1)
+> > > >
+> > > > The 9-15 bits are wasted to use xchg16 in xchg_tail.
+> > > >
+> > > > Please let architecture select xchg16/xchg32 to implement
+> > > > xchg_tail.
+> > >
+> > > So I really don't like this, this pushes complexity into the generic
+> > > code for something that's really not needed.
+> > >
+> > > Lots of RISC already implement sub-word atomics using word ll/sc.
+> > > Obviously they're not sharing code like they should be :/ See for
+> > > example arch/mips/kernel/cmpxchg.c.
+> > I see, we've done two versions of this:
+> >  - Using cmpxchg codes from MIPS by Michael
+> >  - Re-write with assembly codes by Guo
+> >
+> > But using the full-word atomic xchg instructions implement xchg16 has
+> > the semantic risk for atomic operations.
+>
+> What? -ENOPARSE
 
-Good catch, thanks for finding the root cause!
+u32 a = 0x55aa66bb;
+u16 *ptr = &a;
 
-> After the change we execute only:
-> - static_branch_enable(&_page_poisoning_enabled);
-> and ignore init_on_free=1.
-> CC: Vlastimil Babka <vbabka@suse.cz>
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: linux-mm@kvack.org
-> CC: David Hildenbrand <david@redhat.com>
-> CC: Andrey Konovalov <andreyknvl@gmail.com>
-> Link: https://lkml.org/lkml/2021/3/26/443
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+CPU0                       CPU1
+=========             =========
+xchg16(ptr, new)     while(1)
+                                    WRITE_ONCE(*(ptr + 1), x);
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-8db26a3d4735 ("mm, page_poison: use static key more efficiently")
-Cc: <stable@vger.kernel.org>
+When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
 
-> ---
->  mm/page_alloc.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d57d9b4f7089..10a8a1d28c11 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -764,32 +764,36 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
->   */
->  void init_mem_debugging_and_hardening(void)
->  {
-> +	bool page_poison_requested = page_poisoning_enabled();
-> +
-> +#ifdef CONFIG_PAGE_POISONING
-> +	/*
-> +	 * Page poisoning is debug page alloc for some arches. If
-> +	 * either of those options are enabled, enable poisoning.
-> +	 */
-> +	if (page_poisoning_enabled() ||
-> +	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-> +	      debug_pagealloc_enabled())) {
-> +		static_branch_enable(&_page_poisoning_enabled);
-> +		page_poison_requested = true;
-> +	}
-> +#endif
-> +
->  	if (_init_on_alloc_enabled_early) {
-> -		if (page_poisoning_enabled())
-> +		if (page_poison_requested)
->  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
->  				"will take precedence over init_on_alloc\n");
->  		else
->  			static_branch_enable(&init_on_alloc);
->  	}
->  	if (_init_on_free_enabled_early) {
-> -		if (page_poisoning_enabled())
-> +		if (page_poison_requested)
->  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
->  				"will take precedence over init_on_free\n");
->  		else
->  			static_branch_enable(&init_on_free);
->  	}
->  
-> -#ifdef CONFIG_PAGE_POISONING
-> -	/*
-> -	 * Page poisoning is debug page alloc for some arches. If
-> -	 * either of those options are enabled, enable poisoning.
-> -	 */
-> -	if (page_poisoning_enabled() ||
-> -	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-> -	      debug_pagealloc_enabled()))
-> -		static_branch_enable(&_page_poisoning_enabled);
-> -#endif
-> -
->  #ifdef CONFIG_DEBUG_PAGEALLOC
->  	if (!debug_pagealloc_enabled())
->  		return;
-> 
+>
+> > > Also, I really do think doing ticket locks first is a far more sensible
+> > > step.
+> > NACK by Anup
+>
+> Who's he when he's not sending NAKs ?
+We've talked before:
+https://lore.kernel.org/linux-riscv/CAAhSdy1JHLUFwu7RuCaQ+RUWRBks2KsDva7EpRt8--4ZfofSUQ@mail.gmail.com/T/#t
 
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
