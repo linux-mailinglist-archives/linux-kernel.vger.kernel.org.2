@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1B334D690
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF5734D6A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhC2SE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S230434AbhC2SJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhC2SED (ORCPT
+        with ESMTP id S229711AbhC2SJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:04:03 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7385C061574;
-        Mon, 29 Mar 2021 11:04:02 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id o19so15232473edc.3;
-        Mon, 29 Mar 2021 11:04:02 -0700 (PDT)
+        Mon, 29 Mar 2021 14:09:47 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A8E6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=91f+t4KKqAvvbgMruzc8afBLkhYSXYPNhwopXJ4FvVA=;
-        b=p6FRuPHxYfTgUMm71UKWithIReDTZW6SeruOWNV5sOveBvkwcHbRXfHKWUKErqFjv4
-         VnseLfIZ+uJXbhBFCOgoZiIF2USLUIHX8guz67aa7SeGe11LtVAGOftJ8rpQYzABxZv0
-         NBGKe3elev+KxtqxnS/kfj6uTohaKbXdcMYSJgcmQP/m93VQC0iZ5hAhIGx0Vm3NOhd/
-         fz6BPNiXsw7YJn8r+AIL+RtgZ1wnaaiCC4DYk44V8NMxun+pnLMhD/XuSL9iBWztZI3T
-         dFVtrMO23I9KORs2uL48iAYqFmQXkBmVF0QeRvWJntphdGHVrrY0CyCA0WqebLbC+C2w
-         k8cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=91f+t4KKqAvvbgMruzc8afBLkhYSXYPNhwopXJ4FvVA=;
-        b=CB5n52rXqQFTIDnmWNX2m20U3omZVqpHF5I0byisE1F2XE6l+uRsi2eqzoVA1lN5aT
-         2A3IEiDyxwHSfOXkG6r+pmsCzEBm0keq0dFdr9jQ0BdzzqoEmII90rp0U7ry/gy90tlz
-         JPs6lCKGecd89ujVgGO4vAPL7QoRKGDz5nt81vOcIEVfeT6isYX1XwYJah/z8Ks5Uwwc
-         IdIRCjQ/Y1b4Sb6h4BrU52disESgPRnrG54V4dFyXrDR69TJifVzzBb6wUDnszSc34S1
-         BpZ/kFhmzoZbA4QSp8LLZM4H97wv9bVOWS+8vAFVJQjmEfL85Fqg7PItqWknYZLiVz3I
-         sYJA==
-X-Gm-Message-State: AOAM532HZSoGDAMQApf5U5hQbbBCSNtdL2hVdUHEGPz0Au1xOt4mtSgh
-        6ccYVPqgO/W9LrpCdtn7Lr7fUpxRJh8=
-X-Google-Smtp-Source: ABdhPJySGC280M1HDveYNoXLySwn5Qy7wl8t1bmn1rG2whFdiva4yYtWd0vkZ3aI0+Zv6ITZX6kE+Q==
-X-Received: by 2002:aa7:db53:: with SMTP id n19mr30446881edt.330.1617041041521;
-        Mon, 29 Mar 2021 11:04:01 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd? ([2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd])
-        by smtp.gmail.com with ESMTPSA id cf4sm9446313edb.19.2021.03.29.11.04.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 11:04:01 -0700 (PDT)
-Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
-To:     =?UTF-8?B?WOKEuSBSdW95YW8=?= <xry111@mengyan1223.wang>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        =?UTF-8?Q?Dan_Hor=c3=a1k?= <dan@danny.cz>,
-        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        stable@vger.kernel.org
-References: <20210329175348.26859-1-xry111@mengyan1223.wang>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
-Date:   Mon, 29 Mar 2021 20:04:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=ZS4sNHYnf4mHchiCAeNyrhMnw8aw/DbuimEBHiZWFHA=; b=mA+AQziL9xSex
+        kDHbf1VpmhuJxP0QQg2H8fwLSMAG6/L4iHtHbjeD12wB/iyMZlQYA5GljBg8gmbt
+        gDqI44Zq1IIn5tjXfHDEj2WkF5S0GqriCAjMSw2Lvi9byEISnkQyx5APhhJip8Zd
+        fKkvShgKYjP9I4sT+t1GKBwDqbJQdg=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXHkrQF2Jgo9tpAA--.35554S2;
+        Tue, 30 Mar 2021 02:09:22 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:04:16 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH] samples/kprobes: Add riscv support
+Message-ID: <20210330020416.129505e6@xhacker>
 MIME-Version: 1.0
-In-Reply-To: <20210329175348.26859-1-xry111@mengyan1223.wang>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygAXHkrQF2Jgo9tpAA--.35554S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy3CryfuF43KF4xZw48Crg_yoW8Wr18p3
+        Z0y3W5Aa1rtr1Y9ayavF4vgryjkryq93yrurZ2k34Yya4Ivr45AF1F93W0y395uryrXw43
+        tryFvr9rJ3WfArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
+        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
+        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
+        xVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7
+        xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
+        JVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7GYLDUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 29.03.21 um 19:53 schrieb Xℹ Ruoyao:
-> If the initial value of `num_entires` (calculated at line 1654) is not
-> an integral multiple of `AMDGPU_GPU_PAGES_IN_CPU_PAGE`, in line 1681 a
-> value greater than the initial value will be assigned to it.  That causes
-> `start > last + 1` after line 1708.  Then in the next iteration an
-> underflow happens at line 1654.  It causes message
->
->      *ERROR* Couldn't update BO_VA (-12)
->
-> printed in kernel log, and GPU hanging.
->
-> Fortify the criteria of the loop to fix this issue.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-NAK the value of num_entries must always be a multiple of 
-AMDGPU_GPU_PAGES_IN_CPU_PAGE or otherwise we corrupt the page tables.
+Add riscv specific info dump in both handler_pre() and handler_post().
 
-How do you trigger that?
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ samples/kprobes/kprobe_example.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Christian.
+diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
+index 331dcf151532..c495664c0a9b 100644
+--- a/samples/kprobes/kprobe_example.c
++++ b/samples/kprobes/kprobe_example.c
+@@ -47,6 +47,10 @@ static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
+ 	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
+ 		p->symbol_name, p->addr, (long)regs->ARM_pc, (long)regs->ARM_cpsr);
+ #endif
++#ifdef CONFIG_RISCV
++	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
++		p->symbol_name, p->addr, regs->epc, regs->status);
++#endif
+ #ifdef CONFIG_S390
+ 	pr_info("<%s> pre_handler: p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
+ 		p->symbol_name, p->addr, regs->psw.addr, regs->flags);
+@@ -80,6 +84,10 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
+ 	pr_info("<%s> post_handler: p->addr = 0x%p, cpsr = 0x%lx\n",
+ 		p->symbol_name, p->addr, (long)regs->ARM_cpsr);
+ #endif
++#ifdef CONFIG_RISCV
++	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
++		p->symbol_name, p->addr, regs->status);
++#endif
+ #ifdef CONFIG_S390
+ 	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
+ 		p->symbol_name, p->addr, regs->flags);
+-- 
+2.31.0
 
->
-> BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
-> Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
-> Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> Reported-by: Dan Horák <dan@danny.cz>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> index ad91c0c3c423..cee0cc9c8085 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
->   		}
->   		start = tmp;
->   
-> -	} while (unlikely(start != last + 1));
-> +	} while (unlikely(start < last + 1));
->   
->   	r = vm->update_funcs->commit(&params, fence);
->   
->
-> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
 
