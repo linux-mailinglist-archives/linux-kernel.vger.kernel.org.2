@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E553534C87D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F6B34CC82
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhC2IW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57206 "EHLO mail.kernel.org"
+        id S237281AbhC2JDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:03:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232936AbhC2IOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A058E61481;
-        Mon, 29 Mar 2021 08:14:47 +0000 (UTC)
+        id S234639AbhC2IjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:39:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6923A60C3D;
+        Mon, 29 Mar 2021 08:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005688;
-        bh=sZvI42GUOkQjiXCr3sVO3przbU+jstsNxuX6Dbary1E=;
+        s=korg; t=1617007149;
+        bh=JxVYiWqHneHdJDkkpquqAtgbGEcks6zWVo/NuiU6eV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pX38Gel2LGbscLf6co7hV9uYUVuL6iwJuYQm/vlR9uIp0ZIEkrHuTna+0z475xB9v
-         0azY2tFBKhkummf35CsBxkR2wQU0BXrgAiTjDgLQJlTiKlfuwzOFiOmnhixDU+748w
-         UrkEAtSTRHNDj+XS0fLSa6VXPoq1NI0ZoTuuvNPI=
+        b=r5vMOmuVwbcCClkaiwXKTjgDCVKpVxHKOFgTHjP91+9qTjYyyymj+6MXeQ+9+pFIF
+         cXTnm2oUbwbA7FPq70x9Fu7qZ25g79N7W1MCfLNJ4pUyPqxWRz98ycNPuoQKOpnjTZ
+         UE64y3PRwJZzSFb1TRR1zuT59xZGRb3ZRd6woKM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Alexander Naumann <alexandernaumann@gmx.de>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/111] net: cdc-phonet: fix data-interface release on probe failure
+Subject: [PATCH 5.11 194/254] platform/x86: dell-wmi-sysman: Make sysman_init() return -ENODEV of the interfaces are not found
 Date:   Mon, 29 Mar 2021 09:58:30 +0200
-Message-Id: <20210329075617.941682764@linuxfoundation.org>
+Message-Id: <20210329075639.484312106@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit c79a707072fe3fea0e3c92edee6ca85c1e53c29f ]
+[ Upstream commit 32418dd58c957f8fef25b97450d00275967604f1 ]
 
-Set the disconnected flag before releasing the data interface in case
-netdev registration fails to avoid having the disconnect callback try to
-deregister the never registered netdev (and trigger a WARN_ON()).
+When either the attributes or the password interface is not found, then
+unregister the 2 wmi drivers again and return -ENODEV from sysman_init().
 
-Fixes: 87cf65601e17 ("USB host CDC Phonet network interface driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
+Cc: Divya Bharathi <Divya_Bharathi@dell.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Reported-by: Alexander Naumann <alexandernaumann@gmx.de>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321115901.35072-7-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc-phonet.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/dell-wmi-sysman/sysman.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/usb/cdc-phonet.c b/drivers/net/usb/cdc-phonet.c
-index bcabd39d136a..f778172356e6 100644
---- a/drivers/net/usb/cdc-phonet.c
-+++ b/drivers/net/usb/cdc-phonet.c
-@@ -387,6 +387,8 @@ static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *i
- 
- 	err = register_netdev(dev);
- 	if (err) {
-+		/* Set disconnected flag so that disconnect() returns early. */
-+		pnd->disconnected = 1;
- 		usb_driver_release_interface(&usbpn_driver, data_intf);
- 		goto out;
+diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+index 99dc2f3bdf49..5dd9b29d939c 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
++++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+@@ -506,15 +506,17 @@ static int __init sysman_init(void)
  	}
+ 
+ 	ret = init_bios_attr_set_interface();
+-	if (ret || !wmi_priv.bios_attr_wdev) {
+-		pr_debug("failed to initialize set interface\n");
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	ret = init_bios_attr_pass_interface();
+-	if (ret || !wmi_priv.password_attr_wdev) {
+-		pr_debug("failed to initialize pass interface\n");
++	if (ret)
+ 		goto err_exit_bios_attr_set_interface;
++
++	if (!wmi_priv.bios_attr_wdev || !wmi_priv.password_attr_wdev) {
++		pr_debug("failed to find set or pass interface\n");
++		ret = -ENODEV;
++		goto err_exit_bios_attr_pass_interface;
+ 	}
+ 
+ 	ret = class_register(&firmware_attributes_class);
 -- 
 2.30.1
 
