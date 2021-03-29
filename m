@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6844334CE26
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC3934CE2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhC2KsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbhC2Kre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:47:34 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D092EC061574;
-        Mon, 29 Mar 2021 03:47:33 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id v10so9130820pgs.12;
-        Mon, 29 Mar 2021 03:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=efW0R7xutPE11DBN9SEnqyt0zcFDSwQ/E5/CXYn94wc=;
-        b=jPQsgKEHQ54eLWy6kIy7wl774HD78Yf7Uu148O2sQGcjnSPcNidouj546G8YPuZ2IE
-         jlyDUPDwM3WJU/73kMgBQQHdWDDfGXVQ9+AsSgwrJq+ISqD75xZ1g98PoaO+akx4N1S5
-         TjC2qfVV7dtr9clYzL+R0vEsyG5R4YtuXdVVV4lcc+OnHy+wq+Fp+oQvxNpSCCt8Tr5Z
-         ATtVJrY7I5p7CYa8HqHEwBfUb6TTuxICAQ4IsB1mfOSPGG5BWJYet0B2s6HzWJ7xnjJB
-         fllboH1x672YqaBjLozbbsIev2AGse7RUwKpsU3Kf1MRUxBMHlxRN9KStyuPEVLzaATm
-         SgYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=efW0R7xutPE11DBN9SEnqyt0zcFDSwQ/E5/CXYn94wc=;
-        b=JC2UMXPVsSBIkN3Zu4ljav48Vpkh2SJNBAbXcdIAItUYingYJxMovP64qVxVz+u5SK
-         Jh2QPhuk1ZerodSEnyN9RPY/iohGQfBQvKlREpSnkmvxlunTu5m52P+Lm8tODJj6gpld
-         Vloqkd7Dxx6az/0YOtaMDdT+kEC8UG1p/8A1Mcgwi3pOBmoXwkQNMBUayYPcub8vXKuQ
-         vdsNFDDOEUbvuV0JigJRE9lNqYsn6BbJ+foeZLXN4QZUeyrqXdnzynjJu3F8l0OPsLNt
-         WTyZaYIyFY/IQGJyuCloxOQQ0LG+344pNv3kzvInXbSCGOzihygvJaT7utT3x9SgVWJ/
-         gDYQ==
-X-Gm-Message-State: AOAM531Ada6i3NK70haD4nE+L10zAUUhWDaj489Yvp0RfaCflZvDI2nE
-        FUEsqvQssRkSD+CO9pGrPBxOB8vUn4nqH9Zk+2c=
-X-Google-Smtp-Source: ABdhPJxMpWibj/NiiDckZKIUVfWdqK2DbteamjvUT/Dj9Gzk+zF1ZnHWE70UXL5z3KO3CrN27HHdjwpoUKj/lzYf01U=
-X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
- n15-20020a62e50f0000b02902148e4aae46mr25140695pff.73.1617014853376; Mon, 29
- Mar 2021 03:47:33 -0700 (PDT)
+        id S232590AbhC2Kun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:50:43 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49544 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231493AbhC2Kuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:50:35 -0400
+IronPort-SDR: BOoSU4yhFCy26IbUfA5AvnKxQN/heuyMWmNc9SuKHLnFPNJIwtUcU89Ue4Z6UeQEboJnZZvNjD
+ UoMpTazhrZJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="178653625"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="178653625"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 03:50:34 -0700
+IronPort-SDR: 0XlGLqXU8l2XV+/lpI4cmAl8Q5ACXLd3o3/HOfHOuzjfZUlrOx9eEoJ2aSkdJSDyIpCgodQmj0
+ xfo3ZQwBMHIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="515955819"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Mar 2021 03:50:33 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/12] i2c: Adding support for software nodes
+Date:   Mon, 29 Mar 2021 13:50:35 +0300
+Message-Id: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210329080611.9312-1-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210329080611.9312-1-zhiyong.tao@mediatek.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 13:47:17 +0300
-Message-ID: <CAHp75Vcms=dAXcACraU4BHENee6j+CTwQtMVtURdnMHVAmTXkw@mail.gmail.com>
-Subject: Re: [PATCH Resend 0/6] Mediatek pinctrl patch on mt8195
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        sean.wang@kernel.org, srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        jg_poxu@mediatek.com, biao.huang@mediatek.com,
-        hongzhou.yang@mediatek.com, erin.lo@mediatek.com,
-        Sean Wang <sean.wang@mediatek.com>, seiya.wang@mediatek.com,
-        Sj Huang <sj.huang@mediatek.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:09 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
->
-> This series includes 6 patches:
-> 1.add pinctrl file on mt8195.
-> 2.add pinctrl binding document on mt8195.
-> 3.add pinctrl device node on mt8195.
-> 4.add pinctrl driver on MT8195.
-> 5.add pinctrl drive for I2C related pins on MT8195.
-> 6.add pinctrl rsel setting on MT8195.
+Hi,
 
-You submitted the same version of the series twice, but it confuses people.
-Now you have to properly send the series only one time with the
-correct version added and changelog explains the changes done between
-the versions.
+The old device property API (device_add_properties()) is going to be
+removed. These prepare the i2c subsystem and drivers for the change.
+The change is fairly trivial in case of i2c. All we need to do is add
+complete software nodes to the devices instead of only the device
+properties in those nodes.
 
+thanks,
+
+Heikki Krogerus (12):
+  i2c: Add support for software nodes
+  ARM: davinci: Constify the software nodes
+  ARM: omap1: osk: Constify the software node
+  ARM: pxa: stargate2: Constify the software node
+  ARM: s3c: mini2440: Constify the software node
+  platform/x86: intel_cht_int33fe_microb: Constify the software node
+  i2c: cht-wc: Constify the software node
+  i2c: nvidia-gpu: Constify the software node
+  i2c: icy: Constify the software node
+  platform/chrome: chromeos_laptop - Prepare complete software nodes
+  Input: elantech - Prepare a complete software node for the device
+  i2c: Remove support for dangling device properties
+
+ arch/arm/mach-davinci/board-da830-evm.c       |   6 +-
+ arch/arm/mach-davinci/board-dm365-evm.c       |   6 +-
+ arch/arm/mach-davinci/board-dm644x-evm.c      |   6 +-
+ arch/arm/mach-davinci/board-dm646x-evm.c      |   6 +-
+ arch/arm/mach-davinci/board-mityomapl138.c    |   6 +-
+ arch/arm/mach-davinci/board-sffsdr.c          |   6 +-
+ arch/arm/mach-omap1/board-osk.c               |   6 +-
+ arch/arm/mach-pxa/stargate2.c                 |   6 +-
+ arch/arm/mach-s3c/mach-mini2440.c             |   6 +-
+ drivers/i2c/busses/i2c-cht-wc.c               |   6 +-
+ drivers/i2c/busses/i2c-icy.c                  |  32 ++----
+ drivers/i2c/busses/i2c-nvidia-gpu.c           |   6 +-
+ drivers/i2c/i2c-boardinfo.c                   |  11 --
+ drivers/i2c/i2c-core-base.c                   |  14 +--
+ drivers/input/mouse/elantech.c                |   6 +-
+ drivers/platform/chrome/chromeos_laptop.c     | 100 +++++++++++-------
+ .../platform/x86/intel_cht_int33fe_microb.c   |   6 +-
+ include/linux/i2c.h                           |   4 +-
+ 18 files changed, 142 insertions(+), 97 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.30.2
+
