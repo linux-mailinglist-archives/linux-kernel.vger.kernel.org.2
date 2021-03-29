@@ -2,70 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D054F34D536
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E910034D539
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhC2QeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhC2Qd7 (ORCPT
+        id S231259AbhC2Qen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:34:43 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34941 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231404AbhC2QeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:33:59 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B48AC061574;
-        Mon, 29 Mar 2021 09:33:59 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id BC3F8C72850;
-        Mon, 29 Mar 2021 18:33:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617035638;
-        bh=Xn3IzZFIpw6xK5uOfcTm61FzAKQLeGT60T6kbXvT9go=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ch9a6bgZPtQEXlrWuSed3DDKfqbmzuoRNNTrv8nU6/BOhfwepWVTp4CGYhTo9POR6
-         pSUjNYuDydHqIGTq2pXthYuhkm4NbH8Qua9hAGBqCq/AXbIgWa2ejTWeqVueYn5pUP
-         aFvRBtD0B6MlrmFinbfP+mgJh7WHNdebi5SnX9LQ=
-Date:   Mon, 29 Mar 2021 18:33:56 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v6 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <YGIBdBdQJOgbPMTw@workstation.tuxnet>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-2-clemens.gruber@pqgruber.com>
- <20210329155140.4gjtsw2qbpylv77z@pengutronix.de>
+        Mon, 29 Mar 2021 12:34:21 -0400
+Received: by mail-io1-f72.google.com with SMTP id v24so11296778ion.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:34:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=EKuiOPYTZa4B8SPETRVs18Sra54epZFcURNdr8lsLZk=;
+        b=X+6r6zfJ/v4GqOk1w2fin4EatPKefUTxRWlAi4k1Ms3jOPBcPav3AlEP3zk3mIdluE
+         uwqZw1A5NvkmQm80h6w5eyTw9sgPUUwKcrnzB4raGovQxoMgxHDruV37tDNOp7Wzmdky
+         XL89XRriGqcTnEWVxg9MQGDnhj4o66iUHHZCFRu7eA9v5p2N/SztqcpKeOB2Iz+ARO8f
+         /KIgOu+Pu4YUCGSKWSLMRfL0EiNnZEZwMcsUUsj285ygMXIfr86Qsonh+1nmm6rv+vIs
+         dGMIt4iaxXJXFRMkfce0do2JIvLvtgu5I7/7DqjUhDhAqI0tHQAozjqykV836Oomrnfj
+         KH8A==
+X-Gm-Message-State: AOAM530DoxvRTb09sBrBucwXuGWN3jyKKsmuS7YNaR8A/Svp8viIWQM4
+        SDvtqH/g9l/g7f+WlKOfGvBkMLzaL6laZu3YlcbojZQ75MfZ
+X-Google-Smtp-Source: ABdhPJwBcegClubRSEuQMfIu8Ma8uOkKXwBOk5CFQQGzEn1vWpnEDKfvOcKviQcmTzYc8Oprx4eGpapgneGT+wd6gOZLbWf2oG1l
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210329155140.4gjtsw2qbpylv77z@pengutronix.de>
+X-Received: by 2002:a02:aa92:: with SMTP id u18mr24915975jai.119.1617035661435;
+ Mon, 29 Mar 2021 09:34:21 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 09:34:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003069fb05beaf74a4@google.com>
+Subject: [syzbot] INFO: task can't die in msleep
+From:   syzbot <syzbot+3a9c5d436cf1afce2cd6@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+Hello,
 
-On Mon, Mar 29, 2021 at 05:51:40PM +0200, Uwe Kleine-König wrote:
-> Hello Clemens,
-> 
-> On Mon, Mar 29, 2021 at 02:57:02PM +0200, Clemens Gruber wrote:
-> > The hardware readout may return slightly different values than those
-> > that were set in apply due to the limited range of possible prescale and
-> > counter register values.
-> 
-> This is fine and for most hardware that's not preventable. My
-> requirement here is that 
-> 
-> 	.get_state(pwm, &state);
-> 	.apply_state(pwm, &state);
-> 
-> doesn't yield any changes.
+syzbot found the following issue on:
 
-Yes, that would not change anything.
+HEAD commit:    b4f20b70 Add linux-next specific files for 20210325
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e6bb06d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7d6f0d01f04bcd8
+dashboard link: https://syzkaller.appspot.com/bug?extid=3a9c5d436cf1afce2cd6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105da362d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a6978ad00000
 
-Thanks,
-Clemens
+The issue was bisected to:
+
+commit 766b0515d5bec4b780750773ed3009b148df8c0a
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Wed Jan 6 18:40:07 2021 +0000
+
+    net: make sure devices go through netdev_wait_all_refs
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=124939aad00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=114939aad00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=164939aad00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3a9c5d436cf1afce2cd6@syzkaller.appspotmail.com
+Fixes: 766b0515d5be ("net: make sure devices go through netdev_wait_all_refs")
+
+INFO: task syz-executor638:25158 can't die for more than 143 seconds.
+task:syz-executor638 state:D stack:26512 pid:25158 ppid:  8420 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4329 [inline]
+ __schedule+0x911/0x2160 kernel/sched/core.c:5079
+ schedule+0xcf/0x270 kernel/sched/core.c:5158
+ schedule_timeout+0x14a/0x250 kernel/time/timer.c:1878
+ schedule_timeout_uninterruptible kernel/time/timer.c:1912 [inline]
+ msleep+0xa4/0xf0 kernel/time/timer.c:2032
+ netdev_wait_allrefs net/core/dev.c:10457 [inline]
+ netdev_run_todo+0x9e8/0xe10 net/core/dev.c:10538
+ register_netdev+0x35/0x50 net/core/dev.c:10381
+ sit_init_net+0x3a4/0xac0 net/ipv6/sit.c:1917
+ ops_init+0xaf/0x470 net/core/net_namespace.c:140
+ setup_net+0x40f/0xa30 net/core/net_namespace.c:333
+ copy_net_ns+0x31e/0x760 net/core/net_namespace.c:474
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ copy_namespaces+0x385/0x440 kernel/nsproxy.c:178
+ copy_process+0x2bfe/0x71b0 kernel/fork.c:2111
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2501
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2618
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x44da69
+RSP: 002b:00007fd03f038318 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 00000000004cb4a8 RCX: 000000000044da69
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000040000200
+RBP: 00000000004cb4a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cb4ac
+R13: 00007ffc9cc08d4f R14: 00007fd03f038400 R15: 0000000000022000
+
+Showing all locks held in the system:
+5 locks held by kworker/u4:8/422:
+1 lock held by khungtaskd/1638:
+ #0: ffffffff8bf75360 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
+2 locks held by in:imklog/8122:
+ #0: ffff888014d1eff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:961
+ #1: ffff8880b9d35218 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1329 [inline]
+ #1: ffff8880b9d35218 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x21c/0x2160 kernel/sched/core.c:4996
+3 locks held by kworker/0:0/8498:
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010864d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc90001a0fda8 (fqdir_free_work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+ #2: ffffffff8bf7e470 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x44/0x430 kernel/rcu/tree.c:4018
+2 locks held by kworker/1:12/10637:
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc9000b3afda8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+2 locks held by syz-executor638/25158:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: netdev_wait_allrefs net/core/dev.c:10428 [inline]
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: netdev_run_todo+0xa13/0xe10 net/core/dev.c:10538
+1 lock held by syz-executor638/1031:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+2 locks held by syz-executor638/1086:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: cangw_pernet_exit+0xe/0x20 net/can/gw.c:1241
+2 locks held by syz-executor638/1091:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: tc_action_net_exit include/net/act_api.h:147 [inline]
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: gate_exit_net+0x22/0x360 net/sched/act_gate.c:624
+2 locks held by syz-executor638/1113:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: fib6_rules_net_exit+0xe/0x50 net/ipv6/fib6_rules.c:496
+2 locks held by syz-executor638/1198:
+ #0: ffffffff8d674910 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x2fa/0x760 net/core/net_namespace.c:470
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:799 [inline]
+ #1: ffffffff8d6883e8 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x245/0x400 net/smc/smc_pnet.c:868
+
+=============================================
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
