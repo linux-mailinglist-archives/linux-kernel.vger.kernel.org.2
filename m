@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814C434D91B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBF234D927
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhC2Ui2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        id S231197AbhC2UlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhC2Uh5 (ORCPT
+        with ESMTP id S230495AbhC2Ukg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:37:57 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D10EC061574;
-        Mon, 29 Mar 2021 13:37:57 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id o16so14180730wrn.0;
-        Mon, 29 Mar 2021 13:37:57 -0700 (PDT)
+        Mon, 29 Mar 2021 16:40:36 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03FEC061574;
+        Mon, 29 Mar 2021 13:40:35 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id a143so15104748ybg.7;
+        Mon, 29 Mar 2021 13:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Aem0mmjc+m+1Ls4c4+9Q57HeLTfug6e9XtREoWGla0s=;
-        b=Yyz6cO6mfdJ4gTm/q/IIRn+Gd9fo6a0YRZUwTtMq4g0ykMc312Ut403N0L/wIqKGmv
-         towoVO/GPQNCSCpJKtLguC/+QRRMz7J4T8F78TyeFbzQWiohay7whG+PPzrrX7rQrNrg
-         A1IdGgVh+6vl/hbC41SOby1zjIPRFyBw9sGF0zjc1yUkyt0ga9GlSLGsSFoFagGxKAlY
-         0A9zc0fzEBcPjLRbSq9D4aQDe7sP4dHsVrMSHw0qWx+GZg/15SUoCJnatic6Qy2iB6vP
-         y5k5d4/Lbu/KRZMLjwFqXMHqh0g0IAGQtBD+RCpmK14s1pOqibGV+17LEb7JBSKgFCl2
-         4fMA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FaMnHKrcqRFdMgIooSwMY251zpzffov2Wa1tFMgJcQc=;
+        b=NWXHP647lLp0tz5ggRDWXJq++xmMGdJxHith+p2+CT8rtTIE3Kc5v+GunTZ0NLkjpO
+         kxBSJ0NewzcpCyz0O5WQ2HcGBjSG3dKZdUXKBfQ3LrOQ7LGKtOgkjbLvbGBbkj1KYudF
+         WLfyVYA6bNmkhq+Ctwz8j08d4Qy8FqP8l+3fHiAk+dtu2jK2Xlx2EJMqf2aumEBOFb5s
+         3+tgZ7kLhoMZR9Ao3ursAVSaWWCxMstpk+F3JmrrOF1k/jwTjIlOb7UWxEPgdRzIGv0t
+         nIk0s6SQvbon3jahll/0VZ0UbnVoM+W+ImpLuQkBMn6tA5P2cYcfJ3j8coGeKw8xz/Ai
+         704Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Aem0mmjc+m+1Ls4c4+9Q57HeLTfug6e9XtREoWGla0s=;
-        b=APKcnnQT+tzpHl+rkhT7sfBpqLWfc57hN2jwm75kJSqUqgBxgSeB8DtejKb6bPJPZr
-         NaMFg002Zg8mb9HA7Dw2y90fjrSW8JOVRSCxYOx1pZHiBhfrn1mTV/7hqG0CN9cJrtEv
-         MndubQgLkr2KW1LPMmWU5wDFxKPCVINDeKH+WYcZsVFspcLFEcbFWWtwHr/C6nKkmrJx
-         mDLhVhTro/diTfIAHCDOxnBLNC3WO4R4s6u2wB8o6cxFbqrh3Xnb69uTeVx2MPeYSL4P
-         zMgfOL6JoFlVIKa6iJha69F39oGnc6v4D32ikRFToY4bkju1rpIsNrdkxoCsgBbsK4iT
-         yZgA==
-X-Gm-Message-State: AOAM530ZaiENetfr1Af+wT16DCey8QH83HKp79EZ92I/6ZKIbXBGmzcG
-        3OLj909T9GBKgxi5lz8c60g=
-X-Google-Smtp-Source: ABdhPJwbk6wDCyr/7t4h+Ru2dj6hjTiJekgD5rahNgY9nQO/QhGp2GU31eI13ujvkwBWaxDTybvuSg==
-X-Received: by 2002:adf:b313:: with SMTP id j19mr29717540wrd.188.1617050275883;
-        Mon, 29 Mar 2021 13:37:55 -0700 (PDT)
-Received: from [192.168.1.211] ([91.110.20.103])
-        by smtp.gmail.com with ESMTPSA id u63sm545862wmg.24.2021.03.29.13.37.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 13:37:55 -0700 (PDT)
-Subject: Re: [PATCH v3 0/6] Introduce intel_skl_int3472 module
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, tfiga@chromium.org,
-        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
-        rjw@rjwysocki.net, lenb@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <fd2fbee6-e620-a594-8377-d2f22131af29@redhat.com>
- <5d336f50-5f25-fce2-04eb-5ad450c9cd5b@gmail.com>
- <YGHsWNXha0i1OwCN@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <5bc96e11-ab7a-d084-900b-9b8fdc4a4e72@gmail.com>
-Date:   Mon, 29 Mar 2021 21:37:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FaMnHKrcqRFdMgIooSwMY251zpzffov2Wa1tFMgJcQc=;
+        b=OKwEcN1kx/qlfqhvwAzNFeqxmnK7cdp/Sg5NpEaPIa1nEuPQnGBkhvrGRIdXgJkooO
+         tsNMpzu/2roEotUiZe42IYdSemIJB+opfw9sG5tsE+Jr+7FfggyUtlDxVp3MskrOvP/c
+         TOpDq2x6lOrLscWQu0dw3tjRdzTGwE8vaiMh4x8pWUxgfi3XFHYzm8SFIiqClFJTcl9r
+         WQETDFMmT3MR1JivPm2dOu4BJwwclQ+3wLU5xx5C6lx5xi5mKvVou7WfY8TvidumUTez
+         OdWyjhwha7pPjyPA7PxZgXLvbnkaGzfttsNx+1S3xkcZ27EBWCoxCbtP/AmkRIqxDwoY
+         e2Nw==
+X-Gm-Message-State: AOAM530hR+rnnvLt3tkXA53zkg2Sd89LbPEgsvMntBV3L4tTpH2rjO5A
+        mUMcdgPThdWxZj4Fpl+11fwix6wWVcnDfy7p+HQ=
+X-Google-Smtp-Source: ABdhPJy0sW8G5Bh8dGcRLyzl71RvsAYvdfpVfDlRwDlFU1lbSGoQ1uadfPIwsWceK5QatpxnYN+5whxAIH9cW9XQN70=
+X-Received: by 2002:a25:3b55:: with SMTP id i82mr43295469yba.422.1617050434956;
+ Mon, 29 Mar 2021 13:40:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YGHsWNXha0i1OwCN@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210325184615.08526aed@coco.lan> <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
+ <87tuozyslu.fsf@meer.lwn.net> <20210325191435.GZ1719932@casper.infradead.org>
+ <87a6qrx7wf.fsf@meer.lwn.net> <20210325221437.GA1719932@casper.infradead.org>
+In-Reply-To: <20210325221437.GA1719932@casper.infradead.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 29 Mar 2021 22:40:24 +0200
+Message-ID: <CANiq72=kRzBQsjgUeuVNXRmRVN8zXzMvMn+yTWt=YhR+r2wNEg@mail.gmail.com>
+Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
-
-On 29/03/2021 16:03, Andy Shevchenko wrote:
-> On Thu, Mar 04, 2021 at 01:49:14PM +0000, Daniel Scally wrote:
->> On 04/03/2021 13:37, Hans de Goede wrote:
->>> On 2/22/21 2:07 PM, Daniel Scally wrote:
-> ...
+On Thu, Mar 25, 2021 at 11:18 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
->>>> The existing mfd/tps68470.c driver being thus superseded, it is removed.
->>> Thank you for this patch series. Since there have already been a whole
->>> bunch of review-comments, I've not taken a detailed look at this yet.
->> No problem, I'm hoping to do a v3 over the weekend anyway.
-> Do you mean v4?
+> The rust code is alredy coming though ...
+>
+> rust/kernel/buffer.rs:/// A pre-allocated buffer that implements [`core::fmt::Write`].
+>
+> so now we have three formats.  Markdown and RST are _very_ similar, but
+> not identical [1].  Oh, and even better we now have three distinct tools --
+> kerneldoc, rustdoc and sphinx.  Have the rust people reached out to you
+> about integrating the various docs?
 
+Yeah, I reached out to Jonathan a few weeks ago to discuss how we will
+approach this, because I knew using `rustdoc` and Markdown could be
+contentious ;-)
 
-Oops, I do indeed.
+This is the solution we decided to go for the RFC but, of course,
+nothing is set in stone:
 
+  1. The "out-of-line" docs in `Documentation/rust/`: these will be in
+RST as usual [*]. However, please note this does not include APIs or
+anything like that, as it is done in the C side. Only a few "general
+documents" that don't fit anywhere else are kept here.
 
-> I'm just wondering if you need any help.
+  2. The "inline" docs in Rust source files: these will be parsed by
+`rustdoc` and written in Markdown. These will contain the majority of
+the Rust documentation. `rustdoc` is designed for Rust code, and
+internally uses the Rust compiler, which comes with a number of
+advantages.
 
+The generated HTML docs will be showcased in the RFC. It is my hope
+that this way we get feedback on them and see if people agree this
+approach is worth keeping. We have put an effort (and I have been
+annoying contributors enough to that end :-) to provide high-quality
+documentation from the get-go.
 
-Thanks - I don't think so; I've just not been working on it very much
-lately. I got sidetracked with a sensor driver [1] that was pretty fun,
-so I've been focused on that instead. I'm just finishing up a v2 for
-that, and then I'll come back to this.
+Please note that we chose this way knowing well that inconsistency and
+adding "yet one more tool" needs to come with big advantages to
+offset. We think it is the best approach nevertheless!
 
+[*] I discussed with Jonathan using Markdown since Sphinx supports it.
+The main advantage would be easier refactoring of comments between the
+out- and inline docs. But this is very minor, thus mixing two formats
+inside `Documentation/` does not seem like worth it.
 
-[1]
-https://lore.kernel.org/linux-media/20210312103239.279523-2-djrscally@gmail.com/
-
+Cheers,
+Miguel
