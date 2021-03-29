@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C326034C93D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8450634CB98
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhC2I25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:28:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34208 "EHLO mail.kernel.org"
+        id S235146AbhC2Itl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:49:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233490AbhC2ISk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:18:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3988761613;
-        Mon, 29 Mar 2021 08:18:37 +0000 (UTC)
+        id S234530AbhC2IdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83A7C6193B;
+        Mon, 29 Mar 2021 08:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005917;
-        bh=MO9y2X2TYpmHs9c6mM9dk0a2itziTJp6h7Xq2GG3gms=;
+        s=korg; t=1617006723;
+        bh=yZvJKm230+BL4APwjObdqJRSSQWVaCMgEdxQP7/FmZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xuWIyDNUPq9susyq+Qa0pzoUVk6kj3xTtFeG18EjTbcjXQ3Co5yEFmUExE2ZJiHmc
-         H/RbVHaAlyEZCKLpV6uhYR5nhrqGI8XDgpPRga0G33JUtXN91KJBua7VWubgxKFNxl
-         uy/Ynbk3e2NuoQSNpitR8fFqDuFeS6gE9RDsKoQE=
+        b=pLHJPkkT90qc64LrGM4fNHPwqO+CjskAYinXjeBXDYizWl83eZjUb9Lzg+MHYBZgT
+         XzlqBRVdKP4bQkZ0nC/koIdOjPtFpRbWCYzqpzUwpPcVrPC4M3DYYZXbQR6nkO7yg2
+         S4cQPgJ3PtkbthOY2yLnW5HQiDnhN/izxWu7PBcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/221] nvme-pci: add the DISABLE_WRITE_ZEROES quirk for a Samsung PM1725a
-Date:   Mon, 29 Mar 2021 09:56:22 +0200
-Message-Id: <20210329075630.886469856@linuxfoundation.org>
+        stable@vger.kernel.org, Neal Gompa <ngompa13@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.11 067/254] btrfs: do not initialize dev stats if we have no dev_root
+Date:   Mon, 29 Mar 2021 09:56:23 +0200
+Message-Id: <20210329075635.357251509@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit abbb5f5929ec6c52574c430c5475c158a65c2a8c ]
+commit 82d62d06db404d03836cdabbca41d38646d97cbb upstream.
 
-This adds a quirk for Samsung PM1725a drive which fixes timeouts and
-I/O errors due to the fact that the controller does not properly
-handle the Write Zeroes command, dmesg log:
+Neal reported a panic trying to use -o rescue=all
 
-nvme nvme0: I/O 528 QID 10 timeout, aborting
-nvme nvme0: I/O 529 QID 10 timeout, aborting
-nvme nvme0: I/O 530 QID 10 timeout, aborting
-nvme nvme0: I/O 531 QID 10 timeout, aborting
-nvme nvme0: I/O 532 QID 10 timeout, aborting
-nvme nvme0: I/O 533 QID 10 timeout, aborting
-nvme nvme0: I/O 534 QID 10 timeout, aborting
-nvme nvme0: I/O 535 QID 10 timeout, aborting
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: Abort status: 0x0
-nvme nvme0: I/O 528 QID 10 timeout, reset controller
-nvme nvme0: controller is down; will reset: CSTS=0x3, PCI_STATUS=0x10
-nvme nvme0: Device not ready; aborting reset, CSTS=0x3
-nvme nvme0: Device not ready; aborting reset, CSTS=0x3
-nvme nvme0: Removing after probe failure status: -19
-nvme0n1: detected capacity change from 6251233968 to 0
-blk_update_request: I/O error, dev nvme0n1, sector 32776 op 0x1:(WRITE) flags 0x3000 phys_seg 6 prio class 0
-blk_update_request: I/O error, dev nvme0n1, sector 113319936 op 0x9:(WRITE_ZEROES) flags 0x800 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 1, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113319680 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 2, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113319424 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 3, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113319168 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 4, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113318912 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 5, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113318656 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-Buffer I/O error on dev nvme0n1p2, logical block 6, lost async page write
-blk_update_request: I/O error, dev nvme0n1, sector 113318400 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-blk_update_request: I/O error, dev nvme0n1, sector 113318144 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
-blk_update_request: I/O error, dev nvme0n1, sector 113317888 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
+  BUG: kernel NULL pointer dereference, address: 0000000000000030
+  PGD 0 P4D 0
+  Oops: 0000 [#1] SMP PTI
+  CPU: 0 PID: 4095 Comm: mount Not tainted 5.11.0-0.rc7.149.fc34.x86_64 #1
+  RIP: 0010:btrfs_device_init_dev_stats+0x4c/0x1f0
+  RSP: 0018:ffffa60285fbfb68 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff88b88f806498 RCX: ffff88b82e7a2a10
+  RDX: ffffa60285fbfb97 RSI: ffff88b82e7a2a10 RDI: 0000000000000000
+  RBP: ffff88b88f806b3c R08: 0000000000000000 R09: 0000000000000000
+  R10: ffff88b82e7a2a10 R11: 0000000000000000 R12: ffff88b88f806a00
+  R13: ffff88b88f806478 R14: ffff88b88f806a00 R15: ffff88b82e7a2a10
+  FS:  00007f698be1ec40(0000) GS:ffff88b937e00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000030 CR3: 0000000092c9c006 CR4: 00000000003706f0
+  Call Trace:
+  ? btrfs_init_dev_stats+0x1f/0xf0
+  btrfs_init_dev_stats+0x62/0xf0
+  open_ctree+0x1019/0x15ff
+  btrfs_mount_root.cold+0x13/0xfa
+  legacy_get_tree+0x27/0x40
+  vfs_get_tree+0x25/0xb0
+  vfs_kern_mount.part.0+0x71/0xb0
+  btrfs_mount+0x131/0x3d0
+  ? legacy_get_tree+0x27/0x40
+  ? btrfs_show_options+0x640/0x640
+  legacy_get_tree+0x27/0x40
+  vfs_get_tree+0x25/0xb0
+  path_mount+0x441/0xa80
+  __x64_sys_mount+0xf4/0x130
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f698c04e52e
 
-Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This happens because we unconditionally attempt to initialize device
+stats on mount, but we may not have been able to read the device root.
+Fix this by skipping initializing the device stats if we do not have a
+device root.
+
+Reported-by: Neal Gompa <ngompa13@gmail.com>
+CC: stable@vger.kernel.org # 5.11+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/volumes.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 99c59f93a064..4dca58f4afdf 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3247,6 +3247,7 @@ static const struct pci_device_id nvme_id_table[] = {
- 		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
- 	{ PCI_DEVICE(0x144d, 0xa822),   /* Samsung PM1725a */
- 		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY |
-+				NVME_QUIRK_DISABLE_WRITE_ZEROES|
- 				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
- 	{ PCI_DEVICE(0x1987, 0x5016),	/* Phison E16 */
- 		.driver_data = NVME_QUIRK_IGNORE_DEV_SUBNQN, },
--- 
-2.30.1
-
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7282,6 +7282,9 @@ static int btrfs_device_init_dev_stats(s
+ 	int item_size;
+ 	int i, ret, slot;
+ 
++	if (!device->fs_info->dev_root)
++		return 0;
++
+ 	key.objectid = BTRFS_DEV_STATS_OBJECTID;
+ 	key.type = BTRFS_PERSISTENT_ITEM_KEY;
+ 	key.offset = device->devid;
 
 
