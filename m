@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F6734CB6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C7934CAF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235653AbhC2IrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
+        id S232596AbhC2IlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234698AbhC2I24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:28:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E9CB614A7;
-        Mon, 29 Mar 2021 08:28:53 +0000 (UTC)
+        id S233341AbhC2IRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D79786197C;
+        Mon, 29 Mar 2021 08:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006535;
-        bh=lhAd/C0Oh0fcxGjzmcjpSz9Owt59gi0Y5cgrRYKJO6s=;
+        s=korg; t=1617005832;
+        bh=JQUZyqb78MXj8z49UGNMLLgCd8q5U5XxGdDhNop6REE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gGeNyghsUurGLflkkiK1hcrnTpwYjSzV6zsPeKQo9MIIlYTT9Mk0RKJgAaIHleLzo
-         pB1A5t/s2qqJaDeI9QCUgZxASaTLZJL5MjHTzGTRZXcRl3h9HE/lctPVQjI0lltyDi
-         l0LZL/uMNjAvr+Tbm6gtvR1iCaCzXhiz1pBH+b4Y=
+        b=Fujx+/6oar2UiETR3n0Ziw+q9REbpXbowK53Ukpx0U2AGrlaO6Wy0idu3vwLxAjYi
+         HvBEOKI+ktrChjbkxQvh/iY7RkTPSqBV47XAB9iRWKwYm9diAO1AGjdF7RA9uqyS/Q
+         RzE7N0BlRyIj7eDNjg2GGvv27qDW9qh33H6o6XhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomer Tayar <ttayar@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 036/254] habanalabs: Disable file operations after device is removed
+Subject: [PATCH 5.10 021/221] gpiolib: acpi: Add missing IRQF_ONESHOT
 Date:   Mon, 29 Mar 2021 09:55:52 +0200
-Message-Id: <20210329075634.335492396@linuxfoundation.org>
+Message-Id: <20210329075629.895499764@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,161 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit ffd123fe839700366ea79b19ac3683bf56817372 ]
+[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
 
-A device can be removed from the PCI subsystem while a process holds the
-file descriptor opened.
-In such a case, the driver attempts to kill the process, but as it is
-still possible that the process will be alive after this step, the
-device removal will complete, and we will end up with a process object
-that points to a device object which was already released.
+fixed the following coccicheck:
+./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+primary handler requested without IRQF_ONESHOT
 
-To prevent the usage of this released device object, disable the
-following file operations for this process object, and avoid the cleanup
-steps when the file descriptor is eventually closed.
-The latter is just a best effort, as memory leak will occur.
+Make sure threaded IRQs without a primary handler are always request
+with IRQF_ONESHOT
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c       | 40 ++++++++++++++++---
- .../misc/habanalabs/common/habanalabs_ioctl.c | 12 ++++++
- 2 files changed, 46 insertions(+), 6 deletions(-)
+ drivers/gpio/gpiolib-acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 6785329eee27..82c0306a9210 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -93,12 +93,19 @@ void hl_hpriv_put(struct hl_fpriv *hpriv)
- static int hl_device_release(struct inode *inode, struct file *filp)
- {
- 	struct hl_fpriv *hpriv = filp->private_data;
-+	struct hl_device *hdev = hpriv->hdev;
-+
-+	filp->private_data = NULL;
-+
-+	if (!hdev) {
-+		pr_crit("Closing FD after device was removed. Memory leak will occur and it is advised to reboot.\n");
-+		put_pid(hpriv->taskpid);
-+		return 0;
-+	}
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 49a1f8ce4baa..863f059bc498 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -174,7 +174,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
+ 	int ret, value;
  
- 	hl_cb_mgr_fini(hpriv->hdev, &hpriv->cb_mgr);
- 	hl_ctx_mgr_fini(hpriv->hdev, &hpriv->ctx_mgr);
- 
--	filp->private_data = NULL;
--
- 	hl_hpriv_put(hpriv);
- 
- 	return 0;
-@@ -107,16 +114,19 @@ static int hl_device_release(struct inode *inode, struct file *filp)
- static int hl_device_release_ctrl(struct inode *inode, struct file *filp)
- {
- 	struct hl_fpriv *hpriv = filp->private_data;
--	struct hl_device *hdev;
-+	struct hl_device *hdev = hpriv->hdev;
- 
- 	filp->private_data = NULL;
- 
--	hdev = hpriv->hdev;
-+	if (!hdev) {
-+		pr_err("Closing FD after device was removed\n");
-+		goto out;
-+	}
- 
- 	mutex_lock(&hdev->fpriv_list_lock);
- 	list_del(&hpriv->dev_node);
- 	mutex_unlock(&hdev->fpriv_list_lock);
--
-+out:
- 	put_pid(hpriv->taskpid);
- 
- 	kfree(hpriv);
-@@ -136,8 +146,14 @@ static int hl_device_release_ctrl(struct inode *inode, struct file *filp)
- static int hl_mmap(struct file *filp, struct vm_area_struct *vma)
- {
- 	struct hl_fpriv *hpriv = filp->private_data;
-+	struct hl_device *hdev = hpriv->hdev;
- 	unsigned long vm_pgoff;
- 
-+	if (!hdev) {
-+		pr_err_ratelimited("Trying to mmap after device was removed! Please close FD\n");
-+		return -ENODEV;
-+	}
-+
- 	vm_pgoff = vma->vm_pgoff;
- 	vma->vm_pgoff = HL_MMAP_OFFSET_VALUE_GET(vm_pgoff);
- 
-@@ -884,6 +900,16 @@ static int device_kill_open_processes(struct hl_device *hdev, u32 timeout)
- 	return -EBUSY;
- }
- 
-+static void device_disable_open_processes(struct hl_device *hdev)
-+{
-+	struct hl_fpriv *hpriv;
-+
-+	mutex_lock(&hdev->fpriv_list_lock);
-+	list_for_each_entry(hpriv, &hdev->fpriv_list, dev_node)
-+		hpriv->hdev = NULL;
-+	mutex_unlock(&hdev->fpriv_list_lock);
-+}
-+
- /*
-  * hl_device_reset - reset the device
-  *
-@@ -1538,8 +1564,10 @@ void hl_device_fini(struct hl_device *hdev)
- 		HL_PENDING_RESET_LONG_SEC);
- 
- 	rc = device_kill_open_processes(hdev, HL_PENDING_RESET_LONG_SEC);
--	if (rc)
-+	if (rc) {
- 		dev_crit(hdev->dev, "Failed to kill all open processes\n");
-+		device_disable_open_processes(hdev);
-+	}
- 
- 	hl_cb_pool_fini(hdev);
- 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-index d25892d61ec9..0805e1173d54 100644
---- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-@@ -5,6 +5,8 @@
-  * All Rights Reserved.
-  */
- 
-+#define pr_fmt(fmt)	"habanalabs: " fmt
-+
- #include <uapi/misc/habanalabs.h>
- #include "habanalabs.h"
- 
-@@ -667,6 +669,11 @@ long hl_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
- 	const struct hl_ioctl_desc *ioctl = NULL;
- 	unsigned int nr = _IOC_NR(cmd);
- 
-+	if (!hdev) {
-+		pr_err_ratelimited("Sending ioctl after device was removed! Please close FD\n");
-+		return -ENODEV;
-+	}
-+
- 	if ((nr >= HL_COMMAND_START) && (nr < HL_COMMAND_END)) {
- 		ioctl = &hl_ioctls[nr];
- 	} else {
-@@ -685,6 +692,11 @@ long hl_ioctl_control(struct file *filep, unsigned int cmd, unsigned long arg)
- 	const struct hl_ioctl_desc *ioctl = NULL;
- 	unsigned int nr = _IOC_NR(cmd);
- 
-+	if (!hdev) {
-+		pr_err_ratelimited("Sending ioctl after device was removed! Please close FD\n");
-+		return -ENODEV;
-+	}
-+
- 	if (nr == _IOC_NR(HL_IOCTL_INFO)) {
- 		ioctl = &hl_ioctls_control[nr];
- 	} else {
+ 	ret = request_threaded_irq(event->irq, NULL, event->handler,
+-				   event->irqflags, "ACPI:Event", event);
++				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
+ 	if (ret) {
+ 		dev_err(acpi_gpio->chip->parent,
+ 			"Failed to setup interrupt handler for %d\n",
 -- 
 2.30.1
 
