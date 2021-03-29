@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D1634C9FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610BF34CA0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhC2Iel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:34:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38380 "EHLO mail.kernel.org"
+        id S232434AbhC2Iep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233538AbhC2IVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7814761932;
-        Mon, 29 Mar 2021 08:21:21 +0000 (UTC)
+        id S232827AbhC2IVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 160EF61959;
+        Mon, 29 Mar 2021 08:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006082;
-        bh=Itvmwy1S2qgFEM+tQdjJCEoVy+P7Q+pNMr39gdJ9+AI=;
+        s=korg; t=1617006084;
+        bh=LFZ5WWqgCpb/MekxtAIe1lSomTvhgAiDJJD+Y5p9Rso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l46am3RkwEzreLKr15kvUGIbE2AOhQaiKPA4uFjLrLt+hm1HTmNECB22c7WsnSa5+
-         nCOcuVKlJ4PeqxvzxU+EGfZAlKVUBpkaNIbyT3LLpRPoBBjfoNm2XqDtPBOZmnrah8
-         H0rEVdJnQ+V4qJZQR1Bj949509JTO7fFhWK2j6Ug=
+        b=V32xWW2zx6dmrNS8lqjN7tZitTlvXCcvpOJnNmZhAGPA8fp7ip989gWUabbpeAlLB
+         1+HTI61ME/J+BgIuVtSCxcLK+iqSXrJcgS/rJTXsKWrurEQkb4B+swP91goslBdjYv
+         7lZ762DynMGXlHDqU+9bD2Hb6j+c+NWJLdLY5dmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 112/221] net: phy: broadcom: Add power down exit reset state delay
-Date:   Mon, 29 Mar 2021 09:57:23 +0200
-Message-Id: <20210329075632.954177697@linuxfoundation.org>
+Subject: [PATCH 5.10 113/221] ftgmac100: Restart MAC HW once
+Date:   Mon, 29 Mar 2021 09:57:24 +0200
+Message-Id: <20210329075632.984594778@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
@@ -40,39 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Dylan Hung <dylan_hung@aspeedtech.com>
 
-[ Upstream commit 7a1468ba0e02eee24ae1353e8933793a27198e20 ]
+[ Upstream commit 6897087323a2fde46df32917462750c069668b2f ]
 
-Per the datasheet, when we clear the power down bit, the PHY remains in
-an internal reset state for 40us and then resume normal operation.
-Account for that delay to avoid any issues in the future if
-genphy_resume() changes.
+The interrupt handler may set the flag to reset the mac in the future,
+but that flag is not cleared once the reset has occurred.
 
-Fixes: fe26821fa614 ("net: phy: broadcom: Wire suspend/resume for BCM54810")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 10cbd6407609 ("ftgmac100: Rework NAPI & interrupts handling")
+Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/broadcom.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/faraday/ftgmac100.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index cd271de9609b..69713ea36d4e 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -332,6 +332,11 @@ static int bcm54xx_resume(struct phy_device *phydev)
- 	if (ret < 0)
- 		return ret;
+diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+index 80fb1f537bb3..c9c380c50879 100644
+--- a/drivers/net/ethernet/faraday/ftgmac100.c
++++ b/drivers/net/ethernet/faraday/ftgmac100.c
+@@ -1308,6 +1308,7 @@ static int ftgmac100_poll(struct napi_struct *napi, int budget)
+ 	 */
+ 	if (unlikely(priv->need_mac_restart)) {
+ 		ftgmac100_start_hw(priv);
++		priv->need_mac_restart = false;
  
-+	/* Upon exiting power down, the PHY remains in an internal reset state
-+	 * for 40us
-+	 */
-+	fsleep(40);
-+
- 	return bcm54xx_config_init(phydev);
- }
- 
+ 		/* Re-enable "bad" interrupts */
+ 		iowrite32(FTGMAC100_INT_BAD,
 -- 
 2.30.1
 
