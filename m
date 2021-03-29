@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8353B34C87C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B3234CB22
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhC2IW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59002 "EHLO mail.kernel.org"
+        id S234618AbhC2Ing (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhC2IOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D4A61477;
-        Mon, 29 Mar 2021 08:14:44 +0000 (UTC)
+        id S233659AbhC2IZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:25:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F783619AE;
+        Mon, 29 Mar 2021 08:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005685;
-        bh=4VQOAETgK4tCSOh11+Uk4AmzYSjvyWfk78A8is7pybo=;
+        s=korg; t=1617006312;
+        bh=ur5QoLtOwu6/H7SFtp2hAiwQK1B7phpLPDJ6jcafkIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yINcY1AlipxuMkQHZ5Kbk/zOoJiwGwZnqtPq30tezl1YyAGslb7FFj+DacUyjgrdU
-         5fj+7xvZ2nksMSFIaSM56/o1TYr9OPNCaLX8K9xhL6MV7DKuL3L9X6gfDekkYIxWmU
-         r0HFrxcxf2ubHEbG+NXzjXziT5O/53tkRx8nUL10=
+        b=E7gSxKEBgNtAnGXsJY6nREDEcRPCAVLzHGeHK3WTkKZAlsVdemfpEkXr4em/vtqDz
+         a3NVyY03RMiJXkI8t35n20BmsrllzmeKBj9GWBbY4u/Uj8x4ag9nLXmeY8I6vGhZSU
+         Og4e3PAvoSJ88ohg/ZdzcUcWzQfh5nP/A+XofpfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/111] octeontx2-af: fix infinite loop in unmapping NPC counter
+Subject: [PATCH 5.10 178/221] RDMA/cxgb4: Fix adapter LE hash errors while destroying ipv6 listening server
 Date:   Mon, 29 Mar 2021 09:58:29 +0200
-Message-Id: <20210329075617.910112474@linuxfoundation.org>
+Message-Id: <20210329075635.089834647@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-[ Upstream commit 64451b98306bf1334a62bcd020ec92bdb4cb68db ]
+[ Upstream commit 3408be145a5d6418ff955fe5badde652be90e700 ]
 
-unmapping npc counter works in a way by traversing all mcam
-entries to find which mcam rule is associated with counter.
-But loop cursor variable 'entry' is not incremented before
-checking next mcam entry which resulting in infinite loop.
+Not setting the ipv6 bit while destroying ipv6 listening servers may
+result in potential fatal adapter errors due to lookup engine memory hash
+errors. Therefore always set ipv6 field while destroying ipv6 listening
+servers.
 
-This in turn hogs the kworker thread forever and no other
-mbox message is processed by AF driver after that.
-Fix this by updating entry value before checking next
-mcam entry.
-
-Fixes: a958dd59f9ce ("octeontx2-af: Map or unmap NPC MCAM entry and counter")
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 830662f6f032 ("RDMA/cxgb4: Add support for active and passive open connection with IPv6 address")
+Link: https://lore.kernel.org/r/20210324190453.8171-1-bharat@chelsio.com
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 15f70273e29c..d82a519a0cd9 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -1967,10 +1967,10 @@ int rvu_mbox_handler_npc_mcam_free_counter(struct rvu *rvu,
- 		index = find_next_bit(mcam->bmap, mcam->bmap_entries, entry);
- 		if (index >= mcam->bmap_entries)
- 			break;
-+		entry = index + 1;
- 		if (mcam->entry2cntr_map[index] != req->cntr)
- 			continue;
- 
--		entry = index + 1;
- 		npc_unmap_mcam_entry_and_cntr(rvu, mcam, blkaddr,
- 					      index, req->cntr);
- 	}
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 8769e7aa097f..81903749d241 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -3610,13 +3610,13 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
+ 	    ep->com.local_addr.ss_family == AF_INET) {
+ 		err = cxgb4_remove_server_filter(
+ 			ep->com.dev->rdev.lldi.ports[0], ep->stid,
+-			ep->com.dev->rdev.lldi.rxq_ids[0], 0);
++			ep->com.dev->rdev.lldi.rxq_ids[0], false);
+ 	} else {
+ 		struct sockaddr_in6 *sin6;
+ 		c4iw_init_wr_wait(ep->com.wr_waitp);
+ 		err = cxgb4_remove_server(
+ 				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+-				ep->com.dev->rdev.lldi.rxq_ids[0], 0);
++				ep->com.dev->rdev.lldi.rxq_ids[0], true);
+ 		if (err)
+ 			goto done;
+ 		err = c4iw_wait_for_reply(&ep->com.dev->rdev, ep->com.wr_waitp,
 -- 
 2.30.1
 
