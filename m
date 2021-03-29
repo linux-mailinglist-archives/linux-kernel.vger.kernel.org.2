@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C1E34CBD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE0E34CA2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236380AbhC2Ix2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
+        id S233374AbhC2IfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234013AbhC2Iee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3DE61864;
-        Mon, 29 Mar 2021 08:34:30 +0000 (UTC)
+        id S233087AbhC2IVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5F261878;
+        Mon, 29 Mar 2021 08:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006871;
-        bh=Aa15mx8PmigcSszyLxha9b0HRqmadViSukRDRdTfQ/U=;
+        s=korg; t=1617006098;
+        bh=e53U7nlaCOALcoWHSz0ckvm1wTTWN1D9h3L20DQAsZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZuaqkWHLJfxeRZv9Fo7g46pbsWoaTD6KEZiLuJRTPr8t6VRWvMElyi2iYHhOzQG6r
-         rt6r/Np8au2GG4QG3qapNcZP9uq09xs6XO7/kBU9Ni9ZEQpGsDZ3twIDi0aDTktRHn
-         burm4kkYWz+waTRyC3iCzZfq89rVLmf7c6XgG7eE=
+        b=lpZZMhEjl3l5vCXxNxi04Lcb0L+e0wcRHZvv1qYFBvxeXtqAYHP4LdLbnXg15PJpF
+         OumpJ4c9iu2s/T3dUQrR0K64db4LAAxqUof2Akxma+FjmqXoPnbicXsGloVwi/PP48
+         toP/KYiiKFvEuJWEKsxDrylAwsM2UxIIGOZEEsHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        William Tu <u9012063@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 133/254] net: phy: broadcom: Add power down exit reset state delay
+Subject: [PATCH 5.10 118/221] selftests/bpf: Set gopt opt_class to 0 if get tunnel opt failed
 Date:   Mon, 29 Mar 2021 09:57:29 +0200
-Message-Id: <20210329075637.589414757@linuxfoundation.org>
+Message-Id: <20210329075633.141934628@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 7a1468ba0e02eee24ae1353e8933793a27198e20 ]
+[ Upstream commit 31254dc9566221429d2cfb45fd5737985d70f2b6 ]
 
-Per the datasheet, when we clear the power down bit, the PHY remains in
-an internal reset state for 40us and then resume normal operation.
-Account for that delay to avoid any issues in the future if
-genphy_resume() changes.
+When fixing the bpf test_tunnel.sh geneve failure. I only fixed the IPv4
+part but forgot the IPv6 issue. Similar with the IPv4 fixes 557c223b643a
+("selftests/bpf: No need to drop the packet when there is no geneve opt"),
+when there is no tunnel option and bpf_skb_get_tunnel_opt() returns error,
+there is no need to drop the packets and break all geneve rx traffic.
+Just set opt_class to 0 and keep returning TC_ACT_OK at the end.
 
-Fixes: fe26821fa614 ("net: phy: broadcom: Wire suspend/resume for BCM54810")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 557c223b643a ("selftests/bpf: No need to drop the packet when there is no geneve opt")
+Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: William Tu <u9012063@gmail.com>
+Link: https://lore.kernel.org/bpf/20210309032214.2112438-1-liuhangbin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/broadcom.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 8a4ec3222168..ec45a1608309 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -332,6 +332,11 @@ static int bcm54xx_resume(struct phy_device *phydev)
- 	if (ret < 0)
- 		return ret;
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index 9afe947cfae9..ba6eadfec565 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -508,10 +508,8 @@ int _ip6geneve_get_tunnel(struct __sk_buff *skb)
+ 	}
  
-+	/* Upon exiting power down, the PHY remains in an internal reset state
-+	 * for 40us
-+	 */
-+	fsleep(40);
-+
- 	return bcm54xx_config_init(phydev);
- }
+ 	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
+-	if (ret < 0) {
+-		ERROR(ret);
+-		return TC_ACT_SHOT;
+-	}
++	if (ret < 0)
++		gopt.opt_class = 0;
  
+ 	bpf_trace_printk(fmt, sizeof(fmt),
+ 			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
 -- 
 2.30.1
 
