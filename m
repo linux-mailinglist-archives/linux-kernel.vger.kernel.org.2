@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE1434D0E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A9634D0E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhC2NDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbhC2NDo (ORCPT
+        id S231248AbhC2NEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:04:23 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:39793 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC2NEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:03:44 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEA3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:03:44 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id u21so19274322ejo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6T1rMbw5ZcsE5ti8gJc484lBR49yWGMrMkyIroVvTA=;
-        b=E9jjE46frS6Ze0NpluGM+E3KK301B9ASIG7y90hoIW8rnMQPvG6D4eNmZ6ziTBD1bR
-         +xmyZqeLAK61JhWwzYAi0pVD36WQNisPhSLwrwx6BqKrlfvBuayLG6zYBGMMJey7P6qM
-         t1iaBZYlyuvGfbhsD9hMi2ZHgtdrLHuENo67nCUTJ0/JkJoRptCa36na8l4+lhnSIgyb
-         bsMSq8PCdit1cLHi8hj8EdVqbH3Azm0tGsP87ueXDJ1trooBb+RCmFOBnZOqTHWphp8f
-         DxlAY74Hp2joww8N5FF6MQQv0UCyuUkhWUKNXDtEWPzt9j9zMarFAQhaqyRXQGz1a+VM
-         Xasw==
+        Mon, 29 Mar 2021 09:04:00 -0400
+Received: by mail-oi1-f174.google.com with SMTP id i81so12986911oif.6;
+        Mon, 29 Mar 2021 06:04:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6T1rMbw5ZcsE5ti8gJc484lBR49yWGMrMkyIroVvTA=;
-        b=ibywfpTVnDFjiHRhw5dpDAsOFw5NhB3ycNZzz0XZxBsVqMsqMzyhNw2IBMrbYCWmoa
-         ZST/6xlMy1YG9XOjFxcUP3KIf0vswvwLOQPfMAOc5sOtbvXP0jYV57svBAO7NNrahcb2
-         lwglbOLgHjG6u6n4msUxI6hZwV71b8ewDwCSjvP51mxE1H6hwPOHE59wK8oZKIA90n7h
-         u7aSBpd2/Rfifd5cRTXq/69KzpsE4ZIu9Rm6WxYtkcU9r2pLlG3D4J5DBCDxhkqlHAOj
-         6vidizUUM+dmuq5FWssZ68mcdWTvfet58uzR8+Z93ZZTncYsf0mMoeXpQzABJmnO0zMA
-         tTOw==
-X-Gm-Message-State: AOAM531iuPh7yGh31v5QOdn4Dh+Z1iRLcshdYshHTOR3cwpxp+mLZVJa
-        8BjfxGTWL43rs0nEDbTDiMwGhaE1iwg5eQ==
-X-Google-Smtp-Source: ABdhPJxf1YwoyYXKusr2cP9YfulH6QiEHXqmay9nX5YOLNnlQan2hbV51ZX5In2i/UB6MqxKHcs0ZQ==
-X-Received: by 2002:a17:906:7ac9:: with SMTP id k9mr28844155ejo.229.1617023023020;
-        Mon, 29 Mar 2021 06:03:43 -0700 (PDT)
-Received: from localhost.localdomain ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id eo22sm8299861ejc.0.2021.03.29.06.03.42
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Y1aIiE7SFwLQK579HkpbIqGKLeyiA5YPx8hVoVVgXFQ=;
+        b=BcScOans1nnoINUCY/3Sal7AMheU5Qv7Di1q4kPXS1u+m6Ql8c0ORO+K4/SjLHWOro
+         wCASqsrtGIDPpFT9SKvfk/l6oM/zEYLg2NFJU1DjQWEGws1i1Xgv5dZsdg7J8/Wcy3te
+         0BOilnoXtGDPt2r51T1qfASUhF3D6yehoaz3Uc5R4uN3axIwZ/Sh1fF6p1Rk7bcXlvzG
+         R4712kwEIaMQSVYbzoa/RHJkGKy+hwLBRSPWB3rGxyIGsg0pdMK0vrkBkPv2Dp/Kh57H
+         +HRY2Sgyfb2EJZST7CYSiEr1qblpNKnBOIPj7HIbizOJ/KNtkXVO1Cty8fuUhIvY5X3o
+         wrjw==
+X-Gm-Message-State: AOAM531M3/Xvdike69TOlc7j3Fll88oMp8dwSy3p3F1RmK5aNg72estx
+        GFIztVJDqJmb2gp26VxnOQ==
+X-Google-Smtp-Source: ABdhPJxVuo/+GjIyZRUdPE+WRTKXBoClchzvVKeZT69JaPvZAiRQuZKQWu0b5ZjOPvHdZRAEBZmUjQ==
+X-Received: by 2002:aca:6545:: with SMTP id j5mr18291241oiw.31.1617023038568;
+        Mon, 29 Mar 2021 06:03:58 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w12sm4346423oti.53.2021.03.29.06.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:03:42 -0700 (PDT)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     rostedt@goodmis.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH] tracing: Remove unused argument from "ring_buffer_time_stamp()
-Date:   Mon, 29 Mar 2021 16:03:31 +0300
-Message-Id: <20210329130331.199402-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 29 Mar 2021 06:03:57 -0700 (PDT)
+Received: (nullmailer pid 2404780 invoked by uid 1000);
+        Mon, 29 Mar 2021 13:03:52 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, hui.liu@mediatek.com,
+        sean.wang@mediatek.com, erin.lo@mediatek.com, jg_poxu@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, biao.huang@mediatek.com,
+        srv_heupstream@mediatek.com, matthias.bgg@gmail.com,
+        linus.walleij@linaro.org, sean.wang@kernel.org,
+        eddie.huang@mediatek.com, hongzhou.yang@mediatek.com,
+        sj.huang@mediatek.com, seiya.wang@mediatek.com,
+        linux-gpio@vger.kernel.org, robh+dt@kernel.org
+In-Reply-To: <20210329065047.8388-3-zhiyong.tao@mediatek.com>
+References: <20210329065047.8388-1-zhiyong.tao@mediatek.com> <20210329065047.8388-3-zhiyong.tao@mediatek.com>
+Subject: Re: [PATCH 2/6] dt-bindings: pinctrl: mt8195: add binding document
+Date:   Mon, 29 Mar 2021 08:03:52 -0500
+Message-Id: <1617023032.510147.2404779.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "cpu" parameter is not being used by the function.
+On Mon, 29 Mar 2021 14:50:43 +0800, Zhiyong Tao wrote:
+> The commit adds mt8195 compatible node in binding document.
+> 
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> ---
+>  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 152 ++++++++++++++++++
+>  1 file changed, 152 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> 
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- include/linux/ring_buffer.h | 2 +-
- kernel/trace/ring_buffer.c  | 2 +-
- kernel/trace/trace.c        | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 057b7ed4fe24..dac53fd3afea 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -181,7 +181,7 @@ unsigned long ring_buffer_commit_overrun_cpu(struct trace_buffer *buffer, int cp
- unsigned long ring_buffer_dropped_events_cpu(struct trace_buffer *buffer, int cpu);
- unsigned long ring_buffer_read_events_cpu(struct trace_buffer *buffer, int cpu);
- 
--u64 ring_buffer_time_stamp(struct trace_buffer *buffer, int cpu);
-+u64 ring_buffer_time_stamp(struct trace_buffer *buffer);
- void ring_buffer_normalize_time_stamp(struct trace_buffer *buffer,
- 				      int cpu, u64 *ts);
- void ring_buffer_set_clock(struct trace_buffer *buffer,
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index f4216df58e31..2c0ee6484990 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -1080,7 +1080,7 @@ static inline u64 rb_time_stamp(struct trace_buffer *buffer)
- 	return ts << DEBUG_SHIFT;
- }
- 
--u64 ring_buffer_time_stamp(struct trace_buffer *buffer, int cpu)
-+u64 ring_buffer_time_stamp(struct trace_buffer *buffer)
- {
- 	u64 time;
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c8e54b674d3e..3c605957bb5c 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -771,7 +771,7 @@ static u64 buffer_ftrace_now(struct array_buffer *buf, int cpu)
- 	if (!buf->buffer)
- 		return trace_clock_local();
- 
--	ts = ring_buffer_time_stamp(buf->buffer, cpu);
-+	ts = ring_buffer_time_stamp(buf->buffer);
- 	ring_buffer_normalize_time_stamp(buf->buffer, cpu, &ts);
- 
- 	return ts;
-@@ -7173,7 +7173,7 @@ static int tracing_time_stamp_mode_open(struct inode *inode, struct file *file)
- u64 tracing_event_time_stamp(struct trace_buffer *buffer, struct ring_buffer_event *rbe)
- {
- 	if (rbe == this_cpu_read(trace_buffered_event))
--		return ring_buffer_time_stamp(buffer, smp_processor_id());
-+		return ring_buffer_time_stamp(buffer);
- 
- 	return ring_buffer_event_time_stamp(buffer, rbe);
- }
-@@ -8087,7 +8087,7 @@ tracing_stats_read(struct file *filp, char __user *ubuf,
- 		trace_seq_printf(s, "oldest event ts: %5llu.%06lu\n",
- 								t, usec_rem);
- 
--		t = ns2usecs(ring_buffer_time_stamp(trace_buf->buffer, cpu));
-+		t = ns2usecs(ring_buffer_time_stamp(trace_buf->buffer));
- 		usec_rem = do_div(t, USEC_PER_SEC);
- 		trace_seq_printf(s, "now ts: %5llu.%06lu\n", t, usec_rem);
- 	} else {
-@@ -8096,7 +8096,7 @@ tracing_stats_read(struct file *filp, char __user *ubuf,
- 				ring_buffer_oldest_event_ts(trace_buf->buffer, cpu));
- 
- 		trace_seq_printf(s, "now ts: %llu\n",
--				ring_buffer_time_stamp(trace_buf->buffer, cpu));
-+				ring_buffer_time_stamp(trace_buf->buffer));
- 	}
- 
- 	cnt = ring_buffer_dropped_events_cpu(trace_buf->buffer, cpu);
--- 
-2.25.1
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.example.dts:19:18: fatal error: dt-bindings/pinctrl/mt8195-pinfunc.h: No such file or directory
+   19 |         #include <dt-bindings/pinctrl/mt8195-pinfunc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1380: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1459436
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
