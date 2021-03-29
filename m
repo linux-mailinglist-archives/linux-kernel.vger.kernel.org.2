@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A567834C484
+	by mail.lfdr.de (Postfix) with ESMTP id F0C2434C485
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhC2HDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:03:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:20038 "EHLO mga14.intel.com"
+        id S231609AbhC2HDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:03:42 -0400
+Received: from mga14.intel.com ([192.55.52.115]:20045 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231142AbhC2HCt (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:02:49 -0400
-IronPort-SDR: aJL+auJtBEQiVgaWVrYcIjf3TTi4+ovnyHwl2Z+PfCngp3uqGM8sE3hCljlyTFOCfKsy8/nZbG
- TuAieczAP19w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="190956327"
+        id S231424AbhC2HCw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:02:52 -0400
+IronPort-SDR: fFhIIcPe0HTbrbs9SIdjqMNga7CTdeDESjMwHBnbLYzR2t63twmwXxMhd54oL11vm1aNitGTzJ
+ c9WUvW0BAsTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="190956335"
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="190956327"
+   d="scan'208";a="190956335"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:02:49 -0700
-IronPort-SDR: yGLUzK3GJnqQ2QCIOoFzW1kgLyoGxPlNSWIABsqw7H1n8QAZGoc4vgGCCrv6lLkEKxcjtv5mPA
- SUD+TiNAurmw==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:02:51 -0700
+IronPort-SDR: AlxYYldW18YTeLt55oiZGzbVqy1hXAjrcRJJwsXm7WGVGO3dVi4qSkZFkGNdz14kXP17Q5tbfY
+ 3lE5ObVsh8fw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="444677669"
+   d="scan'208";a="444677691"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:02:46 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:02:49 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v3 25/27] perf tests: Support 'Convert perf time to TSC' test for hybrid
-Date:   Mon, 29 Mar 2021 15:00:44 +0800
-Message-Id: <20210329070046.8815-26-yao.jin@linux.intel.com>
+Subject: [PATCH v3 26/27] perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+Date:   Mon, 29 Mar 2021 15:00:45 +0800
+Message-Id: <20210329070046.8815-27-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210329070046.8815-1-yao.jin@linux.intel.com>
 References: <20210329070046.8815-1-yao.jin@linux.intel.com>
@@ -41,63 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since for "cycles:u' on hybrid platform, it creates two "cycles".
-So the second evsel in evlist also needs initialization.
+Currently we don't support shadow stat for hybrid.
 
-With this patch,
+  root@ssp-pwrt-002:~# ./perf stat -e cycles,instructions -a -- sleep 1
 
-  # ./perf test 71
-  71: Convert perf time to TSC                                        : Ok
+   Performance counter stats for 'system wide':
+
+      12,883,109,591      cpu_core/cycles/
+       6,405,163,221      cpu_atom/cycles/
+         555,553,778      cpu_core/instructions/
+         841,158,734      cpu_atom/instructions/
+
+         1.002644773 seconds time elapsed
+
+Now there is no shadow stat 'insn per cycle' reported. We will support
+it later and now just skip the 'perf stat metrics (shadow stat) test'.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v3:
  - No functional change.
 
- tools/perf/tests/perf-time-to-tsc.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ tools/perf/tests/shell/stat+shadow_stat.sh | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
-index 680c3cffb128..72f268c6cc5d 100644
---- a/tools/perf/tests/perf-time-to-tsc.c
-+++ b/tools/perf/tests/perf-time-to-tsc.c
-@@ -20,6 +20,7 @@
- #include "tsc.h"
- #include "mmap.h"
- #include "tests.h"
-+#include "pmu.h"
+diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
+index ebebd3596cf9..e6e35fc6c882 100755
+--- a/tools/perf/tests/shell/stat+shadow_stat.sh
++++ b/tools/perf/tests/shell/stat+shadow_stat.sh
+@@ -7,6 +7,9 @@ set -e
+ # skip if system-wide mode is forbidden
+ perf stat -a true > /dev/null 2>&1 || exit 2
  
- #define CHECK__(x) {				\
- 	while ((x) < 0) {			\
-@@ -66,6 +67,10 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
- 	u64 test_tsc, comm1_tsc, comm2_tsc;
- 	u64 test_time, comm1_time = 0, comm2_time = 0;
- 	struct mmap *md;
-+	bool hybrid = false;
++# skip if on hybrid platform
++perf stat -a -e cycles sleep 1 2>&1 | grep -e cpu_core && exit 2
 +
-+	if (perf_pmu__has_hybrid())
-+		hybrid = true;
- 
- 	threads = thread_map__new(-1, getpid(), UINT_MAX);
- 	CHECK_NOT_NULL__(threads);
-@@ -88,6 +93,17 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
- 	evsel->core.attr.disabled = 1;
- 	evsel->core.attr.enable_on_exec = 0;
- 
-+	/*
-+	 * For hybrid "cycles:u", it creates two events.
-+	 * Init the second evsel here.
-+	 */
-+	if (hybrid) {
-+		evsel = evsel__next(evsel);
-+		evsel->core.attr.comm = 1;
-+		evsel->core.attr.disabled = 1;
-+		evsel->core.attr.enable_on_exec = 0;
-+	}
-+
- 	CHECK__(evlist__open(evlist));
- 
- 	CHECK__(evlist__mmap(evlist, UINT_MAX));
+ test_global_aggr()
+ {
+ 	perf stat -a --no-big-num -e cycles,instructions sleep 1  2>&1 | \
 -- 
 2.17.1
 
