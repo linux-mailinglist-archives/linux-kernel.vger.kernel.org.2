@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD80134C762
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6415634CC39
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhC2IO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
+        id S236923AbhC2I5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232466AbhC2IJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B60261481;
-        Mon, 29 Mar 2021 08:09:12 +0000 (UTC)
+        id S234890AbhC2Ihc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D99BD619C1;
+        Mon, 29 Mar 2021 08:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005353;
-        bh=XawIMJz7FzR1Frd7lLlJZngoYzet05TmnMIy7rvq2r0=;
+        s=korg; t=1617007023;
+        bh=PApl10GyvEwfYrdjagKR3garNXgNNPAlHSkugc5DqVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V1dJDVQroP3513btwEEb635XMPfWVjkutFSEpbVCrfa/yocTgjlnWW9Jah3kmznvv
-         Hvx1iLxHbs88fSUFmuONkbDeqGloajrHYkZfLhQC8FEsV8BAdtBKU6Rq0b0FBu0X9C
-         Mlc/jrSll3mu7lrXkOtdNbOzsdIUqaulBlakOjPM=
+        b=URQaIG9a64qU6QurnrA9UKZqV1Kn+YFffpbEOHHg2DHrk09iSGDm1OVVtMT+p60Wd
+         EkfSXjKwdCp+1zHhkzo5Ga8GOTnJjx9KpnM5ZzIwvYQJAVAR9dIJWwEVmU1xo+fA5r
+         GvT+D7bCy+K4kvvqmFoPTcfO9O0PsjDqztFCWr5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 51/72] drm/msm: fix shutdown hook in case GPU components failed to bind
+Subject: [PATCH 5.11 191/254] platform/x86: dell-wmi-sysman: Make it safe to call exit_foo_attributes() multiple times
 Date:   Mon, 29 Mar 2021 09:58:27 +0200
-Message-Id: <20210329075611.960226403@linuxfoundation.org>
+Message-Id: <20210329075639.393457577@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 623f279c77811475ac8fd5635cc4e4451aa71291 ]
+[ Upstream commit 2d0c418c91d8c86a1b9fb254dda842ada9919513 ]
 
-If GPU components have failed to bind, shutdown callback would fail with
-the following backtrace. Add safeguard check to stop that oops from
-happening and allow the board to reboot.
+During some of the error-exit paths it is possible that
+release_attributes_data() will get called multiple times,
+which results in exit_foo_attributes() getting called multiple
+times.
 
-[   66.617046] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[   66.626066] Mem abort info:
-[   66.628939]   ESR = 0x96000006
-[   66.632088]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   66.637542]   SET = 0, FnV = 0
-[   66.640688]   EA = 0, S1PTW = 0
-[   66.643924] Data abort info:
-[   66.646889]   ISV = 0, ISS = 0x00000006
-[   66.650832]   CM = 0, WnR = 0
-[   66.653890] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000107f81000
-[   66.660505] [0000000000000000] pgd=0000000100bb2003, p4d=0000000100bb2003, pud=0000000100897003, pmd=0000000000000000
-[   66.671398] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[   66.677115] Modules linked in:
-[   66.680261] CPU: 6 PID: 352 Comm: reboot Not tainted 5.11.0-rc2-00309-g79e3faa756b2 #38
-[   66.688473] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-[   66.695347] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[   66.701507] pc : msm_atomic_commit_tail+0x78/0x4e0
-[   66.706437] lr : commit_tail+0xa4/0x184
-[   66.710381] sp : ffff8000108f3af0
-[   66.713791] x29: ffff8000108f3af0 x28: ffff418c44337000
-[   66.719242] x27: 0000000000000000 x26: ffff418c40a24490
-[   66.724693] x25: ffffd3a842a4f1a0 x24: 0000000000000008
-[   66.730146] x23: ffffd3a84313f030 x22: ffff418c444ce000
-[   66.735598] x21: ffff418c408a4980 x20: 0000000000000000
-[   66.741049] x19: 0000000000000000 x18: ffff800010710fbc
-[   66.746500] x17: 000000000000000c x16: 0000000000000001
-[   66.751954] x15: 0000000000010008 x14: 0000000000000068
-[   66.757405] x13: 0000000000000001 x12: 0000000000000000
-[   66.762855] x11: 0000000000000001 x10: 00000000000009b0
-[   66.768306] x9 : ffffd3a843192000 x8 : ffff418c44337000
-[   66.773757] x7 : 0000000000000000 x6 : 00000000a401b34e
-[   66.779210] x5 : 00ffffffffffffff x4 : 0000000000000000
-[   66.784660] x3 : 0000000000000000 x2 : ffff418c444ce000
-[   66.790111] x1 : ffffd3a841dce530 x0 : ffff418c444cf000
-[   66.795563] Call trace:
-[   66.798075]  msm_atomic_commit_tail+0x78/0x4e0
-[   66.802633]  commit_tail+0xa4/0x184
-[   66.806217]  drm_atomic_helper_commit+0x160/0x390
-[   66.811051]  drm_atomic_commit+0x4c/0x60
-[   66.815082]  drm_atomic_helper_disable_all+0x1f4/0x210
-[   66.820355]  drm_atomic_helper_shutdown+0x80/0x130
-[   66.825276]  msm_pdev_shutdown+0x14/0x20
-[   66.829303]  platform_shutdown+0x28/0x40
-[   66.833330]  device_shutdown+0x158/0x330
-[   66.837357]  kernel_restart+0x40/0xa0
-[   66.841122]  __do_sys_reboot+0x228/0x250
-[   66.845148]  __arm64_sys_reboot+0x28/0x34
-[   66.849264]  el0_svc_common.constprop.0+0x74/0x190
-[   66.854187]  do_el0_svc+0x24/0x90
-[   66.857595]  el0_svc+0x14/0x20
-[   66.860739]  el0_sync_handler+0x1a4/0x1b0
-[   66.864858]  el0_sync+0x174/0x180
-[   66.868269] Code: 1ac020a0 2a000273 eb02007f 54ffff01 (f9400285)
-[   66.874525] ---[ end trace 20dedb2a3229fec8 ]---
+Make it safe to call exit_foo_attributes() multiple times,
+avoiding double-free()s in this case.
 
-Fixes: 9d5cbf5fe46e ("drm/msm: add shutdown support for display platform_driver")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Note that release_attributes_data() really should only be called
+once during error-exit paths. This will be fixed in a separate patch
+and it is good to have the exit_foo_attributes() functions modified
+this way regardless.
+
+Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
+Cc: Divya Bharathi <Divya_Bharathi@dell.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321115901.35072-4-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/platform/x86/dell-wmi-sysman/enum-attributes.c    | 3 +++
+ drivers/platform/x86/dell-wmi-sysman/int-attributes.c     | 3 +++
+ drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c | 3 +++
+ drivers/platform/x86/dell-wmi-sysman/string-attributes.c  | 3 +++
+ 4 files changed, 12 insertions(+)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 81de5e165955..08ff9d7645d7 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -1363,6 +1363,10 @@ static int msm_pdev_remove(struct platform_device *pdev)
- static void msm_pdev_shutdown(struct platform_device *pdev)
- {
- 	struct drm_device *drm = platform_get_drvdata(pdev);
-+	struct msm_drm_private *priv = drm ? drm->dev_private : NULL;
+diff --git a/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c b/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
+index 80f4b7785c6c..091e48c217ed 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
++++ b/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
+@@ -185,5 +185,8 @@ void exit_enum_attributes(void)
+ 			sysfs_remove_group(wmi_priv.enumeration_data[instance_id].attr_name_kobj,
+ 								&enumeration_attr_group);
+ 	}
++	wmi_priv.enumeration_instances_count = 0;
 +
-+	if (!priv || !priv->kms)
-+		return;
- 
- 	drm_atomic_helper_shutdown(drm);
+ 	kfree(wmi_priv.enumeration_data);
++	wmi_priv.enumeration_data = NULL;
+ }
+diff --git a/drivers/platform/x86/dell-wmi-sysman/int-attributes.c b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
+index 75aedbb733be..8a49ba6e44f9 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
++++ b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
+@@ -175,5 +175,8 @@ void exit_int_attributes(void)
+ 			sysfs_remove_group(wmi_priv.integer_data[instance_id].attr_name_kobj,
+ 								&integer_attr_group);
+ 	}
++	wmi_priv.integer_instances_count = 0;
++
+ 	kfree(wmi_priv.integer_data);
++	wmi_priv.integer_data = NULL;
+ }
+diff --git a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
+index 3abcd95477c0..834b3e82ad9f 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
++++ b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
+@@ -183,5 +183,8 @@ void exit_po_attributes(void)
+ 			sysfs_remove_group(wmi_priv.po_data[instance_id].attr_name_kobj,
+ 								&po_attr_group);
+ 	}
++	wmi_priv.po_instances_count = 0;
++
+ 	kfree(wmi_priv.po_data);
++	wmi_priv.po_data = NULL;
+ }
+diff --git a/drivers/platform/x86/dell-wmi-sysman/string-attributes.c b/drivers/platform/x86/dell-wmi-sysman/string-attributes.c
+index ac75dce88a4c..552537852459 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/string-attributes.c
++++ b/drivers/platform/x86/dell-wmi-sysman/string-attributes.c
+@@ -155,5 +155,8 @@ void exit_str_attributes(void)
+ 			sysfs_remove_group(wmi_priv.str_data[instance_id].attr_name_kobj,
+ 								&str_attr_group);
+ 	}
++	wmi_priv.str_instances_count = 0;
++
+ 	kfree(wmi_priv.str_data);
++	wmi_priv.str_data = NULL;
  }
 -- 
 2.30.1
