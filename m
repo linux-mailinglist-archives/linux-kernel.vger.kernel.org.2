@@ -2,311 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5707D34DC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890F534DC1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhC2Wu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:50:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230306AbhC2Wut (ORCPT
+        id S231864AbhC2WzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhC2WzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:50:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617058248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEp/AWms1iQPM6gX6QYU8HGZGwUHBY8T+uSbGj6gOv0=;
-        b=R/YbcfjzfF++vgHKMAppi64gVfxm9bsgPobTnU8f29Gg30FEmbnfCrGNqTidgCWPOGizrA
-        EXPmIo2+k0QkyoQKCcfYpGl+kMvxY0iMLYXhTT22N14ZWHsumbeGgcpPTt9lbnn/0ek7Co
-        fExntP9MbOD2mQ2fYAyhz++/74ABf5g=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-d0TPFyuZOmWXhQyUR_-3NA-1; Mon, 29 Mar 2021 18:50:46 -0400
-X-MC-Unique: d0TPFyuZOmWXhQyUR_-3NA-1
-Received: by mail-qt1-f197.google.com with SMTP id w8so6344528qtk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:50:46 -0700 (PDT)
+        Mon, 29 Mar 2021 18:55:07 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29204C061762;
+        Mon, 29 Mar 2021 15:55:07 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id ay2so5141165plb.3;
+        Mon, 29 Mar 2021 15:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=riwS4fKZmYi1s9ahYLZfXUq5/tOglH8JPYYvD9weK5o=;
+        b=OR9oTxQta8eqpIy/h4iAVKRA/cVaqmQaiJDc21WMR4gHeGr9Mc2M6/9p98XGJYkB/3
+         b5WNjXs4c01ti+8V6SVhMejHhS8j5F4cfCZobtQBYQZco1yE2SdLNjCgAThspSE62QRc
+         H+60liBKhyNiiFQZfuuOUeHsDikU+jcBcvTBd9XbMfdPhiASC+oQyB60To+r4aTk9vWl
+         eKpeYpCEft1tZsDfdam5e5P4hVDma7MXKAY3Hp4RwqgPbQylCLtF84qhhd+RDiRJSYY8
+         lQxrZJfn6XDqR9z4fIS8BOjkT5r6L0MY3HdND4ihvr6LokMbOMRcu0BTDS0FZ5EcZyUy
+         H1Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EEp/AWms1iQPM6gX6QYU8HGZGwUHBY8T+uSbGj6gOv0=;
-        b=apMaDnUM8w98HS3TpwGu4607YqTj/tmpqgDRXWNslfOGnvcQ2Oe0tGgqEP2zQfjBXA
-         CHEvIm63VtC5NanxFa/14OB+MBTGc3/4dh+qHs4/cNoK1YabDgWlgqGzb7JjOHubTEKX
-         2/gHQr7b0L7CLgmgPFF/WvonD+FvpwatF4vvsce539ucYNzx4yLenBhNy7MoKKcUrFVz
-         931fv+lzZSr7oBei3AieZnlpMC8pYv8mO0kzHSmU9DIdfGS2CJH2rx2x7UFloYehues/
-         cOI8c41LAwOkh7ZV+Cv/y3J2FuOJf+kWpd8Q6m0r8L6x+npziHvrRMnQS6NVhJdRwdPk
-         uEig==
-X-Gm-Message-State: AOAM5328EIjFm2bgAJR1NcGjmIdvOMvYei35b9VfYXHxkI9SiCCyyVWS
-        yduD4h6xoQFw6tCAyfO6kHYuqfrCiuJthAsbQMhyeenw+xVWuHQQTOddqfsLJoZwfhj0Rd9LKs7
-        NI6ZU6uaGgnvVxOv8lu23ypuT
-X-Received: by 2002:a37:9802:: with SMTP id a2mr28987602qke.473.1617058245970;
-        Mon, 29 Mar 2021 15:50:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4TtfFGH5PtBrvRg+7tdRAACaWWJA5uxnJt87xc9spU6EsS47neLYRetUlyAwN4AL62ZnzNg==
-X-Received: by 2002:a37:9802:: with SMTP id a2mr28987571qke.473.1617058245571;
-        Mon, 29 Mar 2021 15:50:45 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id n2sm11458357qta.61.2021.03.29.15.50.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=riwS4fKZmYi1s9ahYLZfXUq5/tOglH8JPYYvD9weK5o=;
+        b=HONxG0gnRa9QF3+iSvwMDheIJfK2+odv8lAfFdpRgvZRAMfqOtFJG3KMfJZAMD381b
+         wxwvs3yVwpJEqqcJI0i2WKNvDaNK/uTvxcSufJbfXP4UKEZYed5Awv+saaXwMF4eUHGh
+         XBhG0+qVShF4NHtL5OhnHvzb6uK3Mj8VXG7kkbbqEHhXpuZYFvpNvBoEEJTo/s+kSwJu
+         AAcPpEfPMBtNaufdA2cKFikbixo6yec4yt1OIv0lKgngNgP5+ceMgBi9omLRDEpkpB5O
+         X/Yksl5a2DHTnpIMIVS02Xu+Pq/Fk3WhJ05hPkkRzwSKbjO0V3mmCW6HgKZ17ctz88sl
+         OvMw==
+X-Gm-Message-State: AOAM532N9HE9bE8r3BWtiA8zpQ+rqNkz4O8gnxWlaj4XUyeJJJ6cneql
+        vk6x5NgO+DawJj62KpR/gQ8=
+X-Google-Smtp-Source: ABdhPJxuSKooLGKpUklp1sIyirkbLOMBRu9lhF2SAChgjYIOZX5GnDGW8b/pTWhxxzEC2eVO364Dlg==
+X-Received: by 2002:a17:90a:a4cb:: with SMTP id l11mr1298790pjw.144.1617058506536;
+        Mon, 29 Mar 2021 15:55:06 -0700 (PDT)
+Received: from localhost ([112.79.230.77])
+        by smtp.gmail.com with ESMTPSA id q1sm9169695pgf.20.2021.03.29.15.55.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 15:50:44 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 18:50:42 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v2] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
-Message-ID: <20210329225042.GF429942@xz-x1>
-References: <20210329200659.65971-1-axelrasmussen@google.com>
+        Mon, 29 Mar 2021 15:55:06 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     vladbu@nvidia.com
+Cc:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, memxor@gmail.com,
+        netdev@vger.kernel.org, toke@redhat.com, xiyou.wangcong@gmail.com
+Subject: [PATCH v2 1/1] net: sched: bump refcount for new action in ACT replace mode
+Date:   Tue, 30 Mar 2021 04:23:23 +0530
+Message-Id: <20210329225322.143135-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210329200659.65971-1-axelrasmussen@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 01:06:59PM -0700, Axel Rasmussen wrote:
-> Previously, we shared too much of the code with COPY and ZEROPAGE, so we
-> manipulated things in various invalid ways:
-> 
-> - Previously, we unconditionally called shmem_inode_acct_block. In the
->   continue case, we're looking up an existing page which would have been
->   accounted for properly when it was allocated. So doing it twice
->   results in double-counting, and eventually leaking.
-> 
-> - Previously, we made the pte writable whenever the VMA was writable.
->   However, for continue, consider this case:
-> 
->   1. A tmpfs file was created
->   2. The non-UFFD-registered side mmap()-s with MAP_SHARED
->   3. The UFFD-registered side mmap()-s with MAP_PRIVATE
-> 
->   In this case, even though the UFFD-registered VMA may be writable, we
->   still want CoW behavior. So, check for this case and don't make the
->   pte writable.
-> 
-> - The offset / max_off checking doesn't necessarily hurt anything, but
->   it's not needed in the CONTINUE case, so skip it.
-> 
-> - Previously, we unconditionally called ClearPageDirty() in the error
->   path. In the continue case though, since this is an existing page, it
->   might have already been dirty before we started touching it. So,
->   remember whether or not it was dirty before we set_page_dirty(), and
->   only clear the bit if it wasn't dirty before.
-> 
-> - Previously, we unconditionally removed the page from the page cache in
->   the error path. But in the continue case, we didn't add it - it was
->   already there because the page is present in some second
->   (non-UFFD-registered) mapping. So, removing it is invalid.
-> 
-> Because the error handling issues are easy to exercise in the selftest,
-> make a small modification there to do so.
-> 
-> Finally, refactor shmem_mcopy_atomic_pte a bit. By this point, we've
-> added a lot of "if (!is_continue)"-s everywhere. It's cleaner to just
-> check for that mode first thing, and then "goto" down to where the parts
-> we actually want are. This leaves the code in between cleaner.
-> 
-> Changes since v1:
-> - Refactor to skip ahead with goto, instead of adding several more
->   "if (!is_continue)".
-> - Fix unconditional ClearPageDirty().
-> - Don't pte_mkwrite() when is_continue && !VM_SHARED.
-> 
-> Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  mm/shmem.c                               | 67 ++++++++++++++----------
->  tools/testing/selftests/vm/userfaultfd.c | 12 +++++
->  2 files changed, 51 insertions(+), 28 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index d2e0e81b7d2e..8ab1f1f29987 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2378,17 +2378,22 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  	pte_t _dst_pte, *dst_pte;
->  	int ret;
->  	pgoff_t offset, max_off;
-> -
-> -	ret = -ENOMEM;
-> -	if (!shmem_inode_acct_block(inode, 1))
-> -		goto out;
-> +	int writable;
-> +	bool was_dirty;
->  
->  	if (is_continue) {
->  		ret = -EFAULT;
->  		page = find_lock_page(mapping, pgoff);
->  		if (!page)
-> -			goto out_unacct_blocks;
-> -	} else if (!*pagep) {
-> +			goto out;
-> +		goto install_ptes;
-> +	}
-> +
-> +	ret = -ENOMEM;
-> +	if (!shmem_inode_acct_block(inode, 1))
-> +		goto out;
-> +
-> +	if (!*pagep) {
->  		page = shmem_alloc_page(gfp, info, pgoff);
->  		if (!page)
->  			goto out_unacct_blocks;
-> @@ -2415,13 +2420,11 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  		*pagep = NULL;
->  	}
->  
-> -	if (!is_continue) {
-> -		VM_BUG_ON(PageSwapBacked(page));
-> -		VM_BUG_ON(PageLocked(page));
-> -		__SetPageLocked(page);
-> -		__SetPageSwapBacked(page);
-> -		__SetPageUptodate(page);
-> -	}
-> +	VM_BUG_ON(PageSwapBacked(page));
-> +	VM_BUG_ON(PageLocked(page));
-> +	__SetPageLocked(page);
-> +	__SetPageSwapBacked(page);
-> +	__SetPageUptodate(page);
->  
->  	ret = -EFAULT;
->  	offset = linear_page_index(dst_vma, dst_addr);
-> @@ -2429,16 +2432,18 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  	if (unlikely(offset >= max_off))
->  		goto out_release;
->  
-> -	/* If page wasn't already in the page cache, add it. */
-> -	if (!is_continue) {
-> -		ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
-> -					      gfp & GFP_RECLAIM_MASK, dst_mm);
-> -		if (ret)
-> -			goto out_release;
-> -	}
-> +	ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
-> +				      gfp & GFP_RECLAIM_MASK, dst_mm);
-> +	if (ret)
-> +		goto out_release;
->  
-> +install_ptes:
->  	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
-> -	if (dst_vma->vm_flags & VM_WRITE)
-> +	/* For CONTINUE on a non-shared VMA, don't pte_mkwrite for CoW. */
-> +	writable = is_continue && !(dst_vma->vm_flags & VM_SHARED)
-> +		? 0
-> +		: dst_vma->vm_flags & VM_WRITE;
-> +	if (writable)
->  		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
->  	else {
->  		/*
-> @@ -2448,15 +2453,18 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  		 * unconditionally before unlock_page(), but doing it
->  		 * only if VM_WRITE is not set is faster.
->  		 */
-> +		was_dirty = PageDirty(page);
->  		set_page_dirty(page);
->  	}
->  
->  	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
->  
-> -	ret = -EFAULT;
-> -	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> -	if (unlikely(offset >= max_off))
-> -		goto out_release_unlock;
-> +	if (!is_continue) {
-> +		ret = -EFAULT;
-> +		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> +		if (unlikely(offset >= max_off))
-> +			goto out_release_unlock;
-> +	}
+Currently, action creation using ACT API in replace mode is buggy.
+When invoking for non-existent action index 42,
 
-I think you're right, but I won't touch this code explicitly since the new code
-slightly affects readability, while skipping it won't save a lot of cpu cycles.
-No strong opinion though.
+	tc action replace action bpf obj foo.o sec <xyz> index 42
 
->  
->  	ret = -EEXIST;
->  	if (!pte_none(*dst_pte))
-> @@ -2485,13 +2493,16 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  	return ret;
->  out_release_unlock:
->  	pte_unmap_unlock(dst_pte, ptl);
-> -	ClearPageDirty(page);
-> -	delete_from_page_cache(page);
-> +	if (!was_dirty)
-> +		ClearPageDirty(page);
+kernel creates the action, fills up the netlink response, and then just
+deletes the action after notifying userspace.
 
-It could be using a random was_dirty from stack, does not seem right.
+	tc action show action bpf
 
-Maybe simply drop this ClearPageDirty()?  I'm not sure whether the page free
-code will complain, but if not I think an extra dirty bit is better than losing
-one, as the latter corrupts data while the former happens anyways, not to
-mention this is an error path.  Maybe acceptable?
+doesn't list the action.
 
-> +	if (!is_continue)
-> +		delete_from_page_cache(page);
->  out_release:
->  	unlock_page(page);
->  	put_page(page);
->  out_unacct_blocks:
-> -	shmem_inode_unacct_blocks(inode, 1);
-> +	if (!is_continue)
-> +		shmem_inode_unacct_blocks(inode, 1);
->  	goto out;
->  }
->  #endif /* CONFIG_USERFAULTFD */
-> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-> index f6c86b036d0f..d8541a59dae5 100644
-> --- a/tools/testing/selftests/vm/userfaultfd.c
-> +++ b/tools/testing/selftests/vm/userfaultfd.c
-> @@ -485,6 +485,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
->  static void continue_range(int ufd, __u64 start, __u64 len)
->  {
->  	struct uffdio_continue req;
-> +	int ret;
->  
->  	req.range.start = start;
->  	req.range.len = len;
-> @@ -493,6 +494,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
->  	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
->  		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
->  		    (uint64_t)start);
-> +
-> +	/*
-> +	 * Error handling within the kernel for continue is subtly different
-> +	 * from copy or zeropage, so it may be a source of bugs. Trigger an
-> +	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
-> +	 */
-> +	req.mapped = 0;
-> +	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
-> +	if (ret >= 0 || req.mapped != -EEXIST)
-> +		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
-> +		    ret, req.mapped);
->  }
->  
->  static void *locking_thread(void *arg)
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
+This happens due to the following sequence when ovr = 1 (replace mode)
+is enabled:
 
--- 
-Peter Xu
+tcf_idr_check_alloc is used to atomically check and either obtain
+reference for existing action at index, or reserve the index slot using
+a dummy entry (ERR_PTR(-EBUSY)).
+
+This is necessary as pointers to these actions will be held after
+dropping the idrinfo lock, so bumping the reference count is necessary
+as we need to insert the actions, and notify userspace by dumping their
+attributes. Finally, we drop the reference we took using the
+tcf_action_put_many call in tcf_action_add. However, for the case where
+a new action is created due to free index, its refcount remains one.
+This when paired with the put_many call leads to the kernel setting up
+the action, notifying userspace of its creation, and then tearing it
+down. For existing actions, the refcount is still held so they remain
+unaffected.
+
+Fortunately due to rtnl_lock serialization requirement, such an action
+with refcount == 1 will not be concurrently deleted by anything else, at
+best CLS API can move its refcount up and down by binding to it after it
+has been published from tcf_idr_insert_many. Since refcount is atleast
+one until put_many call, CLS API cannot delete it. Also __tcf_action_put
+release path already ensures deterministic outcome (either new action
+will be created or existing action will be reused in case CLS API tries
+to bind to action concurrently) due to idr lock serialization.
+
+We fix this by making refcount of newly created actions as 2 in ACT API
+replace mode. A relaxed store will suffice as visibility is ensured only
+after the tcf_idr_insert_many call.
+
+Note that in case of creation or overwriting using CLS API only (i.e.
+bind = 1), overwriting existing action object is not allowed, and any
+such request is silently ignored (without error).
+
+The refcount bump that occurs in tcf_idr_check_alloc call there for
+existing action will pair with tcf_exts_destroy call made from the
+owner module for the same action. In case of action creation, there
+is no existing action, so no tcf_exts_destroy callback happens.
+
+This means no code changes for CLS API.
+
+Fixes: cae422f379f3 ("net: sched: use reference counting action init")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+Changelog:
+
+v1 -> v2
+Remove erroneous tcf_action_put_many call in tcf_exts_validate (Vlad)
+Isolate refcount bump to ACT API in replace mode
+---
+ net/sched/act_api.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index b919826939e0..43cceb924976 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -1042,6 +1042,9 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+ 	if (err != ACT_P_CREATED)
+ 		module_put(a_o->owner);
+
++	if (!bind && ovr && err == ACT_P_CREATED)
++		refcount_set(&a->tcfa_refcnt, 2);
++
+ 	return a;
+
+ err_out:
+--
+2.30.2
 
