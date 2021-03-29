@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BAB34D6E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DD734D6D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhC2SVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhC2SVf (ORCPT
+        id S230509AbhC2SRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:17:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38107 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230213AbhC2SRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:21:35 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EBB0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=XrZJAq43JW6HFt7rYWH6mHR4qDLWTV1MNg7sqstLDSo=; b=iJ+UZQOhzqW8W
-        TdSCmSqp0nMMiBOVTjEtrznoZpQxeIGrkIKtXLmgTvBEDdkka2jz7QdozNUcWDJA
-        UMFQSHKQifXjKRW3tPOqefKcmYg1K+nnAwm84vr4dEvwP3YFZkrrMt2zGnJPCMcs
-        rCEAx5GCDl3swpW5edoe3jc5mvfmW4=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3WpmnGmJg++ppAA--.5113S2;
-        Tue, 30 Mar 2021 02:21:27 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:16:24 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: keep interrupts disabled for BREAKPOINT exception
-Message-ID: <20210330021624.2b776386@xhacker>
+        Mon, 29 Mar 2021 14:17:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617041819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dgFeyPkzmPObOkTR5EkP4yemPrUTiyxU/lmEG6g4BQs=;
+        b=IZtsSrN8cuyImG7I6iDIbOL52reW3UrS893LxEtv9uC69coMgUL0YsPK3x5htlbwF8Y0qU
+        ekAAkTqY1lkFhhgOHImrYHP9d+AYkjxT899CGs6uGJjA5B3gG0ce9xc+hS75W/YgKpR0QY
+        kSfo9YiPBlH45Wk52kHk4caovXelWOg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-igv5i0B5MrmOps8rHtPNUw-1; Mon, 29 Mar 2021 14:16:57 -0400
+X-MC-Unique: igv5i0B5MrmOps8rHtPNUw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76EEC8030C4;
+        Mon, 29 Mar 2021 18:16:55 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-64.rdu2.redhat.com [10.10.116.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 508E539A60;
+        Mon, 29 Mar 2021 18:16:52 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id DB50F220BCF; Mon, 29 Mar 2021 14:16:51 -0400 (EDT)
+Date:   Mon, 29 Mar 2021 14:16:51 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu, dgilbert@redhat.com,
+        seth.forshee@canonical.com
+Subject: Re: [PATCH v2 1/2] fuse: Add support for FUSE_SETXATTR_V2
+Message-ID: <20210329181651.GD676525@redhat.com>
+References: <20210325151823.572089-1-vgoyal@redhat.com>
+ <20210325151823.572089-2-vgoyal@redhat.com>
+ <YGHpPWcZYQQWMvAi@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygC3WpmnGmJg++ppAA--.5113S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyxtrW5CF4kZF4UKr4Uurg_yoW3urX_C3
-        WxJ39IgrW3KF4IvFWUXw4fu3yay34rtFZ5Xw1IyrW5GFy5Wr47ta9I93s8XrZ5WF4ftFnx
-        A3s7WFZ5tr4IqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbFkYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
-        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-        xVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7
-        xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-        6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2eHqUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGHpPWcZYQQWMvAi@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Mon, Mar 29, 2021 at 03:50:37PM +0100, Luis Henriques wrote:
+> On Thu, Mar 25, 2021 at 11:18:22AM -0400, Vivek Goyal wrote:
+> > Fuse client needs to send additional information to file server when
+> > it calls SETXATTR(system.posix_acl_access). Right now there is no extra
+> > space in fuse_setxattr_in. So introduce a v2 of the structure which has
+> > more space in it and can be used to send extra flags.
+> > 
+> > "struct fuse_setxattr_in_v2" is only used if file server opts-in for it using
+> > flag FUSE_SETXATTR_V2 during feature negotiations.
+> > 
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/fuse/acl.c             |  2 +-
+> >  fs/fuse/fuse_i.h          |  5 ++++-
+> >  fs/fuse/inode.c           |  4 +++-
+> >  fs/fuse/xattr.c           | 21 +++++++++++++++------
+> >  include/uapi/linux/fuse.h | 10 ++++++++++
+> >  5 files changed, 33 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+> > index e9c0f916349d..d31260a139d4 100644
+> > --- a/fs/fuse/acl.c
+> > +++ b/fs/fuse/acl.c
+> > @@ -94,7 +94,7 @@ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+> >  			return ret;
+> >  		}
+> >  
+> > -		ret = fuse_setxattr(inode, name, value, size, 0);
+> > +		ret = fuse_setxattr(inode, name, value, size, 0, 0);
+> >  		kfree(value);
+> >  	} else {
+> >  		ret = fuse_removexattr(inode, name);
+> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> > index 63d97a15ffde..d00bf0b9a38c 100644
+> > --- a/fs/fuse/fuse_i.h
+> > +++ b/fs/fuse/fuse_i.h
+> > @@ -668,6 +668,9 @@ struct fuse_conn {
+> >  	/** Is setxattr not implemented by fs? */
+> >  	unsigned no_setxattr:1;
+> >  
+> > +	/** Does file server support setxattr_v2 */
+> > +	unsigned setxattr_v2:1;
+> > +
+> 
+> Minor (pedantic!) comment: most of the fields here start with 'no_*', so
+> maybe it's worth setting the logic to use 'no_setxattr_v2' instead?
 
-Current riscv's kprobe handlers are run with both preemption and
-interrupt enabled, this violates kprobe requirements. Fix this issue
-by keeping interrupts disabled for BREAKPOINT exception.
+Hi Luis,
 
-Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/kernel/entry.S | 2 ++
- 1 file changed, 2 insertions(+)
+"setxattr_v2" kind of makes more sense to me because it is disabled
+by default untile and unless client opts in. If I use no_setxattr_v2,
+then it means by default I will have to initialize it to 1. Right
+now, following automatically takes care of it.
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 744f3209c48d..4114b65698ec 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -130,6 +130,8 @@ skip_context_tracking:
- 	 */
- 	andi t0, s1, SR_PIE
- 	beqz t0, 1f
-+	li t0, EXC_BREAKPOINT
-+	beq s4, t0, 1f
- #ifdef CONFIG_TRACE_IRQFLAGS
- 	call trace_hardirqs_on
- #endif
--- 
-2.31.0
+fc = kzalloc(sizeof(struct fuse_conn), GFP_KERNEL);
 
+Also, there are other examples which don't use "no_" prefix.
+
+auto_inval_data, explicit_inval_data, do_readdirplus, readdirplus_auto, 
+async_dio..... and list goes on.
+
+Vivek
 
