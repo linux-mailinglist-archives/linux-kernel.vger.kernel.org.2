@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF1C34CAF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E86B34C65E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbhC2Ill (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:41:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
+        id S231512AbhC2IG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233513AbhC2IXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:23:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C21816044F;
-        Mon, 29 Mar 2021 08:23:27 +0000 (UTC)
+        id S232125AbhC2IEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:04:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E89E6196D;
+        Mon, 29 Mar 2021 08:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006208;
-        bh=RHIqCcF0DTcyY7IN0URo8sQrH/fKoLvRgDD/wApvKZo=;
+        s=korg; t=1617005059;
+        bh=ohiOF/8XY/nQljM9J8ufEBUI1rh4ND1W69aAsA9HhxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NI6ongDAmP+QOelX1PmSAAox/ODDhmDy4p0aUFSL2r/U1ISArXXzdFc9pFJEuvckF
-         se+AIHb9594qaSpQr041BV0+hyNu7eQL0VnPcnWb8bvTv+8Wh9rx++MTyTMBum3onJ
-         9JhVpTXvK58He7ipNwNLgGa3u7gShDI/dxGL8QfI=
+        b=LEld+fpZdvE8PBzWkVpitt2EYEKh/AO3kPFThJmMssBOuxLXWAAglKnsCLH/X1aO+
+         1AVIGrmX5ZUSpWwAE8t0uGNSO+lsXUgQdQy/EgRQyJZElVI/Ksb/QmNFob0G9S8One
+         9EjLntRlVkj7NJ+p+olFP8y8QIiMhXQCvc4ISxnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Frank Sorenson <sorenson@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 140/221] drm/msm/dsi: fix check-before-set in the 7nm dsi_pll code
+Subject: [PATCH 4.14 11/59] NFS: Correct size calculation for create reply length
 Date:   Mon, 29 Mar 2021 09:57:51 +0200
-Message-Id: <20210329075633.846380275@linuxfoundation.org>
+Message-Id: <20210329075609.272080949@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Frank Sorenson <sorenson@redhat.com>
 
-[ Upstream commit 3b24cdfc721a5f1098da22f9f68ff5f4a5efccc9 ]
+[ Upstream commit ad3dbe35c833c2d4d0bbf3f04c785d32f931e7c9 ]
 
-Fix setting min/max DSI PLL rate for the V4.1 7nm DSI PLL (used on
-sm8250). Current code checks for pll->type before it is set (as it is
-set in the msm_dsi_pll_init() after calling device-specific functions.
+CREATE requests return a post_op_fh3, rather than nfs_fh3. The
+post_op_fh3 includes an extra word to indicate 'handle_follows'.
 
-Cc: Jonathan Marek <jonathan@marek.ca>
-Fixes: 1ef7c99d145c ("drm/msm/dsi: add support for 7nm DSI PHY/PLL")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Without that additional word, create fails when full 64-byte
+filehandles are in use.
+
+Add NFS3_post_op_fh_sz, and correct the size calculation for
+NFS3_createres_sz.
+
+Signed-off-by: Frank Sorenson <sorenson@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.c     | 2 +-
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.h     | 6 ++++--
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c | 5 +++--
- 3 files changed, 8 insertions(+), 5 deletions(-)
+ fs/nfs/nfs3xdr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
-index a45fe95aff49..3dc65877fa10 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
-@@ -163,7 +163,7 @@ struct msm_dsi_pll *msm_dsi_pll_init(struct platform_device *pdev,
- 		break;
- 	case MSM_DSI_PHY_7NM:
- 	case MSM_DSI_PHY_7NM_V4_1:
--		pll = msm_dsi_pll_7nm_init(pdev, id);
-+		pll = msm_dsi_pll_7nm_init(pdev, type, id);
- 		break;
- 	default:
- 		pll = ERR_PTR(-ENXIO);
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
-index 3405982a092c..bbecb1de5678 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
-@@ -117,10 +117,12 @@ msm_dsi_pll_10nm_init(struct platform_device *pdev, int id)
- }
- #endif
- #ifdef CONFIG_DRM_MSM_DSI_7NM_PHY
--struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id);
-+struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev,
-+					enum msm_dsi_phy_type type, int id);
- #else
- static inline struct msm_dsi_pll *
--msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
-+msm_dsi_pll_7nm_init(struct platform_device *pdev,
-+					enum msm_dsi_phy_type type, int id)
- {
- 	return ERR_PTR(-ENODEV);
- }
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-index 93bf142e4a4e..c1f6708367ae 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-@@ -852,7 +852,8 @@ err_base_clk_hw:
- 	return ret;
- }
- 
--struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
-+struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev,
-+					enum msm_dsi_phy_type type, int id)
- {
- 	struct dsi_pll_7nm *pll_7nm;
- 	struct msm_dsi_pll *pll;
-@@ -885,7 +886,7 @@ struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
- 	pll = &pll_7nm->base;
- 	pll->min_rate = 1000000000UL;
- 	pll->max_rate = 3500000000UL;
--	if (pll->type == MSM_DSI_PHY_7NM_V4_1) {
-+	if (type == MSM_DSI_PHY_7NM_V4_1) {
- 		pll->min_rate = 600000000UL;
- 		pll->max_rate = (unsigned long)5000000000ULL;
- 		/* workaround for max rate overflowing on 32-bit builds: */
+diff --git a/fs/nfs/nfs3xdr.c b/fs/nfs/nfs3xdr.c
+index f1cb0b7eb05f..be666aee28cc 100644
+--- a/fs/nfs/nfs3xdr.c
++++ b/fs/nfs/nfs3xdr.c
+@@ -34,6 +34,7 @@
+  */
+ #define NFS3_fhandle_sz		(1+16)
+ #define NFS3_fh_sz		(NFS3_fhandle_sz)	/* shorthand */
++#define NFS3_post_op_fh_sz	(1+NFS3_fh_sz)
+ #define NFS3_sattr_sz		(15)
+ #define NFS3_filename_sz	(1+(NFS3_MAXNAMLEN>>2))
+ #define NFS3_path_sz		(1+(NFS3_MAXPATHLEN>>2))
+@@ -71,7 +72,7 @@
+ #define NFS3_readlinkres_sz	(1+NFS3_post_op_attr_sz+1)
+ #define NFS3_readres_sz		(1+NFS3_post_op_attr_sz+3)
+ #define NFS3_writeres_sz	(1+NFS3_wcc_data_sz+4)
+-#define NFS3_createres_sz	(1+NFS3_fh_sz+NFS3_post_op_attr_sz+NFS3_wcc_data_sz)
++#define NFS3_createres_sz	(1+NFS3_post_op_fh_sz+NFS3_post_op_attr_sz+NFS3_wcc_data_sz)
+ #define NFS3_renameres_sz	(1+(2 * NFS3_wcc_data_sz))
+ #define NFS3_linkres_sz		(1+NFS3_post_op_attr_sz+NFS3_wcc_data_sz)
+ #define NFS3_readdirres_sz	(1+NFS3_post_op_attr_sz+2)
 -- 
 2.30.1
 
