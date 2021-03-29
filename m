@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDF334CB33
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0956834C773
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhC2Iov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S233020AbhC2IPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:15:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233922AbhC2I1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C774619BD;
-        Mon, 29 Mar 2021 08:26:18 +0000 (UTC)
+        id S232584AbhC2IJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F996196C;
+        Mon, 29 Mar 2021 08:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006378;
-        bh=mnOVFgj789hZ7bVE3o5Rqh7f6Og4rA1AlXhl6AygN8U=;
+        s=korg; t=1617005378;
+        bh=srRYALXKlCfb65PR9LXfX3c/VUocKSHZURZS/aOd5Z0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T4/H3CWqOsKtLN/WWD08HapRo0ymb8+fu7qSn9mVVBnZsPIGF0qO2UfHDoZ574Unc
-         sLCC46pq3p84pzxCYybHpk5JaWHAzmxmsCVlsOilmpSxxoagTcEL6Rs/rEuBI7XFec
-         biXG0Vz6EMaWuikdrawG78mzTAXtgSoddbZ5pYQQ=
+        b=ZDxm77VvDbYvZzY80NuX8T7kc66ikLZZazSfE2nYi88WWR43EXli9PTl7E8R1slB1
+         8wOxcLNjB0DwLqfvuv53XPmkO/BiGBaqQzizKlu2l1HdS0TmMY0ZBoy6N03szJgWF1
+         1stv6FlFwzqIQpynS68nhbt+VjTUqAB1iIlOcAX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 184/221] net: axienet: Fix probe error cleanup
+Subject: [PATCH 4.19 59/72] ACPI: scan: Rearrange memory allocation in acpi_device_add()
 Date:   Mon, 29 Mar 2021 09:58:35 +0200
-Message-Id: <20210329075635.277569048@linuxfoundation.org>
+Message-Id: <20210329075612.240388985@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,131 +41,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <robert.hancock@calian.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 59cd4f19267a0aab87a8c07e4426eb7187ee548d ]
+[ Upstream commit c1013ff7a5472db637c56bb6237f8343398c03a7 ]
 
-The driver did not always clean up all allocated resources when probe
-failed. Fix the probe cleanup path to clean up everything that was
-allocated.
+The upfront allocation of new_bus_id is done to avoid allocating
+memory under acpi_device_lock, but it doesn't really help,
+because (1) it leads to many unnecessary memory allocations for
+_ADR devices, (2) kstrdup_const() is run under that lock anyway and
+(3) it complicates the code.
 
-Fixes: 57baf8cc70ea ("net: axienet: Handle deferred probe on clock properly")
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Rearrange acpi_device_add() to allocate memory for a new struct
+acpi_device_bus_id instance only when necessary, eliminate a redundant
+local variable from it and reduce the number of labels in there.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/xilinx/xilinx_axienet_main.c | 35 +++++++++++++------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ drivers/acpi/scan.c | 57 +++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-index 415676c2c11f..69c79cc24e6e 100644
---- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-+++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-@@ -1848,7 +1848,7 @@ static int axienet_probe(struct platform_device *pdev)
- 	if (IS_ERR(lp->regs)) {
- 		dev_err(&pdev->dev, "could not map Axi Ethernet regs.\n");
- 		ret = PTR_ERR(lp->regs);
--		goto free_netdev;
-+		goto cleanup_clk;
- 	}
- 	lp->regs_start = ethres->start;
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index d614cb72041e..712599019892 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -623,12 +623,23 @@ void acpi_bus_put_acpi_device(struct acpi_device *adev)
+ 	put_device(&adev->dev);
+ }
  
-@@ -1923,12 +1923,12 @@ static int axienet_probe(struct platform_device *pdev)
- 			break;
- 		default:
- 			ret = -EINVAL;
--			goto free_netdev;
-+			goto cleanup_clk;
- 		}
- 	} else {
- 		ret = of_get_phy_mode(pdev->dev.of_node, &lp->phy_mode);
- 		if (ret)
--			goto free_netdev;
-+			goto cleanup_clk;
- 	}
- 
- 	/* Find the DMA node, map the DMA registers, and decode the DMA IRQs */
-@@ -1941,7 +1941,7 @@ static int axienet_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev,
- 				"unable to get DMA resource\n");
- 			of_node_put(np);
--			goto free_netdev;
-+			goto cleanup_clk;
- 		}
- 		lp->dma_regs = devm_ioremap_resource(&pdev->dev,
- 						     &dmares);
-@@ -1961,12 +1961,12 @@ static int axienet_probe(struct platform_device *pdev)
- 	if (IS_ERR(lp->dma_regs)) {
- 		dev_err(&pdev->dev, "could not map DMA regs\n");
- 		ret = PTR_ERR(lp->dma_regs);
--		goto free_netdev;
-+		goto cleanup_clk;
- 	}
- 	if ((lp->rx_irq <= 0) || (lp->tx_irq <= 0)) {
- 		dev_err(&pdev->dev, "could not determine irqs\n");
- 		ret = -ENOMEM;
--		goto free_netdev;
-+		goto cleanup_clk;
- 	}
- 
- 	/* Autodetect the need for 64-bit DMA pointers.
-@@ -1996,7 +1996,7 @@ static int axienet_probe(struct platform_device *pdev)
- 	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(addr_width));
- 	if (ret) {
- 		dev_err(&pdev->dev, "No suitable DMA available\n");
--		goto free_netdev;
-+		goto cleanup_clk;
- 	}
- 
- 	/* Check for Ethernet core IRQ (optional) */
-@@ -2027,12 +2027,12 @@ static int axienet_probe(struct platform_device *pdev)
- 		if (!lp->phy_node) {
- 			dev_err(&pdev->dev, "phy-handle required for 1000BaseX/SGMII\n");
- 			ret = -EINVAL;
--			goto free_netdev;
-+			goto cleanup_mdio;
- 		}
- 		lp->pcs_phy = of_mdio_find_device(lp->phy_node);
- 		if (!lp->pcs_phy) {
- 			ret = -EPROBE_DEFER;
--			goto free_netdev;
-+			goto cleanup_mdio;
- 		}
- 		lp->phylink_config.pcs_poll = true;
- 	}
-@@ -2046,17 +2046,30 @@ static int axienet_probe(struct platform_device *pdev)
- 	if (IS_ERR(lp->phylink)) {
- 		ret = PTR_ERR(lp->phylink);
- 		dev_err(&pdev->dev, "phylink_create error (%i)\n", ret);
--		goto free_netdev;
-+		goto cleanup_mdio;
- 	}
- 
- 	ret = register_netdev(lp->ndev);
- 	if (ret) {
- 		dev_err(lp->dev, "register_netdev() error (%i)\n", ret);
--		goto free_netdev;
-+		goto cleanup_phylink;
- 	}
- 
- 	return 0;
- 
-+cleanup_phylink:
-+	phylink_destroy(lp->phylink);
++static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
++{
++	struct acpi_device_bus_id *acpi_device_bus_id;
 +
-+cleanup_mdio:
-+	if (lp->pcs_phy)
-+		put_device(&lp->pcs_phy->dev);
-+	if (lp->mii_bus)
-+		axienet_mdio_teardown(lp);
-+	of_node_put(lp->phy_node);
++	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
++	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
++		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
++			return acpi_device_bus_id;
++	}
++	return NULL;
++}
 +
-+cleanup_clk:
-+	clk_disable_unprepare(lp->clk);
-+
- free_netdev:
- 	free_netdev(ndev);
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
++	struct acpi_device_bus_id *acpi_device_bus_id;
+ 	int result;
+-	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
+-	int found = 0;
  
+ 	if (device->handle) {
+ 		acpi_status status;
+@@ -654,38 +665,26 @@ int acpi_device_add(struct acpi_device *device,
+ 	INIT_LIST_HEAD(&device->del_list);
+ 	mutex_init(&device->physical_node_lock);
+ 
+-	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
+-	if (!new_bus_id) {
+-		pr_err(PREFIX "Memory allocation error\n");
+-		result = -ENOMEM;
+-		goto err_detach;
+-	}
+-
+ 	mutex_lock(&acpi_device_lock);
+-	/*
+-	 * Find suitable bus_id and instance number in acpi_bus_id_list
+-	 * If failed, create one and link it into acpi_bus_id_list
+-	 */
+-	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+-		if (!strcmp(acpi_device_bus_id->bus_id,
+-			    acpi_device_hid(device))) {
+-			acpi_device_bus_id->instance_no++;
+-			found = 1;
+-			kfree(new_bus_id);
+-			break;
++
++	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
++	if (acpi_device_bus_id) {
++		acpi_device_bus_id->instance_no++;
++	} else {
++		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
++					     GFP_KERNEL);
++		if (!acpi_device_bus_id) {
++			result = -ENOMEM;
++			goto err_unlock;
+ 		}
+-	}
+-	if (!found) {
+-		acpi_device_bus_id = new_bus_id;
+ 		acpi_device_bus_id->bus_id =
+ 			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+ 		if (!acpi_device_bus_id->bus_id) {
+-			pr_err(PREFIX "Memory allocation error for bus id\n");
++			kfree(acpi_device_bus_id);
+ 			result = -ENOMEM;
+-			goto err_free_new_bus_id;
++			goto err_unlock;
+ 		}
+ 
+-		acpi_device_bus_id->instance_no = 0;
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+ 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+@@ -720,13 +719,9 @@ int acpi_device_add(struct acpi_device *device,
+ 		list_del(&device->node);
+ 	list_del(&device->wakeup_list);
+ 
+- err_free_new_bus_id:
+-	if (!found)
+-		kfree(new_bus_id);
+-
++ err_unlock:
+ 	mutex_unlock(&acpi_device_lock);
+ 
+- err_detach:
+ 	acpi_detach_data(device->handle, acpi_scan_drop_device);
+ 	return result;
+ }
 -- 
 2.30.1
 
