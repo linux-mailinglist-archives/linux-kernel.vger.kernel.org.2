@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6038434CB15
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A73C34C77E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhC2InP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41812 "EHLO mail.kernel.org"
+        id S232813AbhC2IPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:15:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233553AbhC2IZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D38619EA;
-        Mon, 29 Mar 2021 08:24:49 +0000 (UTC)
+        id S231892AbhC2IJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A861461974;
+        Mon, 29 Mar 2021 08:09:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006290;
-        bh=7pWrXxggC99dNjxIDeJ+cig5EnZew3swofDFMdjklzc=;
+        s=korg; t=1617005389;
+        bh=42/7lWKhpEmXlFmh/ED9v3yD1FATDEwV3jJQWIKbVds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KTaIf61VjOWQ+y5nIiVLj8UEhzzmQKTwSuD4KYmfnHXcHik7Mwu9zdsxOBT0DjyhA
-         T9wUC9ZjVpKLCxWhEkqdoi91Hf8OixUS+r9OmwrSFMa9RYKRnMXo1TONchkJz9a/Tc
-         keiB5z+4C6E2+Qmzc5Ak0kVBmBxzBgNURKjvPOW4=
+        b=YVFhLoTIwxeu8+bl5JyffVq5Lcf3ZkCKoEXveuK8easJLtEOSLAMFi+i6rvGGRWWT
+         KjQRsA/0MmhfGy2WlfBYC3nqgSPTIpu9DqBWNWqzZHLMhMqoc1uNe6GpBGzo5x/QWS
+         CrpWBAsoIvB4yH3bLJsjs4AlIpoxcMKQPoG7xHcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 188/221] net: phy: broadcom: Fix RGMII delays for BCM50160 and BCM50610M
+Subject: [PATCH 4.19 63/72] scsi: qedi: Fix error return code of qedi_alloc_global_queues()
 Date:   Mon, 29 Mar 2021 09:58:39 +0200
-Message-Id: <20210329075635.397570189@linuxfoundation.org>
+Message-Id: <20210329075612.358641911@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit b1dd9bf688b0dcc5a34dca660de46c7570bd9243 ]
+[ Upstream commit f69953837ca5d98aa983a138dc0b90a411e9c763 ]
 
-The PHY driver entry for BCM50160 and BCM50610M calls
-bcm54xx_config_init() but does not call bcm54xx_config_clock_delay() in
-order to configuration appropriate clock delays on the PHY, fix that.
+When kzalloc() returns NULL to qedi->global_queues[i], no error return code
+of qedi_alloc_global_queues() is assigned.  To fix this bug, status is
+assigned with -ENOMEM in this case.
 
-Fixes: 733336262b28 ("net: phy: Allow BCM5481x PHYs to setup internal TX/RX clock delay")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210308033024.27147-1-baijiaju1990@gmail.com
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/broadcom.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/qedi/qedi_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 6f6e64f81924..dbed15dc0fe7 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -340,6 +340,10 @@ static int bcm54xx_config_init(struct phy_device *phydev)
- 	bcm54xx_adjust_rxrefclk(phydev);
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index e201c163ea1c..fe26144d390a 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1559,6 +1559,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 		if (!qedi->global_queues[i]) {
+ 			QEDI_ERR(&qedi->dbg_ctx,
+ 				 "Unable to allocation global queue %d.\n", i);
++			status = -ENOMEM;
+ 			goto mem_alloc_failure;
+ 		}
  
- 	switch (BRCM_PHY_MODEL(phydev)) {
-+	case PHY_ID_BCM50610:
-+	case PHY_ID_BCM50610M:
-+		err = bcm54xx_config_clock_delay(phydev);
-+		break;
- 	case PHY_ID_BCM54210E:
- 		err = bcm54210e_config_init(phydev);
- 		break;
 -- 
 2.30.1
 
