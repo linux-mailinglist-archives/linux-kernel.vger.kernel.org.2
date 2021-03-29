@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DA734C6AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F1A34CAC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbhC2IJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48512 "EHLO mail.kernel.org"
+        id S234925AbhC2Ijt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:39:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232221AbhC2IFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85EC2619A6;
-        Mon, 29 Mar 2021 08:05:20 +0000 (UTC)
+        id S233532AbhC2IXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C9DA61580;
+        Mon, 29 Mar 2021 08:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005121;
-        bh=W08GJSeIMMLzF16cGv85/Nq/gNBkFj2teDRdoAaF/lE=;
+        s=korg; t=1617006213;
+        bh=RjTHXO6Y1HVtNgvT3dwUnJOsHYYDzs5H0UOvVN4LW5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yamdjDEVwC6b145VsvCGwrmu350gvdWcUCBk9LEK3Bjo4pT1Q7ctURidqoGRg1Yhu
-         RoccSxTkRrovdBO/c/M57H4fx0pafMaywvWO6947SX8T2BDJqLRXlKE7Q7tdVwTqpA
-         NPQ9UoRNlndGX9k30/F6gNKmNwg3vGEU9BM/coTI=
+        b=BDdUERaNDkIV0z18ipNedtVIJsK2vwMnRt9uktyAXwfNEIPxs6uGouMb675nIrhgQ
+         2IcE81RRMmztVDcQ4HxAmZllwdx4G+dmJquvVOK18Ky0W6qSiNvE7g6va2QuSlwKji
+         /5yZq51EjP7+JqSBScUGUgdh5fncA67e13yx0SWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Georgi Valkov <gvalkov@abv.bg>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Robert Davies <robdavies1977@gmail.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/59] libbpf: Fix INSTALL flag order
+Subject: [PATCH 5.10 159/221] r8152: limit the RX buffer size of RTL8153A for USB 2.0
 Date:   Mon, 29 Mar 2021 09:58:10 +0200
-Message-Id: <20210329075609.887656104@linuxfoundation.org>
+Message-Id: <20210329075634.467235800@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georgi Valkov <gvalkov@abv.bg>
+From: Hayes Wang <hayeswang@realtek.com>
 
-[ Upstream commit e7fb6465d4c8e767e39cbee72464e0060ab3d20c ]
+[ Upstream commit f91a50d8b51b5c8ef1cfb08115a005bba4250507 ]
 
-It was reported ([0]) that having optional -m flag between source and
-destination arguments in install command breaks bpftools cross-build
-on MacOS. Move -m to the front to fix this issue.
+If the USB host controller is EHCI, the throughput is reduced from
+300Mb/s to 60Mb/s, when the rx buffer size is modified from 16K to
+32K.
 
-  [0] https://github.com/openwrt/openwrt/pull/3959
+According to the EHCI spec, the maximum size of the qTD is 20K.
+Therefore, when the driver uses more than 20K buffer, the latency
+time of EHCI would be increased. And, it let the RTL8153A get worse
+throughput.
 
-Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210308183038.613432-1-andrii@kernel.org
+However, the driver uses alloc_pages() for rx buffer, so I limit
+the rx buffer to 16K rather than 20K.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205923
+Fixes: ec5791c202ac ("r8152: separate the rx buffer size")
+Reported-by: Robert Davies <robdavies1977@gmail.com>
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/r8152.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index f02448e86d38..9fa466d4417b 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -183,7 +183,7 @@ define do_install
- 	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
- 	fi;						\
--	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
-+	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
- endef
- 
- install_lib: all_cmd
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index d2862071b697..f5010f8ac1ec 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -6519,7 +6519,10 @@ static int rtl_ops_init(struct r8152 *tp)
+ 		ops->in_nway		= rtl8153_in_nway;
+ 		ops->hw_phy_cfg		= r8153_hw_phy_cfg;
+ 		ops->autosuspend_en	= rtl8153_runtime_enable;
+-		tp->rx_buf_sz		= 32 * 1024;
++		if (tp->udev->speed < USB_SPEED_SUPER)
++			tp->rx_buf_sz	= 16 * 1024;
++		else
++			tp->rx_buf_sz	= 32 * 1024;
+ 		tp->eee_en		= true;
+ 		tp->eee_adv		= MDIO_EEE_1000T | MDIO_EEE_100TX;
+ 		break;
 -- 
 2.30.1
 
