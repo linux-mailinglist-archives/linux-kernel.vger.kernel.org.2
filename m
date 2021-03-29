@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D5934D5AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B368B34D5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhC2REO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S230226AbhC2RGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhC2REB (ORCPT
+        with ESMTP id S229515AbhC2RGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:04:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F58C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:04:01 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQvJ0-0006TN-0S; Mon, 29 Mar 2021 19:03:58 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQvIz-0006VR-NZ; Mon, 29 Mar 2021 19:03:57 +0200
-Date:   Mon, 29 Mar 2021 19:03:57 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
-Message-ID: <20210329170357.par7c3izvtmtovlj@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+        Mon, 29 Mar 2021 13:06:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72DCC061574;
+        Mon, 29 Mar 2021 10:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=PxZXZBxp3h9YV07j5jT8xkaQQh1GNk0fRvGYAARFTZg=; b=msfLzo1EA6eVVLNB0DfedVY89l
+        IkhDlmw3csXKyISCQFTCCzB0eZB1i2Bn48A3y4H4DyGI/2TFw9uAaaQHSO3EEps+5tuMx5lv9xnrF
+        hw8nYGH2iYdCNoRxu0fF3mZlRPCUpdRgdGFw6ktY94hcIPgt+A49P+jSkM3tB6IefInTozSCvFMiE
+        mTY7iMFJJ/mG2XA2drP0raaK3czluoQLkrvBpXgYa6b7PpDkS1THUiDjLSYXp3Jp9L2RNLlFDcpFz
+        kc/eLfuHLq+cXMw/KPyOnOiBkqINA7Q2HIdlfuKDdLbGgrxozyuoaDtuQfJHQUhAZUI7vYNHyOE4L
+        QnfMp7qw==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQvLL-000qmA-Mo; Mon, 29 Mar 2021 17:06:28 +0000
+Subject: Re: [PATCH] crypto: chelsio: fix incorrect kernel-doc comment syntax
+ in file
+To:     Aditya Srivastava <yashsri421@gmail.com>,
+        herbert@gondor.apana.org.au
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, ayush.sawal@chelsio.com,
+        vinay.yadav@chelsio.com, rohitm@chelsio.com, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329104514.16950-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <be5cdac5-5522-2204-41a7-e9a1ad717826@infradead.org>
+Date:   Mon, 29 Mar 2021 10:06:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ilk36xqvfaxvav3n"
-Content-Disposition: inline
-In-Reply-To: <20210329125707.182732-4-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210329104514.16950-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/29/21 3:45 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/crypto/chelsio/chcr_core.c follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> "warning: wrong kernel-doc identifier on line:
+>  * This file is part of the Chelsio T4/T5/T6 Ethernet driver for Linux."
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
---ilk36xqvfaxvav3n
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
-> The PCA9685 supports staggered LED output ON times to minimize current
-> surges and reduce EMI.
-> When this new option is enabled, the ON times of each channel are
-> delayed by channel number x counter range / 16, which avoids asserting
-> all enabled outputs at the same counter value while still maintaining
-> the configured duty cycle of each output.
->=20
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+Thanks.
 
-Is there a reason to not want this staggered output? If it never hurts I
-suggest to always stagger and drop the dt property.
+> ---
+>  drivers/crypto/chelsio/chcr_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/chelsio/chcr_core.c b/drivers/crypto/chelsio/chcr_core.c
+> index f91f9d762a45..f03ef4a23f96 100644
+> --- a/drivers/crypto/chelsio/chcr_core.c
+> +++ b/drivers/crypto/chelsio/chcr_core.c
+> @@ -1,4 +1,4 @@
+> -/**
+> +/*
+>   * This file is part of the Chelsio T4/T5/T6 Ethernet driver for Linux.
+>   *
+>   * Copyright (C) 2011-2016 Chelsio Communications.  All rights reserved.
+> 
 
-Best regards
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+-- 
+~Randy
 
---ilk36xqvfaxvav3n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiCHoACgkQwfwUeK3K
-7AnRIQf/W5F4T5BkG5hwd2fJ5VZkg6UaAlvJQfjxLY83XqP3GfgxSNGGb5Wr6kZt
-SciiIuQggfvOY7hIMJS9p8NcCRyMg39GSlYIuabQn/QjPOL22cfXsBe1w+oSTOxy
-PbxbcM842qyGRXGHGQD/OTXK9rpFwsZdOTg3LlSAPh+oyXLbPYk/UImV7Pu+8Oe9
-ViFMITfK0z0Gm2elPu5P4tAWfvQKdN5zCWsaF4TwG9LdjjTzsErhm1sg2bLdzIS5
-3mrquF1ApuV3GnxywZrrq6WL6u9gZonLjSeFIzh1zrj9iFsA/Lr4OlHa1nF0e8aB
-Sg+AcjNDbh/9iY/7flzedDV+v/TUuw==
-=H/BD
------END PGP SIGNATURE-----
-
---ilk36xqvfaxvav3n--
