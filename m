@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6677D34CEF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7A634CEF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhC2L2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:28:45 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:62600 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhC2L2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:28:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1617017316; x=1619609316;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dag0VALSFXxJrNDdDso7no10SDPXXkuRDt61Ctbt0Rc=;
-        b=K1oH4h2CocmPw4sGcR3hBIdtlV9kD9LY6bGzB0yMnqWz63P6B1OfjI02ywYg9865
-        zAheioPcGBIM0tL6SWXQ6OTDLxqofP4llcfD5xBmpTj9/9Jwu0hm6QcTXqVLOG2T
-        p7tuCece7UegKPnQxGmC2y5LTeDQ3f1pciKfS5L39eI=;
-X-AuditID: c39127d2-85cb770000001c91-73-6061b9e48219
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 3C.8A.07313.4E9B1606; Mon, 29 Mar 2021 13:28:36 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021032913283634-253200 ;
-          Mon, 29 Mar 2021 13:28:36 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>
-Subject: [PATCH 3/3] ARM: dts: imx6: pbab01: Set vmmc supply for both SD interfaces
-Date:   Mon, 29 Mar 2021 13:28:19 +0200
-Message-Id: <20210329112819.64043-3-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210329112819.64043-1-s.riedmueller@phytec.de>
-References: <20210329112819.64043-1-s.riedmueller@phytec.de>
-MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 29.03.2021 13:28:36,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 29.03.2021 13:28:36
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsWyRoCBS/fJzsQEg45Dahbzj5xjtXh41d9i
-        1dSdLBabHl9jtej6tZLZ4vKuOWwWrXuPsFv83b6JxeLFFnEHTo+ds+6ye2xa1cnmsXlJvcfG
-        dzuYPPr/Gnh83iQXwBbFZZOSmpNZllqkb5fAlfFrvUDBE46Kc6cesTcwbmLvYuTkkBAwkfj7
-        aDpjFyMXh5DANkaJBR/b2SCca4wSt793sYJUsQkYSSyY1sgEYosI5Eic2riZBcRmFuhkkvh9
-        MriLkYNDWCBYYsF9PZAwi4CqxJqGncwgNq+AjcT6hpOsEMvkJWZe+g62mFPAVuL/ouVgNUJA
-        NYcbIeK8AoISJ2c+YQG5QULgCqPEpT97mCGahSROLz7LDLFXW2LZwtfMExgFZiHpmYUktYCR
-        aRWjUG5mcnZqUWa2XkFGZUlqsl5K6iZGYHAfnqh+aQdj3xyPQ4xMHIyHGCU4mJVEeFlPxyYI
-        8aYkVlalFuXHF5XmpBYfYpTmYFES593AWxImJJCeWJKanZpakFoEk2Xi4JRqYJw3acV04Urz
-        X3pdOvlqrwPOHGwoNzbRZveYJBhwY/ItJaf9pz4xtVu9z1ZgWefOwbfr/syEW5mVPaz2Z7+E
-        B93n1mALO9IleMJN5jNDT9SRSfxGpw9r/7jxyKqg61PA0b8Het7Wdl+OC9ETyX9pr+Z35cS3
-        ZctZXyQ8WZXW5bShTsJJz+KdnRJLcUaioRZzUXEiAAd04UZcAgAA
+        id S229468AbhC2L3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:29:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230402AbhC2L2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:28:47 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E212B6157F;
+        Mon, 29 Mar 2021 11:28:46 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lQq4a-004Qv3-O8; Mon, 29 Mar 2021 12:28:44 +0100
+Date:   Mon, 29 Mar 2021 12:28:44 +0100
+Message-ID: <87tuouqjv7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jingyi Wang <wangjingyi11@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <zhukeqian1@huawei.com>
+Subject: Re: [RFC PATCH 1/3] irqchip/gic-v3: Make use of ICC_SGI1R IRM bit
+In-Reply-To: <7e44b7a1-4a12-86bf-4651-aa6a03c4f832@huawei.com>
+References: <20210329085210.11524-1-wangjingyi11@huawei.com>
+        <20210329085210.11524-2-wangjingyi11@huawei.com>
+        <87wntqqo6s.wl-maz@kernel.org>
+        <7e44b7a1-4a12-86bf-4651-aa6a03c4f832@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: wangjingyi11@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, wanghaibin.wang@huawei.com, yuzenghui@huawei.com, zhukeqian1@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the vmmc supplies is crucial since otherwise the supplying
-regulators get disabled and the SD interfaces are no longer powered
-which leads to system failures if the system is booted from that SD
-interface.
+On Mon, 29 Mar 2021 11:38:04 +0100,
+Jingyi Wang <wangjingyi11@huawei.com> wrote:
+> 
+> 
+> 
+> On 3/29/2021 5:55 PM, Marc Zyngier wrote:
+> > On Mon, 29 Mar 2021 09:52:08 +0100,
+> > Jingyi Wang <wangjingyi11@huawei.com> wrote:
+> >> 
+> >> IRM, bit[40] in ICC_SGI1R, determines how the generated SGIs
+> >> are distributed to PEs. If the bit is set, interrupts are routed
+> >> to all PEs in the system excluding "self". We use cpumask to
+> >> determine if this bit should be set and make use of that.
+> >> 
+> >> This will reduce vm trap when broadcast IPIs are sent.
+> > 
+> > I remember writing similar code about 4 years ago, only to realise
+> > what:
+> > 
+> > - the cost of computing the resulting mask is pretty high for large
+> > machines
+> > - Linux almost never sends broadcast IPIs, so the complexity was all
+> > in vain
+> > 
+> > What changed? Please provide supporting data showing how many IPIs we
+> > actually save, and for which workload.
+> Maybe we can implement send_IPI_allbutself hooks as other some other
+> archs instead of computing cpumask here?
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
----
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+The question remains: how often is that used? x86 uses it only for NMI
+(we don't broadcast our pseudo-NMI) and reboot, it seems. Anything I
+missed? Do we have a different use case on arm64?
 
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/d=
-ts/imx6qdl-phytec-pfla02.dtsi
-index 995e99952aca..3ab12aa2a615 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -433,6 +433,7 @@ &usdhc2 {
- 	pinctrl-0 =3D <&pinctrl=5Fusdhc2>;
- 	cd-gpios =3D <&gpio1 4 GPIO=5FACTIVE=5FLOW>;
- 	wp-gpios =3D <&gpio1 2 GPIO=5FACTIVE=5FHIGH>;
-+	vmmc-supply =3D <&vdd=5Fsd1=5Freg>;
- 	status =3D "disabled";
- };
-=20
-@@ -442,5 +443,6 @@ &usdhc3 {
- 		     &pinctrl=5Fusdhc3=5Fcdwp>;
- 	cd-gpios =3D <&gpio1 27 GPIO=5FACTIVE=5FLOW>;
- 	wp-gpios =3D <&gpio1 29 GPIO=5FACTIVE=5FHIGH>;
-+	vmmc-supply =3D <&vdd=5Fsd0=5Freg>;
- 	status =3D "disabled";
- };
---=20
-2.25.1
+At the moment, this doesn't seem very useful.
 
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
