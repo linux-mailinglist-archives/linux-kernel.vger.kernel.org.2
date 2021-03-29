@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2BF34C9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A236F34C7B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbhC2Idd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:33:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37792 "EHLO mail.kernel.org"
+        id S232727AbhC2ISA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233132AbhC2IUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:20:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC2A61932;
-        Mon, 29 Mar 2021 08:20:45 +0000 (UTC)
+        id S232312AbhC2IKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:10:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B40B61601;
+        Mon, 29 Mar 2021 08:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006046;
-        bh=HeVAUzfXIi4wFci/PGIIJy+PfBz1MSxXTp/F85U0NhA=;
+        s=korg; t=1617005449;
+        bh=IX9H4AcplSR0EDkMc7aZlgW094f7+ZIwMWvyuTjNvRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6VFTjRiz4R17hzH6Hvcr6LbZxQRX7qYpvJXA9uXtKk8qgPqfCjfuI2SpzsUdAkm0
-         mpbbcEfo4YIi0AxhOEmo8L+z0Cf5KmF8SDA85dj19hylYk/yT6IaeDhnHsGpCFKHYx
-         84C2mB0IM4d0Tt2npWfgqbXbO2aGcSq6HiAA25BY=
+        b=voIu/+fAKFgtDINI5RYN4vHMVnHmOM0YBUTWIlnSAV6p9kpK5EF5iHunD7XKx9+ZW
+         ZvqTk0qSRmol6g3lLRgQfQwKj8XMRc7m2k4u50PIwY1cs0yXc+belecwHu2EKPDmS1
+         c8opYoj1V+xFR1MaaMXbzRI2H4Nf4pdrv/3bUpyE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 097/221] net/mlx5e: RX, Mind the MPWQE gaps when calculating offsets
-Date:   Mon, 29 Mar 2021 09:57:08 +0200
-Message-Id: <20210329075632.444644594@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        David Bolvansky <david.bolvansky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 001/111] hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+Date:   Mon, 29 Mar 2021 09:57:09 +0200
+Message-Id: <20210329075615.235292111@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,102 +47,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tariq Toukan <tariqt@nvidia.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit d5dd03b26ba49c4ffe67ee1937add82293c19794 ]
+commit 552546366a30d88bd1d6f5efe848b2ab50fd57e5 upstream.
 
-Since cited patch, MLX5E_REQUIRED_WQE_MTTS is not a power of two.
-Hence, usage of MLX5E_LOG_ALIGNED_MPWQE_PPW should be replaced,
-as it lost some accuracy. Use the designated macro to calculate
-the number of required MTTs.
+A new clang diagnostic (-Wsizeof-array-div) warns about the calculation
+to determine the number of u32's in an array of unsigned longs.
+Suppress warning by adding parentheses.
 
-This makes sure the solution in cited patch works properly.
+While looking at the above issue, noticed that the 'address' parameter
+to hugetlb_fault_mutex_hash is no longer used.  So, remove it from the
+definition and all callers.
 
-While here, un-inline mlx5e_get_mpwqe_offset(), and remove the
-unused RQ parameter.
+No functional change.
 
-Fixes: c3c9402373fe ("net/mlx5e: Add resiliency in Striding RQ mode for packets larger than MTU")
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: http://lkml.kernel.org/r/20190919011847.18400-1-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Ilie Halip <ilie.halip@gmail.com>
+Cc: David Bolvansky <david.bolvansky@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h      | 7 ++++---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 6 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   | 4 ++--
- 3 files changed, 9 insertions(+), 8 deletions(-)
+ fs/hugetlbfs/inode.c    |    4 ++--
+ include/linux/hugetlb.h |    2 +-
+ mm/hugetlb.c            |   10 +++++-----
+ mm/userfaultfd.c        |    2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 2f05b0f9de01..9da34f82d466 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -90,14 +90,15 @@ struct page_pool;
- 				    MLX5_MPWRQ_LOG_WQE_SZ - PAGE_SHIFT : 0)
- #define MLX5_MPWRQ_PAGES_PER_WQE		BIT(MLX5_MPWRQ_WQE_PAGE_ORDER)
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -440,7 +440,7 @@ static void remove_inode_hugepages(struc
+ 			u32 hash;
  
--#define MLX5_MTT_OCTW(npages) (ALIGN(npages, 8) / 2)
-+#define MLX5_ALIGN_MTTS(mtts)		(ALIGN(mtts, 8))
-+#define MLX5_ALIGNED_MTTS_OCTW(mtts)	((mtts) / 2)
-+#define MLX5_MTT_OCTW(mtts)		(MLX5_ALIGNED_MTTS_OCTW(MLX5_ALIGN_MTTS(mtts)))
- /* Add another page to MLX5E_REQUIRED_WQE_MTTS as a buffer between
-  * WQEs, This page will absorb write overflow by the hardware, when
-  * receiving packets larger than MTU. These oversize packets are
-  * dropped by the driver at a later stage.
-  */
--#define MLX5E_REQUIRED_WQE_MTTS		(ALIGN(MLX5_MPWRQ_PAGES_PER_WQE + 1, 8))
--#define MLX5E_LOG_ALIGNED_MPWQE_PPW	(ilog2(MLX5E_REQUIRED_WQE_MTTS))
-+#define MLX5E_REQUIRED_WQE_MTTS		(MLX5_ALIGN_MTTS(MLX5_MPWRQ_PAGES_PER_WQE + 1))
- #define MLX5E_REQUIRED_MTTS(wqes)	(wqes * MLX5E_REQUIRED_WQE_MTTS)
- #define MLX5E_MAX_RQ_NUM_MTTS	\
- 	((1 << 16) * 2) /* So that MLX5_MTT_OCTW(num_mtts) fits into u16 */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 6394f9d8c685..8b0826d689c0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -303,9 +303,9 @@ static int mlx5e_create_rq_umr_mkey(struct mlx5_core_dev *mdev, struct mlx5e_rq
- 				     rq->wqe_overflow.addr);
- }
+ 			index = page->index;
+-			hash = hugetlb_fault_mutex_hash(h, mapping, index, 0);
++			hash = hugetlb_fault_mutex_hash(h, mapping, index);
+ 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
--static inline u64 mlx5e_get_mpwqe_offset(struct mlx5e_rq *rq, u16 wqe_ix)
-+static u64 mlx5e_get_mpwqe_offset(u16 wqe_ix)
+ 			/*
+@@ -644,7 +644,7 @@ static long hugetlbfs_fallocate(struct f
+ 		addr = index * hpage_size;
+ 
+ 		/* mutex taken here, fault path and hole punch */
+-		hash = hugetlb_fault_mutex_hash(h, mapping, index, addr);
++		hash = hugetlb_fault_mutex_hash(h, mapping, index);
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 		/* See if already present in mapping to avoid alloc/free */
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -106,7 +106,7 @@ void free_huge_page(struct page *page);
+ void hugetlb_fix_reserve_counts(struct inode *inode);
+ extern struct mutex *hugetlb_fault_mutex_table;
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-				pgoff_t idx, unsigned long address);
++				pgoff_t idx);
+ 
+ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
+ 
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4020,7 +4020,7 @@ retry:
+ 			 * handling userfault.  Reacquire after handling
+ 			 * fault to make calling code simpler.
+ 			 */
+-			hash = hugetlb_fault_mutex_hash(h, mapping, idx, haddr);
++			hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 			ret = handle_userfault(&vmf, VM_UFFD_MISSING);
+ 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+@@ -4148,7 +4148,7 @@ backout_unlocked:
+ 
+ #ifdef CONFIG_SMP
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
  {
--	return (wqe_ix << MLX5E_LOG_ALIGNED_MPWQE_PPW) << PAGE_SHIFT;
-+	return MLX5E_REQUIRED_MTTS(wqe_ix) << PAGE_SHIFT;
+ 	unsigned long key[2];
+ 	u32 hash;
+@@ -4156,7 +4156,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+ 	key[0] = (unsigned long) mapping;
+ 	key[1] = idx;
+ 
+-	hash = jhash2((u32 *)&key, sizeof(key)/sizeof(u32), 0);
++	hash = jhash2((u32 *)&key, sizeof(key)/(sizeof(u32)), 0);
+ 
+ 	return hash & (num_fault_mutexes - 1);
  }
+@@ -4166,7 +4166,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+  * return 0 and avoid the hashing overhead.
+  */
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
+ {
+ 	return 0;
+ }
+@@ -4210,7 +4210,7 @@ vm_fault_t hugetlb_fault(struct mm_struc
+ 	 * get spurious allocation failures if two CPUs race to instantiate
+ 	 * the same page in the page cache.
+ 	 */
+-	hash = hugetlb_fault_mutex_hash(h, mapping, idx, haddr);
++	hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
- static void mlx5e_init_frags_partition(struct mlx5e_rq *rq)
-@@ -544,7 +544,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 				mlx5_wq_ll_get_wqe(&rq->mpwqe.wq, i);
- 			u32 byte_count =
- 				rq->mpwqe.num_strides << rq->mpwqe.log_stride_sz;
--			u64 dma_offset = mlx5e_get_mpwqe_offset(rq, i);
-+			u64 dma_offset = mlx5e_get_mpwqe_offset(i);
+ 	entry = huge_ptep_get(ptep);
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -269,7 +269,7 @@ retry:
+ 		 */
+ 		idx = linear_page_index(dst_vma, dst_addr);
+ 		mapping = dst_vma->vm_file->f_mapping;
+-		hash = hugetlb_fault_mutex_hash(h, mapping, idx, dst_addr);
++		hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
- 			wqe->data[0].addr = cpu_to_be64(dma_offset + rq->buff.headroom);
- 			wqe->data[0].byte_count = cpu_to_be32(byte_count);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 6d2ba8b84187..7e1f8660dfec 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -506,7 +506,6 @@ static int mlx5e_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 	struct mlx5e_icosq *sq = &rq->channel->icosq;
- 	struct mlx5_wq_cyc *wq = &sq->wq;
- 	struct mlx5e_umr_wqe *umr_wqe;
--	u16 xlt_offset = ix << (MLX5E_LOG_ALIGNED_MPWQE_PPW - 1);
- 	u16 pi;
- 	int err;
- 	int i;
-@@ -537,7 +536,8 @@ static int mlx5e_alloc_rx_mpwqe(struct mlx5e_rq *rq, u16 ix)
- 	umr_wqe->ctrl.opmod_idx_opcode =
- 		cpu_to_be32((sq->pc << MLX5_WQE_CTRL_WQE_INDEX_SHIFT) |
- 			    MLX5_OPCODE_UMR);
--	umr_wqe->uctrl.xlt_offset = cpu_to_be16(xlt_offset);
-+	umr_wqe->uctrl.xlt_offset =
-+		cpu_to_be16(MLX5_ALIGNED_MTTS_OCTW(MLX5E_REQUIRED_MTTS(ix)));
- 
- 	sq->db.wqe_info[pi] = (struct mlx5e_icosq_wqe_info) {
- 		.wqe_type   = MLX5E_ICOSQ_WQE_UMR_RX,
--- 
-2.30.1
-
+ 		err = -ENOMEM;
 
 
