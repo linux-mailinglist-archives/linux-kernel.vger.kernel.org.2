@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221A734D8AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F3F34D8AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhC2T44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        id S231820AbhC2T51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhC2T4d (ORCPT
+        with ESMTP id S231825AbhC2T5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:56:33 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60509C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:56:32 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id h8so4931426plt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:56:32 -0700 (PDT)
+        Mon, 29 Mar 2021 15:57:05 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF83CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:57:04 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id x16so14024658wrn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:57:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=arista.com; s=google;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=TVRiaeC/A0OXhaXQdna/ueya/T+/wFEk8cwu7OpcPig=;
-        b=tClbKgb27ViO0L9uiKHkKrwNgsswcUHsFt1UQ8RqBE+uI9Rb4+9fEocYIv4md/KQyN
-         Ekb3Sj+I1/7OKgCzjtDBMOl+DalI8cUlP3TyspV9S+3qIS+u/OGgjOihGd4IRnrSNGZM
-         EHhoFPUTBjdh0QK3cE4dHsg6pKfWwWpSsDsg+Xikd/gjWQDwT31yYbfRdb3sEaB8B5ht
-         qRcjDjZu2m3TmKu2lhPoWwTSz3DW1FncKrLMv09qTas9YD0UEyxLG/x/QbKU7sqcDMds
-         rTzfDWu7/i1Ct9eIXKD1n/YoVv5O3yGycd49ZGv5clFil9qI74YZlnOX47oeARXEV06S
-         718A==
+        bh=0zAoRl//clq6WPeJfxTMvaVQ753eJj4mZ95Xl7JXi2w=;
+        b=jHis9KCRju1Pzkv1XjWjAwuy1/foOLRBNCKfFr3oS31vyVXubhfTY9tP6LVwBROR4n
+         MmIIdIZhlD+7GOVdN02rjHj9Dm3/6H9cQvZxBMxJlg3fhdgk5HePcFl/joat1D2hC574
+         63614o/popaNQbARYQ+Ycql6hmD49yDdC4P/80sX1MjsGH9dc0H/WAfGnWasvi+Gb/Nf
+         v/LFyfeEBaviEJ8XsauHbyPnFKy05gvEHOanefooRBskkxHz3lhNBpU6oKrGr973Staw
+         LcDzXCvkDPCd63qpkDj3eVIvJ/PreuCwfpqZgqOEW3Pp35hfi3PqIpbVGFR+DWHVzVO/
+         3/LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TVRiaeC/A0OXhaXQdna/ueya/T+/wFEk8cwu7OpcPig=;
-        b=OHozGcZgCrekwjKTSaotcZrIJLgxoOE859+FFMsbEeCllTEdJfaf4tKS8qPdyDjDXZ
-         n3HDGWa6Pc3qVt57/8vYtllpP+r3gCO7Q3+ARSBEZ9bPX8wGf+VpLzlqihsAKcCHtMdJ
-         tku4S4dKf4XyoD2KNLS7zmNjQIMEkaRSTZ6PyJIA30W0A3i8z4vPiMczd7Xsn3cSgsDk
-         qJizH3Hne60kS9vnE+npBgdn6/95D6fuYCOZ9bTvlR1Vc1QFjj79ShboWr8PuVoB0XRE
-         chFkv+A1L/3qt1Eb1zoz/e/oDgmZDavNiiD8ejmD25bPzmcprDVLsY8zgIllxowCqLdR
-         fzIw==
-X-Gm-Message-State: AOAM532XzznKWHJLCADIHEwBEJnncXELGPTciQpNB3NvrG6ASy757CZw
-        sWq7TklIU3MlaMcFND8+dHhmx7Qh+o8GgA==
-X-Google-Smtp-Source: ABdhPJxRIW+kAgl2RhFrsMM0ZdtBZIsjcUKLAfhKOXaVzRH1jnRD5NEfwhl4trPljGrNGj2lLqwO2A==
-X-Received: by 2002:a17:902:8c8d:b029:e5:e1fc:a587 with SMTP id t13-20020a1709028c8db02900e5e1fca587mr30384930plo.12.1617047792347;
-        Mon, 29 Mar 2021 12:56:32 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id u1sm17657167pgg.11.2021.03.29.12.56.31
+        bh=0zAoRl//clq6WPeJfxTMvaVQ753eJj4mZ95Xl7JXi2w=;
+        b=JXohG8KJf33QH5RMJ3siszqmR73WXNzQG1u1bnl9xMDIGRw7/ArM7EhTDyQ0xnjhfY
+         yQGSAKv+LLazt1sPtnvjImrQRvicNdzus2hz3VtoU4M/aYY7vgJOiGUmJ7lasUA0D6Ik
+         LhQn5xfh1XL9A5RvS+b9sRwxJE5g0gT0NYGAJlAWEktfLXYcJYMT/ymP6RaYwN7VAkj/
+         7xadIIDrvlke4BJpmcXuN3H4aeJSPa6WTzB7Vty2RceXwpDVNzP9Prlti8zuzbN+ksP0
+         RjWD+4zDmEeOKHn72fXqD4/JDHJXU/VI5GBZKpbZf4YqvrHcpINJqfU/IKbzipvpAJlT
+         Xbzw==
+X-Gm-Message-State: AOAM530xXAGgiHt3qx5jK5tfRM5/9juaGH0ku0SjU/yummAQmaUsxp8u
+        A3fJ5oRNfwYk53ooPXsMsyeP6w==
+X-Google-Smtp-Source: ABdhPJxL2g1tP98O5KuQnu8BSjgfVcUj0Kh+h35ux47ZTWsKEX9pBHptrVDNF7gcBuJ162MG+t6Sdw==
+X-Received: by 2002:adf:84e6:: with SMTP id 93mr28774576wrg.376.1617047823666;
+        Mon, 29 Mar 2021 12:57:03 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id 81sm449891wmc.11.2021.03.29.12.57.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:56:31 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Read in create_worker_cb
-To:     syzbot <syzbot+099593561bbd1805b839@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-References: <0000000000000dbebd05beb23f0c@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f96bff2f-bcd5-a04f-4130-1c3a933f97a2@kernel.dk>
-Date:   Mon, 29 Mar 2021 13:56:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 29 Mar 2021 12:57:03 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in xfrm_alloc_compat (2)
+To:     syzbot <syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
+References: <000000000000ceb65005beb18c8f@google.com>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <06c56a34-b7c6-f397-568d-3cdf6b044858@arista.com>
+Date:   Mon, 29 Mar 2021 20:57:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <0000000000000dbebd05beb23f0c@google.com>
+In-Reply-To: <000000000000ceb65005beb18c8f@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,135 +69,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 1:54 PM, syzbot wrote:
+Hi,
+
+On 3/29/21 8:04 PM, syzbot wrote:
 > Hello,
 > 
 > syzbot found the following issue on:
 > 
-> HEAD commit:    93129492 Add linux-next specific files for 20210326
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=144509bad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4c9322cd4e3b7a16
-> dashboard link: https://syzkaller.appspot.com/bug?extid=099593561bbd1805b839
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124ce00ed00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1664d5aad00000
+> HEAD commit:    6c996e19 net: change netdev_unregister_timeout_secs min va..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=102e5926d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c0ac79756537274e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=834ffd1afc7212eb8147
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a7b1aad00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae6b7cd00000
 > 
 > The issue was bisected to:
 > 
-> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Fri Oct 2 09:04:21 2020 +0000
+> commit 5f3eea6b7e8f58cf5c8a9d4b9679dc19e9e67ba3
+> Author: Dmitry Safonov <dima@arista.com>
+> Date:   Mon Sep 21 14:36:53 2020 +0000
 > 
->     lockdep: Fix lockdep recursion
+>     xfrm/compat: Attach xfrm dumps to 64=>32 bit translator
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f96b7cd00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11f96b7cd00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16f96b7cd00000
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10694b3ad00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12694b3ad00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14694b3ad00000
 > 
 > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+099593561bbd1805b839@syzkaller.appspotmail.com
-> Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+> Reported-by: syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com
+> Fixes: 5f3eea6b7e8f ("xfrm/compat: Attach xfrm dumps to 64=>32 bit translator")
 > 
-> ==================================================================
-> BUG: KASAN: use-after-free in create_worker_cb+0xaa/0xc0 fs/io-wq.c:272
-> Read of size 8 at addr ffff88801bf150e8 by task syz-executor364/8509
-> 
-> CPU: 0 PID: 8509 Comm: syz-executor364 Not tainted 5.12.0-rc4-next-20210326-syzkaller #0
+> netlink: 208 bytes leftover after parsing attributes in process `syz-executor193'.
+> ------------[ cut here ]------------
+> unsupported nla_type 356
+
+This doesn't seem to be an issue.
+Userspace sent message with nla_type 356, which is > __XFRM_MSG_MAX, so
+this warning is expected. I've added it so when a new XFRM_MSG_* will be
+added, to make sure that there will be translations to such messages in
+xfrm_compat.ko (if the translation needed).
+This is WARN_ON_ONCE(), so it can't be used as DOS.
+
+Ping me if you'd expect something else than once-a-boot warning for
+this. Not sure how-to close syzkaller bug, docs have only `invalid' tag,
+which isn't `not-a-bug'/`expected' tag:
+https://github.com/google/syzkaller/blob/master/docs/syzbot.md
+
+
+> WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_xlate64_attr net/xfrm/xfrm_compat.c:280 [inline]
+> WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_xlate64 net/xfrm/xfrm_compat.c:301 [inline]
+> WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:328
+> Modules linked in:
+> CPU: 1 PID: 8423 Comm: syz-executor193 Not tainted 5.12.0-rc4-syzkaller #0
 > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:xfrm_xlate64_attr net/xfrm/xfrm_compat.c:280 [inline]
+> RIP: 0010:xfrm_xlate64 net/xfrm/xfrm_compat.c:301 [inline]
+> RIP: 0010:xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:328
+> Code: de e8 5b d7 c3 f9 84 db 0f 85 b0 f8 ff ff e8 9e d0 c3 f9 8b 74 24 08 48 c7 c7 80 42 76 8a c6 05 39 2e 02 06 01 e8 74 b7 16 01 <0f> 0b e9 8d f8 ff ff e8 7b d0 c3 f9 8b 14 24 48 c7 c7 40 42 76 8a
+> RSP: 0018:ffffc90000fff4b8 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff88801b1554c0 RSI: ffffffff815c4d75 RDI: fffff520001ffe89
+> RBP: 00000000000000d8 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff815bdb0e R11: 0000000000000000 R12: 00000000ffffffa1
+> R13: ffff8880248eb8f8 R14: ffff888013256dc0 R15: ffff8880132568c0
+> FS:  000000000092f300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000200001e0 CR3: 0000000023271000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 > Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
->  __kasan_report mm/kasan/report.c:399 [inline]
->  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
->  create_worker_cb+0xaa/0xc0 fs/io-wq.c:272
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:143
->  exit_task_work include/linux/task_work.h:30 [inline]
->  do_exit+0xbfc/0x2a60 kernel/exit.c:825
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  __do_sys_exit_group kernel/exit.c:933 [inline]
->  __se_sys_exit_group kernel/exit.c:931 [inline]
->  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+>  xfrm_alloc_userspi+0x66a/0xa30 net/xfrm/xfrm_user.c:1448
+>  xfrm_user_rcv_msg+0x42c/0x8b0 net/xfrm/xfrm_user.c:2812
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+>  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+>  sock_sendmsg_nosec net/socket.c:654 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:674
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
 >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
 >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x447359
-> Code: Unable to access opcode bytes at RIP 0x44732f.
-> RSP: 002b:00007ffdfb4e3ea8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-> RAX: ffffffffffffffda RBX: 00000000004b8390 RCX: 0000000000447359
-> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004b8390
-> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+> RIP: 0033:0x43f009
+> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe0986bcb8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f009
+> RDX: 0000000000000000 RSI: 0000000020000580 RDI: 0000000000000003
+> RBP: 0000000000402ff0 R08: 0000000000000000 R09: 0000000000400488
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403080
+> R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 > 
-> Allocated by task 8509:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:428 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:507 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:466 [inline]
->  __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:516
->  kmalloc_node include/linux/slab.h:574 [inline]
->  kzalloc_node include/linux/slab.h:697 [inline]
->  io_wq_create+0x6e4/0xca0 fs/io-wq.c:934
->  io_init_wq_offload fs/io_uring.c:7938 [inline]
->  io_uring_alloc_task_context+0x1bf/0x660 fs/io_uring.c:7957
->  __io_uring_add_task_file+0x29a/0x3c0 fs/io_uring.c:8915
->  io_uring_add_task_file fs/io_uring.c:8951 [inline]
->  io_uring_install_fd fs/io_uring.c:9509 [inline]
->  io_uring_create fs/io_uring.c:9656 [inline]
->  io_uring_setup+0x20dd/0x2b00 fs/io_uring.c:9693
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Freed by task 8509:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->  ____kasan_slab_free mm/kasan/common.c:360 [inline]
->  ____kasan_slab_free mm/kasan/common.c:325 [inline]
->  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
->  kasan_slab_free include/linux/kasan.h:212 [inline]
->  slab_free_hook mm/slub.c:1578 [inline]
->  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1603
->  slab_free mm/slub.c:3163 [inline]
->  kfree+0xe5/0x7f0 mm/slub.c:4230
->  io_wq_destroy+0x13e/0x2d0 fs/io-wq.c:1022
->  io_wq_put fs/io-wq.c:1032 [inline]
->  io_wq_put_and_exit+0x7a/0xa0 fs/io-wq.c:1038
->  io_uring_clean_tctx+0xed/0x160 fs/io_uring.c:8988
->  __io_uring_files_cancel+0x703/0x850 fs/io_uring.c:9053
->  io_uring_files_cancel include/linux/io_uring.h:22 [inline]
->  do_exit+0x299/0x2a60 kernel/exit.c:780
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  __do_sys_exit_group kernel/exit.c:933 [inline]
->  __se_sys_exit_group kernel/exit.c:931 [inline]
->  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> The buggy address belongs to the object at ffff88801bf15000
->  which belongs to the cache kmalloc-1k of size 1024
-> The buggy address is located 232 bytes inside of
->  1024-byte region [ffff88801bf15000, ffff88801bf15400)
-> The buggy address belongs to the page:
-> page:ffffea00006fc400 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801bf15800 pfn:0x1bf10
-> head:ffffea00006fc400 order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000010200 ffffea00004cd808 ffff888010840888 ffff888010841dc0
-> raw: ffff88801bf15800 000000000010000d 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 > 
-> Memory state around the buggy address:
->  ffff88801bf14f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff88801bf15000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->> ffff88801bf15080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                                           ^
->  ffff88801bf15100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff88801bf15180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
 
-#syz test: git://git.kernel.dk/linux-block for-5.13/io_uring
-
--- 
-Jens Axboe
-
+Thanks,
+          Dmitry
