@@ -2,113 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2BD34C11C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB634C125
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhC2B33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhC2B30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:29:26 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD8DC061574;
-        Sun, 28 Mar 2021 18:29:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7w3L3S0Dz9sVb;
-        Mon, 29 Mar 2021 12:29:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616981359;
-        bh=tS36/yvn4T/WdxBeAhOqfBAnHoRss1JiIniZ0G+CTpI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ppvSGQ+sNcv9C+wOOj53cSXWZ2sZtR9Z2BIEMbeURFA6fINkJGRReXe/PgvF4rRKR
-         xMOpjp+zBtyERG0eQ6CA4/F1gQRhChjAAOsa881Xe06Xe78yw7bHK/euCTz7HSric7
-         goMohvGF3pFaZnaWHfpVksOjCjsgmF5bV1a5G1GDlvd8HNLyRViDiMlEpVqFDJ+xw1
-         RvM8U1R1E9gfGd8NU9VM0Q7kolxXSsouxqoHjZkkrGJTHVrb4W3oHScoIjqybQWAyb
-         XQbm5mqlMbr6mzGR2oIiq6LNBJNU1gcOsdLJ+trE+HHrhaR69rXF1GpCTIbtMYJgB/
-         kiRQi+kizNXJw==
-Date:   Mon, 29 Mar 2021 12:29:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: linux-next: manual merge of the net-next tree with the bpf tree
-Message-ID: <20210329122916.5921aad9@canb.auug.org.au>
+        id S230180AbhC2BfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhC2Be7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 21:34:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 724F9600EF;
+        Mon, 29 Mar 2021 01:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616981698;
+        bh=6+VxiZVQue9t6p9Kolu9ET32ku6Xz3xw7XrpNKRIlKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HgZBo7jtus/fXb/WCdsZOgAK9H4KGX6JBuzzOweRFG4WRHIkaR4/YE+WxS3D0KCC5
+         rZumauk2GLIfhodp6iDQHzWV7MYXZGh/gnKsMVz5+qIBPigv0r+qvGdVP01JJVbxL7
+         YKYOWv9xob0t+KGZaHqYpjqZOkzPPSNP+j0pT8NG+kSPd6HYTYcpTGxcD9IaT29CDM
+         Z9mfnbOzjRh5GQ9vBDwViSmYFwcagTI4kvXWHAyWdld0cz/m7t+dnk/5hUeUHtc3IX
+         JQk0QzMOUhqvQBj0CgRNM5xEEJj+DDQe+pCbQf/MYC8JGzlOsfjLYb15Slqw0iiFUa
+         9+lAISkQ0lZeQ==
+Date:   Mon, 29 Mar 2021 09:34:53 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, aisheng.dong@nxp.com, victor.liu@nxp.com,
+        peng.fan@nxp.com, daniel.baluta@nxp.com, mirela.rabulea@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lznuaa@gmail.com
+Subject: Re: [PATCH 1/1] firmware: imx: scu-pd: add missed ADC1 pd
+Message-ID: <20210329013452.GI22955@dragon>
+References: <20210319212352.31869-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/n0RbQghcvDC=ieBcA8WQy2v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319212352.31869-1-Frank.Li@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/n0RbQghcvDC=ieBcA8WQy2v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Mar 19, 2021 at 04:23:52PM -0500, Frank Li wrote:
+> ADC1 is not defined in pd driver on 8QM.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
 
-Hi all,
-
-Today's linux-next merge of the net-next tree got a conflict in:
-
-  include/linux/bpf.h
-
-between commit:
-
-  861de02e5f3f ("bpf: Take module reference for trampoline in module")
-
-from the bpf tree and commit:
-
-  69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/bpf.h
-index fdac0534ce79,39dce9d3c3a5..000000000000
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@@ -40,7 -40,7 +40,8 @@@ struct bpf_local_storage
-  struct bpf_local_storage_map;
-  struct kobject;
-  struct mem_cgroup;
- +struct module;
-+ struct bpf_func_state;
- =20
-  extern struct idr btf_idr;
-  extern spinlock_t btf_idr_lock;
-
---Sig_/n0RbQghcvDC=ieBcA8WQy2v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhLWwACgkQAVBC80lX
-0Gxtdgf+NOlt2Yc59onwnfYuBU7k+VWAgxK9UP1APSJRyUA8JwoUmUhOGu75Wbin
-uUyCApb7Kmj1kkvWw9exigqwQwyrEKJHjWDGlnzKmozt4WjVjEWW61BaAyly54aT
-IPUir2fox180Tx7BkFdM3SmUAO0CVtxoH64E8AnXCwuqnKGirgLof8jAZMxGgnaj
-O0alMeVR90pU99R/s3OoNFB3FHwb4xsiNCXz/1eUcD1iN/tUOiI5urYsmgi/5HKw
-jqIFQoa/9PXbGCgblD7oOUZGYxaFQv7AQkj4lBxw3IP/NDZU1DgrZN3YIkwiXwNM
-3dSs3Y7iw0unzCSXidDYUaxDNrub9A==
-=5+8n
------END PGP SIGNATURE-----
-
---Sig_/n0RbQghcvDC=ieBcA8WQy2v--
+Applied, thanks.
