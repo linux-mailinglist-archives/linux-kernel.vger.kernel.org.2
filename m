@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D301134C864
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32A934C583
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhC2IVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
+        id S231586AbhC2IAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:00:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232656AbhC2INl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD426197C;
-        Mon, 29 Mar 2021 08:13:33 +0000 (UTC)
+        id S231381AbhC2IAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA2A6196B;
+        Mon, 29 Mar 2021 08:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005614;
-        bh=C9pIcrvGFfRFNSX/85V9/P3WIq5uhGd3ieTYCQCNS5E=;
+        s=korg; t=1617004834;
+        bh=BG4jTp2DQEnJmUtlKC/+k9EQ3yB9/XQr/geX0VFuXlM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+xnAAqPnfwyfzoWVDqQ7kXIj6T8hFfwSL+CBE7069r6VOMmvMcc0+djda8ElhQIR
-         B4P8bjma5KznYXFvecPSsweqS/MuBREGY5o9798MKkECm7FLU6wUKSMevpy0v7ZnUO
-         PPPpdu1VvF/unYCl8ea3uMYqnTyt6jgxGaeiUm7g=
+        b=rU7IWR22zVynXuuXzA3rRwTApA57V3Pm7DR6txZb+vjzsnvrVhObr8V4MGT/YYvCZ
+         th73JQ1c7XGo+Qe7ESwMvowqdS/TBUJ6ZzZWW7Ed3lLfjhS+AT8nvVhn7OPSsjhXYj
+         jG8QLTYa4LM2wVi3jcvHYC67mu4nzsCEhiWpJLa8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Georgi Valkov <gvalkov@abv.bg>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/111] libbpf: Fix INSTALL flag order
+Subject: [PATCH 4.4 18/33] bus: omap_l3_noc: mark l3 irqs as IRQF_NO_THREAD
 Date:   Mon, 29 Mar 2021 09:58:03 +0200
-Message-Id: <20210329075617.030589085@linuxfoundation.org>
+Message-Id: <20210329075605.855957823@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georgi Valkov <gvalkov@abv.bg>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit e7fb6465d4c8e767e39cbee72464e0060ab3d20c ]
+[ Upstream commit 7d7275b3e866cf8092bd12553ec53ba26864f7bb ]
 
-It was reported ([0]) that having optional -m flag between source and
-destination arguments in install command breaks bpftools cross-build
-on MacOS. Move -m to the front to fix this issue.
+The main purpose of l3 IRQs is to catch OCP bus access errors and identify
+corresponding code places by showing call stack, so it's important to
+handle L3 interconnect errors as fast as possible. On RT these IRQs will
+became threaded and will be scheduled much more late from the moment actual
+error occurred so showing completely useless information.
 
-  [0] https://github.com/openwrt/openwrt/pull/3959
+Hence, mark l3 IRQs as IRQF_NO_THREAD so they will not be forced threaded
+on RT or if force_irqthreads = true.
 
-Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210308183038.613432-1-andrii@kernel.org
+Fixes: 0ee7261c9212 ("drivers: bus: Move the OMAP interconnect driver to drivers/bus/")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/omap_l3_noc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 283caeaaffc3..9758bfa59232 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -241,7 +241,7 @@ define do_install
- 	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
- 	fi;						\
--	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
-+	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
- endef
+diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
+index 5012e3ad1225..624f74d03a83 100644
+--- a/drivers/bus/omap_l3_noc.c
++++ b/drivers/bus/omap_l3_noc.c
+@@ -285,7 +285,7 @@ static int omap_l3_probe(struct platform_device *pdev)
+ 	 */
+ 	l3->debug_irq = platform_get_irq(pdev, 0);
+ 	ret = devm_request_irq(l3->dev, l3->debug_irq, l3_interrupt_handler,
+-			       0x0, "l3-dbg-irq", l3);
++			       IRQF_NO_THREAD, "l3-dbg-irq", l3);
+ 	if (ret) {
+ 		dev_err(l3->dev, "request_irq failed for %d\n",
+ 			l3->debug_irq);
+@@ -294,7 +294,7 @@ static int omap_l3_probe(struct platform_device *pdev)
  
- install_lib: all_cmd
+ 	l3->app_irq = platform_get_irq(pdev, 1);
+ 	ret = devm_request_irq(l3->dev, l3->app_irq, l3_interrupt_handler,
+-			       0x0, "l3-app-irq", l3);
++			       IRQF_NO_THREAD, "l3-app-irq", l3);
+ 	if (ret)
+ 		dev_err(l3->dev, "request_irq failed for %d\n", l3->app_irq);
+ 
 -- 
 2.30.1
 
