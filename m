@@ -2,139 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F42634D615
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D643E34D619
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC2RcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:32:16 -0400
-Received: from mga05.intel.com ([192.55.52.43]:10658 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhC2RcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:32:05 -0400
-IronPort-SDR: uVRT3NDj3Nla0GYSM9vskzzzQwEkfb2drJ35K2UUSd0h06s6qp9M3nbg5D6xlQIBGytmXRwh/F
- 2NJCprQhBeCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="276760240"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="276760240"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 10:32:04 -0700
-IronPort-SDR: dOgo06jeRJlSM+BgD1dcoC59nLgsXdxPiTuCuCv8j31WCEfvDhRNo7vW6kR+bXqwfDk51GCNI8
- O9nAHiVQ3CAQ==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="411196206"
-Received: from jmwolcot-mobl.amr.corp.intel.com (HELO [10.209.158.84]) ([10.209.158.84])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 10:32:04 -0700
-Subject: Re: I915 CI-run with kfence enabled, issues found
-To:     Marco Elver <elver@google.com>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
-Cc:     "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S229711AbhC2Rdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:33:51 -0400
+Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:55168
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229479AbhC2Rdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:33:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AA71YgXi3DVqt5p+qzTUX8gTuZu/UP9hvRYv4LpEYA6TqsZ5C4tD3tF1xBmlFBDgHIm5fhxfEJcwnPfIX9r7tM3HHE5uueo5opo6KmOwwvT1S5oRGfxmPK7vXcapMxk/tx/aRxqKq0mP4nBzdLn9pGzMYZM9a2uM4fmyWZFxYma/MW6fO9qxO61IORst9r+9OJxVRXWHb/wN/EEaznhYM88itWvjHXhq48WpcLbAmMf52aw1/ZHhSafXO+BSUCYcXZpRPOLDdUHCWcKuyTZn1wrZC1I5yvtSEs3UgnPgy+gp5pry7ODNVVgs4VMjUrDjAXqH86V3wAXTNvvRb4nUdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vRl4CM98VnUwsjuPkji+ebpOYEO0wzKz8YEjuxmTn4c=;
+ b=H0bMBkSqaoyxwkigIMha0XbJyi0TAyODZ2rYlmg0V4eNzeJj92OSC0u/sBq33UjlsHtnT0lPvIIx45X0H4nPhibWJawGzR6yc9zweGSVn08JJwvSMu4sn5rthpyU8ebY7fp1onfoaA7EROZqhv2MQRDrV+s+6Egb7QTtN8cEIzSOhaIn698/TaVPr9IRU5MSb1uBEwKSayqpBNbaNdJQxAWv0NjQbQlHko04cGU4PHGPhtdprC2covepD6e+EGv4GLKZNAuf0ktFXFyHPl5xWwFo5rhC6/lMxbhZ4A2p6gNzZ5/p0lHGZ3h6W7jYDlEfG1KQnASbuw4YLQ3xMVwKhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vRl4CM98VnUwsjuPkji+ebpOYEO0wzKz8YEjuxmTn4c=;
+ b=EsiIInyB9oXONVlk0aAnMvc1REWM07C6ZhavXvpdnmk982Hg9cRarBFJBGOvre87dpIlqzP8Fpjn0/BFeuA2/+Xylu8dD7/PCjkE++u7h1avRWInjqkNeBhMwUxVU4U3c2+GVKmIVmr+JnjuFaOE/F+H95mAMe6HP5xN4PaNHy8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
+ by MWHPR1201MB2476.namprd12.prod.outlook.com (2603:10b6:300:de::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Mon, 29 Mar
+ 2021 17:33:45 +0000
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::4987:8b2f:78ca:deb8]) by MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::4987:8b2f:78ca:deb8%7]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 17:33:45 +0000
+Subject: Re: [PATCH] drm/amd/display: dual cursors are seen if scaling is
+ enabled
+To:     Louis Li <Ching-shih.Li@amd.com>
+Cc:     ching-li@amd.com, Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Ikshwaku Chauhan <ikshwaku.chauhan@amd.corp-partner.google.com>,
+        Aric Cyr <aric.cyr@amd.com>, hersen wu <hersenxs.wu@amd.com>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-References: <d60bba0e6f354cbdbd0ae16314edeb9a@intel.com>
- <66f453a79f2541d4b05bcd933204f1c9@intel.com>
- <YGIDBAboELGgMgXy@elver.google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <796ff05e-c137-cbd4-252b-7b114abaced9@intel.com>
-Date:   Mon, 29 Mar 2021 10:32:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <YGIDBAboELGgMgXy@elver.google.com>
-Content-Type: text/plain; charset=utf-8
+References: <20210329075411.501760-1-Ching-shih.Li@amd.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <bd4ec0cf-eb7b-4323-08f0-43f95ea75d64@amd.com>
+Date:   Mon, 29 Mar 2021 13:33:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210329075411.501760-1-Ching-shih.Li@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [198.200.67.155]
+X-ClientProxiedBy: YT1PR01CA0032.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::45)
+ To MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.193] (198.200.67.155) by YT1PR01CA0032.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.32 via Frontend Transport; Mon, 29 Mar 2021 17:33:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0a3c9a0e-ea72-4aa6-f9e9-08d8f2d8cd6c
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB2476:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB24763EDCCA16C9AF1AD158DC8C7E9@MWHPR1201MB2476.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /e7CwaaydWqXoJt7htMwaZPQyn2xK8x6HkF9idHzLpiX/ZXeYSU8pvsf9OEHNBOq3OjTmHnZbsEFcSBoaUMfMkVv5nz/YHQI2OAs4KjuSUk/iJUasrRpXgCU2mmQwZSipEyJB1CuQuFYqn3K97xYD66h7RjEcSv3IR4dffBA/Pd9c9Zs5RT+6oXg3f9EKvv/dX326RVCm7oHm4e7yThDx9RpdXcoG0LMDdC7uJp/yRruGt1ujxF/VY9DMLwMjMB7F/Ici2Mn+G+Rwvy+625/3qpS7FmSUw93L/JUXQ1Or3WcyP8nVAbYTOD9i7FndfffTP5sULkxN0aaL48JT1uRge0noxPasmYH1VynAgWYtI62MpGX24sCKRlXqI/S2ZORLc8nUjU0KXj3/POXMAicdZK57BTTyV8Rh07P/SRBuAD6BgTu9W6DIwbOHf6z4kme1v+jhb0JHlFyUC46fp8e78YLJLCJH4xhCY1rbAxJkgv5qJBfVMp6G8NnlnmGWX3De60T40incRJ/UNZwGyjirDpuGoMgXsQv9A3OLCoA/ABmhbU5RS6AdPRRD2cJ7qnDb1eH4LHpMzw8yTjRSxEsywjFLEwQrZktEUP+2TG1+qHhV7KBGyfu4bAbAL/C/Pc1xJV2WeOx/Qpdd0H0x2l6Lxjyc3QwnHNCKP/+La+qzIHE2zq6jibpC3/Hy8tOH0XmimZMkoH2YgopxpPesMmf7g31YA1OGUQWsla5wXAATNo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(366004)(346002)(136003)(66946007)(4326008)(83380400001)(66556008)(8936002)(2616005)(66476007)(36756003)(5660300002)(956004)(16526019)(86362001)(6486002)(6862004)(31686004)(38100700001)(186003)(316002)(54906003)(16576012)(37006003)(44832011)(2906002)(31696002)(53546011)(6666004)(478600001)(26005)(6636002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?N002Nm8zUFN3TUJ6RkZqeG5KYmc4S05MYlE1enR3NGE0TnJnaVY2ZFZaQ01x?=
+ =?utf-8?B?MHZGZjh0NW9IeUp1eXBJNkVMYVZkTEdDaldudlZHZW54TXB3ZW1QVTg1azBN?=
+ =?utf-8?B?ajdIcmZTcXhzQ0tuNkhRTEp3RGEzdHFRVlBvcittYXVEbXduRTN5SzVWSHpR?=
+ =?utf-8?B?N2JwU3NLa1dSZmNoV0prRm5laVV4c1JEaGUvSWtvS28yd3Q5VWZ5V20wT3VZ?=
+ =?utf-8?B?OVBUK09RMGhpQ1lSYU9Ubkc0MTZUajRPZkU3Wi9kT2ZaT2c3OVBnVExPL0Vw?=
+ =?utf-8?B?L1dYRGlkQVBHRExQZXdTdkY3bFFkdWFhMFdhTENmTlRDYVVxTGtnVExxUDVJ?=
+ =?utf-8?B?cFpSR2xTTDJEQVJYSEhhRGcwbVZwKy9xaHBMa0dHQTZiSkFKbVhrWFJXTUZl?=
+ =?utf-8?B?MWI3MElpL1hYRHVnNkhRZWpsUnJxT2dSenFURmNRRCtsNnRRRXAyWDlFaXBv?=
+ =?utf-8?B?ZmNObmErK2gwaGxBSExENjBoQWhmVXk5Vm9NbUNhV29YeW1mci9qbFZFNERW?=
+ =?utf-8?B?TjRJRkpXdEpNSWlRazdkRW5VbU9yRkY4amxDdU9UOTF1VVB5RnZKSXlNOGpa?=
+ =?utf-8?B?elJDV3VySFRzTktOQXVlNStiTXVZSXBvU3o4eE1WMjRhQ2pBVi9mOTd4ZjRR?=
+ =?utf-8?B?LzJMd1VCZEpkd3VBS3NtbzFqU2wxdGNUZHpyb05uUlB6eEJSL3lha1RYQUEv?=
+ =?utf-8?B?YnNNNSt3VHlJTW1oNmJjRnkzOWdBZXRUd0VsZ0t6MW5CQldNeXh4c0tDeVcx?=
+ =?utf-8?B?VGV0YXVDUlI3NGhwejV5cHZ4RFNLSWF5T1FQQU1ZVTNjdGdzaktCeHFuMUVr?=
+ =?utf-8?B?cDF0RWFwZjFzN1hOQUNiSmhkNVhkTkxnaXFlcVFoMnRyTWVTeHpxQzhKV0wr?=
+ =?utf-8?B?Z0trZ2ZqRy9tQUVrakx6TWdHWGVNTnd4QUs3bWNSM1J1UmFqdGpscDE4MVc0?=
+ =?utf-8?B?UVkyb2Qxa0tuY2tKdUQrMHpvSEVqdWs3aTQ0QnJad096VUgrNTE2U1ZVTHJ6?=
+ =?utf-8?B?THQ2bEhkdkU1N0c3blpiQXJqUW9kQ0FDYlJ5K2JSV0dzYnRuMzJ3cmdSUVZl?=
+ =?utf-8?B?ZVl4SEtnVDRZOEpFQzBJOGZzR0RUTk80ak9BRDhwc3JsTG1iZG8vQkIxdkQz?=
+ =?utf-8?B?UlNiZGF5Y2huMVo0VXdVSTd0ZFNkWm9aUUNrbDQvSmtKVHdpZTZvaGFSMHNV?=
+ =?utf-8?B?WS9XNnJwbHhabENEcUtWdTNWSHFuRVg5Q1VURlRoTG9NQjhhVXpaMDlpTStY?=
+ =?utf-8?B?Qi9kbTBVbUZGZmVkT04zSG1uMXl0cHllL0RYRlR3VHozaXVXUDhXM0VZTUVC?=
+ =?utf-8?B?U0hmaWUvNld1SU43TTFTUGRhTjlTb0hLWU5nV2FwSEZ4MDNLWEllVk5TVUJv?=
+ =?utf-8?B?eGhjLzBPN0VRQVNybXVzdlllZENUZ005enVML1I2L2VLZFBaZ01PMldwdXFB?=
+ =?utf-8?B?ZGRzcHNMSzZtOEJBdm8xZTM0YjNKaXc2Nkl2YU9MTENhbVRZMWwrOEEvcTZY?=
+ =?utf-8?B?R3JTN3lYaE5tQkNHSDlzRGxJRm9obGJZM1VEOGFOS3NoWERRdEJBVk9PclZL?=
+ =?utf-8?B?WjBIK3dIMkJnSVhTOFM3ZEJ3cnRNVkxxempKVjVKdnhVYWI1eExqdWs0ak9O?=
+ =?utf-8?B?OTRyNk51a0ZuWUhhYUlUYlhqK3VSODhLMnJsUVNTbmFiNytWTXlEek5QZFdp?=
+ =?utf-8?B?TGcwM1FGeWJVTUNGQWRVb0xVOHN2RnUxc3FKVHBEalk4NUNvbXdsYldOYkNl?=
+ =?utf-8?Q?pzegZkc+D3ytX5IBrF+IfF+79bBGfGsFaissvYR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a3c9a0e-ea72-4aa6-f9e9-08d8f2d8cd6c
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 17:33:44.8663
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gfcHNo2x8Xy/3Rj9y91vep7abQf49E+b3wi70QPMIm5+oiMNvfzvalQH6sPsIyhBX5/N/P1usGDUaoWe/PdQ4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB2476
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 9:40 AM, Marco Elver wrote:
-> It looks like the code path from flush_tlb_one_kernel() to
-> invalidate_user_asid()'s this_cpu_ptr() has several feature checks, so
-> probably some feature difference between systems where it triggers and
-> it doesn't.
+On 2021-03-29 3:54 a.m., Louis Li wrote:
+> [Why]
+> This issue is found when scaling is not equal to one from src to dest.
+> When issue happens, there are offsets in both axis x and y between
+> two cursors. Users cannot control APP under such a condition.
 > 
-> As far as I'm aware, there is no restriction on where
-> flush_tlb_one_kernel() is called. We could of course guard it but I
-> think that's wrong.
+
+What's the use case? I don't think we support two cursors on a screen.
+
+Does this pass IGT cursor tests?
+
+Nick, I thought we don't allow cursor on anything but the top, unscaled 
+pipe.
+
+Harry
+
+> [How]
+> For dual cursors, cursor should be disabled if there is a visible pipe
+> on top of the current pipe at the current cursor position.
+> For offsets between two cursors, need translate cursor position from
+> stream space to plane space with scaling into consideration.
 > 
-> Other than that, I hope the x86 maintainers know what's going on here.
+> Tested-by: Louis Li <Ching-shih.Li@amd.com>
+> Signed-off-by: Louis Li <Ching-shih.Li@amd.com>
+> Change-Id: Ic19e4f3b9225736f037f5ade10b68e8afe5f9ab7
+> ---
+>   .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 40 ++++++++++++++-----
+>   1 file changed, 30 insertions(+), 10 deletions(-)
 > 
-> Just for reference, the stack traces in the above logs start with:
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+> index 83212ea40077..1ce5e58e3a9e 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+> @@ -2999,6 +2999,10 @@ static bool dcn10_can_pipe_disable_cursor(struct pipe_ctx *pipe_ctx)
+>   	const struct rect *r1 = &pipe_ctx->plane_res.scl_data.recout, *r2;
+>   	int r1_r = r1->x + r1->width, r1_b = r1->y + r1->height, r2_r, r2_b;
+>   
+> +	struct dc_cursor_position pos_cpy = pipe_ctx->stream->cursor_position;
+> +	int cp_x = pos_cpy.x;
+> +	int cp_y = pos_cpy.y;
+> +
+>   	/**
+>   	 * Disable the cursor if there's another pipe above this with a
+>   	 * plane that contains this pipe's viewport to prevent double cursor
+> @@ -3013,7 +3017,8 @@ static bool dcn10_can_pipe_disable_cursor(struct pipe_ctx *pipe_ctx)
+>   		r2_r = r2->x + r2->width;
+>   		r2_b = r2->y + r2->height;
+>   
+> -		if (r1->x >= r2->x && r1->y >= r2->y && r1_r <= r2_r && r1_b <= r2_b)
+> +		if ((cp_x >= r1->x && cp_y >= r1->y && cp_x <= r1_r && cp_y <= r1_b)
+> +		   && (cp_x >= r2->x && cp_y >= r2->y && cp_x <= r2_r && cp_y <= r2_b))
+>   			return true;
+>   	}
+>   
+> @@ -3034,15 +3039,30 @@ static void dcn10_set_cursor_position(struct pipe_ctx *pipe_ctx)
+>   		.rotation = pipe_ctx->plane_state->rotation,
+>   		.mirror = pipe_ctx->plane_state->horizontal_mirror
+>   	};
+> -	uint32_t x_plane = pipe_ctx->plane_state->dst_rect.x;
+> -	uint32_t y_plane = pipe_ctx->plane_state->dst_rect.y;
+> -	uint32_t x_offset = min(x_plane, pos_cpy.x);
+> -	uint32_t y_offset = min(y_plane, pos_cpy.y);
+> -
+> -	pos_cpy.x -= x_offset;
+> -	pos_cpy.y -= y_offset;
+> -	pos_cpy.x_hotspot += (x_plane - x_offset);
+> -	pos_cpy.y_hotspot += (y_plane - y_offset);
+> +
+> +	int x_plane = pipe_ctx->plane_state->dst_rect.x;
+> +	int y_plane = pipe_ctx->plane_state->dst_rect.y;
+> +	int x_pos = pos_cpy.x;
+> +	int y_pos = pos_cpy.y;
+> +
+> +	// translate cursor from stream space to plane space
+> +	x_pos = (x_pos - x_plane) * pipe_ctx->plane_state->src_rect.width /
+> +			pipe_ctx->plane_state->dst_rect.width;
+> +	y_pos = (y_pos - y_plane) * pipe_ctx->plane_state->src_rect.height /
+> +			pipe_ctx->plane_state->dst_rect.height;
+> +
+> +	if (x_pos < 0) {
+> +		pos_cpy.x_hotspot -= x_pos;
+> +		x_pos = 0;
+> +	}
+> +
+> +	if (y_pos < 0) {
+> +		pos_cpy.y_hotspot -= y_pos;
+> +		y_pos = 0;
+> +	}
+> +
+> +	pos_cpy.x = (uint32_t)x_pos;
+> +	pos_cpy.y = (uint32_t)y_pos;
+>   
+>   	if (pipe_ctx->plane_state->address.type
+>   			== PLN_ADDR_TYPE_VIDEO_PROGRESSIVE)
 > 
-> | <3> [31.556004] BUG: using smp_processor_id() in preemptible [00000000] code: dmesg/1075
-> | <4> [31.556070] caller is invalidate_user_asid+0x13/0x50
-> | <4> [31.556078] CPU: 6 PID: 1075 Comm: dmesg Not tainted 5.12.0-rc4-gda4a2b1a5479-kfence_1+ #1
-> | <4> [31.556081] Hardware name: Hewlett-Packard HP Pro 3500 Series/2ABF, BIOS 8.11 10/24/2012
-> | <4> [31.556084] Call Trace:
-> | <4> [31.556088]  dump_stack+0x7f/0xad
-> | <4> [31.556097]  check_preemption_disabled+0xc8/0xd0
-> | <4> [31.556104]  invalidate_user_asid+0x13/0x50
-> | <4> [31.556109]  flush_tlb_one_kernel+0x5/0x20
-> | <4> [31.556113]  kfence_protect+0x56/0x80
-> | 	...........
 
-Our naming here isn't great.
-
-But, the "one" in flush_tlb_one_kernel() really refers to two "ones":
-1. Flush one single address
-2. Flush that address from one CPU's TLB
-
-The reason preempt needs to be off is that it doesn't make any sense to
-flush one TLB entry from a "random" CPU.  It only makes sense to flush
-it when preempt is disabled and you *know* which CPU's TLB you're flushing.
-
-I think kfence needs to be using flush_tlb_kernel_range().  That does
-all the IPI fanciness to flush the TLBs on *ALL* CPUs, not just the
-current one.
-
-BTW, the preempt checks in flush_tlb_one_kernel() are dependent on KPTI
-being enabled.  That's probably why you don't see this everywhere.  We
-should probably have unconditional preempt checks in there.
