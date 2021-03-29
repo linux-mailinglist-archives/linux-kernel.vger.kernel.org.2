@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CBF34C718
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BBD34C64C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhC2IMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S232364AbhC2IGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232165AbhC2IHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 277536193A;
-        Mon, 29 Mar 2021 08:07:49 +0000 (UTC)
+        id S231618AbhC2IDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C27461959;
+        Mon, 29 Mar 2021 08:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005270;
-        bh=K4fqc7zoVmAvq0J3bVVpDAlwhg06AUxZdqlVtI7sLss=;
+        s=korg; t=1617005035;
+        bh=Sepos0qn7ogREQUQReaVRdvkH4LNy6TqoeWdQ4e0K/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0RKBW6n9ca+TcxngggdXJNoN91TqqHZe+JjWSoH6sceNh+jH5ncYvkFqjRD9lNQ6Z
-         nlsN4+2s6LuUq7MxDr8pYb9eszsppLZwrJvlHmb+7mJnL4b1ssGr5hrAhEnAp3yylu
-         XA8P58GDF/HuzWIl9YN4SFmC0Qzh/h+P/bBRQJO0=
+        b=zuhOn6rRAkhn6Xeu2ntYS9WCpM875x+1vyty/OvyCw1tkrIWJDUzheVZJGF+CSy/O
+         bPwTRBf4I3FMUeZYKEC6+B1etYTYd5Xme8MZF7V6P4YMTV899U51mL8scE9i3mWA85
+         iV1eaWvb5e+IiqeZKL5bGvVCU6V/3+0Tu+YHQRc0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 24/72] netsec: restore phy power state after controller reset
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 25/53] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
 Date:   Mon, 29 Mar 2021 09:58:00 +0200
-Message-Id: <20210329075611.065101539@linuxfoundation.org>
+Message-Id: <20210329075608.363613459@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mian Yousaf Kaukab <ykaukab@suse.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 804741ac7b9f2fdebe3740cb0579cb8d94d49e60 upstream.
+[ Upstream commit b52912b8293f2c496f42583e65599aee606a0c18 ]
 
-Since commit 8e850f25b581 ("net: socionext: Stop PHY before resetting
-netsec") netsec_netdev_init() power downs phy before resetting the
-controller. However, the state is not restored once the reset is
-complete. As a result it is not possible to bring up network on a
-platform with Broadcom BCM5482 phy.
+There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
+that we have caught its return value but lack further handling.
+Check and terminate the execution flow just like other e1e_wphy()
+in this function.
 
-Fix the issue by restoring phy power state after controller reset is
-complete.
-
-Fixes: 8e850f25b581 ("net: socionext: Stop PHY before resetting netsec")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/socionext/netsec.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -1386,14 +1386,17 @@ static int netsec_netdev_init(struct net
- 		goto err1;
- 
- 	/* set phy power down */
--	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR) |
--		BMCR_PDOWN;
--	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR);
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR,
-+			 data | BMCR_PDOWN);
- 
- 	ret = netsec_reset_hardware(priv, true);
- 	if (ret)
- 		goto err2;
- 
-+	/* Restore phy power state */
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+
- 	return 0;
- err2:
- 	netsec_free_dring(priv, NETSEC_RING_RX);
+diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
+index 6b03c8553e59..65deaf8f3004 100644
+--- a/drivers/net/ethernet/intel/e1000e/82571.c
++++ b/drivers/net/ethernet/intel/e1000e/82571.c
+@@ -917,6 +917,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
+ 	} else {
+ 		data &= ~IGP02E1000_PM_D0_LPLU;
+ 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
++		if (ret_val)
++			return ret_val;
+ 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+ 		 * during Dx states where the power conservation is most
+ 		 * important.  During driver activity we should enable
+-- 
+2.30.1
+
 
 
