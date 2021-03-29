@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F7434C879
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D0834CBF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbhC2IWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
+        id S236778AbhC2Iyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231610AbhC2IOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DA1619B9;
-        Mon, 29 Mar 2021 08:14:24 +0000 (UTC)
+        id S234416AbhC2Ifs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:35:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B057861581;
+        Mon, 29 Mar 2021 08:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005665;
-        bh=S4DiG8oj0WRZkZr0KnsFJXHx9WwR6hooWtKkYHCW+vc=;
+        s=korg; t=1617006923;
+        bh=JqQYKn1ZTnx1pruKnmZr2f/O7Y9btMH/+S13rtg3ZGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RW/ZRbW8YWNE+YpwIa0i1ZY9EnYVXD1DNPiEon49FnpeYdg1sjqvqzi6rhfT8KIcG
-         BitwofXqT5ICD/lLsWM+guV79w0MFO3b7XWe/4en1R7ah4VvHX8Boz6Cjw7mWiZCLg
-         EVmc1hG0D0Xwpijwxudqjv1ijTeQ4ZmyY+hDP5Vk=
+        b=ZydmdarQj+dRSeGGRP02pL2tckUx8jyksrz5UR8dXsQkIPdKZgtNII6z1ritLxtKn
+         0D6ajyXlJAovPdfkmaQ7OlmkNddEoEzUMH5V4gfgbWAfEzNyisIlSZBTfmrGKzCE5X
+         rfsUYMZ1OhVshMHl7AL9rpmVDrz9886cKJZZx7FM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 039/111] netsec: restore phy power state after controller reset
-Date:   Mon, 29 Mar 2021 09:57:47 +0200
-Message-Id: <20210329075616.480711294@linuxfoundation.org>
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 152/254] can: c_can_pci: c_can_pci_remove(): fix use-after-free
+Date:   Mon, 29 Mar 2021 09:57:48 +0200
+Message-Id: <20210329075638.206892683@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mian Yousaf Kaukab <ykaukab@suse.de>
+From: Tong Zhang <ztong0001@gmail.com>
 
-commit 804741ac7b9f2fdebe3740cb0579cb8d94d49e60 upstream.
+[ Upstream commit 0429d6d89f97ebff4f17f13f5b5069c66bde8138 ]
 
-Since commit 8e850f25b581 ("net: socionext: Stop PHY before resetting
-netsec") netsec_netdev_init() power downs phy before resetting the
-controller. However, the state is not restored once the reset is
-complete. As a result it is not possible to bring up network on a
-platform with Broadcom BCM5482 phy.
+There is a UAF in c_can_pci_remove(). dev is released by
+free_c_can_dev() and is used by pci_iounmap(pdev, priv->base) later.
+To fix this issue, save the mmio address before releasing dev.
 
-Fix the issue by restoring phy power state after controller reset is
-complete.
-
-Fixes: 8e850f25b581 ("net: socionext: Stop PHY before resetting netsec")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5b92da0443c2 ("c_can_pci: generic module for C_CAN/D_CAN on PCI")
+Link: https://lore.kernel.org/r/20210301024512.539039-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/socionext/netsec.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/can/c_can/c_can_pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -1693,14 +1693,17 @@ static int netsec_netdev_init(struct net
- 		goto err1;
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 406b4847e5dc..7efb60b50876 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -239,12 +239,13 @@ static void c_can_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct net_device *dev = pci_get_drvdata(pdev);
+ 	struct c_can_priv *priv = netdev_priv(dev);
++	void __iomem *addr = priv->base;
  
- 	/* set phy power down */
--	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR) |
--		BMCR_PDOWN;
--	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR);
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR,
-+			 data | BMCR_PDOWN);
+ 	unregister_c_can_dev(dev);
  
- 	ret = netsec_reset_hardware(priv, true);
- 	if (ret)
- 		goto err2;
+ 	free_c_can_dev(dev);
  
-+	/* Restore phy power state */
-+	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
-+
- 	spin_lock_init(&priv->desc_ring[NETSEC_RING_TX].lock);
- 	spin_lock_init(&priv->desc_ring[NETSEC_RING_RX].lock);
- 
+-	pci_iounmap(pdev, priv->base);
++	pci_iounmap(pdev, addr);
+ 	pci_disable_msi(pdev);
+ 	pci_clear_master(pdev);
+ 	pci_release_regions(pdev);
+-- 
+2.30.1
+
 
 
