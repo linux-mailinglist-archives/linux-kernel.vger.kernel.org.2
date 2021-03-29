@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80EA34C675
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEF234C636
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhC2IH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        id S231920AbhC2IGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232167AbhC2IEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8245161959;
-        Mon, 29 Mar 2021 08:04:38 +0000 (UTC)
+        id S229655AbhC2IDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 335FE6197C;
+        Mon, 29 Mar 2021 08:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005079;
-        bh=Hu7eLsX0xzzWq8Az1HGRu3h9HNzL7mi7VCU2Z64f044=;
+        s=korg; t=1617005017;
+        bh=xApSOa09ElfP4rhRLxl2qX3/VQV9GCPKdkvheP9nFhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NubtIa00RlnamXU9pdrZQVVOLPFhFeu53bEYBOVwgAbmViL4m6V3VC7EVYcqI5xl3
-         6pCvVJKtzdv9SD7fnw9/L9s6epZA/iBY7eB0161BaQi99eiQvfCUEVRnUYTR6BIYan
-         dWPYm47GHmNgBHYMcVPmbS4jvuIaPbzDyZ1xJ3BM=
+        b=kIr2lYWYYev1c3pHsQAD1bger4fXng1OCgg5wW+BKTfgW8zUHbSbTJxiE6A3naMkh
+         zBD0+EPBxq+IrI0NTJOjlHFw+QHyuiSA0EeEw6nnPKVBk0nmbMRWoxPCG1M/G6WZFe
+         R2LUco6Glt6pcAfMU8FAjX88D76WqaS7kh0pfQ3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 18/59] drm/radeon: fix AGP dependency
+Subject: [PATCH 4.9 23/53] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
 Date:   Mon, 29 Mar 2021 09:57:58 +0200
-Message-Id: <20210329075609.481151152@linuxfoundation.org>
+Message-Id: <20210329075608.301350730@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit cba2afb65cb05c3d197d17323fee4e3c9edef9cd ]
+[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
 
-When AGP is compiled as module radeon must be compiled as module as
-well.
+Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
+bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
+qualify the phydev->dev_flags based on whether the port is connected to
+an internal or external PHY otherwise we risk having a flags collision
+with a completely different interpretation depending on the driver.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/dsa/bcm_sf2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 83cb2a88c204..595d0c96ba89 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -156,6 +156,7 @@ source "drivers/gpu/drm/arm/Kconfig"
- config DRM_RADEON
- 	tristate "ATI Radeon"
- 	depends on DRM && PCI && MMU
-+	depends on AGP || !AGP
- 	select FW_LOADER
-         select DRM_KMS_HELPER
-         select DRM_TTM
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index 0c69d5858558..40b3adf7ad99 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -588,8 +588,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+ 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+ 	 * the REG_PHY_REVISION register layout is.
+ 	 */
+-
+-	return priv->hw_params.gphy_rev;
++	if (priv->int_phy_mask & BIT(port))
++		return priv->hw_params.gphy_rev;
++	else
++		return 0;
+ }
+ 
+ static void bcm_sf2_sw_adjust_link(struct dsa_switch *ds, int port,
 -- 
 2.30.1
 
