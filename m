@@ -2,178 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADFC34D397
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7B934D3AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhC2PSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:18:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40106 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhC2PSN (ORCPT
+        id S230240AbhC2PVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:21:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32350 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229628AbhC2PUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:18:13 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lQteb-00050s-LV; Mon, 29 Mar 2021 15:18:09 +0000
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: mm/page_alloc: add a bulk page allocator
-Message-ID: <61c479aa-18fe-82f3-c859-710c3555cbaa@canonical.com>
-Date:   Mon, 29 Mar 2021 16:18:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 29 Mar 2021 11:20:54 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TF3aVY047260;
+        Mon, 29 Mar 2021 11:20:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=TtToMWPYlyyGKFmt9lcXEYBKQ3nvsnYebkyKrx3OjBw=;
+ b=COXX9l6kGqWVDKKIcAYiVUUzju7eeBG33nEQ/I5nAtW838OwWWNjixQ2xF5YCXgrA/iw
+ oG460QTK9au0MTBODefBSZy2YV3rtFompJlsovTkFH4gSu5AF2Kgf2LfzJMVR5cYvlui
+ GjjNbWYgJTZOMFridW7ksnykrgmLWcz0zLhbeVj2GweKcxxl0sDYesWdH3xCe2VtRciC
+ 7dag2yGyQt1aiMeko/E/PrDtfmsSAaVEPibqh1gRzjPOxE0WGLirDAJcOE9qdGNkTy85
+ IPDg1vOCPc95UBFO69CrV2GJtwhvrl2NZsAPNMsFp4b71DC05VfqoOGfEH+KAvd2Ip8z pQ== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37jhsrurtb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 11:20:49 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12TFBgTc029969;
+        Mon, 29 Mar 2021 15:20:48 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03wdc.us.ibm.com with ESMTP id 37jqmmyawp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 15:20:48 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12TFKmqB8651454
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 15:20:48 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCE98124053;
+        Mon, 29 Mar 2021 15:20:47 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE869124054;
+        Mon, 29 Mar 2021 15:20:46 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.163.3.96])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Mar 2021 15:20:46 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     sam@mendozajonas.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Milton Miller <miltonm@us.ibm.com>,
+        Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH] net/ncsi: Avoid channel_monitor hrtimer deadlock
+Date:   Mon, 29 Mar 2021 10:20:39 -0500
+Message-Id: <20210329152039.15189-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EhYCi-mAd2mOfMYoZv6WjQEfnxileLQa
+X-Proofpoint-ORIG-GUID: EhYCi-mAd2mOfMYoZv6WjQEfnxileLQa
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_10:2021-03-26,2021-03-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ phishscore=0 impostorscore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103290114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Milton Miller <miltonm@us.ibm.com>
 
-Static analysis on linux-next with Coverity has found a potential
-uninitialized variable issue in function __alloc_pages_bulk with the
-following commit:
+Calling ncsi_stop_channel_monitor from channel_monitor is a guaranteed
+deadlock on SMP because stop calls del_timer_sync on the timer that
+inoked channel_monitor as its timer function.
 
-commit b0e0a469733fa571ddd8fe147247c9561b51b2da
-Author: Mel Gorman <mgorman@techsingularity.net>
-Date:   Mon Mar 29 11:12:24 2021 +1100
+Recognise the inherent race of marking the monitor disabled before
+deleting the timer by just returning if enable was cleared.  After
+a timeout (the default case -- reset to START when response received)
+just mark the monitor.enabled false.
 
-    mm/page_alloc: add a bulk page allocator
+If the channel has an entrie on the channel_queue list, or if the
+state is not ACTIVE or INACTIVE, then warn and mark the timer stopped
+and don't restart, as the locking is broken somehow.
 
-The analysis is as follows:
+Fixes: 0795fb2021f0 ("net/ncsi: Stop monitor if channel times out or is inactive")
+Signed-off-by: Milton Miller <miltonm@us.ibm.com>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+---
+ net/ncsi/ncsi-manage.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-5023 unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-5024                        nodemask_t *nodemask, int nr_pages,
-5025                        struct list_head *page_list,
-5026                        struct page **page_array)
-5027 {
-5028        struct page *page;
-5029        unsigned long flags;
-5030        struct zone *zone;
-5031        struct zoneref *z;
-5032        struct per_cpu_pages *pcp;
-5033        struct list_head *pcp_list;
-5034        struct alloc_context ac;
-5035        gfp_t alloc_gfp;
-    1. var_decl: Declaring variable alloc_flags without initializer.
-5036        unsigned int alloc_flags;
-5037        int nr_populated = 0;
-5038
-    2. Condition !!(nr_pages <= 0), taking false branch.
-5039        if (unlikely(nr_pages <= 0))
-5040                return 0;
-5041
-5042        /*
-5043         * Skip populated array elements to determine if any pages need
-5044         * to be allocated before disabling IRQs.
-5045         */
-    3. Condition page_array, taking true branch.
-    4. Condition page_array[nr_populated], taking true branch.
-    5. Condition nr_populated < nr_pages, taking true branch.
-    7. Condition page_array, taking true branch.
-    8. Condition page_array[nr_populated], taking true branch.
-    9. Condition nr_populated < nr_pages, taking true branch.
-    11. Condition page_array, taking true branch.
-    12. Condition page_array[nr_populated], taking true branch.
-    13. Condition nr_populated < nr_pages, taking false branch.
-5046        while (page_array && page_array[nr_populated] &&
-nr_populated < nr_pages)
-    6. Jumping back to the beginning of the loop.
-    10. Jumping back to the beginning of the loop.
-5047                nr_populated++;
-5048
-5049        /* Use the single page allocator for one page. */
-    14. Condition nr_pages - nr_populated == 1, taking false branch.
-5050        if (nr_pages - nr_populated == 1)
-5051                goto failed;
-5052
-5053        /* May set ALLOC_NOFRAGMENT, fragmentation will return 1
-page. */
-5054        gfp &= gfp_allowed_mask;
-5055        alloc_gfp = gfp;
-
-    Uninitialized scalar variable (UNINIT)
-    15. uninit_use_in_call: Using uninitialized value alloc_flags when
-calling prepare_alloc_pages.
-
-5056        if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask,
-&ac, &alloc_gfp, &alloc_flags))
-5057                return 0;
-
-And in prepare_alloc_pages():
-
-4957 static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int
-order,
-4958                int preferred_nid, nodemask_t *nodemask,
-4959                struct alloc_context *ac, gfp_t *alloc_gfp,
-4960                unsigned int *alloc_flags)
-4961 {
-4962        ac->highest_zoneidx = gfp_zone(gfp_mask);
-4963        ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
-4964        ac->nodemask = nodemask;
-4965        ac->migratetype = gfp_migratetype(gfp_mask);
-4966
-
-    1. Condition cpusets_enabled(), taking false branch.
-
-4967        if (cpusets_enabled()) {
-4968                *alloc_gfp |= __GFP_HARDWALL;
-4969                /*
-4970                 * When we are in the interrupt context, it is
-irrelevant
-4971                 * to the current task context. It means that any
-node ok.
-4972                 */
-4973                if (!in_interrupt() && !ac->nodemask)
-4974                        ac->nodemask = &cpuset_current_mems_allowed;
-4975                else
-4976                        *alloc_flags |= ALLOC_CPUSET;
-4977        }
-4978
-4979        fs_reclaim_acquire(gfp_mask);
-4980        fs_reclaim_release(gfp_mask);
-4981
-    2. Condition gfp_mask & 1024U /* (gfp_t)1024U */, taking true branch.
-4982        might_sleep_if(gfp_mask & __GFP_DIRECT_RECLAIM);
-4983
-    3. Condition should_fail_alloc_page(gfp_mask, order), taking false
-branch.
-4984        if (should_fail_alloc_page(gfp_mask, order))
-4985                return false;
-4986
-    4. read_value: Reading value *alloc_flags when calling
-gfp_to_alloc_flags_cma.
-4987        *alloc_flags = gfp_to_alloc_flags_cma(gfp_mask, *alloc_flags);
-
-And in call gfp_to_alloc_flags_cma():
-
-in /mm/page_alloc.c
-
-3853 static inline unsigned int gfp_to_alloc_flags_cma(gfp_t gfp_mask,
-3854                                                  unsigned int
-alloc_flags)
-3855 {
-3856#ifdef CONFIG_CMA
-    1. Condition gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE, taking
-true branch.
-3857        if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-    2. read_value: Reading value alloc_flags.
-3858                alloc_flags |= ALLOC_CMA;
-3859#endif
-3860        return alloc_flags;
-3861 }
-
-So alloc_flags in gfp_to_alloc_flags_cma is being updated with the |=
-operator and we managed to get to this path with uninitialized
-alloc_flags.  Should alloc_flags be initialized to zero in
-__alloc_page_bulk()?
-
-Colin
-
+diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
+index a9cb355324d1..ffff8da707b8 100644
+--- a/net/ncsi/ncsi-manage.c
++++ b/net/ncsi/ncsi-manage.c
+@@ -105,13 +105,20 @@ static void ncsi_channel_monitor(struct timer_list *t)
+ 	monitor_state = nc->monitor.state;
+ 	spin_unlock_irqrestore(&nc->lock, flags);
+ 
+-	if (!enabled || chained) {
+-		ncsi_stop_channel_monitor(nc);
+-		return;
+-	}
++	if (!enabled)
++		return;		/* expected race disabling timer */
++	if (WARN_ON_ONCE(chained))
++		goto bad_state;
++
+ 	if (state != NCSI_CHANNEL_INACTIVE &&
+ 	    state != NCSI_CHANNEL_ACTIVE) {
+-		ncsi_stop_channel_monitor(nc);
++bad_state:
++		netdev_warn(ndp->ndev.dev,
++			    "Bad NCSI monitor state channel %d 0x%x %s queue\n",
++			    nc->id, state, chained ? "on" : "off");
++		spin_lock_irqsave(&nc->lock, flags);
++		nc->monitor.enabled = false;
++		spin_unlock_irqrestore(&nc->lock, flags);
+ 		return;
+ 	}
+ 
+@@ -136,10 +143,9 @@ static void ncsi_channel_monitor(struct timer_list *t)
+ 		ncsi_report_link(ndp, true);
+ 		ndp->flags |= NCSI_DEV_RESHUFFLE;
+ 
+-		ncsi_stop_channel_monitor(nc);
+-
+ 		ncm = &nc->modes[NCSI_MODE_LINK];
+ 		spin_lock_irqsave(&nc->lock, flags);
++		nc->monitor.enabled = false;
+ 		nc->state = NCSI_CHANNEL_INVISIBLE;
+ 		ncm->data[2] &= ~0x1;
+ 		spin_unlock_irqrestore(&nc->lock, flags);
+-- 
+2.27.0
 
