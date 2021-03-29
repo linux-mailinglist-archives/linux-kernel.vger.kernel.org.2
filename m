@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D0634CC2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246334C714
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236069AbhC2I5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
+        id S232893AbhC2IMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:12:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234677AbhC2IhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF335619AB;
-        Mon, 29 Mar 2021 08:36:17 +0000 (UTC)
+        id S232415AbhC2IH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B18E619A0;
+        Mon, 29 Mar 2021 08:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006978;
-        bh=KC7cYA3GCnH1sNAc2tHBgiwFe0CGHB7A53pDDXKoVps=;
+        s=korg; t=1617005248;
+        bh=YmdqMCOGIIF1N6stSjszgZ/JdIxQLgQGqkNQIalEejU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pUa1sZf8UQbA42KQbT5tt681qtQwKzLXAfwzzNoE0uC6vxfIZPTQOoS7LGy5Crb0k
-         UTTY3vJ8MZU4eZm+cy8nlIMZGwVQHN6pkwb03UahqlmlrsJquD5Xt0AqKVv0HXk+3r
-         DTtp3SXC8LvI7px5KjHRfTgLGtK6S6poM6dVMitA=
+        b=RqLcFEWfaSCByvORA/9h8T6ZMqL6Kh9OnBGPlvRJCdzHTAttDllGdooe16ijx8LqR
+         mzybZU3oxNrUhbn1Ut1eA58dKSZ45hZYgRko4pszbnZmeVxO6PoYHLfa6wmq4oSUtD
+         ldKCAPMvB9D3PPBnYqAdkM4SXV+cE/fTJtgxHHB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carlos Llamas <cmllamas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 158/254] selftests/net: fix warnings on reuseaddr_ports_exhausted
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Erhard F." <erhard_f@mailbox.org>,
+        Sasha Levin <sashal@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH 4.19 18/72] u64_stats,lockdep: Fix u64_stats_init() vs lockdep
 Date:   Mon, 29 Mar 2021 09:57:54 +0200
-Message-Id: <20210329075638.390828958@linuxfoundation.org>
+Message-Id: <20210329075610.877791027@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Carlos Llamas <cmllamas@google.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 81f711d67a973bf8a6db9556faf299b4074d536e ]
+[ Upstream commit d5b0e0677bfd5efd17c5bbb00156931f0d41cb85 ]
 
-Fix multiple warnings seen with gcc 10.2.1:
-reuseaddr_ports_exhausted.c:32:41: warning: missing braces around initializer [-Wmissing-braces]
-   32 | struct reuse_opts unreusable_opts[12] = {
-      |                                         ^
-   33 |  {0, 0, 0, 0},
-      |   {   } {   }
+Jakub reported that:
 
-Fixes: 7f204a7de8b0 ("selftests: net: Add SO_REUSEADDR test to check if 4-tuples are fully utilized.")
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    static struct net_device *rtl8139_init_board(struct pci_dev *pdev)
+    {
+	    ...
+	    u64_stats_init(&tp->rx_stats.syncp);
+	    u64_stats_init(&tp->tx_stats.syncp);
+	    ...
+    }
+
+results in lockdep getting confused between the RX and TX stats lock.
+This is because u64_stats_init() is an inline calling seqcount_init(),
+which is a macro using a static variable to generate a lockdep class.
+
+By wrapping that in an inline, we negate the effect of the macro and
+fold the static key variable, hence the confusion.
+
+Fix by also making u64_stats_init() a macro for the case where it
+matters, leaving the other case an inline for argument validation
+etc.
+
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Debugged-by: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: "Erhard F." <erhard_f@mailbox.org>
+Link: https://lkml.kernel.org/r/YEXicy6+9MksdLZh@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/net/reuseaddr_ports_exhausted.c | 32 +++++++++----------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ include/linux/u64_stats_sync.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/net/reuseaddr_ports_exhausted.c b/tools/testing/selftests/net/reuseaddr_ports_exhausted.c
-index 7b01b7c2ec10..066efd30e294 100644
---- a/tools/testing/selftests/net/reuseaddr_ports_exhausted.c
-+++ b/tools/testing/selftests/net/reuseaddr_ports_exhausted.c
-@@ -30,25 +30,25 @@ struct reuse_opts {
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index a27604f99ed0..11096b561dab 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -69,12 +69,13 @@ struct u64_stats_sync {
  };
  
- struct reuse_opts unreusable_opts[12] = {
--	{0, 0, 0, 0},
--	{0, 0, 0, 1},
--	{0, 0, 1, 0},
--	{0, 0, 1, 1},
--	{0, 1, 0, 0},
--	{0, 1, 0, 1},
--	{0, 1, 1, 0},
--	{0, 1, 1, 1},
--	{1, 0, 0, 0},
--	{1, 0, 0, 1},
--	{1, 0, 1, 0},
--	{1, 0, 1, 1},
-+	{{0, 0}, {0, 0}},
-+	{{0, 0}, {0, 1}},
-+	{{0, 0}, {1, 0}},
-+	{{0, 0}, {1, 1}},
-+	{{0, 1}, {0, 0}},
-+	{{0, 1}, {0, 1}},
-+	{{0, 1}, {1, 0}},
-+	{{0, 1}, {1, 1}},
-+	{{1, 0}, {0, 0}},
-+	{{1, 0}, {0, 1}},
-+	{{1, 0}, {1, 0}},
-+	{{1, 0}, {1, 1}},
- };
  
- struct reuse_opts reusable_opts[4] = {
--	{1, 1, 0, 0},
--	{1, 1, 0, 1},
--	{1, 1, 1, 0},
--	{1, 1, 1, 1},
-+	{{1, 1}, {0, 0}},
-+	{{1, 1}, {0, 1}},
-+	{{1, 1}, {1, 0}},
-+	{{1, 1}, {1, 1}},
- };
++#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
++#define u64_stats_init(syncp)	seqcount_init(&(syncp)->seq)
++#else
+ static inline void u64_stats_init(struct u64_stats_sync *syncp)
+ {
+-#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
+-	seqcount_init(&syncp->seq);
+-#endif
+ }
++#endif
  
- int bind_port(struct __test_metadata *_metadata, int reuseaddr, int reuseport)
+ static inline void u64_stats_update_begin(struct u64_stats_sync *syncp)
+ {
 -- 
 2.30.1
 
