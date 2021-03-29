@@ -2,331 +2,445 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC4434D0A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE5C34D0AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhC2M5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:57:25 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:40755 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhC2M5G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:57:06 -0400
-Received: by mail-lf1-f50.google.com with SMTP id a198so18274566lfd.7;
-        Mon, 29 Mar 2021 05:57:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iRQm7adOIabnAfpsuFSutUolgUzBs7NwmGrsdLAuNXA=;
-        b=o7JehHz1p+MGdDkNUjlk5hnU88uYTPZ6sp8dmC/e/RIVv8Re3CCh7ocIQc/WFJg2WX
-         vXNNLhlZQbSv4UXBImGMfF3+d8I+WB2VzEl/yGNU9PfvjgV/LM90xXUYsBO72oGjLhWi
-         CEoQidWLn5lLQiwVNCHndI+KvU6Y0B2Su8QZol1t4RGr9CJ+6oRSQ8OnKgzbQhWr2jJd
-         glGjYYiKKjoY4+bTz91U3aiGlu7fuSyKZilEJ+kK1OU9DvpBNAvwTZZWDdcL4MyGWnL6
-         4exT3trk2Iub1mKCHs8QhFk5CQ9fCqOK2L2KGHykxB5WrMmEKnwPabZGSResdtOGar9d
-         AjNg==
-X-Gm-Message-State: AOAM532wyDD7rqFxy7cY7s7yfsePIpQOZO+4Whg/DI5if+simXSjihtJ
-        z9s1hffZJNzN33NltLex1mo=
-X-Google-Smtp-Source: ABdhPJyQB5nFBtK5BPwMV2u6/oqVU7ff09UBq+kyAXMWbWUz02g1bXwVLvLV4wN8T7NkZ+zjjyc6Bg==
-X-Received: by 2002:a19:6b13:: with SMTP id d19mr15882316lfa.291.1617022624787;
-        Mon, 29 Mar 2021 05:57:04 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id t5sm2387508ljc.78.2021.03.29.05.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 05:57:04 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 15:56:58 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org
-Subject: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
-Message-ID: <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+        id S231238AbhC2M6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:58:37 -0400
+Received: from mail.pqgruber.com ([52.59.78.55]:55404 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230397AbhC2M6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:58:09 -0400
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 55549C72850;
+        Mon, 29 Mar 2021 14:58:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617022685;
+        bh=2Bg426qlMhce2kXOzD65/CoRQ7Z+DtaI/B85VWag8c0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NyR+Dj/c78+0sIe40ptETzu4oMrbhkIiM9yL3qKJ4I3J9d0znAMBFWEG2njAs2T6l
+         WWsckC6esePkP+YUktMNI4buZ+4MO6SQbgPca4YF9fOCN1uGh13KxZLFYlxdteVJGi
+         E+gD34YvaAhPoTSHxSimgI/opvvHnXtAXE6fhEiM=
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     linux-pwm@vger.kernel.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        Clemens Gruber <clemens.gruber@pqgruber.com>
+Subject: [PATCH v6 1/7] pwm: pca9685: Switch to atomic API
+Date:   Mon, 29 Mar 2021 14:57:01 +0200
+Message-Id: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support GPO(s) found from ROHM BD71815 power management IC. The IC has two
-GPO pins but only one is properly documented in data-sheet. The driver
-exposes by default only the documented GPO. The second GPO is connected to
-E5 pin and is marked as GND in data-sheet. Control for this undocumented
-pin can be enabled using a special DT property.
+The switch to the atomic API goes hand in hand with a few fixes to
+previously experienced issues:
+- The duty cycle is no longer lost after disable/enable (previously the
+  OFF registers were cleared in disable and the user was required to
+  call config to restore the duty cycle settings)
+- If one sets a period resulting in the same prescale register value,
+  the sleep and write to the register is now skipped
 
-This driver is derived from work by Peter Yang <yanglsh@embest-tech.com>
-although not so much of original is left.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 ---
-
-Linus, Bartosz, please note that I changed this patch somewhat according
-to suggestions from Andy. Please let me know if you want to revoke acks.
+Changes since v5:
+- Function documentation for set_duty
+- Variable initializations
+- Print warning if all LEDs channel
+- Changed EOPNOTSUPP to EINVAL
+- Improved error messages
+- Register reset corrections moved to this patch
 
 Changes since v4:
- - styling fixes
- - implemented init_valid_mask
- - added comment that the ngpio hack can be deleted later
-   if sysfs IF does respect the valid_mask
+- Patches split up
+- Use a single set_duty function
+- Improve readability / new macros
+- Added a patch to restrict prescale changes to the first user
 
- drivers/gpio/Kconfig        |  10 ++
- drivers/gpio/Makefile       |   1 +
- drivers/gpio/gpio-bd71815.c | 193 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 204 insertions(+)
- create mode 100644 drivers/gpio/gpio-bd71815.c
+Changes since v3:
+- Refactoring: Extracted common functions
+- Read prescale register value instead of caching it
+- Return all zeros and disabled for "all LEDs" channel state
+- Improved duty calculation / mapping to 0..4096
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index e3607ec4c2e8..d3b3de514f6e 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1105,6 +1105,16 @@ config GPIO_BD70528
- 	  This driver can also be built as a module. If so, the module
- 	  will be called gpio-bd70528.
+Changes since v2:
+- Always set default prescale value in probe
+- Simplified probe code
+- Inlined functions with one callsite
+
+Changes since v1:
+- Fixed a logic error
+- Impoved PM runtime handling and fixed !CONFIG_PM
+- Write default prescale reg value if invalid in probe
+- Reuse full_off/_on functions throughout driver
+- Use cached prescale value whenever possible
+
+ drivers/pwm/pwm-pca9685.c | 261 ++++++++++++++------------------------
+ 1 file changed, 92 insertions(+), 169 deletions(-)
+
+diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+index 4a55dc18656c..0ed1013737e3 100644
+--- a/drivers/pwm/pwm-pca9685.c
++++ b/drivers/pwm/pwm-pca9685.c
+@@ -51,7 +51,6 @@
+ #define PCA9685_PRESCALE_MAX	0xFF	/* => min. frequency of 24 Hz */
  
-+config GPIO_BD71815
-+	tristate "ROHM BD71815 PMIC GPIO support"
-+	depends on MFD_ROHM_BD71828
-+	help
-+	  Support for GPO(s) on ROHM BD71815 PMIC. There are two GPOs
-+	  available on the ROHM PMIC.
+ #define PCA9685_COUNTER_RANGE	4096
+-#define PCA9685_DEFAULT_PERIOD	5000000	/* Default period_ns = 1/200 Hz */
+ #define PCA9685_OSC_CLOCK_MHZ	25	/* Internal oscillator with 25 MHz */
+ 
+ #define PCA9685_NUMREGS		0xFF
+@@ -71,10 +70,14 @@
+ #define LED_N_OFF_H(N)	(PCA9685_LEDX_OFF_H + (4 * (N)))
+ #define LED_N_OFF_L(N)	(PCA9685_LEDX_OFF_L + (4 * (N)))
+ 
++#define REG_ON_H(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_H : LED_N_ON_H((C)))
++#define REG_ON_L(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_L : LED_N_ON_L((C)))
++#define REG_OFF_H(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_H : LED_N_OFF_H((C)))
++#define REG_OFF_L(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_L : LED_N_OFF_L((C)))
 +
-+	  This driver can also be built as a module. If so, the module
-+	  will be called gpio-bd71815.
-+
- config GPIO_BD71828
- 	tristate "ROHM BD71828 GPIO support"
- 	depends on MFD_ROHM_BD71828
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index c58a90a3c3b1..4c12f31db31f 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_GPIO_ATH79)		+= gpio-ath79.o
- obj-$(CONFIG_GPIO_BCM_KONA)		+= gpio-bcm-kona.o
- obj-$(CONFIG_GPIO_BCM_XGS_IPROC)	+= gpio-xgs-iproc.o
- obj-$(CONFIG_GPIO_BD70528)		+= gpio-bd70528.o
-+obj-$(CONFIG_GPIO_BD71815)		+= gpio-bd71815.o
- obj-$(CONFIG_GPIO_BD71828)		+= gpio-bd71828.o
- obj-$(CONFIG_GPIO_BD9571MWV)		+= gpio-bd9571mwv.o
- obj-$(CONFIG_GPIO_BRCMSTB)		+= gpio-brcmstb.o
-diff --git a/drivers/gpio/gpio-bd71815.c b/drivers/gpio/gpio-bd71815.c
-new file mode 100644
-index 000000000000..c7f37813d629
---- /dev/null
-+++ b/drivers/gpio/gpio-bd71815.c
-@@ -0,0 +1,193 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Support to GPOs on ROHM BD71815
-+ * Copyright 2021 ROHM Semiconductors.
-+ * Author: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+ *
-+ * Copyright 2014 Embest Technology Co. Ltd. Inc.
-+ * Author: yanglsh@embest-tech.com
-+ */
-+
-+#include <linux/gpio/driver.h>
-+#include <linux/init.h>
-+#include <linux/irq.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+/* For the BD71815 register definitions */
-+#include <linux/mfd/rohm-bd71815.h>
-+
-+struct bd71815_gpio {
-+	struct gpio_chip chip;
-+	struct device *dev;
-+	struct regmap *regmap;
-+};
-+
-+static int bd71815gpo_get(struct gpio_chip *chip, unsigned int offset)
+ struct pca9685 {
+ 	struct pwm_chip chip;
+ 	struct regmap *regmap;
+-	int period_ns;
+ #if IS_ENABLED(CONFIG_GPIOLIB)
+ 	struct mutex lock;
+ 	struct gpio_chip gpio;
+@@ -87,6 +90,51 @@ static inline struct pca9685 *to_pca(struct pwm_chip *chip)
+ 	return container_of(chip, struct pca9685, chip);
+ }
+ 
++/* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=2048 -> 50%) */
++static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
 +{
-+	struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
-+	int ret, val;
-+
-+	ret = regmap_read(bd71815->regmap, BD71815_REG_GPO, &val);
-+	if (ret)
-+		return ret;
-+
-+	return (val >> offset) & 1;
-+}
-+
-+static void bd71815gpo_set(struct gpio_chip *chip, unsigned int offset,
-+			   int value)
-+{
-+	struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
-+	int ret, bit;
-+
-+	bit = BIT(offset);
-+
-+	if (value)
-+		ret = regmap_set_bits(bd71815->regmap, BD71815_REG_GPO, bit);
-+	else
-+		ret = regmap_clear_bits(bd71815->regmap, BD71815_REG_GPO, bit);
-+
-+	if (ret)
-+		dev_warn(bd71815->dev, "failed to toggle GPO\n");
-+}
-+
-+static int bd71815_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
-+				   unsigned long config)
-+{
-+	struct bd71815_gpio *bdgpio = gpiochip_get_data(chip);
-+
-+	switch (pinconf_to_config_param(config)) {
-+	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-+		return regmap_update_bits(bdgpio->regmap,
-+					  BD71815_REG_GPO,
-+					  BD71815_GPIO_DRIVE_MASK << offset,
-+					  BD71815_GPIO_OPEN_DRAIN << offset);
-+	case PIN_CONFIG_DRIVE_PUSH_PULL:
-+		return regmap_update_bits(bdgpio->regmap,
-+					  BD71815_REG_GPO,
-+					  BD71815_GPIO_DRIVE_MASK << offset,
-+					  BD71815_GPIO_CMOS << offset);
-+	default:
-+		break;
++	if (duty == 0) {
++		/* Set the full OFF bit, which has the highest precedence */
++		regmap_write(pca->regmap, REG_OFF_H(channel), LED_FULL);
++	} else if (duty >= PCA9685_COUNTER_RANGE) {
++		/* Set the full ON bit and clear the full OFF bit */
++		regmap_write(pca->regmap, REG_ON_H(channel), LED_FULL);
++		regmap_write(pca->regmap, REG_OFF_H(channel), 0);
++	} else {
++		/* Set OFF time (clears the full OFF bit) */
++		regmap_write(pca->regmap, REG_OFF_L(channel), duty & 0xff);
++		regmap_write(pca->regmap, REG_OFF_H(channel), (duty >> 8) & 0xf);
++		/* Clear the full ON bit */
++		regmap_write(pca->regmap, REG_ON_H(channel), 0);
 +	}
-+	return -ENOTSUPP;
 +}
 +
-+/* BD71815 GPIO is actually GPO */
-+static int bd71815gpo_direction_get(struct gpio_chip *gc, unsigned int offset)
++static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channel)
 +{
-+	return GPIO_LINE_DIRECTION_OUT;
-+}
++	unsigned int off_h = 0, val = 0;
 +
-+/* Template for GPIO chip */
-+static const struct gpio_chip bd71815gpo_chip = {
-+	.label			= "bd71815",
-+	.owner			= THIS_MODULE,
-+	.get			= bd71815gpo_get,
-+	.get_direction		= bd71815gpo_direction_get,
-+	.set			= bd71815gpo_set,
-+	.set_config		= bd71815_gpio_set_config,
-+	.can_sleep		= 1,
-+};
-+
-+#define BD71815_TWO_GPIOS	0x3UL
-+#define BD71815_ONE_GPIO	0x1UL
-+
-+/*
-+ * Sigh. The BD71815 and BD71817 were originally designed to support two GPO
-+ * pins. At some point it was noticed the second GPO pin which is the E5 pin
-+ * located at the center of IC is hard to use on PCB (due to the location). It
-+ * was decided to not promote this second GPO and pin is marked as GND in the
-+ * datasheet. The functionality is still there though! I guess driving a GPO
-+ * connected to the ground is a bad idea. Thus we do not support it by default.
-+ * OTOH - the original driver written by colleagues at Embest did support
-+ * controlling this second GPO. It is thus possible this is used in some of the
-+ * products.
-+ *
-+ * This driver does not by default support configuring this second GPO
-+ * but allows using it by providing the DT property
-+ * "rohm,enable-hidden-gpo".
-+ */
-+static int bd71815_init_valid_mask(struct gpio_chip *gc,
-+				   unsigned long *valid_mask,
-+				   unsigned int ngpios)
-+{
-+	if (ngpios != 2)
++	if (WARN_ON(channel >= PCA9685_MAXCHAN)) {
++		/* HW does not support reading state of "all LEDs" channel */
 +		return 0;
-+
-+	if (gc->parent && device_property_present(gc->parent,
-+						  "rohm,enable-hidden-gpo"))
-+		*valid_mask = BD71815_TWO_GPIOS;
-+	else
-+		*valid_mask = BD71815_ONE_GPIO;
-+
-+	return 0;
-+}
-+
-+static int gpo_bd71815_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct bd71815_gpio *g;
-+	struct device *dev;
-+	struct device *parent;
-+
-+	/*
-+	 * Bind devm lifetime to this platform device => use dev for devm.
-+	 * also the prints should originate from this device.
-+	 */
-+	dev = &pdev->dev;
-+	/* The device-tree and regmap come from MFD => use parent for that */
-+	parent = dev->parent;
-+
-+	g = devm_kzalloc(dev, sizeof(*g), GFP_KERNEL);
-+	if (!g)
-+		return -ENOMEM;
-+
-+	g->chip = bd71815gpo_chip;
-+
-+	/*
-+	 * As writing of this the sysfs interface for GPIO control does not
-+	 * respect the valid_mask. Do not trust it but rather set the ngpios
-+	 * to 1 if "rohm,enable-hidden-gpo" is not given.
-+	 *
-+	 * This check can be removed later if the sysfs export is fixed and
-+	 * if the fix is backported.
-+	 *
-+	 * For now it is safest to just set the ngpios though.
-+	 */
-+	if (device_property_present(parent, "rohm,enable-hidden-gpo"))
-+		g->chip.ngpio = 2;
-+	else
-+		g->chip.ngpio = 1;
-+
-+	g->chip.init_valid_mask = bd71815_init_valid_mask;
-+	g->chip.base = -1;
-+	g->chip.parent = parent;
-+	g->regmap = dev_get_regmap(parent, NULL);
-+	g->dev = dev;
-+
-+	ret = devm_gpiochip_add_data(dev, &g->chip, g);
-+	if (ret < 0) {
-+		dev_err(dev, "could not register gpiochip, %d\n", ret);
-+		return ret;
 +	}
 +
-+	return ret;
++	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off_h);
++	if (off_h & LED_FULL) {
++		/* Full OFF bit is set */
++		return 0;
++	}
++
++	regmap_read(pca->regmap, LED_N_ON_H(channel), &val);
++	if (val & LED_FULL) {
++		/* Full ON bit is set */
++		return PCA9685_COUNTER_RANGE;
++	}
++
++	val = 0;
++	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
++	return ((off_h & 0xf) << 8) | (val & 0xff);
 +}
 +
-+static struct platform_driver gpo_bd71815_driver = {
-+	.driver = {
-+		.name	= "bd71815-gpo",
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= gpo_bd71815_probe,
-+};
-+
-+module_platform_driver(gpo_bd71815_driver);
-+
-+MODULE_ALIAS("platform:bd71815-gpo");
-+MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_AUTHOR("Peter Yang <yanglsh@embest-tech.com>");
-+MODULE_DESCRIPTION("GPO interface for BD71815");
-+MODULE_LICENSE("GPL");
+ #if IS_ENABLED(CONFIG_GPIOLIB)
+ static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, int pwm_idx)
+ {
+@@ -138,34 +186,23 @@ static int pca9685_pwm_gpio_request(struct gpio_chip *gpio, unsigned int offset)
+ static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned int offset)
+ {
+ 	struct pca9685 *pca = gpiochip_get_data(gpio);
+-	struct pwm_device *pwm = &pca->chip.pwms[offset];
+-	unsigned int value;
+ 
+-	regmap_read(pca->regmap, LED_N_ON_H(pwm->hwpwm), &value);
+-
+-	return value & LED_FULL;
++	return pca9685_pwm_get_duty(pca, offset) != 0;
+ }
+ 
+ static void pca9685_pwm_gpio_set(struct gpio_chip *gpio, unsigned int offset,
+ 				 int value)
+ {
+ 	struct pca9685 *pca = gpiochip_get_data(gpio);
+-	struct pwm_device *pwm = &pca->chip.pwms[offset];
+-	unsigned int on = value ? LED_FULL : 0;
+-
+-	/* Clear both OFF registers */
+-	regmap_write(pca->regmap, LED_N_OFF_L(pwm->hwpwm), 0);
+-	regmap_write(pca->regmap, LED_N_OFF_H(pwm->hwpwm), 0);
+ 
+-	/* Set the full ON bit */
+-	regmap_write(pca->regmap, LED_N_ON_H(pwm->hwpwm), on);
++	pca9685_pwm_set_duty(pca, offset, value ? PCA9685_COUNTER_RANGE : 0);
+ }
+ 
+ static void pca9685_pwm_gpio_free(struct gpio_chip *gpio, unsigned int offset)
+ {
+ 	struct pca9685 *pca = gpiochip_get_data(gpio);
+ 
+-	pca9685_pwm_gpio_set(gpio, offset, 0);
++	pca9685_pwm_set_duty(pca, offset, 0);
+ 	pm_runtime_put(pca->chip.dev);
+ 	pca9685_pwm_clear_inuse(pca, offset);
+ }
+@@ -246,167 +283,56 @@ static void pca9685_set_sleep_mode(struct pca9685 *pca, bool enable)
+ 	}
+ }
+ 
+-static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+-			      int duty_ns, int period_ns)
++static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
++			     const struct pwm_state *state)
+ {
+ 	struct pca9685 *pca = to_pca(chip);
+-	unsigned long long duty;
+-	unsigned int reg;
+-	int prescale;
+-
+-	if (period_ns != pca->period_ns) {
+-		prescale = DIV_ROUND_CLOSEST(PCA9685_OSC_CLOCK_MHZ * period_ns,
+-					     PCA9685_COUNTER_RANGE * 1000) - 1;
+-
+-		if (prescale >= PCA9685_PRESCALE_MIN &&
+-			prescale <= PCA9685_PRESCALE_MAX) {
+-			/*
+-			 * Putting the chip briefly into SLEEP mode
+-			 * at this point won't interfere with the
+-			 * pm_runtime framework, because the pm_runtime
+-			 * state is guaranteed active here.
+-			 */
+-			/* Put chip into sleep mode */
+-			pca9685_set_sleep_mode(pca, true);
+-
+-			/* Change the chip-wide output frequency */
+-			regmap_write(pca->regmap, PCA9685_PRESCALE, prescale);
+-
+-			/* Wake the chip up */
+-			pca9685_set_sleep_mode(pca, false);
+-
+-			pca->period_ns = period_ns;
+-		} else {
+-			dev_err(chip->dev,
+-				"prescaler not set: period out of bounds!\n");
+-			return -EINVAL;
+-		}
+-	}
++	unsigned long long duty, prescale;
++	unsigned int val = 0;
+ 
+-	if (duty_ns < 1) {
+-		if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-			reg = PCA9685_ALL_LED_OFF_H;
+-		else
+-			reg = LED_N_OFF_H(pwm->hwpwm);
++	if (state->polarity != PWM_POLARITY_NORMAL)
++		return -EINVAL;
+ 
+-		regmap_write(pca->regmap, reg, LED_FULL);
+-
+-		return 0;
++	prescale = DIV_ROUND_CLOSEST_ULL(PCA9685_OSC_CLOCK_MHZ * state->period,
++					 PCA9685_COUNTER_RANGE * 1000) - 1;
++	if (prescale < PCA9685_PRESCALE_MIN || prescale > PCA9685_PRESCALE_MAX) {
++		dev_err(chip->dev, "pwm not changed: period out of bounds!\n");
++		return -EINVAL;
+ 	}
+ 
+-	if (duty_ns == period_ns) {
+-		/* Clear both OFF registers */
+-		if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-			reg = PCA9685_ALL_LED_OFF_L;
+-		else
+-			reg = LED_N_OFF_L(pwm->hwpwm);
+-
+-		regmap_write(pca->regmap, reg, 0x0);
+-
+-		if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-			reg = PCA9685_ALL_LED_OFF_H;
+-		else
+-			reg = LED_N_OFF_H(pwm->hwpwm);
+-
+-		regmap_write(pca->regmap, reg, 0x0);
+-
+-		/* Set the full ON bit */
+-		if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-			reg = PCA9685_ALL_LED_ON_H;
+-		else
+-			reg = LED_N_ON_H(pwm->hwpwm);
+-
+-		regmap_write(pca->regmap, reg, LED_FULL);
++	duty = PCA9685_COUNTER_RANGE * state->duty_cycle;
++	duty = DIV_ROUND_CLOSEST_ULL(duty, state->period);
+ 
++	if (!state->enabled || duty < 1) {
++		pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
++		return 0;
++	} else if (duty == PCA9685_COUNTER_RANGE) {
++		pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
+ 		return 0;
+ 	}
+ 
+-	duty = PCA9685_COUNTER_RANGE * (unsigned long long)duty_ns;
+-	duty = DIV_ROUND_UP_ULL(duty, period_ns);
+-
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_OFF_L;
+-	else
+-		reg = LED_N_OFF_L(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, (int)duty & 0xff);
+-
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_OFF_H;
+-	else
+-		reg = LED_N_OFF_H(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, ((int)duty >> 8) & 0xf);
+-
+-	/* Clear the full ON bit, otherwise the set OFF time has no effect */
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_ON_H;
+-	else
+-		reg = LED_N_ON_H(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, 0);
+-
+-	return 0;
+-}
+-
+-static int pca9685_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
+-{
+-	struct pca9685 *pca = to_pca(chip);
+-	unsigned int reg;
+-
+-	/*
+-	 * The PWM subsystem does not support a pre-delay.
+-	 * So, set the ON-timeout to 0
+-	 */
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_ON_L;
+-	else
+-		reg = LED_N_ON_L(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, 0);
+-
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_ON_H;
+-	else
+-		reg = LED_N_ON_H(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, 0);
++	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
++	if (prescale != val) {
++		/*
++		 * Putting the chip briefly into SLEEP mode
++		 * at this point won't interfere with the
++		 * pm_runtime framework, because the pm_runtime
++		 * state is guaranteed active here.
++		 */
++		/* Put chip into sleep mode */
++		pca9685_set_sleep_mode(pca, true);
+ 
+-	/*
+-	 * Clear the full-off bit.
+-	 * It has precedence over the others and must be off.
+-	 */
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_OFF_H;
+-	else
+-		reg = LED_N_OFF_H(pwm->hwpwm);
++		/* Change the chip-wide output frequency */
++		regmap_write(pca->regmap, PCA9685_PRESCALE, (int)prescale);
+ 
+-	regmap_update_bits(pca->regmap, reg, LED_FULL, 0x0);
++		/* Wake the chip up */
++		pca9685_set_sleep_mode(pca, false);
++	}
+ 
++	pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
+ 	return 0;
+ }
+ 
+-static void pca9685_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
+-{
+-	struct pca9685 *pca = to_pca(chip);
+-	unsigned int reg;
+-
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_OFF_H;
+-	else
+-		reg = LED_N_OFF_H(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, LED_FULL);
+-
+-	/* Clear the LED_OFF counter. */
+-	if (pwm->hwpwm >= PCA9685_MAXCHAN)
+-		reg = PCA9685_ALL_LED_OFF_L;
+-	else
+-		reg = LED_N_OFF_L(pwm->hwpwm);
+-
+-	regmap_write(pca->regmap, reg, 0x0);
+-}
+-
+ static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+ {
+ 	struct pca9685 *pca = to_pca(chip);
+@@ -422,15 +348,13 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+ {
+ 	struct pca9685 *pca = to_pca(chip);
+ 
+-	pca9685_pwm_disable(chip, pwm);
++	pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
+ 	pm_runtime_put(chip->dev);
+ 	pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
+ }
+ 
+ static const struct pwm_ops pca9685_pwm_ops = {
+-	.enable = pca9685_pwm_enable,
+-	.disable = pca9685_pwm_disable,
+-	.config = pca9685_pwm_config,
++	.apply = pca9685_pwm_apply,
+ 	.request = pca9685_pwm_request,
+ 	.free = pca9685_pwm_free,
+ 	.owner = THIS_MODULE,
+@@ -461,7 +385,6 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+ 			ret);
+ 		return ret;
+ 	}
+-	pca->period_ns = PCA9685_DEFAULT_PERIOD;
+ 
+ 	i2c_set_clientdata(client, pca);
+ 
+@@ -484,9 +407,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+ 	reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
+ 	regmap_write(pca->regmap, PCA9685_MODE1, reg);
+ 
+-	/* Clear all "full off" bits */
+-	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, 0);
+-	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, 0);
++	/* Reset OFF registers to POR default */
++	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
++	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
+ 
+ 	pca->chip.ops = &pca9685_pwm_ops;
+ 	/* Add an extra channel for ALL_LED */
 -- 
-2.25.4
+2.31.1
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
