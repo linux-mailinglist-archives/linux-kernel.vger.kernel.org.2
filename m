@@ -2,987 +2,1052 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A760634D5D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEB634D5D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhC2RMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:12:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55752 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230418AbhC2RMX (ORCPT
+        id S230323AbhC2RO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC2ROC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:12:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617037942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qjle54fuL2uZlUqYzm9qSrYRm25htz1uxsRIGiJSuGQ=;
-        b=eIevD6+9sWnfUXuUJ1LvY08v+MXspDQKAG1X8HE8TLZnon82F8gFC56OpZS4ajDhsKs6GT
-        gKZDjUf0x8VEG9P4prJBL94xVgG9K48jsaU6ba9wYxdYKTDpoUx+O4oz5ilk40irVgOFdr
-        3N0FrjK9IHU1eEqiYwGR+zUYhQkh0h4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-vRP9gVs2OvujcK4ZtTRJkw-1; Mon, 29 Mar 2021 13:12:20 -0400
-X-MC-Unique: vRP9gVs2OvujcK4ZtTRJkw-1
-Received: by mail-qt1-f197.google.com with SMTP id r32so7991231qtd.16
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:12:20 -0700 (PDT)
+        Mon, 29 Mar 2021 13:14:02 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A8EC061574;
+        Mon, 29 Mar 2021 10:14:02 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id j9so11907633wrx.12;
+        Mon, 29 Mar 2021 10:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KoNQ1gvkoVsSMUbW7PnzNl025oWo43EpX2SZzmy7GkE=;
+        b=q34xealUAQoXVO4eqxcv+8qOWSP/9ngYzXbkrKVbX4LMpgM5LB1u0T/xwWkF18Rs2c
+         maAi46r37Yl/g3vvrQ2nEaX1heytjPwH6tzYfRqWXCIUMCKvR+0afV6NGj6C9bNVPuN1
+         VMbXhd2Ol1CfV8QVPIVyA/dkvVQOC8nHKVIu3nezg2VgyVGnN2t/xG0hPemmmDCKsNsA
+         wgiuciTVndQT79F5V0106vGvfElHEIoE7bqruV8ha9EnHn1rcwk4cCBGTYDw+k511inv
+         CtQ8tsL6kUVazfdsI8PNB1xHwLaZPvFF/8hzv2l1ikRu/bXGQggaLW6fJlzGpCRYr3cQ
+         FAig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=qjle54fuL2uZlUqYzm9qSrYRm25htz1uxsRIGiJSuGQ=;
-        b=DduZw1tecdxcKly9SM3N5L4Gedkxzc7UgR0DQoMFYmSnw/6x8EOO/qLSi0DcQgrV2L
-         S6J/yUQxifbtQCCd+/K4Hfpfz8kZu+WMK6QNWGfIumH67+j8Tfi1ORdrHxsapf4RSSgD
-         4OKzaYUB09yrzavzgc2oFeHju/e70yeSvxpaYdLLj8P9iL1QLRzW4iqsjIkhwFx3nwAH
-         sBIWoKjutTTCCTZDS6DHqKBJON2LqKEz6ItmwE73RGIBNhCe6OQNCNEg5NowUxhVmUMN
-         WQV7+yuHx5MELPOzMe0O1nHcJ5Kk3O0WKw4oBvM0rhq402JumR2IfV2WBzPaUOWMzEar
-         5pOg==
-X-Gm-Message-State: AOAM533mtx+EaTDIYDADnf3qh2e9m6suQ/cR2vqZezdKfyHcIF4ieACD
-        yqAUelR6k6V7uZoaI4IUGxk8obsR8QHMCB1uZvsQP/Abf9BNLwVU6EiWe0khzx/2FUMufoR4G2h
-        HdWSfL9PyilQ+6Xhtf3vLygcn
-X-Received: by 2002:a05:620a:15d4:: with SMTP id o20mr26114387qkm.81.1617037939669;
-        Mon, 29 Mar 2021 10:12:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4QMu34Hd/rkDVsP5/3iI4BxGOHb4uKf8PXyoWPah+H/NyK7Dat3WdXpbD0P2I1K3bawJpEA==
-X-Received: by 2002:a05:620a:15d4:: with SMTP id o20mr26114349qkm.81.1617037939200;
-        Mon, 29 Mar 2021 10:12:19 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id z89sm11479842qtd.5.2021.03.29.10.12.17
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KoNQ1gvkoVsSMUbW7PnzNl025oWo43EpX2SZzmy7GkE=;
+        b=CY3dt8L63+gytI+ZSR6103kaKEykd+iQ0uDdmc7m5HthhqniU7tV27T5UKY/SRL9dS
+         Mo0g3pSJ61EVUk4lvFEYe1gBf4Yt243eMItNQwNbyJE8iFRUGqlWB25nQGK+KTgefZx6
+         8sovIHGsXuRWCrVy36Ijchf7IyNMkiLX0BfjUvgi2lwHXbXFMdnPeIMMSVv3TEnjz8SD
+         QmAGs4TL52Bt49pGwlHYd7NlfbrjIw8Fg4d5ixCeBJp77vmKZk26bMfGIsVzzAvhM+5H
+         scBLrjCbkkR5P3OVlvX+xWJBTNIH7MwlGYlYGpyXaD/NiTDowhZdvG0YLy5gYeFSh+Yk
+         gkgA==
+X-Gm-Message-State: AOAM532HjgOT8hOkUKodw0H79xmt/0QNeyj/bmP8jXwLUNN/OmtcftDN
+        kEsBI4FMYW3S0tTtLcB6RX0=
+X-Google-Smtp-Source: ABdhPJxof6jyRjyf9JtDQPahKISpc3W23VNYxXuHMqbgmVBk6ZtnNrXxcE3g5vStVImntAob0TlaqQ==
+X-Received: by 2002:adf:e38a:: with SMTP id e10mr29819773wrm.37.1617038041057;
+        Mon, 29 Mar 2021 10:14:01 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id p18sm36295729wro.18.2021.03.29.10.14.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 10:12:18 -0700 (PDT)
-Subject: Re: [PATCH V4 XRT Alveo 03/20] fpga: xrt: xclbin file helper
- functions
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
- <20210324052947.27889-4-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a0ea8632-be40-a1b3-a1a4-8183881cfd12@redhat.com>
-Date:   Mon, 29 Mar 2021 10:12:16 -0700
+        Mon, 29 Mar 2021 10:14:00 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] power: supply: mt6360_charger: add MT6360 charger
+ support
+To:     Gene Chen <gene.chen.richtek@gmail.com>, sre@kernel.org,
+        robh+dt@kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1610973703-676-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1610973703-676-3-git-send-email-gene.chen.richtek@gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <b6c62ed0-5187-8012-1422-4213b4fa1a84@gmail.com>
+Date:   Mon, 29 Mar 2021 19:13:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210324052947.27889-4-lizhi.hou@xilinx.com>
+In-Reply-To: <1610973703-676-3-git-send-email-gene.chen.richtek@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 3/23/21 10:29 PM, Lizhi Hou wrote:
-> Alveo FPGA firmware and partial reconfigure file are in xclbin format. This
-> code enumerates and extracts sections from xclbin files. xclbin.h is cross
-> platform and used across all platforms and OS.
-ok
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+
+On 18/01/2021 13:41, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add basic support for the battery charger for MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+
+Sebastian, can you have a look on that patch please?
+
+Regards,
+Matthias
+
 > ---
->  drivers/fpga/xrt/include/xclbin-helper.h |  48 +++
->  drivers/fpga/xrt/lib/xclbin.c            | 369 ++++++++++++++++++++
->  include/uapi/linux/xrt/xclbin.h          | 409 +++++++++++++++++++++++
->  3 files changed, 826 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/xclbin-helper.h
->  create mode 100644 drivers/fpga/xrt/lib/xclbin.c
->  create mode 100644 include/uapi/linux/xrt/xclbin.h
->
-> diff --git a/drivers/fpga/xrt/include/xclbin-helper.h b/drivers/fpga/xrt/include/xclbin-helper.h
+>  drivers/power/supply/Kconfig          |  10 +
+>  drivers/power/supply/Makefile         |   1 +
+>  drivers/power/supply/mt6360_charger.c | 914 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 925 insertions(+)
+>  create mode 100644 drivers/power/supply/mt6360_charger.c
+> 
+> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+> index eec646c..dd63bed 100644
+> --- a/drivers/power/supply/Kconfig
+> +++ b/drivers/power/supply/Kconfig
+> @@ -567,6 +567,16 @@ config CHARGER_MP2629
+>  	  Battery charger. This driver provides Battery charger power management
+>  	  functions on the systems.
+>  
+> +config CHARGER_MT6360
+> +	tristate "Mediatek MT6360 Charger Driver"
+> +	depends on MFD_MT6360
+> +	depends on REGULATOR
+> +	help
+> +	  Say Y here to enable MT6360 Charger Part.
+> +	  The device supports High-Accuracy Voltage/Current Regulation,
+> +	  Average Input Current Regulation, Battery Tempature Sensing,
+> +	  Over-Temperature Protection, DPDM Detection for BC1.2
+> +
+>  config CHARGER_QCOM_SMBB
+>  	tristate "Qualcomm Switch-Mode Battery Charger and Boost"
+>  	depends on MFD_SPMI_PMIC || COMPILE_TEST
+> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
+> index dd4b863..9bd0804 100644
+> --- a/drivers/power/supply/Makefile
+> +++ b/drivers/power/supply/Makefile
+> @@ -77,6 +77,7 @@ obj-$(CONFIG_CHARGER_MAX77693)	+= max77693_charger.o
+>  obj-$(CONFIG_CHARGER_MAX8997)	+= max8997_charger.o
+>  obj-$(CONFIG_CHARGER_MAX8998)	+= max8998_charger.o
+>  obj-$(CONFIG_CHARGER_MP2629)	+= mp2629_charger.o
+> +obj-$(CONFIG_CHARGER_MT6360)	+= mt6360_charger.o
+>  obj-$(CONFIG_CHARGER_QCOM_SMBB)	+= qcom_smbb.o
+>  obj-$(CONFIG_CHARGER_BQ2415X)	+= bq2415x_charger.o
+>  obj-$(CONFIG_CHARGER_BQ24190)	+= bq24190_charger.o
+> diff --git a/drivers/power/supply/mt6360_charger.c b/drivers/power/supply/mt6360_charger.c
 > new file mode 100644
-> index 000000000000..382b1de97b0a
+> index 0000000..d80bdad
 > --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xclbin-helper.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *    David Zhang <davidzha@xilinx.com>
-> + *    Sonal Santan <sonal.santan@xilinx.com>
-> + */
-> +
-> +#ifndef _XCLBIN_HELPER_H_
-> +#define _XCLBIN_HELPER_H_
-ok
-> +
-> +#include <linux/types.h>
-> +#include <linux/device.h>
-> +#include <linux/xrt/xclbin.h>
-> +
-> +#define XCLBIN_VERSION2	"xclbin2"
-> +#define XCLBIN_HWICAP_BITFILE_BUF_SZ 1024
-> +#define XCLBIN_MAX_SIZE (1024 * 1024 * 1024) /* Assuming xclbin <= 1G, always */
-ok
-> +
-> +enum axlf_section_kind;
-> +struct axlf;
-> +
-> +/**
-> + * Bitstream header information as defined by Xilinx tools.
-> + * Please note that this struct definition is not owned by the driver.
-> + */
-> +struct xclbin_bit_head_info {
-> +	u32 header_length;		/* Length of header in 32 bit words */
-> +	u32 bitstream_length;		/* Length of bitstream to read in bytes */
-> +	const unchar *design_name;	/* Design name get from bitstream */
-> +	const unchar *part_name;	/* Part name read from bitstream */
-> +	const unchar *date;		/* Date read from bitstream header */
-> +	const unchar *time;		/* Bitstream creation time */
-> +	u32 magic_length;		/* Length of the magic numbers */
-> +	const unchar *version;		/* Version string */
-> +};
-> +
-ok, bit removed.
-> +/* caller must free the allocated memory for **data. len could be NULL. */
-> +int xrt_xclbin_get_section(struct device *dev,  const struct axlf *xclbin,
-> +			   enum axlf_section_kind kind, void **data,
-> +			   uint64_t *len);
-
-need to add comment that user must free data
-
-need to add comment that len is optional
-
-> +int xrt_xclbin_get_metadata(struct device *dev, const struct axlf *xclbin, char **dtb);
-> +int xrt_xclbin_parse_bitstream_header(struct device *dev, const unchar *data,
-> +				      u32 size, struct xclbin_bit_head_info *head_info);
-> +const char *xrt_clock_type2epname(enum XCLBIN_CLOCK_TYPE type);
-ok
-> +
-> +#endif /* _XCLBIN_HELPER_H_ */
-> diff --git a/drivers/fpga/xrt/lib/xclbin.c b/drivers/fpga/xrt/lib/xclbin.c
-> new file mode 100644
-> index 000000000000..31b363c014a3
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xclbin.c
-> @@ -0,0 +1,369 @@
+> +++ b/drivers/power/supply/mt6360_charger.c
+> @@ -0,0 +1,914 @@
 > +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * Xilinx Alveo FPGA Driver XCLBIN parser
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors: David Zhang <davidzha@xilinx.com>
+> + * Copyright (c) 2021 MediaTek Inc.
 > + */
 > +
-> +#include <asm/errno.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/device.h>
-> +#include "xclbin-helper.h"
-> +#include "metadata.h"
+> +#include <linux/init.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/power_supply.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/driver.h>
 > +
-> +/* Used for parsing bitstream header */
-> +#define BITSTREAM_EVEN_MAGIC_BYTE	0x0f
-> +#define BITSTREAM_ODD_MAGIC_BYTE	0xf0
-ok
+> +#define MT6360_PMU_CHG_CTRL1	0x311
+> +#define MT6360_PMU_CHG_CTRL2	0x312
+> +#define MT6360_PMU_CHG_CTRL3	0x313
+> +#define MT6360_PMU_CHG_CTRL4	0x314
+> +#define MT6360_PMU_CHG_CTRL5	0x315
+> +#define MT6360_PMU_CHG_CTRL6	0x316
+> +#define MT6360_PMU_CHG_CTRL7	0x317
+> +#define MT6360_PMU_CHG_CTRL8	0x318
+> +#define MT6360_PMU_CHG_CTRL9	0x319
+> +#define MT6360_PMU_CHG_CTRL10	0x31A
+> +#define MT6360_PMU_DEVICE_TYPE	0x322
+> +#define MT6360_PMU_USB_STATUS1	0x327
+> +#define MT6360_PMU_CHG_STAT	0x34A
+> +#define MT6360_PMU_CHG_CTRL19	0x361
+> +#define MT6360_PMU_FOD_STAT	0x3E7
 > +
-> +static int xrt_xclbin_get_section_hdr(const struct axlf *xclbin,
-> +				      enum axlf_section_kind kind,
-> +				      const struct axlf_section_header **header)
+> +/* MT6360_PMU_CHG_CTRL1 */
+> +#define MT6360_FSLP_SHFT	(3)
+> +#define MT6360_FSLP_MASK	BIT(MT6360_FSLP_SHFT)
+> +#define MT6360_OPA_MODE_SHFT	(0)
+> +#define MT6360_OPA_MODE_MASK	BIT(MT6360_OPA_MODE_SHFT)
+> +/* MT6360_PMU_CHG_CTRL2 */
+> +#define MT6360_IINLMTSEL_SHFT	(2)
+> +#define MT6360_IINLMTSEL_MASK	GENMASK(3, 2)
+> +/* MT6360_PMU_CHG_CTRL3 */
+> +#define MT6360_IAICR_SHFT	(2)
+> +#define MT6360_IAICR_MASK	GENMASK(7, 2)
+> +#define MT6360_ILIM_EN_MASK	BIT(0)
+> +/* MT6360_PMU_CHG_CTRL4 */
+> +#define MT6360_VOREG_SHFT	(1)
+> +#define MT6360_VOREG_MASK	GENMASK(7, 1)
+> +/* MT6360_PMU_CHG_CTRL5 */
+> +#define MT6360_VOBST_MASK	GENMASK(7, 2)
+> +/* MT6360_PMU_CHG_CTRL6 */
+> +#define MT6360_VMIVR_SHFT      (1)
+> +#define MT6360_VMIVR_MASK      GENMASK(7, 1)
+> +/* MT6360_PMU_CHG_CTRL7 */
+> +#define MT6360_ICHG_SHFT	(2)
+> +#define MT6360_ICHG_MASK	GENMASK(7, 2)
+> +/* MT6360_PMU_CHG_CTRL8 */
+> +#define MT6360_IPREC_SHFT	(0)
+> +#define MT6360_IPREC_MASK	GENMASK(3, 0)
+> +/* MT6360_PMU_CHG_CTRL9 */
+> +#define MT6360_IEOC_SHFT	(4)
+> +#define MT6360_IEOC_MASK	GENMASK(7, 4)
+> +/* MT6360_PMU_CHG_CTRL10 */
+> +#define MT6360_OTG_OC_MASK	GENMASK(3, 0)
+> +/* MT6360_PMU_DEVICE_TYPE */
+> +#define MT6360_USBCHGEN_MASK	BIT(7)
+> +/* MT6360_PMU_USB_STATUS1 */
+> +#define MT6360_USB_STATUS_SHFT	(4)
+> +#define MT6360_USB_STATUS_MASK	GENMASK(6, 4)
+> +/* MT6360_PMU_CHG_STAT */
+> +#define MT6360_CHG_STAT_SHFT	(6)
+> +#define MT6360_CHG_STAT_MASK	GENMASK(7, 6)
+> +#define MT6360_VBAT_LVL_MASK	BIT(5)
+> +/* MT6360_PMU_CHG_CTRL19 */
+> +#define MT6360_VINOVP_SHFT	(5)
+> +#define MT6360_VINOVP_MASK	GENMASK(6, 5)
+> +/* MT6360_PMU_FOD_STAT */
+> +#define MT6360_CHRDET_EXT_MASK	BIT(4)
+> +
+> +/* uV */
+> +#define MT6360_VMIVR_MIN	3900000
+> +#define MT6360_VMIVR_MAX	13400000
+> +#define MT6360_VMIVR_STEP	100000
+> +/* uA */
+> +#define MT6360_ICHG_MIN		100000
+> +#define MT6360_ICHG_MAX		5000000
+> +#define MT6360_ICHG_STEP	100000
+> +/* uV */
+> +#define MT6360_VOREG_MIN	3900000
+> +#define MT6360_VOREG_MAX	4710000
+> +#define MT6360_VOREG_STEP	10000
+> +/* uA */
+> +#define MT6360_AICR_MIN		100000
+> +#define MT6360_AICR_MAX		3250000
+> +#define MT6360_AICR_STEP	50000
+> +/* uA */
+> +#define MT6360_IPREC_MIN	100000
+> +#define MT6360_IPREC_MAX	850000
+> +#define MT6360_IPREC_STEP	50000
+> +/* uA */
+> +#define MT6360_IEOC_MIN		100000
+> +#define MT6360_IEOC_MAX		850000
+> +#define MT6360_IEOC_STEP	50000
+> +
+> +struct mt6360_chg_info {
+> +	struct device *dev;
+> +	struct regmap *regmap;
+> +	struct power_supply_desc psy_desc;
+> +	struct power_supply *psy;
+> +	struct regulator_dev *otg_rdev;
+> +	struct mutex chgdet_lock;
+> +	u32 vinovp;
+> +	bool pwr_rdy;
+> +	bool bc12_en;
+> +	int psy_usb_type;
+> +	struct work_struct chrdet_work;
+> +};
+> +
+> +enum mt6360_iinlmtsel {
+> +	MT6360_IINLMTSEL_AICR_3250 = 0,
+> +	MT6360_IINLMTSEL_CHG_TYPE,
+> +	MT6360_IINLMTSEL_AICR,
+> +	MT6360_IINLMTSEL_LOWER_LEVEL,
+> +};
+> +
+> +enum mt6360_pmu_chg_type {
+> +	MT6360_CHG_TYPE_NOVBUS = 0,
+> +	MT6360_CHG_TYPE_UNDER_GOING,
+> +	MT6360_CHG_TYPE_SDP,
+> +	MT6360_CHG_TYPE_SDPNSTD,
+> +	MT6360_CHG_TYPE_DCP,
+> +	MT6360_CHG_TYPE_CDP,
+> +	MT6360_CHG_TYPE_DISABLE_BC12,
+> +	MT6360_CHG_TYPE_MAX,
+> +};
+> +
+> +static enum power_supply_usb_type mt6360_charger_usb_types[] = {
+> +	POWER_SUPPLY_USB_TYPE_UNKNOWN,
+> +	POWER_SUPPLY_USB_TYPE_SDP,
+> +	POWER_SUPPLY_USB_TYPE_DCP,
+> +	POWER_SUPPLY_USB_TYPE_CDP,
+> +};
+> +
+> +static unsigned int mt6360_map_reg_sel(u32 data, u32 min, u32 max, u32 step)
 > +{
-> +	const struct axlf_section_header *phead = NULL;
-> +	u64 xclbin_len;
+> +	u32 target = 0, max_sel;
+> +
+> +	if (data >= min) {
+> +		target = (data - min) / step;
+> +		max_sel = (max - min) / step;
+> +		if (target > max_sel)
+> +			target = max_sel;
+> +	}
+> +	return target;
+> +}
+> +
+> +static u32 mt6360_map_real_val(u32 sel, u32 min, u32 max, u32 step)
+> +{
+> +	u32 target = 0;
+> +
+> +	target = min + (sel * step);
+> +	if (target > max)
+> +		target = max;
+> +	return target;
+> +}
+> +
+> +static int mt6360_get_chrdet_ext_stat(struct mt6360_chg_info *mci,
+> +					     bool *pwr_rdy)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_FOD_STAT, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	*pwr_rdy = (regval & MT6360_CHRDET_EXT_MASK) ? true : false;
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_online(struct mt6360_chg_info *mci,
+> +				     union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	bool pwr_rdy;
+> +
+> +	ret = mt6360_get_chrdet_ext_stat(mci, &pwr_rdy);
+> +	if (ret < 0)
+> +		return ret;
+> +	val->intval = pwr_rdy ? true : false;
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_status(struct mt6360_chg_info *mci,
+> +				     union power_supply_propval *val)
+> +{
+> +	int status, ret;
+> +	unsigned int regval;
+> +	bool pwr_rdy;
+> +
+> +	ret = mt6360_get_chrdet_ext_stat(mci, &pwr_rdy);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (!pwr_rdy) {
+> +		status = POWER_SUPPLY_STATUS_DISCHARGING;
+> +		goto out;
+> +	}
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_STAT, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval &= MT6360_CHG_STAT_MASK;
+> +	regval >>= MT6360_CHG_STAT_SHFT;
+> +	switch (regval) {
+> +	case 0x0:
+> +		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+> +		break;
+> +	case 0x1:
+> +		status = POWER_SUPPLY_STATUS_CHARGING;
+> +		break;
+> +	case 0x2:
+> +		status = POWER_SUPPLY_STATUS_FULL;
+> +		break;
+> +	default:
+> +		ret = -EIO;
+> +	}
+> +out:
+> +	if (!ret)
+> +		val->intval = status;
+> +	return ret;
+> +}
+> +
+> +static int mt6360_charger_get_charge_type(struct mt6360_chg_info *mci,
+> +					  union power_supply_propval *val)
+> +{
+> +	int type, ret;
+> +	unsigned int regval;
+> +	u8 chg_stat;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_STAT, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	chg_stat = (regval & MT6360_CHG_STAT_MASK) >> MT6360_CHG_STAT_SHFT;
+> +	switch (chg_stat) {
+> +	case 0x01: /* Charge in Progress */
+> +		if (regval & MT6360_VBAT_LVL_MASK)
+> +			type = POWER_SUPPLY_CHARGE_TYPE_FAST;
+> +		else
+> +			type = POWER_SUPPLY_CHARGE_TYPE_TRICKLE;
+> +		break;
+> +	case 0x00: /* Not Charging */
+> +	case 0x02: /* Charge Done */
+> +	case 0x03: /* Charge Fault */
+> +	default:
+> +		type = POWER_SUPPLY_CHARGE_TYPE_NONE;
+> +		break;
+> +	}
+> +
+> +	val->intval = type;
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_ichg(struct mt6360_chg_info *mci,
+> +				   union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL7, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_ICHG_MASK) >> MT6360_ICHG_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_ICHG_MIN,
+> +					  MT6360_ICHG_MAX,
+> +					  MT6360_ICHG_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_max_ichg(struct mt6360_chg_info *mci,
+> +				       union power_supply_propval *val)
+> +{
+> +	val->intval = MT6360_ICHG_MAX;
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_cv(struct mt6360_chg_info *mci,
+> +				 union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL4, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_VOREG_MASK) >> MT6360_VOREG_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_VOREG_MIN,
+> +					  MT6360_VOREG_MAX,
+> +					  MT6360_VOREG_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_max_cv(struct mt6360_chg_info *mci,
+> +				     union power_supply_propval *val)
+> +{
+> +	val->intval = MT6360_VOREG_MAX;
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_aicr(struct mt6360_chg_info *mci,
+> +				   union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL3, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_IAICR_MASK) >> MT6360_IAICR_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_AICR_MIN,
+> +					  MT6360_AICR_MAX,
+> +					  MT6360_AICR_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_mivr(struct mt6360_chg_info *mci,
+> +				   union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL6, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_VMIVR_MASK) >> MT6360_VMIVR_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_VMIVR_MIN,
+> +					  MT6360_VMIVR_MAX,
+> +					  MT6360_VMIVR_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_iprechg(struct mt6360_chg_info *mci,
+> +				      union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL8, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_IPREC_MASK) >> MT6360_IPREC_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_IPREC_MIN,
+> +					  MT6360_IPREC_MAX,
+> +					  MT6360_IPREC_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_get_ieoc(struct mt6360_chg_info *mci,
+> +				   union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	unsigned int regval;
+> +
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_CHG_CTRL9, &regval);
+> +	if (ret < 0)
+> +		return ret;
+> +	regval = (regval & MT6360_IEOC_MASK) >> MT6360_IEOC_SHFT;
+> +	val->intval = mt6360_map_real_val(regval,
+> +					  MT6360_IEOC_MIN,
+> +					  MT6360_IEOC_MAX,
+> +					  MT6360_IEOC_STEP);
+> +	return 0;
+> +}
+> +
+> +static int mt6360_charger_set_online(struct mt6360_chg_info *mci,
+> +				     const union power_supply_propval *val)
+> +{
+> +	u8 force_sleep = val->intval ? 0 : 1;
+> +
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL1,
+> +				  MT6360_FSLP_MASK,
+> +				  force_sleep << MT6360_FSLP_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_ichg(struct mt6360_chg_info *mci,
+> +				   const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_ICHG_MIN,
+> +				 MT6360_ICHG_MAX,
+> +				 MT6360_ICHG_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL7,
+> +				  MT6360_ICHG_MASK,
+> +				  sel << MT6360_ICHG_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_cv(struct mt6360_chg_info *mci,
+> +				 const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_VOREG_MIN,
+> +				 MT6360_VOREG_MAX,
+> +				 MT6360_VOREG_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL4,
+> +				  MT6360_VOREG_MASK,
+> +				  sel << MT6360_VOREG_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_aicr(struct mt6360_chg_info *mci,
+> +				   const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_AICR_MIN,
+> +				 MT6360_AICR_MAX,
+> +				 MT6360_AICR_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL3,
+> +				  MT6360_IAICR_MASK,
+> +				  sel << MT6360_IAICR_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_mivr(struct mt6360_chg_info *mci,
+> +				   const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_VMIVR_MIN,
+> +				 MT6360_VMIVR_MAX,
+> +				 MT6360_VMIVR_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL3,
+> +				  MT6360_VMIVR_MASK,
+> +				  sel << MT6360_VMIVR_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_iprechg(struct mt6360_chg_info *mci,
+> +				      const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_IPREC_MIN,
+> +				 MT6360_IPREC_MAX,
+> +				 MT6360_IPREC_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL8,
+> +				  MT6360_IPREC_MASK,
+> +				  sel << MT6360_IPREC_SHFT);
+> +}
+> +
+> +static int mt6360_charger_set_ieoc(struct mt6360_chg_info *mci,
+> +				   const union power_supply_propval *val)
+> +{
+> +	u8 sel;
+> +
+> +	sel = mt6360_map_reg_sel(val->intval,
+> +				 MT6360_IEOC_MIN,
+> +				 MT6360_IEOC_MAX,
+> +				 MT6360_IEOC_STEP);
+> +	return regmap_update_bits(mci->regmap,
+> +				  MT6360_PMU_CHG_CTRL9,
+> +				  MT6360_IEOC_MASK,
+> +				  sel << MT6360_IEOC_SHFT);
+> +}
+> +
+> +static int mt6360_charger_get_property(struct power_supply *psy,
+> +				       enum power_supply_property psp,
+> +				       union power_supply_propval *val)
+> +{
+> +	struct mt6360_chg_info *mci = power_supply_get_drvdata(psy);
+> +	int ret = 0;
+> +
+> +	switch (psp) {
+> +	case POWER_SUPPLY_PROP_ONLINE:
+> +		ret = mt6360_charger_get_online(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_STATUS:
+> +		ret = mt6360_charger_get_status(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CHARGE_TYPE:
+> +		ret = mt6360_charger_get_charge_type(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+> +		ret = mt6360_charger_get_ichg(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
+> +		ret = mt6360_charger_get_max_ichg(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+> +		ret = mt6360_charger_get_cv(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
+> +		ret = mt6360_charger_get_max_cv(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> +		ret = mt6360_charger_get_aicr(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT:
+> +		ret = mt6360_charger_get_mivr(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
+> +		ret = mt6360_charger_get_iprechg(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
+> +		ret = mt6360_charger_get_ieoc(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_USB_TYPE:
+> +		val->intval = mci->psy_usb_type;
+> +		break;
+> +	default:
+> +		ret = -ENODATA;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int mt6360_charger_set_property(struct power_supply *psy,
+> +				       enum power_supply_property psp,
+> +				       const union power_supply_propval *val)
+> +{
+> +	struct mt6360_chg_info *mci = power_supply_get_drvdata(psy);
+> +	int ret;
+> +
+> +	switch (psp) {
+> +	case POWER_SUPPLY_PROP_ONLINE:
+> +		ret = mt6360_charger_set_online(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+> +		ret = mt6360_charger_set_ichg(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+> +		ret = mt6360_charger_set_cv(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> +		ret = mt6360_charger_set_aicr(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT:
+> +		ret = mt6360_charger_set_mivr(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
+> +		ret = mt6360_charger_set_iprechg(mci, val);
+> +		break;
+> +	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
+> +		ret = mt6360_charger_set_ieoc(mci, val);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int mt6360_charger_property_is_writeable(struct power_supply *psy,
+> +					       enum power_supply_property psp)
+> +{
+> +	switch (psp) {
+> +	case POWER_SUPPLY_PROP_ONLINE:
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+> +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+> +	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> +	case POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT:
+> +	case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
+> +	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
+> +		return 1;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static enum power_supply_property mt6360_charger_properties[] = {
+> +	POWER_SUPPLY_PROP_ONLINE,
+> +	POWER_SUPPLY_PROP_STATUS,
+> +	POWER_SUPPLY_PROP_CHARGE_TYPE,
+> +	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT,
+> +	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
+> +	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
+> +	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
+> +	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
+> +	POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT,
+> +	POWER_SUPPLY_PROP_PRECHARGE_CURRENT,
+> +	POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT,
+> +	POWER_SUPPLY_PROP_USB_TYPE,
+> +};
+> +
+> +static const struct power_supply_desc mt6360_charger_desc = {
+> +	.type			= POWER_SUPPLY_TYPE_USB,
+> +	.properties		= mt6360_charger_properties,
+> +	.num_properties		= ARRAY_SIZE(mt6360_charger_properties),
+> +	.get_property		= mt6360_charger_get_property,
+> +	.set_property		= mt6360_charger_set_property,
+> +	.property_is_writeable	= mt6360_charger_property_is_writeable,
+> +	.usb_types		= mt6360_charger_usb_types,
+> +	.num_usb_types		= ARRAY_SIZE(mt6360_charger_usb_types),
+> +};
+> +
+> +static const struct regulator_ops mt6360_chg_otg_ops = {
+> +	.list_voltage = regulator_list_voltage_linear,
+> +	.enable = regulator_enable_regmap,
+> +	.disable = regulator_disable_regmap,
+> +	.is_enabled = regulator_is_enabled_regmap,
+> +	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+> +	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+> +};
+> +
+> +static const struct regulator_desc mt6360_otg_rdesc = {
+> +	.of_match = "usb-otg-vbus",
+> +	.name = "usb-otg-vbus",
+> +	.ops = &mt6360_chg_otg_ops,
+> +	.owner = THIS_MODULE,
+> +	.type = REGULATOR_VOLTAGE,
+> +	.min_uV = 4425000,
+> +	.uV_step = 25000,
+> +	.n_voltages = 57,
+> +	.vsel_reg = MT6360_PMU_CHG_CTRL5,
+> +	.vsel_mask = MT6360_VOBST_MASK,
+> +	.enable_reg = MT6360_PMU_CHG_CTRL1,
+> +	.enable_mask = MT6360_OPA_MODE_MASK,
+> +};
+> +
+> +static irqreturn_t mt6360_pmu_attach_i_handler(int irq, void *data)
+> +{
+> +	struct mt6360_chg_info *mci = data;
+> +	int ret;
+> +	unsigned int usb_status;
+> +	int last_usb_type;
+> +
+> +	mutex_lock(&mci->chgdet_lock);
+> +	if (!mci->bc12_en) {
+> +		dev_warn(mci->dev, "Received attach interrupt, bc12 disabled, ignore irq\n");
+> +		goto out;
+> +	}
+> +	last_usb_type = mci->psy_usb_type;
+> +	/* Plug in */
+> +	ret = regmap_read(mci->regmap, MT6360_PMU_USB_STATUS1, &usb_status);
+> +	if (ret < 0)
+> +		goto out;
+> +	usb_status &= MT6360_USB_STATUS_MASK;
+> +	usb_status >>= MT6360_USB_STATUS_SHFT;
+> +	switch (usb_status) {
+> +	case MT6360_CHG_TYPE_NOVBUS:
+> +		dev_dbg(mci->dev, "Received attach interrupt, no vbus\n");
+> +		goto out;
+> +	case MT6360_CHG_TYPE_UNDER_GOING:
+> +		dev_dbg(mci->dev, "Received attach interrupt, under going...\n");
+> +		goto out;
+> +	case MT6360_CHG_TYPE_SDP:
+> +		mci->psy_usb_type = POWER_SUPPLY_USB_TYPE_SDP;
+> +		break;
+> +	case MT6360_CHG_TYPE_SDPNSTD:
+> +		mci->psy_usb_type = POWER_SUPPLY_USB_TYPE_SDP;
+> +		break;
+> +	case MT6360_CHG_TYPE_CDP:
+> +		mci->psy_usb_type = POWER_SUPPLY_USB_TYPE_CDP;
+> +		break;
+> +	case MT6360_CHG_TYPE_DCP:
+> +		mci->psy_usb_type = POWER_SUPPLY_USB_TYPE_DCP;
+> +		break;
+> +	case MT6360_CHG_TYPE_DISABLE_BC12:
+> +		dev_dbg(mci->dev, "Received attach interrupt, bc12 detect not enable\n");
+> +		goto out;
+> +	default:
+> +		dev_dbg(mci->dev, "Received attach interrupt, reserved address\n");
+> +		goto out;
+> +	}
+> +
+> +	dev_dbg(mci->dev, "Received attach interrupt, chg_type = %d\n", mci->psy_usb_type);
+> +	if (last_usb_type != mci->psy_usb_type)
+> +		power_supply_changed(mci->psy);
+> +out:
+> +	mutex_unlock(&mci->chgdet_lock);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void mt6360_handle_chrdet_ext_evt(struct mt6360_chg_info *mci)
+> +{
+> +	int ret;
+> +	bool pwr_rdy;
+> +
+> +	mutex_lock(&mci->chgdet_lock);
+> +	ret = mt6360_get_chrdet_ext_stat(mci, &pwr_rdy);
+> +	if (ret < 0)
+> +		goto out;
+> +	if (mci->pwr_rdy == pwr_rdy) {
+> +		dev_dbg(mci->dev, "Received vbus interrupt, pwr_rdy is same(%d)\n", pwr_rdy);
+> +		goto out;
+> +	}
+> +	mci->pwr_rdy = pwr_rdy;
+> +	dev_dbg(mci->dev, "Received vbus interrupt, pwr_rdy = %d\n", pwr_rdy);
+> +	if (!pwr_rdy) {
+> +		mci->psy_usb_type = POWER_SUPPLY_USB_TYPE_UNKNOWN;
+> +		power_supply_changed(mci->psy);
+> +
+> +	}
+> +	ret = regmap_update_bits(mci->regmap,
+> +				 MT6360_PMU_DEVICE_TYPE,
+> +				 MT6360_USBCHGEN_MASK,
+> +				 pwr_rdy ? MT6360_USBCHGEN_MASK : 0);
+> +	if (ret < 0)
+> +		goto out;
+> +	mci->bc12_en = pwr_rdy;
+> +out:
+> +	mutex_unlock(&mci->chgdet_lock);
+> +}
+> +
+> +static void mt6360_chrdet_work(struct work_struct *work)
+> +{
+> +	struct mt6360_chg_info *mci = (struct mt6360_chg_info *)container_of(
+> +				     work, struct mt6360_chg_info, chrdet_work);
+> +
+> +	mt6360_handle_chrdet_ext_evt(mci);
+> +}
+> +
+> +static irqreturn_t mt6360_pmu_chrdet_ext_evt_handler(int irq, void *data)
+> +{
+> +	struct mt6360_chg_info *mci = data;
+> +
+> +	mt6360_handle_chrdet_ext_evt(mci);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int mt6360_chg_irq_register(struct platform_device *pdev)
+> +{
+> +	const struct {
+> +		const char *name;
+> +		irq_handler_t handler;
+> +	} irq_descs[] = {
+> +		{ "attach_i", mt6360_pmu_attach_i_handler },
+> +		{ "chrdet_ext_evt", mt6360_pmu_chrdet_ext_evt_handler }
+> +	};
+> +	int i, ret;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(irq_descs); i++) {
+> +		ret = platform_get_irq_byname(pdev, irq_descs[i].name);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret = devm_request_threaded_irq(&pdev->dev, ret, NULL,
+> +						irq_descs[i].handler,
+> +						IRQF_TRIGGER_FALLING,
+> +						irq_descs[i].name,
+> +						platform_get_drvdata(pdev));
+> +		if (ret < 0)
+> +			return dev_err_probe(&pdev->dev, ret, "Failed to request %s irq\n",
+> +					     irq_descs[i].name);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +struct mt6360_field_info {
+> +	struct device_attribute dev_attr;
+> +	u16 reg;
+> +	u8 mask;
+> +	u8 shft;
+> +};
+> +
+> +static int mt6360_chg_init_setting(struct mt6360_chg_info *mci)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(mci->regmap, MT6360_PMU_DEVICE_TYPE,
+> +				 MT6360_USBCHGEN_MASK, 0);
+> +	if (ret)
+> +		return dev_err_probe(mci->dev, ret, "%s: Failed to disable bc12\n", __func__);
+> +	ret = regmap_update_bits(mci->regmap, MT6360_PMU_CHG_CTRL2,
+> +				 MT6360_IINLMTSEL_MASK,
+> +				 MT6360_IINLMTSEL_AICR <<
+> +					MT6360_IINLMTSEL_SHFT);
+> +	if (ret)
+> +		return dev_err_probe(mci->dev, ret,
+> +				     "%s: Failed to switch iinlmtsel to aicr\n", __func__);
+> +	usleep_range(5000, 6000);
+> +	ret = regmap_update_bits(mci->regmap, MT6360_PMU_CHG_CTRL3,
+> +				 MT6360_ILIM_EN_MASK, 0);
+> +	if (ret)
+> +		return dev_err_probe(mci->dev, ret,
+> +				     "%s: Failed to disable ilim\n", __func__);
+> +	ret = regmap_update_bits(mci->regmap, MT6360_PMU_CHG_CTRL10,
+> +				 MT6360_OTG_OC_MASK, MT6360_OTG_OC_MASK);
+> +	if (ret)
+> +		return dev_err_probe(mci->dev, ret,
+> +				     "%s: Failed to config otg oc to 3A\n", __func__);
+> +	return 0;
+> +}
+> +
+> +static u32 mt6360_vinovp_trans_to_sel(u32 val)
+> +{
+> +	u32 vinovp_tbl[] = { 5500000, 6500000, 11000000, 14500000 };
 > +	int i;
 > +
-> +	*header = NULL;
-> +	for (i = 0; i < xclbin->header.num_sections; i++) {
-> +		if (xclbin->sections[i].section_kind == kind) {
-> +			phead = &xclbin->sections[i];
+> +	/* Select the smaller and equal supported value */
+> +	for (i = 0; i < ARRAY_SIZE(vinovp_tbl)-1; i++) {
+> +		if (val < vinovp_tbl[i+1])
 > +			break;
-> +		}
 > +	}
-> +
-> +	if (!phead)
-> +		return -ENOENT;
-> +
-> +	xclbin_len = xclbin->header.length;
-> +	if (xclbin_len > XCLBIN_MAX_SIZE ||
-> +	    phead->section_offset + phead->section_size > xclbin_len)
-> +		return -EINVAL;
-> +
-> +	*header = phead;
-> +	return 0;
+> +	return i;
 > +}
 > +
-> +static int xrt_xclbin_section_info(const struct axlf *xclbin,
-> +				   enum axlf_section_kind kind,
-> +				   u64 *offset, u64 *size)
+> +static int mt6360_parse_dt(struct platform_device *pdev)
 > +{
-> +	const struct axlf_section_header *mem_header = NULL;
-> +	int rc;
+> +	struct mt6360_chg_info *mci = dev_get_drvdata(&pdev->dev);
+> +	int ret;
 > +
-> +	rc = xrt_xclbin_get_section_hdr(xclbin, kind, &mem_header);
-> +	if (rc)
-> +		return rc;
-> +
-> +	*offset = mem_header->section_offset;
-> +	*size = mem_header->section_size;
-ok
-> +
-> +	return 0;
+> +	ret = device_property_read_u32(&pdev->dev, "richtek,vinovp-microvolt", &mci->vinovp);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to parse vinovp in DT\n");
+> +	return ret;
 > +}
 > +
-> +/* caller must free the allocated memory for **data */
-> +int xrt_xclbin_get_section(struct device *dev,
-> +			   const struct axlf *buf,
-> +			   enum axlf_section_kind kind,
-> +			   void **data, u64 *len)
+> +static int mt6360_apply_dt(struct platform_device *pdev)
 > +{
-> +	const struct axlf *xclbin = (const struct axlf *)buf;
-> +	void *section = NULL;
-> +	u64 offset = 0;
-> +	u64 size = 0;
-> +	int err = 0;
+> +	struct mt6360_chg_info *mci = dev_get_drvdata(&pdev->dev);
+> +	u32 sel;
 > +
-> +	if (!data) {
-ok
-> +		dev_err(dev, "invalid data pointer");
-> +		return -EINVAL;
-> +	}
+> +	sel = mt6360_vinovp_trans_to_sel(mci->vinovp);
+> +	return regmap_update_bits(mci->regmap, MT6360_PMU_CHG_CTRL19,
+> +				  MT6360_VINOVP_MASK, sel << MT6360_VINOVP_SHFT);
+> +}
 > +
-> +	err = xrt_xclbin_section_info(xclbin, kind, &offset, &size);
-> +	if (err) {
-> +		dev_dbg(dev, "parsing section failed. kind %d, err = %d", kind, err);
-> +		return err;
-> +	}
+> +static int mt6360_charger_probe(struct platform_device *pdev)
+> +{
+> +	struct mt6360_chg_info *mci;
+> +	struct power_supply_config charger_cfg = {};
+> +	struct regulator_config config = { };
+> +	int ret;
 > +
-> +	section = vzalloc(size);
-> +	if (!section)
+> +	mci = devm_kzalloc(&pdev->dev, sizeof(*mci), GFP_KERNEL);
+> +	if (!mci)
 > +		return -ENOMEM;
 > +
-> +	memcpy(section, ((const char *)xclbin) + offset, size);
+> +	ret = mt6360_parse_dt(pdev);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to parse dt\n");
 > +
-> +	*data = section;
-> +	if (len)
-> +		*len = size;
+> +	mci->dev = &pdev->dev;
+> +	mci->vinovp = 6500000;
+> +	mutex_init(&mci->chgdet_lock);
+> +	platform_set_drvdata(pdev, mci);
+> +	INIT_WORK(&mci->chrdet_work, &mt6360_chrdet_work);
 > +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(xrt_xclbin_get_section);
+> +	mci->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!mci->regmap)
+> +		return dev_err_probe(&pdev->dev, -ENODEV, "Failed to get parent regmap\n");
 > +
-> +static inline int xclbin_bit_get_string(const unchar *data, u32 size,
-> +					u32 offset, unchar prefix,
-> +					const unchar **str)
-> +{
-> +	int len;
-> +	u32 tmp;
+> +	ret = mt6360_apply_dt(pdev);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to apply dt\n");
 > +
-> +	/* prefix and length will be 3 bytes */
-> +	if (offset + 3  > size)
-> +		return -EINVAL;
+> +	memcpy(&mci->psy_desc, &mt6360_charger_desc, sizeof(mci->psy_desc));
+> +	mci->psy_desc.name = dev_name(&pdev->dev);
+> +	charger_cfg.drv_data = mci;
+> +	charger_cfg.of_node = pdev->dev.of_node;
+> +	mci->psy = devm_power_supply_register(&pdev->dev,
+> +					      &mci->psy_desc, &charger_cfg);
+> +	if (IS_ERR(mci->psy))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(mci->psy),
+> +				     "Failed to register power supply dev\n");
 > +
-> +	/* Read prefix */
-> +	tmp = data[offset++];
-> +	if (tmp != prefix)
-> +		return -EINVAL;
+> +	ret = mt6360_chg_init_setting(mci);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to initial setting\n");
 > +
-> +	/* Get string length */
-> +	len = data[offset++];
-> +	len = (len << 8) | data[offset++];
+> +	schedule_work(&mci->chrdet_work);
 > +
-> +	if (offset + len > size)
-> +		return -EINVAL;
+> +	ret = mt6360_chg_irq_register(pdev);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "Failed to register irqs\n");
 > +
-> +	if (data[offset + len - 1] != '\0')
-> +		return -EINVAL;
-> +
-> +	*str = data + offset;
-> +
-> +	return len + 3;
-> +}
-> +
-> +/* parse bitstream header */
-> +int xrt_xclbin_parse_bitstream_header(struct device *dev, const unchar *data,
-> +				      u32 size, struct xclbin_bit_head_info *head_info)
-> +{
-> +	u32 offset = 0;
-> +	int len, i;
-> +	u16 magic;
-> +
-> +	memset(head_info, 0, sizeof(*head_info));
-> +
-> +	/* Get "Magic" length */
-> +	if (size < sizeof(u16)) {
-> +		dev_err(dev, "invalid size");
-> +		return -EINVAL;
-> +	}
-ok
-> +
-> +	len = data[offset++];
-> +	len = (len << 8) | data[offset++];
-> +
-> +	if (offset + len > size) {
-> +		dev_err(dev, "invalid magic len");
-> +		return -EINVAL;
-> +	}
-> +	head_info->magic_length = len;
-> +
-> +	for (i = 0; i < head_info->magic_length - 1; i++) {
-> +		magic = data[offset++];
-> +		if (!(i % 2) && magic != BITSTREAM_EVEN_MAGIC_BYTE) {
-> +			dev_err(dev, "invalid magic even byte at %d", offset);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if ((i % 2) && magic != BITSTREAM_ODD_MAGIC_BYTE) {
-> +			dev_err(dev, "invalid magic odd byte at %d", offset);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	if (offset + 3 > size) {
-> +		dev_err(dev, "invalid length of magic end");
-> +		return -EINVAL;
-> +	}
-> +	/* Read null end of magic data. */
-> +	if (data[offset++]) {
-> +		dev_err(dev, "invalid magic end");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Read 0x01 (short) */
-> +	magic = data[offset++];
-> +	magic = (magic << 8) | data[offset++];
-> +
-> +	/* Check the "0x01" half word */
-> +	if (magic != 0x01) {
-> +		dev_err(dev, "invalid magic end");
-> +		return -EINVAL;
-> +	}
-> +
-> +	len = xclbin_bit_get_string(data, size, offset, 'a', &head_info->design_name);
-> +	if (len < 0) {
-> +		dev_err(dev, "get design name failed");
-> +		return -EINVAL;
-> +	}
-> +
-> +	head_info->version = strstr(head_info->design_name, "Version=") + strlen("Version=");
-> +	offset += len;
-> +
-> +	len = xclbin_bit_get_string(data, size, offset, 'b', &head_info->part_name);
-> +	if (len < 0) {
-> +		dev_err(dev, "get part name failed");
-> +		return -EINVAL;
-> +	}
-> +	offset += len;
-> +
-> +	len = xclbin_bit_get_string(data, size, offset, 'c', &head_info->date);
-> +	if (len < 0) {
-> +		dev_err(dev, "get data failed");
-> +		return -EINVAL;
-> +	}
-> +	offset += len;
-> +
-> +	len = xclbin_bit_get_string(data, size, offset, 'd', &head_info->time);
-> +	if (len < 0) {
-> +		dev_err(dev, "get time failed");
-> +		return -EINVAL;
-> +	}
-> +	offset += len;
-> +
-> +	if (offset + 5 >= size) {
-> +		dev_err(dev, "can not get bitstream length");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Read 'e' */
-> +	if (data[offset++] != 'e') {
-> +		dev_err(dev, "invalid prefix of bitstream length");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Get byte length of bitstream */
-> +	head_info->bitstream_length = data[offset++];
-> +	head_info->bitstream_length = (head_info->bitstream_length << 8) | data[offset++];
-> +	head_info->bitstream_length = (head_info->bitstream_length << 8) | data[offset++];
-> +	head_info->bitstream_length = (head_info->bitstream_length << 8) | data[offset++];
-OK
-> +
-> +	head_info->header_length = offset;
-ok
+> +	config.dev = &pdev->dev;
+> +	config.regmap = mci->regmap;
+> +	mci->otg_rdev = devm_regulator_register(&pdev->dev, &mt6360_otg_rdesc,
+> +						&config);
+> +	if (IS_ERR(mci->otg_rdev))
+> +		return PTR_ERR(mci->otg_rdev);
 > +
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL_GPL(xrt_xclbin_parse_bitstream_header);
-ok, removed xrt_xclbin_free_header
 > +
-> +struct xrt_clock_desc {
-> +	char	*clock_ep_name;
-> +	u32	clock_xclbin_type;
-> +	char	*clkfreq_ep_name;
-> +} clock_desc[] = {
-> +	{
-> +		.clock_ep_name = XRT_MD_NODE_CLK_KERNEL1,
-> +		.clock_xclbin_type = CT_DATA,
-> +		.clkfreq_ep_name = XRT_MD_NODE_CLKFREQ_K1,
+> +static const struct of_device_id __maybe_unused mt6360_charger_of_id[] = {
+> +	{ .compatible = "mediatek,mt6360-chg", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, mt6360_charger_of_id);
+> +
+> +static const struct platform_device_id mt6360_charger_id[] = {
+> +	{ "mt6360-chg", 0 },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(platform, mt6360_charger_id);
+> +
+> +static struct platform_driver mt6360_charger_driver = {
+> +	.driver = {
+> +		.name = "mt6360-chg",
+> +		.of_match_table = of_match_ptr(mt6360_charger_of_id),
 > +	},
-> +	{
-> +		.clock_ep_name = XRT_MD_NODE_CLK_KERNEL2,
-> +		.clock_xclbin_type = CT_KERNEL,
-> +		.clkfreq_ep_name = XRT_MD_NODE_CLKFREQ_K2,
-> +	},
-> +	{
-> +		.clock_ep_name = XRT_MD_NODE_CLK_KERNEL3,
-> +		.clock_xclbin_type = CT_SYSTEM,
-> +		.clkfreq_ep_name = XRT_MD_NODE_CLKFREQ_HBM,
-> +	},
+> +	.probe = mt6360_charger_probe,
+> +	.id_table = mt6360_charger_id,
 > +};
-> +
-> +const char *xrt_clock_type2epname(enum XCLBIN_CLOCK_TYPE type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(clock_desc); i++) {
-> +		if (clock_desc[i].clock_xclbin_type == type)
-> +			return clock_desc[i].clock_ep_name;
-> +	}
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(xrt_clock_type2epname);
-> +
-> +static const char *clock_type2clkfreq_name(enum XCLBIN_CLOCK_TYPE type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(clock_desc); i++) {
-> +		if (clock_desc[i].clock_xclbin_type == type)
-> +			return clock_desc[i].clkfreq_ep_name;
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static int xrt_xclbin_add_clock_metadata(struct device *dev,
-> +					 const struct axlf *xclbin,
-> +					 char *dtb)
-> +{
-> +	struct clock_freq_topology *clock_topo;
-> +	u16 freq;
-> +	int rc;
-> +	int i;
-> +
-> +	/* if clock section does not exist, add nothing and return success */
-ok
-> +	rc = xrt_xclbin_get_section(dev, xclbin, CLOCK_FREQ_TOPOLOGY,
-> +				    (void **)&clock_topo, NULL);
-> +	if (rc == -ENOENT)
-> +		return 0;
-> +	else if (rc)
-> +		return rc;
-> +
-> +	for (i = 0; i < clock_topo->count; i++) {
-> +		u8 type = clock_topo->clock_freq[i].type;
-> +		const char *ep_name = xrt_clock_type2epname(type);
-> +		const char *counter_name = clock_type2clkfreq_name(type);
-> +
-> +		if (!ep_name || !counter_name)
-> +			continue;
-> +
-> +		freq = cpu_to_be16(clock_topo->clock_freq[i].freq_MHZ);
-> +		rc = xrt_md_set_prop(dev, dtb, ep_name, NULL, XRT_MD_PROP_CLK_FREQ,
-> +				     &freq, sizeof(freq));
-> +		if (rc)
-> +			break;
-> +
-> +		rc = xrt_md_set_prop(dev, dtb, ep_name, NULL, XRT_MD_PROP_CLK_CNT,
-> +				     counter_name, strlen(counter_name) + 1);
-> +		if (rc)
-> +			break;
-> +	}
-> +
-> +	vfree(clock_topo);
-> +
-> +	return rc;
-> +}
-> +
-> +int xrt_xclbin_get_metadata(struct device *dev, const struct axlf *xclbin, char **dtb)
-> +{
-> +	char *md = NULL, *newmd = NULL;
-> +	u64 len, md_len;
-> +	int rc;
-> +
-> +	*dtb = NULL;
-ok
-> +
-> +	rc = xrt_xclbin_get_section(dev, xclbin, PARTITION_METADATA, (void **)&md, &len);
-> +	if (rc)
-> +		goto done;
-> +
-> +	md_len = xrt_md_size(dev, md);
-> +
-> +	/* Sanity check the dtb section. */
-> +	if (md_len > len) {
-> +		rc = -EINVAL;
-> +		goto done;
-> +	}
-> +
-> +	/* use dup function here to convert incoming metadata to writable */
-> +	newmd = xrt_md_dup(dev, md);
-> +	if (!newmd) {
-> +		rc = -EFAULT;
-> +		goto done;
-> +	}
-> +
-> +	/* Convert various needed xclbin sections into dtb. */
-> +	rc = xrt_xclbin_add_clock_metadata(dev, xclbin, newmd);
-> +
-> +	if (!rc)
-> +		*dtb = newmd;
-> +	else
-> +		vfree(newmd);
-ok
-> +done:
-> +	vfree(md);
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(xrt_xclbin_get_metadata);
-> diff --git a/include/uapi/linux/xrt/xclbin.h b/include/uapi/linux/xrt/xclbin.h
-> new file mode 100644
-> index 000000000000..baa14d6653ab
-> --- /dev/null
-> +++ b/include/uapi/linux/xrt/xclbin.h
-> @@ -0,0 +1,409 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + *  Xilinx FPGA compiled binary container format
-> + *
-> + *  Copyright (C) 2015-2021, Xilinx Inc
-> + */
-> +
-> +#ifndef _XCLBIN_H_
-> +#define _XCLBIN_H_
-ok, removed _WIN32_
-> +
-> +#if defined(__KERNEL__)
-> +
-> +#include <linux/types.h>
-ok, removed uuid.h and version.h
-> +
-> +#elif defined(__cplusplus)
-> +
-> +#include <cstdlib>
-> +#include <cstdint>
-> +#include <algorithm>
-> +#include <uuid/uuid.h>
-> +
-> +#else
-> +
-> +#include <stdlib.h>
-> +#include <stdint.h>
-> +#include <uuid/uuid.h>
-> +
-> +#endif
-> +
-> +#ifdef __cplusplus
-> +extern "C" {
-> +#endif
-> +
-> +/**
-> + * DOC: Container format for Xilinx FPGA images
-> + * The container stores bitstreams, metadata and firmware images.
-> + * xclbin/xsabin is an ELF-like binary container format. It is a structured
-ok
-> + * series of sections. There is a file header followed by several section
-> + * headers which is followed by sections. A section header points to an
-> + * actual section. There is an optional signature at the end. The
-> + * following figure illustrates a typical xclbin:
-> + *
-> + *     +---------------------+
-> + *     |                     |
-> + *     |       HEADER        |
-> + *     +---------------------+
-> + *     |   SECTION  HEADER   |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |        ...          |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |   SECTION  HEADER   |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |       SECTION       |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |         ...         |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |       SECTION       |
-> + *     |                     |
-> + *     +---------------------+
-> + *     |      SIGNATURE      |
-> + *     |      (OPTIONAL)     |
-> + *     +---------------------+
-ok on the tabs to spaces
-> + */
-> +
-> +enum XCLBIN_MODE {
-> +	XCLBIN_FLAT = 0,
-ok
-> +	XCLBIN_PR,
-> +	XCLBIN_TANDEM_STAGE2,
-> +	XCLBIN_TANDEM_STAGE2_WITH_PR,
-> +	XCLBIN_HW_EMU,
-> +	XCLBIN_SW_EMU,
-> +	XCLBIN_MODE_MAX
-> +};
-> +
-> +enum axlf_section_kind {
-> +	BITSTREAM = 0,
-> +	CLEARING_BITSTREAM,
-> +	EMBEDDED_METADATA,
-> +	FIRMWARE,
-> +	DEBUG_DATA,
-> +	SCHED_FIRMWARE,
-> +	MEM_TOPOLOGY,
-> +	CONNECTIVITY,
-> +	IP_LAYOUT,
-> +	DEBUG_IP_LAYOUT,
-> +	DESIGN_CHECK_POINT,
-> +	CLOCK_FREQ_TOPOLOGY,
-> +	MCS,
-> +	BMC,
-> +	BUILD_METADATA,
-> +	KEYVALUE_METADATA,
-> +	USER_METADATA,
-> +	DNA_CERTIFICATE,
-> +	PDI,
-> +	BITSTREAM_PARTIAL_PDI,
-> +	PARTITION_METADATA,
-> +	EMULATION_DATA,
-> +	SYSTEM_METADATA,
-> +	SOFT_KERNEL,
-> +	ASK_FLASH,
-> +	AIE_METADATA,
-> +	ASK_GROUP_TOPOLOGY,
-> +	ASK_GROUP_CONNECTIVITY
-> +};
-> +
-> +enum MEM_TYPE {
-> +	MEM_DDR3 = 0,
-> +	MEM_DDR4,
-> +	MEM_DRAM,
-> +	MEM_STREAMING,
-> +	MEM_PREALLOCATED_GLOB,
-> +	MEM_ARE,
-> +	MEM_HBM,
-> +	MEM_BRAM,
-> +	MEM_URAM,
-> +	MEM_STREAMING_CONNECTION
-> +};
-> +
-> +enum IP_TYPE {
-> +	IP_MB = 0,
-> +	IP_KERNEL,
-> +	IP_DNASC,
-> +	IP_DDR4_CONTROLLER,
-> +	IP_MEM_DDR4,
-> +	IP_MEM_HBM
-> +};
-> +
-> +struct axlf_section_header {
-> +	uint32_t section_kind;	    /* Section type */
-> +	char section_name[16];	    /* Examples: "stage2", "clear1", */
-> +				    /* "clear2", "ocl1", "ocl2, */
-> +				    /* "ublaze", "sched" */
-> +	char rsvd[4];
-> +	uint64_t section_offset;    /* File offset of section data */
-> +	uint64_t section_size;	    /* Size of section data */
-> +} __packed;
-> +
-> +struct axlf_header {
-> +	uint64_t length;		    /* Total size of the xclbin file */
-> +	uint64_t time_stamp;		    /* Number of seconds since epoch */
-> +					    /* when xclbin was created */
-> +	uint64_t feature_rom_timestamp;     /* TimeSinceEpoch of the featureRom */
-> +	uint16_t version_patch;	    /* Patch Version */
-> +	uint8_t version_major;	    /* Major Version - Version: 2.1.0*/
-
-ok, version checked
-
-whitepace, needs '2.1.0 */'
-
-I see this is a general problem, look other places.
-
-maybe it is a 'tab' and the diff is messing it up, convert tab to space.
-
-> +	uint8_t version_minor;	    /* Minor Version */
-> +	uint32_t mode;		    /* XCLBIN_MODE */
-> +	union {
-> +		struct {
-> +			uint64_t platform_id;	/* 64 bit platform ID: */
-> +					/* vendor-device-subvendor-subdev */
-> +			uint64_t feature_id;	/* 64 bit feature id */
-> +		} rom;
-> +		unsigned char rom_uuid[16];	/* feature ROM UUID for which */
-> +						/* this xclbin was generated */
-> +	};
-> +	unsigned char platform_vbnv[64];	/* e.g. */
-> +		/* xilinx:xil-accel-rd-ku115:4ddr-xpr:3.4: null terminated */
-> +	union {
-> +		char next_axlf[16];		/* Name of next xclbin file */
-> +						/* in the daisy chain */
-> +		unsigned char uuid[16];		/* uuid of this xclbin*/
-
-ok
-
-whitespace comment need a ' ' before */
-
-> +	};
-> +	char debug_bin[16];			/* Name of binary with debug */
-> +						/* information */
-> +	uint32_t num_sections;		/* Number of section headers */
-> +	char rsvd[4];
-> +} __packed;
-> +
-> +struct axlf {
-> +	char magic[8];			/* Should be "xclbin2\0"  */
-> +	int32_t signature_length;		/* Length of the signature. */
-> +						/* -1 indicates no signature */
-> +	unsigned char reserved[28];		/* Note: Initialized to 0xFFs */
-> +
-> +	unsigned char key_block[256];		/* Signature for validation */
-> +						/* of binary */
-> +	uint64_t unique_id;			/* axlf's uniqueId, use it to */
-> +						/* skip redownload etc */
-> +	struct axlf_header header;		/* Inline header */
-> +	struct axlf_section_header sections[1];   /* One or more section */
-> +						    /* headers follow */
-> +} __packed;
-ok, thanks!
-> +
-> +/* bitstream information */
-> +struct xlnx_bitstream {
-> +	uint8_t freq[8];
-> +	char bits[1];
-> +} __packed;
-> +
-> +/****	MEMORY TOPOLOGY SECTION ****/
-> +struct mem_data {
-> +	uint8_t type; /* enum corresponding to mem_type. */
-> +	uint8_t used; /* if 0 this bank is not present */
-> +	uint8_t rsvd[6];
-> +	union {
-> +		uint64_t size; /* if mem_type DDR, then size in KB; */
-> +		uint64_t route_id; /* if streaming then "route_id" */
-> +	};
-> +	union {
-> +		uint64_t base_address;/* if DDR then the base address; */
-> +		uint64_t flow_id; /* if streaming then "flow id" */
-> +	};
-> +	unsigned char tag[16]; /* DDR: BANK0,1,2,3, has to be null */
-> +			/* terminated; if streaming then stream0, 1 etc */
-> +} __packed;
-> +
-> +struct mem_topology {
-> +	int32_t count; /* Number of mem_data */
-> +	struct mem_data mem_data[1]; /* Should be sorted on mem_type */
-> +} __packed;
-> +
-> +/****	CONNECTIVITY SECTION ****/
-> +/* Connectivity of each argument of CU(Compute Unit). It will be in terms
-ok
-> + * of argument index associated. For associating CU instances with arguments
-> + * and banks, start at the connectivity section. Using the ip_layout_index
-> + * access the ip_data.name. Now we can associate this CU instance with its
-> + * original CU name and get the connectivity as well. This enables us to form
-> + * related groups of CU instances.
-> + */
-> +
-> +struct connection {
-> +	int32_t arg_index; /* From 0 to n, may not be contiguous as scalars */
-> +			   /* skipped */
-> +	int32_t ip_layout_index; /* index into the ip_layout section. */
-> +			   /* ip_layout.ip_data[index].type == IP_KERNEL */
-> +	int32_t mem_data_index; /* index of the mem_data . Flag error is */
-> +				/* used false. */
-> +} __packed;
-> +
-> +struct connectivity {
-> +	int32_t count;
-> +	struct connection connection[1];
-> +} __packed;
-> +
-> +/****	IP_LAYOUT SECTION ****/
-> +
-> +/* IP Kernel */
-> +#define IP_INT_ENABLE_MASK	  0x0001
-> +#define IP_INTERRUPT_ID_MASK  0x00FE
-> +#define IP_INTERRUPT_ID_SHIFT 0x1
-> +
-> +enum IP_CONTROL {
-> +	AP_CTRL_HS = 0,
-
-ok
-
-Thanks for the changes!
-
-Tom
-
-> +	AP_CTRL_CHAIN,
-> +	AP_CTRL_NONE,
-> +	AP_CTRL_ME,
-> +	ACCEL_ADAPTER
-> +};
-> +
-> +#define IP_CONTROL_MASK	 0xFF00
-> +#define IP_CONTROL_SHIFT 0x8
-> +
-> +/* IPs on AXI lite - their types, names, and base addresses.*/
-> +struct ip_data {
-> +	uint32_t type; /* map to IP_TYPE enum */
-> +	union {
-> +		uint32_t properties; /* Default: 32-bits to indicate ip */
-> +				     /* specific property. */
-> +		/* type: IP_KERNEL
-> +		 *	    int_enable   : Bit  - 0x0000_0001;
-> +		 *	    interrupt_id : Bits - 0x0000_00FE;
-> +		 *	    ip_control   : Bits = 0x0000_FF00;
-> +		 */
-> +		struct {		 /* type: IP_MEM_* */
-> +			uint16_t index;
-> +			uint8_t pc_index;
-> +			uint8_t unused;
-> +		} indices;
-> +	};
-> +	uint64_t base_address;
-> +	uint8_t name[64]; /* eg Kernel name corresponding to KERNEL */
-> +			    /* instance, can embed CU name in future. */
-> +} __packed;
-> +
-> +struct ip_layout {
-> +	int32_t count;
-> +	struct ip_data ip_data[1]; /* All the ip_data needs to be sorted */
-> +				     /* by base_address. */
-> +} __packed;
-> +
-> +/*** Debug IP section layout ****/
-> +enum DEBUG_IP_TYPE {
-> +	UNDEFINED = 0,
-> +	LAPC,
-> +	ILA,
-> +	AXI_MM_MONITOR,
-> +	AXI_TRACE_FUNNEL,
-> +	AXI_MONITOR_FIFO_LITE,
-> +	AXI_MONITOR_FIFO_FULL,
-> +	ACCEL_MONITOR,
-> +	AXI_STREAM_MONITOR,
-> +	AXI_STREAM_PROTOCOL_CHECKER,
-> +	TRACE_S2MM,
-> +	AXI_DMA,
-> +	TRACE_S2MM_FULL
-> +};
-> +
-> +struct debug_ip_data {
-> +	uint8_t type; /* type of enum DEBUG_IP_TYPE */
-> +	uint8_t index_lowbyte;
-> +	uint8_t properties;
-> +	uint8_t major;
-> +	uint8_t minor;
-> +	uint8_t index_highbyte;
-> +	uint8_t reserved[2];
-> +	uint64_t base_address;
-> +	char	name[128];
-> +} __packed;
-> +
-> +struct debug_ip_layout {
-> +	uint16_t count;
-> +	struct debug_ip_data debug_ip_data[1];
-> +} __packed;
-> +
-> +/* Supported clock frequency types */
-> +enum XCLBIN_CLOCK_TYPE {
-> +	CT_UNUSED = 0,			   /* Initialized value */
-> +	CT_DATA	  = 1,			   /* Data clock */
-> +	CT_KERNEL = 2,			   /* Kernel clock */
-> +	CT_SYSTEM = 3			   /* System Clock */
-> +};
-> +
-> +/* Clock Frequency Entry */
-> +struct clock_freq {
-> +	uint16_t freq_MHZ;		   /* Frequency in MHz */
-> +	uint8_t type;			   /* Clock type (enum CLOCK_TYPE) */
-> +	uint8_t unused[5];		   /* Not used - padding */
-> +	char name[128];			   /* Clock Name */
-> +} __packed;
-> +
-> +/* Clock frequency section */
-> +struct clock_freq_topology {
-> +	int16_t count;		   /* Number of entries */
-> +	struct clock_freq clock_freq[1]; /* Clock array */
-> +} __packed;
-> +
-> +/* Supported MCS file types */
-> +enum MCS_TYPE {
-> +	MCS_UNKNOWN = 0,		   /* Initialized value */
-> +	MCS_PRIMARY = 1,		   /* The primary mcs file data */
-> +	MCS_SECONDARY = 2,		   /* The secondary mcs file data */
-> +};
-> +
-> +/* One chunk of MCS data */
-> +struct mcs_chunk {
-> +	uint8_t type;			   /* MCS data type */
-> +	uint8_t unused[7];		   /* padding */
-> +	uint64_t offset;		   /* data offset from the start of */
-> +					   /* the section */
-> +	uint64_t size;		   /* data size */
-> +} __packed;
-> +
-> +/* MCS data section */
-> +struct mcs {
-> +	int8_t count;			   /* Number of chunks */
-> +	int8_t unused[7];		   /* padding */
-> +	struct mcs_chunk chunk[1];	   /* MCS chunks followed by data */
-> +} __packed;
-> +
-> +/* bmc data section */
-> +struct bmc {
-> +	uint64_t offset;		   /* data offset from the start of */
-> +					   /* the section */
-> +	uint64_t size;		   /* data size (bytes) */
-> +	char image_name[64];		   /* Name of the image */
-> +					   /* (e.g., MSP432P401R) */
-> +	char device_name[64];		   /* Device ID	(e.g., VCU1525)	 */
-> +	char version[64];
-> +	char md5value[33];		   /* MD5 Expected Value */
-> +				/* (e.g., 56027182079c0bd621761b7dab5a27ca)*/
-> +	char padding[7];		   /* Padding */
-> +} __packed;
-> +
-> +/* soft kernel data section, used by classic driver */
-> +struct soft_kernel {
-> +	/** Prefix Syntax:
-> +	 *  mpo - member, pointer, offset
-> +	 *  This variable represents a zero terminated string
-> +	 *  that is offseted from the beginning of the section.
-> +	 *  The pointer to access the string is initialized as follows:
-> +	 *  char * pCharString = (address_of_section) + (mpo value)
-> +	 */
-> +	uint32_t mpo_name;	   /* Name of the soft kernel */
-> +	uint32_t image_offset;   /* Image offset */
-> +	uint32_t image_size;	   /* Image size */
-> +	uint32_t mpo_version;	   /* Version */
-> +	uint32_t mpo_md5_value;	   /* MD5 checksum */
-> +	uint32_t mpo_symbol_name;  /* Symbol name */
-> +	uint32_t num_instances;  /* Number of instances */
-> +	uint8_t padding[36];	   /* Reserved for future use */
-> +	uint8_t reserved_ext[16];   /* Reserved for future extended data */
-> +} __packed;
-> +
-> +enum CHECKSUM_TYPE {
-> +	CST_UNKNOWN = 0,
-> +	CST_SDBM = 1,
-> +	CST_LAST
-> +};
-> +
-> +#ifdef __cplusplus
-> +}
-> +#endif
-> +
-> +#endif
-
+> +module_platform_driver(mt6360_charger_driver);
+> +
+> +MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
+> +MODULE_DESCRIPTION("MT6360 Charger Driver");
+> +MODULE_LICENSE("GPL");
+> 
