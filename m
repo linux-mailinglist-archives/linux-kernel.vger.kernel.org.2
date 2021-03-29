@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515FD34C5D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736B134C5AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhC2IDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44466 "EHLO mail.kernel.org"
+        id S231807AbhC2ICG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231855AbhC2ICK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B23E361969;
-        Mon, 29 Mar 2021 08:02:09 +0000 (UTC)
+        id S231555AbhC2IBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A86816196D;
+        Mon, 29 Mar 2021 08:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004930;
-        bh=EWcyRWDCzbio/IzJEMVtJOeSKiPOeEp8HG9IZTLd1No=;
+        s=korg; t=1617004879;
+        bh=0gKLLVIRJWhIHFvivJy0eQKipnuQ6vBS+4w/XlrwzBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=culwYKf/kC0PUnTZyEZV8OKVdnHBekDDsO6U3xCIcFf7gadGJMDlsscIK1e2676Xw
-         F7x1mFFNce7Lf8fwoHatjNSZq8+Acoo6neMGTApBMU8GKKFgPfX/HEb0Lu6Bi+mw+R
-         hssQIyp8H9HQT4ga97lIHzu9Nc5bN0VKuz8uMRko=
+        b=fqj/ROveXMH0Z37/Qudwn2j4dSHJff6TghnAk/Pu89m+/5RUrMJCNz+UARoCKKjob
+         v5wEbthKQ5ng+Q6HV+Y5pA1S/JRI3hyRKxZSd2v2dJem2FY2PnSUaKp6wzws4OkDe1
+         78IR/57Voo7BrBwbTWXDB3v/6TTzAlRiWg56VkJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 19/53] squashfs: fix xattr id and id lookup sanity checks
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/33] atm: uPD98402: fix incorrect allocation
 Date:   Mon, 29 Mar 2021 09:57:54 +0200
-Message-Id: <20210329075608.177398196@linuxfoundation.org>
+Message-Id: <20210329075605.579195860@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Tong Zhang <ztong0001@gmail.com>
 
-commit 8b44ca2b634527151af07447a8090a5f3a043321 upstream.
+[ Upstream commit 3153724fc084d8ef640c611f269ddfb576d1dcb1 ]
 
-The checks for maximum metadata block size is missing
-SQUASHFS_BLOCK_OFFSET (the two byte length count).
+dev->dev_data is set in zatm.c, calling zatm_start() will overwrite this
+dev->dev_data in uPD98402_start() and a subsequent PRIV(dev)->lock
+(i.e dev->phy_data->lock) will result in a null-ptr-dereference.
 
-Link: https://lkml.kernel.org/r/2069685113.2081245.1614583677427@webmail.123-reg.co.uk
-Fixes: f37aa4c7366e23f ("squashfs: add more sanity checks in id lookup")
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Cc: Sean Nyekjaer <sean@geanix.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I believe this is a typo and what it actually want to do is to allocate
+phy_data instead of dev_data.
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/id.c       |    6 ++++--
- fs/squashfs/xattr_id.c |    6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/atm/uPD98402.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/squashfs/id.c
-+++ b/fs/squashfs/id.c
-@@ -110,14 +110,16 @@ __le64 *squashfs_read_id_index_table(str
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end || (end - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= id_table_start || (id_table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= id_table_start || (id_table_start - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
---- a/fs/squashfs/xattr_id.c
-+++ b/fs/squashfs/xattr_id.c
-@@ -122,14 +122,16 @@ __le64 *squashfs_read_xattr_id_table(str
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end || (end - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= table_start || (table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= table_start || (table_start - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
+diff --git a/drivers/atm/uPD98402.c b/drivers/atm/uPD98402.c
+index 5120a96b3a89..b2f4e8df1591 100644
+--- a/drivers/atm/uPD98402.c
++++ b/drivers/atm/uPD98402.c
+@@ -210,7 +210,7 @@ static void uPD98402_int(struct atm_dev *dev)
+ static int uPD98402_start(struct atm_dev *dev)
+ {
+ 	DPRINTK("phy_start\n");
+-	if (!(dev->dev_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	spin_lock_init(&PRIV(dev)->lock);
+ 	memset(&PRIV(dev)->sonet_stats,0,sizeof(struct k_sonet_stats));
+-- 
+2.30.1
+
 
 
