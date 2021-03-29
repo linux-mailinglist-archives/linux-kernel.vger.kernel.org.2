@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A9134D45C
+	by mail.lfdr.de (Postfix) with ESMTP id A03E934D45D
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhC2P4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhC2Pzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:55:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFAAC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:55:31 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQuEh-00076z-Qe; Mon, 29 Mar 2021 17:55:27 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQuEh-0001hX-HH; Mon, 29 Mar 2021 17:55:27 +0200
-Date:   Mon, 29 Mar 2021 17:55:27 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/7] pwm: pca9685: Improve runtime PM behavior
-Message-ID: <20210329155527.q3o25ubh33pmszsi@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-3-clemens.gruber@pqgruber.com>
+        id S230482AbhC2P4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:56:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:56112 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230323AbhC2Pzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:55:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0F36142F;
+        Mon, 29 Mar 2021 08:55:30 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAA313F719;
+        Mon, 29 Mar 2021 08:55:27 -0700 (PDT)
+Subject: Re: [PATCH v10 1/6] arm64: mte: Sync tags for pages where PTE is
+ untagged
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210312151902.17853-1-steven.price@arm.com>
+ <20210312151902.17853-2-steven.price@arm.com> <20210326185653.GG5126@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <21842e4d-7935-077c-3d6f-fced89b7f2bb@arm.com>
+Date:   Mon, 29 Mar 2021 16:55:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="anui7dfz743pecr5"
-Content-Disposition: inline
-In-Reply-To: <20210329125707.182732-3-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210326185653.GG5126@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/03/2021 18:56, Catalin Marinas wrote:
+> Hi Steven,
+> 
+> On Fri, Mar 12, 2021 at 03:18:57PM +0000, Steven Price wrote:
+>> A KVM guest could store tags in a page even if the VMM hasn't mapped
+>> the page with PROT_MTE. So when restoring pages from swap we will
+>> need to check to see if there are any saved tags even if !pte_tagged().
+>>
+>> However don't check pages which are !pte_valid_user() as these will
+>> not have been swapped out.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>   arch/arm64/include/asm/pgtable.h |  2 +-
+>>   arch/arm64/kernel/mte.c          | 16 ++++++++++++----
+>>   2 files changed, 13 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index e17b96d0e4b5..84166625c989 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>   		__sync_icache_dcache(pte);
+>>   
+>>   	if (system_supports_mte() &&
+>> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+>> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
+>>   		mte_sync_tags(ptep, pte);
+> 
+> With the EPAN patches queued in for-next/epan, pte_valid_user()
+> disappeared as its semantics weren't very clear.
 
---anui7dfz743pecr5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for pointing that out.
 
-On Mon, Mar 29, 2021 at 02:57:03PM +0200, Clemens Gruber wrote:
-> The chip does not come out of POR in active state but in sleep state.
-> To be sure (in case the bootloader woke it up) we force it to sleep in
-> probe.
->=20
-> On kernels without CONFIG_PM, we wake the chip in .probe and put it to
-> sleep in .remove.
+> So this relies on the set_pte_at() being done on the VMM address space.
+> I wonder, if the VMM did an mprotect(PROT_NONE), can the VM still access
+> it via stage 2? If yes, the pte_valid_user() test wouldn't work. We need
+> something like pte_present() && addr <= user_addr_max().
 
-What is the effect of sleep state? Does it continue to oscilate it the
-bootloader set up some configuration?
+AFAIUI the stage 2 matches the VMM's address space (for the subset that 
+has memslots). So mprotect(PROT_NONE) would cause the stage 2 mapping to 
+be invalidated and a subsequent fault would exit to the VMM to sort out. 
+This sort of thing is done for the lazy migration use case (i.e. pages 
+are fetched as the VM tries to access them).
 
+> BTW, ignoring virtualisation, can we ever bring a page in from swap on a
+> PROT_NONE mapping (say fault-around)? It's not too bad if we keep the
+> metadata around for when the pte becomes accessible but I suspect we
+> remove it if the page is removed from swap.
 
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> ---
->  drivers/pwm/pwm-pca9685.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> index fb026a25fb61..4d6684b90819 100644
-> --- a/drivers/pwm/pwm-pca9685.c
-> +++ b/drivers/pwm/pwm-pca9685.c
-> @@ -469,14 +469,19 @@ static int pca9685_pwm_probe(struct i2c_client *cli=
-ent,
->  		return ret;
->  	}
-> =20
-> -	/* The chip comes out of power-up in the active state */
-> -	pm_runtime_set_active(&client->dev);
->  	/*
-> -	 * Enable will put the chip into suspend, which is what we
-> -	 * want as all outputs are disabled at this point
-> +	 * The chip comes out of power-up in the sleep state,
-> +	 * but force it to sleep in case it was woken up before
->  	 */
-> +	pca9685_set_sleep_mode(pca, true);
-> +	pm_runtime_set_suspended(&client->dev);
->  	pm_runtime_enable(&client->dev);
-> =20
-> +	if (!IS_ENABLED(CONFIG_PM)) {
-> +		/* Wake the chip up on non-PM environments */
-> +		pca9685_set_sleep_mode(pca, false);
+There are two stages of bringing data from swap. First is populating the 
+swap cache by doing the physical read from swap. The second is actually 
+restoring the page table entries.
 
-I admit I didn't grasp all the PM framework details, but I wonder if
-it's right to first call set_sleep_mode(true) and then in some cases to
-false again.
+Clearly the first part can happen even with PROT_NONE (the simple case 
+is there's another mapping which is !PROT_NONE).
 
-Best regards
-Uwe
+For the second I'm a little hazy on exactly what happens when you do a 
+'swapoff' - that may cause a page to be re-inserted into a page table 
+without a fault. If you follow the chain down from try_to_unuse() you 
+end up at a call to set_pte_at(). So we need set_pte_at() to handle a 
+PROT_NONE mapping. So I guess the test we really want here is just 
+(pte_val() & PTE_USER).
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---anui7dfz743pecr5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBh+GwACgkQwfwUeK3K
-7AkbOggAjYvZJ4yGp4lADVNTwgOi0pKpb9Dp/MLD1RJO3uK16kZsTD5MQu2W/5hu
-wlxYxQ4E2C0cBKwq6dpphiCf2aC+wdF91SQx+ylH1jsLoDVwsVRISHre62252aRI
-6ph+w1/xoi3taNeLwB4g6Bt7/c7nKz1nFope2UJuMRvD5yq6WykfBkVvygpOxs9q
-I7OQuzb2swBYCRm5TVaZeU6M96yZDzqEuLoiXD3PqbsoDxjqZ5axt4cgiVUb1PTr
-o5xbGzjthqNZd8V1BjkBQ4cHHlZy1YO0VSiTlvTPSyu3j7zwrXTQjJODNbOOluxS
-OXXMPJvHfZY8h1KJvSVjlvEz32FBkA==
-=aroP
------END PGP SIGNATURE-----
-
---anui7dfz743pecr5--
+Steve
