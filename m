@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC5134D753
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDFD34D754
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhC2SeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
+        id S231699AbhC2SeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbhC2Sdp (ORCPT
+        with ESMTP id S231578AbhC2Sdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:33:45 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ACFC061574;
-        Mon, 29 Mar 2021 11:33:45 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id s11so4363914pfm.1;
-        Mon, 29 Mar 2021 11:33:45 -0700 (PDT)
+        Mon, 29 Mar 2021 14:33:47 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E00C061574;
+        Mon, 29 Mar 2021 11:33:47 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v3so9986925pgq.2;
+        Mon, 29 Mar 2021 11:33:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FYsTycVF/lf5Suqc/le+NiU66k2yrrkWCgrAdMasvHQ=;
-        b=EwRoKPvlF7FWX9zpVxFvTd+9Gbfv+po1sNagOi00oOc4hc08cqDJyvrx/d9Nj7oiXe
-         8QNj4EBukFzHkr2WG9TLfdQZnqiZuslYs9rrJA3QsutNFZqVYaEw7xiB4CwhLTbmU9XL
-         HoTsTBCB3fYRFi4OZM5ZADxflQ5OiqwrSBnxO8vrMxYRZO05CzSn6wnGJDqOGwQUU20t
-         /IK3nNMn8ZM+UlafqfarLjZJGVX2HrEwnE0HcjskCVHfm+ykKtnmRXxZE/tsnHVd7/hs
-         xBr0jt4STA/4Zd+HAehlVwRRBEFaqdUk/hUixGzinRD20IS+IvGgnoDG7MNN8L3aQ1g+
-         U0lA==
+        bh=8eLl3881AHbZ4nNjB6RvYqJ53F/ZpOHZuU1QaCJvItA=;
+        b=kwSaBPZO7cNmxBxn0pqrgpKYEG8tAOHuiuyNiyDxCJ5co/V4+pKYYq4FPQlfXlFkVB
+         5T+u5kfT14LU01mRwKUj4D+eSFyy1ceWJTJSR1Z2ys75gI+Bo1tDjOaTFdJiSMr78KDW
+         aJJerTatPG6tRajq8FGyMWo2ldNPddMXrCpIKW39FwssTzJZkoxIwEmODd2lYwhBRn8K
+         eVaK0fkoHahUGSUCVJFhhlUuT9TwH9NUJ+25lQVka8UPmN7gwQBeQ1U+YygBwUdG8+au
+         B7bT6WXhQY03CcKZtp7qSmKKPeh0QuVPi7Iu/XFw3F5qwa89ns3oqMyzEpV9st69Rvw+
+         MeKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FYsTycVF/lf5Suqc/le+NiU66k2yrrkWCgrAdMasvHQ=;
-        b=ooWPeQ+eo1njIU+hOypvslL2qJ7PGJMrRvf/ydthJFmMMYZf8bFYn5CiC8ufA099p+
-         A1sJF11EyeDuSE/WGNfhch6Jt0PnxR6EeNvAxPepGlcjT5naqg/tKqugr/fWthm03loo
-         /jHaBA9VB/SBGzPOBz76KzWkyHGkwBtQ5h3eLgT06F9ypToY+jpa9GL8DCzxaERc/MRp
-         QOlHxwSgB+3cH/Z9g+AV/azeYHVWoPJjO91WJQK4Xkk53CqEw2jMsavUVgfPDi0Wy1NQ
-         U5uz8yfwVdJMwzUvvEpMvMrCP4itpnXXazLz/Q1ZUtwReQ2ay3WjrBVxIOvsjt3eryrz
-         YQog==
-X-Gm-Message-State: AOAM532x0YmdKdgtggqa3uOoDkhjOWCOl9IUcH6517lMGvjWf5v9vyuN
-        wEJLATYiGzQLpzFW7G/DEoM=
-X-Google-Smtp-Source: ABdhPJyUwLv/aBlbpIZMlUWrgzevZQFoOKfq2lF1E8ilUH/PStCQt54+emM0GTOxUo68jPoyEJbLWA==
-X-Received: by 2002:a63:1f1e:: with SMTP id f30mr25650718pgf.141.1617042825188;
-        Mon, 29 Mar 2021 11:33:45 -0700 (PDT)
+        bh=8eLl3881AHbZ4nNjB6RvYqJ53F/ZpOHZuU1QaCJvItA=;
+        b=EQ/lRLx0Ntmn314UZ71hR7LKaVfeE1upwi/DIPywwt7dUGpG1Hr4gb7S4zldUQ95HR
+         PJqXft7W7CEvxAL7WZ9OZXqFpmJRGDynmECqAYlpHlLf0Z45RPpbPFzHfAypyKkqrYkl
+         9rNuD8vnjOGC4vKbvN1xrdcC3H5TPafapALevlWQhTwQW7yasLsA8iRCRyJxAQFWYqQO
+         O1GtKmunY21W47OmOgtpUC+Yv2WK8uftsBUC+wEbm3tVIgMCfS1z7Hsxb9dVlPpe/+S5
+         IfjKf5ZQnrs3EIpj5w4HOh0etmYZSwvbytiwSLxlGuhUxHFVgYERSAuNWK6g8cMaYVPh
+         mFgQ==
+X-Gm-Message-State: AOAM533abR02C5eZ2L6CXvfmxbqpprKzQgfPO3SypoUIOULQ4wzgG+z/
+        4ZaOFZRM2TItGCB/bzrAYoU=
+X-Google-Smtp-Source: ABdhPJxyn2xuG80U+SXHgd1NCntqw7s6KhVXO/7VXrjrexxIiOWCkyV1JlwgzlIBdN+psfQDbKvSIg==
+X-Received: by 2002:a63:5852:: with SMTP id i18mr8939381pgm.337.1617042827282;
+        Mon, 29 Mar 2021 11:33:47 -0700 (PDT)
 Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id x11sm1151158pjh.0.2021.03.29.11.33.43
+        by smtp.gmail.com with ESMTPSA id x11sm1151158pjh.0.2021.03.29.11.33.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 11:33:44 -0700 (PDT)
+        Mon, 29 Mar 2021 11:33:46 -0700 (PDT)
 From:   Yang Shi <shy828301@gmail.com>
 To:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
         mhocko@suse.com, ying.huang@intel.com, hughd@google.com,
@@ -55,9 +55,9 @@ To:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
         akpm@linux-foundation.org
 Cc:     shy828301@gmail.com, linux-mm@kvack.org,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] mm: memory: make numa_migrate_prep() non-static
-Date:   Mon, 29 Mar 2021 11:33:08 -0700
-Message-Id: <20210329183312.178266-3-shy828301@gmail.com>
+Subject: [PATCH 3/6] mm: migrate: teach migrate_misplaced_page() about THP
+Date:   Mon, 29 Mar 2021 11:33:09 -0700
+Message-Id: <20210329183312.178266-4-shy828301@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210329183312.178266-1-shy828301@gmail.com>
 References: <20210329183312.178266-1-shy828301@gmail.com>
@@ -67,43 +67,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The numa_migrate_prep() will be used by huge NUMA fault as well in the following
-patch, make it non-static.
+In the following patch the migrate_misplaced_page() will be used to migrate THP
+for NUMA faul too.  Prepare to deal with THP.
 
 Signed-off-by: Yang Shi <shy828301@gmail.com>
 ---
- mm/internal.h | 3 +++
- mm/memory.c   | 5 ++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ include/linux/migrate.h | 6 ++++--
+ mm/memory.c             | 2 +-
+ mm/migrate.c            | 2 +-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/mm/internal.h b/mm/internal.h
-index 1432feec62df..5ac525f364e6 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -618,4 +618,7 @@ struct migration_target_control {
- 	gfp_t gfp_mask;
- };
- 
-+int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
-+		      unsigned long addr, int page_nid, int *flags);
-+
- #endif	/* __MM_INTERNAL_H */
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 3a389633b68f..6abd34986cc5 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -102,14 +102,16 @@ static inline void __ClearPageMovable(struct page *page)
+ #ifdef CONFIG_NUMA_BALANCING
+ extern bool pmd_trans_migrating(pmd_t pmd);
+ extern int migrate_misplaced_page(struct page *page,
+-				  struct vm_area_struct *vma, int node);
++				  struct vm_area_struct *vma, int node,
++				  bool compound);
+ #else
+ static inline bool pmd_trans_migrating(pmd_t pmd)
+ {
+ 	return false;
+ }
+ static inline int migrate_misplaced_page(struct page *page,
+-					 struct vm_area_struct *vma, int node)
++					 struct vm_area_struct *vma, int node,
++					 bool compound)
+ {
+ 	return -EAGAIN; /* can't migrate now */
+ }
 diff --git a/mm/memory.c b/mm/memory.c
-index 33be5811ac65..003bbf3187d4 100644
+index 003bbf3187d4..7fed578bdc31 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -4078,9 +4078,8 @@ static vm_fault_t do_fault(struct vm_fault *vmf)
- 	return ret;
- }
+@@ -4169,7 +4169,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	}
  
--static int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
--				unsigned long addr, int page_nid,
--				int *flags)
-+int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
-+		      unsigned long addr, int page_nid, int *flags)
+ 	/* Migrate to the requested node */
+-	migrated = migrate_misplaced_page(page, vma, target_nid);
++	migrated = migrate_misplaced_page(page, vma, target_nid, false);
+ 	if (migrated) {
+ 		page_nid = target_nid;
+ 		flags |= TNF_MIGRATED;
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 62b81d5257aa..9c4ae5132919 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2127,7 +2127,7 @@ static inline bool is_shared_exec_page(struct vm_area_struct *vma,
+  * the page that will be dropped by this function before returning.
+  */
+ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+-			   int node)
++			   int node, bool compound)
  {
- 	get_page(page);
- 
+ 	pg_data_t *pgdat = NODE_DATA(node);
+ 	int isolated;
 -- 
 2.26.2
 
