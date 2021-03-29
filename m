@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39B334C47E
+	by mail.lfdr.de (Postfix) with ESMTP id EEFBD34C47F
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhC2HDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:03:17 -0400
+        id S231388AbhC2HDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:03:20 -0400
 Received: from mga14.intel.com ([192.55.52.115]:20002 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhC2HCc (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:02:32 -0400
-IronPort-SDR: VkbhS/opidxIbiKoTSd/5gAS1wSWmK5qXNeRk6KWTrgVbh/SWBtoyXJuQCJYHElum7OPMwwgob
- u3pd5D+IiSJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="190956293"
+        id S230287AbhC2HCf (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:02:35 -0400
+IronPort-SDR: nC6XiISs1t1qGH+5cSuFzxfwaXzh9kpQsZ6QWhwYj4bGa9FEPDmYPVXE2xC4MgqvEn/cq77rJF
+ mR2duKeCvjRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="190956297"
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="190956293"
+   d="scan'208";a="190956297"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:02:32 -0700
-IronPort-SDR: ThGfwo6cGGsrVB/NNWTbjmVBhmKus+xJgkaPVXKaWOHGWdM7lWpG4hTKVe1p8GfAhww06urAqL
- lQeHq4Tq+SzQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:02:35 -0700
+IronPort-SDR: 4D8NrUMuEWeeT0G5g1aqCMCRmByhVKEmfOhDpiQtrMrsj1sLI7XloHeiIgdvizLPIcWzrIqJqd
+ ysl9o7mWgF+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="444677576"
+   d="scan'208";a="444677593"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:02:29 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:02:32 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v3 19/27] perf tests: Add hybrid cases for 'Parse event definition strings' test
-Date:   Mon, 29 Mar 2021 15:00:38 +0800
-Message-Id: <20210329070046.8815-20-yao.jin@linux.intel.com>
+Subject: [PATCH v3 20/27] perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+Date:   Mon, 29 Mar 2021 15:00:39 +0800
+Message-Id: <20210329070046.8815-21-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210329070046.8815-1-yao.jin@linux.intel.com>
 References: <20210329070046.8815-1-yao.jin@linux.intel.com>
@@ -41,214 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic hybrid test cases for 'Parse event definition strings' test.
+Since for one hw event, two hybrid events are created.
 
-  # ./perf test 6
-   6: Parse event definition strings                                  : Ok
+For example,
+
+evsel->idx      evsel__name(evsel)
+0               cycles
+1               cycles
+2               instructions
+3               instructions
+...
+
+So for comparing the evsel name on hybrid, the evsel->idx
+needs to be divided by 2.
+
+  # ./perf test 14
+  14: Roundtrip evsel->name                                           : Ok
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v3:
- - Use PERF_TYPE_RAW for cpu_core/cycles/
+ - No functional change.
 
- tools/perf/tests/parse-events.c | 170 ++++++++++++++++++++++++++++++++
- 1 file changed, 170 insertions(+)
+ tools/perf/tests/evsel-roundtrip-name.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-index 026c54743311..1cd1d2778172 100644
---- a/tools/perf/tests/parse-events.c
-+++ b/tools/perf/tests/parse-events.c
-@@ -1512,6 +1512,123 @@ static int test__all_tracepoints(struct evlist *evlist)
- 	return test__checkevent_tracepoint_multi(evlist);
+diff --git a/tools/perf/tests/evsel-roundtrip-name.c b/tools/perf/tests/evsel-roundtrip-name.c
+index f7f3e5b4c180..b74cf80d1f10 100644
+--- a/tools/perf/tests/evsel-roundtrip-name.c
++++ b/tools/perf/tests/evsel-roundtrip-name.c
+@@ -4,6 +4,7 @@
+ #include "parse-events.h"
+ #include "tests.h"
+ #include "debug.h"
++#include "pmu.h"
+ #include <errno.h>
+ #include <linux/kernel.h>
+ 
+@@ -62,7 +63,8 @@ static int perf_evsel__roundtrip_cache_name_test(void)
+ 	return ret;
  }
  
-+static int test__hybrid_hw_event_with_pmu(struct evlist *evlist)
-+{
-+	struct evsel *evsel = evlist__first(evlist);
-+
-+	TEST_ASSERT_VAL("wrong number of entries", 1 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x3c == evsel->core.attr.config);
-+	return 0;
-+}
-+
-+static int test__hybrid_hw_event(struct evlist *evlist)
-+{
-+	struct evsel *evsel1 = evlist__first(evlist);
-+	struct evsel *evsel2 = evlist__last(evlist);
-+
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE_PMU == evsel1->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x400000000 == evsel1->core.attr.config);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE_PMU == evsel2->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0xa00000000 == evsel2->core.attr.config);
-+	return 0;
-+}
-+
-+static int test__hybrid_hw_group_event(struct evlist *evlist)
-+{
-+	struct evsel *evsel, *leader;
-+
-+	evsel = leader = evlist__first(evlist);
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x3c == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+
-+	evsel = evsel__next(evsel);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0xc0 == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+	return 0;
-+}
-+
-+static int test__hybrid_sw_hw_group_event(struct evlist *evlist)
-+{
-+	struct evsel *evsel, *leader;
-+
-+	evsel = leader = evlist__first(evlist);
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_SOFTWARE == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+
-+	evsel = evsel__next(evsel);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x3c == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+	return 0;
-+}
-+
-+static int test__hybrid_hw_sw_group_event(struct evlist *evlist)
-+{
-+	struct evsel *evsel, *leader;
-+
-+	evsel = leader = evlist__first(evlist);
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x3c == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+
-+	evsel = evsel__next(evsel);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_SOFTWARE == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+	return 0;
-+}
-+
-+static int test__hybrid_group_modifier1(struct evlist *evlist)
-+{
-+	struct evsel *evsel, *leader;
-+
-+	evsel = leader = evlist__first(evlist);
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x3c == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+	TEST_ASSERT_VAL("wrong exclude_user", evsel->core.attr.exclude_user);
-+	TEST_ASSERT_VAL("wrong exclude_kernel", !evsel->core.attr.exclude_kernel);
-+
-+	evsel = evsel__next(evsel);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0xc0 == evsel->core.attr.config);
-+	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-+	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
-+	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
-+	return 0;
-+}
-+
-+static int test__hybrid_raw1(struct evlist *evlist)
-+{
-+	struct evsel *evsel = evlist__first(evlist);
-+
-+	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x1a == evsel->core.attr.config);
-+
-+	/* The type of second event is randome value */
-+	evsel = evsel__next(evsel);
-+	TEST_ASSERT_VAL("wrong config", 0x1a == evsel->core.attr.config);
-+	return 0;
-+}
-+
-+static int test__hybrid_raw2(struct evlist *evlist)
-+{
-+	struct evsel *evsel = evlist__first(evlist);
-+
-+	TEST_ASSERT_VAL("wrong number of entries", 1 == evlist->core.nr_entries);
-+	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
-+	TEST_ASSERT_VAL("wrong config", 0x1a == evsel->core.attr.config);
-+	return 0;
-+}
-+
- struct evlist_test {
- 	const char *name;
- 	__u32 type;
-@@ -1868,6 +1985,54 @@ static struct terms_test test__terms[] = {
- 	},
- };
- 
-+static struct evlist_test test__hybrid_events[] = {
-+	{
-+		.name  = "cpu_core/cpu-cycles/",
-+		.check = test__hybrid_hw_event_with_pmu,
-+		.id    = 0,
-+	},
-+	{
-+		.name  = "cycles",
-+		.check = test__hybrid_hw_event,
-+		.id    = 1,
-+	},
-+	{
-+		.name  = "{cpu_core/cycles/,cpu_core/instructions/}",
-+		.check = test__hybrid_hw_group_event,
-+		.id    = 2,
-+	},
-+	{
-+		.name  = "{cpu-clock,cpu_core/cycles/}",
-+		.check = test__hybrid_sw_hw_group_event,
-+		.id    = 3,
-+	},
-+	{
-+		.name  = "{cpu_core/cycles/,cpu-clock}",
-+		.check = test__hybrid_hw_sw_group_event,
-+		.id    = 4,
-+	},
-+	{
-+		.name  = "{cpu_core/cycles/k,cpu_core/instructions/u}",
-+		.check = test__hybrid_group_modifier1,
-+		.id    = 5,
-+	},
-+	{
-+		.name  = "r1a",
-+		.check = test__hybrid_raw1,
-+		.id    = 6,
-+	},
-+	{
-+		.name  = "cpu_core/r1a/",
-+		.check = test__hybrid_raw2,
-+		.id    = 7,
-+	},
-+	{
-+		.name  = "cpu_core/config=10,config1,config2=3,period=1000/u",
-+		.check = test__checkevent_pmu,
-+		.id    = 0,
-+	},
-+};
-+
- static int test_event(struct evlist_test *e)
+-static int __perf_evsel__name_array_test(const char *names[], int nr_names)
++static int __perf_evsel__name_array_test(const char *names[], int nr_names,
++					 int distance)
  {
- 	struct parse_events_error err;
-@@ -2035,6 +2200,11 @@ do {							\
- 		ret2 = ret1;				\
- } while (0)
+ 	int i, err;
+ 	struct evsel *evsel;
+@@ -82,9 +84,9 @@ static int __perf_evsel__name_array_test(const char *names[], int nr_names)
  
-+	if (perf_pmu__has_hybrid()) {
-+		TEST_EVENTS(test__hybrid_events);
-+		return ret2;
-+	}
+ 	err = 0;
+ 	evlist__for_each_entry(evlist, evsel) {
+-		if (strcmp(evsel__name(evsel), names[evsel->idx])) {
++		if (strcmp(evsel__name(evsel), names[evsel->idx / distance])) {
+ 			--err;
+-			pr_debug("%s != %s\n", evsel__name(evsel), names[evsel->idx]);
++			pr_debug("%s != %s\n", evsel__name(evsel), names[evsel->idx / distance]);
+ 		}
+ 	}
+ 
+@@ -93,18 +95,21 @@ static int __perf_evsel__name_array_test(const char *names[], int nr_names)
+ 	return err;
+ }
+ 
+-#define perf_evsel__name_array_test(names) \
+-	__perf_evsel__name_array_test(names, ARRAY_SIZE(names))
++#define perf_evsel__name_array_test(names, distance) \
++	__perf_evsel__name_array_test(names, ARRAY_SIZE(names), distance)
+ 
+ int test__perf_evsel__roundtrip_name_test(struct test *test __maybe_unused, int subtest __maybe_unused)
+ {
+ 	int err = 0, ret = 0;
+ 
+-	err = perf_evsel__name_array_test(evsel__hw_names);
++	if (perf_pmu__has_hybrid())
++		return perf_evsel__name_array_test(evsel__hw_names, 2);
 +
- 	TEST_EVENTS(test__events);
++	err = perf_evsel__name_array_test(evsel__hw_names, 1);
+ 	if (err)
+ 		ret = err;
  
- 	if (test_pmu())
+-	err = __perf_evsel__name_array_test(evsel__sw_names, PERF_COUNT_SW_DUMMY + 1);
++	err = __perf_evsel__name_array_test(evsel__sw_names, PERF_COUNT_SW_DUMMY + 1, 1);
+ 	if (err)
+ 		ret = err;
+ 
 -- 
 2.17.1
 
