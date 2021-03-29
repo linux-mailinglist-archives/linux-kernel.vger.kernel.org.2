@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B6234CA09
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA7D34CBC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhC2IdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
+        id S236020AbhC2Iwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232837AbhC2IUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:20:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1579961477;
-        Mon, 29 Mar 2021 08:20:42 +0000 (UTC)
+        id S232118AbhC2Idq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E232A61580;
+        Mon, 29 Mar 2021 08:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006043;
-        bh=RvGHUelu78Wvy3Fwm5HS4yu27xL0Wo2Xk9pw5n3GH3Q=;
+        s=korg; t=1617006826;
+        bh=fB+bUIeCiRj31nOqz//yiESzdu73Ba1P883DWaOnAgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Km3/QjY2Ha3GNVCtARj7IGaGFdEdQ1HSe7uz1zgHLFI1ZoPJepCVC4JbiNp7Ktj6g
-         YctuSKD8b6a9mN+PzlQ9d1wPlUFs+hHhOgiqr1s3ILJc2JypO+yRPVcNYOt+KiRuCK
-         z8RpJEn8yyo5o+M0SwxPf5fgXU9a4lxi047YMhak=
+        b=dJrEOtMTaCe2kqrewIjk1JVNlu7dUOVcbt1OxESkzrLO0lhW/eZdYGjw48avzub28
+         S3M6vKEFOmPj8K5Hf7qpc7BKTyYtZOLLfzSlyaxO3wUDzaeOApZ1BwrScJWlaXtkfS
+         vOUTD4GAjY14MNGT35EQCikQ24i9yahwA+oFfBZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Georgi Valkov <gvalkov@abv.bg>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Tal Lossos <tallossos@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/221] libbpf: Fix INSTALL flag order
-Date:   Mon, 29 Mar 2021 09:57:07 +0200
-Message-Id: <20210329075632.409795694@linuxfoundation.org>
+Subject: [PATCH 5.11 112/254] bpf: Change inode_storages lookup_elem return value from NULL to -EBADF
+Date:   Mon, 29 Mar 2021 09:57:08 +0200
+Message-Id: <20210329075636.891850944@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georgi Valkov <gvalkov@abv.bg>
+From: Tal Lossos <tallossos@gmail.com>
 
-[ Upstream commit e7fb6465d4c8e767e39cbee72464e0060ab3d20c ]
+[ Upstream commit 769c18b254ca191b45047e1fcb3b2ce56fada0b6 ]
 
-It was reported ([0]) that having optional -m flag between source and
-destination arguments in install command breaks bpftools cross-build
-on MacOS. Move -m to the front to fix this issue.
+bpf_fd_inode_storage_lookup_elem() returned NULL when getting a bad FD,
+which caused -ENOENT in bpf_map_copy_value. -EBADF error is better than
+-ENOENT for a bad FD behaviour.
 
-  [0] https://github.com/openwrt/openwrt/pull/3959
+The patch was partially contributed by CyberArk Software, Inc.
 
-Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
+Signed-off-by: Tal Lossos <tallossos@gmail.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210308183038.613432-1-andrii@kernel.org
+Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: KP Singh <kpsingh@kernel.org>
+Link: https://lore.kernel.org/bpf/20210307120948.61414-1-tallossos@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/Makefile | 2 +-
+ kernel/bpf/bpf_inode_storage.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 55bd78b3496f..310f647c2d5b 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -236,7 +236,7 @@ define do_install
- 	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
- 	fi;						\
--	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
-+	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
- endef
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index 6639640523c0..b58b2efb9b43 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -109,7 +109,7 @@ static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+ 	fd = *(int *)key;
+ 	f = fget_raw(fd);
+ 	if (!f)
+-		return NULL;
++		return ERR_PTR(-EBADF);
  
- install_lib: all_cmd
+ 	sdata = inode_storage_lookup(f->f_inode, map, true);
+ 	fput(f);
 -- 
 2.30.1
 
