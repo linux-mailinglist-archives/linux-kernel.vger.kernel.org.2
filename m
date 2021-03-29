@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17BD34D75C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B8D34D768
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhC2Sed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:34:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33039 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231486AbhC2SeG (ORCPT
+        id S231368AbhC2Shl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230052AbhC2ShK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:34:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617042845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pDaHHzh6SdLVte/qI+KKbIrazg9pPxb7giE0iRBcJy4=;
-        b=b6999D+6qaAwvhbvFlcUk+JpkW3dCC+VsXSCFlUUbVjxX2s47P6I9rxPPLIU9szC6IudE1
-        J3mPs13+ao4CvhWQ0Fvth90/Nn501L23Du3rFV0zUYrtoNoJMvU8zspeuGdl/8YfH8mYY3
-        rWWlh2MphnlP+1kXLes/3Rpwmz6u2sc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-6CvGnPCoONa9AJSA2KRzUg-1; Mon, 29 Mar 2021 14:34:03 -0400
-X-MC-Unique: 6CvGnPCoONa9AJSA2KRzUg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C03F87A82A;
-        Mon, 29 Mar 2021 18:34:00 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4D0395D6A1;
-        Mon, 29 Mar 2021 18:33:53 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 29 Mar 2021 20:34:00 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 20:33:52 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v3 06/11] perf: Add support for SIGTRAP on perf events
-Message-ID: <20210329183351.GD24849@redhat.com>
-References: <20210324112503.623833-1-elver@google.com>
- <20210324112503.623833-7-elver@google.com>
- <YFxGb+QHEumZB6G8@elver.google.com>
- <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
- <20210329142705.GA24849@redhat.com>
- <CANpmjNN=dpMmanU1mzigUscZQ6_Bx6u4u5mS4Ukhy0PTiexgDA@mail.gmail.com>
+        Mon, 29 Mar 2021 14:37:10 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B812C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:37:10 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so8581706pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2vX47kNAbuQ6iB1dL8WXUv9iCpp8Rvoq9MaFH5UQI38=;
+        b=pCAl0bSL/I5WQtZov9ySDbJXFGEJH8fmLrqtdxAvKbwMitCZ26kUfZ/iiDtktj5fJJ
+         G9u8iihtEvHzjpgsQsB1skcXCj7ckkpINKKLrZC50ESwZRbAfe5upG1TO620D/ia0l70
+         +y65rDOOMlpjygsHtnzmfOZuiw8Q5FOcnTXvjlfzh58aIKQzifsBiE918rijmVwcFKjq
+         qyveWaNE6k/FMI++0MMnDPHsq3bWWUIO6HhMnjIFeF+A/AAG47PqjjHPnxcLPXWECrCV
+         fj3rPSTkhELMWV7e7H7xI0cCDkToNlOLSniYWz+7BM/sFm++gvxDcPR7e1BgWU+isk16
+         Fm/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2vX47kNAbuQ6iB1dL8WXUv9iCpp8Rvoq9MaFH5UQI38=;
+        b=gwolIL/BMB0ZsReDEhyjHfGgAGJMoxboO0aavBGk2ijBQJ7wuM7vhHyDWPyHHJhUTD
+         ILpX+mq72XjHaTT2W4n7LgdGDqw2x4n+6pnaF+WR/6XyNw9QHbWW+NBW8v2GVNFMDj6f
+         MJvvKeSEm8Vt7outOfx67HhE21HJqNZFF2WqO4KgV8ZApeMMd66FZarGa7u4WpXKRqB9
+         +kaNDuMFOzAi6wAgiiBJG7RmLUO30FZc3M+1YI3tsof2rLIm/3UkZQ/D5lbIv4jNpB9r
+         W8YHZg6kGPUVSGMEPl8akdvK9N/33oxYxdpqt7RB2puZMJVdrRSTJylmRjrESFdN7GKd
+         6kNw==
+X-Gm-Message-State: AOAM530HA6bXc4914xC/hgGCjdGX1vjktthQXlOH9G60ZGKOvbItBImV
+        wbq1uAN0FWVfwv/lrrvRgSTRt1foiLo=
+X-Google-Smtp-Source: ABdhPJzOcjK8lse5dwGxec+1eCDIQXd22D1u4X0NONkPKF2eV/Cystg/J5MADzJZ6P69Jy7JK7CjWA==
+X-Received: by 2002:a17:902:c48d:b029:e6:f7d:a76d with SMTP id n13-20020a170902c48db02900e60f7da76dmr29563498plx.66.1617043029628;
+        Mon, 29 Mar 2021 11:37:09 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:9e10:2d94:bd34:41ff:d945])
+        by smtp.gmail.com with ESMTPSA id f2sm18348117pfq.129.2021.03.29.11.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 11:37:09 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PULL 0/2] xtensa fixes for 5.12
+Date:   Mon, 29 Mar 2021 11:36:48 -0700
+Message-Id: <20210329183648.2277-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNN=dpMmanU1mzigUscZQ6_Bx6u4u5mS4Ukhy0PTiexgDA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/29, Marco Elver wrote:
->
-> So, per off-list discussion, it appears that I should ask to clarify:
-> PF_EXISTING or PF_EXITING?
+Hi Linus,
 
-Aaaaaaah, sorry Marco.
+please pull the following fixes for the xtensa architecture for v5.12.
 
-PF_EXITING, of course.
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Oleg.
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
+are available in the Git repository at:
+
+  git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20210329
+
+for you to fetch changes up to 7b9acbb6aad4f54623dcd4bd4b1a60fe0c727b09:
+
+  xtensa: fix uaccess-related livelock in do_page_fault (2021-03-29 11:25:11 -0700)
+
+----------------------------------------------------------------
+Xtensa fixes for v5.12:
+
+- fix build with separate exception vectors when they are placed too far
+  from the rest of the kernel;
+- fix uaccess-related livelock in do_page_fault.
+
+----------------------------------------------------------------
+Max Filippov (2):
+      xtensa: move coprocessor_flush to the .text section
+      xtensa: fix uaccess-related livelock in do_page_fault
+
+ arch/xtensa/kernel/coprocessor.S | 64 +++++++++++++++++++++-------------------
+ arch/xtensa/mm/fault.c           |  5 +++-
+ 2 files changed, 37 insertions(+), 32 deletions(-)
+
+-- 
+Thanks.
+-- Max
