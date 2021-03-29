@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D0A34CB32
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB9034C6EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhC2Iop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:44:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
+        id S231976AbhC2IKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhC2I1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2496197C;
-        Mon, 29 Mar 2021 08:26:11 +0000 (UTC)
+        id S232311AbhC2IGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 470DE61601;
+        Mon, 29 Mar 2021 08:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006372;
-        bh=sgr8tK8x+N4oQpocvskHvoLxipXGs5t+ArI37vnKWaw=;
+        s=korg; t=1617005180;
+        bh=dvwga2nMKL8CsJFWYAJjwpoMbFDPkbN6S2CCxlHVpXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wvWrObL2v36cQqprNGUiWJBO2zv/u48DqZ15u8SDi+SBb5I6mGsPXfqn71a3PZ+Z3
-         0XhPJqEj7vsHC/tXGdycsLMl8C8yofolZ1Jsn2jsjViLtGaWvDRtHIF3h4/z3/J4fR
-         9R8+iF/JXKjMOJCfS8/crqS+EKMO8EuaOlx3UVXE=
+        b=gn9AoVsCtxrvbn4vmKodq3X2TD0mhQKPODnDnDU/KKM/1NstVGt3pwyjmT38nyeI9
+         0Fw6AtQ6ssZvG2lC9xgGcvUt2AFlhO5/OFKAZ/PojH4QSU08YLT1hcumo5N/qOdviH
+         r49+y1C8nBpWkj9/QB/RX5HPu/y+SjzDFghLEu70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li RongQing <lirongqing@baidu.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Vishakha Jambekar <vishakha.jambekar@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/221] igb: avoid premature Rx buffer reuse
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 4.14 53/59] locking/mutex: Fix non debug version of mutex_lock_io_nested()
 Date:   Mon, 29 Mar 2021 09:58:33 +0200
-Message-Id: <20210329075635.211881910@linuxfoundation.org>
+Message-Id: <20210329075610.615824399@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,161 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li RongQing <lirongqing@baidu.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 98dfb02aa22280bd8833836d1b00ab0488fa951f ]
+commit 291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7 upstream.
 
-Igb needs a similar fix as commit 75aab4e10ae6a ("i40e: avoid
-premature Rx buffer reuse")
+If CONFIG_DEBUG_LOCK_ALLOC=n then mutex_lock_io_nested() maps to
+mutex_lock() which is clearly wrong because mutex_lock() lacks the
+io_schedule_prepare()/finish() invocations.
 
-The page recycle code, incorrectly, relied on that a page fragment
-could not be freed inside xdp_do_redirect(). This assumption leads to
-that page fragments that are used by the stack/XDP redirect can be
-reused and overwritten.
+Map it to mutex_lock_io().
 
-To avoid this, store the page count prior invoking xdp_do_redirect().
-
-Longer explanation:
-
-Intel NICs have a recycle mechanism. The main idea is that a page is
-split into two parts. One part is owned by the driver, one part might
-be owned by someone else, such as the stack.
-
-t0: Page is allocated, and put on the Rx ring
-              +---------------
-used by NIC ->| upper buffer
-(rx_buffer)   +---------------
-              | lower buffer
-              +---------------
-  page count  == USHRT_MAX
-  rx_buffer->pagecnt_bias == USHRT_MAX
-
-t1: Buffer is received, and passed to the stack (e.g.)
-              +---------------
-              | upper buff (skb)
-              +---------------
-used by NIC ->| lower buffer
-(rx_buffer)   +---------------
-  page count  == USHRT_MAX
-  rx_buffer->pagecnt_bias == USHRT_MAX - 1
-
-t2: Buffer is received, and redirected
-              +---------------
-              | upper buff (skb)
-              +---------------
-used by NIC ->| lower buffer
-(rx_buffer)   +---------------
-
-Now, prior calling xdp_do_redirect():
-  page count  == USHRT_MAX
-  rx_buffer->pagecnt_bias == USHRT_MAX - 2
-
-This means that buffer *cannot* be flipped/reused, because the skb is
-still using it.
-
-The problem arises when xdp_do_redirect() actually frees the
-segment. Then we get:
-  page count  == USHRT_MAX - 1
-  rx_buffer->pagecnt_bias == USHRT_MAX - 2
-
->From a recycle perspective, the buffer can be flipped and reused,
-which means that the skb data area is passed to the Rx HW ring!
-
-To work around this, the page count is stored prior calling
-xdp_do_redirect().
-
-Fixes: 9cbc948b5a20 ("igb: add XDP support")
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-Tested-by: Vishakha Jambekar <vishakha.jambekar@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f21860bac05b ("locking/mutex, sched/wait: Fix the mutex_lock_io_nested() define")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/878s6fshii.fsf@nanos.tec.linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ include/linux/mutex.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index ebe80ec6e437..fecfcfcf161c 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -8232,7 +8232,8 @@ static inline bool igb_page_is_reserved(struct page *page)
- 	return (page_to_nid(page) != numa_mem_id()) || page_is_pfmemalloc(page);
- }
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -183,7 +183,7 @@ extern void mutex_lock_io(struct mutex *
+ # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
+ # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
+ # define mutex_lock_nest_lock(lock, nest_lock) mutex_lock(lock)
+-# define mutex_lock_io_nested(lock, subclass) mutex_lock(lock)
++# define mutex_lock_io_nested(lock, subclass) mutex_lock_io(lock)
+ #endif
  
--static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer)
-+static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer,
-+				  int rx_buf_pgcnt)
- {
- 	unsigned int pagecnt_bias = rx_buffer->pagecnt_bias;
- 	struct page *page = rx_buffer->page;
-@@ -8243,7 +8244,7 @@ static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer)
- 
- #if (PAGE_SIZE < 8192)
- 	/* if we are only owner of page we can reuse it */
--	if (unlikely((page_ref_count(page) - pagecnt_bias) > 1))
-+	if (unlikely((rx_buf_pgcnt - pagecnt_bias) > 1))
- 		return false;
- #else
- #define IGB_LAST_OFFSET \
-@@ -8633,11 +8634,17 @@ static unsigned int igb_rx_offset(struct igb_ring *rx_ring)
- }
- 
- static struct igb_rx_buffer *igb_get_rx_buffer(struct igb_ring *rx_ring,
--					       const unsigned int size)
-+					       const unsigned int size, int *rx_buf_pgcnt)
- {
- 	struct igb_rx_buffer *rx_buffer;
- 
- 	rx_buffer = &rx_ring->rx_buffer_info[rx_ring->next_to_clean];
-+	*rx_buf_pgcnt =
-+#if (PAGE_SIZE < 8192)
-+		page_count(rx_buffer->page);
-+#else
-+		0;
-+#endif
- 	prefetchw(rx_buffer->page);
- 
- 	/* we are reusing so sync this buffer for CPU use */
-@@ -8653,9 +8660,9 @@ static struct igb_rx_buffer *igb_get_rx_buffer(struct igb_ring *rx_ring,
- }
- 
- static void igb_put_rx_buffer(struct igb_ring *rx_ring,
--			      struct igb_rx_buffer *rx_buffer)
-+			      struct igb_rx_buffer *rx_buffer, int rx_buf_pgcnt)
- {
--	if (igb_can_reuse_rx_page(rx_buffer)) {
-+	if (igb_can_reuse_rx_page(rx_buffer, rx_buf_pgcnt)) {
- 		/* hand second half of page back to the ring */
- 		igb_reuse_rx_page(rx_ring, rx_buffer);
- 	} else {
-@@ -8682,6 +8689,7 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
- 	u16 cleaned_count = igb_desc_unused(rx_ring);
- 	unsigned int xdp_xmit = 0;
- 	struct xdp_buff xdp;
-+	int rx_buf_pgcnt;
- 
- 	xdp.rxq = &rx_ring->xdp_rxq;
- 
-@@ -8712,7 +8720,7 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
- 		 */
- 		dma_rmb();
- 
--		rx_buffer = igb_get_rx_buffer(rx_ring, size);
-+		rx_buffer = igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
- 
- 		/* retrieve a buffer from the ring */
- 		if (!skb) {
-@@ -8755,7 +8763,7 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
- 			break;
- 		}
- 
--		igb_put_rx_buffer(rx_ring, rx_buffer);
-+		igb_put_rx_buffer(rx_ring, rx_buffer, rx_buf_pgcnt);
- 		cleaned_count++;
- 
- 		/* fetch next buffer in frame if non-eop */
--- 
-2.30.1
-
+ /*
 
 
