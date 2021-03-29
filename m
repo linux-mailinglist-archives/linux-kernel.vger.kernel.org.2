@@ -2,158 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E382334DA01
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4950A34DA03
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhC2WQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:16:54 -0400
-Received: from mail-ej1-f45.google.com ([209.85.218.45]:37781 "EHLO
-        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhC2WQk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:16:40 -0400
-Received: by mail-ej1-f45.google.com with SMTP id w3so21816775ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:16:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WQzIDcWuiHAyXRwih35ciaqMW2/DmFDACcc42yRYS2k=;
-        b=Rn9XImGceiHBLK+km6SGms6h0hc5aW8JgKxKM53TSUZa/QayRU7sHLOlIsHK1Lsfka
-         NUGP2r7efbn5gMlFnb9bdh2wpY3RX0GRgGtuHEQcR9QZ/q8/hqE1AMk6xQaMP4yWgD+r
-         uPSXpZ2gp36MeUb6Rz+X4BOukPyf0RoaalNnC6gI+OzqRmZ7CUM3QEIiOpGH5Jqlg0QU
-         6uHaRhoU34GEMFsn1lMbnwlVayYCbBTcX4pOj+XGiakL+0HuciE3YDx24gxqntqm7zYw
-         OXsopa0/evPu2/TLsQYMLGb8AnDixI7kxhnqB5iHz+3CGmLCLLrZkP6VOyQWR394LKnw
-         cKnw==
-X-Gm-Message-State: AOAM533osUvx/O0Rd+YK/qsxZiIwqwmMTaFffIM5GyW2yw0CwqsJjusw
-        aB2gw46wgaMkfRpYkd3EIWAKNJ+VusGhzH3s/KU=
-X-Google-Smtp-Source: ABdhPJx6CPFcHJiMC5wf94BMQoWnoiz4MEwX5AhrAY5/XJp1AvowCU2TgxnrqxhIVNOK/tBXOaHlpCbo4zoLtPw/EHs=
-X-Received: by 2002:a17:906:6d01:: with SMTP id m1mr20808560ejr.501.1617056199371;
- Mon, 29 Mar 2021 15:16:39 -0700 (PDT)
+        id S231512AbhC2WS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:18:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34119 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230434AbhC2WR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:17:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617056278; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=tUu2ZQk0gPltxUnwP13tDodfdocjEk967Z7tb4j5tSU=; b=ElBjpE0xkElmd/KfIoN7CNz8Ptr6YpCdffnyX3a4tXmRYUgGP3onMdxlC1LZdqtiaVRqql0f
+ ig2oKzhrSsynOZv0Mo13bWcizIJDHvfpgiXK5yYAwocD3hF8ASLVwt4Sd7vC6YZ5vemHfH1x
+ AdTjvaUTDhGHn/ShS4wxHM3KMGE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 606252153f4005d07537cd21 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 22:17:57
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DCF1BC433C6; Mon, 29 Mar 2021 22:17:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.60.140] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3186C433CA;
+        Mon, 29 Mar 2021 22:17:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3186C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v3 2/2] usb: dwc3: Fix DRD mode change sequence following
+ programming guide
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
+        Yang Fei <fei.yang@intel.com>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jun Li <lijun.kernel@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+References: <20210108015115.27920-1-john.stultz@linaro.org>
+ <20210108015115.27920-2-john.stultz@linaro.org>
+ <eb4b8540-a57c-53cc-a371-cf68178bec15@codeaurora.org>
+ <e696b018-b310-5811-5c80-3c50dde297e7@synopsys.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <b08386c0-503d-a333-46be-9df77122ec4e@codeaurora.org>
+Date:   Mon, 29 Mar 2021 15:17:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-15-chang.seok.bae@intel.com> <87o8fda2ye.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkZEWTsqhXLC+qiQ49c2xn7GDF95PfTBi0rw1FnE--JKQ@mail.gmail.com>
- <87r1jyaxum.ffs@nanos.tec.linutronix.de> <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
- <87ft0d7q2q.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87ft0d7q2q.ffs@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Mon, 29 Mar 2021 18:16:28 -0400
-Message-ID: <CAJvTdK=mfc3giXCy_fteyR4UiZfnN5f0hvREN4TjXc5KxtiP+w@mail.gmail.com>
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
- first use of dynamic user state
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e696b018-b310-5811-5c80-3c50dde297e7@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:49 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> According to documentation it is irrelevant whether AMX usage is
-> disabled via XCR0, CR4.OSXSAVE or XFD[18]. In any case the effect of
-> AMX INIT=0 will prevent C6.
->
-> As I explained in great length there are enough ways to get into a
-> situation where this can happen and a CPU goes idle with AMX INIT=0.
->
-> So what are we supposed to do?
-
-Let me know if this problem description is fair:
-
-Many-core Xeon servers will support AMX, and when I run an AMX application
-on one, when I take an interrupt with AMX INIT=0, Linux may go idle on my CPU.
-If Linux cpuidle requests C6, the hardware will demote to C1E.
-
-The concern is that a core in C1E will negatively impact power of
-self, or performance
-of a neighboring core.
-
-This is what we are talking about, right?
-
-First, I should mention that if I threw a dart at a map of Xeons
-deployed across the universe, the chances are "significant" that I'd
-hit one that is configured with C6 disabled, and this discussion would be moot.
-
-Second, I should mention that Linux cpuidle demotes from deep C-states
-to shallow ones all day long.  This is typically due to expected timer
-expiration,
-and other heuristics.
-
-Third, I should mention that the processor itself demotes from C6 to C1E
-for a number of reasons -- basically like what Linux is doing, but in HW.
-
-Albeit, the hardware does have the capability to "un-demote" when it demotes
-and recognizes it made a mistake, and that "un-demote" capability would
-not be present if the reason for demotion was AVX INIT=0.
-
-Okay, that said, let's assume we have found a system where this problem
-could happen, and we use it in a way that makes it happen.  Would we notice?
-
-If your system were profoundly idle, and one or more cores were in C1E,
-then it would prevent the SOC from entering Package C6 (if enabled).
-Yes, there is a measurable idle power difference between Package C1E
-and Package C6.  (indeed, this is why Package C6 exists).
-
-I'm delighted that there are Xeon customers, who care about this power savings.
-Unfortunately, they are the exception, not the rule.
-
-If you were to provoke this scenario on many cores simultaneously, then
-I expect you could detect a power difference between C1E and CC6.
-However, that difference would be smaller than the difference
-in power due to the frequency choice of the running cores,
-because it is basically just the L2-leakage vs L2-off difference.
-
-Regarding frequency credits for a core being in C1E vs C6.
-Yes, this is factored into the frequency credits for turbo mode.
-How much impact, I can't say, because that information is not yet available.
-However, this is mitigated by the fact that Xeon single core turbo
-is deployed differently than client.  Xeon's are deployed
-more with multi-core turbo in mind, and so how much you'll
-notice C1E vs C6 may not be significant, unless perhaps it happened
-on all the cores across the system.
-
->    - Use TILERELEASE on context switch after XSAVES?
-
-Yes, that would be perfectly reasonable.
-
->    - Any other mechanism on context switch
-
-XRESTOR of a context with INIT=1 would also do it.
-
->    - Clear XFD[18] when going idle and issue TILERELEASE depending
->      on the last state
-
-I think you mean to *set* XFD.
-When the task touched AMX, he took a #NM, and we cleared XFD for that task.
-So when we get here, XFD is already clear (unarmed).
-Nevertheless, the setting of XFD is moot here.
-
->    - Use any other means to set the thing back into INIT=1 state when
->      going idle
-
-TILERELEASE and XRESTOR are the tools in the toolbox, if necessary.
-
-> There is no option 'shrug and ignore' unfortunately.
-
-I'm not going to say it is impossible that this path will matter.
-If some terrible things go wrong with the hardware, and the hardware
-is configured and used in a very specific way, yes, this could matter.
-
-In the grand scheme of things, this is a pretty small issue,
-say, compared to the API discussion.
-
-thanks,
-Len Brown, Intel Open Source Technology Center
 
 
--Len
+On 3/6/2021 3:39 PM, Thinh Nguyen wrote:
+> Wesley Cheng wrote:
+>>
+>> On 1/7/2021 5:51 PM, John Stultz wrote:
+>>> In reviewing the previous patch, Thinh Nguyen pointed out that
+>>> the DRD mode change sequence should be like the following when
+>>> switching from host -> device according to the programming guide
+>>> (for all DRD IPs):
+>>> 1. Reset controller with GCTL.CoreSoftReset
+>>> 2. Set GCTL.PrtCapDir(device)
+>>> 3. Soft reset with DCTL.CSftRst
+>>> 4. Then follow up with the initializing registers sequence
+>>>
+>>> The current code does:
+>>> a. Soft reset with DCTL.CSftRst on driver probe
+>>> b. Reset controller with GCTL.CoreSoftReset (added in previous
+>>>    patch)
+>>> c. Set GCTL.PrtCapDir(device)
+>>> d. < missing DCTL.CSftRst >
+>>> e. Then follow up with initializing registers sequence
+>>>
+>>> So this patch adds the DCTL.CSftRst soft reset that was currently
+>>> missing from the dwc3 mode switching.
+>>>
+>>> Cc: Felipe Balbi <balbi@kernel.org>
+>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
+>>> Cc: Yang Fei <fei.yang@intel.com>
+>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
+>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
+>>> Cc: Jun Li <lijun.kernel@gmail.com>
+>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> Cc: linux-usb@vger.kernel.org
+>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
+>>> ---
+>>> Feedback would be appreciated. I'm a little worried I should be
+>>> conditionalizing the DCTL.CSftRst on DRD mode controllers, but
+>>> I'm really not sure what the right thing to do is for non-DRD
+>>> mode controllers.
+>>> ---
+>>>  drivers/usb/dwc3/core.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>>> index b6a6b90eb2d5..71f8b07ecb99 100644
+>>> --- a/drivers/usb/dwc3/core.c
+>>> +++ b/drivers/usb/dwc3/core.c
+>>> @@ -40,6 +40,8 @@
+>>>  
+>>>  #define DWC3_DEFAULT_AUTOSUSPEND_DELAY	5000 /* ms */
+>>>  
+>>> +static int dwc3_core_soft_reset(struct dwc3 *dwc);
+>>> +
+>>>  /**
+>>>   * dwc3_get_dr_mode - Validates and sets dr_mode
+>>>   * @dwc: pointer to our context structure
+>>> @@ -177,6 +179,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+>>>  
+>>>  	dwc3_set_prtcap(dwc, dwc->desired_dr_role);
+>>>  
+>>> +	dwc3_core_soft_reset(dwc);
+>> Hi John/Thinh/Felipe,
+>>
+>> I actually added this change into my local branch, because we were
+>> seeing an issue when switching from host mode --> peripheral mode.  What
+>> was happening was that the RXFIFO register did not update back to the
+>> expected value for peripheral mode by the time
+>> dwc3_gadget_init_out_endpoint() was executed.  With the logic to
+>> calculate the EP max packet limit based on RXFIFO reg, this caused all
+>> EPs to be set with an EP max limit of 0.
+>>
+>> With this change, it seemed to help with the above issue.  However, can
+>> we consider moving the core soft reset outside the spinlock?  At least
+>> with our PHY init routines, we have some msleep() calls for waiting for
+>> the PHYs to be ready, which will end up as a sleeping while atomic bug.
+>> (not sure if PHY init is required to be called in atomic context)
+>>
+>> Thanks
+>> Wesley Cheng
+> 
+> Hi Wesley,
+> 
+> Thanks for letting us know the issue you're having also.
+> 
+> Yes, you need to wait a certain amount of time to synchronize with the
+> PHY (at least 50ms for dwc_usb32 and dwc_usb31 v1.80a and above, and
+> less for older versions). When removing the spinlock to use msleep(),
+> just make sure that there's no race issue. BTW, how long does your setup
+> need to msleep()?
+> 
+Hi Thinh,
+
+Sorry for the late response.  My mistake, its actually just a usleep()
+for a less than 100uS (polling for a status bit change, so it will exit
+early if possible).  For this change, can we just move the
+dwc3_core_soft_reset() outside of the spinlock?
+
+Thanks
+Wesley Cheng
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
