@@ -2,183 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE72234CDB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3280834CDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhC2KLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S232689AbhC2KLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhC2KKo (ORCPT
+        with ESMTP id S232713AbhC2KLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:10:44 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9287C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:10:43 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id o126so17635314lfa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:10:43 -0700 (PDT)
+        Mon, 29 Mar 2021 06:11:17 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75D07C061574;
+        Mon, 29 Mar 2021 03:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TrrPoo3NF06Hriy1kiCCzSGcqBJEQPrLMgSJHsg60T0=;
-        b=MEEB4gQC+frgKiF9qxjZWukNl+J2hRwRFu7J1PqfnMfeey07tHMtQDPvdpfUrJMj+v
-         ygJO68J8dLSogekKUyuyEXo8RQTJ807gbbBdBq6oagwJBdc2IRBWavSbj7y0TeaYGk7E
-         1GMkHLPx64SGknP3wTP3iIwhW/hsV3/W7y4ZI2wuMVuSBy4bV9ff4rSSppPkrnAbmDgR
-         DUn7cyCOUbkSRIfa4trfe9SwiqvhtJKOiqg6ST1RQmHRJJnJUUL32FPYbRR2YeR7KN3I
-         R5SyHZOtuaxGBK7ZXgmwHbpEg33N9z5EquYbNO9sYVg5nO/6x0zL17e5dB0XQojSvKub
-         IXGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TrrPoo3NF06Hriy1kiCCzSGcqBJEQPrLMgSJHsg60T0=;
-        b=lkMekmfgsQwYQhyP7r1K0Ot0Yq821Krly2UgJqcA8GvkK1iXO/HptCHVWMBTlozCLi
-         n9hGp/yFSWwX9NIzgnMZnIVXzCB+9HFmNwgFJzIzHUHZCClEMmzaomibmWXAu1J1bCAG
-         nxEPAQkMIV0TKsi0K7MEKzc0RlpFAlzKTPGX8nD+nB3fw890m7vO4pIPafxGv9JlGmDi
-         WquLh6O8UoWe/DT2e8z9XmNoiIYcGuoidjBeRENsfZ3CXLZZdM6285tk6wZy88QUS8kQ
-         KDV4As0hM4Da9oYKXaHirkdjl/R5jUl7VxXtANqNMs8myHFoHEGtQEjMVsvWz8hcp8ZG
-         lBeQ==
-X-Gm-Message-State: AOAM530880RmTVTLfs5lIR1OKDjqIYuz1rgM0hLjZLgY6v467RVSDO+Q
-        8exjO0TZvr1r+eMm/eR6MXrLvg==
-X-Google-Smtp-Source: ABdhPJzFN60J7EkuzOGOBl18JQs7UDI+EF00tDUs2xAE6AjR6wmyHSPcLg0T1AveZfh8xHdfaQ/2vg==
-X-Received: by 2002:a05:6512:3089:: with SMTP id z9mr16097622lfd.496.1617012642015;
-        Mon, 29 Mar 2021 03:10:42 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id r66sm1776883lff.93.2021.03.29.03.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 03:10:41 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id DB6C5101FC8; Mon, 29 Mar 2021 13:10:40 +0300 (+03)
-Date:   Mon, 29 Mar 2021 13:10:40 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 18/28] mm/mmap: Add shadow stack pages to memory
- accounting
-Message-ID: <20210329101040.sra6aqvgjbmy72bj@box>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-19-yu-cheng.yu@intel.com>
- <20210322105729.24rt4nwc3blipxsr@box>
- <4b926140-66ac-f538-df94-8213b8a2ab86@intel.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=Act1HoZZl+zIcAFDQN1jwVGwdefUdm0EiFSF
+        kwRMeuc=; b=hm5QoBLF7/MGTLOBZVTI8+LRyHMyle0xKKw9AneNq+p8q2WeceEC
+        ueUfECuJHYGaK+aGpzp1d/yhpYDYfZy6Feuo3vVhC0PbPPjqSFR3n37nS9AM/UBW
+        MHalqkdo0PsgAxT5fGSfHFCB6m1Kh2dC2naRcGPdrxccJ0Ne8PQlrQY=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 29 Mar
+ 2021 18:11:05 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 29 Mar 2021 18:11:05 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Heiner Kallweit" <hkallweit1@gmail.com>
+Cc:     nic_swsd@realtek.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] ethernet/realtek/r8169: Fix a double free in
+ rtl8169_start_xmit
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <8d40cd7a-c47e-199d-dccb-e242ec93e143@gmail.com>
+References: <20210329090248.4209-1-lyl2019@mail.ustc.edu.cn>
+ <8d40cd7a-c47e-199d-dccb-e242ec93e143@gmail.com>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b926140-66ac-f538-df94-8213b8a2ab86@intel.com>
+Message-ID: <31f922b3.1c7ca.1787d772dda.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygCXnUm5p2FgNYRmAA--.2W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoPBlQhn5hSTgAFsp
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 08:46:30AM -0700, Yu, Yu-cheng wrote:
-> On 3/22/2021 3:57 AM, Kirill A. Shutemov wrote:
-> > On Tue, Mar 16, 2021 at 08:10:44AM -0700, Yu-cheng Yu wrote:
-> > > Account shadow stack pages to stack memory.
-> > > 
-> > > Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >   arch/x86/mm/pgtable.c   |  7 +++++++
-> > >   include/linux/pgtable.h | 11 +++++++++++
-> > >   mm/mmap.c               |  5 +++++
-> > >   3 files changed, 23 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-> > > index 0f4fbf51a9fc..948d28c29964 100644
-> > > --- a/arch/x86/mm/pgtable.c
-> > > +++ b/arch/x86/mm/pgtable.c
-> > > @@ -895,3 +895,10 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
-> > >   #endif /* CONFIG_X86_64 */
-> > >   #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
-> > > +
-> > > +#ifdef CONFIG_ARCH_HAS_SHADOW_STACK
-> > > +bool arch_shadow_stack_mapping(vm_flags_t vm_flags)
-> > > +{
-> > > +	return (vm_flags & VM_SHSTK);
-> > > +}
-> > > +#endif
-> > > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > > index cbd98484c4f1..487c08df4365 100644
-> > > --- a/include/linux/pgtable.h
-> > > +++ b/include/linux/pgtable.h
-> > > @@ -1470,6 +1470,17 @@ static inline pmd_t arch_maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma
-> > >   #endif /* CONFIG_ARCH_MAYBE_MKWRITE */
-> > >   #endif /* CONFIG_MMU */
-> > > +#ifdef CONFIG_MMU
-> > > +#ifdef CONFIG_ARCH_HAS_SHADOW_STACK
-> > > +bool arch_shadow_stack_mapping(vm_flags_t vm_flags);
-> > > +#else
-> > > +static inline bool arch_shadow_stack_mapping(vm_flags_t vm_flags)
-> > > +{
-> > > +	return false;
-> > > +}
-> > > +#endif /* CONFIG_ARCH_HAS_SHADOW_STACK */
-> > > +#endif /* CONFIG_MMU */
-> > > +
-> > >   /*
-> > >    * Architecture PAGE_KERNEL_* fallbacks
-> > >    *
-> > > diff --git a/mm/mmap.c b/mm/mmap.c
-> > > index 3f287599a7a3..2ac67882ace2 100644
-> > > --- a/mm/mmap.c
-> > > +++ b/mm/mmap.c
-> > > @@ -1718,6 +1718,9 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
-> > >   	if (file && is_file_hugepages(file))
-> > >   		return 0;
-> > > +	if (arch_shadow_stack_mapping(vm_flags))
-> > > +		return 1;
-> > > +
-> > 
-> > What's wrong with testing (vm_flags & VM_SHSTK) here? VM_SHSTK is 0 on
-> > non-x86.
-> > 
-> > >   	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
-> > >   }
-> > > @@ -3387,6 +3390,8 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
-> > >   		mm->stack_vm += npages;
-> > >   	else if (is_data_mapping(flags))
-> > >   		mm->data_vm += npages;
-> > > +	else if (arch_shadow_stack_mapping(flags))
-> > > +		mm->stack_vm += npages;
-> > 
-> > Ditto.
-> > 
-> 
-> The thought was, here all testings are done with helpers, e.g.
-> is_data_mapping(), so creating a helper for shadow stack is more inline with
-> the existing code.  Or, maybe we can call it is_shadow_stack_mapping()?
-> And, since we have a helper, use it in accountable_mapping() as well.  Or do
-> you have other suggestions?
-
-is_shadow_stack_mapping() sounds reasonable.
-
-My point is that we already have ifdef around #define VM_SHSTK. No need in
-duplicating it for helper.
-
--- 
- Kirill A. Shutemov
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkhlaW5lciBLYWxs
+d2VpdCIgPGhrYWxsd2VpdDFAZ21haWwuY29tPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMjkg
+MTc6NTE6MzAgKOaYn+acn+S4gCkNCj4g5pS25Lu25Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlA
+bWFpbC51c3RjLmVkdS5jbj4sIG5pY19zd3NkQHJlYWx0ZWsuY29tLCBrdWJhQGtlcm5lbC5vcmcN
+Cj4g5oqE6YCBOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnDQo+IOS4u+mimDogUmU6IFtQQVRDSF0gZXRoZXJuZXQvcmVhbHRlay9yODE2OTogRml4
+IGEgZG91YmxlIGZyZWUgaW4gcnRsODE2OV9zdGFydF94bWl0DQo+IA0KPiBPbiAyOS4wMy4yMDIx
+IDExOjAyLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+IEluIHJ0bDgxNjlfc3RhcnRfeG1pdCwgaXQg
+Y2FsbHMgcnRsODE2OV90c29fY3N1bV92Mih0cCwgc2tiLCBvcHRzKSBhbmQNCj4gPiBydGw4MTY5
+X3Rzb19jc3VtX3YyKCkgY2FsbHMgX19za2JfcHV0X3BhZHRvKHNrYiwgcGFkdG8sIGZhbHNlKS4g
+SWYNCj4gPiBfX3NrYl9wdXRfcGFkdG8oKSBmYWlsZWQsIGl0IHdpbGwgZnJlZSB0aGUgc2tiIGlu
+IHRoZSBmaXJzdCB0aW1lIGFuZA0KPiA+IHJldHVybiBlcnJvci4gVGhlbiBydGw4MTY5X3N0YXJ0
+X3htaXQgd2lsbCBnb3RvIGVycl9kbWFfMC4NCj4gPiANCj4gDQo+IE5vLCB0aGUgc2tiIGlzbid0
+IGZyZWVkIGhlcmUgaW4gY2FzZSBvZiBlcnJvci4gSGF2ZSBhIGxvb2sgYXQgdGhlDQo+IGltcGxl
+bWVudGF0aW9uIG9mIF9fc2tiX3B1dF9wYWR0bygpIGFuZCBzZWUgYWxzbyBjYzY1MjhiYzlhMGMN
+Cj4gKCJyODE2OTogZml4IHBvdGVudGlhbCBza2IgZG91YmxlIGZyZWUgaW4gYW4gZXJyb3IgcGF0
+aCIpLg0KPiANCj4gDQo+ID4gQnV0IGluIGVycl9kbWFfMCBsYWJlbCwgdGhlIHNrYiBpcyBmcmVl
+ZCBieSBkZXZfa2ZyZWVfc2tiX2FueShza2IpIGluDQo+ID4gdGhlIHNlY29uZCB0aW1lLg0KPiA+
+IA0KPiA+IE15IHBhdGNoIGFkZHMgYSBuZXcgbGFiZWwgaW5zaWRlIHRoZSBvbGQgZXJyX2RtYV8w
+IGxhYmVsIHRvIGF2b2lkIHRoZQ0KPiA+IGRvdWJsZSBmcmVlIGFuZCByZW5hbWVzIHRoZSBlcnJv
+ciBsYWJlbHMgdG8ga2VlcCB0aGUgb3JpZ2luIGZ1bmN0aW9uDQo+ID4gdW5jaGFuZ2VkLg0KPiA+
+IA0KPiA+IEZpeGVzOiBiODQ0N2FiYzRjOGZiICgicjgxNjk6IGZhY3RvciBvdXQgcnRsODE2OV90
+eF9tYXAiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3Rj
+LmVkdS5jbj4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9yODE2
+OV9tYWluLmMgfCA5ICsrKysrLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25z
+KCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9l
+dGhlcm5ldC9yZWFsdGVrL3I4MTY5X21haW4uYyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L3JlYWx0
+ZWsvcjgxNjlfbWFpbi5jDQo+ID4gaW5kZXggZjcwNGRhM2YyMTRjLi45MWM0MzM5OTcxMmIgMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9yODE2OV9tYWluLmMN
+Cj4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9yZWFsdGVrL3I4MTY5X21haW4uYw0KPiA+
+IEBAIC00MjE3LDEzICs0MjE3LDEzIEBAIHN0YXRpYyBuZXRkZXZfdHhfdCBydGw4MTY5X3N0YXJ0
+X3htaXQoc3RydWN0IHNrX2J1ZmYgKnNrYiwNCj4gPiAgDQo+ID4gIAlpZiAodW5saWtlbHkocnRs
+ODE2OV90eF9tYXAodHAsIG9wdHMsIHNrYl9oZWFkbGVuKHNrYiksIHNrYi0+ZGF0YSwNCj4gPiAg
+CQkJCSAgICBlbnRyeSwgZmFsc2UpKSkNCj4gPiAtCQlnb3RvIGVycl9kbWFfMDsNCj4gPiArCQln
+b3RvIGVycl9kbWFfMTsNCj4gPiAgDQo+ID4gIAl0eGRfZmlyc3QgPSB0cC0+VHhEZXNjQXJyYXkg
+KyBlbnRyeTsNCj4gPiAgDQo+ID4gIAlpZiAoZnJhZ3MpIHsNCj4gPiAgCQlpZiAocnRsODE2OV94
+bWl0X2ZyYWdzKHRwLCBza2IsIG9wdHMsIGVudHJ5KSkNCj4gPiAtCQkJZ290byBlcnJfZG1hXzE7
+DQo+ID4gKwkJCWdvdG8gZXJyX2RtYV8yOw0KPiA+ICAJCWVudHJ5ID0gKGVudHJ5ICsgZnJhZ3Mp
+ICUgTlVNX1RYX0RFU0M7DQo+ID4gIAl9DQo+ID4gIA0KPiA+IEBAIC00MjcwLDEwICs0MjcwLDEx
+IEBAIHN0YXRpYyBuZXRkZXZfdHhfdCBydGw4MTY5X3N0YXJ0X3htaXQoc3RydWN0IHNrX2J1ZmYg
+KnNrYiwNCj4gPiAgDQo+ID4gIAlyZXR1cm4gTkVUREVWX1RYX09LOw0KPiA+ICANCj4gPiAtZXJy
+X2RtYV8xOg0KPiA+ICtlcnJfZG1hXzI6DQo+ID4gIAlydGw4MTY5X3VubWFwX3R4X3NrYih0cCwg
+ZW50cnkpOw0KPiA+IC1lcnJfZG1hXzA6DQo+ID4gK2Vycl9kbWFfMToNCj4gPiAgCWRldl9rZnJl
+ZV9za2JfYW55KHNrYik7DQo+ID4gK2Vycl9kbWFfMDoNCj4gPiAgCWRldi0+c3RhdHMudHhfZHJv
+cHBlZCsrOw0KPiA+ICAJcmV0dXJuIE5FVERFVl9UWF9PSzsNCj4gPiAgDQo+ID4gDQo+IA0KDQpP
+aywgaSBzZWUgdGFodCBfX3NrYl9wdXRfcGFkdG8oc2tiLCBwYWR0bywgZmFsc2UpIGlzbid0IGZy
+ZWUgc2tiIG9uIGVycm9yLg0KDQpUaGFua3MuDQo=
