@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E3A34C7A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE31E34C711
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhC2IQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:16:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
+        id S232819AbhC2IML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232663AbhC2IKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3BA61481;
-        Mon, 29 Mar 2021 08:10:28 +0000 (UTC)
+        id S231756AbhC2IGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5059A61959;
+        Mon, 29 Mar 2021 08:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005429;
-        bh=62QVEbroNMzCrjQrgGEozezDsRbKEuTH4LbWoXT03G0=;
+        s=korg; t=1617005213;
+        bh=4T5nshDnSfdrBR1gefSFliG79GvTAw5WAZSSBIwntxo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIrcjZ0B4FMUFersPRzGAkEalLtbn54OHT3z4vdI59Ry3rUGaBWi6M3qGopQYtksa
-         q71MmBgeDPesPOlUr3AteDDkAtE9ricrvc/dahl9dfhOST5iQ4W6MHXidZeDcvHyYu
-         5P2GslhDxCgEEnM/9F2AtRXk7UCVqk861gWFZBLs=
+        b=yy0/GLqVkXkfdmEndhQqQ/qiOol6Xl71eBHQRl8+oMADduxdawbV+fk0nhNSiAlVY
+         nMgTg3F6VluDwtNshN0rNT+Y8+hp8DsFeQiLWFagOOYLhaLC1tb2Q3S0FKkP5ck0uk
+         O/o5gx01kYIleAQOruDDRyf14knF4V4nQrhonU90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 43/72] can: peak_usb: add forgotten supported devices
+Subject: [PATCH 4.14 39/59] can: c_can: move runtime PM enable/disable to c_can_platform
 Date:   Mon, 29 Mar 2021 09:58:19 +0200
-Message-Id: <20210329075611.710415404@linuxfoundation.org>
+Message-Id: <20210329075610.174207337@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 59ec7b89ed3e921cd0625a8c83f31a30d485fdf8 ]
+[ Upstream commit 6e2fe01dd6f98da6cae8b07cd5cfa67abc70d97d ]
 
-Since the peak_usb driver also supports the CAN-USB interfaces
-"PCAN-USB X6" and "PCAN-Chip USB" from PEAK-System GmbH, this patch adds
-their names to the list of explicitly supported devices.
+Currently doing modprobe c_can_pci will make the kernel complain:
 
-Fixes: ea8b65b596d7 ("can: usb: Add support of PCAN-Chip USB stamp module")
-Fixes: f00b534ded60 ("can: peak: Add support for PCAN-USB X6 USB interface")
-Link: https://lore.kernel.org/r/20210309082128.23125-3-s.grosjean@peak-system.com
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+    Unbalanced pm_runtime_enable!
+
+this is caused by pm_runtime_enable() called before pm is initialized.
+
+This fix is similar to 227619c3ff7c, move those pm_enable/disable code
+to c_can_platform.
+
+Fixes: 4cdd34b26826 ("can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller")
+Link: http://lore.kernel.org/r/20210302025542.987600-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Tested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/c_can/c_can.c          | 24 +-----------------------
+ drivers/net/can/c_can/c_can_platform.c |  6 +++++-
+ 2 files changed, 6 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 40ac37fe9dcd..1649687ab924 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -26,6 +26,8 @@
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 24c6015f6c92..2278c5fff5c6 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
+ 	.brp_inc = 1,
+ };
  
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB FD adapter");
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro FD adapter");
-+MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-Chip USB");
-+MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB X6 adapter");
+-static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_enable(priv->device);
+-}
+-
+-static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_disable(priv->device);
+-}
+-
+ static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
+ {
+ 	if (priv->device)
+@@ -1318,7 +1306,6 @@ static const struct net_device_ops c_can_netdev_ops = {
  
- #define PCAN_USBPROFD_CHANNEL_COUNT	2
- #define PCAN_USBFD_CHANNEL_COUNT	1
+ int register_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
+ 	int err;
+ 
+ 	/* Deactivate pins to prevent DRA7 DCAN IP from being
+@@ -1328,28 +1315,19 @@ int register_c_can_dev(struct net_device *dev)
+ 	 */
+ 	pinctrl_pm_select_sleep_state(dev->dev.parent);
+ 
+-	c_can_pm_runtime_enable(priv);
+-
+ 	dev->flags |= IFF_ECHO;	/* we support local echo */
+ 	dev->netdev_ops = &c_can_netdev_ops;
+ 
+ 	err = register_candev(dev);
+-	if (err)
+-		c_can_pm_runtime_disable(priv);
+-	else
++	if (!err)
+ 		devm_can_led_init(dev);
+-
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_c_can_dev);
+ 
+ void unregister_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
+-
+ 	unregister_candev(dev);
+-
+-	c_can_pm_runtime_disable(priv);
+ }
+ EXPORT_SYMBOL_GPL(unregister_c_can_dev);
+ 
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index b5145a7f874c..f2b0408ce87d 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -29,6 +29,7 @@
+ #include <linux/list.h>
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -385,6 +386,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, dev);
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+ 
++	pm_runtime_enable(priv->device);
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -397,6 +399,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ exit_free_device:
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ exit:
+ 	dev_err(&pdev->dev, "probe failed\n");
+@@ -407,9 +410,10 @@ exit:
+ static int c_can_plat_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
++	struct c_can_priv *priv = netdev_priv(dev);
+ 
+ 	unregister_c_can_dev(dev);
+-
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ 
+ 	return 0;
 -- 
 2.30.1
 
