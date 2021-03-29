@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF6C34CB52
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD3E34C929
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbhC2IqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:46:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42578 "EHLO mail.kernel.org"
+        id S234244AbhC2I17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:27:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234271AbhC2I2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:28:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54F98619C8;
-        Mon, 29 Mar 2021 08:27:09 +0000 (UTC)
+        id S233351AbhC2IRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 382C1619AB;
+        Mon, 29 Mar 2021 08:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006429;
-        bh=ay1pn4ySndbEBJDvHwEjIDAYLrbbLtL1itocjZCDnIs=;
+        s=korg; t=1617005840;
+        bh=shqrO44CNEbaZ037D9y/bUKPrsaXZ/uQPtoYKuIQUlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IyljKrqVYNoath7vol5i6pgAXAzXefkLEmRu7HsxrjSzhf/OFKJp9RUHkTUYd7XoF
-         i5OMj6cVrshTbns4vFoCIB2HS+1UFWo5AcoRU3QgSUfYRz6TIKq/hbCtdwrkcYQtcX
-         0qbyU/wuc3bqr0RvYjRloHrO2/Y3sF+Ny5fiCZ+0=
+        b=FOKSkHbukGiK1FcNBxQ4tgve5F83BwPX3QyP38btQmUplijPDqjmFaP/5LVhaAOEg
+         YSHt1PjYBaZrOvxeF7KKuJkIoG1SEkP9/7xV5gGDKbQ4V/C4CjbZExw/ewtHAzbE0v
+         Tmv5y/QcLonmAPwSvbD5+FYksvRsW8IgygRNKRdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 017/254] cifs: ask for more credit on async read/write code paths
-Date:   Mon, 29 Mar 2021 09:55:33 +0200
-Message-Id: <20210329075633.715055819@linuxfoundation.org>
+Subject: [PATCH 5.10 003/221] mt76: fix tx skb error handling in mt76_dma_tx_queue_skb
+Date:   Mon, 29 Mar 2021 09:55:34 +0200
+Message-Id: <20210329075629.288629093@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 88fd98a2306755b965e4f4567f84e73db3b6738c ]
+[ Upstream commit ae064fc0e32a4d28389086d9f4b260a0c157cfee ]
 
-When doing a large read or write workload we only
-very gradually increase the number of credits
-which can cause problems with parallelizing large i/o
-(I/O ramps up more slowly than it should for large
-read/write workloads) especially with multichannel
-when the number of credits on the secondary channels
-starts out low (e.g. less than about 130) or when
-recovering after server throttled back the number
-of credit.
+When running out of room in the tx queue after calling drv->tx_prepare_skb,
+the buffer list will already have been modified on MT7615 and newer drivers.
+This can leak a DMA mapping and will show up as swiotlb allocation failures
+on x86.
 
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Fix this by moving the queue length check further up. This is less accurate,
+since it can overestimate the needed room in the queue on MT7615 and newer,
+but the difference is small enough to not matter in practice.
+
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210216135119.23809-1-nbd@nbd.name
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/wireless/mediatek/mt76/dma.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index 794fc3b68b4f..6a1af5545f67 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -4033,8 +4033,7 @@ smb2_async_readv(struct cifs_readdata *rdata)
- 	if (rdata->credits.value > 0) {
- 		shdr->CreditCharge = cpu_to_le16(DIV_ROUND_UP(rdata->bytes,
- 						SMB2_MAX_BUFFER_SIZE));
--		shdr->CreditRequest =
--			cpu_to_le16(le16_to_cpu(shdr->CreditCharge) + 1);
-+		shdr->CreditRequest = cpu_to_le16(le16_to_cpu(shdr->CreditCharge) + 8);
+diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
+index 262c40dc14a6..665a03ebf9ef 100644
+--- a/drivers/net/wireless/mediatek/mt76/dma.c
++++ b/drivers/net/wireless/mediatek/mt76/dma.c
+@@ -355,7 +355,6 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, enum mt76_txq_id qid,
+ 	};
+ 	struct ieee80211_hw *hw;
+ 	int len, n = 0, ret = -ENOMEM;
+-	struct mt76_queue_entry e;
+ 	struct mt76_txwi_cache *t;
+ 	struct sk_buff *iter;
+ 	dma_addr_t addr;
+@@ -397,6 +396,11 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, enum mt76_txq_id qid,
+ 	}
+ 	tx_info.nbuf = n;
  
- 		rc = adjust_credits(server, &rdata->credits, rdata->bytes);
- 		if (rc)
-@@ -4340,8 +4339,7 @@ smb2_async_writev(struct cifs_writedata *wdata,
- 	if (wdata->credits.value > 0) {
- 		shdr->CreditCharge = cpu_to_le16(DIV_ROUND_UP(wdata->bytes,
- 						    SMB2_MAX_BUFFER_SIZE));
--		shdr->CreditRequest =
--			cpu_to_le16(le16_to_cpu(shdr->CreditCharge) + 1);
-+		shdr->CreditRequest = cpu_to_le16(le16_to_cpu(shdr->CreditCharge) + 8);
++	if (q->queued + (tx_info.nbuf + 1) / 2 >= q->ndesc - 1) {
++		ret = -ENOMEM;
++		goto unmap;
++	}
++
+ 	dma_sync_single_for_cpu(dev->dev, t->dma_addr, dev->drv->txwi_size,
+ 				DMA_TO_DEVICE);
+ 	ret = dev->drv->tx_prepare_skb(dev, txwi, qid, wcid, sta, &tx_info);
+@@ -405,11 +409,6 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, enum mt76_txq_id qid,
+ 	if (ret < 0)
+ 		goto unmap;
  
- 		rc = adjust_credits(server, &wdata->credits, wdata->bytes);
- 		if (rc)
+-	if (q->queued + (tx_info.nbuf + 1) / 2 >= q->ndesc - 1) {
+-		ret = -ENOMEM;
+-		goto unmap;
+-	}
+-
+ 	return mt76_dma_add_buf(dev, q, tx_info.buf, tx_info.nbuf,
+ 				tx_info.info, tx_info.skb, t);
+ 
+@@ -425,9 +424,7 @@ mt76_dma_tx_queue_skb(struct mt76_dev *dev, enum mt76_txq_id qid,
+ 		dev->test.tx_done--;
+ #endif
+ 
+-	e.skb = tx_info.skb;
+-	e.txwi = t;
+-	dev->drv->tx_complete_skb(dev, &e);
++	dev_kfree_skb(tx_info.skb);
+ 	mt76_put_txwi(dev, t);
+ 	return ret;
+ }
 -- 
 2.30.1
 
