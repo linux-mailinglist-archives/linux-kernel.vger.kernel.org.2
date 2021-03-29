@@ -2,189 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DB234D74D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17BD34D75C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhC2SeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:34:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:15369 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhC2Sdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:33:36 -0400
-IronPort-SDR: LSxqw8Yved18eHCFeiCt9yXtnhIq3gYgvIWvg3Vg8eel9KT1TyDjI/8nu2dgOCNquA+xK56CDY
- bqr9qGn0GGXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="276770688"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="276770688"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:33:36 -0700
-IronPort-SDR: b6dMCHmsN/szLMRFtlDYijrVu5YTBH2pJDqufuaQmqjltYgrY1AFsxfDObNd2XGb5xzdgX6L0s
- 8yrIibqi5onA==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="417793139"
-Received: from auchter-mobl.ger.corp.intel.com (HELO localhost) ([10.252.56.199])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:33:33 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-In-Reply-To: <20210329144204.GF351017@casper.infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210325184615.08526aed@coco.lan> <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org> <87tuozyslu.fsf@meer.lwn.net> <20210325191435.GZ1719932@casper.infradead.org> <87a6qrx7wf.fsf@meer.lwn.net> <20210325221437.GA1719932@casper.infradead.org> <87wntux3w7.fsf@meer.lwn.net> <20210329144204.GF351017@casper.infradead.org>
-Date:   Mon, 29 Mar 2021 21:33:30 +0300
-Message-ID: <874kgtq079.fsf@intel.com>
+        id S231787AbhC2Sed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:34:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33039 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231486AbhC2SeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:34:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617042845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pDaHHzh6SdLVte/qI+KKbIrazg9pPxb7giE0iRBcJy4=;
+        b=b6999D+6qaAwvhbvFlcUk+JpkW3dCC+VsXSCFlUUbVjxX2s47P6I9rxPPLIU9szC6IudE1
+        J3mPs13+ao4CvhWQ0Fvth90/Nn501L23Du3rFV0zUYrtoNoJMvU8zspeuGdl/8YfH8mYY3
+        rWWlh2MphnlP+1kXLes/3Rpwmz6u2sc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-6CvGnPCoONa9AJSA2KRzUg-1; Mon, 29 Mar 2021 14:34:03 -0400
+X-MC-Unique: 6CvGnPCoONa9AJSA2KRzUg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C03F87A82A;
+        Mon, 29 Mar 2021 18:34:00 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4D0395D6A1;
+        Mon, 29 Mar 2021 18:33:53 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 29 Mar 2021 20:34:00 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 20:33:52 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v3 06/11] perf: Add support for SIGTRAP on perf events
+Message-ID: <20210329183351.GD24849@redhat.com>
+References: <20210324112503.623833-1-elver@google.com>
+ <20210324112503.623833-7-elver@google.com>
+ <YFxGb+QHEumZB6G8@elver.google.com>
+ <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
+ <20210329142705.GA24849@redhat.com>
+ <CANpmjNN=dpMmanU1mzigUscZQ6_Bx6u4u5mS4Ukhy0PTiexgDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNN=dpMmanU1mzigUscZQ6_Bx6u4u5mS4Ukhy0PTiexgDA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021, Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Mar 25, 2021 at 04:30:32PM -0600, Jonathan Corbet wrote:
->> Matthew Wilcox <willy@infradead.org> writes:
->> 
->> > The rust code is alredy coming though ...
->> >
->> > rust/kernel/buffer.rs:/// A pre-allocated buffer that implements [`core::fmt::Write`].
->> >
->> > so now we have three formats.  Markdown and RST are _very_ similar, but
->> > not identical [1].  Oh, and even better we now have three distinct tools --
->> > kerneldoc, rustdoc and sphinx.  Have the rust people reached out to you
->> > about integrating the various docs?
->> 
->> I have talked with them a bit, yes, but without any clear conclusions at
->> this point.  The Rust world has its own way of doing things with regard
->> to documentation, and I don't want to tell them they can't use it in the
->> kernel context.  So I think there's going to be a certain amount of
->> groping around for the best solution.
->> 
->> We did come to the mutual agreement that teaching kernel-doc to parse
->> Rust code as well was not an ideal solution.  Probably there will be
->> some sort of tool to translate between rustdoc and our sphinx setup.
->> Beyond that, we'll see how it goes.
+On 03/29, Marco Elver wrote:
 >
-> In the spirit of groping around for the best solution, I did some looking
-> around at various options, including using rustdoc for .c files (that
-> uses Markdown, which appears to be strictly worse than rST for our
-> purposes).
->
-> So here's my "modest proposal":
->
->  - Similar to our ".. kernel-doc::" invocation in .rst files, handle
->    ".. rustdoc::" (insert weeks of hacking here)
->  - Now add ".. rst-doc::" which parses .c files like [1] kernel-doc
->    does, but interprets a different style of comment and actually does
->    most of the repetitive boring bits for you.
+> So, per off-list discussion, it appears that I should ask to clarify:
+> PF_EXISTING or PF_EXITING?
 
-As a hobby, I've written a Sphinx extension to use Clang to parse the
-code and extract pure reStructuredText documentation comments with
-minimal conversions [1]. No additional syntax. Just use reStructuredText
-for everything instead of inventing your own.
+Aaaaaaah, sorry Marco.
 
-I'm not proposing to use that in kernel, at all. It was more like a
-diversion from the kernel documentation.
+PF_EXITING, of course.
 
-But based on my experience with the old and new kernel documentation
-systems and the hobby one, the one takeaway is to not create new
-syntaxes, grammars, parsers, or preprocessors to be maintained by the
-kernel community. Just don't. Take what's working and supported by other
-projects, and add the minimal glue using Sphinx extensions to put it
-together, and no more.
+Oleg.
 
-Of course, we couldn't ditch kernel-doc the script, but we managed to
-trim it down quite a bit. OTOH, there have been a number of additions
-outside of Sphinx in Makefiles and custom tools in various languages
-that I'm really not happy about. It's all too reminiscient of the old
-DocBook toolchain, while Sphinx was supposed to be the one tool to tie
-it all together, partially chosen because of the extension support.
-
-
-BR,
-Jani.
-
-
-[1] https://github.com/jnikula/hawkmoth
-
-
->
-> For example, xa_load:
->
-> /**
->  * xa_load() - Load an entry from an XArray.
->  * @xa: XArray.
->  * @index: index into array.
->  *
->  * Context: Any context.  Takes and releases the RCU lock.
->  * Return: The entry at @index in @xa.
->  */
-> void *xa_load(struct xarray *xa, unsigned long index)
->
-> //rST
-> // Load an entry from an XArray.
-> //
-> // :Context: Any context.  Takes and releases the RCU lock.
-> // :Return: The entry in `xa` at `index`.
-> void *xa_load(struct xarray *xa, unsigned long index)
->
-> (more complex example below [2])
->
-> Things I considered:
->
->  - Explicitly document that this is rST markup instead of Markdown or
->    whatever.
->  - Don't repeat the name of the function.  The tool can figure it out.
->  - Don't force documenting each parameter.  Often they are obvious
->    and there's really nothing interesting to say about the parameter.
->    Witness the number of '@foo: The foo' (of type struct foo) that we
->    have scattered throughout the tree.  It's not that the documenter is
->    lazy, it's that there's genuinely nothing to say here.
->  - Use `interpreted text` to refer to parameters instead of *emphasis* or
->    **strong emphasis**.  The tool can turn that into whatever markup
->    is appropriate.
->  - Use field lists for Context and Return instead of sections.  The markup
->    is simpler to use, and I think the rendered output is better.
->
-> [1] by which i mean "in a completely different way from, but similar in
->     concept"
->
-> [2] More complex example:
->
-> /**
->  * xa_store() - Store this entry in the XArray.
->  * @xa: XArray.
->  * @index: Index into array.
->  * @entry: New entry.
->  * @gfp: Memory allocation flags.
->  *
->  * After this function returns, loads from this index will return @entry.
->  * Storing into an existing multi-index entry updates the entry of every index.
->  * The marks associated with @index are unaffected unless @entry is %NULL.
->  *
->  * Context: Any context.  Takes and releases the xa_lock.
->  * May sleep if the @gfp flags permit.
->  * Return: The old entry at this index on success, xa_err(-EINVAL) if @entry
->  * cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
->  * failed.
->  */
-> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
->
-> //rST
-> // Store an entry in the XArray.
-> //
-> // After this function returns, loads from `index` will return `entry`.
-> // Storing into an existing multi-index entry updates the entry of every index.
-> // The marks associated with `index` are unaffected unless `entry` is ``NULL``.
-> //
-> // :Context: Any context.  Takes and releases the xa_lock.
-> //    May sleep if the `gfp` flags permit.
-> // :Return: The old entry at this index on success, xa_err(-EINVAL) if `entry`
-> //    cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
-> //    failed.
-> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
->
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
