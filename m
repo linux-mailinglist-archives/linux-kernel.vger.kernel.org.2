@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF80F34C189
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F5334C1C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhC2B7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        id S231293AbhC2CAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhC2B7F (ORCPT
+        with ESMTP id S230520AbhC2CAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:59:05 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175B3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 18:59:05 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id a23so5636437vsd.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 18:59:05 -0700 (PDT)
+        Sun, 28 Mar 2021 22:00:00 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20631C0613B1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 18:59:46 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id h3so8851575pfr.12
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 18:59:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ow1zs3cItHl7OQhkXPkPKnmVcsXMnGDINjd+t2rZz+4=;
-        b=HL7jEOHhxCjXtEUyrATnLBUUV818++rOTkwH9FSMmlW4hKwDk7tg3lnoQyahnT5yrM
-         NByS65qREQytoF26NUwxtzn2ZnuyYr6LUEn6LLrwKnUBIzAESbCcCPKkEdOJLAuwUSNO
-         Mc1GzvOxfALhrseTffBsnjUqzYdWwDaWFD3TwpGzdJU64+xBi2yUeAzofFVt9vOimO9z
-         n0C8fOsibYzDCJboPy93GlMjA+uJSTwZ+RHUhjt2EHgHTy3ue87TtVZTWb+YXUwdZLiG
-         khbvSWc/0HJxt6hU+KzKcTpzKjEvxnrG/L1YPgi+LCsRXu3BGFQHLDDl3tEntdcOYWD7
-         yrdw==
+        d=pensando.io; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=AfF0syJPa3AZ/E4+2g/B+WMyDbSM6G2J2QkIgg8nw3Q=;
+        b=T01xgGlZn2BIwUsonZP5ixX/9LH8VPlr+gd5BDTNg0VMSdRtjDBE0JOwLw7igeBhko
+         wo/cM4iJlRvGHPcYYFLkDpM2mTG0+87twKvt7f7L68H+yRD62jlWQz0ZNgNyYtYWSSQr
+         BA8svNiCo0uY2Rnz8GKeTY24Ilt2icIb75h6AWPSvtD5nh+C1a/Uy8P5iYAXxog5e0KL
+         tdFUjRHfkIOF/IKP/A2P7xA4LBTWPZJC+8jOTUdtHvslE8R7lkQIGDMoucaQ5+rp5VzT
+         rbbzXdgF2AGjr3VCtT/3mxA6eyoDtcTs0u4Yk0mELcDT2BHKiCFn9ESQX+pUeUGUkti7
+         ssFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ow1zs3cItHl7OQhkXPkPKnmVcsXMnGDINjd+t2rZz+4=;
-        b=Vwaw6i4kyqY39FPJTOo8q3IEDzFELlq7TXyK9qEE8VBEa5kjY/YtPk2KNeQVHi37bJ
-         zjIu5fwoQgIJ2+VAjrLyNZaWPII03wKyneWU/zF/v1SNPftTI73dW5r8J5Gqbsp7Em2W
-         tXd/UEeYOSoXOCvd31RGAt0zwppfQx1xTrzTH5eqas0NTgvxambYZaFhomG9PCS8AhVS
-         dlCy9AnJL0JbXWWwdHu1eLh7968Doz0LG9XF+3QyAv227d684H7sOZjqBU9p4ET9cHZt
-         xg2FP5d1fjr4ptgGh9qINGgb61urstlNOfw+UsYZolQLMYLIqzQyxWRJNh0OyCrwBHyR
-         Nw5Q==
-X-Gm-Message-State: AOAM533+6RuWdMEwwd4zPZ+9Ttmcgf+XG0MPWTpMTKDKaREyi2wcDVHk
-        kjgxNGEnBwTow8FOYSOrXgUfOcNVuE1JrxmNcPhdvBe56FM=
-X-Google-Smtp-Source: ABdhPJwDm1MJIjc3Tvq0XbBfiBsjbrkbM5KG38v/weJPX+6L/VEVRz9N1G94hyEgfLPte3zpGmG8FyMmZKJ8BBzOPds=
-X-Received: by 2002:a05:6102:3131:: with SMTP id f17mr13277929vsh.30.1616983143979;
- Sun, 28 Mar 2021 18:59:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
- <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
- <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz> <34a07677-3afe-465c-933e-dc9503e9634d@linux.alibaba.com>
- <CANt8P=vwbshvNntPLAkEQFrRfeSHfd1bkxLUhmRXNS2CD_mO_w@mail.gmail.com> <2ad0539f-2c38-714e-330e-7709bb07ebac@suse.cz>
-In-Reply-To: <2ad0539f-2c38-714e-330e-7709bb07ebac@suse.cz>
-From:   Shu Ming <sming56@gmail.com>
-Date:   Mon, 29 Mar 2021 09:58:52 +0800
-Message-ID: <CANt8P=uD1X4wMHeomCVmE2ggvTSn6h3H7Fcwmu-FrEqzgrtRiQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial objects
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
-        Christoph Lameter <cl@linux.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AfF0syJPa3AZ/E4+2g/B+WMyDbSM6G2J2QkIgg8nw3Q=;
+        b=XNlTD1qznaVnTHr7aCVicMvlacuQwFM3lvMPUtX/I2356DIYFipCytKyDN1/1nIYYI
+         xrDsdNoq4PskiM2YxqMRCLGuQyYTpaTOF98oljsPSeOZzozLy7hXiXNe1tfDMseT0IYg
+         JMXwBPQ9U5AiuuxVBI0wp0qFmM9o7oI8TZhiM2Bt2P6Nx7Me1U1tH9BBBVNNlQ4OOocp
+         XsCvt0ULTsUlk76XAeVfK/qbuuSsPs39PMD2IiamsHVLsGyrm4L2dkpNhlVDxc+bTfeV
+         gg//VvdqPm4XIEKk/DD0MbI+2j3/uwUy/xq9n5qIaaZ7TlY4w9h0MHLXbhGwvDx00b/t
+         bniA==
+X-Gm-Message-State: AOAM5323phobz5dk5vmKmNf08yiH/4K5I5i/3PRl+w03axJnTOngzfhD
+        0EmXZ6xVrR3bRqnwUTJvMCmcKg==
+X-Google-Smtp-Source: ABdhPJwqvHlLi+PBJ/1vUPZIesu3HIRE3E2tVo/qHkMLNjVAZtT91oBjuqfdT4SzwP9uUl+pbfBhBA==
+X-Received: by 2002:a62:cfc1:0:b029:200:1eed:462 with SMTP id b184-20020a62cfc10000b02902001eed0462mr23229810pfg.55.1616983185403;
+        Sun, 28 Mar 2021 18:59:45 -0700 (PDT)
+Received: from platform-dev1.pensando.io ([12.226.153.42])
+        by smtp.gmail.com with ESMTPSA id w37sm14728027pgl.13.2021.03.28.18.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 18:59:45 -0700 (PDT)
+From:   Brad Larson <brad@pensando.io>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        broonie@kernel.org, fancer.lancer@gmail.com,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org, olof@lixom.net,
+        brad@pensando.io, linux-gpio@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/13] Support Pensando Elba SoC
+Date:   Sun, 28 Mar 2021 18:59:25 -0700
+Message-Id: <20210329015938.20316-1-brad@pensando.io>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am not sure how people are using partial object accounting.  I
-believe it is used as a memory usage hint of slabs.
+This series enables support for Pensando Elba SoC based platforms.
+The Elba SoC has the following features:
 
-On Mon, Mar 22, 2021 at 6:22 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 3/22/21 2:46 AM, Shu Ming wrote:
-> > More precisely, ss will count partial objects like denty objects with
-> > "/sys/kernel/slab/dentry/partial"   whose number can become huge.
->
-> Uh, that's interesting. Would you know what exactly it uses the value for? I can
-> think of several reasons why it might be misleading.
->
-> > On Thu, Mar 18, 2021 at 8:56 PM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
-> >>
-> >>
-> >>
-> >> On 3/18/21 8:18 PM, Vlastimil Babka wrote:
-> >> > On 3/17/21 8:54 AM, Xunlei Pang wrote:
-> >> >> The node list_lock in count_partial() spends long time iterating
-> >> >> in case of large amount of partial page lists, which can cause
-> >> >> thunder herd effect to the list_lock contention.
-> >> >>
-> >> >> We have HSF RT(High-speed Service Framework Response-Time) monitors,
-> >> >> the RT figures fluctuated randomly, then we deployed a tool detecting
-> >> >> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
-> >> >> the list_lock cost nearly 100ms with irq off issued by "ss", this also
-> >> >> caused network timeouts.
-> >> >
-> >> > I forgot to ask, how does "ss" come into this? It displays network connections
-> >> > AFAIK. Does it read any SLUB counters or slabinfo?
-> >> >
-> >>
-> >> ss may access /proc/slabinfo to acquire network related slab statistics.
-> >
->
+- Sixteen ARM64 A72 cores
+- Dual DDR 4/5 memory controllers
+- 32 lanes of PCIe Gen3/4 to the Host
+- Network interfaces: Dual 200GE, Quad 100GE, 50GE, 25GE, 10GE and
+  also a single 1GE management port.
+- Storage/crypto offloads and 144 programmable P4 cores.
+- QSPI and EMMC for SoC storage
+- Two SPI interfaces for peripheral management
+- I2C bus for platform management
+
+See below for an overview of changes since v1.
+
+== Patch overview ==
+
+- 01    Fix typo, return code value and log message.
+- 03    Remove else clause, intrinsic DW chip-select is never used.
+- 08-11 Split out dts and bindings to sub-patches
+- 10    Converted existing cadence-quadspi.txt to YAML schema
+- 13    New driver should use <linux/gpio/driver.h>
+
+Brad Larson (13):
+  gpio: Add Elba SoC gpio driver for spi cs control
+  spi: cadence-quadspi: Add QSPI support for Pensando Elba SoC
+  spi: dw: Add support for Pensando Elba SoC SPI
+  spidev: Add Pensando CPLD compatible
+  mmc: sdhci-cadence: Add Pensando Elba SoC support
+  arm64: Add config for Pensando SoC platforms
+  arm64: dts: Add Pensando Elba SoC support
+  dt-bindings: Add pensando vendor prefix
+  dt-bindings: mmc: Add Pensando Elba SoC binding
+  dt-bindings: spi: cadence-qspi: Add support for Pensando Elba SoC
+  dt-bindings: gpio: Add Pensando Elba SoC support
+  MAINTAINERS: Add entry for PENSANDO
+  gpio: Use linux/gpio/driver.h
+
+ .../bindings/gpio/pensando,elba-spics.yaml    |  50 +++
+ .../devicetree/bindings/mmc/cdns,sdhci.yaml   |   1 +
+ .../bindings/spi/cadence-quadspi.txt          |  68 ----
+ .../bindings/spi/cadence-quadspi.yaml         | 153 +++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   9 +
+ arch/arm64/Kconfig.platforms                  |   5 +
+ arch/arm64/boot/dts/Makefile                  |   1 +
+ arch/arm64/boot/dts/pensando/Makefile         |   6 +
+ arch/arm64/boot/dts/pensando/elba-16core.dtsi | 170 ++++++++++
+ .../boot/dts/pensando/elba-asic-common.dtsi   | 112 +++++++
+ arch/arm64/boot/dts/pensando/elba-asic.dts    |   7 +
+ .../boot/dts/pensando/elba-flash-parts.dtsi   |  78 +++++
+ arch/arm64/boot/dts/pensando/elba.dtsi        | 310 ++++++++++++++++++
+ drivers/gpio/Kconfig                          |   6 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-elba-spics.c                | 113 +++++++
+ drivers/mmc/host/Kconfig                      |  15 +
+ drivers/mmc/host/Makefile                     |   1 +
+ drivers/mmc/host/sdhci-cadence-elba.c         | 137 ++++++++
+ drivers/mmc/host/sdhci-cadence.c              |  81 +++--
+ drivers/mmc/host/sdhci-cadence.h              |  68 ++++
+ drivers/spi/spi-cadence-quadspi.c             |   9 +
+ drivers/spi/spi-dw-mmio.c                     |  28 +-
+ drivers/spi/spidev.c                          |   1 +
+ 25 files changed, 1321 insertions(+), 111 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/pensando,elba-spics.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+ create mode 100644 arch/arm64/boot/dts/pensando/Makefile
+ create mode 100644 arch/arm64/boot/dts/pensando/elba-16core.dtsi
+ create mode 100644 arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/pensando/elba-asic.dts
+ create mode 100644 arch/arm64/boot/dts/pensando/elba-flash-parts.dtsi
+ create mode 100644 arch/arm64/boot/dts/pensando/elba.dtsi
+ create mode 100644 drivers/gpio/gpio-elba-spics.c
+ create mode 100644 drivers/mmc/host/sdhci-cadence-elba.c
+ create mode 100644 drivers/mmc/host/sdhci-cadence.h
+
+-- 
+2.17.1
+
