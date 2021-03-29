@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B7D34CF5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D5934CF62
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhC2LuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:50:09 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:37458 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230388AbhC2Ltw (ORCPT
+        id S231404AbhC2Luk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231464AbhC2Lua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:49:52 -0400
-X-UUID: ddbdf52e650846288a9a09d2c4d7041d-20210329
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=700zl6YmFxv75lk34/wx0WtvqnKIf4i7bpRRlFphdnI=;
-        b=AHzPNTFUi/evXpq/pyNIGpnxTSTLWtQ62edJtxYxuTpgVIC3HfFTJz+c0rzCpSXSYyfhCyMsDl4f7zJcFdDLfWRC6Ulq5o32nOQW0ZFzO2FeQivLP1IDjwCAyt1bKChKB2UCZOh7Y9j5vQ3nuDEKXegbou/IfgIE8jtce5f3sXY=;
-X-UUID: ddbdf52e650846288a9a09d2c4d7041d-20210329
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 200071948; Mon, 29 Mar 2021 19:49:48 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
- 2021 19:49:46 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Mar 2021 19:49:45 +0800
-Message-ID: <1617018585.10316.9.camel@mhfsdcap03>
-Subject: Re: [PATCH Resend v0 0/6] Mediatek pinctrl patch on mt8195
-From:   zhiyong tao <zhiyong.tao@mediatek.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        <hui.liu@mediatek.com>, Eddie Huang <eddie.huang@mediatek.com>,
-        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
-        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
-        Sj Huang <sj.huang@mediatek.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Date:   Mon, 29 Mar 2021 19:49:45 +0800
-In-Reply-To: <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com>
-References: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
-         <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 29 Mar 2021 07:50:30 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABBE3C061574;
+        Mon, 29 Mar 2021 04:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=vP+XJ1pyvg
+        bdFg3L0Y9Fk0jxHhZt3M1r+adOKJxCnW4=; b=iI+Uv9H9d+uCCQWblbJ9h/lP54
+        Qc4700Q4+ZOPuSlLa3lMcyxX6DTjy7lMtZGv7leFnccy6Uhgjt/fnmxyMYDdStt4
+        iRKo7G0mSCRzSeRkaIBQ8J3+jcOlWFGnjWBgS+m3pmLYNXGuXS89G/3Sf9CVAVp+
+        ZHNZIDT67SYNa0a80=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnb3_uvmFg_lBnAA--.904S4;
+        Mon, 29 Mar 2021 19:50:06 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     kuba@kernel.org, simon.horman@netronome.com, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] ethernet/netronome/nfp: Fix a use after free in nfp_bpf_ctrl_msg_rx
+Date:   Mon, 29 Mar 2021 04:50:02 -0700
+Message-Id: <20210329115002.8557-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: AABB6345A8775AA73C4B49EF96DF27E08E9473E30D95DB3D672079749D6477F42000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBnb3_uvmFg_lBnAA--.904S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryxKw17AF1ftrWrKF4DArb_yoWftFXEkr
+        1jgFWfG3yUGw15KwsF9r4a93sYkr1qv3s5CFZxKrWSv3y5CF17XrZY9rykZa47Ww4xAa9r
+        Xr9IqryUAa48tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
+        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUS_M-UUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTAzLTI5IGF0IDE0OjM1ICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
-DQo+IE9uIE1vbiwgTWFyIDI5LCAyMDIxIGF0IDI6MzIgUE0gWmhpeW9uZyBUYW8gPHpoaXlvbmcu
-dGFvQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGlzIHNlcmllcyBpbmNsdWRlcyA2
-IHBhdGNoZXM6DQo+ID4gMS5hZGQgcGluY3RybCBmaWxlIG9uIG10ODE5NS4NCj4gPiAyLmFkZCBw
-aW5jdHJsIGJpbmRpbmcgZG9jdW1lbnQgb24gbXQ4MTk1Lg0KPiA+IDMuYWRkIHBpbmN0cmwgZGV2
-aWNlIG5vZGUgb24gbXQ4MTk1Lg0KPiA+IDQuYWRkIHBpbmN0cmwgZHJpdmVyIG9uIE1UODE5NS4N
-Cj4gPiA1LmFkZCBwaW5jdHJsIGRyaXZlIGZvciBJMkMgcmVsYXRlZCBwaW5zIG9uIE1UODE5NS4N
-Cj4gPiA2LmFkZCBwaW5jdHJsIHJzZWwgc2V0dGluZyBvbiBNVDgxOTUuDQo+IA0KPiBQYXRjaCBz
-ZXJpZXMgdy9vIHZlcnNpb24gaXMgZGUgZmFjdG8gdjEuDQo+IERyb3BwaW5nIHRvIHYwIHNlZW1z
-IG5vdCByaWdodC4NCj4gWW91IG1pc3NlZCBjaGFuZ2Vsb2cuDQo+IA0KPiBTbywgc2VuZCB2MiBw
-cm9wZXJseS4NCj4gDQo+IE1hdGVyaWFsIHRvIHN0dWR5Og0KPiBodHRwczovL3d3dy5rZXJuZWwu
-b3JnL2RvYy9odG1sL2xhdGVzdC9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5odG1sDQo+IA0K
-DQpIaSBBbmR5LA0KDQpUaGVyZSBpcyBub3QgYW55IGNoYW5nZSBiZXR3ZWVuIHYwIGFuZCB2MS4g
-c28gd2Ugc2VuZCAiUmVzZW5kIHYwIiBhcyB2Mg0KaW4gdGhpcyB0aW1lLklzIGl0IGFsc28gcHJv
-cGVybHk/IGFuZCB3ZSBzZW5kIHRoZSB2ZXJzaW9uIHdoaWNoIGlzIHYzIGluDQpuZXh0IHRpbWUu
-IA0KDQpUaGFua3MuDQo=
+In nfp_bpf_ctrl_msg_rx, if
+nfp_ccm_get_type(skb) == NFP_CCM_TYPE_BPF_BPF_EVENT is true, the skb
+will be freed. But the skb is still used by nfp_ccm_rx(&bpf->ccm, skb).
+
+My patch adds a return when the skb was freed.
+
+Fixes: bcf0cafab44fd ("nfp: split out common control message handling code")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
+index 0e2db6ea79e9..2ec62c8d86e1 100644
+--- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
++++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
+@@ -454,6 +454,7 @@ void nfp_bpf_ctrl_msg_rx(struct nfp_app *app, struct sk_buff *skb)
+ 			dev_consume_skb_any(skb);
+ 		else
+ 			dev_kfree_skb_any(skb);
++		return;
+ 	}
+ 
+ 	nfp_ccm_rx(&bpf->ccm, skb);
+-- 
+2.25.1
+
 
