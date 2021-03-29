@@ -2,97 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A9E34D07F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57F234D07E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhC2Mxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:53:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231270AbhC2MxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:53:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2665A61934;
-        Mon, 29 Mar 2021 12:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617022390;
-        bh=ZtH+hMquy7Na1NKF/yxIB+LhxXUi37ByQKiTFk9d38U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iy/yWInWB8DBRPxhLE7cb8nnL6SjCZMkWAdqdfKqXrpShBLHbTyVWa0wYkSN/tX5v
-         Iu2rpPH80kkfOhq/UaN9/SA2YdB+x9RzSUizC5xp3FbagOGD5b8lWF+eiPxaQmBmsG
-         8mQrC67o6eRGU77PTSiyD5FqmWZB/XMtgSQ5Lr9cr8/1EInyzd3Enz3sAFQtKWMDis
-         x3GYxZ0FAXmMllpi+MTFzy++LKlizjyA1MYaBsoE2fzmId5Zv5Q27wwu0mWOSFEudJ
-         MXKxlcT5oSR+vVk0rlL8s5NVNMSWLEZchX3yY/jaxKeq8CZH6LQBvCanFjA1q171Om
-         P1oxZoWMTKRBQ==
-Received: by mail-lf1-f41.google.com with SMTP id o10so18223327lfb.9;
-        Mon, 29 Mar 2021 05:53:10 -0700 (PDT)
-X-Gm-Message-State: AOAM533cSk97HasmT8nByVThJULtDdqVPyK13bf2i1w0RLRFzSF8Li8M
-        CVz+iN9B15UZU561UOhAEZN+6nbU59L6+hzz1NM=
-X-Google-Smtp-Source: ABdhPJzKyxFt/x88AyNxVA443wYhozA+/lh8xw56UgIWl+92QcqgMI4gEBYMXLqoZdXoDirHF7Uz5bRUqUYJrcU8Gu8=
-X-Received: by 2002:a19:f501:: with SMTP id j1mr17188294lfb.231.1617022388450;
- Mon, 29 Mar 2021 05:53:08 -0700 (PDT)
+        id S231513AbhC2Mxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:53:41 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:41828 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231150AbhC2MxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:53:09 -0400
+Received: by mail-lj1-f178.google.com with SMTP id f26so15776384ljp.8;
+        Mon, 29 Mar 2021 05:53:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=15scucGuxQEVqG82Vp3uA/E8nHIfFMIZbRfLy3bD9LM=;
+        b=Hd1p9JaiV/FPHKYzyu4CV5BXFUB3o96TWJ8PLOnMJnFakTTMrYevzueKotevujZVAh
+         OcRyJ5RfwdOQOKiPVCzIkiIV5AEzjAYJSG1SNZUUbm0ws6d5PMfeC6Yw5+s72nfvR/Xe
+         JMcUFVo/+xuGFgvQJ51ThOb9XM/2raQuATLuTAtQ/3QY9kSknANvvF4UlINtVHzw/TdW
+         qUe+DKOGKp28jKwog+i3/Ye9E8OoM/DhMn8sOrq4QiXsJCWupo5ZRrCJL4iQd4BbLt0a
+         z1UT8KHDza4xF8hwqC3tuOctn8H2eLpvrUBvaC+vSe84gTSsSaSnxy9ErwdGArkuEtsj
+         a4yA==
+X-Gm-Message-State: AOAM532rmpCCV63NaUYN8NimGlIEHRUAqBFx/O981+kvv7VP+cd60WuK
+        FMhkOa0aN85bJgz3rq1UNeU=
+X-Google-Smtp-Source: ABdhPJzbY5o/we75/W6SXyQXAoRv0YP98/V95FOxvnLjrk0G2ZvyhR81QfVPxqBfaUp7pz6zjbal1w==
+X-Received: by 2002:a2e:9855:: with SMTP id e21mr17409438ljj.26.1617022387982;
+        Mon, 29 Mar 2021 05:53:07 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id u11sm1827721lfg.275.2021.03.29.05.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:53:07 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 15:53:01 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-rtc@vger.kernel.org
+Subject: [PATCH v5 01/19] rtc: bd70528: Do not require parent data
+Message-ID: <4de24492583e02366a6d34e159e4f2e42e61ae9c.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
- <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
-In-Reply-To: <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 29 Mar 2021 20:52:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
-Message-ID: <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org> wrote=
-:
->
-> On Mon, Mar 29, 2021 at 01:16:53PM +0200, Peter Zijlstra wrote:
-> > Anyway, an additional 'funny' is that I suspect you cannot prove fwd
-> > progress of the entire primitive with any of this on. But who cares
-> > about details anyway.. :/
->
-> What's the architectural guarantee on LL/SC progress for RISC-V ?
+The ROHM BD71828 and BD71815 RTC drivers only need the regmap
+pointer from parent. Regmap can be obtained via dev_get_regmap()
+so do not require parent to populate driver data for that.
 
-funct5    | aq | rl   | rs2 |  rs1  | funct3 | rd | opcode
-     5          1    1      5       5         3        5          7
-LR.W/D  ordering  0     addr    width   dest    AMO
-SC.W/D  ordering  src  addr    width   dest    AMO
+BD70528 on the other hand requires parent data to access the
+watchdog so leave the parent data for BD70528 here for now.
 
-LR.W loads a word from the address in rs1, places the sign-extended
-value in rd, and registers a reservation set=E2=80=94a set of bytes that
-subsumes the bytes in the addressed word. SC.W conditionally writes a
-word in rs2 to the address in rs1: the SC.W succeeds only if the
-reservation is still valid and the reservation set contains the bytes
-being written. If the SC.W succeeds, the instruction writes the word
-in rs2 to memory, and it writes zero to rd. If the SC.W fails, the
-instruction does not write to memory, and it writes a nonzero value to
-rd. Regardless of success or failure, executing an SC.W instruction
-*invalidates any reservation held by this hart*.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+No changes since v3
 
-More details, ref:
-https://github.com/riscv/riscv-isa-manual
+ drivers/rtc/rtc-bd70528.c | 67 ++++++++++++++++++---------------------
+ 1 file changed, 31 insertions(+), 36 deletions(-)
 
-> And what if you double loop it like cmpxchg() ?
-Can you give a code snippet?
+diff --git a/drivers/rtc/rtc-bd70528.c b/drivers/rtc/rtc-bd70528.c
+index 17cb67f5bf6e..fb4476bb5ab6 100644
+--- a/drivers/rtc/rtc-bd70528.c
++++ b/drivers/rtc/rtc-bd70528.c
+@@ -52,6 +52,7 @@ struct bd70528_rtc_alm {
+ 
+ struct bd70528_rtc {
+ 	struct rohm_regmap_dev *parent;
++	struct regmap *regmap;
+ 	struct device *dev;
+ 	u8 reg_time_start;
+ 	bool has_rtc_timers;
+@@ -234,9 +235,8 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 	int ret;
+ 	struct bd71828_rtc_alm alm;
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 
+-	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
++	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
+ 			       &alm, sizeof(alm));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read alarm regs\n");
+@@ -250,7 +250,7 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 	else
+ 		alm.alm_mask |= BD70528_MASK_ALM_EN;
+ 
+-	ret = regmap_bulk_write(parent->regmap, BD71828_REG_RTC_ALM_START,
++	ret = regmap_bulk_write(r->regmap, BD71828_REG_RTC_ALM_START,
+ 				&alm, sizeof(alm));
+ 	if (ret)
+ 		dev_err(dev, "Failed to set alarm time\n");
+@@ -265,17 +265,16 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 	struct bd70528_rtc_alm alm;
+ 	int ret;
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 
+-	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_WAKE_START,
+-			       &wake, sizeof(wake));
++	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
++			       sizeof(wake));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read wake regs\n");
+ 		return ret;
+ 	}
+ 
+-	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
+-			       &alm, sizeof(alm));
++	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
++			       sizeof(alm));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read alarm regs\n");
+ 		return ret;
+@@ -292,15 +291,14 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 		wake.ctrl &= ~BD70528_MASK_WAKE_EN;
+ 	}
+ 
+-	ret = regmap_bulk_write(parent->regmap,
+-				BD70528_REG_RTC_WAKE_START, &wake,
++	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
+ 				sizeof(wake));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to set wake time\n");
+ 		return ret;
+ 	}
+-	ret = regmap_bulk_write(parent->regmap, BD70528_REG_RTC_ALM_START,
+-				&alm, sizeof(alm));
++	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
++				sizeof(alm));
+ 	if (ret)
+ 		dev_err(dev, "Failed to set alarm time\n");
+ 
+@@ -312,9 +310,8 @@ static int bd71828_read_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 	int ret;
+ 	struct bd71828_rtc_alm alm;
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 
+-	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
++	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
+ 			       &alm, sizeof(alm));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read alarm regs\n");
+@@ -336,10 +333,9 @@ static int bd70528_read_alarm(struct device *dev, struct rtc_wkalrm *a)
+ 	struct bd70528_rtc_alm alm;
+ 	int ret;
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 
+-	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
+-			       &alm, sizeof(alm));
++	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
++			       sizeof(alm));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read alarm regs\n");
+ 		return ret;
+@@ -360,14 +356,12 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
+ 	int ret, tmpret, old_states;
+ 	struct bd70528_rtc_data rtc_data;
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 
+ 	ret = bd70528_disable_rtc_based_timers(r, &old_states);
+ 	if (ret)
+ 		return ret;
+ 
+-	tmpret = regmap_bulk_read(parent->regmap,
+-				  r->reg_time_start, &rtc_data,
++	tmpret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
+ 				  sizeof(rtc_data));
+ 	if (tmpret) {
+ 		dev_err(dev, "Failed to read RTC time registers\n");
+@@ -375,8 +369,7 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
+ 	}
+ 	tm2rtc(t, &rtc_data);
+ 
+-	tmpret = regmap_bulk_write(parent->regmap,
+-				   r->reg_time_start, &rtc_data,
++	tmpret = regmap_bulk_write(r->regmap, r->reg_time_start, &rtc_data,
+ 				   sizeof(rtc_data));
+ 	if (tmpret) {
+ 		dev_err(dev, "Failed to set RTC time\n");
+@@ -410,13 +403,11 @@ static int bd70528_set_time(struct device *dev, struct rtc_time *t)
+ static int bd70528_get_time(struct device *dev, struct rtc_time *t)
+ {
+ 	struct bd70528_rtc *r = dev_get_drvdata(dev);
+-	struct rohm_regmap_dev *parent = r->parent;
+ 	struct bd70528_rtc_data rtc_data;
+ 	int ret;
+ 
+ 	/* read the RTC date and time registers all at once */
+-	ret = regmap_bulk_read(parent->regmap,
+-			       r->reg_time_start, &rtc_data,
++	ret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
+ 			       sizeof(rtc_data));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to read RTC time (err %d)\n", ret);
+@@ -443,7 +434,7 @@ static int bd70528_alm_enable(struct device *dev, unsigned int enabled)
+ 		dev_err(dev, "Failed to change wake state\n");
+ 		goto out_unlock;
+ 	}
+-	ret = regmap_update_bits(r->parent->regmap, BD70528_REG_RTC_ALM_MASK,
++	ret = regmap_update_bits(r->regmap, BD70528_REG_RTC_ALM_MASK,
+ 				 BD70528_MASK_ALM_EN, enableval);
+ 	if (ret)
+ 		dev_err(dev, "Failed to change alarm state\n");
+@@ -462,7 +453,7 @@ static int bd71828_alm_enable(struct device *dev, unsigned int enabled)
+ 	if (!enabled)
+ 		enableval = 0;
+ 
+-	ret = regmap_update_bits(r->parent->regmap, BD71828_REG_RTC_ALM0_MASK,
++	ret = regmap_update_bits(r->regmap, BD71828_REG_RTC_ALM0_MASK,
+ 				 BD70528_MASK_ALM_EN, enableval);
+ 	if (ret)
+ 		dev_err(dev, "Failed to change alarm state\n");
+@@ -498,7 +489,6 @@ static int bd70528_probe(struct platform_device *pdev)
+ {
+ 	struct bd70528_rtc *bd_rtc;
+ 	const struct rtc_class_ops *rtc_ops;
+-	struct rohm_regmap_dev *parent;
+ 	const char *irq_name;
+ 	int ret;
+ 	struct rtc_device *rtc;
+@@ -508,20 +498,25 @@ static int bd70528_probe(struct platform_device *pdev)
+ 	u8 hour_reg;
+ 	enum rohm_chip_type chip = platform_get_device_id(pdev)->driver_data;
+ 
+-	parent = dev_get_drvdata(pdev->dev.parent);
+-	if (!parent) {
+-		dev_err(&pdev->dev, "No MFD driver data\n");
+-		return -EINVAL;
+-	}
+ 	bd_rtc = devm_kzalloc(&pdev->dev, sizeof(*bd_rtc), GFP_KERNEL);
+ 	if (!bd_rtc)
+ 		return -ENOMEM;
+ 
+-	bd_rtc->parent = parent;
++	bd_rtc->regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!bd_rtc->regmap) {
++		dev_err(&pdev->dev, "No regmap\n");
++		return -EINVAL;
++	}
++
+ 	bd_rtc->dev = &pdev->dev;
+ 
+ 	switch (chip) {
+ 	case ROHM_CHIP_TYPE_BD70528:
++		bd_rtc->parent = dev_get_drvdata(pdev->dev.parent);
++		if (!bd_rtc->parent) {
++			dev_err(&pdev->dev, "No MFD data\n");
++			return -EINVAL;
++		}
+ 		irq_name = "bd70528-rtc-alm";
+ 		bd_rtc->has_rtc_timers = true;
+ 		bd_rtc->reg_time_start = BD70528_REG_RTC_START;
+@@ -547,7 +542,7 @@ static int bd70528_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, bd_rtc);
+ 
+-	ret = regmap_read(parent->regmap, hour_reg, &hr);
++	ret = regmap_read(bd_rtc->regmap, hour_reg, &hr);
+ 
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to reag RTC clock\n");
+@@ -595,7 +590,7 @@ static int bd70528_probe(struct platform_device *pdev)
+ 	 *  from sub-registers when IRQ is disabled or freed.
+ 	 */
+ 	if (enable_main_irq) {
+-		ret = regmap_update_bits(parent->regmap,
++		ret = regmap_update_bits(bd_rtc->regmap,
+ 				 BD70528_REG_INT_MAIN_MASK,
+ 				 BD70528_INT_RTC_MASK, 0);
+ 		if (ret) {
+-- 
+2.25.4
 
 
---
-Best Regards
- Guo Ren
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-ML: https://lore.kernel.org/linux-csky/
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
