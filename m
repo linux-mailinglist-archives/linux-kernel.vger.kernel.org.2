@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382E134D3C9
+	by mail.lfdr.de (Postfix) with ESMTP id A7BF134D3CA
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhC2P0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:26:18 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:52361 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231320AbhC2PZp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:25:45 -0400
-Received: (qmail 936534 invoked by uid 1000); 29 Mar 2021 11:25:44 -0400
-Date:   Mon, 29 Mar 2021 11:25:44 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
-        tanxiaofei@huawei.com, liudongdong3@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] USB:ohci:fix ohci interruption problem
-Message-ID: <20210329152544.GB933773@rowland.harvard.edu>
-References: <1616748896-9415-1-git-send-email-liulongfang@huawei.com>
- <20210326152821.GA832251@rowland.harvard.edu>
- <e8d6fb1c-5a9b-426a-4844-add67aac768f@huawei.com>
+        id S231342AbhC2P0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:26:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:48469 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231346AbhC2PZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:25:53 -0400
+IronPort-SDR: OWG3aUqDZXmGmp0RhPPtLvjohN+t5qIajUeeRotdhuuQRLS1yALSpXptkf4BdwcViJ8y7r8kaH
+ U9wWdlJHCPkg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255565714"
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="255565714"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:25:52 -0700
+IronPort-SDR: rq1xC6B+ZNCfNwvKuTjI3Ukn5oSNFgV8aADsVbnNANwb9n0N8pt6HOBTo7QeKYM1Sj+NXdP4wx
+ scvTUSMC6FqQ==
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="606413062"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:25:49 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lQtly-00H3Yz-VK; Mon, 29 Mar 2021 18:25:46 +0300
+Date:   Mon, 29 Mar 2021 18:25:46 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from
+ config
+Message-ID: <YGHxejGI2x4X3EEe@smile.fi.intel.com>
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
+ <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8d6fb1c-5a9b-426a-4844-add67aac768f@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 04:38:10PM +0800, liulongfang wrote:
-> On 2021/3/26 23:28, Alan Stern wrote:
-> > On Fri, Mar 26, 2021 at 04:54:56PM +0800, Longfang Liu wrote:
-> >> When OHCI enters the S4 sleep state, the USB sleep process will call
-> >> check_root_hub_suspend() and ohci_bus_suspend() instead of
-> >> ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
-> >> to not be closed.
+On Mon, Mar 29, 2021 at 08:08:52AM -0700, Joe Perches wrote:
+> On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:
+> > On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
+> > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > 
+> > > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
+> > > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+> > > 
+> > > Make the gpiolib allow drivers to return both so driver developers
+> > > can avoid one of the checkpatch complaints.
 > > 
-> > What on earth are you talking about?  This isn't true at all.
+> > Internally we are fine to use the ENOTSUPP.
+> > Checkpatch false positives there.
 > > 
-> > Can you provide more information about your system?  Are you using a 
-> > PCI-based OHCI controller or a platform device (and if so, which one)?  
-> > Can you post system logs to back up your statements?
-> > The system is UOS, the kernel version is kernel4.19, and the driver
-> used is ohci-pci.c based on PCI.
+> > I doubt we need this change. Rather checkpatch should rephrase this to
+> > point out that this is only applicable to _user-visible_ error path.
+> > Cc'ed Joe.
 > 
-> By adding the log in ohci_suspend, and then viewing the dmesg after sleep,
-> I can confirm that the system does not call ohci_suspend in S4 sleep mode.
+> Adding CC for Jakub Kicinski who added that particular rule/test.
+> 
+> And the output message report of the rule is merely a suggestion indicating
+> a preference.  It's always up to an individual to accept/reject.
+> 
+> At best, perhaps wordsmithing the checkpatch message might be an OK option.
 
-Then your job is to figure out why not.  Doesn't entry into S4 sleep
-call hcd_pci_suspend() in core/hcd-pci.c, and doesn't that call
-suspend_common(), and doesn't that call hcd->driver->pci_suspend(),
-and isn't that routine ohci_suspend()?
+Thanks, Joe!
 
-Alan Stern
+Jakub, what do you think?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
