@@ -2,139 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0172434D875
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACFF34D878
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhC2Tnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhC2TnB (ORCPT
+        id S231765AbhC2Tog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:44:36 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:57326 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231829AbhC2ToY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:43:01 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94261C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:43:01 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so1335361oop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fnyiEO9OhvCOE6YDdvqhIfEdfkK5pS64UBBP8aKR8x0=;
-        b=sQ9wSnk60zzKzl34v97wg73YTjb7G2TpzijdiBzLzzNcZiY7+sgz/gqCWypfVyl3Xh
-         ISAYJumImkIOfnUIGNjYjVWlYNbCuKgQtTHC+RdcTgIB8dl6AGRbZACZWBT4nkDH6fQ9
-         NZ8wLHHuHQvGl8ry+fuUZN7F9G2rh9TmtE2IhlbRqnjuQKTfPKueOegl3Ej0oY72QS8F
-         OLyUr/0gLkkOqD2RHizW3DuojeKHys3Qz90MdzlYedtLDEsWW8OQay74UPQUgm1a3LRz
-         gU5RWureJDhJsJ6NK5sojsg/a1N6C/vOkYdb/XLRpXw0lm+u+p/rOJ+J6uempA6eN+dV
-         A2Og==
+        Mon, 29 Mar 2021 15:44:24 -0400
+Received: by mail-io1-f72.google.com with SMTP id y2so11655559ioa.23
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:44:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fnyiEO9OhvCOE6YDdvqhIfEdfkK5pS64UBBP8aKR8x0=;
-        b=mvpN9sEDG+fVod5l5GqieGayLhSQP0oPd/7F+zqEgDmEjWYtT53lbcxe80q5lyyU44
-         GlJhHHpWTH6Nh/nPoEu13T+RqP9dyR1obh+lBHFDXnDTB2JgxpgZj+Nw0yGbcuP8IIxB
-         bTo0ZfSAxzLFgBTtIgHAqbOMciVMKI4supbTg+8tZEhQtEMiUU5syggC+++bgU0mavwJ
-         HJ3xu56WeHlJsVaDwioA7E2ARhx4lSbuhbjWk8Cgellm9DvMkcHD6AJiSnq8OGas3uve
-         NgvaesrscFC4sEp0bvAtylthRp/Pp6DC3GkydZbgQulLmF0xCL+p12Oh0VqmKxF7ax2j
-         7K4Q==
-X-Gm-Message-State: AOAM531KUBGS//wQogJoFLbA52H17/W9uXRnrc7OF3VLzscQJSYfKrBG
-        +9anMRj8PC7202OhzHOr+3VKQCw36qw=
-X-Google-Smtp-Source: ABdhPJxVvcg9TfRZbMYeV74VZzf3CHGWLIN83+ClqkCeOgADBnjsdDDUOlooUQ09GmRSqmaIgH6E1g==
-X-Received: by 2002:a4a:d1da:: with SMTP id a26mr22665209oos.58.1617046980767;
-        Mon, 29 Mar 2021 12:43:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o63sm4511682ota.6.2021.03.29.12.42.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:43:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Linux 5.12-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
- <20210329020746.GA250550@roeck-us.net>
- <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <1f047022-f74f-e738-d683-d6ae45d3ce49@roeck-us.net>
-Date:   Mon, 29 Mar 2021 12:42:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2jXqd5aaFNpRqFsoVJoIotG0Bi63SDagwQS5vWH17Jk=;
+        b=TFFfq1ZIR/t33AYYC48KW2yWtTQogWY/djlS+pn9k6D/eZ/NHLQUC0F7+gaul9gYvt
+         SdvgFRIbuTXyGgaOkevcFTkv+haB3a33E8aoO3UTMYeaJgLGrqMs3sCgSwA0CW9KkKmL
+         j2dn95WvcJRp8zIE5jrBzVOPUsqm7LLe5hqK1iTsw7oki2j0UhbpQbJWCIEns39vtetf
+         klL0+GWUKKZI/raCzOantB9yBEgK26rZjERRv70P5DsNx7fAKRXbCY/pgzYokTtktDX0
+         txV1cu+riwxNN5xZrQR/p9lMifjFvZrLq60hYj1truR0jniFh3v62Qovftv5fJbOLHW+
+         P2Cw==
+X-Gm-Message-State: AOAM533aLFWlqPYrRUcd03k54R4kAASqfbXaLpT+0TRsch6aW8zctSKW
+        J7ECgSmhTcxUcUx4wYAXrgmi25EGjkPGhoC7VA7OJkH5Ot9h
+X-Google-Smtp-Source: ABdhPJy/ZudhkqwfnKEhdS/yKCJpkGSSCxnzBrzHksrAyg/qGBUzjTyQgd+9aCKPwglbBHyo4r30jJoQbms5ya3aikRvOeMg8+mY
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:3304:: with SMTP id c4mr25517291jae.68.1617047063801;
+ Mon, 29 Mar 2021 12:44:23 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 12:44:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d2b42905beb21b3f@google.com>
+Subject: [syzbot] KMSAN: uninit-value in efuse_one_byte_read
+From:   syzbot <syzbot+6610740013f861b6e829@syzkaller.appspotmail.com>
+To:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        florian.c.schilhabel@googlemail.com, glider@google.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 11:05 AM, Linus Torvalds wrote:
-> On Sun, Mar 28, 2021 at 7:07 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> This is not really a new problem. I enabled devicetree unit tests
->> in the openrisc kernel and was rewarded with a crash.
->> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
->> has all the glorious details.
-> 
-> Hmm.
-> 
-> I'm not sure I love that patch.
-> 
+Hello,
 
-Me not either. I did point out that it doesn't fix the problem, only
-the impact. Fixing the dt unittest code would have been easy enough,
-but I wasn't sure how to properly address the problem in the dt overlay
-code, and I was concerned that other code might be affected as well,
-so I gave up trying and settled on error handling.
+syzbot found the following issue on:
 
-Looks like Frank is going to provide a proper fix, so we should be covered.
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d4e126d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b573c14b733efb1c
+dashboard link: https://syzkaller.appspot.com/bug?extid=6610740013f861b6e829
+compiler:       Debian clang version 11.0.1-2
 
-Thanks,
-Guenter
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6610740013f861b6e829@syzkaller.appspotmail.com
+
+r8712u: register rtl8712_netdev_ops to netdev_ops
+usb 2-1: r8712u: USB_SPEED_HIGH with 0 endpoints
+usb 2-1: r8712u: Boot from EEPROM: Autoload OK
+=====================================================
+BUG: KMSAN: uninit-value in efuse_one_byte_read+0x206/0x2e0 drivers/staging/rtl8712/rtl8712_efuse.c:76
+CPU: 1 PID: 4662 Comm: kworker/1:3 Tainted: G        W         5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ efuse_one_byte_read+0x206/0x2e0 drivers/staging/rtl8712/rtl8712_efuse.c:76
+ r8712_efuse_pg_packet_read+0x29c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:245
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----data@usb_read8 created at:
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in r8712_efuse_pg_packet_read+0x77c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:246
+CPU: 1 PID: 4662 Comm: kworker/1:3 Tainted: G    B   W         5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ r8712_efuse_pg_packet_read+0x77c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:246
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+ efuse_one_byte_read+0x2cd/0x2e0 drivers/staging/rtl8712/rtl8712_efuse.c:86
+ r8712_efuse_pg_packet_read+0x29c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:245
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----data@usb_read8 created at:
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in r8712_efuse_pg_packet_read+0x79b/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:251
+CPU: 1 PID: 4662 Comm: kworker/1:3 Tainted: G    B   W         5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ r8712_efuse_pg_packet_read+0x79b/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:251
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+ efuse_one_byte_read+0x2cd/0x2e0 drivers/staging/rtl8712/rtl8712_efuse.c:86
+ r8712_efuse_pg_packet_read+0x29c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:245
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----data@usb_read8 created at:
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in r8712_efuse_pg_packet_read+0xb56/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:244
+CPU: 1 PID: 4662 Comm: kworker/1:3 Tainted: G    B   W         5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ r8712_efuse_pg_packet_read+0xb56/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:244
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+ efuse_one_byte_read+0x2cd/0x2e0 drivers/staging/rtl8712/rtl8712_efuse.c:86
+ r8712_efuse_pg_packet_read+0x29c/0xcd0 drivers/staging/rtl8712/rtl8712_efuse.c:245
+ r871xu_drv_init+0x1cfb/0x2fe0 drivers/staging/rtl8712/usb_intf.c:443
+ usb_probe_interface+0xfcc/0x1520 drivers/usb/core/driver.c:396
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_set_configuration+0x3872/0x3eb0 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:238
+ usb_probe_device+0x317/0x570 drivers/usb/core/driver.c:293
+ really_probe+0xe15/0x24d0 drivers/base/dd.c:558
+ driver_probe_device+0x29d/0x3a0 drivers/base/dd.c:740
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:846
+ bus_for_each_drv+0x2c8/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x56a/0x890 drivers/base/dd.c:914
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:961
+ bus_probe_device+0x17e/0x3d0 drivers/base/bus.c:491
+ device_add+0x2c15/0x31d0 drivers/base/core.c:3109
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x5b99/0x8870 drivers/usb/core/hub.c:5591
+ process_one_work+0x1219/0x1fe0 kernel/workqueue.c:2275
+ worker_thread+0x10ec/0x2340 kernel/workqueue.c:2421
+ kthread+0x521/0x560 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Local variable ----data@usb_read8 created at:
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+ usb_read8+0x5d/0x130 drivers/staging/rtl8712/usb_ops.c:33
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
