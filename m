@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B374634D34C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E6A34D352
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhC2PG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:06:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:46836 "EHLO mga07.intel.com"
+        id S229822AbhC2PHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:07:35 -0400
+Received: from mga18.intel.com ([134.134.136.126]:59333 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230286AbhC2PGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:06:15 -0400
-IronPort-SDR: PKtnDDvBDJR80BaLe4+MJ6AfmDrhrYmiFhUAKzJpTHxJhiRrIKjaiJ055WWX8178VmpeEuRsO+
- MT6mf0sFVxaw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255562071"
+        id S230475AbhC2PHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:07:03 -0400
+IronPort-SDR: Xop5fxtpcYw1CHFC+F4Z6ZmV7P0oAsnQtC7/ik6KPom92AiqryS2DZoGPh1eMFcAQEQEECbpvD
+ Q6uXo0IcgsPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="179108189"
 X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="255562071"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:06:13 -0700
-IronPort-SDR: 545zvjtY9dG69WL9Ut7H/wMK+vDtjZmeAt2GKqPonMpv8o8JoGWp7DhNbafFxL0OqS+jLIAsQz
- asQHcfWxs7fg==
+   d="scan'208";a="179108189"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:07:01 -0700
+IronPort-SDR: Is5J99+pHpoobgtCh6qg1/4mlY2+6LvOhQZLrfY/wIHtoDJ+fMFl/wYTjZVQFMSCcdpjlswiKk
+ rKcbi86vCnGw==
 X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="417704531"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:06:10 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 29 Mar 2021 18:06:07 +0300
-Date:   Mon, 29 Mar 2021 18:06:07 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Kranthi Kuntala <kranthi.kuntala@intel.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] thunderbolt: Fix a leak in tb_retimer_add()
-Message-ID: <20210329150607.GJ2542@lahna.fi.intel.com>
-References: <YGFulvAa5Kz6HTsd@mwanda>
- <20210329130220.GY2356281@nvidia.com>
- <20210329144323.GI2542@lahna.fi.intel.com>
- <20210329145405.GD2356281@nvidia.com>
+   d="scan'208";a="411125582"
+Received: from jmwolcot-mobl.amr.corp.intel.com (HELO [10.209.158.84]) ([10.209.158.84])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:07:00 -0700
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
+ <87o8f4cd50.ffs@nanos.tec.linutronix.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a535e22d-b87d-6b26-bb92-086cea52504c@intel.com>
+Date:   Mon, 29 Mar 2021 08:06:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329145405.GD2356281@nvidia.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <87o8f4cd50.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:54:05AM -0300, Jason Gunthorpe wrote:
-> On Mon, Mar 29, 2021 at 05:43:23PM +0300, Mika Westerberg wrote:
-> 
-> > The nvm is a separate (physical Linux) device that gets added under this
-> > one. It cannot be added before AFAICT.
-> 
-> Hum, yes, but then it is odd that a parent is holding sysfs attributes
-> that refer to a child.
+On 3/27/21 5:53 PM, Thomas Gleixner wrote:
+> Making it solely depend on XCR0 and fault if not requested upfront is
+> bringing you into the situation that you broke 'legacy code' which
+> relied on the CPUID bit and that worked until now which gets you
+> in the no-regression trap.
 
-Well the child (NVMem) comes from completely different subsystem that
-does not have a concept of "authentication" or anythin similar. This is
-what we add on top. We actually exposer two NVMem devices under each
-retimer: one that is the current active one, and then the one that is
-used to write the new firmware image.
+Trying to find the right place to jump into this thread... :)
 
-> > The code you refer actually looks like this:
-> > 
-> > static ssize_t nvm_authenticate_store(struct device *dev,
-> >  	struct device_attribute *attr, const char *buf, size_t count)
-> > {
-> > 	...
-> >         if (!mutex_trylock(&rt->tb->lock)) {
-> >                 ret = restart_syscall();
-> >                 goto exit_rpm;
-> >         }
-> 
-> Is that lock held during tb_retimer_nvm_add() I looked for a bit and
-> didn't find something. So someplace more than 4 call site above
-> mandatory locking is being held?
+I don't know what apps do in practice.  But, the enumeration of the
+features in the SDM describes three steps:
+1. Check for XGETBV support
+2. Use XGETBV[0] to check that the OS is aware of the feature and is
+   context-switching it
+3. Detect the feature itself
 
-Yes it is. It is called from tb_scan_port() where that lock is held.
+So, apps *are* supposed to be checking XCR0 via XGETBV.  If they don't,
+they run the risk of a feature being supported by the CPU and the
+registers "working" but not being context-switched.
 
-> static void tb_retimer_remove(struct tb_retimer *rt)
-> {
-> 	dev_info(&rt->dev, "retimer disconnected\n");
-> 	tb_nvm_free(rt->nvm);
-> 	device_unregister(&rt->dev);
-> }
-> 
-> Here too?
+Zeroing out bits in XCR0 will have the effect of telling the app that
+the OS isn't context-switching the state.  I think this means that apps
+will see the same thing in both situations:
+1. If they run an old (say pre-AVX-512) kernel on new AVX-512-enabled
+   hardware, or
+2. They run a new kernel with this fancy proposed XCR0-switching
+   mechanism
 
-Yes.
-
-> And this is why it is all trylock because it deadlocks with unregister
-> otherwise?
-
-I tried to explain it in 09f11b6c99fe ("thunderbolt: Take domain lock in
-switch sysfs attribute callbacks"), except that at that time we did not
-have retimers exposed but the same applies here too.
+I _think_ that gets us off the hook for an ABI break, at least for AVX-512.
