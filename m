@@ -2,216 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DEF34D0CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F0B34D0CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhC2NBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:01:14 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:41968 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231735AbhC2NBE (ORCPT
+        id S231775AbhC2NBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:01:15 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:65312 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231737AbhC2NBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:01:04 -0400
-Received: by mail-lf1-f47.google.com with SMTP id b14so18281338lfv.8;
-        Mon, 29 Mar 2021 06:01:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U0CyRmeyleZ4lvEoqQtGqAf4e0MllNlG193uWSSjCXU=;
-        b=oDCKKwr+6KyMCnSwjikwiYE5UAwNKQd/zmEVb0SgEVrSDVWYQGkCyvIYeQirprjnkc
-         3ZgiIFQAhTRB0KH7uLRtilcRyTFsQIPEbGphfCDzJoNNuGzF9+jv2uVQ7FMkB6iEOX1G
-         vDn+g44ZNKraBjgR2gXqzyY4KDmbC6oLTAEHKEI4rkMEl7XQn6pob2tGvS0zzsCZEIP6
-         6/LrPqgYhQiP5UNy+hRoMOqgt2Jb/5QqQtPDY2zjHPx8gf98r6+R0aDh/ECLsxJQhnWL
-         Afgt6b3K+qISf4E3avZ7dI+0RGpBF8I4LEbwfBV9Y5nh4hKdUDeTr0ZGBVvtBjKaixi7
-         SVRg==
-X-Gm-Message-State: AOAM533v35rKurAkWEFeHUonwxce7kvBlgEi0oFY+uH0cF3AYZiaoksE
-        X4Ec1HLArbSNgVucvxvVaCw=
-X-Google-Smtp-Source: ABdhPJxH0VZJYf4ZZ3n93LZo9qXiGchl5XA64SGti3oaGeb9c0p4Qo8p39SQSpwOCVLIbuI2gczl4A==
-X-Received: by 2002:ac2:5e62:: with SMTP id a2mr17525106lfr.385.1617022863089;
-        Mon, 29 Mar 2021 06:01:03 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id x7sm2425655ljc.118.2021.03.29.06.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:01:02 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 16:00:57 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH v5 18/19] rtc: bd70528: Support RTC on ROHM BD71815
-Message-ID: <e9b51b57252be8eac7d93a36bae92161fea4a808.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 29 Mar 2021 09:01:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1617022864; x=1619614864;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KkyaLvXgnh8FHwhgimfkJzNBhe8FYXfqUyA0puTFtrg=;
+        b=NICHpzJr7Tv+1CxFlfsYlHFDQlNu/cEgLx12UmKOodcGMnv0YrHwyK8OALvIKfJp
+        olUvWhJq5sISZcgTbNeC4HppmIGcA5n7Nx3vxZueiCxAUrLcOXYFx+DkvoNBqcZb
+        r5qap9lPJXYXDsrKGnh/lIzO5YhFeANsEPUf3BZQuLw=;
+X-AuditID: c39127d2-85cb770000001c91-35-6061cf90f966
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8E.4B.07313.09FC1606; Mon, 29 Mar 2021 15:01:04 +0200 (CEST)
+Received: from lws-riedmueller.phytec.de ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021032915010496-253808 ;
+          Mon, 29 Mar 2021 15:01:04 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: [PATCH v2 1/3] ARM: dts: imx6: pfla02: Fix USB vbus enable pinmuxing
+Date:   Mon, 29 Mar 2021 15:01:01 +0200
+Message-Id: <20210329130103.65857-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 29.03.2021 15:01:04,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 29.03.2021 15:01:05
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsWyRoCBS3fC+cQEg53zLCzmHznHavHwqr/F
+        qqk7WSw2Pb7GatH1ayWzxeVdc9gsWvceYbf4u30Ti8WLLeIOnB47Z91l99i0qpPNY/OSeo+N
+        73YwefT/NfD4vEkugC2KyyYlNSezLLVI3y6BK2PTcq2ChTwVk3v3sTYwdnN1MXJySAiYSDRu
+        nMXWxcjFISSwjVHi1pbdzBDONUaJJy//MoFUsQkYSSyY1ghmiwjkSJzauJkFxGYW6GSS+H0y
+        GMQWFvCVmDD/EmsXIwcHi4CqxNf9qSBhXgEbibN3F7JBLJOXmHnpOztEXFDi5MwnLBDxK4wS
+        e26qQ9hCEqcXn2WGGK8tsWzha+YJjHyzkLTMQpJawMi0ilEoNzM5O7UoM1uvIKOyJDVZLyV1
+        EyMwVA9PVL+0g7FvjschRiYOxkOMEhzMSiK8wgcSE4R4UxIrq1KL8uOLSnNSiw8xSnOwKInz
+        buAtCRMSSE8sSc1OTS1ILYLJMnFwSjUwRnvN3qn6d4rkSqbHMR8X3fue9vt83kerwim++7fZ
+        zOCIqH0RMUf/0aNqzqVn7CLfJ6RmsQl7ny14cd5dql/X1Jt31uepq1/ES79X8mL7+72jZim7
+        0+vD32KsZpUY9HOYv+u+u95b45H8MX4tQ9PP2htOfF87r3pGzTsvpYa+fy9FwlmkN/hdVmIp
+        zkg01GIuKk4EALO2rFFDAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BD71815 contains similar RTC block as BD71828. Only the address offsets
-seem different. Support also BD71815 RTC using rtc-bd70528.
+The pinmuxing for the enable pin of the usbh1 node is wrong. It needs to
+be muxed as GPIO. While at it, move the pinctrl to the vbus regulator
+since it is actually the regulator enable pin.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
 ---
-Changes since v3:
- - No changes
- drivers/rtc/Kconfig       |  6 +++---
- drivers/rtc/rtc-bd70528.c | 45 ++++++++++++++++++++++++++++++++-------
- 2 files changed, 40 insertions(+), 11 deletions(-)
+Changes in v2:
+ - Use default pad ctl value instead of 0x80000000
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index ce723dc54aa4..622af1314ece 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -501,11 +501,11 @@ config RTC_DRV_M41T80_WDT
- 	  watchdog timer in the ST M41T60 and M41T80 RTC chips series.
- 
- config RTC_DRV_BD70528
--	tristate "ROHM BD70528 PMIC RTC"
--	depends on MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
-+	tristate "ROHM BD70528, BD71815 and BD71828 PMIC RTC"
-+	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
- 	help
- 	  If you say Y here you will get support for the RTC
--	  block on ROHM BD70528 and BD71828 Power Management IC.
-+	  block on ROHM BD70528, BD71815 and BD71828 Power Management IC.
- 
- 	  This driver can also be built as a module. If so, the module
- 	  will be called rtc-bd70528.
-diff --git a/drivers/rtc/rtc-bd70528.c b/drivers/rtc/rtc-bd70528.c
-index fb4476bb5ab6..6454afca02a6 100644
---- a/drivers/rtc/rtc-bd70528.c
-+++ b/drivers/rtc/rtc-bd70528.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bcd.h>
- #include <linux/mfd/rohm-bd70528.h>
-+#include <linux/mfd/rohm-bd71815.h>
- #include <linux/mfd/rohm-bd71828.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -13,6 +14,12 @@
- #include <linux/regmap.h>
- #include <linux/rtc.h>
- 
-+/*
-+ * On BD71828 and BD71815 the ALM0 MASK is 14 bytes after the ALM0
-+ * block start
-+ */
-+#define BD718XX_ALM_EN_OFFSET 14
-+
- /*
-  * We read regs RTC_SEC => RTC_YEAR
-  * this struct is ordered according to chip registers.
-@@ -55,6 +62,7 @@ struct bd70528_rtc {
- 	struct regmap *regmap;
- 	struct device *dev;
- 	u8 reg_time_start;
-+	u8 bd718xx_alm_block_start;
- 	bool has_rtc_timers;
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/d=
+ts/imx6qdl-phytec-pfla02.dtsi
+index 7a1e53195785..9f39c926cc08 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+@@ -31,6 +31,8 @@ reg=5Fusb=5Fotg=5Fvbus: regulator@0 {
+=20
+ 		reg=5Fusb=5Fh1=5Fvbus: regulator@1 {
+ 			compatible =3D "regulator-fixed";
++			pinctrl-names =3D "default";
++			pinctrl-0 =3D <&pinctrl=5Fusbh1=5Fvbus>;
+ 			reg =3D <1>;
+ 			regulator-name =3D "usb=5Fh1=5Fvbus";
+ 			regulator-min-microvolt =3D <5000000>;
+@@ -328,9 +330,9 @@ MX6QDL=5FPAD=5FKEY=5FROW0=5F=5FUART4=5FRX=5FDATA	0x1b0b1
+ 			>;
+ 		};
+=20
+-		pinctrl=5Fusbh1: usbh1grp {
++		pinctrl=5Fusbh1=5Fvbus: usbh1vbusgrp {
+ 			fsl,pins =3D <
+-				MX6QDL=5FPAD=5FGPIO=5F0=5F=5FUSB=5FH1=5FPWR		0x80000000
++				MX6QDL=5FPAD=5FGPIO=5F0=5F=5FGPIO1=5FIO00		0x1b0b0
+ 			>;
+ 		};
+=20
+@@ -415,8 +417,6 @@ &uart4 {
+=20
+ &usbh1 {
+ 	vbus-supply =3D <&reg=5Fusb=5Fh1=5Fvbus>;
+-	pinctrl-names =3D "default";
+-	pinctrl-0 =3D <&pinctrl=5Fusbh1>;
+ 	status =3D "disabled";
  };
- 
-@@ -236,8 +244,8 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
- 
--	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, r->bd718xx_alm_block_start, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -250,8 +258,8 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	else
- 		alm.alm_mask |= BD70528_MASK_ALM_EN;
- 
--	ret = regmap_bulk_write(r->regmap, BD71828_REG_RTC_ALM_START,
--				&alm, sizeof(alm));
-+	ret = regmap_bulk_write(r->regmap, r->bd718xx_alm_block_start, &alm,
-+				sizeof(alm));
- 	if (ret)
- 		dev_err(dev, "Failed to set alarm time\n");
- 
-@@ -311,8 +319,8 @@ static int bd71828_read_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
- 
--	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, r->bd718xx_alm_block_start, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -453,8 +461,9 @@ static int bd71828_alm_enable(struct device *dev, unsigned int enabled)
- 	if (!enabled)
- 		enableval = 0;
- 
--	ret = regmap_update_bits(r->regmap, BD71828_REG_RTC_ALM0_MASK,
--				 BD70528_MASK_ALM_EN, enableval);
-+	ret = regmap_update_bits(r->regmap, r->bd718xx_alm_block_start +
-+				 BD718XX_ALM_EN_OFFSET, BD70528_MASK_ALM_EN,
-+				 enableval);
- 	if (ret)
- 		dev_err(dev, "Failed to change alarm state\n");
- 
-@@ -524,9 +533,28 @@ static int bd70528_probe(struct platform_device *pdev)
- 		enable_main_irq = true;
- 		rtc_ops = &bd70528_rtc_ops;
- 		break;
-+	case ROHM_CHIP_TYPE_BD71815:
-+		irq_name = "bd71815-rtc-alm-0";
-+		bd_rtc->reg_time_start = BD71815_REG_RTC_START;
-+
-+		/*
-+		 * See also BD718XX_ALM_EN_OFFSET:
-+		 * This works for BD71828 and BD71815 as they have same offset
-+		 * between ALM0 start and ALM0_MASK. If new ICs are to be
-+		 * added this requires proper check as ALM0_MASK is not located
-+		 * at the end of ALM0 block - but after all ALM blocks so if
-+		 * amount of ALMs differ the offset to enable/disable is likely
-+		 * to be incorrect and enable/disable must be given as own
-+		 * reg address here.
-+		 */
-+		bd_rtc->bd718xx_alm_block_start = BD71815_REG_RTC_ALM_START;
-+		hour_reg = BD71815_REG_HOUR;
-+		rtc_ops = &bd71828_rtc_ops;
-+		break;
- 	case ROHM_CHIP_TYPE_BD71828:
- 		irq_name = "bd71828-rtc-alm-0";
- 		bd_rtc->reg_time_start = BD71828_REG_RTC_START;
-+		bd_rtc->bd718xx_alm_block_start = BD71828_REG_RTC_ALM_START;
- 		hour_reg = BD71828_REG_RTC_HOUR;
- 		rtc_ops = &bd71828_rtc_ops;
- 		break;
-@@ -605,6 +633,7 @@ static int bd70528_probe(struct platform_device *pdev)
- static const struct platform_device_id bd718x7_rtc_id[] = {
- 	{ "bd70528-rtc", ROHM_CHIP_TYPE_BD70528 },
- 	{ "bd71828-rtc", ROHM_CHIP_TYPE_BD71828 },
-+	{ "bd71815-rtc", ROHM_CHIP_TYPE_BD71815 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(platform, bd718x7_rtc_id);
--- 
-2.25.4
+=20
+--=20
+2.25.1
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
