@@ -2,323 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C5B34D57A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0EC34D555
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhC2QvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:51:13 -0400
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:42970 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230362AbhC2Qup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:50:45 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([87.20.116.197])
-        by smtp-17.iol.local with ESMTPA
-        id Quy8lKyqctpGHQuyIliOm0; Mon, 29 Mar 2021 18:42:34 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1617036154; bh=nbH1lCYkzDuJOmzMnHaDvCFk1I+LYdzwm2/11Mvim6g=;
-        h=From;
-        b=zBdY8WL2o1EwDALC64lY354sHSwBnW/kCdS4xsiBNdTP2KvlUi6RcSFuEWaHaGl6h
-         9EXS4JKox3kpj1lFLXft/myXWTYJgTwAixHqZ83OQWvuu0Gar2wlA/D3nDxazcgfre
-         LQ0cx4uw77W6YMB5TtIm+qBZYqXOwl5AWcAKtTxcH19xrF4pvrVcp3RiFDsKbv2elu
-         AE3T+91Uzi825PrUNTzuI2OnLbiKnP338XZ+YZng0/RBK9/PxfVxrrWx5CpW5kEwMi
-         pV+lGKsfstjSErBuUAfYlRDr7xxzxBjgSUqcur7037BeE5H8sDb+jSVbU1HD6QpmJu
-         0v7MnrY7a5foA==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6062037a cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=IkcTkHD0fZMA:10 a=o_rbLAqdoS-kjYQczG8A:9 a=QEXdDO2ut3YA:10
- a=fCgQI5UlmZDRPDxm0A3o:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Dario Binacchi <dariobin@libero.it>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v3 4/4] clk: ti: add am33xx spread spectrum clock support
-Date:   Mon, 29 Mar 2021 18:42:21 +0200
-Message-Id: <20210329164222.26794-5-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210329164222.26794-1-dariobin@libero.it>
-References: <20210329164222.26794-1-dariobin@libero.it>
+        id S229515AbhC2QoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhC2Qn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:43:58 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2D2C061574;
+        Mon, 29 Mar 2021 09:43:58 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o16so2642469ljp.3;
+        Mon, 29 Mar 2021 09:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EJA04ZTI6BF3T7RTrxt/PRfIkpOFj2/PcmhPczxlcIE=;
+        b=THtoF59AVOFrR2jstQBNOoDcCB3dQWh93fHaqXEcvO6bOXhPRvN/8TTsypthmcU/UM
+         7owCSX8NkHl8e8J+iFGtj+lVPrVQnLR8m9FfUaHm2usLQF3/Ihx9eug/2HcW6JcqmMWl
+         e1dSxyzypN/4jCg4LVG1Mi4NjAQCkdAeAMupYwoMRAmdRzvfbSutokQwCvgD71J9KIRc
+         ioKEB6E5pMQ9ODdDJg49OAZPraUF1oMBiKUKb6VxvUQtncu5rNH1r/20pJLezAxSuChl
+         wnwTupu+GYlnlJB90p5n1z7OfAxBC4ffWz0Fe7ambJ9mbYDgBBWCP3J2ve8YMcp+/Ahx
+         TziA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EJA04ZTI6BF3T7RTrxt/PRfIkpOFj2/PcmhPczxlcIE=;
+        b=CEuCs57A8k8rsiXT3e55r+NC0U+dGGTs69buvpaco1A2IrhxTqHa+qbVfZFvf1m3mq
+         yRdyDHdGKwXHiXNJHbdwkxxwGMSFa8MPjdJLHCZcfETabb7RTf3nSi1g1/n3/p/gIxio
+         NaMOBsDnpzQHfQjJrS9g7CS1avWXdCmfEOmmTixxQuyMmHVfMO3khXjwrwMUP9sNiinu
+         ARW4j0+2jBzsK3AsPndPkYHWudwwmRjRz4tC5U4N5IDMIFZuLsiDu3lT5AzQB1Z6QrX2
+         65+PWiLE9avFXDjpkFf4SYJPa0Q78FbxIqNL2V4Fj2SHoaLaMVt33cjbPDPOValgIV23
+         L/OQ==
+X-Gm-Message-State: AOAM530i+QE0ORin1l5Alli5AYaZZqNeqA9YmZl0elPUdn7BVEvUeeXp
+        UZHCL2aHGMrpd975UASF1fBiPknYBWV/D2SribI=
+X-Google-Smtp-Source: ABdhPJzS8PQfFWyMazbBa7Hc/f4knOhxnZndQbdzqKAFN6z6q+U1344mkldKZH8fX2YKnlVG0Nr19E2tf6O0Uy6Gu1s=
+X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr18376958ljj.116.1617036236649;
+ Mon, 29 Mar 2021 09:43:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfOR5sfuN7CDFFUQ88TsfF0HHMJBZaMkZQKbATvMx0SfTeVaDp7fVsaCecIeyLBX8/d+G1bstcZDBADy2NQJIrQIptnGEweg1OqaE4mJjica+kR8FyFLb
- /AmZxcJHouBpWLUiZ5mUizeJOATj8KKHjfr3K3UHGLz2FiulZO3rJmbApmBYFE1ltDv25dsqMCmpeUXbRmpFM6WYST5OyuB/PQyKzcDFKWFJy6SDouUu2Clo
- iOeZnB7QLdcGcy9q+ZifKS5GfT+bLTbzmdY56kpBbw8dH/to5UXC1rBBYroyUpcJFdGE5YuHet8oy06lKGmzJtUP5IsvZBVnMjTcOY0UYe5U0zRIUjA/UUJl
- H8/XVyQM6ZKHKH6c/KxehfQKvn8D9N0ImTc/wY9YBR6/9gG3GK3glkTl4urBIwm/NaRUaRNndNkxOmYJa1C0BaqFmNKZT7ngbgc44vBpP75+nCvp6soT4ZMo
- r03r4SsW98JedLjvk608NzCmq3pbxnyfK7rqlA==
+References: <20210329142604.28737-1-yashsri421@gmail.com>
+In-Reply-To: <20210329142604.28737-1-yashsri421@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 29 Mar 2021 13:43:44 -0300
+Message-ID: <CAOMZO5DLaw7uCBX03YgpY7ZvcjNW6gdsbOx9et+pgEGjRMm=dw@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: imx8mp: fix incorrect kernel-doc comment syntax
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>, lukas.bulwahn@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch enables spread spectrum clocking (SSC) for MPU and LCD PLLs.
-As reported by the TI spruh73x RM, SSC is only supported for the
-DISP/LCD and MPU PLLs on am33xx device. SSC is not supported for DDR,
-PER, and CORE PLLs.
+Hi Aditya,
 
-Calculating the required values and setting the registers accordingly
-was taken from the set_mpu_spreadspectrum routine contained in the
-arch/arm/mach-omap2/am33xx/clock_am33xx.c file of the u-boot project.
+On Mon, Mar 29, 2021 at 11:26 AM Aditya Srivastava <yashsri421@gmail.com> wrote:
+>
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/usb/dwc3/dwc3-imx8mp.c follows this syntax, but the
+> content inside does not comply with kernel-doc.
+>
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> "warning: expecting prototype for dwc3(). Prototype was for USB_WAKEUP_CTRL() instead"
+>
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+>
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-In locked condition, DPLL output clock = CLKINP *[M/N]. In case of
-SSC enabled, the AM335x reference manual explains that there is a
-restriction of range of M values. Since the omap2_dpll_round_rate
-routine attempts to select the minimum possible N, the value of M
-obtained is not guaranteed to be within the range required. With the new
-"ti,min-div" parameter it is possible to increase N and consequently M
-to satisfy the constraint imposed by SSC.
+It looks good, thanks:
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
----
-
-Changes in v3:
-- Use "ti,ssc-modfreq-hz" binding instead of "ti,ssc-modfreq".
-
-Changes in v2:
-- Move the DT changes to the previous patch in the series.
-
- drivers/clk/ti/dpll.c     | 42 +++++++++++++++++++
- drivers/clk/ti/dpll3xxx.c | 85 +++++++++++++++++++++++++++++++++++++++
- include/linux/clk/ti.h    | 24 +++++++++++
- 3 files changed, 151 insertions(+)
-
-diff --git a/drivers/clk/ti/dpll.c b/drivers/clk/ti/dpll.c
-index d6f1ac5b53e1..91bea2a9ee0d 100644
---- a/drivers/clk/ti/dpll.c
-+++ b/drivers/clk/ti/dpll.c
-@@ -290,7 +290,9 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	struct clk_init_data *init = NULL;
- 	const char **parent_names = NULL;
- 	struct dpll_data *dd = NULL;
-+	int ssc_clk_index;
- 	u8 dpll_mode = 0;
-+	u32 min_div;
- 
- 	dd = kmemdup(ddt, sizeof(*dd), GFP_KERNEL);
- 	clk_hw = kzalloc(sizeof(*clk_hw), GFP_KERNEL);
-@@ -345,6 +347,28 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	if (dd->autoidle_mask) {
- 		if (ti_clk_get_reg_addr(node, 3, &dd->autoidle_reg))
- 			goto cleanup;
-+
-+		ssc_clk_index = 4;
-+	} else {
-+		ssc_clk_index = 3;
-+	}
-+
-+	if (dd->ssc_deltam_int_mask && dd->ssc_deltam_frac_mask &&
-+	    dd->ssc_modfreq_mant_mask && dd->ssc_modfreq_exp_mask) {
-+		if (ti_clk_get_reg_addr(node, ssc_clk_index++,
-+					&dd->ssc_deltam_reg))
-+			goto cleanup;
-+
-+		if (ti_clk_get_reg_addr(node, ssc_clk_index++,
-+					&dd->ssc_modfreq_reg))
-+			goto cleanup;
-+
-+		of_property_read_u32(node, "ti,ssc-modfreq-hz",
-+				     &dd->ssc_modfreq);
-+		of_property_read_u32(node, "ti,ssc-deltam", &dd->ssc_deltam);
-+		if (of_property_read_bool(node, "ti,ssc-downspread"))
-+			dd->ssc_downspread = 1;
-+
- 	}
- 
- 	if (of_property_read_bool(node, "ti,low-power-stop"))
-@@ -356,6 +380,10 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	if (of_property_read_bool(node, "ti,lock"))
- 		dpll_mode |= 1 << DPLL_LOCKED;
- 
-+	if (!of_property_read_u32(node, "ti,min-div", &min_div) &&
-+	    min_div > dd->min_divider)
-+		dd->min_divider = min_div;
-+
- 	if (dpll_mode)
- 		dd->modes = dpll_mode;
- 
-@@ -585,8 +613,15 @@ static void __init of_ti_am3_no_gate_dpll_setup(struct device_node *node)
- 	const struct dpll_data dd = {
- 		.idlest_mask = 0x1,
- 		.enable_mask = 0x7,
-+		.ssc_enable_mask = 0x1 << 12,
-+		.ssc_ack_mask = 0x1 << 13,
-+		.ssc_downspread_mask = 0x1 << 14,
- 		.mult_mask = 0x7ff << 8,
- 		.div1_mask = 0x7f,
-+		.ssc_deltam_int_mask = 0x3 << 18,
-+		.ssc_deltam_frac_mask = 0x3ffff,
-+		.ssc_modfreq_mant_mask = 0x7f,
-+		.ssc_modfreq_exp_mask = 0x7 << 8,
- 		.max_multiplier = 2047,
- 		.max_divider = 128,
- 		.min_divider = 1,
-@@ -645,8 +680,15 @@ static void __init of_ti_am3_dpll_setup(struct device_node *node)
- 	const struct dpll_data dd = {
- 		.idlest_mask = 0x1,
- 		.enable_mask = 0x7,
-+		.ssc_enable_mask = 0x1 << 12,
-+		.ssc_ack_mask = 0x1 << 13,
-+		.ssc_downspread_mask = 0x1 << 14,
- 		.mult_mask = 0x7ff << 8,
- 		.div1_mask = 0x7f,
-+		.ssc_deltam_int_mask = 0x3 << 18,
-+		.ssc_deltam_frac_mask = 0x3ffff,
-+		.ssc_modfreq_mant_mask = 0x7f,
-+		.ssc_modfreq_exp_mask = 0x7 << 8,
- 		.max_multiplier = 2047,
- 		.max_divider = 128,
- 		.min_divider = 1,
-diff --git a/drivers/clk/ti/dpll3xxx.c b/drivers/clk/ti/dpll3xxx.c
-index 94d5b5fe9a2b..e32b3515f9e7 100644
---- a/drivers/clk/ti/dpll3xxx.c
-+++ b/drivers/clk/ti/dpll3xxx.c
-@@ -291,6 +291,88 @@ static void _lookup_sddiv(struct clk_hw_omap *clk, u8 *sd_div, u16 m, u8 n)
- 	*sd_div = sd;
- }
- 
-+/**
-+ * omap3_noncore_dpll_ssc_program - set spread-spectrum clocking registers
-+ * @clk:	struct clk * of DPLL to set
-+ *
-+ * Enable the DPLL spread spectrum clocking if frequency modulation and
-+ * frequency spreading have been set, otherwise disable it.
-+ */
-+static void omap3_noncore_dpll_ssc_program(struct clk_hw_omap *clk)
-+{
-+	struct dpll_data *dd = clk->dpll_data;
-+	unsigned long ref_rate;
-+	u32 v, ctrl, mod_freq_divider, exponent, mantissa;
-+	u32 deltam_step, deltam_ceil;
-+
-+	ctrl = ti_clk_ll_ops->clk_readl(&dd->control_reg);
-+
-+	if (dd->ssc_modfreq && dd->ssc_deltam) {
-+		ctrl |= dd->ssc_enable_mask;
-+
-+		if (dd->ssc_downspread)
-+			ctrl |= dd->ssc_downspread_mask;
-+		else
-+			ctrl &= ~dd->ssc_downspread_mask;
-+
-+		ref_rate = clk_hw_get_rate(dd->clk_ref);
-+		mod_freq_divider =
-+		    (ref_rate / dd->last_rounded_n) / (4 * dd->ssc_modfreq);
-+		if (dd->ssc_modfreq > (ref_rate / 70))
-+			pr_warn("clock: SSC modulation frequency of DPLL %s greater than %ld\n",
-+				__clk_get_name(clk->hw.clk), ref_rate / 70);
-+
-+		exponent = 0;
-+		mantissa = mod_freq_divider;
-+		while ((mantissa > 127) && (exponent < 7)) {
-+			exponent++;
-+			mantissa /= 2;
-+		}
-+		if (mantissa > 127)
-+			mantissa = 127;
-+
-+		v = ti_clk_ll_ops->clk_readl(&dd->ssc_modfreq_reg);
-+		v &= ~(dd->ssc_modfreq_mant_mask | dd->ssc_modfreq_exp_mask);
-+		v |= mantissa << __ffs(dd->ssc_modfreq_mant_mask);
-+		v |= exponent << __ffs(dd->ssc_modfreq_exp_mask);
-+		ti_clk_ll_ops->clk_writel(v, &dd->ssc_modfreq_reg);
-+
-+		deltam_step = dd->last_rounded_m * dd->ssc_deltam;
-+		deltam_step /= 10;
-+		if (dd->ssc_downspread)
-+			deltam_step /= 2;
-+
-+		deltam_step <<= __ffs(dd->ssc_deltam_int_mask);
-+		deltam_step /= 100;
-+		deltam_step /= mod_freq_divider;
-+		if (deltam_step > 0xFFFFF)
-+			deltam_step = 0xFFFFF;
-+
-+		deltam_ceil = (deltam_step & dd->ssc_deltam_int_mask) >>
-+		    __ffs(dd->ssc_deltam_int_mask);
-+		if (deltam_step & dd->ssc_deltam_frac_mask)
-+			deltam_ceil++;
-+
-+		if ((dd->ssc_downspread &&
-+		     ((dd->last_rounded_m - (2 * deltam_ceil)) < 20 ||
-+		      dd->last_rounded_m > 2045)) ||
-+		    ((dd->last_rounded_m - deltam_ceil) < 20 ||
-+		     (dd->last_rounded_m + deltam_ceil) > 2045))
-+			pr_warn("clock: SSC multiplier of DPLL %s is out of range\n",
-+				__clk_get_name(clk->hw.clk));
-+
-+		v = ti_clk_ll_ops->clk_readl(&dd->ssc_deltam_reg);
-+		v &= ~(dd->ssc_deltam_int_mask | dd->ssc_deltam_frac_mask);
-+		v |= deltam_step << __ffs(dd->ssc_deltam_int_mask |
-+					  dd->ssc_deltam_frac_mask);
-+		ti_clk_ll_ops->clk_writel(v, &dd->ssc_deltam_reg);
-+	} else {
-+		ctrl &= ~dd->ssc_enable_mask;
-+	}
-+
-+	ti_clk_ll_ops->clk_writel(ctrl, &dd->control_reg);
-+}
-+
- /**
-  * omap3_noncore_dpll_program - set non-core DPLL M,N values directly
-  * @clk:	struct clk * of DPLL to set
-@@ -390,6 +472,9 @@ static int omap3_noncore_dpll_program(struct clk_hw_omap *clk, u16 freqsel)
- 		ti_clk_ll_ops->clk_writel(v, &dd->control_reg);
- 	}
- 
-+	if (dd->ssc_enable_mask)
-+		omap3_noncore_dpll_ssc_program(clk);
-+
- 	/* We let the clock framework set the other output dividers later */
- 
- 	/* REVISIT: Set ramp-up delay? */
-diff --git a/include/linux/clk/ti.h b/include/linux/clk/ti.h
-index c62f6fa6763d..cba093de62d8 100644
---- a/include/linux/clk/ti.h
-+++ b/include/linux/clk/ti.h
-@@ -63,6 +63,18 @@ struct clk_omap_reg {
-  * @auto_recal_bit: bitshift of the driftguard enable bit in @control_reg
-  * @recal_en_bit: bitshift of the PRM_IRQENABLE_* bit for recalibration IRQs
-  * @recal_st_bit: bitshift of the PRM_IRQSTATUS_* bit for recalibration IRQs
-+ * @ssc_deltam_reg: register containing the DPLL SSC frequency spreading
-+ * @ssc_modfreq_reg: register containing the DPLL SSC modulation frequency
-+ * @ssc_modfreq_mant_mask: mask of the mantissa component in @ssc_modfreq_reg
-+ * @ssc_modfreq_exp_mask: mask of the exponent component in @ssc_modfreq_reg
-+ * @ssc_enable_mask: mask of the DPLL SSC enable bit in @control_reg
-+ * @ssc_ack_mask: mask of the DPLL SSC turned on/off bit in @control_reg
-+ * @ssc_downspread_mask: mask of the DPLL SSC low frequency only bit in
-+ *                       @control_reg
-+ * @ssc_modfreq: the DPLL SSC frequency modulation in kHz
-+ * @ssc_deltam: the DPLL SSC frequency spreading in permille (10th of percent)
-+ * @ssc_downspread: require the only low frequency spread of the DPLL in SSC
-+ *                   mode
-  * @flags: DPLL type/features (see below)
-  *
-  * Possible values for @flags:
-@@ -110,6 +122,18 @@ struct dpll_data {
- 	u8			auto_recal_bit;
- 	u8			recal_en_bit;
- 	u8			recal_st_bit;
-+	struct clk_omap_reg	ssc_deltam_reg;
-+	struct clk_omap_reg	ssc_modfreq_reg;
-+	u32			ssc_deltam_int_mask;
-+	u32			ssc_deltam_frac_mask;
-+	u32			ssc_modfreq_mant_mask;
-+	u32			ssc_modfreq_exp_mask;
-+	u32                     ssc_enable_mask;
-+	u32                     ssc_ack_mask;
-+	u32                     ssc_downspread_mask;
-+	u32                     ssc_modfreq;
-+	u32                     ssc_deltam;
-+	u8                      ssc_downspread;
- 	u8			flags;
- };
- 
--- 
-2.17.1
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
