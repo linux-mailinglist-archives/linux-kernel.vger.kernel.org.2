@@ -2,164 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7669B34D502
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FF134D508
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhC2QYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:24:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37680 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhC2QYO (ORCPT
+        id S231422AbhC2QZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:25:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51301 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231649AbhC2QZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:24:14 -0400
-Date:   Mon, 29 Mar 2021 16:24:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617035053;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 29 Mar 2021 12:25:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617035113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dcZQ+5Ot4W7UPWffXYKybV8kr0ZvNfQ/8RgvI4Gk4e8=;
-        b=IzquOC7wjoUX4cRfG4pr9ILgftJj5JhoN2F+YTW07lMaAP6IbnR+f9w6fUNH2qSSHGIeOv
-        yJdHw2IIE70YtHxfvueg3UoHuPS/Ndz5sq2u1DmqLMBQnxVrzo4DGxFWKA+hi0klCJqhJX
-        3x+pWhQbUwB3/6lHeuB/sjw6U4FuUFI6avDtl439E0XAtQwxG9IGCpEu6b0lvLelz6ejCD
-        KEafUfL1AHgHjaUgRICrUKGnyr1QksJVcbxBJdqFnnqF9BUQevwX3DpVdo+eLhnN6dOoaq
-        X91Aiu+aIxEPLQAAElJcOHjv8Q/cH6MOU+CNK2yRUDzzBcgHk16ecLaPyf7fPw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617035053;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dcZQ+5Ot4W7UPWffXYKybV8kr0ZvNfQ/8RgvI4Gk4e8=;
-        b=L/ttjsis22ZnBDbBbX6dV8cUt0ewNanoxl2vA/A870tFXQGPDaWDp12uQz3H8eMAv0Rbe5
-        MErSYo8nE5sAR7BQ==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Remove rt_mutex_timed_lock()
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        bh=mbFIhCPku9MFTnIxaRhUC4X/zn411dNU5tYynxv/ZoU=;
+        b=OKEbGMmBikCLaew/FcuGEdteEgxlMKvgTSHDil00nSByn+iENGeWGVMc7Oe753L5kXj/tT
+        jC/NzwEusPA6WHWJ6jWZsxZ7AmtdeDl5/d0orgSEcCiK0OddYkLDW03hCC+E6BmsW4JxqM
+        F9TKlYwhAFaTd+DWxqIjoIG4r7FWWh0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-qOruQgiyNGW82h5Jfle3-A-1; Mon, 29 Mar 2021 12:25:12 -0400
+X-MC-Unique: qOruQgiyNGW82h5Jfle3-A-1
+Received: by mail-ed1-f69.google.com with SMTP id w16so8852863edc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:25:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mbFIhCPku9MFTnIxaRhUC4X/zn411dNU5tYynxv/ZoU=;
+        b=pkJSt6LMFZtKiTaeFB7TI5rZiikl2HATt+PE9s9cQHpZrGWZ7F6WQEkHWddpnKRd5o
+         deRaIp2FzfsXHOnVZJgTC1xG5FsZJecCwhbGr/polAFzKV0shiqh+l83Y2wdYZ8Azmcf
+         RatNPvnQ0FxZuQhv+o4rgX2QQp6yKIbkTlvRluh/RQUXz5hDT7YN2fTK/GodkVSx5Mhy
+         Z4o/u+KpVrQgiMrhKdY2uSys/3zev6cqGkcBFT7mwZVxCPuxfa2k7wCl9eJ+T2r9hiEc
+         xT1FsoFyB+HYIUDZopdoRI1vzSfKalpDSjLA4DBZlac+n8z2G8M7M9t6aJOSY+eT8Y4f
+         H8cQ==
+X-Gm-Message-State: AOAM533/eSeMdeDCR81OcllG80IrRSbTSdfZAWgixArUWw8Fi57jRFoP
+        I7wgu3C76yLqrGPhrvLhQzAMHtHiotX/AiivKLE7dPujQpVKW6mL4eO4iDg9t3gmrP5mUr53y9z
+        pSXwetsp03cqC8TQ4TSk4c+9r
+X-Received: by 2002:a50:ec96:: with SMTP id e22mr29345932edr.385.1617035110007;
+        Mon, 29 Mar 2021 09:25:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywYRxi7n5QniEJaNO6UMg08JtWmwcuPYfyG7Lv1dtxhDjfWqUvGzbcye9KyF5FRMcPYikhkQ==
+X-Received: by 2002:a50:ec96:: with SMTP id e22mr29345921edr.385.1617035109876;
+        Mon, 29 Mar 2021 09:25:09 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id cw14sm9522115edb.8.2021.03.29.09.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 09:25:09 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AC9F6181B24; Mon, 29 Mar 2021 18:25:08 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210326153943.061103415@linutronix.de>
-References: <20210326153943.061103415@linutronix.de>
+Subject: Re: [PATCH net 1/1] xdp: fix xdp_return_frame() kernel BUG throw
+ for page_pool memory model
+In-Reply-To: <20210329170209.6db77c3d@carbon>
+References: <20210329080039.32753-1-boon.leong.ong@intel.com>
+ <20210329170209.6db77c3d@carbon>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Mar 2021 18:25:08 +0200
+Message-ID: <87lfa6rkpn.fsf@toke.dk>
 MIME-Version: 1.0
-Message-ID: <161703505243.29796.17304307401328757785.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-Commit-ID:     c15380b72d7ae821ee090ba5a56fc6310828dbda
-Gitweb:        https://git.kernel.org/tip/c15380b72d7ae821ee090ba5a56fc6310828dbda
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Fri, 26 Mar 2021 16:29:30 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 29 Mar 2021 15:57:02 +02:00
+> On Mon, 29 Mar 2021 16:00:39 +0800
+> Ong Boon Leong <boon.leong.ong@intel.com> wrote:
+>
+>> xdp_return_frame() may be called outside of NAPI context to return
+>> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
+>> napi_direct = false. For page_pool memory model, __xdp_return() calls
+>> xdp_return_frame_no_direct() unconditionally and below false negative
+>> kernel BUG throw happened under preempt-rt build:
+>> 
+>> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
+>> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
+>> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+>> 
+>> So, this patch fixes the issue by adding "if (napi_direct)" condition
+>> to skip calling xdp_return_frame_no_direct() if napi_direct = false.
+>> 
+>> Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
+>> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+>> ---
+>
+> This looks correct to me.
+>
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>
+>
+>>  net/core/xdp.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/net/core/xdp.c b/net/core/xdp.c
+>> index 05354976c1fc..4eaa28972af2 100644
+>> --- a/net/core/xdp.c
+>> +++ b/net/core/xdp.c
+>> @@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+>>  		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+>>  		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+>>  		page = virt_to_head_page(data);
+>> -		napi_direct &= !xdp_return_frame_no_direct();
+>> +		if (napi_direct)
+>> +			napi_direct &= !xdp_return_frame_no_direct();
+>
+> if (napi_direct && xdp_return_frame_no_direct())
+> 	napi_direct = false;
+>
+> I wonder if this code would be easier to understand?
 
-locking/rtmutex: Remove rt_mutex_timed_lock()
+Yes, IMO it would! :)
 
-rt_mutex_timed_lock() has no callers since:
+-Toke
 
-  c051b21f71d1f ("rtmutex: Confine deadlock logic to futex")
-
-Remove it.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210326153943.061103415@linutronix.de
----
- include/linux/rtmutex.h  |  3 +---
- kernel/locking/rtmutex.c | 46 +---------------------------------------
- 2 files changed, 49 deletions(-)
-
-diff --git a/include/linux/rtmutex.h b/include/linux/rtmutex.h
-index 6fd615a..32f4a35 100644
---- a/include/linux/rtmutex.h
-+++ b/include/linux/rtmutex.h
-@@ -115,9 +115,6 @@ extern void rt_mutex_lock(struct rt_mutex *lock);
- #endif
- 
- extern int rt_mutex_lock_interruptible(struct rt_mutex *lock);
--extern int rt_mutex_timed_lock(struct rt_mutex *lock,
--			       struct hrtimer_sleeper *timeout);
--
- extern int rt_mutex_trylock(struct rt_mutex *lock);
- 
- extern void rt_mutex_unlock(struct rt_mutex *lock);
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index db31bce..ca93e5d 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1395,21 +1395,6 @@ rt_mutex_fastlock(struct rt_mutex *lock, int state,
- }
- 
- static inline int
--rt_mutex_timed_fastlock(struct rt_mutex *lock, int state,
--			struct hrtimer_sleeper *timeout,
--			enum rtmutex_chainwalk chwalk,
--			int (*slowfn)(struct rt_mutex *lock, int state,
--				      struct hrtimer_sleeper *timeout,
--				      enum rtmutex_chainwalk chwalk))
--{
--	if (chwalk == RT_MUTEX_MIN_CHAINWALK &&
--	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
--		return 0;
--
--	return slowfn(lock, state, timeout, chwalk);
--}
--
--static inline int
- rt_mutex_fasttrylock(struct rt_mutex *lock,
- 		     int (*slowfn)(struct rt_mutex *lock))
- {
-@@ -1517,37 +1502,6 @@ int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
- }
- 
- /**
-- * rt_mutex_timed_lock - lock a rt_mutex interruptible
-- *			the timeout structure is provided
-- *			by the caller
-- *
-- * @lock:		the rt_mutex to be locked
-- * @timeout:		timeout structure or NULL (no timeout)
-- *
-- * Returns:
-- *  0		on success
-- * -EINTR	when interrupted by a signal
-- * -ETIMEDOUT	when the timeout expired
-- */
--int
--rt_mutex_timed_lock(struct rt_mutex *lock, struct hrtimer_sleeper *timeout)
--{
--	int ret;
--
--	might_sleep();
--
--	mutex_acquire(&lock->dep_map, 0, 0, _RET_IP_);
--	ret = rt_mutex_timed_fastlock(lock, TASK_INTERRUPTIBLE, timeout,
--				       RT_MUTEX_MIN_CHAINWALK,
--				       rt_mutex_slowlock);
--	if (ret)
--		mutex_release(&lock->dep_map, _RET_IP_);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(rt_mutex_timed_lock);
--
--/**
-  * rt_mutex_trylock - try to lock a rt_mutex
-  *
-  * @lock:	the rt_mutex to be locked
