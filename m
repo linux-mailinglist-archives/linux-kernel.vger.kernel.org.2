@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894AB34D63F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A8E34D65D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhC2Rt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhC2RtL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:49:11 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383DFC061574;
-        Mon, 29 Mar 2021 10:49:11 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id l76so9886257pga.6;
-        Mon, 29 Mar 2021 10:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=alD74IFAXQEwKYTbtkg5WVYKect/IaprUkdk5NWf3Qo=;
-        b=jO4n+ehyarH3mbYFi7EGWu63AM28SP3fHpsAfbCi1F3/yU33oVbfjgssgD2Nu8vFkO
-         emGc9LfbW1N0ZDtiYBqwITkBg3pET2D0rb5yD3HwJwI12oT2Z7TFSgI7G3NMa+HOyRx9
-         skj+OiJ0ClcOZdZYm1o3LO5PhtO3AxW4K32aYy3h0z+CO8LkYG5xgrDcyxbnjEYOapSW
-         tjMjZ5V9BDJ2NSK29aKwYmRonl+tv4R6mcROyptkvsLEqmKBiujomJF8Kaa/HIPNwryQ
-         QSXGhzJYWdH9DK4FCKDVxTqyzfVLgJWQ8950Z+EDAuwtRD1Q6EbnXcMyk9NE2HBJS4cz
-         mIjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=alD74IFAXQEwKYTbtkg5WVYKect/IaprUkdk5NWf3Qo=;
-        b=jwsuf7xHW1+8Q+TuGTDOeXKth9HX4sh8lkQRN9xdvanRcwFcLiSo4fF++eiSimX8TK
-         5RM5oUUqX7nTSilhN+KyD2BAY4DX5W41hElbeuDXBd2cHGnWmZZWFUb5MD8rfkknZ5lM
-         g192zXry1QDnE9+7mGhvEOB57V/lSF09YAZIlKnzNpTLLIDXIUDsdr8BKZRhs9dOmYre
-         4mFQroQKxFlWkgmfdQbOOMWKYfPRQAX7cPJH6Ox+j9sr7jzYDqlzDC2FFIbdt5dxjg6m
-         MtQLUE3TB7rkAXQHvzeWjmgS1eNgCjTu1URC5yoehGxMKnNUw9Em3EW67MM2NTPNDH8i
-         6fUg==
-X-Gm-Message-State: AOAM532DifG4FeUouNCxTV+BWkCVGbpHhjXRQGtLGyFSxiszDeMW7T2N
-        DcWDG4niXDZjf7tMVU0T1pj52jd2xWM=
-X-Google-Smtp-Source: ABdhPJz4vQGopnrBSqxGq3ta5AYh+YkIBUEzgGwh7xwl/UB5WFllQWo7wTN9tCTKOfQLuf2uFCP++Q==
-X-Received: by 2002:a62:17ce:0:b029:1fc:9b43:dbc5 with SMTP id 197-20020a6217ce0000b02901fc9b43dbc5mr27021106pfx.75.1617040150347;
-        Mon, 29 Mar 2021 10:49:10 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id gb1sm123385pjb.21.2021.03.29.10.49.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 10:49:09 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/219] 5.10.27-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210329101340.196712908@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e31d6712-d6df-7cb1-fe43-ebfee4ca796e@gmail.com>
-Date:   Mon, 29 Mar 2021 10:49:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230406AbhC2RzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:55:20 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:50676 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhC2Ry7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:54:59 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12THsZ66023435
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 19:54:35 +0200
+Received: from localhost.localdomain ([167.87.41.127])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12THnYmt025235;
+        Mon, 29 Mar 2021 19:49:34 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Enrico Weigelt <lkml@metux.net>
+Subject: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
+Date:   Mon, 29 Mar 2021 19:49:24 +0200
+Message-Id: <20210329174928.18816-1-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <20210329101340.196712908@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 3:14 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.27 release.
-> There are 219 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 31 Mar 2021 10:13:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.27-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+changes since v2:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit kernels:
+- remove "simatic-ipc" prefix from LED names
+- fix style issues found in v2, mainly LED driver
+- fix OEM specific dmi code, and remove magic numbers
+- more "simatic_ipc" name prefixing
+- improved pmc quirk code using callbacks
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+changes since v1:
+
+- fixed lots of style issues found in v1
+  - (debug) printing
+  - header ordering
+- fixed license issues GPLv2 and SPDX in all files
+- module_platform_driver instead of __init __exit
+- wdt simplifications cleanup
+- lots of fixes in wdt driver, all that was found in v1
+- fixed dmi length in dmi helper
+- changed LED names to allowed ones
+- move led driver to simple/
+- switched pmc_atom to dmi callback with global variable
+
+--
+
+This series adds support for watchdogs and leds of several x86 devices
+from Siemens.
+
+It is structured with a platform driver that mainly does identification
+of the machines. It might trigger loading of the actual device drivers
+by attaching devices to the platform bus.
+
+The identification is vendor specific, parsing a special binary DMI
+entry. The implementation of that platform identification is applied on
+pmc_atom clock quirks in the final patch.
+
+It is all structured in a way that we can easily add more devices and
+more platform drivers later. Internally we have some more code for
+hardware monitoring, more leds, watchdogs etc. This will follow some
+day.
+
+Henning Schild (4):
+  platform/x86: simatic-ipc: add main driver for Siemens devices
+  leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
+  watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial PCs
+  platform/x86: pmc_atom: improve critclk_systems matching for Siemens
+    PCs
+
+ drivers/leds/Kconfig                          |   3 +
+ drivers/leds/Makefile                         |   3 +
+ drivers/leds/simple/Kconfig                   |  11 +
+ drivers/leds/simple/Makefile                  |   2 +
+ drivers/leds/simple/simatic-ipc-leds.c        | 202 ++++++++++++++++
+ drivers/platform/x86/Kconfig                  |  12 +
+ drivers/platform/x86/Makefile                 |   3 +
+ drivers/platform/x86/pmc_atom.c               |  57 +++--
+ drivers/platform/x86/simatic-ipc.c            | 169 ++++++++++++++
+ drivers/watchdog/Kconfig                      |  11 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/simatic-ipc-wdt.c            | 215 ++++++++++++++++++
+ .../platform_data/x86/simatic-ipc-base.h      |  29 +++
+ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++
+ 14 files changed, 769 insertions(+), 21 deletions(-)
+ create mode 100644 drivers/leds/simple/Kconfig
+ create mode 100644 drivers/leds/simple/Makefile
+ create mode 100644 drivers/leds/simple/simatic-ipc-leds.c
+ create mode 100644 drivers/platform/x86/simatic-ipc.c
+ create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+ create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
+ create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
+
 -- 
-Florian
+2.26.3
+
