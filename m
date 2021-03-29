@@ -2,165 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D1034CDBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4447634CDC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhC2KLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbhC2KLd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:11:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1843EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:11:33 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lQorr-00056a-FI; Mon, 29 Mar 2021 12:11:31 +0200
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        David Gstir <david@sigma-star.at>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
- <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
- <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
- <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
- <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
- <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
- <YGDpA4yPWmTWEyx+@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <1171de9c-97b9-3936-707b-16ec34cf94d5@pengutronix.de>
-Date:   Mon, 29 Mar 2021 12:11:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232027AbhC2KNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231313AbhC2KMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:12:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE13E60230;
+        Mon, 29 Mar 2021 10:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617012768;
+        bh=7PkOv218bPk9OOXo5Gv5y4+r7T3J8mVj9A3aW/G3GBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2XgiteQZsLfXcwDVsxaDC4JME+5MKTtbVPKn9LoB77614lFC5x+h7UnTTDxzt8nDW
+         LrrmlbP9fl2Csqm5/Zjm1B7iYZirJTbfR4b5EvFIl6HOZshB3BHEPixNY2ktmeNqwl
+         ku9E0B/1WL1heJSzJszSL6W+UF9ulmqZbWtx7usw=
+Date:   Mon, 29 Mar 2021 12:12:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
+Message-ID: <YGGoHdprUT/AscHa@kroah.com>
+References: <20210329075633.135869143@linuxfoundation.org>
+ <20210329075640.480623043@linuxfoundation.org>
+ <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YGDpA4yPWmTWEyx+@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jarkko,
-
-On 28.03.21 22:37, Jarkko Sakkinen wrote:
-> On Sat, Mar 27, 2021 at 01:41:24PM +0100, David Gstir wrote:
->> Generally speaking, I’d say trusting the CAAM RNG and trusting in it’s
->> other features are two separate things. However, reading through the CAAM
->> key blob spec I’ve got here, CAAM key blob keys (the keys that secure a blob’s
->> content) are generated using its internal RNG. So I’d save if the CAAM RNG
->> is insecure, so are generated key blobs. Maybe somebody with more insight
->> into the CAAM internals can verify that, but I don’t see any point in using
->> the kernel’s RNG as long as we let CAAM generate the key blob keys for us.
+On Mon, Mar 29, 2021 at 03:05:25PM +0530, Naresh Kamboju wrote:
+> On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Anshuman Khandual <anshuman.khandual@arm.com>
+> >
+> > [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+> >
+> > This overrides arch_get_mappable_range() on arm64 platform which will be
+> > used with recently added generic framework.  It drops
+> > inside_linear_region() and subsequent check in arch_add_memory() which are
+> > no longer required.  It also adds a VM_BUG_ON() check that would ensure
+> > that mhp_range_allowed() has already been called.
+> >
+> > Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > Cc: Jason Wang <jasowang@redhat.com>
+> > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > Cc: Michal Hocko <mhocko@kernel.org>
+> > Cc: Oscar Salvador <osalvador@suse.de>
+> > Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> > Cc: teawater <teawaterz@linux.alibaba.com>
+> > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  arch/arm64/mm/mmu.c | 15 +++++++--------
+> >  1 file changed, 7 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > index 6f0648777d34..92b3be127796 100644
+> > --- a/arch/arm64/mm/mmu.c
+> > +++ b/arch/arm64/mm/mmu.c
+> > @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+> >         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+> >  }
+> >
+> > -static bool inside_linear_region(u64 start, u64 size)
+> > +struct range arch_get_mappable_range(void)
+> >  {
+> > +       struct range mhp_range;
+> > +
+> >         /*
+> >          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+> >          * accommodating both its ends but excluding PAGE_END. Max physical
+> >          * range which can be mapped inside this linear mapping range, must
+> >          * also be derived from its end points.
+> >          */
+> > -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+> > -              (start + size - 1) <= __pa(PAGE_END - 1);
+> > +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> > +       mhp_range.end =  __pa(PAGE_END - 1);
+> > +       return mhp_range;
+> >  }
+> >
+> >  int arch_add_memory(int nid, u64 start, u64 size,
+> > @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> >  {
+> >         int ret, flags = 0;
+> >
+> > -       if (!inside_linear_region(start, size)) {
+> > -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+> > -               return -EINVAL;
+> > -       }
+> > -
+> > +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> >         if (rodata_full || debug_pagealloc_enabled())
+> >                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
 > 
-> Here's my long'ish analysis. Please read it to the end if by ever means
-> possible, and apologies, I usually try to keep usually my comms short, but
-> this requires some more meat than the usual.
-
-Thanks for the write-up!
-
-> The Bad News
-> ============
+> The stable rc 5.10 and 5.11 builds failed for arm64 architecture
+> due to below warnings / errors,
 > 
-> Now that we add multiple hardware trust sources for trusted keys, will
-> there ever be a scenario where a trusted key is originally sealed with a
-> backing hardware A, unsealed, and resealed with hardware B?
+> > Anshuman Khandual <anshuman.khandual@arm.com>
+> >     arm64/mm: define arch_get_mappable_range()
 > 
-> The hardware and vendor neutral way to generate the key material would be
-> unconditionally always just the kernel RNG.
 > 
-> CAAM is actually worse than TCG because it's not even a standards body, if
-> I got it right. Not a lot but at least a tiny fraction.
-
-CAAM is how NXP calls the crypto accelerator built into some of its SoCs.
-
-> This brings an open item in TEE patches: trusted_tee_get_random() is an
-> issue in generating kernel material. I would rather replace that with
-> kernel RNG *for now*, because the same open question applies also to ARM
-> TEE. It's also a single company controlled backing technology.
+>   arch/arm64/mm/mmu.c: In function 'arch_add_memory':
+>   arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
+> 'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
+> [-Werror=implicit-function-declaration]
+>     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+>                ^
+>   include/linux/build_bug.h:30:63: note: in definition of macro
+> 'BUILD_BUG_ON_INVALID'
+>    #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+>                                                                  ^
+>   arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
+>     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+>     ^~~~~~~~~
 > 
-> By all practical means, I do trust ARM TEE in my personal life but this is
-> not important.
-> 
-> CAAM *and* TEE backends break the golden rule of putting as little trust as
-> possible to anything, even not anything weird is clear at sight, as
-> security is essentially a game of known unknowns and unknown unknowns.
+> Build link,
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
 
-Agreed.
+thanks, will go drop this, and the patch that was after it in the
+series, from both trees and will push out a -rc2.
 
-> The GOOD News
-> =============
-> 
-> So there's actually option (C) that also fixes the TPM trustd keys issue:
-> 
-> Add a new kernel patch, which:
-> 
-> 1. Adds the use of kernel RNG as a boot option.
-> 2. If this boot option is not active, the subsystem will print a warning
->    to klog denoting this.
-> 3. Default is of course vendor RNG given the bad design issue in the TPM
->    trusted keys, but the warning in klog will help to address it at least
->    a bit.
+Note, I used tuxbuild before doing this release, and it does not show
+this error in the arm64 defconfigs.  What config did you use to trigger
+this?
 
-Why should the TPM backend's choice influence later backends? We could add
-a new option for key creation time, e.g.:
+thanks,
 
-   keyctl add trusted kmk "new keylen rng=kernel" @s
-
-The default would be rng=vendor if available with a fallback to rng=kernel,
-which should always be available.
-
-> 4. Document all this to Documentation/security/keys/trusted-encrypted.rst.
-
-Yes, backends would then document whether they support a rng=vendor or not.
-
-> I'd prefer the choice between A, B and C be concluded rather sooner than
-> later.
-
-FWIW, my vote is for option C, with the change described above.
-
-Cheers,
-Ahmad
-
-> 
-> /Jarkko
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+greg k-h
