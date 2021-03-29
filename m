@@ -2,155 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212F234C1F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DCC34C1F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhC2Cgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhC2CgV (ORCPT
+        id S230167AbhC2CfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:35:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15026 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbhC2CfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:36:21 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398BAC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:36:21 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso5209311pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
-        b=NdD78yuLYTGdfabSkW9fDFCmI/wAKkRI+bdbi3C40h46k09r+CPXXnDsULEeMRpYCY
-         mTA9SlV0i9LRcZwDyLdDsPbDlUZ0vRKzk10vvve4fpWOgX38GXwtFKi7IZQI/aJKHK7u
-         /tUdntrGJvJxIs8FTAq2BmA6G2wiFTJyOKp3xfW+YmGHZDFg7n/orBLoqjmMubNf9IUF
-         9offqL0dJuZ96+J8D99jWZCLq+qCsiicbI7frK9KWOLcTjCZRweT7gQR5BKKmEFSnOJn
-         x3V2kcmm0LpxMqage0PQqdoUdqimNHXOoQRiLnSiORuXe9yvBrYwlyurZis47xz5BuNh
-         eR3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
-        b=mS5DKyDN32xMOpfGVWKY/UMHyHnVKIJqpAHbTkQfywY2hbrbHG1YVm1hchiKxmH2QA
-         aDn+yvp9EpxP42eO3eV9XxsqmZL0ojFvyc1JtjUqINbZLruA89LaRw1ijWN9tdHXUsOH
-         CMvyUlB7AA3sKKh8MLZfYXE5R9Gy3BRsvjuBMnEZf6RgzR2C+xYVgN23E4V5/+sx1o2Y
-         6fMemKMmPFSGo1TmxjDM7pgQVd0IeBGL4gY6h0DT5agUFovBO0NhRULh7Gi2LWTTVr6e
-         O1QEY4IWvt/2EGJJ7SE+Nz9PQLpeDw8t1wht7ymCl22rIOPBQge1wKJRjQqufctigONT
-         ioyA==
-X-Gm-Message-State: AOAM5318MfCrS0WWdtjcK5yH+z8AoVB7nZz6vDJkp1ZHWErNArIXW23E
-        Duzw2ackkRE4RzrMoN/ahv4=
-X-Google-Smtp-Source: ABdhPJxZ849+jWX0gjrx0lO+sVP2orhASW3JCcSspPRCnP+wrB6iVfJhjHxrTGeezqC0l4KvTxjTFQ==
-X-Received: by 2002:a17:90b:3553:: with SMTP id lt19mr24154314pjb.222.1616985380578;
-        Sun, 28 Mar 2021 19:36:20 -0700 (PDT)
-Received: from localhost.localdomain ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id a21sm15450037pfk.83.2021.03.28.19.36.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Mar 2021 19:36:20 -0700 (PDT)
-From:   Qianli Zhao <zhaoqianligood@gmail.com>
-To:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
-        oleg@redhat.com, tglx@linutronix.de, pcc@google.com
-Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-Subject: [PATCH V4] exit: trigger panic when global init has exited
-Date:   Mon, 29 Mar 2021 10:27:26 +0800
-Message-Id: <1616984846-184466-1-git-send-email-zhaoqianligood@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Sun, 28 Mar 2021 22:35:07 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F7xSC6NJ1zPk4n;
+        Mon, 29 Mar 2021 10:32:27 +0800 (CST)
+Received: from [10.174.176.191] (10.174.176.191) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 10:34:53 +0800
+Subject: Re: [PATCH v14 01/11] x86: kdump: replace the hard-coded alignment
+ with macro CRASH_ALIGN
+To:     Baoquan He <bhe@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-2-chenzhou10@huawei.com>
+ <20210224141939.GA28965@arm.com> <20210225072426.GH3553@MiWiFi-R3L-srv>
+ <121fa1e6-f1a3-d47f-bb1d-baaacf96fddc@huawei.com>
+ <m14khykfeq.fsf@fess.ebiederm.org> <20210302074327.GC13714@MiWiFi-R3L-srv>
+CC:     Catalin Marinas <catalin.marinas@arm.com>, <mingo@redhat.com>,
+        <tglx@linutronix.de>, <rppt@kernel.org>, <dyoung@redhat.com>,
+        <will@kernel.org>, <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
+        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <5cde3992-96cf-5d7d-a252-30d1d2847b59@huawei.com>
+Date:   Mon, 29 Mar 2021 10:34:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210302074327.GC13714@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.191]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qianli Zhao <zhaoqianli@xiaomi.com>
 
-When init sub-threads running on different CPUs exit at the same time,
-zap_pid_ns_processe()->BUG() may be happened(timing is as below),move
-panic() before set PF_EXITING to fix this problem.
 
-In addition,if panic() after other sub-threads finish do_exit(),
-some key variables (task->mm,task->nsproxy etc) of sub-thread will be lost,
-which makes it difficult to parse coredump from fulldump,checking SIGNAL_GROUP_EXIT
-to prevent init sub-threads exit.
+On 2021/3/2 15:43, Baoquan He wrote:
+> On 02/26/21 at 09:38am, Eric W. Biederman wrote:
+>> chenzhou <chenzhou10@huawei.com> writes:
+>>
+>>> On 2021/2/25 15:25, Baoquan He wrote:
+>>>> On 02/24/21 at 02:19pm, Catalin Marinas wrote:
+>>>>> On Sat, Jan 30, 2021 at 03:10:15PM +0800, Chen Zhou wrote:
+>>>>>> Move CRASH_ALIGN to header asm/kexec.h for later use. Besides, the
+>>>>>> alignment of crash kernel regions in x86 is 16M(CRASH_ALIGN), but
+>>>>>> function reserve_crashkernel() also used 1M alignment. So just
+>>>>>> replace hard-coded alignment 1M with macro CRASH_ALIGN.
+>>>>> [...]
+>>>>>> @@ -510,7 +507,7 @@ static void __init reserve_crashkernel(void)
+>>>>>>  	} else {
+>>>>>>  		unsigned long long start;
+>>>>>>  
+>>>>>> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
+>>>>>> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
+>>>>>>  						  crash_base + crash_size);
+>>>>>>  		if (start != crash_base) {
+>>>>>>  			pr_info("crashkernel reservation failed - memory is in use.\n");
+>>>>> There is a small functional change here for x86. Prior to this patch,
+>>>>> crash_base passed by the user on the command line is allowed to be 1MB
+>>>>> aligned. With this patch, such reservation will fail.
+>>>>>
+>>>>> Is the current behaviour a bug in the current x86 code or it does allow
+>>>>> 1MB-aligned reservations?
+>>>> Hmm, you are right. Here we should keep 1MB alignment as is because
+>>>> users specify the address and size, their intention should be respected.
+>>>> The 1MB alignment for fixed memory region reservation was introduced in
+>>>> below commit, but it doesn't tell what is Eric's request at that time, I
+>>>> guess it meant respecting users' specifying.
+>>
+>>> I think we could make the alignment unified. Why is the alignment system reserved and
+>>> user specified different? Besides, there is no document about the 1MB alignment.
+>>> How about adding the alignment size(16MB) in doc  if user specified
+>>> start address as arm64 does.
+>> Looking at what the code is doing.  Attempting to reserve a crash region
+>> at the location the user specified.  Adding unnecessary alignment
+>> constraints is totally broken. 
+>>
+>> I am not even certain enforcing a 1MB alignment makes sense.  I suspect
+>> it was added so that we don't accidentally reserve low memory on x86.
+>> Frankly I am not even certain that makes sense.
+>>
+>> Now in practice there might be an argument for 2MB alignment that goes
+>> with huge page sizes on x86.  But until someone finds that there are
+>> actual problems with 1MB alignment I would not touch it.
+>>
+>> The proper response to something that isn't documented and confusing is
+>> not to arbitrarily change it and risk breaking users.  Especially in
+>> this case where it is clear that adding additional alignment is total
+>> nonsense.  The proper response to something that isn't clear and
+>> documented is to dig in and document it, or to leave it alone and let it
+> Sounds reasonable. Then adding document or code comment around looks
+> like a good way to go further so that people can easily get why its
+> alignment is different than other reservation.
+Hi Baoquan & Eric,
 
-[   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
-[   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
-[   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
+Sorry for late reply, i missed it earlier.
 
-PID: 552   CPU: 4   COMMAND: "init"
-PID: 1     CPU: 7   COMMAND: "init"
-core4                           core7
-...                             sys_exit_group()
-                                do_group_exit()
-                                   - sig->flags = SIGNAL_GROUP_EXIT
-                                   - zap_other_threads()
-                                do_exit() //PF_EXITING is set
-ret_to_user()
-do_notify_resume()
-get_signal()
-    - signal_group_exit
-    - goto fatal;
-do_group_exit()
-do_exit() //PF_EXITING is set
-    - panic("Attempted to kill init! exitcode=0x%08x\n")
-                                exit_notify()
-                                find_alive_thread() //no alive sub-threads
-                                zap_pid_ns_processes()//CONFIG_PID_NS is not set
-                                BUG()
+Thanks for your explanation, i will just leave the 1MB alignment here as is.
 
-Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
----
-V4:
-- Changelog update
+I will introduce CRASH_ALIGN_SPECIFIED to help make function reserve_crashkernel generic.
+CRASH_ALIGN_SPECIFIED is used for user specified start address which is distinct from
+default CRASH_ALIGN.
 
-V3:
-- Use group_dead instead of thread_group_empty() to test single init exit.
-
-V2:
-- Changelog update
-- Remove wrong useage of SIGNAL_UNKILLABLE. 
-- Add thread_group_empty() test to handle single init thread exit
-
----
- kernel/exit.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e3..f95f8dc 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -766,6 +766,17 @@ void __noreturn do_exit(long code)
- 
- 	validate_creds_for_do_exit(tsk);
- 
-+	group_dead = atomic_dec_and_test(&tsk->signal->live);
-+	/*
-+	 * If global init has exited,
-+	 * panic immediately to get a useable coredump.
-+	 */
-+	if (unlikely(is_global_init(tsk) &&
-+	    (group_dead || (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
-+			panic("Attempted to kill init! exitcode=0x%08x\n",
-+				tsk->signal->group_exit_code ?: (int)code);
-+	}
-+
- 	/*
- 	 * We're taking recursive faults here in do_exit. Safest is to just
- 	 * leave this task alone and wait for reboot.
-@@ -784,16 +795,8 @@ void __noreturn do_exit(long code)
- 	if (tsk->mm)
- 		sync_mm_rss(tsk->mm);
- 	acct_update_integrals(tsk);
--	group_dead = atomic_dec_and_test(&tsk->signal->live);
--	if (group_dead) {
--		/*
--		 * If the last thread of global init has exited, panic
--		 * immediately to get a useable coredump.
--		 */
--		if (unlikely(is_global_init(tsk)))
--			panic("Attempted to kill init! exitcode=0x%08x\n",
--				tsk->signal->group_exit_code ?: (int)code);
- 
-+	if (group_dead) {
- #ifdef CONFIG_POSIX_TIMERS
- 		hrtimer_cancel(&tsk->signal->real_timer);
- 		exit_itimers(tsk->signal);
--- 
-1.9.1
+Thanks,
+Chen Zhou
+>
+>> be the next persons problem.
+>>
+>> In this case there is no reason for changing this bit of code.
+>> All CRASH_ALIGN is about is a default alignment when none is specified.
+>> It is not a functional requirement but just something so that things
+>> come out nicely.
+>>
+>>
+>> Eric
+>>
+> .
+>
 
