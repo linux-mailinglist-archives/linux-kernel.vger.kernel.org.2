@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07AB34C84B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B6E34C573
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhC2IVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56890 "EHLO mail.kernel.org"
+        id S231466AbhC2IAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232341AbhC2INO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91763619B6;
-        Mon, 29 Mar 2021 08:13:13 +0000 (UTC)
+        id S229873AbhC2IAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:00:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC2661969;
+        Mon, 29 Mar 2021 07:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005594;
-        bh=jJeqaqIRW+9vGMbSvhZ/Ja9P9yQbphsEMcXoaK5bPUQ=;
+        s=korg; t=1617004801;
+        bh=syqiy/Li6HnEEBmIOCP61gDJXS6K8gQC530w/VEDqZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IT7VO2LwbfzVaQr82OBusURhReZezTL8tiEZKDgnRxNaZLf04NSk5rawELjgTEjE2
-         wFKqtW8Hw8GkgCdcbN1l5b3hl62NV4ptFgF7h+QoScDWKvgKuxmWc/M8WJD7CBwg/k
-         yRZPe2WG89T7uRVRnW2kei+uoYUXjgTXXVDLbPrE=
+        b=JxmM3GHzzS1zT3yvWjCD3zIZfEkR3uaok4r/nkuVK2aRJCP/aaTk1tJiQ/8h8H70K
+         PsFW5Ot4QHg0xg87bc+tG1kdgJGhASBzjHAdqKpZzv8+BySOP7woyETKmgcTalcfzp
+         YAO3VFne9Sp7r9NfHZR8AmoivjBBaScDEydA9PQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.4 050/111] integrity: double check iint_cache was initialized
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/33] ia64: fix ia64_syscall_get_set_arguments() for break-based syscalls
 Date:   Mon, 29 Mar 2021 09:57:58 +0200
-Message-Id: <20210329075616.855850206@linuxfoundation.org>
+Message-Id: <20210329075605.699663837@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,98 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mimi Zohar <zohar@linux.ibm.com>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-commit 92063f3ca73aab794bd5408d3361fd5b5ea33079 upstream.
+[ Upstream commit 0ceb1ace4a2778e34a5414e5349712ae4dc41d85 ]
 
-The kernel may be built with multiple LSMs, but only a subset may be
-enabled on the boot command line by specifying "lsm=".  Not including
-"integrity" on the ordered LSM list may result in a NULL deref.
+In https://bugs.gentoo.org/769614 Dmitry noticed that
+`ptrace(PTRACE_GET_SYSCALL_INFO)` does not work for syscalls called via
+glibc's syscall() wrapper.
 
-As reported by Dmitry Vyukov:
-in qemu:
-qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
-max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
-wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
- -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
-   -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
-nic,model=virtio-net-pci   -object
-memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
-  -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
-root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
-panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
-vm_pid -m 2G -cpu host
+ia64 has two ways to call syscalls from userspace: via `break` and via
+`eps` instructions.
 
-But it crashes on NULL deref in integrity_inode_get during boot:
+The difference is in stack layout:
 
-Run /sbin/init as init process
-BUG: kernel NULL pointer dereference, address: 000000000000001c
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
-Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
-3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
-1c 4cf
-RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
-RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
-R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
-R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
-FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
- process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
- ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
- security_bprm_check+0x7d/0xa0 security/security.c:845
- search_binary_handler fs/exec.c:1708 [inline]
- exec_binprm fs/exec.c:1761 [inline]
- bprm_execve fs/exec.c:1830 [inline]
- bprm_execve+0x764/0x19a0 fs/exec.c:1792
- kernel_execve+0x370/0x460 fs/exec.c:1973
- try_to_run_init_process+0x14/0x4e init/main.c:1366
- kernel_init+0x11d/0x1b8 init/main.c:1477
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
-CR2: 000000000000001c
----[ end trace 22d601a500de7d79 ]---
+1. `eps` creates simple stack frame: no locals, in{0..7} == out{0..8}
+2. `break` uses userspace stack frame: may be locals (glibc provides
+   one), in{0..7} == out{0..8}.
 
-Since LSMs and IMA may be configured at build time, but not enabled at
-run time, panic the system if "integrity" was not initialized before use.
+Both work fine in syscall handling cde itself.
 
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Fixes: 79f7865d844c ("LSM: Introduce "lsm=" for boottime LSM selection")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+But `ptrace(PTRACE_GET_SYSCALL_INFO)` uses unwind mechanism to
+re-extract syscall arguments but it does not account for locals.
+
+The change always skips locals registers. It should not change `eps`
+path as kernel's handler already enforces locals=0 and fixes `break`.
+
+Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
+
+Link: https://lkml.kernel.org/r/20210221002554.333076-1-slyfox@gentoo.org
+Link: https://bugs.gentoo.org/769614
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/iint.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/ia64/kernel/ptrace.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -98,6 +98,14 @@ struct integrity_iint_cache *integrity_i
- 	struct rb_node *node, *parent = NULL;
- 	struct integrity_iint_cache *iint, *test_iint;
+diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+index 6f54d511cc50..a757b123ebaf 100644
+--- a/arch/ia64/kernel/ptrace.c
++++ b/arch/ia64/kernel/ptrace.c
+@@ -2140,27 +2140,39 @@ static void syscall_get_set_args_cb(struct unw_frame_info *info, void *data)
+ {
+ 	struct syscall_get_set_args *args = data;
+ 	struct pt_regs *pt = args->regs;
+-	unsigned long *krbs, cfm, ndirty;
++	unsigned long *krbs, cfm, ndirty, nlocals, nouts;
+ 	int i, count;
+ 
+ 	if (unw_unwind_to_user(info) < 0)
+ 		return;
  
 +	/*
-+	 * The integrity's "iint_cache" is initialized at security_init(),
-+	 * unless it is not included in the ordered list of LSMs enabled
-+	 * on the boot command line.
++	 * We get here via a few paths:
++	 * - break instruction: cfm is shared with caller.
++	 *   syscall args are in out= regs, locals are non-empty.
++	 * - epsinstruction: cfm is set by br.call
++	 *   locals don't exist.
++	 *
++	 * For both cases argguments are reachable in cfm.sof - cfm.sol.
++	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
 +	 */
-+	if (!iint_cache)
-+		panic("%s: lsm=integrity required.\n", __func__);
-+
- 	iint = integrity_iint_find(inode);
- 	if (iint)
- 		return iint;
+ 	cfm = pt->cr_ifs;
++	nlocals = (cfm >> 7) & 0x7f; /* aka sol */
++	nouts = (cfm & 0x7f) - nlocals; /* aka sof - sol */
+ 	krbs = (unsigned long *)info->task + IA64_RBS_OFFSET/8;
+ 	ndirty = ia64_rse_num_regs(krbs, krbs + (pt->loadrs >> 19));
+ 
+ 	count = 0;
+ 	if (in_syscall(pt))
+-		count = min_t(int, args->n, cfm & 0x7f);
++		count = min_t(int, args->n, nouts);
+ 
++	/* Iterate over outs. */
+ 	for (i = 0; i < count; i++) {
++		int j = ndirty + nlocals + i + args->i;
+ 		if (args->rw)
+-			*ia64_rse_skip_regs(krbs, ndirty + i + args->i) =
+-				args->args[i];
++			*ia64_rse_skip_regs(krbs, j) = args->args[i];
+ 		else
+-			args->args[i] = *ia64_rse_skip_regs(krbs,
+-				ndirty + i + args->i);
++			args->args[i] = *ia64_rse_skip_regs(krbs, j);
+ 	}
+ 
+ 	if (!args->rw) {
+-- 
+2.30.1
+
 
 
