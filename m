@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F52934C92A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0244B34CB54
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhC2I2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:28:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58964 "EHLO mail.kernel.org"
+        id S235463AbhC2IqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233354AbhC2IRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 028C66044F;
-        Mon, 29 Mar 2021 08:17:25 +0000 (UTC)
+        id S234296AbhC2I2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:28:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35882619D3;
+        Mon, 29 Mar 2021 08:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005846;
-        bh=GT+lisKyj04s1FvVx444rz72yjzpOZdk93r+kgqXFr0=;
+        s=korg; t=1617006439;
+        bh=yVGfVRO7Xj7U+lHvrEE+sQIiCYb5eGK2AG3Ak+dYvGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ADoalKlIxo2WH1og+my6paPSENJzw6arU+NL0MGkYT+pWJaaGubAZBJ0ICFQRPjcY
-         u4IABhT8RHHLZlHGRDi7pLm4DYFYcefc1bl/EzXSbd9T7kWNVYavAR+PxWqQ2rZUJG
-         8nM0JzOZLOUjWCOHcUXX+w2FhtEcHgDkEznzb4UE=
+        b=hLWTovUiStEt9DmY1dVbb1hz101kS+QK+rncaTgi+i8hNW2pgTYs5Ux6qX+b27o8G
+         1QqVIsXlSqW5ENkExejLpGHosafvD/RvqJXxDZZFqGKvKjcIFfkw+9WKuxx7wBlrfb
+         eYZSc7Mln8MeGSlMmWP5En9xL/ehm5csGtYNm00U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Thiery <heiko.thiery@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 005/221] net: fec: ptp: avoid register access when ipg clock is disabled
-Date:   Mon, 29 Mar 2021 09:55:36 +0200
-Message-Id: <20210329075629.356202815@linuxfoundation.org>
+Subject: [PATCH 5.11 021/254] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
+Date:   Mon, 29 Mar 2021 09:55:37 +0200
+Message-Id: <20210329075633.846633943@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Thiery <heiko.thiery@gmail.com>
+From: Timo Rothenpieler <timo@rothenpieler.org>
 
-[ Upstream commit 6a4d7234ae9a3bb31181f348ade9bbdb55aeb5c5 ]
+[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
 
-When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-This is only the case when the interface is down. This can be reproduced
-by reading with 'phc_ctrl eth0 get'.
+This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
+With the default being m, it's impossible to build the module into the
+kernel.
 
-Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-the igp clock is disabled when the interface is down and leads to a
-system hang.
-
-So we check if the ptp clock status before reading the timecounter
-register.
-
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Link: https://lore.kernel.org/r/20210225211514.9115-1-heiko.thiery@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/nfs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 2e344aada4c6..1753807cbf97 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -377,9 +377,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	u64 ns;
- 	unsigned long flags;
+diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
+index e2a488d403a6..14a72224b657 100644
+--- a/fs/nfs/Kconfig
++++ b/fs/nfs/Kconfig
+@@ -127,7 +127,7 @@ config PNFS_BLOCK
+ config PNFS_FLEXFILE_LAYOUT
+ 	tristate
+ 	depends on NFS_V4_1 && NFS_V3
+-	default m
++	default NFS_V4
  
-+	mutex_lock(&adapter->ptp_clk_mutex);
-+	/* Check the ptp clock */
-+	if (!adapter->ptp_clk_on) {
-+		mutex_unlock(&adapter->ptp_clk_mutex);
-+		return -EINVAL;
-+	}
- 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
- 	ns = timecounter_read(&adapter->tc);
- 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
-+	mutex_unlock(&adapter->ptp_clk_mutex);
- 
- 	*ts = ns_to_timespec64(ns);
- 
+ config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
+ 	string "NFSv4.1 Implementation ID Domain"
 -- 
 2.30.1
 
