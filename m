@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF1E34CB20
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A792E34C792
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhC2Inb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S233110AbhC2IQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233661AbhC2IZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82423619AA;
-        Mon, 29 Mar 2021 08:25:09 +0000 (UTC)
+        id S231657AbhC2IKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:10:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F24AB61997;
+        Mon, 29 Mar 2021 08:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006310;
-        bh=nwJmXZyvikEUvajC3mgvchdhiH/JCT/IkbHTO2+XaO4=;
+        s=korg; t=1617005411;
+        bh=zNWJ3S6ipAU6dbDVMKFDhWmunigq6V3cEmVjjZAnHXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmDI/IRJNAxyvxKT0KIjJs1KXjx351sBPMJ/V5lBnrsu4hvfcAJlLZbMDbfPX2Odj
-         PttH0qUZbXdcAKWEt5Yix8lix2WrzLJWktwA0A7ytcG+FywraIgMeB2yZeU7L2qvpF
-         rsG01aOBn+BoiZK0Lu8B/52iz0bYzqm8PqThcjDM=
+        b=Q6fsWwSH6Miw6vt20gboBPV217t70CyXfQW0btqSLFSt/mQc8o+Hk8q14ks63iJp3
+         Cx3dR2TWuNWHbt0s/mZWmIvVxy1LToAgQEdfOUvU8+LYevpYaSaHOsuy3R68er+PiF
+         XChfmsjmZJWjxVPaKdnIHQvCexMNhmTyPhsbeDuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 195/221] Revert "netfilter: x_tables: Update remaining dereference to RCU"
+        syzbot+93976391bf299d425f44@syzkaller.appspotmail.com,
+        Markus Theil <markus.theil@tu-ilmenau.de>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 70/72] mac80211: fix double free in ibss_leave
 Date:   Mon, 29 Mar 2021 09:58:46 +0200
-Message-Id: <20210329075635.629309677@linuxfoundation.org>
+Message-Id: <20210329075612.592902253@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Markus Theil <markus.theil@tu-ilmenau.de>
 
-[ Upstream commit abe7034b9a8d57737e80cc16d60ed3666990bdbf ]
+commit 3bd801b14e0c5d29eeddc7336558beb3344efaa3 upstream.
 
-This reverts commit 443d6e86f821a165fae3fc3fc13086d27ac140b1.
+Clear beacon ie pointer and ie length after free
+in order to prevent double free.
 
-This (and the following) patch basically re-implemented the RCU
-mechanisms of patch 784544739a25. That patch was replaced because of the
-performance problems that it created when replacing tables. Now, we have
-the same issue: the call to synchronize_rcu() makes replacing tables
-slower by as much as an order of magnitude.
+==================================================================
+BUG: KASAN: double-free or invalid-free \
+in ieee80211_ibss_leave+0x83/0xe0 net/mac80211/ibss.c:1876
 
-Revert these patches and fix the issue in a different way.
+CPU: 0 PID: 8472 Comm: syz-executor100 Not tainted 5.11.0-rc6-syzkaller #0
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
+ ____kasan_slab_free+0xcc/0xe0 mm/kasan/common.c:341
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ __cache_free mm/slab.c:3424 [inline]
+ kfree+0xed/0x270 mm/slab.c:3760
+ ieee80211_ibss_leave+0x83/0xe0 net/mac80211/ibss.c:1876
+ rdev_leave_ibss net/wireless/rdev-ops.h:545 [inline]
+ __cfg80211_leave_ibss+0x19a/0x4c0 net/wireless/ibss.c:212
+ __cfg80211_leave+0x327/0x430 net/wireless/core.c:1172
+ cfg80211_leave net/wireless/core.c:1221 [inline]
+ cfg80211_netdev_notifier_call+0x9e8/0x12c0 net/wireless/core.c:1335
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
+ call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
+ call_netdevice_notifiers net/core/dev.c:2066 [inline]
+ __dev_close_many+0xee/0x2e0 net/core/dev.c:1586
+ __dev_close net/core/dev.c:1624 [inline]
+ __dev_change_flags+0x2cb/0x730 net/core/dev.c:8476
+ dev_change_flags+0x8a/0x160 net/core/dev.c:8549
+ dev_ifsioc+0x210/0xa70 net/core/dev_ioctl.c:265
+ dev_ioctl+0x1b1/0xc40 net/core/dev_ioctl.c:511
+ sock_do_ioctl+0x148/0x2d0 net/socket.c:1060
+ sock_ioctl+0x477/0x6a0 net/socket.c:1177
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+93976391bf299d425f44@syzkaller.appspotmail.com
+Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
+Link: https://lore.kernel.org/r/20210213133653.367130-1-markus.theil@tu-ilmenau.de
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/netfilter/arp_tables.c | 2 +-
- net/ipv4/netfilter/ip_tables.c  | 2 +-
- net/ipv6/netfilter/ip6_tables.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ net/mac80211/ibss.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 04a2010755a6..d1e04d2b5170 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1379,7 +1379,7 @@ static int compat_get_entries(struct net *net,
- 	xt_compat_lock(NFPROTO_ARP);
- 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
+--- a/net/mac80211/ibss.c
++++ b/net/mac80211/ibss.c
+@@ -1861,6 +1861,8 @@ int ieee80211_ibss_leave(struct ieee8021
  
- 		ret = compat_table_info(private, &info);
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index a5b63f92b7f3..f15bc21d7301 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1589,7 +1589,7 @@ compat_get_entries(struct net *net, struct compat_ipt_get_entries __user *uptr,
- 	xt_compat_lock(AF_INET);
- 	t = xt_find_table_lock(net, AF_INET, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
- 		ret = compat_table_info(private, &info);
- 		if (!ret && get.size == info.size)
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 81c042940b21..2e2119bfcf13 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1598,7 +1598,7 @@ compat_get_entries(struct net *net, struct compat_ip6t_get_entries __user *uptr,
- 	xt_compat_lock(AF_INET6);
- 	t = xt_find_table_lock(net, AF_INET6, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
- 		ret = compat_table_info(private, &info);
- 		if (!ret && get.size == info.size)
--- 
-2.30.1
-
+ 	/* remove beacon */
+ 	kfree(sdata->u.ibss.ie);
++	sdata->u.ibss.ie = NULL;
++	sdata->u.ibss.ie_len = 0;
+ 
+ 	/* on the next join, re-program HT parameters */
+ 	memset(&ifibss->ht_capa, 0, sizeof(ifibss->ht_capa));
 
 
