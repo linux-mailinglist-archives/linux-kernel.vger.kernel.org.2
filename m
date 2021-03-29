@@ -2,137 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F2C34DC74
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDA234DC7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhC2X3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhC2X25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:28:57 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F46C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:28:57 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id m132so15493075ybf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WDde1oog8pONjUYe4veyTF77bnbUW5uOW/VjN8BRrfc=;
-        b=tR1uudSRQlnzL7FPxhVK1H2lmKlgH5Jstl69KtGaXiKfzpJeNtd3sKUREc83E14Hyg
-         KNtpU52k/3GvnCheolompf0OcGFwxjIztQl12NPKWvtVUo2Ca28hh6VmkNVc+jIKNYve
-         qR/5ZhPcLbSkgxU1WQSwPiF+Kkczewe7xqJWQApgPqPzpetjUWvmTZ7Qr41GdZDiJIJH
-         XibRwn4VLj8hlEfGH9NN6fS+EgkU8yH6ME68JPyNOJ8MKcOIyH806NIpP9D2drko4jdM
-         T3dCqd2FpbrDSQ8blvlO8F8dItLzhwn6XP5WAL3ZurP3FGTL5yuve9pXPXBjS913UV8N
-         utww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WDde1oog8pONjUYe4veyTF77bnbUW5uOW/VjN8BRrfc=;
-        b=bZNu7qQojJ+48aLORgixQkRRXLZ3rgh9pFipcsq5gJck6rTexeCqpr8x0VC12BK90b
-         pfDQ31NI4JCXNmwLqWh7aH3J8jwITk3Wpb/b2a0tqUQZrwvm3EoB6NfwWIiAtc2CxOkl
-         I9vG8PKB1CYLj7hbaKUxVg1caUImfNNUc7wQYzO/ktai5Xbi52hIBkHMNLX9aarzNsq0
-         U5h8os5orT/fLVtsAeVZ0+a5S61dISxdxgOgTUHyRso2XRta+bXIMPUVKuyhR1oJ1Vrg
-         HYME16fxwCBVzw1S+8NAbccVPKQADZcm6EXauwACCrhzwwcirC2DaOSSCf2d84zbPOo6
-         uoXg==
-X-Gm-Message-State: AOAM531vascDx84ov7G+YK75iaBbTw5MOt49BBb+9PfhrwqZOce/1qKl
-        NClxYFK8815Cg75k+JRpCugHPCs9TO+wBhfpYWLX/w==
-X-Google-Smtp-Source: ABdhPJxJ0sCTNyDyfI1b+8FrpLSQIIgEbs4baXc7OkRt3EK4dgFfRKGNOBy2PoOel1NkVVc1/6RzZA8g9VrfRrbLeWw=
-X-Received: by 2002:a25:b443:: with SMTP id c3mr43370477ybg.32.1617060536158;
- Mon, 29 Mar 2021 16:28:56 -0700 (PDT)
+        id S230482AbhC2XaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:30:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230306AbhC2XaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 19:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1167A61990;
+        Mon, 29 Mar 2021 23:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617060609;
+        bh=EXL/V1f5671ULe9zTlOxtZG5RkbkvreQBcphjnUfHMQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ggJZNBiqZH6NUsVc3Oncw91AnDIVjjOWzkNsXcbf0jOE90Q5R/JXggMzvZWpfBwub
+         S3cUr3nh9Sl480xDXZAZdF6PhD7bEy7YAT506MxCU3ajEkSyv4Xwt4MQloiW3lMPfH
+         SGBOKbPTYnJU1FxFdYita1HypGsxD6cNP1T+QLOGIi+kG1rPNvE1Ds860HnDpm1an0
+         g1QjR06eqLfCyTKoxBsQzlVHrtVnDoAQXN3Uu3SKlvyJByJcCZVhNKLtFceqnqW2f4
+         IQqkQwEIL5e1lBw81foyZ7HmLkalduQQDow7TiPqjxvo7u3P5TcUPpHgpTzwYOW9bs
+         IzIanOdvWpSEg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 00F3760A48;
+        Mon, 29 Mar 2021 23:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210205222644.2357303-9-saravanak@google.com>
- <20210210114435.122242-1-tudor.ambarus@microchip.com> <20210210114435.122242-2-tudor.ambarus@microchip.com>
- <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
- <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com> <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
- <161678243444.3012082.5031467952132861429@swboyd.mtv.corp.google.com>
- <CAMuHMdV5PGUujsFP2TXMxij4UxVnrrurh_qVhq8+480w21jJAg@mail.gmail.com> <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
-In-Reply-To: <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 29 Mar 2021 16:28:20 -0700
-Message-ID: <CAGETcx8reqKoPoJ8dV7f9=SHYKmNhcVpkNHoCS-0L4UHCBahoA@mail.gmail.com>
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        DOCUMENTATION <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetre
-        e@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>, linux-rpi-kernel" 
-        <linux-rpi-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net:tipc: Fix a double free in tipc_sk_mcast_rcv
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161706060899.18537.8994477724999069966.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Mar 2021 23:30:08 +0000
+References: <20210328073029.4325-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210328073029.4325-1-lyl2019@mail.ustc.edu.cn>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:25 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Geert Uytterhoeven (2021-03-26 11:29:55)
-> > On Fri, Mar 26, 2021 at 7:13 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> > > Quoting Nicolas Saenz Julienne (2021-03-25 11:25:24)
-> > > > >
-> > > > > This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls
-> > > > > devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL
-> > > > > dev->of_node. I'm not sure if adding a check for a NULL np in
-> > > > > of_clk_add_hw_provider() is a right fix, though.
-> > > >
-> > > > I believe the right fix is not to call 'devm_of_clk_add_hw_provider()' if
-> > > > 'pdev->dev.of_node == NULL'. In such case, which is RPi3's, only the CPU clock
-> > > > is used, and it's defined and queried later through
-> > > > devm_clk_hw_register_clkdev().
-> > > >
-> > > > @Marek, I don't mind taking care of it if it's OK with you.
-> > > >
-> > >
-> > > Ah I see this is related to the patch I just reviewed. Can you reference
-> > > this in the commit text? And instead of putting the change into the clk
-> > > provider let's check for NULL 'np' in of_clk_add_hw_provider() instead
-> > > and return 0 if there's nothing to do. That way we don't visit this
-> > > problem over and over again.
-> >
-> > I'm not sure the latter is what we reall want: shouldn't calling
-> > *of*_clk_add_hw_provider() with a NULL np be a bug in the provider?
-> >
->
-> I don't have a strong opinion either way. Would it be useful if the
-> function returned an error when 'np' is NULL?
+Hello:
 
-I lean towards returning an error. Not a strong opinion either.
+This patch was applied to netdev/net.git (refs/heads/master):
 
--Saravana
+On Sun, 28 Mar 2021 00:30:29 -0700 you wrote:
+> In the if(skb_peek(arrvq) == skb) branch, it calls __skb_dequeue(arrvq) to get
+> the skb by skb = skb_peek(arrvq). Then __skb_dequeue() unlinks the skb from arrvq
+> and returns the skb which equals to skb_peek(arrvq). After __skb_dequeue(arrvq)
+> finished, the skb is freed by kfree_skb(__skb_dequeue(arrvq)) in the first time.
+> 
+> Unfortunately, the same skb is freed in the second time by kfree_skb(skb) after
+> the branch completed.
+> 
+> [...]
 
-> I guess the caller could
-> use that to figure out that it should register a clkdev. But it
-> shouldn't hurt to register both a clkdev lookup and a DT provider for
-> the same clk. The framework will try the DT path first and then fallback
-> to a clkdev lookup otherwise, so we'll be wasting memory for clkdev but
-> otherwise be fine.
->
-> Really it feels like we should try to unify around a
-> devm_clk_add_hw_provider() API that figures out what to do based on if
-> the device has an of_node or not. That would mean implementing something
-> like clkdev but for a whole provider instead of a single clk. Then this
-> question of returning an error would be moot here.
+Here is the summary with links:
+  - net:tipc: Fix a double free in tipc_sk_mcast_rcv
+    https://git.kernel.org/netdev/net/c/6bf24dc0cc0c
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
