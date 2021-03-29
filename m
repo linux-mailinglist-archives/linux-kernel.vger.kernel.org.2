@@ -2,181 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4950A34DA03
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC9134DA09
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhC2WS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:18:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34119 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhC2WR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:17:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617056278; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tUu2ZQk0gPltxUnwP13tDodfdocjEk967Z7tb4j5tSU=; b=ElBjpE0xkElmd/KfIoN7CNz8Ptr6YpCdffnyX3a4tXmRYUgGP3onMdxlC1LZdqtiaVRqql0f
- ig2oKzhrSsynOZv0Mo13bWcizIJDHvfpgiXK5yYAwocD3hF8ASLVwt4Sd7vC6YZ5vemHfH1x
- AdTjvaUTDhGHn/ShS4wxHM3KMGE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 606252153f4005d07537cd21 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 22:17:57
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DCF1BC433C6; Mon, 29 Mar 2021 22:17:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.60.140] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3186C433CA;
-        Mon, 29 Mar 2021 22:17:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3186C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 2/2] usb: dwc3: Fix DRD mode change sequence following
- programming guide
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-References: <20210108015115.27920-1-john.stultz@linaro.org>
- <20210108015115.27920-2-john.stultz@linaro.org>
- <eb4b8540-a57c-53cc-a371-cf68178bec15@codeaurora.org>
- <e696b018-b310-5811-5c80-3c50dde297e7@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <b08386c0-503d-a333-46be-9df77122ec4e@codeaurora.org>
-Date:   Mon, 29 Mar 2021 15:17:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231597AbhC2WTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:19:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230271AbhC2WSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:18:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617056319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=a2LCEVo4TBpl00I4ylw0j9DYE4xxtQovFWZPzhkRNFo=;
+        b=LMFBGe+Z+8rEI91QPf7U1A4RQNcKrn3gINCeZR+9GD0FoP70Sj+HISyk8Kv8O1s74J2Dav
+        3ktx0yE7VIaR17tyhjbGxJJmuq4L0m2aITfsEi4/gUrR172SOmLZHdPKuYgYb3qPov1Jhe
+        Akz3CYmQIWZ5Cpky46q5TUx8smXPg6c=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-j523m72GPLuC_rcF_SN4Fg-1; Mon, 29 Mar 2021 18:18:37 -0400
+X-MC-Unique: j523m72GPLuC_rcF_SN4Fg-1
+Received: by mail-qk1-f199.google.com with SMTP id b78so13206069qkg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:18:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a2LCEVo4TBpl00I4ylw0j9DYE4xxtQovFWZPzhkRNFo=;
+        b=cxvOWJC7aQGUan89MeFXgsbYvr0QmfGbeoByvmQiMtN5ZKm/QWbZ83qFcp//gkNW6I
+         zQy7Lb/+yzYKVdxYJPOTuCo3FbhEC/dxJAElglr51EArYy0WTMLHQjmw9Eov5BYHNdeA
+         tHTH0lzePP/I0PiG6ArSEOZE/6tUcSRPc0GN9oXP53z4izkm2iooWdRoDsFl/Uj6HbFl
+         jIqry+ZH+95qPQWeF9+i/lSQDr9hPWwhWJnJAoSejSE/Z0wHYFEp7+Gb+ptwALn7xuBO
+         Ff5pU3Y2PUIiIspkNE0/ifZf1INmy6Mz+2wMFL30AF8q643EzNVzmEY6nlH7uT0VHz2j
+         B5iw==
+X-Gm-Message-State: AOAM530R/tilDbK4/pYGkY5/gWK5EJ19Cg50H5jdMDJrIWUKELhPbNi7
+        dkYQyV1y6zwiUNqs0bCXQddVLZ+xP6LLncGhe+8edzRx2la4OPSOW/1UCf8diibqnWuhIxRodQv
+        gx0ThbL7/1on5EHl3TSkQmEtO
+X-Received: by 2002:a0c:fd62:: with SMTP id k2mr27266584qvs.51.1617056316469;
+        Mon, 29 Mar 2021 15:18:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYSdTuvzXwSj947y/QWq1Gw7vYl06Ny69njq+aEYPm6whLOz19fdF4mpWlPPYxbKOEA5d8TQ==
+X-Received: by 2002:a0c:fd62:: with SMTP id k2mr27266568qvs.51.1617056316155;
+        Mon, 29 Mar 2021 15:18:36 -0700 (PDT)
+Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id i17sm12255215qtr.33.2021.03.29.15.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 15:18:35 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org
+Cc:     Axel Rasmussen <axelrasmussen@google.com>, peterx@redhat.com,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v5 0/4] man2: udpate mm/userfaultfd manpages to latest
+Date:   Mon, 29 Mar 2021 18:18:29 -0400
+Message-Id: <20210329221833.517923-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <e696b018-b310-5811-5c80-3c50dde297e7@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v5:=0D
+- add r-bs for Mike R.=0D
+- Fix spelling mistake "diable" [Mike R.]=0D
+- s/Starting from/Since/ for patch 2 (also replaced two existing ones in th=
+e=0D
+  same file) [Alex]=0D
+- s/un-write-protect/write-unprotect/ [Alex]=0D
+- s/The process was interrupted and need to retry/The process was interrupt=
+ed;=0D
+  retry this call/ in the last patch. [Alex]=0D
+=0D
+v4:=0D
+- Fixed a few "subordinate clauses" (SC) cases [Alex]=0D
+- Reword in ioctl_userfaultfd.2 to use bold font for the two modes referenc=
+ed,=0D
+  so as to be clear on what is "both" referring to [Alex]=0D
+=0D
+v3:=0D
+- Don't use "Currently", instead add "(since x.y)" mark where proper [Alex]=
+=0D
+- Always use semantic newlines across the whole patchset [Alex]=0D
+- Use quote when possible, rather than escapes [Alex]=0D
+- Fix one missing replacement of ".BR" -> ".B" [Alex]=0D
+- Some other trivial rephrases here and there when fixing up above=0D
+=0D
+v2 changes:=0D
+- Fix wordings as suggested [MikeR]=0D
+- convert ".BR" to ".B" where proper for the patchset [Alex]=0D
+- rearrange a few lines in the last two patches where they got messed up=0D
+- document more things, e.g. UFFDIO_COPY_MODE_WP; and also on how to resolv=
+e a=0D
+  wr-protect page fault.=0D
+=0D
+There're two features missing in current manpage, namely:=0D
+=0D
+  (1) Userfaultfd Thread-ID feature=0D
+  (2) Userfaultfd write protect mode=0D
+=0D
+There's also a 3rd one which was just contributed from Axel - Axel, I think=
+ it=0D
+would be great if you can add that part too, probably after the whole=0D
+hugetlbfs/shmem minor mode reaches the linux master branch.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (4):=0D
+  userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
+  userfaultfd.2: Add write-protect mode=0D
+  ioctl_userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
+  ioctl_userfaultfd.2: Add write-protect mode docs=0D
+=0D
+ man2/ioctl_userfaultfd.2 |  89 +++++++++++++++++++++++++++-=0D
+ man2/userfaultfd.2       | 121 +++++++++++++++++++++++++++++++++++++--=0D
+ 2 files changed, 203 insertions(+), 7 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-
-On 3/6/2021 3:39 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->>
->> On 1/7/2021 5:51 PM, John Stultz wrote:
->>> In reviewing the previous patch, Thinh Nguyen pointed out that
->>> the DRD mode change sequence should be like the following when
->>> switching from host -> device according to the programming guide
->>> (for all DRD IPs):
->>> 1. Reset controller with GCTL.CoreSoftReset
->>> 2. Set GCTL.PrtCapDir(device)
->>> 3. Soft reset with DCTL.CSftRst
->>> 4. Then follow up with the initializing registers sequence
->>>
->>> The current code does:
->>> a. Soft reset with DCTL.CSftRst on driver probe
->>> b. Reset controller with GCTL.CoreSoftReset (added in previous
->>>    patch)
->>> c. Set GCTL.PrtCapDir(device)
->>> d. < missing DCTL.CSftRst >
->>> e. Then follow up with initializing registers sequence
->>>
->>> So this patch adds the DCTL.CSftRst soft reset that was currently
->>> missing from the dwc3 mode switching.
->>>
->>> Cc: Felipe Balbi <balbi@kernel.org>
->>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
->>> Cc: Yang Fei <fei.yang@intel.com>
->>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>> Cc: Thinh Nguyen <thinhn@synopsys.com>
->>> Cc: Jun Li <lijun.kernel@gmail.com>
->>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Cc: linux-usb@vger.kernel.org
->>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>> ---
->>> Feedback would be appreciated. I'm a little worried I should be
->>> conditionalizing the DCTL.CSftRst on DRD mode controllers, but
->>> I'm really not sure what the right thing to do is for non-DRD
->>> mode controllers.
->>> ---
->>>  drivers/usb/dwc3/core.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
->>> index b6a6b90eb2d5..71f8b07ecb99 100644
->>> --- a/drivers/usb/dwc3/core.c
->>> +++ b/drivers/usb/dwc3/core.c
->>> @@ -40,6 +40,8 @@
->>>  
->>>  #define DWC3_DEFAULT_AUTOSUSPEND_DELAY	5000 /* ms */
->>>  
->>> +static int dwc3_core_soft_reset(struct dwc3 *dwc);
->>> +
->>>  /**
->>>   * dwc3_get_dr_mode - Validates and sets dr_mode
->>>   * @dwc: pointer to our context structure
->>> @@ -177,6 +179,7 @@ static void __dwc3_set_mode(struct work_struct *work)
->>>  
->>>  	dwc3_set_prtcap(dwc, dwc->desired_dr_role);
->>>  
->>> +	dwc3_core_soft_reset(dwc);
->> Hi John/Thinh/Felipe,
->>
->> I actually added this change into my local branch, because we were
->> seeing an issue when switching from host mode --> peripheral mode.  What
->> was happening was that the RXFIFO register did not update back to the
->> expected value for peripheral mode by the time
->> dwc3_gadget_init_out_endpoint() was executed.  With the logic to
->> calculate the EP max packet limit based on RXFIFO reg, this caused all
->> EPs to be set with an EP max limit of 0.
->>
->> With this change, it seemed to help with the above issue.  However, can
->> we consider moving the core soft reset outside the spinlock?  At least
->> with our PHY init routines, we have some msleep() calls for waiting for
->> the PHYs to be ready, which will end up as a sleeping while atomic bug.
->> (not sure if PHY init is required to be called in atomic context)
->>
->> Thanks
->> Wesley Cheng
-> 
-> Hi Wesley,
-> 
-> Thanks for letting us know the issue you're having also.
-> 
-> Yes, you need to wait a certain amount of time to synchronize with the
-> PHY (at least 50ms for dwc_usb32 and dwc_usb31 v1.80a and above, and
-> less for older versions). When removing the spinlock to use msleep(),
-> just make sure that there's no race issue. BTW, how long does your setup
-> need to msleep()?
-> 
-Hi Thinh,
-
-Sorry for the late response.  My mistake, its actually just a usleep()
-for a less than 100uS (polling for a status bit change, so it will exit
-early if possible).  For this change, can we just move the
-dwc3_core_soft_reset() outside of the spinlock?
-
-Thanks
-Wesley Cheng
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
