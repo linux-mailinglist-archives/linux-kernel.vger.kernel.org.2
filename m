@@ -2,129 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E50934CF7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BDC34CF83
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhC2Lz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
+        id S231586AbhC2L5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhC2LzF (ORCPT
+        with ESMTP id S230202AbhC2L4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:55:05 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62DAC061574;
-        Mon, 29 Mar 2021 04:55:04 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id y124-20020a1c32820000b029010c93864955so8370780wmy.5;
-        Mon, 29 Mar 2021 04:55:04 -0700 (PDT)
+        Mon, 29 Mar 2021 07:56:39 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6610C061574;
+        Mon, 29 Mar 2021 04:56:38 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id w10so4926630pgh.5;
+        Mon, 29 Mar 2021 04:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DTGUJTFeIuqkHE7OgJ63VK0q/EGuYFQeHNPktt9KFqo=;
-        b=QN35vK/ypSg7ojWLSyNITTgbIp7lU5hj9ii1qUFNLXtobdt6MopjIdyHP28M9+Rffc
-         0QyV1rs6l7CwMir6EKdxwwiegfEr5OyxXCaBZjYkx5GuJjZliKYxynDp13LHfw6DDagS
-         UVD21vEON7j88LiUfCj8od7SxA+QySey74c9RbkXt7E8GTsIrOKSLgI/zZ1dO85Gz7Wq
-         LJtj9zPXDtBbnEGjHUJYXws5JFL5lrmn8Gk8DParf4M5AQKjTOQ5fGxDfoPv0LraDup6
-         gLklABKV5Y3HL0FsuHujXQv0D5BhUQyhP+ZaAwBeT++RpwmgiCJ0IeQSXp8ZGUkmyegF
-         RNCw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EnFBJVazfWibXzhJ5rFjkl18/36Z2C8O31hRW2EttRI=;
+        b=A9cEsaeO3naOM710L2wuvIqbPGfwMqsINL0RsSR3ub4D76xfVmp2uPyA9wgdeF1fej
+         nquXimcD83GEyR0BDLAE3Uyb3tyyDpnv//EAsfWzn7DA8vh1AgM0iSzsHYOaMQSw5n8Q
+         PIdczv5EB0yCI8k1Qua9JVn30khMPAFFgmJdPldw3QonBdWkiYaYn0/WVcLSnOAIeoMA
+         tINEdTuOGv0TKW7prcSeDHfxpX1KRt9//dVTelcsMi/ZWrAIcqHQS4sKEIoMRQStRCHm
+         zLOvhNjDFoTW0I+WFfmpzxSnnVxZ/jm+yA495ctTVPbaq2dU0+UdO+OVP59WJsgqCWpC
+         iLZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DTGUJTFeIuqkHE7OgJ63VK0q/EGuYFQeHNPktt9KFqo=;
-        b=otePqtb4+Tw1ac1D6L3QWMRWhV9VvSHp1s2PuHsbP802eP7RCKZFWLnzfLlHvKoWSN
-         kk0L7x9FO80n+MoUlvGS1FbKo8+rib5JehHQiNhn9S5ulsIozrDpXSfw3EA7cYAZsiPB
-         ZShf6yCAhAUwd8IaTUa9qpWVz3ThC9jOVoKoSZ4jo8Q/sS7BCd5NlYa+MRr/pNTLYE5i
-         e7yix01vXAHqp7V9pAVOY9pc8nwYSDxRsSuuafDFhmL6RzrLzIyjmOhNIvUlhtUuUX0Z
-         M92HrVf6dnWxrKKk9C/OxXTyGsEdt1xMfhr3NSiQUo8YIT8kGmFAFsPbxM207mKfR97B
-         AtHA==
-X-Gm-Message-State: AOAM533uPhH0bRLPZYoafK1vVEiFTvPXaBJqVSniTSDIOoMO361A2KJF
-        XQy8HiqdItdPHeT8ITd/VlI=
-X-Google-Smtp-Source: ABdhPJwwik1eV8I3tyUxdsEEtBJZ250VJWBh3/7XjHJgtNWDne3LT3xC5YApnDCKW8FGW59G3wBZqg==
-X-Received: by 2002:a1c:e912:: with SMTP id q18mr24516003wmc.59.1617018903448;
-        Mon, 29 Mar 2021 04:55:03 -0700 (PDT)
-Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
-        by smtp.gmail.com with ESMTPSA id f2sm30409723wrq.34.2021.03.29.04.55.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 04:55:02 -0700 (PDT)
-Subject: Re: [PATCH v2 6/8] dt-bindings: arm: Add compatible for Mediatek
- MT8195
-To:     Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, srv_heupstream@mediatek.com
-References: <20210319023427.16711-1-seiya.wang@mediatek.com>
- <20210319023427.16711-8-seiya.wang@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <dd425954-cfeb-01d1-0027-17dedfd29dbc@gmail.com>
-Date:   Mon, 29 Mar 2021 13:55:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EnFBJVazfWibXzhJ5rFjkl18/36Z2C8O31hRW2EttRI=;
+        b=r3lYF0gFuZJZH+3Q+W4edY/aeYWbDelwD7G1tvkzXwcTKiFZJ7wSWabtjcmqAcbxGZ
+         rlxp8nTtTK34iDamm3417YW5HnP2gWElJQL0BRrHsI/UKHZ90wfSxDxUVnEVNNJkKC8K
+         DbSXaasmHYz05hENu5TTGcY8iUB4Dwv9ViF833pmn9ORuGSrnkMuFrgikJ5zv2vR+8ea
+         Z0aDd9GM2SKSfVaCJkIMVCLLKQUb9m3Vea1I3+A6U9DFfpEEmuwugA55a2h7B2lhXNoD
+         b3WZfj2ztN0D8/wSxYJwr66v3kPShy0sAsayUaqfatNNA5YaiAPqG/4lRoMJoWZwUjv6
+         T/WA==
+X-Gm-Message-State: AOAM531a6ILmzDz4WNI9ExjcSGuW1pTtnJ2x7x+AYuWJjZm4LjgvUVGC
+        L7vXjgyUqYTjB+idxyubnV8hYOgAJ1xaop8gVgTHXymjVQZ6wQ==
+X-Google-Smtp-Source: ABdhPJxz6Y3Wwr3WdRctkjolrbirCvNh0/HlbM9vuGK4xJH+M9zFIKH1xBeqzhhiWXrXT6L9hNo9bP1vVwanduLj6Ms=
+X-Received: by 2002:a63:cb44:: with SMTP id m4mr1017181pgi.4.1617018998358;
+ Mon, 29 Mar 2021 04:56:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319023427.16711-8-seiya.wang@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com> <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 14:56:22 +0300
+Message-ID: <CAHp75VeaEGbnyro2UUCddNxZaKHSWyfyDmExV6s7a0TJKGnkNA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 2:42 PM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
+>
+> Do not allow exporting GPIOs which are set invalid
+> by the driver's valid mask.
 
+> Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
+>
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-On 19/03/2021 03:34, Seiya Wang wrote:
-> This commit adds dt-binding documentation for the Mediatek MT8195
-> reference board.
-> 
-> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+Should not be blank lines in the tag block.
 
-Applied to v5.12-next/dts64
+Dunno if you can convert those pr_*() to dev_*(), but it's definitely
+out of the scope here.
 
-Thanks!
-
-
+I like the idea, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
 > ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> index 93b3bdf6eaeb..a95224fcff9f 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -118,6 +118,10 @@ properties:
->            - enum:
->                - mediatek,mt8183-evb
->            - const: mediatek,mt8183
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt8195-evb
-> +          - const: mediatek,mt8195
->        - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
->          items:
->            - enum:
-> 
+>  drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+> index 26c5466b8179..ae49bb23c6ed 100644
+> --- a/drivers/gpio/gpiolib-sysfs.c
+> +++ b/drivers/gpio/gpiolib-sysfs.c
+> @@ -458,6 +458,8 @@ static ssize_t export_store(struct class *class,
+>         long                    gpio;
+>         struct gpio_desc        *desc;
+>         int                     status;
+> +       struct gpio_chip        *gc;
+> +       int                     offset;
+>
+>         status = kstrtol(buf, 0, &gpio);
+>         if (status < 0)
+> @@ -469,6 +471,12 @@ static ssize_t export_store(struct class *class,
+>                 pr_warn("%s: invalid GPIO %ld\n", __func__, gpio);
+>                 return -EINVAL;
+>         }
+> +       gc = desc->gdev->chip;
+> +       offset = gpio_chip_hwgpio(desc);
+> +       if (!gpiochip_line_is_valid(gc, offset)) {
+> +               pr_warn("%s: GPIO %ld masked\n", __func__, gpio);
+> +               return -EINVAL;
+> +       }
+>
+>         /* No extra locking here; FLAG_SYSFS just signifies that the
+>          * request and export were done by on behalf of userspace, so
+> --
+> 2.25.4
+>
+>
+> --
+> Matti Vaittinen, Linux device drivers
+> ROHM Semiconductors, Finland SWDC
+> Kiviharjunlenkki 1E
+> 90220 OULU
+> FINLAND
+>
+> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+> Simon says - in Latin please.
+> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+> Thanks to Simon Glass for the translation =]
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
