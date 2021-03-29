@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77C134C875
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3FF34CB00
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhC2IWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
+        id S235094AbhC2ImP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232849AbhC2IOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 141D6619C3;
-        Mon, 29 Mar 2021 08:14:35 +0000 (UTC)
+        id S234204AbhC2IX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 483D0619C4;
+        Mon, 29 Mar 2021 08:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005676;
-        bh=qCOOaa6EfyiklhqncTsoyrChG1edpEURA9rvgktgUhg=;
+        s=korg; t=1617006235;
+        bh=Hw9A6Psap29M1k2WTByEluXpzjwHWq9t16vzcJNwzyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BmZteLOypT1uWmzHwiX3jXXILgOJBRdUsYXFHD+UzvgQn9Ktl6agrDb2XJKEnObRd
-         +9LBEfhvV/VZ7pX/evuN995IrIVR3AJUhH48o5rurgxEoGPNa6aDGcdlsDjLqKI37n
-         GPNaT0H7/BW0ThROtV6jMkMsCFF2mBLdRVfCHruM=
+        b=SqfZYiZH4OyfUM9GuEDVqJNHIK6xWB0TsKPn+X+kbEIaO0pSpBipHTixRC6RYHwBa
+         AReOpl7hCW1GxV6hfe1JrHieGpL23vvO6fCXJOQIlX25AlyYOgIlPOz2LUA/Xhfj7K
+         4r/oGJwyF42L+nnPSd9rWArF+Kelq/GvVQ9mQ818=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/111] can: peak_usb: add forgotten supported devices
+Subject: [PATCH 5.10 167/221] drm/msm: Fix suspend/resume on i.MX5
 Date:   Mon, 29 Mar 2021 09:58:18 +0200
-Message-Id: <20210329075617.544105248@linuxfoundation.org>
+Message-Id: <20210329075634.718810265@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit 59ec7b89ed3e921cd0625a8c83f31a30d485fdf8 ]
+[ Upstream commit a9748134ea4aad989e52a6a91479e0acfd306e5b ]
 
-Since the peak_usb driver also supports the CAN-USB interfaces
-"PCAN-USB X6" and "PCAN-Chip USB" from PEAK-System GmbH, this patch adds
-their names to the list of explicitly supported devices.
+When putting iMX5 into suspend, the following flow is
+observed:
 
-Fixes: ea8b65b596d7 ("can: usb: Add support of PCAN-Chip USB stamp module")
-Fixes: f00b534ded60 ("can: peak: Add support for PCAN-USB X6 USB interface")
-Link: https://lore.kernel.org/r/20210309082128.23125-3-s.grosjean@peak-system.com
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+[   70.023427] [<c07755f0>] (msm_atomic_commit_tail) from [<c06e7218>]
+(commit_tail+0x9c/0x18c)
+[   70.031890] [<c06e7218>] (commit_tail) from [<c0e2920c>]
+(drm_atomic_helper_commit+0x1a0/0x1d4)
+[   70.040627] [<c0e2920c>] (drm_atomic_helper_commit) from
+[<c06e74d4>] (drm_atomic_helper_disable_all+0x1c4/0x1d4)
+[   70.050913] [<c06e74d4>] (drm_atomic_helper_disable_all) from
+[<c0e2943c>] (drm_atomic_helper_suspend+0xb8/0x170)
+[   70.061198] [<c0e2943c>] (drm_atomic_helper_suspend) from
+[<c06e84bc>] (drm_mode_config_helper_suspend+0x24/0x58)
+
+In the i.MX5 case, priv->kms is not populated (as i.MX5 does not use any
+of the Qualcomm display controllers), causing a NULL pointer
+dereference in msm_atomic_commit_tail():
+
+[   24.268964] 8<--- cut here ---
+[   24.274602] Unable to handle kernel NULL pointer dereference at
+virtual address 00000000
+[   24.283434] pgd = (ptrval)
+[   24.286387] [00000000] *pgd=ca212831
+[   24.290788] Internal error: Oops: 17 [#1] SMP ARM
+[   24.295609] Modules linked in:
+[   24.298777] CPU: 0 PID: 197 Comm: init Not tainted 5.11.0-rc2-next-20210111 #333
+[   24.306276] Hardware name: Freescale i.MX53 (Device Tree Support)
+[   24.312442] PC is at msm_atomic_commit_tail+0x54/0xb9c
+[   24.317743] LR is at commit_tail+0xa4/0x1b0
+
+Fix the problem by calling drm_mode_config_helper_suspend/resume()
+only when priv->kms is available.
+
+Fixes: ca8199f13498 ("drm/msm/dpu: ensure device suspend happens during PM sleep")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/msm/msm_drv.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 96bbdef672bc..17a5641d81b3 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -18,6 +18,8 @@
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 45e325c982c2..b38ebccad42f 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1079,6 +1079,10 @@ static int __maybe_unused msm_pm_resume(struct device *dev)
+ static int __maybe_unused msm_pm_prepare(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
++	struct msm_drm_private *priv = ddev ? ddev->dev_private : NULL;
++
++	if (!priv || !priv->kms)
++		return 0;
  
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB FD adapter");
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro FD adapter");
-+MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-Chip USB");
-+MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB X6 adapter");
+ 	return drm_mode_config_helper_suspend(ddev);
+ }
+@@ -1086,6 +1090,10 @@ static int __maybe_unused msm_pm_prepare(struct device *dev)
+ static void __maybe_unused msm_pm_complete(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
++	struct msm_drm_private *priv = ddev ? ddev->dev_private : NULL;
++
++	if (!priv || !priv->kms)
++		return;
  
- #define PCAN_USBPROFD_CHANNEL_COUNT	2
- #define PCAN_USBFD_CHANNEL_COUNT	1
+ 	drm_mode_config_helper_resume(ddev);
+ }
 -- 
 2.30.1
 
