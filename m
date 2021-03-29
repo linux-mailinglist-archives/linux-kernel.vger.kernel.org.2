@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5B334C46E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBC134C46F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhC2HCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:02:21 -0400
+        id S231209AbhC2HC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:02:26 -0400
 Received: from mga09.intel.com ([134.134.136.24]:51195 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhC2HBw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:01:52 -0400
-IronPort-SDR: VkB5C0DigDQ2qConkdsx+tviLOEoOhIVzWRT3AvPCJn4Ij/ve1obH1xdmUA2wBgPN8gMExF0Ir
- FH9h+cSjW63Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="191590368"
+        id S229873AbhC2HBz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:01:55 -0400
+IronPort-SDR: MGuhptFoX6ogeM+wuHOxOTMGelj1mIUV5KKjMxPxiH/HfM1VxG+sgXrhZIoUvwbXb6KsCNHoMX
+ nayDXW2+AQBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="191590392"
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="191590368"
+   d="scan'208";a="191590392"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:01:52 -0700
-IronPort-SDR: UUc93x9SQhowlpCsZ6IzDLTYT0Pc6BByidqza/n0u44kG81IO7w97vuIRmfq/jx1Btj410Ufew
- 9QZGo5jNRueA==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:01:55 -0700
+IronPort-SDR: sOdfv2iST9xwQHOFIR2KU3wD4x4sNpLk+DZc2/KBdsTmqSMNld8X+jMADkdeSVNfgSVRN08L3u
+ RXALHsPYvsww==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="444677302"
+   d="scan'208";a="444677313"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:01:50 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:01:52 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v3 04/27] perf pmu: Save pmu name
-Date:   Mon, 29 Mar 2021 15:00:23 +0800
-Message-Id: <20210329070046.8815-5-yao.jin@linux.intel.com>
+Subject: [PATCH v3 05/27] perf pmu: Save detected hybrid pmus to a global pmu list
+Date:   Mon, 29 Mar 2021 15:00:24 +0800
+Message-Id: <20210329070046.8815-6-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210329070046.8815-1-yao.jin@linux.intel.com>
 References: <20210329070046.8815-1-yao.jin@linux.intel.com>
@@ -41,82 +41,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hybrid platform, one event is available on one pmu
-(such as, available on cpu_core or on cpu_atom).
+We identify the cpu_core pmu and cpu_atom pmu by explicitly
+checking following files:
 
-This patch saves the pmu name to the pmu field of struct perf_pmu_alias.
-Then next we can know the pmu which the event can be enabled on.
+For cpu_core, checks:
+"/sys/bus/event_source/devices/cpu_core/cpus"
+
+For cpu_atom, checks:
+"/sys/bus/event_source/devices/cpu_atom/cpus"
+
+If the 'cpus' file exists, the pmu exists.
+
+But in order not to hardcode the "cpu_core" and "cpu_atom",
+and make the code in a generic way. So if the path
+"/sys/bus/event_source/devices/cpu_xxx/cpus" exists, the hybrid
+pmu exists. All the detected hybrid pmus are linked to a
+global list 'perf_pmu__hybrid_pmus' and then next we just need
+to iterate the list to get all hybrid pmu by using
+perf_pmu__for_each_hybrid_pmu.
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v3:
- - Change pmu to pmu_name in struct perf_pmu_alias.
+ - No functional change.
 
- tools/perf/util/pmu.c | 10 +++++++++-
- tools/perf/util/pmu.h |  1 +
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ tools/perf/util/Build        |  1 +
+ tools/perf/util/pmu-hybrid.c | 35 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/pmu-hybrid.h | 18 ++++++++++++++++++
+ tools/perf/util/pmu.c        |  9 ++++++++-
+ tools/perf/util/pmu.h        |  4 ++++
+ 5 files changed, 66 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/util/pmu-hybrid.c
+ create mode 100644 tools/perf/util/pmu-hybrid.h
 
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index e3e12f9d4733..37a8a63c7195 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -69,6 +69,7 @@ perf-y += parse-events-bison.o
+ perf-y += pmu.o
+ perf-y += pmu-flex.o
+ perf-y += pmu-bison.o
++perf-y += pmu-hybrid.o
+ perf-y += trace-event-read.o
+ perf-y += trace-event-info.o
+ perf-y += trace-event-scripting.o
+diff --git a/tools/perf/util/pmu-hybrid.c b/tools/perf/util/pmu-hybrid.c
+new file mode 100644
+index 000000000000..7316bf46e54b
+--- /dev/null
++++ b/tools/perf/util/pmu-hybrid.c
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/list.h>
++#include <linux/compiler.h>
++#include <linux/string.h>
++#include <linux/zalloc.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <stdbool.h>
++#include <stdarg.h>
++#include <locale.h>
++#include <api/fs/fs.h>
++#include "fncache.h"
++#include "pmu-hybrid.h"
++
++LIST_HEAD(perf_pmu__hybrid_pmus);
++
++bool perf_pmu__hybrid_mounted(const char *name)
++{
++	char path[PATH_MAX];
++	const char *sysfs;
++
++	if (strncmp(name, "cpu_", 4))
++		return false;
++
++	sysfs = sysfs__mountpoint();
++	if (!sysfs)
++		return false;
++
++	snprintf(path, PATH_MAX, CPUS_TEMPLATE_CPU, sysfs, name);
++	return file_available(path);
++}
+diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
+new file mode 100644
+index 000000000000..35bed3714438
+--- /dev/null
++++ b/tools/perf/util/pmu-hybrid.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __PMU_HYBRID_H
++#define __PMU_HYBRID_H
++
++#include <linux/perf_event.h>
++#include <linux/compiler.h>
++#include <linux/list.h>
++#include <stdbool.h>
++#include "pmu.h"
++
++extern struct list_head perf_pmu__hybrid_pmus;
++
++#define perf_pmu__for_each_hybrid_pmu(pmu)	\
++	list_for_each_entry(pmu, &perf_pmu__hybrid_pmus, hybrid_list)
++
++bool perf_pmu__hybrid_mounted(const char *name);
++
++#endif /* __PMU_HYBRID_H */
 diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 9ed9a6a8b2d2..10709ec1cc3e 100644
+index 10709ec1cc3e..35e9660c3904 100644
 --- a/tools/perf/util/pmu.c
 +++ b/tools/perf/util/pmu.c
-@@ -283,6 +283,7 @@ void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
- 	zfree(&newalias->str);
- 	zfree(&newalias->metric_expr);
- 	zfree(&newalias->metric_name);
-+	zfree(&newalias->pmu_name);
- 	parse_events_terms__purge(&newalias->terms);
- 	free(newalias);
- }
-@@ -297,6 +298,10 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+@@ -25,6 +25,7 @@
+ #include "string2.h"
+ #include "strbuf.h"
+ #include "fncache.h"
++#include "pmu-hybrid.h"
  
- 	list_for_each_entry(a, alist, list) {
- 		if (!strcasecmp(newalias->name, a->name)) {
-+			if (newalias->pmu_name && a->pmu_name &&
-+			    !strcasecmp(newalias->pmu_name, a->pmu_name)) {
-+				continue;
-+			}
- 			perf_pmu_update_alias(a, newalias);
- 			perf_pmu_free_alias(newalias);
- 			return true;
-@@ -314,7 +319,8 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
- 	int num;
- 	char newval[256];
- 	char *long_desc = NULL, *topic = NULL, *unit = NULL, *perpkg = NULL,
--	     *metric_expr = NULL, *metric_name = NULL, *deprecated = NULL;
-+	     *metric_expr = NULL, *metric_name = NULL, *deprecated = NULL,
-+	     *pmu_name = NULL;
+ struct perf_pmu perf_pmu__fake;
  
- 	if (pe) {
- 		long_desc = (char *)pe->long_desc;
-@@ -324,6 +330,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
- 		metric_expr = (char *)pe->metric_expr;
- 		metric_name = (char *)pe->metric_name;
- 		deprecated = (char *)pe->deprecated;
-+		pmu_name = (char *)pe->pmu;
- 	}
+@@ -613,7 +614,6 @@ static struct perf_cpu_map *__pmu_cpumask(const char *path)
+  */
+ #define SYS_TEMPLATE_ID	"./bus/event_source/devices/%s/identifier"
+ #define CPUS_TEMPLATE_UNCORE	"%s/bus/event_source/devices/%s/cpumask"
+-#define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
  
- 	alias = malloc(sizeof(*alias));
-@@ -389,6 +396,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
- 	}
- 	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
- 	alias->str = strdup(newval);
-+	alias->pmu_name = pmu_name ? strdup(pmu_name) : NULL;
+ static struct perf_cpu_map *pmu_cpumask(const char *name)
+ {
+@@ -645,6 +645,9 @@ static bool pmu_is_uncore(const char *name)
+ 	char path[PATH_MAX];
+ 	const char *sysfs;
  
- 	if (deprecated)
- 		alias->deprecated = true;
++	if (perf_pmu__hybrid_mounted(name))
++		return false;
++
+ 	sysfs = sysfs__mountpoint();
+ 	snprintf(path, PATH_MAX, CPUS_TEMPLATE_UNCORE, sysfs, name);
+ 	return file_available(path);
+@@ -946,6 +949,7 @@ static struct perf_pmu *pmu_lookup(const char *name)
+ 	pmu->is_uncore = pmu_is_uncore(name);
+ 	if (pmu->is_uncore)
+ 		pmu->id = pmu_id(name);
++	pmu->is_hybrid = perf_pmu__hybrid_mounted(name);
+ 	pmu->max_precise = pmu_max_precise(name);
+ 	pmu_add_cpu_aliases(&aliases, pmu);
+ 	pmu_add_sys_aliases(&aliases, pmu);
+@@ -957,6 +961,9 @@ static struct perf_pmu *pmu_lookup(const char *name)
+ 	list_splice(&aliases, &pmu->aliases);
+ 	list_add_tail(&pmu->list, &pmus);
+ 
++	if (pmu->is_hybrid)
++		list_add_tail(&pmu->hybrid_list, &perf_pmu__hybrid_pmus);
++
+ 	pmu->default_config = perf_pmu__get_default_config(pmu);
+ 
+ 	return pmu;
 diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 8164388478c6..8493b1719e10 100644
+index 8493b1719e10..29289e7c2649 100644
 --- a/tools/perf/util/pmu.h
 +++ b/tools/perf/util/pmu.h
-@@ -72,6 +72,7 @@ struct perf_pmu_alias {
- 	bool deprecated;
- 	char *metric_expr;
- 	char *metric_name;
-+	char *pmu_name;
+@@ -5,6 +5,7 @@
+ #include <linux/bitmap.h>
+ #include <linux/compiler.h>
+ #include <linux/perf_event.h>
++#include <linux/list.h>
+ #include <stdbool.h>
+ #include "parse-events.h"
+ #include "pmu-events/pmu-events.h"
+@@ -19,6 +20,7 @@ enum {
+ 
+ #define PERF_PMU_FORMAT_BITS 64
+ #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
++#define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
+ 
+ struct perf_event_attr;
+ 
+@@ -34,6 +36,7 @@ struct perf_pmu {
+ 	__u32 type;
+ 	bool selectable;
+ 	bool is_uncore;
++	bool is_hybrid;
+ 	bool auxtrace;
+ 	int max_precise;
+ 	struct perf_event_attr *default_config;
+@@ -42,6 +45,7 @@ struct perf_pmu {
+ 	struct list_head aliases; /* HEAD struct perf_pmu_alias -> list */
+ 	struct list_head caps;    /* HEAD struct perf_pmu_caps -> list */
+ 	struct list_head list;    /* ELEM */
++	struct list_head hybrid_list;
  };
  
- struct perf_pmu *perf_pmu__find(const char *name);
+ extern struct perf_pmu perf_pmu__fake;
 -- 
 2.17.1
 
