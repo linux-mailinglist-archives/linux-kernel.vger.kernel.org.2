@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C1B34C917
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FDF34CB64
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhC2I0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:26:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
+        id S235290AbhC2Iqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhC2IRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0898B61964;
-        Mon, 29 Mar 2021 08:16:49 +0000 (UTC)
+        id S234387AbhC2I2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:28:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1590161554;
+        Mon, 29 Mar 2021 08:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005810;
-        bh=wzE1/pH3sttOMtpx9P/3mP60bD/P+dRiprD1JqRIWPE=;
+        s=korg; t=1617006476;
+        bh=06AdV+JkCI79bqE8VrXjJjhz6t24lXG9Wq7P9wAxE/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPp90xxj4iwXuzFB8Jt0QEzFQLOLmZ2kY5dhsxbRpHrtU29FIzYKO+lbcsKvN5YCZ
-         WE/B5xyWq6Fae5M+mN7gXoeikHhMIRa5pDx+tMUZJLMRLbJqtxtzHPaqjSJ/tw5XK/
-         CfTE20KLiBlAqkcBJ6Kf5U0jotEnt6YoNuQ321Mk=
+        b=u04svQhgBUcIyVtvz3bYWSaRe7ZJg4pm1Y102HUwIh3YH2q99whAJo+C5kcN17zk7
+         MXcOA06EsgqupyjlfsmBC/sqJyD9kXIFY92JTGRWEEk3H7HVV5G8/C9UqXKV50ONbm
+         wRre4EF56gJVPMg082MMKhUuk7FA7xNW8Up8RJhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 014/221] net: tehuti: fix error return code in bdx_probe()
-Date:   Mon, 29 Mar 2021 09:55:45 +0200
-Message-Id: <20210329075629.652167104@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 030/254] irqchip/ingenic: Add support for the JZ4760
+Date:   Mon, 29 Mar 2021 09:55:46 +0200
+Message-Id: <20210329075634.126319982@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 38c26ff3048af50eee3fcd591921357ee5bfd9ee ]
+[ Upstream commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60 ]
 
-When bdx_read_mac() fails, no error return code of bdx_probe()
-is assigned.
-To fix this bug, err is assigned with -EFAULT as error return code.
+Add support for the interrupt controller found in the JZ4760 SoC, which
+works exactly like the one in the JZ4770.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210307172014.73481-2-paul@crapouillou.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/tehuti/tehuti.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/irqchip/irq-ingenic-tcu.c | 1 +
+ drivers/irqchip/irq-ingenic.c     | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
-index b8f4f419173f..d054c6e83b1c 100644
---- a/drivers/net/ethernet/tehuti/tehuti.c
-+++ b/drivers/net/ethernet/tehuti/tehuti.c
-@@ -2044,6 +2044,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		/*bdx_hw_reset(priv); */
- 		if (bdx_read_mac(priv)) {
- 			pr_err("load MAC address failed\n");
-+			err = -EFAULT;
- 			goto err_out_iomap;
- 		}
- 		SET_NETDEV_DEV(ndev, &pdev->dev);
+diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
+index 7a7222d4c19c..b938d1d04d96 100644
+--- a/drivers/irqchip/irq-ingenic-tcu.c
++++ b/drivers/irqchip/irq-ingenic-tcu.c
+@@ -179,5 +179,6 @@ static int __init ingenic_tcu_irq_init(struct device_node *np,
+ }
+ IRQCHIP_DECLARE(jz4740_tcu_irq, "ingenic,jz4740-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(jz4725b_tcu_irq, "ingenic,jz4725b-tcu", ingenic_tcu_irq_init);
++IRQCHIP_DECLARE(jz4760_tcu_irq, "ingenic,jz4760-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(jz4770_tcu_irq, "ingenic,jz4770-tcu", ingenic_tcu_irq_init);
+ IRQCHIP_DECLARE(x1000_tcu_irq, "ingenic,x1000-tcu", ingenic_tcu_irq_init);
+diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
+index b61a8901ef72..ea36bb00be80 100644
+--- a/drivers/irqchip/irq-ingenic.c
++++ b/drivers/irqchip/irq-ingenic.c
+@@ -155,6 +155,7 @@ static int __init intc_2chip_of_init(struct device_node *node,
+ {
+ 	return ingenic_intc_of_init(node, 2);
+ }
++IRQCHIP_DECLARE(jz4760_intc, "ingenic,jz4760-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4770_intc, "ingenic,jz4770-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4775_intc, "ingenic,jz4775-intc", intc_2chip_of_init);
+ IRQCHIP_DECLARE(jz4780_intc, "ingenic,jz4780-intc", intc_2chip_of_init);
 -- 
 2.30.1
 
