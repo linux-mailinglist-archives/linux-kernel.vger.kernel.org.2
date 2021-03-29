@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FB334CE23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6844334CE26
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhC2Kp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S232705AbhC2KsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbhC2Kpa (ORCPT
+        with ESMTP id S232374AbhC2Kre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:45:30 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19E8C061574;
-        Mon, 29 Mar 2021 03:45:29 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id bt4so5788815pjb.5;
-        Mon, 29 Mar 2021 03:45:29 -0700 (PDT)
+        Mon, 29 Mar 2021 06:47:34 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D092EC061574;
+        Mon, 29 Mar 2021 03:47:33 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id v10so9130820pgs.12;
+        Mon, 29 Mar 2021 03:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=g2efpXc6CiG6QCMpvbYQLueL6cg1gKbJK+Z6dWI/3SA=;
-        b=lwrDNhydGj21KJbXpi1nfvXIHfwqMDKggqjgFJYmJiFhS1w2zAilBYILA2Pf+jhLBG
-         LXTuSExnbOeyAt1TLjatsaF78h+UIn//EmEKd32UB2TkEZhxCI9cul7wvRSgJB9n7WKm
-         Aj0/x94Ok2ChTDRpA0+S5TVIqRDTE62HZZaHxiwMsRCiwGTxvmCNDnJsmRHPLIWGJ+1P
-         7Zcqu7Re8dbRg7GRLyUXr8tsvODQTGElId3XjqrWCfW068mkTC2k8i22UiVONQHg5mk2
-         wb7T7DfcU6OnPUmGUUZRDApveoszKOJ46JaIRA82UPEVSZj4CU/h26KAuvbA7D2BsYlz
-         alrw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=efW0R7xutPE11DBN9SEnqyt0zcFDSwQ/E5/CXYn94wc=;
+        b=jPQsgKEHQ54eLWy6kIy7wl774HD78Yf7Uu148O2sQGcjnSPcNidouj546G8YPuZ2IE
+         jlyDUPDwM3WJU/73kMgBQQHdWDDfGXVQ9+AsSgwrJq+ISqD75xZ1g98PoaO+akx4N1S5
+         TjC2qfVV7dtr9clYzL+R0vEsyG5R4YtuXdVVV4lcc+OnHy+wq+Fp+oQvxNpSCCt8Tr5Z
+         ATtVJrY7I5p7CYa8HqHEwBfUb6TTuxICAQ4IsB1mfOSPGG5BWJYet0B2s6HzWJ7xnjJB
+         fllboH1x672YqaBjLozbbsIev2AGse7RUwKpsU3Kf1MRUxBMHlxRN9KStyuPEVLzaATm
+         SgYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=g2efpXc6CiG6QCMpvbYQLueL6cg1gKbJK+Z6dWI/3SA=;
-        b=Tlj6x8EamuOfKSAfRRdMjvE4bS7Xh0apAPCB8+X9EWbA9Am6CjchCoNIpIkSp7f1rb
-         MkM4lQbfIJqutogs8jG4fRt3CdtXjs5Ilp4NFizoxV7n4DMYh7i0fkibJRNZKEgxw40C
-         M+WS7v/mnvuIrfJC5HYjoxpU8IX9lHY2CsgEMW6laSat1KGVV8Ay6VBX7HssI+8y1OWU
-         B9EqGnv8Sbu1GnPc8uUhkitOeUWh5uI4JiUbLc+h/RON8OBSQXmA4ab5otBkKdhrtc0l
-         P4+syfB1L+Bcal+3nzYaxNA9NxZyWYILRHUQnN+PuudYMoLKY36VJdmpTvsPDcbUDCgV
-         t6Rw==
-X-Gm-Message-State: AOAM530NIz9nuhOGCdLU9rSl3JGLlGLQdlIgwrrCOJwqzmBST+Y7Axo1
-        FQ2b1LPEUyyIUT/0Md49QeY=
-X-Google-Smtp-Source: ABdhPJxZSy88aUJ6nv1FSCn7vFcyjln/WZWwIqUth7Zbwp+cTyNUvACjs0umhKfvpfaQ+TFdNkjGHg==
-X-Received: by 2002:a17:902:9a0a:b029:e6:bf00:8a36 with SMTP id v10-20020a1709029a0ab02900e6bf008a36mr28128496plp.51.1617014729311;
-        Mon, 29 Mar 2021 03:45:29 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:4ed:8f53:adc7:b574])
-        by smtp.googlemail.com with ESMTPSA id bb24sm14881555pjb.5.2021.03.29.03.45.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 03:45:29 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     herbert@gondor.apana.org.au
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, rdunlap@infradead.org,
-        ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
-        rohitm@chelsio.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: chelsio: fix incorrect kernel-doc comment syntax in file
-Date:   Mon, 29 Mar 2021 16:15:14 +0530
-Message-Id: <20210329104514.16950-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=efW0R7xutPE11DBN9SEnqyt0zcFDSwQ/E5/CXYn94wc=;
+        b=JC2UMXPVsSBIkN3Zu4ljav48Vpkh2SJNBAbXcdIAItUYingYJxMovP64qVxVz+u5SK
+         Jh2QPhuk1ZerodSEnyN9RPY/iohGQfBQvKlREpSnkmvxlunTu5m52P+Lm8tODJj6gpld
+         Vloqkd7Dxx6az/0YOtaMDdT+kEC8UG1p/8A1Mcgwi3pOBmoXwkQNMBUayYPcub8vXKuQ
+         vdsNFDDOEUbvuV0JigJRE9lNqYsn6BbJ+foeZLXN4QZUeyrqXdnzynjJu3F8l0OPsLNt
+         WTyZaYIyFY/IQGJyuCloxOQQ0LG+344pNv3kzvInXbSCGOzihygvJaT7utT3x9SgVWJ/
+         gDYQ==
+X-Gm-Message-State: AOAM531Ada6i3NK70haD4nE+L10zAUUhWDaj489Yvp0RfaCflZvDI2nE
+        FUEsqvQssRkSD+CO9pGrPBxOB8vUn4nqH9Zk+2c=
+X-Google-Smtp-Source: ABdhPJxMpWibj/NiiDckZKIUVfWdqK2DbteamjvUT/Dj9Gzk+zF1ZnHWE70UXL5z3KO3CrN27HHdjwpoUKj/lzYf01U=
+X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
+ n15-20020a62e50f0000b02902148e4aae46mr25140695pff.73.1617014853376; Mon, 29
+ Mar 2021 03:47:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210329080611.9312-1-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210329080611.9312-1-zhiyong.tao@mediatek.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 13:47:17 +0300
+Message-ID: <CAHp75Vcms=dAXcACraU4BHENee6j+CTwQtMVtURdnMHVAmTXkw@mail.gmail.com>
+Subject: Re: [PATCH Resend 0/6] Mediatek pinctrl patch on mt8195
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        sean.wang@kernel.org, srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        jg_poxu@mediatek.com, biao.huang@mediatek.com,
+        hongzhou.yang@mediatek.com, erin.lo@mediatek.com,
+        Sean Wang <sean.wang@mediatek.com>, seiya.wang@mediatek.com,
+        Sj Huang <sj.huang@mediatek.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-The header for drivers/crypto/chelsio/chcr_core.c follows this syntax, but
-the content inside does not comply with kernel-doc.
+On Mon, Mar 29, 2021 at 11:09 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+>
+> This series includes 6 patches:
+> 1.add pinctrl file on mt8195.
+> 2.add pinctrl binding document on mt8195.
+> 3.add pinctrl device node on mt8195.
+> 4.add pinctrl driver on MT8195.
+> 5.add pinctrl drive for I2C related pins on MT8195.
+> 6.add pinctrl rsel setting on MT8195.
 
-This line was probably not meant for kernel-doc parsing, but is parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warning from kernel-doc:
-"warning: wrong kernel-doc identifier on line:
- * This file is part of the Chelsio T4/T5/T6 Ethernet driver for Linux."
+You submitted the same version of the series twice, but it confuses people.
+Now you have to properly send the series only one time with the
+correct version added and changelog explains the changes done between
+the versions.
 
-Provide a simple fix by replacing this occurrence with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- drivers/crypto/chelsio/chcr_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/chelsio/chcr_core.c b/drivers/crypto/chelsio/chcr_core.c
-index f91f9d762a45..f03ef4a23f96 100644
---- a/drivers/crypto/chelsio/chcr_core.c
-+++ b/drivers/crypto/chelsio/chcr_core.c
-@@ -1,4 +1,4 @@
--/**
-+/*
-  * This file is part of the Chelsio T4/T5/T6 Ethernet driver for Linux.
-  *
-  * Copyright (C) 2011-2016 Chelsio Communications.  All rights reserved.
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
