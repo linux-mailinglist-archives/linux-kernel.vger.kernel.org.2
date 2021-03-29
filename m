@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BC934CA9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E0C34C69C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbhC2IjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40608 "EHLO mail.kernel.org"
+        id S231154AbhC2IIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231806AbhC2IXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FFDD619CF;
-        Mon, 29 Mar 2021 08:23:19 +0000 (UTC)
+        id S231715AbhC2IFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E930961932;
+        Mon, 29 Mar 2021 08:05:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006200;
-        bh=drVuqeO6EH03hFK4B3qDi0ktNDzprxhN07ztrzp0zHE=;
+        s=korg; t=1617005108;
+        bh=V1jICNUaOI9SiZN01Nr+FcrVDtq1erXjG/lyOxXFWJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xVhcIRQi9B3ZQpuV5Wq2iQEWU8lPLCA53QorV4XX8CAIqM3Fyvp9rJH36gViUeM06
-         RcOvv1tnHnfwwmWb0DW2IQywxS4YOaMnz/0iGxrVfwgpotLgJ4XOFcKoz1RgAs8b5n
-         iIVJgB5wLjrCuUzc9f+C9oRMpljV845qFFH/Oz+8=
+        b=2cPhQMMvRibkz0pQCHBR+q+MrZx8pzLKxFWJe/wynCd3rlPWIlKIWw418c2vOu4gG
+         UMUrh5H71OtMl3Hg1yfPX/F6wAlnUXs5wSEH+RPgF6N1YVwzGijXJUB4XmXuZWzqYv
+         Fo/FsX1IGFgvMokvZEkREgJJZOQZ3tS2OfxcaroM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 155/221] octeontx2-af: fix infinite loop in unmapping NPC counter
+        stable@vger.kernel.org,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.14 26/59] arm64: dts: ls1043a: mark crypto engine dma coherent
 Date:   Mon, 29 Mar 2021 09:58:06 +0200
-Message-Id: <20210329075634.334220868@linuxfoundation.org>
+Message-Id: <20210329075609.747722908@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+From: Horia Geantă <horia.geanta@nxp.com>
 
-[ Upstream commit 64451b98306bf1334a62bcd020ec92bdb4cb68db ]
+commit 4fb3a074755b7737c4081cffe0ccfa08c2f2d29d upstream.
 
-unmapping npc counter works in a way by traversing all mcam
-entries to find which mcam rule is associated with counter.
-But loop cursor variable 'entry' is not incremented before
-checking next mcam entry which resulting in infinite loop.
+Crypto engine (CAAM) on LS1043A platform is configured HW-coherent,
+mark accordingly the DT node.
 
-This in turn hogs the kworker thread forever and no other
-mbox message is processed by AF driver after that.
-Fix this by updating entry value before checking next
-mcam entry.
+Lack of "dma-coherent" property for an IP that is configured HW-coherent
+can lead to problems, similar to what has been reported for LS1046A.
 
-Fixes: a958dd59f9ce ("octeontx2-af: Map or unmap NPC MCAM entry and counter")
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.8+
+Fixes: 63dac35b58f4 ("arm64: dts: ls1043a: add crypto node")
+Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 511b01dd03ed..169ae491f978 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -2035,10 +2035,10 @@ int rvu_mbox_handler_npc_mcam_free_counter(struct rvu *rvu,
- 		index = find_next_bit(mcam->bmap, mcam->bmap_entries, entry);
- 		if (index >= mcam->bmap_entries)
- 			break;
-+		entry = index + 1;
- 		if (mcam->entry2cntr_map[index] != req->cntr)
- 			continue;
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -219,6 +219,7 @@
+ 			ranges = <0x0 0x00 0x1700000 0x100000>;
+ 			reg = <0x00 0x1700000 0x0 0x100000>;
+ 			interrupts = <0 75 0x4>;
++			dma-coherent;
  
--		entry = index + 1;
- 		npc_unmap_mcam_entry_and_cntr(rvu, mcam, blkaddr,
- 					      index, req->cntr);
- 	}
--- 
-2.30.1
-
+ 			sec_jr0: jr@10000 {
+ 				compatible = "fsl,sec-v5.4-job-ring",
 
 
