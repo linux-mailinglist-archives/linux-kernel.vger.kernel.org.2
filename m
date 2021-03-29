@@ -2,261 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568D534D6E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD66F34D6EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhC2SVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:21:06 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58608 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231354AbhC2SUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:20:55 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TIK3oF027933;
-        Mon, 29 Mar 2021 11:20:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=7eiZu0LguVFGL5nhxJF7zFkSY9wW4xv7C3QkMYgICaM=;
- b=ltgpJKAsugO3lBkn40Arcyf73THEAABQ8KAIQQY4PNqCtKMiw3cxbLaQ2XL3KiffLCR3
- AulgkoxprIK+ChYl5FMsclN/QXVYwSwx/opLYHznyoCBEpOcnOEyWd6OKojMKmvUlMQL
- OANmBtyqddghx1IW06FW/OSkw7UGv1vcpJE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37kk6n0ex8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 29 Mar 2021 11:20:40 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 29 Mar 2021 11:20:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j/SuqXiP8usXzO8KPCBkT7AEmWsu2mzADQyr+nbnBpaTAdAypOlcvGyEClkaehBSceGCIRXQjSynEZFjHi7jg3O9X10UiycPfCo1RMpTaWpg2FhkQBala7Z8qJruHzP0rwcIRylw5qBA2lUqJ5NBysbO4IhdFXfYaD2yPw2zFrMs2vm3A8P1VhFHx4SXXXBK7HoKJMCOE9zlJxUJnotdVoXltXuDdnsd1IVMlo09MNjNC4GQ7mqa2VzD/qgzwhEBp5hiwuZ7pATgjEadnh5mKNs1BSJGgPxd2upDeu5fsvD4l63M8aLGK3uRovIk0+NefqxzliyO2MB2O0BSHjbB2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7eiZu0LguVFGL5nhxJF7zFkSY9wW4xv7C3QkMYgICaM=;
- b=EE3BOIukAVw57PPZEvnD3GT1RHAxEQakHY+Imf6pFGOwF+eOasZXvlPG54CPkJuWONBkN+WPS9orUTkTZzH/WDeqiFgAamlLWH2edyEIJDAhbw73oEfd5vL8F4iyS1urgp57T8w+xYY2BV5BHRz1VrlApApwi7v9RiUqMHFnAZMs3hWVt0d5WnIc+72RtuJllA+g3DeM66pdCl3Rji0VeTghXSkWC4CSyFViH+4CMTjGqREQXyRuDPKY/xuWcuRrRP0TUo3wD/Z6tEuk1HhvFfXF7GhefGw1iCMz27L4IMqqV5+kIWF+0N+6EwHpgEtbLjXNH4j9Saoau07dWMeZpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4155.namprd15.prod.outlook.com (2603:10b6:a03:2ee::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Mon, 29 Mar
- 2021 18:20:38 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 18:20:38 +0000
-Date:   Mon, 29 Mar 2021 11:20:34 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Dennis Zhou <dennis@kernel.org>
-CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rfc 2/4] percpu: split __pcpu_balance_workfn()
-Message-ID: <YGIacjqWI8v+TESq@carbon.dhcp.thefacebook.com>
-References: <20210324190626.564297-1-guro@fb.com>
- <20210324190626.564297-3-guro@fb.com>
- <YGION8fYFy0uVVlm@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YGION8fYFy0uVVlm@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:1478]
-X-ClientProxiedBy: MW4PR03CA0224.namprd03.prod.outlook.com
- (2603:10b6:303:b9::19) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S231604AbhC2SWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229711AbhC2SV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:21:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B6246192F;
+        Mon, 29 Mar 2021 18:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617042116;
+        bh=kXXNq0dmCm0hnDHX95YhDo2GckeFUbqTf+Vy/Sj1jII=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CMlVL+AXpKGC1PhE0ZVob7HpQCZ1WS+ADxg9wBBos3cnQxcPM/76/gNufY6mSpfB/
+         SZIskvFnqMPoO2uOp2ziIElwYystz3hL+ANT4zQ3YzElwWHQZOApT62ZJG2T2KIVxN
+         4w8nRG0yxxSISUX8SNt9h+iCT6Og0pxPe1pP3h2cN2LCLHidVmGTNkoXBcRX702IyQ
+         W+GSerRAkNuum/Gfmy7z1jgLeJMmj3C4kCv6VlfMNVUEXsCwaRVhi0jQGDA4KGbZgG
+         4/dbbVHQ6BmNiskgCszIWmpS/W/pE+BvQOfcc4KTt+uE+SkTG3suBb6hfYZ7I0V1TE
+         7XuzoX0iN450A==
+Received: by mail-ej1-f46.google.com with SMTP id l4so20899366ejc.10;
+        Mon, 29 Mar 2021 11:21:55 -0700 (PDT)
+X-Gm-Message-State: AOAM53082jbnZpaZs9QXubfpfmFt21nSMV0g6PuZ6hM840CLyuuI3LGM
+        kQSVqPjE0cZdGC74jn4pve4SVGDaNyOLTVgHpQ==
+X-Google-Smtp-Source: ABdhPJzostUqG07SvP2TdnshS72q9Psgvp2zPmUNYqwhr48uhIFFg3ifwYD6akjgiF4UQn5rCWRhbcYhEHh3cLnHZ60=
+X-Received: by 2002:a17:906:7d48:: with SMTP id l8mr29395652ejp.108.1617042114445;
+ Mon, 29 Mar 2021 11:21:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:1478) by MW4PR03CA0224.namprd03.prod.outlook.com (2603:10b6:303:b9::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 18:20:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ebc0ba9e-38d0-4aad-f17a-08d8f2df5a4f
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4155:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB41550F9EA1FA1B9559E7E723BE7E9@SJ0PR15MB4155.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ydDGD9MtahXlJJqE+gvx9IR/oP9gmXu+TmLsz0JErCpUU5dAJFcGenTzCjF6fEaf5g2gxGPg/Y08i/ShasR2FCjOOlZD1dqeLJgZHV5Cwe3tC+qah9riro0uPP13SifdJPgZj6SU1rksJ8sDEW6fjXkXmxfeERbZOYPgssS/1+WaAqf9R8041T9EzucL8IOw9jqVnCrn0/r9tI2QlXmYJRW8e85GoROcJcRZzlbUD2FzBWWGDhS4FiYSG6vkfmUZ4mpRcQYGnlCxjVP4YDQY1s6gdRrZcSeKqel5pCdsiBgJEq1QEblaTstGaq0QXjKtKfa/dBUpEag9VkDHMz29o3DE5YMys49dBHERHhIGa0k7Wsb5jgjJp0ja6cue8zqFN+STZF7PxHJXtk14/Skbg5qb/gE4B2rb0d9C7Tf/0ftC492kImqwJnG0FGDxkij+zQ3ngxPKHeJrKqqyp5SXTaQPtsABFfGVh++YVJ+n0iaNiShidFObg/vpa9PNrDy0f7AIWpWh+Pkfmewt8i6Nc3fEg5+dn1lCyozEu0Qv/Bd6bcu/mRvMzLfIPZ6MqxLpW9o8HdbDkq7ETsj/CjbCmDtp76M9f3eQTxQSEx6htInNYq9LMC6mBAnDkWpLKQahwJY3XlSSzbP0T3bnnxvLEykdKfbLr01PV+9if7dIijeGKnEKJYe+ew6uk7JEUhAP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(136003)(39860400002)(316002)(8676002)(16526019)(6666004)(55016002)(66476007)(66556008)(2906002)(66946007)(186003)(9686003)(38100700001)(83380400001)(86362001)(52116002)(5660300002)(6506007)(8936002)(478600001)(7696005)(6916009)(4326008)(54906003)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YFmqlqAfD6dhUtscbclPyyQcdBC1L0djNlDmKhUF09tW4Qm0lZmLkTkWIG0J?=
- =?us-ascii?Q?wLvdzYgntbCdUEgHu34/jOkNiMOR4R5tw2FvMp7slpMmaXJs5yNtJHQTpPFw?=
- =?us-ascii?Q?GXYJz9tK/sG7s01ihiSJYYYmswA0hxqSOb3qGvyQvGN71ibMWfVUgY7ymxDb?=
- =?us-ascii?Q?MXa670zJZBmtPCVDprmeIh1rpxgEF8cCqofMFzjCJrC8o2ES8ij1uhSOfKmW?=
- =?us-ascii?Q?cS/KVSFBTJZy3iv8cQJL+kw9LrhAZgidLJ69rgqgEZXDQhpEBHd07XizKZN2?=
- =?us-ascii?Q?UTD5RmlfAil8FhlUSxozwQPVVNxHIqAZ9KdT3uaW3NJP/DFm9qVztjW15260?=
- =?us-ascii?Q?Mp+/ju07mqIttVXYBvCooXkSAnsCl0y4vOEc5LvM6VC/DBi5zm1WTm4Lmcbl?=
- =?us-ascii?Q?hcnbZPRTWmiFc89W3iBbL/l1eVggiE4XgB0I/yNWHYRkIvtuMWXQVibMAyin?=
- =?us-ascii?Q?Xa0mnf8vWgPiAVOHm9rUpL8uZlkpVbKi3STYzKBfYsbV3mwYdcI0h1++b2R8?=
- =?us-ascii?Q?+khxa2mdjMO1b1Dl/zzc4VONDg+9gEQxSfw5b9E60ZKC9dqUCUzIG4SKaMBZ?=
- =?us-ascii?Q?suc6uzYUuxrS1cSE79aYr7rIHhtXnX+o9P2Okyi2Lta1cfVwLNJfaOeSY97d?=
- =?us-ascii?Q?jO4lfMAa76e7WhqTQFhNkVJBKidktdL4+NHnCq/cPhpONucvaeE7AyLegoRL?=
- =?us-ascii?Q?3/RR2FaPtJseV//vnPTflTyCxtLCGQrYq601gA+DrpMIMv0GHYqcoVZtaEl7?=
- =?us-ascii?Q?aK0TcczaB+FzCmWHv5aMt+Y7FajS2FN+nh48R+RZLo8btNtncAeWu6wy0wxB?=
- =?us-ascii?Q?orAC3n3GsKcCo2u2+kiDXmk/VAMjvv9TqW6gV3Usy9x4ab88wJo5BVUGrM4D?=
- =?us-ascii?Q?saqwb6DDSfWMcBpX3Qx8A9JDK7Qc/tAmVnU/chP6vNAxgSOByhdExKCyZUr9?=
- =?us-ascii?Q?U40u4kTNOZT5vXQEZXEbZqSD6mZ9pSatyLyS/cTgN9DUmSRzEUiWu+a7KImZ?=
- =?us-ascii?Q?wlWfybesCdjBhhkzdTE99DxMob6EmLd0pMbu537xBJOWH/BaBOH5Bfb5QBZo?=
- =?us-ascii?Q?lWgWuZuiwtybtfh1lxcgKQ3SYGARfEXK8qxs9je1emGDL3WN5oaIv+ZgLnLs?=
- =?us-ascii?Q?3Oan88IoVX/kUXL4LMZ9cF54DmOEqBPVNSwZa/3iVqdv7Lj494Ptl4IjIT4r?=
- =?us-ascii?Q?HB5kkp7+bb/UdQt2VPcFE0F6SvGlhbL6X3RONfwnuYsq0yfzMXWLR28u4Nv5?=
- =?us-ascii?Q?DTnrU9ZH0EXgDIvJ8eoMLwJJnwtSqtS3tFa3BNYqGadsF4YJ0Wl3gqq1qku+?=
- =?us-ascii?Q?6sB7mCcDxBoanIH6LDIcB0nEFLfbYLIrHWfTgNp0qz65Fw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ebc0ba9e-38d0-4aad-f17a-08d8f2df5a4f
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 18:20:38.1139
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 74YnwM/v4HABHkyO1riryVjyWpZm4vmzLo8aJ1a+XViWq+rYZsOuGzaEHeClMvTC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4155
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: yPKF3v8pcUOhHVHaSnpJa50zKU8up2CU
-X-Proofpoint-ORIG-GUID: yPKF3v8pcUOhHVHaSnpJa50zKU8up2CU
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-29_11:2021-03-26,2021-03-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 impostorscore=0 spamscore=0 mlxscore=0
- adultscore=0 bulkscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103290136
-X-FB-Internal: deliver
+References: <20210327224116.69309-1-linux@roeck-us.net>
+In-Reply-To: <20210327224116.69309-1-linux@roeck-us.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 29 Mar 2021 13:21:42 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK6r=hfXdSZhsWb72O0QMDaOPnWTiYnOjp1fvztRj865A@mail.gmail.com>
+Message-ID: <CAL_JsqK6r=hfXdSZhsWb72O0QMDaOPnWTiYnOjp1fvztRj865A@mail.gmail.com>
+Subject: Re: [PATCH] of/fdt: Improve error checking
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 05:28:23PM +0000, Dennis Zhou wrote:
-> On Wed, Mar 24, 2021 at 12:06:24PM -0700, Roman Gushchin wrote:
-> > __pcpu_balance_workfn() became fairly big and hard to follow, but in
-> > fact it consists of two fully independent parts, responsible for
-> > the destruction of excessive free chunks and population of necessarily
-> > amount of free pages.
-> > 
-> > In order to simplify the code and prepare for adding of a new
-> > functionality, split it in two functions:
-> > 
-> >   1) pcpu_balance_free,
-> >   2) pcpu_balance_populated.
-> > 
-> > Move the taking/releasing of the pcpu_alloc_mutex to an upper level
-> > to keep the current synchronization in place.
-> > 
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > ---
-> >  mm/percpu.c | 46 +++++++++++++++++++++++++++++-----------------
-> >  1 file changed, 29 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/mm/percpu.c b/mm/percpu.c
-> > index 78c55c73fa28..015d076893f5 100644
-> > --- a/mm/percpu.c
-> > +++ b/mm/percpu.c
-> > @@ -1930,31 +1930,22 @@ void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
-> >  }
-> >  
-> >  /**
-> > - * __pcpu_balance_workfn - manage the amount of free chunks and populated pages
-> > + * pcpu_balance_free - manage the amount of free chunks
-> >   * @type: chunk type
-> >   *
-> > - * Reclaim all fully free chunks except for the first one.  This is also
-> > - * responsible for maintaining the pool of empty populated pages.  However,
-> > - * it is possible that this is called when physical memory is scarce causing
-> > - * OOM killer to be triggered.  We should avoid doing so until an actual
-> > - * allocation causes the failure as it is possible that requests can be
-> > - * serviced from already backed regions.
-> > + * Reclaim all fully free chunks except for the first one.
-> >   */
-> > -static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
-> > +static void pcpu_balance_free(enum pcpu_chunk_type type)
-> >  {
-> > -	/* gfp flags passed to underlying allocators */
-> > -	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
-> >  	LIST_HEAD(to_free);
-> >  	struct list_head *pcpu_slot = pcpu_chunk_list(type);
-> >  	struct list_head *free_head = &pcpu_slot[pcpu_nr_slots - 1];
-> >  	struct pcpu_chunk *chunk, *next;
-> > -	int slot, nr_to_pop, ret;
-> >  
-> >  	/*
-> >  	 * There's no reason to keep around multiple unused chunks and VM
-> >  	 * areas can be scarce.  Destroy all free chunks except for one.
-> >  	 */
-> > -	mutex_lock(&pcpu_alloc_mutex);
-> >  	spin_lock_irq(&pcpu_lock);
-> >  
-> >  	list_for_each_entry_safe(chunk, next, free_head, list) {
-> > @@ -1982,6 +1973,25 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
-> >  		pcpu_destroy_chunk(chunk);
-> >  		cond_resched();
-> >  	}
-> > +}
-> > +
-> > +/**
-> > + * pcpu_balance_populated - manage the amount of populated pages
-> > + * @type: chunk type
-> > + *
-> > + * Maintain a certain amount of populated pages to satisfy atomic allocations.
-> > + * It is possible that this is called when physical memory is scarce causing
-> > + * OOM killer to be triggered.  We should avoid doing so until an actual
-> > + * allocation causes the failure as it is possible that requests can be
-> > + * serviced from already backed regions.
-> > + */
-> > +static void pcpu_balance_populated(enum pcpu_chunk_type type)
-> > +{
-> > +	/* gfp flags passed to underlying allocators */
-> > +	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
-> > +	struct list_head *pcpu_slot = pcpu_chunk_list(type);
-> > +	struct pcpu_chunk *chunk;
-> > +	int slot, nr_to_pop, ret;
-> >  
-> >  	/*
-> >  	 * Ensure there are certain number of free populated pages for
-> > @@ -2051,8 +2061,6 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
-> >  			goto retry_pop;
-> >  		}
-> >  	}
-> > -
-> > -	mutex_unlock(&pcpu_alloc_mutex);
-> >  }
-> >  
-> >  /**
-> > @@ -2149,14 +2157,18 @@ static void pcpu_shrink_populated(enum pcpu_chunk_type type)
-> >   * pcpu_balance_workfn - manage the amount of free chunks and populated pages
-> >   * @work: unused
-> >   *
-> > - * Call __pcpu_balance_workfn() for each chunk type.
-> > + * Call pcpu_balance_free() and pcpu_balance_populated() for each chunk type.
-> >   */
-> >  static void pcpu_balance_workfn(struct work_struct *work)
-> >  {
-> >  	enum pcpu_chunk_type type;
-> >  
-> > -	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++)
-> > -		__pcpu_balance_workfn(type);
-> > +	for (type = 0; type < PCPU_NR_CHUNK_TYPES; type++) {
-> > +		mutex_lock(&pcpu_alloc_mutex);
-> > +		pcpu_balance_free(type);
-> > +		pcpu_balance_populated(type);
-> > +		mutex_unlock(&pcpu_alloc_mutex);
-> > +	}
-> >  }
-> >  
-> >  /**
-> > -- 
-> > 2.30.2
-> > 
-> 
-> Reviewed-by: Dennis Zhou <dennis@kernel.org>
-> 
-> This makes sense. If you want me to pick this and the last patch up
-> first I can. Otherwise, do you mind moving this to the front of the
-> stack because it is a clean up?
+On Sat, Mar 27, 2021 at 5:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> If an unaligned pointer is passed to of_fdt_unflatten_tree(),
+> populate_node() as called from unflatten_dt_nodes() will fail.
+> unflatten_dt_nodes() will return 0 and set *nodepp to NULL.
+> This is not expected to happen in __unflatten_device_tree(),
+> which then tries to write into the NULL pointer, causing a crash
+> on openrisc if CONFIG_OF_UNITTEST=y.
+>
+>  ### dt-test ### start of unittest - you will see error messages
+> Unable to handle kernel NULL pointer dereference
+>  at virtual address 0x00000064
+>
+> Oops#: 0000
+> CPU #: 0
+>    PC: c03a25d4    SR: 0000807f    SP: c102dd50
+> GPR00: 00000000 GPR01: c102dd50 GPR02: c102dd78 GPR03: c1704004
+> GPR04: 00000000 GPR05: c102dc18 GPR06: c102ddc8 GPR07: c102dcf7
+> GPR08: 00000001 GPR09: c03a25a0 GPR10: c102c000 GPR11: c16fd75c
+> GPR12: 0000ffb7 GPR13: 00000000 GPR14: 00000008 GPR15: 00000000
+> GPR16: c16fd75c GPR17: 00000064 GPR18: c1704004 GPR19: 00000004
+> GPR20: 00000000 GPR21: 00000000 GPR22: c102ddc8 GPR23: 00000018
+> GPR24: 00000001 GPR25: 00000010 GPR26: c16fd75c GPR27: 00000008
+> GPR28: deadbeef GPR29: 00000000 GPR30: c0720128 GPR31: 00060000
+>   RES: c16fd75c oGPR11: ffffffff
+> Process swapper (pid: 1, stackpage=c1028ba0)
+>
+> Stack:
+> Call trace:
+> [<(ptrval)>] __unflatten_device_tree+0xe0/0x184
+> [<(ptrval)>] of_fdt_unflatten_tree+0x60/0x90
+> [<(ptrval)>] of_unittest+0xb4/0x3614
+> [<(ptrval)>] ? __kernfs_create_file+0x130/0x188
+> [<(ptrval)>] ? sysfs_add_file_mode_ns+0x13c/0x288
+> [<(ptrval)>] ? of_unittest+0x0/0x3614
+> [<(ptrval)>] ? lock_is_held_type+0x160/0x20c
+> [<(ptrval)>] ? of_unittest+0x0/0x3614
+> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
+> [<(ptrval)>] do_one_initcall+0x98/0x340
+> [<(ptrval)>] ? parse_args+0x220/0x4e4
+> [<(ptrval)>] ? lock_is_held_type+0x160/0x20c
+> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
+> [<(ptrval)>] ? rcu_read_lock_sched_held+0x34/0x88
+> [<(ptrval)>] kernel_init_freeable+0x1c0/0x240
+> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
+> [<(ptrval)>] ? kernel_init+0x0/0x154
+> [<(ptrval)>] kernel_init+0x1c/0x154
+> [<(ptrval)>] ? calculate_sigpending+0x54/0x64
+> [<(ptrval)>] ret_from_fork+0x1c/0x150
+>
+> This problem affects all architectures with a 4-byte memory alignment.
+> Since commit 79edff12060f ("scripts/dtc: Update to upstream version
+> v1.6.0-51-g183df9e9c2b9"), devicetree code in the Linux kernel mandates
+> an 8-byte memory alignment of devicetree pointers, but it does not take
+> into account that functions such as kmalloc() or kmemdup() may not return
+> accordingly aligned pointers.
 
-It's up to you :)
-Sure, I can move it to the front, will do in the next version.
+AFAICT, openrisc would get:
 
-Thank you for taking a look!
+#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
+
+Is that not 8 bytes?
+
+Specifically, the problem is here is the unittest DT is copied with
+kmemdup(). I don't think there are other allocations which could be a
+problem.
+
+> To fix the immediate crash, check if *mynodes is NULL in
+> __unflatten_device_tree() before writing into it.
+>
+> Also affected by this problem is the code calling of_fdt_unflatten_tree().
+> That code checks for errors using the content of the mynodes pointer,
+> which is not set by the devicetree code if the alignment problem is
+> observed. Result is that the callers of of_fdt_unflatten_tree() check
+> if an uninitialized pointer is set to NULL. Preinitialize that pointer
+> to avoid the problem.
+>
+> With this code in place, devicetree code on openrisc (and any other
+
+"devicetree unittest code"
+
+The only other dtb copy is unflatten_and_copy_device_tree() which
+should be fine since it gives memblock the alignment requirement.
+
+> architecture with 4-byte memory alignment) will still not work properly,
+> but at least it won't crash anymore. The resulting log message is
+>
+>  ### dt-test ### start of unittest - you will see error messages
+>  ### dt-test ### unittest_data_add: No tree to attach; not running tests
+>
+> when trying to run devicetree unittests.
+>
+> Fixes: 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/of/fdt.c      | 2 +-
+>  drivers/of/overlay.c  | 2 +-
+>  drivers/of/unittest.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index dcc1dd96911a..ab95fdb4461d 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -415,7 +415,7 @@ void *__unflatten_device_tree(const void *blob,
+>                 pr_warn("End of tree marker overwritten: %08x\n",
+>                         be32_to_cpup(mem + size));
+>
+> -       if (detached && mynodes) {
+> +       if (detached && mynodes && *mynodes) {
+>                 of_node_set_flag(*mynodes, OF_DETACHED);
+>                 pr_debug("unflattened tree is detached\n");
+>         }
+> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> index 50bbe0edf538..e12c643b6ba8 100644
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -1017,7 +1017,7 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
+>         const void *new_fdt;
+>         int ret;
+>         u32 size;
+> -       struct device_node *overlay_root;
+> +       struct device_node *overlay_root = NULL;
+>
+>         *ovcs_id = 0;
+>         ret = 0;
+> diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+> index eb100627c186..5dc4d2378bfd 100644
+> --- a/drivers/of/unittest.c
+> +++ b/drivers/of/unittest.c
+> @@ -1408,7 +1408,7 @@ static void attach_node_and_children(struct device_node *np)
+>  static int __init unittest_data_add(void)
+>  {
+>         void *unittest_data;
+> -       struct device_node *unittest_data_node, *np;
+> +       struct device_node *unittest_data_node = NULL, *np;
+>         /*
+>          * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
+>          * created by cmd_dt_S_dtb in scripts/Makefile.lib
+> --
+> 2.17.1
+>
