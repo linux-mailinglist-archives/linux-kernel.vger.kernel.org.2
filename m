@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF3034CB26
+	by mail.lfdr.de (Postfix) with ESMTP id AFDFB34CB27
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbhC2In7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S235126AbhC2IoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:44:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233546AbhC2IZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233682AbhC2IZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:25:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26648614A7;
-        Mon, 29 Mar 2021 08:25:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EAF8619BB;
+        Mon, 29 Mar 2021 08:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006323;
-        bh=zb6U6309W+wIdgkhmMqWm87hvVyw6zYof3eZim7Rrw0=;
+        s=korg; t=1617006326;
+        bh=mHF8+Ki1w5Z7pryKIf68rubLDuN40bh2yS1C9XqTdpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1377hEZSRBu3xysI5bg8kfEm5i4Mw1AUyoUpjaS1xwdCCiDNq8t0zKg8o+r/K3mDG
-         qe6MoWDwpFQXD7en2pU+V1VtOM7u9wFgSxzP89s6m7yakItdfMvlyCFZ6jQtQ9LL7X
-         8QUFOKVoCisIhxbqaX4rXg1FxYD/5JBarj3kW8kY=
+        b=JIoNnZNrQnKEAAKeMFPuOdxzNVrCrl+/Z8/bIus9gCI9XndUi4lQyhPcRTBDGAS+A
+         FDzTDZ6gATnc/wZh0Uvh7pAtamh/6SAE9Z+9oyAg+zRCiPagkN3/JSiwcxNuMNQLcl
+         TL7MZ+rTo6BDUzhBrgxv6CKwAT3NfdWvMBD5+/q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 199/221] perf synthetic events: Avoid write of uninitialized memory when generating PERF_RECORD_MMAP* records
-Date:   Mon, 29 Mar 2021 09:58:50 +0200
-Message-Id: <20210329075635.762121600@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 200/221] io_uring: fix provide_buffers sign extension
+Date:   Mon, 29 Mar 2021 09:58:51 +0200
+Message-Id: <20210329075635.803001996@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
@@ -46,57 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 2a76f6de07906f0bb5f2a13fb02845db1695cc29 ]
+[ Upstream commit d81269fecb8ce16eb07efafc9ff5520b2a31c486 ]
 
-Account for alignment bytes in the zero-ing memset.
+io_provide_buffers_prep()'s "p->len * p->nbufs" to sign extension
+problems. Not a huge problem as it's only used for access_ok() and
+increases the checked length, but better to keep typing right.
 
-Fixes: 1a853e36871b533c ("perf record: Allow specifying a pid to record")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210309234945.419254-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: efe68c1ca8f49 ("io_uring: validate the full range of provided buffers for access")
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/562376a39509e260d8532186a06226e56eb1f594.1616149233.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/synthetic-events.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/io_uring.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index d9c624377da7..b4cf6dd57dd6 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -384,7 +384,7 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 06e9c2181995..dde290eb7dd0 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3996,6 +3996,7 @@ static int io_remove_buffers(struct io_kiocb *req, bool force_nonblock,
+ static int io_provide_buffers_prep(struct io_kiocb *req,
+ 				   const struct io_uring_sqe *sqe)
+ {
++	unsigned long size;
+ 	struct io_provide_buf *p = &req->pbuf;
+ 	u64 tmp;
  
- 	while (!io.eof) {
- 		static const char anonstr[] = "//anon";
--		size_t size;
-+		size_t size, aligned_size;
+@@ -4009,7 +4010,8 @@ static int io_provide_buffers_prep(struct io_kiocb *req,
+ 	p->addr = READ_ONCE(sqe->addr);
+ 	p->len = READ_ONCE(sqe->len);
  
- 		/* ensure null termination since stack will be reused. */
- 		event->mmap2.filename[0] = '\0';
-@@ -444,11 +444,12 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 		}
+-	if (!access_ok(u64_to_user_ptr(p->addr), (p->len * p->nbufs)))
++	size = (unsigned long)p->len * p->nbufs;
++	if (!access_ok(u64_to_user_ptr(p->addr), size))
+ 		return -EFAULT;
  
- 		size = strlen(event->mmap2.filename) + 1;
--		size = PERF_ALIGN(size, sizeof(u64));
-+		aligned_size = PERF_ALIGN(size, sizeof(u64));
- 		event->mmap2.len -= event->mmap.start;
- 		event->mmap2.header.size = (sizeof(event->mmap2) -
--					(sizeof(event->mmap2.filename) - size));
--		memset(event->mmap2.filename + size, 0, machine->id_hdr_size);
-+					(sizeof(event->mmap2.filename) - aligned_size));
-+		memset(event->mmap2.filename + size, 0, machine->id_hdr_size +
-+			(aligned_size - size));
- 		event->mmap2.header.size += machine->id_hdr_size;
- 		event->mmap2.pid = tgid;
- 		event->mmap2.tid = pid;
+ 	p->bgid = READ_ONCE(sqe->buf_group);
 -- 
 2.30.1
 
