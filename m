@@ -2,167 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F77034D84A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B22E34D84B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhC2Tcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhC2TcS (ORCPT
+        id S231719AbhC2TdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:33:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53171 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231672AbhC2TdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:32:18 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB92C061574;
-        Mon, 29 Mar 2021 12:32:18 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b14so20150681lfv.8;
-        Mon, 29 Mar 2021 12:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=95kh5SpigsiYFCPpdp/oq1Ev/SueOTCbLK84aNGGJrE=;
-        b=PRz/rYoB7sXNPzH/aSQ9NrISTs67V/HYeePvNPCaY0OBrWLGXFFShibdS9GvgSKOT8
-         bXJF30qRp8Pr1P4+jpewVwJ8RyZbm1f156SUxrKtZt9Y4ahoZZCkF2DJtZaQlrmfvsi/
-         3Pa8pCDzDmUXDZfWP6YwcaUV9u6079ZyY/Qrpjm3iTBdjipFSbXWBo2HmgIojOr0t3E0
-         4pxGZEp9rfIr6ToIc1ZPt/8XMtOMOFoTD3MzTNi7leSn2BVl//HY4lpAFUXF0EdQZw11
-         sRTFa1ztJ8TFzU7aFwFH7ULViR1xGIXa6KaVz65YMxyWVd2WWehIgrHnWQ3ct8gX6xoG
-         e8fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=95kh5SpigsiYFCPpdp/oq1Ev/SueOTCbLK84aNGGJrE=;
-        b=prks3BEACN03AqHjc6ChqQPmoNUosxqVy1LUHcgl1CLCUb5GJnaFv1ndEkcosv1Msv
-         TDmVoLyDL9yADoVPBwFanui6g9YoZUrEZCUqyjbEOYUgYEgcoGTfwv4KP214NZwt/wcL
-         fFMkPf+sYGCDCQnRXQQxTexBdMI5SLC192sF/oihpE5QsN2JCrTic0T5fhx8lmbbfTs/
-         xXA5TOlU9JRFiyLCdAkFpAMraooXITiXjHNQIo6edBrh+mnBNCXqnwcmN9W01TYqGHqv
-         CcjN1o+uNTbfixt42dCV5eYUDU5bvW52r3jue8Wmh59LEv5MMr7iBoYGaCqeU6a4TCph
-         Iq2A==
-X-Gm-Message-State: AOAM531KHeqWt6PpAopaB/HtqzCG3rAZ5whvdCjCcYQjk58MGFRCQLND
-        Wtyhb6f5pGgvDL/b0YOzaInkeQ/mU1Q=
-X-Google-Smtp-Source: ABdhPJzJAoua3FRaGMlVWTpwb4GWVB4Wbcz16Runx47ygk4+lsqd1MITQtmz0SSJyhJaQ+xevkXhnA==
-X-Received: by 2002:a05:6512:31cf:: with SMTP id j15mr17399289lfe.14.1617046336864;
-        Mon, 29 Mar 2021 12:32:16 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id z28sm2618579ljn.117.2021.03.29.12.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:32:16 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 29 Mar 2021 21:32:14 +0200
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Matthew Wilcox <willy@infradead.org>,
-        Colin King <colin.king@canonical.com>,
-        Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mm/vmalloc: Fix read of pointer area after it has
- been free'd
-Message-ID: <20210329193214.GA28602@pc638.lan>
-References: <20210329170730.121943-1-colin.king@canonical.com>
- <20210329171434.GH351017@casper.infradead.org>
- <20210329174029.GA457@pc638.lan>
- <20210329181453.GA13467@pc638.lan>
- <20210329183036.GA22667@pc638.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329183036.GA22667@pc638.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 29 Mar 2021 15:33:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617046386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=RyyA36HINMqdxngGTUCEgjqj6MrT0fuaoMe/JT47GTc=;
+        b=dptpUXskn1nKepBcei6vvW7DE7rWW3VMHrasr8GPSTgBP7X62sOGJmcap8nhYNf8+gbjBn
+        sNdEKwZkYBGOi0Ydxerh+MMFfPx+4GeubkFSNldE9tZSWPwIzaD9VCEDYUWuj4j6HCU75F
+        dtcQa0P40thxp0c/wOe1/eYB6u4+npM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-603-WdwShEdMOw-FOPvUbw70YQ-1; Mon, 29 Mar 2021 15:33:04 -0400
+X-MC-Unique: WdwShEdMOw-FOPvUbw70YQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4323E501F8;
+        Mon, 29 Mar 2021 19:33:00 +0000 (UTC)
+Received: from llong.com (ovpn-118-139.rdu2.redhat.com [10.10.118.139])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D82BB5DDAD;
+        Mon, 29 Mar 2021 19:32:50 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] sched/debug: Use sched_debug_lock to serialize use of cgroup_path[] only
+Date:   Mon, 29 Mar 2021 15:32:35 -0400
+Message-Id: <20210329193235.30364-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Mar 29, 2021 at 08:14:53PM +0200, Uladzislau Rezki wrote:
-> > On Mon, Mar 29, 2021 at 07:40:29PM +0200, Uladzislau Rezki wrote:
-> > > On Mon, Mar 29, 2021 at 06:14:34PM +0100, Matthew Wilcox wrote:
-> > > > On Mon, Mar 29, 2021 at 06:07:30PM +0100, Colin King wrote:
-> > > > > From: Colin Ian King <colin.king@canonical.com>
-> > > > > 
-> > > > > Currently the memory pointed to by area is being freed by the
-> > > > > free_vm_area call and then area->nr_pages is referencing the
-> > > > > free'd object. Fix this swapping the order of the warn_alloc
-> > > > > message and the free.
-> > > > > 
-> > > > > Addresses-Coverity: ("Read from pointer after free")
-> > > > > Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
-> > > > 
-> > > > i don't have this git sha.  if this is -next, the sha ids aren't stable
-> > > > and shouldn't be referenced in commit logs, because these fixes should
-> > > > just be squashed into the not-yet-upstream commits.
-> > > > 
-> > > > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > > > > ---
-> > > > >  mm/vmalloc.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > > > index b73e4e715e0d..7936405749e4 100644
-> > > > > --- a/mm/vmalloc.c
-> > > > > +++ b/mm/vmalloc.c
-> > > > > @@ -2790,11 +2790,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
-> > > > >  	}
-> > > > >  
-> > > > >  	if (!pages) {
-> > > > > -		free_vm_area(area);
-> > > > >  		warn_alloc(gfp_mask, NULL,
-> > > > >  			   "vmalloc size %lu allocation failure: "
-> > > > >  			   "page array size %lu allocation failed",
-> > > > >  			   area->nr_pages * PAGE_SIZE, array_size);
-> > > > > +		free_vm_area(area);
-> > > > >  		return NULL;
-> > > > 
-> > > > this fix looks right to me.
-> > > > 
-> > > That is from the linux-next. Same to me.
-> > > 
-> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > 
-> > > --
-> > > Vlad Rezki
-> > Is the linux-next(next-20210329) broken?
-> > 
-> Please ignore my previous email. That was due to my local "stashed" change.
-> 
-Hello, Andrew.
+The handling of sysrq keys should normally be done in an user context
+except when MAGIC_SYSRQ_SERIAL is set and the magic sequence is typed
+in a serial console.
 
-Could you please squash below patch with the one that is in question?
-Or should i send out it as separate patch?
+Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is taken
+with interrupt disabled for the whole duration of the calls to print_*_stats()
+and print_rq() which could last for the quite some time if the information dump
+happens on the serial console.
 
-From 6d1c221fec4718094c6e825e3879a76ad70dba93 Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Mon, 29 Mar 2021 21:12:47 +0200
-Subject: [PATCH] mm/vmalloc: print correct vmalloc allocation size
+If the system has many cpus and the sched_debug_lock is somehow busy
+(e.g. parallel sysrq-t), the system may hit a hard lockup panic, like
 
-On entry the area->nr_pages is not set yet and is zero, thus
-when an allocation of the page-table array fails the vmalloc
-size will not be reflected correctly in a error message.
+[ 7809.796262] Kernel panic - not syncing: Hard LOCKUP
+[ 7809.796264] CPU: 13 PID: 79867 Comm: reproducer.sh Kdump: loaded Tainted: G          I      --------- -  - 4.18.0-301.el8.x86_64 #1
+[ 7809.796264] Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 1.4.9 06/29/2018
+[ 7809.796265] Call Trace:
+[ 7809.796265]  <NMI>
+[ 7809.796266]  dump_stack+0x5c/0x80
+[ 7809.796266]  panic+0xe7/0x2a9
+[ 7809.796267]  nmi_panic.cold.9+0xc/0xc
+[ 7809.796267]  watchdog_overflow_callback.cold.7+0x5c/0x70
+[ 7809.796268]  __perf_event_overflow+0x52/0xf0
+[ 7809.796268]  handle_pmi_common+0x204/0x2a0
+[ 7809.796269]  ? __set_pte_vaddr+0x32/0x50
+[ 7809.796269]  ? __native_set_fixmap+0x24/0x30
+[ 7809.796270]  ? ghes_copy_tofrom_phys+0xd3/0x1c0
+[ 7809.796271]  intel_pmu_handle_irq+0xbf/0x160
+[ 7809.796271]  perf_event_nmi_handler+0x2d/0x50
+[ 7809.796272]  nmi_handle+0x63/0x110
+[ 7809.796272]  default_do_nmi+0x49/0x100
+[ 7809.796273]  do_nmi+0x17e/0x1e0
+[ 7809.796273]  end_repeat_nmi+0x16/0x6f
+[ 7809.796274] RIP: 0010:native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796275] Code: 6d f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 47 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 81 fe 00 01 00
+[ 7809.796276] RSP: 0018:ffffaa54cd887df8 EFLAGS: 00000002
+[ 7809.796277] RAX: 0000000000000101 RBX: 0000000000000246 RCX: 0000000000000000
+[ 7809.796278] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff936b66d0
+[ 7809.796278] RBP: ffffffff9301fb40 R08: 0000000000000004 R09: 000000000000004f
+[ 7809.796279] R10: 0000000000000000 R11: ffffaa54cd887cc0 R12: ffff907fd0a29ec0
+[ 7809.796280] R13: 0000000000000000 R14: ffffffff926ab7c0 R15: 0000000000000000
+[ 7809.796280]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  </NMI>
+[ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
+[ 7809.796283]  print_cpu+0x261/0x7c0
+[ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
+[ 7809.796284]  sysrq_handle_showstate+0xc/0x20
+[ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
+[ 7809.796285]  write_sysrq_trigger+0x2b/0x30
+[ 7809.796285]  proc_reg_write+0x39/0x60
+[ 7809.796286]  vfs_write+0xa5/0x1a0
+[ 7809.796286]  ksys_write+0x4f/0xb0
+[ 7809.796287]  do_syscall_64+0x5b/0x1a0
+[ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+[ 7809.796288] RIP: 0033:0x7fabe4ceb648
 
-Replace area->nr_pages by the nr_small_pages.
+The purpose of sched_debug_lock is to serialize the use of the global
+cgroup_path[] buffer in print_cpu(). The rests of the printk() calls
+don't need serialization from sched_debug_lock.
 
-Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Calling printk() with interrupt disabled can still be
+problematic. Allocating a stack buffer of PATH_MAX bytes is not
+feasible. So a compromised solution is used where a small stack buffer
+is allocated for pathname. If the actual pathname is short enough, it
+is copied to the stack buffer with sched_debug_lock release afterward
+before printk().  Otherwise, the global group_path[] buffer will be
+used with sched_debug_lock held until after printk().
+
+Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- mm/vmalloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/debug.c | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index b73e4e715e0d..8b564f91a610 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2794,7 +2794,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		warn_alloc(gfp_mask, NULL,
- 			   "vmalloc size %lu allocation failure: "
- 			   "page array size %lu allocation failed",
--			   area->nr_pages * PAGE_SIZE, array_size);
-+			   nr_small_pages * PAGE_SIZE, array_size);
- 		return NULL;
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 486f403a778b..191ccb111cb4 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -8,8 +8,6 @@
+  */
+ #include "sched.h"
+ 
+-static DEFINE_SPINLOCK(sched_debug_lock);
+-
+ /*
+  * This allows printing both to /proc/sched_debug and
+  * to the console
+@@ -470,6 +468,7 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+ #endif
+ 
+ #ifdef CONFIG_CGROUP_SCHED
++static DEFINE_SPINLOCK(sched_debug_lock);
+ static char group_path[PATH_MAX];
+ 
+ static char *task_group_path(struct task_group *tg)
+@@ -481,6 +480,27 @@ static char *task_group_path(struct task_group *tg)
+ 
+ 	return group_path;
+ }
++
++#define SEQ_printf_task_group_path(m, tg, fmt...)			\
++{									\
++	unsigned long flags;						\
++	char *path, buf[128];						\
++	bool locked;							\
++									\
++	spin_lock_irqsave(&sched_debug_lock, flags);			\
++	locked = true;							\
++	path = task_group_path(tg);					\
++	if (strlen(path) < sizeof(buf)) {				\
++		strcpy(buf, path);					\
++		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
++		locked = false;						\
++		path = buf;						\
++	}								\
++									\
++	SEQ_printf(m, fmt, path);					\
++	if (locked)							\
++		spin_unlock_irqrestore(&sched_debug_lock, flags);	\
++}
+ #endif
+ 
+ static void
+@@ -506,7 +526,7 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
+ #endif
+ #ifdef CONFIG_CGROUP_SCHED
+-	SEQ_printf(m, " %s", task_group_path(task_group(p)));
++	SEQ_printf_task_group_path(m, task_group(p), " %s")
+ #endif
+ 
+ 	SEQ_printf(m, "\n");
+@@ -543,7 +563,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
++	SEQ_printf_task_group_path(m, cfs_rq->tg, "cfs_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "cfs_rq[%d]:\n", cpu);
+@@ -614,7 +634,7 @@ void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
+ {
+ #ifdef CONFIG_RT_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "rt_rq[%d]:%s\n", cpu, task_group_path(rt_rq->tg));
++	SEQ_printf_task_group_path(m, rt_rq->tg, "rt_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "rt_rq[%d]:\n", cpu);
+@@ -666,7 +686,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
+ static void print_cpu(struct seq_file *m, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+-	unsigned long flags;
+ 
+ #ifdef CONFIG_X86
+ 	{
+@@ -717,13 +736,11 @@ do {									\
  	}
+ #undef P
+ 
+-	spin_lock_irqsave(&sched_debug_lock, flags);
+ 	print_cfs_stats(m, cpu);
+ 	print_rt_stats(m, cpu);
+ 	print_dl_stats(m, cpu);
+ 
+ 	print_rq(m, rq, cpu);
+-	spin_unlock_irqrestore(&sched_debug_lock, flags);
+ 	SEQ_printf(m, "\n");
+ }
  
 -- 
-2.20.1
+2.18.1
 
---
-Vlad Rezki
