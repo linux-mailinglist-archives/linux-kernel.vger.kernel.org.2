@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0F034C70F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1B734CC34
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhC2IMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50424 "EHLO mail.kernel.org"
+        id S236833AbhC2I5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhC2IG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081FB61969;
-        Mon, 29 Mar 2021 08:06:55 +0000 (UTC)
+        id S234785AbhC2IhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F40E8619C4;
+        Mon, 29 Mar 2021 08:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005216;
-        bh=oQvUQn0sAgthy4KJvQCBYVONmtEtSmFNNmKlPmkxQ6s=;
+        s=korg; t=1617007002;
+        bh=50bq1V/OJBYTOS4GglO9HpASZA32TGS3U7ESGsOpvcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pDDQXwhaU4tQ0OBx7yg7ZtCcKew2pNsBZP7ccGhrV1tQCBegeun/hGoc8HiZ+R1jc
-         hqMYVVV8lAVHxUfLtD/MXmd0SoW532YNN7XjGUC3UoKZL3cLT09Y+9LY3yQ0WDpgiL
-         GgWlE8it0Luq3rp+/GX3SaAPygvfKcuqBFdC3lCQ=
+        b=GOBukRRkSPQc4lUFfMr6SLkDS1bSZeAKoAT2uSXjjbkNcnry4itMc+tG0naIhxMKC
+         wTNsRo1SK6QzjufIHBD2hoZQcE0w0sRHVfU6N6cF73BH3Bceknq/7XrROE7tNKCHkI
+         HQcIYHLAnTpI0K10OzfQIbHfkB4IRc3sy9xeGqZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mariusz Madej <mariusz.madej@xtrack.com>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 40/59] can: m_can: m_can_do_rx_poll(): fix extraneous msg loss warning
+Subject: [PATCH 5.11 184/254] selinux: vsock: Set SID for socket returned by accept()
 Date:   Mon, 29 Mar 2021 09:58:20 +0200
-Message-Id: <20210329075610.207580382@linuxfoundation.org>
+Message-Id: <20210329075639.181254030@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: David Brazdil <dbrazdil@google.com>
 
-[ Upstream commit c0e399f3baf42279f48991554240af8c457535d1 ]
+[ Upstream commit 1f935e8e72ec28dddb2dc0650b3b6626a293d94b ]
 
-Message loss from RX FIFO 0 is already handled in
-m_can_handle_lost_msg(), with netdev output included.
+For AF_VSOCK, accept() currently returns sockets that are unlabelled.
+Other socket families derive the child's SID from the SID of the parent
+and the SID of the incoming packet. This is typically done as the
+connected socket is placed in the queue that accept() removes from.
 
-Removing this warning also improves driver performance under heavy
-load, where m_can_do_rx_poll() may be called many times before this
-interrupt is cleared, causing this message to be output many
-times (thanks Mariusz Madej for this report).
+Reuse the existing 'security_sk_clone' hook to copy the SID from the
+parent (server) socket to the child. There is no packet SID in this
+case.
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Link: https://lore.kernel.org/r/20210303103151.3760532-1-torin@maxiluxsystems.com
-Reported-by: Mariusz Madej <mariusz.madej@xtrack.com>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 3 ---
- 1 file changed, 3 deletions(-)
+ net/vmw_vsock/af_vsock.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index a3f2548c5548..8751bd3e5789 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -513,9 +513,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 	}
- 
- 	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
--		if (rxfs & RXFS_RFL)
--			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
--
- 		m_can_read_fifo(dev, rxfs);
- 
- 		quota--;
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 5546710d8ac1..bc7fb9bf3351 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -755,6 +755,7 @@ static struct sock *__vsock_create(struct net *net,
+ 		vsk->buffer_size = psk->buffer_size;
+ 		vsk->buffer_min_size = psk->buffer_min_size;
+ 		vsk->buffer_max_size = psk->buffer_max_size;
++		security_sk_clone(parent, sk);
+ 	} else {
+ 		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
+ 		vsk->owner = get_current_cred();
 -- 
 2.30.1
 
