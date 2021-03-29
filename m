@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E87D34CDA3
+	by mail.lfdr.de (Postfix) with ESMTP id B94C434CDA4
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhC2KIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
+        id S232398AbhC2KIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:08:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231675AbhC2KH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:07:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2D161585;
-        Mon, 29 Mar 2021 10:07:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617012476;
-        bh=pMPh6eyELHUsFo1+GSOTU018GXuHnqwmLWfjowXKpSM=;
+        id S232070AbhC2KIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:08:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F0E61585;
+        Mon, 29 Mar 2021 10:08:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617012494;
+        bh=c/7u/i7ph/tkb1ucVKeq7qerOvzc66BELd2N9yKT6Qo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f9EhhMV0Q2/acyWJ/ZfxNWBKDPSPFcewP+yYd7grUMYR6ohYLn/GQbjkVRfpx6hy1
-         qlz2kGTV6H9hIJ3P83OFCRWasmAPh0B4tg4uRiF/UiE/RSNCbR5Vp/lFYg26JDmhOc
-         MWyUZuzkuVH70jdZJzCAyLBOqrXhFTb1bKdlZHGSYbFlC9bk2RUcV6QNHQmOXZOSfw
-         MB8cWs05TS9x1iAejddICQs8gS82J+9FM1MYdvz//gI0U56nk09G1BsYCdMIXSnO7c
-         KleBb0hQlKjIQJz/LgOJaH5ew9SHfhQgI3a4l184IRzCzZU/6ZjlfekxQPDfmmV3Jo
-         EOvtS+AxR38PQ==
-Date:   Mon, 29 Mar 2021 11:07:51 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        b=xi8z6QdvTQisUhBYLvuH+RY6/Ar4ZYGIuQ6n08/iItJYlqAAZnaxkoeuXDw9aMpj+
+         XoG/64oHaZ9QotDYjedPS5h+aUMK8hpIJfROZiCuiezNc9/qrPrZQqZlkMDH3FbTe3
+         KffsAwS6ZGeTd5YofEP/7OvODgm5LbhfEATrZoDc=
+Date:   Mon, 29 Mar 2021 12:08:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210329100750.GB3207@willie-the-truck>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba>
- <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
- <20210325195956.GM109100@zorba>
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v9 4/4] docs: ABI: Add sysfs documentation interface of
+ dw-xdata-pcie driver
+Message-ID: <YGGnC8LouF+paZ6G@kroah.com>
+References: <cover.1617011831.git.gustavo.pimentel@synopsys.com>
+ <5840637a206dd1287caf142a0dbedf0dac9ccd48.1617011831.git.gustavo.pimentel@synopsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325195956.GM109100@zorba>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5840637a206dd1287caf142a0dbedf0dac9ccd48.1617011831.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:59:56PM -0700, Daniel Walker wrote:
-> On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> > 
-> > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> > 
-> > Let's only provide once CMDLINE as of today, and ask the user to select
-> > whether he wants it appended or prepended or replacee. Then no need to
-> > change all existing config to rename CONFIG_CMDLINE into either of the new
-> > ones.
-> > 
-> > That's the main difference between my series and Daniel's series. So I'll
-> > finish taking Will's comment into account and we'll send out a v3 soon.
+On Mon, Mar 29, 2021 at 11:59:40AM +0200, Gustavo Pimentel wrote:
+> This patch describes the sysfs interface implemented on the dw-xdata-pcie
+> driver.
 > 
-> It doesn't solve the needs of Cisco, I've stated many times your changes have
-> little value. Please stop submitting them.
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> ---
+>  Documentation/ABI/testing/sysfs-driver-xdata | 46 ++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xdata b/Documentation/ABI/testing/sysfs-driver-xdata
+> new file mode 100644
+> index 00000000..66af19a
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-xdata
+> @@ -0,0 +1,46 @@
+> +What:		/sys/class/misc/drivers/dw-xdata-pcie.<device>/write
+> +Date:		April 2021
+> +KernelVersion:	5.13
+> +Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> +Description:	Allows the user to enable the PCIe traffic generator which
+> +		will create write TLPs frames - from the Root Complex to the
+> +		Endpoint direction.
+> +		Usage e.g.
+> +		 echo 1 > /sys/class/misc/dw-xdata-pcie.<device>/write
 
-FWIW, they're useful for arm64 and I will gladly review the updated series.
+Again, this does not match the code.  Either fix the code (which I
+recommend), or change this and the other sysfs descriptions of writing
+values here.
 
-I don't think asking people to stop submitting patches is ever the right
-answer. Please don't do that.
+thanks,
 
-Will
+greg k-h
