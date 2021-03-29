@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC1534CB50
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737FD34CB55
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbhC2IqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42698 "EHLO mail.kernel.org"
+        id S235496AbhC2IqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234289AbhC2I2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234293AbhC2I2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:28:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58044619CE;
-        Mon, 29 Mar 2021 08:27:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BEA619D0;
+        Mon, 29 Mar 2021 08:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006434;
-        bh=sPQZ5s9ecY6bsqQ2F4HSHnT6X4JoUINd/+vhwy11Tkg=;
+        s=korg; t=1617006437;
+        bh=sVURH9xQNJTVxxqiD4JO++kz+Hn2GaPDiRIcKKnd0io=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YFvPUZu50YtG2RST2pp9iccXEr6Qw4erTzY8gmw8QEZ6ES+IuE6WEStjMAFY528dw
-         Wx3lcwSNaYCIcrxaLr+nXANTcyaeEfqaPQaKJMc8IJZiX7zMdHUwS/W/zi1KF04xJL
-         9rWMMyLfgD4362JJca1P8v0osDghZ5kby93rWyRs=
+        b=zRyYWc2+1pd6QDW8a+OMR3TdehKDRBxRJQdrbyyxB/+rf5+RNHDloKNrq/qStcTmg
+         MRS88k/E30qgtyW1D7ekOiPKxvcTcTdvqPMHYlhkQGSS5CwL0OoHQ3MhpHRygqn3Ml
+         KwJZOPgs5SxfKvH3Vlf7hPTGRDAGsSGMhBi6k5Rw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 019/254] cpufreq: blacklist Arm Vexpress platforms in cpufreq-dt-platdev
-Date:   Mon, 29 Mar 2021 09:55:35 +0200
-Message-Id: <20210329075633.786469075@linuxfoundation.org>
+Subject: [PATCH 5.11 020/254] gpiolib: acpi: Add missing IRQF_ONESHOT
+Date:   Mon, 29 Mar 2021 09:55:36 +0200
+Message-Id: <20210329075633.814778315@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -40,34 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit fbb31cb805fd3574d3be7defc06a7fd2fd9af7d2 ]
+[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
 
-Add "arm,vexpress" to cpufreq-dt-platdev blacklist since the actual
-scaling is handled by the firmware cpufreq drivers(scpi, scmi and
-vexpress-spc).
+fixed the following coccicheck:
+./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+primary handler requested without IRQF_ONESHOT
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Make sure threaded IRQs without a primary handler are always request
+with IRQF_ONESHOT
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq-dt-platdev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpio/gpiolib-acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index bd2db0188cbb..91e6a0c10dbf 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -103,6 +103,8 @@ static const struct of_device_id whitelist[] __initconst = {
- static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "allwinner,sun50i-h6", },
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 495f779b2ab9..1aacd2a5a1fd 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -174,7 +174,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
+ 	int ret, value;
  
-+	{ .compatible = "arm,vexpress", },
-+
- 	{ .compatible = "calxeda,highbank", },
- 	{ .compatible = "calxeda,ecx-2000", },
- 
+ 	ret = request_threaded_irq(event->irq, NULL, event->handler,
+-				   event->irqflags, "ACPI:Event", event);
++				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
+ 	if (ret) {
+ 		dev_err(acpi_gpio->chip->parent,
+ 			"Failed to setup interrupt handler for %d\n",
 -- 
 2.30.1
 
