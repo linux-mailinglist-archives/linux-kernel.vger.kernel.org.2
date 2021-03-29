@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEDA34CAFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4429434CC2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhC2Iln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
+        id S233865AbhC2I46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233627AbhC2IXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:23:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72BAB61481;
-        Mon, 29 Mar 2021 08:23:41 +0000 (UTC)
+        id S234706AbhC2IhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A74461864;
+        Mon, 29 Mar 2021 08:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006222;
-        bh=iBauD/YwGNRCek8/X8z7f22gVG1rUIanDYdTEaY0FK4=;
+        s=korg; t=1617006983;
+        bh=cmKZcmgutAP/LE069QLnOK/eWTJvd8gv+WoBYBihBu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vXKE8jxhmSQTd4nPwF+taU8dBEGBNtFJye7qVYJNba7bEKhacVw2jhpEaYwoLDzn8
-         XwI6EZvP1j1vYYXYjg4pAzNlyoYyYa8eg2YMkMVlghL9RAZVHThrsf2fcUiSyhJDEi
-         3jZnb/jELjcKi+GNcdjOzgZg1mpPJ/PgouSXO/gs=
+        b=U4XzG0Ef4oY1f1IndTvWRBIvceyFnHGcjTP4XSQ8WqWiMw3XyQc6rvBv351ezerZu
+         2f4owqowge2YrKg8U3EzVjAQJwhssUWZ1Ozl/lHtexpBsLyBTtTSV+/myqEZGJOaWL
+         f4UkqHrZ8WoIj7zm3Q2RDPDChDPmvqTgrYYwRPQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        stable@vger.kernel.org, Hariprasad Kelam <hkelam@marvell.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 162/221] selftests: forwarding: vxlan_bridge_1d: Fix vxlan ecn decapsulate value
+Subject: [PATCH 5.11 177/254] octeontx2-af: fix infinite loop in unmapping NPC counter
 Date:   Mon, 29 Mar 2021 09:58:13 +0200
-Message-Id: <20210329075634.555865507@linuxfoundation.org>
+Message-Id: <20210329075638.970508270@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Hariprasad Kelam <hkelam@marvell.com>
 
-[ Upstream commit 5aa3c334a449bab24519c4967f5ac2b3304c8dcf ]
+[ Upstream commit 64451b98306bf1334a62bcd020ec92bdb4cb68db ]
 
-The ECN bit defines ECT(1) = 1, ECT(0) = 2. So inner 0x02 + outer 0x01
-should be inner ECT(0) + outer ECT(1). Based on the description of
-__INET_ECN_decapsulate, the final decapsulate value should be
-ECT(1). So fix the test expect value to 0x01.
+unmapping npc counter works in a way by traversing all mcam
+entries to find which mcam rule is associated with counter.
+But loop cursor variable 'entry' is not incremented before
+checking next mcam entry which resulting in infinite loop.
 
-Before the fix:
-TEST: VXLAN: ECN decap: 01/02->0x02                                 [FAIL]
-        Expected to capture 10 packets, got 0.
+This in turn hogs the kworker thread forever and no other
+mbox message is processed by AF driver after that.
+Fix this by updating entry value before checking next
+mcam entry.
 
-After the fix:
-TEST: VXLAN: ECN decap: 01/02->0x01                                 [ OK ]
-
-Fixes: a0b61f3d8ebf ("selftests: forwarding: vxlan_bridge_1d: Add an ECN decap test")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Fixes: a958dd59f9ce ("octeontx2-af: Map or unmap NPC MCAM entry and counter")
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh | 2 +-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
-index ce6bea9675c0..0ccb1dda099a 100755
---- a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
-+++ b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
-@@ -658,7 +658,7 @@ test_ecn_decap()
- 	# In accordance with INET_ECN_decapsulate()
- 	__test_ecn_decap 00 00 0x00
- 	__test_ecn_decap 01 01 0x01
--	__test_ecn_decap 02 01 0x02
-+	__test_ecn_decap 02 01 0x01
- 	__test_ecn_decap 01 03 0x03
- 	__test_ecn_decap 02 03 0x03
- 	test_ecn_decap_error
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index 5cf9b7a907ae..b81539f3b2ac 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -2490,10 +2490,10 @@ int rvu_mbox_handler_npc_mcam_free_counter(struct rvu *rvu,
+ 		index = find_next_bit(mcam->bmap, mcam->bmap_entries, entry);
+ 		if (index >= mcam->bmap_entries)
+ 			break;
++		entry = index + 1;
+ 		if (mcam->entry2cntr_map[index] != req->cntr)
+ 			continue;
+ 
+-		entry = index + 1;
+ 		npc_unmap_mcam_entry_and_cntr(rvu, mcam, blkaddr,
+ 					      index, req->cntr);
+ 	}
 -- 
 2.30.1
 
