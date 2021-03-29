@@ -2,594 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFDA34C559
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E65334C700
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhC2HyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:54:17 -0400
-Received: from mail-dm6nam12on2089.outbound.protection.outlook.com ([40.107.243.89]:18240
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S232519AbhC2ILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:11:37 -0400
+Received: from mail-mw2nam10on2069.outbound.protection.outlook.com ([40.107.94.69]:56929
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229873AbhC2Hxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:53:46 -0400
+        id S232348AbhC2IGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cgQNgH/sxgp+vMALlnDtaP97ycSzLB53NHDg0qZ3EFzG6Lr7KzCA2edQv7ZUg+fA9jHz/qBmbx1RzlyeuqV9TOrAuDJApy1I67mkpkwKaqvJwgjrOEDSQQHKG9t9iSW9x1yjgKagBYLkr9HLP5Wzn1sB/o0YwgAZ9FdtnjIPRN/Nruu68/ApiF2O68/yhUjQG6erO1ztZK/vzNpIOEVYIwcu37yLbXSiT2OfjKAYeBWvKwbyHi09bKSMlUOlxodcZvjLixRGOiOmeHoSvVVda8gt+ar1a1pvOTIaVNb0TS80kQbrEpp8L7fEYlsK7mHUfatciSKXha73Qo3h3NZuWg==
+ b=oIIaLE4Wu6oRZ350ZFy5TMuNksTljCHBikPSZb9V1lpQebGGY79H/3K02PqWydHz7QMANTespx3hvnP05RuxZOoamuDu21qyzrpFTlvwNnCY69LUymDDrZc6I6GHX79a07egqS0DylBzgOFp/wzyPRr6xVEnL6/YO0zH5ejkUNRpyXh1Ulxns2XaLDs1iGZsw8KSXWj771Kbakgj1hf8l1Ed1rvDVSxwYVAZnzPjmr+9grHYq6/4uES7TQNolbYVQctqsp4bcDTBAvqHJBKEnS2+becezah1cwx7XEWxEQXdaci662OXGX2S+/plfVlDuSdtxtbDA1JjAoOt6vXiOg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rdrHmdHmTdupCZEncz/mcjMTmhnf++Kp8zDkJc/mBgM=;
- b=FcFAjfYUGhfI+J+HHeLvDl1vCtorkGo8TrsPzQQTfH/VaH2OefC9YHnykyinDUf2w5uATqlnC4pbc6eX2tzZW41oWmW7+ZObcvifuYll8TLexp0K2PRTaM1SRnKXt7Ydpp/PwzhpWd4qni4yW+oxa2KxGf1xj3XSmvcJLuWw3F0A+ERHWliS1mVEE1ZRhcg5q1mBQiATNGNigQqL4ehd2qV+BwsNzQfOkbsado8UBG8u48AhnIoqXSD5fTJPBqs9JbBnE/R/gtRiBxDRrJHxyfIhCnNWgbV+3i33MqYP2ZTZJm0wFLdl92S5X3VtGtrxv3WBWsQuufx3KTDySZuI9Q==
+ bh=mC94VzzSggFllqcwT5KsRJ6BKNCloh6wYrVoo8AuEME=;
+ b=jpm4BEVjrrNHCqHjy2VvnwYZzsgCFHi3jqp0J8vbRgKuIoQtQXYZnWYFmaGlW5hoKeWFmCYaRu3/lVSWlEown0f2kh8BceX8bEKobkIaQB9SVcyL3c03ogqbejfB+mGKaGE6oPLfyrgcMzTYAFZY5EGrmpu9ubTN/7AakRl5kFAGxpn37lATNk7BnW8Q9N0gBieXG/ptsJnlx2v6MO5WQGrtBVHTimiCY0Ke0HvACA6K4+VbjkXMI9IGU/icrRqJZmFpL0ixH8hUnink9HKJF1wAK+G8ze7INoJi92Y83y9BWX0GttGwg3IjNOg3TnkM5IlKU3lmKAEqpuzy3e+TFA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ 165.204.84.17) smtp.rcpttodomain=linux.ie smtp.mailfrom=amd.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rdrHmdHmTdupCZEncz/mcjMTmhnf++Kp8zDkJc/mBgM=;
- b=RwO1r78j6Q6UISq1uOjXTTru5zooftWqfUlNQC/+zhNP2It7er8U+3UJaRD9rhZCkZ6l2wqldfYs9WMu5bZq+8kJ9JRUcAD1Wc0TVCr1aPW9nO55gy+z6kE8BGwDkq2AuXOkF4WgIVHIxysDb6atG+wfCFJcn46TiTJMGaaOYElEpzwDvIf9tQRqcOamIRe/5PBOaca++DUOPiPFgY4/vvqLZ9kaLttaXTbQY9wQr7bbeZLLvBPp4jflNdiLQC1Ss1ZKsOCq5ufZGeSvBd+HFIYOQ7jrotBFHloBUSosmqg/QLragc+B6jIzQ49a5Swf61vaCiohVhZybGo/dQxV0w==
-Received: from DM5PR18CA0095.namprd18.prod.outlook.com (2603:10b6:3:3::33) by
- DM6PR12MB3916.namprd12.prod.outlook.com (2603:10b6:5:1ca::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.24; Mon, 29 Mar 2021 07:53:39 +0000
-Received: from DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:3:cafe::e8) by DM5PR18CA0095.outlook.office365.com
- (2603:10b6:3:3::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.32 via Frontend
- Transport; Mon, 29 Mar 2021 07:53:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT039.mail.protection.outlook.com (10.13.172.83) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Mon, 29 Mar 2021 07:53:39 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
- 2021 07:53:35 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     kernel test robot <oliver.sang@intel.com>
-CC:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        <lkp@lists.01.org>, <akpm@linux-foundation.org>,
-        <david@redhat.com>, <daniel.vetter@ffwll.ch>,
-        <dan.j.williams@intel.com>, <gregkh@linuxfoundation.org>,
-        <jhubbard@nvidia.com>, <jglisse@redhat.com>, <linux-mm@kvack.org>,
-        Balbir Singh <bsingharora@gmail.com>
-Subject: Re: [kernel/resource]  cf1e4e12c9: WARNING:possible_recursive_locking_detected
-Date:   Mon, 29 Mar 2021 18:53:33 +1100
-Message-ID: <1783395.ZrcDVnWPF7@nvdebian>
-In-Reply-To: <20210329054230.GB3633@xsang-OptiPlex-9020>
-References: <20210329054230.GB3633@xsang-OptiPlex-9020>
+ bh=mC94VzzSggFllqcwT5KsRJ6BKNCloh6wYrVoo8AuEME=;
+ b=4oQEvWoW0NkXnxtH34TCHBqD1pRe1sQ1JkWcIlk0/1OPHCQF607x7SQs0yPaKYrHyrWTGPDJQvFm6re4YdIi9wflwVZ5UJlHgGA8HVawZo5zVN4JOvTeznPr6G6wjnBTo6s3ACTrxledslU7t44/eL3o2ii2fgp9/12zjXequic=
+Received: from MWHPR22CA0024.namprd22.prod.outlook.com (2603:10b6:300:ef::34)
+ by BN6PR12MB1217.namprd12.prod.outlook.com (2603:10b6:404:20::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Mon, 29 Mar
+ 2021 08:06:32 +0000
+Received: from CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ef:cafe::30) by MWHPR22CA0024.outlook.office365.com
+ (2603:10b6:300:ef::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend
+ Transport; Mon, 29 Mar 2021 08:06:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; linux.ie; dkim=none (message not signed)
+ header.d=none;linux.ie; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT019.mail.protection.outlook.com (10.13.175.57) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3955.18 via Frontend Transport; Mon, 29 Mar 2021 08:06:31 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 29 Mar
+ 2021 03:06:30 -0500
+Received: from HPG8.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
+ Transport; Mon, 29 Mar 2021 03:06:26 -0500
+From:   Louis Li <Ching-shih.Li@amd.com>
+CC:     <ching-li@amd.com>, Louis Li <Ching-shih.Li@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Nicholas Kazlauskas" <Nicholas.Kazlauskas@amd.com>,
+        Ikshwaku Chauhan <ikshwaku.chauhan@amd.corp-partner.google.com>,
+        Aric Cyr <aric.cyr@amd.com>, hersen wu <hersenxs.wu@amd.com>,
+        =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/amd/display: dual cursors are seen if scaling is enabled
+Date:   Mon, 29 Mar 2021 15:54:10 +0800
+Message-ID: <20210329075411.501760-1-Ching-shih.Li@amd.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32d04994-f46a-4b38-57e0-08d8f287c3d1
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3916:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3916F681EC3E023375C5AC7BDF7E9@DM6PR12MB3916.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: b0cc45b1-32fe-41c4-ded3-08d8f2899033
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1217:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB121733D7DD076B8FF780B825AA7E9@BN6PR12MB1217.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S45cwPLRRqKAfNqMUfYVhqkY5FXHeP/jPTnirOSRs00+sV+tkfCEnWxA+TmATBAH+M9OnAkYxD+bQq7rotwooG6w6su9HiBqf+bbmbxDrkD9wjbBh4tI2ZXBzzG6N8nnPvmvB265EEXg/dq/jK9BAvGKbRuKawKUp3gK/q3iqE5BMIfcDA6PG+LHc5DViwypzjJ4s3xK/RFxVQEVtCo5lrxhG9awkG0X2B2/7zop4jx+sQ5E4W8eXmW7QErb1EGSJh/GT4A+bbcDNmaZTUliRj2QcKG4rgibSsVe7saaaCDeIbu2Wod8ItJhRVuVFUbyY1AAtW4gl/hiOn+Ty9PbkRdiqduLh+aqdPSlUsvM/lZEjZL8siPF/DA1X1OLhhNiOtxqeQKa3oGRuEOgJ/3ziYuWtyIE1FoqCuaSe1U/1PmnD5m1S8df87oXwhWlTzMw47vkoipYOdZcXEQbNReJOXxfNNg4RAVbpOpWOvnb2KBXZ7k803ELIiFgWvquRsyY9WDNI7mPRbVm6GIyrvbzOrCbQgFebVaQFE2Gj+jPjoqLX4Z1y2+k0S+wcAXJgf40RyLbZPpzw4xvvIIQ3AgBY7A0WTuD/BbiuR+9esxruxwjsoq7rpDPs4xPM0pZRXzE/LGBT1S3InPLSVbUYDZxwGqIirGG6x5OZ5fNksDY7coBwVlYYxr6f1WSESwNKUHRhIizNi3JqX2T6uRcKK5cifF624wt6hcChHLEtWsI6A/i9t+YHAihLot01YkL9NuG
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(36840700001)(46966006)(9576002)(356005)(70206006)(70586007)(82740400003)(7636003)(82310400003)(6916009)(8936002)(2906002)(83380400001)(8676002)(54906003)(316002)(26005)(966005)(16526019)(33716001)(186003)(86362001)(478600001)(426003)(4326008)(36906005)(47076005)(5660300002)(7416002)(336012)(9686003)(30864003)(36860700001)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 07:53:39.1179
+X-Microsoft-Antispam-Message-Info: gKBNU6q0QusGufjVCCblV6vqxBUjaMcT0bRurDgbFbMouiqF6b0drsF1c6VEw7crn31WWOS6fmqI55wk5KrafYZ58TYRUWJG7oZAMVBZiDn256kwpd+EXvSeT/DLSpO9/ba2DvXXxOkJS+EKPPjetNXxNIA9yKjL7yUS/NKrDkgr8WMxqz1LBAXKySJ05R/3dx0q4sqRmq4PcLJfhOY/02Wv88kDU7xIVtndc38DfJI1JI+mZGpkSmaUFWjLuRtZlPNlJmrGIYueYEl6HrQrr6SC3GzzLoKm4YL77+Qd2btg7VEEpFV7nufTmbb2SApzJToOwDyxZBLV+mQLo7zIUUXfUtaeefV/ctAlgmNGRz5UXV2tDnAjrshOnc8PCj1A58ckJ1GR1+kyBtQP26muM7Rp1YImamgnT5pBYYxKRJ0S+O3HdhB2AdP1iysZBQCQX+xTS3Jaxj/25qabazb5SsMFA24v0/95uugjzzZJ2n7NrfJA8Ems3JuGEwD/HAeCBRUnVEGmPE0MkP+ElCCEacVF89NpjLB6Z45LcVcmfb5H5LRPnFMDe1E50gmhDT5sep3n8O4u3LREMGYe6xjPxt7HhAprkhMAdQrpeMK6KBwoLtesK3EOSua2rHsXiSXFKKIEAMpRsc6AnHcoGZ4u2D+Xyebs0HeEHoYicKRbrs75eBu/0uQPjmOpT2aggAf+LAXt7Q9026U/zAkXO0qGow==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(136003)(346002)(36840700001)(46966006)(70206006)(70586007)(478600001)(82310400003)(2906002)(82740400003)(81166007)(356005)(5660300002)(2616005)(83380400001)(186003)(109986005)(26005)(8936002)(4326008)(336012)(8676002)(6666004)(316002)(7696005)(426003)(47076005)(36860700001)(54906003)(36756003)(86362001)(1076003)(266003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 08:06:31.4995
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32d04994-f46a-4b38-57e0-08d8f287c3d1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0cc45b1-32fe-41c4-ded3-08d8f2899033
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3916
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1217
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not sure why I didn't hit this in testing but the problem is obvious: I missed 
-that revoke_iomem() calls devmem_is_allowed() which on x86 calls 
-region_intersects(). I guess I must have forgotten to do a boot test with 
-CONFIG_IO_STRICT_DEVMEM. Will put a fix together.
+[Why]
+This issue is found when scaling is not equal to one from src to dest.
+When issue happens, there are offsets in both axis x and y between
+two cursors. Users cannot control APP under such a condition.
 
- - Alistair
+[How]
+For dual cursors, cursor should be disabled if there is a visible pipe
+on top of the current pipe at the current cursor position.
+For offsets between two cursors, need translate cursor position from
+stream space to plane space with scaling into consideration.
 
-On Monday, 29 March 2021 4:42:30 PM AEDT kernel test robot wrote:
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: cf1e4e12c95dec0bb945df3eb138190fc353460f ("[PATCH v2] kernel/
-resource: Fix locking in request_free_mem_region")
-> url: https://github.com/0day-ci/linux/commits/Alistair-Popple/kernel-resource-Fix-locking-in-request_free_mem_region/20210326-092150
-> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 
-a74e6a014c9d4d4161061f770c9b4f98372ac778
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/
-backtrace):
-> 
-> 
-> +----------------------------------------------+------------+------------+
-> |                                              | a74e6a014c | cf1e4e12c9 |
-> +----------------------------------------------+------------+------------+
-> | boot_successes                               | 6          | 0          |
-> | boot_failures                                | 0          | 6          |
-> | WARNING:possible_recursive_locking_detected  | 0          | 6          |
-> | INFO:rcu_sched_self-detected_stall_on_CPU    | 0          | 6          |
-> | INFO:rcu_sched_detected_stalls_on_CPUs/tasks | 0          | 1          |
-> | EIP:queued_read_lock_slowpath                | 0          | 1          |
-> +----------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> [    9.616229] WARNING: possible recursive locking detected
-> [    9.617758] 5.12.0-rc2-00297-gcf1e4e12c95d #1 Not tainted
-> [    9.617758] --------------------------------------------
-> [    9.617758] swapper/0/1 is trying to acquire lock:
-> [    9.617758] 41bb9674 (resource_lock){++++}-{2:2}, at: region_intersects 
-(kbuild/src/consumer/kernel/resource.c:534 kbuild/src/consumer/kernel/
-resource.c:580)
-> [    9.619753]
-> [    9.619753] but task is already holding lock:
-> [    9.619753] 41bb9674 (resource_lock){++++}-{2:2}, at: __request_region 
-(kbuild/src/consumer/kernel/resource.c:1188 kbuild/src/consumer/kernel/
-resource.c:1255)
-> [    9.621757]
-> [    9.621757] other info that might help us debug this:
-> [    9.621757]  Possible unsafe locking scenario:
-> [    9.621757]
-> [    9.621757]        CPU0
-> [    9.621757]        ----
-> [    9.623721]   lock(resource_lock);
-> [    9.623747]   lock(resource_lock);
-> [    9.623747]
-> [    9.623747]  *** DEADLOCK ***
-> [    9.623747]
-> [    9.623747]  May be due to missing lock nesting notation
-> [    9.623747]
-> [    9.625725] 2 locks held by swapper/0/1:
-> [    9.625759] #0: 42e1f160 (&dev->mutex){....}-{3:3}, at: device_lock 
-(kbuild/src/consumer/include/linux/device.h:741)
-> [    9.625759] #1: 41bb9674 (resource_lock){++++}-{2:2}, at: 
-__request_region (kbuild/src/consumer/kernel/resource.c:1188 kbuild/src/
-consumer/kernel/resource.c:1255)
-> [    9.625759]
-> [    9.625759] stack backtrace:
-> [    9.627748] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2-00297-
-gcf1e4e12c95d #1
-> [    9.627748] Call Trace:
-> [    9.627748] ? dump_stack (kbuild/src/consumer/lib/dump_stack.c:122)
-> [    9.627748] ? validate_chain (kbuild/src/consumer/kernel/locking/
-lockdep.c:2829 kbuild/src/consumer/kernel/locking/lockdep.c:2872 kbuild/src/
-consumer/kernel/locking/lockdep.c:3661)
-> [    9.629761] ? __lock_acquire (kbuild/src/consumer/kernel/locking/
-lockdep.c:4900)
-> [    9.629761] ? lock_acquire (kbuild/src/consumer/kernel/locking/lockdep.c:
-437 kbuild/src/consumer/kernel/locking/lockdep.c:5512 kbuild/src/consumer/
-kernel/locking/lockdep.c:5475)
-> [    9.629761] ? region_intersects (kbuild/src/consumer/kernel/resource.c:
-534 kbuild/src/consumer/kernel/resource.c:580)
-> [    9.629761] ? lock_acquire (kbuild/src/consumer/kernel/locking/lockdep.c:
-437 kbuild/src/consumer/kernel/locking/lockdep.c:5512 kbuild/src/consumer/
-kernel/locking/lockdep.c:5475)
-> [    9.629761] ? lock_is_held_type (kbuild/src/consumer/kernel/locking/
-lockdep.c:5253 kbuild/src/consumer/kernel/locking/lockdep.c:5549)
-> [    9.631752] ? _raw_read_lock (kbuild/src/consumer/include/linux/
-rwlock_api_smp.h:150 kbuild/src/consumer/kernel/locking/spinlock.c:223)
-> [    9.631752] ? region_intersects (kbuild/src/consumer/kernel/resource.c:
-534 kbuild/src/consumer/kernel/resource.c:580)
-> [    9.631752] ? devmem_is_allowed (kbuild/src/consumer/arch/x86/mm/init.c:
-823)
-> [    9.633761] ? __request_region (kbuild/src/consumer/kernel/resource.c:
-1157 kbuild/src/consumer/kernel/resource.c:1232 kbuild/src/consumer/kernel/
-resource.c:1255)
-> [    9.633761] ? wake_up_q (kbuild/src/consumer/kernel/sched/core.c:5542)
-> [    9.633761] ? __pci_request_region (kbuild/src/consumer/drivers/pci/
-pci.c:3848 (discriminator 2))
-> [    9.633761] ? __pci_request_selected_regions (kbuild/src/consumer/
-drivers/pci/pci.c:3915)
-> [    9.635756] ? pci_request_selected_regions (kbuild/src/consumer/drivers/
-pci/pci.c:3938)
-> [    9.637732] ? e1000_probe (kbuild/src/consumer/drivers/net/ethernet/
-intel/e1000/e1000_main.c:948)
-> [    9.637767] ? trace_hardirqs_on (kbuild/src/consumer/kernel/trace/
-trace_preemptirq.c:51 (discriminator 19))
-> [    9.637767] ? __pm_runtime_resume (kbuild/src/consumer/drivers/base/
-power/runtime.c:1093)
-> [    9.637767] ? e1000_io_slot_reset (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:922)
-> [    9.637767] ? pci_device_probe (kbuild/src/consumer/drivers/pci/pci-
-driver.c:309 kbuild/src/consumer/drivers/pci/pci-driver.c:366 kbuild/src/
-consumer/drivers/pci/pci-driver.c:391 kbuild/src/consumer/drivers/pci/pci-
-driver.c:434)
-> [    9.639749] ? really_probe (kbuild/src/consumer/drivers/base/dd.c:555)
-> [    9.639749] ? driver_probe_device (kbuild/src/consumer/drivers/base/dd.c:
-740)
-> [    9.639749] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1015)
-> [    9.639749] ? __driver_attach (kbuild/src/consumer/drivers/base/dd.c:
-1094)
-> [    9.639749] ? bus_for_each_dev (kbuild/src/consumer/drivers/base/bus.c:
-305)
-> [    9.641762] ? driver_attach (kbuild/src/consumer/drivers/base/dd.c:1109)
-> [    9.641762] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1047)
-> [    9.641762] ? bus_add_driver (kbuild/src/consumer/drivers/base/bus.c:623)
-> [    9.641762] ? driver_register (kbuild/src/consumer/drivers/base/driver.c:
-171)
-> [    9.643749] ? __pci_register_driver (kbuild/src/consumer/drivers/pci/pci-
-driver.c:1394)
-> [    9.643749] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [    9.643749] ? e1000_init_module (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:227)
-> [    9.643749] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [    9.643749] ? do_one_initcall (kbuild/src/consumer/init/main.c:1226)
-> [    9.645767] ? rcu_read_lock_sched_held (kbuild/src/consumer/include/
-linux/lockdep.h:278 kbuild/src/consumer/kernel/rcu/update.c:125)
-> [    9.645767] ? trace_initcall_level (kbuild/src/consumer/include/trace/
-events/initcall.h:10 kbuild/src/consumer/include/trace/events/initcall.h:10)
-> [    9.645767] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [    9.645767] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [    9.647749] ? rest_init (kbuild/src/consumer/init/main.c:1421)
-> [    9.647749] ? kernel_init (kbuild/src/consumer/init/main.c:1426)
-> [    9.647749] ? ret_from_fork (kbuild/src/consumer/arch/x86/entry/
-entry_32.S:856)
-> [   13.148425] rcu-torture: rcu_torture_read_exit: End of episode
-> [   68.608707] rcu-torture: rtc: (ptrval) ver: 5 tfle: 0 rta: 6 rtaf: 0 rtf: 
-0 rtmbe: 0 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 19364 
-onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0 read-exits: 16 nocb-
-toggles: 0:0
-> [   68.611404] rcu-torture: Reader Pipe:  7767697 1 0 0 0 0 0 0 0 0 0
-> [   68.612232] rcu-torture: Reader Batch:  7767697 1 0 0 0 0 0 0 0 0 0
-> [   68.612964] rcu-torture: Free-Block Circulation:  5 4 3 2 1 0 0 0 0 0 0
-> [  113.915674] rcu: INFO: rcu_sched self-detected stall on CPU
-> [  113.915674] rcu:     1-....: (104125 ticks this GP) idle=df6/1/0x40000000 
-softirq=1939/1941 fqs=20299
-> [  113.915674]  (t=105001 jiffies g=5985 q=37696)
-> [  113.915674] NMI backtrace for cpu 1
-> [  113.915674] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2-00297-
-gcf1e4e12c95d #1
-> [  113.918848] Call Trace:
-> [  113.918848] ? dump_stack (kbuild/src/consumer/lib/dump_stack.c:122)
-> [  113.918848] ? lapic_can_unplug_cpu (kbuild/src/consumer/arch/x86/kernel/
-apic/vector.c:1081)
-> [  113.918848] ? nmi_cpu_backtrace (kbuild/src/consumer/include/linux/
-cpumask.h:356 kbuild/src/consumer/lib/nmi_backtrace.c:107)
-> [  113.918848] ? lapic_can_unplug_cpu (kbuild/src/consumer/arch/x86/kernel/
-apic/hw_nmi.c:33)
-> [  113.918848] ? nmi_trigger_cpumask_backtrace (kbuild/src/consumer/lib/
-nmi_backtrace.c:64)
-> [  113.918848] ? arch_trigger_cpumask_backtrace (kbuild/src/consumer/arch/
-x86/kernel/apic/hw_nmi.c:41)
-> [  113.918848] ? rcu_dump_cpu_stacks (kbuild/src/consumer/kernel/rcu/
-tree_stall.h:337 (discriminator 5))
-> [  113.918848] ? rcu_sched_clock_irq (kbuild/src/consumer/kernel/rcu/
-tree_stall.h:624 kbuild/src/consumer/kernel/rcu/tree_stall.h:697 kbuild/src/
-consumer/kernel/rcu/tree.c:3830 kbuild/src/consumer/kernel/rcu/tree.c:2650)
-> [  113.918848] ? __raise_softirq_irqoff (kbuild/src/consumer/include/trace/
-events/irq.h:156 kbuild/src/consumer/kernel/softirq.c:484)
-> [  113.918848] ? update_process_times (kbuild/src/consumer/arch/x86/include/
-asm/preempt.h:27 kbuild/src/consumer/kernel/time/timer.c:1798)
-> [  113.918848] ? tick_sched_timer (kbuild/src/consumer/kernel/time/tick-
-sched.c:227 kbuild/src/consumer/kernel/time/tick-sched.c:1369)
-> [  113.918848] ? __hrtimer_run_queues (kbuild/src/consumer/kernel/time/
-hrtimer.c:1521 kbuild/src/consumer/kernel/time/hrtimer.c:1583)
-> [  113.918848] ? do_write_seqcount_begin_nested (kbuild/src/consumer/
-include/linux/spinlock.h:354 kbuild/src/consumer/include/linux/seqlock.h:893)
-> [  113.918848] ? hrtimer_interrupt (kbuild/src/consumer/kernel/time/
-hrtimer.c:1648)
-> [  113.918848] ? bigsmp_ioapic_phys_id_map (kbuild/src/consumer/arch/x86/
-include/asm/apic.h:105)
-> [  113.918848] ? sysvec_call_function_single (kbuild/src/consumer/arch/x86/
-kernel/apic/apic.c:1100)
-> [  113.918848] ? __sysvec_apic_timer_interrupt (kbuild/src/consumer/arch/
-x86/include/asm/jump_label.h:25 kbuild/src/consumer/include/linux/
-jump_label.h:200 kbuild/src/consumer/arch/x86/include/asm/trace/irq_vectors.h:
-41 kbuild/src/consumer/arch/x86/kernel/apic/apic.c:1107)
-> [  113.918848] ? sysvec_apic_timer_interrupt (kbuild/src/consumer/arch/x86/
-kernel/apic/apic.c:1100)
-> [  113.918848] ? handle_exception (kbuild/src/consumer/arch/x86/entry/
-entry_32.S:1179)
-> [  113.918848] ? sysvec_call_function_single (kbuild/src/consumer/arch/x86/
-kernel/apic/apic.c:1100)
-> [  113.918848] ? queued_read_lock_slowpath (kbuild/src/consumer/arch/x86/
-include/asm/vdso/processor.h:19 kbuild/src/consumer/kernel/locking/qrwlock.c:
-48)
-> [  113.918848] ? sysvec_call_function_single (kbuild/src/consumer/arch/x86/
-kernel/apic/apic.c:1100)
-> [  113.918848] ? queued_read_lock_slowpath (kbuild/src/consumer/arch/x86/
-include/asm/vdso/processor.h:19 kbuild/src/consumer/kernel/locking/qrwlock.c:
-48)
-> [  113.918848] ? do_raw_read_lock (kbuild/src/consumer/kernel/locking/
-spinlock_debug.c:159)
-> [  113.918848] ? _raw_read_lock (kbuild/src/consumer/include/linux/
-rwlock_api_smp.h:150 kbuild/src/consumer/kernel/locking/spinlock.c:223)
-> [  113.918848] ? region_intersects (kbuild/src/consumer/kernel/resource.c:
-534 kbuild/src/consumer/kernel/resource.c:580)
-> [  113.918848] ? devmem_is_allowed (kbuild/src/consumer/arch/x86/mm/init.c:
-823)
-> [  113.918848] ? __request_region (kbuild/src/consumer/kernel/resource.c:
-1157 kbuild/src/consumer/kernel/resource.c:1232 kbuild/src/consumer/kernel/
-resource.c:1255)
-> [  113.918848] ? wake_up_q (kbuild/src/consumer/kernel/sched/core.c:5542)
-> [  113.918848] ? __pci_request_region (kbuild/src/consumer/drivers/pci/
-pci.c:3848 (discriminator 2))
-> [  113.918848] ? __pci_request_selected_regions (kbuild/src/consumer/
-drivers/pci/pci.c:3915)
-> [  113.918848] ? pci_request_selected_regions (kbuild/src/consumer/drivers/
-pci/pci.c:3938)
-> [  113.918848] ? e1000_probe (kbuild/src/consumer/drivers/net/ethernet/
-intel/e1000/e1000_main.c:948)
-> [  113.918848] ? trace_hardirqs_on (kbuild/src/consumer/kernel/trace/
-trace_preemptirq.c:51 (discriminator 19))
-> [  113.918848] ? __pm_runtime_resume (kbuild/src/consumer/drivers/base/
-power/runtime.c:1093)
-> [  113.918848] ? e1000_io_slot_reset (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:922)
-> [  113.918848] ? pci_device_probe (kbuild/src/consumer/drivers/pci/pci-
-driver.c:309 kbuild/src/consumer/drivers/pci/pci-driver.c:366 kbuild/src/
-consumer/drivers/pci/pci-driver.c:391 kbuild/src/consumer/drivers/pci/pci-
-driver.c:434)
-> [  113.918848] ? really_probe (kbuild/src/consumer/drivers/base/dd.c:555)
-> [  113.918848] ? driver_probe_device (kbuild/src/consumer/drivers/base/dd.c:
-740)
-> [  113.918848] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1015)
-> [  113.918848] ? __driver_attach (kbuild/src/consumer/drivers/base/dd.c:
-1094)
-> [  113.918848] ? bus_for_each_dev (kbuild/src/consumer/drivers/base/bus.c:
-305)
-> [  113.918848] ? driver_attach (kbuild/src/consumer/drivers/base/dd.c:1109)
-> [  113.918848] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1047)
-> [  113.918848] ? bus_add_driver (kbuild/src/consumer/drivers/base/bus.c:623)
-> [  113.918848] ? driver_register (kbuild/src/consumer/drivers/base/driver.c:
-171)
-> [  113.918848] ? __pci_register_driver (kbuild/src/consumer/drivers/pci/pci-
-driver.c:1394)
-> [  113.918848] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [  113.918848] ? e1000_init_module (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:227)
-> [  113.918848] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [  113.918848] ? do_one_initcall (kbuild/src/consumer/init/main.c:1226)
-> [  113.918848] ? rcu_read_lock_sched_held (kbuild/src/consumer/include/
-linux/lockdep.h:278 kbuild/src/consumer/kernel/rcu/update.c:125)
-> [  113.918848] ? trace_initcall_level (kbuild/src/consumer/include/trace/
-events/initcall.h:10 kbuild/src/consumer/include/trace/events/initcall.h:10)
-> [  113.918848] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [  113.918848] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [  113.918848] ? rest_init (kbuild/src/consumer/init/main.c:1421)
-> [  113.918848] ? kernel_init (kbuild/src/consumer/init/main.c:1426)
-> [  113.918848] ? ret_from_fork (kbuild/src/consumer/arch/x86/entry/
-entry_32.S:856)
-> [  121.856725] rcu: INFO: rcu_sched detected expedited stalls on CPUs/tasks: 
-{ 1-... } 108713 jiffies s: 73 root: 0x2/.
-> [  121.858173] rcu: blocking rcu_node structures (internal RCU debug):
-> [  121.858984] Task dump for CPU 1:
-> [  121.859402] task:swapper/0       state:R  running task     stack: 5736 
-pid:    1 ppid:     0 flags:0x00004008
-> [  121.860681] Call Trace:
-> [  121.860996] ? wake_up_q (kbuild/src/consumer/kernel/sched/core.c:5542)
-> [  121.861429] ? __pci_request_region (kbuild/src/consumer/drivers/pci/
-pci.c:3848 (discriminator 2))
-> [  121.861990] ? __pci_request_selected_regions (kbuild/src/consumer/
-drivers/pci/pci.c:3915)
-> [  121.862639] ? pci_request_selected_regions (kbuild/src/consumer/drivers/
-pci/pci.c:3938)
-> [  121.863247] ? e1000_probe (kbuild/src/consumer/drivers/net/ethernet/
-intel/e1000/e1000_main.c:948)
-> [  121.863713] ? trace_hardirqs_on (kbuild/src/consumer/kernel/trace/
-trace_preemptirq.c:51 (discriminator 19))
-> [  121.865689] ? __pm_runtime_resume (kbuild/src/consumer/drivers/base/
-power/runtime.c:1093)
-> [  121.866262] ? e1000_io_slot_reset (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:922)
-> [  121.866807] ? pci_device_probe (kbuild/src/consumer/drivers/pci/pci-
-driver.c:309 kbuild/src/consumer/drivers/pci/pci-driver.c:366 kbuild/src/
-consumer/drivers/pci/pci-driver.c:391 kbuild/src/consumer/drivers/pci/pci-
-driver.c:434)
-> [  121.867363] ? really_probe (kbuild/src/consumer/drivers/base/dd.c:555)
-> [  121.867875] ? driver_probe_device (kbuild/src/consumer/drivers/base/dd.c:
-740)
-> [  121.869481] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1015)
-> [  121.870046] ? __driver_attach (kbuild/src/consumer/drivers/base/dd.c:
-1094)
-> [  121.870576] ? bus_for_each_dev (kbuild/src/consumer/drivers/base/bus.c:
-305)
-> [  121.871092] ? driver_attach (kbuild/src/consumer/drivers/base/dd.c:1109)
-> [  121.871625] ? device_driver_attach (kbuild/src/consumer/drivers/base/
-dd.c:1047)
-> [  121.872227] ? bus_add_driver (kbuild/src/consumer/drivers/base/bus.c:623)
-> [  121.872739] ? driver_register (kbuild/src/consumer/drivers/base/driver.c:
-171)
-> [  121.873305] ? __pci_register_driver (kbuild/src/consumer/drivers/pci/pci-
-driver.c:1394)
-> [  121.873878] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [  121.874466] ? e1000_init_module (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:227)
-> [  121.874996] ? blackhole_netdev_init (kbuild/src/consumer/drivers/net/
-ethernet/intel/e1000/e1000_main.c:221)
-> [  121.875586] ? do_one_initcall (kbuild/src/consumer/init/main.c:1226)
-> [  121.876114] ? rcu_read_lock_sched_held (kbuild/src/consumer/include/
-linux/lockdep.h:278 kbuild/src/consumer/kernel/rcu/update.c:125)
-> [  121.876757] ? trace_initcall_level (kbuild/src/consumer/include/trace/
-events/initcall.h:10 kbuild/src/consumer/include/trace/events/initcall.h:10)
-> [  121.877368] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [  121.877940] ? kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 
-kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 
-kbuild/src/consumer/init/main.c:1537)
-> [  121.878538] ? rest_init (kbuild/src/consumer/init/main.c:1421)
-> [  121.879008] ? kernel_init (kbuild/src/consumer/init/main.c:1426)
-> [  121.879473] ? ret_from_fork (kbuild/src/consumer/arch/x86/entry/
-entry_32.S:856)
-> [  130.048872] rcu-torture: rtc: (ptrval) ver: 5 tfle: 0 rta: 6 rtaf: 0 rtf: 
-0 rtmbe: 0 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 41670 
-onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0 read-exits: 16 nocb-
-toggles: 0:0
-> [  130.051537] rcu-torture: Reader Pipe:  16853873 1 0 0 0 0 0 0 0 0 0
-> [  130.052366] rcu-torture: Reader Batch:  16853873 1 0 0 0 0 0 0 0 0 0
-> [  130.053161] rcu-torture: Free-Block Circulation:  5 4 3 2 1 0 0 0 0 0 0
-> [  130.053994] ??? Writer stall state RTWS_SYNC(9) g5985 f0x0 ->state 0x2 
-cpu 0
-> [  130.054858] task:rcu_torture_wri state:D stack: 6900 pid:  109 ppid:     
-2 flags:0x00004000
-> [  130.055908] Call Trace:
-> [  130.056221] ? __schedule (kbuild/src/consumer/kernel/sched/core.c:4327 
-kbuild/src/consumer/kernel/sched/core.c:5075)
-> [  130.056697] ? lock_release (kbuild/src/consumer/include/trace/events/
-lock.h:58 kbuild/src/consumer/kernel/locking/lockdep.c:5521)
-> [  130.057173] ? schedule (kbuild/src/consumer/arch/x86/include/asm/
-preempt.h:85 (discriminator 1) kbuild/src/consumer/kernel/sched/core.c:5155 
-(discriminator 1))
-> [  130.057593] ? schedule_preempt_disabled (kbuild/src/consumer/arch/x86/
-include/asm/preempt.h:80 kbuild/src/consumer/kernel/sched/core.c:5214)
-> [  130.058186] ? __mutex_lock (kbuild/src/consumer/kernel/locking/mutex.c:
-1029 kbuild/src/consumer/kernel/locking/mutex.c:1093)
-> [  130.058667] ? mutex_lock_nested (kbuild/src/consumer/kernel/locking/
-mutex.c:1109)
-> [  130.060228] ? synchronize_rcu_expedited (kbuild/src/consumer/kernel/rcu/
-tree_exp.h:324 kbuild/src/consumer/kernel/rcu/tree_exp.h:836)
-> [  130.060861] ? synchronize_rcu_expedited (kbuild/src/consumer/kernel/rcu/
-tree_exp.h:324 kbuild/src/consumer/kernel/rcu/tree_exp.h:836)
-> [  130.061479] ? debug_object_free (kbuild/src/consumer/lib/debugobjects.c:
-853)
-> [  130.061996] ? rcu_preempt_sleep_check (kbuild/src/consumer/include/linux/
-rcupdate.h:327)
-> [  130.062538] ? __might_sleep (kbuild/src/consumer/kernel/sched/core.c:8285 
-(discriminator 14))
-> [  130.063008] ? lock_acquire (kbuild/src/consumer/include/trace/events/
-lock.h:13 kbuild/src/consumer/kernel/locking/lockdep.c:5481)
-> [  130.063460] ? synchronize_rcu (kbuild/src/consumer/kernel/rcu/tree.c:
-3767)
-> [  130.063960] ? schedule_hrtimeout_range (kbuild/src/consumer/kernel/time/
-hrtimer.c:2186)
-> [  130.064509] ? lock_acquired (kbuild/src/consumer/include/trace/events/
-lock.h:67 kbuild/src/consumer/kernel/locking/lockdep.c:5751)
-> [  130.064986] ? __delay (kbuild/src/consumer/arch/x86/lib/delay.c:204)
-> [  130.065384] ? __const_udelay (kbuild/src/consumer/arch/x86/lib/delay.c:
-218 (discriminator 21))
-> [  130.065890] ? rcu_torture_writer (kbuild/src/consumer/kernel/rcu/
-rcutorture.c:1220)
-> [  130.066435] ? __kthread_parkme (kbuild/src/consumer/arch/x86/include/asm/
-bitops.h:207 kbuild/src/consumer/include/asm-generic/bitops/instrumented-non-
-atomic.h:135 kbuild/src/consumer/kernel/kthread.c:222)
-> [  130.066947] ? kthread (kbuild/src/consumer/kernel/kthread.c:294)
-> [  130.067352] ? rcu_torture_pipe_update (kbuild/src/consumer/kernel/rcu/
-rcutorture.c:1126)
-> [  130.067945] ? __list_del_entry (kbuild/src/consumer/arch/x86/events/
-intel/uncore.c:318)
-> [  130.068439] ? ret_from_fork (kbuild/src/consumer/arch/x86/entry/
-entry_32.S:856)
-> [  130.068922] rcu: rcu_sched: wait state: RCU_GP_WAIT_FQS(5) ->state: 0x0 
-delta ->gp_activity 21 ->gp_req_activity 121169 ->gp_wake_time 121169 -
->gp_wake_seq 5984 ->gp_seq 5985 ->gp_seq_needed 5988 ->gp_flags 0x0
-> [  130.071191] rcu:     rcu_node 0:1 ->gp_seq 5985 ->gp_seq_needed 5988
-> [  130.071956] rcu:     cpu 0 ->gp_seq_needed 5988
-> [  130.072500] rcu:     cpu 1 ->gp_seq_needed 5988
-> [  130.073046] rcu: RCU callbacks invoked since boot: 23719
-> [  130.073712] rcu_tasks: RTGS_WAIT_CBS(11) since 127497 g:2 i:0/0 k.
-> [  130.074481] rcu_tasks_rude: RTGS_WAIT_CBS(11) since 127657 g:2 i:0/3 k.
-> [  130.075385] rcu_tasks_trace: RTGS_WAIT_CBS(11) since 127828 g:2 i:0/1 k. 
-N0 h:0/0/0
-> [  130.078873] Dumping ftrace buffer:
-> [  130.079310]    (ftrace buffer empty)
-> [  191.488693] rcu-torture: rtc: (ptrval) ver: 5 tfle: 0 rta: 6 rtaf: 0 rtf: 
-0 rtmbe: 0 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 63533 
-onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0 read-exits: 16 nocb-
-toggles: 0:0
-> [  191.491304] rcu-torture: Reader Pipe:  25714613 1 0 0 0 0 0 0 0 0 0
-> [  191.492111] rcu-torture: Reader Batch:  25714613 1 0 0 0 0 0 0 0 0 0
-> [  191.492907] rcu-torture: Free-Block Circulation:  5 4 3 2 1 0 0 0 0 0 0
-> [  191.493730] ??? Writer stall state RTWS_SYNC(9) g5985 f0x0 ->state 0x2 
-cpu 0
-> [  191.494579] rcu: rcu_sched: wait state: RCU_GP_WAIT_FQS(5) ->state: 0x0 
-delta ->gp_activity 7 ->gp_req_activity 182594 ->gp_wake_time 182594 -
->gp_wake_seq 5984 ->gp_seq 5985 ->gp_seq_needed 5988 ->gp_flags 0x0
-> [  191.496790] rcu:     rcu_node 0:1 ->gp_seq 5985 ->gp_seq_needed 5988
-> [  191.497521] rcu:     cpu 0 ->gp_seq_needed 5988
-> [  191.498050] rcu:     cpu 1 ->gp_seq_needed 5988
-> [  191.498572] rcu: RCU callbacks invoked since boot: 23719
-> [  191.499222] rcu_tasks: RTGS_WAIT_CBS(11) since 188922 g:2 i:0/0 k.
-> [  191.499999] rcu_tasks_rude: RTGS_WAIT_CBS(11) since 189083 g:2 i:0/3 k.
-> [  191.500832] rcu_tasks_trace: RTGS_WAIT_CBS(11) since 189254 g:2 i:0/1 k. 
-N0 h:0/0/0
-> [  253.207367] rcu-torture: rtc: (ptrval) ver: 5 tfle: 0 rta: 6 rtaf: 0 rtf: 
-0 rtmbe: 0 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 83753 
-onoff: 0/0:0/0 -1,0:-1,0 0:0 (HZ=1000) barrier: 0/0:0 read-exits: 16 nocb-
-toggles: 0:0
-> [  253.209923] rcu-torture: Reader Pipe:  33834394 1 0 0 0 0 0 0 0 0 0
-> [  253.210714] rcu-torture: Reader Batch:  33834394 1 0 0 0 0 0 0 0 0 0
-> [  253.211498] rcu-torture: Free-Block Circulation:  5 4 3 2 1 0 0 0 0 0 0
-> [  253.212358] ??? Writer stall state RTWS_SYNC(9) g5985 f0x0 ->state 0x2 
-cpu 0
-> [  253.213214] rcu: rcu_sched: wait state: RCU_GP_WAIT_FQS(5) ->state: 0x0 
-delta ->gp_activity 6 ->gp_req_activity 244313 ->gp_wake_time 244313 -
->gp_wake_seq 5984 ->gp_seq 5985 ->gp_seq_needed 5988 ->gp_flags 0x0
-> [  253.215409] rcu:     rcu_node 0:1 ->gp_seq 5985 ->gp_seq_needed 5988
-> [  253.216164] rcu:     cpu 0 ->gp_seq_needed 5988
-> [  253.216695] rcu:     cpu 1 ->gp_seq_needed 5988
-> [  253.217225] rcu: RCU callbacks invoked since boot: 23719
-> [  253.217885] rcu_tasks: RTGS_WAIT_CBS(11) since 250641 g:2 i:0/0 k.
-> [  253.218647] rcu_tasks_rude: RTGS_WAIT_CBS(11) since 250801 g:2 i:0/3 k.
-> [  253.219473] rcu_tasks_trace: RTGS_WAIT_CBS(11) since 250972 g:2 i:0/1 k. 
-N0 h:0/0/0
-> 
-> 
-> To reproduce:
-> 
->         # build kernel
->         cd linux
->         cp config-5.12.0-rc2-00297-gcf1e4e12c95d .config
->         make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare 
-modules_prepare bzImage
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> job-script # job-script is attached in 
-this email
-> 
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology 
-Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel 
-Corporation
-> 
-> Thanks,
-> Oliver Sang
-> 
+Tested-by: Louis Li <Ching-shih.Li@amd.com>
+Signed-off-by: Louis Li <Ching-shih.Li@amd.com>
+Change-Id: Ic19e4f3b9225736f037f5ade10b68e8afe5f9ab7
+---
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 40 ++++++++++++++-----
+ 1 file changed, 30 insertions(+), 10 deletions(-)
 
-
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index 83212ea40077..1ce5e58e3a9e 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -2999,6 +2999,10 @@ static bool dcn10_can_pipe_disable_cursor(struct pipe_ctx *pipe_ctx)
+ 	const struct rect *r1 = &pipe_ctx->plane_res.scl_data.recout, *r2;
+ 	int r1_r = r1->x + r1->width, r1_b = r1->y + r1->height, r2_r, r2_b;
+ 
++	struct dc_cursor_position pos_cpy = pipe_ctx->stream->cursor_position;
++	int cp_x = pos_cpy.x;
++	int cp_y = pos_cpy.y;
++
+ 	/**
+ 	 * Disable the cursor if there's another pipe above this with a
+ 	 * plane that contains this pipe's viewport to prevent double cursor
+@@ -3013,7 +3017,8 @@ static bool dcn10_can_pipe_disable_cursor(struct pipe_ctx *pipe_ctx)
+ 		r2_r = r2->x + r2->width;
+ 		r2_b = r2->y + r2->height;
+ 
+-		if (r1->x >= r2->x && r1->y >= r2->y && r1_r <= r2_r && r1_b <= r2_b)
++		if ((cp_x >= r1->x && cp_y >= r1->y && cp_x <= r1_r && cp_y <= r1_b)
++		   && (cp_x >= r2->x && cp_y >= r2->y && cp_x <= r2_r && cp_y <= r2_b))
+ 			return true;
+ 	}
+ 
+@@ -3034,15 +3039,30 @@ static void dcn10_set_cursor_position(struct pipe_ctx *pipe_ctx)
+ 		.rotation = pipe_ctx->plane_state->rotation,
+ 		.mirror = pipe_ctx->plane_state->horizontal_mirror
+ 	};
+-	uint32_t x_plane = pipe_ctx->plane_state->dst_rect.x;
+-	uint32_t y_plane = pipe_ctx->plane_state->dst_rect.y;
+-	uint32_t x_offset = min(x_plane, pos_cpy.x);
+-	uint32_t y_offset = min(y_plane, pos_cpy.y);
+-
+-	pos_cpy.x -= x_offset;
+-	pos_cpy.y -= y_offset;
+-	pos_cpy.x_hotspot += (x_plane - x_offset);
+-	pos_cpy.y_hotspot += (y_plane - y_offset);
++
++	int x_plane = pipe_ctx->plane_state->dst_rect.x;
++	int y_plane = pipe_ctx->plane_state->dst_rect.y;
++	int x_pos = pos_cpy.x;
++	int y_pos = pos_cpy.y;
++
++	// translate cursor from stream space to plane space
++	x_pos = (x_pos - x_plane) * pipe_ctx->plane_state->src_rect.width /
++			pipe_ctx->plane_state->dst_rect.width;
++	y_pos = (y_pos - y_plane) * pipe_ctx->plane_state->src_rect.height /
++			pipe_ctx->plane_state->dst_rect.height;
++
++	if (x_pos < 0) {
++		pos_cpy.x_hotspot -= x_pos;
++		x_pos = 0;
++	}
++
++	if (y_pos < 0) {
++		pos_cpy.y_hotspot -= y_pos;
++		y_pos = 0;
++	}
++
++	pos_cpy.x = (uint32_t)x_pos;
++	pos_cpy.y = (uint32_t)y_pos;
+ 
+ 	if (pipe_ctx->plane_state->address.type
+ 			== PLN_ADDR_TYPE_VIDEO_PROGRESSIVE)
+-- 
+2.27.0
 
