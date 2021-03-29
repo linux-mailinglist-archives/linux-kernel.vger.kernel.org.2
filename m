@@ -2,118 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E6F34D008
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58F334D00C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhC2MZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:25:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54774 "EHLO mx2.suse.de"
+        id S229910AbhC2M3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231178AbhC2MZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:25:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617020728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N7hVAqpYAusMkHlATCXWeNNlZhd9syTrD6uQQBirn8c=;
-        b=sNvwsFtpjxUjAszNASXyGeAyCB0QX1h+VK+1fE29wFDuDA5nqfu5gBVZKefdIG+QNueDW7
-        1of1QLAvyu2evHAH+gxZgFEKUyZJk0tHHVKsR883sItvdIuFxqCrVFwZVvJe5IIqZD+axH
-        L8p7tPc2iYjrBAG6+wMm6Vn9FgII7Nk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6B69B471;
-        Mon, 29 Mar 2021 12:25:28 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 14:25:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     jpoimboe@redhat.com, jikos@kernel.org, joe.lawrence@redhat.com,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        axboe@kernel.dk
-Subject: Re: [PATCH] livepatch: Replace the fake signal sending with
- TIF_NOTIFY_SIGNAL infrastructure
-Message-ID: <YGHHODMwuxvRiGRI@alley>
-References: <20210326143021.17773-1-mbenes@suse.cz>
+        id S229711AbhC2M2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:28:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 055C16192F;
+        Mon, 29 Mar 2021 12:28:37 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     kasan-dev@googlegroups.com, will@kernel.org,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     linux@roeck-us.net, ryabinin.a.a@gmail.com, andreyknvl@gmail.com,
+        yj.chiang@mediatek.com, gustavoars@kernel.org,
+        tyhicks@linux.microsoft.com, rppt@kernel.org, glider@google.com,
+        maz@kernel.org, akpm@linux-foundation.org, dvyukov@google.com
+Subject: Re: [PATCH v4 0/5] arm64: kasan: support CONFIG_KASAN_VMALLOC
+Date:   Mon, 29 Mar 2021 13:28:35 +0100
+Message-Id: <161702091034.21347.12247252783807550442.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210324040522.15548-1-lecopzer.chen@mediatek.com>
+References: <20210324040522.15548-1-lecopzer.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326143021.17773-1-mbenes@suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-03-26 15:30:21, Miroslav Benes wrote:
-> Livepatch sends a fake signal to all remaining blocking tasks of a
-> running transition after a set period of time. It uses TIF_SIGPENDING
-> flag for the purpose. Commit 12db8b690010 ("entry: Add support for
-> TIF_NOTIFY_SIGNAL") added a generic infrastructure to achieve the same.
-> Replace our bespoke solution with the generic one.
+On Wed, 24 Mar 2021 12:05:17 +0800, Lecopzer Chen wrote:
+> Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> ("kasan: support backing vmalloc space with real shadow memory")
 > 
-> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-> ---
-> Tested on x86_64, s390x and ppc64le archs.
+> Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> by not to populate the vmalloc area except for kimg address.
 > 
->  kernel/livepatch/transition.c | 5 ++---
->  kernel/signal.c               | 3 +--
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index f6310f848f34..3a4beb9395c4 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/cpu.h>
->  #include <linux/stacktrace.h>
-> +#include <linux/tracehook.h>
->  #include "core.h"
->  #include "patch.h"
->  #include "transition.h"
-> @@ -369,9 +370,7 @@ static void klp_send_signals(void)
->  			 * Send fake signal to all non-kthread tasks which are
->  			 * still not migrated.
->  			 */
-> -			spin_lock_irq(&task->sighand->siglock);
-> -			signal_wake_up(task, 0);
-> -			spin_unlock_irq(&task->sighand->siglock);
-> +			set_notify_signal(task);
->  		}
->  	}
->  	read_unlock(&tasklist_lock);
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index f2a1b898da29..e52cb82aaecd 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -181,8 +181,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
->  
->  void recalc_sigpending(void)
->  {
-> -	if (!recalc_sigpending_tsk(current) && !freezing(current) &&
-> -	    !klp_patch_pending(current))
-> +	if (!recalc_sigpending_tsk(current) && !freezing(current))
->  		clear_thread_flag(TIF_SIGPENDING);
->  
->  }
+> [...]
 
-The original commit 43347d56c8d9dd732cee2 ("livepatch: send a fake
-signal to all blocking tasks") did also:
+Applied to arm64 (for-next/kasan-vmalloc), thanks!
 
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -40,6 +40,7 @@
- #include <linux/cn_proc.h>
- #include <linux/compiler.h>
- #include <linux/posix-timers.h>
-+#include <linux/livepatch.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/signal.h>
+[1/5] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+      https://git.kernel.org/arm64/c/9a0732efa774
+[2/5] arm64: kasan: abstract _text and _end to KERNEL_START/END
+      https://git.kernel.org/arm64/c/7d7b88ff5f8f
+[3/5] arm64: Kconfig: support CONFIG_KASAN_VMALLOC
+      https://git.kernel.org/arm64/c/71b613fc0c69
+[4/5] arm64: kaslr: support randomized module area with KASAN_VMALLOC
+      https://git.kernel.org/arm64/c/31d02e7ab008
+[5/5] arm64: Kconfig: select KASAN_VMALLOC if KANSAN_GENERIC is enabled
+      https://git.kernel.org/arm64/c/acc3042d62cb
 
-We could/should remove the include now.
+-- 
+Catalin
 
-Otherwise, it looks good to me. Well, I do not feel to be expert
-in this are. Anyway, feel free to add:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
