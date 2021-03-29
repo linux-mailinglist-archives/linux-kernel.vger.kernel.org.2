@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99B134D0F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E6F34D0F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhC2NHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbhC2NG2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:06:28 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD75C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:06:28 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lQrb3-0006o4-6z; Mon, 29 Mar 2021 15:06:21 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lQrb2-000345-I5; Mon, 29 Mar 2021 15:06:20 +0200
-Date:   Mon, 29 Mar 2021 15:06:20 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v5 1/3] dt-bindings:iio:adc: add generic settling-time-us
- and oversampling-ratio channel properties
-Message-ID: <20210329130620.utfdlgwzixrenqka@pengutronix.de>
-References: <20210329073131.1759-1-o.rempel@pengutronix.de>
- <20210329073131.1759-2-o.rempel@pengutronix.de>
- <20210329112532.174825d6@jic23-huawei>
+        id S231695AbhC2NHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:07:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52008 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhC2NGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:06:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 365C7B473;
+        Mon, 29 Mar 2021 13:06:33 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 15:06:32 +0200 (CEST)
+From:   Richard Biener <rguenther@suse.de>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+cc:     Jiri Slaby <jslaby@suse.cz>, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: perf does not resolve plt symbols from libstdc++ right (.plt.sec
+ problem)
+In-Reply-To: <CAMe9rOpwCwOb0u8n-k1OnBSc+4kTnqM_5GVhN_qYd0SjH_8xJg@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2103291457400.17979@zhemvz.fhfr.qr>
+References: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz> <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz> <nycvar.YFH.7.76.2103291136070.17979@zhemvz.fhfr.qr> <CAMe9rOpwCwOb0u8n-k1OnBSc+4kTnqM_5GVhN_qYd0SjH_8xJg@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210329112532.174825d6@jic23-huawei>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:57:12 up 117 days,  3:03, 48 users,  load average: 0.14, 0.14,
- 0.09
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="-1609908220-831296595-1617023193=:17979"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:25:32AM +0100, Jonathan Cameron wrote:
-> On Mon, 29 Mar 2021 09:31:29 +0200
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1609908220-831296595-1617023193=:17979
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Mon, 29 Mar 2021, H.J. Lu wrote:
+
+> On Mon, Mar 29, 2021 at 2:38 AM Richard Biener <rguenther@suse.de> wrote:
+> >
+> > On Mon, 29 Mar 2021, Jiri Slaby wrote:
+> >
+> > > Any ideas on this?
+> > >
+> > > On 11. 01. 21, 7:31, Jiri Slaby wrote:
+> > > > Hi,
+> > > >
+> > > > this e-mails is a follow-up of my report at:
+> > > > https://bugzilla.suse.com/show_bug.cgi?id=1180681
+> > > >
+> > > > There is a problem with *@plt symbols in some libraries, they are unresolved
+> > > > by perf (memcmp@plt in this case):
+> > > >  >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0
+> > > >             l [.] 0x00000000000a51a0
+> > > >
+> > > > On the other hand, plt symbols in other libraries are fine (memset@plt in
+> > > > this case):
+> > > >  >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10
+> > > >             l [.] memset@plt
+> > > >
+> > > > I dumped memcmp's .plt.rela entries in perf:
+> > > > /usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 hdr=10
+> > > > entry=10
+> > > > /usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10
+> > > > entry=10
+> > > >
+> > > > The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 0xa1070
+> > > > (perf's computed) = 0x4130.
+> > > >
+> > > > The problem is perf assumes nth entry of .plt.rela to correspond to nth
+> > > > function in .plt, but memcmp is in .plt.sec in libstdc++.so:
+> > > >
+> > > >  >Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
+> > > >  >     Offset             Info             Type               Symbol's
+> > > > Value  Symbol's Name + Addend
+> > > >  > ...
+> > > >  > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT
+> > > > 0000000000000000 memcmp@GLIBC_2.2.5 + 0
+> > > >
+> > > > Perf does this with the rela entries:
+> > > > https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385
+> > > >
+> > > > It takes a symbol index from sym.r_info. Then it resolves its name from
+> > > > .dynsym, appending "@plt" to it. Then this name is added to perf's symbol
+> > > > table along with address which is computed as .rela.plt index multiplied by
+> > > > entry size (shdr_plt.sh_entsize) plus plt header (shdr_plt.sh_entsize on
+> > > > x86_64 too).
+> > > >
+> > > > And from this comes (almost) the offset above:
+> > > >  >$ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
+> > > >  >  12 .plt          00003fb0  000000000009e020  000000000009e020
+> > > > 0009e020  2**4
+> > > >  >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160
+> > > > 000a2160  2**4
+> > > >
+> > > > 0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds
+> > > > shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry
+> > > > (header).
+> > > >
+> > > > Richard writes:
+> > > > ======
+> > > > .plt.sec is IIRC the "second" (sec) PLT entry - the one that will be used on
+> > > > the second call (and on).  This is used / emitted for ELF object
+> > > > instrumented for Intel CET.  The details escape me for the moment but I hope
+> > > > the x86 ABI documents this (and the constraints) in detail.
+> >
+> > I just checked and the x86_64 psABI doesn't say anything about .plt.sec
 > 
-> > Settling time and over sampling is a typical challenge for different IIO ADC
-> > devices. So, introduce channel specific settling-time-us and oversampling-ratio
-> > properties to cover this use case.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  Documentation/devicetree/bindings/iio/adc/adc.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/adc.yaml b/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> > index 912a7635edc4..d5bc86d2a2af 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adc.yaml
-> > @@ -39,4 +39,12 @@ properties:
-> >        The first value specifies the positive input pin, the second
-> >        specifies the negative input pin.
-> >  
-> > +  settling-time-us:
-> > +    description:
-> > +      Time between enabling the channel and firs stable readings.
-> 
-> first
+> The second PLT is documented in section 13.2 Dynamic Linking in x86-64
+> psABI.  Please see elf_x86_64_get_synthetic_symtab in binutils for PLT symbol
+> processing.
 
-ack
+Hmm, google pointed me to https://gitlab.com/x86-psABIs/ and that
+version does not have a section 13 (but the last is section 12 on MPX).
+There's also references to a pdf which contain the section but
+that's on github and the github page says gitlab is the home...
+So I'm a bit confused here.
 
-> > +
-> > +  oversampling-ratio:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: Number of data samples which are averaged for each read.
-> 
-> I think I've asked about this in previous reviews, but I want a clear statement
-> of why you think this property is a feature of the 'board' (and hence should be
-> in device tree) rather than setting sensible defaults and leaving any control
-> to userspace?
+Richard.
 
-yes, my reply was:
-> Oversampling is used as replacement of or addition to the low-pass filter. The
-> filter can be implemented on board, but it will change settling time
-> characteristic. Since low-pass filter is board specific characteristic, this
-> property belongs in device tree as well.
-
-I could imagine that this values can be overwritten from user space for
-diagnostic, but we need some working default values. 
-
-Should I integrate this comment in to the yaml?
-
-Regards,
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Richard Biener <rguenther@suse.de>
+SUSE Software Solutions Germany GmbH, Maxfeldstrasse 5, 90409 Nuernberg,
+Germany; GF: Felix Imendörffer; HRB 36809 (AG Nuernberg)
+---1609908220-831296595-1617023193=:17979--
