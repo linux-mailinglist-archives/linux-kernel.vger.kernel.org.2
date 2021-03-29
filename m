@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4442034D2D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC6E34D2D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhC2Ov3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:51:29 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15376 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhC2Ou4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:50:56 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8Fnn6wQqz9sMm;
-        Mon, 29 Mar 2021 22:48:45 +0800 (CST)
-Received: from localhost (10.174.179.96) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
- 22:50:41 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <Vijendar.Mukunda@amd.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: amd: acp-da7219-max98357a: Fix -Wunused-variable warning
-Date:   Mon, 29 Mar 2021 22:50:37 +0800
-Message-ID: <20210329145037.23756-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S231426AbhC2Ou7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231479AbhC2Oun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:50:43 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A138F61932;
+        Mon, 29 Mar 2021 14:50:40 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 15:50:46 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
+        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
+Subject: Re: [PATCH 05/10] platform/x86: toshiba_acpi: register backlight
+ with device-managed variant
+Message-ID: <20210329155046.125641ac@jic23-huawei>
+In-Reply-To: <20210324125548.45983-6-aardelean@deviqon.com>
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+        <20210324125548.45983-6-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While ACPI is not set, make W=1 warns:
+On Wed, 24 Mar 2021 14:55:43 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-sound/soc/amd/acp-da7219-max98357a.c:684:28: warning: ‘cz_rt5682_card’ defined but not used [-Wunused-variable]
- static struct snd_soc_card cz_rt5682_card = {
-                            ^~~~~~~~~~~~~~
-sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: ‘cz_card’ defined but not used [-Wunused-variable]
- static struct snd_soc_card cz_card = {
+> This change converts the registration of the backlight data with the
+> devm_backlight_device_register() function.
+> This way, the backlight_device_unregister() call is no longer required, and
+> the order of deregistration is made to be more symmetrical with the
+> registration order.
+> 
 
-Use #ifdef block to guard this.
+This one looks fine to me.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index e65e007fc604..1bf0458e22a8 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -47,13 +47,15 @@
- #define DUAL_CHANNEL		2
- #define RT5682_PLL_FREQ (48000 * 512)
- 
-+extern bool bt_uart_enable;
-+void *acp_soc_is_rltk_max(struct device *dev);
-+
-+#ifdef CONFIG_ACPI
- static struct snd_soc_jack cz_jack;
- static struct clk *da7219_dai_wclk;
- static struct clk *da7219_dai_bclk;
- static struct clk *rt5682_dai_wclk;
- static struct clk *rt5682_dai_bclk;
--extern bool bt_uart_enable;
--void *acp_soc_is_rltk_max(struct device *dev);
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -692,6 +694,7 @@ static struct snd_soc_card cz_rt5682_card = {
- 	.controls = cz_mc_controls,
- 	.num_controls = ARRAY_SIZE(cz_mc_controls),
- };
-+#endif
- 
- void *acp_soc_is_rltk_max(struct device *dev)
- {
--- 
-2.17.1
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/platform/x86/toshiba_acpi.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+> index 556f2cc99bad..ada2a2d8c913 100644
+> --- a/drivers/platform/x86/toshiba_acpi.c
+> +++ b/drivers/platform/x86/toshiba_acpi.c
+> @@ -2876,7 +2876,8 @@ static int toshiba_acpi_setup_keyboard(struct device *parent,
+>  	return error;
+>  }
+>  
+> -static int toshiba_acpi_setup_backlight(struct toshiba_acpi_dev *dev)
+> +static int toshiba_acpi_setup_backlight(struct device *parent,
+> +					struct toshiba_acpi_dev *dev)
+>  {
+>  	struct backlight_properties props;
+>  	int brightness;
+> @@ -2924,11 +2925,12 @@ static int toshiba_acpi_setup_backlight(struct toshiba_acpi_dev *dev)
+>  	if (dev->tr_backlight_supported)
+>  		props.max_brightness++;
+>  
+> -	dev->backlight_dev = backlight_device_register("toshiba",
+> -						       &dev->acpi_dev->dev,
+> -						       dev,
+> -						       &toshiba_backlight_data,
+> -						       &props);
+> +	dev->backlight_dev = devm_backlight_device_register(parent,
+> +							    "toshiba",
+> +							    &dev->acpi_dev->dev,
+> +							    dev,
+> +							    &toshiba_backlight_data,
+> +							    &props);
+>  	if (IS_ERR(dev->backlight_dev)) {
+>  		ret = PTR_ERR(dev->backlight_dev);
+>  		pr_err("Could not register toshiba backlight device\n");
+> @@ -2999,8 +3001,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
+>  		sysfs_remove_group(&dev->acpi_dev->dev.kobj,
+>  				   &toshiba_attr_group);
+>  
+> -	backlight_device_unregister(dev->backlight_dev);
+> -
+>  	led_classdev_unregister(&dev->led_dev);
+>  	led_classdev_unregister(&dev->kbd_led);
+>  	led_classdev_unregister(&dev->eco_led);
+> @@ -3104,9 +3104,9 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  	ret = get_tr_backlight_status(dev, &dummy);
+>  	dev->tr_backlight_supported = !ret;
+>  
+> -	ret = toshiba_acpi_setup_backlight(dev);
+> +	ret = toshiba_acpi_setup_backlight(parent, dev);
+>  	if (ret)
+> -		goto error;
+> +		return ret;
+>  
+>  	toshiba_illumination_available(dev);
+>  	if (dev->illumination_supported) {
 
