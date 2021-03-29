@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7934CAF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8FE34CB77
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhC2IlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
+        id S235867AbhC2Irt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233341AbhC2IRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D79786197C;
-        Mon, 29 Mar 2021 08:17:11 +0000 (UTC)
+        id S231653AbhC2I3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92942614A7;
+        Mon, 29 Mar 2021 08:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005832;
-        bh=JQUZyqb78MXj8z49UGNMLLgCd8q5U5XxGdDhNop6REE=;
+        s=korg; t=1617006544;
+        bh=zAtzDfQAXaeOAB0+XE+qy9KzeC4/LjIy8j9dzfmTH9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fujx+/6oar2UiETR3n0Ziw+q9REbpXbowK53Ukpx0U2AGrlaO6Wy0idu3vwLxAjYi
-         HvBEOKI+ktrChjbkxQvh/iY7RkTPSqBV47XAB9iRWKwYm9diAO1AGjdF7RA9uqyS/Q
-         RzE7N0BlRyIj7eDNjg2GGvv27qDW9qh33H6o6XhM=
+        b=oQX8y3n7Z43JC/rGUan2EIaB2akm72Q0FjxMAyY9+qV47H6GaSnbd4r4C4q0ddna9
+         Ypwg/4A8AS68wb07PddhjIkf2baXM1Gs/Be291GyEcVH7hDyUpkaK1Y7fIJUT+PUVl
+         o89JFzxeP/xgux6KeKA5jRgGHTEi7pfbVfiduAmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Julian Braha <julianbraha@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 021/221] gpiolib: acpi: Add missing IRQF_ONESHOT
-Date:   Mon, 29 Mar 2021 09:55:52 +0200
-Message-Id: <20210329075629.895499764@linuxfoundation.org>
+Subject: [PATCH 5.11 037/254] staging: rtl8192e: fix kconfig dependency on CRYPTO
+Date:   Mon, 29 Mar 2021 09:55:53 +0200
+Message-Id: <20210329075634.368710522@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Julian Braha <julianbraha@gmail.com>
 
-[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
+[ Upstream commit 7c36194558cf49a86a53b5f60db8046c5e3013ae ]
 
-fixed the following coccicheck:
-./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+Kbuild gives the following warning:
 
-Make sure threaded IRQs without a primary handler are always request
-with IRQF_ONESHOT
+WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+  - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+
+This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and
+CRYPTO_LIB_ARC4, without depending on or selecting CRYPTO,
+despite those config options being subordinate to CRYPTO.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Link: https://lore.kernel.org/r/20210222180607.399753-1-julianbraha@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpiolib-acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8192e/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 49a1f8ce4baa..863f059bc498 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -174,7 +174,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
- 	int ret, value;
- 
- 	ret = request_threaded_irq(event->irq, NULL, event->handler,
--				   event->irqflags, "ACPI:Event", event);
-+				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
- 	if (ret) {
- 		dev_err(acpi_gpio->chip->parent,
- 			"Failed to setup interrupt handler for %d\n",
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 03fcc23516fd..6e7d84ac06f5 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+ config RTLLIB_CRYPTO_TKIP
+ 	tristate "Support for rtllib TKIP crypto"
+ 	depends on RTLLIB
++	select CRYPTO
+ 	select CRYPTO_LIB_ARC4
+ 	select CRYPTO_MICHAEL_MIC
+ 	default y
 -- 
 2.30.1
 
