@@ -2,84 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D9E34D1B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108F634D1B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhC2NrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbhC2NrC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:47:02 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08EFC061765
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:47:01 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b4so18523649lfi.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=53xSj5DfXd9H1GpbknrIL485EwLdmQCgbXSAs/QT+/o=;
-        b=yhPWMG13vhBx59H2VpJc5BK8cY4/JSTE4JcwVrJ+ZIjc4fA911utIUFjfl5tIzLq9R
-         qSfY+azU5HU3eE/ivaeU6HdLvDQGMnm2jBcupDt95pGHdfk1ZLCrY7g4kZYAEc22Pgtt
-         1UIhdAr0aERFI/nNcSGaOsQ8y2EgROOz85LpRyvAZkQZQGTlIwu8+7UdEGXUOZX2rE6g
-         pEo3efviOuF+PXy+3kLaX3SMNQtB32DCX1BFNfDRHYzmWO1YX99xPNkOylJWee+UVa6m
-         1jkomPURjQile+F4rkWZZMoYX1oPwop3LBFUwA1hOU+4kHE4AEiArUXJmVY59ROOZPvf
-         PbWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=53xSj5DfXd9H1GpbknrIL485EwLdmQCgbXSAs/QT+/o=;
-        b=Mo0XZ2QVGQZtjmP0D3cS6tvsPROWsc9HciH6TZ/ZTaOdiR9q1VeZuppTjohuKOC66U
-         1Y+2qn0/rXVqHTQEM9f04ph4bmN+IIrZTCQSfSNr0rVx9/JDM4XMZChHiOYbncYLhdpF
-         iPr8BEHDPKF2gTDCtwzTHU5djoBSZyTH7vfQQCrQTMzGgQWQiMtK1d7KMI+O+5pg75ik
-         RHWF2mzQJqAT6+n+mgy+9klHQN8rWRmHOEH6I6vjdEa2utejas/Dx36QBrP5TpIvt38b
-         aQkdx5loidoL4RrYxu6uGt5gCVq9mjchq7a3NEmomljLmiA09/I1uXRlrI3HQZQ1aaCL
-         lhyA==
-X-Gm-Message-State: AOAM533TqX4VH7YTU5CMgmxOiOjhuGjrdfA1c+iRBMIh4/u622a+1z1k
-        zxzBYM/o4Hg543ema2NhUgFb0Qeq2gbETdiJxut15A==
-X-Google-Smtp-Source: ABdhPJx6Axg9ofLpquCRIjMCOhfnJFBxvPAErT/NqyJYw09/tE2YGisLWKD/dFqP42J60embz/z2dwtQ7xqxrQLa49s=
-X-Received: by 2002:a19:548:: with SMTP id 69mr16333313lff.465.1617025620232;
- Mon, 29 Mar 2021 06:47:00 -0700 (PDT)
+        id S231756AbhC2NrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231248AbhC2Nq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:46:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA4B61554;
+        Mon, 29 Mar 2021 13:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617025616;
+        bh=c/WTy9azX0/08KD45OZAEbmjtj/yV6bJ6UiCDZa0+JY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CkTTzmLmQjpE9FiGmyxjjcHBGDyt92CxYwGWCVLHLvHcAfwAhDuXCBplbqcqEyTY+
+         WaAZQ/t2njGUMczl1F9flOs/0SBZJL6sLcL5sMXTIY8OxQ/gCpxSpND2spBzHvWO1r
+         vxk08s8FbL/c7FXwELNwbcC+su0rSvVmGYuGtnII=
+Date:   Mon, 29 Mar 2021 15:46:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 3/8] software node: Show properties and their values
+ in sysfs
+Message-ID: <YGHaTf+cpvAZ5geB@kroah.com>
+References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
+ <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
+ <YGAmB2Nwph6pArXc@kroah.com>
+ <CAHp75VfFzqpdR+6p9vQww-ujQcw3L-V_N7ezUTGhcRmvwvqMZg@mail.gmail.com>
+ <YGB+YMh1MsQao3zS@kroah.com>
+ <YGHPnkoB/wP6u6HC@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-2-brad@pensando.io>
-In-Reply-To: <20210329015938.20316-2-brad@pensando.io>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 29 Mar 2021 15:46:48 +0200
-Message-ID: <CACRpkda2XvgoLENQbh2dFVQqgm=fxF4=ZwG-T-DBmLjLWxABCA@mail.gmail.com>
-Subject: Re: [PATCH v2 01/13] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Brad Larson <brad@pensando.io>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGHPnkoB/wP6u6HC@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 3:59 AM Brad Larson <brad@pensando.io> wrote:
+On Mon, Mar 29, 2021 at 04:01:18PM +0300, Andy Shevchenko wrote:
+> On Sun, Mar 28, 2021 at 03:02:24PM +0200, Greg Kroah-Hartman wrote:
+> > On Sun, Mar 28, 2021 at 03:56:26PM +0300, Andy Shevchenko wrote:
+> > > On Sun, Mar 28, 2021 at 9:47 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
+> > > > > It's very convenient to see what properties and their values
+> > > > > are currently being assigned in the registered software nodes.
+> > > > >
+> > > > > Show properties and their values in sysfs.
+> > > 
+> > > ...
+> > > 
+> > > > > +             for (i = 0; i < prop->length / sizeof(u8); i++)
+> > > > > +                     len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
+> > > >
+> > > > No, sysfs is "one value per file", and that is not what you are showing
+> > > > here at all :(
+> > > 
+> > > It is following: it's a "one value" for property in question,
+> > > 
+> > > As we may read in [1]: "...so it is socially acceptable to express an
+> > > array of values of the same type."
+> > > 
+> > > And here is exactly the case: *values of the same type*.
+> > 
+> > So what is it going to look like exactly?
+> 
+> Basically we have two approaches (already done in the kernel!) use space or
+> comma for a separator. So:
+>  - for boolean it will be an empty string (and it's one value always)
+>  - for integers it will be, for example, '0,1,2' (w/o single quotes)
+>    for property array with values 0, 1, and 2
+>  - for plain integers or arrays out of 1 element it will be plain integer
+>  - for strings it will be, for example, '"str1","str2"' (w/o single quotes)
+>    for array of string { "str1", "str2" }
+>  - for single string or array out of 1 element, it will be '"str"' (w/o single
+>    quotes)
+> 
+> This should be a part of documentation.
 
-> This GPIO driver is for the Pensando Elba SoC which
-> provides control of four chip selects on two SPI busses.
->
-> Signed-off-by: Brad Larson <brad@pensando.io>
+And I will complain then too, these "lists of values" are not for sysfs,
+sorry.
 
-You have not addressed mine nor Andy's comments
-on v1. Go back, read and reply, and rewrite.
+> > And what tool is going to be
+> > there to parse this mess?  Who is going to to use it?
+> 
+> I guess something like hwinfo (needs a patch).
 
-Yours,
-Linus Walleij
+If nothing needs this, then why are you adding these?
+
+> The idea behind that this is following what ACPI and DT provides to the users
+> via /sys/firmware/ (however, in binary format). I can re-do to provide a
+> binary, and it will effectively make software nodes in align with the rest.
+
+binary files in sysfs are only to be used as a "pass through" from
+hardware to userspace.  That does not seem relevant here.
+
+sorry, please keep this out of sysfs for now.
+
+greg k-h
