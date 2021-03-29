@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D5034D70C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2491234D6EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhC2S1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhC2S1D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:27:03 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DFEEC061574;
-        Mon, 29 Mar 2021 11:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=TtLVGU3fdGFUnspw6rWTgvkrU7WnO/Si+O2feWCXEJ0=; b=PzuqL32U8LFDO
-        BDoLS9X6KUhf/FnGgOT84hR9gjiMXS62xNjlTlMAbCCVAzspdbC39z5WYHRgl8qF
-        eGFEU+04M0WG98v6Xhu5epUnPsANchst09f0TdMqxe/ppET33slA01s86jxWht8s
-        PHxpwEl0CoAHCyBOl0hTSWIlQM9WHA=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3EjgG2JgN_FpAA--.35355S2;
-        Tue, 30 Mar 2021 02:26:40 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:21:44 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 0/9] riscv: improve self-protection
-Message-ID: <20210330022144.150edc6e@xhacker>
+        id S231615AbhC2SWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:22:15 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:53502 "EHLO mengyan1223.wang"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231562AbhC2SWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:22:07 -0400
+Received: from [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e] (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id 5A69D65B2D;
+        Mon, 29 Mar 2021 14:21:54 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1617042124;
+        bh=YHCTLOQji1TU6PObSe0lzPj8T+Fg3PTAYM1EeyxrTnQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=kScrJxKtrzkjmZaqBTvC/q0aDm55v4zy0NZzfmG1WADUs+/bOimqcylR6UIgZT6SS
+         EanGcnOGHOVoE/bcwylAs+rVAUNfdVW1cYCIGQ9vtGj71+VktU83WHF25EicmM1e8G
+         7L9YszFJY7ltQ3BJrox9JozuLhrRzg1u5esLN5q6fKWbE57ClR9jwhbZ0eBEVrjHCh
+         2/AA5SlkSqjTx1VMFYdYN2hNc75l1rAfwtNY8/9t6xbL3LkpcMgcHv3Di4RLnf6DpO
+         eyHR5K/btD0GZXcMaMzxGvaNScXHXcmTQWNfdUhTOUI4JJXSxSoHLIb5W8Q2ljbuI0
+         w1zbYPYaij3uw==
+Message-ID: <bf9e05d4a6ece3e8bf1f732b011d3e54bbf8000e.camel@mengyan1223.wang>
+Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
+From:   Xi Ruoyao <xry111@mengyan1223.wang>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Dan =?ISO-8859-1?Q?Hor=E1k?= <dan@danny.cz>,
+        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org
+Date:   Tue, 30 Mar 2021 02:21:48 +0800
+In-Reply-To: <9a11c873-a362-b5d1-6d9c-e937034e267d@gmail.com>
+References: <20210329175348.26859-1-xry111@mengyan1223.wang>
+         <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
+         <be9042b9294bda450659d3cd418c5e8759d57319.camel@mengyan1223.wang>
+         <9a11c873-a362-b5d1-6d9c-e937034e267d@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDX3EjgG2JgN_FpAA--.35355S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8Xr4Dpr
-        s0kry5ZrWrCrn3CF1ayrykur1fXwsYg3yagrsrC34rJw4avFWUZwn5Xwn3tr98XFy0gF9a
-        kF45u34Ykr18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F
-        4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU84KZJ
-        UUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On 2021-03-29 20:10 +0200, Christian König wrote:
+> You need to identify the root cause of this, most likely start or last 
+> are not a multiple of AMDGPU_GPU_PAGES_IN_CPU_PAGE.
 
-patch1 is a trivial improvement patch to move some functions to .init
-section
+I printk'ed the value of start & last, they are all a multiple of 4
+(AMDGPU_GPU_PAGES_IN_CPU_PAGE).
 
-Then following patches improve self-protection by:
+However... `num_entries = last - start + 1` so it became some irrational
+thing...  Either this line is wrong, or someone called
+amdgpu_vm_bo_update_mapping with [start, last) instead of [start, last], which
+is unexpected.
 
-Marking some variables __ro_after_init
-Constifing some variables
-Enabling ARCH_HAS_STRICT_MODULE_RWX
-
-Jisheng Zhang (9):
-  riscv: add __init section marker to some functions
-  riscv: Mark some global variables __ro_after_init
-  riscv: Constify sys_call_table
-  riscv: Constify sbi_ipi_ops
-  riscv: kprobes: Implement alloc_insn_page()
-  riscv: bpf: Move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
-  riscv: bpf: Avoid breaking W^X
-  riscv: module: Create module allocations without exec permissions
-  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
-
- arch/riscv/Kconfig                 |  1 +
- arch/riscv/include/asm/smp.h       |  4 ++--
- arch/riscv/include/asm/syscall.h   |  2 +-
- arch/riscv/kernel/module.c         |  2 +-
- arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
- arch/riscv/kernel/sbi.c            | 10 +++++-----
- arch/riscv/kernel/smp.c            |  6 +++---
- arch/riscv/kernel/syscall_table.c  |  2 +-
- arch/riscv/kernel/time.c           |  2 +-
- arch/riscv/kernel/traps.c          |  2 +-
- arch/riscv/kernel/vdso.c           |  4 ++--
- arch/riscv/mm/init.c               | 12 ++++++------
- arch/riscv/mm/kasan_init.c         |  6 +++---
- arch/riscv/mm/ptdump.c             |  2 +-
- arch/riscv/net/bpf_jit_comp64.c    | 13 -------------
- arch/riscv/net/bpf_jit_core.c      | 14 ++++++++++++++
- 16 files changed, 50 insertions(+), 40 deletions(-)
+> > > > BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+> > > > Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
+> > > > Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> > > > Reported-by: Dan Horák <dan@danny.cz>
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> > > > ---
+> > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+> > > >    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > index ad91c0c3c423..cee0cc9c8085 100644
+> > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct
+> > > > amdgpu_device *adev,
+> > > >                  }
+> > > >                  start = tmp;
+> > > >    
+> > > > -       } while (unlikely(start != last + 1));
+> > > > +       } while (unlikely(start < last + 1));
+> > > >    
+> > > >          r = vm->update_funcs->commit(&params, fence);
+> > > >    
+> > > > 
+> > > > base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+> 
 
 -- 
-2.31.0
-
+Xi Ruoyao <xry111@mengyan1223.wang>
+School of Aerospace Science and Technology, Xidian University
 
