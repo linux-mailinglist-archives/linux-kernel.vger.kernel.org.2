@@ -2,58 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC8534D8B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DBC34D8B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhC2T6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
+        id S231939AbhC2T6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:58:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231905AbhC2T63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D93B61554;
-        Mon, 29 Mar 2021 19:58:28 +0000 (UTC)
+        id S231899AbhC2T6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 15:58:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1BF6191F;
+        Mon, 29 Mar 2021 19:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617047908;
-        bh=33BYQBr/4s8xc5+GccSIv0XFr7Cs0xd2pSG0T9cY22E=;
+        s=k20201202; t=1617047911;
+        bh=jbAmDArShiL4oonsNLYnBl1mk7GP/JtKtsRSpxITWNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K5fZj4fa3wTwxBVGVv7q1JKBJm1UWhEvTvaF+2bYcnBgMDkShzw2MgG8NsOTrRLuP
-         vQPGU4D+FLGTn9YK4trNp/AD91mkKtF9M8zS4Wc00OkShzwkYi0KjMKAhiz0ePEobD
-         IAzie5hN9XALsPgN+KSuBGzNxsZpxwd/8KZ2/pWdf+NnRWqdRCDA5AZ8HcloD8nm7j
-         ljEB4eKJINcXF7b/jF0VLQbCpGbEH6icy/BBzwtnUt0LL7yolsVx9UUrIps7KUpURM
-         UwDlhs5hpPeSZBXp6e47zMhrZtL/o9XEhpw9FeiMIEc5tHGj8LrJR1ajAmOpL5+4WG
-         N4BhJo1/+Bptw==
+        b=Gamj3rVEAhScmz0V7u0h9F+RFepBXlENhuLJw0GXsHU9Ld8uEk+1QVJVAXvZMCFCM
+         FTvNosPGvraNnfIFQn+tNnMPv1YmjtRCFDG79GlpE4zZeaOs5AlYQ1MQlIb5DjJ4i/
+         qLh2/KfGEGLkMuPHfYZClMNNakgJJaItOf8ApODZL33YYkNnDwUoWtzn2ytIZNtmNS
+         yScgAvEfg1+8HQiSpS1iwfCxHT1+F4xnml5EuzuAX4n3gUGptnz9Xul7K8/cxh1AoC
+         19xuTTdoWeGNR8BN6gdLEktw3IiKkuyJ3Xeqo+cEJTOxwKx609cRqkdhvWH5CtH9jG
+         CfCh635CqgPPA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+To:     Scott Branden <sbranden@broadcom.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Takashi Iwai <tiwai@suse.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Argus Lin <argus.lin@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        devicetree@vger.kernel.org,
-        Chipeng Chang <chipeng.chang@mediatek.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-mediatek@lists.infradead.org,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Shuming Fan <shumingf@realtek.com>,
-        "Shane.Chien" <shane.chien@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        wsd_upstream@mediatek.com, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        alsa-devel@alsa-project.org, Dan Murphy <dmurphy@ti.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jack Yu <jack.yu@realtek.com>
-Subject: Re: [PATCH V2 0/2] Add mediatek MT6359 ASoC accdet jack driver
-Date:   Mon, 29 Mar 2021 20:58:08 +0100
-Message-Id: <161704724764.10039.3415916166435567719.b4-ty@kernel.org>
+        Jaroslav Kysela <perex@perex.cz>, Ray Jui <rjui@broadcom.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        kbuild-all@lists.01.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH] ASoC: cygnus: fix for_each_child.cocci warnings
+Date:   Mon, 29 Mar 2021 20:58:09 +0100
+Message-Id: <161704724764.10039.17032104494798378390.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1615383186-18500-1-git-send-email-argus.lin@mediatek.com>
-References: <1615383186-18500-1-git-send-email-argus.lin@mediatek.com>
+In-Reply-To: <alpine.DEB.2.22.394.2103281651320.2854@hadrien>
+References: <alpine.DEB.2.22.394.2103281651320.2854@hadrien>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -61,20 +46,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 21:33:04 +0800, Argus Lin wrote:
-> All of 3-pole and 4-pole jack are supported.
+On Sun, 28 Mar 2021 16:54:45 +0200 (CEST), Julia Lawall wrote:
+> Function "for_each_available_child_of_node" should have of_node_put()
+> before return around line 1352.
 > 
-> change since v2:
->   - fixs missing blank at Kconfig.
->   - fixs comment format and spelling mistake.
->   - changes private structure mt6359_accdet to mt6359-accdet.h and uses this
->     data as function parameter.
->   - removes compatible string declaration.
->   - uses regmap_read_poll_timeout as polling timer.
->   - simplify jack detection and key detection report function.
->   - adds mt6359_accdet_enable_jack_detect for sound card jack initialization.
-> 
-> [...]
+> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
 Applied to
 
@@ -82,10 +58,8 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: mediatek: mt6359: add ASoC mt6359 ASoC accdet jack document
-      commit: e61c589587c772c5f672b22683c3e0b38be20702
-[2/2] ASoC: mediatek: mt6359: add MT6359 accdet jack driver
-      commit: eef07b9e0925e16457ab9444b56a7f93b541aee3
+[1/1] ASoC: cygnus: fix for_each_child.cocci warnings
+      commit: aa320c7cd45647b75af2233430d36a8d154703d4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
