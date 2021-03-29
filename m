@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC71134C4B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B32934C4B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhC2HR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhC2HRp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:17:45 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E044EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:17:44 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id f17so3960459plr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:17:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=qdeB1DebFOmTbF+ti3VSGS7v5ONmS4cJGUgOsP/gdjA=;
-        b=EnbPpclGbqr4Hc9lGUFEyziTKgJz2w7fvZXNbwcF/Pp4gt3Hcrks5FKB9iMpS4ZlxI
-         howTT/y1k7mwB488x4Rv/IJ2hr5bnPQHpi24wFiq53aVzclEjW3l9ZXLG0DtkCMtHbbV
-         4tL9WSfR9wgZ1EgH8Ja8DBZIqDrQLEM7NJQxs/0IPKPKTNrmZSQNwrBp9lpQtPAVG/nK
-         4XYmJOmBgpoUnsIXvmS4X3EJA6BoHuosr3dDrkeVRUMvwS9TpCPpA21eX0juErFIDvpm
-         U3E20xaYV2dQP8iPzF9j8R7UFIX2aRndPBhCEjG/H3Ul59CB+Bty9sO+mAR5xH6rp/JE
-         BEqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=qdeB1DebFOmTbF+ti3VSGS7v5ONmS4cJGUgOsP/gdjA=;
-        b=WQGWk2+JEuHtqr34W0N8Srx1snPndX/FwLf6qQZE/3ZlFkIqAW2VwCgwhCin4x7BdK
-         Lxn9UAM4S5cUl/d9vHsjrlmY1E0aD29+7I5p4tUDw3dNNS5ww7HVCZiSDBV5YOSrOvn4
-         C2vz4iaIfKVgL+tJdCgEBu9QcPOUDmxzP1+D6rB0tbzVT5K0ugeSdfz/iyxyq89DPovw
-         f4xdxpVINLUlRATVsCGrxmmH90H7uV0TABjDEGecH2zn+ZrQnL0byfj9YJz+/rOH3OIi
-         YEESSgUxkJ8KaHTvLAmBuCu2bH9AOKg+TVnfZ6Zq2+kDXtbIJFoYL4e2m6erer+TnXVB
-         eg1w==
-X-Gm-Message-State: AOAM531erfOjBowdxAtnc5aEH/tUEOpYi2uY4zAWJawKVwV2qkmu0m73
-        NXbzNi0yLJSooufF6FIdH6E=
-X-Google-Smtp-Source: ABdhPJx/W/HjhM/a4N9svXc2YgAccr1N6UNtTUoDxhEpDeSRKnk2nDGczja/ipyxeEehv5Y5Svxmqg==
-X-Received: by 2002:a17:903:2309:b029:e7:1063:e6aa with SMTP id d9-20020a1709032309b02900e71063e6aamr26422893plh.52.1617002264382;
-        Mon, 29 Mar 2021 00:17:44 -0700 (PDT)
-Received: from vostro (173-228-88-28.dsl.dynamic.fusionbroadband.com. [173.228.88.28])
-        by smtp.gmail.com with ESMTPSA id e3sm4092727pfm.43.2021.03.29.00.17.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 00:17:43 -0700 (PDT)
-Sender: Nikitas Angelinas <nikitasangelinas@gmail.com>
-Date:   Mon, 29 Mar 2021 00:15:16 -0700
-From:   Nikitas Angelinas <nikitas.angelinas@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nikitas Angelinas <nikitas.angelinas@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] locking/mutex: initialize osq lock in __MUTEX_INITIALIZER()
-Message-ID: <YGF+hDytO8r9Iv2o@vostro>
+        id S230359AbhC2HQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:16:24 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45336 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230466AbhC2HQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:16:06 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx38uufmFgeuMBAA--.5162S2;
+        Mon, 29 Mar 2021 15:15:59 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Loongson64: enable CONFIG_USB_SERIAL_PL2303
+Date:   Mon, 29 Mar 2021 15:15:58 +0800
+Message-Id: <20210329071558.3492-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx38uufmFgeuMBAA--.5162S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWUGFW3CFykuF1fKFWrGrg_yoW8Ww43pF
+        93XFW8GF48Gr18CFWv9F4kGr40kFZ8Kr97Ca1jyr15tFn3Xw4Yvw1Yyw1xGws2qr95J3W8
+        ua4kK3yxJFW7C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcRwZUUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since __MUTEX_INITIALIZER() is used on memory that is initialized to 0
-anyway this change should not have an effect, but it seems better to
-initialize osq explicitly for completeness, as done in other macros and
-functions that initialize mutex and rwsem.
+When using the Loongson-3A4000 machine for serial port debugging,
+there is no /dev/ttyUSB* output, which makes the serial port unavailable,
+For convenience, we open this configuration.
 
-Signed-off-by: Nikitas Angelinas <nikitas.angelinas@gmail.com>
+zhangqing@loongson-pc:~$ cat /sys/firmware/lefi/boardinfo
+Board Info
+Manufacturer		: THTF
+Board Name		: THTF-LS3A4000-7A1000-ML4A
+Family			: LOONGSON3
+
+BIOS Info
+Vendor			: ZD tech
+Version			: ZD tech-V2.1.1
+ROM Size		: 4 KB
+Release Date		: 2020-06-29
+
+zhangqing@loongson-pc:~$ lsusb
+Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 005 Device 003: ID 093a:2510 Pixart Imaging, Inc. Optical Mouse
+Bus 005 Device 002: ID 0c45:760b Microdia USB Keyboard
+Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 003 Device 003: ID 067b:2303 Prolific Technology, Inc. PL2303 Serial Port
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---
- include/linux/mutex.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/mips/configs/loongson3_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 515cff7..bff47f8 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -129,10 +129,18 @@ do {									\
- # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
- #endif
- 
-+#ifdef CONFIG_MUTEX_SPIN_ON_OWNER
-+# define __OSQ_MUTEX_INITIALIZER(lockname)			\
-+		, .osq = OSQ_LOCK_UNLOCKED
-+#else
-+# define __OSQ_MUTEX_INITIALIZER(lockname)
-+#endif
-+
- #define __MUTEX_INITIALIZER(lockname) \
- 		{ .owner = ATOMIC_LONG_INIT(0) \
- 		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
- 		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
-+		__OSQ_MUTEX_INITIALIZER(lockname) \
- 		__DEBUG_MUTEX_INITIALIZER(lockname) \
- 		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
- 
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 77f6a3551f46..a18609cf0e5e 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -320,6 +320,7 @@ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_UHCI_HCD=m
+ CONFIG_USB_STORAGE=m
+ CONFIG_USB_SERIAL=m
++CONFIG_USB_SERIAL_PL2303=m
+ CONFIG_USB_SERIAL_OPTION=m
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_CMOS=y
 -- 
-2.10.0
+2.31.0
 
