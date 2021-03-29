@@ -2,77 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458B634D186
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3C734D188
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhC2Njj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhC2NjL (ORCPT
+        id S231549AbhC2Njl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:39:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36462 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231873AbhC2NjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:39:11 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B6EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:39:11 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso5182084pjh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PTI+L6ax+/N+yMG1MXdvXBKRXCBtboFyHdTE1wtJx+k=;
-        b=pWIp11nHFW7KdnNAiA9K1BL1Od6BgMAM7GRbTXqtMPyZ7gtqHQXCOkLdSG3wcT5UJE
-         aj2G6x+OC5ELOVlMUvospOx5QDhace1cy5WW2FUoRbaZaR4/HCepnU+gIuH1c2TuEhVL
-         zFN+UEnXJikrfluMdBrX6+RTs8xYNzSJNUR7fTnFypB8a892d27IAYuTudTMWxB8dteU
-         mkABKWFlCP8rzp1OI1TAimg+bL9zTuKU9vcLC31IYPzWTZGvXkmeacqdy1Qh7Qt/MAlL
-         Y7GrMMkjCj8hIP9UtDRnsCcyXjdQ9ObiX0sZEq2PlNof1lR62WjpGp1rOGY3PC5EFnXn
-         AlSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PTI+L6ax+/N+yMG1MXdvXBKRXCBtboFyHdTE1wtJx+k=;
-        b=sTfFCW1byC6LrNCrDuJERfuML/3jDwAVHWNStGZvxet66JnCv5dtM7jsagt/qfCeMb
-         weD5un0COVcVGI7IMxLy9Bvh0Dwt5fA09WTM3GMuP5idzxycd/WWkiL35Mvbpimam9Yr
-         IzThXZGkKFzsfLAokoj3JQc4g0dciNbHw0N+MGo2L3Jf/3iqaF6vtSTLy6ftZlXv6o+2
-         fKSlFvqujcz38lSOTQe2EIgr14A4NR+aYkgC579g9K6hTBQ67YreAVy1+SnIUyckzpAq
-         /s6zWSm4rEnura/clb96MqR4+0kyu8IV/8EgnjnzC02aJIXg/x2H6pG8KHEMKAUJtZYk
-         7GUQ==
-X-Gm-Message-State: AOAM531oKNsjnKOZ09eOc+ceiiqrFerQQHf+SOiEgo8J6FyAr8U6EZ8b
-        mDJSpsmGg+nI3bZUUWSQZEJz+NOskKcYiA==
-X-Google-Smtp-Source: ABdhPJzuj3M/DsqXiV9zd8IxnhRo608IcZgTiobsDDdPzYZif5V8Z1u24W8jhK9cloHgqxbQJPdjAQ==
-X-Received: by 2002:a17:90a:9f43:: with SMTP id q3mr26582711pjv.50.1617025150517;
-        Mon, 29 Mar 2021 06:39:10 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 8sm15739525pjj.53.2021.03.29.06.39.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 06:39:10 -0700 (PDT)
-Subject: Re: [PATCH -next 1/2] mtip32xx: use DEFINE_SPINLOCK() for spinlock
-To:     Shixin Liu <liushixin2@huawei.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210329095349.4170870-1-liushixin2@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <11e068c7-0022-8c7e-23d9-c1bd8ee90896@kernel.dk>
-Date:   Mon, 29 Mar 2021 07:39:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 29 Mar 2021 09:39:24 -0400
+Date:   Mon, 29 Mar 2021 13:39:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617025163;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLB2BNsCt+BijSiuIwiFC9FjqsqOmLqZvmmRmrZ2cs8=;
+        b=CT5VgYyoO8YeSAEzGG1nMMsoA6NhiTcUCpGgSPvyEQ9BCo07w2BfM/puPOOXcnUIAEgvcN
+        r4gTOC3n0bEooT6CWKFFIDE7CZBJrjDeOfEpzkke92GL9l85nvro7V86qtPCP1tCT/7wff
+        gvVUZ2akGoIshvG+FQxu/JJHAfBWUxcdfsFVgynz6nni0ttjMaoRn1cu5zNs1ObsslpNYd
+        OYop4LiACMFeKythEogO6pWQ1lHXNR77jREepMu/ABaY1d/CylS0wWTivX+bxBqnO5c84D
+        ItsrQD8O+xLk2vxv1/BMe6fBUp2DsOarAVB+pqR35XEmzkym37Wqk1WZ3xTFvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617025163;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLB2BNsCt+BijSiuIwiFC9FjqsqOmLqZvmmRmrZ2cs8=;
+        b=uEl9uMKOwvFCCDir3eCiZpv4H5Zf+wet6fvPp2xLWR+dq9BCE7mFhTC2nSIwKiFreUXkwz
+        FGvDgWJaxLnqrMAw==
+From:   "tip-bot2 for Bartosz Golaszewski" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq/irq_sim: Shrink devm_irq_domain_create_sim()
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210301142659.8971-1-brgl@bgdev.pl>
+References: <20210301142659.8971-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210329095349.4170870-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <161702516235.29796.2614144333096477246.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 3:53 AM, Shixin Liu wrote:
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
+The following commit has been merged into the irq/core branch of tip:
 
-Applied both, thanks.
+Commit-ID:     e6d46eded43dacf6370a7ae70f927ef4692cfcab
+Gitweb:        https://git.kernel.org/tip/e6d46eded43dacf6370a7ae70f927ef4692cfcab
+Author:        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+AuthorDate:    Mon, 01 Mar 2021 15:26:59 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 29 Mar 2021 15:36:00 +02:00
 
--- 
-Jens Axboe
+genirq/irq_sim: Shrink devm_irq_domain_create_sim()
 
+The custom devres structure manages only a single pointer which can
+can be achieved by using devm_add_action_or_reset() as well which
+makes the code simpler.
+
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210301142659.8971-1-brgl@bgdev.pl
+
+---
+ kernel/irq/irq_sim.c | 31 ++++++++++++-------------------
+ 1 file changed, 12 insertions(+), 19 deletions(-)
+
+diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+index 4800660..ee40a84 100644
+--- a/kernel/irq/irq_sim.c
++++ b/kernel/irq/irq_sim.c
+@@ -24,10 +24,6 @@ struct irq_sim_irq_ctx {
+ 	struct irq_sim_work_ctx	*work_ctx;
+ };
+ 
+-struct irq_sim_devres {
+-	struct irq_domain	*domain;
+-};
+-
+ static void irq_sim_irqmask(struct irq_data *data)
+ {
+ 	struct irq_sim_irq_ctx *irq_ctx = irq_data_get_irq_chip_data(data);
+@@ -216,11 +212,11 @@ void irq_domain_remove_sim(struct irq_domain *domain)
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_remove_sim);
+ 
+-static void devm_irq_domain_release_sim(struct device *dev, void *res)
++static void devm_irq_domain_remove_sim(void *data)
+ {
+-	struct irq_sim_devres *this = res;
++	struct irq_domain *domain = data;
+ 
+-	irq_domain_remove_sim(this->domain);
++	irq_domain_remove_sim(domain);
+ }
+ 
+ /**
+@@ -238,20 +234,17 @@ struct irq_domain *devm_irq_domain_create_sim(struct device *dev,
+ 					      struct fwnode_handle *fwnode,
+ 					      unsigned int num_irqs)
+ {
+-	struct irq_sim_devres *dr;
++	struct irq_domain *domain;
++	int ret;
+ 
+-	dr = devres_alloc(devm_irq_domain_release_sim,
+-			  sizeof(*dr), GFP_KERNEL);
+-	if (!dr)
+-		return ERR_PTR(-ENOMEM);
++	domain = irq_domain_create_sim(fwnode, num_irqs);
++	if (IS_ERR(domain))
++		return domain;
+ 
+-	dr->domain = irq_domain_create_sim(fwnode, num_irqs);
+-	if (IS_ERR(dr->domain)) {
+-		devres_free(dr);
+-		return dr->domain;
+-	}
++	ret = devm_add_action_or_reset(dev, devm_irq_domain_remove_sim, domain);
++	if (!ret)
++		return ERR_PTR(ret);
+ 
+-	devres_add(dev, dr);
+-	return dr->domain;
++	return domain;
+ }
+ EXPORT_SYMBOL_GPL(devm_irq_domain_create_sim);
