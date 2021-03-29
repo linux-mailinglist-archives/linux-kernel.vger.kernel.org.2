@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1243234CC17
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D55E34CB06
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhC2Iza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
+        id S235274AbhC2Imh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234514AbhC2IgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:36:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF0261582;
-        Mon, 29 Mar 2021 08:35:49 +0000 (UTC)
+        id S233176AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD810619D1;
+        Mon, 29 Mar 2021 08:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006950;
-        bh=Y0VvlWboovBmsNia49sfU9QoG5zcTaaChcyJbULoRb8=;
+        s=korg; t=1617006263;
+        bh=6GlC2+1Kik4I1fN3VDmxXUiskJCS6rKSVODO2sGCz2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3DuB++krWqaaUVCTDC8tP2AQlCLYwIhYMyFWDJP4DMVVYc9ZEUcha5RRbAogJFkn
-         +jGh3l8SsjiAjkzApCJ/QL1Bkb2i9HYskaGCoWvuYEZ2G+/5T0qQMJuszEHMLNGjFJ
-         sqjpfYeAg6YMnk10S+UGwe39OsKVtojP0qON7erc=
+        b=llVyUlwP7y8hV84mIi+qgLazcsQx5YLQoRP2GdTcvOFtFCfGr5Y17Stgo2oYoaZYy
+         SUvRbLsJGnCIUfIlxVApXUvyfa14v3YH68b+NWrQe1XF491npMgLhencrCyj8hfRxv
+         TIpJa3E20c+n4qJGQaI9wVXuS8qEn7b9d2RcG6OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
-        Yen-lin Lai <yenlinlai@chromium.org>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 157/254] mac80211: Allow HE operation to be longer than expected.
+Subject: [PATCH 5.10 142/221] net/sched: cls_flower: fix only mask bit check in the validate_ct_state
 Date:   Mon, 29 Mar 2021 09:57:53 +0200
-Message-Id: <20210329075638.360711184@linuxfoundation.org>
+Message-Id: <20210329075633.914203344@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Norris <briannorris@chromium.org>
+From: wenxu <wenxu@ucloud.cn>
 
-[ Upstream commit 0f7e90faddeef53a3568f449a0c3992d77510b66 ]
+[ Upstream commit afa536d8405a9ca36e45ba035554afbb8da27b82 ]
 
-We observed some Cisco APs sending the following HE Operation IE in
-associate response:
+The ct_state validate should not only check the mask bit and also
+check mask_bit & key_bit..
+For the +new+est case example, The 'new' and 'est' bits should be
+set in both state_mask and state flags. Or the -new-est case also
+will be reject by kernel.
+When Openvswitch with two flows
+ct_state=+trk+new,action=commit,forward
+ct_state=+trk+est,action=forward
 
-  ff 0a 24 f4 3f 00 01 fc ff 00 00 00
+A packet go through the kernel  and the contrack state is invalid,
+The ct_state will be +trk-inv. Upcall to the ovs-vswitchd, the
+finally dp action will be drop with -new-est+trk.
 
-Its HE operation parameter is 0x003ff4, so the expected total length is
-7 which does not match the actual length = 10. This causes association
-failing with "HE AP is missing HE Capability/operation."
-
-According to P802.11ax_D4 Table9-94, HE operation is extensible, and
-according to 802.11-2016 10.27.8, STA should discard the part beyond
-the maximum length and parse the truncated element.
-
-Allow HE operation element to be longer than expected to handle this
-case and future extensions.
-
-Fixes: e4d005b80dee ("mac80211: refactor extended element parsing")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Yen-lin Lai <yenlinlai@chromium.org>
-Link: https://lore.kernel.org/r/20210223051926.2653301-1-yenlinlai@chromium.org
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 1bcc51ac0731 ("net/sched: cls_flower: Reject invalid ct_state flags rules")
+Fixes: 3aed8b63336c ("net/sched: cls_flower: validate ct_state for invalid and reply flags")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mlme.c | 2 +-
- net/mac80211/util.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/sched/cls_flower.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index 0e4d950cf907..9db648a91a4f 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -5071,7 +5071,7 @@ static int ieee80211_prep_channel(struct ieee80211_sub_if_data *sdata,
- 		he_oper_ie = cfg80211_find_ext_ie(WLAN_EID_EXT_HE_OPERATION,
- 						  ies->data, ies->len);
- 		if (he_oper_ie &&
--		    he_oper_ie[1] == ieee80211_he_oper_size(&he_oper_ie[3]))
-+		    he_oper_ie[1] >= ieee80211_he_oper_size(&he_oper_ie[3]))
- 			he_oper = (void *)(he_oper_ie + 3);
- 		else
- 			he_oper = NULL;
-diff --git a/net/mac80211/util.c b/net/mac80211/util.c
-index 8d3ae6b2f95f..f4507a708965 100644
---- a/net/mac80211/util.c
-+++ b/net/mac80211/util.c
-@@ -968,7 +968,7 @@ static void ieee80211_parse_extension_element(u32 *crc,
- 		break;
- 	case WLAN_EID_EXT_HE_OPERATION:
- 		if (len >= sizeof(*elems->he_operation) &&
--		    len == ieee80211_he_oper_size(data) - 1) {
-+		    len >= ieee80211_he_oper_size(data) - 1) {
- 			if (crc)
- 				*crc = crc32_be(*crc, (void *)elem,
- 						elem->datalen + 2);
+diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+index 46c1b3e9f66a..14316ba9b3b3 100644
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -1432,7 +1432,7 @@ static int fl_set_key_ct(struct nlattr **tb,
+ 			       &mask->ct_state, TCA_FLOWER_KEY_CT_STATE_MASK,
+ 			       sizeof(key->ct_state));
+ 
+-		err = fl_validate_ct_state(mask->ct_state,
++		err = fl_validate_ct_state(key->ct_state & mask->ct_state,
+ 					   tb[TCA_FLOWER_KEY_CT_STATE_MASK],
+ 					   extack);
+ 		if (err)
 -- 
 2.30.1
 
