@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCE434CCBC
+	by mail.lfdr.de (Postfix) with ESMTP id B183E34CCBD
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbhC2JHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:07:21 -0400
-Received: from ozlabs.org ([203.11.71.1]:48089 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237499AbhC2JEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:04:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S236306AbhC2JHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:07:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43912 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233922AbhC2JFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:05:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617008700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oRHZbctdvU5CldfExqqxh/W48hH/Hyg8pzA6KkszOzU=;
+        b=Iy+e7Mvlk2WidXFs4eeK3wC0uOSx/8v73BkggVn073lX8b36xYTZNlWjP9LRY6b4vb/+2B
+        iEnGTSwJIdcuSA2w/XOu4kW5SL5TAnVzme6rYqr/gAtUjPFmbbiTzDJM7XWSy7k46SwZTZ
+        5BRTHM6tQi1/LgzenvUGI29Dw+FZ0M8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-QNjbounNOPK8-daY-yLZAw-1; Mon, 29 Mar 2021 05:04:55 -0400
+X-MC-Unique: QNjbounNOPK8-daY-yLZAw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F868B6F3rz9rx6;
-        Mon, 29 Mar 2021 20:04:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617008651;
-        bh=3qlcorbKE/WPrfj99cXC8R6wsLqCHbeOJ6lOtj+arhw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mE8j05+qrhwDTkLAvsxl4voEy4Eryd2e46TrnjQFERVVQyfKDAx8UclxNIOWCQXQ/
-         1n5T+44CiGGMeRKLtRhE+Qs20nyFmzPsBuUffnrPkFeYWSlk5TNOUqUR8bv+GZP9T4
-         nhUUob1PJpOR9QysnGFGynmmWHDBFyaweiXFbFPR9Fn7hUmft/HrCUFMhkG+P/8gli
-         kHA1rxm8eYEJIDyBfgT9Ju5DANT6AexzJx42olk4vhWwPNHz3o0bDc4PIBG1o4zsQ1
-         sHMy4/Z2rf+Lq8pybMtUFiYUrQFEA40pQBuN0Sa2Bh13Ktjh96dpwDnFAZP54uJ9qq
-         E9YBNdR1FLCwQ==
-Date:   Mon, 29 Mar 2021 20:04:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grant Likely <grant.likely@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of Linus' tree
-Message-ID: <20210329200348.24a9a8be@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD3D28189C8;
+        Mon, 29 Mar 2021 09:04:53 +0000 (UTC)
+Received: from [10.36.114.205] (ovpn-114-205.ams2.redhat.com [10.36.114.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 751F960864;
+        Mon, 29 Mar 2021 09:04:48 +0000 (UTC)
+Subject: Re: [PATCH] virtio-balloon: fix a typo in comment of
+ virtballoon_migratepage()
+To:     Liu Xiang <liu.xiang@zlingsmart.com>, mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
+        liuxiang1999@gmail.com
+References: <20210327031710.16151-1-liu.xiang@zlingsmart.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <57a2d4ed-88d7-332b-6c3e-2f39b8902ace@redhat.com>
+Date:   Mon, 29 Mar 2021 11:04:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//vAhXD8SJIwHkVn8dXqsR7c";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210327031710.16151-1-liu.xiang@zlingsmart.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//vAhXD8SJIwHkVn8dXqsR7c
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 27.03.21 04:17, Liu Xiang wrote:
+> Typo: compation --> compaction
+> 
+> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+> ---
+>   drivers/virtio/virtio_balloon.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 7da25b87f..c25665802 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -734,7 +734,7 @@ static void report_free_page_func(struct work_struct *work)
+>   #ifdef CONFIG_BALLOON_COMPACTION
+>   /*
+>    * virtballoon_migratepage - perform the balloon page migration on behalf of
+> - *			     a compation thread.     (called under page lock)
+> + *			     a compaction thread.     (called under page lock)
+>    * @vb_dev_info: the balloon device
+>    * @newpage: page that will replace the isolated page after migration finishes.
+>    * @page   : the isolated (old) page that is about to be migrated to newpage.
+> 
 
-Hi all,
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-After merging Linus' tree, today's linux-next build (htmldocs) produced
-these warnings:
+-- 
+Thanks,
 
-include/linux/of.h:1211: warning: Function parameter or member 'output' not=
- described in 'of_property_read_string_index'
-include/linux/of.h:1211: warning: Excess function parameter 'out_string' de=
-scription in 'of_property_read_string_index'
+David / dhildenb
 
-Introduced by commit
-
-  a87fa1d81a9f ("of: Fix overflow bug in string property parsing functions")
-
-include/linux/of.h:1480: warning: cannot understand function prototype: 'en=
-um of_overlay_notify_action '
-
-Introduced by commit
-
-  39a842e22c1b ("of/overlay: add of overlay notifications")
-
-I assume that these warnings have turned up now due to better(?) tooling.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//vAhXD8SJIwHkVn8dXqsR7c
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhmAoACgkQAVBC80lX
-0GzcmggAgaAHsihegR6B/BLamV8sUI1bQFHJ4idRs3WGWmkkxWVUW1NfRbfk0U2U
-JkQ+YBWFRIkeLbr/j6J+Kt2onaYLRBZIW7jBSqt8Of9LOnDqqVvgVN9Pk3/aPsp3
-WtxziOeUpMaDkHGoEidtD+TeNsIYFLD05imzm3fo66VnSs7p/xjcyvOxTGPW3nVb
-raC0REvIN6dC7vD7s+w3tFS/X6O/cn9Zsj7jn1g6caIk7AXC/kvrgpTbYF61bWyU
-zYJys4LQuUnKvLyr4LdmvjzCuNy590DZyghEYxtk0/npSVb5uTviwLZvBvuF/Aji
-srcogS3AdUag44WTNrCQKshl0Jv3Ew==
-=NvnD
------END PGP SIGNATURE-----
-
---Sig_//vAhXD8SJIwHkVn8dXqsR7c--
