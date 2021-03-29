@@ -2,121 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FEF34D965
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6697334D96D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhC2VDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:03:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:48312 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhC2VDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:03:42 -0400
-IronPort-SDR: gD/H4/T46Y1fbY+dg76Jv1OfyjmkZOoLL5WNAx9x7CtW77yXQ8KgFWEXxUVVDW/D9kuCm4JI3u
- wFFsfnpG+rRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="252970997"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="252970997"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 14:03:42 -0700
-IronPort-SDR: lzTsoGTpeGUNutDxGIcoQyA2JBxCXayDDEM4oMNIBef2LKg/nMeuOImLRswPvXJXSnTW2FnP1v
- JsYRselswgBg==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="411273851"
-Received: from jmwolcot-mobl.amr.corp.intel.com (HELO [10.209.158.84]) ([10.209.158.84])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 14:03:41 -0700
-Subject: Re: I915 CI-run with kfence enabled, issues found
-To:     Marco Elver <elver@google.com>
-Cc:     "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <d60bba0e6f354cbdbd0ae16314edeb9a@intel.com>
- <66f453a79f2541d4b05bcd933204f1c9@intel.com>
- <YGIDBAboELGgMgXy@elver.google.com>
- <796ff05e-c137-cbd4-252b-7b114abaced9@intel.com>
- <CANpmjNP4Jjo2W2K_2nVv3UmOGB8c5k9Z0iOFRFD9bQpeWr+8mA@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ef4956a3-c14b-f56a-3527-23fcecf7e1a3@intel.com>
-Date:   Mon, 29 Mar 2021 14:03:40 -0700
+        id S231482AbhC2VHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhC2VHC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 17:07:02 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E20C061574;
+        Mon, 29 Mar 2021 14:07:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso7329268wmi.0;
+        Mon, 29 Mar 2021 14:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=wymBNLQAb/qlX8skiczhdYWHj6Aq/qxq8MM3GFnILNk=;
+        b=QVOE8LnKESKbPxunJ6fQ9EXEX+saGlPLvUljMlASbWCVGt5Z5v5JJ/1XrJ1SwqhLwj
+         BVf10Wz+LCPJn/fexc0jfYp1j+HoH9+7Mlz030SCb/GGeZnwG0S8Ih12G3YEXMGoOi6t
+         OWa6ClmRZTt+dAsNnC2Pwv/f/QUPamz/35uxAhubNGzPgDMyVFmHeJ8MQopcy5o1KNL5
+         8pOawJu36repMumXomXPTuVvHbxFISk82GfRNNJT5ATjbScIMChU03DHyNnMdniDy+5W
+         6a1V2OrDdNN/qyhNJt76EIaqWJdlVanuGEmTHoFajZkWaaYl08Z6w+Cykqpu58WYSckT
+         LI9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=wymBNLQAb/qlX8skiczhdYWHj6Aq/qxq8MM3GFnILNk=;
+        b=c2UUIGfm0wTOCnoKFXUHqJCnNxn+31bduI7rdWW60dVJugWYABxixXLKvdvoV9uJCt
+         0C7S99ihA7/8Yz7BrZhvSus3zvxAehSpx1JvjnUKhtH/GEZBiDsUHqvIWENje1d+j7ye
+         DEuaGhJReRTExIEfdPoorD0niNwh9S8Yg9j43Y5ipHneq+O//Ejar2bn40JbhqxWmQoC
+         aYU+Jio2/UnKaq7FQFgcYiU9XIU9leeRGn4e/AGrG94N/9xNt/t4SVwHK7QaINZyf496
+         UvQtUnTDilEDElhwcTP3boOSi3ShhIkcPlez2C+HJ7xvcmwaVQKNLmLrCwUFHAdINh2o
+         dDZA==
+X-Gm-Message-State: AOAM533byK9GlQDXpXY0DKt1RYdLoCQefHzvjh095/Xb/dRv/qdTPM9t
+        Oogo9L4m/3XS5iGxZanfeRz7Ri6WqBU=
+X-Google-Smtp-Source: ABdhPJzrCb3hXadhWOgxbjhl5szV15i9EJFpYsUh+E3AMNwO/aTgKe+zuY5tAvDd6aIFy++rKE6Qog==
+X-Received: by 2002:a05:600c:2145:: with SMTP id v5mr790346wml.65.1617052020546;
+        Mon, 29 Mar 2021 14:07:00 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.103])
+        by smtp.gmail.com with ESMTPSA id a15sm21389883wrr.53.2021.03.29.14.06.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 14:07:00 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] software node: Deduplicate code in
+ fwnode_create_software_node()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
+ <20210329151207.36619-3-andriy.shevchenko@linux.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <4e922df6-4c87-9a95-538c-dc777ebaccab@gmail.com>
+Date:   Mon, 29 Mar 2021 22:06:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNP4Jjo2W2K_2nVv3UmOGB8c5k9Z0iOFRFD9bQpeWr+8mA@mail.gmail.com>
+In-Reply-To: <20210329151207.36619-3-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 10:45 AM, Marco Elver wrote:
-> On Mon, 29 Mar 2021 at 19:32, Dave Hansen <dave.hansen@intel.com> wrote:
-> Doing it to all CPUs is too expensive, and we can tolerate this being
-> approximate (nothing bad will happen, KFENCE might just miss a bug and
-> that's ok).
-...
->> BTW, the preempt checks in flush_tlb_one_kernel() are dependent on KPTI
->> being enabled.  That's probably why you don't see this everywhere.  We
->> should probably have unconditional preempt checks in there.
-> 
-> In which case I'll add a preempt_disable/enable() pair to
-> kfence_protect_page() in arch/x86/include/asm/kfence.h.
+Hi Andy
 
-That sounds sane to me.  I'd just plead that the special situation (not
-needing deterministic TLB flushes) is obvious.  We don't want any folks
-copying this code.
+On 29/03/2021 16:12, Andy Shevchenko wrote:
+> Deduplicate conditional and assignment in fwnode_create_software_node(),
+> i.e. parent is checked in two out of three cases and parent software node
+> is assigned by to_swnode() call.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-BTW, I know you want to avoid the cost of IPIs, but have you considered
-any other low-cost ways to get quicker TLB flushes?  For instance, you
-could loop over all CPUs and set cpu_tlbstate.invalidate_other=1.  That
-would induce a context switch at the next context switch without needing
-an IPI.
+
+Reviewed-by: Daniel Scally <djrscally@gmail.com>
+
+> ---
+> v2: no changes
+>  drivers/base/swnode.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 19aa44bc2628..db982859171e 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -973,15 +973,14 @@ fwnode_create_software_node(const struct property_entry *properties,
+>  {
+>  	struct fwnode_handle *fwnode;
+>  	struct software_node *node;
+> -	struct swnode *p = NULL;
+> -
+> -	if (parent) {
+> -		if (IS_ERR(parent))
+> -			return ERR_CAST(parent);
+> -		if (!is_software_node(parent))
+> -			return ERR_PTR(-EINVAL);
+> -		p = to_swnode(parent);
+> -	}
+> +	struct swnode *p;
+> +
+> +	if (IS_ERR(parent))
+> +		return ERR_CAST(parent);
+> +
+> +	p = to_swnode(parent);
+> +	if (parent && !p)
+> +		return ERR_PTR(-EINVAL);
+>  
+>  	node = software_node_alloc(properties);
+>  	if (IS_ERR(node))
