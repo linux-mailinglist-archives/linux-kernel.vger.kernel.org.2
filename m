@@ -2,118 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BB734D40C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E692F34D416
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhC2Pg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhC2PgI (ORCPT
+        id S230266AbhC2Pgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:36:55 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:36778 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC2Pgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:36:08 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3071AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:36:08 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso7886102pji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YP03UpIuOEGxIuDdLf5I1V97pJYhY/44A539ah6Go6k=;
-        b=jf73mCvFikKQK34+CiaYQiocgSloOf+SOXs5/NLKXJTxObVt/9+gPj3eXTKYQvaylu
-         4tBx3IW4HRysl/5a2nIobne7QbZF0GGX9SuqodGN+S3k1fzcKe5fRNtGdnW4STJtH1vX
-         pIlbEk3xYlXhHIExWKym2TPyCiAGwhe9dOqEKLahpGu9BoPWKwTfdb9j/rwL28iPQkSu
-         XTct7Lk3jCzaPPtP86nH7kuOxD5YItVP6rqLq+cvwBR3TJlemD+pB6usE2j6pbYE9EBD
-         babD2SOMREx+gv6Hw4PhnOBf7++PN/NK0pkxu/4IG2HsCAOZZiw84WF4yuNVX6hzYduv
-         ZWig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YP03UpIuOEGxIuDdLf5I1V97pJYhY/44A539ah6Go6k=;
-        b=iY01eMtPsBDGAWs8vzwRo+FxlviLz3nCt2bRHfd/6mBInjAZJFQSAC0kUx1zB5SAYl
-         N05Btjz3QXfuk1aPCPCGB7H0SqlxEU5VqyR0S1peEscWwtQA80k5/Pda0IrfO/Qvkmu6
-         PgHacqgyqJ1Iiqpot/nv9pkStsYezjoFvfR2ny9Ey2dMNd6xSYihOuCXIpX+nmqFX1cX
-         Zd4rfegfasVXBxuKUqIRX2S3kLhh3XvogmWsvpEOSa5VuTjrejgWm3sdaThhUQGki2Rx
-         xgrjcNfHmjkikp+VWdFQ92ZxGZDYKln/FsH8U0Y3u5nqgWxI/lMW32nBY60xijjpATK2
-         V64g==
-X-Gm-Message-State: AOAM532h3Jc9IaLjiOQeCrOgsX/81I9pFXdsnvnJflmJVWh8zRUsH+KU
-        6jdv36lEULsSAoD9e7fRYkc=
-X-Google-Smtp-Source: ABdhPJzhKT070FMpmXHZSX2ge66cpPVsH13y9YHiAfKLwVbCD35kN3EvWoZWYU32L4l8hBacKrYntA==
-X-Received: by 2002:a17:902:7404:b029:e4:503b:f83d with SMTP id g4-20020a1709027404b02900e4503bf83dmr28722675pll.35.1617032167700;
-        Mon, 29 Mar 2021 08:36:07 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:3c:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id s8sm15366821pjg.29.2021.03.29.08.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 08:36:07 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 08:36:04 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        Daphne Preston-Kendall <dpk@nonceword.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an
- error when TAI has not been configured
-Message-ID: <20210329153604.GA21716@hoboy.vegasvil.org>
-References: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
- <20210327032859.GA3168@hoboy.vegasvil.org>
- <YGGbAIoCKDbZLQQ0@localhost>
- <20210329142612.GC20909@hoboy.vegasvil.org>
- <87o8f26m8c.ffs@nanos.tec.linutronix.de>
+        Mon, 29 Mar 2021 11:36:46 -0400
+Date:   Mon, 29 Mar 2021 15:36:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1617032204;
+        bh=rqe9EJEDo6OVkZ/VB+6sIQKNjLvmWP/qQQn0EH+cucE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=HpGWtcbSc1BRR8C//YNHRfRX94i3nWsb+pdd14v2BmpPVcvRhqxYDP65AyfHLnKBx
+         XK25WeJ9dMffhERinc9teknCpK13ACInH5U3ioLVaZYq/382YcQL+NgpbJ7CuiZS9D
+         l9GStvSS6LFR40V0tBF9/4vQST+o2u0wEAbj0bEbP197GtioRyahLzh5sn1mwWFSto
+         WZ2Zw3bg5NhoBydcrl7qRc/Pr+PP2nniZGuVzjF/rDIplNm/gkalM7ynbXNfkWIRtU
+         g0vavMPE3d9XV44tE1OrBuEeqFNrG2nKO1b4hPD8kyui51GNCIqEIrZLxmVQk2tRXE
+         Ma+1ySXRmzdIQ==
+To:     Paul Cercueil <paul@crapouillou.net>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH] drm: DON'T require each CRTC to have a unique primary plane
+Message-ID: <f_BApfXCctltkOAAKup7ZXRsq8N81SZgbxIEFbHWzeoKZCo8z169Bkk4DDwk9WmMNKXpyxaMQCxbWzwVMgfNav0ZYVf3s_6bXRO89LKD_AM=@emersion.fr>
+In-Reply-To: <TTLQQQ.OCR65URAWJVQ2@crapouillou.net>
+References: <20210327112214.10252-1-paul@crapouillou.net> <20210329140731.tvkfxic4fu47v3rz@gilmour> <BoDZUOZSsZmHjkYkjHPb18dMl_t_U8ldrh8jZezjkA6a2O-IBkPGaER4wxZ2KlqRYuXlWM8xZwPnvweWEAATzoX-yuBJnBzjGKD3oXNfh5Y=@emersion.fr> <TTLQQQ.OCR65URAWJVQ2@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8f26m8c.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 04:57:55PM +0200, Thomas Gleixner wrote:
-> I think adjtimex is the right place and not yet another random file
-> somewhere. Something like the below.
+On Monday, March 29th, 2021 at 5:32 PM, Paul Cercueil <paul@crapouillou.net=
+> wrote:
 
-Perfect.
+> Making the second plane an overlay would break the ABI, which is never
+> something I'm happy to do; but I'd prefer to do it now than later.
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Yeah, I wonder if some user-space depends on this behavior somehow?
 
-> ---
->  include/uapi/linux/timex.h |    7 +++++--
->  kernel/time/ntp.c          |    4 +++-
->  2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> --- a/include/uapi/linux/timex.h
-> +++ b/include/uapi/linux/timex.h
-> @@ -188,9 +188,12 @@ struct __kernel_timex {
->  #define STA_MODE	0x4000	/* mode (0 = PLL, 1 = FLL) (ro) */
->  #define STA_CLK		0x8000	/* clock source (0 = A, 1 = B) (ro) */
->  
-> +#define STA_TAISET	0x10000 /* TAI offset was set via adjtimex (ro) */
-> +
->  /* read-only bits */
-> -#define STA_RONLY (STA_PPSSIGNAL | STA_PPSJITTER | STA_PPSWANDER | \
-> -	STA_PPSERROR | STA_CLOCKERR | STA_NANO | STA_MODE | STA_CLK)
-> +#define STA_RONLY (STA_PPSSIGNAL | STA_PPSJITTER | STA_PPSWANDER |	\
-> +		   STA_PPSERROR | STA_CLOCKERR | STA_NANO | STA_MODE |	\
-> +		   STA_CLK | STA_TAISET)
->  
->  /*
->   * Clock states (time_state)
-> --- a/kernel/time/ntp.c
-> +++ b/kernel/time/ntp.c
-> @@ -741,8 +741,10 @@ static inline void process_adjtimex_mode
->  	}
->  
->  	if (txc->modes & ADJ_TAI &&
-> -			txc->constant >= 0 && txc->constant <= MAX_TAI_OFFSET)
-> +	    txc->constant >= 0 && txc->constant <= MAX_TAI_OFFSET) {
->  		*time_tai = txc->constant;
-> +		time_status |= STA_TAISET;
-> +	}
->  
->  	if (txc->modes & ADJ_OFFSET)
->  		ntp_update_offset(txc->offset);
+> I still have concerns about the user-space being "clever" enough to
+> know it can disable the primary plane. Can e.g. wlroots handle that?
+
+wlroots will always pick the first primary plane, and will never use
+overlays. The plan is to use libliftoff [1] to make use of overlay
+planes. libliftoff should already support the scenario you describe.
+
+I think Weston supports that too.
+
+[1]: https://github.com/emersion/libliftoff
