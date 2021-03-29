@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4D234C64F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C9C34CC3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhC2IGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:06:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
+        id S237001AbhC2I6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:58:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232094AbhC2IEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:04:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC70061601;
-        Mon, 29 Mar 2021 08:04:09 +0000 (UTC)
+        id S234903AbhC2Ihd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6958261959;
+        Mon, 29 Mar 2021 08:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005050;
-        bh=HLyvqv6KeKN5vDhCQR9UUaivBet8DbRXIuO0u5O415A=;
+        s=korg; t=1617007031;
+        bh=gPcEVq23ZcHljHYJI94dgaVJ7RvY85qJGeXSIOVsoOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CeqyAreO7rubSOknMbPARi7NejaIaTVVFt+UM9yBVDJhDFsQzemF0H6Ityj7cuU+x
-         N746ZVuN8h5Vgwg2ChdLpdAtUglL30gmi4YjZ/S4M67IVONekV4DlZm+2k3m9Bl1Cm
-         vDe/pxWp5R+hogL8Sd5v+2B7h+OpD6dE9bDFKJTA=
+        b=beb73++y0fCLtpdETHMQbGmuBzg40xv88geOfxLmwi9+yfUcy9ZQlori6gD9aEiGK
+         NL5Ax0BL319WnsL9Hop6NAciir92GMFh0X/V/ABFrkovzdu9zlyrzqur0rma5wLDCK
+         lh6zsLqyP410S85RZHpig/5cR5kP8vHtxHOkqYJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.9 20/53] arm64: dts: ls1043a: mark crypto engine dma coherent
-Date:   Mon, 29 Mar 2021 09:57:55 +0200
-Message-Id: <20210329075608.208746569@linuxfoundation.org>
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 160/254] nfp: flower: add ipv6 bit to pre_tunnel control message
+Date:   Mon, 29 Mar 2021 09:57:56 +0200
+Message-Id: <20210329075638.450689820@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-commit 4fb3a074755b7737c4081cffe0ccfa08c2f2d29d upstream.
+[ Upstream commit 5c4f5e19d6a8e159127b9d653bb67e0dc7a28047 ]
 
-Crypto engine (CAAM) on LS1043A platform is configured HW-coherent,
-mark accordingly the DT node.
+Differentiate between ipv4 and ipv6 flows when configuring the pre_tunnel
+table to prevent them trampling each other in the table.
 
-Lack of "dma-coherent" property for an IP that is configured HW-coherent
-can lead to problems, similar to what has been reported for LS1046A.
-
-Cc: <stable@vger.kernel.org> # v4.8+
-Fixes: 63dac35b58f4 ("arm64: dts: ls1043a: add crypto node")
-Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 783461604f7e ("nfp: flower: update flow merge code to support IPv6 tunnels")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ .../ethernet/netronome/nfp/flower/tunnel_conf.c   | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-@@ -177,6 +177,7 @@
- 			ranges = <0x0 0x00 0x1700000 0x100000>;
- 			reg = <0x00 0x1700000 0x0 0x100000>;
- 			interrupts = <0 75 0x4>;
-+			dma-coherent;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c b/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
+index 7248d248f604..d19c02e99114 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/tunnel_conf.c
+@@ -16,8 +16,9 @@
+ #define NFP_FL_MAX_ROUTES               32
  
- 			sec_jr0: jr@10000 {
- 				compatible = "fsl,sec-v5.4-job-ring",
+ #define NFP_TUN_PRE_TUN_RULE_LIMIT	32
+-#define NFP_TUN_PRE_TUN_RULE_DEL	0x1
+-#define NFP_TUN_PRE_TUN_IDX_BIT		0x8
++#define NFP_TUN_PRE_TUN_RULE_DEL	BIT(0)
++#define NFP_TUN_PRE_TUN_IDX_BIT		BIT(3)
++#define NFP_TUN_PRE_TUN_IPV6_BIT	BIT(7)
+ 
+ /**
+  * struct nfp_tun_pre_run_rule - rule matched before decap
+@@ -1268,6 +1269,7 @@ int nfp_flower_xmit_pre_tun_flow(struct nfp_app *app,
+ {
+ 	struct nfp_flower_priv *app_priv = app->priv;
+ 	struct nfp_tun_offloaded_mac *mac_entry;
++	struct nfp_flower_meta_tci *key_meta;
+ 	struct nfp_tun_pre_tun_rule payload;
+ 	struct net_device *internal_dev;
+ 	int err;
+@@ -1290,6 +1292,15 @@ int nfp_flower_xmit_pre_tun_flow(struct nfp_app *app,
+ 	if (!mac_entry)
+ 		return -ENOENT;
+ 
++	/* Set/clear IPV6 bit. cpu_to_be16() swap will lead to MSB being
++	 * set/clear for port_idx.
++	 */
++	key_meta = (struct nfp_flower_meta_tci *)flow->unmasked_data;
++	if (key_meta->nfp_flow_key_layer & NFP_FLOWER_LAYER_IPV6)
++		mac_entry->index |= NFP_TUN_PRE_TUN_IPV6_BIT;
++	else
++		mac_entry->index &= ~NFP_TUN_PRE_TUN_IPV6_BIT;
++
+ 	payload.port_idx = cpu_to_be16(mac_entry->index);
+ 
+ 	/* Copy mac id and vlan to flow - dev may not exist at delete time. */
+-- 
+2.30.1
+
 
 
