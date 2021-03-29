@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F46234D69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E241134D6BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhC2SJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:09:20 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:52800 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhC2SIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:08:55 -0400
-Received: from [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e] (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 8E86265B2D;
-        Mon, 29 Mar 2021 14:08:46 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1617041334;
-        bh=DnbFnwZ0/NuIMzB/7EbnclRu37Hg7RRrTWRMFouAYiY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eud4UHFmqGdkogF/vnhMCKl190X1Lx65bFaTgdfl+MlbTUpeY7mcQy4Vbmpjtc95J
-         PMqWWNP7RQ75jB/WpJ3wr3rkXC9baOSQyJPRpYIp20wzuZYlkBZtwHVFr/UkHKLl37
-         dnaSp+ZX2lG0dIZeqmglsLk0cEQC9LzZ1f9CfhEh/GQL0/MvG1MxssMrKQpNZWiZUf
-         hJJbRSc+mafXGpbfgbeOKZOnQDG0QVHPiOoc6Liu3sf4khCbQ6/gf/876E4QCouvFk
-         0ZtsKsl1RlGA0ursq/pLBvT4uoIc2edOlSRAd8iCn5wo2bUCJKZO7codNKxm6NAAiS
-         +2HbmYpCJKk9g==
-Message-ID: <be9042b9294bda450659d3cd418c5e8759d57319.camel@mengyan1223.wang>
-Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     Christian =?ISO-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Dan =?ISO-8859-1?Q?Hor=E1k?= <dan@danny.cz>,
-        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        stable@vger.kernel.org
-Date:   Tue, 30 Mar 2021 02:08:36 +0800
-In-Reply-To: <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
-References: <20210329175348.26859-1-xry111@mengyan1223.wang>
-         <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 
+        id S231504AbhC2SOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231426AbhC2SOR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:14:17 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 08529C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=V7QWJ+YGHy2yIE7nOobdxM7F3R9Lizg99THkUvNIUEQ=; b=G9iyx5pXiqdM9
+        To3b4o2QUiHkH3Gu8RnOzyjU787gd8syjAU74b+84DW0qvuUU56SICqeFU7Elmnk
+        s8U9+VZZ8ur0Rph89ZaiWqNlPSu2JGKoqHttyPhQBLpzRJWz5RQ9/dmvDyIrYEG2
+        7UeP5NjSHePiORgSWOJHnR8V4et7mY=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3fKTvGGJgC+JpAA--.13100S2;
+        Tue, 30 Mar 2021 02:14:07 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:09:11 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH] irqchip/sifive-plic: Mark two global variables 
+ __ro_after_init
+Message-ID: <20210330020911.26423e9e@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygB3fKTvGGJgC+JpAA--.13100S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3CF48Ar43GFy5Zr1UKFg_yoWfurb_uw
+        1ruF9xCayxAr1fuw1UAr13ZrySyayv9Fnru3ZYqFWayr9xGw18Ar1fXFnxGFWkWrWfCFn2
+        kayDA343Kry7CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbFxYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
+        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj4
+        0_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
+        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jOVyxUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-29 20:04 +0200, Christian König wrote:
-> Am 29.03.21 um 19:53 schrieb Xℹ Ruoyao:
-> > If the initial value of `num_entires` (calculated at line 1654) is not
-> > an integral multiple of `AMDGPU_GPU_PAGES_IN_CPU_PAGE`, in line 1681 a
-> > value greater than the initial value will be assigned to it.  That causes
-> > `start > last + 1` after line 1708.  Then in the next iteration an
-> > underflow happens at line 1654.  It causes message
-> > 
-> >      *ERROR* Couldn't update BO_VA (-12)
-> > 
-> > printed in kernel log, and GPU hanging.
-> > 
-> > Fortify the criteria of the loop to fix this issue.
-> 
-> NAK the value of num_entries must always be a multiple of 
-> AMDGPU_GPU_PAGES_IN_CPU_PAGE or otherwise we corrupt the page tables.
-> 
-> How do you trigger that?
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Simply run "OpenGL area" from gtk3-demo (which just renders a triangle with GL)
-under Xorg, on MIPS64.  See the BugLink.
+All of these two are never modified after init, so they can be
+ __ro_after_init.
 
-> Christian.
-> 
-> > 
-> > BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
-> > Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
-> > Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> > Reported-by: Dan Horák <dan@danny.cz>
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > index ad91c0c3c423..cee0cc9c8085 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct
-> > amdgpu_device *adev,
-> >                 }
-> >                 start = tmp;
-> >   
-> > -       } while (unlikely(start != last + 1));
-> > +       } while (unlikely(start < last + 1));
-> >   
-> >         r = vm->update_funcs->commit(&params, fence);
-> >   
-> > 
-> > base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
-> 
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ drivers/irqchip/irq-sifive-plic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index 6f432d2a5ceb..97d4d04b0a80 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -77,8 +77,8 @@ struct plic_handler {
+ 	void __iomem		*enable_base;
+ 	struct plic_priv	*priv;
+ };
+-static int plic_parent_irq;
+-static bool plic_cpuhp_setup_done;
++static int plic_parent_irq __ro_after_init;
++static bool plic_cpuhp_setup_done __ro_after_init;
+ static DEFINE_PER_CPU(struct plic_handler, plic_handlers);
+ 
+ static inline void plic_toggle(struct plic_handler *handler,
 -- 
-Xi Ruoyao <xry111@mengyan1223.wang>
-School of Aerospace Science and Technology, Xidian University
+2.31.0
+
 
