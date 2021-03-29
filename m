@@ -2,175 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3322E34D855
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAB534D856
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhC2Tez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:34:55 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:51234 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbhC2TeX (ORCPT
+        id S231833AbhC2Te5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbhC2Tel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:34:23 -0400
-Received: by mail-io1-f72.google.com with SMTP id i19so11640560ioh.18
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:34:22 -0700 (PDT)
+        Mon, 29 Mar 2021 15:34:41 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71AFC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:34:40 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id t20so4900329plr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=4/AjcviJM+MN/+F8Vy+FJ7ln76QoDZiyxq5y8TMSkpE=;
+        b=L2srLFum8RmHEw+td2eI6LO1Ehlsob/6OnhmJPb9xldC56tHgR9+SpUmCCf4q83+i/
+         abpeKNTf2iWhHwOZeBskvs1/5uO2FaxsbGpMUyX7XzNaLvu3vJXjkylw0SYu48LWzpcn
+         zChuKzk+1zZOYVBoZ/6n6BgjKUhdio/7Mzv7E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OrPDaz0uXlDAGavWdBModoSbr4og33NB13Z6NEmvLrk=;
-        b=U/NQGtWRXFxRd2tECd0Sq8EO/Ls1O9Lq180RqJor/IQ0czc7Mgt+m36Rs1a5HLULtO
-         ZCK9a+tcs0i+one3fqHSsdo8jRztT35TUtdi9ZzIqEbT59IQNsCcUF4LIV0K12rBEhVN
-         l17rv+XybrWYimYHR8LHF+MdGE4DKN7eIU5Dld5h6qFwcgsM0XHzCNuewMfpXfELmj1G
-         PVvFHHZ9Oa1kHyqGr1DMA4PXSVWfFtyBa8LOM4e9o0nnjK9/8k6YOQLdsAJM1V4FZtDX
-         LNsGnzQo6730Ch2P43+Og1xEX7NxJKLqc+XRq2MAIT2bpP3DFjc9tZnTM+eF+3kr506Q
-         aEZg==
-X-Gm-Message-State: AOAM5308AAOxX6z2fUIvanxmExwJD2z4cq/qGySlkJCh8p6TRs5LobqO
-        5/vYXbJ2VFY2t4JhMSOo5ZAlCGGO1PCEX+0zJafly2/hj/Y/
-X-Google-Smtp-Source: ABdhPJz2YO830nGl4M6ePvLGaPzfj1rTapAn96ODgiHyJNjckK5R93z+domwZR0jK4zlRmMBByoYdUBVo5zAEZjMaqEKJvYy0zK3
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=4/AjcviJM+MN/+F8Vy+FJ7ln76QoDZiyxq5y8TMSkpE=;
+        b=QZ5vsLFU5L3yT7avwNiJEJbx2NP62en1dFSF3kPVPd1PsiLgle0cYpWRgEWlHWItgo
+         gA6O1nWyZ4mLDnYACfRj97GjF0GYE7obzkFpxxlyLNiwJjqZUCwvm0R5RQQG6MzKCdYb
+         RJoQDJURrACxdGzXZSORm2g7PokxhbsxJSRpRG9Z1vCEEFu87DoqPJjq3rb5ZzTbw1qw
+         pRf7gwmmoktA784Z9C2omdhquv6r17K4rwP8DITyHhmsLoA7ko5clwu1ry79d92qZixm
+         8yqPec6USMz3l/zM2uuTxoEwJ6pzVFuMvlQbVEQpSAkgSTE+Cqx4/Tg6c+PlEyOCKpLK
+         mOMw==
+X-Gm-Message-State: AOAM530X06GQzqBI3NqnZ01rhm2lp3yuofoR30tlqQicNX3BsSBzhcfZ
+        0KLU4HlOrAG1VOSU35TYZ03PFA==
+X-Google-Smtp-Source: ABdhPJz3TidD50Ag7Kik9OP4JEultVxXJ9TyLE4CvKWcc8IlgTj554nkINbgbuyrv1G2biVaUOu2sA==
+X-Received: by 2002:a17:90a:66c2:: with SMTP id z2mr673191pjl.139.1617046480184;
+        Mon, 29 Mar 2021 12:34:40 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:4091:2b37:966b:1fca])
+        by smtp.gmail.com with ESMTPSA id cp22sm323225pjb.15.2021.03.29.12.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 12:34:39 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a02:5184:: with SMTP id s126mr5484831jaa.107.1617046462357;
- Mon, 29 Mar 2021 12:34:22 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 12:34:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f964fd05beb1f7d3@google.com>
-Subject: [syzbot] possible deadlock in ip_setsockopt
-From:   syzbot <syzbot+81bff613876f26c198d8@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5cd274f98b38d4b85c1ce212720b6b680f4a00f0.1616651305.git.schowdhu@codeaurora.org>
+References: <cover.1616651305.git.schowdhu@codeaurora.org> <5cd274f98b38d4b85c1ce212720b6b680f4a00f0.1616651305.git.schowdhu@codeaurora.org>
+Subject: Re: [PATCH V2 1/5] dt-bindings: Added the yaml bindings for DCC
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Date:   Mon, 29 Mar 2021 12:34:38 -0700
+Message-ID: <161704647819.3012082.13027529193947275446@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Quoting Souradeep Chowdhury (2021-03-25 01:02:32)
+> diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml b/Do=
+cumentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+> new file mode 100644
+> index 0000000..c6e0a9c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/msm/qcom,dcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Data Capture and Compare
+> +
+> +maintainers:
+> +  - Souradeep Chowdhury <schowdhu@codeaurora.org>
+> +
+> +description: |
+> +    DCC (Data Capture and Compare) is a DMA engine which is used to save
+> +    configuration data or system memory contents during catastrophic fai=
+lure
+> +    or SW trigger.DCC is used to capture and store data for debugging pu=
+rpose
 
-syzbot found the following issue on:
+Add space between trigger. and DCC?
 
-HEAD commit:    1b479fb8 drivers/net/wan/hdlc_fr: Fix a double free in pvc..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1072d3d6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-dashboard link: https://syzkaller.appspot.com/bug?extid=81bff613876f26c198d8
+> +
+> +
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Drop double newline?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+81bff613876f26c198d8@syzkaller.appspotmail.com
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,sm8150-dcc
+> +      - const: qcom,dcc
+> +
+> +  reg:
+> +    items:
+> +      - description: DCC base register region
+> +      - description: DCC RAM base register region
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dcc
+> +      - const: dcc-ram
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-rc4-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.3/14381 is trying to acquire lock:
-ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
-ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
-ffff888018aa2420 (sk_lock-AF_INET){+.+.}-{0:0}, at: ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
+Do we really need reg names? Seems like we can assume the ordering.
 
-but task is already holding lock:
-ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:944 [inline]
-ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: ip_setsockopt+0x1c8/0x3a00 net/ipv4/ip_sockglue.c:1423
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dcc@10a2000{
 
-which lock already depends on the new lock.
+dma@10a2000? Or debug@10a2000?
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (rtnl_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       ip_mc_drop_socket+0x89/0x260 net/ipv4/igmp.c:2671
-       mptcp_release+0xab/0x120 net/mptcp/protocol.c:3438
-       __sock_release+0xcd/0x280 net/socket.c:599
-       sock_close+0x18/0x20 net/socket.c:1258
-       __fput+0x288/0x920 fs/file_table.c:280
-       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
-       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
-       exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
-       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2936 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3059 [inline]
-       validate_chain kernel/locking/lockdep.c:3674 [inline]
-       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
-       lock_acquire kernel/locking/lockdep.c:5510 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
-       lock_sock_nested+0xca/0x120 net/core/sock.c:3071
-       lock_sock include/net/sock.h:1600 [inline]
-       do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
-       ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
-       udp_setsockopt+0x76/0xc0 net/ipv4/udp.c:2719
-       __sys_setsockopt+0x2db/0x610 net/socket.c:2117
-       __do_sys_setsockopt net/socket.c:2128 [inline]
-       __se_sys_setsockopt net/socket.c:2125 [inline]
-       __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(rtnl_mutex);
-                               lock(sk_lock-AF_INET);
-                               lock(rtnl_mutex);
-  lock(sk_lock-AF_INET);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.3/14381:
- #0: ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: do_ip_setsockopt net/ipv4/ip_sockglue.c:944 [inline]
- #0: ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: ip_setsockopt+0x1c8/0x3a00 net/ipv4/ip_sockglue.c:1423
-
-stack backtrace:
-CPU: 0 PID: 14381 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2127
- check_prev_add kernel/locking/lockdep.c:2936 [inline]
- check_prevs_add kernel/locking/lockdep.c:3059 [inline]
- validate_chain kernel/locking/lockdep.c:3674 [inline]
- __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
- lock_sock_nested+0xca/0x120 net/core/sock.c:3071
- lock_sock include/net/sock.h:1600 [inline]
- do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
- ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
- udp_setsockopt+0x76/0xc0 net/ipv4/udp.c:2719
- __sys_setsockopt+0x2db/0x610 net/socket.c:2117
- __do_sys_setsockopt net/socket.c:2128 [inline]
- __se_sys_setsockopt net/socket.c:2125 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x466459
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd7716d0188 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000466459
-RDX: 0000000000000029 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00000000004bf9fb R08: 0000000000000010 R09: 0000000000000000
-R10: 0000000020000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffec9848caf R14: 00007fd7716d0300 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +                compatible =3D "qcom,sm8150-dcc","qcom,dcc";
+> +                reg =3D <0x010a2000  0x1000>,
+> +                      <0x010ad000  0x2000>;
+> +                reg-names =3D "dcc", "dcc-ram";
+> +    };
