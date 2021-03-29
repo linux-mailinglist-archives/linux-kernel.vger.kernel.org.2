@@ -2,47 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4C434C838
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC3634C5A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbhC2IUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56202 "EHLO mail.kernel.org"
+        id S231703AbhC2IB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233014AbhC2IMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:12:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C099261481;
-        Mon, 29 Mar 2021 08:12:47 +0000 (UTC)
+        id S231419AbhC2IBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B833361969;
+        Mon, 29 Mar 2021 08:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005568;
-        bh=fZdI6x61lP7DKPueHUknv78riDY7sIu35G3f2jqdv6k=;
+        s=korg; t=1617004871;
+        bh=SIHhCZxrnfKiMp4P1TEUPAcpCiMriRCZ0H/FHgexX0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZOKDHf57NV8ViS4KQ8gXAZ82GcTiLBwfTVBRFSqirp8Ie9V1afhiFM0Qpw+qz7fgM
-         q0EFbbQ6z0dfvYoZukId9dwwzIXFsk8/Z5rtP6Uqq5V7fjgsJjjLSkawLhEPBlRVGu
-         vvCURDonque+ydyPPE0M0whmTC4RKL8YYrRG9LdA=
+        b=ZInX6XDpEaNrGZ9J1NlO5XBCrumlQ1qGt+WLYMellAZBLT/AjU19eZkkuY6uaguA7
+         grZHLel6NmZE6kfu98u4r6d4Adr9+lOSUbCNVh6hAQMsNTMV02zZhGvmJLJKk8LaL5
+         9f5JufmCK5sWnvvRp3pAlDYNryyatV4GxqmvKVkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 043/111] kasan: fix per-page tags for non-page_alloc pages
+        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 06/33] sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
 Date:   Mon, 29 Mar 2021 09:57:51 +0200
-Message-Id: <20210329075616.610767833@linuxfoundation.org>
+Message-Id: <20210329075605.490105787@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,87 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@google.com>
+From: Denis Efremov <efremov@linux.com>
 
-commit cf10bd4c4aff8dd64d1aa7f2a529d0c672bc16af upstream.
+[ Upstream commit 155b23e6e53475ca3b8c2a946299b4d4dd6a5a1e ]
 
-To allow performing tag checks on page_alloc addresses obtained via
-page_address(), tag-based KASAN modes store tags for page_alloc
-allocations in page->flags.
+RXMAC_BC_FRM_CNT_COUNT added to mp->rx_bcasts twice in a row
+in niu_xmac_interrupt(). Remove the second addition.
 
-Currently, the default tag value stored in page->flags is 0x00.
-Therefore, page_address() returns a 0x00ffff...  address for pages that
-were not allocated via page_alloc.
-
-This might cause problems.  A particular case we encountered is a
-conflict with KFENCE.  If a KFENCE-allocated slab object is being freed
-via kfree(page_address(page) + offset), the address passed to kfree()
-will get tagged with 0x00 (as slab pages keep the default per-page
-tags).  This leads to is_kfence_address() check failing, and a KFENCE
-object ending up in normal slab freelist, which causes memory
-corruptions.
-
-This patch changes the way KASAN stores tag in page-flags: they are now
-stored xor'ed with 0xff.  This way, KASAN doesn't need to initialize
-per-page flags for every created page, which might be slow.
-
-With this change, page_address() returns natively-tagged (with 0xff)
-pointers for pages that didn't have tags set explicitly.
-
-This patch fixes the encountered conflict with KFENCE and prevents more
-similar issues that can occur in the future.
-
-Link: https://lkml.kernel.org/r/1a41abb11c51b264511d9e71c303bb16d5cb367b.1615475452.git.andreyknvl@google.com
-Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Marco Elver <elver@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Peter Collingbourne <pcc@google.com>
-Cc: Evgenii Stepanov <eugenis@google.com>
-Cc: Branislav Rankov <Branislav.Rankov@arm.com>
-Cc: Kevin Brodsky <kevin.brodsky@arm.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mm.h |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/sun/niu.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1226,13 +1226,26 @@ static inline bool cpupid_match_pid(stru
- #endif /* CONFIG_NUMA_BALANCING */
- 
- #ifdef CONFIG_KASAN_SW_TAGS
-+
-+/*
-+ * KASAN per-page tags are stored xor'ed with 0xff. This allows to avoid
-+ * setting tags for all pages to native kernel tag value 0xff, as the default
-+ * value 0x00 maps to 0xff.
-+ */
-+
- static inline u8 page_kasan_tag(const struct page *page)
- {
--	return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-+	u8 tag;
-+
-+	tag = (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-+	tag ^= 0xff;
-+
-+	return tag;
- }
- 
- static inline void page_kasan_tag_set(struct page *page, u8 tag)
- {
-+	tag ^= 0xff;
- 	page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
- 	page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
- }
+diff --git a/drivers/net/ethernet/sun/niu.c b/drivers/net/ethernet/sun/niu.c
+index 85f3a2c0d4dd..cc3b025ab7a7 100644
+--- a/drivers/net/ethernet/sun/niu.c
++++ b/drivers/net/ethernet/sun/niu.c
+@@ -3948,8 +3948,6 @@ static void niu_xmac_interrupt(struct niu *np)
+ 		mp->rx_mcasts += RXMAC_MC_FRM_CNT_COUNT;
+ 	if (val & XRXMAC_STATUS_RXBCAST_CNT_EXP)
+ 		mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT;
+-	if (val & XRXMAC_STATUS_RXBCAST_CNT_EXP)
+-		mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT;
+ 	if (val & XRXMAC_STATUS_RXHIST1_CNT_EXP)
+ 		mp->rx_hist_cnt1 += RXMAC_HIST_CNT1_COUNT;
+ 	if (val & XRXMAC_STATUS_RXHIST2_CNT_EXP)
+-- 
+2.30.1
+
 
 
