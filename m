@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACCF34C877
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0158934C5CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhC2IWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
+        id S231395AbhC2IDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232097AbhC2IOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D74F619AD;
-        Mon, 29 Mar 2021 08:14:30 +0000 (UTC)
+        id S231695AbhC2IB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E276196B;
+        Mon, 29 Mar 2021 08:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005671;
-        bh=IqqgAef8aMSmr7MlycYjfyp1izlvDR167gZ7Dbm1wOw=;
+        s=korg; t=1617004916;
+        bh=dg+/Pkath+wescMwFVrjzahw+NDG3JqOZK7J8hCRso8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BLZu7610v5ud4iTlsWeMT3ooZ8TcLPRthyhqIc97TB2lmUKPVSd+rhwLq6RCqGMND
-         UeziSD9Y8A/9mE6Um3uLPv5VYcHxr75BtAPIX6DlBoqkreYzp1Y+ooyVas/ut2PEB9
-         6z6Y4Ndak2MvCxye4wxYhPltHVWwqHAIP0mqCGE8=
+        b=lNDR0wjwoYzbmvXRKXSxAwtmHxQnQW/vXyguk4ev/asB2SWoOviZe0h3vWrO6oWt+
+         WA1Ld+F02aG945WHR81QPPVGPkIDCpulZmj5Z4YIo+Z1XdMGSVWTwHi2CcLxiOUnDj
+         Umi/VIbsM8KT40lGA7X0OAE6uXp3N+DOy5ov5NYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 041/111] squashfs: fix inode lookup sanity checks
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 14/53] nfs: we dont support removing system.nfs4_acl
 Date:   Mon, 29 Mar 2021 09:57:49 +0200
-Message-Id: <20210329075616.544131883@linuxfoundation.org>
+Message-Id: <20210329075608.015358131@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit c1b2028315c6b15e8d6725e0d5884b15887d3daa upstream.
+[ Upstream commit 4f8be1f53bf615102d103c0509ffa9596f65b718 ]
 
-When mouting a squashfs image created without inode compression it fails
-with: "unable to read inode lookup table"
+The NFSv4 protocol doesn't have any notion of reomoving an attribute, so
+removexattr(path,"system.nfs4_acl") doesn't make sense.
 
-It turns out that the BLOCK_OFFSET is missing when checking the
-SQUASHFS_METADATA_SIZE agaist the actual size.
+There's no documented return value.  Arguably it could be EOPNOTSUPP but
+I'm a little worried an application might take that to mean that we
+don't support ACLs or xattrs.  How about EINVAL?
 
-Link: https://lkml.kernel.org/r/20210226092903.1473545-1-sean@geanix.com
-Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/export.c      |    8 ++++++--
- fs/squashfs/squashfs_fs.h |    1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ fs/nfs/nfs4proc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/squashfs/export.c
-+++ b/fs/squashfs/export.c
-@@ -152,14 +152,18 @@ __le64 *squashfs_read_inode_lookup_table
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 0cebe0ca03b2..94130588ebf5 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5144,6 +5144,9 @@ static int __nfs4_proc_set_acl(struct inode *inode, const void *buf, size_t bufl
+ 	unsigned int npages = DIV_ROUND_UP(buflen, PAGE_SIZE);
+ 	int ret, i;
  
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end
-+		    || (end - start) >
-+		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= lookup_table_start ||
-+	    (lookup_table_start - start) >
-+	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
---- a/fs/squashfs/squashfs_fs.h
-+++ b/fs/squashfs/squashfs_fs.h
-@@ -17,6 +17,7 @@
- 
- /* size of metadata (inode and directory) blocks */
- #define SQUASHFS_METADATA_SIZE		8192
-+#define SQUASHFS_BLOCK_OFFSET		2
- 
- /* default size of block device I/O */
- #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
++	/* You can't remove system.nfs4_acl: */
++	if (buflen == 0)
++		return -EINVAL;
+ 	if (!nfs4_server_supports_acls(server))
+ 		return -EOPNOTSUPP;
+ 	if (npages > ARRAY_SIZE(pages))
+-- 
+2.30.1
+
 
 
