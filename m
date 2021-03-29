@@ -2,85 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3401B34D5DC
+	by mail.lfdr.de (Postfix) with ESMTP id AF85334D5DD
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhC2RPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        id S231218AbhC2RPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhC2RO7 (ORCPT
+        with ESMTP id S231249AbhC2RPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:14:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B8FC061574;
-        Mon, 29 Mar 2021 10:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qFjG2sAenIACloeegredFO6bNxng6P7GkaqFjdUrTIE=; b=H1S47WOi3yw9L3md+Wm5LfUZH7
-        N1hnN7TFFXJorN8+d5wU/uROq47wNZKSkNknrpPBf3MO5HPUU05AbNhEL3StMmAHFCYmDYDNK8PHg
-        PPp3aVFpbtDaEvTiG50hvl1jIYqWgrycuhD4mo/5Zj2NxRozi/PSaBpWSGKqssyy1TE2Iy6rRv1fU
-        Kt1qUPVVo2I7ZSBtpBGm23QQwu1W8fVmNzIbGzw9oSaLl8pIBQoTfRgEQjUqA3g4LLDTO0tIEuqkw
-        I2HSSsjAxgKDHcHeGoHQcP6coJW/TIAHcwSzB5ipRkvK3VDFEj4iTTzhAZ5rP9VXzxnkGn2MAdtMZ
-        uZHlgyCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQvTG-001sAs-Jl; Mon, 29 Mar 2021 17:14:39 +0000
-Date:   Mon, 29 Mar 2021 18:14:34 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mm/vmalloc: Fix read of pointer area after it has
- been free'd
-Message-ID: <20210329171434.GH351017@casper.infradead.org>
-References: <20210329170730.121943-1-colin.king@canonical.com>
+        Mon, 29 Mar 2021 13:15:16 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5689FC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:15:14 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id s21so6330034pjq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4EOZ8Sb48l4lF5h6fA0NMs053uNtaYhsr8erjsTM8FY=;
+        b=dJa0dz3LkHSAQnB1HnfNX988JAywvpjQ2nQa+OOmU1Q1d2DwIEnZq29hhBDzKdRxXE
+         H2+gweAaru8FyL51vYdLZqQk+LlgGHXWU2s0AkLYMYDGjnZcmDOvU8R/mKFAC+qU1vIX
+         XPAyDzVe8NSuyaZAg0cXmd0jGKW4a2IDnsE1zs/Ez/37HUKafd/J/R1ziPJCuX+I4Dpf
+         Tw0jZTkcRBH3XrdNeYIA3KmJtNNy2CR8lFZ8Dx508atoQ9r9BethZLU06XK+K63gTZ+l
+         2+FqHVY9ZlBOQ7IBm6r/u4vCEUGjGPj33ZrHyK8p+/GuDZNRufuBgGCB6P0PiBFmDIx3
+         BvRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4EOZ8Sb48l4lF5h6fA0NMs053uNtaYhsr8erjsTM8FY=;
+        b=QB1L8IDCcEedyNaU6kSeropw0PkQpv2mELiusPKebq7lcSbOQuPn0eyv/+GIUxBm5v
+         bcS9GeYDKFKSjR9u/U6dGztxZYZOceL3x5sSrQmknruDK41ugLSnyKsm4CLR7Jb6wnmA
+         ravTQejy0efnw46XnRo9rVxsZKRjto1bL/iRaxfn6nejVH+KpqX4jiQF3/cSSHEQmM2e
+         II4t1h/3wbj2AM0T+odM/tuF1KtnrYsiAogZZG8+GdiDyN8ahLeVO2WOTKUyHYMgI8uS
+         Qj/9Y80olvvfIKo4w8wI6uM5lUbnyDrhb0nl4gvHwo11z52PYN4DAGOwkDnXxexBjMNJ
+         OwBA==
+X-Gm-Message-State: AOAM530+FNuHdDNuHP5o16kqCWANpLNdWj4TnIW4d3I6605P9I8tFv2d
+        OB3L9dQvcJYIqwmIS0vJoVW4Eg==
+X-Google-Smtp-Source: ABdhPJwUSjt0rB7FD0ZPLYYja1hZE1EpzcLffmT9z2Qr4zlV7MsvSmN97Oxmu4wf1Gm80JBrMXnHnQ==
+X-Received: by 2002:a17:90b:3884:: with SMTP id mu4mr152309pjb.128.1617038113480;
+        Mon, 29 Mar 2021 10:15:13 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id d2sm7379997pgp.47.2021.03.29.10.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 10:15:12 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 17:15:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] KVM: X86: Properly account for guest CPU time when
+ considering context tracking
+Message-ID: <YGILHM7CHpjXtxaH@google.com>
+References: <1617011036-11734-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329170730.121943-1-colin.king@canonical.com>
+In-Reply-To: <1617011036-11734-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 06:07:30PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the memory pointed to by area is being freed by the
-> free_vm_area call and then area->nr_pages is referencing the
-> free'd object. Fix this swapping the order of the warn_alloc
-> message and the free.
-> 
-> Addresses-Coverity: ("Read from pointer after free")
-> Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
++Thomas
 
-i don't have this git sha.  if this is -next, the sha ids aren't stable
-and shouldn't be referenced in commit logs, because these fixes should
-just be squashed into the not-yet-upstream commits.
-
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Mon, Mar 29, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+> 
+> The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831 
+> reported that the guest time remains 0 when running a while true 
+> loop in the guest.
+> 
+> The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it 
+> belongs") moves guest_exit_irqoff() close to vmexit breaks the 
+> tick-based time accouting when the ticks that happen after IRQs are 
+> disabled are incorrectly accounted to the host/system time. This is 
+> because we exit the guest state too early.
+> 
+> vtime-based time accounting is tied to context tracking, keep the 
+> guest_exit_irqoff() around vmexit code when both vtime-based time 
+> accounting and specific cpu is context tracking mode active. 
+> Otherwise, leave guest_exit_irqoff() after handle_exit_irqoff() 
+> and explicit IRQ window for tick-based time accouting.
+> 
+> Fixes: 87fa7f3e98a131 ("x86/kvm: Move context tracking where it belongs")
+> Cc: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 > ---
->  mm/vmalloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/x86/kvm/svm/svm.c | 3 ++-
+>  arch/x86/kvm/vmx/vmx.c | 3 ++-
+>  arch/x86/kvm/x86.c     | 2 ++
+>  3 files changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index b73e4e715e0d..7936405749e4 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2790,11 +2790,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
->  	}
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 58a45bb..55fb5ce 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3812,7 +3812,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>  	 * into world and some more.
+>  	 */
+>  	lockdep_hardirqs_off(CALLER_ADDR0);
+> -	guest_exit_irqoff();
+> +	if (vtime_accounting_enabled_this_cpu())
+> +		guest_exit_irqoff();
 >  
->  	if (!pages) {
-> -		free_vm_area(area);
->  		warn_alloc(gfp_mask, NULL,
->  			   "vmalloc size %lu allocation failure: "
->  			   "page array size %lu allocation failed",
->  			   area->nr_pages * PAGE_SIZE, array_size);
-> +		free_vm_area(area);
->  		return NULL;
+>  	instrumentation_begin();
+>  	trace_hardirqs_off_finish();
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 32cf828..85695b3 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6689,7 +6689,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>  	 * into world and some more.
+>  	 */
+>  	lockdep_hardirqs_off(CALLER_ADDR0);
+> -	guest_exit_irqoff();
+> +	if (vtime_accounting_enabled_this_cpu())
+> +		guest_exit_irqoff();
 
-this fix looks right to me.
+This looks ok, as CONFIG_CONTEXT_TRACKING and CONFIG_VIRT_CPU_ACCOUNTING_GEN are
+selected by CONFIG_NO_HZ_FULL=y, and can't be enabled independently, e.g. the
+rcu_user_exit() call won't be delayed because it will never be called in the
+!vtime case.  But it still feels wrong poking into those details, e.g. it'll
+be weird and/or wrong guest_exit_irqoff() gains stuff that isn't vtime specific.
+Maybe that will never happen though?  And of course, my hack alternative also
+pokes into the details[*].
 
+Thomas, do you have an input on the least awful way to handle this?  My horrible
+hack was to force PF_VCPU around the window where KVM handles IRQs after guest
+exit.
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index d9f931c63293..6ddf341cd755 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9118,6 +9118,13 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	vcpu->mode = OUTSIDE_GUEST_MODE;
+ 	smp_wmb();
+
++	/*
++	 * Temporarily pretend this task is running a vCPU when potentially
++	 * processing an IRQ exit, including the below opening of an IRQ
++	 * window.  Tick-based accounting of guest time relies on PF_VCPU
++	 * being set when the tick IRQ handler runs.
++	 */
++	current->flags |= PF_VCPU;
+ 	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
+
+ 	/*
+@@ -9132,6 +9139,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	++vcpu->stat.exits;
+ 	local_irq_disable();
+ 	kvm_after_interrupt(vcpu);
++	current->flags &= ~PF_VCPU;
+
+ 	if (lapic_in_kernel(vcpu)) {
+ 		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+
+[*]https://lkml.kernel.org/r/20210206004218.312023-1-seanjc@google.com
+
+>  	instrumentation_begin();
+>  	trace_hardirqs_off_finish();
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index fe806e8..234c8b3 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9185,6 +9185,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	++vcpu->stat.exits;
+>  	local_irq_disable();
+>  	kvm_after_interrupt(vcpu);
+> +	if (!vtime_accounting_enabled_this_cpu())
+> +		guest_exit_irqoff();
+>  
+>  	if (lapic_in_kernel(vcpu)) {
+>  		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+> -- 
+> 2.7.4
+> 
