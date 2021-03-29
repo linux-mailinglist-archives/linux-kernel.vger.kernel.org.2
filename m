@@ -2,85 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB4C34CF8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEF934CF88
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhC2L7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbhC2L7S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:59:18 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E8CC061574;
-        Mon, 29 Mar 2021 04:59:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id w10so4930872pgh.5;
-        Mon, 29 Mar 2021 04:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S1q6FN0be2nNgkxLhQ/5xPXLSDRhRJotDmWVTEUn70Q=;
-        b=qJ8ZgwY67pQO889tRUpKdSwyP2wHUMHml2juMaxM8RoQgssdUTSTIkvXXFWIMqJCnJ
-         ZRjSVg57gYYto/+XSTexZlAVod6elP8RXDAWz9u5lj5xlqc4iv0hyQJgwNU0M6PWqERQ
-         5y0G0M3EsstmvUWUrcA5RA9cLde3sFOzmwHYHeXfE9BKVymp84AwzD6yKrddSf362opN
-         0ol3L9Hy8tq180eAYdTERHZov6hyvbyIK2KE0YZ5ObBTeEaX88+ZiEIhc+2d7YSpbpVJ
-         tD8vJ+NY9ZgDOpm8g8/o0/LYCtig5Kp4uNtLgpw0ffW4nQUaOO8WAdWJdIei7SoCMNGT
-         Jejw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S1q6FN0be2nNgkxLhQ/5xPXLSDRhRJotDmWVTEUn70Q=;
-        b=DdtRqNhGRMqQnS58pfNRsCeX8ddWfg/tSiUM9TrfGDEOfx5uNwrN7E0uixpRhY2Mus
-         f8espE5XlMfRc5as2CeX0zCR4psohiyhcK2qoydWmchxlCiPHS0bo8cYaytwwq7vv0st
-         Dj6GVjvhKlb0GeYX8huBqdx4qly6wlBJeU6E8JKN6CG/ZqmSLb7mdu6TLeIZ4sVq/aHj
-         61Ze8P+OeZHA4nxINnQE/vRNqaTNMI5Q3n+NQuWtqAHAazQuzhGnvB+ejsqdtxRHECRU
-         73qjzitjCmPCNUi5kBqmZLuXwNvNdYiEddzyGirkI+STkeVhgxlwso0ipzvSUWNCm55e
-         AvRA==
-X-Gm-Message-State: AOAM530528RTdJOGzbd2+HX4ofMlaop20b3yDOa1j3auGJdnUD6Alpdh
-        HXtZDWQWxFov6Y/4vqLul/nF4m59BCaN2sDvLbM=
-X-Google-Smtp-Source: ABdhPJx2aMWqnSdKxJ6nPeD7uZWyqNOKOyM8uxiOe9McLOMNGKyJKX3sv5uI+EKLH2FTISuzffJpiT92vaL/V5hMC6c=
-X-Received: by 2002:a63:cb44:: with SMTP id m4mr1025033pgi.4.1617019158130;
- Mon, 29 Mar 2021 04:59:18 -0700 (PDT)
+        id S231258AbhC2L7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:59:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231614AbhC2L7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:59:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 892A9B3C9;
+        Mon, 29 Mar 2021 11:59:08 +0000 (UTC)
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210327180348.137d8fe2@sf>
+ <20210327182144.3213887-1-slyfox@gentoo.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2] mm: page_alloc: ignore init_on_free=1 for
+ debug_pagealloc=1
+Message-ID: <ea46d903-d201-5781-1f3c-f8d7fea5070e@suse.cz>
+Date:   Mon, 29 Mar 2021 13:59:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com> <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 14:59:02 +0300
-Message-ID: <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from config
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Joe Perches <joe@perches.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210327182144.3213887-1-slyfox@gentoo.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
->
-> The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
-> > WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
->
-> Make the gpiolib allow drivers to return both so driver developers
-> can avoid one of the checkpatch complaints.
+On 3/27/21 7:21 PM, Sergei Trofimovich wrote:
+> On !ARCH_SUPPORTS_DEBUG_PAGEALLOC (like ia64) debug_pagealloc=1
+> implies page_poison=on:
+> 
+>     if (page_poisoning_enabled() ||
+>          (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+>           debug_pagealloc_enabled()))
+>             static_branch_enable(&_page_poisoning_enabled);
+> 
+> page_poison=on needs to init_on_free=1.
+> 
+> Before the change id happened too late for the following case:
+> - have PAGE_POISONING=y
+> - have page_poison unset
+> - have !ARCH_SUPPORTS_DEBUG_PAGEALLOC arch (like ia64)
+> - have init_on_free=1
+> - have debug_pagealloc=1
+> 
+> That way we get both keys enabled:
+> - static_branch_enable(&init_on_free);
+> - static_branch_enable(&_page_poisoning_enabled);
+> 
+> which leads to poisoned pages returned for __GFP_ZERO pages.
 
-Internally we are fine to use the ENOTSUPP.
-Checkpatch false positives there.
+Good catch, thanks for finding the root cause!
 
-I doubt we need this change. Rather checkpatch should rephrase this to
-point out that this is only applicable to _user-visible_ error path.
-Cc'ed Joe.
+> After the change we execute only:
+> - static_branch_enable(&_page_poisoning_enabled);
+> and ignore init_on_free=1.
+> CC: Vlastimil Babka <vbabka@suse.cz>
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: linux-mm@kvack.org
+> CC: David Hildenbrand <david@redhat.com>
+> CC: Andrey Konovalov <andreyknvl@gmail.com>
+> Link: https://lkml.org/lkml/2021/3/26/443
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+8db26a3d4735 ("mm, page_poison: use static key more efficiently")
+Cc: <stable@vger.kernel.org>
+
+> ---
+>  mm/page_alloc.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d57d9b4f7089..10a8a1d28c11 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -764,32 +764,36 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
+>   */
+>  void init_mem_debugging_and_hardening(void)
+>  {
+> +	bool page_poison_requested = page_poisoning_enabled();
+> +
+> +#ifdef CONFIG_PAGE_POISONING
+> +	/*
+> +	 * Page poisoning is debug page alloc for some arches. If
+> +	 * either of those options are enabled, enable poisoning.
+> +	 */
+> +	if (page_poisoning_enabled() ||
+> +	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+> +	      debug_pagealloc_enabled())) {
+> +		static_branch_enable(&_page_poisoning_enabled);
+> +		page_poison_requested = true;
+> +	}
+> +#endif
+> +
+>  	if (_init_on_alloc_enabled_early) {
+> -		if (page_poisoning_enabled())
+> +		if (page_poison_requested)
+>  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+>  				"will take precedence over init_on_alloc\n");
+>  		else
+>  			static_branch_enable(&init_on_alloc);
+>  	}
+>  	if (_init_on_free_enabled_early) {
+> -		if (page_poisoning_enabled())
+> +		if (page_poison_requested)
+>  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+>  				"will take precedence over init_on_free\n");
+>  		else
+>  			static_branch_enable(&init_on_free);
+>  	}
+>  
+> -#ifdef CONFIG_PAGE_POISONING
+> -	/*
+> -	 * Page poisoning is debug page alloc for some arches. If
+> -	 * either of those options are enabled, enable poisoning.
+> -	 */
+> -	if (page_poisoning_enabled() ||
+> -	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+> -	      debug_pagealloc_enabled()))
+> -		static_branch_enable(&_page_poisoning_enabled);
+> -#endif
+> -
+>  #ifdef CONFIG_DEBUG_PAGEALLOC
+>  	if (!debug_pagealloc_enabled())
+>  		return;
+> 
+
