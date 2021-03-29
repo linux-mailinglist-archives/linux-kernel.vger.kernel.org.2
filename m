@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EF234C969
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBD834CB9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhC2I3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:29:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34276 "EHLO mail.kernel.org"
+        id S235360AbhC2Ity (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:49:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233018AbhC2IS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B31619AD;
-        Mon, 29 Mar 2021 08:18:56 +0000 (UTC)
+        id S234596AbhC2IdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04B94619BC;
+        Mon, 29 Mar 2021 08:32:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005937;
-        bh=QDDrb5e6R0I/Ek2pDzfHlUtE/9FEmRIQZxNtVtNQcAo=;
+        s=korg; t=1617006738;
+        bh=zw6S8tYGfZUBG887EXZd/vUxE9n2eI80yfCF6RuGaLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWX1KMhrPZI4dIaBOjbbIyXvZuBc67R4sz+eP4odKm3ogUq2b7i/aG/k1pZwmLtrr
-         S4XAK/0c19JrUsWmF/oBaPI9LbDRT5eYyYQpQ5Gmyul/RAHImZ5C5s498RNhV/ikyA
-         aZ1DDzkAmREjFaZGREttFkQU584HQcBC1vaXrPGQ=
+        b=FgQjNMbP0JeZBOfig6Ywt5tPkehappmeJKcxIqlbvroomR5Ty2OvqVmjtYbZhk3To
+         wBtX8W1ckpW8r5hTfbazeih/CkB0o9mFFWfTLKF1n6KMjF6aLfgbD3rMcGsGG7zqN3
+         Yl03xBj3eNmr6tJ8XQcTe02wadcJwG4AxqdWrnFA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 057/221] static_call: Pull some static_call declarations to the type headers
-Date:   Mon, 29 Mar 2021 09:56:28 +0200
-Message-Id: <20210329075631.099974701@linuxfoundation.org>
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.11 073/254] selinux: dont log MAC_POLICY_LOAD record on failed policy load
+Date:   Mon, 29 Mar 2021 09:56:29 +0200
+Message-Id: <20210329075635.548864904@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,171 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-[ Upstream commit 880cfed3a012d7863f42251791cea7fe78c39390 ]
+commit 519dad3bcd809dc1523bf80ab0310ddb3bf00ade upstream.
 
-Some static call declarations are going to be needed on low level header
-files. Move the necessary material to the dedicated static call types
-header to avoid inclusion dependency hell.
+If sel_make_policy_nodes() fails, we should jump to 'out', not 'out1',
+as the latter would incorrectly log an MAC_POLICY_LOAD audit record,
+even though the policy hasn't actually been reloaded. The 'out1' jump
+label now becomes unused and can be removed.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210118141223.123667-4-frederic@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 02a52c5c8c3b ("selinux: move policy commit after updating selinuxfs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/static_call.h             | 21 -------------------
- include/linux/static_call_types.h       | 27 +++++++++++++++++++++++++
- tools/include/linux/static_call_types.h | 27 +++++++++++++++++++++++++
- 3 files changed, 54 insertions(+), 21 deletions(-)
+ security/selinux/selinuxfs.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 695da4c9b338..a2c064585c03 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -107,26 +107,10 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 
- #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
- 
--/*
-- * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-- * the symbol table so that objtool can reference it when it generates the
-- * .static_call_sites section.
-- */
--#define __static_call(name)						\
--({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
--})
--
- #else
- #define STATIC_CALL_TRAMP_ADDR(name) NULL
- #endif
- 
--
--#define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
--	extern typeof(func) STATIC_CALL_TRAMP(name);
--
- #define static_call_update(name, func)					\
- ({									\
- 	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
-@@ -174,7 +158,6 @@ extern int static_call_text_reserved(void *start, void *end);
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- #define EXPORT_STATIC_CALL(name)					\
-@@ -207,7 +190,6 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- static inline
-@@ -252,9 +234,6 @@ struct static_call_key {
- 		.func = NULL,						\
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+@@ -651,14 +651,13 @@ static ssize_t sel_write_load(struct fil
+ 	length = sel_make_policy_nodes(fsi, newpolicy);
+ 	if (length) {
+ 		selinux_policy_cancel(fsi->state, newpolicy);
+-		goto out1;
++		goto out;
  	}
  
--#define static_call(name)						\
--	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
--
- static inline void __static_call_nop(void) { }
+ 	selinux_policy_commit(fsi->state, newpolicy);
  
- /*
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 89135bb35bf7..08f78b1b88b4 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
+ 	length = count;
  
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,30 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
-+
-+#define static_call(name)	__static_call(name)
-+
-+#else
-+
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
-diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
-index 89135bb35bf7..08f78b1b88b4 100644
---- a/tools/include/linux/static_call_types.h
-+++ b/tools/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,30 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
-+
-+#define static_call(name)	__static_call(name)
-+
-+#else
-+
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
--- 
-2.30.1
-
+-out1:
+ 	audit_log(audit_context(), GFP_KERNEL, AUDIT_MAC_POLICY_LOAD,
+ 		"auid=%u ses=%u lsm=selinux res=1",
+ 		from_kuid(&init_user_ns, audit_get_loginuid(current)),
 
 
