@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B387F34C59D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12ED34CAFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhC2IBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:01:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
+        id S235048AbhC2Il4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231633AbhC2IBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDC026196B;
-        Mon, 29 Mar 2021 08:00:59 +0000 (UTC)
+        id S233751AbhC2IXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B17C61477;
+        Mon, 29 Mar 2021 08:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004860;
-        bh=My0QLuzKZiQ4X4RCd6u2RmzL/Espwu/uby9EaZh+6qE=;
+        s=korg; t=1617006216;
+        bh=eEJVoYkaI1r84j3V+kCRgMCnPWmDDoAETWzeYyE3snY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFHgEOv7AfJIqOkd1k2373iF41dupKxoS3ye3P46NUx3bYxy1MBrmI1feiYSfcBCT
-         srgFj6WwrcsbFQVGCBT+5JqUjTIU+MKCJj7LR7ExtPzaEmnw6V3Ef0zTw6kpBCyCsG
-         /07AwgUP7QFTH7OFYCH2pzXW6emf7R88zGT0Qv4c=
+        b=VCHCQ1EPU/7BtSphSUU89fyBOX8OL5jxR9m6RdCA+gyL1L3MaXQseT+pnGjoCyJw0
+         hgqzGrZTkqux2Cdf8+sEoEv4SVbfowPcrcde05h6JKcqjp9Pg21VBcCoIM1ZTqFdc8
+         xKzNZRPB34rjQg0xGzF+8tZerkxYvwlmrW/BaU80=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mariusz Madej <mariusz.madej@xtrack.com>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Belisko Marek <marek.belisko@gmail.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 26/33] can: m_can: m_can_do_rx_poll(): fix extraneous msg loss warning
+Subject: [PATCH 5.10 160/221] net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
 Date:   Mon, 29 Mar 2021 09:58:11 +0200
-Message-Id: <20210329075606.100957776@linuxfoundation.org>
+Message-Id: <20210329075634.495320332@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit c0e399f3baf42279f48991554240af8c457535d1 ]
+[ Upstream commit 014dfa26ce1c647af09bf506285ef67e0e3f0a6b ]
 
-Message loss from RX FIFO 0 is already handled in
-m_can_handle_lost_msg(), with netdev output included.
+MTU cannot be changed on dwmac-sun8i. (ip link set eth0 mtu xxx returning EINVAL)
+This is due to tx_fifo_size being 0, since this value is used to compute valid
+MTU range.
+Like dwmac-sunxi (with commit 806fd188ce2a ("net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes"))
+dwmac-sun8i need to have tx and rx fifo sizes set.
+I have used values from datasheets.
+After this patch, setting a non-default MTU (like 1000) value works and network is still useable.
 
-Removing this warning also improves driver performance under heavy
-load, where m_can_do_rx_poll() may be called many times before this
-interrupt is cleared, causing this message to be output many
-times (thanks Mariusz Madej for this report).
-
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Link: https://lore.kernel.org/r/20210303103151.3760532-1-torin@maxiluxsystems.com
-Reported-by: Mariusz Madej <mariusz.madej@xtrack.com>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-on: sun8i-h3-orangepi-pc
+Tested-on: sun8i-r40-bananapi-m2-ultra
+Tested-on: sun50i-a64-bananapi-m64
+Tested-on: sun50i-h5-nanopi-neo-plus2
+Tested-on: sun50i-h6-pine-h64
+Fixes: 9f93ac8d408 ("net-next: stmmac: Add dwmac-sun8i")
+Reported-by: Belisko Marek <marek.belisko@gmail.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 0bd7e7164796..197c27d8f584 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -428,9 +428,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+index a5e0eff4a387..9f5ccf1a0a54 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -1217,6 +1217,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
+ 	plat_dat->init = sun8i_dwmac_init;
+ 	plat_dat->exit = sun8i_dwmac_exit;
+ 	plat_dat->setup = sun8i_dwmac_setup;
++	plat_dat->tx_fifo_size = 4096;
++	plat_dat->rx_fifo_size = 16384;
  
- 	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
--		if (rxfs & RXFS_RFL)
--			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
--
- 		m_can_read_fifo(dev, rxfs);
- 
- 		quota--;
+ 	ret = sun8i_dwmac_set_syscon(&pdev->dev, plat_dat);
+ 	if (ret)
 -- 
 2.30.1
 
