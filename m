@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A5334CC80
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FA334CC48
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237214AbhC2JDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:03:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34002 "EHLO mail.kernel.org"
+        id S234903AbhC2I7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234575AbhC2IjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62AA561990;
-        Mon, 29 Mar 2021 08:39:05 +0000 (UTC)
+        id S234921AbhC2Ihg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 099CB61929;
+        Mon, 29 Mar 2021 08:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007146;
-        bh=eB0f3E9CYhRZX991dzExvF66ssWPY14C7K+Ls8IDR2g=;
+        s=korg; t=1617007052;
+        bh=ybjBk6LLyhr+xz1rjzBkqQfJqU0aSoRZsIhrvOoC+xU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TUb/A3oS6CPsgsRYAPxSxqaraayCqif3/07bsfKwpK+fXc47Mnre3SKmx1DwUvG98
-         wapgY4Hf8L9VMLEZkvEn7S2+felv6IRnC2o8FwGgKfvpgO6ZMZDqUa980WbuCHvmJO
-         ioKVm3nnJoiLjfUeYOHP4mpcuzW4PBLKRPKmhRL0=
+        b=BsyOjAw1eMHc7DKFfEYVcFQcMV/hM+4fdK4OOiqNl+5/P+jdANMksGnWpITMJqjQB
+         6dPVvfdgnXUwqBxHsK8UDR9vYghnwU2tmf8UMNLZApI+UTDYBE+urdxC0QUeOmkyEi
+         XN4sIiBImoKMYjy7o8PA0FPlUniTJc9jVGaI8Yh0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Ionela Voinescu <ionela.voinescu@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 203/254] mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources"
-Date:   Mon, 29 Mar 2021 09:58:39 +0200
-Message-Id: <20210329075639.772545376@linuxfoundation.org>
+Subject: [PATCH 5.11 204/254] PM: EM: postpone creating the debugfs dir till fs_initcall
+Date:   Mon, 29 Mar 2021 09:58:40 +0200
+Message-Id: <20210329075639.803178376@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -43,57 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
 
-[ Upstream commit a61f4661fba404418a7c77e86586dc52a58a93c6 ]
+[ Upstream commit fb9d62b27ab1e07d625591549c314b7d406d21df ]
 
-The structures are used as place holders, so they are modified at run-time.
-Obviously they may not be constants.
+The debugfs directory '/sys/kernel/debug/energy_model' is needed before
+the Energy Model registration can happen. With the recent change in
+debugfs subsystem it's not allowed to create this directory at early
+stage (core_initcall). Thus creating this directory would fail.
 
-  BUG: unable to handle page fault for address: d0643220
-  ...
-  CPU: 0 PID: 110 Comm: modprobe Not tainted 5.11.0+ #1
-  Hardware name: Intel Corp. QUARK/GalileoGen2, BIOS 0x01000200 01/01/2014
-  EIP: intel_quark_mfd_probe+0x93/0x1c0 [intel_quark_i2c_gpio]
+Postpone the creation of the EM debug dir to later stage: fs_initcall.
 
-This partially reverts the commit c4a164f41554d2899bed94bdcc499263f41787b4.
+It should be safe since all clients: CPUFreq drivers, Devfreq drivers
+will be initialized in later stages.
 
-While at it, add a comment to avoid similar changes in the future.
+The custom debug log below prints the time of creation the EM debug dir
+at fs_initcall and successful registration of EMs at later stages.
 
-Fixes: c4a164f41554 ("mfd: Constify static struct resources")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Tested-by: Tong Zhang <ztong0001@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+[    1.505717] energy_model: creating rootdir
+[    3.698307] cpu cpu0: EM: created perf domain
+[    3.709022] cpu cpu1: EM: created perf domain
+
+Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/power/energy_model.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-index fe8ca945f367..b67cb0a3ab05 100644
---- a/drivers/mfd/intel_quark_i2c_gpio.c
-+++ b/drivers/mfd/intel_quark_i2c_gpio.c
-@@ -72,7 +72,8 @@ static const struct dmi_system_id dmi_platform_info[] = {
- 	{}
- };
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 1358fa4abfa8..0f4530b3a8cd 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -98,7 +98,7 @@ static int __init em_debug_init(void)
  
--static const struct resource intel_quark_i2c_res[] = {
-+/* This is used as a place holder and will be modified at run-time */
-+static struct resource intel_quark_i2c_res[] = {
- 	[INTEL_QUARK_IORES_MEM] = {
- 		.flags = IORESOURCE_MEM,
- 	},
-@@ -85,7 +86,8 @@ static struct mfd_cell_acpi_match intel_quark_acpi_match_i2c = {
- 	.adr = MFD_ACPI_MATCH_I2C,
- };
- 
--static const struct resource intel_quark_gpio_res[] = {
-+/* This is used as a place holder and will be modified at run-time */
-+static struct resource intel_quark_gpio_res[] = {
- 	[INTEL_QUARK_IORES_MEM] = {
- 		.flags = IORESOURCE_MEM,
- 	},
+ 	return 0;
+ }
+-core_initcall(em_debug_init);
++fs_initcall(em_debug_init);
+ #else /* CONFIG_DEBUG_FS */
+ static void em_debug_create_pd(struct device *dev) {}
+ static void em_debug_remove_pd(struct device *dev) {}
 -- 
 2.30.1
 
