@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB8734CBF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D0334C86C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236660AbhC2IyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55168 "EHLO mail.kernel.org"
+        id S233768AbhC2IWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:22:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234381AbhC2Ifd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 635EE619B9;
-        Mon, 29 Mar 2021 08:35:07 +0000 (UTC)
+        id S232174AbhC2IOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453B761613;
+        Mon, 29 Mar 2021 08:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006907;
-        bh=Knma5qnz+dz3inPfmmtNceFH4HfcpVpK4qQ2jqRcOSA=;
+        s=korg; t=1617005634;
+        bh=BSffEmERICGiTjTedTj6xJLJLjImmOSI6p14Q1RmeOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmfkYSNxgVBDIYgvg8acEPkXSK0Mqm+JDELKc+EKUlytyh2mAVec6QwFRhdpp442C
-         XJambOsI4SYvGKyD63Ow+trNPQsUfXs58CS7TaUlFPbHaD3O4kdQNauIoZuuezmLOD
-         tTt6jj3ca8OViVU0eR10zp0Psq2mkh+P8ALnjS3s=
+        b=S8EQvQAJA7uERZt+tn5zRf5kXK3+GQFd1AT8kj6HTyunIFGBMCQHabDlq8Z/dZmnE
+         9PbiiaBqN3pt3w4ds/BKp2Rpvm3DXLToUBnWOfn35D92+r+nCf2YwArgb5nMCFuVmg
+         RrQh1KSt7G6cMoFi4ZxEPiydh/elYbpUOKtxTCW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 147/254] can: isotp: isotp_setsockopt(): only allow to set low level TX flags for CAN-FD
+Subject: [PATCH 5.4 035/111] nfs: we dont support removing system.nfs4_acl
 Date:   Mon, 29 Mar 2021 09:57:43 +0200
-Message-Id: <20210329075638.043401350@linuxfoundation.org>
+Message-Id: <20210329075616.341903627@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: J. Bruce Fields <bfields@redhat.com>
 
-[ Upstream commit e4912459bd5edd493b61bc7c3a5d9b2eb17f5a89 ]
+[ Upstream commit 4f8be1f53bf615102d103c0509ffa9596f65b718 ]
 
-CAN-FD frames have struct canfd_frame::flags, while classic CAN frames
-don't.
+The NFSv4 protocol doesn't have any notion of reomoving an attribute, so
+removexattr(path,"system.nfs4_acl") doesn't make sense.
 
-This patch refuses to set TX flags (struct
-can_isotp_ll_options::tx_flags) on non CAN-FD isotp sockets.
+There's no documented return value.  Arguably it could be EOPNOTSUPP but
+I'm a little worried an application might take that to mean that we
+don't support ACLs or xattrs.  How about EINVAL?
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://lore.kernel.org/r/20210218215434.1708249-2-mkl@pengutronix.de
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/isotp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/nfs/nfs4proc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 3ef7f78e553b..e32d446c121e 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1228,7 +1228,8 @@ static int isotp_setsockopt(struct socket *sock, int level, int optname,
- 			if (ll.mtu != CAN_MTU && ll.mtu != CANFD_MTU)
- 				return -EINVAL;
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index b2119159dead..304ab4cdaa8c 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -5754,6 +5754,9 @@ static int __nfs4_proc_set_acl(struct inode *inode, const void *buf, size_t bufl
+ 	unsigned int npages = DIV_ROUND_UP(buflen, PAGE_SIZE);
+ 	int ret, i;
  
--			if (ll.mtu == CAN_MTU && ll.tx_dl > CAN_MAX_DLEN)
-+			if (ll.mtu == CAN_MTU &&
-+			    (ll.tx_dl > CAN_MAX_DLEN || ll.tx_flags != 0))
- 				return -EINVAL;
- 
- 			memcpy(&so->ll, &ll, sizeof(ll));
++	/* You can't remove system.nfs4_acl: */
++	if (buflen == 0)
++		return -EINVAL;
+ 	if (!nfs4_server_supports_acls(server))
+ 		return -EOPNOTSUPP;
+ 	if (npages > ARRAY_SIZE(pages))
 -- 
 2.30.1
 
