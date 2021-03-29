@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6E234C49C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F298534C49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhC2HJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:09:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42205 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229873AbhC2HJd (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:09:33 -0400
-IronPort-SDR: 6ghwyP7c+DTwziECI+3wEwOBE4Dlt8I/rmWXH3RyqdPSLqL9ZE3DDvmuIte2dHNuEzUWGQGUyL
- PVlFPy9FM2Pg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="170895413"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="170895413"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:09:32 -0700
-IronPort-SDR: 9y3o4pZzF1F4AeXLRBxzyw1oRrMOMYrkwz3q4jWv3PsAfBBzsx7MT6sP3t4RowLcgPI70td6df
- UlVREcP9DAgg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="444679957"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Mar 2021 00:09:30 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf vendor events: Add missing model numbers
-Date:   Mon, 29 Mar 2021 15:09:03 +0800
-Message-Id: <20210329070903.8894-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230502AbhC2HKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhC2HKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:10:00 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AABC061574;
+        Mon, 29 Mar 2021 00:09:59 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id b16so13023628eds.7;
+        Mon, 29 Mar 2021 00:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8EPqcs4lhEPj51fKobc7SeG/GdrCBROeNix2wAvAO8s=;
+        b=NJeNSszf9STJ/uTyzLNxz2oALfLVFwMa8vlQR9mVSDfZz7aiNKVW4rZKu8mCDoUcb8
+         bK6hKcSxwlSuyL66vpl9/8vNXkrE7aHsAVvQ0sw+yYcXG2O3SJSve+MLl1jASD5trR6p
+         +lAtQ0LC8L+6E8s7ZBEpI7hrY6segCMZWvWCKJC7u8S+fQ84GG5HDV+0GStbisxOv0B9
+         Fioa2ubwZ70YUpYikDtMLInpU+wZHdnt2a+8YY6V1FvSayn16sqpTcP37/BuA8h99C+V
+         o0HopJQtMCFrXEF04AUAk/8h8xG8ynn8aDQ0Ey2urQ7tDMhicx/LMVSp5KNQUxLZ6um2
+         hUNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8EPqcs4lhEPj51fKobc7SeG/GdrCBROeNix2wAvAO8s=;
+        b=WQw59R8wq1D7pcSJY9qr0NN6jxM5eCLp2Sfzpb9ayNP4naszQYUxS+3JPgNR1D7kWn
+         p/+AHr7PNFAzZF39FChTgUPSMaCD+I7xRyaYjPtDB+zPo1McNYi/4o777AS04yQEYl7k
+         q5P8W4wQ4i4P7WyLSSABBLlZtkdaK4reGYsfVJUMZmNMEH/uXBEYdE2q6X9xs3csMzgl
+         j9TM3UBzpDLMTaZYLgs1q1oTAxUuoYX1lopOdzEuzeRQlfnMrGnjxlZ/+IE+StRWrE8L
+         LVDNq8a8nVecDcQWHwz489eI8nTc9lPtBElYSf7Khge7mwVqdZ1mgpWhkk0g7AQdUxA9
+         TOkA==
+X-Gm-Message-State: AOAM5323sMGozIyyahKgXwPqDeV8cNLeXrN87EBgbEwwlw5NJ60UoTil
+        6+XwTmyGbwuZb2BFWbntni5rQKlkUPA=
+X-Google-Smtp-Source: ABdhPJwB7mXbSet2+Q59IdP9PhlFHXAXslHRcTy8lBrIWJXZaPTE/B4OTmnHvl29cCarPWFBRcp/Eg==
+X-Received: by 2002:aa7:dd97:: with SMTP id g23mr26854096edv.154.1617001798142;
+        Mon, 29 Mar 2021 00:09:58 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id b4sm7628441eja.47.2021.03.29.00.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 00:09:56 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 09:10:21 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] spi: dt-bindings: nvidia,tegra210-quad: Use documented
+ compatible "jedec,spi-nor" in example
+Message-ID: <YGF9XcEkQGU/HWfv@orome.fritz.box>
+References: <20210327203357.552794-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="AklUVe8lhldcq41s"
+Content-Disposition: inline
+In-Reply-To: <20210327203357.552794-1-robh@kernel.org>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel has supported COMETLAKE/COMETLAKE_L to use the SKYLAKE
-events and supported TIGERLAKE_L/TIGERLAKE/ROCKETLAKE to use
-the ICELAKE events. But pmu-events mapfile.csv is missing
-these model numbers.
 
-Now add the missing model numbers to mapfile.csv.
+--AklUVe8lhldcq41s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/pmu-events/arch/x86/mapfile.csv | 3 +++
- 1 file changed, 3 insertions(+)
+On Sat, Mar 27, 2021 at 03:33:57PM -0500, Rob Herring wrote:
+> The 'spi-nor' compatible used in the example is not documented. Use the
+> documented 'jedec,spi-nor' compatible instead.
+>=20
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: linux-spi@vger.kernel.org
+> Cc: linux-tegra@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
-index 2f2a209e87e1..6455f06f35d3 100644
---- a/tools/perf/pmu-events/arch/x86/mapfile.csv
-+++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
-@@ -24,6 +24,7 @@ GenuineIntel-6-1F,v2,nehalemep,core
- GenuineIntel-6-1A,v2,nehalemep,core
- GenuineIntel-6-2E,v2,nehalemex,core
- GenuineIntel-6-[4589]E,v24,skylake,core
-+GenuineIntel-6-A[56],v24,skylake,core
- GenuineIntel-6-37,v13,silvermont,core
- GenuineIntel-6-4D,v13,silvermont,core
- GenuineIntel-6-4C,v13,silvermont,core
-@@ -35,6 +36,8 @@ GenuineIntel-6-55-[01234],v1,skylakex,core
- GenuineIntel-6-55-[56789ABCDEF],v1,cascadelakex,core
- GenuineIntel-6-7D,v1,icelake,core
- GenuineIntel-6-7E,v1,icelake,core
-+GenuineIntel-6-8[CD],v1,icelake,core
-+GenuineIntel-6-A7,v1,icelake,core
- GenuineIntel-6-86,v1,tremontx,core
- AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
- AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
--- 
-2.17.1
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--AklUVe8lhldcq41s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBhfV0ACgkQ3SOs138+
+s6EHAw/9GNeVaHkoLSfjhUjshuu9RoNledRj5+lp6/VZiBDq4GAoADW2NsK2mbEO
+ljrU5OwaV+Vw+yMn2XzHSVZr1YQF/xhlDYrNaawKXQJu2eDqJ10k/wMuDzA6LpgZ
+pczvVi2T6p01Lk9KGvoyT29w/3coDDJSPOBUfKVYbZbJqCSkym8P8SWpOUAP0rIv
+pH448ArFh3oM2y8T2R4f/6nVLrKkmb3qDfPKqeSDudzUvjfJ7g2cmCLUD/5C51br
+fReiqRY0Wfn0fo7gw6IRIZvPnSbdujZ6PdIxSBfDm9bJIvp6LeKO6blepFra5JdQ
+1nSLFB447kSeQSmwVIkoNwjjAIhhmLnFvD2OV+xNP4xyDfGlhmT3/iUNZN+pZ7sS
+AOYnpDuSGeHH6XI+n6wTdENPaVV6z15RykEf7/p2YUl5F7zRdL63fQlZpiC2zl/K
+KvgNF3j+TpDSk95obOum6hShBIfj2uJqYyNZH2q4NJMLnCQHLQOPVlcFKVGu+5jR
+QCRef13F4Y3u+lhuyqarBw4pOdcHFHH4v3ONJiRw557aJtxgM7CynA65sq6e8aaC
+orQ83KbCHIyx0ApsSXi9Q2n1lIfVQEVk8gj5AqLyjV2/u83bvyxMWLBw/A8T0PM8
+z+pDKUN+Xb2qJia6dXt7JPUlxr4/hXMGkEgayzfZIKdnOXJicGw=
+=bW8s
+-----END PGP SIGNATURE-----
+
+--AklUVe8lhldcq41s--
