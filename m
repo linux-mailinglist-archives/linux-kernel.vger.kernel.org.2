@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736DC34CB0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024A334C849
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhC2Ims (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:42:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42698 "EHLO mail.kernel.org"
+        id S232609AbhC2IVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232489AbhC2IYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:24:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED92861601;
-        Mon, 29 Mar 2021 08:24:30 +0000 (UTC)
+        id S232034AbhC2ING (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:13:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83E6561477;
+        Mon, 29 Mar 2021 08:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006271;
-        bh=KPcYmxIsnUGx5m7FKjSmupJ5Uhrm65quTBUIhkOylzQ=;
+        s=korg; t=1617005585;
+        bh=+zP0ABLRRc2hPhyeSSLBrxVtLxNsL4UThJPbaTza8nE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O2out5YoqcGo47UJPHOAaKyx9q/5EuBNwEJ0LiPJt7VItWGyvTQnKLNhdssHpQ9Jm
-         sxm7zOmFsiBVBtMmzpiRd1ddXRKt03+s3MlIK3st3ZhDwL118mAgBnN3bf+o1K95kG
-         dF/CE8I4E+P0OXkh5wyxNhBAgCVE1R1axDwIHg6E=
+        b=S189skl+4Vcwn8S5sr/0N5rME/CgyYUFw8cqDLuWtLqkFYEIglMoyfVwPg81GhoZB
+         O5mB3dhhbH453XPedAuxpsikjXek+I5jpFvRO5StUnC3qGj4UCXL5Y4Z1j2d5OfokH
+         MC8gimoeOKDvnysvFBodPu3lcXVDLdGe5aDUWO9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yinjun Zhang <yinjun.zhang@corigine.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 145/221] netfilter: flowtable: Make sure GC works periodically in idle system
+        stable@vger.kernel.org,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.4 048/111] arm64: dts: ls1043a: mark crypto engine dma coherent
 Date:   Mon, 29 Mar 2021 09:57:56 +0200
-Message-Id: <20210329075634.014644035@linuxfoundation.org>
+Message-Id: <20210329075616.791971442@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yinjun Zhang <yinjun.zhang@corigine.com>
+From: Horia Geantă <horia.geanta@nxp.com>
 
-[ Upstream commit 740b486a8d1f966e68ac0666f1fd57441a7cda94 ]
+commit 4fb3a074755b7737c4081cffe0ccfa08c2f2d29d upstream.
 
-Currently flowtable's GC work is initialized as deferrable, which
-means GC cannot work on time when system is idle. So the hardware
-offloaded flow may be deleted for timeout, since its used time is
-not timely updated.
+Crypto engine (CAAM) on LS1043A platform is configured HW-coherent,
+mark accordingly the DT node.
 
-Resolve it by initializing the GC work as delayed work instead of
-deferrable.
+Lack of "dma-coherent" property for an IP that is configured HW-coherent
+can lead to problems, similar to what has been reported for LS1046A.
 
-Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
-Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
-Signed-off-by: Louis Peens <louis.peens@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@netronome.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.8+
+Fixes: 63dac35b58f4 ("arm64: dts: ls1043a: add crypto node")
+Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_flow_table_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 4a4acbba78ff..b03feb6e1226 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -506,7 +506,7 @@ int nf_flow_table_init(struct nf_flowtable *flowtable)
- {
- 	int err;
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -241,6 +241,7 @@
+ 			ranges = <0x0 0x00 0x1700000 0x100000>;
+ 			reg = <0x00 0x1700000 0x0 0x100000>;
+ 			interrupts = <0 75 0x4>;
++			dma-coherent;
  
--	INIT_DEFERRABLE_WORK(&flowtable->gc_work, nf_flow_offload_work_gc);
-+	INIT_DELAYED_WORK(&flowtable->gc_work, nf_flow_offload_work_gc);
- 	flow_block_init(&flowtable->flow_block);
- 	init_rwsem(&flowtable->flow_block_lock);
- 
--- 
-2.30.1
-
+ 			sec_jr0: jr@10000 {
+ 				compatible = "fsl,sec-v5.4-job-ring",
 
 
