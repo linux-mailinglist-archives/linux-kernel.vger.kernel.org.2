@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D5934CF62
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC2A34CF66
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhC2Luk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
+        id S230306AbhC2LvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhC2Lua (ORCPT
+        with ESMTP id S231409AbhC2Luk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:50:30 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABBE3C061574;
-        Mon, 29 Mar 2021 04:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=vP+XJ1pyvg
-        bdFg3L0Y9Fk0jxHhZt3M1r+adOKJxCnW4=; b=iI+Uv9H9d+uCCQWblbJ9h/lP54
-        Qc4700Q4+ZOPuSlLa3lMcyxX6DTjy7lMtZGv7leFnccy6Uhgjt/fnmxyMYDdStt4
-        iRKo7G0mSCRzSeRkaIBQ8J3+jcOlWFGnjWBgS+m3pmLYNXGuXS89G/3Sf9CVAVp+
-        ZHNZIDT67SYNa0a80=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnb3_uvmFg_lBnAA--.904S4;
-        Mon, 29 Mar 2021 19:50:06 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     kuba@kernel.org, simon.horman@netronome.com, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] ethernet/netronome/nfp: Fix a use after free in nfp_bpf_ctrl_msg_rx
-Date:   Mon, 29 Mar 2021 04:50:02 -0700
-Message-Id: <20210329115002.8557-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 29 Mar 2021 07:50:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD719C061574;
+        Mon, 29 Mar 2021 04:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7UpbfvkQlofjez1TPOd4UNQFXQ8qN4tvk7VAKOS6IdU=; b=d1jazCfp9GFupDWuBoEvDZbGQK
+        UZh3r/Vp7n5hXFiWCRo215QQeab+C/jEbXVjcic5hvqv1r6g1ghqgrv2GxYXYmkSyn4iBwAS+LchH
+        7gZ35kDMDQ9572RglcVE7MJEUXddNPs8Kd3T5ODSizVqeAKVKfP64BLPfF5dA2MQFFi+tCK3ySnj/
+        k7bpEyUmvUYCGxB4sNNoCeCl561LuFtPXN/WCumUy0p2m5rBfOZEcaoXWn/52rEV5pZnqgiaHoApH
+        4at1tHWSSFRxtOcbeUlp63TMCdcM7UVOQIapZPgpZ0v8tD3V5ZkJ2SrKZ+7iq52ZFro1OaDrYGS0z
+        nQ1RJ6Zw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQqPU-000cyZ-G1; Mon, 29 Mar 2021 11:50:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D0E3305CC3;
+        Mon, 29 Mar 2021 13:50:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0EFE92071A3DD; Mon, 29 Mar 2021 13:50:19 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 13:50:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
+        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
+        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
+        mascasa@google.com, pcc@google.com, irogers@google.com,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 01/11] perf: Rework perf_event_exit_event()
+Message-ID: <YGG++nxhvVBSEphQ@hirez.programming.kicks-ass.net>
+References: <20210324112503.623833-1-elver@google.com>
+ <20210324112503.623833-2-elver@google.com>
+ <YFxjJam0ErVmk99i@elver.google.com>
+ <YFy3qI65dBfbsZ1z@elver.google.com>
+ <YFzgO0AhGFODmgc1@elver.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBnb3_uvmFg_lBnAA--.904S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XryxKw17AF1ftrWrKF4DArb_yoWftFXEkr
-        1jgFWfG3yUGw15KwsF9r4a93sYkr1qv3s5CFZxKrWSv3y5CF17XrZY9rykZa47Ww4xAa9r
-        Xr9IqryUAa48tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUS_M-UUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFzgO0AhGFODmgc1@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nfp_bpf_ctrl_msg_rx, if
-nfp_ccm_get_type(skb) == NFP_CCM_TYPE_BPF_BPF_EVENT is true, the skb
-will be freed. But the skb is still used by nfp_ccm_rx(&bpf->ccm, skb).
+On Thu, Mar 25, 2021 at 08:10:51PM +0100, Marco Elver wrote:
 
-My patch adds a return when the skb was freed.
+> and therefore synthesized this fix on top:
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 57de8d436efd..e77294c7e654 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -12400,7 +12400,7 @@ static void sync_child_event(struct perf_event *child_event)
+>  	if (child_event->attr.inherit_stat) {
+>  		struct task_struct *task = child_event->ctx->task;
+>  
+> -		if (task)
+> +		if (task && task != TASK_TOMBSTONE)
+>  			perf_event_read_event(child_event, task);
+>  	}
+>  
+> which fixes the problem. My guess is that the parent and child are both
+> racing to exit?
+> 
+> Does that make any sense?
 
-Fixes: bcf0cafab44fd ("nfp: split out common control message handling code")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-index 0e2db6ea79e9..2ec62c8d86e1 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-@@ -454,6 +454,7 @@ void nfp_bpf_ctrl_msg_rx(struct nfp_app *app, struct sk_buff *skb)
- 			dev_consume_skb_any(skb);
- 		else
- 			dev_kfree_skb_any(skb);
-+		return;
- 	}
- 
- 	nfp_ccm_rx(&bpf->ccm, skb);
--- 
-2.25.1
-
-
+Yes, I think it does. ACK
