@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F50634C582
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A4934C85F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhC2IAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:00:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42122 "EHLO mail.kernel.org"
+        id S232546AbhC2IVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231296AbhC2IAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B95161969;
-        Mon, 29 Mar 2021 08:00:28 +0000 (UTC)
+        id S232636AbhC2INk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:13:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B71E96196D;
+        Mon, 29 Mar 2021 08:13:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004832;
-        bh=EWcyRWDCzbio/IzJEMVtJOeSKiPOeEp8HG9IZTLd1No=;
+        s=korg; t=1617005611;
+        bh=42qRDQwA3PzQ8gXbf6yCGbRBR9F6Rn83WITUPpQJlB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZuN5dv8ssR+kzfBuOsfSAHc8L1n/ngE7RZJiZMGOhBW66O6i7toMqRMZb6Ug0GJAK
-         1gtCRpxSp1JbatxKkqrVjw6te7n6kuVpLJvTbxLzwAJKhI4tQepI2VIydGpCmsOlRN
-         jlKoPoI2hoUfukG8945V3SgHL2xbLCwusOG0Bzsk=
+        b=yPqyxWEn/OmmnMPkbPquqIYU8npw5VhW3CnYvxfsUpGo/wi8cICFgXpDtip624Cla
+         NYGKdJXqugnxA/BU/ho5zwE4oAzqSSXrgHda4i7CXtb5NMzQGgZ/QT87IH2stnONdH
+         WovU+Uk3rBy/8BYwoJXIBqshg8KJyrYjTsW84b8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 17/33] squashfs: fix xattr id and id lookup sanity checks
+        stable@vger.kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 054/111] veth: Store queue_mapping independently of XDP prog presence
 Date:   Mon, 29 Mar 2021 09:58:02 +0200
-Message-Id: <20210329075605.825682530@linuxfoundation.org>
+Message-Id: <20210329075616.995366898@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-commit 8b44ca2b634527151af07447a8090a5f3a043321 upstream.
+[ Upstream commit edbea922025169c0e5cdca5ebf7bf5374cc5566c ]
 
-The checks for maximum metadata block size is missing
-SQUASHFS_BLOCK_OFFSET (the two byte length count).
+Currently, veth_xmit() would call the skb_record_rx_queue() only when
+there is XDP program loaded on peer interface in native mode.
 
-Link: https://lkml.kernel.org/r/2069685113.2081245.1614583677427@webmail.123-reg.co.uk
-Fixes: f37aa4c7366e23f ("squashfs: add more sanity checks in id lookup")
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Cc: Sean Nyekjaer <sean@geanix.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+If peer has XDP prog in generic mode, then netif_receive_generic_xdp()
+has a call to netif_get_rxqueue(skb), so for multi-queue veth it will
+not be possible to grab a correct rxq.
+
+To fix that, store queue_mapping independently of XDP prog presence on
+peer interface.
+
+Fixes: 638264dc9022 ("veth: Support per queue XDP ring")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Link: https://lore.kernel.org/bpf/20210303152903.11172-1-maciej.fijalkowski@intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/id.c       |    6 ++++--
- fs/squashfs/xattr_id.c |    6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/veth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/fs/squashfs/id.c
-+++ b/fs/squashfs/id.c
-@@ -110,14 +110,16 @@ __le64 *squashfs_read_id_index_table(str
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end || (end - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 88cfd63f08a6..44ad412f9a06 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -254,8 +254,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (rxq < rcv->real_num_rx_queues) {
+ 		rq = &rcv_priv->rq[rxq];
+ 		rcv_xdp = rcu_access_pointer(rq->xdp_prog);
+-		if (rcv_xdp)
+-			skb_record_rx_queue(skb, rxq);
++		skb_record_rx_queue(skb, rxq);
  	}
  
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= id_table_start || (id_table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= id_table_start || (id_table_start - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
---- a/fs/squashfs/xattr_id.c
-+++ b/fs/squashfs/xattr_id.c
-@@ -122,14 +122,16 @@ __le64 *squashfs_read_xattr_id_table(str
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end || (end - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= table_start || (table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= table_start || (table_start - start) >
-+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
+ 	skb_tx_timestamp(skb);
+-- 
+2.30.1
+
 
 
