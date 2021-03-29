@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEA934CCFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3873534CD1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhC2JYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhC2JYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:24:41 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AFAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:24:41 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id r12so2428368vsj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:24:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nUqVYbOsgzJvFaHO534MA1Tdm9chX2nN9+FCc/y44XE=;
-        b=Guw+BOMais6EakAu9RohwYoxmmtYPJnwLs/4rXBB+5UKeB5Yk2UrYiXEwnNnkllavH
-         gR+Ayxy4vd3HWHJa9R982DXzyD662Iha+wtjn3IWiK37BiidxzCx7+ACDI+z1HXLucj4
-         ajJUXlLUtrwguVPFucQuJIwHsRtyodYMdnz88=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nUqVYbOsgzJvFaHO534MA1Tdm9chX2nN9+FCc/y44XE=;
-        b=AXNxrRxWFc/WiSF8eugJzXJhsib+jphdAACm/iReKxJOJ9AhreJ2WrCd+wwwbFXbzc
-         Cppwiz6O1irLiqDV4M9hZ9gkpL/9vlHkR8Hgh8sNNj/+zf0Ud1Clr1h0+VnND5wJMVYh
-         CoDqO5vyUE6rJYYFUY0LoHAsR789J95nB2tMhWt7D503LR97Njm69L89aFNHjrK4WFyD
-         uIertphZo9foR/gxY1mfXmq5HyHjFyo5gFiosTdc0y7N5AnYHBsEQ0kS9Tgp3s3kEWDr
-         VFOEkgxZkx83xIqwUo8CIqp3rYfYTwaqPahfvojgo0KorQ/E9MR5VgYkIGsc1Jo6t7Sg
-         Rf3w==
-X-Gm-Message-State: AOAM530AA3BG2ZieTyrepwGLHzIqw/99HbC8/2kVShRNEEDwWZWpPwbQ
-        0qsnlxpf3YMhvfWdJ1+oJJRpyDtOhNCrett94XxLbA==
-X-Google-Smtp-Source: ABdhPJyZxxztIJkv/XIaxwQ8J2HG8Af2Yj5L8n64NOybPY5kHyelQ8Yf6zkuJ1gUrjuqCaWQkxiofplCj62NVVMbq+g=
-X-Received: by 2002:a67:63c5:: with SMTP id x188mr1682420vsb.9.1617009880930;
- Mon, 29 Mar 2021 02:24:40 -0700 (PDT)
+        id S232225AbhC2Jay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:30:54 -0400
+Received: from elvis.franken.de ([193.175.24.41]:33835 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231853AbhC2JaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:30:23 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lQoE1-0003qb-01; Mon, 29 Mar 2021 11:30:21 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9A93BC1D90; Mon, 29 Mar 2021 11:24:49 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 11:24:49 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v3] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Message-ID: <20210329092449.GA8484@alpha.franken.de>
+References: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <20210325193755.294925-1-mszeredi@redhat.com> <20210325193755.294925-4-mszeredi@redhat.com>
- <YGDGICWI6o+1zhPI@zeniv-ca.linux.org.uk>
-In-Reply-To: <YGDGICWI6o+1zhPI@zeniv-ca.linux.org.uk>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 29 Mar 2021 11:24:30 +0200
-Message-ID: <CAJfpegun3LHMZ9uVxbf5knZB6w1CnUHHXeYpn_ReCTdXKaFX0w@mail.gmail.com>
-Subject: Re: [PATCH v3 03/18] ovl: stack fileattr ops
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 8:09 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Thu, Mar 25, 2021 at 08:37:40PM +0100, Miklos Szeredi wrote:
-> > Add stacking for the fileattr operations.
-> >
-> > Add hack for calling security_file_ioctl() for now.  Probably better to
-> > have a pair of specific hooks for these operations.
->
-> Umm...  Shouldn't you remove the old code from their ->ioctl() instance?
+On Thu, Mar 25, 2021 at 08:50:01PM +0800, Tiezhu Yang wrote:
+> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
+> archs where they work"), bpf_probe_read{, str}() functions were no longer
+> available on MIPS, so there exist some errors when running bpf program:
+> 
+> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
+> bpf: Failed to load program: Invalid argument
+> [...]
+> 11: (85) call bpf_probe_read#4
+> unknown func bpf_probe_read#4
+> [...]
+> Exception: Failed to load BPF program count_sched: Invalid argument
+> 
+> ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be restricted to archs
+> with non-overlapping address ranges, but they can overlap in EVA mode
+> on MIPS, so select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA in
+> arch/mips/Kconfig, otherwise the bpf old helper bpf_probe_read() will
+> not be available.
+> 
+> This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
+> bpf_probe_read{, str}() on powerpc again").
+> 
+> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v3: Select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
+>     on MIPS.
+> 
+> v2: update the commit message to fix typos found by
+>     Sergei Shtylyov, thank you!
+> 
+>     not longer --> no longer
+>     there exists --> there exist
+> 
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Will do, once fuse gets converted.
+applied to mips-next.
 
-And fuse will get converted, when I manage to decide on the best way to do it:
+Thomas.
 
-1) keep a list of open files for each inode, pick random one for doing
-the ioctl (really shouldn't matter which one)
-
-2) do a sequence of open - [sg]et attr - release for each invocation
-
-Thanks,
-Miklos
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
