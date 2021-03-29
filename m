@@ -2,213 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F015534D9B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A488734D9BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhC2VwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:52:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230280AbhC2Vvu (ORCPT
+        id S230502AbhC2VxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhC2VxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:51:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617054710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fXA20eIAi5LvcsVse5nWTOxsx9pyCiUtKEPvP36UGXE=;
-        b=BpVyN35ybJv5IAA+hDLYWHtdvxN8BsvHGDuRNtv0UzDnxF9sUHUf6SCWCHs+WNRKZMxZuA
-        cPUX6EEG/LDgE5z1TZeTgFTdcLJgcc26tYMjVTjb0ewLY0S+H8A6Cp/0NNQP8ylcV3m6Xv
-        wmIEg/poa94dMdUSqV3VhqeNMoO/1Vs=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-LBhOqR-2PSGts37C1p5wJA-1; Mon, 29 Mar 2021 17:51:48 -0400
-X-MC-Unique: LBhOqR-2PSGts37C1p5wJA-1
-Received: by mail-qv1-f72.google.com with SMTP id n3so4407879qvr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:51:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fXA20eIAi5LvcsVse5nWTOxsx9pyCiUtKEPvP36UGXE=;
-        b=TnjfmqJHLIIWcOyyjrhxP+ynhsxqHSEJUopCdxuMHQbVCi2J/Lm4Yb2vo3gtkAFOh4
-         5X0ygxMN+IdOWKFUDFY8UjosHMfl2TkQAumHbUCyHDYtiUy/JbQD0BsFrtGLGQnTLw/y
-         PcdGGgKXdssYbuFe8ICElnAXQDPKj/rJvcJCDJfPRcEa7dnLogBwWv2YQSXmFqrJDikE
-         JGmB4LeNBA050idaayHJECEiGYDnt7Vn+eaFxmaNR/j5TKxSoJJUQ4nDC2puaJrfLOoj
-         kvOUmijKy5DqcluyLBfl4H2RB81VHVyeUC1+GhpJrm0hxu8A/CeNGg3Gg0dzQjuj3Uny
-         gHKQ==
-X-Gm-Message-State: AOAM532Mx7Ij2L7rcqq05W3etIW8I06BV9AkoK+0EPGlhTmLTZp4w8eT
-        VRN136DxTwEX4d+ZM42JwCZtFY8gt7kyZYnlF29Y4ImQNCgOhigwS6RtTvbD58nRru3xF5OINJ4
-        nzZH2L08fGpqG/a/U2MaUDl0H
-X-Received: by 2002:ac8:72c5:: with SMTP id o5mr11257651qtp.279.1617054707746;
-        Mon, 29 Mar 2021 14:51:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyYqUX7O065WJ20RVczGrXZkxbkD6gVD9ttPGilIKHPwaK9Q7WWKLF50gkedOIcUAW02b2IoA==
-X-Received: by 2002:ac8:72c5:: with SMTP id o5mr11257633qtp.279.1617054707409;
-        Mon, 29 Mar 2021 14:51:47 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id d24sm13846143qkl.49.2021.03.29.14.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 14:51:46 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 17:51:45 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
-Message-ID: <20210329215145.GE429942@xz-x1>
-References: <20210322220848.52162-1-peterx@redhat.com>
- <20210322220848.52162-5-peterx@redhat.com>
- <c65b5f04-4620-4c7e-e71f-91fc8394d164@gmail.com>
- <20210323191618.GJ6486@xz-x1>
- <dbc37834-9fb1-ca44-7ed5-9f8f6cc53741@gmail.com>
+        Mon, 29 Mar 2021 17:53:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4C0C061574;
+        Mon, 29 Mar 2021 14:53:04 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 1FBC41F454FB
+Received: by earth.universe (Postfix, from userid 1000)
+        id 974053C0C96; Mon, 29 Mar 2021 23:53:00 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 23:53:00 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: [RFC] clk: add boot clock support
+Message-ID: <20210329215300.4qnhmm4utmdectk5@earth.universe>
+References: <20210316215123.GA3712408@robh.at.kernel.org>
+ <20210318210318.144961-1-sebastian.reichel@collabora.com>
+ <20210326012720.GA2113788@robh.at.kernel.org>
+ <CAGETcx9JmtbwAq_fpU5KfUzjcTw-uHPqKo3gAGjQwht=wxY8yg@mail.gmail.com>
+ <20210326095212.22ty5ueowiq36y6b@earth.universe>
+ <CAGETcx81=GwChE0eZtKKAk4kDeq2S0ijS8X7FsMnk5HhzAcOhA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vkhbavartwpths7y"
 Content-Disposition: inline
-In-Reply-To: <dbc37834-9fb1-ca44-7ed5-9f8f6cc53741@gmail.com>
+In-Reply-To: <CAGETcx81=GwChE0eZtKKAk4kDeq2S0ijS8X7FsMnk5HhzAcOhA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:32:20PM +0100, Alejandro Colomar (man-pages) wrote:
-> Hi Peter,
-> 
-> On 3/23/21 8:16 PM, Peter Xu wrote:
-> > On Tue, Mar 23, 2021 at 07:11:04PM +0100, Alejandro Colomar (man-pages) wrote:
-> > > > +.TP
-> > > > +.B UFFDIO_COPY_MODE_WP
-> > > > +Copy the page with read-only permission.
-> > > > +This allows the user to trap the next write to the page,
-> > > > +which will block and generate another write-protect userfault message.
-> > > 
-> > > s/write-protect/write-protected/
-> > > ?
-> > 
-> > I think here "write-protect" is the wording I wanted to use, it is the name of
-> > the type of the message in plain text.
-> 
-> Okay.
-> 
-> > 
-> > [...]
-> > 
-> > > > +.B EAGAIN
-> > > > +The process was interrupted and need to retry.
-> > > 
-> > > Maybe: "The process was interrupted; retry this call."?
-> > > I don't know what other pager say about this kind of error.
-> > 
-> > Frankly I see no difference between the two..  If you prefer the latter, I can
-> > switch.
-> 
-> I understand yours, but technically it's a bit incorrect:  The subject of
-> the sentence changes: in "The process was interrupted" it's the process, and
-> in "need to retry" it's [you].  By separating the sentence into two, it's
-> more natural. :)
 
-Sure, I'll change.
+--vkhbavartwpths7y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > 
-> > > 
-> > > > +.TP
-> > > > +.B ENOENT
-> > > > +The range specified in
-> > > > +.I range
-> > > > +is not valid.
-> > > 
-> > > I'm not sure how this is different from the wording above in EINVAL.  An
-> > > "otherwise invalid range" was already giving EINVAL?
-> > 
-> > This can be returned when vma is not found (mwriteprotect_range()):
-> > 
-> > 	err = -ENOENT;
-> > 	dst_vma = find_dst_vma(dst_mm, start, len);
-> > 
-> > 	if (!dst_vma)
-> > 		goto out_unlock;
-> > 
-> > I think maybe I could simply remove this entry, because from an user app
-> > developer pov I'd only be interested in specific error that I'd be able to
-> > detect and (even better) recover from.  For such error I'd say there's not much
-> > to do besides failing the app.
-> 
-> If there's any possibility that the error can happen, it should be
-> documented, even if it's to say "Fatal error; abort!".  Just try to explain
-> the causes and how to avoid causing them and/or possibly what to do when
-> they happen (abort?).
+Hi,
 
-Okay.  Would you mind me keeping my original wording?  Because IMHO that
-exactly does what you said as "trying to explain the causes" and so on:
+On Mon, Mar 29, 2021 at 01:03:20PM -0700, Saravana Kannan wrote:
+> On Fri, Mar 26, 2021 at 2:52 AM Sebastian Reichel
+> <sebastian.reichel@collabora.com> wrote:
+> > On Thu, Mar 25, 2021 at 06:55:52PM -0700, Saravana Kannan wrote:
+> > > On Thu, Mar 25, 2021 at 6:27 PM Rob Herring <robh@kernel.org> wrote:
+> > > > On Thu, Mar 18, 2021 at 10:03:18PM +0100, Sebastian Reichel wrote:
+> > > > > On Congatec's QMX6 system on module one of the i.MX6 fixed clocks
+> > > > > is provided by an I2C RTC. Specifying this properly results in a
+> > > > > circular dependency, since the I2C RTC (and thus its clock) cannot
+> > > > > be initialized without the i.MX6 clock controller being initializ=
+ed.
+> > > > >
+> > > > > With current code the following path is executed when i.MX6 clock
+> > > > > controller is probed (and ckil clock is specified to be the I2C R=
+TC
+> > > > > via DT):
+> > > > >
+> > > > > 1. imx6q_obtain_fixed_clk_hw(ccm_node, "ckil", 0);
+> > > > > 2. of_clk_get_by_name(ccm_node, "ckil");
+> > > > > 3. __of_clk_get(ccm_node, 0, ccm_node->full_name, "ckil");
+> > > > > 4. of_clk_get_hw(ccm_node, 0, "ckil")
+> > > > > 5. spec =3D of_parse_clkspec(ccm_node, 0, "ckil"); // get phandle
+> > > > > 6. of_clk_get_hw_from_clkspec(&spec); // returns -EPROBE_DEFER
+> > > > > 7. error is propagated back, i.MX6q clock controller is probe def=
+erred
+> > > > > 8. I2C controller is never initialized without clock controller
+> > > > >    I2C RTC is never initialized without I2C controller
+> > > > >    CKIL clock is never initialized without I2C RTC
+> > > > >    clock controller is never initialized without CKIL
+> > > > >
+> > > > > To fix the circular dependency this registers a dummy clock when
+> > > > > the RTC clock is tried to be acquired. The dummy clock will later
+> > > > > be unregistered when the proper clock is registered for the RTC
+> > > > > DT node. IIUIC clk_core_reparent_orphans() will take care of
+> > > > > fixing up the clock tree.
+> > > > >
+> > > > > NOTE: For now the patch is compile tested only. If this approach
+> > > > > is the correct one I will do some testing and properly submit thi=
+s.
+> > > > > You can find all the details about the hardware in the following
+> > > > > patchset:
+> > > > >
+> > > > > https://lore.kernel.org/linux-devicetree/20210222171247.97609-1-s=
+ebastian.reichel@collabora.com/
+> > > > >
+> > > > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > > > > ---
+> > > > >  .../bindings/clock/clock-bindings.txt         |   7 +
+> > > > >  drivers/clk/clk.c                             | 146 ++++++++++++=
+++++++
+> > > > >  2 files changed, 153 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/clock/clock-bindin=
+gs.txt b/Documentation/devicetree/bindings/clock/clock-bindings.txt
+> > > > > index f2ea53832ac6..66d67ff4aa0f 100644
+> > > > > --- a/Documentation/devicetree/bindings/clock/clock-bindings.txt
+> > > > > +++ b/Documentation/devicetree/bindings/clock/clock-bindings.txt
+> > > > > @@ -32,6 +32,13 @@ clock-output-names: Recommended to be a list o=
+f strings of clock output signal
+> > > > >                   Clock consumer nodes must never directly refere=
+nce
+> > > > >                   the provider's clock-output-names property.
+> > > > >
+> > > > > +boot-clock-frequencies: This property is used to specify that a =
+clock is enabled
+> > > > > +                     by default with the provided frequency at b=
+oot time. This
+> > > > > +                     is required to break circular clock depende=
+ncies. For clock
+> > > > > +                     providers with #clock-cells =3D 0 this is a=
+ single u32
+> > > > > +                     with the frequency in Hz. Otherwise it's a =
+list of
+> > > > > +                     clock cell specifier + frequency in Hz.
+> > > >
+> > > > Seems alright to me. I hadn't thought about the aspect of needing to
+> > > > know the frequency. Other cases probably don't as you only need the
+> > > > clocks once both components have registered.
+> > > >
+> > > > Note this could be lost being threaded in the other series.
+> > >
+> > > I read this thread and tried to understand it. But my head isn't right
+> > > today (lack of sleep) so I couldn't wrap my head around it. I'll look
+> > > at it again after the weekend. In the meantime, Sebastian can you
+> > > please point me to the DT file and the specific device nodes (names or
+> > > line number) where this cycle is present?
+> >
+> > I have not yet sent an updated DT file, but if you look at this
+> > submission:
+> >
+> > https://lore.kernel.org/linux-devicetree/20210222171247.97609-7-sebasti=
+an.reichel@collabora.com/
+> >
+> > There is a node
+> >
+> > rtc: m41t62@68 { compatible =3D "st,m41t62"; };
+> >
+> > That is an I2C RTC, which provides a 32.768 kHz clock by default
+> > (i.e. after power loss). This clock signal is used to provide the
+> > i.MX6 CKIL:
+> >
+> > ------------------------------------
+> > &clks {
+> >     clocks =3D <&rtc>;
+> >     clock-names =3D "ckil";
+> > };
+> > ------------------------------------
+> >
+> > > Keeping a clock on until all its consumers probe is part of my TODO
+> > > list (next item after fw_devlink=3Don lands). I already have it worki=
+ng
+> > > in AOSP, but need to clean it up for upstream. fw_devlink can also
+> > > break *some* cycles (not all). So I'm wondering if the kernel will
+> > > solve this automatically soon(ish). If it can solve it automatically,
+> > > I'd rather not add new DT bindings because it'll make it more work for
+> > > fw_devlink.
+> >
+> > As written above on Congatec QMX6 an I2C RTC provides one of the
+> > SoC's input frequencies. The SoC basically expects that frequency
+> > to be always enabled and this is what it works like before clock
+> > support had been added to the RTC driver.
+>=20
+> Thanks. I skimmed through the RTC driver code and
+> imx6q_obtain_fixed_clk_hw() and the DT files.
+>=20
+> >
+> > With the link properly being described the Kernel tries to probe
+> > the SoC's clock controller during early boot. Then it tries to get a
+> > reference to the linked clock, using imx6q_obtain_fixed_clk_hw()
+> > and that returns -EPROBE_DEFER (because the RTC driver has not
+> > yet been probed).
+>=20
+> But the RTC (which is a proper I2C device) will never probe before
+> CLK_OF_DECLARE() initializes the core clock controller. So, it's not
+> clear how "protected-clocks" helps here since it doesn't change
+> whether you get -EPROBE_DEFER from imx6q_obtain_fixed_clk_hw() (which
+> is called from the CLK_OF_DECLARE() callback). Oof... I see what you
+> are doing with of_clk_register_boot_clk(). You are having the consumer
+> register its own clock and then use it. Kinda beats the whole point of
+> describing the link in the first place.
 
-        .B ENOENT
-        The range specified in
-        .I range
-        is not valid.
-        For example, the virtual address does not exist,
-        or not registered with userfaultfd write-protect mode.
+I agree, that it does not make sense from a code point of view for
+this platform. All of this is just to make the DT look correct.
+=46rom a platform point of view the most logical way is to handle the
+RTC clock as do-not-touch always enabled fixed-clock.
 
-It's indeed slightly duplicated with EINVAL, but if you don't agree with the
-wording meanwhile if you don't agree on overlapping of the errors, then what I
-need is not reworking this patchset, but proposing a kernel patch to change the
-error retval to make them match. I am not against proposing a kernel patch, but
-I just don't see it extremely necessary.
+> > Without the clock controller basically none of
+> > the i.MX6 SoC drivers can probe including the I2C driver. Without
+> > the I2C bus being registered, the RTC driver never probes and the
+> > boot process is stuck.
+> >
+> > I'm not sure how fw_devlink can help here.
+>=20
+> I'll explain how it'd help. Let's assume "fsl,imx6q-ccm" was
+> implemented as an actual platform device driver and not using
+> CLK_OF_DECLARE() to initialize ALL the clocks. I'll get to this
+> assumption later.
+>=20
+> In that case, fw_devlink will notice this cycle:
+> syntax: consumer -(reason)-> supplier
+> clks -(clocks property)-> rtc -(parent)-> i2c3  -(clocks property)-> clks.
+>=20
+> It'll then reason that it doesn't make sense for a device (clks) to
+> have a supplier (rtc) whose parent (i2c3) in turn depends on the
+> device (clks). It'll then drop the clks -> rtc dependency because
+> that's the most illogical one in terms of probing.
+>=20
+> So all you'd need to do is delete any -EPROBE defer you might do in
+> "fsl,imx6q-ccm" driver for "ckil". For cases where there's no cycle,
+> fw_devlink will make sure the supplier of ckil has probed first. For
+> cases where there's a cycle like this, it'll be smart enough to drop
+> this dependency during probe ordering.
 
-For my own experience on working with the kernel, the return value sometimes is
-not that strict - say, it's hard to control every single bit of the possible
-return code of a syscall/ioctl to reflect everything matching the document.  We
-should always try to do it accurate but it seems not easy to me.  It's also
-hard to write up the document that 100% matching the kernel code, because at
-least that'll require a full-path workthrough of every single piece of kernel
-code that the syscall/ioctl has called, so as to collect all the errors, then
-summarize their meanings.  That could be a lot of work.
+What do you mean drop? Anything using ckil will not be registered?
+That will basically kill the system within a few seconds, since the
+watchdog hardware uses ckil.
 
-> 
-> > 
-> > > 
-> > > > +For example, the virtual address does not exist,
-> > > > +or not registered with userfaultfd write-protect mode.
-> > > > +.TP
-> > > > +.B EFAULT
-> > > > +Encountered a generic fault during processing.
-> > > 
-> > > What is a "generic fault"?
-> > 
-> > For example when the user copy failed due to some reason.  See
-> > userfaultfd_writeprotect():
-> > 
-> > 	if (copy_from_user(&uffdio_wp, user_uffdio_wp,
-> > 			   sizeof(struct uffdio_writeprotect)))
-> > 		return -EFAULT;
-> > 
-> > But I didn't check other places, generally I'd return -EFAULT if I can't find a
-> > proper other replacement which has a clearer meaning.
-> > 
-> > I don't think this is really helpful to user app too because no user app would
-> > start to read this -EFAULT to do anything useful.. how about I drop it too if
-> > you think the description is confusing?
-> 
-> Same as above.
+> I don't know enough about the clocks in imx6q to comment if you can
+> get away without using CLK_OF_DECLARE() at all. The only clock that
+> really needs to use CLK_OF_DECLARE() is any clock that's needed for
+> the scheduler timer. Other than that, everything else can be
+> initialized by a normal driver. Including UART clocks. I can get into
+> more specifics if you go down this path.
+>=20
+> So, that's how fw_devlink could help here if you massage
+> drivers/clk/imx/clk-imx6q.c to be a proper platform driver. You'll
+> have to set fw_devlink=3Don in the kernel commandline though (it's work
+> in progress to set this by default). There are some additional details
+> here about keeping clocks on, but we can discuss the solution for that
+> if it becomes an issue.
+>=20
+> > I see exactly two
+> > options to solve this:
+> >
+> > a) do not describe the link and keep RTC clock enabled somehow.
+> >    (my initial patchset)
+> > b) describe the link, but ignore it during boot.
+> >    (what I'm trying to do here)
+> >
+>=20
+> Even if you completely ignore fw_devlink, why not just model this
+> clock as a fixed-clock in DT for this specific machine?
+>
+> It's clearly expecting the clock to be an always on fixed clock.
 
-Above copy_from_user() is the only place that could trigger -EFAULT so far I
-can find.  So either I can change above into:
+Yes. SoC runs unreliably with this. Downstream vendor kernel does
+not contain a clock driver for the squarewave pin of the RTC (i.e.
+their driver does not yet contain 1373e77b4f10) and just works.
+Upstream kernel disables the RTC's squarewave and then goes into
+reboot loop because of watchdog going crazy.
 
-        .TP
-        .B EFAULT
-        Failure on copying ioctl parameters into the kernel.
+> This will also remove the need for adding "boot-clock-frequencies"
+> binding.  "fixed-clocks" devices are initialized very early on
+> (they use CLK_OF_DECLARE too) even without their parents probing
+> (not sure I agree with this, but this is how it works now).
+>
+> Something like:
+>=20
+> rtc: m41t62@68 {
+> compatible =3D "st,m41t62";
+> reg =3D <0x68>;
+>=20
+>     clock-ckil {
+>                     compatible =3D "fixed-clock";
+>                     #clock-cells =3D <0>;
+>                     clock-frequency =3D <32768>;
+>             };
+> };
+>=20
+> I hope this helps.
 
-Would you think it okay (before I repost)?  I'd still prefer my original
-wording because I bet 90% user developer may not even know what does it mean
-when the kernel cannot copy the user parameter, and what he/she can do with
-it..  However if you think it's proper I'll use it.
+This looks like a complex way of my initial patchset with
+'protected-clocks' property replaced by a fixed-clock
+node. RTC driver needs to check if that exists and avoid
+registering its own clock.
 
-Thanks,
+-- Sebastian
 
--- 
-Peter Xu
+--vkhbavartwpths7y
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBiTDEACgkQ2O7X88g7
++ppCeg//YS0A2pP5kWYsbjQYCUM9tVw9orRFCW5sTm4YuaTmjX1Jpl5Rb/0azuk1
+2Y8twLBPhRnzs/+wqtpOV7qghETyWqXfso/+avfSpoeg3kdh4wPRXpWQwPqZ6Glb
+R1wT+fjKovLvYVnhgghVtjOQlMz52wfHWk5vHEspwc7sfQwMNleIyQciuKd9l6NR
+5OdkXsU+6Z6K1iOQmCn3KAiRtmLwHqqne7zKE5M+FNHbt0FRP0eyJ+HgWeyEvblA
+lN7zlONu8ZRPno40Mfz1ki3pkdy5rZlATfSQl5W1Olf9uInYTvWPSHurcqGhWKW2
+q85gcRCIV1O7TDQK/kNi0IBP2K+xn+kuIgxCKrLKVU+34BMJXMjg5kW/bfDCELV2
+hVgU8Yxm4m0gwz0wmgjnLYXbMgz0buZRSxKT8gmuwhfMNJ7nTD9U69HinFZRMKtR
++jGUCgnz/q6rF0CL7NG/+bdGkD2jUsl+JsN03r8SiNkZrB1uHiWZ/fu5hdnKExYv
+z9KfFSxQpnsl5+fDmuCmuTH4aVABdH3otL0TQq859UhNCdBWr/Sx7eKSlSC2RrlN
+LYdwiNLyCx/xeDFMgpS23kxqAF8xway/n3UJXrxm8oJSy680gvd/yk8i45lz77T/
+v7B4690sNb3XrJJ4ccf9Tuj99CQCAq15zKE+GelK8eSBkYPDvU4=
+=yDed
+-----END PGP SIGNATURE-----
+
+--vkhbavartwpths7y--
