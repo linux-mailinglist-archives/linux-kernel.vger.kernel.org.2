@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2D434C1DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E219334C1E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhC2CIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhC2CHt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:07:49 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3774C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:07:49 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso10862905otq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=33BUB9NPkhecwhiP+JMlpJbR0y9CgZ2Jmpq0oPOxIQk=;
-        b=t5ekW7ea1m1zelWsFej4WsSte5tR40UOSY6GqCEnbLqjkvKS5p3sZ+fspzJPEfLw63
-         GHUvvwWVguMVf1YetY7O6/yUsNOYz5nHm//deRMFDbuC1Cq+QOxFfY8zQNBWQiNgIjiH
-         BuSs2joLe9CQsfUWbCLJlpeQs7qa+z/Ee9hCaweIu0I/CdbbrpdukcJkhNw9oRwHqUfD
-         hV9E2t81cRfBcd0dhaAcziz24vMxG3ykp85aSMqmyCeOzmSCZOPnb0o1Paa5YzxM5O0b
-         HhJNvzatpGdBDSzm3+AxVNunN/z2Dzl1f/qY7ZIbCv9HOAP/Pwq6d7DEgZ1LYkJBHdZ2
-         1kMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=33BUB9NPkhecwhiP+JMlpJbR0y9CgZ2Jmpq0oPOxIQk=;
-        b=ewdAYy2PIobYO2XaxCe5FGjeutCZENDo54nfJwcPLUGa5bwOt7XpWut+xGdXP3c6kx
-         hNXNF0J28yRIfecdQKk/niQxcrr1UUfmGvX+0ZeEk93qyEh8SqjHDW4bTDV/cD9dl191
-         MFNyn0DcunnxF+pjBmV1gllEO0Ga7a2VGppnf17TgcPbWegGQF29ksF1k7ztLo18cfMI
-         zPCkv4m/Jsdln2FsCCPy2jDeW2ClMVe5PrvgVEC+52tf9gjNn6BZjI+SsDhR11k3Ophw
-         KkO4cJVZcTUwqpdKJ6aqBABEt5EcDSbhdriYsy7bmZxI1hcOSkYSpHJPlTnMxLDMBKga
-         zuoQ==
-X-Gm-Message-State: AOAM531/cOvGDHdlC2hDs5/1M2vO0R/XJNGCQPswAlUb8HoUV/cEfdkC
-        W+SLc7t0SneYnwZ7D2mqCkaviUho+ps=
-X-Google-Smtp-Source: ABdhPJynqhS1hSQVjVS0E2kwAS/y30NKm44zTPnN7oCrWGscRQOGLlHhdrfeF16OtQ1pxcRy5dIhbA==
-X-Received: by 2002:a9d:591:: with SMTP id 17mr20267864otd.115.1616983669134;
-        Sun, 28 Mar 2021 19:07:49 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n13sm4038734otk.61.2021.03.28.19.07.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 28 Mar 2021 19:07:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 28 Mar 2021 19:07:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.12-rc5
-Message-ID: <20210329020746.GA250550@roeck-us.net>
-References: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
+        id S230100AbhC2COY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:14:24 -0400
+Received: from ozlabs.org ([203.11.71.1]:57127 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhC2COS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 22:14:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7x2z4SZnz9sVw;
+        Mon, 29 Mar 2021 13:14:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616984044;
+        bh=k9kCaTFSgKm9tQfT1MUAvppABz0an6Oi0rH94pjamiI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=e276cr5qjXA0c5ua2WQptS3A/LM1/RIIee8HExUKua5b4/5qcrHxazaWH2xSDtRbp
+         J8xVr13wVSFG2W5nEEvFDCuef8o9beM8sCAK0ZUrqODYyNd7q8qIvG0CIcYdvoQwRy
+         jcyVKfe4fVqg2uzs5uvu+sGdIB1moRqSUY5BSiRNB8EiuaJFThpkpgz+P4CZaAbgpE
+         i52wiQLa4m2spLGhCg82cuNdzcz/Xezbt66WRaVU/ZK+K7BBB1oPKHblworrwrKR87
+         +CVCtYhFJCXvQg68ENM2wRVjR7bU8bcK7u+/cFk6sA10ENnaqjOuWlj/0lx/pC4fAI
+         xuMrJwBjHMCGQ==
+Date:   Mon, 29 Mar 2021 13:14:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        shaoyunl <shaoyun.liu@amd.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20210329131401.15724766@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/g_NQGzQ9qT.S6dVnkopD=ch";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 04:05:54PM -0700, Linus Torvalds wrote:
-> So if rc4 was perhaps a bit smaller than average, it looks like rc5 is
-> a bigger than average.  We're not breaking any records, but it
-> certainly isn't tiny, and the rc's aren't shrinking.
-> 
-> I'm not overly worried yet, but let's just say that the trend had
-> better not continue, or I'll start feeling like we will need to make
-> this one of those releases that need an rc8.
-> 
-> Most of the changes are drivers (gpu and networking stand out, but
-> there's various other smaller driver updates elsewhere too) with core
-> networking (including bpf) fixes being another noticeable subsystem.
-> 
-> Other than that, there's a smattering of noise all over: minor arch
-> fixes, some filesystem fixes (btrfs, cifs, squashfs), selinux, perf
-> tools, documentation.
-> 
-> io_uring continues to have noise in it, this time mainly due to some
-> signal handling fixes. That removed a fair amount of problematic
-> special casing, but the timing certainly isn't great.
-> 
-> So again, nothing really scary, just rather more than I would have
-> liked to have in an rc5.
-> 
-> Shortlog appended for people who want to delve into the details,
-> 
+--Sig_/g_NQGzQ9qT.S6dVnkopD=ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 458 pass: 457 fail: 1
-Failed tests:
-	openrisc:or1ksim_defconfig
+Hi all,
 
-This is not really a new problem. I enabled devicetree unit tests
-in the openrisc kernel and was rewarded with a crash.
-https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-has all the glorious details.
+Today's linux-next merge of the drm tree got a conflict in:
 
-Guenter
+  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+
+between commits:
+
+  9adb125dde69 ("drm/amdgpu: re-enable suspend phase 2 for S0ix")
+  4021229e32bd ("drm/amdgpu/swsmu: skip gfx cgpg on s0ix suspend")
+  9bb735abcbd8 ("drm/amdgpu: update comments about s0ix suspend/resume")
+
+from Linus' tree and commit:
+
+  e3c1b0712fdb ("drm/amdgpu: Reset the devices in the XGMI hive duirng prob=
+e")
+
+from the drm tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 8a5a8ff5d362,0f82c5d21237..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@@ -2743,16 -2712,15 +2720,25 @@@ static int amdgpu_device_ip_suspend_pha
+  			continue;
+  		}
+ =20
+ +		/* skip suspend of gfx and psp for S0ix
+ +		 * gfx is in gfxoff state, so on resume it will exit gfxoff just
+ +		 * like at runtime. PSP is also part of the always on hardware
+ +		 * so no need to suspend it.
+ +		 */
+ +		if (adev->in_s0ix &&
+ +		    (adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_PSP ||
+ +		     adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_GFX))
+ +			continue;
+ +
++ 		/* skip unnecessary suspend if we do not initialize them yet */
++ 		if (adev->gmc.xgmi.pending_reset &&
++ 		    !(adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_GMC ||
++ 		      adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_SMC ||
++ 		      adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_COMMON =
+||
++ 		      adev->ip_blocks[i].version->type =3D=3D AMD_IP_BLOCK_TYPE_IH)) {
++ 			adev->ip_blocks[i].status.hw =3D false;
++ 			continue;
++ 		}
+  		/* XXX handle errors */
+  		r =3D adev->ip_blocks[i].version->funcs->suspend(adev);
+  		/* XXX handle errors */
+
+--Sig_/g_NQGzQ9qT.S6dVnkopD=ch
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhN+kACgkQAVBC80lX
+0GyIHwf/WDrD2AvhZk2+xd2OuiACRlE6HXHMppYBDQyq7alR4iWQDeunMCdWjBzX
+0QzyE03CWLgiZkJu/RfNkrYej0oNilYuI+zVCuNfb6yAZjfbjg/7oDbI1GaV/aEh
++1RmtZehAyfFG/qWNllHTBpl8cv/RaVeotbLrOwNzToZbVj7hmwSn4JlpEQ/QxB7
+AxvlCb73O3aCtFFcE5xJDjiaU0w4Bc0emgmC3dt3biOX0K+2M4FHGQqBJn9W2ro8
+bzlYEFxz4Fps2fs+hMRWSPs09pbBak4PfFMD9+S7qcWsszywYj8wLX6NuiA+jTfk
+dfE3mOW7Li0ybRZX17B/4gQtfNIRWg==
+=7sDt
+-----END PGP SIGNATURE-----
+
+--Sig_/g_NQGzQ9qT.S6dVnkopD=ch--
