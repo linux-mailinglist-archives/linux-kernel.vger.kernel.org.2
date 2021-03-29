@@ -2,141 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DF134CCF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6233E34CD90
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhC2JYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:24:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231751AbhC2JXt (ORCPT
+        id S232545AbhC2KCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231787AbhC2J1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:23:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617009828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sNdWxHwtlPTSLgjKBuoZy8VuUpSPf2A9bGzW9m7EMqs=;
-        b=B678AYHXDNIsV+qvSc6kD6mzLvkel2O++FltgGBLhQX31mIqli/NwwKA/9ZgjsV5pf3QYD
-        hg7eBnODMcCB8bQMY0zlwYNTS3IzRTTjm9XZAz8LK8bxpcn3Ay7Lh6iZYvZUhJEeELMs4g
-        QAsQSsSxYqXAWKhmJ/O996ultG1JUjc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-3--sNhDeOqyirpC_2KIBtw-1; Mon, 29 Mar 2021 05:23:27 -0400
-X-MC-Unique: 3--sNhDeOqyirpC_2KIBtw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90B12801814;
-        Mon, 29 Mar 2021 09:23:25 +0000 (UTC)
-Received: from [10.36.114.205] (ovpn-114-205.ams2.redhat.com [10.36.114.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2738F5D9F0;
-        Mon, 29 Mar 2021 09:23:23 +0000 (UTC)
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210327180348.137d8fe2@sf>
- <20210327182144.3213887-1-slyfox@gentoo.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v2] mm: page_alloc: ignore init_on_free=1 for
- debug_pagealloc=1
-Message-ID: <e681dbc0-70b9-2185-28bf-012852f39102@redhat.com>
-Date:   Mon, 29 Mar 2021 11:23:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 29 Mar 2021 05:27:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360DEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qZ3M3nbcYig1T0+sNysEy6eKT+TCnQNoW5WfBPGFHhc=; b=Witj7OTUWLQUd8GHfYMEBB4JUF
+        EU4WxwrRURr0mrq9MEhEZCLr5m/6vQjFyrOeHQRMKljvPLPSTe3YnB3H3LybQoqYVFRfNTms9oT/1
+        KJoHeIvMjkPBDWBD6uZiF/VoDf4Uyu3u734FVNoLSIvQZq1JdmwhH6zPBJnqx6I/2/2kYqkC+s7Sj
+        Qln0TGrvpyqEDp2wilKccWI8EqNAUnqL3cdkkbGuNW5t5b5lwfLm+kfxaWuCuCOnIAYbgAexx4xhk
+        vipBUwwd4QQwlWlgeCri+ZzrTB0STT6n6g7Un0NGlvssGYDZn2UK9W0rsp97GWm9BdYARwWCqzdn9
+        8u35KWPw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQoAF-001K1x-Aw; Mon, 29 Mar 2021 09:26:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 918593003E5;
+        Mon, 29 Mar 2021 11:24:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 81707207189D6; Mon, 29 Mar 2021 11:24:19 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 11:24:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 00/15] locking/rtmutex: Spring cleaning
+Message-ID: <YGGcww3coJWhDJBT@hirez.programming.kicks-ass.net>
+References: <20210326152929.709289883@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210327182144.3213887-1-slyfox@gentoo.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326152929.709289883@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.03.21 19:21, Sergei Trofimovich wrote:
-> On !ARCH_SUPPORTS_DEBUG_PAGEALLOC (like ia64) debug_pagealloc=1
-> implies page_poison=on:
-> 
->      if (page_poisoning_enabled() ||
->           (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
->            debug_pagealloc_enabled()))
->              static_branch_enable(&_page_poisoning_enabled);
-> 
-> page_poison=on needs to init_on_free=1.
-> 
-> Before the change id happened too late for the following case:
-> - have PAGE_POISONING=y
-> - have page_poison unset
-> - have !ARCH_SUPPORTS_DEBUG_PAGEALLOC arch (like ia64)
-> - have init_on_free=1
-> - have debug_pagealloc=1
-> 
-> That way we get both keys enabled:
-> - static_branch_enable(&init_on_free);
-> - static_branch_enable(&_page_poisoning_enabled);
-> 
-> which leads to poisoned pages returned for __GFP_ZERO pages.
-> 
-> After the change we execute only:
-> - static_branch_enable(&_page_poisoning_enabled);
-> and ignore init_on_free=1.
-> 
-> CC: Vlastimil Babka <vbabka@suse.cz>
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: linux-mm@kvack.org
-> CC: David Hildenbrand <david@redhat.com>
-> CC: Andrey Konovalov <andreyknvl@gmail.com>
-> Link: https://lkml.org/lkml/2021/3/26/443
+On Fri, Mar 26, 2021 at 04:29:29PM +0100, Thomas Gleixner wrote:
+>  a/kernel/locking/rtmutex-debug.c |  182 -----------------
+>  a/kernel/locking/rtmutex-debug.h |   37 ---
+>  a/kernel/locking/rtmutex.h       |   35 ---
+>  include/linux/rtmutex.h          |   35 ---
+>  kernel/locking/Makefile          |    2 
+>  kernel/locking/rtmutex.c         |  402 ++++++++++++++-------------------------
+>  kernel/locking/rtmutex_common.h  |  104 +++++-----
+>  7 files changed, 202 insertions(+), 595 deletions(-)
 
-Again, Fixes: tag? IOW, which commit initially broke it.
-
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> ---
->   mm/page_alloc.c | 30 +++++++++++++++++-------------
->   1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d57d9b4f7089..10a8a1d28c11 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -764,32 +764,36 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
->    */
->   void init_mem_debugging_and_hardening(void)
->   {
-> +	bool page_poison_requested = page_poisoning_enabled();
-
-s/page_poison_requested/page_poisoning_requested/
-
-And I wonder if you should just initialize to "false" here.
-
-Without CONFIG_PAGE_POISONING, page_poisoning_enabled() will always 
-return false, so it seems unnecessary.
-
-> +
-> +#ifdef CONFIG_PAGE_POISONING
-> +	/*
-> +	 * Page poisoning is debug page alloc for some arches. If
-> +	 * either of those options are enabled, enable poisoning.
-> +	 */
-> +	if (page_poisoning_enabled() ||
-> +	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-> +	      debug_pagealloc_enabled())) {
-> +		static_branch_enable(&_page_poisoning_enabled);
-> +		page_poison_requested = true;
-> +	}
-> +#endif
-
-Apart from that, looks good.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
