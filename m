@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A7A34D945
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54FB34D947
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhC2UoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:44:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39104 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhC2UoN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:44:13 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617050652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzdIA7Tqyx3FWfeIMgfDnt3zetELTcxSkWCFIqnOxeg=;
-        b=t5krLasIZPDSx1tgbcTmmecuFI3Kp6NaS65Ru+gwKkDId0fuKJCXv7v66/oMyGQtbC4lZ2
-        XOuSaYrjINSIqyzkSNdwAh9dflIcIA5Eo7mVSvFy9EPZ4KwjwLHSe4SHUQAT+LJYnjeEN9
-        PxRNHit1trheXc4AOY25z6PkrJnR6Ha0PNWYjcHyhWjJ1AeCY5PdeWCh2o3AJJZxZi0Rs3
-        XbCWVj+/jXpIfrMvRVQnuPax8oFsFVa8+SBpSC4MgDGWlhAJa6K1569WovHUch1J+kKwqQ
-        EHUmqj2H3bU7ic5pxkURLxlrVsQvuUoLvhc6p8Up0uQfB8liXZCH6ecvW8HYQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617050652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzdIA7Tqyx3FWfeIMgfDnt3zetELTcxSkWCFIqnOxeg=;
-        b=bBXxAsOADktXWj2MGiVk11NqrYTy0Sj8N0yhPfRE3blwPn7ekCnuPZvaEikcTiInFXCGeh
-        zgy397NDr8w/IEAA==
-To:     Waiman Long <longman@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, x86@kernel.org,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH v2] x86/apic/vector: Move pr_warn() out of vector_lock
-In-Reply-To: <ce7250cb-2b11-7d83-56b0-00f4f6274dae@redhat.com>
-References: <20210329005236.1218-1-longman@redhat.com> <87tuoub07f.ffs@nanos.tec.linutronix.de> <ce7250cb-2b11-7d83-56b0-00f4f6274dae@redhat.com>
-Date:   Mon, 29 Mar 2021 22:44:11 +0200
-Message-ID: <87czvh7kro.ffs@nanos.tec.linutronix.de>
+        id S230482AbhC2Uq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231134AbhC2Upy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:45:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00E9861924;
+        Mon, 29 Mar 2021 20:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617050754;
+        bh=Tn6txlmT/d5Y6cdWpSK86evJAyAI5ibaFDr8ZhPHJ7I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilUFPx4hc92t2Aj4EYfhXwfBLx9FIgfYhx08XN4s09fLHol3ENfrlglaL1lCfsKaE
+         QBBft64uV6XYkBYaIVasY9QFVUV0Ysk2k/5cHBw+UuGX3E8iOTAl6TOASLulPINCNu
+         NegRpZT1iGQaUWL6fDINp2rePSxHQeySAt6qyuOufxvqzuqTNYd64lPcqcFIKTvAhs
+         fi+JyNlIHBXJpL+ocTnGeKCtU/4NqjHv2OrL3JhRyBLMi2GShp23yJ/5C2fo+rOcLg
+         QkEV5uVt+e1NL3alss/vkRHLGWAmLOWZ5BwgiZ4J931YIcStCVo55Etf9VKzFkBDO0
+         NdTMOLu6/6l8A==
+Date:   Mon, 29 Mar 2021 21:45:43 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
+Message-ID: <20210329204543.GJ5166@sirena.org.uk>
+References: <20210326191906.43567-1-jim2101024@gmail.com>
+ <20210326191906.43567-3-jim2101024@gmail.com>
+ <20210329162539.GG5166@sirena.org.uk>
+ <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
+ <20210329171613.GI5166@sirena.org.uk>
+ <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EVh9lyqKgK19OcEf"
+Content-Disposition: inline
+In-Reply-To: <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
+X-Cookie: Never give an inch!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Waiman,
 
-On Mon, Mar 29 2021 at 15:57, Waiman Long wrote:
-> On 3/29/21 8:42 AM, Thomas Gleixner wrote:
->> On Sun, Mar 28 2021 at 20:52, Waiman Long wrote:
->>> It was found that the following circular locking dependency warning
->>> could happen in some systems:
->>>
->>> [  218.097878] ======================================================
->>> [  218.097879] WARNING: possible circular locking dependency detected
->>> [  218.097880] 4.18.0-228.el8.x86_64+debug #1 Not tainted
->> Reports have to be against latest mainline and not against the random
->> distro frankenkernel of the day. That's nothing new.
->>
->> Plus I was asking you to provide a full splat to look at so this can be
->> discussed _upfront_. Oh well...
->
-> That was the full splat that I can see except the following trailing
-> data:
+--EVh9lyqKgK19OcEf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I meant: Just the splat without yet another eyebleeding patch.
+On Mon, Mar 29, 2021 at 03:48:46PM -0400, Jim Quinlan wrote:
 
->>> [  218.097985] 6 locks held by systemd/1:
->>> [  218.097986]  #0: ffff88822b5cc1e8 (&tty->legacy_mutex){+.+.}, at: tty_init_dev+0x79/0x440
->>> [  218.097989]  #1: ffff88832ee00770 (&port->mutex){+.+.}, at: tty_port_open+0x85/0x190
->>> [  218.097993]  #2: ffff88813be85a88 (&desc->request_mutex){+.+.}, at: __setup_irq+0x249/0x1e60
->>> [  218.097996]  #3: ffff88813be858c0 (&irq_desc_lock_class){-.-.}, at: __setup_irq+0x2d9/0x1e60
->>> [  218.098000]  #4: ffffffff84afca78 (vector_lock){-.-.}, at: x86_vector_activate+0xca/0xab0
->>> [  218.098003]  #5: ffffffff84c27e20 (console_lock){+.+.}, at: vprintk_emit+0x13a/0x450
->> This is a more fundamental problem than just vector lock and the same
->> problem exists with any other printk over serial which is nested in the
->> interrupt activation chain not only on X86.
->
-> That is true. This problem is more generic than just that. I am hoping 
-> that the new printk rewrite may address this problem. I have been 
-> waiting for a while and that work is still not upstream yet. So what is 
-> your current timeline for that? If that will happen soon, I probably 
-> don't need this patch. I send this patch out as I am uncertain about
-> it.
+> I'm not concerned about a namespace collision and I don't think you
+> should be concerned either.  First, this driver is for Broadcom STB
+> PCIe chips and boards, and we also deliver the DT to the customers.
+> We typically do not have any other regulators in the DT besides the
+> ones I am proposing.  For example, the 7216 SOC DT has 0 other
 
-Timeline? You know how kernel development works, right?
+You may not describe these regulators in the DT but you must have other
+regulators in your system, most devices need power to operate.  In any
+case "this works for me with my DT on my system and nobody will ever
+change our reference design" isn't really a great approach, frankly it's
+not a claim I entirely believe and even if it turns out to be true for
+your systems if we establish this as being how regulators work for
+soldered down PCI devices everyone else is going to want to do the same
+thing, most likely making the same claims for how much control they have
+over the systems things will run on.
 
->> But, because I'm curious and printk is a constant source of trouble, I
->> just added unconditional pr_warns into those functions under vector_lock
->> on 5.12-rc5.
->>
->> Still waiting for the lockdep splat to show up while enjoying the
->> trickle of printks over serial.
->>
->> If you really think this is an upstream problem then please provide a
->> corresponding lockdep splat on plain 5.12-rc5 along with a .config and
->> the scenario which triggers this. Not less, not more.
->
-> I will try to reproduce this problem with an upstream kernel.
+> regulators -- no namespace collision possible.  Our DT-generating
+> scripts also flag namespace issues.  I admit that this driver is also
+> used by RPi chips, but I can easily exclude this feature from the RPI
+> if Nicolas has any objection.
 
-Yes please.
+That's certainly an issue, obviously the RPI is the sort of system where
+I'd imagine this would be particularly useful.
 
-Thanks,
+> Further, if you want, I can restrict the search to the two regulators
+> I am proposing to add to pci-bus.yaml:  "vpcie12v-supply" and
+> "vpcie3v3-supply".
 
-        tglx
+No, that doesn't help - what happens if someone uses separate regulators
+for different PCI devices?  The reason the supplies are device namespaced
+is that each device can look up it's own supplies and label them how it
+wants without reference to anything else on the board.  Alternatively
+what happens if some device has another supply it needs to power on (eg,
+something that wants a clean LDO output for analogue use)?
+
+> Is the above enough to alleviate your concerns about global namespace collision?
+
+Not really.  TBH it looks like this driver is keeping the regulators
+enabled all the time except for suspend and resume anyway, if that's all
+that's going on I'd have thought that you wouldn't need any explicit
+management in the driver anyway?  Just mark the regualtors as always on
+and set up an appropriate suspend mode configuration and everything
+should work without the drivers doing anything.  Unless your PMIC isn't
+able to provide separate suspend mode configuration for the regulators?
+
+--EVh9lyqKgK19OcEf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBiPHYACgkQJNaLcl1U
+h9DcTgf+OZsWq4Kiw9u8jT0Zh0uDMR6gGhzcyfOahqmUWp9hC1kN/GHXDI3w4TeJ
+hP0LpX8fmakwqDIpzcznWQlCXP/ugmDG4NUXvYUdZuXA2eVLtjLJBBDOLR1OLp/b
+qVagVEC1Mj56FjMqlM2a76+DEj9q3l0MbYPlEldMKuxv3PeAK2QswG2jfJkITImg
+Ab9UhzhJb7ocDfTcgxOEyYhzhFWppAJrJZ+ZprHqDktAJAz9g6SP/kzAWNM+/X33
+iXmxoro4y4Ri2cRoZWLZRlFaQqSraj0ayRuTMebWd0FCUlG6eaiFGUYNc52+jHdy
+yaHM7wnjraDdfm4WS1wVzjHh+I0YDA==
+=rc28
+-----END PGP SIGNATURE-----
+
+--EVh9lyqKgK19OcEf--
