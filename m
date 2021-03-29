@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8E634CB9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D134334CB9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234965AbhC2IuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:50:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53704 "EHLO mail.kernel.org"
+        id S235600AbhC2IuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:50:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234599AbhC2IdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234600AbhC2IdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:33:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62435619B7;
-        Mon, 29 Mar 2021 08:32:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD073619BA;
+        Mon, 29 Mar 2021 08:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006731;
-        bh=4ZlL0hiTebv8fuSRjHJIYa0eZHyLJzoBSI9l82OeImo=;
+        s=korg; t=1617006736;
+        bh=FJSI5A/QV1SqGxKsCKmziCupLjs37PH95WhuTZ5/Ioo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1rwjzN029F8ObyPaGCNwXBbYTeNUFxvKxRLX2dCc8p8F3mHSvE4RBrGp1SKbplrNt
-         jV/HKtU41trUbEu29JBVtP/meJZo7Zsii5nVYoAJUrZLRiqBADbfBuw541scBJu9Ch
-         1PX7aXMS0VrNnoWkhfd2lMw5TA6zrGAe0t6byE5o=
+        b=08mSjfy+Iw8LExRtn9Gnu38OvUaFEYHhmE5jA/fQ2M+FpyE0z3CfnKJJ8xLxyFFFD
+         DaOhbrtzcHyNKHWfbalLUV95zPoezJ0H54Clb8suqkE13XBm6JTAfv5CRutkzA51Pq
+         H+Z2feWEaT1zCuuXGswpqy74JV3DHK67LM3v/b/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stuart Shelton <srcshelton@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>,
+        stable@vger.kernel.org, Robbie Ko <robbieko@synology.com>,
+        Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.11 071/254] btrfs: fix sleep while in non-sleep context during qgroup removal
-Date:   Mon, 29 Mar 2021 09:56:27 +0200
-Message-Id: <20210329075635.486737742@linuxfoundation.org>
+Subject: [PATCH 5.11 072/254] btrfs: fix subvolume/snapshot deletion not triggered on mount
+Date:   Mon, 29 Mar 2021 09:56:28 +0200
+Message-Id: <20210329075635.518142775@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -42,100 +42,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-commit 0bb788300990d3eb5582d3301a720f846c78925c upstream.
+commit 8d488a8c7ba22d7112fbf6b0a82beb1cdea1c0d5 upstream.
 
-While removing a qgroup's sysfs entry we end up taking the kernfs_mutex,
-through kobject_del(), while holding the fs_info->qgroup_lock spinlock,
-producing the following trace:
+During the mount procedure we are calling btrfs_orphan_cleanup() against
+the root tree, which will find all orphans items in this tree. When an
+orphan item corresponds to a deleted subvolume/snapshot (instead of an
+inode space cache), it must not delete the orphan item, because that will
+cause btrfs_find_orphan_roots() to not find the orphan item and therefore
+not add the corresponding subvolume root to the list of dead roots, which
+results in the subvolume's tree never being deleted by the cleanup thread.
 
-  [821.843637] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:281
-  [821.843641] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 28214, name: podman
-  [821.843644] CPU: 3 PID: 28214 Comm: podman Tainted: G        W         5.11.6 #15
-  [821.843646] Hardware name: Dell Inc. PowerEdge R330/084XW4, BIOS 2.11.0 12/08/2020
-  [821.843647] Call Trace:
-  [821.843650]  dump_stack+0xa1/0xfb
-  [821.843656]  ___might_sleep+0x144/0x160
-  [821.843659]  mutex_lock+0x17/0x40
-  [821.843662]  kernfs_remove_by_name_ns+0x1f/0x80
-  [821.843666]  sysfs_remove_group+0x7d/0xe0
-  [821.843668]  sysfs_remove_groups+0x28/0x40
-  [821.843670]  kobject_del+0x2a/0x80
-  [821.843672]  btrfs_sysfs_del_one_qgroup+0x2b/0x40 [btrfs]
-  [821.843685]  __del_qgroup_rb+0x12/0x150 [btrfs]
-  [821.843696]  btrfs_remove_qgroup+0x288/0x2a0 [btrfs]
-  [821.843707]  btrfs_ioctl+0x3129/0x36a0 [btrfs]
-  [821.843717]  ? __mod_lruvec_page_state+0x5e/0xb0
-  [821.843719]  ? page_add_new_anon_rmap+0xbc/0x150
-  [821.843723]  ? kfree+0x1b4/0x300
-  [821.843725]  ? mntput_no_expire+0x55/0x330
-  [821.843728]  __x64_sys_ioctl+0x5a/0xa0
-  [821.843731]  do_syscall_64+0x33/0x70
-  [821.843733]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [821.843736] RIP: 0033:0x4cd3fb
-  [821.843741] RSP: 002b:000000c000906b20 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
-  [821.843744] RAX: ffffffffffffffda RBX: 000000c000050000 RCX: 00000000004cd3fb
-  [821.843745] RDX: 000000c000906b98 RSI: 000000004010942a RDI: 000000000000000f
-  [821.843747] RBP: 000000c000907cd0 R08: 000000c000622901 R09: 0000000000000000
-  [821.843748] R10: 000000c000d992c0 R11: 0000000000000206 R12: 000000000000012d
-  [821.843749] R13: 000000000000012c R14: 0000000000000200 R15: 0000000000000049
+The same applies to the remount from RO to RW path.
 
-Fix this by removing the qgroup sysfs entry while not holding the spinlock,
-since the spinlock is only meant for protection of the qgroup rbtree.
+Fix this by making btrfs_find_orphan_roots() run before calling
+btrfs_orphan_cleanup() against the root tree.
 
-Reported-by: Stuart Shelton <srcshelton@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/7A5485BB-0628-419D-A4D3-27B1AF47E25A@gmail.com/
-Fixes: 49e5fb46211de0 ("btrfs: qgroup: export qgroups in sysfs")
-CC: stable@vger.kernel.org # 5.10+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+A test case for fstests will follow soon.
+
+Reported-by: Robbie Ko <robbieko@synology.com>
+Link: https://lore.kernel.org/linux-btrfs/b19f4310-35e0-606e-1eea-2dd84d28c5da@synology.com/
+Fixes: 638331fa56caea ("btrfs: fix transaction leak and crash after cleaning up orphans on RO mount")
+CC: stable@vger.kernel.org # 5.11+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/qgroup.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/btrfs/disk-io.c |   16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -226,7 +226,6 @@ static void __del_qgroup_rb(struct btrfs
- {
- 	struct btrfs_qgroup_list *list;
- 
--	btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
- 	list_del(&qgroup->dirty);
- 	while (!list_empty(&qgroup->groups)) {
- 		list = list_first_entry(&qgroup->groups,
-@@ -243,7 +242,6 @@ static void __del_qgroup_rb(struct btrfs
- 		list_del(&list->next_member);
- 		kfree(list);
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2914,6 +2914,21 @@ int btrfs_start_pre_rw_mount(struct btrf
+ 		}
  	}
--	kfree(qgroup);
- }
  
- /* must be called with qgroup_lock held */
-@@ -569,6 +567,8 @@ void btrfs_free_qgroup_config(struct btr
- 		qgroup = rb_entry(n, struct btrfs_qgroup, node);
- 		rb_erase(n, &fs_info->qgroup_tree);
- 		__del_qgroup_rb(fs_info, qgroup);
-+		btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
-+		kfree(qgroup);
- 	}
- 	/*
- 	 * We call btrfs_free_qgroup_config() when unmounting
-@@ -1578,6 +1578,14 @@ int btrfs_remove_qgroup(struct btrfs_tra
- 	spin_lock(&fs_info->qgroup_lock);
- 	del_qgroup_rb(fs_info, qgroupid);
- 	spin_unlock(&fs_info->qgroup_lock);
-+
 +	/*
-+	 * Remove the qgroup from sysfs now without holding the qgroup_lock
-+	 * spinlock, since the sysfs_remove_group() function needs to take
-+	 * the mutex kernfs_mutex through kernfs_remove_by_name_ns().
++	 * btrfs_find_orphan_roots() is responsible for finding all the dead
++	 * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and load
++	 * them into the fs_info->fs_roots_radix tree. This must be done before
++	 * calling btrfs_orphan_cleanup() on the tree root. If we don't do it
++	 * first, then btrfs_orphan_cleanup() will delete a dead root's orphan
++	 * item before the root's tree is deleted - this means that if we unmount
++	 * or crash before the deletion completes, on the next mount we will not
++	 * delete what remains of the tree because the orphan item does not
++	 * exists anymore, which is what tells us we have a pending deletion.
 +	 */
-+	btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
-+	kfree(qgroup);
++	ret = btrfs_find_orphan_roots(fs_info);
++	if (ret)
++		goto out;
++
+ 	ret = btrfs_cleanup_fs_roots(fs_info);
+ 	if (ret)
+ 		goto out;
+@@ -2973,7 +2988,6 @@ int btrfs_start_pre_rw_mount(struct btrf
+ 		}
+ 	}
+ 
+-	ret = btrfs_find_orphan_roots(fs_info);
  out:
- 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
  	return ret;
+ }
 
 
