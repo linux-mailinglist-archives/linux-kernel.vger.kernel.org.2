@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3196C34CBE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEC234CA51
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbhC2Iyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:54:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55278 "EHLO mail.kernel.org"
+        id S234462AbhC2Igm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234020AbhC2Ifo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8990361932;
-        Mon, 29 Mar 2021 08:35:12 +0000 (UTC)
+        id S233778AbhC2IWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCE276044F;
+        Mon, 29 Mar 2021 08:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006913;
-        bh=74oYEkzNjJ8Z+4umsu4SClRr6oN6d0M/PORPD1mKRcQ=;
+        s=korg; t=1617006145;
+        bh=UEQoMXZ6WL4a5lcnMnICIkdCGCryPENNnGQhxaMdqrs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDrnA49XZom3QWPA/aXflpEuXb9dEy8ygsoeiNVKqVCySI4512PXQLPoGkzw8Jn/X
-         3CoJ61Ht/A7nVmAd1TZ8IJMbtyPR6pRDfEdvSpUkijkldrHpVYG6YIVeMnalp1GLYR
-         umHVAVivt7/sojtbLcWkN3JDsPNPWh8EGX1cr4R4=
+        b=orrk2BT88LizM5aQe7WTw9sDE1KIt+1Vedlj/F8mgKK64bhAssE+3Mmx0e+0X63Nq
+         3gp/MW3vKnmVxD2YmRXIsNyv98AYULeV74TSWBuamVNmkG0aPZlKjSoUmSyq8iQJ79
+         TTFEl4k1npZ1ckywEBDZg1zNO6oBXVlJkSUTyX2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 148/254] can: isotp: TX-path: ensure that CAN frame flags are initialized
+Subject: [PATCH 5.10 133/221] mac80211: fix rate mask reset
 Date:   Mon, 29 Mar 2021 09:57:44 +0200
-Message-Id: <20210329075638.072526453@linuxfoundation.org>
+Message-Id: <20210329075633.630474453@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit d4eb538e1f48b3cf7bb6cb9eb39fe3e9e8a701f7 ]
+[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
 
-The previous patch ensures that the TX flags (struct
-can_isotp_ll_options::tx_flags) are 0 for classic CAN frames or a user
-configured value for CAN-FD frames.
+Coverity reported the strange "if (~...)" condition that's
+always true. It suggested that ! was intended instead of ~,
+but upon further analysis I'm convinced that what really was
+intended was a comparison to 0xff/0xffff (in HT/VHT cases
+respectively), since this indicates that all of the rates
+are enabled.
 
-This patch sets the CAN frames flags unconditionally to the ISO-TP TX
-flags, so that they are initialized to a proper value. Otherwise when
-running "candump -x" on a classical CAN ISO-TP stream shows wrongly
-set "B" and "E" flags.
+Change the comparison accordingly.
 
-| $ candump any,0:0,#FFFFFFFF -extA
-| [...]
-| can0  TX B E  713   [8]  2B 0A 0B 0C 0D 0E 0F 00
-| can0  TX B E  713   [8]  2C 01 02 03 04 05 06 07
-| can0  TX B E  713   [8]  2D 08 09 0A 0B 0C 0D 0E
-| can0  TX B E  713   [8]  2E 0F 00 01 02 03 04 05
+I'm guessing this never really mattered because a reset to
+not having a rate mask is basically equivalent to having a
+mask that enables all rates.
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://lore.kernel.org/r/20210218215434.1708249-2-mkl@pengutronix.de
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
+Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/isotp.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ net/mac80211/cfg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index e32d446c121e..430976485d95 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -215,8 +215,7 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 	if (ae)
- 		ncf->data[0] = so->opt.ext_address;
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 7276e66ae435..2bf6271d9e3f 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -2961,14 +2961,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
+ 			continue;
  
--	if (so->ll.mtu == CANFD_MTU)
--		ncf->flags = so->ll.tx_flags;
-+	ncf->flags = so->ll.tx_flags;
+ 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
+-			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
+ 				sdata->rc_has_mcs_mask[i] = true;
+ 				break;
+ 			}
+ 		}
  
- 	can_send_ret = can_send(nskb, 1);
- 	if (can_send_ret)
-@@ -790,8 +789,7 @@ isotp_tx_burst:
- 		so->tx.sn %= 16;
- 		so->tx.bs++;
- 
--		if (so->ll.mtu == CANFD_MTU)
--			cf->flags = so->ll.tx_flags;
-+		cf->flags = so->ll.tx_flags;
- 
- 		skb->dev = dev;
- 		can_skb_set_owner(skb, sk);
-@@ -939,8 +937,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	}
- 
- 	/* send the first or only CAN frame */
--	if (so->ll.mtu == CANFD_MTU)
--		cf->flags = so->ll.tx_flags;
-+	cf->flags = so->ll.tx_flags;
- 
- 	skb->dev = dev;
- 	skb->sk = sk;
+ 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
+-			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
+ 				sdata->rc_has_vht_mcs_mask[i] = true;
+ 				break;
+ 			}
 -- 
 2.30.1
 
