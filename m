@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC84034C64B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1868E34CC44
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhC2IGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:06:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46164 "EHLO mail.kernel.org"
+        id S234677AbhC2I67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhC2ID6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F52E6193A;
-        Mon, 29 Mar 2021 08:03:57 +0000 (UTC)
+        id S234914AbhC2Ihf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 468306196E;
+        Mon, 29 Mar 2021 08:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005038;
-        bh=21+1aaAoxth4P8EL7aecZpE5xGGU6U8HEhnpI45xmTc=;
+        s=korg; t=1617007044;
+        bh=6GlC2+1Kik4I1fN3VDmxXUiskJCS6rKSVODO2sGCz2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AEHUnXvzN+mW4OviXDlnzn7jKqhaUV2obx6Rdp6l8I+o4p/r5YuO7oNGSCco5Qga9
-         GdCkbZLvl2U7MdjIwBzCrodX+qoNsJE2X12D9Pls/4/CiFER5J8jGWkhC2HRdiQpVr
-         QVMy6nJtvMc26dagTxavfinmJASF+hTRt82m9cjw=
+        b=hX+5E4ExGWB8fkGDYphC+pCRsEyZ3cRxD7QDmlmGCmqUXOh8DTT4jOa7Q45fMUyIz
+         Xwc5H8agupfuxKpvZ+xu1ZheRAyygXFJ4HTr37+RcU53z1KW3qRVSBTRro/Gs+iAFM
+         zCOzW7ifZ3the3DufMMpHft2fEvIKHOg8HmoAADg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 26/53] net/qlcnic: Fix a use after free in qlcnic_83xx_get_minidump_template
+Subject: [PATCH 5.11 165/254] net/sched: cls_flower: fix only mask bit check in the validate_ct_state
 Date:   Mon, 29 Mar 2021 09:58:01 +0200
-Message-Id: <20210329075608.393699883@linuxfoundation.org>
+Message-Id: <20210329075638.602018954@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: wenxu <wenxu@ucloud.cn>
 
-[ Upstream commit db74623a3850db99cb9692fda9e836a56b74198d ]
+[ Upstream commit afa536d8405a9ca36e45ba035554afbb8da27b82 ]
 
-In qlcnic_83xx_get_minidump_template, fw_dump->tmpl_hdr was freed by
-vfree(). But unfortunately, it is used when extended is true.
+The ct_state validate should not only check the mask bit and also
+check mask_bit & key_bit..
+For the +new+est case example, The 'new' and 'est' bits should be
+set in both state_mask and state flags. Or the -new-est case also
+will be reject by kernel.
+When Openvswitch with two flows
+ct_state=+trk+new,action=commit,forward
+ct_state=+trk+est,action=forward
 
-Fixes: 7061b2bdd620e ("qlogic: Deletion of unnecessary checks before two function calls")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+A packet go through the kernel  and the contrack state is invalid,
+The ct_state will be +trk-inv. Upcall to the ovs-vswitchd, the
+finally dp action will be drop with -new-est+trk.
+
+Fixes: 1bcc51ac0731 ("net/sched: cls_flower: Reject invalid ct_state flags rules")
+Fixes: 3aed8b63336c ("net/sched: cls_flower: validate ct_state for invalid and reply flags")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/sched/cls_flower.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-index 5174e0bd75d1..625336264a44 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-@@ -1426,6 +1426,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
+diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+index 46c1b3e9f66a..14316ba9b3b3 100644
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -1432,7 +1432,7 @@ static int fl_set_key_ct(struct nlattr **tb,
+ 			       &mask->ct_state, TCA_FLOWER_KEY_CT_STATE_MASK,
+ 			       sizeof(key->ct_state));
  
- 	if (fw_dump->tmpl_hdr == NULL || current_version > prev_version) {
- 		vfree(fw_dump->tmpl_hdr);
-+		fw_dump->tmpl_hdr = NULL;
- 
- 		if (qlcnic_83xx_md_check_extended_dump_capability(adapter))
- 			extended = !qlcnic_83xx_extend_md_capab(adapter);
-@@ -1444,6 +1445,8 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
- 			struct qlcnic_83xx_dump_template_hdr *hdr;
- 
- 			hdr = fw_dump->tmpl_hdr;
-+			if (!hdr)
-+				return;
- 			hdr->drv_cap_mask = 0x1f;
- 			fw_dump->cap_mask = 0x1f;
- 			dev_info(&pdev->dev,
+-		err = fl_validate_ct_state(mask->ct_state,
++		err = fl_validate_ct_state(key->ct_state & mask->ct_state,
+ 					   tb[TCA_FLOWER_KEY_CT_STATE_MASK],
+ 					   extack);
+ 		if (err)
 -- 
 2.30.1
 
