@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E899334C766
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE9334C6CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhC2IPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52914 "EHLO mail.kernel.org"
+        id S232632AbhC2IKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:10:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232517AbhC2IJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B2C61494;
-        Mon, 29 Mar 2021 08:09:17 +0000 (UTC)
+        id S231629AbhC2IGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 980D9619B4;
+        Mon, 29 Mar 2021 08:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005358;
-        bh=lz9v7f47yDgMMpBmFT6qfI1keNphLwq4X56bspJJxwE=;
+        s=korg; t=1617005168;
+        bh=6ux4RafXB43Riu8oKSioC4axeyE7JJrDxxNnz+duII8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tAbNcZlj3z5gtZZwOOYvlZA7UEk39OXh8mM0Kggtp+3Zt3ew9VTWPu39b2JX1GZxu
-         4epdHcpZgfDxNaQeJmxW11BXVKxSwvWnoPb8/BQMUpsA/diDX8dgZp87nYjdi+3fpl
-         jppXjT3jystH476nzRGZUlGj7MHg7x8+R3cagohw=
+        b=uLkFT6jbcyh4fhLVXAm+h7McqE8efbHssjF+PXj3y7BxtmE5cJxFHex/XsPZ2fZLE
+         wox8+1xKpFNb+V8gmYA7jhHN/mkEoMbdzP9jc7qGtum81MX23IfUeABv3SG82Yx46u
+         4Mu/FEcWXV3Is5TcXbUM0M0UiLa7cFWCXrmUf79M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 53/72] net/mlx5e: Fix error path for ethtool set-priv-flag
+Subject: [PATCH 4.14 49/59] ACPI: scan: Use unique number for instance_no
 Date:   Mon, 29 Mar 2021 09:58:29 +0200
-Message-Id: <20210329075612.020145153@linuxfoundation.org>
+Message-Id: <20210329075610.490962494@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 4eacfe72e3e037e3fc019113df32c39a705148c2 ]
+[ Upstream commit eb50aaf960e3bedfef79063411ffd670da94b84b ]
 
-Expose error value when failing to comply to command:
-$ ethtool --set-priv-flags eth2 rx_cqe_compress [on/off]
+The decrementation of acpi_device_bus_id->instance_no
+in acpi_device_del() is incorrect, because it may cause
+a duplicate instance number to be allocated next time
+a device with the same acpi_device_bus_id is added.
 
-Fixes: be7e87f92b58 ("net/mlx5e: Fail safe cqe compressing/moderation mode setting")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Replace above mentioned approach by using IDA framework.
+
+While at it, define the instance range to be [0, 4096).
+
+Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
+Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/acpi/internal.h |  6 +++++-
+ drivers/acpi/scan.c     | 33 ++++++++++++++++++++++++++++-----
+ include/acpi/acpi_bus.h |  1 +
+ 3 files changed, 34 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index a383276eb816..3d824c20d2a4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -1460,6 +1460,7 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
- {
- 	struct mlx5e_priv *priv = netdev_priv(netdev);
- 	struct mlx5_core_dev *mdev = priv->mdev;
-+	int err;
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index e6b10aad55d5..6ac1c6b04199 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -18,6 +18,8 @@
+ #ifndef _ACPI_INTERNAL_H_
+ #define _ACPI_INTERNAL_H_
  
- 	if (!MLX5_CAP_GEN(mdev, cqe_compression))
- 		return -EOPNOTSUPP;
-@@ -1469,7 +1470,10 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
- 		return -EINVAL;
- 	}
- 
--	mlx5e_modify_rx_cqe_compression_locked(priv, enable);
-+	err = mlx5e_modify_rx_cqe_compression_locked(priv, enable);
-+	if (err)
-+		return err;
++#include <linux/idr.h>
 +
- 	priv->channels.params.rx_cqe_compress_def = enable;
+ #define PREFIX "ACPI: "
  
- 	return 0;
+ int early_acpi_osi_init(void);
+@@ -97,9 +99,11 @@ void acpi_scan_table_handler(u32 event, void *table, void *context);
+ 
+ extern struct list_head acpi_bus_id_list;
+ 
++#define ACPI_MAX_DEVICE_INSTANCES	4096
++
+ struct acpi_device_bus_id {
+ 	const char *bus_id;
+-	unsigned int instance_no;
++	struct ida instance_ida;
+ 	struct list_head node;
+ };
+ 
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 9ec463da9a50..57a213466721 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -481,9 +481,8 @@ static void acpi_device_del(struct acpi_device *device)
+ 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
+ 		if (!strcmp(acpi_device_bus_id->bus_id,
+ 			    acpi_device_hid(device))) {
+-			if (acpi_device_bus_id->instance_no > 0)
+-				acpi_device_bus_id->instance_no--;
+-			else {
++			ida_simple_remove(&acpi_device_bus_id->instance_ida, device->pnp.instance_no);
++			if (ida_is_empty(&acpi_device_bus_id->instance_ida)) {
+ 				list_del(&acpi_device_bus_id->node);
+ 				kfree_const(acpi_device_bus_id->bus_id);
+ 				kfree(acpi_device_bus_id);
+@@ -634,6 +633,21 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+ 	return NULL;
+ }
+ 
++static int acpi_device_set_name(struct acpi_device *device,
++				struct acpi_device_bus_id *acpi_device_bus_id)
++{
++	struct ida *instance_ida = &acpi_device_bus_id->instance_ida;
++	int result;
++
++	result = ida_simple_get(instance_ida, 0, ACPI_MAX_DEVICE_INSTANCES, GFP_KERNEL);
++	if (result < 0)
++		return result;
++
++	device->pnp.instance_no = result;
++	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
++	return 0;
++}
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
+@@ -668,7 +682,9 @@ int acpi_device_add(struct acpi_device *device,
+ 
+ 	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+ 	if (acpi_device_bus_id) {
+-		acpi_device_bus_id->instance_no++;
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result)
++			goto err_unlock;
+ 	} else {
+ 		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+ 					     GFP_KERNEL);
+@@ -684,9 +700,16 @@ int acpi_device_add(struct acpi_device *device,
+ 			goto err_unlock;
+ 		}
+ 
++		ida_init(&acpi_device_bus_id->instance_ida);
++
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result) {
++			kfree(acpi_device_bus_id);
++			goto err_unlock;
++		}
++
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+-	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+ 
+ 	if (device->parent)
+ 		list_add_tail(&device->node, &device->parent->children);
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 67f4fce22209..3746d4ce4857 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -245,6 +245,7 @@ struct acpi_pnp_type {
+ 
+ struct acpi_device_pnp {
+ 	acpi_bus_id bus_id;		/* Object name */
++	int instance_no;		/* Instance number of this object */
+ 	struct acpi_pnp_type type;	/* ID type */
+ 	acpi_bus_address bus_address;	/* _ADR */
+ 	char *unique_id;		/* _UID */
 -- 
 2.30.1
 
