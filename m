@@ -2,89 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CCA34D2AB
+	by mail.lfdr.de (Postfix) with ESMTP id C974634D2AC
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhC2Oqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:46:38 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40545 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231208AbhC2OqZ (ORCPT
+        id S231259AbhC2Oqo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 10:46:44 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:52709 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhC2Oqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:46:25 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 3B59816FB;
-        Mon, 29 Mar 2021 10:46:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 29 Mar 2021 10:46:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=eKkpDu759GNYQmLWPNJwPs2ZcJZ
-        sZ+svCF5iPlOlHnc=; b=nnvKxeXB41Gr/pETVeWGaZCKG4jao+vt/P+GGv8lS2t
-        YzibKW/Iw+3sdiGotGsTqVxjnM0rH6DVe54hJFH3VGVXuFjqdieJVEO/ir9E6zpx
-        exsFyj1Xh4b/KAODauPJfmQdNsXHpvpElMMttkw4O9TODzMFB8/osHbWvagGIjC8
-        kH7Irad3X4G2CUPtPlfIfzheewwo16zGkIel6ac8NkTB9GGyToTpWQzN7M1HHPg3
-        Ze7VO0kS+ZK/IM3er83MsmK/4svc1VMFLx6f3slf0it57bon0o6jQvk+PQgSTZs1
-        ShK5wpQ3zw/jVlUPxHbadms8Ptlw8UUiC6+CGjVHCkA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=eKkpDu
-        759GNYQmLWPNJwPs2ZcJZsZ+svCF5iPlOlHnc=; b=IwGxRNZDCTHJo7jA7e8I8q
-        hu30CzoZkKuenczUXk4JpL4wIc7H5s+DjAZMHHKlo9K7FMLZyzilRSJDT6DU0Vth
-        a0MU5nKtuqL0jOVjdLelglAJEdmNotQ0YqdmboXAwvBKUObHDwx63emEIC7WNSvs
-        a68MTzK0+LN3BJCe6oE0F07W8zNPCBS4LnuMWWeb2EEFyJotqiGBNauFRPE1sjcl
-        BnuhXzqBoTg+AzrvsTolWA6lN9l9x6UwOygUgOoipK3zcxCxEENDjXjsMlvhirOq
-        gpqhvLvrjMB0clxel4gjMkWbqlpGTrvtl+NedSgz+p3Rqk1VLhKt674h62pJ/xPg
-        ==
-X-ME-Sender: <xms:QOhhYCzoG2-faUB1pFLierDyWavKaUheBvh-BuA2YppA-G9FiH0U-A>
-    <xme:QOhhYOR-_9kCJk47LGIr6nGvRdid-tGlut4qSSYJPo8wTJkxvHoRhMhcjQcX6AHbO
-    HRBSMgtbP1F5Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:QOhhYEU3WgcEEtmFQ_csxjzM6THrhAeoqP2W8877A4lWk53bmQfK3w>
-    <xmx:QOhhYIjykD2QFJZ0zEqowI4i8xDdWcHXpSu9fZYkQbWFcZdlMeSztQ>
-    <xmx:QOhhYEA4QTIrm78JA8ssgahRFqUktn7_I3kBeChLNaMmLy7Z5uBHJg>
-    <xmx:QOhhYPoXO_vWdEhRn-3dh9PkvbaZdez27lNG9iUrhnTxqLrePrbIlQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EE4281080057;
-        Mon, 29 Mar 2021 10:46:23 -0400 (EDT)
-Date:   Mon, 29 Mar 2021 16:46:21 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Ronald Warsow <rwarsow@gmx.de>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/252] 5.11.11-rc2 review
-Message-ID: <YGHoPbwu3D9DXnCB@kroah.com>
-References: <d11fe153-b3a3-94f0-a425-ad4881a82412@gmx.de>
+        Mon, 29 Mar 2021 10:46:31 -0400
+X-Originating-IP: 91.175.115.186
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 71A3A1BF20F;
+        Mon, 29 Mar 2021 14:46:26 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andre Heider <a.heider@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: Re: [PATCH mvebu v3 03/10] clk: mvebu: armada-37xx-periph: remove
+ .set_parent method for CPU PM clock
+In-Reply-To: <20210222194158.12342-4-pali@kernel.org>
+References: <20210114124032.12765-1-pali@kernel.org>
+ <20210222194158.12342-1-pali@kernel.org>
+ <20210222194158.12342-4-pali@kernel.org>
+Date:   Mon, 29 Mar 2021 16:46:26 +0200
+Message-ID: <874kguf265.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d11fe153-b3a3-94f0-a425-ad4881a82412@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 04:40:00PM +0200, Ronald Warsow wrote:
-> hello
-> 
-> 5.11.11-rc2 compiles, boots and run fine here (on an i7-6700 with Fedora
-> 34 Beta)
-> 
-> Thanks.
-> 
-> but I see some error's/warning's with the new gcc-11.0.1 compared to the
-> elder gcc-10.2.1-11
+Pali Rohár <pali@kernel.org> writes:
 
-Do you also see those gcc-11 warnings on Linus's tree?  I don't think
-I've started to backport any gcc-11 fixes like this to older kernels
-just yet.
+> From: Marek Behún <kabel@kernel.org>
+>
+> Remove the .set_parent method in clk_pm_cpu_ops.
+>
+> This method was supposed to be needed by the armada-37xx-cpufreq driver,
+> but was never actually called due to wrong assumptions in the cpufreq
+> driver. After this was fixed in the cpufreq driver, this method is not
+> needed anymore.
+>
+> Signed-off-by: Marek Behún <kabel@kernel.org>
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Tested-by: Pali Rohár <pali@kernel.org>
+> Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+> Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
+> Tested-by: Philip Soares <philips@netisense.com>
+> Fixes: 2089dc33ea0e ("clk: mvebu: armada-37xx-periph: add DVFS support for cpu clocks")
 
-thanks,
+Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-greg k-h
+Thanks,
+
+Gregory
+> ---
+>  drivers/clk/mvebu/armada-37xx-periph.c | 28 --------------------------
+>  1 file changed, 28 deletions(-)
+>
+> diff --git a/drivers/clk/mvebu/armada-37xx-periph.c b/drivers/clk/mvebu/armada-37xx-periph.c
+> index f5746f9ea929..6507bd2c5f31 100644
+> --- a/drivers/clk/mvebu/armada-37xx-periph.c
+> +++ b/drivers/clk/mvebu/armada-37xx-periph.c
+> @@ -440,33 +440,6 @@ static u8 clk_pm_cpu_get_parent(struct clk_hw *hw)
+>  	return val;
+>  }
+>  
+> -static int clk_pm_cpu_set_parent(struct clk_hw *hw, u8 index)
+> -{
+> -	struct clk_pm_cpu *pm_cpu = to_clk_pm_cpu(hw);
+> -	struct regmap *base = pm_cpu->nb_pm_base;
+> -	int load_level;
+> -
+> -	/*
+> -	 * We set the clock parent only if the DVFS is available but
+> -	 * not enabled.
+> -	 */
+> -	if (IS_ERR(base) || armada_3700_pm_dvfs_is_enabled(base))
+> -		return -EINVAL;
+> -
+> -	/* Set the parent clock for all the load level */
+> -	for (load_level = 0; load_level < LOAD_LEVEL_NR; load_level++) {
+> -		unsigned int reg, mask,  val,
+> -			offset = ARMADA_37XX_NB_TBG_SEL_OFF;
+> -
+> -		armada_3700_pm_dvfs_update_regs(load_level, &reg, &offset);
+> -
+> -		val = index << offset;
+> -		mask = ARMADA_37XX_NB_TBG_SEL_MASK << offset;
+> -		regmap_update_bits(base, reg, mask, val);
+> -	}
+> -	return 0;
+> -}
+> -
+>  static unsigned long clk_pm_cpu_recalc_rate(struct clk_hw *hw,
+>  					    unsigned long parent_rate)
+>  {
+> @@ -592,7 +565,6 @@ static int clk_pm_cpu_set_rate(struct clk_hw *hw, unsigned long rate,
+>  
+>  static const struct clk_ops clk_pm_cpu_ops = {
+>  	.get_parent = clk_pm_cpu_get_parent,
+> -	.set_parent = clk_pm_cpu_set_parent,
+>  	.round_rate = clk_pm_cpu_round_rate,
+>  	.set_rate = clk_pm_cpu_set_rate,
+>  	.recalc_rate = clk_pm_cpu_recalc_rate,
+> -- 
+> 2.20.1
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
