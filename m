@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531C534CBC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB72B34C9D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236144AbhC2Iww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:52:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54686 "EHLO mail.kernel.org"
+        id S231446AbhC2Id5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:33:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233294AbhC2IeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:34:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 881E761601;
-        Mon, 29 Mar 2021 08:34:00 +0000 (UTC)
+        id S232696AbhC2IVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B10D561613;
+        Mon, 29 Mar 2021 08:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006841;
-        bh=/8pC+aB8vIxGZ1rLfLyif8WJI8gMCmiBJGWfVbdIBy4=;
+        s=korg; t=1617006060;
+        bh=IqqgAef8aMSmr7MlycYjfyp1izlvDR167gZ7Dbm1wOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QC97qvDpzeBOXwPrLjUKW/olNHryP2lbs6urzH1W2cbJGojrFNCYnvgKzqOUGMJAc
-         B3ARx2vHpDCq0TZQ7HACaws/MJPkEwfzmhdzBD49sZIzMvZIRg7tgqgb0KUq7vBPaX
-         p96XSui7MgLr+b7IK8aZmzjeo3zT+rQY1Ori5QGY=
+        b=u0+sk/iqBI5l17cfoi7PC/1G4jdyuh7lrSgrKdXhADL1yKnn0NSpamnZkvr3QHn7/
+         T+zh1ec8nsTKIcVZAspmAlQjOpcDEehbrP4NAyNrmzy2YMkQSPTXib41/vgHkr0lr2
+         vJr4Qa3ZG7FMrlHdhy9OeaUjHg5s0/qdSfZM2gRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 084/254] mm/highmem: fix CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
+Subject: [PATCH 5.10 069/221] squashfs: fix inode lookup sanity checks
 Date:   Mon, 29 Mar 2021 09:56:40 +0200
-Message-Id: <20210329075635.922676641@linuxfoundation.org>
+Message-Id: <20210329075631.484170112@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-commit 487cfade12fae0eb707bdce71c4d585128238a7d upstream.
+commit c1b2028315c6b15e8d6725e0d5884b15887d3daa upstream.
 
-The kernel test robot found that __kmap_local_sched_out() was not
-correctly skipping the guard pages when DEBUG_KMAP_LOCAL_FORCE_MAP was
-set.[1] This was due to DEBUG_HIGHMEM check being used.
+When mouting a squashfs image created without inode compression it fails
+with: "unable to read inode lookup table"
 
-Change the configuration check to be correct.
+It turns out that the BLOCK_OFFSET is missing when checking the
+SQUASHFS_METADATA_SIZE agaist the actual size.
 
-[1] https://lore.kernel.org/lkml/20210304083825.GB17830@xsang-OptiPlex-9020/
-
-Link: https://lkml.kernel.org/r/20210318230657.1497881-1-ira.weiny@intel.com
-Fixes: 0e91a0c6984c ("mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP")
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Oliver Sang <oliver.sang@intel.com>
-Cc: Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc: David Sterba <dsterba@suse.com>
+Link: https://lkml.kernel.org/r/20210226092903.1473545-1-sean@geanix.com
+Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/highmem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/squashfs/export.c      |    8 ++++++--
+ fs/squashfs/squashfs_fs.h |    1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/mm/highmem.c b/mm/highmem.c
-index 86f2b9495f9c..6ef8f5e05e7e 100644
---- a/mm/highmem.c
-+++ b/mm/highmem.c
-@@ -618,7 +618,7 @@ void __kmap_local_sched_out(void)
- 		int idx;
+--- a/fs/squashfs/export.c
++++ b/fs/squashfs/export.c
+@@ -152,14 +152,18 @@ __le64 *squashfs_read_inode_lookup_table
+ 		start = le64_to_cpu(table[n]);
+ 		end = le64_to_cpu(table[n + 1]);
  
- 		/* With debug all even slots are unmapped and act as guard */
--		if (IS_ENABLED(CONFIG_DEBUG_HIGHMEM) && !(i & 0x01)) {
-+		if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL) && !(i & 0x01)) {
- 			WARN_ON_ONCE(!pte_none(pteval));
- 			continue;
+-		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++		if (start >= end
++		    || (end - start) >
++		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 			kfree(table);
+ 			return ERR_PTR(-EINVAL);
  		}
-@@ -654,7 +654,7 @@ void __kmap_local_sched_in(void)
- 		int idx;
+ 	}
  
- 		/* With debug all even slots are unmapped and act as guard */
--		if (IS_ENABLED(CONFIG_DEBUG_HIGHMEM) && !(i & 0x01)) {
-+		if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL) && !(i & 0x01)) {
- 			WARN_ON_ONCE(!pte_none(pteval));
- 			continue;
- 		}
--- 
-2.31.0
-
+ 	start = le64_to_cpu(table[indexes - 1]);
+-	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
++	if (start >= lookup_table_start ||
++	    (lookup_table_start - start) >
++	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 		kfree(table);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+--- a/fs/squashfs/squashfs_fs.h
++++ b/fs/squashfs/squashfs_fs.h
+@@ -17,6 +17,7 @@
+ 
+ /* size of metadata (inode and directory) blocks */
+ #define SQUASHFS_METADATA_SIZE		8192
++#define SQUASHFS_BLOCK_OFFSET		2
+ 
+ /* default size of block device I/O */
+ #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
 
 
