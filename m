@@ -2,80 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A29D34C223
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 05:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E9634C22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 05:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhC2DKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 23:10:23 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48087 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229822AbhC2DKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 23:10:10 -0400
-X-UUID: c02db032ecec40e5ad041916dcd9bd66-20210329
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=wSaNHIYgbtxvvyhecQJ0vc5k/eJQ8TBE/XpQJUZ1nTo=;
-        b=UPxpM2GrBuDavjJiFgmzxdQRb1BK/gdTNFF5UYRWIy1UjPe9YOBtUlDGbgGkVah3Nw4CCQieF2feczW0RjICYnTTEfLKlSKMTiZHOQUThsyOE+5R6KZ8ebU+7Ijw4QbWjtdAEaj7+pVVnEWWuqNWaleXEgg+6FA/ufwobNDmj2U=;
-X-UUID: c02db032ecec40e5ad041916dcd9bd66-20210329
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 397472872; Mon, 29 Mar 2021 11:10:06 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs06n2.mediatek.inc
- (172.21.101.130) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
- 2021 11:10:04 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Mar 2021 11:10:03 +0800
-Message-ID: <1616987403.1101.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 01/13] dt-bindings: usb: mtk-xhci: support property
- usb2-lpm-disable
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 29 Mar 2021 11:10:03 +0800
-In-Reply-To: <20210327172438.GA268453@robh.at.kernel.org>
-References: <1616482975-17841-1-git-send-email-chunfeng.yun@mediatek.com>
-         <20210327172438.GA268453@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S230323AbhC2DT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 23:19:29 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7351 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230209AbhC2DTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 23:19:21 -0400
+IronPort-SDR: NLUK0cWTVzWOM7rJYg/DEASXDOZpIh21uEbu+3VfWr0pnb3rkI+fkJTj7daNvql/2KTgI75VtN
+ GBzvnhOGU9fQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="190931290"
+X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
+   d="scan'208";a="190931290"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 20:19:21 -0700
+IronPort-SDR: ARP9HMJ6j3HLkrVp+cGiWP6izK7yof5wX5K0LHOiCR7NEU0PCCBuWu+pMar0EDarsu8Qg1Yuk9
+ 9tTEsQ3oiCZg==
+X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
+   d="scan'208";a="526786945"
+Received: from samudral-mobl.amr.corp.intel.com (HELO [10.212.80.176]) ([10.212.80.176])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 20:19:20 -0700
+Subject: Re: [PATCH net 1/4] virtchnl: Fix layout of RSS structures
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     anthony.l.nguyen@intel.com,
+        Norbert Ciosek <norbertx.ciosek@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, sassmann@redhat.com,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210325223119.3991796-1-anthony.l.nguyen@intel.com>
+ <20210325223119.3991796-2-anthony.l.nguyen@intel.com>
+ <CAMuHMdXo_UOf_QLKSxtgm5ByvSAo_Uy_h2RTpy8B=xqdUGaBNQ@mail.gmail.com>
+ <ce03118c-d368-def0-8a1f-8c3a770901d6@intel.com>
+ <CAMuHMdW3BSkJXjSL5R4xuYv6Yb765U5zwBCLcsSW+zr_K7898g@mail.gmail.com>
+From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Message-ID: <a47965c9-c7d6-7349-b717-4eb3bde193c7@intel.com>
+Date:   Sun, 28 Mar 2021 20:19:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 81D83AAA84D63BFC35F7B38B8A44CC61F10435E3EBDF6E402B43BCF3EA74F96D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAMuHMdW3BSkJXjSL5R4xuYv6Yb765U5zwBCLcsSW+zr_K7898g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTAzLTI3IGF0IDExOjI0IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVHVlLCBNYXIgMjMsIDIwMjEgYXQgMDM6MDI6NDNQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IEFkZCBzdXBwb3J0IGNvbW1vbiBwcm9wZXJ0eSB1c2IyLWxwbS1kaXNhYmxlDQo+
-ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0
-ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHYyOiBubyBjaGFuZ2VzDQo+ID4gLS0tDQo+ID4gIERvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRrLXhoY2kueWFtbCB8
-IDQgKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0
-ZWssbXRrLXhoY2kueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2Iv
-bWVkaWF0ZWssbXRrLXhoY2kueWFtbA0KPiA+IGluZGV4IDE0ZjQwZWZiM2IyMi4uMjI0NmQyOWE1
-ZTRlIDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91
-c2IvbWVkaWF0ZWssbXRrLXhoY2kueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRrLXhoY2kueWFtbA0KPiA+IEBAIC0xMDMsNiAr
-MTAzLDEwIEBAIHByb3BlcnRpZXM6DQo+ID4gICAgICBkZXNjcmlwdGlvbjogc3VwcG9ydHMgVVNC
-My4wIExQTQ0KPiA+ICAgICAgdHlwZTogYm9vbGVhbg0KPiA+ICANCj4gPiArICB1c2IyLWxwbS1k
-aXNhYmxlOg0KPiA+ICsgICAgZGVzY3JpcHRpb246IGRpc2FibGUgVVNCMiBIVyBMUE0NCj4gPiAr
-ICAgIHR5cGU6IGJvb2xlYW4NCj4gDQo+IEFscmVhZHkgaGFzIGEgdHlwZS4gRG9uJ3QgcmVkZWZp
-bmUgaGVyZS4gSnVzdCAndXNiMi1scG0tZGlzYWJsZTogdHJ1ZScgDQo+IGFuZCBtYWtlIHN1cmUg
-dXNiLXhoY2kueWFtbCBpcyByZWZlcmVuY2VkLg0KT2ssIHRoYW5rcw0KPiANCj4gPiArDQo+ID4g
-ICAgaW1vZC1pbnRlcnZhbC1uczoNCj4gPiAgICAgIGRlc2NyaXB0aW9uOg0KPiA+ICAgICAgICBJ
-bnRlcnJ1cHQgbW9kZXJhdGlvbiBpbnRlcnZhbCB2YWx1ZSwgaXQgaXMgOCB0aW1lcyBhcyBtdWNo
-IGFzIHRoYXQNCj4gPiAtLSANCj4gPiAyLjE4LjANCj4gPiANCg0K
+On 3/27/2021 2:53 AM, Geert Uytterhoeven wrote:
+> Hi Samudrala,
+>
+> On Fri, Mar 26, 2021 at 11:45 PM Samudrala, Sridhar
+> <sridhar.samudrala@intel.com> wrote:
+>> On 3/26/2021 1:06 AM, Geert Uytterhoeven wrote:
+>>> On Thu, Mar 25, 2021 at 11:29 PM Tony Nguyen <anthony.l.nguyen@intel.com> wrote:
+>>> From: Norbert Ciosek <norbertx.ciosek@intel.com>
+>>>
+>>> Remove padding from RSS structures. Previous layout
+>>> could lead to unwanted compiler optimizations
+>>> in loops when iterating over key and lut arrays.
+>>>
+>>>  From an earlier private conversation with Mateusz, I understand the real
+>>> explanation is that key[] and lut[] must be at the end of the
+>>> structures, because they are used as flexible array members?
+>>>
+>>> Fixes: 65ece6de0114 ("virtchnl: Add missing explicit padding to structures")
+>>> Signed-off-by: Norbert Ciosek <norbertx.ciosek@intel.com>
+>>> Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+>>> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+>>>
+>>> --- a/include/linux/avf/virtchnl.h
+>>> +++ b/include/linux/avf/virtchnl.h
+>>> @@ -476,7 +476,6 @@ struct virtchnl_rss_key {
+>>>          u16 vsi_id;
+>>>          u16 key_len;
+>>>          u8 key[1];         /* RSS hash key, packed bytes */
+>>> -       u8 pad[1];
+>>>   };
+>>>
+>>>   VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_rss_key);
+>>> @@ -485,7 +484,6 @@ struct virtchnl_rss_lut {
+>>>          u16 vsi_id;
+>>>          u16 lut_entries;
+>>>          u8 lut[1];        /* RSS lookup table */
+>>> -       u8 pad[1];
+>>>   };
+>>>
+>>> If you use a flexible array member, it should be declared without a size,
+>>> i.e.
+>>>
+>>>      u8 key[];
+>>>
+>>> Everything else is (trying to) fool the compiler, and leading to undefined
+>>> behavior, and people (re)adding explicit padding.
+>> This header file is shared across other OSes that use C++ that doesn't support
+>> flexible arrays. So the structures in this file use an array of size 1 as a last
+>> element to enable variable sized arrays.
+> I don't think it is accepted practice to have non-Linux-isms in
+> include/*linux*/avf/virtchnl.h header files.  Moreover, using a size
+> of 1 is counter-intuitive for people used to Linux kernel development,
+> and may lead to off-by-one errors in calculation of sizes.
+>
+> If you insist on ignoring the above, this definitely deserves a
+> comment next to the member's declaration.
+Sure. We can add a comment indicating that these fields are used 
+variable sized arrays.
 
+Thanks
+Sridhar
