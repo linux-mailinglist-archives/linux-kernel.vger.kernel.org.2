@@ -2,227 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D7D34D844
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447B834D846
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhC2T3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S230213AbhC2TbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhC2T3V (ORCPT
+        with ESMTP id S230346AbhC2Tas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:29:21 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E70C061574;
-        Mon, 29 Mar 2021 12:29:20 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 005EB1F454DE
-Message-ID: <9a6ce3a1339a5967e17963f54e2148d752b43d97.camel@collabora.com>
-Subject: Re: [PATCH v7 12/13] media: hantro: IMX8M: add variant for G2/HEVC
- codec
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Date:   Mon, 29 Mar 2021 16:29:09 -0300
-In-Reply-To: <20210329065743.11961-13-benjamin.gaignard@collabora.com>
-References: <20210329065743.11961-1-benjamin.gaignard@collabora.com>
-         <20210329065743.11961-13-benjamin.gaignard@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Mon, 29 Mar 2021 15:30:48 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3787C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e14so4899159plj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=obZ+GpJjqBDtqxvYFyMbZyPSIXXyagLFH5qtJ8HsExQ=;
+        b=HHhQPWAK96gQvI6JJPOnIFVc/FznBCpCUgJanyhV1/94rYU1ByXo2ua2XSsY0qQgmp
+         KIaZTSyo5SuA6seJ5a/O7TcMaCc8Ha00PbefwymFFN6Bh4SozydEAVhqPLhRmlGm00ka
+         lScMH+FJN19u14o2jaisyvXsm3zBEVeZY+xULE8uu7a5h6oH+HAG77+RU3KPPteH9R6B
+         WYiKhCcxB/ecADLL2AoxhTy/NQbZ1fI6E7lpLVdSZ9SlfLS0OYYmiVb21b6R9Bvt3FBZ
+         41HDs14NdrUmwSNuMRWHhJisDMdHRjsyzIaX26cb0dW7YCSZj0e5a/nwIBZO9C/Xvcjp
+         DOkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=obZ+GpJjqBDtqxvYFyMbZyPSIXXyagLFH5qtJ8HsExQ=;
+        b=SvahDJZeZmqos8Ab1ilm/o8AxkkY2PRgXEzT62NxIHeXc9BcBrP2JAfZjEVcDCTRr+
+         J9+QoAfPS7/L8X291UM8WNyYPFXJTBMiVbDWuJydwo5A4c3e1mTSPnX+iBLZ2TuCd/CT
+         QE+kU+C6+72hw9hRvBO90oWUcAWqxqdXio6eBKs5NFr3EXxTR3mg8/KqGj+bilI4KExm
+         P8qqci3JpeBq5UVP1H6IHzRsBYU0hCKYqHsX0BOVnJaUnnRpWAzJwFYsyRP+YX8+FHHu
+         8nudM1KG5JttbyxxOrRRdurRVd3U/BhrWf5JRH6BZwhFpILGdFS0sU9wg5amgUB8/WJa
+         jx9g==
+X-Gm-Message-State: AOAM530d332JGiewfMrMStFCTE3hsoiqXfr3NJ55r5UmIQ+7awOnkIQn
+        xBGtNuXL/g/bmUh7QKo4RRF3OV3VeWI=
+X-Google-Smtp-Source: ABdhPJxy4vuS0N+tsZKwReXwZHG1+vd1B7r82n2+XtMrMVGst8TxZghuZ5z5ETykyH/7joqAlbYfUA==
+X-Received: by 2002:a17:90b:10a:: with SMTP id p10mr668776pjz.148.1617046248127;
+        Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t19sm18375620pfg.38.2021.03.29.12.30.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 12:30:47 -0700 (PDT)
+Subject: Re: [PATCH] ARM: Qualify enabling of swiotlb_init()
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, xen-devel@lists.xensource.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, opendmb@gmail.com
+References: <20210319040333.183827-1-f.fainelli@gmail.com>
+ <20210319130731.GB2624@lst.de>
+ <20210319195929.GA1346384@konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com>
+ <alpine.DEB.2.21.2103191718210.439@sstabellini-ThinkPad-T480s>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3db926f4-6047-cc62-8654-a965b8570e75@gmail.com>
+Date:   Mon, 29 Mar 2021 12:30:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2103191718210.439@sstabellini-ThinkPad-T480s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-29 at 08:57 +0200, Benjamin Gaignard wrote:
-> Add variant to IMX8M to enable G2/HEVC codec.
-> Define the capabilities for the hardware up to 3840x2160.
-> G2 doesn't have postprocessor, use the same clocks and got it
-> own interruption.
+On 3/19/21 5:22 PM, Stefano Stabellini wrote:
+> On Fri, 19 Mar 2021, Konrad Rzeszutek Wilk wrote:
+>> On Fri, Mar 19, 2021 at 02:07:31PM +0100, Christoph Hellwig wrote:
+>>> On Thu, Mar 18, 2021 at 09:03:33PM -0700, Florian Fainelli wrote:
+>>>>  #ifdef CONFIG_ARM_LPAE
+>>>> +	if (swiotlb_force == SWIOTLB_FORCE ||
+>>>> +	    max_pfn > arm_dma_pfn_limit)
+>>>
+>>> Does arm_dma_pfn_limit do the right thing even with the weirdest
+>>> remapping ranges?  Maybe a commen here would be useful.
+>>>
+>>>> +		swiotlb_init(1);
+>>>> +	else
+>>>> +		swiotlb_force = SWIOTLB_NO_FORCE;
+>>>
+>>> Konrad: what do you think of setting swiotlb_force to SWIOTLB_NO_FORCE
+>>> and only switching it to SWIOTLB_NORMAL when swiotlb_init* is called?
+>>> That kind makes more sense than forcing the callers to do it.
+>>>
+>>> While we're at it, I think swiotlb_force should probably be renamed to
+>>> swiotlb_mode or somethng like that.
+>>
+>> swiotlb_mode sounds good.
+>>
+>> Also it got me thinking - ARM on Xen at some point was a bit strange, so not sure how
+>> the logic works here, Stefano?
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> There is nothing strange in regards to swiotlb_force. swiotlb_force is only used
+> in swiotlb-xen map_page to figure out whether:
+> 
+> - we actually have to use the swiotlb bounce buffer (this is the
+>   swiotlb_xen == SWIOTLB_FORCE case)
+> - or we can use the provided page directly for dma if other conditions
+>   are met (dma_capable, !range_straddles_page_boundary, ...)
+> 
+> 
+> I don't think that switching to "swiotlb_mode" would cause any issues.
+> 
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-
-> ---
-> version 7:
->  - Add Philipp Reviewed-by tag.
-> 
-> version 5:
->  - remove useless postproc fields for G2
-> 
-> version 2:
-> - remove useless clocks
-> 
->  drivers/staging/media/hantro/hantro_drv.c   |  1 +
->  drivers/staging/media/hantro/hantro_hw.h    |  1 +
->  drivers/staging/media/hantro/imx8m_vpu_hw.c | 76 ++++++++++++++++++++-
->  3 files changed, 76 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 33b8bd38eac1..ed380a8bef93 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -574,6 +574,7 @@ static const struct of_device_id of_hantro_match[] = {
->  #endif
->  #ifdef CONFIG_VIDEO_HANTRO_IMX8M
->         { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
-> +       { .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
->  #endif
->         { /* sentinel */ }
->  };
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index 5788188aae50..b4e7490bbe45 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -193,6 +193,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
->  extern const struct hantro_variant rk3328_vpu_variant;
->  extern const struct hantro_variant rk3288_vpu_variant;
->  extern const struct hantro_variant imx8mq_vpu_variant;
-> +extern const struct hantro_variant imx8mq_vpu_g2_variant;
->  
->  extern const struct hantro_postproc_regs hantro_g1_postproc_regs;
->  
-> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> index 8d0c3425234b..6de43e0edc36 100644
-> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> @@ -12,6 +12,7 @@
->  #include "hantro.h"
->  #include "hantro_jpeg.h"
->  #include "hantro_g1_regs.h"
-> +#include "hantro_g2_regs.h"
->  
->  #define CTRL_SOFT_RESET                0x00
->  #define RESET_G1               BIT(1)
-> @@ -129,6 +130,26 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
->         },
->  };
->  
-> +static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
-> +       {
-> +               .fourcc = V4L2_PIX_FMT_NV12,
-> +               .codec_mode = HANTRO_MODE_NONE,
-> +       },
-> +       {
-> +               .fourcc = V4L2_PIX_FMT_HEVC_SLICE,
-> +               .codec_mode = HANTRO_MODE_HEVC_DEC,
-> +               .max_depth = 2,
-> +               .frmsize = {
-> +                       .min_width = 48,
-> +                       .max_width = 3840,
-> +                       .step_width = MB_DIM,
-> +                       .min_height = 48,
-> +                       .max_height = 2160,
-> +                       .step_height = MB_DIM,
-> +               },
-> +       },
-> +};
-> +
->  static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->  {
->         struct hantro_dev *vpu = dev_id;
-> @@ -147,6 +168,24 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->         return IRQ_HANDLED;
->  }
->  
-> +static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
-> +{
-> +       struct hantro_dev *vpu = dev_id;
-> +       enum vb2_buffer_state state;
-> +       u32 status;
-> +
-> +       status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
-> +       state = (status & HEVC_REG_INTERRUPT_DEC_RDY_INT) ?
-> +                VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
-> +
-> +       vdpu_write(vpu, 0, HEVC_REG_INTERRUPT);
-> +       vdpu_write(vpu, HEVC_REG_CONFIG_DEC_CLK_GATE_E, HEVC_REG_CONFIG);
-> +
-> +       hantro_irq_done(vpu, state);
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
->  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
->  {
->         struct device_node *np = vpu->dev->of_node;
-> @@ -176,6 +215,13 @@ static void imx8m_vpu_g1_reset(struct hantro_ctx *ctx)
->         imx8m_soft_reset(vpu, RESET_G1);
->  }
->  
-> +static void imx8m_vpu_g2_reset(struct hantro_ctx *ctx)
-> +{
-> +       struct hantro_dev *vpu = ctx->dev;
-> +
-> +       imx8m_soft_reset(vpu, RESET_G2);
-> +}
-> +
->  /*
->   * Supported codec ops.
->   */
-> @@ -201,16 +247,28 @@ static const struct hantro_codec_ops imx8mq_vpu_codec_ops[] = {
->         },
->  };
->  
-> +static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
-> +       [HANTRO_MODE_HEVC_DEC] = {
-> +               .run = hantro_g2_hevc_dec_run,
-> +               .reset = imx8m_vpu_g2_reset,
-> +               .init = hantro_hevc_dec_init,
-> +               .exit = hantro_hevc_dec_exit,
-> +       },
-> +};
-> +
->  /*
->   * VPU variants.
->   */
->  
->  static const struct hantro_irq imx8mq_irqs[] = {
->         { "g1", imx8m_vpu_g1_irq },
-> -       { "g2", NULL /* TODO: imx8m_vpu_g2_irq */ },
->  };
->  
-> -static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
-> +static const struct hantro_irq imx8mq_g2_irqs[] = {
-> +       { "g2", imx8m_vpu_g2_irq },
-> +};
-> +
-> +static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus"};
->  
->  const struct hantro_variant imx8mq_vpu_variant = {
->         .dec_fmts = imx8m_vpu_dec_fmts,
-> @@ -228,3 +286,17 @@ const struct hantro_variant imx8mq_vpu_variant = {
->         .clk_names = imx8mq_clk_names,
->         .num_clocks = ARRAY_SIZE(imx8mq_clk_names),
->  };
-> +
-> +const struct hantro_variant imx8mq_vpu_g2_variant = {
-> +       .dec_offset = 0x0,
-> +       .dec_fmts = imx8m_vpu_g2_dec_fmts,
-> +       .num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-> +       .codec = HANTRO_HEVC_DECODER,
-> +       .codec_ops = imx8mq_vpu_g2_codec_ops,
-> +       .init = imx8mq_vpu_hw_init,
-> +       .runtime_resume = imx8mq_runtime_resume,
-> +       .irqs = imx8mq_g2_irqs,
-> +       .num_irqs = ARRAY_SIZE(imx8mq_g2_irqs),
-> +       .clk_names = imx8mq_clk_names,
-> +       .num_clocks = ARRAY_SIZE(imx8mq_clk_names),
-> +};
-
-
+Should I toss this in Russell's patch tracker or do you need me to make
+some changes to the patch?
+-- 
+Florian
