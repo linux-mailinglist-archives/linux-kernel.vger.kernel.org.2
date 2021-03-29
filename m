@@ -2,146 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3219834D2D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B152634D491
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhC2Ove (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhC2OvS (ORCPT
+        id S230373AbhC2QMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:12:21 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.82]:42520 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230339AbhC2QMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:51:18 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32213C061574;
-        Mon, 29 Mar 2021 07:51:18 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id h3so9993949pfr.12;
-        Mon, 29 Mar 2021 07:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TtgJoHcRy4HrILByQHP0XtLCLwWzY0ytiVDAosaALmI=;
-        b=GvbmuyzUK0XcLFnuTgzgiWC6Xn2EmVvqH1CYzweg/SfjBgajDHZozowXa6RI+/LdO5
-         DXNU9xH4UVeiFB3is0qki2yur/kKiwd9aZyujfqJH8DZqQhBKzd9li0zBimiiOWdAJTG
-         apVIMo6uLD5d85yJ5wcJV5Tq6g8hydbu6lNkKl8ARWlRLRXmRgD1rNuKu2xJSA9zMyvj
-         zZP52MygYOQo5BtHC7SelvNyVDbqJDaOBfCcGKoSIOhAlWPmnF+AoF/DQ2n4YAnh0TP1
-         MAS9qjKE4/7BnDCi2m7Sl8fhILeWEbw+9t4OoLYdX3CkJK3a9EsUpb+V229VFtJD7W/R
-         lfTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TtgJoHcRy4HrILByQHP0XtLCLwWzY0ytiVDAosaALmI=;
-        b=PJIp/SSmb2MpbGGeQBEVtmXcwjxc1YrExG4RVe9ryumyas6t9OH1WQAzY6PoJGkRsW
-         SIAA4ylFNV+6SVhGrBiMHZwsYkLBDQS3lgKaImLAQ9HWaIhhymrxLv1kon0Bi3OTtVxO
-         Zt0BlCySo8gRa9KLoRIq03Iy2RtnYa7ac7lFfs2OHySCNgBH5fEfVRW42cNcbsB8gBgn
-         qGR8yrAitFzzkRdP9Sm20DyAbuwJ3HWGZ0/tjjWaZ13fmRZE/i/iCSaJazrnm7OfiHw3
-         8NnRzUKbKC5mIEYHzLH3SQ4vjlyAu4pbQkiRL4xzndNsH7R3te00DaHiz9xwvoPDkeP4
-         CsVg==
-X-Gm-Message-State: AOAM531/137PXW9rEJbyewuNlQDTsznmC1aHHjEdQhOMvQGPwdFwyKn7
-        xbjTq67OeAsdkD+OD9waEzD3tQ3ODMt5jP94oE4=
-X-Google-Smtp-Source: ABdhPJwZCI4bilYL0u7DfEXdhw7ru/FjBc8O1UxeqAHmeF6XEhOWqOcZcOrYX4N4pMlcXqXhKmpJOxWCqu/NHpa2/+M=
-X-Received: by 2002:a63:cb44:: with SMTP id m4mr1667281pgi.4.1617029477672;
- Mon, 29 Mar 2021 07:51:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
- <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
- <YGAmB2Nwph6pArXc@kroah.com> <CAHp75VfFzqpdR+6p9vQww-ujQcw3L-V_N7ezUTGhcRmvwvqMZg@mail.gmail.com>
- <YGB+YMh1MsQao3zS@kroah.com> <YGHPnkoB/wP6u6HC@smile.fi.intel.com> <YGHaTf+cpvAZ5geB@kroah.com>
-In-Reply-To: <YGHaTf+cpvAZ5geB@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 29 Mar 2021 17:51:01 +0300
-Message-ID: <CAHp75VfEN4HAX=BUZNp+-kKD1B1WVU2oeG2SXyaw=EWVa-CAhA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/8] software node: Show properties and their values in sysfs
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Scally <djrscally@gmail.com>,
+        Mon, 29 Mar 2021 12:12:08 -0400
+X-Greylist: delayed 1218 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 12:12:08 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id C7915BDF5F8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:51:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id QuAvluMyBMGeEQuAvlYYPd; Mon, 29 Mar 2021 10:51:33 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MVjj6c/3EYFRY18LSudOpq9RRJ0gd0CYOhASmpfIFJY=; b=m0YYM27UAhHL2DVQds8D5oVwR1
+        iJg/7xmw0OnDIsqTxdkVgUhFTbzvIiLfrG3KRgqMAub8jH78xAHecphLD5g6+4iwz6kIzsYMxkNku
+        IeVdQAbfeUiv4mAiTh+3tS8CET3YbFoV/1dnVmv7yztfYGXkEejvjVzEnFaAuFPYtPGWoaBToAClA
+        IHa+t3Zn1aXP0Wzi9fjS611XhupwDCiRWpJJ1rZlGJLuywLCO1L0/0BOqX8AI/jlpkFtf2xzTh6qU
+        NKDR2n4CWhDZWNEZ6E2UCVVCNh+1M4IyJLJh7ns4rVaG/+4//CFlYHvKl3RWCpZk8OYHEK16ShG7I
+        MHb2KRUQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33746 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lQuAv-002LQV-9q; Mon, 29 Mar 2021 10:51:33 -0500
+Subject: Re: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
+ flexible-array member
+To:     chucklever@gmail.com, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-hardening@vger.kernel.org
+References: <20210323224858.GA293698@embeddedor>
+ <CAFMMQGtZLNt-jsFFEJVGZaOQyVxckXEGbtan8oDZ-WUNSHkGWg@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <f2333f4b-15ea-cb3e-eea0-d349b469e082@embeddedor.com>
+Date:   Mon, 29 Mar 2021 09:51:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAFMMQGtZLNt-jsFFEJVGZaOQyVxckXEGbtan8oDZ-WUNSHkGWg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lQuAv-002LQV-9q
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:33746
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 4:46 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Mon, Mar 29, 2021 at 04:01:18PM +0300, Andy Shevchenko wrote:
-> > On Sun, Mar 28, 2021 at 03:02:24PM +0200, Greg Kroah-Hartman wrote:
-> > > On Sun, Mar 28, 2021 at 03:56:26PM +0300, Andy Shevchenko wrote:
-> > > > On Sun, Mar 28, 2021 at 9:47 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
-> > > > > > It's very convenient to see what properties and their values
-> > > > > > are currently being assigned in the registered software nodes.
 
-...
 
-> > > > > > +             for (i = 0; i < prop->length / sizeof(u8); i++)
-> > > > > > +                     len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
-> > > > >
-> > > > > No, sysfs is "one value per file", and that is not what you are showing
-> > > > > here at all :(
-> > > >
-> > > > It is following: it's a "one value" for property in question,
-> > > >
-> > > > As we may read in [1]: "...so it is socially acceptable to express an
-> > > > array of values of the same type."
-> > > >
-> > > > And here is exactly the case: *values of the same type*.
-> > >
-> > > So what is it going to look like exactly?
-> >
-> > Basically we have two approaches (already done in the kernel!) use space or
-> > comma for a separator. So:
-> >  - for boolean it will be an empty string (and it's one value always)
-> >  - for integers it will be, for example, '0,1,2' (w/o single quotes)
-> >    for property array with values 0, 1, and 2
-> >  - for plain integers or arrays out of 1 element it will be plain integer
-> >  - for strings it will be, for example, '"str1","str2"' (w/o single quotes)
-> >    for array of string { "str1", "str2" }
-> >  - for single string or array out of 1 element, it will be '"str"' (w/o single
-> >    quotes)
-> >
-> > This should be a part of documentation.
->
-> And I will complain then too, these "lists of values" are not for sysfs,
-> sorry.
+On 3/29/21 09:57, Chuck Lever wrote:
+> Sorry for the reply via gmail, the original patch did not show up in
+> my Oracle mailbox.
+> 
+> I've been waiting for a resolution of this thread (and perhaps a
+> Reviewed-by). But in
+> the meantime I've committed this, provisionally, to the for-next topic branch in
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git
 
-How can you recommend showing an array(s) of values of the same type?
+Awesome. :)
 
-> > > And what tool is going to be
-> > > there to parse this mess?  Who is going to to use it?
-> >
-> > I guess something like hwinfo (needs a patch).
->
-> If nothing needs this, then why are you adding these?
+Thanks, Chuck.
+--
+Gustavo
 
-OK, I will prepare tools first, but I have no idea for the format. So,
-how can I be sure that tools will accept the patch if there is no
-kernel interface available? Seems like a stale case.
-
-> > The idea behind that this is following what ACPI and DT provides to the users
-> > via /sys/firmware/ (however, in binary format). I can re-do to provide a
-> > binary, and it will effectively make software nodes in align with the rest.
->
-> binary files in sysfs are only to be used as a "pass through" from
-> hardware to userspace.  That does not seem relevant here.
-
-This makes sense.
-
-> sorry, please keep this out of sysfs for now.
-
-OK. For now I will resubmit the rest with addressed comments.
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+> On Wed, Mar 24, 2021 at 4:39 AM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+>>
+>> There is a regular need in the kernel to provide a way to declare having
+>> a dynamically sized set of trailing elements in a structure. Kernel code
+>> should always use “flexible array members”[1] for these cases. The older
+>> style of one-element or zero-length arrays should no longer be used[2].
+>>
+>> Use an anonymous union with a couple of anonymous structs in order to
+>> keep userspace unchanged:
+>>
+>> $ pahole -C nfs_fhbase_new fs/nfsd/nfsfh.o
+>> struct nfs_fhbase_new {
+>>         union {
+>>                 struct {
+>>                         __u8       fb_version_aux;       /*     0     1 */
+>>                         __u8       fb_auth_type_aux;     /*     1     1 */
+>>                         __u8       fb_fsid_type_aux;     /*     2     1 */
+>>                         __u8       fb_fileid_type_aux;   /*     3     1 */
+>>                         __u32      fb_auth[1];           /*     4     4 */
+>>                 };                                       /*     0     8 */
+>>                 struct {
+>>                         __u8       fb_version;           /*     0     1 */
+>>                         __u8       fb_auth_type;         /*     1     1 */
+>>                         __u8       fb_fsid_type;         /*     2     1 */
+>>                         __u8       fb_fileid_type;       /*     3     1 */
+>>                         __u32      fb_auth_flex[0];      /*     4     0 */
+>>                 };                                       /*     0     4 */
+>>         };                                               /*     0     8 */
+>>
+>>         /* size: 8, cachelines: 1, members: 1 */
+>>         /* last cacheline: 8 bytes */
+>> };
+>>
+>> Also, this helps with the ongoing efforts to enable -Warray-bounds by
+>> fixing the following warnings:
+>>
+>> fs/nfsd/nfsfh.c: In function ‘nfsd_set_fh_dentry’:
+>> fs/nfsd/nfsfh.c:191:41: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>   191 |        ntohl((__force __be32)fh->fh_fsid[1])));
+>>       |                              ~~~~~~~~~~~^~~
+>> ./include/linux/kdev_t.h:12:46: note: in definition of macro ‘MKDEV’
+>>    12 | #define MKDEV(ma,mi) (((ma) << MINORBITS) | (mi))
+>>       |                                              ^~
+>> ./include/uapi/linux/byteorder/little_endian.h:40:26: note: in expansion of macro ‘__swab32’
+>>    40 | #define __be32_to_cpu(x) __swab32((__force __u32)(__be32)(x))
+>>       |                          ^~~~~~~~
+>> ./include/linux/byteorder/generic.h:136:21: note: in expansion of macro ‘__be32_to_cpu’
+>>   136 | #define ___ntohl(x) __be32_to_cpu(x)
+>>       |                     ^~~~~~~~~~~~~
+>> ./include/linux/byteorder/generic.h:140:18: note: in expansion of macro ‘___ntohl’
+>>   140 | #define ntohl(x) ___ntohl(x)
+>>       |                  ^~~~~~~~
+>> fs/nfsd/nfsfh.c:191:8: note: in expansion of macro ‘ntohl’
+>>   191 |        ntohl((__force __be32)fh->fh_fsid[1])));
+>>       |        ^~~~~
+>> fs/nfsd/nfsfh.c:192:32: warning: array subscript 2 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>   192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
+>>       |                     ~~~~~~~~~~~^~~
+>> fs/nfsd/nfsfh.c:192:15: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>   192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
+>>       |    ~~~~~~~~~~~^~~
+>>
+>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+>>
+>> Link: https://github.com/KSPP/linux/issues/79
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  include/uapi/linux/nfsd/nfsfh.h | 27 +++++++++++++++++++--------
+>>  1 file changed, 19 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/nfsd/nfsfh.h b/include/uapi/linux/nfsd/nfsfh.h
+>> index ff0ca88b1c8f..427294dd56a1 100644
+>> --- a/include/uapi/linux/nfsd/nfsfh.h
+>> +++ b/include/uapi/linux/nfsd/nfsfh.h
+>> @@ -64,13 +64,24 @@ struct nfs_fhbase_old {
+>>   *   in include/linux/exportfs.h for currently registered values.
+>>   */
+>>  struct nfs_fhbase_new {
+>> -       __u8            fb_version;     /* == 1, even => nfs_fhbase_old */
+>> -       __u8            fb_auth_type;
+>> -       __u8            fb_fsid_type;
+>> -       __u8            fb_fileid_type;
+>> -       __u32           fb_auth[1];
+>> -/*     __u32           fb_fsid[0]; floating */
+>> -/*     __u32           fb_fileid[0]; floating */
+>> +       union {
+>> +               struct {
+>> +                       __u8            fb_version_aux; /* == 1, even => nfs_fhbase_old */
+>> +                       __u8            fb_auth_type_aux;
+>> +                       __u8            fb_fsid_type_aux;
+>> +                       __u8            fb_fileid_type_aux;
+>> +                       __u32           fb_auth[1];
+>> +                       /*      __u32           fb_fsid[0]; floating */
+>> +                       /*      __u32           fb_fileid[0]; floating */
+>> +               };
+>> +               struct {
+>> +                       __u8            fb_version;     /* == 1, even => nfs_fhbase_old */
+>> +                       __u8            fb_auth_type;
+>> +                       __u8            fb_fsid_type;
+>> +                       __u8            fb_fileid_type;
+>> +                       __u32           fb_auth_flex[]; /* flexible-array member */
+>> +               };
+>> +       };
+>>  };
+>>
+>>  struct knfsd_fh {
+>> @@ -97,7 +108,7 @@ struct knfsd_fh {
+>>  #define        fh_fsid_type            fh_base.fh_new.fb_fsid_type
+>>  #define        fh_auth_type            fh_base.fh_new.fb_auth_type
+>>  #define        fh_fileid_type          fh_base.fh_new.fb_fileid_type
+>> -#define        fh_fsid                 fh_base.fh_new.fb_auth
+>> +#define        fh_fsid                 fh_base.fh_new.fb_auth_flex
+>>
+>>  /* Do not use, provided for userspace compatiblity. */
+>>  #define        fh_auth                 fh_base.fh_new.fb_auth
+>> --
+>> 2.27.0
+>>
+> 
+> 
