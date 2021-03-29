@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9288034C805
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BB234CA32
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhC2ITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55372 "EHLO mail.kernel.org"
+        id S234434AbhC2Ift (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232547AbhC2ILq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:11:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 176696193A;
-        Mon, 29 Mar 2021 08:11:45 +0000 (UTC)
+        id S233599AbhC2IVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56E7B61964;
+        Mon, 29 Mar 2021 08:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005506;
-        bh=ItLjE4viB/f14ALVxn9paBIewkdAwI3h4BY5cpp8Z6w=;
+        s=korg; t=1617006114;
+        bh=srDLX5F2mVEsfQXfCd1xpY64ZHrErokYKgAW/ncrvuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c7TGg2ydNjjdh9AGJn38m7+Y1cajLEP1c/jP6RWFZDLsKpjTD2hh3zh8ghikOheTM
-         c4tpMbBzkGBIP/bGu7SkRvT7t+M2CJ011gSShszi0lSLdQ8kpn8B1/2q0fX7DRuPEU
-         uHvccS9jpChuA29mlMDsfoXt8aVLEEHaCoXdXAHg=
+        b=JEP50RlkzW9uGaQmv7bKDr9LK44YpxKfWUf8sJ4Li3YXk7vDQzVR4T+diAvrCUwwE
+         xEcPR7dbjNGsdcsYfgfB2gjpQBUCopUO08i5Ja59/9RNk311JBAowrcjJpQrbf0xqX
+         Y+mMsvTc/fvTXe/9v3J7HElzqLRp0KBKsQNd5WIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomer Tayar <ttayar@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
+        Oleg Senin <olegsenin@yandex-team.ru>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 026/111] habanalabs: Call put_pid() when releasing control device
+Subject: [PATCH 5.10 123/221] tcp: relookup sock for RST+ACK packets handled by obsolete req sock
 Date:   Mon, 29 Mar 2021 09:57:34 +0200
-Message-Id: <20210329075616.053842337@linuxfoundation.org>
+Message-Id: <20210329075633.320571842@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+From: Alexander Ovechkin <ovov@yandex-team.ru>
 
-[ Upstream commit 27ac5aada024e0821c86540ad18f37edadd77d5e ]
+[ Upstream commit 7233da86697efef41288f8b713c10c2499cffe85 ]
 
-The refcount of the "hl_fpriv" structure is not used for the control
-device, and thus hl_hpriv_put() is not called when releasing this
-device.
-This results with no call to put_pid(), so add it explicitly in
-hl_device_release_ctrl().
+Currently tcp_check_req can be called with obsolete req socket for which big
+socket have been already created (because of CPU race or early demux
+assigning req socket to multiple packets in gro batch).
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Commit e0f9759f530bf789e984 ("tcp: try to keep packet if SYN_RCV race
+is lost") added retry in case when tcp_check_req is called for PSH|ACK packet.
+But if client sends RST+ACK immediatly after connection being
+established (it is performing healthcheck, for example) retry does not
+occur. In that case tcp_check_req tries to close req socket,
+leaving big socket active.
+
+Fixes: e0f9759f530 ("tcp: try to keep packet if SYN_RCV race is lost")
+Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
+Reported-by: Oleg Senin <olegsenin@yandex-team.ru>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/device.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/net/inet_connection_sock.h | 2 +-
+ net/ipv4/inet_connection_sock.c    | 7 +++++--
+ net/ipv4/tcp_minisocks.c           | 7 +++++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/device.c b/drivers/misc/habanalabs/device.c
-index 3486bf33474d..e3d943c65419 100644
---- a/drivers/misc/habanalabs/device.c
-+++ b/drivers/misc/habanalabs/device.c
-@@ -108,6 +108,8 @@ static int hl_device_release_ctrl(struct inode *inode, struct file *filp)
- 	list_del(&hpriv->dev_node);
- 	mutex_unlock(&hdev->fpriv_list_lock);
+diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+index 111d7771b208..aa92af3dd444 100644
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -284,7 +284,7 @@ static inline int inet_csk_reqsk_queue_is_full(const struct sock *sk)
+ 	return inet_csk_reqsk_queue_len(sk) >= sk->sk_max_ack_backlog;
+ }
  
-+	put_pid(hpriv->taskpid);
+-void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
+ void inet_csk_reqsk_queue_drop_and_put(struct sock *sk, struct request_sock *req);
+ 
+ static inline void inet_csk_prepare_for_destroy_sock(struct sock *sk)
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 48d2b615edc2..1dfa561e8f98 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -705,12 +705,15 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+ 	return found;
+ }
+ 
+-void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
+ {
+-	if (reqsk_queue_unlink(req)) {
++	bool unlinked = reqsk_queue_unlink(req);
 +
- 	kfree(hpriv);
++	if (unlinked) {
+ 		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
+ 		reqsk_put(req);
+ 	}
++	return unlinked;
+ }
+ EXPORT_SYMBOL(inet_csk_reqsk_queue_drop);
  
- 	return 0;
+diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+index 495dda2449fe..f0f67b25c97a 100644
+--- a/net/ipv4/tcp_minisocks.c
++++ b/net/ipv4/tcp_minisocks.c
+@@ -804,8 +804,11 @@ embryonic_reset:
+ 		tcp_reset(sk);
+ 	}
+ 	if (!fastopen) {
+-		inet_csk_reqsk_queue_drop(sk, req);
+-		__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
++		bool unlinked = inet_csk_reqsk_queue_drop(sk, req);
++
++		if (unlinked)
++			__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
++		*req_stolen = !unlinked;
+ 	}
+ 	return NULL;
+ }
 -- 
 2.30.1
 
