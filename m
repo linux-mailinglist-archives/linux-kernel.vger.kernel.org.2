@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643D334C914
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937E734CB62
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhC2I0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59086 "EHLO mail.kernel.org"
+        id S235050AbhC2Iql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233216AbhC2IRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 581B261960;
-        Mon, 29 Mar 2021 08:16:47 +0000 (UTC)
+        id S234367AbhC2I2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:28:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C08561477;
+        Mon, 29 Mar 2021 08:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005807;
-        bh=O/0q2JjobzsUmuE+dvnraPV+i669n5v5EMZTYrRvoEI=;
+        s=korg; t=1617006471;
+        bh=LMlAkPh0AFAChpebs9ayhYBjTS7ZxN6DVOA23qX1478=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vT79fWYiAl85eInY4SPdpsrTMYL4QM123+Epl0QhQ/bBxf5A1RcIQdU7cW+fUf4je
-         R1njm//PltpJLAbVCbq/qLkCOwwbMrMIhs3frfDsyLxqHfbEhn2Pn1Q6Lnz/IxhEOT
-         ksh2YzCXnbSEiBagrLHP0ONwcbubTqU7N6/vRhtE=
+        b=lAUAbLKIwxkMIZm6Pthlo/eZznxCFSJpUFp/iqN/miIsJnIUTCtZnJQM+K6UjLaUi
+         NbJSIf7Uj+9JF8+h8PuJoor99Da4Vb1FAfwvEIK86S1+PEMvxAKch341yt5kYRqE3y
+         Xv5sfb9uPX4E+HCPgR0ZIvTgIc4coo00LTAg46zQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xunlei Pang <xlpang@linux.alibaba.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 013/221] blk-cgroup: Fix the recursive blkg rwstat
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 028/254] atm: idt77252: fix null-ptr-dereference
 Date:   Mon, 29 Mar 2021 09:55:44 +0200
-Message-Id: <20210329075629.620477384@linuxfoundation.org>
+Message-Id: <20210329075634.066757197@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xunlei Pang <xlpang@linux.alibaba.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 4f44657d74873735e93a50eb25014721a66aac19 ]
+[ Upstream commit 4416e98594dc04590ebc498fc4e530009535c511 ]
 
-The current blkio.throttle.io_service_bytes_recursive doesn't
+this one is similar to the phy_data allocation fix in uPD98402, the
+driver allocate the idt77105_priv and store to dev_data but later
+dereference using dev->dev_data, which will cause null-ptr-dereference.
+
+fix this issue by changing dev_data to phy_data so that PRIV(dev) can
 work correctly.
 
-As an example, for the following blkcg hierarchy:
- (Made 1GB READ in test1, 512MB READ in test2)
-     test
-    /    \
- test1   test2
-
-$ head -n 1 test/test1/blkio.throttle.io_service_bytes_recursive
-8:0 Read 1073684480
-$ head -n 1 test/test2/blkio.throttle.io_service_bytes_recursive
-8:0 Read 537448448
-$ head -n 1 test/blkio.throttle.io_service_bytes_recursive
-8:0 Read 537448448
-
-Clearly, above data of "test" reflects "test2" not "test1"+"test2".
-
-Do the correct summary in blkg_rwstat_recursive_sum().
-
-Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-cgroup-rwstat.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/atm/idt77105.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-cgroup-rwstat.c b/block/blk-cgroup-rwstat.c
-index 85d5790ac49b..3304e841df7c 100644
---- a/block/blk-cgroup-rwstat.c
-+++ b/block/blk-cgroup-rwstat.c
-@@ -109,6 +109,7 @@ void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
+diff --git a/drivers/atm/idt77105.c b/drivers/atm/idt77105.c
+index 3c081b6171a8..bfca7b8a6f31 100644
+--- a/drivers/atm/idt77105.c
++++ b/drivers/atm/idt77105.c
+@@ -262,7 +262,7 @@ static int idt77105_start(struct atm_dev *dev)
+ {
+ 	unsigned long flags;
  
- 	lockdep_assert_held(&blkg->q->queue_lock);
- 
-+	memset(sum, 0, sizeof(*sum));
- 	rcu_read_lock();
- 	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
- 		struct blkg_rwstat *rwstat;
-@@ -122,7 +123,7 @@ void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
- 			rwstat = (void *)pos_blkg + off;
- 
- 		for (i = 0; i < BLKG_RWSTAT_NR; i++)
--			sum->cnt[i] = blkg_rwstat_read_counter(rwstat, i);
-+			sum->cnt[i] += blkg_rwstat_read_counter(rwstat, i);
- 	}
- 	rcu_read_unlock();
- }
+-	if (!(dev->dev_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	PRIV(dev)->dev = dev;
+ 	spin_lock_irqsave(&idt77105_priv_lock, flags);
+@@ -337,7 +337,7 @@ static int idt77105_stop(struct atm_dev *dev)
+                 else
+                     idt77105_all = walk->next;
+ 	        dev->phy = NULL;
+-                dev->dev_data = NULL;
++                dev->phy_data = NULL;
+                 kfree(walk);
+                 break;
+             }
 -- 
 2.30.1
 
