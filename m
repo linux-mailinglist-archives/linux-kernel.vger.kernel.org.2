@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C5F34CC28
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC9C34C624
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbhC2I4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
+        id S231359AbhC2IFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:05:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234747AbhC2IhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED34619BA;
-        Mon, 29 Mar 2021 08:36:28 +0000 (UTC)
+        id S231978AbhC2IDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67B0961996;
+        Mon, 29 Mar 2021 08:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006989;
-        bh=gGIgEHXRAvsGtIhAzf9ewUnStrk7jD2CKzfDovCxItI=;
+        s=korg; t=1617004989;
+        bh=g/c6TfSTbNF6xa3LHH7jg47KeE776XHa6nIZONfk/Iw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVqskkwSbRlCUNUMQAjeMSEKLMfUeE1J/qhWPGAMqJx55xnM6uY3qyKnNNqbhnmtv
-         whplzAmWNpcczXYuxeGC4j3Oho1p7hxF/LCPKY71vjFf4seUKC2jinHI1r4KxnoRLL
-         /lclTXdCiQ2Iln/tM4QGlfbjK5ZfYx4+QGOWbHnQ=
+        b=wnJjUN1XX0EdNpe1YT3gnObjeHV83akELnoNEzWW8hqiRirb1GNhzu1tQW/Uv05Bi
+         VdHZngI7zcViw8LmBsrrnqAwtpTzQzXe71K/V2rrd5KiVztNsofLgqFodlNQGAiHHT
+         elNlqZ8hreYicVIPDw4MzqEbSr1lldB/5+52Ohyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 179/254] net: cdc-phonet: fix data-interface release on probe failure
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        juri.lelli@arm.com, xlpang@redhat.com, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jdesfossez@efficios.com,
+        dvhart@infradead.org, bristot@redhat.com,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 4.9 40/53] futex: Drop hb->lock before enqueueing on the rtmutex
 Date:   Mon, 29 Mar 2021 09:58:15 +0200
-Message-Id: <20210329075639.030030604@linuxfoundation.org>
+Message-Id: <20210329075608.827955071@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +44,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit c79a707072fe3fea0e3c92edee6ca85c1e53c29f ]
+commit 56222b212e8edb1cf51f5dd73ff645809b082b40 upstream.
 
-Set the disconnected flag before releasing the data interface in case
-netdev registration fails to avoid having the disconnect callback try to
-deregister the never registered netdev (and trigger a WARN_ON()).
+When PREEMPT_RT_FULL does the spinlock -> rt_mutex substitution the PI
+chain code will (falsely) report a deadlock and BUG.
 
-Fixes: 87cf65601e17 ("USB host CDC Phonet network interface driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The problem is that it hold hb->lock (now an rt_mutex) while doing
+task_blocks_on_rt_mutex on the futex's pi_state::rtmutex. This, when
+interleaved just right with futex_unlock_pi() leads it to believe to see an
+AB-BA deadlock.
+
+  Task1 (holds rt_mutex,	Task2 (does FUTEX_LOCK_PI)
+         does FUTEX_UNLOCK_PI)
+
+				lock hb->lock
+				lock rt_mutex (as per start_proxy)
+  lock hb->lock
+
+Which is a trivial AB-BA.
+
+It is not an actual deadlock, because it won't be holding hb->lock by the
+time it actually blocks on the rt_mutex, but the chainwalk code doesn't
+know that and it would be a nightmare to handle this gracefully.
+
+To avoid this problem, do the same as in futex_unlock_pi() and drop
+hb->lock after acquiring wait_lock. This still fully serializes against
+futex_unlock_pi(), since adding to the wait_list does the very same lock
+dance, and removing it holds both locks.
+
+Aside of solving the RT problem this makes the lock and unlock mechanism
+symetric and reduces the hb->lock held time.
+
+Reported-and-tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: juri.lelli@arm.com
+Cc: xlpang@redhat.com
+Cc: rostedt@goodmis.org
+Cc: mathieu.desnoyers@efficios.com
+Cc: jdesfossez@efficios.com
+Cc: dvhart@infradead.org
+Cc: bristot@redhat.com
+Link: http://lkml.kernel.org/r/20170322104152.161341537@infradead.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/cdc-phonet.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/futex.c                  |   30 +++++++++++++++++-------
+ kernel/locking/rtmutex.c        |   49 ++++++++++++++++++++++------------------
+ kernel/locking/rtmutex_common.h |    3 ++
+ 3 files changed, 52 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/usb/cdc-phonet.c b/drivers/net/usb/cdc-phonet.c
-index 02e6bbb17b15..8d1f69dad603 100644
---- a/drivers/net/usb/cdc-phonet.c
-+++ b/drivers/net/usb/cdc-phonet.c
-@@ -387,6 +387,8 @@ static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *i
- 
- 	err = register_netdev(dev);
- 	if (err) {
-+		/* Set disconnected flag so that disconnect() returns early. */
-+		pnd->disconnected = 1;
- 		usb_driver_release_interface(&usbpn_driver, data_intf);
- 		goto out;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2948,20 +2948,33 @@ retry_private:
+ 		goto no_block;
  	}
--- 
-2.30.1
-
+ 
++	rt_mutex_init_waiter(&rt_waiter);
++
+ 	/*
+-	 * We must add ourselves to the rt_mutex waitlist while holding hb->lock
+-	 * such that the hb and rt_mutex wait lists match.
++	 * On PREEMPT_RT_FULL, when hb->lock becomes an rt_mutex, we must not
++	 * hold it while doing rt_mutex_start_proxy(), because then it will
++	 * include hb->lock in the blocking chain, even through we'll not in
++	 * fact hold it while blocking. This will lead it to report -EDEADLK
++	 * and BUG when futex_unlock_pi() interleaves with this.
++	 *
++	 * Therefore acquire wait_lock while holding hb->lock, but drop the
++	 * latter before calling rt_mutex_start_proxy_lock(). This still fully
++	 * serializes against futex_unlock_pi() as that does the exact same
++	 * lock handoff sequence.
+ 	 */
+-	rt_mutex_init_waiter(&rt_waiter);
+-	ret = rt_mutex_start_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter, current);
++	raw_spin_lock_irq(&q.pi_state->pi_mutex.wait_lock);
++	spin_unlock(q.lock_ptr);
++	ret = __rt_mutex_start_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter, current);
++	raw_spin_unlock_irq(&q.pi_state->pi_mutex.wait_lock);
++
+ 	if (ret) {
+ 		if (ret == 1)
+ 			ret = 0;
+ 
++		spin_lock(q.lock_ptr);
+ 		goto no_block;
+ 	}
+ 
+-	spin_unlock(q.lock_ptr);
+ 
+ 	if (unlikely(to))
+ 		hrtimer_start_expires(&to->timer, HRTIMER_MODE_ABS);
+@@ -2974,6 +2987,9 @@ retry_private:
+ 	 * first acquire the hb->lock before removing the lock from the
+ 	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex
+ 	 * wait lists consistent.
++	 *
++	 * In particular; it is important that futex_unlock_pi() can not
++	 * observe this inconsistency.
+ 	 */
+ 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
+ 		ret = 0;
+@@ -3071,10 +3087,6 @@ retry:
+ 
+ 		get_pi_state(pi_state);
+ 		/*
+-		 * Since modifying the wait_list is done while holding both
+-		 * hb->lock and wait_lock, holding either is sufficient to
+-		 * observe it.
+-		 *
+ 		 * By taking wait_lock while still holding hb->lock, we ensure
+ 		 * there is no point where we hold neither; and therefore
+ 		 * wake_futex_pi() must observe a state consistent with what we
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1695,31 +1695,14 @@ void rt_mutex_proxy_unlock(struct rt_mut
+ 	rt_mutex_set_owner(lock, NULL);
+ }
+ 
+-/**
+- * rt_mutex_start_proxy_lock() - Start lock acquisition for another task
+- * @lock:		the rt_mutex to take
+- * @waiter:		the pre-initialized rt_mutex_waiter
+- * @task:		the task to prepare
+- *
+- * Returns:
+- *  0 - task blocked on lock
+- *  1 - acquired the lock for task, caller should wake it up
+- * <0 - error
+- *
+- * Special API call for FUTEX_REQUEUE_PI support.
+- */
+-int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+ 			      struct rt_mutex_waiter *waiter,
+ 			      struct task_struct *task)
+ {
+ 	int ret;
+ 
+-	raw_spin_lock_irq(&lock->wait_lock);
+-
+-	if (try_to_take_rt_mutex(lock, task, NULL)) {
+-		raw_spin_unlock_irq(&lock->wait_lock);
++	if (try_to_take_rt_mutex(lock, task, NULL))
+ 		return 1;
+-	}
+ 
+ 	/* We enforce deadlock detection for futexes */
+ 	ret = task_blocks_on_rt_mutex(lock, waiter, task,
+@@ -1738,12 +1721,36 @@ int rt_mutex_start_proxy_lock(struct rt_
+ 	if (unlikely(ret))
+ 		remove_waiter(lock, waiter);
+ 
+-	raw_spin_unlock_irq(&lock->wait_lock);
+-
+ 	debug_rt_mutex_print_deadlock(waiter);
+ 
+ 	return ret;
+ }
++
++/**
++ * rt_mutex_start_proxy_lock() - Start lock acquisition for another task
++ * @lock:		the rt_mutex to take
++ * @waiter:		the pre-initialized rt_mutex_waiter
++ * @task:		the task to prepare
++ *
++ * Returns:
++ *  0 - task blocked on lock
++ *  1 - acquired the lock for task, caller should wake it up
++ * <0 - error
++ *
++ * Special API call for FUTEX_REQUEUE_PI support.
++ */
++int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++			      struct rt_mutex_waiter *waiter,
++			      struct task_struct *task)
++{
++	int ret;
++
++	raw_spin_lock_irq(&lock->wait_lock);
++	ret = __rt_mutex_start_proxy_lock(lock, waiter, task);
++	raw_spin_unlock_irq(&lock->wait_lock);
++
++	return ret;
++}
+ 
+ /**
+  * rt_mutex_next_owner - return the next owner of the lock
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -104,6 +104,9 @@ extern void rt_mutex_init_proxy_locked(s
+ 				       struct task_struct *proxy_owner);
+ extern void rt_mutex_proxy_unlock(struct rt_mutex *lock);
+ extern void rt_mutex_init_waiter(struct rt_mutex_waiter *waiter);
++extern int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++				     struct rt_mutex_waiter *waiter,
++				     struct task_struct *task);
+ extern int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+ 				     struct rt_mutex_waiter *waiter,
+ 				     struct task_struct *task);
 
 
