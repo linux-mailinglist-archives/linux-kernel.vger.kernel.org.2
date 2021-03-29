@@ -2,203 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4292B34C4AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2ED34C4AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhC2HOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhC2HO3 (ORCPT
+        id S230316AbhC2HPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:15:48 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:38421 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230052AbhC2HPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:14:29 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327F5C061574;
-        Mon, 29 Mar 2021 00:14:29 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id r12so17787938ejr.5;
-        Mon, 29 Mar 2021 00:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3i61lbYtht1bCl8e/9X51r7cabit5ewoNnhghpFbgB4=;
-        b=Ie1AnPs9rGSxNFYqSvt0EusYJvzck2q7ygXAvCLx2RY2J50vtvhFP0y4uA9Q5nxvx9
-         PidhP6edYbGS7obwIl9nyLyLOpqEBRTOP84T05EHxQ5zg20rmUubOkc28iX6XE22aYfP
-         8i5kqbk49k4OcXC1flXKeeh7vBBJvuRRHapTPEG/FQ9YBUeb3NMPu0n5cfog1+GXWvqk
-         X8vShelYAPhGXPytY5mZy9SKV8QQnPIsEcp6jhYCn9vdOJIupz/Mur/RsMO2a+wvpRii
-         3jYJzW2Z52GBwnPZ/hzLnF05PtxbiKoFz/iY5TucUhmEx9vuu+5Wj6GVf0YjiqPA5cSe
-         ZT4A==
+        Mon, 29 Mar 2021 03:15:21 -0400
+Received: by mail-vs1-f44.google.com with SMTP id r12so2281518vsj.5;
+        Mon, 29 Mar 2021 00:15:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3i61lbYtht1bCl8e/9X51r7cabit5ewoNnhghpFbgB4=;
-        b=EC/ayPXe5hik3a8p1obKhaPnEJxsdAu64e4YMhhQytgo1jMV/4uGDezhN0DDzX+mUZ
-         mgz8/C1ZrSHhTa6ENyii0alCN0ycGVJOuhFUOqCsoSLRAHYqFsqXwugD9vsarInJELCW
-         MMMxiqXq2Ofbjcf+LXQsAzJhcpgTdUggezlXteDRvsgBpg11+GoAHlxYtDjnxkjSI4wA
-         Sdg4s2RhWrTJ4aDIcf15Qk1CpIR4ikF9ng9FHcEpJCCnRxkK2FKlLs6s8BzMLZkpsHd9
-         7xWuJGiTtY4I8egEel69bE2vnJ7sLlCKfR/A5rTY4u52gl0hBVZFYM59l6Yn5PRhj/38
-         oLOw==
-X-Gm-Message-State: AOAM530PPMYCtFI+P+Se5ZW649SzL0oK064FmkpwiOYtDur/R9+KX2wr
-        P83PABgjWYN0KcjkmLTZDTM=
-X-Google-Smtp-Source: ABdhPJz0Wyo214HyWDDtxNsLzkbmyW4AFgsBR1ewRxx746ERv+oPB8VFTAjV7+GjDSv0aqTEjGU2eQ==
-X-Received: by 2002:a17:907:33cd:: with SMTP id zk13mr27102009ejb.224.1617002067914;
-        Mon, 29 Mar 2021 00:14:27 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id g25sm8253594edp.95.2021.03.29.00.14.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 00:14:26 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 09:14:51 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 13/17] ASoC: tegra: tegra20_das: align function prototypes
-Message-ID: <YGF+a+/FXkGvT1WY@orome.fritz.box>
-References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
- <20210326215927.936377-14-pierre-louis.bossart@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R+Y1qLkJ0VZf/i1XHHe8V+cBjsex9rRaMaM82dXviM4=;
+        b=ti8jf8t71IdVMHBQSRgBrvsDMAnfS3OFfdQuUNP2/nLWeK0b68NWNR0kutyDsiL48X
+         HiLGmlrJcI2OnrrpdI0YuGa+/yJUCB8c8f3FDJpPTbDo2pZz+Q0mOIyxNgljx9KDQtog
+         P9L9D5gbVVqeHnhcimhmAaMhUt3AD74zcWog7O80B7AY3g92o7tS8WnH3YHQs0Wsq8f3
+         WUBDxwFlaUMmEvrCYaZ4kR6zuWDtWr2m8tMIpOEpMnaTl2L+v8C89zVMrs0eOSmxl6CT
+         REGG+GDfKdutuzqINPBye+JZHjj4YPV1EQzPcTX46Kse2jFJlYM58OxqiU7im3TuFYf9
+         G9DA==
+X-Gm-Message-State: AOAM532kBEvW5XMWhbZM2wEkxJRlH3hZpgzfhK+Q6I9M9IF/gizM29FV
+        fW4tfuA62M/f8QyanrfQvMR84HICOwzuZZgA5xS/6ymM
+X-Google-Smtp-Source: ABdhPJyGEYd+Q49zYMlQ9mf1eQCEc+DZYIpnEMkPvYFXBxBNcExj7l3rm+tPGvIUCTs8h3guIJh/RY+hb+rv38ipfV0=
+X-Received: by 2002:a67:1ac7:: with SMTP id a190mr8074891vsa.18.1617002120644;
+ Mon, 29 Mar 2021 00:15:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xtdBqiT13sHPbdgA"
-Content-Disposition: inline
-In-Reply-To: <20210326215927.936377-14-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-17-geert@linux-m68k.org> <2868cd091dc6ff0cab14b5da07f89984@protonic.nl>
+In-Reply-To: <2868cd091dc6ff0cab14b5da07f89984@protonic.nl>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Mar 2021 09:15:09 +0200
+Message-ID: <CAMuHMdXJV3duE=uhCD3XSVn35Y5=iafOOUu5_57-1TtW062ZJg@mail.gmail.com>
+Subject: Re: [PATCH 16/17] auxdisplay: ht16k33: Add support for segment displays
+To:     Robin van der Gracht <robin@protonic.nl>
+Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hoi Robin,
 
---xtdBqiT13sHPbdgA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 29, 2021 at 9:09 AM Robin van der Gracht <robin@protonic.nl> wrote:
+> On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> > The Holtek HT16K33 LED controller is not only used for driving
+> > dot-matrix displays, but also for driving segment displays.
+> >
+> > Add support for 4-digit 7-segment and quad 14-segment alphanumeric
+> > displays, like the Adafruit 7-segment and 14-segment display backpack
+> > and FeatherWing expansion boards.  Use the character line display core
+> > support to display a message, which will be scrolled if it doesn't fit.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+> > The 7-segment support is based on schematics, and untested on actual
+> > hardware.
+> > ---
+> >  drivers/auxdisplay/ht16k33.c | 198 +++++++++++++++++++++++++++++++++--
+> >  1 file changed, 191 insertions(+), 7 deletions(-)
+> >
+> ...
+> >
+> > +static int ht16k33_seg_probe(struct i2c_client *client,
+> > +                          struct ht16k33_priv *priv, uint32_t brightness)
+> > +{
+> > +     struct ht16k33_seg *seg = &priv->seg;
+> > +     struct device *dev = &client->dev;
+> > +     int err;
+> > +
+> > +     err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     switch (priv->type) {
+> > +     case DISP_MATRIX:
+> > +             /* not handled here */
+> > +             break;
+>
+> This 'case' shouldn't happen. Having said that, the break here will
+> still
+> cause the linedisp_register() function to be called for the DISP_MATRIX
+> type.
+> If you'd like to handle this case, a return (or setting 'err') should
+> prevent this.
 
-On Fri, Mar 26, 2021 at 04:59:23PM -0500, Pierre-Louis Bossart wrote:
-> cppcheck warnings:
->=20
-> sound/soc/tegra/tegra20_das.c:35:40: style:inconclusive: Function
-> 'tegra20_das_connect_dap_to_dac' argument 1 names different:
-> declaration 'dap_id' definition 'dap'. [funcArgNamesDifferent]
->=20
-> int tegra20_das_connect_dap_to_dac(int dap, int dac)
->                                        ^
-> sound/soc/tegra/tegra20_das.h:98:47: note: Function
-> 'tegra20_das_connect_dap_to_dac' argument 1 names different:
-> declaration 'dap_id' definition 'dap'.
-> extern int tegra20_das_connect_dap_to_dac(int dap_id, int dac_sel);
->                                               ^
-> sound/soc/tegra/tegra20_das.c:35:40: note: Function
-> 'tegra20_das_connect_dap_to_dac' argument 1 names different:
-> declaration 'dap_id' definition 'dap'.
-> int tegra20_das_connect_dap_to_dac(int dap, int dac)
->                                        ^
-> sound/soc/tegra/tegra20_das.c:35:49: style:inconclusive: Function
-> 'tegra20_das_connect_dap_to_dac' argument 2 names different:
-> declaration 'dac_sel' definition 'dac'. [funcArgNamesDifferent]
-> int tegra20_das_connect_dap_to_dac(int dap, int dac)
->                                                 ^
-> sound/soc/tegra/tegra20_das.h:98:59: note: Function
-> 'tegra20_das_connect_dap_to_dac' argument 2 names different:
-> declaration 'dac_sel' definition 'dac'.
-> extern int tegra20_das_connect_dap_to_dac(int dap_id, int dac_sel);
->                                                           ^
-> sound/soc/tegra/tegra20_das.c:35:49: note: Function 'tegra20_das_connect_=
-dap_to_dac' argument 2 names different: declaration 'dac_sel' definition 'd=
-ac'.
-> int tegra20_das_connect_dap_to_dac(int dap, int dac)
->                                                 ^
-> sound/soc/tegra/tegra20_das.c:53:40: style:inconclusive: Function
-> 'tegra20_das_connect_dap_to_dap' argument 1 names different:
-> declaration 'dap_id' definition 'dap'. [funcArgNamesDifferent]
-> int tegra20_das_connect_dap_to_dap(int dap, int otherdap, int master,
->                                        ^
-> sound/soc/tegra/tegra20_das.h:108:47: note: Function
-> 'tegra20_das_connect_dap_to_dap' argument 1 names different:
-> declaration 'dap_id' definition 'dap'.
-> extern int tegra20_das_connect_dap_to_dap(int dap_id, int other_dap_sel,
->                                               ^
-> sound/soc/tegra/tegra20_das.c:53:40: note: Function
-> 'tegra20_das_connect_dap_to_dap' argument 1 names different:
-> declaration 'dap_id' definition 'dap'.
-> int tegra20_das_connect_dap_to_dap(int dap, int otherdap, int master,
->                                        ^
-> sound/soc/tegra/tegra20_das.c:53:49: style:inconclusive: Function
-> 'tegra20_das_connect_dap_to_dap' argument 2 names different:
-> declaration 'other_dap_sel' definition
-> 'otherdap'. [funcArgNamesDifferent]
-> int tegra20_das_connect_dap_to_dap(int dap, int otherdap, int master,
->                                                 ^
-> sound/soc/tegra/tegra20_das.h:108:59: note: Function
-> 'tegra20_das_connect_dap_to_dap' argument 2 names different:
-> declaration 'other_dap_sel' definition 'otherdap'.
-> extern int tegra20_das_connect_dap_to_dap(int dap_id, int other_dap_sel,
->                                                           ^
-> sound/soc/tegra/tegra20_das.c:53:49: note: Function
-> 'tegra20_das_connect_dap_to_dap' argument 2 names different:
-> declaration 'other_dap_sel' definition 'otherdap'.
-> int tegra20_das_connect_dap_to_dap(int dap, int otherdap, int master,
->                                                 ^
-> sound/soc/tegra/tegra20_das.c:75:40: style:inconclusive: Function
-> 'tegra20_das_connect_dac_to_dap' argument 1 names different:
-> declaration 'dac_id' definition 'dac'. [funcArgNamesDifferent]
-> int tegra20_das_connect_dac_to_dap(int dac, int dap)
->                                        ^
-> sound/soc/tegra/tegra20_das.h:118:47: note: Function
-> 'tegra20_das_connect_dac_to_dap' argument 1 names different:
-> declaration 'dac_id' definition 'dac'.
-> extern int tegra20_das_connect_dac_to_dap(int dac_id, int dap_sel);
->                                               ^
-> sound/soc/tegra/tegra20_das.c:75:40: note: Function
-> 'tegra20_das_connect_dac_to_dap' argument 1 names different:
-> declaration 'dac_id' definition 'dac'.
-> int tegra20_das_connect_dac_to_dap(int dac, int dap)
->                                        ^
-> sound/soc/tegra/tegra20_das.c:75:49: style:inconclusive: Function
-> 'tegra20_das_connect_dac_to_dap' argument 2 names different:
-> declaration 'dap_sel' definition 'dap'. [funcArgNamesDifferent]
-> int tegra20_das_connect_dac_to_dap(int dac, int dap)
->                                                 ^
-> sound/soc/tegra/tegra20_das.h:118:59: note: Function
-> 'tegra20_das_connect_dac_to_dap' argument 2 names different:
-> declaration 'dap_sel' definition 'dap'.
-> extern int tegra20_das_connect_dac_to_dap(int dac_id, int dap_sel);
->                                                           ^
-> sound/soc/tegra/tegra20_das.c:75:49: note: Function
-> 'tegra20_das_connect_dac_to_dap' argument 2 names different:
-> declaration 'dap_sel' definition 'dap'.
-> int tegra20_das_connect_dac_to_dap(int dac, int dap)
->                                                 ^
->=20
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/soc/tegra/tegra20_das.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+This function is never called if priv->type == DISP_MATRIX, so this
+cannot happen.  However, gcc complains if not all enum values are
+handled in a switch() statement, hence the dummy case.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Is there a better way to handle this?
 
---xtdBqiT13sHPbdgA
-Content-Type: application/pgp-signature; name="signature.asc"
+> > +     case DISP_QUAD_7SEG:
+> > +             INIT_DELAYED_WORK(&priv->work, ht16k33_seg7_update);
+> > +             seg->map.seg7 = initial_map_seg7;
+> > +             seg->map_size = sizeof(seg->map.seg7);
+> > +             err = device_create_file(dev, &dev_attr_map_seg7);
+> > +             break;
+> > +
+> > +     case DISP_QUAD_14SEG:
+> > +             INIT_DELAYED_WORK(&priv->work, ht16k33_seg14_update);
+> > +             seg->map.seg14 = initial_map_seg14;
+> > +             seg->map_size = sizeof(seg->map.seg14);
+> > +             err = device_create_file(dev, &dev_attr_map_seg14);
+> > +             break;
+> > +     }
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     err = linedisp_register(&seg->linedisp, dev, 4, seg->curr,
+> > +                             ht16k33_linedisp_update);
+> > +     if (err)
+> > +             goto err_remove_map_file;
+> > +
+> > +     return 0;
 
------BEGIN PGP SIGNATURE-----
+Gr{oetje,eeting}s,
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBhfmsACgkQ3SOs138+
-s6HkchAAltA7zPKOIL5EHYwQ8SynrcJVRybPjCnp5hAYOxFdncbR4b5rvEhZ8a2S
-Es3+Six6tVloierFTCCftuwK9YUuso9z+8TtkV0DCciC/GFfbW1IO22hROSo2/Nv
-g9JQnkjrHAzKhJS+wMRXKIDhhRlQ729bf01cEkINfNPaCvYp/amv0kMyyl2ElymD
-yJOx4XBlmMpwgBTKoPlTNVuGaBqkMV4AWi8IlENba8HSridV7NUeP4hxFPnkC1Vk
-1O8uG3KoyydD73hy81XqfyDW/pxquC6xA0fxcCpW08b2SnUcjCNMm9haVZQgkoId
-3h6IugwleJZvjRcmeuswp/CS+DB/CWo6qHvwDAUAz+ipa5BpovK31VrEKg5B7Zmn
-TAfTPCdbDHLTRsjJ4ds5uU7QG7dT3QDPzy87+Lzv5SiIKLK1ZtZowR7wQ41rszjk
-k5bPswLndoqDVSK4+9r1aLoYWRdX/7WkzaNNSW+0HcipR3/EZThkAmgAjvoxGDzv
-XnhkDtMBoDnN476Xr2GsuzPgbfhQZHjXeZ19YkpVtg3srQpdZha2RG+5gGmmpBAx
-HBkJ5BeNwzyboiX/4gXXWaUEoTH54LwMxCFGLE0cIhbXCAeeKtYeThRT+VvxKsNB
-F2dIt8OnEynsXoIoTZj/ZvEiki/VOUi3FPIkV3MSOAomuwY5/fM=
-=/+6d
------END PGP SIGNATURE-----
+                        Geert
 
---xtdBqiT13sHPbdgA--
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
