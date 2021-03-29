@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FF434C5F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233B734CC22
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhC2IE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45412 "EHLO mail.kernel.org"
+        id S236019AbhC2Izz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231441AbhC2ICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB82B6197F;
-        Mon, 29 Mar 2021 08:02:47 +0000 (UTC)
+        id S232783AbhC2Igx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:36:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D674961934;
+        Mon, 29 Mar 2021 08:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004968;
-        bh=DeVbnc7dhfifVTkUd8+aO2oWriYvvGDHDJ/iwaqX5Lw=;
+        s=korg; t=1617006967;
+        bh=l/x7sWgwTSly1NnGtXWbeInvTL3RLJFK/EbvH2vXYCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z7p8VOhYLsGlpMUfBXZvBbx6v0RyArxxGqfdvrK64JWB0udCvBssV0PjZ2rRkPQ40
-         9IDGraSuNNgZ7e4nfIqUf2ALddkfs656lZBU4gS8JgvxrFUdh/hDCBfA5z0W/4N+Vd
-         hXFeH3v94qEq4At6jUGTB7xgUeP1EoXH6EaNH3K4=
+        b=KdjHH8CArtWPK9TCOr8FedRLRO85okuZQzvMtss/Dmnw1uUIgwKziuvfc6io55mgy
+         MVmAhH/aoBZuV55KJWRntgWpz/2K7FwfGFQAdCa5fNzH7QICZbdo6SFg9QrqT3Pp7P
+         GID6eeV3it2ATM9/wHMbtwtF0+6CfaTML73H8LO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Sunyi Shao <sunyishao@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 33/53] ACPI: scan: Rearrange memory allocation in acpi_device_add()
+Subject: [PATCH 5.11 172/254] ipv6: weaken the v4mapped source check
 Date:   Mon, 29 Mar 2021 09:58:08 +0200
-Message-Id: <20210329075608.605488641@linuxfoundation.org>
+Message-Id: <20210329075638.818149955@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,125 +43,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit c1013ff7a5472db637c56bb6237f8343398c03a7 ]
+[ Upstream commit dcc32f4f183ab8479041b23a1525d48233df1d43 ]
 
-The upfront allocation of new_bus_id is done to avoid allocating
-memory under acpi_device_lock, but it doesn't really help,
-because (1) it leads to many unnecessary memory allocations for
-_ADR devices, (2) kstrdup_const() is run under that lock anyway and
-(3) it complicates the code.
+This reverts commit 6af1799aaf3f1bc8defedddfa00df3192445bbf3.
 
-Rearrange acpi_device_add() to allocate memory for a new struct
-acpi_device_bus_id instance only when necessary, eliminate a redundant
-local variable from it and reduce the number of labels in there.
+Commit 6af1799aaf3f ("ipv6: drop incoming packets having a v4mapped
+source address") introduced an input check against v4mapped addresses.
+Use of such addresses on the wire is indeed questionable and not
+allowed on public Internet. As the commit pointed out
 
-No intentional functional impact.
+  https://tools.ietf.org/html/draft-itojun-v6ops-v4mapped-harmful-02
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+lists potential issues.
+
+Unfortunately there are applications which use v4mapped addresses,
+and breaking them is a clear regression. For example v4mapped
+addresses (or any semi-valid addresses, really) may be used
+for uni-direction event streams or packet export.
+
+Since the issue which sparked the addition of the check was with
+TCP and request_socks in particular push the check down to TCPv6
+and DCCP. This restores the ability to receive UDPv6 packets with
+v4mapped address as the source.
+
+Keep using the IPSTATS_MIB_INHDRERRORS statistic to minimize the
+user-visible changes.
+
+Fixes: 6af1799aaf3f ("ipv6: drop incoming packets having a v4mapped source address")
+Reported-by: Sunyi Shao <sunyishao@fb.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/scan.c | 57 +++++++++++++++++++++------------------------
- 1 file changed, 26 insertions(+), 31 deletions(-)
+ net/dccp/ipv6.c      |  5 +++++
+ net/ipv6/ip6_input.c | 10 ----------
+ net/ipv6/tcp_ipv6.c  |  5 +++++
+ net/mptcp/subflow.c  |  5 +++++
+ 4 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 5aa4a01f698f..c1066487c06b 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -622,12 +622,23 @@ void acpi_bus_put_acpi_device(struct acpi_device *adev)
- 	put_device(&adev->dev);
- }
+diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+index 1f73603913f5..2be5c69824f9 100644
+--- a/net/dccp/ipv6.c
++++ b/net/dccp/ipv6.c
+@@ -319,6 +319,11 @@ static int dccp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
+ 	if (!ipv6_unicast_destination(skb))
+ 		return 0;	/* discard, don't send a reset here */
  
-+static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
-+{
-+	struct acpi_device_bus_id *acpi_device_bus_id;
-+
-+	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
-+	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
-+		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
-+			return acpi_device_bus_id;
++	if (ipv6_addr_v4mapped(&ipv6_hdr(skb)->saddr)) {
++		__IP6_INC_STATS(sock_net(sk), NULL, IPSTATS_MIB_INHDRERRORS);
++		return 0;
 +	}
-+	return NULL;
-+}
 +
- int acpi_device_add(struct acpi_device *device,
- 		    void (*release)(struct device *))
- {
-+	struct acpi_device_bus_id *acpi_device_bus_id;
- 	int result;
--	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
--	int found = 0;
+ 	if (dccp_bad_service_code(sk, service)) {
+ 		dcb->dccpd_reset_code = DCCP_RESET_CODE_BAD_SERVICE_CODE;
+ 		goto drop;
+diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+index e96304d8a4a7..06d60662717d 100644
+--- a/net/ipv6/ip6_input.c
++++ b/net/ipv6/ip6_input.c
+@@ -245,16 +245,6 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
+ 	if (ipv6_addr_is_multicast(&hdr->saddr))
+ 		goto err;
  
- 	if (device->handle) {
- 		acpi_status status;
-@@ -653,38 +664,26 @@ int acpi_device_add(struct acpi_device *device,
- 	INIT_LIST_HEAD(&device->del_list);
- 	mutex_init(&device->physical_node_lock);
- 
--	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
--	if (!new_bus_id) {
--		pr_err(PREFIX "Memory allocation error\n");
--		result = -ENOMEM;
--		goto err_detach;
--	}
--
- 	mutex_lock(&acpi_device_lock);
--	/*
--	 * Find suitable bus_id and instance number in acpi_bus_id_list
--	 * If failed, create one and link it into acpi_bus_id_list
+-	/* While RFC4291 is not explicit about v4mapped addresses
+-	 * in IPv6 headers, it seems clear linux dual-stack
+-	 * model can not deal properly with these.
+-	 * Security models could be fooled by ::ffff:127.0.0.1 for example.
+-	 *
+-	 * https://tools.ietf.org/html/draft-itojun-v6ops-v4mapped-harmful-02
 -	 */
--	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
--		if (!strcmp(acpi_device_bus_id->bus_id,
--			    acpi_device_hid(device))) {
--			acpi_device_bus_id->instance_no++;
--			found = 1;
--			kfree(new_bus_id);
--			break;
-+
-+	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
-+	if (acpi_device_bus_id) {
-+		acpi_device_bus_id->instance_no++;
-+	} else {
-+		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
-+					     GFP_KERNEL);
-+		if (!acpi_device_bus_id) {
-+			result = -ENOMEM;
-+			goto err_unlock;
- 		}
--	}
--	if (!found) {
--		acpi_device_bus_id = new_bus_id;
- 		acpi_device_bus_id->bus_id =
- 			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
- 		if (!acpi_device_bus_id->bus_id) {
--			pr_err(PREFIX "Memory allocation error for bus id\n");
-+			kfree(acpi_device_bus_id);
- 			result = -ENOMEM;
--			goto err_free_new_bus_id;
-+			goto err_unlock;
- 		}
- 
--		acpi_device_bus_id->instance_no = 0;
- 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
- 	}
- 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
-@@ -719,13 +718,9 @@ int acpi_device_add(struct acpi_device *device,
- 		list_del(&device->node);
- 	list_del(&device->wakeup_list);
- 
-- err_free_new_bus_id:
--	if (!found)
--		kfree(new_bus_id);
+-	if (ipv6_addr_v4mapped(&hdr->saddr))
+-		goto err;
 -
-+ err_unlock:
- 	mutex_unlock(&acpi_device_lock);
+ 	skb->transport_header = skb->network_header + sizeof(*hdr);
+ 	IP6CB(skb)->nhoff = offsetof(struct ipv6hdr, nexthdr);
  
-- err_detach:
- 	acpi_detach_data(device->handle, acpi_scan_drop_device);
- 	return result;
- }
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 0e1509b02cb3..c07e5e8d557b 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1175,6 +1175,11 @@ static int tcp_v6_conn_request(struct sock *sk, struct sk_buff *skb)
+ 	if (!ipv6_unicast_destination(skb))
+ 		goto drop;
+ 
++	if (ipv6_addr_v4mapped(&ipv6_hdr(skb)->saddr)) {
++		__IP6_INC_STATS(sock_net(sk), NULL, IPSTATS_MIB_INHDRERRORS);
++		return 0;
++	}
++
+ 	return tcp_conn_request(&tcp6_request_sock_ops,
+ 				&tcp_request_sock_ipv6_ops, sk, skb);
+ 
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index c3090003a17b..96e040951cd4 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -440,6 +440,11 @@ static int subflow_v6_conn_request(struct sock *sk, struct sk_buff *skb)
+ 	if (!ipv6_unicast_destination(skb))
+ 		goto drop;
+ 
++	if (ipv6_addr_v4mapped(&ipv6_hdr(skb)->saddr)) {
++		__IP6_INC_STATS(sock_net(sk), NULL, IPSTATS_MIB_INHDRERRORS);
++		return 0;
++	}
++
+ 	return tcp_conn_request(&mptcp_subflow_request_sock_ops,
+ 				&subflow_request_sock_ipv6_ops, sk, skb);
+ 
 -- 
 2.30.1
 
