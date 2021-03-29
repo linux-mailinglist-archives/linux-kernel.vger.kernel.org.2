@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5634C83A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1243234CC17
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbhC2IU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S232816AbhC2Iza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:55:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233058AbhC2IMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D8E61477;
-        Mon, 29 Mar 2021 08:12:53 +0000 (UTC)
+        id S234514AbhC2IgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:36:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF0261582;
+        Mon, 29 Mar 2021 08:35:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005574;
-        bh=4BLFySzTlZC5OzXVirKvk9nGLRDRCln5urASLOKK0yM=;
+        s=korg; t=1617006950;
+        bh=Y0VvlWboovBmsNia49sfU9QoG5zcTaaChcyJbULoRb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zw/vAxEjdp08Hwsxp30cfAzYQxKT/PmObLWVJBZNDo/3+0kvjNjv6Dixwg7FpIvn4
-         tMZn26NOqnDSp6A4otUTplkKHj/+3+FcTXn8LStaIU1I56B/eggxQMmTLfR168cION
-         1SM9IyGbsN5/cItBdOmKQ+Euxc5bn91As0EpiBRo=
+        b=O3DuB++krWqaaUVCTDC8tP2AQlCLYwIhYMyFWDJP4DMVVYc9ZEUcha5RRbAogJFkn
+         +jGh3l8SsjiAjkzApCJ/QL1Bkb2i9HYskaGCoWvuYEZ2G+/5T0qQMJuszEHMLNGjFJ
+         sqjpfYeAg6YMnk10S+UGwe39OsKVtojP0qON7erc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Pavel Machek (CIP)" <pavel@denx.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 045/111] ACPI: video: Add missing callback back for Sony VPCEH3U1E
+        stable@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
+        Yen-lin Lai <yenlinlai@chromium.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 157/254] mac80211: Allow HE operation to be longer than expected.
 Date:   Mon, 29 Mar 2021 09:57:53 +0200
-Message-Id: <20210329075616.681683733@linuxfoundation.org>
+Message-Id: <20210329075638.360711184@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+From: Brian Norris <briannorris@chromium.org>
 
-commit c1d1e25a8c542816ae8dee41b81a18d30c7519a0 upstream.
+[ Upstream commit 0f7e90faddeef53a3568f449a0c3992d77510b66 ]
 
-The .callback of the quirk for Sony VPCEH3U1E was unintetionally
-removed by the commit 25417185e9b5 ("ACPI: video: Add DMI quirk
-for GIGABYTE GB-BXBT-2807"). Add it back to make sure the quirk
-for Sony VPCEH3U1E works as expected.
+We observed some Cisco APs sending the following HE Operation IE in
+associate response:
 
-Fixes: 25417185e9b5 ("ACPI: video: Add DMI quirk for GIGABYTE GB-BXBT-2807")
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Reviewed-by: Pavel Machek (CIP) <pavel@denx.de>
-Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  ff 0a 24 f4 3f 00 01 fc ff 00 00 00
+
+Its HE operation parameter is 0x003ff4, so the expected total length is
+7 which does not match the actual length = 10. This causes association
+failing with "HE AP is missing HE Capability/operation."
+
+According to P802.11ax_D4 Table9-94, HE operation is extensible, and
+according to 802.11-2016 10.27.8, STA should discard the part beyond
+the maximum length and parse the truncated element.
+
+Allow HE operation element to be longer than expected to handle this
+case and future extensions.
+
+Fixes: e4d005b80dee ("mac80211: refactor extended element parsing")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Yen-lin Lai <yenlinlai@chromium.org>
+Link: https://lore.kernel.org/r/20210223051926.2653301-1-yenlinlai@chromium.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/video_detect.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/mac80211/mlme.c | 2 +-
+ net/mac80211/util.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -150,6 +150,7 @@ static const struct dmi_system_id video_
- 		},
- 	},
- 	{
-+	.callback = video_detect_force_vendor,
- 	.ident = "Sony VPCEH3U1E",
- 	.matches = {
- 		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index 0e4d950cf907..9db648a91a4f 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -5071,7 +5071,7 @@ static int ieee80211_prep_channel(struct ieee80211_sub_if_data *sdata,
+ 		he_oper_ie = cfg80211_find_ext_ie(WLAN_EID_EXT_HE_OPERATION,
+ 						  ies->data, ies->len);
+ 		if (he_oper_ie &&
+-		    he_oper_ie[1] == ieee80211_he_oper_size(&he_oper_ie[3]))
++		    he_oper_ie[1] >= ieee80211_he_oper_size(&he_oper_ie[3]))
+ 			he_oper = (void *)(he_oper_ie + 3);
+ 		else
+ 			he_oper = NULL;
+diff --git a/net/mac80211/util.c b/net/mac80211/util.c
+index 8d3ae6b2f95f..f4507a708965 100644
+--- a/net/mac80211/util.c
++++ b/net/mac80211/util.c
+@@ -968,7 +968,7 @@ static void ieee80211_parse_extension_element(u32 *crc,
+ 		break;
+ 	case WLAN_EID_EXT_HE_OPERATION:
+ 		if (len >= sizeof(*elems->he_operation) &&
+-		    len == ieee80211_he_oper_size(data) - 1) {
++		    len >= ieee80211_he_oper_size(data) - 1) {
+ 			if (crc)
+ 				*crc = crc32_be(*crc, (void *)elem,
+ 						elem->datalen + 2);
+-- 
+2.30.1
+
 
 
