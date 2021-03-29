@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A7A34CB6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A78634C8EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhC2Ir1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:47:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
+        id S233274AbhC2IZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233685AbhC2IZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8448A61996;
-        Mon, 29 Mar 2021 08:25:31 +0000 (UTC)
+        id S232053AbhC2IQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:16:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7BB8619B7;
+        Mon, 29 Mar 2021 08:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006332;
-        bh=Sgw8TwiF/29dri5Ik1SbIf0JWfE1R6fYO5rKwkMSQ0o=;
+        s=korg; t=1617005760;
+        bh=wE3xhMdPeGoNp5bVHudTSYb/w7alIs67ZTkdo/MVYzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oXAu3ylVG9bV5RxsayuLM/hmnF4zOhitH9qX66U+JNakMIvleMHKhSFAVu8AyDDwa
-         sd3qtYsrNLcnwZZOMn5reNfhWzGpgsQBU3VryWNCl0jrCAqSZePnN6UTSwURSJDhCM
-         0P/qjqzJ4756ojAEnoS6F93AGJNlmGtp55D44w30=
+        b=eTphMdp03MoTKbuPCl7CDQB7jbi2YWCjaEU3wZPx3v/f9Hjwpsvt0D6QHo4q+Vj0w
+         FbZx4+neh1V7XQAsA8LO+S2Daz1kaEnbdjFWDQjESd2vl8WT20Pdp8GI1m/kM3NTXj
+         cmMKvrjfi63x4eje8JZBW4imj6F5C7uziO+o3aaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quinn Tran <qutran@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 202/221] scsi: Revert "qla2xxx: Make sure that aborted commands are freed"
-Date:   Mon, 29 Mar 2021 09:58:53 +0200
-Message-Id: <20210329075635.863447483@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Willi <martin@strongswan.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 106/111] can: dev: Move device back to init netns on owning netns delete
+Date:   Mon, 29 Mar 2021 09:58:54 +0200
+Message-Id: <20210329075618.736747508@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,122 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Martin Willi <martin@strongswan.org>
 
-[ Upstream commit 39c0c8553bfb5a3d108aa47f1256076d507605e3 ]
+commit 3a5ca857079ea022e0b1b17fc154f7ad7dbc150f upstream.
 
-Calling vha->hw->tgt.tgt_ops->free_cmd() from qlt_xmit_response() is wrong
-since the command for which a response is sent must remain valid until the
-SCSI target core calls .release_cmd(). It has been observed that the
-following scenario triggers a kernel crash:
+When a non-initial netns is destroyed, the usual policy is to delete
+all virtual network interfaces contained, but move physical interfaces
+back to the initial netns. This keeps the physical interface visible
+on the system.
 
- - qlt_xmit_response() calls qlt_check_reserve_free_req()
+CAN devices are somewhat special, as they define rtnl_link_ops even
+if they are physical devices. If a CAN interface is moved into a
+non-initial netns, destroying that netns lets the interface vanish
+instead of moving it back to the initial netns. default_device_exit()
+skips CAN interfaces due to having rtnl_link_ops set. Reproducer:
 
- - qlt_check_reserve_free_req() returns -EAGAIN
+  ip netns add foo
+  ip link set can0 netns foo
+  ip netns delete foo
 
- - qlt_xmit_response() calls vha->hw->tgt.tgt_ops->free_cmd(cmd)
+WARNING: CPU: 1 PID: 84 at net/core/dev.c:11030 ops_exit_list+0x38/0x60
+CPU: 1 PID: 84 Comm: kworker/u4:2 Not tainted 5.10.19 #1
+Workqueue: netns cleanup_net
+[<c010e700>] (unwind_backtrace) from [<c010a1d8>] (show_stack+0x10/0x14)
+[<c010a1d8>] (show_stack) from [<c086dc10>] (dump_stack+0x94/0xa8)
+[<c086dc10>] (dump_stack) from [<c086b938>] (__warn+0xb8/0x114)
+[<c086b938>] (__warn) from [<c086ba10>] (warn_slowpath_fmt+0x7c/0xac)
+[<c086ba10>] (warn_slowpath_fmt) from [<c0629f20>] (ops_exit_list+0x38/0x60)
+[<c0629f20>] (ops_exit_list) from [<c062a5c4>] (cleanup_net+0x230/0x380)
+[<c062a5c4>] (cleanup_net) from [<c0142c20>] (process_one_work+0x1d8/0x438)
+[<c0142c20>] (process_one_work) from [<c0142ee4>] (worker_thread+0x64/0x5a8)
+[<c0142ee4>] (worker_thread) from [<c0148a98>] (kthread+0x148/0x14c)
+[<c0148a98>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
 
- - transport_handle_queue_full() tries to retransmit the response
+To properly restore physical CAN devices to the initial netns on owning
+netns exit, introduce a flag on rtnl_link_ops that can be set by drivers.
+For CAN devices setting this flag, default_device_exit() considers them
+non-virtual, applying the usual namespace move.
 
-Fix this crash by reverting the patch that introduced it.
+The issue was introduced in the commit mentioned below, as at that time
+CAN devices did not have a dellink() operation.
 
-Link: https://lore.kernel.org/r/20210320232359.941-2-bvanassche@acm.org
-Fixes: 0dcec41acb85 ("scsi: qla2xxx: Make sure that aborted commands are freed")
-Cc: Quinn Tran <qutran@marvell.com>
-Cc: Mike Christie <michael.christie@oracle.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e008b5fc8dc7 ("net: Simplfy default_device_exit and improve batching.")
+Link: https://lore.kernel.org/r/20210302122423.872326-1-martin@strongswan.org
+Signed-off-by: Martin Willi <martin@strongswan.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_target.c  | 13 +++++--------
- drivers/scsi/qla2xxx/tcm_qla2xxx.c |  4 ----
- 2 files changed, 5 insertions(+), 12 deletions(-)
+ drivers/net/can/dev.c   |    1 +
+ include/net/rtnetlink.h |    2 ++
+ net/core/dev.c          |    2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
-index a27a625839e6..dcae8f071c35 100644
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -3222,8 +3222,7 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
- 	if (!qpair->fw_started || (cmd->reset_count != qpair->chip_reset) ||
- 	    (cmd->sess && cmd->sess->deleted)) {
- 		cmd->state = QLA_TGT_STATE_PROCESSED;
--		res = 0;
--		goto free;
-+		return 0;
- 	}
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -1226,6 +1226,7 @@ static void can_dellink(struct net_devic
  
- 	ql_dbg_qp(ql_dbg_tgt, qpair, 0xe018,
-@@ -3234,8 +3233,9 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
+ static struct rtnl_link_ops can_link_ops __read_mostly = {
+ 	.kind		= "can",
++	.netns_refund	= true,
+ 	.maxtype	= IFLA_CAN_MAX,
+ 	.policy		= can_policy,
+ 	.setup		= can_setup,
+--- a/include/net/rtnetlink.h
++++ b/include/net/rtnetlink.h
+@@ -33,6 +33,7 @@ static inline int rtnl_msg_family(const
+  *
+  *	@list: Used internally
+  *	@kind: Identifier
++ *	@netns_refund: Physical device, move to init_net on netns exit
+  *	@maxtype: Highest device specific netlink attribute number
+  *	@policy: Netlink policy for device specific attribute validation
+  *	@validate: Optional validation function for netlink/changelink parameters
+@@ -64,6 +65,7 @@ struct rtnl_link_ops {
+ 	size_t			priv_size;
+ 	void			(*setup)(struct net_device *dev);
  
- 	res = qlt_pre_xmit_response(cmd, &prm, xmit_type, scsi_status,
- 	    &full_req_cnt);
--	if (unlikely(res != 0))
--		goto free;
-+	if (unlikely(res != 0)) {
-+		return res;
-+	}
++	bool			netns_refund;
+ 	unsigned int		maxtype;
+ 	const struct nla_policy	*policy;
+ 	int			(*validate)(struct nlattr *tb[],
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10121,7 +10121,7 @@ static void __net_exit default_device_ex
+ 			continue;
  
- 	spin_lock_irqsave(qpair->qp_lock_ptr, flags);
+ 		/* Leave virtual devices for the generic cleanup */
+-		if (dev->rtnl_link_ops)
++		if (dev->rtnl_link_ops && !dev->rtnl_link_ops->netns_refund)
+ 			continue;
  
-@@ -3255,8 +3255,7 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
- 			vha->flags.online, qla2x00_reset_active(vha),
- 			cmd->reset_count, qpair->chip_reset);
- 		spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
--		res = 0;
--		goto free;
-+		return 0;
- 	}
- 
- 	/* Does F/W have an IOCBs for this request */
-@@ -3359,8 +3358,6 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
- 	qlt_unmap_sg(vha, cmd);
- 	spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
- 
--free:
--	vha->hw->tgt.tgt_ops->free_cmd(cmd);
- 	return res;
- }
- EXPORT_SYMBOL(qlt_xmit_response);
-diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-index 61017acd3458..7405fab324c8 100644
---- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-+++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-@@ -646,7 +646,6 @@ static int tcm_qla2xxx_queue_data_in(struct se_cmd *se_cmd)
- {
- 	struct qla_tgt_cmd *cmd = container_of(se_cmd,
- 				struct qla_tgt_cmd, se_cmd);
--	struct scsi_qla_host *vha = cmd->vha;
- 
- 	if (cmd->aborted) {
- 		/* Cmd can loop during Q-full.  tcm_qla2xxx_aborted_task
-@@ -659,7 +658,6 @@ static int tcm_qla2xxx_queue_data_in(struct se_cmd *se_cmd)
- 			cmd->se_cmd.transport_state,
- 			cmd->se_cmd.t_state,
- 			cmd->se_cmd.se_cmd_flags);
--		vha->hw->tgt.tgt_ops->free_cmd(cmd);
- 		return 0;
- 	}
- 
-@@ -687,7 +685,6 @@ static int tcm_qla2xxx_queue_status(struct se_cmd *se_cmd)
- {
- 	struct qla_tgt_cmd *cmd = container_of(se_cmd,
- 				struct qla_tgt_cmd, se_cmd);
--	struct scsi_qla_host *vha = cmd->vha;
- 	int xmit_type = QLA_TGT_XMIT_STATUS;
- 
- 	if (cmd->aborted) {
-@@ -701,7 +698,6 @@ static int tcm_qla2xxx_queue_status(struct se_cmd *se_cmd)
- 		    cmd, kref_read(&cmd->se_cmd.cmd_kref),
- 		    cmd->se_cmd.transport_state, cmd->se_cmd.t_state,
- 		    cmd->se_cmd.se_cmd_flags);
--		vha->hw->tgt.tgt_ops->free_cmd(cmd);
- 		return 0;
- 	}
- 	cmd->bufflen = se_cmd->data_length;
--- 
-2.30.1
-
+ 		/* Push remaining network devices to init_net */
 
 
