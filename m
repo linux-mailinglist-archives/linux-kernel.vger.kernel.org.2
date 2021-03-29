@@ -2,183 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD8C34D5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A3134D5F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhC2RSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhC2RR4 (ORCPT
+        id S230316AbhC2RV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:21:26 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:33621 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhC2RU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:17:56 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B7DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:17:56 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so3133267ooa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=21iR4YsIMqr0GJilRg5APx1zgMQO9nbylZqGVp4FhgQ=;
-        b=G62xhjcd8O7u1LvlgBxy6yH1+Hf/COQ05QMGWpusToI5ltmuRZ82DJYQ36s/9jJy+R
-         y350WAuxaFigQJ5h65ShC/myVMsa5x7as7FUuWTNFPzcUEgQkhuKJP/2ONUt74yUW9id
-         TxauZMRy7BTibjqXc606L7OeT6e4/P/QYtLNOCau4QHUxhuyt0u69JV1E/25ZJNnJ2SQ
-         qFz0Jzmq9LS8EEiQwlO8flvoB1e2OTv4yDXtNqiB+07JDBJEVqAcGcaHiBC7X+T02Ggi
-         399eRSnkcec3FBynLEQE5QmwuNSSFhFHMR5qX76CPuM7BH39ohEGBR7OaznKT2dwA8jo
-         QVUg==
+        Mon, 29 Mar 2021 13:20:58 -0400
+Received: by mail-io1-f51.google.com with SMTP id n198so13606235iod.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:20:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=21iR4YsIMqr0GJilRg5APx1zgMQO9nbylZqGVp4FhgQ=;
-        b=Iu59OMit5dKwJOQPgserzbbIhWA54R4faFfQ52swwKL7WBL491EtSmgN8238IyPl6Y
-         HM/V/DrOJYKqZCe3dwaCxLkiyfkg3h7yQpE79VwWfl8//UqV+3hKlDby7GakiKxCKGC3
-         PTes3SnEU2OcmkgZkzEPyZXvdC7EW3lTxRHoy9w9I61xDkWL/X8Ry4L+fKO2FyJkDKNy
-         vU6B2aCJPpw8c0oFJogCrwOiESkewaHCgBQ6NWSIDCv/h+PdgTOQ1b4jUehVmPlzqKry
-         T/p0IqBldaarKZZjOi6iNCroXbVhKcN9nedO6NYK/Xrajpw180Lh9uS4teV4w4KufwIb
-         K5Fw==
-X-Gm-Message-State: AOAM530xg2V9tVYXuXxymXcoIHe0zBRT+I5yXkl8Oz/bQcJrVzccUjx5
-        SUDt8Ox45MA8yxoHa+6Ls3mcCVECvXGLPZrswQkj1ycE
-X-Google-Smtp-Source: ABdhPJz31x+IdZoMp9o42AxozLWzh9nLHiQ08ST/eyJ5NMSXmjVZL40w9dma34cMez1jrfhkMtr5jGnNVYBdLIa3Gk0=
-X-Received: by 2002:a4a:8845:: with SMTP id e5mr22025923ooi.90.1617038275723;
- Mon, 29 Mar 2021 10:17:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iMWTErVQxa6Br5eKuQTUrDw3Akw8/5fDwCd4vZ5RQb8=;
+        b=QmSZbTizoDWf5qxAeNVKUHi+braOTzDs8GIo5sgeCZ4p/1f/MYeLr/n8QTIUIR2VTQ
+         OX552heaixJzwu2KiTutndQyWJr57UFWeA1dm+JJxYXpiA0JCByLD1jHuq+8wsl1+Erq
+         iCMYga/ItSsQ5qipQxpC0L3Bbl0XtMsVvwbjE/CyjpC4rackZJ/OgmvqtN2BTv08e46q
+         sG+7q17cgaw6Q5wrBRMFdcfR81Tq3oR7rHvlzAE6+A1ENz/sKxcdPLhNOMl5W84VHDgN
+         vl0YhMthGmNh0pS5HOqfrsTRgq3IPP3knmescniVKKWDhbaVSra1fA0j/QOMipIAUavK
+         zpYQ==
+X-Gm-Message-State: AOAM531TprjLeowMLIJw6hcFGIFeku5LpQpnQWzL3C5PtN7n3UBi+GWW
+        m/jMu6fdiuUExcS+6O7dAgwvXsl5vL0=
+X-Google-Smtp-Source: ABdhPJxpxNa7tBKLkU+8bOLFCusW0dMTKwreFmJoWNbcB3LeiDx4h9RarXnIyWZYTp1hAbjohLSu4w==
+X-Received: by 2002:a6b:7501:: with SMTP id l1mr20733718ioh.92.1617038457633;
+        Mon, 29 Mar 2021 10:20:57 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id x4sm4424915ilo.43.2021.03.29.10.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 10:20:57 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 17:20:55 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rfc 1/4] percpu: implement partial chunk depopulation
+Message-ID: <YGIMdy2t1oLHDC4b@google.com>
+References: <20210324190626.564297-1-guro@fb.com>
+ <20210324190626.564297-2-guro@fb.com>
 MIME-Version: 1.0
-References: <20210327072807.1486517-1-wanjiabing@vivo.com>
-In-Reply-To: <20210327072807.1486517-1-wanjiabing@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 29 Mar 2021 13:17:44 -0400
-Message-ID: <CADnq5_PSnvFAcUt7T9q=L8v6sFGnLM72cot=Lq_+cs8cNHK5sg@mail.gmail.com>
-Subject: Re: [PATCH] amd: display: dc: struct dc_state is declared twice
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <aric.cyr@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-        Jacky Liao <ziyu.liao@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324190626.564297-2-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 3:28 AM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> struct dc_state has been declared at 273rd line.
-> Remove the duplicate.
-> Delete duplicate blank lines.
-
-Can you split these into separate patches?
-
-Alex
-
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+On Wed, Mar 24, 2021 at 12:06:23PM -0700, Roman Gushchin wrote:
+> This patch implements partial depopulation of percpu chunks.
+> 
+> As now, a chunk can be depopulated only as a part of the final
+> destruction, when there are no more outstanding allocations. However
+> to minimize a memory waste, it might be useful to depopulate a
+> partially filed chunk, if a small number of outstanding allocations
+> prevents the chunk from being reclaimed.
+> 
+> This patch implements the following depopulation process: it scans
+> over the chunk pages, looks for a range of empty and populated pages
+> and performs the depopulation. To avoid races with new allocations,
+> the chunk is previously isolated. After the depopulation the chunk is
+> returned to the original slot (but is appended to the tail of the list
+> to minimize the chances of population).
+> 
+> Because the pcpu_lock is dropped while calling pcpu_depopulate_chunk(),
+> the chunk can be concurrently moved to a different slot. So we need
+> to isolate it again on each step. pcpu_alloc_mutex is held, so the
+> chunk can't be populated/depopulated asynchronously.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/dc.h | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
-> index 18ed0d3f247e..dc667298ab5b 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dc.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dc.h
-> @@ -234,7 +234,6 @@ struct dc_static_screen_params {
->         unsigned int num_frames;
->  };
->
-> -
->  /* Surface update type is used by dc_update_surfaces_and_stream
->   * The update type is determined at the very beginning of the function based
->   * on parameters passed in and decides how much programming (or updating) is
-> @@ -272,7 +271,6 @@ struct dc;
->  struct dc_plane_state;
->  struct dc_state;
->
-> -
->  struct dc_cap_funcs {
->         bool (*get_dcc_compression_cap)(const struct dc *dc,
->                         const struct dc_dcc_surface_param *input,
-> @@ -281,7 +279,6 @@ struct dc_cap_funcs {
->
->  struct link_training_settings;
->
-> -
->  /* Structure to hold configuration flags set by dm at dc creation. */
->  struct dc_config {
->         bool gpu_vm_support;
-> @@ -581,7 +578,6 @@ struct dc_bounding_box_overrides {
->         int min_dcfclk_mhz;
->  };
->
-> -struct dc_state;
->  struct resource_pool;
->  struct dce_hwseq;
->  struct gpu_info_soc_bounding_box_v1_0;
-> @@ -757,7 +753,6 @@ enum dc_transfer_func_predefined {
->         TRANSFER_FUNCTION_GAMMA26
->  };
->
-> -
->  struct dc_transfer_func {
->         struct kref refcount;
->         enum dc_transfer_func_type type;
-> @@ -770,7 +765,6 @@ struct dc_transfer_func {
->         };
->  };
->
-> -
->  union dc_3dlut_state {
->         struct {
->                 uint32_t initialized:1;         /*if 3dlut is went through color module for initialization */
-> @@ -784,7 +778,6 @@ union dc_3dlut_state {
->         uint32_t raw;
->  };
->
-> -
->  struct dc_3dlut {
->         struct kref refcount;
->         struct tetrahedral_params lut_3d;
-> @@ -1014,7 +1007,6 @@ enum dc_status dc_validate_global_state(
->                 struct dc_state *new_ctx,
->                 bool fast_validate);
->
-> -
->  void dc_resource_state_construct(
->                 const struct dc *dc,
->                 struct dc_state *dst_ctx);
-> @@ -1167,7 +1159,6 @@ struct dc_container_id {
->         unsigned short productCode;
->  };
->
-> -
->  struct dc_sink_dsc_caps {
->         // 'true' if these are virtual DPCD's DSC caps (immediately upstream of sink in MST topology),
->         // 'false' if they are sink's DSC caps
-> @@ -1229,7 +1220,6 @@ struct dc_cursor {
->         struct dc_cursor_attributes attributes;
->  };
->
-> -
->  /*******************************************************************************
->   * Interrupt interfaces
->   ******************************************************************************/
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  mm/percpu.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 90 insertions(+)
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 6596a0a4286e..78c55c73fa28 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -2055,6 +2055,96 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
+>  	mutex_unlock(&pcpu_alloc_mutex);
+>  }
+>  
+> +/**
+> + * pcpu_shrink_populated - scan chunks and release unused pages to the system
+> + * @type: chunk type
+> + *
+> + * Scan over all chunks, find those marked with the depopulate flag and
+> + * try to release unused pages to the system. On every attempt clear the
+> + * chunk's depopulate flag to avoid wasting CPU by scanning the same
+> + * chunk again and again.
+> + */
+> +static void pcpu_shrink_populated(enum pcpu_chunk_type type)
+> +{
+> +	struct list_head *pcpu_slot = pcpu_chunk_list(type);
+> +	struct pcpu_chunk *chunk;
+> +	int slot, i, off, start;
+> +
+> +	spin_lock_irq(&pcpu_lock);
+> +	for (slot = pcpu_nr_slots - 1; slot >= 0; slot--) {
+> +restart:
+> +		list_for_each_entry(chunk, &pcpu_slot[slot], list) {
+> +			bool isolated = false;
+> +
+> +			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH)
+> +				break;
+> +
+
+Deallocation makes me a little worried for the atomic case as now we
+could in theory pathologically scan deallocated chunks before finding a
+populated one.
+
+I wonder if we should do something like once a chunk gets depopulated,
+it gets deprioritized and then only once we exhaust looking through
+allocated chunks we then find a depopulated chunk and add it back into
+the rotation. Possibly just add another set of slots? I guess it adds a
+few dimensions to pcpu_slots after the memcg change.
+
+> +			for (i = 0, start = -1; i < chunk->nr_pages; i++) {
+> +				if (!chunk->nr_empty_pop_pages)
+> +					break;
+> +
+> +				/*
+> +				 * If the page is empty and populated, start or
+> +				 * extend the [start, i) range.
+> +				 */
+> +				if (test_bit(i, chunk->populated)) {
+> +					off = find_first_bit(
+> +						pcpu_index_alloc_map(chunk, i),
+> +						PCPU_BITMAP_BLOCK_BITS);
+> +					if (off >= PCPU_BITMAP_BLOCK_BITS) {
+> +						if (start == -1)
+> +							start = i;
+> +						continue;
+> +					}
+
+Here instead of looking at the alloc_map, you can look at the
+pcpu_block_md and look for a fully free contig_hint.
+
+> +				}
+> +
+> +				/*
+> +				 * Otherwise check if there is an active range,
+> +				 * and if yes, depopulate it.
+> +				 */
+> +				if (start == -1)
+> +					continue;
+> +
+> +				/*
+> +				 * Isolate the chunk, so new allocations
+> +				 * wouldn't be served using this chunk.
+> +				 * Async releases can still happen.
+> +				 */
+> +				if (!list_empty(&chunk->list)) {
+> +					list_del_init(&chunk->list);
+> +					isolated = true;
+
+Maybe when freeing a chunk, we should consider just isolating it period
+and preventing pcpu_free_area() from being able to add the chunk back
+to a pcpu_slot.
+
+> +				}
+> +
+> +				spin_unlock_irq(&pcpu_lock);
+> +				pcpu_depopulate_chunk(chunk, start, i);
+> +				cond_resched();
+> +				spin_lock_irq(&pcpu_lock);
+> +
+> +				pcpu_chunk_depopulated(chunk, start, i);
+> +
+> +				/*
+> +				 * Reset the range and continue.
+> +				 */
+> +				start = -1;
+> +			}
+> +
+> +			if (isolated) {
+> +				/*
+> +				 * The chunk could have been moved while
+> +				 * pcpu_lock wasn't held. Make sure we put
+> +				 * the chunk back into the slot and restart
+> +				 * the scanning.
+> +				 */
+> +				if (list_empty(&chunk->list))
+> +					list_add_tail(&chunk->list,
+> +						      &pcpu_slot[slot]);
+> +				goto restart;
+> +			}
+> +		}
+> +	}
+> +	spin_unlock_irq(&pcpu_lock);
+> +}
+> +
+>  /**
+>   * pcpu_balance_workfn - manage the amount of free chunks and populated pages
+>   * @work: unused
+> -- 
+> 2.30.2
+> 
