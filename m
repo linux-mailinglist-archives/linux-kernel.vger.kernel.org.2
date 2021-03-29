@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A754134C853
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A723034CA77
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbhC2IMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50472 "EHLO mail.kernel.org"
+        id S234382AbhC2Iim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232516AbhC2IHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C3661932;
-        Mon, 29 Mar 2021 08:07:47 +0000 (UTC)
+        id S234144AbhC2IXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12C3B61481;
+        Mon, 29 Mar 2021 08:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005267;
-        bh=6doY695fcNFJgCQPeD37/bzJKzw8f4iXkCzcMtRpyCU=;
+        s=korg; t=1617006181;
+        bh=IdFDlIIR39il2hMS2AeD6RVlsSd/FAnv32fcqcq+/AU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuh3slOpfX9k0PEJi5bgFPGdGRN1ho6hIbVLl2ccM/iTraz9u/rMTsVsf9KyKucsS
-         ngmoQHEWyJyd+SFRzPG0Vh8jdA8KEqz7pexo4XxszICxXN0B1mPM05XfKC3yxanH24
-         RThsbQBP79xqDiheNHDl0vrqBwb43sfDS8dQF0Jw=
+        b=vx5XpuuC61OGPQaL9lOfm3ag8ZO0t1t5ZTWcH7DXEp9Fi3L9ax6JF3E7vT918iQ5X
+         tSjT9O6O09ypO4p8gddKEDJsWhM4Dcz1nihLNsh/IoXG6H+TUgYFLYEj3lbzy8XGrI
+         gJkbYRlhJDyA8EXSEdR2HdPpkhoGIxChFJw+rbNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, dillon min <dillon.minfei@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/72] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
+Subject: [PATCH 5.10 148/221] ARM: dts: imx6ull: fix ubi filesystem mount failed
 Date:   Mon, 29 Mar 2021 09:57:59 +0200
-Message-Id: <20210329075611.033570379@linuxfoundation.org>
+Message-Id: <20210329075634.107208227@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: dillon min <dillon.minfei@gmail.com>
 
-[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
+[ Upstream commit e4817a1b6b77db538bc0141c3b138f2df803ce87 ]
 
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+For NAND Ecc layout, there is a dependency from old kernel's nand driver
+setting and current. if old kernel use 4 bit ecc , we should use 4 bit
+in new kernel either. else will run into following error at filesystem
+mounting.
 
-The bug is in mismatch between get/set errors:
+So, enable fsl,use-minimum-ecc from device tree, to fix this mismatch
 
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
+[    9.449265] ubi0: scanning is finished
+[    9.463968] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading
+22528 bytes from PEB 513:4096, read only 22528 bytes, retry
+[    9.486940] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading
+22528 bytes from PEB 513:4096, read only 22528 bytes, retry
+[    9.509906] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading
+22528 bytes from PEB 513:4096, read only 22528 bytes, retry
+[    9.532845] ubi0 error: ubi_io_read: error -74 (ECC error) while reading
+22528 bytes from PEB 513:4096, read 22528 bytes
 
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
-
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
-
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-
-Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
-Link: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f9ecf10cb88c ("ARM: dts: imx6ull: add MYiR MYS-6ULX SBC")
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 1d0b875fec44..ec909eec0b4c 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -35,7 +35,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
- {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
- }
+diff --git a/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dts b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dts
+index ecbb2cc5b9ab..79cc45728cd2 100644
+--- a/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dts
++++ b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-eval.dts
+@@ -14,5 +14,6 @@
+ };
  
- static inline long syscall_get_return_value(struct task_struct *task,
+ &gpmi {
++	fsl,use-minimum-ecc;
+ 	status = "okay";
+ };
 -- 
 2.30.1
 
