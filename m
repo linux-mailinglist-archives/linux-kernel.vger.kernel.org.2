@@ -2,95 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439CC34CE64
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5673934CE6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhC2LAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbhC2LAj (ORCPT
+        id S231784AbhC2LDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:03:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15382 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhC2LDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:00:39 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B287BC061574;
-        Mon, 29 Mar 2021 04:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=6WGqTp8LlJ
-        59ua+GVPvEnMczMwTS+/11WKeKOjgGhoM=; b=Shxtg7AXlGvy+aTBuQuhlIRvat
-        EmNogThRBfqgGDUw848aj+v8AtTHJJ58E88tQrIV7DF/Wy4nEU2yCYNJlH4czxse
-        2kiMDZqbP5EX/uZSMDWCg7rpKQGr/J1GKEkvHsdP2J6jvcArWSZvCehi1flnBkgz
-        nEYtfV+lt7azcc+mc=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3_39Hs2Fgv+xmAA--.569S4;
-        Mon, 29 Mar 2021 19:00:23 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     j@w1.fi, kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] wireless: hostap: Fix a use after free in hostap_80211_rx
-Date:   Mon, 29 Mar 2021 04:00:21 -0700
-Message-Id: <20210329110021.7497-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 29 Mar 2021 07:03:16 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F88lc5xc7zlW22;
+        Mon, 29 Mar 2021 19:01:32 +0800 (CST)
+Received: from [10.174.187.192] (10.174.187.192) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 19:03:03 +0800
+Subject: Re: [RFC PATCH 3/3] arm/arm64: Use gic_ipi_send_single() to inject
+ single IPI
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <zhukeqian1@huawei.com>
+References: <20210329085210.11524-1-wangjingyi11@huawei.com>
+ <20210329085210.11524-4-wangjingyi11@huawei.com>
+ <87v99aqnmg.wl-maz@kernel.org>
+From:   Jingyi Wang <wangjingyi11@huawei.com>
+Message-ID: <1476b457-f23c-1913-05c5-3a9b13319f6b@huawei.com>
+Date:   Mon, 29 Mar 2021 19:03:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygD3_39Hs2Fgv+xmAA--.569S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur17Ww4UZry5ZrWDWrWrAFb_yoW8XFyfpF
-        Z5Cay3Krn8JF1UA34xXF1xCFyrXa1UJas3WFyUC3WF9Fn8XFn5K3sY9FyUKF15W39Yk3Wf
-        JFs8tw47AasxG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6r4kMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbU5r5UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+In-Reply-To: <87v99aqnmg.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.192]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function hostap_80211_rx() calls prism2_rx_80211(..,skb,..). In
-prism2_rx_80211, i found that the skb could be freed by dev_kfree_skb_any(skb)
-and return 0. Also could be freed by netif_rx(skb) when netif_rx return
-NET_RX_DROP.
-
-But after called the prism2_rx_80211(..,skb,..), the skb is used by skb->len.
-
-As the new skb->len is returned by prism2_rx_80211(), my patch uses a variable
-len to repalce skb->len. According to another useage of prism2_rx_80211 in
-monitor_rx().
-
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/net/wireless/intersil/hostap/hostap_80211_rx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c b/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
-index 61be822f90b5..a45ee7b35533 100644
---- a/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
-+++ b/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
-@@ -1016,10 +1016,10 @@ void hostap_80211_rx(struct net_device *dev, struct sk_buff *skb,
- 			if (local->hostapd && local->apdev) {
- 				/* Send IEEE 802.1X frames to the user
- 				 * space daemon for processing */
--				prism2_rx_80211(local->apdev, skb, rx_stats,
-+				int len = prism2_rx_80211(local->apdev, skb, rx_stats,
- 						PRISM2_RX_MGMT);
- 				local->apdevstats.rx_packets++;
--				local->apdevstats.rx_bytes += skb->len;
-+				local->apdevstats.rx_bytes += len;
- 				goto rx_exit;
- 			}
- 		} else if (!frame_authorized) {
--- 
-2.25.1
 
 
+On 3/29/2021 6:07 PM, Marc Zyngier wrote:
+> On Mon, 29 Mar 2021 09:52:10 +0100,
+> Jingyi Wang <wangjingyi11@huawei.com> wrote:
+>>
+>> Currently, arm use gic_ipi_send_mask() to inject single IPI, which
+>> make the procedure a little complex. We use gic_ipi_send_single()
+>> instead as some other archs.
+>>
+>> Signed-off-by: Jingyi Wang <wangjingyi11@huawei.com>
+>> ---
+>>   arch/arm/kernel/smp.c   | 16 +++++++++++++---
+>>   arch/arm64/kernel/smp.c | 16 +++++++++++++---
+>>   2 files changed, 26 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+>> index 74679240a9d8..369ce529cdd8 100644
+>> --- a/arch/arm/kernel/smp.c
+>> +++ b/arch/arm/kernel/smp.c
+>> @@ -534,6 +534,8 @@ static const char *ipi_types[NR_IPI] __tracepoint_string = {
+>>   };
+>>   
+>>   static void smp_cross_call(const struct cpumask *target, unsigned int ipinr);
+>> +static void smp_cross_call_single(const struct cpumask *target, int cpu,
+>> +				  unsigned int ipinr);
+> 
+> Why does this function need to take both a cpumask *and* a cpu, given
+> that they represent the same thing?
+> I was intended to use the extra param to reuse trace_ipi_raise_rcuidle.
+
+>>
+>>   void show_ipi_list(struct seq_file *p, int prec)
+>>   {
+>> @@ -564,14 +566,15 @@ void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
+>>   
+>>   void arch_send_call_function_single_ipi(int cpu)
+>>   {
+>> -	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
+>> +	smp_cross_call_single(cpumask_of(cpu), cpu, IPI_CALL_FUNC);
+>>   }
+>>   
+>>   #ifdef CONFIG_IRQ_WORK
+>>   void arch_irq_work_raise(void)
+>>   {
+>> +	int cpu = smp_processor_id();
+>>   	if (arch_irq_work_has_interrupt())
+>> -		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+>> +		smp_cross_call(cpumask_of(cpu), cpu, IPI_IRQ_WORK);
+> 
+> Why isn't that a call to smp_cross_call_single()?
+> 
+I ignored that, thanks.
+
+>>   }
+>>   #endif
+>>   
+>> @@ -707,6 +710,13 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+>>   	__ipi_send_mask(ipi_desc[ipinr], target);
+>>   }
+>>   
+>> +static void smp_cross_call_single(const struct cpumask *target, int cpu,
+>> +				  unsigned int ipinr)
+>> +{
+>> +	trace_ipi_raise_rcuidle(target, ipi_types[ipinr]);
+> 
+> Why don't you compute the cpumask here^^?
+> 
+>> +	__ipi_send_single(ipi_desc[ipinr], cpu);
+>> +}
+>> +
+>>   static void ipi_setup(int cpu)
+>>   {
+>>   	int i;
+>> @@ -744,7 +754,7 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+>>   
+>>   void smp_send_reschedule(int cpu)
+>>   {
+>> -	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+>> +	smp_cross_call_single(cpumask_of(cpu), cpu, IPI_RESCHEDULE);
+>>   }
+>>   
+>>   void smp_send_stop(void)
+>> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+>> index 357590beaabb..d290b6dc5a6e 100644
+>> --- a/arch/arm64/kernel/smp.c
+>> +++ b/arch/arm64/kernel/smp.c
+> 
+> Similar comments for the arm64 side.
+> 
+> Overall, this needs to be backed by data that indicates that there is
+> an actual benefit for this extra complexity.
+> 
+> Thanks,
+> 
+> 	M.
+> 
+
+Firstly, I implemented exitless-IPIs to reduce VM trap caused by sending
+IPI as what x86 does here:
+https://patchwork.kernel.org/project/kvm/cover/1532327996-17619-1-git-send-email-wanpengli@tencent.com/
+Then I realized that sending ipi mask usually cause sending IPIs all
+but self as IRM bit defines.
+So do you think we can use IRM if we can avoid extra cost like computing
+mask, or using broadcast IPIs is just meaningless for now?
+
+Thanks,
+Jingyi
