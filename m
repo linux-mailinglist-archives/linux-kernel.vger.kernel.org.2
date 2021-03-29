@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761FB34C696
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539AF34C586
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhC2II0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47982 "EHLO mail.kernel.org"
+        id S231644AbhC2IBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232090AbhC2IFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ACF561974;
-        Mon, 29 Mar 2021 08:05:02 +0000 (UTC)
+        id S231476AbhC2IAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A10506196C;
+        Mon, 29 Mar 2021 08:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005103;
-        bh=bu9Eq3kNXr4FyHrjK60GQwJP3tzHCRp9scyrY/Xx4yw=;
+        s=korg; t=1617004843;
+        bh=xNCKVcV/NhDrB/mLzxGObIO9yDOX00RUksFEPoS9loI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSJBo8p61AekOf+kwCFIwzTlxgy/hmu7NPuug15fqkLrxbnjipZCcfgXeKIVaUFin
-         I+tz1HkoPS+Et7BBBprr9lVZBR1h+p9gk/cdFWm4RZycy3ZLsjWBGX2WRBJjVIftEj
-         hkeAvyZDbPUwugZ9+tkzrxPkmcyDGJ47115c0jSg=
+        b=AHnp690ZYm3OUe5lSObCoyGCzRTQ8x4MLq9QEXnXSyzzWFkniYfIb1/AkcFBxxaya
+         S1q6HGgFjWcgKn1ci+qImg+lyqPVaxv+U4XMRpYSS1iBIWWt1wdMs0pE9cnztQTWJa
+         aqEduzVBUGUlG+M9f4kw3XsMuIrO/8Ta2m3YAyS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.14 24/59] arm64: dts: ls1046a: mark crypto engine dma coherent
-Date:   Mon, 29 Mar 2021 09:58:04 +0200
-Message-Id: <20210329075609.683634115@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 20/33] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
+Date:   Mon, 29 Mar 2021 09:58:05 +0200
+Message-Id: <20210329075605.915789514@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 9c3a16f88385e671b63a0de7b82b85e604a80f42 upstream.
+[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
 
-Crypto engine (CAAM) on LS1046A platform is configured HW-coherent,
-mark accordingly the DT node.
+Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
+bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
+qualify the phydev->dev_flags based on whether the port is connected to
+an internal or external PHY otherwise we risk having a flags collision
+with a completely different interpretation depending on the driver.
 
-As reported by Greg and Sascha, and explained by Robin, lack of
-"dma-coherent" property for an IP that is configured HW-coherent
-can lead to problems, e.g. on v5.11:
-
-> kernel BUG at drivers/crypto/caam/jr.c:247!
-> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.11.0-20210225-3-00039-g434215968816-dirty #12
-> Hardware name: TQ TQMLS1046A SoM on Arkona AT1130 (C300) board (DT)
-> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> pc : caam_jr_dequeue+0x98/0x57c
-> lr : caam_jr_dequeue+0x98/0x57c
-> sp : ffff800010003d50
-> x29: ffff800010003d50 x28: ffff8000118d4000
-> x27: ffff8000118d4328 x26: 00000000000001f0
-> x25: ffff0008022be480 x24: ffff0008022c6410
-> x23: 00000000000001f1 x22: ffff8000118d4329
-> x21: 0000000000004d80 x20: 00000000000001f1
-> x19: 0000000000000001 x18: 0000000000000020
-> x17: 0000000000000000 x16: 0000000000000015
-> x15: ffff800011690230 x14: 2e2e2e2e2e2e2e2e
-> x13: 2e2e2e2e2e2e2020 x12: 3030303030303030
-> x11: ffff800011700a38 x10: 00000000fffff000
-> x9 : ffff8000100ada30 x8 : ffff8000116a8a38
-> x7 : 0000000000000001 x6 : 0000000000000000
-> x5 : 0000000000000000 x4 : 0000000000000000
-> x3 : 00000000ffffffff x2 : 0000000000000000
-> x1 : 0000000000000000 x0 : 0000000000001800
-> Call trace:
->  caam_jr_dequeue+0x98/0x57c
->  tasklet_action_common.constprop.0+0x164/0x18c
->  tasklet_action+0x44/0x54
->  __do_softirq+0x160/0x454
->  __irq_exit_rcu+0x164/0x16c
->  irq_exit+0x1c/0x30
->  __handle_domain_irq+0xc0/0x13c
->  gic_handle_irq+0x5c/0xf0
->  el1_irq+0xb4/0x180
->  arch_cpu_idle+0x18/0x30
->  default_idle_call+0x3c/0x1c0
->  do_idle+0x23c/0x274
->  cpu_startup_entry+0x34/0x70
->  rest_init+0xdc/0xec
->  arch_call_rest_init+0x1c/0x28
->  start_kernel+0x4ac/0x4e4
-> Code: 91392021 912c2000 d377d8c6 97f24d96 (d4210000)
-
-Cc: <stable@vger.kernel.org> # v4.10+
-Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
-Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
-Reported-by: Greg Ungerer <gerg@kernel.org>
-Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Acked-by: Greg Ungerer <gerg@kernel.org>
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/dsa/bcm_sf2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-@@ -244,6 +244,7 @@
- 			ranges = <0x0 0x00 0x1700000 0x100000>;
- 			reg = <0x00 0x1700000 0x0 0x100000>;
- 			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-coherent;
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index 0864f05633a2..a56f4f3a5872 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -1067,8 +1067,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+ 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+ 	 * the REG_PHY_REVISION register layout is.
+ 	 */
+-
+-	return priv->hw_params.gphy_rev;
++	if (priv->int_phy_mask & BIT(port))
++		return priv->hw_params.gphy_rev;
++	else
++		return 0;
+ }
  
- 			sec_jr0: jr@10000 {
- 				compatible = "fsl,sec-v5.4-job-ring",
+ static int bcm_sf2_sw_indir_rw(struct dsa_switch *ds, int op, int addr,
+-- 
+2.30.1
+
 
 
