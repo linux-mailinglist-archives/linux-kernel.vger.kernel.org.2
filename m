@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2A634CAA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62EF34C6A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhC2Ij1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40608 "EHLO mail.kernel.org"
+        id S232038AbhC2IIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233106AbhC2IXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:23:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5451861554;
-        Mon, 29 Mar 2021 08:23:22 +0000 (UTC)
+        id S232191AbhC2IFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 461CA6197C;
+        Mon, 29 Mar 2021 08:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006202;
-        bh=OccUCev7wftWWMxIJL7xbKd2olf2arqmEU/Kp+ISNkU=;
+        s=korg; t=1617005113;
+        bh=LCfOYbdDrWCE+GJPVozw9HGEGOggj0If07yc6i7jxEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m2SE8ff/tFXqL95yhWzcUn07B5YSoHj3Bs2DZDogO11g/Dtp3Pp+NaHsoLHsXYKXM
-         QMxeq7WNGBUt26jz1Av15i2OSNyNTl9DrCEQi7084LO9s2pLj0gIesbirgqmOGlL/T
-         49wqdetH0z6bgs4F4puV92ZEyejSAmbB8QrtnjgE=
+        b=APEyjRyvIEZ2TlZPGNbZS54vOxwyNQpDBX9DS6XygZlXp6G2Nm1cehjulI3Mc2Pd1
+         oNxgiwOHDFpPDxlV851RCF9UpyCueJM+UNBOH47/WwauuaIAw5FvJpYMhpRX9GdwZ5
+         UANvDgGAKhfYLf6vBvx0QM3rHJM0Go8yJoy3A+do=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Bohac <jbohac@suse.cz>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 156/221] net: check all name nodes in __dev_alloc_name
-Date:   Mon, 29 Mar 2021 09:58:07 +0200
-Message-Id: <20210329075634.365237903@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 28/59] dm ioctl: fix out of bounds array access when no devices
+Date:   Mon, 29 Mar 2021 09:58:08 +0200
+Message-Id: <20210329075609.816700615@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Bohac <jbohac@suse.cz>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 6c015a2256801597fadcbc11d287774c9c512fa5 ]
+commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
 
-__dev_alloc_name(), when supplied with a name containing '%d',
-will search for the first available device number to generate a
-unique device name.
+If there are not any dm devices, we need to zero the "dev" argument in
+the first structure dm_name_list. However, this can cause out of
+bounds write, because the "needed" variable is zero and len may be
+less than eight.
 
-Since commit ff92741270bf8b6e78aa885f166b68c7a67ab13a ("net:
-introduce name_node struct to be used in hashlist") network
-devices may have alternate names.  __dev_alloc_name() does take
-these alternate names into account, possibly generating a name
-that is already taken and failing with -ENFILE as a result.
+Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
+too small to hold the "nl->dev" value.
 
-This demonstrates the bug:
-
-    # rmmod dummy 2>/dev/null
-    # ip link property add dev lo altname dummy0
-    # modprobe dummy numdummies=1
-    modprobe: ERROR: could not insert 'dummy': Too many open files in system
-
-Instead of creating a device named dummy1, modprobe fails.
-
-Fix this by checking all the names in the d->name_node list, not just d->name.
-
-Signed-off-by: Jiri Bohac <jbohac@suse.cz>
-Fixes: ff92741270bf ("net: introduce name_node struct to be used in hashlist")
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/dev.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/md/dm-ioctl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 75ca6c6d01d6..dbc286fd2047 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1195,6 +1195,18 @@ static int __dev_alloc_name(struct net *net, const char *name, char *buf)
- 			return -ENOMEM;
- 
- 		for_each_netdev(net, d) {
-+			struct netdev_name_node *name_node;
-+			list_for_each_entry(name_node, &d->name_node->list, list) {
-+				if (!sscanf(name_node->name, name, &i))
-+					continue;
-+				if (i < 0 || i >= max_netdevices)
-+					continue;
-+
-+				/*  avoid cases where sscanf is not exact inverse of printf */
-+				snprintf(buf, IFNAMSIZ, name, i);
-+				if (!strncmp(buf, name_node->name, IFNAMSIZ))
-+					set_bit(i, inuse);
-+			}
- 			if (!sscanf(d->name, name, &i))
- 				continue;
- 			if (i < 0 || i >= max_netdevices)
--- 
-2.30.1
-
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -529,7 +529,7 @@ static int list_devices(struct file *fil
+ 	 * Grab our output buffer.
+ 	 */
+ 	nl = orig_nl = get_result_buffer(param, param_size, &len);
+-	if (len < needed) {
++	if (len < needed || len < sizeof(nl->dev)) {
+ 		param->flags |= DM_BUFFER_FULL_FLAG;
+ 		goto out;
+ 	}
 
 
