@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A964034C7DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D1634C9FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhC2ISZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:18:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55102 "EHLO mail.kernel.org"
+        id S234145AbhC2Iel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231796AbhC2ILK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:11:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B86B461494;
-        Mon, 29 Mar 2021 08:11:08 +0000 (UTC)
+        id S233538AbhC2IVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7814761932;
+        Mon, 29 Mar 2021 08:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005469;
-        bh=SE5/41DFwNWyQScSzmT4GzGmsWmPaOb5nqr7RPV1HwI=;
+        s=korg; t=1617006082;
+        bh=Itvmwy1S2qgFEM+tQdjJCEoVy+P7Q+pNMr39gdJ9+AI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vgyxExyfv6WJHa/2KLY3Mnk8cfh3ScRFWYfQGu38veBrfOhS9qj1gqmvcEC8Kyt+x
-         dx53slSbe5guOhbEdnU5NlVkq9jDoHzogrGLplH8aYXAyOBmb5s8Rw4dpcoZoj1OVb
-         I8j3L6Tz2y2SCxycghsdeM+Z/OYx8p9ry1zHwe6k=
+        b=l46am3RkwEzreLKr15kvUGIbE2AOhQaiKPA4uFjLrLt+hm1HTmNECB22c7WsnSa5+
+         nCOcuVKlJ4PeqxvzxU+EGfZAlKVUBpkaNIbyT3LLpRPoBBjfoNm2XqDtPBOZmnrah8
+         H0rEVdJnQ+V4qJZQR1Bj949509JTO7fFhWK2j6Ug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/111] gpiolib: acpi: Add missing IRQF_ONESHOT
+Subject: [PATCH 5.10 112/221] net: phy: broadcom: Add power down exit reset state delay
 Date:   Mon, 29 Mar 2021 09:57:23 +0200
-Message-Id: <20210329075615.699706924@linuxfoundation.org>
+Message-Id: <20210329075632.954177697@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
+[ Upstream commit 7a1468ba0e02eee24ae1353e8933793a27198e20 ]
 
-fixed the following coccicheck:
-./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+Per the datasheet, when we clear the power down bit, the PHY remains in
+an internal reset state for 40us and then resume normal operation.
+Account for that delay to avoid any issues in the future if
+genphy_resume() changes.
 
-Make sure threaded IRQs without a primary handler are always request
-with IRQF_ONESHOT
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: fe26821fa614 ("net: phy: broadcom: Wire suspend/resume for BCM54810")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpiolib-acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/broadcom.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index b2e186047014..66dcab6ab26d 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -174,7 +174,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
- 	int ret, value;
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index cd271de9609b..69713ea36d4e 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -332,6 +332,11 @@ static int bcm54xx_resume(struct phy_device *phydev)
+ 	if (ret < 0)
+ 		return ret;
  
- 	ret = request_threaded_irq(event->irq, NULL, event->handler,
--				   event->irqflags, "ACPI:Event", event);
-+				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
- 	if (ret) {
- 		dev_err(acpi_gpio->chip->parent,
- 			"Failed to setup interrupt handler for %d\n",
++	/* Upon exiting power down, the PHY remains in an internal reset state
++	 * for 40us
++	 */
++	fsleep(40);
++
+ 	return bcm54xx_config_init(phydev);
+ }
+ 
 -- 
 2.30.1
 
