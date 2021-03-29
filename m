@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2A034C971
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBFF34CBA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhC2I3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:29:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
+        id S235076AbhC2IuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232892AbhC2ITC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:19:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A187861554;
-        Mon, 29 Mar 2021 08:18:59 +0000 (UTC)
+        id S234601AbhC2IdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4228A619BD;
+        Mon, 29 Mar 2021 08:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005940;
-        bh=f09avr0kvSHuOYpmQdLTRtOUC7K8bFii372BVU+MPcA=;
+        s=korg; t=1617006740;
+        bh=xklHUkCkSFA+FxueWwB1TX0vfkQ4jbI5MgkaVx6OX7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjky7zeHbD2fo2gd1Srs057vR2py6of88/B8ClwwhAWJ7R1Xt8WjL6huamOy2DrO8
-         ytPJdoidcKj06LchCdz3DGw6AscXftiiEq1bKs/pNcrd82qDegpSurZc0dw4bdjl06
-         flnlhVDpIrQUt9NFAwaYnMiNNmg0ceCWl8BSvgQE=
+        b=J6tdfDn87Xh64DQocYM8Cp+uBg4az/xGCSVNPBt4fNDVdiB5RetCwQ3kRBkeOcLPx
+         W3907voT7Zm/zSQDszqUUqu51/8Na8vP+3d2LzfGP6DWEI/W4WQJtKIN0W1v4pL3cV
+         ohrs7AhNKUpcfhKymSIiRVJhxmYX1PSqDKk0JL/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/221] static_call: Allow module use without exposing static_call_key
-Date:   Mon, 29 Mar 2021 09:56:29 +0200
-Message-Id: <20210329075631.128907226@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.11 074/254] selinux: fix variable scope issue in live sidtab conversion
+Date:   Mon, 29 Mar 2021 09:56:30 +0200
+Message-Id: <20210329075635.584715806@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,342 +40,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-[ Upstream commit 73f44fe19d359635a607e8e8daa0da4001c1cfc2 ]
+commit 6406887a12ee5dcdaffff1a8508d91113d545559 upstream.
 
-When exporting static_call_key; with EXPORT_STATIC_CALL*(), the module
-can use static_call_update() to change the function called.  This is
-not desirable in general.
+Commit 02a52c5c8c3b ("selinux: move policy commit after updating
+selinuxfs") moved the selinux_policy_commit() call out of
+security_load_policy() into sel_write_load(), which caused a subtle yet
+rather serious bug.
 
-Not exporting static_call_key however also disallows usage of
-static_call(), since objtool needs the key to construct the
-static_call_site.
+The problem is that security_load_policy() passes a reference to the
+convert_params local variable to sidtab_convert(), which stores it in
+the sidtab, where it may be accessed until the policy is swapped over
+and RCU synchronized. Before 02a52c5c8c3b, selinux_policy_commit() was
+called directly from security_load_policy(), so the convert_params
+pointer remained valid all the way until the old sidtab was destroyed,
+but now that's no longer the case and calls to sidtab_context_to_sid()
+on the old sidtab after security_load_policy() returns may cause invalid
+memory accesses.
 
-Solve this by allowing objtool to create the static_call_site using
-the trampoline address when it builds a module and cannot find the
-static_call_key symbol. The module loader will then try and map the
-trampole back to a key before it constructs the normal sites list.
+This can be easily triggered using the stress test from commit
+ee1a84fdfeed ("selinux: overhaul sidtab to fix bug and improve
+performance"):
+```
+function rand_cat() {
+	echo $(( $RANDOM % 1024 ))
+}
 
-Doing this requires a trampoline -> key associsation, so add another
-magic section that keeps those.
+function do_work() {
+	while true; do
+		echo -n "system_u:system_r:kernel_t:s0:c$(rand_cat),c$(rand_cat)" \
+			>/sys/fs/selinux/context 2>/dev/null || true
+	done
+}
 
-Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210127231837.ifddpn7rhwdaepiu@treble
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+do_work >/dev/null &
+do_work >/dev/null &
+do_work >/dev/null &
+
+while load_policy; do echo -n .; sleep 0.1; done
+
+kill %1
+kill %2
+kill %3
+```
+
+Fix this by allocating the temporary sidtab convert structures
+dynamically and passing them among the
+selinux_policy_{load,cancel,commit} functions.
+
+Fixes: 02a52c5c8c3b ("selinux: move policy commit after updating selinuxfs")
+Cc: stable@vger.kernel.org
+Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+[PM: merge fuzz in security.h and services.c]
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/static_call.h      |  7 ++++
- include/asm-generic/vmlinux.lds.h       |  5 ++-
- include/linux/static_call.h             | 22 +++++++++-
- include/linux/static_call_types.h       | 27 +++++++++++-
- kernel/static_call.c                    | 55 ++++++++++++++++++++++++-
- tools/include/linux/static_call_types.h | 27 +++++++++++-
- tools/objtool/check.c                   | 17 +++++++-
- 7 files changed, 149 insertions(+), 11 deletions(-)
+ security/selinux/include/security.h |   15 ++++++--
+ security/selinux/selinuxfs.c        |   10 ++---
+ security/selinux/ss/services.c      |   65 ++++++++++++++++++++++--------------
+ 3 files changed, 56 insertions(+), 34 deletions(-)
 
-diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
-index c37f11999d0c..cbb67b6030f9 100644
---- a/arch/x86/include/asm/static_call.h
-+++ b/arch/x86/include/asm/static_call.h
-@@ -37,4 +37,11 @@
- #define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
- 	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret; nop; nop; nop; nop")
+--- a/security/selinux/include/security.h
++++ b/security/selinux/include/security.h
+@@ -219,14 +219,21 @@ static inline bool selinux_policycap_gen
+ 	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS]);
+ }
  
++struct selinux_policy_convert_data;
 +
-+#define ARCH_ADD_TRAMP_KEY(name)					\
-+	asm(".pushsection .static_call_tramp_key, \"a\"		\n"	\
-+	    ".long " STATIC_CALL_TRAMP_STR(name) " - .		\n"	\
-+	    ".long " STATIC_CALL_KEY_STR(name) " - .		\n"	\
-+	    ".popsection					\n")
-+
- #endif /* _ASM_STATIC_CALL_H */
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 34d8287cd774..d7efbc5490e8 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -393,7 +393,10 @@
- 	. = ALIGN(8);							\
- 	__start_static_call_sites = .;					\
- 	KEEP(*(.static_call_sites))					\
--	__stop_static_call_sites = .;
-+	__stop_static_call_sites = .;					\
-+	__start_static_call_tramp_key = .;				\
-+	KEEP(*(.static_call_tramp_key))					\
-+	__stop_static_call_tramp_key = .;
- 
- /*
-  * Allow architectures to handle ro_after_init data on their
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index a2c064585c03..04e6042d252d 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -138,6 +138,12 @@ struct static_call_key {
- 	};
- };
- 
-+/* For finding the key associated with a trampoline */
-+struct static_call_tramp_key {
-+	s32 tramp;
-+	s32 key;
++struct selinux_load_state {
++	struct selinux_policy *policy;
++	struct selinux_policy_convert_data *convert_data;
 +};
 +
- extern void __static_call_update(struct static_call_key *key, void *tramp, void *func);
- extern int static_call_mod_init(struct module *mod);
- extern int static_call_text_reserved(void *start, void *end);
-@@ -163,11 +169,18 @@ extern int static_call_text_reserved(void *start, void *end);
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
--
- #define EXPORT_STATIC_CALL_GPL(name)					\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
+ int security_mls_enabled(struct selinux_state *state);
+ int security_load_policy(struct selinux_state *state,
+-			void *data, size_t len,
+-			struct selinux_policy **newpolicyp);
++			 void *data, size_t len,
++			 struct selinux_load_state *load_state);
+ void selinux_policy_commit(struct selinux_state *state,
+-			struct selinux_policy *newpolicy);
++			   struct selinux_load_state *load_state);
+ void selinux_policy_cancel(struct selinux_state *state,
+-			struct selinux_policy *policy);
++			   struct selinux_load_state *load_state);
+ int security_read_policy(struct selinux_state *state,
+ 			 void **data, size_t *len);
  
-+/* Leave the key unexported, so modules can't change static call targets: */
-+#define EXPORT_STATIC_CALL_TRAMP(name)					\
-+	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name));				\
-+	ARCH_ADD_TRAMP_KEY(name)
-+#define EXPORT_STATIC_CALL_TRAMP_GPL(name)				\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name));			\
-+	ARCH_ADD_TRAMP_KEY(name)
-+
- #elif defined(CONFIG_HAVE_STATIC_CALL)
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+@@ -616,7 +616,7 @@ static ssize_t sel_write_load(struct fil
  
- static inline int static_call_init(void) { return 0; }
-@@ -209,11 +222,16 @@ static inline int static_call_text_reserved(void *start, void *end)
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
--
- #define EXPORT_STATIC_CALL_GPL(name)					\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
- 
-+/* Leave the key unexported, so modules can't change static call targets: */
-+#define EXPORT_STATIC_CALL_TRAMP(name)					\
-+	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+#define EXPORT_STATIC_CALL_TRAMP_GPL(name)				\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
-+
- #else /* Generic implementation */
- 
- static inline int static_call_init(void) { return 0; }
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 08f78b1b88b4..ae5662d368b9 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -10,6 +10,7 @@
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
- #define STATIC_CALL_KEY_PREFIX_LEN	(sizeof(STATIC_CALL_KEY_PREFIX_STR) - 1)
- #define STATIC_CALL_KEY(name)		__PASTE(STATIC_CALL_KEY_PREFIX, name)
-+#define STATIC_CALL_KEY_STR(name)	__stringify(STATIC_CALL_KEY(name))
- 
- #define STATIC_CALL_TRAMP_PREFIX	__SCT__
- #define STATIC_CALL_TRAMP_PREFIX_STR	__stringify(STATIC_CALL_TRAMP_PREFIX)
-@@ -39,17 +40,39 @@ struct static_call_site {
- 
- #ifdef CONFIG_HAVE_STATIC_CALL
- 
-+#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+
- /*
-  * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-  * the symbol table so that objtool can reference it when it generates the
-  * .static_call_sites section.
-  */
-+#define __STATIC_CALL_ADDRESSABLE(name) \
-+	__ADDRESSABLE(STATIC_CALL_KEY(name))
-+
- #define __static_call(name)						\
- ({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
-+	__STATIC_CALL_ADDRESSABLE(name);				\
-+	__raw_static_call(name);					\
- })
- 
-+#else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
-+
-+#define __STATIC_CALL_ADDRESSABLE(name)
-+#define __static_call(name)	__raw_static_call(name)
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
-+
-+#ifdef MODULE
-+#define __STATIC_CALL_MOD_ADDRESSABLE(name)
-+#define static_call_mod(name)	__raw_static_call(name)
-+#else
-+#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
-+#define static_call_mod(name)	__static_call(name)
-+#endif
-+
- #define static_call(name)	__static_call(name)
- 
- #else
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index db914da6e785..db64c2331a32 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -12,6 +12,8 @@
- 
- extern struct static_call_site __start_static_call_sites[],
- 			       __stop_static_call_sites[];
-+extern struct static_call_tramp_key __start_static_call_tramp_key[],
-+				    __stop_static_call_tramp_key[];
- 
- static bool static_call_initialized;
- 
-@@ -332,10 +334,59 @@ static int __static_call_mod_text_reserved(void *start, void *end)
- 	return ret;
- }
- 
-+static unsigned long tramp_key_lookup(unsigned long addr)
-+{
-+	struct static_call_tramp_key *start = __start_static_call_tramp_key;
-+	struct static_call_tramp_key *stop = __stop_static_call_tramp_key;
-+	struct static_call_tramp_key *tramp_key;
-+
-+	for (tramp_key = start; tramp_key != stop; tramp_key++) {
-+		unsigned long tramp;
-+
-+		tramp = (long)tramp_key->tramp + (long)&tramp_key->tramp;
-+		if (tramp == addr)
-+			return (long)tramp_key->key + (long)&tramp_key->key;
-+	}
-+
-+	return 0;
-+}
-+
- static int static_call_add_module(struct module *mod)
  {
--	return __static_call_init(mod, mod->static_call_sites,
--				  mod->static_call_sites + mod->num_static_call_sites);
-+	struct static_call_site *start = mod->static_call_sites;
-+	struct static_call_site *stop = start + mod->num_static_call_sites;
-+	struct static_call_site *site;
+ 	struct selinux_fs_info *fsi = file_inode(file)->i_sb->s_fs_info;
+-	struct selinux_policy *newpolicy;
++	struct selinux_load_state load_state;
+ 	ssize_t length;
+ 	void *data = NULL;
+ 
+@@ -642,19 +642,19 @@ static ssize_t sel_write_load(struct fil
+ 	if (copy_from_user(data, buf, count) != 0)
+ 		goto out;
+ 
+-	length = security_load_policy(fsi->state, data, count, &newpolicy);
++	length = security_load_policy(fsi->state, data, count, &load_state);
+ 	if (length) {
+ 		pr_warn_ratelimited("SELinux: failed to load policy\n");
+ 		goto out;
+ 	}
+ 
+-	length = sel_make_policy_nodes(fsi, newpolicy);
++	length = sel_make_policy_nodes(fsi, load_state.policy);
+ 	if (length) {
+-		selinux_policy_cancel(fsi->state, newpolicy);
++		selinux_policy_cancel(fsi->state, &load_state);
+ 		goto out;
+ 	}
+ 
+-	selinux_policy_commit(fsi->state, newpolicy);
++	selinux_policy_commit(fsi->state, &load_state);
+ 
+ 	length = count;
+ 
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -66,6 +66,17 @@
+ #include "audit.h"
+ #include "policycap_names.h"
+ 
++struct convert_context_args {
++	struct selinux_state *state;
++	struct policydb *oldp;
++	struct policydb *newp;
++};
 +
-+	for (site = start; site != stop; site++) {
-+		unsigned long addr = (unsigned long)static_call_key(site);
-+		unsigned long key;
++struct selinux_policy_convert_data {
++	struct convert_context_args args;
++	struct sidtab_convert_params sidtab_params;
++};
 +
-+		/*
-+		 * Is the key is exported, 'addr' points to the key, which
-+		 * means modules are allowed to call static_call_update() on
-+		 * it.
-+		 *
-+		 * Otherwise, the key isn't exported, and 'addr' points to the
-+		 * trampoline so we need to lookup the key.
-+		 *
-+		 * We go through this dance to prevent crazy modules from
-+		 * abusing sensitive static calls.
-+		 */
-+		if (!kernel_text_address(addr))
-+			continue;
-+
-+		key = tramp_key_lookup(addr);
-+		if (!key) {
-+			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
-+				static_call_addr(site));
-+			return -EINVAL;
-+		}
-+
-+		site->key = (key - (long)&site->key) |
-+			    (site->key & STATIC_CALL_SITE_FLAGS);
-+	}
-+
-+	return __static_call_init(mod, start, stop);
+ /* Forward declaration. */
+ static int context_struct_to_string(struct policydb *policydb,
+ 				    struct context *context,
+@@ -1973,12 +1984,6 @@ static inline int convert_context_handle
+ 	return 0;
  }
  
- static void static_call_del_module(struct module *mod)
-diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
-index 08f78b1b88b4..ae5662d368b9 100644
---- a/tools/include/linux/static_call_types.h
-+++ b/tools/include/linux/static_call_types.h
-@@ -10,6 +10,7 @@
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
- #define STATIC_CALL_KEY_PREFIX_LEN	(sizeof(STATIC_CALL_KEY_PREFIX_STR) - 1)
- #define STATIC_CALL_KEY(name)		__PASTE(STATIC_CALL_KEY_PREFIX, name)
-+#define STATIC_CALL_KEY_STR(name)	__stringify(STATIC_CALL_KEY(name))
- 
- #define STATIC_CALL_TRAMP_PREFIX	__SCT__
- #define STATIC_CALL_TRAMP_PREFIX_STR	__stringify(STATIC_CALL_TRAMP_PREFIX)
-@@ -39,17 +40,39 @@ struct static_call_site {
- 
- #ifdef CONFIG_HAVE_STATIC_CALL
- 
-+#define __raw_static_call(name)	(&STATIC_CALL_TRAMP(name))
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+
+-struct convert_context_args {
+-	struct selinux_state *state;
+-	struct policydb *oldp;
+-	struct policydb *newp;
+-};
+-
  /*
-  * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-  * the symbol table so that objtool can reference it when it generates the
-  * .static_call_sites section.
+  * Convert the values in the security context
+  * structure `oldc' from the values specified
+@@ -2158,7 +2163,7 @@ static void selinux_policy_cond_free(str
+ }
+ 
+ void selinux_policy_cancel(struct selinux_state *state,
+-			struct selinux_policy *policy)
++			   struct selinux_load_state *load_state)
+ {
+ 	struct selinux_policy *oldpolicy;
+ 
+@@ -2166,7 +2171,8 @@ void selinux_policy_cancel(struct selinu
+ 					lockdep_is_held(&state->policy_mutex));
+ 
+ 	sidtab_cancel_convert(oldpolicy->sidtab);
+-	selinux_policy_free(policy);
++	selinux_policy_free(load_state->policy);
++	kfree(load_state->convert_data);
+ }
+ 
+ static void selinux_notify_policy_change(struct selinux_state *state,
+@@ -2181,9 +2187,9 @@ static void selinux_notify_policy_change
+ }
+ 
+ void selinux_policy_commit(struct selinux_state *state,
+-			struct selinux_policy *newpolicy)
++			   struct selinux_load_state *load_state)
+ {
+-	struct selinux_policy *oldpolicy;
++	struct selinux_policy *oldpolicy, *newpolicy = load_state->policy;
+ 	u32 seqno;
+ 
+ 	oldpolicy = rcu_dereference_protected(state->policy,
+@@ -2223,6 +2229,7 @@ void selinux_policy_commit(struct selinu
+ 	/* Free the old policy */
+ 	synchronize_rcu();
+ 	selinux_policy_free(oldpolicy);
++	kfree(load_state->convert_data);
+ 
+ 	/* Notify others of the policy change */
+ 	selinux_notify_policy_change(state, seqno);
+@@ -2239,11 +2246,10 @@ void selinux_policy_commit(struct selinu
+  * loading the new policy.
   */
-+#define __STATIC_CALL_ADDRESSABLE(name) \
-+	__ADDRESSABLE(STATIC_CALL_KEY(name))
-+
- #define __static_call(name)						\
- ({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
-+	__STATIC_CALL_ADDRESSABLE(name);				\
-+	__raw_static_call(name);					\
- })
+ int security_load_policy(struct selinux_state *state, void *data, size_t len,
+-			struct selinux_policy **newpolicyp)
++			 struct selinux_load_state *load_state)
+ {
+ 	struct selinux_policy *newpolicy, *oldpolicy;
+-	struct sidtab_convert_params convert_params;
+-	struct convert_context_args args;
++	struct selinux_policy_convert_data *convert_data;
+ 	int rc = 0;
+ 	struct policy_file file = { data, len }, *fp = &file;
  
-+#else /* !CONFIG_HAVE_STATIC_CALL_INLINE */
-+
-+#define __STATIC_CALL_ADDRESSABLE(name)
-+#define __static_call(name)	__raw_static_call(name)
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL_INLINE */
-+
-+#ifdef MODULE
-+#define __STATIC_CALL_MOD_ADDRESSABLE(name)
-+#define static_call_mod(name)	__raw_static_call(name)
-+#else
-+#define __STATIC_CALL_MOD_ADDRESSABLE(name) __STATIC_CALL_ADDRESSABLE(name)
-+#define static_call_mod(name)	__static_call(name)
-+#endif
-+
- #define static_call(name)	__static_call(name)
+@@ -2273,10 +2279,10 @@ int security_load_policy(struct selinux_
+ 		goto err_mapping;
+ 	}
  
- #else
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index dc24aac08edd..5c83f73ad668 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -502,8 +502,21 @@ static int create_static_call_sections(struct objtool_file *file)
+-
+ 	if (!selinux_initialized(state)) {
+ 		/* First policy load, so no need to preserve state from old policy */
+-		*newpolicyp = newpolicy;
++		load_state->policy = newpolicy;
++		load_state->convert_data = NULL;
+ 		return 0;
+ 	}
  
- 		key_sym = find_symbol_by_name(file->elf, tmp);
- 		if (!key_sym) {
--			WARN("static_call: can't find static_call_key symbol: %s", tmp);
--			return -1;
-+			if (!module) {
-+				WARN("static_call: can't find static_call_key symbol: %s", tmp);
-+				return -1;
-+			}
+@@ -2290,29 +2296,38 @@ int security_load_policy(struct selinux_
+ 		goto err_free_isids;
+ 	}
+ 
++	convert_data = kmalloc(sizeof(*convert_data), GFP_KERNEL);
++	if (!convert_data) {
++		rc = -ENOMEM;
++		goto err_free_isids;
++	}
 +
-+			/*
-+			 * For modules(), the key might not be exported, which
-+			 * means the module can make static calls but isn't
-+			 * allowed to change them.
-+			 *
-+			 * In that case we temporarily set the key to be the
-+			 * trampoline address.  This is fixed up in
-+			 * static_call_add_module().
-+			 */
-+			key_sym = insn->call_dest;
- 		}
- 		free(key_name);
+ 	/*
+ 	 * Convert the internal representations of contexts
+ 	 * in the new SID table.
+ 	 */
+-	args.state = state;
+-	args.oldp = &oldpolicy->policydb;
+-	args.newp = &newpolicy->policydb;
+-
+-	convert_params.func = convert_context;
+-	convert_params.args = &args;
+-	convert_params.target = newpolicy->sidtab;
++	convert_data->args.state = state;
++	convert_data->args.oldp = &oldpolicy->policydb;
++	convert_data->args.newp = &newpolicy->policydb;
++
++	convert_data->sidtab_params.func = convert_context;
++	convert_data->sidtab_params.args = &convert_data->args;
++	convert_data->sidtab_params.target = newpolicy->sidtab;
  
--- 
-2.30.1
-
+-	rc = sidtab_convert(oldpolicy->sidtab, &convert_params);
++	rc = sidtab_convert(oldpolicy->sidtab, &convert_data->sidtab_params);
+ 	if (rc) {
+ 		pr_err("SELinux:  unable to convert the internal"
+ 			" representation of contexts in the new SID"
+ 			" table\n");
+-		goto err_free_isids;
++		goto err_free_convert_data;
+ 	}
+ 
+-	*newpolicyp = newpolicy;
++	load_state->policy = newpolicy;
++	load_state->convert_data = convert_data;
+ 	return 0;
+ 
++err_free_convert_data:
++	kfree(convert_data);
+ err_free_isids:
+ 	sidtab_destroy(newpolicy->sidtab);
+ err_mapping:
 
 
