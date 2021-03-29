@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE07C34CBF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF1C34CAF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhC2Iyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:54:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        id S235002AbhC2Ill (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233837AbhC2Ifx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BBC361601;
-        Mon, 29 Mar 2021 08:35:30 +0000 (UTC)
+        id S233513AbhC2IXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C21816044F;
+        Mon, 29 Mar 2021 08:23:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006930;
-        bh=5bzssBjW/KOEzduNrNgJ8l+A9etlBpDxW72zasxvtT8=;
+        s=korg; t=1617006208;
+        bh=RHIqCcF0DTcyY7IN0URo8sQrH/fKoLvRgDD/wApvKZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mSXRpU95v3+bNMR4XIz8mYTCW1AfeFs2ViilHMhxvdarpzW5TZ5LjWFse+Ny0YdEl
-         fBNzRUw64mXTcUtcFF5LjizyVuBGLe+lD+OckMAadqwJrDT57aIkPmQ7/3X8W+Cc5z
-         BF6V7sRaJIDvSlICL8PPpdTvFcuXoO6wVOf1WiUs=
+        b=NI6ongDAmP+QOelX1PmSAAox/ODDhmDy4p0aUFSL2r/U1ISArXXzdFc9pFJEuvckF
+         se+AIHb9594qaSpQr041BV0+hyNu7eQL0VnPcnWb8bvTv+8Wh9rx++MTyTMBum3onJ
+         9JhVpTXvK58He7ipNwNLgGa3u7gShDI/dxGL8QfI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 155/254] can: m_can: m_can_rx_peripheral(): fix RX being blocked by errors
+Subject: [PATCH 5.10 140/221] drm/msm/dsi: fix check-before-set in the 7nm dsi_pll code
 Date:   Mon, 29 Mar 2021 09:57:51 +0200
-Message-Id: <20210329075638.298974919@linuxfoundation.org>
+Message-Id: <20210329075633.846380275@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit e98d9ee64ee2cc9b1d1a8e26610ec4d0392ebe50 ]
+[ Upstream commit 3b24cdfc721a5f1098da22f9f68ff5f4a5efccc9 ]
 
-For M_CAN peripherals, m_can_rx_handler() was called with quota = 1,
-which caused any error handling to block RX from taking place until
-the next time the IRQ handler is called. This had been observed to
-cause RX to be blocked indefinitely in some cases.
+Fix setting min/max DSI PLL rate for the V4.1 7nm DSI PLL (used on
+sm8250). Current code checks for pll->type before it is set (as it is
+set in the msm_dsi_pll_init() after calling device-specific functions.
 
-This is fixed by calling m_can_rx_handler with a sensibly high quota.
-
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Link: https://lore.kernel.org/r/20210303144350.4093750-1-torin@maxiluxsystems.com
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jonathan Marek <jonathan@marek.ca>
+Fixes: 1ef7c99d145c ("drm/msm/dsi: add support for 7nm DSI PHY/PLL")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll.c     | 2 +-
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll.h     | 6 ++++--
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c | 5 +++--
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 678679a8c907..44b3f4b3aea5 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -873,7 +873,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
+diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
+index a45fe95aff49..3dc65877fa10 100644
+--- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
++++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.c
+@@ -163,7 +163,7 @@ struct msm_dsi_pll *msm_dsi_pll_init(struct platform_device *pdev,
+ 		break;
+ 	case MSM_DSI_PHY_7NM:
+ 	case MSM_DSI_PHY_7NM_V4_1:
+-		pll = msm_dsi_pll_7nm_init(pdev, id);
++		pll = msm_dsi_pll_7nm_init(pdev, type, id);
+ 		break;
+ 	default:
+ 		pll = ERR_PTR(-ENXIO);
+diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
+index 3405982a092c..bbecb1de5678 100644
+--- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
++++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll.h
+@@ -117,10 +117,12 @@ msm_dsi_pll_10nm_init(struct platform_device *pdev, int id)
+ }
+ #endif
+ #ifdef CONFIG_DRM_MSM_DSI_7NM_PHY
+-struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id);
++struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev,
++					enum msm_dsi_phy_type type, int id);
+ #else
+ static inline struct msm_dsi_pll *
+-msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
++msm_dsi_pll_7nm_init(struct platform_device *pdev,
++					enum msm_dsi_phy_type type, int id)
  {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	return ERR_PTR(-ENODEV);
+ }
+diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
+index 93bf142e4a4e..c1f6708367ae 100644
+--- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
++++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
+@@ -852,7 +852,8 @@ err_base_clk_hw:
+ 	return ret;
+ }
  
--	m_can_rx_handler(dev, 1);
-+	m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
- 
- 	m_can_enable_all_interrupts(cdev);
- 
+-struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
++struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev,
++					enum msm_dsi_phy_type type, int id)
+ {
+ 	struct dsi_pll_7nm *pll_7nm;
+ 	struct msm_dsi_pll *pll;
+@@ -885,7 +886,7 @@ struct msm_dsi_pll *msm_dsi_pll_7nm_init(struct platform_device *pdev, int id)
+ 	pll = &pll_7nm->base;
+ 	pll->min_rate = 1000000000UL;
+ 	pll->max_rate = 3500000000UL;
+-	if (pll->type == MSM_DSI_PHY_7NM_V4_1) {
++	if (type == MSM_DSI_PHY_7NM_V4_1) {
+ 		pll->min_rate = 600000000UL;
+ 		pll->max_rate = (unsigned long)5000000000ULL;
+ 		/* workaround for max rate overflowing on 32-bit builds: */
 -- 
 2.30.1
 
