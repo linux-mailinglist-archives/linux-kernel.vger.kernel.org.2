@@ -2,255 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040CA34D9FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E382334DA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhC2WPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:15:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62817 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhC2WOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:14:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617056091; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=hibZXyHjual3YOnIg1gGgphNnhTXGq5FpZD3vLTTGzo=; b=PYC6M6iiF7iJUKk8G6Q4gJnAyxfVd6JV3JtzB2nOFs/KRAXFYacIuMy6oo9KfIu6VbU8uYVH
- SWr02xYhU9VoMtP10ewUuP4BkLIRd7UJuhJZvCQE6+/zCgJQLcu0GfuW1VpCYeJArD6MVRD3
- DAiXX/wTo9ZTLxCJJJuAxkSTCsI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60625159a2ab6642dbcdb218 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 22:14:49
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E747AC43461; Mon, 29 Mar 2021 22:14:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.60.140] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD4CDC43461;
-        Mon, 29 Mar 2021 22:14:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD4CDC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
- switching modes in DRD
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Roger Quadros <rogerq@ti.com>
-References: <20210108015115.27920-1-john.stultz@linaro.org>
- <87bldzwr6x.fsf@kernel.org>
- <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
- <d95d0971-624e-a0e6-ac72-6ee3b1fb1106@synopsys.com>
- <06a44245-4f2f-69ba-fe46-b88a19f585c2@codeaurora.org>
- <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com>
- <fa5cc67e-3873-e6d9-8727-d160740b027e@codeaurora.org>
- <3db531c4-7058-68ec-8d4b-ff122c307697@synopsys.com>
- <8b5f7348-66d7-4902-eac8-593ab503db96@codeaurora.org>
- <ee47c2c6-f931-6229-13cd-d41a28b3b9c7@codeaurora.org>
- <28bc3ce1-7ace-be25-7d7d-ca8ab1b0f0e9@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <62c7ee3a-21c4-009d-bfc0-ce9d3a84fefe@codeaurora.org>
-Date:   Mon, 29 Mar 2021 15:14:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230329AbhC2WQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:16:54 -0400
+Received: from mail-ej1-f45.google.com ([209.85.218.45]:37781 "EHLO
+        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230323AbhC2WQk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:16:40 -0400
+Received: by mail-ej1-f45.google.com with SMTP id w3so21816775ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:16:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WQzIDcWuiHAyXRwih35ciaqMW2/DmFDACcc42yRYS2k=;
+        b=Rn9XImGceiHBLK+km6SGms6h0hc5aW8JgKxKM53TSUZa/QayRU7sHLOlIsHK1Lsfka
+         NUGP2r7efbn5gMlFnb9bdh2wpY3RX0GRgGtuHEQcR9QZ/q8/hqE1AMk6xQaMP4yWgD+r
+         uPSXpZ2gp36MeUb6Rz+X4BOukPyf0RoaalNnC6gI+OzqRmZ7CUM3QEIiOpGH5Jqlg0QU
+         6uHaRhoU34GEMFsn1lMbnwlVayYCbBTcX4pOj+XGiakL+0HuciE3YDx24gxqntqm7zYw
+         OXsopa0/evPu2/TLsQYMLGb8AnDixI7kxhnqB5iHz+3CGmLCLLrZkP6VOyQWR394LKnw
+         cKnw==
+X-Gm-Message-State: AOAM533osUvx/O0Rd+YK/qsxZiIwqwmMTaFffIM5GyW2yw0CwqsJjusw
+        aB2gw46wgaMkfRpYkd3EIWAKNJ+VusGhzH3s/KU=
+X-Google-Smtp-Source: ABdhPJx6CPFcHJiMC5wf94BMQoWnoiz4MEwX5AhrAY5/XJp1AvowCU2TgxnrqxhIVNOK/tBXOaHlpCbo4zoLtPw/EHs=
+X-Received: by 2002:a17:906:6d01:: with SMTP id m1mr20808560ejr.501.1617056199371;
+ Mon, 29 Mar 2021 15:16:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <28bc3ce1-7ace-be25-7d7d-ca8ab1b0f0e9@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-15-chang.seok.bae@intel.com> <87o8fda2ye.fsf@nanos.tec.linutronix.de>
+ <CAJvTdKkZEWTsqhXLC+qiQ49c2xn7GDF95PfTBi0rw1FnE--JKQ@mail.gmail.com>
+ <87r1jyaxum.ffs@nanos.tec.linutronix.de> <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
+ <87ft0d7q2q.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87ft0d7q2q.ffs@nanos.tec.linutronix.de>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 29 Mar 2021 18:16:28 -0400
+Message-ID: <CAJvTdK=mfc3giXCy_fteyR4UiZfnN5f0hvREN4TjXc5KxtiP+w@mail.gmail.com>
+Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
+ first use of dynamic user state
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 2:49 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> According to documentation it is irrelevant whether AMX usage is
+> disabled via XCR0, CR4.OSXSAVE or XFD[18]. In any case the effect of
+> AMX INIT=0 will prevent C6.
+>
+> As I explained in great length there are enough ways to get into a
+> situation where this can happen and a CPU goes idle with AMX INIT=0.
+>
+> So what are we supposed to do?
+
+Let me know if this problem description is fair:
+
+Many-core Xeon servers will support AMX, and when I run an AMX application
+on one, when I take an interrupt with AMX INIT=0, Linux may go idle on my CPU.
+If Linux cpuidle requests C6, the hardware will demote to C1E.
+
+The concern is that a core in C1E will negatively impact power of
+self, or performance
+of a neighboring core.
+
+This is what we are talking about, right?
+
+First, I should mention that if I threw a dart at a map of Xeons
+deployed across the universe, the chances are "significant" that I'd
+hit one that is configured with C6 disabled, and this discussion would be moot.
+
+Second, I should mention that Linux cpuidle demotes from deep C-states
+to shallow ones all day long.  This is typically due to expected timer
+expiration,
+and other heuristics.
+
+Third, I should mention that the processor itself demotes from C6 to C1E
+for a number of reasons -- basically like what Linux is doing, but in HW.
+
+Albeit, the hardware does have the capability to "un-demote" when it demotes
+and recognizes it made a mistake, and that "un-demote" capability would
+not be present if the reason for demotion was AVX INIT=0.
+
+Okay, that said, let's assume we have found a system where this problem
+could happen, and we use it in a way that makes it happen.  Would we notice?
+
+If your system were profoundly idle, and one or more cores were in C1E,
+then it would prevent the SOC from entering Package C6 (if enabled).
+Yes, there is a measurable idle power difference between Package C1E
+and Package C6.  (indeed, this is why Package C6 exists).
+
+I'm delighted that there are Xeon customers, who care about this power savings.
+Unfortunately, they are the exception, not the rule.
+
+If you were to provoke this scenario on many cores simultaneously, then
+I expect you could detect a power difference between C1E and CC6.
+However, that difference would be smaller than the difference
+in power due to the frequency choice of the running cores,
+because it is basically just the L2-leakage vs L2-off difference.
+
+Regarding frequency credits for a core being in C1E vs C6.
+Yes, this is factored into the frequency credits for turbo mode.
+How much impact, I can't say, because that information is not yet available.
+However, this is mitigated by the fact that Xeon single core turbo
+is deployed differently than client.  Xeon's are deployed
+more with multi-core turbo in mind, and so how much you'll
+notice C1E vs C6 may not be significant, unless perhaps it happened
+on all the cores across the system.
+
+>    - Use TILERELEASE on context switch after XSAVES?
+
+Yes, that would be perfectly reasonable.
+
+>    - Any other mechanism on context switch
+
+XRESTOR of a context with INIT=1 would also do it.
+
+>    - Clear XFD[18] when going idle and issue TILERELEASE depending
+>      on the last state
+
+I think you mean to *set* XFD.
+When the task touched AMX, he took a #NM, and we cleared XFD for that task.
+So when we get here, XFD is already clear (unarmed).
+Nevertheless, the setting of XFD is moot here.
+
+>    - Use any other means to set the thing back into INIT=1 state when
+>      going idle
+
+TILERELEASE and XRESTOR are the tools in the toolbox, if necessary.
+
+> There is no option 'shrug and ignore' unfortunately.
+
+I'm not going to say it is impossible that this path will matter.
+If some terrible things go wrong with the hardware, and the hardware
+is configured and used in a very specific way, yes, this could matter.
+
+In the grand scheme of things, this is a pretty small issue,
+say, compared to the API discussion.
+
+thanks,
+Len Brown, Intel Open Source Technology Center
 
 
-On 3/19/2021 4:09 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->>
->>
->> On 3/8/2021 10:33 PM, Wesley Cheng wrote:
->>>
->>>
->>> On 3/8/2021 7:05 PM, Thinh Nguyen wrote:
->>>> Wesley Cheng wrote:
->>>>>
->>>>> On 3/6/2021 3:41 PM, Thinh Nguyen wrote:
->>>>>> Wesley Cheng wrote:
->>>>>>> On 1/8/2021 4:44 PM, Thinh Nguyen wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> John Stultz wrote:
->>>>>>>>> On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
->>>>>>>>>> Hi,
->>>>>>>>>>
->>>>>>>>>> John Stultz <john.stultz@linaro.org> writes:
->>>>>>>>>>> From: Yu Chen <chenyu56@huawei.com>
->>>>>>>>>>>
->>>>>>>>>>> Just resending this, as discussion died out a bit and I'm not
->>>>>>>>>>> sure how to make further progress. See here for debug data that
->>>>>>>>>>> was requested last time around:
->>>>>>>>>>>   https://urldefense.com/v3/__https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnsnlqd3w$ 
->>>>>>>>>>>
->>>>>>>>>>> With the current dwc3 code on the HiKey960 we often see the
->>>>>>>>>>> COREIDLE flag get stuck off in __dwc3_gadget_start(), which
->>>>>>>>>>> seems to prevent the reset irq and causes the USB gadget to
->>>>>>>>>>> fail to initialize.
->>>>>>>>>>>
->>>>>>>>>>> We had seen occasional initialization failures with older
->>>>>>>>>>> kernels but with recent 5.x era kernels it seemed to be becoming
->>>>>>>>>>> much more common, so I dug back through some older trees and
->>>>>>>>>>> realized I dropped this quirk from Yu Chen during upstreaming
->>>>>>>>>>> as I couldn't provide a proper rational for it and it didn't
->>>>>>>>>>> seem to be necessary. I now realize I was wrong.
->>>>>>>>>>>
->>>>>>>>>>> After resubmitting the quirk, Thinh Nguyen pointed out that it
->>>>>>>>>>> shouldn't be a quirk at all and it is actually mentioned in the
->>>>>>>>>>> programming guide that it should be done when switching modes
->>>>>>>>>>> in DRD.
->>>>>>>>>>>
->>>>>>>>>>> So, to avoid these !COREIDLE lockups seen on HiKey960, this
->>>>>>>>>>> patch issues GCTL soft reset when switching modes if the
->>>>>>>>>>> controller is in DRD mode.
->>>>>>>>>>>
->>>>>>>>>>> Cc: Felipe Balbi <balbi@kernel.org>
->>>>>>>>>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
->>>>>>>>>>> Cc: Yang Fei <fei.yang@intel.com>
->>>>>>>>>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>>>>>>>>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>>>>>>>>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
->>>>>>>>>>> Cc: Jun Li <lijun.kernel@gmail.com>
->>>>>>>>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>>>>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>>>>>>> Cc: linux-usb@vger.kernel.org
->>>>>>>>>>> Signed-off-by: Yu Chen <chenyu56@huawei.com>
->>>>>>>>>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>>>>>>>>>> ---
->>>>>>>>>>> v2:
->>>>>>>>>>> * Rework to always call the GCTL soft reset in DRD mode,
->>>>>>>>>>>   rather then using a quirk as suggested by Thinh Nguyen
->>>>>>>>>>>
->>>>>>>>>>> v3:
->>>>>>>>>>> * Move GCTL soft reset under the spinlock as suggested by
->>>>>>>>>>>   Thinh Nguyen
->>>>>>>>>> Because this is such an invasive change, I would prefer that we get
->>>>>>>>>> Tested-By tags from a good fraction of the users before applying these
->>>>>>>>>> two changes.
->>>>>>>>> I'm happy to reach out to folks to try to get that. Though I'm
->>>>>>>>> wondering if it would be better to put it behind a dts quirk flag, as
->>>>>>>>> originally proposed?
->>>>>>>>>    https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnRWITZfc$ 
->>>>>>>>>
->>>>>>>>> That way folks can enable it for devices as they need?
->>>>>>>>>
->>>>>>>>> Again, I'm not trying to force this in as-is, just mostly sending it
->>>>>>>>> out again for discussion to understand what other approach might work.
->>>>>>>>>
->>>>>>>>> thanks
->>>>>>>>> -john
->>>>>>>> A quirk would imply something is broken/diverged from the design right?
->>>>>>>> But it's not the case here, and at least this is needed for HiKey960.
->>>>>>>> Also, I think Rob will be ok with not adding 1 more quirk to the dwc3
->>>>>>>> devicetree. :)
->>>>>>>>
->>>>>>>> BR,
->>>>>>>> Thinh
->>>>>>>>
->>>>>>> Hi All,
->>>>>>>
->>>>>>> Sorry for jumping in, but I checked the SNPS v1.90a databook, and that
->>>>>>> seemed to remove the requirement for the GCTL.softreset before writing
->>>>>>> to PRTCAPDIR.  Should we consider adding a controller version/IP check?
->>>>>>>
->>>>>> Hi Wesley,
->>>>>>
->>>>>> From what I see in the v1.90a databook and others, the flow remains the
->>>>>> same. I need to check internally, but I'm not aware of the change.
->>>>>>
->>>>> Hi Thinh,
->>>>>
->>>>> Hmmm, can you help check the register description for the PRTCAPDIR on
->>>>> your v1.90a databook?  (Table 1-19 Fields for Register: GCTL (Continued)
->>>>> Pg73)  When we compared the sequence in the description there to the
->>>>> previous versions it removed the GCTL.softreset.  If it still shows up
->>>>> on yours, then maybe my v1.90a isn't the final version?
->>>>>
->>>>> Thanks
->>>>> Wesley Cheng
->>>>>
->>>>
->>>> Hi Wesley,
->>>>
->>>> Actually your IP version type may use the newer flow. Can you print your
->>>> DWC3_VER_TYPE? I still need to verify internally to know which versions
->>>> need the update if any.
->>>>
->>>> Thanks,
->>>> Thinh
->>>>
->>> Hi Thinh,
->>>
->>> Sure, my DWC3_VER_TYPE output = 0x67612A2A
->>>
->>> Thanks
->>> Wesley Cheng
->>>
->> Hi Thinh,
->>
->> Would you happen to have an update on the required sequence on the
->> version shared?  Sorry for pushing, but we just wanted to finalize on
->> it, since it does cause some functional issues w/o the soft reset in
->> place, and causes a crash if we have the GCTL.softreset.
->>
->> Thanks
->> Wesley Cheng
->>
-> 
-> Hi Wesley,
-> 
-> I'm still trying to get that info for you. The versions without
-> GCTL.softreset should be very new. The flow with GCTL.softreset should
-> work for all versions and should not cause functional impact. We can
-> create a change to optimize and remove GCTL.softreset for the newer
-> controller versions at a later time.
-> 
-> Since you and John Stultz have the setup that can be verified in the
-> real world. It would be great if John or you provide a tested patch(es)
-> to resolve this issue.
-> 
-> Thanks,
-> Thinh
-> 
-Hi Thinh,
-
-Thanks for the input as always.  I tested the GCTL.softreset change just
-now, and it is working fine at least on my set up.
-
-Not sure if we'd need input from other vendors as well to get this
-change merged.
-
-Thanks
-Wesley Cheng
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+-Len
