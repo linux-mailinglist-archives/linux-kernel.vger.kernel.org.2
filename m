@@ -2,127 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54FB34D947
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED88834D94D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhC2Uq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49404 "EHLO mail.kernel.org"
+        id S229950AbhC2UuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231134AbhC2Upy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:45:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00E9861924;
-        Mon, 29 Mar 2021 20:45:53 +0000 (UTC)
+        id S231158AbhC2UuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:50:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3D57C61987;
+        Mon, 29 Mar 2021 20:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617050754;
-        bh=Tn6txlmT/d5Y6cdWpSK86evJAyAI5ibaFDr8ZhPHJ7I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ilUFPx4hc92t2Aj4EYfhXwfBLx9FIgfYhx08XN4s09fLHol3ENfrlglaL1lCfsKaE
-         QBBft64uV6XYkBYaIVasY9QFVUV0Ysk2k/5cHBw+UuGX3E8iOTAl6TOASLulPINCNu
-         NegRpZT1iGQaUWL6fDINp2rePSxHQeySAt6qyuOufxvqzuqTNYd64lPcqcFIKTvAhs
-         fi+JyNlIHBXJpL+ocTnGeKCtU/4NqjHv2OrL3JhRyBLMi2GShp23yJ/5C2fo+rOcLg
-         QkEV5uVt+e1NL3alss/vkRHLGWAmLOWZ5BwgiZ4J931YIcStCVo55Etf9VKzFkBDO0
-         NdTMOLu6/6l8A==
-Date:   Mon, 29 Mar 2021 21:45:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
-Message-ID: <20210329204543.GJ5166@sirena.org.uk>
-References: <20210326191906.43567-1-jim2101024@gmail.com>
- <20210326191906.43567-3-jim2101024@gmail.com>
- <20210329162539.GG5166@sirena.org.uk>
- <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
- <20210329171613.GI5166@sirena.org.uk>
- <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
+        s=k20201202; t=1617051009;
+        bh=CRvnZ4SBTVigQxkQ8MXJb8tNdKdsznOVhG0mp1xUJBA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TrjkOV25fz/bMPqfF9bVZz6oiZSMx8fOeucrKqZBDBy4w46VqnOUDdXgxBOyyG/D6
+         kl/UdIhFPiOon4csHETMTcozoS3CwltP/NLDdrPEn9/mAuuRiOoLX6K/DqgRN3+Udd
+         Fn2Bl9k0zbMh6N16F/lyiGbHj9da005UFpmvyTkc+FBnCH3XHY3HaVl08csJwfIGnE
+         LyPOUjZRw7V/zaFpPgmlLDUiNCEM5LnBzMiu3VEepmS9TlCG+li+eOEJWo6LMraduh
+         BU/3mkXDKbdq0noGDRPfAU53xws0GkB9Ini5DhcjNJ7cf+KPRGchTtdz+ndb8o6sS9
+         lg2ex8d1P0+Tg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2D4AF60A48;
+        Mon, 29 Mar 2021 20:50:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EVh9lyqKgK19OcEf"
-Content-Disposition: inline
-In-Reply-To: <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
-X-Cookie: Never give an inch!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ethernet: myri10ge: Fix a use after free in myri10ge_sw_tso
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161705100918.19110.5559989308020507704.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Mar 2021 20:50:09 +0000
+References: <20210329123648.9474-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210329123648.9474-1-lyl2019@mail.ustc.edu.cn>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     christopher.lee@cspi.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
---EVh9lyqKgK19OcEf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon, Mar 29, 2021 at 03:48:46PM -0400, Jim Quinlan wrote:
+On Mon, 29 Mar 2021 05:36:48 -0700 you wrote:
+> In myri10ge_sw_tso, the skb_list_walk_safe macro will set
+> (curr) = (segs) and (next) = (curr)->next. If status!=0 is true,
+> the memory pointed by curr and segs will be free by dev_kfree_skb_any(curr).
+> But later, the segs is used by segs = segs->next and causes a uaf.
+> 
+> As (next) = (curr)->next, my patch replaces seg->next to next.
+> 
+> [...]
 
-> I'm not concerned about a namespace collision and I don't think you
-> should be concerned either.  First, this driver is for Broadcom STB
-> PCIe chips and boards, and we also deliver the DT to the customers.
-> We typically do not have any other regulators in the DT besides the
-> ones I am proposing.  For example, the 7216 SOC DT has 0 other
+Here is the summary with links:
+  - ethernet: myri10ge: Fix a use after free in myri10ge_sw_tso
+    https://git.kernel.org/netdev/net/c/63415767a244
 
-You may not describe these regulators in the DT but you must have other
-regulators in your system, most devices need power to operate.  In any
-case "this works for me with my DT on my system and nobody will ever
-change our reference design" isn't really a great approach, frankly it's
-not a claim I entirely believe and even if it turns out to be true for
-your systems if we establish this as being how regulators work for
-soldered down PCI devices everyone else is going to want to do the same
-thing, most likely making the same claims for how much control they have
-over the systems things will run on.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> regulators -- no namespace collision possible.  Our DT-generating
-> scripts also flag namespace issues.  I admit that this driver is also
-> used by RPi chips, but I can easily exclude this feature from the RPI
-> if Nicolas has any objection.
 
-That's certainly an issue, obviously the RPI is the sort of system where
-I'd imagine this would be particularly useful.
-
-> Further, if you want, I can restrict the search to the two regulators
-> I am proposing to add to pci-bus.yaml:  "vpcie12v-supply" and
-> "vpcie3v3-supply".
-
-No, that doesn't help - what happens if someone uses separate regulators
-for different PCI devices?  The reason the supplies are device namespaced
-is that each device can look up it's own supplies and label them how it
-wants without reference to anything else on the board.  Alternatively
-what happens if some device has another supply it needs to power on (eg,
-something that wants a clean LDO output for analogue use)?
-
-> Is the above enough to alleviate your concerns about global namespace collision?
-
-Not really.  TBH it looks like this driver is keeping the regulators
-enabled all the time except for suspend and resume anyway, if that's all
-that's going on I'd have thought that you wouldn't need any explicit
-management in the driver anyway?  Just mark the regualtors as always on
-and set up an appropriate suspend mode configuration and everything
-should work without the drivers doing anything.  Unless your PMIC isn't
-able to provide separate suspend mode configuration for the regulators?
-
---EVh9lyqKgK19OcEf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBiPHYACgkQJNaLcl1U
-h9DcTgf+OZsWq4Kiw9u8jT0Zh0uDMR6gGhzcyfOahqmUWp9hC1kN/GHXDI3w4TeJ
-hP0LpX8fmakwqDIpzcznWQlCXP/ugmDG4NUXvYUdZuXA2eVLtjLJBBDOLR1OLp/b
-qVagVEC1Mj56FjMqlM2a76+DEj9q3l0MbYPlEldMKuxv3PeAK2QswG2jfJkITImg
-Ab9UhzhJb7ocDfTcgxOEyYhzhFWppAJrJZ+ZprHqDktAJAz9g6SP/kzAWNM+/X33
-iXmxoro4y4Ri2cRoZWLZRlFaQqSraj0ayRuTMebWd0FCUlG6eaiFGUYNc52+jHdy
-yaHM7wnjraDdfm4WS1wVzjHh+I0YDA==
-=rc28
------END PGP SIGNATURE-----
-
---EVh9lyqKgK19OcEf--
