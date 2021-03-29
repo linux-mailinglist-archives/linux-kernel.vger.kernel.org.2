@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDA834C578
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287D134C647
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhC2IAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41944 "EHLO mail.kernel.org"
+        id S231492AbhC2IGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231313AbhC2IAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2637F6196C;
-        Mon, 29 Mar 2021 08:00:12 +0000 (UTC)
+        id S231381AbhC2IDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDA661477;
+        Mon, 29 Mar 2021 08:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004816;
-        bh=6doY695fcNFJgCQPeD37/bzJKzw8f4iXkCzcMtRpyCU=;
+        s=korg; t=1617005033;
+        bh=E8E3yMYgdHqnln8qh5YZzz0QoMWvj530Q8pTa26fGsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1BxinMDRiGp1XMEDhqkhPYnR6H45o4huI5oNhUj9f2f/hcda7MQo+0z2xl5wdkk7A
-         BfZV+ddMsTMb3b56RRt7ub+JrDumNcMnvGzoYwJ3frPZlk/7ZQ8dyvDrp57G9XPvh9
-         CpErTt/muoYpIxrhBC6Pe6CUBDEVBm1CsbF63L8k=
+        b=XmfU1H8AXqYsk/usgIEOVBqLCg/Ap26LUGlggXEgGQjzEV170h+Dg2GqNQmaLXNIm
+         7Mpou++wOR6d+1NIZ4ofwRWD57tr0lj3rwNj/eGP8IXHq4FtsG9j86HcgLSsZtd034
+         bZ5GgdmBdWNUsvUQ3EbnrEjhG2Y/s7JHpBZih/Ko=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Vitaly Lifshits <vitaly.lifshits@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 14/33] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
+Subject: [PATCH 4.9 24/53] e1000e: add rtnl_lock() to e1000_reset_task
 Date:   Mon, 29 Mar 2021 09:57:59 +0200
-Message-Id: <20210329075605.729833210@linuxfoundation.org>
+Message-Id: <20210329075608.333369956@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Vitaly Lifshits <vitaly.lifshits@intel.com>
 
-[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
+[ Upstream commit 21f857f0321d0d0ea9b1a758bd55dc63d1cb2437 ]
 
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+A possible race condition was found in e1000_reset_task,
+after discovering a similar issue in igb driver via
+commit 024a8168b749 ("igb: reinit_locked() should be called
+with rtnl_lock").
 
-The bug is in mismatch between get/set errors:
+Added rtnl_lock() and rtnl_unlock() to avoid this.
 
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
-
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
-
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
-
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-
-Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
-Link: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e1000e/netdev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 1d0b875fec44..ec909eec0b4c 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -35,7 +35,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
- {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 3c01bc43889a..46323019aa63 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5920,15 +5920,19 @@ static void e1000_reset_task(struct work_struct *work)
+ 	struct e1000_adapter *adapter;
+ 	adapter = container_of(work, struct e1000_adapter, reset_task);
+ 
++	rtnl_lock();
+ 	/* don't run the task if already down */
+-	if (test_bit(__E1000_DOWN, &adapter->state))
++	if (test_bit(__E1000_DOWN, &adapter->state)) {
++		rtnl_unlock();
+ 		return;
++	}
+ 
+ 	if (!(adapter->flags & FLAG_RESTART_NOW)) {
+ 		e1000e_dump(adapter);
+ 		e_err("Reset adapter unexpectedly\n");
+ 	}
+ 	e1000e_reinit_locked(adapter);
++	rtnl_unlock();
  }
  
- static inline long syscall_get_return_value(struct task_struct *task,
+ /**
 -- 
 2.30.1
 
