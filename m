@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC07E34C80E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C92834CBDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhC2ITa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
+        id S236507AbhC2Ixq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231901AbhC2ILz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 473A16196D;
-        Mon, 29 Mar 2021 08:11:54 +0000 (UTC)
+        id S234235AbhC2Iex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CADF7619AD;
+        Mon, 29 Mar 2021 08:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005514;
-        bh=ycdKLRkXafHBSwEDjvdu5pheyZU7MTyYgWw4zPjDw9c=;
+        s=korg; t=1617006893;
+        bh=a0Je3Mx7OeomMmK/c6EPHcMSocIwScW6wMLIc9UEx1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i2dIRgPTAt9cJSN0cDjlOc1/seRpuYo/DlJNJi5COOLyXfz4MCAE6dO6pwnOEK2kF
-         UqAxbPKgNiy8/mjLuPv0ds/FODx6MHWRT4S3b8dV66jftHZfJMVUEkrqBjq102onYw
-         q5OhU1RZGRu39yLa8CoeHawbprOWbaOugHqEX7Sk=
+        b=sikpMnY//l05xrxvapQHgTzc8UYnsVPERT90OWvwJWWyq+qX4zJ8+JsNPQc4u5w42
+         RrciwMXcmGzE24nGP1TQSzIEgtpsDaeq/ECwKFLRMF7ii/FFLoseeMmqU6hxs+q+bX
+         XFmxvG/qSbRDkXgxN+L75S8z7LJXPXAEiGiVRT3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Sung Lee <sung.lee@amd.com>,
-        Haonan Wang <Haonan.Wang2@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 029/111] drm/amd/display: Revert dram_clock_change_latency for DCN2.1
+Subject: [PATCH 5.11 141/254] netfilter: ctnetlink: fix dump of the expect mask attribute
 Date:   Mon, 29 Mar 2021 09:57:37 +0200
-Message-Id: <20210329075616.150349243@linuxfoundation.org>
+Message-Id: <20210329075637.848401895@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sung Lee <sung.lee@amd.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit b0075d114c33580f5c9fa9cee8e13d06db41471b ]
+[ Upstream commit b58f33d49e426dc66e98ed73afb5d97b15a25f2d ]
 
-[WHY & HOW]
-Using values provided by DF for latency may cause hangs in
-multi display configurations. Revert change to previous value.
+Before this change, the mask is never included in the netlink message, so
+"conntrack -E expect" always prints 0.0.0.0.
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Sung Lee <sung.lee@amd.com>
-Reviewed-by: Haonan Wang <Haonan.Wang2@amd.com>
-Acked-by: Eryk Brol <eryk.brol@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+In older kernels the l3num callback struct was passed as argument, based
+on tuple->src.l3num. After the l3num indirection got removed, the call
+chain is based on m.src.l3num, but this value is 0xffff.
+
+Init l3num to the correct value.
+
+Fixes: f957be9d349a3 ("netfilter: conntrack: remove ctnetlink callbacks from l3 protocol trackers")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_netlink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-index f63cbbee7b33..11a4c4029a90 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -257,7 +257,7 @@ struct _vcs_dpi_soc_bounding_box_st dcn2_1_soc = {
- 	.num_banks = 8,
- 	.num_chans = 4,
- 	.vmm_page_size_bytes = 4096,
--	.dram_clock_change_latency_us = 11.72,
-+	.dram_clock_change_latency_us = 23.84,
- 	.return_bus_width_bytes = 64,
- 	.dispclk_dppclk_vco_speed_mhz = 3600,
- 	.xfc_bus_transport_time_us = 4,
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 84caf3316946..e0c566b3df90 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2969,6 +2969,7 @@ static int ctnetlink_exp_dump_mask(struct sk_buff *skb,
+ 	memset(&m, 0xFF, sizeof(m));
+ 	memcpy(&m.src.u3, &mask->src.u3, sizeof(m.src.u3));
+ 	m.src.u.all = mask->src.u.all;
++	m.src.l3num = tuple->src.l3num;
+ 	m.dst.protonum = tuple->dst.protonum;
+ 
+ 	nest_parms = nla_nest_start(skb, CTA_EXPECT_MASK);
 -- 
 2.30.1
 
