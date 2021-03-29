@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F17934D540
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EA934D543
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhC2QjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:39:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229515AbhC2Qij (ORCPT
+        id S229628AbhC2Qje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:39:34 -0400
+Received: from mail-ej1-f45.google.com ([209.85.218.45]:37675 "EHLO
+        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhC2QjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:38:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617035918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MTmpotKO9nQgIN5ZjXhj4X36rPku8Dx7D0Tu3VxJP8E=;
-        b=ahSYwZ3599qPJSUq/Gf4GBqKD+gY8w7Kw7khn4sYEDsnS12sPYDl5TX8OWcvUATfTfe/BZ
-        nj4HRV4MFtd8jQPqNCuyRiDmdvKx4g7ioKOfimUOwQNMc74DMg7ij9TsyD2E211xoKuq8v
-        UkO/CMAWfxZSlff0zbPFVJSkOGQJTUA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-g7Oo5IVlOKuZbqTu5AvQsA-1; Mon, 29 Mar 2021 12:38:34 -0400
-X-MC-Unique: g7Oo5IVlOKuZbqTu5AvQsA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 965F41927800;
-        Mon, 29 Mar 2021 16:38:32 +0000 (UTC)
-Received: from treble (ovpn-120-130.rdu2.redhat.com [10.10.120.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1EF685D6A8;
-        Mon, 29 Mar 2021 16:38:30 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 11:38:26 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <20210329163826.anuqkv5ahvoyus5c@treble>
-References: <20210326151159.128534163@infradead.org>
- <20210326151300.320177914@infradead.org>
+        Mon, 29 Mar 2021 12:39:11 -0400
+Received: by mail-ej1-f45.google.com with SMTP id w3so20495664ejc.4;
+        Mon, 29 Mar 2021 09:39:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HQBzHMmoWkQcaprrOUSdhejJEll5+CAI/Ph1n47/PJw=;
+        b=aXJ6nCTAcMIUUMfsjlCRMqOemgfASMfudMfr7pYVFUEMyEBV/+LeHqigFZfZdvxrx/
+         G/e5DSOIO7PvgAktIN6k+obCdE50ru9Q2qDUT2hnC6o0XSRN2/3HlkwKnCR8/skY3kbv
+         8UOEasyunFwOpPsONnLoan9/oM47R3DSnSO/R+FPUaRslhn2xpqkBoJFwY93s64l1Q67
+         n9M1DFjKdyOnrL5mE8fsK5k3pi+PRLFfK8AtvIRV3IuXVuplBlPqddrO1ps0O/IZseu5
+         QLY8IumlWe9lORgVZ/y0FMRV/VwKSMf+zVCMoZRrLPcbmQceubJOR/Szw+OE8NskVQKY
+         nFUg==
+X-Gm-Message-State: AOAM530e/ZF0fOAQGIM3T7hmJ/KD2eivh9PxhmpvvFxbBRsdK2/TF/D9
+        tvTwGXzL/CwboXRDFuROkjdbUAkNuMUhvUyMVkZ19Jvr
+X-Google-Smtp-Source: ABdhPJxjNrDcuW6fqcnTahZ6x0HV9VofKao6CrqWau5z1tsA6fl+HcOu2Ky9NWP5J3t8vPib8G1j0TqQqFN0HBYRtBM=
+X-Received: by 2002:a17:906:b4c:: with SMTP id v12mr29508059ejg.330.1617035950748;
+ Mon, 29 Mar 2021 09:39:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210326151300.320177914@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
+ <CAJvTdKm8aQPwQMXFQWgVb5dfJ88ds3d0=uHOyWeueUqfya9Nsw@mail.gmail.com>
+ <YF8B3M9qihZzCf3n@kroah.com> <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
+In-Reply-To: <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 29 Mar 2021 12:38:59 -0400
+Message-ID: <CAJvTdKkKhCFpaWm1hb8r3GHx10KBRQvpJNTtYPSAc6m28A7sQA@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 04:12:15PM +0100, Peter Zijlstra wrote:
-> @@ -61,3 +89,15 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
->  #define GEN(reg) EXPORT_THUNK(reg)
->  #include <asm/GEN-for-each-reg.h>
->  
-> +#undef GEN
-> +#define GEN(reg) ALT_THUNK reg
-> +#include <asm/GEN-for-each-reg.h>
-> +
-> +#undef GEN
-> +#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_call_ ## reg)
-> +#include <asm/GEN-for-each-reg.h>
-> +
-> +#undef GEN
-> +#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_jmp_ ## reg)
-> +#include <asm/GEN-for-each-reg.h>
-> +
+> In particular, the library may use instructions that main() doesn't know exist.
 
-Git complains about this last newline.
+And so I'll ask my question another way.
 
-Otherwise everything looks pretty good to me.  Let me run it through the
-test matrix.
+How is it okay to change the value of XCR0 during the run time of a program?
 
--- 
-Josh
+I submit that it is not, and that is a deal-killer for a request/release API.
 
+eg.  main() doesn't know that the math library wants to use AMX,
+and neither does the threading library.  So main() doesn't know to
+call the API before either library is invoked.  The threading library starts up
+and creates user-space threads based on the initial value from XCR0.
+Then the math library calls the API, which adds bits to XCRO,
+and then the user-space context switch in the threading library corrupts data
+because the new XCR0 size doesn't match the initial size.
+
+-Len
