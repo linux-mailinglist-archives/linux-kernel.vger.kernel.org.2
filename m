@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CD034C8FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB8034CAD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbhC2IZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:25:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58896 "EHLO mail.kernel.org"
+        id S231719AbhC2IkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:40:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233178AbhC2IQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6837861601;
-        Mon, 29 Mar 2021 08:16:19 +0000 (UTC)
+        id S231993AbhC2IGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF19861601;
+        Mon, 29 Mar 2021 08:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005779;
-        bh=Vg20Nm++ebwyXWmx/Vjif0ME9zKVYghYM6vxJ2aqTy0=;
+        s=korg; t=1617005211;
+        bh=UqKxY8JrXkGafpGGXo/vi1eZjNzvixcPNWB8ebfj0EY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0snic1fscl7Nm5kU3oi5bZTPxPW1Cswh5iDu1ZPzEs4LdQqmtQKT6je0NsXptpPof
-         Ouz4X6Tb4R1ELjTytFs/CbIOXo6JoOWympoq9Rsab3s0bdFb6GNn68nFuOHKNBtqik
-         M+4MDBH2QPpmAjOx4ixenGly3Bc+3oLm+VJeOidc=
+        b=Vi2Q8NSKDLpChVqC9Z1Cmk+jDgEvvrTQ0oE1Uxtps514fJUAkTrLSINWO6n43s3ap
+         aEQ9isRaQTQ9qEnAujq1Xfj1f9TxkrOJbFgkRwA0mT5M9PUZqFA3soHtTGSLIhLGDp
+         jpZw+ns9Ca7RV5fn6SFF0FiUBgwZx1ZjxD/WE/dA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
-        Oleg Senin <olegsenin@yandex-team.ru>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/111] tcp: relookup sock for RST+ACK packets handled by obsolete req sock
-Date:   Mon, 29 Mar 2021 09:58:17 +0200
-Message-Id: <20210329075617.513843886@linuxfoundation.org>
+Subject: [PATCH 4.14 38/59] can: c_can_pci: c_can_pci_remove(): fix use-after-free
+Date:   Mon, 29 Mar 2021 09:58:18 +0200
+Message-Id: <20210329075610.142096952@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Ovechkin <ovov@yandex-team.ru>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 7233da86697efef41288f8b713c10c2499cffe85 ]
+[ Upstream commit 0429d6d89f97ebff4f17f13f5b5069c66bde8138 ]
 
-Currently tcp_check_req can be called with obsolete req socket for which big
-socket have been already created (because of CPU race or early demux
-assigning req socket to multiple packets in gro batch).
+There is a UAF in c_can_pci_remove(). dev is released by
+free_c_can_dev() and is used by pci_iounmap(pdev, priv->base) later.
+To fix this issue, save the mmio address before releasing dev.
 
-Commit e0f9759f530bf789e984 ("tcp: try to keep packet if SYN_RCV race
-is lost") added retry in case when tcp_check_req is called for PSH|ACK packet.
-But if client sends RST+ACK immediatly after connection being
-established (it is performing healthcheck, for example) retry does not
-occur. In that case tcp_check_req tries to close req socket,
-leaving big socket active.
-
-Fixes: e0f9759f530 ("tcp: try to keep packet if SYN_RCV race is lost")
-Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
-Reported-by: Oleg Senin <olegsenin@yandex-team.ru>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 5b92da0443c2 ("c_can_pci: generic module for C_CAN/D_CAN on PCI")
+Link: https://lore.kernel.org/r/20210301024512.539039-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/inet_connection_sock.h | 2 +-
- net/ipv4/inet_connection_sock.c    | 7 +++++--
- net/ipv4/tcp_minisocks.c           | 7 +++++--
- 3 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/can/c_can/c_can_pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index 6c8f8e5e33c3..13792c0ef46e 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -287,7 +287,7 @@ static inline int inet_csk_reqsk_queue_is_full(const struct sock *sk)
- 	return inet_csk_reqsk_queue_len(sk) >= sk->sk_max_ack_backlog;
- }
- 
--void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
-+bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
- void inet_csk_reqsk_queue_drop_and_put(struct sock *sk, struct request_sock *req);
- 
- void inet_csk_destroy_sock(struct sock *sk);
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index ac5c4f6cdefe..85a88425edc4 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -700,12 +700,15 @@ static bool reqsk_queue_unlink(struct request_sock *req)
- 	return found;
- }
- 
--void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
-+bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index d065c0e2d18e..f3e0b2124a37 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -239,12 +239,13 @@ static void c_can_pci_remove(struct pci_dev *pdev)
  {
--	if (reqsk_queue_unlink(req)) {
-+	bool unlinked = reqsk_queue_unlink(req);
-+
-+	if (unlinked) {
- 		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
- 		reqsk_put(req);
- 	}
-+	return unlinked;
- }
- EXPORT_SYMBOL(inet_csk_reqsk_queue_drop);
+ 	struct net_device *dev = pci_get_drvdata(pdev);
+ 	struct c_can_priv *priv = netdev_priv(dev);
++	void __iomem *addr = priv->base;
  
-diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-index c802bc80c400..194743bd3fc1 100644
---- a/net/ipv4/tcp_minisocks.c
-+++ b/net/ipv4/tcp_minisocks.c
-@@ -796,8 +796,11 @@ embryonic_reset:
- 		tcp_reset(sk);
- 	}
- 	if (!fastopen) {
--		inet_csk_reqsk_queue_drop(sk, req);
--		__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
-+		bool unlinked = inet_csk_reqsk_queue_drop(sk, req);
-+
-+		if (unlinked)
-+			__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
-+		*req_stolen = !unlinked;
- 	}
- 	return NULL;
- }
+ 	unregister_c_can_dev(dev);
+ 
+ 	free_c_can_dev(dev);
+ 
+-	pci_iounmap(pdev, priv->base);
++	pci_iounmap(pdev, addr);
+ 	pci_disable_msi(pdev);
+ 	pci_clear_master(pdev);
+ 	pci_release_regions(pdev);
 -- 
 2.30.1
 
