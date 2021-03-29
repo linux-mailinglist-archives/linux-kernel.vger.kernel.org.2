@@ -2,95 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A369734C1F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212F234C1F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhC2C1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:27:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14504 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhC2C1P (ORCPT
+        id S230240AbhC2Cgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhC2CgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:27:15 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F7xHl4PXrzwPW0;
-        Mon, 29 Mar 2021 10:25:07 +0800 (CST)
-Received: from [10.174.177.134] (10.174.177.134) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 10:27:01 +0800
-Subject: [PATCH v2] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build
- configuration
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Paul Mackerras" <paulus@samba.org>
-CC:     Don Zickus <dzickus@redhat.com>, <linux-kernel@vger.kernel.org>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linuxppc-dev@lists.ozlabs.org>
-References: <20210327094900.938555-1-chenhuang5@huawei.com>
- <dd6b25d3-006b-be1e-9c4f-89e66aefb519@csgroup.eu>
- <e8eddfd4-ca07-f2ba-42de-19e636dc2ce9@huawei.com>
-Message-ID: <4b8f8335-0a29-93fc-7943-b4dc16efb908@huawei.com>
-Date:   Mon, 29 Mar 2021 10:27:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <e8eddfd4-ca07-f2ba-42de-19e636dc2ce9@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+        Sun, 28 Mar 2021 22:36:21 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398BAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:36:21 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso5209311pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
+        b=NdD78yuLYTGdfabSkW9fDFCmI/wAKkRI+bdbi3C40h46k09r+CPXXnDsULEeMRpYCY
+         mTA9SlV0i9LRcZwDyLdDsPbDlUZ0vRKzk10vvve4fpWOgX38GXwtFKi7IZQI/aJKHK7u
+         /tUdntrGJvJxIs8FTAq2BmA6G2wiFTJyOKp3xfW+YmGHZDFg7n/orBLoqjmMubNf9IUF
+         9offqL0dJuZ96+J8D99jWZCLq+qCsiicbI7frK9KWOLcTjCZRweT7gQR5BKKmEFSnOJn
+         x3V2kcmm0LpxMqage0PQqdoUdqimNHXOoQRiLnSiORuXe9yvBrYwlyurZis47xz5BuNh
+         eR3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
+        b=mS5DKyDN32xMOpfGVWKY/UMHyHnVKIJqpAHbTkQfywY2hbrbHG1YVm1hchiKxmH2QA
+         aDn+yvp9EpxP42eO3eV9XxsqmZL0ojFvyc1JtjUqINbZLruA89LaRw1ijWN9tdHXUsOH
+         CMvyUlB7AA3sKKh8MLZfYXE5R9Gy3BRsvjuBMnEZf6RgzR2C+xYVgN23E4V5/+sx1o2Y
+         6fMemKMmPFSGo1TmxjDM7pgQVd0IeBGL4gY6h0DT5agUFovBO0NhRULh7Gi2LWTTVr6e
+         O1QEY4IWvt/2EGJJ7SE+Nz9PQLpeDw8t1wht7ymCl22rIOPBQge1wKJRjQqufctigONT
+         ioyA==
+X-Gm-Message-State: AOAM5318MfCrS0WWdtjcK5yH+z8AoVB7nZz6vDJkp1ZHWErNArIXW23E
+        Duzw2ackkRE4RzrMoN/ahv4=
+X-Google-Smtp-Source: ABdhPJxZ849+jWX0gjrx0lO+sVP2orhASW3JCcSspPRCnP+wrB6iVfJhjHxrTGeezqC0l4KvTxjTFQ==
+X-Received: by 2002:a17:90b:3553:: with SMTP id lt19mr24154314pjb.222.1616985380578;
+        Sun, 28 Mar 2021 19:36:20 -0700 (PDT)
+Received: from localhost.localdomain ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id a21sm15450037pfk.83.2021.03.28.19.36.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Mar 2021 19:36:20 -0700 (PDT)
+From:   Qianli Zhao <zhaoqianligood@gmail.com>
+To:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
+        oleg@redhat.com, tglx@linutronix.de, pcc@google.com
+Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+Subject: [PATCH V4] exit: trigger panic when global init has exited
+Date:   Mon, 29 Mar 2021 10:27:26 +0800
+Message-Id: <1616984846-184466-1-git-send-email-zhaoqianligood@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the powerpc with the SMP disabled, it shows the issue:
+From: Qianli Zhao <zhaoqianli@xiaomi.com>
 
-arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
-arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
-  177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
-      |    ^~~~~~~~~~~~~~~~
-      |    smp_send_stop
-cc1: all warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
-make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
-make: *** [Makefile:1980: arch/powerpc] Error 2
-make: *** Waiting for unfinished jobs....
+When init sub-threads running on different CPUs exit at the same time,
+zap_pid_ns_processe()->BUG() may be happened(timing is as below),move
+panic() before set PF_EXITING to fix this problem.
 
-We found that powerpc used ipi to implement hardlockup watchdog, so the
-HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
+In addition,if panic() after other sub-threads finish do_exit(),
+some key variables (task->mm,task->nsproxy etc) of sub-thread will be lost,
+which makes it difficult to parse coredump from fulldump,checking SIGNAL_GROUP_EXIT
+to prevent init sub-threads exit.
 
-Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+[   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
+[   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
+[   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
+
+PID: 552   CPU: 4   COMMAND: "init"
+PID: 1     CPU: 7   COMMAND: "init"
+core4                           core7
+...                             sys_exit_group()
+                                do_group_exit()
+                                   - sig->flags = SIGNAL_GROUP_EXIT
+                                   - zap_other_threads()
+                                do_exit() //PF_EXITING is set
+ret_to_user()
+do_notify_resume()
+get_signal()
+    - signal_group_exit
+    - goto fatal;
+do_group_exit()
+do_exit() //PF_EXITING is set
+    - panic("Attempted to kill init! exitcode=0x%08x\n")
+                                exit_notify()
+                                find_alive_thread() //no alive sub-threads
+                                zap_pid_ns_processes()//CONFIG_PID_NS is not set
+                                BUG()
+
+Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V4:
+- Changelog update
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 764df010baee..a5196e1a1281 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -210,6 +210,7 @@ config PPC
-    select HAVE_FUNCTION_TRACER
-    select HAVE_GCC_PLUGINS         if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
-    select HAVE_GENERIC_VDSO
-+   select HAVE_HARDLOCKUP_DETECTOR_ARCH    if PPC_BOOK3S_64 && SMP
-    select HAVE_HW_BREAKPOINT       if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
-    select HAVE_IDE
-    select HAVE_IOREMAP_PROT
-@@ -225,7 +226,6 @@ config PPC
-    select HAVE_LIVEPATCH           if HAVE_DYNAMIC_FTRACE_WITH_REGS
-    select HAVE_MOD_ARCH_SPECIFIC
-    select HAVE_NMI             if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
--   select HAVE_HARDLOCKUP_DETECTOR_ARCH    if (PPC64 && PPC_BOOK3S)
-    select HAVE_OPTPROBES           if PPC64
-    select HAVE_PERF_EVENTS
-    select HAVE_PERF_EVENTS_NMI     if PPC64
---
-2.17.1
+V3:
+- Use group_dead instead of thread_group_empty() to test single init exit.
 
+V2:
+- Changelog update
+- Remove wrong useage of SIGNAL_UNKILLABLE. 
+- Add thread_group_empty() test to handle single init thread exit
+
+---
+ kernel/exit.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 04029e3..f95f8dc 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -766,6 +766,17 @@ void __noreturn do_exit(long code)
+ 
+ 	validate_creds_for_do_exit(tsk);
+ 
++	group_dead = atomic_dec_and_test(&tsk->signal->live);
++	/*
++	 * If global init has exited,
++	 * panic immediately to get a useable coredump.
++	 */
++	if (unlikely(is_global_init(tsk) &&
++	    (group_dead || (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
++			panic("Attempted to kill init! exitcode=0x%08x\n",
++				tsk->signal->group_exit_code ?: (int)code);
++	}
++
+ 	/*
+ 	 * We're taking recursive faults here in do_exit. Safest is to just
+ 	 * leave this task alone and wait for reboot.
+@@ -784,16 +795,8 @@ void __noreturn do_exit(long code)
+ 	if (tsk->mm)
+ 		sync_mm_rss(tsk->mm);
+ 	acct_update_integrals(tsk);
+-	group_dead = atomic_dec_and_test(&tsk->signal->live);
+-	if (group_dead) {
+-		/*
+-		 * If the last thread of global init has exited, panic
+-		 * immediately to get a useable coredump.
+-		 */
+-		if (unlikely(is_global_init(tsk)))
+-			panic("Attempted to kill init! exitcode=0x%08x\n",
+-				tsk->signal->group_exit_code ?: (int)code);
+ 
++	if (group_dead) {
+ #ifdef CONFIG_POSIX_TIMERS
+ 		hrtimer_cancel(&tsk->signal->real_timer);
+ 		exit_itimers(tsk->signal);
+-- 
+1.9.1
 
