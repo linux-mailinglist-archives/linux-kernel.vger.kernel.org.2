@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8260A34C1CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC90434C1D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhC2CAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhC2CAE (ORCPT
+        id S231438AbhC2CAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:00:52 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14175 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231380AbhC2CAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:00:04 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF000C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:04 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id l1so3656929plg.12
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 19:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=AUT/fx38q5jzHp0KnGD15nyHtPKW1998V0+UJkFXEGk=;
-        b=Fatmgx4bbKgLWkUqRoiO8p/pewMHfBVdaojdQ8DnCIAerwmYI168oyuDMwEC046Dkm
-         abax/+QVucUuZr6HMyxsyxoV2bp8YOzt7wZStiliDGPY/FMZMWKLCj42wq6hu4JTHdE9
-         qd4VArE7xvCnu9/Ddnx9HsL0GVjdLqrKqMuUZD+3vvygCHFDmPDAO2zNpMhsdPZIfwLS
-         +3MnxcxKkh3beRViCgwbPVYABlOiRJOB4+QQmUpCvBuQUNnLxV/4LKOzzvCjhmQimQXo
-         P9ppgVDwaAm4xzplaUoVrnJWCvluAnQxTbAXcVtgcuDcmnNOGlgqx2F2WZMJQviIRtZV
-         tzdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=AUT/fx38q5jzHp0KnGD15nyHtPKW1998V0+UJkFXEGk=;
-        b=ZpaNWqQw6OYPMKg7S8jSpkhnj2AVKa1eSd1/XlhpFO8DP7FEeAngtrUXR2BPVDFNvt
-         F5/RunbHlNJZBgFT5zTHBl63lBkfUi4OhPe7+v1WrkokX7v1VQEAbkkyIhn5Rl7PMlE9
-         ZvXYG28dPSLwrfTR6hPMm+pmE5avisyFnm4pcizZc1pDJyh90sAGKJ4SJQ/H0R8Py7If
-         c6WyZnjuVEx9OVW47snsmen95zW0tgVRySEh7ixlpe/iMS+/kO+BBMhTmIBC8ZUrptyI
-         XjVM+pNsugKlhwNS6y5Nr8TCdlArrfdhaloVKN1B8aLfJ54ZkDGnAD58LWA+w9cZXv92
-         nsNQ==
-X-Gm-Message-State: AOAM531IUH3ytQ/9qBLIWUY+WYEePPNa8EVQZ5OdFZIOJjYyenWae2b2
-        so7zZ+78XYZMnIlJqtSDLbBG9w==
-X-Google-Smtp-Source: ABdhPJyVsLefzEtdM9V5TgiaRr9fa4c2/h685XCffpBKXzNUaBp5HAE7FMtuN8Bx6CudThzRHfR2Zw==
-X-Received: by 2002:a17:90a:d41:: with SMTP id 1mr24992479pju.232.1616983204271;
-        Sun, 28 Mar 2021 19:00:04 -0700 (PDT)
-Received: from platform-dev1.pensando.io ([12.226.153.42])
-        by smtp.gmail.com with ESMTPSA id w37sm14728027pgl.13.2021.03.28.19.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 19:00:03 -0700 (PDT)
-From:   Brad Larson <brad@pensando.io>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        broonie@kernel.org, fancer.lancer@gmail.com,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org, olof@lixom.net,
-        brad@pensando.io, linux-gpio@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/13] gpio: Use linux/gpio/driver.h
-Date:   Sun, 28 Mar 2021 18:59:38 -0700
-Message-Id: <20210329015938.20316-14-brad@pensando.io>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210329015938.20316-1-brad@pensando.io>
-References: <20210329015938.20316-1-brad@pensando.io>
+        Sun, 28 Mar 2021 22:00:40 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F7whV1X4bznWgZ;
+        Mon, 29 Mar 2021 09:58:02 +0800 (CST)
+Received: from [10.174.177.134] (10.174.177.134) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 10:00:29 +0800
+Subject: Re: [PATCH] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build
+ configuration
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>
+CC:     Don Zickus <dzickus@redhat.com>, <linux-kernel@vger.kernel.org>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linuxppc-dev@lists.ozlabs.org>
+References: <20210327094900.938555-1-chenhuang5@huawei.com>
+ <dd6b25d3-006b-be1e-9c4f-89e66aefb519@csgroup.eu>
+From:   Chen Huang <chenhuang5@huawei.com>
+Message-ID: <e8eddfd4-ca07-f2ba-42de-19e636dc2ce9@huawei.com>
+Date:   Mon, 29 Mar 2021 10:00:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <dd6b25d3-006b-be1e-9c4f-89e66aefb519@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New drivers should include <linux/gpio/driver.h> instead
-of legacy <linux/gpio.h>.
 
-Signed-off-by: Brad Larson <brad@pensando.io>
----
- drivers/gpio/gpio-elba-spics.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-elba-spics.c b/drivers/gpio/gpio-elba-spics.c
-index 351bbaeea033..c0dce5333f35 100644
---- a/drivers/gpio/gpio-elba-spics.c
-+++ b/drivers/gpio/gpio-elba-spics.c
-@@ -6,11 +6,10 @@
-  */
- 
- #include <linux/err.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/driver.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/init.h>
--//#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
--- 
-2.17.1
+在 2021/3/28 19:06, Christophe Leroy 写道:
+> 
+> 
+> Le 27/03/2021 à 10:49, Chen Huang a écrit :
+>> When compiling the powerpc with the SMP disabled, it shows the issue:
+>>
+>> arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
+>> arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
+>>    177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+>>        |    ^~~~~~~~~~~~~~~~
+>>        |    smp_send_stop
+>> cc1: all warnings being treated as errors
+>> make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
+>> make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
+>> make: *** [Makefile:1980: arch/powerpc] Error 2
+>> make: *** Waiting for unfinished jobs....
+>>
+>> We found that powerpc used ipi to implement hardlockup watchdog, so the
+>> HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
+>>
+>> Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+>> ---
+>>   arch/powerpc/Kconfig | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>> index 764df010baee..2d4f37b117ce 100644
+>> --- a/arch/powerpc/Kconfig
+>> +++ b/arch/powerpc/Kconfig
+>> @@ -225,7 +225,7 @@ config PPC
+>>       select HAVE_LIVEPATCH            if HAVE_DYNAMIC_FTRACE_WITH_REGS
+>>       select HAVE_MOD_ARCH_SPECIFIC
+>>       select HAVE_NMI                if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+>> -    select HAVE_HARDLOCKUP_DETECTOR_ARCH    if (PPC64 && PPC_BOOK3S)
+>> +    select HAVE_HARDLOCKUP_DETECTOR_ARCH    if PPC64 && PPC_BOOK3S && SMP
+> 
+> While modifying this line, you should restore the alphabetic order by moving it up.
+> 
+> You can use PPC_BOOK3S_64 instead of PPC64 && PPC_BOOK3S
+> 
 
+I will modify it. Thanks!
+
+>>       select HAVE_OPTPROBES            if PPC64
+>>       select HAVE_PERF_EVENTS
+>>       select HAVE_PERF_EVENTS_NMI        if PPC64
+>>
+> .
