@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F0634C836
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68DA34C5EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhC2IUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:20:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
+        id S231527AbhC2IDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232934AbhC2IMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:12:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 608DD61494;
-        Mon, 29 Mar 2021 08:12:36 +0000 (UTC)
+        id S231936AbhC2ICX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:02:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41EA96196B;
+        Mon, 29 Mar 2021 08:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005560;
-        bh=RIRFGEqrcd5TIFcmBQsp4YlMG8xjpmPckwKgKpxzPq4=;
+        s=korg; t=1617004942;
+        bh=NCREDiYkF9t8YSmZJjZdwMr96woroBhFxbt91BlFNaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VVLzCRKzBsqsgODZ07JGvRapqpQX+fafVGvx5f5NbE9PpMPLUxg1jGxUpWh5Suc1E
-         DgzxtNqncL5HFHU8ZdgouvqjeLQK7QxSGcUNlyUUKoU+67j/EEaOlmpcSnkBFYoGbd
-         lW1ZVeytgDVe3/O9Obif0AOkRTqofUMejZ+PeHnU=
+        b=XbBnh873iebHagTMA+WnTClkBgxyl/Jy4ZVlC/w9LL8W8aXRR0q9vEqU2/AGnbbFs
+         ir1X7Z5VALa7dkQgl5Zm24Qk8jUHR48iZnVDO5Gy4+dcJME4nEsizwUv5lPScbRFtk
+         nMZwZQPgXc64SzLVvhgS0l/ndrzCkKkx5Ubcvz6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 033/111] nvme-fc: return NVME_SC_HOST_ABORTED_CMD when a command has been aborted
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 06/53] net: tehuti: fix error return code in bdx_probe()
 Date:   Mon, 29 Mar 2021 09:57:41 +0200
-Message-Id: <20210329075616.278745796@linuxfoundation.org>
+Message-Id: <20210329075607.763321882@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit ae3afe6308b43bbf49953101d4ba2c1c481133a8 ]
+[ Upstream commit 38c26ff3048af50eee3fcd591921357ee5bfd9ee ]
 
-When a command has been aborted we should return NVME_SC_HOST_ABORTED_CMD
-to be consistent with the other transports.
+When bdx_read_mac() fails, no error return code of bdx_probe()
+is assigned.
+To fix this bug, err is assigned with -EFAULT as error return code.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/fc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/tehuti/tehuti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 65b3dc9cd693..0d2c22cf12a0 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -1608,7 +1608,7 @@ nvme_fc_fcpio_done(struct nvmefc_fcp_req *req)
- 				sizeof(op->rsp_iu), DMA_FROM_DEVICE);
- 
- 	if (opstate == FCPOP_STATE_ABORTED)
--		status = cpu_to_le16(NVME_SC_HOST_PATH_ERROR << 1);
-+		status = cpu_to_le16(NVME_SC_HOST_ABORTED_CMD << 1);
- 	else if (freq->status) {
- 		status = cpu_to_le16(NVME_SC_HOST_PATH_ERROR << 1);
- 		dev_info(ctrl->ctrl.device,
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index 7108c68f16d3..6ee7f8d2f2d1 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -2062,6 +2062,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		/*bdx_hw_reset(priv); */
+ 		if (bdx_read_mac(priv)) {
+ 			pr_err("load MAC address failed\n");
++			err = -EFAULT;
+ 			goto err_out_iomap;
+ 		}
+ 		SET_NETDEV_DEV(ndev, &pdev->dev);
 -- 
 2.30.1
 
