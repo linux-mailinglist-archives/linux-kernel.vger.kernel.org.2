@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BEE34CC7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B4434C6F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237080AbhC2JD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:03:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
+        id S232483AbhC2ILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232058AbhC2Ii6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:38:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D7B561581;
-        Mon, 29 Mar 2021 08:38:56 +0000 (UTC)
+        id S232318AbhC2IG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36EA2619A0;
+        Mon, 29 Mar 2021 08:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007137;
-        bh=LatsfoIWkuAEW3l1DdWNftvFA8jWNeJrMMS4hSV3nMs=;
+        s=korg; t=1617005188;
+        bh=nOm8l39tJQp6GR6uVTBHiEOZ3QFdvM9/M3vIMGsYA2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1IjJsqRBavDs6Q2ZmZU5ZOMc3jc2jdSfsOv3uiPErxs86L7lgmdxSRNuXu7sU7u4
-         JNQSE6Y9UYcX0HRvHBueXXq+1+hxDNh2wm8rlN8e270/baNVUPHGuaufI6iePgaH3E
-         rCCSVWCIvbUZVp4c/Ra+eE4Fc/s5leMfxrK1Z7uY=
+        b=rtkTw7rhIK3rPZ2m7AruTQZX1IfdefJJSJfZfzpIIfVwk5mxj754cNfq4CFdAmOJl
+         fwCu/34ku3BY8pfYVsu1oa41nW0ep21HCDS39HpiFDOK5mCdutUGo6ceBwTM4uKpbY
+         20s9uYsH7BDL6nq3YVwug1a0f3g7pugXhuLCF9nE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alaa Hleihel <alaa@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 200/254] net/mlx5e: Allow to match on MPLS parameters only for MPLS over UDP
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 56/59] net: qrtr: fix a kernel-infoleak in qrtr_recvmsg()
 Date:   Mon, 29 Mar 2021 09:58:36 +0200
-Message-Id: <20210329075639.671172004@linuxfoundation.org>
+Message-Id: <20210329075610.707354169@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Hleihel <alaa@nvidia.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 7d6c86e3ccb5ceea767df5c7a9a17cdfccd3df9a ]
+commit 50535249f624d0072cd885bcdce4e4b6fb770160 upstream.
 
-Currently, we support hardware offload only for MPLS over UDP.
-However, rules matching on MPLS parameters are now wrongly offloaded
-for regular MPLS, without actually taking the parameters into
-consideration when doing the offload.
-Fix it by rejecting such unsupported rules.
+struct sockaddr_qrtr has a 2-byte hole, and qrtr_recvmsg() currently
+does not clear it before copying kernel data to user space.
 
-Fixes: 72046a91d134 ("net/mlx5e: Allow to match on mpls parameters")
-Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It might be too late to name the hole since sockaddr_qrtr structure is uapi.
+
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+CPU: 0 PID: 29705 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
+ kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+ instrument_copy_to_user include/linux/instrumented.h:121 [inline]
+ _copy_to_user+0x1ac/0x270 lib/usercopy.c:33
+ copy_to_user include/linux/uaccess.h:209 [inline]
+ move_addr_to_user+0x3a2/0x640 net/socket.c:237
+ ____sys_recvmsg+0x696/0xd50 net/socket.c:2575
+ ___sys_recvmsg net/socket.c:2610 [inline]
+ do_recvmmsg+0xa97/0x22d0 net/socket.c:2710
+ __sys_recvmmsg net/socket.c:2789 [inline]
+ __do_sys_recvmmsg net/socket.c:2812 [inline]
+ __se_sys_recvmmsg+0x24a/0x410 net/socket.c:2805
+ __x64_sys_recvmmsg+0x62/0x80 net/socket.c:2805
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f43659d6188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000000000008 RSI: 0000000020003e40 RDI: 0000000000000003
+RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010060 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007f43659d6300 R15: 0000000000022000
+
+Local variable ----addr@____sys_recvmsg created at:
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
+
+Bytes 2-3 of 12 are uninitialized
+Memory access of size 12 starts at ffff88817c627b40
+Data copied to user address 0000000020000140
+
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Courtney Cavin <courtney.cavin@sonymobile.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/qrtr/qrtr.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index e9b7da05f14a..95cbefed1b32 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -2595,6 +2595,16 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 			*match_level = MLX5_MATCH_L4;
- 	}
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -819,6 +819,11 @@ static int qrtr_recvmsg(struct socket *s
+ 	rc = copied;
  
-+	/* Currenlty supported only for MPLS over UDP */
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS) &&
-+	    !netif_is_bareudp(filter_dev)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Matching on MPLS is supported only for MPLS over UDP");
-+		netdev_err(priv->netdev,
-+			   "Matching on MPLS is supported only for MPLS over UDP\n");
-+		return -EOPNOTSUPP;
-+	}
+ 	if (addr) {
++		/* There is an anonymous 2-byte hole after sq_family,
++		 * make sure to clear it.
++		 */
++		memset(addr, 0, sizeof(*addr));
 +
- 	return 0;
- }
- 
--- 
-2.30.1
-
+ 		addr->sq_family = AF_QIPCRTR;
+ 		addr->sq_node = le32_to_cpu(phdr->src_node_id);
+ 		addr->sq_port = le32_to_cpu(phdr->src_port_id);
 
 
