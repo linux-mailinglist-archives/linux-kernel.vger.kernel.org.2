@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1710834C868
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC11734C744
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhC2IWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57912 "EHLO mail.kernel.org"
+        id S231708AbhC2INl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232217AbhC2INx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B572261878;
-        Mon, 29 Mar 2021 08:13:47 +0000 (UTC)
+        id S232070AbhC2IIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:08:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A202D61932;
+        Mon, 29 Mar 2021 08:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005628;
-        bh=HsHgQDnSIXi0/4was2YY6QDlq/buV799LjVma+Ve4xI=;
+        s=korg; t=1617005296;
+        bh=LCfOYbdDrWCE+GJPVozw9HGEGOggj0If07yc6i7jxEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vP+C+oMdRR/VUE0GrYGccLGMWrrQs5/HODNbbmaxoBCYXlIt9uV25jfj3eQvmKoTV
-         k1eUcePmYtSBD8sZec1dvi/C2cZlK3zKKZSlHf05Gkx4J4b0tAro9MqTbWXQFBjo8m
-         Rf9XHffpB2tNKK6SSikmmIoe6mdM/TJ6LW4DaPMI=
+        b=0v4LKhzqTNC6dtw3fcoQ+SH0PqGQ4AfjCPTetpxf8Siozfd5P1Jdx05zhciPeOP+K
+         XziPljLfJkMEFe1RgeeQtOVWKpELZso4bItZ/67QP8PdXHXyT5QjbSpWZXzlpIlRNS
+         xm9YlVIqE333uB40BV0AgAOCFxHM/yeOpUSvwnnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 060/111] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 32/72] dm ioctl: fix out of bounds array access when no devices
 Date:   Mon, 29 Mar 2021 09:58:08 +0200
-Message-Id: <20210329075617.208118977@linuxfoundation.org>
+Message-Id: <20210329075611.335506740@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
+commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
 
-Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
-bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
-qualify the phydev->dev_flags based on whether the port is connected to
-an internal or external PHY otherwise we risk having a flags collision
-with a completely different interpretation depending on the driver.
+If there are not any dm devices, we need to zero the "dev" argument in
+the first structure dm_name_list. However, this can cause out of
+bounds write, because the "needed" variable is zero and len may be
+less than eight.
 
-Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
+too small to hold the "nl->dev" value.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/bcm_sf2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/md/dm-ioctl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index ca425c15953b..0ee1c0a7b165 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -479,8 +479,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
- 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
- 	 * the REG_PHY_REVISION register layout is.
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -529,7 +529,7 @@ static int list_devices(struct file *fil
+ 	 * Grab our output buffer.
  	 */
--
--	return priv->hw_params.gphy_rev;
-+	if (priv->int_phy_mask & BIT(port))
-+		return priv->hw_params.gphy_rev;
-+	else
-+		return 0;
- }
- 
- static void bcm_sf2_sw_validate(struct dsa_switch *ds, int port,
--- 
-2.30.1
-
+ 	nl = orig_nl = get_result_buffer(param, param_size, &len);
+-	if (len < needed) {
++	if (len < needed || len < sizeof(nl->dev)) {
+ 		param->flags |= DM_BUFFER_FULL_FLAG;
+ 		goto out;
+ 	}
 
 
