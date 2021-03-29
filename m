@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD16834D4DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A5634D4DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhC2QX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhC2QXW (ORCPT
+        id S231233AbhC2QYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:24:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44924 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230286AbhC2QXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:23:22 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A15CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:23:22 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so8805976wmy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KPclp6vfsh1l0llxq/9bcQXpgR0clJ6jmS6dVL/hig8=;
-        b=bj77tl0OjsgCgZLbOb3u3k145orUo71nkMcisB/6plOzX/M2mg3Z4Yb5uDisu9c4pB
-         Y53SOJe4s4v6Mhp+CFbq6aMAtV0YnUliuYDu7EDJkfI1uYn+lEi44BJeUdxqKS/tx3ru
-         OfU2m9joLw9o3CyDSRJhRXWyX6CADErtPac4qLPNqMsBYAMl4Ls7CdOHxBs62aYJ4XaJ
-         yUgTz5aupJxIno4XKcDiaBivqeoEJ6rRqOkSeKzkD+lCKQV3ESKONlrbQU0ZLjQ3/915
-         /Mff3SI799c/P5lsfxlGS62u7OScJZG9l13uwvkzhwn9CM6+aup1yF/Jf4SM0qj4lLMj
-         WW+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KPclp6vfsh1l0llxq/9bcQXpgR0clJ6jmS6dVL/hig8=;
-        b=A2NrdyyKOiFaE7RWbNbGH6YFJ8aED7zPkEjgc+VgBKhcG2l+BuPL30ZEvr+z+6VAfn
-         OZsEsZxPVF8wr5HT+PYG8+GYp7VX1GdWvvnyze8SYcCbdORmZRjJtBbuUv/QuZk85cTT
-         KdyZn4pFe11L6hMEP+nPBKmQ2wrKkRPp0v9el+SBU8x/V3gAdMifbUxlbflQHkNiRbUs
-         XUVST6gP0Li5TyoYTsa4UozJg00tNQkc8f1AXs5YkxDHJftnUbYCqGTGryKTPAR/68qv
-         RfZVKIvvq/qL/B6ycZGaIroabTMFpLPZ2vFvcrHdB18D8hAAN5kkcy+m3O5W9H6Dq3Hk
-         nlPA==
-X-Gm-Message-State: AOAM5315G5M646rweYmXjUz+RSvsYioJOnh0AHbHInm84aO1+6zXF9Y9
-        Kjo7ckM+nUho66K42OvmidIyuA==
-X-Google-Smtp-Source: ABdhPJwFilW/ot1hZMhT/JWnG2uNUr6y5QBKqC9sEGMBX6tvcW+gfCS/ourdvz2bsJ56tuVkYTAQEw==
-X-Received: by 2002:a7b:c2f7:: with SMTP id e23mr26138332wmk.30.1617035001094;
-        Mon, 29 Mar 2021 09:23:21 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id i8sm29594538wrx.43.2021.03.29.09.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 09:23:20 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 18:23:02 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Vivek Kumar Gautam <vivek.gautam@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, alex.williamson@redhat.com,
-        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
-        shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH RFC v1 15/15] iommu/virtio: Update fault type and reason
- info for viommu fault
-Message-ID: <YGH+5pHtR6gWnimB@myrica>
-References: <20210115121342.15093-1-vivek.gautam@arm.com>
- <20210115121342.15093-16-vivek.gautam@arm.com>
- <YD/GjQIKkaJ5+UJM@myrica>
- <d8a81406-12c6-a5e1-7297-49c1a0a800ab@arm.com>
+        Mon, 29 Mar 2021 12:23:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617035015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XI84iZTRDWoAG38cDh4IhJ7kgX/ztNT961J0uIm+CnQ=;
+        b=b6HPRJkLe+4w7yD994pZqcwM7XmMv2gU79C/jbQ7v+haK1bbIOrJ2zsoEmv20kLFLUJeME
+        SqlMm8x1dgqgDy6f+8G/P6RusGGwXmss19JRNyR3JjbWlbWU30IY/qCBPukzLyPs3kJiuK
+        fkqRVeoVjJ6Xwd+gciaAwaFOJ0AdOLY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-XhYDoezHNVaajJPJ79R3Kg-1; Mon, 29 Mar 2021 12:23:33 -0400
+X-MC-Unique: XhYDoezHNVaajJPJ79R3Kg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DAC7100F76C;
+        Mon, 29 Mar 2021 16:23:32 +0000 (UTC)
+Received: from localhost (ovpn-114-227.ams2.redhat.com [10.36.114.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D0F36F968;
+        Mon, 29 Mar 2021 16:23:21 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 17:23:20 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Sochin Jiang <jiangxiaoqing.sochin@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
+        lizefan.x@bytedance.com, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] virtio_blk: make virtio blks as non-rotational devices
+Message-ID: <YGH++CMejgUlvBy1@stefanha-x1.localdomain>
+References: <20210326033914.65483-1-jiangxiaoqing.sochin@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ngZFjV0XBYrCqjZn"
 Content-Disposition: inline
-In-Reply-To: <d8a81406-12c6-a5e1-7297-49c1a0a800ab@arm.com>
-X-TUID: vOigyBwZv6w+
+In-Reply-To: <20210326033914.65483-1-jiangxiaoqing.sochin@bytedance.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 06:39:05PM +0530, Vivek Kumar Gautam wrote:
-> To complete the page request we would also need to send the response back to
-> the host from virtio backend when handling page request. So the virtio
-> command should also be accompanied with a vfio api to send the page request
-> response back to the host. Isn't it?
-> This is where the host smmuv3 can send PRI_RESP command to the device to
-> complete the page fault.
 
-It looks like Eric already has this in the VFIO series:
-https://lore.kernel.org/linux-iommu/20210223210625.604517-14-eric.auger@redhat.com/
+--ngZFjV0XBYrCqjZn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Jean
+On Fri, Mar 26, 2021 at 11:39:13AM +0800, Sochin Jiang wrote:
+> This confuses some users seeing one rotational block device
+> in the guest(/sys/block/vdx/queue/rotational), let's make
+> virtio blks as virtual block devices, just like xen blks,
+>  and as we known, QUEUE_FLAG_VIRT is defined as QUEUE_FLAG_NONROT
+> actually. See also rbd and nbd block devices.
+>=20
+> Signed-off-by: Sochin Jiang <jiangxiaoqing.sochin@bytedance.com>
+> ---
+>  drivers/block/virtio_blk.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+I would like to make this change because it seems consistent and often
+the disk really is non-rotational. However, a justification and
+performance results are needed especially since this has been reverted
+previously. Please see commit f8b12e513b953aebf30f8ff7d2de9be7e024dbbe
+("virtio_blk: revert QUEUE_FLAG_VIRT addition").
+
+That was in 2009, so maybe things have changed now. Please explain what
+has changed in the commit description.
+
+This flag can affect performance. Please include performance data.
+
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index b9fa3ef5b57c..31a978a4dab5 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -822,6 +822,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  		max_size =3D min(max_size, v);
+>=20
+>  	blk_queue_max_segment_size(q, max_size);
+> +	blk_queue_flag_set(QUEUE_FLAG_VIRT, q);
+>=20
+>  	/* Host can optionally specify the block size of the device */
+>  	err =3D virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
+> --
+> 2.11.0
+>=20
+
+--ngZFjV0XBYrCqjZn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmBh/vgACgkQnKSrs4Gr
+c8jUmgf+LTGpf2nf6Y/NWBXFszDUQxrIh7v6gwDcX3bPVYQJdY2m6qzuc7u2Xk+3
+bgYjOChi+pVK6weOQnu/+1a83Fjg9u9vwCNtIVyTb0Sg3iO4PP6wo+CF0o+mn2rA
+jbaMM6QYmNY1TbNBnw0OCAcPtaFA6YqhnocrcBKUKd7gtsyYayMqOIBThBKmR+0T
+tjgWySl4dZAP1j2ToxSFEmrgN7yb9oNaKUza0X5u+LDvYmS7TYLhvjdY26OmcxHG
+MljeLIYffkSa8ZGAC0U17/I3Zk9tuJhD/hehpO02qK0ZmrG99Zu4r6sUnyt1K60L
+jq7UHz4gb2ypS72a1QjcGEGUokOheA==
+=K/c4
+-----END PGP SIGNATURE-----
+
+--ngZFjV0XBYrCqjZn--
+
