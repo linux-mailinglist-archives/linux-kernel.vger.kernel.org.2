@@ -2,126 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447B834D846
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F77034D84A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhC2TbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
+        id S231637AbhC2Tcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhC2Tas (ORCPT
+        with ESMTP id S230229AbhC2TcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:30:48 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3787C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e14so4899159plj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
+        Mon, 29 Mar 2021 15:32:18 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB92C061574;
+        Mon, 29 Mar 2021 12:32:18 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b14so20150681lfv.8;
+        Mon, 29 Mar 2021 12:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=obZ+GpJjqBDtqxvYFyMbZyPSIXXyagLFH5qtJ8HsExQ=;
-        b=HHhQPWAK96gQvI6JJPOnIFVc/FznBCpCUgJanyhV1/94rYU1ByXo2ua2XSsY0qQgmp
-         KIaZTSyo5SuA6seJ5a/O7TcMaCc8Ha00PbefwymFFN6Bh4SozydEAVhqPLhRmlGm00ka
-         lScMH+FJN19u14o2jaisyvXsm3zBEVeZY+xULE8uu7a5h6oH+HAG77+RU3KPPteH9R6B
-         WYiKhCcxB/ecADLL2AoxhTy/NQbZ1fI6E7lpLVdSZ9SlfLS0OYYmiVb21b6R9Bvt3FBZ
-         41HDs14NdrUmwSNuMRWHhJisDMdHRjsyzIaX26cb0dW7YCSZj0e5a/nwIBZO9C/Xvcjp
-         DOkw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=95kh5SpigsiYFCPpdp/oq1Ev/SueOTCbLK84aNGGJrE=;
+        b=PRz/rYoB7sXNPzH/aSQ9NrISTs67V/HYeePvNPCaY0OBrWLGXFFShibdS9GvgSKOT8
+         bXJF30qRp8Pr1P4+jpewVwJ8RyZbm1f156SUxrKtZt9Y4ahoZZCkF2DJtZaQlrmfvsi/
+         3Pa8pCDzDmUXDZfWP6YwcaUV9u6079ZyY/Qrpjm3iTBdjipFSbXWBo2HmgIojOr0t3E0
+         4pxGZEp9rfIr6ToIc1ZPt/8XMtOMOFoTD3MzTNi7leSn2BVl//HY4lpAFUXF0EdQZw11
+         sRTFa1ztJ8TFzU7aFwFH7ULViR1xGIXa6KaVz65YMxyWVd2WWehIgrHnWQ3ct8gX6xoG
+         e8fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=obZ+GpJjqBDtqxvYFyMbZyPSIXXyagLFH5qtJ8HsExQ=;
-        b=SvahDJZeZmqos8Ab1ilm/o8AxkkY2PRgXEzT62NxIHeXc9BcBrP2JAfZjEVcDCTRr+
-         J9+QoAfPS7/L8X291UM8WNyYPFXJTBMiVbDWuJydwo5A4c3e1mTSPnX+iBLZ2TuCd/CT
-         QE+kU+C6+72hw9hRvBO90oWUcAWqxqdXio6eBKs5NFr3EXxTR3mg8/KqGj+bilI4KExm
-         P8qqci3JpeBq5UVP1H6IHzRsBYU0hCKYqHsX0BOVnJaUnnRpWAzJwFYsyRP+YX8+FHHu
-         8nudM1KG5JttbyxxOrRRdurRVd3U/BhrWf5JRH6BZwhFpILGdFS0sU9wg5amgUB8/WJa
-         jx9g==
-X-Gm-Message-State: AOAM530d332JGiewfMrMStFCTE3hsoiqXfr3NJ55r5UmIQ+7awOnkIQn
-        xBGtNuXL/g/bmUh7QKo4RRF3OV3VeWI=
-X-Google-Smtp-Source: ABdhPJxy4vuS0N+tsZKwReXwZHG1+vd1B7r82n2+XtMrMVGst8TxZghuZ5z5ETykyH/7joqAlbYfUA==
-X-Received: by 2002:a17:90b:10a:: with SMTP id p10mr668776pjz.148.1617046248127;
-        Mon, 29 Mar 2021 12:30:48 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id t19sm18375620pfg.38.2021.03.29.12.30.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:30:47 -0700 (PDT)
-Subject: Re: [PATCH] ARM: Qualify enabling of swiotlb_init()
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, xen-devel@lists.xensource.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, opendmb@gmail.com
-References: <20210319040333.183827-1-f.fainelli@gmail.com>
- <20210319130731.GB2624@lst.de>
- <20210319195929.GA1346384@konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com>
- <alpine.DEB.2.21.2103191718210.439@sstabellini-ThinkPad-T480s>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <3db926f4-6047-cc62-8654-a965b8570e75@gmail.com>
-Date:   Mon, 29 Mar 2021 12:30:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=95kh5SpigsiYFCPpdp/oq1Ev/SueOTCbLK84aNGGJrE=;
+        b=prks3BEACN03AqHjc6ChqQPmoNUosxqVy1LUHcgl1CLCUb5GJnaFv1ndEkcosv1Msv
+         TDmVoLyDL9yADoVPBwFanui6g9YoZUrEZCUqyjbEOYUgYEgcoGTfwv4KP214NZwt/wcL
+         fFMkPf+sYGCDCQnRXQQxTexBdMI5SLC192sF/oihpE5QsN2JCrTic0T5fhx8lmbbfTs/
+         xXA5TOlU9JRFiyLCdAkFpAMraooXITiXjHNQIo6edBrh+mnBNCXqnwcmN9W01TYqGHqv
+         CcjN1o+uNTbfixt42dCV5eYUDU5bvW52r3jue8Wmh59LEv5MMr7iBoYGaCqeU6a4TCph
+         Iq2A==
+X-Gm-Message-State: AOAM531KHeqWt6PpAopaB/HtqzCG3rAZ5whvdCjCcYQjk58MGFRCQLND
+        Wtyhb6f5pGgvDL/b0YOzaInkeQ/mU1Q=
+X-Google-Smtp-Source: ABdhPJzJAoua3FRaGMlVWTpwb4GWVB4Wbcz16Runx47ygk4+lsqd1MITQtmz0SSJyhJaQ+xevkXhnA==
+X-Received: by 2002:a05:6512:31cf:: with SMTP id j15mr17399289lfe.14.1617046336864;
+        Mon, 29 Mar 2021 12:32:16 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id z28sm2618579ljn.117.2021.03.29.12.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 12:32:16 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 29 Mar 2021 21:32:14 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Matthew Wilcox <willy@infradead.org>,
+        Colin King <colin.king@canonical.com>,
+        Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mm/vmalloc: Fix read of pointer area after it has
+ been free'd
+Message-ID: <20210329193214.GA28602@pc638.lan>
+References: <20210329170730.121943-1-colin.king@canonical.com>
+ <20210329171434.GH351017@casper.infradead.org>
+ <20210329174029.GA457@pc638.lan>
+ <20210329181453.GA13467@pc638.lan>
+ <20210329183036.GA22667@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2103191718210.439@sstabellini-ThinkPad-T480s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329183036.GA22667@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 5:22 PM, Stefano Stabellini wrote:
-> On Fri, 19 Mar 2021, Konrad Rzeszutek Wilk wrote:
->> On Fri, Mar 19, 2021 at 02:07:31PM +0100, Christoph Hellwig wrote:
->>> On Thu, Mar 18, 2021 at 09:03:33PM -0700, Florian Fainelli wrote:
->>>>  #ifdef CONFIG_ARM_LPAE
->>>> +	if (swiotlb_force == SWIOTLB_FORCE ||
->>>> +	    max_pfn > arm_dma_pfn_limit)
->>>
->>> Does arm_dma_pfn_limit do the right thing even with the weirdest
->>> remapping ranges?  Maybe a commen here would be useful.
->>>
->>>> +		swiotlb_init(1);
->>>> +	else
->>>> +		swiotlb_force = SWIOTLB_NO_FORCE;
->>>
->>> Konrad: what do you think of setting swiotlb_force to SWIOTLB_NO_FORCE
->>> and only switching it to SWIOTLB_NORMAL when swiotlb_init* is called?
->>> That kind makes more sense than forcing the callers to do it.
->>>
->>> While we're at it, I think swiotlb_force should probably be renamed to
->>> swiotlb_mode or somethng like that.
->>
->> swiotlb_mode sounds good.
->>
->> Also it got me thinking - ARM on Xen at some point was a bit strange, so not sure how
->> the logic works here, Stefano?
+> On Mon, Mar 29, 2021 at 08:14:53PM +0200, Uladzislau Rezki wrote:
+> > On Mon, Mar 29, 2021 at 07:40:29PM +0200, Uladzislau Rezki wrote:
+> > > On Mon, Mar 29, 2021 at 06:14:34PM +0100, Matthew Wilcox wrote:
+> > > > On Mon, Mar 29, 2021 at 06:07:30PM +0100, Colin King wrote:
+> > > > > From: Colin Ian King <colin.king@canonical.com>
+> > > > > 
+> > > > > Currently the memory pointed to by area is being freed by the
+> > > > > free_vm_area call and then area->nr_pages is referencing the
+> > > > > free'd object. Fix this swapping the order of the warn_alloc
+> > > > > message and the free.
+> > > > > 
+> > > > > Addresses-Coverity: ("Read from pointer after free")
+> > > > > Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
+> > > > 
+> > > > i don't have this git sha.  if this is -next, the sha ids aren't stable
+> > > > and shouldn't be referenced in commit logs, because these fixes should
+> > > > just be squashed into the not-yet-upstream commits.
+> > > > 
+> > > > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > > > > ---
+> > > > >  mm/vmalloc.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > > index b73e4e715e0d..7936405749e4 100644
+> > > > > --- a/mm/vmalloc.c
+> > > > > +++ b/mm/vmalloc.c
+> > > > > @@ -2790,11 +2790,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> > > > >  	}
+> > > > >  
+> > > > >  	if (!pages) {
+> > > > > -		free_vm_area(area);
+> > > > >  		warn_alloc(gfp_mask, NULL,
+> > > > >  			   "vmalloc size %lu allocation failure: "
+> > > > >  			   "page array size %lu allocation failed",
+> > > > >  			   area->nr_pages * PAGE_SIZE, array_size);
+> > > > > +		free_vm_area(area);
+> > > > >  		return NULL;
+> > > > 
+> > > > this fix looks right to me.
+> > > > 
+> > > That is from the linux-next. Same to me.
+> > > 
+> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > 
+> > > --
+> > > Vlad Rezki
+> > Is the linux-next(next-20210329) broken?
+> > 
+> Please ignore my previous email. That was due to my local "stashed" change.
 > 
-> There is nothing strange in regards to swiotlb_force. swiotlb_force is only used
-> in swiotlb-xen map_page to figure out whether:
-> 
-> - we actually have to use the swiotlb bounce buffer (this is the
->   swiotlb_xen == SWIOTLB_FORCE case)
-> - or we can use the provided page directly for dma if other conditions
->   are met (dma_capable, !range_straddles_page_boundary, ...)
-> 
-> 
-> I don't think that switching to "swiotlb_mode" would cause any issues.
-> 
+Hello, Andrew.
 
-Should I toss this in Russell's patch tracker or do you need me to make
-some changes to the patch?
+Could you please squash below patch with the one that is in question?
+Or should i send out it as separate patch?
+
+From 6d1c221fec4718094c6e825e3879a76ad70dba93 Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Mon, 29 Mar 2021 21:12:47 +0200
+Subject: [PATCH] mm/vmalloc: print correct vmalloc allocation size
+
+On entry the area->nr_pages is not set yet and is zero, thus
+when an allocation of the page-table array fails the vmalloc
+size will not be reflected correctly in a error message.
+
+Replace area->nr_pages by the nr_small_pages.
+
+Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ mm/vmalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index b73e4e715e0d..8b564f91a610 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2794,7 +2794,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		warn_alloc(gfp_mask, NULL,
+ 			   "vmalloc size %lu allocation failure: "
+ 			   "page array size %lu allocation failed",
+-			   area->nr_pages * PAGE_SIZE, array_size);
++			   nr_small_pages * PAGE_SIZE, array_size);
+ 		return NULL;
+ 	}
+ 
 -- 
-Florian
+2.20.1
+
+--
+Vlad Rezki
