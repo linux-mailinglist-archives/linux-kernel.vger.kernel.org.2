@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE54434CC4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C068834C8E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234435AbhC2I7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
+        id S233067AbhC2IYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:24:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234985AbhC2Ihv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AADB61601;
-        Mon, 29 Mar 2021 08:37:49 +0000 (UTC)
+        id S232599AbhC2IQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:16:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7D461996;
+        Mon, 29 Mar 2021 08:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007070;
-        bh=fg/t+/tVwYZGF8Il71r0gie7VKbpu3SQYEB7sXz4v+k=;
+        s=korg; t=1617005743;
+        bh=f4SrBsKx2dgW3UIsr+CYOr0HFYiWiaDu53knJp07cAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2eP4it1v7/bWwA5q7EbLgxYOjPxAlkz+bj5rMTnhvXA6n2hRfQ24XhMIppWmiRBte
-         xt3DUCFgMVGGXVR1WSzw9f0ORySpLipKbRVKwV6C+gr2+FrWhZCHAF6WPlIKqNl0r5
-         U6RSYDPAR99nXp08VyFlL+qlH5WKLfFXl2utd06w=
+        b=cjUco6+MFYO/hdEUXxQ1jxxlHVl0RulsGexnhqFlIXUZvuyEPgs0HQMSZyE2HsLiw
+         PM3VHYRm3d/NKNXIBeeiSgIFU5P0/twx/DDXBYcaKrz0nOd01UYVfoS7Lj5YPeCnGk
+         gqn0sSf9mCwt/tSWnuEmu/XPpC2H9aMh2DoEVXJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 211/254] bpf: Dont do bpf_cgroup_storage_set() for kuprobe/tp programs
-Date:   Mon, 29 Mar 2021 09:58:47 +0200
-Message-Id: <20210329075640.030705612@linuxfoundation.org>
+        stable@vger.kernel.org, David Jeffery <djeffery@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 100/111] block: recalculate segment count for multi-segment discards correctly
+Date:   Mon, 29 Mar 2021 09:58:48 +0200
+Message-Id: <20210329075618.551953331@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 05a68ce5fa51a83c360381630f823545c5757aa2 ]
+From: David Jeffery <djeffery@redhat.com>
 
-For kuprobe and tracepoint bpf programs, kernel calls
-trace_call_bpf() which calls BPF_PROG_RUN_ARRAY_CHECK()
-to run the program array. Currently, BPF_PROG_RUN_ARRAY_CHECK()
-also calls bpf_cgroup_storage_set() to set percpu
-cgroup local storage with NULL value. This is
-due to Commit 394e40a29788 ("bpf: extend bpf_prog_array to store
-pointers to the cgroup storage") which modified
-__BPF_PROG_RUN_ARRAY() to call bpf_cgroup_storage_set()
-and this macro is also used by BPF_PROG_RUN_ARRAY_CHECK().
+[ Upstream commit a958937ff166fc60d1c3a721036f6ff41bfa2821 ]
 
-kuprobe and tracepoint programs are not allowed to call
-bpf_get_local_storage() helper hence does not
-access percpu cgroup local storage. Let us
-change BPF_PROG_RUN_ARRAY_CHECK() not to
-modify percpu cgroup local storage.
+When a stacked block device inserts a request into another block device
+using blk_insert_cloned_request, the request's nr_phys_segments field gets
+recalculated by a call to blk_recalc_rq_segments in
+blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+handle multi-segment discards. For disk types which can handle
+multi-segment discards like nvme, this results in discard requests which
+claim a single segment when it should report several, triggering a warning
+in nvme and causing nvme to fail the discard from the invalid state.
 
-The issue is observed when I tried to debug [1] where
-percpu data is overwritten due to
-  preempt_disable -> migration_disable
-change. This patch does not completely fix the above issue,
-which will be addressed separately, e.g., multiple cgroup
-prog runs may preempt each other. But it does fix
-any potential issue caused by tracing program
-overwriting percpu cgroup storage:
- - in a busy system, a tracing program is to run between
-   bpf_cgroup_storage_set() and the cgroup prog run.
- - a kprobe program is triggered by a helper in cgroup prog
-   before bpf_get_local_storage() is called.
+ WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+ ...
+ nvme_setup_cmd+0x217/0x270 [nvme_core]
+ nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+ __blk_mq_try_issue_directly+0xe7/0x1b0
+ blk_mq_request_issue_directly+0x41/0x70
+ ? blk_account_io_start+0x40/0x50
+ dm_mq_queue_rq+0x200/0x3e0
+ blk_mq_dispatch_rq_list+0x10a/0x7d0
+ ? __sbitmap_queue_get+0x25/0x90
+ ? elv_rb_del+0x1f/0x30
+ ? deadline_remove_request+0x55/0xb0
+ ? dd_dispatch_request+0x181/0x210
+ __blk_mq_do_dispatch_sched+0x144/0x290
+ ? bio_attempt_discard_merge+0x134/0x1f0
+ __blk_mq_sched_dispatch_requests+0x129/0x180
+ blk_mq_sched_dispatch_requests+0x30/0x60
+ __blk_mq_run_hw_queue+0x47/0xe0
+ __blk_mq_delay_run_hw_queue+0x15b/0x170
+ blk_mq_sched_insert_requests+0x68/0xe0
+ blk_mq_flush_plug_list+0xf0/0x170
+ blk_finish_plug+0x36/0x50
+ xlog_cil_committed+0x19f/0x290 [xfs]
+ xlog_cil_process_committed+0x57/0x80 [xfs]
+ xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+ xlog_ioend_work+0x2f/0x80 [xfs]
+ process_one_work+0x1b6/0x350
+ worker_thread+0x53/0x3e0
+ ? process_one_work+0x350/0x350
+ kthread+0x11b/0x140
+ ? __kthread_bind_mask+0x60/0x60
+ ret_from_fork+0x22/0x30
 
- [1] https://lore.kernel.org/bpf/CAKH8qBuXCfUz=w8L+Fj74OaUpbosO29niYwTki7e3Ag044_aww@mail.gmail.com/T
+This patch fixes blk_recalc_rq_segments to be aware of devices which can
+have multi-segment discards. It calculates the correct discard segment
+count by counting the number of bio as each discard bio is considered its
+own segment.
 
-Fixes: 394e40a29788 ("bpf: extend bpf_prog_array to store pointers to the cgroup storage")
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Roman Gushchin <guro@fb.com>
-Link: https://lore.kernel.org/bpf/20210309185028.3763817-1-yhs@fb.com
+Fixes: 1e739730c5b9 ("block: optionally merge discontiguous discard bios into a single request")
+Signed-off-by: David Jeffery <djeffery@redhat.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Laurence Oberman <loberman@redhat.com>
+Link: https://lore.kernel.org/r/20210211143807.GA115624@redhat
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ block/blk-merge.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6e585dbc10df..f4242865cc86 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1066,7 +1066,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
- 			struct bpf_prog *include_prog,
- 			struct bpf_prog_array **new_array);
- 
--#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null)	\
-+#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null, set_cg_storage) \
- 	({						\
- 		struct bpf_prog_array_item *_item;	\
- 		struct bpf_prog *_prog;			\
-@@ -1079,7 +1079,8 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
- 			goto _out;			\
- 		_item = &_array->items[0];		\
- 		while ((_prog = READ_ONCE(_item->prog))) {		\
--			bpf_cgroup_storage_set(_item->cgroup_storage);	\
-+			if (set_cg_storage)		\
-+				bpf_cgroup_storage_set(_item->cgroup_storage);	\
- 			_ret &= func(_prog, ctx);	\
- 			_item++;			\
- 		}					\
-@@ -1140,10 +1141,10 @@ _out:							\
- 	})
- 
- #define BPF_PROG_RUN_ARRAY(array, ctx, func)		\
--	__BPF_PROG_RUN_ARRAY(array, ctx, func, false)
-+	__BPF_PROG_RUN_ARRAY(array, ctx, func, false, true)
- 
- #define BPF_PROG_RUN_ARRAY_CHECK(array, ctx, func)	\
--	__BPF_PROG_RUN_ARRAY(array, ctx, func, true)
-+	__BPF_PROG_RUN_ARRAY(array, ctx, func, true, false)
- 
- #ifdef CONFIG_BPF_SYSCALL
- DECLARE_PER_CPU(int, bpf_prog_active);
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 86c4c1ef8742..03959bfe961c 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -370,6 +370,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+ 	switch (bio_op(rq->bio)) {
+ 	case REQ_OP_DISCARD:
+ 	case REQ_OP_SECURE_ERASE:
++		if (queue_max_discard_segments(rq->q) > 1) {
++			struct bio *bio = rq->bio;
++
++			for_each_bio(bio)
++				nr_phys_segs++;
++			return nr_phys_segs;
++		}
++		return 1;
+ 	case REQ_OP_WRITE_ZEROES:
+ 		return 0;
+ 	case REQ_OP_WRITE_SAME:
 -- 
 2.30.1
 
