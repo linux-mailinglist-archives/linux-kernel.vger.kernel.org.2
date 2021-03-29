@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C889934C86D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A768634C6C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233789AbhC2IW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
+        id S232002AbhC2IJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232590AbhC2IOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D53C66196E;
-        Mon, 29 Mar 2021 08:14:01 +0000 (UTC)
+        id S231580AbhC2IFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:05:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79A0C61938;
+        Mon, 29 Mar 2021 08:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005642;
-        bh=AKLAihQ2Lv+aD1fMnM/vH8LCZkbuoFhLX/jvRzntyrM=;
+        s=korg; t=1617005142;
+        bh=PzrJR67FvEnJOBrgFZg6b5pr2t3VI0la/+3L64PDOL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DmxL+5Q7pfKXUUjvLcT4dOoHLbzAMTy1DUs2NLdr+Djl/Uot9kz2Sm84RNl8voi24
-         +Od/A6ldgDiYmYZACn+GtDht3UJA0lSOnEMQihRwo2dclCH5r2xejclQPqh7n5Eedi
-         wbs5imnwV03dSZUFhAshR+kNDG2KxXR2RXcBU5+Y=
+        b=rF6UvN998eAmIniacdv+AcRTi9Jk02bCl/PEZsqTcnywffjb9GCba86n7vYtrynzX
+         gpbXRb1L3EJSKxw0vF8hxRCIxAOYxd1pmCkX1dTM+GM8QroeDiaA/2Rp20YI5rI/Dy
+         TthT0G+3+8roZFe9Sa4vkRG4YVS24XZ2pTON08tQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 064/111] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
+Subject: [PATCH 4.14 32/59] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
 Date:   Mon, 29 Mar 2021 09:58:12 +0200
-Message-Id: <20210329075617.341749913@linuxfoundation.org>
+Message-Id: <20210329075609.949091231@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit b52912b8293f2c496f42583e65599aee606a0c18 ]
+[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
 
-There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
-that we have caught its return value but lack further handling.
-Check and terminate the execution flow just like other e1e_wphy()
-in this function.
+Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
+bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
+qualify the phydev->dev_flags based on whether the port is connected to
+an internal or external PHY otherwise we risk having a flags collision
+with a completely different interpretation depending on the driver.
 
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/dsa/bcm_sf2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
-index 2c1bab377b2a..1fd4406173a8 100644
---- a/drivers/net/ethernet/intel/e1000e/82571.c
-+++ b/drivers/net/ethernet/intel/e1000e/82571.c
-@@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
- 	} else {
- 		data &= ~IGP02E1000_PM_D0_LPLU;
- 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
-+		if (ret_val)
-+			return ret_val;
- 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
- 		 * during Dx states where the power conservation is most
- 		 * important.  During driver activity we should enable
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index 7fc84ae562a2..11a72c4cbb92 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -613,8 +613,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+ 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+ 	 * the REG_PHY_REVISION register layout is.
+ 	 */
+-
+-	return priv->hw_params.gphy_rev;
++	if (priv->int_phy_mask & BIT(port))
++		return priv->hw_params.gphy_rev;
++	else
++		return 0;
+ }
+ 
+ static void bcm_sf2_sw_adjust_link(struct dsa_switch *ds, int port,
 -- 
 2.30.1
 
