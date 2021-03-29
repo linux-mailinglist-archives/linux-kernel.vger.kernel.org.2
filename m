@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFB334C6C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7590534C634
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhC2IJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49094 "EHLO mail.kernel.org"
+        id S231844AbhC2IFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:05:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhC2IFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D81861974;
-        Mon, 29 Mar 2021 08:05:49 +0000 (UTC)
+        id S231835AbhC2IDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A84E619CA;
+        Mon, 29 Mar 2021 08:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005150;
-        bh=Ng5+7RAmAVVpFm4rU5N9Ql0JO0uW5KTAgcyYeOTXTcc=;
+        s=korg; t=1617005012;
+        bh=WWKK9RxNWAXgPCH7HSSLdGqI22JLNNmpgwz5y6Abp2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvs4tF2HgrMjeeczEHwbvViTnmwwAtTz7HXmULVXAGEzMs8k3NK+BV394O2f5/SY8
-         ihU7FRHcTAIF/KiZKfVPHNGKSFK744rqcF2kNRzFpSFXElKgYeO0QmeFojM8/zPTOl
-         jwaTBtzf8lqsVaZ0LzLK/QZQ3TnvGGx5eM63q060=
+        b=gw+zIS9+1jp61bDfKXikSGxhU91TZuySGQkKoTysDHbit2YfS0r/Pqjj4eYLTJgjs
+         QtXqVMbJNc7M+aJhZaBzsQPp/BWMMavPbi7s+Knk+hEeMuVT6BObo/fpLdrlp3dZty
+         4RC4uelScmZ49gOvXnHrw4Ul2thIrU5LKxGfxOho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Belisko Marek <marek.belisko@gmail.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 43/59] net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 48/53] futex: Fix incorrect should_fail_futex() handling
 Date:   Mon, 29 Mar 2021 09:58:23 +0200
-Message-Id: <20210329075610.300085563@linuxfoundation.org>
+Message-Id: <20210329075609.096873496@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
-[ Upstream commit 014dfa26ce1c647af09bf506285ef67e0e3f0a6b ]
+commit 921c7ebd1337d1a46783d7e15a850e12aed2eaa0 upstream.
 
-MTU cannot be changed on dwmac-sun8i. (ip link set eth0 mtu xxx returning EINVAL)
-This is due to tx_fifo_size being 0, since this value is used to compute valid
-MTU range.
-Like dwmac-sunxi (with commit 806fd188ce2a ("net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes"))
-dwmac-sun8i need to have tx and rx fifo sizes set.
-I have used values from datasheets.
-After this patch, setting a non-default MTU (like 1000) value works and network is still useable.
+If should_futex_fail() returns true in futex_wake_pi(), then the 'ret'
+variable is set to -EFAULT and then immediately overwritten. So the failure
+injection is non-functional.
 
-Tested-on: sun8i-h3-orangepi-pc
-Tested-on: sun8i-r40-bananapi-m2-ultra
-Tested-on: sun50i-a64-bananapi-m64
-Tested-on: sun50i-h5-nanopi-neo-plus2
-Tested-on: sun50i-h6-pine-h64
-Fixes: 9f93ac8d408 ("net-next: stmmac: Add dwmac-sun8i")
-Reported-by: Belisko Marek <marek.belisko@gmail.com>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix it by actually leaving the function and returning -EFAULT.
+
+The Fixes tag is kinda blury because the initial commit which introduced
+failure injection was already sloppy, but the below mentioned commit broke
+it completely.
+
+[ tglx: Massaged changelog ]
+
+Fixes: 6b4f4bc9cb22 ("locking/futex: Allow low-level atomic operations to return -EAGAIN")
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200927000858.24219-1-mateusznosek0@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/futex.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index 149fd0d5e069..8e60315a087c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -972,6 +972,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
- 	plat_dat->init = sun8i_dwmac_init;
- 	plat_dat->exit = sun8i_dwmac_exit;
- 	plat_dat->setup = sun8i_dwmac_setup;
-+	plat_dat->tx_fifo_size = 4096;
-+	plat_dat->rx_fifo_size = 16384;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1605,8 +1605,10 @@ static int wake_futex_pi(u32 __user *uad
+ 	 */
+ 	newval = FUTEX_WAITERS | task_pid_vnr(new_owner);
  
- 	ret = sun8i_dwmac_init(pdev, plat_dat->bsp_priv);
- 	if (ret)
--- 
-2.30.1
-
+-	if (unlikely(should_fail_futex(true)))
++	if (unlikely(should_fail_futex(true))) {
+ 		ret = -EFAULT;
++		goto out_unlock;
++	}
+ 
+ 	ret = cmpxchg_futex_value_locked(&curval, uaddr, uval, newval);
+ 	if (!ret && (curval != uval)) {
 
 
