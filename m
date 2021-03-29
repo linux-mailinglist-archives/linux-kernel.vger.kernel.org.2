@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938E834D67F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5ADA34D662
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhC2SBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:01:15 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:52630 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231368AbhC2SAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:00:53 -0400
-X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 14:00:53 EDT
-Received: from xry111-X57S1.. (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 27C1965B2D;
-        Mon, 29 Mar 2021 13:54:42 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1617040502;
-        bh=Zbib90WcD3Bj0OIpXKzlZugk4FNdHitNgQA0jv+MLiU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RU+YMOzQvm+gW5FvX3GXZLNVPhBUjDloPV82MoeNw7oievKXs/gIQiWpL5SBftjTW
-         d80gOOr+DddPwloNLOzXp0GCnIqS4W/QbxFmYxRJ4hxQM4kiLJuUw2EePkXE0aVs/Y
-         uBoJIXzvqR/4zCsmk6uTiAuRooaRityvTiWnlpgtq/jHPAHy1TjtfggLtue9OQWuuN
-         4IWWrENjuf1vXeIibEui8gWSZqNaGpIDucg85Hg+Ngyb2oNEdeff6GEQAt5NIz0QZC
-         1i2W4g7bEOK+b6d3v+3RGHoKP6ez8+NS8SJVCp+1AiooXOScYkg3zc2OQk3yA+piYk
-         ReaBEHE9AvPfQ==
-From:   =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>,
-        =?UTF-8?q?Dan=20Hor=C3=A1k?= <dan@danny.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
-Date:   Tue, 30 Mar 2021 01:53:48 +0800
-Message-Id: <20210329175348.26859-1-xry111@mengyan1223.wang>
-X-Mailer: git-send-email 2.31.1
+        id S230224AbhC2R4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhC2Rzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:55:55 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1970C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:55:52 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id j3so15152128edp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6MnTmV7Ubg2sTi3Xa2Quc7eX0k5n11budl3ddfjJpTQ=;
+        b=gJtMzc9yrdH/AglObhliCl1eLVPtYjBzEmGKhMs9v04xve8sR8xROi3HbQURzWGDBs
+         x8hjM/XW/JAvIauCyjxGZxqaSPBn0pcf+T7fLRHs7eObNBz2kPQmyxHodjG+nu+2gJZy
+         FIVdwhqEuY1c/omIMQ0qtK55Vk+CN/qmkvUprAWKV84JmQMF9rzoH+lH0KmtH7NZN+W6
+         fxLZuGFGvtrYKg/jzLgyYqQQ+6MAMaONyDWHCjxn3cfuCalDKFQDPkJYCBBcW6SuypKs
+         wssZhiDV5SEqInSyh8F8f74PMu8fBNBcKYbISCWdYueBbiapEn7mxGLyhaKBuVsq+1Nt
+         6gpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6MnTmV7Ubg2sTi3Xa2Quc7eX0k5n11budl3ddfjJpTQ=;
+        b=XrX9sXTfxmFAYLF/+fpE8yxX+GDhcukBeLOCUT0jH8t8USqhuqXge8vY3JogHysIOd
+         ApgU9f1iYpspLHxleO+h/xqbwUpC54PJnMQ6JbIqgUh2UIHeUeJP8q2nhjEKvKiOcze7
+         Jd93QnuXPz1W7Krd+bkooBgskC6iE8gi5ayd23wXNfs9irOGb2UCJzwBbWeLwpA8lK5h
+         cIv6HeGwMEDSVS90prrfm3vB84QIksVrqwMSzIOMbzHySC3H5rUu4vy/tyXQi8xT87EH
+         beHhWuNoj6NGcguCvH3iPpejqa9PBtv+nvRZd0gpPZV5ULs2c+IGxRAY2zxHFd/WUYkA
+         FRHw==
+X-Gm-Message-State: AOAM532M2gNF9yBHDycYXPtj71w0ZOzG54HcTmfMxmVpuw1Ehz4BwVAI
+        QeGf83UN99Bm26hX3Fvln9OIMs2DgHDKdcAxtvZWwg==
+X-Google-Smtp-Source: ABdhPJyyEm9oNlLOtY/Bv1/0xqF/9Vl1Ci9LBjhH/1QbEkuGJ2ahfATbkAxlMF/PRkZVCCe8dvKLypvNECTtIrpoWYA=
+X-Received: by 2002:aa7:d588:: with SMTP id r8mr29436114edq.88.1617040551435;
+ Mon, 29 Mar 2021 10:55:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210326231303.3071950-1-eric@anholt.net> <20210329144729.GB4203@willie-the-truck>
+In-Reply-To: <20210329144729.GB4203@willie-the-truck>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Mon, 29 Mar 2021 10:55:40 -0700
+Message-ID: <CADaigPV0yHFUnGt_ncsS=wBHCMyex_wp=PVAibxSaAMEs8GS=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+To:     Will Deacon <will@kernel.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the initial value of `num_entires` (calculated at line 1654) is not
-an integral multiple of `AMDGPU_GPU_PAGES_IN_CPU_PAGE`, in line 1681 a
-value greater than the initial value will be assigned to it.  That causes
-`start > last + 1` after line 1708.  Then in the next iteration an
-underflow happens at line 1654.  It causes message
+On Mon, Mar 29, 2021 at 7:47 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Mar 26, 2021 at 04:13:02PM -0700, Eric Anholt wrote:
+> > db820c wants to use the qcom smmu path to get HUPCF set (which keeps
+> > the GPU from wedging and then sometimes wedging the kernel after a
+> > page fault), but it doesn't have separate pagetables support yet in
+> > drm/msm so we can't go all the way to the TTBR1 path.
+>
+> What do you mean by "doesn't have separate pagetables support yet"? The
+> compatible string doesn't feel like the right way to determine this.
 
-    *ERROR* Couldn't update BO_VA (-12)
-
-printed in kernel log, and GPU hanging.
-
-Fortify the criteria of the loop to fix this issue.
-
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
-Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
-Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
-Reported-by: Dan Horák <dan@danny.cz>
-Cc: stable@vger.kernel.org
-Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index ad91c0c3c423..cee0cc9c8085 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
- 		}
- 		start = tmp;
- 
--	} while (unlikely(start != last + 1));
-+	} while (unlikely(start < last + 1));
- 
- 	r = vm->update_funcs->commit(&params, fence);
- 
-
-base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
--- 
-2.31.1
-
+In my past experience with DT, software looking at the (existing)
+board-specific compatibles has been a typical mechanism used to
+resolve something like this "ok, but you need to actually get down to
+what board is involved here to figure out how to play along with the
+rest of Linux that later attaches to other DT nodes".  Do you have a
+preferred mechanism here?
