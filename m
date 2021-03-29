@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B634D7A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62C934D7AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhC2S5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:57:52 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:36860 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhC2S5h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:57:37 -0400
-Received: by mail-ej1-f48.google.com with SMTP id a7so21091051ejs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:57:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fg4T1toksbX6wYWOQA9Y4u4lfMcCUeyne4oYFvBGONg=;
-        b=tu2i2XkLFLbz+col2+fcNBdbaYdNaUaUsgEPL6QZDK83kFnEKkgf1F8mV3viGYxxAo
-         SC9GBZxsSXZrGNwbPgFclTpiXHzf6jkhaTb+7YW2hKKPUXIj1xvrWIVQEmy3xEKyR8PS
-         JwJ+h3yABngjs8oL2koxPH/p3YKMoYJ7UbgiTCVBvfwc4HSEwCtaSGr18ssc7ElBTW8a
-         37zAYixpf9BpzrPXpWrbp4KoIqcVJQ/p2xFatFt6OC88GoDVhMq1SghIVjvH41DzMNgy
-         DA0aKYyl1l+cUW9IXGGs4Zg6EkyLjquHR4aHspXyOTk236k7WEO3i/hKUUvvdgLaStlJ
-         rGqA==
-X-Gm-Message-State: AOAM532mVZ3snVjbT8lR51Hpbaod4OjcrZDrVmpTW2euy5YyktJJt1FH
-        dBLWaIR4LvudVWxlNHouA+KRxWVaGI3QghjLs58=
-X-Google-Smtp-Source: ABdhPJygtQkRo0D4Yy9BT5cy38x+9L0MYd7T755PdhfzD0n6u1cHCRH3Gu6eL74xK/SC/007z1ts5mCoFYYBnkcMfEY=
-X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr30013433ejc.219.1617044256430;
- Mon, 29 Mar 2021 11:57:36 -0700 (PDT)
+        id S231603AbhC2S60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:58:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231468AbhC2S6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:58:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C95E76191B;
+        Mon, 29 Mar 2021 18:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617044284;
+        bh=c/s9VChyW+PWZcaM8NTQh/9X1+6v/QSeKT0dp32MvX4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RdSoptfqmS51C5yohMF4Ery+8npmlpIBFPKOsRYfVGQGmjFOt7iAsGNaONA/rytjU
+         48sJiJzE4sFKwDHQFNHwoRoxLf8Yn83gGOYrdatSSScHKQlfgZPAX9McuarcwJ/sCi
+         bgRTB6kFartuSl2ozV7UPbQ5rpBeO/fzFLAbfyO8=
+Date:   Mon, 29 Mar 2021 20:58:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alaa Emad <alaaemadhossney.ae@gmail.com>
+Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] wireless/nl80211.c: fix uninitialized variable
+Message-ID: <YGIjOZauy9kPwINV@kroah.com>
+References: <20210329163036.135761-1-alaaemadhossney.ae@gmail.com>
+ <YGIaaezqxNmhVcmn@kroah.com>
+ <CAM1DhOgA9DDaGSGFxKgXBONopoo4rLJZheK2jzW_BK-mJrNZKQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAJvTdKm4qKw8D8b+NokBsdiE5yBj=LTiH50VuxJY2aAL8qQq6g@mail.gmail.com>
- <09AB34BD-7DB8-4DBD-A538-F3AE642F8C8A@amacapital.net>
-In-Reply-To: <09AB34BD-7DB8-4DBD-A538-F3AE642F8C8A@amacapital.net>
-From:   Len Brown <lenb@kernel.org>
-Date:   Mon, 29 Mar 2021 14:57:25 -0400
-Message-ID: <CAJvTdKkZU3kFiC-5_xwVUNnwzM2QmVS3u1aY-RY=S6_Tw3f5zg@mail.gmail.com>
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
- first use of dynamic user state
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM1DhOgA9DDaGSGFxKgXBONopoo4rLJZheK2jzW_BK-mJrNZKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 1:43 PM Andy Lutomirski <luto@amacapital.net> wrote:
+On Mon, Mar 29, 2021 at 08:41:38PM +0200, Alaa Emad wrote:
+> On Mon, 29 Mar 2021 at 20:20, Greg KH <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Mon, Mar 29, 2021 at 06:30:36PM +0200, Alaa Emad wrote:
+> > > Reported-by: syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
+> > > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+> >
+> > You need to provide some changelog text here, I know I can not take
+> > patches without that, maybe the wireless maintainer is more flexible :)
+> >
+>  you mean explain what i did , right?
 
-> > *switching* XCR0 on context switch is slow, but perfectly legal.
->
-> How slow is it?  And how slow is switching XFD?  XFD is definitely serializing?
+Yes, explain why this change is needed.
 
-XCR0 writes in a VM guest cause a VMEXIT..
-XCR writes in a VM guest do not.
+thanks,
 
-I will find out what the relative cost is on bare metal, where VMEXIT
-is not an issue.
--- 
-Len Brown, Intel Open Source Technology Center
+greg k-h
