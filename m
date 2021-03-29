@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691E134D999
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51F434D9A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhC2VeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhC2Vdv (ORCPT
+        id S231661AbhC2Vem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:34:42 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:59118 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhC2VeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:33:51 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE42C061574;
-        Mon, 29 Mar 2021 14:33:50 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id m13so14431743oiw.13;
-        Mon, 29 Mar 2021 14:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p5uG/83deN7fkE+65BzYsh5OFVE6auA2I3Hi0Ph/ON8=;
-        b=NxN7Jcyf2anILr9gxLOSmio71KN482iMywa1GZTnJP2JpgwRAetKfuWNjUMTFCKtK0
-         WLIVueJpFOt6EwlebCnieYG+PDEKXy3LXz3hAm+NaoCk/q5bejSpxi6IyZ4oZJybSGTc
-         85TAYINN8bbxjCzuWgtKiT5biaywptq18qdkckn6uddckRjreM9si+YgQXzQ9VZMjN+q
-         lMJgygjmm3Ao7flXEt01qr7iZDUUDXz5PCEoKUJVGRP7yRBGvtF1hd7WpcshRu37HUSD
-         FMWYGVEyQe/A45dAXAvZ+6maR4f5NxJ+d2/Wy/P1yjAzqG8U2TaKUBqKu2M9pmjzaUcu
-         4lkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p5uG/83deN7fkE+65BzYsh5OFVE6auA2I3Hi0Ph/ON8=;
-        b=t0qtPSBDNRpb2yM6Fd4ZQ4CTl6bc2Dau8Hbvr77H5cr+QIArrNEKq04OgtlhrswYLN
-         HxQRPh5INFNIJWgLdxA/eNoGUoh1F3iHsEwnquJKNoXmGQYUt49J+skdy4TX9kpf2VUL
-         zlmwM+pXc39RNql/MGgJKv826aW/zHaICgn4PRVDxtmy39hyCDqvtDfWHXeubPskbJGD
-         grOiHrpcR6bio1sufOkChPYsAU/xm5xrhqe5Xm+acFRbhYu9eskTUe6tC2FWCsBlLx5X
-         FaRSTN9P8mvNp3KuyYZc9kRO44KH8FnSr6RoY7xtM5BzES8Dy6kH47CUjF8QdJbUcAP4
-         QdUw==
-X-Gm-Message-State: AOAM532kgBCLjHYjR0ZRPLbrO34CxmwuDZ/atnhqSkL9Pa6E2Os1bzz4
-        nv4hi5jnkXSdTs9XRcXb1GU=
-X-Google-Smtp-Source: ABdhPJzWV+zEYWtZn0XuoBGEgbmJGERkiXw94U9elwGlZH3nA9PGMlB/lPWPWmoNcyU7vhxByPae8g==
-X-Received: by 2002:a05:6808:8da:: with SMTP id k26mr790020oij.115.1617053630259;
-        Mon, 29 Mar 2021 14:33:50 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j72sm3711736oih.46.2021.03.29.14.33.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Mar 2021 14:33:49 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 29 Mar 2021 14:33:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/111] 5.4.109-rc1 review
-Message-ID: <20210329213348.GE220164@roeck-us.net>
-References: <20210329075615.186199980@linuxfoundation.org>
+        Mon, 29 Mar 2021 17:34:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617053658; x=1648589658;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2kTOQKtN0t9m6S1C1pzGz3PzM5EesinMEa6hjWzfgDY=;
+  b=kxaO3nsASkgb20dQ9qR8HFy6g6oJj+C4559h7sjvBOo1a9S+kuhREMHM
+   QseiTMFEfvgWPOP1iY6NfqcBS/ITU0jrvvkCkHmtni3+Lwk7bu+Lqss13
+   LeO1FJ0KO7l+P4UmLuRxP++1Xx/1ZNpCxcNfPnf0GmFXERwavmIWg3XJm
+   0iUlvUDu/07VTUk7iLFibFJ4Q0C5+1Fyqt2p2U8knGljExiPO0of84Cbs
+   XE3OHNPWy5h0X1FDIU/1Zs9pAomN4eYHbLMscuiTQSgcqGoU56ZCo+XGX
+   Dsvdd4OzS0tXqZpbEr4JfU/bmedbeMoIDRBpK2PW+u3BNe849RJ9sJAdX
+   g==;
+IronPort-SDR: UCF/K/3Bzx1tQnCR0a0OpheQyJ5HyNk4EBJkUnwMqtphT9lMSwdNvYB8BjLv1ZWU1tTjM+jcif
+ SkwiJiMWowts4FeIxJV/J+32skB0dbG4tDkHAT6lg68sZp/8jjly8OMry3/G6RAFJ4k9CbIr5i
+ ynPvtFSKl3g7fvf+Reu0OEeK4q/XaFRGmlOWMTA0k1nm24J6aN7Xrqy0Kq/jAxBdf4+lx5dlsC
+ bchp3ssUON9u+wcM4hq+IXMJOmtgwppbyEbI7UZ6OKvvWfQGaaWMI/ktCjY3S5eSUVQHeSF5BC
+ VcQ=
+X-IronPort-AV: E=Sophos;i="5.81,288,1610434800"; 
+   d="scan'208";a="115079626"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Mar 2021 14:34:18 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 29 Mar 2021 14:34:17 -0700
+Received: from cristi-P53.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 29 Mar 2021 14:34:15 -0700
+From:   <cristian.birsan@microchip.com>
+To:     <linux@roeck-us.net>, <heikki.krogerus@linux.intel.com>,
+        <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [RFC PATCH 0/2] usb: typec: Add driver for Microchip sama7g5 tcpc
+Date:   Tue, 30 Mar 2021 00:33:55 +0300
+Message-ID: <20210329213357.431083-1-cristian.birsan@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 09:57:08AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.109 release.
-> There are 111 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
-> 
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 431 pass: 431 fail: 0
+This patch set adds initial driver support for Microchip USB Type-C Port
+Controller (TCPC) embedded in sama7g5 SoC.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+The controller does not implement power delivery and the driver uses dummy
+functions to register the port with TCPM. The current silicon version is
+not able to trigger interrupts so the driver will poll for changes on
+CC1/CC2 lines.
 
-Guenter
+Support for sink is implemented and tested with an USB device. The plan is
+to extend the driver and add source support.
+
+Cristian Birsan (2):
+  dt-bindings: usb: Add DT bindings for Microchip sama7g5 tcpc
+  usb: typec: sama7g5_tcpc: add driver for Microchip sama7g5 tcpc
+
+ .../bindings/usb/microchip,sama7g5-tcpc.yaml  |  80 +++
+ drivers/usb/typec/tcpm/Kconfig                |   8 +
+ drivers/usb/typec/tcpm/Makefile               |   1 +
+ drivers/usb/typec/tcpm/sama7g5_tcpc.c         | 602 ++++++++++++++++++
+ 4 files changed, 691 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/microchip,sama7g5-tcpc.yaml
+ create mode 100644 drivers/usb/typec/tcpm/sama7g5_tcpc.c
+
+-- 
+2.25.1
+
