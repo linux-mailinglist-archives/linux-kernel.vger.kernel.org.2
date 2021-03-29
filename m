@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA9C34C5AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E392B34CAE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhC2ICC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42966 "EHLO mail.kernel.org"
+        id S234900AbhC2Ikx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:40:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231658AbhC2IBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D6EA61969;
-        Mon, 29 Mar 2021 08:01:13 +0000 (UTC)
+        id S232413AbhC2IHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BEE6197F;
+        Mon, 29 Mar 2021 08:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004873;
-        bh=RMOjAYX1vm174Y9ksn1z6Hf+kiX9gRDRZjgDW5Hq9zA=;
+        s=korg; t=1617005243;
+        bh=UwteTIvtz0sz7yz6zNFbrqtuV5n3YUzbwKmK4nWPcpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LhiBSTJCJZYp9sWeaGOAg8Jp4B94UJ6lCbKbSEQ2aa8XMhPNqamPyHCZ1HSliRY/D
-         tsKFAaQQ410uOe0kZfUmYr5D9+Rqp+J7j1Yox0gDlzqm8Md5YA6Ogdh8kNOjOw/5QT
-         7WChv7IU40ToeIVw3PQ3Ft5Fr8bTHaGkPkQjPZG0=
+        b=TYozlefUhm/fowFu/3+5iik8WymLFlN/7Aeg+P8VLkSxK92a3GGUhqT2RmbgupzDL
+         LOsFNSkO9c1mKqsdaMwaHMAFcUmNHzMWPjbIJl6VsqR+FbiAeTA32etMKaExVAZg6Y
+         075CqC25e9R1hIqMObKWHx/zV5uMmpid2X6o8d38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/33] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
+Subject: [PATCH 4.19 16/72] atm: idt77252: fix null-ptr-dereference
 Date:   Mon, 29 Mar 2021 09:57:52 +0200
-Message-Id: <20210329075605.519473058@linuxfoundation.org>
+Message-Id: <20210329075610.818747128@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Rothenpieler <timo@rothenpieler.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
+[ Upstream commit 4416e98594dc04590ebc498fc4e530009535c511 ]
 
-This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
-With the default being m, it's impossible to build the module into the
-kernel.
+this one is similar to the phy_data allocation fix in uPD98402, the
+driver allocate the idt77105_priv and store to dev_data but later
+dereference using dev->dev_data, which will cause null-ptr-dereference.
 
-Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+fix this issue by changing dev_data to phy_data so that PRIV(dev) can
+work correctly.
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/atm/idt77105.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
-index c3428767332c..55ebf9f4a824 100644
---- a/fs/nfs/Kconfig
-+++ b/fs/nfs/Kconfig
-@@ -132,7 +132,7 @@ config PNFS_OBJLAYOUT
- config PNFS_FLEXFILE_LAYOUT
- 	tristate
- 	depends on NFS_V4_1 && NFS_V3
--	default m
-+	default NFS_V4
+diff --git a/drivers/atm/idt77105.c b/drivers/atm/idt77105.c
+index 0a67487c0b1d..a2ecb4190f78 100644
+--- a/drivers/atm/idt77105.c
++++ b/drivers/atm/idt77105.c
+@@ -261,7 +261,7 @@ static int idt77105_start(struct atm_dev *dev)
+ {
+ 	unsigned long flags;
  
- config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
- 	string "NFSv4.1 Implementation ID Domain"
+-	if (!(dev->dev_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	PRIV(dev)->dev = dev;
+ 	spin_lock_irqsave(&idt77105_priv_lock, flags);
+@@ -336,7 +336,7 @@ static int idt77105_stop(struct atm_dev *dev)
+                 else
+                     idt77105_all = walk->next;
+ 	        dev->phy = NULL;
+-                dev->dev_data = NULL;
++                dev->phy_data = NULL;
+                 kfree(walk);
+                 break;
+             }
 -- 
 2.30.1
 
