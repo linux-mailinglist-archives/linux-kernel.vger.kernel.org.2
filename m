@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF27034C4F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F1734C4FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhC2Ha1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:30:27 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:46670 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbhC2HaK (ORCPT
+        id S231255AbhC2HcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhC2Hbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:30:10 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id D864544A022C;
-        Mon, 29 Mar 2021 09:30:08 +0200 (CEST)
+        Mon, 29 Mar 2021 03:31:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E66C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:31:40 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lQmN3-0001Sm-KL; Mon, 29 Mar 2021 09:31:33 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lQmN2-0000TI-Q2; Mon, 29 Mar 2021 09:31:32 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH v5 0/3] mainline ti tsc2046 adc driver
+Date:   Mon, 29 Mar 2021 09:31:28 +0200
+Message-Id: <20210329073131.1759-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Date:   Mon, 29 Mar 2021 09:30:08 +0200
-From:   Robin van der Gracht <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/17] auxdisplay: ht16k33: Add support for segment
- displays
-Reply-To: robin@protonic.nl
-In-Reply-To: <CAMuHMdXJV3duE=uhCD3XSVn35Y5=iafOOUu5_57-1TtW062ZJg@mail.gmail.com>
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
- <20210322144848.1065067-17-geert@linux-m68k.org>
- <2868cd091dc6ff0cab14b5da07f89984@protonic.nl>
- <CAMuHMdXJV3duE=uhCD3XSVn35Y5=iafOOUu5_57-1TtW062ZJg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <8376c4a183971aef9631c1bc64f9222c@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-29 09:15, Geert Uytterhoeven wrote:
-> Hoi Robin,
-> 
-> On Mon, Mar 29, 2021 at 9:09 AM Robin van der Gracht 
-> <robin@protonic.nl> wrote:
->> On 2021-03-22 15:48, Geert Uytterhoeven wrote:
->> > The Holtek HT16K33 LED controller is not only used for driving
->> > dot-matrix displays, but also for driving segment displays.
->> >
->> > Add support for 4-digit 7-segment and quad 14-segment alphanumeric
->> > displays, like the Adafruit 7-segment and 14-segment display backpack
->> > and FeatherWing expansion boards.  Use the character line display core
->> > support to display a message, which will be scrolled if it doesn't fit.
->> >
->> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> > ---
->> > The 7-segment support is based on schematics, and untested on actual
->> > hardware.
->> > ---
->> >  drivers/auxdisplay/ht16k33.c | 198 +++++++++++++++++++++++++++++++++--
->> >  1 file changed, 191 insertions(+), 7 deletions(-)
->> >
->> ...
->> >
->> > +static int ht16k33_seg_probe(struct i2c_client *client,
->> > +                          struct ht16k33_priv *priv, uint32_t brightness)
->> > +{
->> > +     struct ht16k33_seg *seg = &priv->seg;
->> > +     struct device *dev = &client->dev;
->> > +     int err;
->> > +
->> > +     err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
->> > +     if (err)
->> > +             return err;
->> > +
->> > +     switch (priv->type) {
->> > +     case DISP_MATRIX:
->> > +             /* not handled here */
->> > +             break;
->> 
->> This 'case' shouldn't happen. Having said that, the break here will
->> still
->> cause the linedisp_register() function to be called for the 
->> DISP_MATRIX
->> type.
->> If you'd like to handle this case, a return (or setting 'err') should
->> prevent this.
-> 
-> This function is never called if priv->type == DISP_MATRIX, so this
-> cannot happen.  However, gcc complains if not all enum values are
-> handled in a switch() statement, hence the dummy case.
+changes v5:
+- remove type for the settling-time-us property
 
-I see. But if it's there it should work right? :P
+changes v4:
+- spell fixes
+- add more comments
+- make code more readable
+- move scan_buf to the priv
+- use FIELD_GET to extract ADC data
+- make some multi line code as one line
+- do not use atomic API for trig_more_count
+- fix build warning on 64bit system
+- add NULL check for the devm_kasprintf()
+- use return devm_iio_device_register(), without additional error
+  printing.
 
-> Is there a better way to handle this?
+changes v3:
+- different spell fixes
+- add some notes about driver structure
+- rename the trigger to point on the touchscreen nature of it
+- rename DT binding to oversampling-ratio
+- make sure we have some defaults in case no DT property is set
 
-How about adding the default case:
+changes v2:
+- rework and extend DT binding properties
+- remove touchscreen related code from the IIO ADC driver
+- make trigger be active longer then IRQ is requesting. This is needed
+  to get "inactive" samples
+- make oversampling and settle time configurable
 
-default:
-     /* not handled */
-     err = -EINVAL;
+TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
+this ADC based touchscreen controller share same set of challenges, it
+is better keep then as simple IIO ADC devices attached to a generic
+resistive-adc-touch driver.
 
-Groetjes/Kind regards,
-Robin van der Gracht
+This driver can replace drivers/input/touchscreen/ads7846.c and has
+following advantages over it:
+- less code to maintain
+- shared code paths (resistive-adc-touch, iio-hwmon, etc)
+- can be used as plain IIO ADC to investigate signaling issues or test
+  real capacity of the plates and attached low-pass filters
+  (or use the touchscreen as a microphone if you like ;) )
+
+Oleksij Rempel (3):
+  dt-bindings:iio:adc: add generic settling-time-us and
+    oversampling-ratio channel properties
+  dt-bindings:iio:adc: add documentation for TI TSC2046 controller
+  iio: adc: add ADC driver for the TI TSC2046 controller
+
+ .../devicetree/bindings/iio/adc/adc.yaml      |   8 +
+ .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
+ MAINTAINERS                                   |   8 +
+ drivers/iio/adc/Kconfig                       |  12 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/ti-tsc2046.c                  | 726 ++++++++++++++++++
+ 6 files changed, 870 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+ create mode 100644 drivers/iio/adc/ti-tsc2046.c
 
 -- 
-Protonic Holland
-Factorij 36
-1689AL Zwaag
-+31 (0)229 212928
-https://www.protonic.nl
+2.29.2
+
