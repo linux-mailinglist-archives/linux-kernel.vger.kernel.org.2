@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A3C34C534
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A84134C54D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhC2HtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:49:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhC2HtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:49:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617004157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vFHJ4JGDDiBA44nm8xVddU83hXh/LFKuGl5xqRH1qKc=;
-        b=c1htYbeZQB91YR1m5OPqrf+mR8rUAcSzMa/VloNbI5FSETiXYdF9JKOtrd/0R7G2yLHviW
-        H6Qv8jJzuQl/OxYGwZdR/K7MUAMshYhNjILe8lTwZ6wzT73yJ7VhagFGCkLqG5t6DSPdl/
-        ITh7Z38NLoNb/F29zCoS1QNOipwZW/A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46305B333;
-        Mon, 29 Mar 2021 07:49:17 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 09:49:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [External] [PATCH 7/8] hugetlb: make free_huge_page irq safe
-Message-ID: <YGGGfBE0JVrxyFsW@dhcp22.suse.cz>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-8-mike.kravetz@oracle.com>
- <CAMZfGtVghACpXiXRrNhQa-fM8A+-xBZvsW+QiEUU1Rqjhd2W5Q@mail.gmail.com>
+        id S230274AbhC2HvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhC2Huv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:50:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9725BC061574;
+        Mon, 29 Mar 2021 00:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RmtQjdY4jd7gdJlUZ3DW9jMcByENp8YMhL3jjISCf78=; b=nnsLTgcvgCRg3B8Fc0hgEyHVPa
+        C3nz4ZoUQzUhylNi2HcH7gsoEOw0NP02VuD30ri51IFNz7TdHeT8fI856Z12noRCm6mDLZxDe54GG
+        FcuZUNJLbDaeFENhAjbP8BsnJcQxz0D3Ue2kBv545ZemDljZy0HQZtA+o4hJkFkYyfG0vnwykvY0h
+        UxSf6d+v1U+TfhvAocF63PQOzKYT4rXagudr+KYPJZSJCheIDn2HB6KLENrteYmJE5xFcHxximPDJ
+        7YXs4t4aupq1wyuYM18uogTbiu005muh7DV+DWqh4GYKLgujOwVzYt4diS5ecQ/MkhQ7EDTR8mdUF
+        6CmPI6cQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQmew-001CUv-Cc; Mon, 29 Mar 2021 07:50:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 836C5305CC3;
+        Mon, 29 Mar 2021 09:50:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 62B48207189A5; Mon, 29 Mar 2021 09:50:01 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 09:50:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     guoren@kernel.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+Message-ID: <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtVghACpXiXRrNhQa-fM8A+-xBZvsW+QiEUU1Rqjhd2W5Q@mail.gmail.com>
+In-Reply-To: <1616868399-82848-4-git-send-email-guoren@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 27-03-21 15:06:36, Muchun Song wrote:
-> On Thu, Mar 25, 2021 at 8:29 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in
-> > non-task context") was added to address the issue of free_huge_page
-> > being called from irq context.  That commit hands off free_huge_page
-> > processing to a workqueue if !in_task.  However, as seen in [1] this
-> > does not cover all cases.  Instead, make the locks taken in the
-> > free_huge_page irq safe.
-> >
-> > This patch does the following:
-> > - Make hugetlb_lock irq safe.  This is mostly a simple process of
-> >   changing spin_*lock calls to spin_*lock_irq* calls.
-> > - Make subpool lock irq safe in a similar manner.
-> > - Revert the !in_task check and workqueue handoff.
-> >
-> > [1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
-> >
-> > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Sat, Mar 27, 2021 at 06:06:38PM +0000, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> The changes are straightforward.
+> Some architectures don't have sub-word swap atomic instruction,
+> they only have the full word's one.
 > 
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> The sub-word swap only improve the performance when:
+> NR_CPUS < 16K
+>  *  0- 7: locked byte
+>  *     8: pending
+>  *  9-15: not used
+>  * 16-17: tail index
+>  * 18-31: tail cpu (+1)
 > 
-> Since this patchset aims to fix a real word issue. Should we add a Fixes
-> tag?
+> The 9-15 bits are wasted to use xchg16 in xchg_tail.
+> 
+> Please let architecture select xchg16/xchg32 to implement
+> xchg_tail.
 
-Do we know since when it is possible to use hugetlb in the networking
-context? Maybe this is possible since ever but I am wondering why the
-lockdep started complaining only now. Maybe just fuzzing finally started
-using this setup which nobody does normally.
--- 
-Michal Hocko
-SUSE Labs
+So I really don't like this, this pushes complexity into the generic
+code for something that's really not needed.
+
+Lots of RISC already implement sub-word atomics using word ll/sc.
+Obviously they're not sharing code like they should be :/ See for
+example arch/mips/kernel/cmpxchg.c.
+
+Also, I really do think doing ticket locks first is a far more sensible
+step.
