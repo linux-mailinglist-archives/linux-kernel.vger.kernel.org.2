@@ -2,262 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1FB34D688
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4DE34D689
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhC2SCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
+        id S231424AbhC2SCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhC2SCE (ORCPT
+        with ESMTP id S231395AbhC2SCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:02:04 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97660C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:03 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id w3so20866128ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=e8KNXf14WU5er2UKIj8pqaMgzclV9pM6uKswGnOq0GI=;
-        b=YcYo7bu9r336af+ZihUai2NR1FN7E19CljmfOG7Ut4FbEZBRPLPSfmFx9cjry9N4Y4
-         8I4Gd50bIqBTW4GBPyi3KKU8TWobDmMkORH9Pm2VSwgarDb4m5s8ZWbIeP0HKmE1QfFZ
-         TFMEOx7iDIoULS14gOtTG7EOrYKRIQXl4IZkB6s81C2P0QE9WSGAFtGIibk74MKTWn63
-         E/xJ2uxzbUjTdbzrT+/oZVDLpMVXsiUTzfWnnSN3Cq8albtvx6hzu0oCwcDi+aHfXZlN
-         RBqU3YqLm0LYdSpJ056SGGYdNfO3m8xJhEOy/JWPJuDvi2BM6WHecxGLtdzXLqbvNXcJ
-         HVRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=e8KNXf14WU5er2UKIj8pqaMgzclV9pM6uKswGnOq0GI=;
-        b=cHdV6MGMm26vEnvVn/iE0zfSOhHjkw0drY1ryGWk9KSGlNAxAmdv4Ds4QGWLcZQ7jr
-         Uneavon2mICkbJl4dpxgeNPXDsFfDMuxJ8sSLiGMlUtSKoKfslShXrZB6ooPrKmBcp0G
-         LI5YyMy1ZOV7OTJa4+GrsAv0GVTgHDia+XAn9wMGaBXb0mOYZNkvM930bWYncyu58cHZ
-         DAUE0vC0r4e2He6rpZOYzdsS6ItISqyaFocMOC5j2LWQyrvFrJKwarDLexsnalxqCkMj
-         elS9R9j5bNzPav9+/XXZIw34nFa0nL3L5DbSlpkewaf6XNzHxyx5ogqkeoJ8+MvIDW/5
-         1vjA==
-X-Gm-Message-State: AOAM5306MAE3URsUaoGhYTJw+3mkN1BxDlKHE3kRd7M9kUqlSOssLZ8A
-        E+DmvxpR8U6a487Zalo+abBVPsrTBdou5JsJpLf6HA==
-X-Google-Smtp-Source: ABdhPJyWq+ZomiWSDl0ybZKapPb4tWS2qbLi9TxNv1TkUpgXj0wjt9dprwRxjCcvoKbRR01exYOKHFlM5KlT0qJdTrY=
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr28846636ejc.133.1617040922119;
- Mon, 29 Mar 2021 11:02:02 -0700 (PDT)
+        Mon, 29 Mar 2021 14:02:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BE1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:02:10 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQwDH-0004Gs-73; Mon, 29 Mar 2021 20:02:07 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQwDG-0001XY-IO; Mon, 29 Mar 2021 20:02:06 +0200
+Date:   Mon, 29 Mar 2021 20:02:06 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] pwm: pca9685: Support staggered output ON times
+Message-ID: <20210329180206.rejl32uajslpvbgi@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-4-clemens.gruber@pqgruber.com>
+ <20210329170357.par7c3izvtmtovlj@pengutronix.de>
+ <YGILdjZBCc2vVlRd@workstation.tuxnet>
 MIME-Version: 1.0
-References: <20210329101343.082590961@linuxfoundation.org>
-In-Reply-To: <20210329101343.082590961@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 29 Mar 2021 23:31:50 +0530
-Message-ID: <CA+G9fYsGM7g=W9P4GN=VbmpQpV6dez6SdTqoF969A-+14j3xyg@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/252] 5.11.11-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="noem5j55dbfdgb7z"
+Content-Disposition: inline
+In-Reply-To: <YGILdjZBCc2vVlRd@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 15:45, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.11 release.
-> There are 252 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 31 Mar 2021 10:13:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.11-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+--noem5j55dbfdgb7z
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On Mon, Mar 29, 2021 at 07:16:38PM +0200, Clemens Gruber wrote:
+> On Mon, Mar 29, 2021 at 07:03:57PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Mon, Mar 29, 2021 at 02:57:04PM +0200, Clemens Gruber wrote:
+> > > The PCA9685 supports staggered LED output ON times to minimize current
+> > > surges and reduce EMI.
+> > > When this new option is enabled, the ON times of each channel are
+> > > delayed by channel number x counter range / 16, which avoids asserting
+> > > all enabled outputs at the same counter value while still maintaining
+> > > the configured duty cycle of each output.
+> > >=20
+> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> >=20
+> > Is there a reason to not want this staggered output? If it never hurts I
+> > suggest to always stagger and drop the dt property.
+>=20
+> There might be applications where you want multiple outputs to assert at
+> the same time / to be synchronized.
+> With staggered outputs mode always enabled, this would no longer be
+> possible as they are spread out according to their channel number.
+>=20
+> Not sure how often that usecase is required, but just enforcing the
+> staggered mode by default sounds risky to me.
 
-Summary
-------------------------------------------------------------------------
+There is no such guarantee in the PWM framework, so I don't think we
+need to fear breaking setups. Thierry?
 
-kernel: 5.11.11-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: f288f3edc68844bc15b54723fe2c7a50c24f5da6
-git describe: v5.11.10-253-gf288f3edc688
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.10-253-gf288f3edc688
+One reason we might not want staggering is if we have a consumer who
+cares about config transitions. (This however is moot it the hardware
+doesn't provide sane transitions even without staggering.)
 
-No regressions (compared to build v5.11.9-3-g7ab86fca27ce)
+Did I already ask about races in this driver? I assume there is a
+free running counter and the ON and OFF registers just define where in
+the period the transitions happen, right? Given that changing ON and OFF
+needs two register writes probably all kind of strange things can
+happen, right? (Example thought: for simplicity's sake I assume ON is
+always 0. Then if you want to change from OFF =3D 0xaaa to OFF =3D 0xccc we
+might see a period with 0xacc. Depending on how the hardware works we
+might even see 4 edges in a single period then.)
 
-No fixes (compared to build v5.11.9-3-g7ab86fca27ce)
-
-
-Ran 66219 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lkdtm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-tc-testing
-* ltp-commands-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* fwts
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* kselftest-intel_pstate
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* ltp-tracing-tests
-* kvm-unit-tests
-* v4l2-compliance
-* rcutorture
-* kunit
-* igt-gpu-tools
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* ssuite
+Best regards
+Uwe
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--noem5j55dbfdgb7z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiFhoACgkQwfwUeK3K
+7AmvxQf+Kp1rfako1h3M55rltPehAc3AA2Mm7QgxbFli1DO8l1yv/rHyDhoWqVGW
+OnGEYoCJvn3mvjJVWPHgnjwFQBoHDgsrClihzVNX+2oqM9arkRnDbZ3QE6QnBIBI
+eGo+kSSfsQIv7uUEyL2m2CuHivqDIGsS8khw6LdoTHzvp13vK/ICGm5zVKiRBkE2
+bFSrKsuBn89LN+uYjULYcDs0nWtd61ah6ULENwttDvihVedCK55JxkFxLNUg5XRS
+0SYZBvuTwjQeepWttbVCiLtpHL+dbc39ZYNQcSo7G7lS1bgj2WGTVVdb+x5xuAeC
+jJwGG+TgKT6QA9h41S/8Y9lzUyWT1w==
+=QR6o
+-----END PGP SIGNATURE-----
+
+--noem5j55dbfdgb7z--
