@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B32934C4B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B2534C4BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhC2HQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:16:24 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45336 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230466AbhC2HQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:16:06 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx38uufmFgeuMBAA--.5162S2;
-        Mon, 29 Mar 2021 15:15:59 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Loongson64: enable CONFIG_USB_SERIAL_PL2303
-Date:   Mon, 29 Mar 2021 15:15:58 +0800
-Message-Id: <20210329071558.3492-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
+        id S231136AbhC2HTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229711AbhC2HSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:18:44 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739D9C061574;
+        Mon, 29 Mar 2021 00:18:44 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id r17so4271852ilt.0;
+        Mon, 29 Mar 2021 00:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ipGIX5vIwXmNlWMmQnWuyNW0ntYcVKs6pD8ajiwAnug=;
+        b=XyZL/W8VaxFDzjFLaaYW/fQo+48ztvKqEBg+KJxrYfBdVANhaJ1U3TLOtlYswRQkap
+         1lFPil6jY9ZwtJ8qKXZ0AcTcsVOpByWh2kz7E/BcqFWe7/mkw3uOMGgGnqbE0dCsugaZ
+         248C5uWfZJAcfMnGGkS1Vf/H6ARTbkOnYnNSyHOdC9TxblQ5cUj8qF0I66wSl6CBQnuh
+         e4sV05K0uGcVI0jJ5OsMxNaHBaIYDAWAd7X7i2YWm+VyIpySXjm42YueJxQDKvSOMPJn
+         yuUFAKlp2UB1qx9owUfcR4Gdt56qzzbkkfQP3LkszC879mU9WdQSFGA/loe/Klt+JCbW
+         Gx3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ipGIX5vIwXmNlWMmQnWuyNW0ntYcVKs6pD8ajiwAnug=;
+        b=GjV3cewFIio2XYL6zBd6Kh2u2gyyIfzCZQNbqlKtk/Hkri6JSEhJxbhsygld4Vl2LC
+         FTtpN8c87vitGhqvuKYSTxqojaLIQWMs5Nl3xG8FA87UNl7dqRPKcFzo1MWzmSZ2oFWL
+         2YkXDL1P9ADfAxcBwzteXIxzY6sSvZixOVRqjCSggcgriFxd1oiRFq5qL9SYJSWiM6W5
+         y9nWbqCjguVMgqoDpJ4jqlAJDlXE3IgxbTzjAAswKHqqgyJJFPX1CaPSi9coBiLvv8FO
+         MWk3xNFzKimUvRE4qzHA7+PyqiTy8H4V3rE/LLI3p6gSEw186PVwRcz6JBAc1guGrX5P
+         8cZQ==
+X-Gm-Message-State: AOAM533a3/tLo54Vp/JLtze1751SbDrzAptsRvZGuPRyu+rZiQ8SJRbP
+        LsFoS0wJdydPzxkIUjovBCkU2ys1ze5ERNGyGFGfMhF+qmFoUA==
+X-Google-Smtp-Source: ABdhPJxgoEy+504UKzc83Pshb0sd4GwTxbG1/5jJB/P/wMWiVbHYiQiSccfdpfpCm+G/V2KxS41eSBOAm9n5Nr5g37o=
+X-Received: by 2002:a92:194c:: with SMTP id e12mr19805012ilm.292.1617002323859;
+ Mon, 29 Mar 2021 00:18:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx38uufmFgeuMBAA--.5162S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWUGFW3CFykuF1fKFWrGrg_yoW8Ww43pF
-        93XFW8GF48Gr18CFWv9F4kGr40kFZ8Kr97Ca1jyr15tFn3Xw4Yvw1Yyw1xGws2qr95J3W8
-        ua4kK3yxJFW7C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcRwZUUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <cover.1616966903.git.lucas.p.stankus@gmail.com>
+In-Reply-To: <cover.1616966903.git.lucas.p.stankus@gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 29 Mar 2021 10:18:32 +0300
+Message-ID: <CA+U=DsqOq2ZYRTy-VG-N-5fb_9TY6RNa4KM1uVdQb6eW-6VH6w@mail.gmail.com>
+Subject: Re: [PATCH 0/3] iio: adc: ad7923: convert driver resources routines
+ to device-managed counterparts
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using the Loongson-3A4000 machine for serial port debugging,
-there is no /dev/ttyUSB* output, which makes the serial port unavailable,
-For convenience, we open this configuration.
+On Mon, Mar 29, 2021 at 12:48 AM Lucas Stankus
+<lucas.p.stankus@gmail.com> wrote:
+>
+> Following the initiative proposed by Alexandru, this patch series aims
+> to convert the ad7923 to use only device-managed routines.
+>
 
-zhangqing@loongson-pc:~$ cat /sys/firmware/lefi/boardinfo
-Board Info
-Manufacturer		: THTF
-Board Name		: THTF-LS3A4000-7A1000-ML4A
-Family			: LOONGSON3
+This idea is becoming popular it seems :)
 
-BIOS Info
-Vendor			: ZD tech
-Version			: ZD tech-V2.1.1
-ROM Size		: 4 KB
-Release Date		: 2020-06-29
+Thanks to Lars for pointing out that spi_set_drvdata() omission.
+With that fixed:
 
-zhangqing@loongson-pc:~$ lsusb
-Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-Bus 005 Device 003: ID 093a:2510 Pixart Imaging, Inc. Optical Mouse
-Bus 005 Device 002: ID 0c45:760b Microdia USB Keyboard
-Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Bus 003 Device 003: ID 067b:2303 Prolific Technology, Inc. PL2303 Serial Port
-Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- arch/mips/configs/loongson3_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+If you want, you can also search for more of these xxx_set_drvdata() omissions.
+There were more conversions to devm_ that forgot to remove those.
+Maybe a cocci script would be nice to find them.
+But all this is optional. Only if you want.
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 77f6a3551f46..a18609cf0e5e 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -320,6 +320,7 @@ CONFIG_USB_OHCI_HCD=y
- CONFIG_USB_UHCI_HCD=m
- CONFIG_USB_STORAGE=m
- CONFIG_USB_SERIAL=m
-+CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_OPTION=m
- CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_CMOS=y
--- 
-2.31.0
-
+> Part of the driver was already using devm_ functions, so it was possible
+> to convert the remainder of it without much hassle.
+>
+> With that, the deregistration function was no longer necessary and could
+> be entirely removed from the driver.
+>
+> Lucas Stankus (3):
+>   iio: adc: ad7923: use devm_add_action_or_reset for regulator disable
+>   iio: adc: ad7923: use device-managed function for triggered buffer
+>   iio: adc: ad7923: register device with devm_iio_device_register
+>
+>  drivers/iio/adc/ad7923.c | 39 +++++++++++++--------------------------
+>  1 file changed, 13 insertions(+), 26 deletions(-)
+>
+> --
+> 2.31.0
+>
