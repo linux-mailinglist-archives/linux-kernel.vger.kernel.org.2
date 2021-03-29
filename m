@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492CA34C7A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C3834C8F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhC2IRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54106 "EHLO mail.kernel.org"
+        id S233653AbhC2IZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:25:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhC2IKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:10:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 956C36196B;
-        Mon, 29 Mar 2021 08:10:42 +0000 (UTC)
+        id S233146AbhC2IQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:16:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74976619B9;
+        Mon, 29 Mar 2021 08:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005443;
-        bh=4T5nshDnSfdrBR1gefSFliG79GvTAw5WAZSSBIwntxo=;
+        s=korg; t=1617005766;
+        bh=XCxWf8aOOtILEe2PPUBZalMKFfKHWRwjEDxquhJJ8Hs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FX/rUpP6P4AGRJ47UxwREKG3oU+cFq5rURDWh5/opRRfIt/ZuBbf38iINwJZpCxx0
-         ddkhtpfs1J4ImKLvlNFWMDePA99Co/85fzGH0vXz46sv36g70WiNiPNXpJeJOhFKt+
-         Fyn8Iyx86f14NkNc//mxKjQWb7YPf6EtDX8woIjY=
+        b=YxeCFINhMDt01ghFmK/y+H9KVDO4W6OH1eC7904SJRhHLNcHBbL3ppB9y0L/L/qA3
+         vRDOmiVTStAKLo01fpI0OgSWixNUCNulJ2P3NkIXc5b320oBaygIZiIwd3iC7ex6l3
+         y8dfzeZAylbNna6Q/y1FzApDBt67PHJX+lqK7ezE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <u.kleine-koenig@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 46/72] can: c_can: move runtime PM enable/disable to c_can_platform
+Subject: [PATCH 5.4 074/111] can: c_can: move runtime PM enable/disable to c_can_platform
 Date:   Mon, 29 Mar 2021 09:58:22 +0200
-Message-Id: <20210329075611.801685477@linuxfoundation.org>
+Message-Id: <20210329075617.673652011@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,7 +67,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 6 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 24c6015f6c92..2278c5fff5c6 100644
+index 8e9f5620c9a2..f14e739ba3f4 100644
 --- a/drivers/net/can/c_can/c_can.c
 +++ b/drivers/net/can/c_can/c_can.c
 @@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
@@ -89,7 +89,7 @@ index 24c6015f6c92..2278c5fff5c6 100644
  static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
  {
  	if (priv->device)
-@@ -1318,7 +1306,6 @@ static const struct net_device_ops c_can_netdev_ops = {
+@@ -1334,7 +1322,6 @@ static const struct net_device_ops c_can_netdev_ops = {
  
  int register_c_can_dev(struct net_device *dev)
  {
@@ -97,7 +97,7 @@ index 24c6015f6c92..2278c5fff5c6 100644
  	int err;
  
  	/* Deactivate pins to prevent DRA7 DCAN IP from being
-@@ -1328,28 +1315,19 @@ int register_c_can_dev(struct net_device *dev)
+@@ -1344,28 +1331,19 @@ int register_c_can_dev(struct net_device *dev)
  	 */
  	pinctrl_pm_select_sleep_state(dev->dev.parent);
  
