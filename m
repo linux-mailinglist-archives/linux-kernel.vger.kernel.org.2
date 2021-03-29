@@ -2,51 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D8734CD25
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D7634CD28
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhC2Jcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:32:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:45292 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231654AbhC2Jcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:32:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDF80142F;
-        Mon, 29 Mar 2021 02:32:42 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.51.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65DE83F7D7;
-        Mon, 29 Mar 2021 02:32:41 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     gustavo.pimentel@synopsys.com, bhelgaas@google.com,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        toan@os.amperecomputing.com, linux-pci@vger.kernel.org,
-        robh@kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, dann.frazier@canonical.com
-Subject: Re: [PATCH] PCI: xgene: fix a mistake about cfg address
-Date:   Mon, 29 Mar 2021 10:32:35 +0100
-Message-Id: <161701033575.5341.4105470875260495956.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210328144118.305074-1-zhengdejin5@gmail.com>
-References: <20210328144118.305074-1-zhengdejin5@gmail.com>
+        id S231543AbhC2JgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhC2Jft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:35:49 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:35:49 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id o19so13476380edc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ofP8ZrkKdrb2jW02UKASuGexUcGhv2J0NvhfsNoA2rw=;
+        b=LWhxFew4ersP1bNrrS/NlQ7W5Wfn+B7qayH3xpRbTUpQ8/ZFI7VhGpZAoHTlpbSI9x
+         4p7LvtBL4kSOJXZ+Cd9e5O04DN1347CpU8/Qggx18/vHhrxLyOJvWanTfiJo3wK0pXQe
+         jXhhNPuPbJISHvJjCT3Pgu7yGZdO1Ma+27xw6nUshbKcIZEXE5GcOiuTGdXti7t2MKB0
+         tUM68KaL/IUiIauovo+qemQLHynrPpjlrmalMOBwb5XCnRH2Pxd3q/a3tonUcKTW+BMN
+         0HBi6osGVojmYTfxrlfjJU40cq62HaXJ7RAPPgpBN4BEbiLYElPZdM6JvTaMhcozOd9x
+         sNjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ofP8ZrkKdrb2jW02UKASuGexUcGhv2J0NvhfsNoA2rw=;
+        b=GOsP8ybVNW0kj6y6oShtyktx3wPuPFYvrhWyK8ro/FBMRKnIHDefVFj7Qqv/2LTdXF
+         uVoZ/J6I8QSYbj9AsM7LCXijRumItSl9EFz7p/WjZ/Iw1WbJfm0BYaeSRVs1jpaU/njk
+         XqbQFpdHoxlFRaSuAO63tWHIdpzX16FQLZqd5I9ub9HZaJTRutCaKi6uemHjgpE6r/v7
+         OIM9vzRheCq5QH9nQstseh4k59ZlOeNuYQLoyFCmnP6nTDNTFFjh5f7+NsWhwo64D8TQ
+         CKQMGu7BFtb3rNBRknbqf6pApI9Xt9PLei01U03LwuVZ9t5HiF9ppi8YrBPd1BPbZf5k
+         U/QQ==
+X-Gm-Message-State: AOAM531kKRHX+bYcCIBAg8WJIFO/wYfKsQ/FqjgwPuS3E2dynxzp8zh4
+        7mtazYoAaNERRHPWBlOYzgSbW/kqUdvLe0EIczMeVJ+W5m0O8fPV
+X-Google-Smtp-Source: ABdhPJzeKGOpzQe8OSdOFHA+TWaSykrMP4h6yj9CHmlZ7q7eF7+gw/6ai54C/CvIxbfcszi3ibuCpUW50QCMakOQAqA=
+X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr27144667ejc.375.1617010537417;
+ Mon, 29 Mar 2021 02:35:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210329075633.135869143@linuxfoundation.org> <20210329075640.480623043@linuxfoundation.org>
+In-Reply-To: <20210329075640.480623043@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 29 Mar 2021 15:05:25 +0530
+Message-ID: <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
+Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 Mar 2021 22:41:18 +0800, Dejin Zheng wrote:
-> It has a wrong modification to the xgene driver by the commit
-> e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
-> simplify codes and remove the res variable, But the following code
-> needs to use this res variable, So after this commit, the port->cfg_addr
-> will get a wrong address. Now, revert it.
+On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Anshuman Khandual <anshuman.khandual@arm.com>
+>
+> [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+>
+> This overrides arch_get_mappable_range() on arm64 platform which will be
+> used with recently added generic framework.  It drops
+> inside_linear_region() and subsequent check in arch_add_memory() which are
+> no longer required.  It also adds a VM_BUG_ON() check that would ensure
+> that mhp_range_allowed() has already been called.
+>
+> Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: teawater <teawaterz@linux.alibaba.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm64/mm/mmu.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 6f0648777d34..92b3be127796 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+>         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+>  }
+>
+> -static bool inside_linear_region(u64 start, u64 size)
+> +struct range arch_get_mappable_range(void)
+>  {
+> +       struct range mhp_range;
+> +
+>         /*
+>          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+>          * accommodating both its ends but excluding PAGE_END. Max physical
+>          * range which can be mapped inside this linear mapping range, must
+>          * also be derived from its end points.
+>          */
+> -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+> -              (start + size - 1) <= __pa(PAGE_END - 1);
+> +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> +       mhp_range.end =  __pa(PAGE_END - 1);
+> +       return mhp_range;
+>  }
+>
+>  int arch_add_memory(int nid, u64 start, u64 size,
+> @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>  {
+>         int ret, flags = 0;
+>
+> -       if (!inside_linear_region(start, size)) {
+> -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+> -               return -EINVAL;
+> -       }
+> -
+> +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
+>         if (rodata_full || debug_pagealloc_enabled())
+>                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
 
-Applied to pci/xgene, thanks!
+The stable rc 5.10 and 5.11 builds failed for arm64 architecture
+due to below warnings / errors,
 
-[1/1] PCI: xgene: Fix cfg resource mapping
-      https://git.kernel.org/lpieralisi/pci/c/f243b619b4
+> Anshuman Khandual <anshuman.khandual@arm.com>
+>     arm64/mm: define arch_get_mappable_range()
 
-Thanks,
-Lorenzo
+
+  arch/arm64/mm/mmu.c: In function 'arch_add_memory':
+  arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
+'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
+[-Werror=implicit-function-declaration]
+    VM_BUG_ON(!mhp_range_allowed(start, size, true));
+               ^
+  include/linux/build_bug.h:30:63: note: in definition of macro
+'BUILD_BUG_ON_INVALID'
+   #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+                                                                 ^
+  arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
+    VM_BUG_ON(!mhp_range_allowed(start, size, true));
+    ^~~~~~~~~
+
+Build link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
+
+--
+Linaro LKFT
+https://lkft.linaro.org
