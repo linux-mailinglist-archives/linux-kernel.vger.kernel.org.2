@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD39634CB02
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D97F34C625
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbhC2ImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:42:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
+        id S232156AbhC2IFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233131AbhC2IYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:24:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA43E614A7;
-        Mon, 29 Mar 2021 08:23:49 +0000 (UTC)
+        id S231996AbhC2IDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8356619AA;
+        Mon, 29 Mar 2021 08:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006230;
-        bh=maZLklevpeKGFhw+kRt1hXzJbYfrna0g4eQsOohi0eE=;
+        s=korg; t=1617004992;
+        bh=A6LnIq9Ny7Qd4Rzyprd6DSPguREoTQjKIkCsXOZZAvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LySZCGbw7H+gMuNAeJ4FiP5JbwycYAThkBX6sDdtyiAPjWlXHnojOtFOZUuOPHxs/
-         QYehEgyCM+MlpstPuyRA6/7UADvUaxsc2GTnw9ePFhXo5NFiPaj7nqvaHaKgAyPCE6
-         Fd/L9cRYnR+b2galW0dn8qt4d19Z0pXrm7HpS1Dg=
+        b=qY7d3A6nU4+xXSL+nUfuSVvdI8t75cAhkBTuv8oHb5eDEqelAULBz3frhXGzm41mR
+         /trNcC8cB+ejIpX444ShoaIqcX2aAlL4T7rv2+/9vR+RpJQI4r6Sv85pSqkEubgbyP
+         PVDVr2P7Cnz5oTwYIszXAixvZ1p+SMZtOJAKyPnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 165/221] can: isotp: tx-path: zero initialize outgoing CAN frames
+        Alexander Levin <alexander.levin@verizon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 41/53] futex: Avoid freeing an active timer
 Date:   Mon, 29 Mar 2021 09:58:16 +0200
-Message-Id: <20210329075634.646178240@linuxfoundation.org>
+Message-Id: <20210329075608.863398296@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit b5f020f82a8e41201c6ede20fa00389d6980b223 ]
+commit 97181f9bd57405b879403763284537e27d46963d upstream.
 
-Commit d4eb538e1f48 ("can: isotp: TX-path: ensure that CAN frame flags are
-initialized") ensured the TX flags to be properly set for outgoing CAN
-frames.
+Alexander reported a hrtimer debug_object splat:
 
-In fact the root cause of the issue results from a missing initialization
-of outgoing CAN frames created by isotp. This is no problem on the CAN bus
-as the CAN driver only picks the correctly defined content from the struct
-can(fd)_frame. But when the outgoing frames are monitored (e.g. with
-candump) we potentially leak some bytes in the unused content of
-struct can(fd)_frame.
+  ODEBUG: free active (active state 0) object type: hrtimer hint: hrtimer_wakeup (kernel/time/hrtimer.c:1423)
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20210319100619.10858-1-socketcan@hartkopp.net
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  debug_object_free (lib/debugobjects.c:603)
+  destroy_hrtimer_on_stack (kernel/time/hrtimer.c:427)
+  futex_lock_pi (kernel/futex.c:2740)
+  do_futex (kernel/futex.c:3399)
+  SyS_futex (kernel/futex.c:3447 kernel/futex.c:3415)
+  do_syscall_64 (arch/x86/entry/common.c:284)
+  entry_SYSCALL64_slow_path (arch/x86/entry/entry_64.S:249)
+
+Which was caused by commit:
+
+  cfafcd117da0 ("futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()")
+
+... losing the hrtimer_cancel() in the shuffle. Where previously the
+hrtimer_cancel() was done by rt_mutex_slowlock() we now need to do it
+manually.
+
+Reported-by: Alexander Levin <alexander.levin@verizon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Fixes: cfafcd117da0 ("futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()")
+Link: http://lkml.kernel.org/r/alpine.DEB.2.20.1704101802370.2906@nanos
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/isotp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/futex.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index b01662d2f2cd..ea1e227b8e54 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -196,7 +196,7 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 	nskb->dev = dev;
- 	can_skb_set_owner(nskb, sk);
- 	ncf = (struct canfd_frame *)nskb->data;
--	skb_put(nskb, so->ll.mtu);
-+	skb_put_zero(nskb, so->ll.mtu);
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3018,8 +3018,10 @@ out_unlock_put_key:
+ out_put_key:
+ 	put_futex_key(&q.key);
+ out:
+-	if (to)
++	if (to) {
++		hrtimer_cancel(&to->timer);
+ 		destroy_hrtimer_on_stack(&to->timer);
++	}
+ 	return ret != -EINTR ? ret : -ERESTARTNOINTR;
  
- 	/* create & send flow control reply */
- 	ncf->can_id = so->txid;
-@@ -779,7 +779,7 @@ isotp_tx_burst:
- 		can_skb_prv(skb)->skbcnt = 0;
- 
- 		cf = (struct canfd_frame *)skb->data;
--		skb_put(skb, so->ll.mtu);
-+		skb_put_zero(skb, so->ll.mtu);
- 
- 		/* create consecutive frame */
- 		isotp_fill_dataframe(cf, so, ae, 0);
-@@ -887,7 +887,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	so->tx.idx = 0;
- 
- 	cf = (struct canfd_frame *)skb->data;
--	skb_put(skb, so->ll.mtu);
-+	skb_put_zero(skb, so->ll.mtu);
- 
- 	/* take care of a potential SF_DL ESC offset for TX_DL > 8 */
- 	off = (so->tx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
--- 
-2.30.1
-
+ uaddr_faulted:
 
 
