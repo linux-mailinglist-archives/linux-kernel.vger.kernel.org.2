@@ -2,177 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5489B34CD60
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6689C34CD58
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhC2JwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:52:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232034AbhC2Jvy (ORCPT
+        id S232142AbhC2JwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231594AbhC2Jvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:51:54 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T9XAQX194653;
-        Mon, 29 Mar 2021 05:51:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=nXxBRDUKwv4tg/UBkzFy6h2ENZzL491+fnndTiowvk4=;
- b=drq38PB5FRwtpw+LxpbQ7I4BjfqCIYqe708C+H4xYrof0a05p80fpy9vZxeFrnQBd7Hp
- Z9Hmpbdu/bje+Q60h0wn4FTXD+URyYPBp1YwgE5Xq3fCdkjxeVnOgY82qLR2S4CAqNFP
- yVAk1s3VKJcFeKbgU9+SlZsx74eZ0UAXRSgt2fjoGz0LdvCVF00QEi87+0H3zn1oxim5
- iUWFpSHPBwRWxZpi12tqfA+0bmU8Yx0X+DUpHY5VY0JVBbhIwsgYECMXAVYFi+Kdp13r
- TIvqjOvs47lH6KBS+N7ODDeYdN2N2nYt9NWkIBa3lo90WH9TX9REbOjT3W4X4jiwXyGf RA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37juxb9d0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 05:51:14 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12T9bflm017044;
-        Mon, 29 Mar 2021 05:51:13 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37juxb9cyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 05:51:13 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12T9gTCf008972;
-        Mon, 29 Mar 2021 09:51:11 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 37hvb8gvef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 09:51:11 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12T9p93F25231686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 09:51:09 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3C0A111C04A;
-        Mon, 29 Mar 2021 09:51:09 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E16D711C058;
-        Mon, 29 Mar 2021 09:51:03 +0000 (GMT)
-Received: from pomme.local (unknown [9.211.151.38])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Mar 2021 09:51:03 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
-To:     Dmitry Safonov <dima@arista.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org
-References: <20210326191720.138155-1-dima@arista.com>
- <52562f46-6767-ba04-7301-04c6209fe4f1@csgroup.eu>
- <1b1494a8-da80-e170-78fa-48dfb3226e75@arista.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <ff24e583-aab7-6d73-8b19-4a0e47457482@linux.ibm.com>
-Date:   Mon, 29 Mar 2021 11:51:02 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <1b1494a8-da80-e170-78fa-48dfb3226e75@arista.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FAlyGckbWKhcUViz8Ul3CgHiuiimSH8s
-X-Proofpoint-ORIG-GUID: nVhytTAiyqNveN1mzjsuDnanoTdeSsmI
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 29 Mar 2021 05:51:39 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765BFC061574;
+        Mon, 29 Mar 2021 02:51:39 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id j9so10444551wrx.12;
+        Mon, 29 Mar 2021 02:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=93DcfhqgtfktNYwco+/lseOCnkVnHEhuy5c9l8CVzz4=;
+        b=pffyDvAOie8uMl0siTK3GLdLWHiNqPgExweQb9wXMb483DBV1zWgFYHf0/ExWZOXIC
+         59A43Z66AS0dBfPHbCjuma1K9gQGAjk3Yh6WJ6t7mzB+//avDZ1Y35DHxxJeimRPttIP
+         pbIoNp6Db6FpuUcdOUHE2DawEdukr9exayyHkXbB8WxwdwgEqAg040uXn8Op4UFBZIdN
+         jHNpfKJ6VpMQn/T7cryeR7mWOx1G5Q43fFdqEJlnOLIvz3pmuVZQIltqUSnp8rTqyXAi
+         AP3d8dIGMz49QgwcIqvSrT2vcDEEmEeQM9jgayJr7U5U8jpSlQeM2F+/HeUg8v2EGU2d
+         7yrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=93DcfhqgtfktNYwco+/lseOCnkVnHEhuy5c9l8CVzz4=;
+        b=MhxSgF3nHYvLfVrx2AZkAeV8rGiWLcUc29fE2MZ7tcYOAA7s1iDm5GTviEKqxQ3RcX
+         Au+xWx/wbBK5iM+4zkNJbeENdwbd9aGtl0jsmSDYKBX1ECqQ5pg2wJ1exnd3HCvdi7Jc
+         tRgyaAP6RJZhBvC+fIm2Yun5POgtI1Rmmd/INL5PIfLm3TTQZV3suDmrPm8klIxTlQzQ
+         6e+5e173nq6ejEcT2ORTCVXLH8t5QjLZbevCNL0WvKTHF7COHwXrsefPuhkjF4mzgsMC
+         O/OYzH7w1HyAQEhw7tYVrch9iRIHb2PYZPhtvaMAZxyNA+gEETAYTaEECysjJPsO1hnF
+         C0rA==
+X-Gm-Message-State: AOAM530dzIimQd4qWzwq5BKUbzdDlTt/isyVr9IG1TIGbTkHhCgfcOFy
+        sHQaU8WouuIjTS7awcaz38q40xmY4REMZA==
+X-Google-Smtp-Source: ABdhPJwpWPMYvsiGwLPDE6K+GRTz4Xw21Fxhc4GZIQCLGW7TdEToZ7flewLP3wrAkuiHydS+sUQqGQ==
+X-Received: by 2002:a05:6000:120f:: with SMTP id e15mr26610369wrx.129.1617011497996;
+        Mon, 29 Mar 2021 02:51:37 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f1f:bb00:b80f:8305:42a8:f5fd? (p200300ea8f1fbb00b80f830542a8f5fd.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:b80f:8305:42a8:f5fd])
+        by smtp.googlemail.com with ESMTPSA id t8sm29657343wrr.10.2021.03.29.02.51.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 02:51:37 -0700 (PDT)
+Subject: Re: [PATCH] ethernet/realtek/r8169: Fix a double free in
+ rtl8169_start_xmit
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, nic_swsd@realtek.com,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329090248.4209-1-lyl2019@mail.ustc.edu.cn>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <8d40cd7a-c47e-199d-dccb-e242ec93e143@gmail.com>
+Date:   Mon, 29 Mar 2021 11:51:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-29_05:2021-03-26,2021-03-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- clxscore=1011 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103290071
+In-Reply-To: <20210329090248.4209-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe and Dimitry,
+On 29.03.2021 11:02, Lv Yunlong wrote:
+> In rtl8169_start_xmit, it calls rtl8169_tso_csum_v2(tp, skb, opts) and
+> rtl8169_tso_csum_v2() calls __skb_put_padto(skb, padto, false). If
+> __skb_put_padto() failed, it will free the skb in the first time and
+> return error. Then rtl8169_start_xmit will goto err_dma_0.
+> 
 
-Le 27/03/2021 à 18:43, Dmitry Safonov a écrit :
-> Hi Christophe,
-> 
-> On 3/27/21 5:19 PM, Christophe Leroy wrote:
-> [..]
->>> I opportunistically Cc stable on it: I understand that usually such
->>> stuff isn't a stable material, but that will allow us in CRIU have
->>> one workaround less that is needed just for one release (v5.11) on
->>> one platform (ppc64), which we otherwise have to maintain.
->>
->> Why is that a workaround, and why for one release only ? I think the
->> solution proposed by Laurentto use the aux vector AT_SYSINFO_EHDR should
->> work with any past and future release.
-> 
-> Yeah, I guess.
-> Previously, (before v5.11/power) all kernels had ELF start at "[vdso]"
-> VMA start, now we'll have to carry the offset in the VMA. Probably, not
-> the worst thing, but as it will be only for v5.11 release it can break,
-> so needs separate testing.
-> Kinda life was a bit easier without this additional code.
-The assumption that ELF header is at the start of "[vdso]" is perhaps not a good 
-one, but using a "[vvar]" section looks more conventional and allows to clearly 
-identify the data part. I'd argue for this option.
+No, the skb isn't freed here in case of error. Have a look at the
+implementation of __skb_put_padto() and see also cc6528bc9a0c
+("r8169: fix potential skb double free in an error path").
 
-> 
->>> I wouldn't go as far as to say that the commit 511157ab641e is ABI
->>> regression as no other userspace got broken, but I'd really appreciate
->>> if it gets backported to v5.11 after v5.12 is released, so as not
->>> to complicate already non-simple CRIU-vdso code. Thanks!
->>>
->>> Cc: Andrei Vagin <avagin@gmail.com>
->>> Cc: Andy Lutomirski <luto@kernel.org>
->>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
->>> Cc: Michael Ellerman <mpe@ellerman.id.au>
->>> Cc: Paul Mackerras <paulus@samba.org>
->>> Cc: linuxppc-dev@lists.ozlabs.org
->>> Cc: stable@vger.kernel.org # v5.11
->>> [1]: https://github.com/checkpoint-restore/criu/issues/1417
->>> Signed-off-by: Dmitry Safonov <dima@arista.com>
->>> Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>
->> I tested it with sifreturn_vdso selftest and it worked, because that
->> selftest doesn't involve VDSO data.
-> 
-> Thanks again on helping with testing it, I appreciate it!
-> 
->> But if I do a mremap() on the VDSO text vma without remapping VVAR to
->> keep the same distance between the two vmas, gettimeofday() crashes. The
->> reason is that the code obtains the address of the data by calculating a
->> fix difference from its own address with the below macro, the delta
->> being resolved at link time:
->>
->> .macro get_datapage ptr
->>      bcl    20, 31, .+4
->> 999:
->>      mflr    \ptr
->> #if CONFIG_PPC_PAGE_SHIFT > 14
->>      addis    \ptr, \ptr, (_vdso_datapage - 999b)@ha
->> #endif
->>      addi    \ptr, \ptr, (_vdso_datapage - 999b)@l
->> .endm
->>
->> So the datapage needs to remain at the same distance from the code at
->> all time.
->>
->> Wondering how the other architectures do to have two independent VMAs
->> and be able to move one independently of the other.
-> 
-> It's alright as far as I know. If userspace remaps vdso/vvar it should
-> be aware of this (CRIU keeps this in mind, also old vdso image is dumped
-> to compare on restore with the one that the host has).
 
-I do agree, playing with the VDSO mapping needs the application to be aware of 
-the mapping details, and prior to 83d3f0e90c6c "powerpc/mm: tracking vDSO 
-remap", remapping the VDSO was not working on PowerPC and nobody complained...
-
-Laurent.
+> But in err_dma_0 label, the skb is freed by dev_kfree_skb_any(skb) in
+> the second time.
+> 
+> My patch adds a new label inside the old err_dma_0 label to avoid the
+> double free and renames the error labels to keep the origin function
+> unchanged.
+> 
+> Fixes: b8447abc4c8fb ("r8169: factor out rtl8169_tx_map")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/net/ethernet/realtek/r8169_main.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index f704da3f214c..91c43399712b 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -4217,13 +4217,13 @@ static netdev_tx_t rtl8169_start_xmit(struct sk_buff *skb,
+>  
+>  	if (unlikely(rtl8169_tx_map(tp, opts, skb_headlen(skb), skb->data,
+>  				    entry, false)))
+> -		goto err_dma_0;
+> +		goto err_dma_1;
+>  
+>  	txd_first = tp->TxDescArray + entry;
+>  
+>  	if (frags) {
+>  		if (rtl8169_xmit_frags(tp, skb, opts, entry))
+> -			goto err_dma_1;
+> +			goto err_dma_2;
+>  		entry = (entry + frags) % NUM_TX_DESC;
+>  	}
+>  
+> @@ -4270,10 +4270,11 @@ static netdev_tx_t rtl8169_start_xmit(struct sk_buff *skb,
+>  
+>  	return NETDEV_TX_OK;
+>  
+> -err_dma_1:
+> +err_dma_2:
+>  	rtl8169_unmap_tx_skb(tp, entry);
+> -err_dma_0:
+> +err_dma_1:
+>  	dev_kfree_skb_any(skb);
+> +err_dma_0:
+>  	dev->stats.tx_dropped++;
+>  	return NETDEV_TX_OK;
+>  
+> 
 
