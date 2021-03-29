@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534DF34CC5E
+	by mail.lfdr.de (Postfix) with ESMTP id C5C2A34CC5F
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhC2JBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
+        id S235799AbhC2JB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234146AbhC2IcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234143AbhC2IcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:32:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0663F61613;
-        Mon, 29 Mar 2021 08:31:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 439EE61883;
+        Mon, 29 Mar 2021 08:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006689;
-        bh=ALWK2MgANjTNDoOXHTlGe4rZuzKW3+d/DbaMfhN1Co8=;
+        s=korg; t=1617006691;
+        bh=aozgTVH3HTG6JxHeF/viQWKnhix4qY/2AgcsbmddK/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l7Ph0YuIZhXe6EqxVt3L3NoctQLIraWGMKOokDQbMmTmPGNXn9DfcwnaXkp85HjB7
-         fDAMDaWBlC7LxtyY7dzXohDDG8h3kt0w7G2JQ9XZcfdxoyzRnWA4q1uT2IivZ7Vzqb
-         V3muowc0htq7y4MLwWvdEmwpZz8l/MFLRaFgmbAg=
+        b=08eXekHTrjo2ZgQBrxRdiOwEXMSkZ+ZloaO6Ey3x7wkVBjRxajqCKfyii2rlxCqIB
+         eViYSmeHs4L53m66fHvuCd2ENGfuaSRd0hVwp2NTpWZK07atlnSMwfFLym5W4xr7Mj
+         sl6e4zuqIcmHZ05uZqqsiFbgoeeNnM1ecz8zoAMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
         Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 053/254] nvme-core: check ctrl css before setting up zns
-Date:   Mon, 29 Mar 2021 09:56:09 +0200
-Message-Id: <20210329075634.919919753@linuxfoundation.org>
+Subject: [PATCH 5.11 054/254] nvme-rdma: Fix a use after free in nvmet_rdma_write_data_done
+Date:   Mon, 29 Mar 2021 09:56:10 +0200
+Message-Id: <20210329075634.950662202@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -40,38 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 0ec84df4953bd42c6583a555773f1d4996a061eb ]
+[ Upstream commit abec6561fc4e0fbb19591a0b35676d8c783b5493 ]
 
-Ensure multiple Command Sets are supported before starting to setup a
-ZNS namespace.
+In nvmet_rdma_write_data_done, rsp is recoverd by wc->wr_cqe and freed by
+nvmet_rdma_release_rsp(). But after that, pr_info() used the freed
+chunk's member object and could leak the freed chunk address with
+wc->wr_cqe by computing the offset.
 
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-[hch: move the check around a bit]
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/nvme/target/rdma.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 206bf0a50487..c611a17e83f0 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4069,6 +4069,12 @@ static void nvme_validate_or_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid)
- 				nsid);
- 			break;
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index 06b6b742bb21..6c1f3ab7649c 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -802,9 +802,8 @@ static void nvmet_rdma_write_data_done(struct ib_cq *cq, struct ib_wc *wc)
+ 		nvmet_req_uninit(&rsp->req);
+ 		nvmet_rdma_release_rsp(rsp);
+ 		if (wc->status != IB_WC_WR_FLUSH_ERR) {
+-			pr_info("RDMA WRITE for CQE 0x%p failed with status %s (%d).\n",
+-				wc->wr_cqe, ib_wc_status_msg(wc->status),
+-				wc->status);
++			pr_info("RDMA WRITE for CQE failed with status %s (%d).\n",
++				ib_wc_status_msg(wc->status), wc->status);
+ 			nvmet_rdma_error_comp(queue);
  		}
-+		if (!nvme_multi_css(ctrl)) {
-+			dev_warn(ctrl->device,
-+				"command set not reported for nsid: %d\n",
-+				ns->head->ns_id);
-+			break;
-+		}
- 		nvme_alloc_ns(ctrl, nsid, &ids);
- 		break;
- 	default:
+ 		return;
 -- 
 2.30.1
 
