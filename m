@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DD734D6D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A85334D6D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhC2SRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:17:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38107 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhC2SRA (ORCPT
+        id S230180AbhC2SRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhC2SQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:17:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617041819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dgFeyPkzmPObOkTR5EkP4yemPrUTiyxU/lmEG6g4BQs=;
-        b=IZtsSrN8cuyImG7I6iDIbOL52reW3UrS893LxEtv9uC69coMgUL0YsPK3x5htlbwF8Y0qU
-        ekAAkTqY1lkFhhgOHImrYHP9d+AYkjxT899CGs6uGJjA5B3gG0ce9xc+hS75W/YgKpR0QY
-        kSfo9YiPBlH45Wk52kHk4caovXelWOg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-igv5i0B5MrmOps8rHtPNUw-1; Mon, 29 Mar 2021 14:16:57 -0400
-X-MC-Unique: igv5i0B5MrmOps8rHtPNUw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76EEC8030C4;
-        Mon, 29 Mar 2021 18:16:55 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-64.rdu2.redhat.com [10.10.116.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 508E539A60;
-        Mon, 29 Mar 2021 18:16:52 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id DB50F220BCF; Mon, 29 Mar 2021 14:16:51 -0400 (EDT)
-Date:   Mon, 29 Mar 2021 14:16:51 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, dgilbert@redhat.com,
-        seth.forshee@canonical.com
-Subject: Re: [PATCH v2 1/2] fuse: Add support for FUSE_SETXATTR_V2
-Message-ID: <20210329181651.GD676525@redhat.com>
-References: <20210325151823.572089-1-vgoyal@redhat.com>
- <20210325151823.572089-2-vgoyal@redhat.com>
- <YGHpPWcZYQQWMvAi@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGHpPWcZYQQWMvAi@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Mon, 29 Mar 2021 14:16:55 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FABC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:16:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id h25so9951999pgm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:mime-version:subject:from:in-reply-to:cc
+         :date:message-id:references:to;
+        bh=8BodsD7dsVnt+VzHAjG94w3biZzppe7s1NeC4YW3R/c=;
+        b=GNpIT7nzOTmW1j7uFYG4MsGsQxgaqfSrJP1SkCUw/L5kBaziQANp4Xtap/4+tcFNgC
+         KTvZCQCQVpgIb0fUmLkQ60kWI8HQXJYR6DiQRm4CIU3tIU29oOJJZ+fz+Ocfv5mlWm8x
+         DkEPHuwuZkcS4OKahPd0myLcrYOjKzc6pCbnd6jKrunOdLISD8RsZXHq1DisNJJfQ0gt
+         cMIX92bLePaXILA75sfBZv7pX34Tzjw7R53UoU7TJeFVt5m/Pw3fgpgQJUSVboYdjgGs
+         +CFJcbyeTYn8OpYjuc/wtrHPkmhoJVZn2kGJKbVyDMEBroWuC16FFk0uifhUmu4OJiJw
+         XMEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
+         :from:in-reply-to:cc:date:message-id:references:to;
+        bh=8BodsD7dsVnt+VzHAjG94w3biZzppe7s1NeC4YW3R/c=;
+        b=l7ldRbcEbqReXuGV+BFzqp8URZ98n065eixUxLxHqpCp4qZYBAwf1w78CbzYP6C5XC
+         N5EBu7d0VtXAfrT1r5qfQ0YGnvK5R3XWM0OrMJGQqoc6v4COJwAY4IAAqPFgJY0TbL3p
+         uxVgo6T/fnbF5jq+uEN/1eYjK5wk9tXUMzLfNKAuZjkJmgX6HbjtVJFfk+uVGqq+pF1F
+         2liJlNrVC4iTX3OCKZXEpf6cK2ngEsi6QpUNwCefImQjUQ1h1tuot6cQwteC6D2Cvsmb
+         o6k34pk8G724vNGurlm+m8fKclnM+hdo8S8Q8sRGx/6zY6Niw4zXvS39cYazgmRz8WnP
+         FJWg==
+X-Gm-Message-State: AOAM530f126UpJXCFsnpz1yqfXKLkaS4eVC6pAuGvS+iomSrS54YbD4w
+        F0SCJlXLVwdra9kGnk12mHy+Qg==
+X-Google-Smtp-Source: ABdhPJyUHvY7mzJVm4QtHCpeu+1+8bU5WDlgupz5L/Udp3YcSBGJJ/qR+2++lKVjcX5LitTuRPqOwQ==
+X-Received: by 2002:a63:f959:: with SMTP id q25mr25786650pgk.104.1617041814663;
+        Mon, 29 Mar 2021 11:16:54 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b06a:1311:e806:6d31:5a5:2c5c? ([2600:1010:b06a:1311:e806:6d31:5a5:2c5c])
+        by smtp.gmail.com with ESMTPSA id mp21sm212574pjb.16.2021.03.29.11.16.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 11:16:54 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+From:   Andy Lutomirski <luto@amacapital.net>
+In-Reply-To: <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Date:   Mon, 29 Mar 2021 11:16:52 -0700
+Message-Id: <5F98327E-8EC4-455E-B9E1-74D2F13578C5@amacapital.net>
+References: <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
+To:     Len Brown <lenb@kernel.org>
+X-Mailer: iPhone Mail (18D61)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 03:50:37PM +0100, Luis Henriques wrote:
-> On Thu, Mar 25, 2021 at 11:18:22AM -0400, Vivek Goyal wrote:
-> > Fuse client needs to send additional information to file server when
-> > it calls SETXATTR(system.posix_acl_access). Right now there is no extra
-> > space in fuse_setxattr_in. So introduce a v2 of the structure which has
-> > more space in it and can be used to send extra flags.
-> > 
-> > "struct fuse_setxattr_in_v2" is only used if file server opts-in for it using
-> > flag FUSE_SETXATTR_V2 during feature negotiations.
-> > 
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > ---
-> >  fs/fuse/acl.c             |  2 +-
-> >  fs/fuse/fuse_i.h          |  5 ++++-
-> >  fs/fuse/inode.c           |  4 +++-
-> >  fs/fuse/xattr.c           | 21 +++++++++++++++------
-> >  include/uapi/linux/fuse.h | 10 ++++++++++
-> >  5 files changed, 33 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
-> > index e9c0f916349d..d31260a139d4 100644
-> > --- a/fs/fuse/acl.c
-> > +++ b/fs/fuse/acl.c
-> > @@ -94,7 +94,7 @@ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
-> >  			return ret;
-> >  		}
-> >  
-> > -		ret = fuse_setxattr(inode, name, value, size, 0);
-> > +		ret = fuse_setxattr(inode, name, value, size, 0, 0);
-> >  		kfree(value);
-> >  	} else {
-> >  		ret = fuse_removexattr(inode, name);
-> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> > index 63d97a15ffde..d00bf0b9a38c 100644
-> > --- a/fs/fuse/fuse_i.h
-> > +++ b/fs/fuse/fuse_i.h
-> > @@ -668,6 +668,9 @@ struct fuse_conn {
-> >  	/** Is setxattr not implemented by fs? */
-> >  	unsigned no_setxattr:1;
-> >  
-> > +	/** Does file server support setxattr_v2 */
-> > +	unsigned setxattr_v2:1;
-> > +
-> 
-> Minor (pedantic!) comment: most of the fields here start with 'no_*', so
-> maybe it's worth setting the logic to use 'no_setxattr_v2' instead?
 
-Hi Luis,
+> On Mar 29, 2021, at 8:47 AM, Len Brown <lenb@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Sat, Mar 27, 2021 at 5:58 AM Greg KH <gregkh@linuxfoundation.o=
+rg> wrote:
+>>> On Fri, Mar 26, 2021 at 11:39:18PM -0400, Len Brown wrote:
+>>> Hi Andy,
+>>> Say a mainline links with a math library that uses AMX without the
+>>> knowledge of the mainline.
+>=20
+> sorry for the confusion.
+>=20
+> mainline =3D main().
+>=20
+> ie. the part of the program written by you, and not the library you linked=
+ with.
+>=20
+> In particular, the library may use instructions that main() doesn't know e=
+xist.
 
-"setxattr_v2" kind of makes more sense to me because it is disabled
-by default untile and unless client opts in. If I use no_setxattr_v2,
-then it means by default I will have to initialize it to 1. Right
-now, following automatically takes care of it.
+If we pretend for a bit that AMX were a separate device instead of a part of=
+ the CPU, this would be a no brainer: something would be responsible for ope=
+ning a device node or otherwise requesting access to the device.=20
 
-fc = kzalloc(sizeof(struct fuse_conn), GFP_KERNEL);
+Real AMX isn=E2=80=99t so different. Programs acquire access either by sysca=
+ll or by a fault, they use it, and (hopefully) they release it again using T=
+ILERELEASE. The only thing special about it is that, supposedly, acquiring a=
+nd releasing access (at least after the first time) is quite fast.  But hold=
+ing access is *not* free =E2=80=94 despite all your assertions to the contra=
+ry, the kernel *will* correctly context switch it to avoid blowing up power c=
+onsumption, and this will have overhead.
 
-Also, there are other examples which don't use "no_" prefix.
+We=E2=80=99ve seen the pattern of programs thinking that, just because somet=
+hing is a CPU insn, it=E2=80=99s free and no thought is needed before using i=
+t. This happened with AVX and AVX512, and it will happen again with AMX. We *=
+still* have a significant performance regression in the kernel due to screwi=
+ng up the AVX state machine, and the only way I know about any of the detail=
+s is that I wrote silly test programs to try to reverse engineer the nonsens=
+ical behavior of the CPUs.
 
-auto_inval_data, explicit_inval_data, do_readdirplus, readdirplus_auto, 
-async_dio..... and list goes on.
+I might believe that Intel has figured out how to make a well behaved XSTATE=
+ feature after Intel demonstrates at least once that it=E2=80=99s possible. =
+ That means full documentation of all the weird issues, no new special cases=
+, and the feature actually making sense in the context of XSTATE.  This has n=
+ot happened.  Let=E2=80=99s list all of them:
 
-Vivek
+- SSE.  Look for all the MXCSR special cases in the pseudocode and tell me w=
+ith a straight face that this one works sensibly.
 
+- AVX.  Also has special cases in the pseudocode. And has transition issues t=
+hat are still problems and still not fully documented. L
+
+- AVX2.  Horrible undocumented performance issues.  Otherwise maybe okay?
+
+- MPX: maybe the best example, but the compat mode part got flubbed and it=E2=
+=80=99s MPX.
+
+- PKRU: Should never have been in XSTATE. (Also, having WRPKRU in the ISA wa=
+s a major mistake, now unfixable, that seriously limits the usefulness of th=
+e whole feature.  I suppose Intel could release PKRU2 with a better ISA and d=
+eprecate the original PKRU, but I=E2=80=99m not holding my breath.)
+
+- AVX512: Yet more uarch-dependent horrible performance issues, and Intel ha=
+s still not responded about documentation.  The web is full of people specul=
+ating differently about when, exactly, using AVX512 breaks performance. This=
+ is NAKked in kernel until docs arrive. Also, it broke old user programs.  I=
+f we had noticed a few years ago, AVX512 enablement would have been reverted=
+.
+
+- AMX: This mess.
+
+The current system of automatic user enablement does not work. We need somet=
+hing better.=
