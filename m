@@ -2,43 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B578434CC76
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E76134CC77
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236846AbhC2JDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:03:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32956 "EHLO mail.kernel.org"
+        id S236888AbhC2JDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:03:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234447AbhC2Iin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:38:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B81F61581;
-        Mon, 29 Mar 2021 08:38:42 +0000 (UTC)
+        id S234581AbhC2Iiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:38:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB1A60234;
+        Mon, 29 Mar 2021 08:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007123;
-        bh=U98Yu/5RQudYbBGo0L7Tv+gCkT7W42eHmz639tYLuhw=;
+        s=korg; t=1617007126;
+        bh=nwJmXZyvikEUvajC3mgvchdhiH/JCT/IkbHTO2+XaO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kpmZ3erMp2eE84VP+mO4l2++okcD6fe2tVJEy/wfASdQ3bD1e3rhxI7AJaP/9To/i
-         a9LffZ4QgZEWWTACgZ2r5bgjjn0n9uHtUxJWuDbl88QJFI2g52LH+OkysPu3Z2r6SP
-         c+7HBI4MBeVUxINsMraRc+LFbANkTDs6qOn+VEAk=
+        b=xb04PKuiPczBHaEq1Y+i9nqCMWJOr0A88R8y2nbWqGmSuif1sLm/MXYRMbb57LQsl
+         cDB5aJjDEmp1t0FcL4/k733QVAdIs/YkZ4h7eTefxr/aP+iGL7V9xNclaSarqEUhKT
+         LajGeAtzP2m15UM04vmLwCmXipit7aSAxjTLh0GE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 228/254] mm/mmu_notifiers: ensure range_end() is paired with range_start()
-Date:   Mon, 29 Mar 2021 09:59:04 +0200
-Message-Id: <20210329075640.588231248@linuxfoundation.org>
+Subject: [PATCH 5.11 229/254] Revert "netfilter: x_tables: Update remaining dereference to RCU"
+Date:   Mon, 29 Mar 2021 09:59:05 +0200
+Message-Id: <20210329075640.621096537@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -50,121 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-[ Upstream commit c2655835fd8cabdfe7dab737253de3ffb88da126 ]
+[ Upstream commit abe7034b9a8d57737e80cc16d60ed3666990bdbf ]
 
-If one or more notifiers fails .invalidate_range_start(), invoke
-.invalidate_range_end() for "all" notifiers.  If there are multiple
-notifiers, those that did not fail are expecting _start() and _end() to
-be paired, e.g.  KVM's mmu_notifier_count would become imbalanced.
-Disallow notifiers that can fail _start() from implementing _end() so
-that it's unnecessary to either track which notifiers rejected _start(),
-or had already succeeded prior to a failed _start().
+This reverts commit 443d6e86f821a165fae3fc3fc13086d27ac140b1.
 
-Note, the existing behavior of calling _start() on all notifiers even
-after a previous notifier failed _start() was an unintented "feature".
-Make it canon now that the behavior is depended on for correctness.
+This (and the following) patch basically re-implemented the RCU
+mechanisms of patch 784544739a25. That patch was replaced because of the
+performance problems that it created when replacing tables. Now, we have
+the same issue: the call to synchronize_rcu() makes replacing tables
+slower by as much as an order of magnitude.
 
-As of today, the bug is likely benign:
+Revert these patches and fix the issue in a different way.
 
-  1. The only caller of the non-blocking notifier is OOM kill.
-  2. The only notifiers that can fail _start() are the i915 and Nouveau
-     drivers.
-  3. The only notifiers that utilize _end() are the SGI UV GRU driver
-     and KVM.
-  4. The GRU driver will never coincide with the i195/Nouveau drivers.
-  5. An imbalanced kvm->mmu_notifier_count only causes soft lockup in the
-     _guest_, and the guest is already doomed due to being an OOM victim.
-
-Fix the bug now to play nice with future usage, e.g.  KVM has a
-potential use case for blocking memslot updates in KVM while an
-invalidation is in-progress, and failure to unblock would result in said
-updates being blocked indefinitely and hanging.
-
-Found by inspection.  Verified by adding a second notifier in KVM that
-periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
-and observing that KVM exits with an elevated notifier count.
-
-Link: https://lkml.kernel.org/r/20210311180057.1582638-1-seanjc@google.com
-Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ben Gardon <bgardon@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: "Jérôme Glisse" <jglisse@redhat.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mmu_notifier.h | 10 +++++-----
- mm/mmu_notifier.c            | 23 +++++++++++++++++++++++
- 2 files changed, 28 insertions(+), 5 deletions(-)
+ net/ipv4/netfilter/arp_tables.c | 2 +-
+ net/ipv4/netfilter/ip_tables.c  | 2 +-
+ net/ipv6/netfilter/ip6_tables.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index b8200782dede..1a6a9eb6d3fa 100644
---- a/include/linux/mmu_notifier.h
-+++ b/include/linux/mmu_notifier.h
-@@ -169,11 +169,11 @@ struct mmu_notifier_ops {
- 	 * the last refcount is dropped.
- 	 *
- 	 * If blockable argument is set to false then the callback cannot
--	 * sleep and has to return with -EAGAIN. 0 should be returned
--	 * otherwise. Please note that if invalidate_range_start approves
--	 * a non-blocking behavior then the same applies to
--	 * invalidate_range_end.
--	 *
-+	 * sleep and has to return with -EAGAIN if sleeping would be required.
-+	 * 0 should be returned otherwise. Please note that notifiers that can
-+	 * fail invalidate_range_start are not allowed to implement
-+	 * invalidate_range_end, as there is no mechanism for informing the
-+	 * notifier that its start failed.
- 	 */
- 	int (*invalidate_range_start)(struct mmu_notifier *subscription,
- 				      const struct mmu_notifier_range *range);
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 61ee40ed804e..459d195d2ff6 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -501,10 +501,33 @@ static int mn_hlist_invalidate_range_start(
- 						"");
- 				WARN_ON(mmu_notifier_range_blockable(range) ||
- 					_ret != -EAGAIN);
-+				/*
-+				 * We call all the notifiers on any EAGAIN,
-+				 * there is no way for a notifier to know if
-+				 * its start method failed, thus a start that
-+				 * does EAGAIN can't also do end.
-+				 */
-+				WARN_ON(ops->invalidate_range_end);
- 				ret = _ret;
- 			}
- 		}
- 	}
-+
-+	if (ret) {
-+		/*
-+		 * Must be non-blocking to get here.  If there are multiple
-+		 * notifiers and one or more failed start, any that succeeded
-+		 * start are expecting their end to be called.  Do so now.
-+		 */
-+		hlist_for_each_entry_rcu(subscription, &subscriptions->list,
-+					 hlist, srcu_read_lock_held(&srcu)) {
-+			if (!subscription->ops->invalidate_range_end)
-+				continue;
-+
-+			subscription->ops->invalidate_range_end(subscription,
-+								range);
-+		}
-+	}
- 	srcu_read_unlock(&srcu, id);
+diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
+index 04a2010755a6..d1e04d2b5170 100644
+--- a/net/ipv4/netfilter/arp_tables.c
++++ b/net/ipv4/netfilter/arp_tables.c
+@@ -1379,7 +1379,7 @@ static int compat_get_entries(struct net *net,
+ 	xt_compat_lock(NFPROTO_ARP);
+ 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
+ 	if (!IS_ERR(t)) {
+-		const struct xt_table_info *private = xt_table_get_private_protected(t);
++		const struct xt_table_info *private = t->private;
+ 		struct xt_table_info info;
  
- 	return ret;
+ 		ret = compat_table_info(private, &info);
+diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
+index a5b63f92b7f3..f15bc21d7301 100644
+--- a/net/ipv4/netfilter/ip_tables.c
++++ b/net/ipv4/netfilter/ip_tables.c
+@@ -1589,7 +1589,7 @@ compat_get_entries(struct net *net, struct compat_ipt_get_entries __user *uptr,
+ 	xt_compat_lock(AF_INET);
+ 	t = xt_find_table_lock(net, AF_INET, get.name);
+ 	if (!IS_ERR(t)) {
+-		const struct xt_table_info *private = xt_table_get_private_protected(t);
++		const struct xt_table_info *private = t->private;
+ 		struct xt_table_info info;
+ 		ret = compat_table_info(private, &info);
+ 		if (!ret && get.size == info.size)
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index 81c042940b21..2e2119bfcf13 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -1598,7 +1598,7 @@ compat_get_entries(struct net *net, struct compat_ip6t_get_entries __user *uptr,
+ 	xt_compat_lock(AF_INET6);
+ 	t = xt_find_table_lock(net, AF_INET6, get.name);
+ 	if (!IS_ERR(t)) {
+-		const struct xt_table_info *private = xt_table_get_private_protected(t);
++		const struct xt_table_info *private = t->private;
+ 		struct xt_table_info info;
+ 		ret = compat_table_info(private, &info);
+ 		if (!ret && get.size == info.size)
 -- 
 2.30.1
 
