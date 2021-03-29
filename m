@@ -2,117 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8B234D590
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E2A34D593
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbhC2Qxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        id S230214AbhC2QzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhC2Qxi (ORCPT
+        with ESMTP id S230323AbhC2Qye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:53:38 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99F5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:53:37 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q26so13058379qkm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZRSWFn6sDTnWj31Ge7dRmuXWY5dPnlyjzxRDAOMtyF8=;
-        b=WygmQm1qMDmfY/dti7lonDd2AkzmSsz95cmmN4EA838MXM8wIdMZhzVOyyLhzAY/w1
-         nIw0EAj4d2QZKTFe6bLzWAkPIfTuu6K9yfjg4bwTPoQuHPbnYPgLKbOa80x9irMuDmgg
-         cAr+0cC12bw3Vbjyrw/fS6+L0XQEIN13UlU1NzgS+UB7dbgmTvccF4BNYgp/uLRGCfh4
-         PmqrURDMZ9gT+F+S/NjxmXsCKiCHCWGu4anYJLOXWMzAtjokdWBuILL0LbQuyYplMFlc
-         985TS4hQFVh5GcvQeBgbxTgGHE7NcPcBrEK6cX6jyfsh4aY0Of1pOL497Lup+TgkT12h
-         3oyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ZRSWFn6sDTnWj31Ge7dRmuXWY5dPnlyjzxRDAOMtyF8=;
-        b=qJYWQzEoexRb6jKeFj5lcWLM/GN3w0uqYbXIQL8G0kQKACtTzTMfbYZUW7AetkFz0D
-         cNGSGCGc5rvWb8FZKOm9HmZe9PAc3iZjMx84JSI07ASb84l5jFjKJTi67vx+937bO1L0
-         EIFDIqMzSVch68e2Lxf5bnG2p7y8tjfM0Of0AV2humgq9CbNmx+l44LOX8pYkfg0CJgG
-         J2q4u3ZE5LM1ZJ8B1fXCPMbyLETwoFVUUyBMunOnuT4MYQA+BZNrh2GKpo9w5uzuA0WG
-         DnrccFv10MdgIB5NqrR7/8hQx467b8AtE7KI62ZHSqDw2agQSB3++1yJamp5vjNc5X1l
-         lNXA==
-X-Gm-Message-State: AOAM533WzfmlidGoitinWy1gXWRpMmlnKVhmy1Uto5BYM7KaZ9UP8A6T
-        rrRT66x0bwPzWP2O1pPV/MA=
-X-Google-Smtp-Source: ABdhPJwBGESAAZnjMxS4JMwOOjjnfqtZJ5Ln7gMJ3AXgQHLh3PMxfP4mzO0xqz9mn5cQWjzQTdaEqg==
-X-Received: by 2002:a05:620a:525:: with SMTP id h5mr26509611qkh.100.1617036816735;
-        Mon, 29 Mar 2021 09:53:36 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id j3sm13967483qki.84.2021.03.29.09.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 09:53:36 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     schwab@linux-m68k.org, geert@linux-m68k.org,
-        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH v3] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
-Date:   Mon, 29 Mar 2021 12:53:29 -0400
-Message-Id: <20210329165329.27994-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 29 Mar 2021 12:54:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A21C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:54:34 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQv9q-0004zl-2r; Mon, 29 Mar 2021 18:54:30 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQv9p-0005CS-Mf; Mon, 29 Mar 2021 18:54:29 +0200
+Date:   Mon, 29 Mar 2021 18:54:29 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <20210329165429.ookfliw4eq6zz2sg@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-2-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jj5t55ipcok53hai"
+Content-Disposition: inline
+In-Reply-To: <20210329125707.182732-2-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When LATENCYTOP, LOCKDEP, or FAULT_INJECTION_STACKTRACE_FILTER
-is enabled and ARCH_WANT_FRAME_POINTERS
-is disabled, Kbuild gives a warning such as:
 
-WARNING: unmet direct dependencies detected for FRAME_POINTER
-  Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
-  Selected by [y]:
-  - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+--jj5t55ipcok53hai
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Depending on ARCH_WANT_FRAME_POINTERS causes a
-recursive dependency error.
-ARCH_WANT_FRAME_POINTERS is to be selected by the architecture,
-and is not supposed to be overridden by other config options.
+On Mon, Mar 29, 2021 at 02:57:02PM +0200, Clemens Gruber wrote:
+> Implements .get_state to read-out the current hardware state.
+>=20
+> The hardware readout may return slightly different values than those
+> that were set in apply due to the limited range of possible prescale and
+> counter register values.
+>=20
+> Also note that although the datasheet mentions 200 Hz as default
+> frequency when using the internal 25 MHz oscillator, the calculated
+> period from the default prescaler register setting of 30 is 5079040ns.
+>=20
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+>  drivers/pwm/pwm-pca9685.c | 41 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>=20
+> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> index 0ed1013737e3..fb026a25fb61 100644
+> --- a/drivers/pwm/pwm-pca9685.c
+> +++ b/drivers/pwm/pwm-pca9685.c
+> @@ -333,6 +333,46 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, =
+struct pwm_device *pwm,
+>  	return 0;
+>  }
+> =20
+> +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_devi=
+ce *pwm,
+> +				  struct pwm_state *state)
+> +{
+> +	struct pca9685 *pca =3D to_pca(chip);
+> +	unsigned long long duty;
+> +	unsigned int val =3D 0;
+> +
+> +	/* Calculate (chip-wide) period from prescale value */
+> +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
+> +	state->period =3D (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ=
+) *
+> +			(val + 1);
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- lib/Kconfig.debug | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+As we have PCA9685_OSC_CLOCK_MHZ =3D 25 this is an integer calculation
+without loss of precision. It might be worth to point that out in a
+comment. (Otherwise doing the division at the end might be more
+sensible.)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 2779c29d9981..417c3d3e521b 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1363,7 +1363,7 @@ config LOCKDEP
- 	bool
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select STACKTRACE
--	select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !X86
-+	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
- 
-@@ -1665,7 +1665,7 @@ config LATENCYTOP
- 	depends on DEBUG_KERNEL
- 	depends on STACKTRACE_SUPPORT
- 	depends on PROC_FS
--	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-+	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
- 	select STACKTRACE
-@@ -1918,7 +1918,7 @@ config FAULT_INJECTION_STACKTRACE_FILTER
- 	depends on FAULT_INJECTION_DEBUG_FS && STACKTRACE_SUPPORT
- 	depends on !X86_64
- 	select STACKTRACE
--	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-+	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	help
- 	  Provide stacktrace filter for fault-injection capabilities
- 
--- 
-2.25.1
+> +	/* The (per-channel) polarity is fixed */
+> +	state->polarity =3D PWM_POLARITY_NORMAL;
+> +
+> +	if (pwm->hwpwm >=3D PCA9685_MAXCHAN) {
+> +		/*
+> +		 * The "all LEDs" channel does not support HW readout
+> +		 * Return 0 and disabled for backwards compatibility
+> +		 */
+> +		state->duty_cycle =3D 0;
+> +		state->enabled =3D false;
+> +		return;
+> +	}
+> +
+> +	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
+> +
+> +	state->enabled =3D !!duty;
+> +	if (!state->enabled) {
+> +		state->duty_cycle =3D 0;
+> +		return;
+> +	} else if (duty =3D=3D PCA9685_COUNTER_RANGE) {
+> +		state->duty_cycle =3D state->period;
+> +		return;
+> +	}
+> +
+> +	duty *=3D state->period;
+> +	state->duty_cycle =3D duty / PCA9685_COUNTER_RANGE;
 
+=2Eapply uses ROUND_CLOSEST to calculate duty from state->duty_cycle,
+still using / here (instead of ROUND_CLOSEST), but again as
+PCA9685_OSC_CLOCK_MHZ is 25 this calculation doesn't suffer from
+rounding errors. So if you feed the state returned here into .apply
+again, there is (as I want it) no change.
+
+The only annoyance is that if PCA9685_PRESCALE holds a value smaller
+than 3, .apply() will fail. Not sure there is any saner way to handle
+this.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jj5t55ipcok53hai
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiBkIACgkQwfwUeK3K
+7AkXKAf9Edxq8VdhqE0oDz96RLGkPW0PEAiL6u8vB1+9uTC2lxfe6gMj6tqPZamt
+H/Jk4XXwbitFnMLIfgZMtfA+/CMwymtjYvd6FjY5+yt1MfFkGLyZNX5G3IccWPgE
+d4MUwF9bG0BGgTJHEnWqJLiJ8mkDpOX6FMYSDvRtKw9rlODXnq6wlxRws/tjtjXm
+SkSivomIoImBw6ZE6EHiImGjX+BzSBHeyztU5PwuxDGry05ZEaR4CX9p3sZE4GOU
+U7U87QEUnHLdK1+vZ/1RJAsV1RTOh4v2fZtDw3WCsW8GDjyN59B9Q8X2nMQH5Z3B
+K+ac83vQ/Hlzgdaa5rIliDTJ1Y3b6Q==
+=j+4H
+-----END PGP SIGNATURE-----
+
+--jj5t55ipcok53hai--
