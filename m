@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA0F34DCAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D613334DCAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhC2XyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:54:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhC2Xxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:53:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C063E6191F;
-        Mon, 29 Mar 2021 23:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617062031;
-        bh=O7CZUUst1KTUXea/ImcMyTTrMtLZde4Lis24HYpx6Sk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=E5lJZqBTYgDkDNrBmZV2N596JOK7b6csKY7cw486lsvRqDDlcioGJLOIcsjt+mnqJ
-         +USRTsn/5fUz5CcQk6Q0tZRaP4S72V2ucI3MaYkI9YbmiUugCg2yDoxO2LdjsQE1va
-         IONLcMyEV2H+HJUQK2qLfERFCwyCdDRw3LqmTvGsQCnzhVDloY9Zjum2/1aH03c4sU
-         WwuhubQfFIzp/n0zRfgGUFzCKniKk7elmyRnR3tPRFKWAOB9OYnbqq8gNWgIBG9q/Q
-         8ko7I+7wjL5wa9Gl7VZnW04NzMOfqa4Q8IHUl/S8wEIDdUq0z9JPVv/997iP8jo4iT
-         Rl5nj3U2ynBag==
-Date:   Mon, 29 Mar 2021 16:53:49 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     simon.horman@netronome.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ethernet/netronome/nfp: Fix a use after free in
- nfp_bpf_ctrl_msg_rx
-Message-ID: <20210329165349.7b2e942f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210329115002.8557-1-lyl2019@mail.ustc.edu.cn>
-References: <20210329115002.8557-1-lyl2019@mail.ustc.edu.cn>
+        id S230294AbhC2XzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:55:18 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:42900 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhC2Xyy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 19:54:54 -0400
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 4057772C8C5;
+        Tue, 30 Mar 2021 02:54:52 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 262387CC8A3; Tue, 30 Mar 2021 02:54:52 +0300 (MSK)
+Date:   Tue, 30 Mar 2021 02:54:52 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Chris Packham <judge.packham@gmail.com>
+Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        musl@lists.openwall.com, carlos@redhat.com, davem@davemloft.net
+Subject: Re: Linux include/uapi/linux/libc-compat.h and Musl
+ include/netinet/in.h incompatibility for __UAPI_DEF_IN6_ADDR_ALT
+Message-ID: <20210329235451.GA20210@altlinux.org>
+References: <CAFOYHZCoqSW3BDywr+u-pHTdupGQjqatD8hR_P1zCdjBWjy8aQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFOYHZCoqSW3BDywr+u-pHTdupGQjqatD8hR_P1zCdjBWjy8aQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 04:50:02 -0700 Lv Yunlong wrote:
-> In nfp_bpf_ctrl_msg_rx, if
-> nfp_ccm_get_type(skb) == NFP_CCM_TYPE_BPF_BPF_EVENT is true, the skb
-> will be freed. But the skb is still used by nfp_ccm_rx(&bpf->ccm, skb).
-> 
-> My patch adds a return when the skb was freed.
-> 
-> Fixes: bcf0cafab44fd ("nfp: split out common control message handling code")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Hi,
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+On Tue, Mar 30, 2021 at 12:30:52PM +1300, Chris Packham wrote:
+> Hi,
+> 
+> I've come over from https://github.com/strace/strace/issues/177
+> there's a bit of context there.
+> 
+> Crosstool-ng has hit a problem when building a recent enough version
+> of strace in a configuration that uses musl libc.
+> 
+> The error is
+> 
+> [ALL  ]    In file included from
+> /home/x-tool/.build/arm-unknown-linux-musleabi/src/strace/bundled/linux/include/uapi/linux/in6.h:26,
+> [ALL  ]                     from
+> /home/x-tool/.build/arm-unknown-linux-musleabi/src/strace/bundled/linux/include/uapi/linux/if_bridge.h:19,
+> [ALL  ]                     from
+> /home/x-tool/.build/arm-unknown-linux-musleabi/src/strace/src/rtnl_mdb.c:16:
+> [ERROR]    /home/x-tool/.build/arm-unknown-linux-musleabi/src/strace/bundled/linux/include/uapi/linux/libc-compat.h:109:
+> error: "__UAPI_DEF_IN6_ADDR_ALT" redefined [-Werror]
+> [ALL  ]      109 | #define __UAPI_DEF_IN6_ADDR_ALT  1
+> [ALL  ]          |
+> [ALL  ]    In file included from
+> /home/x-tool/.build/arm-unknown-linux-musleabi/src/strace/src/rtnl_mdb.c:15:
+> [ALL  ]    /home/x-tool/x-tools/arm-unknown-linux-musleabi/arm-unknown-linux-musleabi/sysroot/usr/include/netinet/in.h:401:
+> note: this is the location of the previous definition
+> [ALL  ]      401 | #define __UAPI_DEF_IN6_ADDR_ALT 0
+> [ALL  ]          |
+> [ALL  ]    cc1: all warnings being treated as errors
+> [ERROR]    make[4]: *** [Makefile:6660: libstrace_a-rtnl_mdb.o] Error 1
+> [ALL  ]    make[4]: Leaving directory
+> '/home/x-tool/.build/arm-unknown-linux-musleabi/build/build-strace/src'
+> [ERROR]    make[3]: *** [Makefile:2404: all] Error 2
+> [ALL  ]    rm ioctlsort0.o ioctls_all0.h ioctlsort0
+> [ALL  ]    make[3]: Leaving directory
+> '/home/x-tool/.build/arm-unknown-linux-musleabi/build/build-strace/src'
+> [ERROR]    make[2]: *** [Makefile:601: all-recursive] Error 1
+> [ALL  ]    make[2]: Leaving directory
+> '/home/x-tool/.build/arm-unknown-linux-musleabi/build/build-strace'
+> [ERROR]    make[1]: *** [Makefile:506: all] Error 2
+> [ALL  ]    make[1]: Leaving directory
+> '/home/x-tool/.build/arm-unknown-linux-musleabi/build/build-strace'
+> 
+> It appears that the bundled uapi headers definition of
+> __UAPI_DEF_IN6_ADDR_ALT conflicts with the musl libc definition. It
+> looks like libc-compat.h tries to co-exists with GNU libc but this
+> isn't working for musl.
+
+This essentially means that such basic things as
+#include <netinet/in.h>
+#include <linux/in6.h>
+are broken in your setup.
+
+
+-- 
+ldv
