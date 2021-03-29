@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E6634C58E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA6034CC24
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhC2IBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:01:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
+        id S235860AbhC2I4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:56:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231479AbhC2IAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ED5D6196C;
-        Mon, 29 Mar 2021 08:00:45 +0000 (UTC)
+        id S234606AbhC2Igv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:36:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0A661929;
+        Mon, 29 Mar 2021 08:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004846;
-        bh=TPMByftcP4CcZiRfphYDd6yKF/0QDfJVps31PeiKSU4=;
+        s=korg; t=1617006962;
+        bh=BWha6g2ReB6vQK8qQFmrEzo3gadJxJSoJqqOplO8hSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dAyAsuhuDlzmaLCIcQkGatcNdIW0sr3S0MHNjkYlWnqG5VgwDa6XLj99t89TjvryU
-         kRInsbjnTO+F1XDeqeBWpZ026/enciW5ZZbtaa6esv7Ks/ZTW4zCa5Gr+9WPCSVRY+
-         bGKozOmXxLPTt7TSqLvDf5rKAzUupImoSdqRA6io=
+        b=ITuh8IH3MwYGE8OnYUJ2pojXi6tx5eyQ6Iqet1kdfSCpbOLpILFItFantJmJeqESC
+         aNkIfAd6MX8ZhSrNw3g1zqL/eIqG5Rhwx3ZpbYuGO/uIktzTizKupmihubuj2pP2EW
+         XvW3D7MnOBta5nZDI8kStMHP5dpvbqSTzSXOVQ6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Vitaly Lifshits <vitaly.lifshits@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/33] e1000e: add rtnl_lock() to e1000_reset_task
+Subject: [PATCH 5.11 170/254] libbpf: Use SOCK_CLOEXEC when opening the netlink socket
 Date:   Mon, 29 Mar 2021 09:58:06 +0200
-Message-Id: <20210329075605.946655841@linuxfoundation.org>
+Message-Id: <20210329075638.758700890@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Lifshits <vitaly.lifshits@intel.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-[ Upstream commit 21f857f0321d0d0ea9b1a758bd55dc63d1cb2437 ]
+[ Upstream commit 58bfd95b554f1a23d01228672f86bb489bdbf4ba ]
 
-A possible race condition was found in e1000_reset_task,
-after discovering a similar issue in igb driver via
-commit 024a8168b749 ("igb: reinit_locked() should be called
-with rtnl_lock").
+Otherwise, there exists a small window between the opening and closing
+of the socket fd where it may leak into processes launched by some other
+thread.
 
-Added rtnl_lock() and rtnl_unlock() to avoid this.
-
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 949abbe88436 ("libbpf: add function to setup XDP")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Link: https://lore.kernel.org/bpf/20210317115857.6536-1-memxor@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/lib/bpf/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index 3bd0bdbdfa0e..a8ee20ecb3ad 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -5875,15 +5875,19 @@ static void e1000_reset_task(struct work_struct *work)
- 	struct e1000_adapter *adapter;
- 	adapter = container_of(work, struct e1000_adapter, reset_task);
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index 4dd73de00b6f..d2cb28e9ef52 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -40,7 +40,7 @@ static int libbpf_netlink_open(__u32 *nl_pid)
+ 	memset(&sa, 0, sizeof(sa));
+ 	sa.nl_family = AF_NETLINK;
  
-+	rtnl_lock();
- 	/* don't run the task if already down */
--	if (test_bit(__E1000_DOWN, &adapter->state))
-+	if (test_bit(__E1000_DOWN, &adapter->state)) {
-+		rtnl_unlock();
- 		return;
-+	}
+-	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
++	sock = socket(AF_NETLINK, SOCK_RAW | SOCK_CLOEXEC, NETLINK_ROUTE);
+ 	if (sock < 0)
+ 		return -errno;
  
- 	if (!(adapter->flags & FLAG_RESTART_NOW)) {
- 		e1000e_dump(adapter);
- 		e_err("Reset adapter unexpectedly\n");
- 	}
- 	e1000e_reinit_locked(adapter);
-+	rtnl_unlock();
- }
- 
- /**
 -- 
 2.30.1
 
