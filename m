@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D97F34C625
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D3134CC32
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhC2IFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:05:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45862 "EHLO mail.kernel.org"
+        id S236531AbhC2I5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231996AbhC2IDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8356619AA;
-        Mon, 29 Mar 2021 08:03:11 +0000 (UTC)
+        id S234753AbhC2IhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 565B3619B4;
+        Mon, 29 Mar 2021 08:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004992;
-        bh=A6LnIq9Ny7Qd4Rzyprd6DSPguREoTQjKIkCsXOZZAvc=;
+        s=korg; t=1617006992;
+        bh=I7tKOGsbe5V0mucBGg0MXsh1Rye+IwgHZCt6+ozJDBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qY7d3A6nU4+xXSL+nUfuSVvdI8t75cAhkBTuv8oHb5eDEqelAULBz3frhXGzm41mR
-         /trNcC8cB+ejIpX444ShoaIqcX2aAlL4T7rv2+/9vR+RpJQI4r6Sv85pSqkEubgbyP
-         PVDVr2P7Cnz5oTwYIszXAixvZ1p+SMZtOJAKyPnw=
+        b=H8DfK92ALiRMcSyRgwTSEun8j7yjdrG4VsZAyjxvFLvyR6eiwvy598/0s17UrevdE
+         BkwFaUvsJrXQqUMykg1Rqv6x/g+lXTDAVH7jjwGlFtz/6Pmqbqslvqo3WwTbix9EwL
+         Vfan0tkPxKUvYdg6PKDnTU0S/moWNLFu0oCfojzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Levin <alexander.levin@verizon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 41/53] futex: Avoid freeing an active timer
+        stable@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 180/254] igb: check timestamp validity
 Date:   Mon, 29 Mar 2021 09:58:16 +0200
-Message-Id: <20210329075608.863398296@linuxfoundation.org>
+Message-Id: <20210329075639.060632325@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +42,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-commit 97181f9bd57405b879403763284537e27d46963d upstream.
+[ Upstream commit f0a03a026857d6c7766eb7d5835edbf5523ca15c ]
 
-Alexander reported a hrtimer debug_object splat:
+Add a couple of checks to make sure timestamping is on and that the
+timestamp value from DMA is valid. This avoids any functional issues
+that could come from a misinterpreted time stamp.
 
-  ODEBUG: free active (active state 0) object type: hrtimer hint: hrtimer_wakeup (kernel/time/hrtimer.c:1423)
+One of the functions changed doesn't need a return value added because
+there was no value in checking from the calling locations.
 
-  debug_object_free (lib/debugobjects.c:603)
-  destroy_hrtimer_on_stack (kernel/time/hrtimer.c:427)
-  futex_lock_pi (kernel/futex.c:2740)
-  do_futex (kernel/futex.c:3399)
-  SyS_futex (kernel/futex.c:3447 kernel/futex.c:3415)
-  do_syscall_64 (arch/x86/entry/common.c:284)
-  entry_SYSCALL64_slow_path (arch/x86/entry/entry_64.S:249)
+While here, fix a couple of reverse christmas tree issues next to
+the code being changed.
 
-Which was caused by commit:
-
-  cfafcd117da0 ("futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()")
-
-... losing the hrtimer_cancel() in the shuffle. Where previously the
-hrtimer_cancel() was done by rt_mutex_slowlock() we now need to do it
-manually.
-
-Reported-by: Alexander Levin <alexander.levin@verizon.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Fixes: cfafcd117da0 ("futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()")
-Link: http://lkml.kernel.org/r/alpine.DEB.2.20.1704101802370.2906@nanos
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f56e7bba22fa ("igb: Pull timestamp from fragment before adding it to skb")
+Fixes: 9cbc948b5a20 ("igb: add XDP support")
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igb/igb.h      |  4 +--
+ drivers/net/ethernet/intel/igb/igb_main.c | 11 ++++----
+ drivers/net/ethernet/intel/igb/igb_ptp.c  | 31 ++++++++++++++++++-----
+ 3 files changed, 32 insertions(+), 14 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3018,8 +3018,10 @@ out_unlock_put_key:
- out_put_key:
- 	put_futex_key(&q.key);
- out:
--	if (to)
-+	if (to) {
-+		hrtimer_cancel(&to->timer);
- 		destroy_hrtimer_on_stack(&to->timer);
-+	}
- 	return ret != -EINTR ? ret : -ERESTARTNOINTR;
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
+index aaa954aae574..7bda8c5edea5 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -748,8 +748,8 @@ void igb_ptp_suspend(struct igb_adapter *adapter);
+ void igb_ptp_rx_hang(struct igb_adapter *adapter);
+ void igb_ptp_tx_hang(struct igb_adapter *adapter);
+ void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb);
+-void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			 struct sk_buff *skb);
++int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
++			struct sk_buff *skb);
+ int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 03f78fdb0dcd..de0fab0e7ce2 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8319,9 +8319,10 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 		return NULL;
  
- uaddr_faulted:
+ 	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
+-		igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb);
+-		xdp->data += IGB_TS_HDR_LEN;
+-		size -= IGB_TS_HDR_LEN;
++		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
++			xdp->data += IGB_TS_HDR_LEN;
++			size -= IGB_TS_HDR_LEN;
++		}
+ 	}
+ 
+ 	/* Determine available headroom for copy */
+@@ -8382,8 +8383,8 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 
+ 	/* pull timestamp out of packet data */
+ 	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+-		igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb);
+-		__skb_pull(skb, IGB_TS_HDR_LEN);
++		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
++			__skb_pull(skb, IGB_TS_HDR_LEN);
+ 	}
+ 
+ 	/* update buffer offset */
+diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
+index 7cc5428c3b3d..86a576201f5f 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ptp.c
++++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
+@@ -856,6 +856,9 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
++#define IGB_RET_PTP_DISABLED 1
++#define IGB_RET_PTP_INVALID 2
++
+ /**
+  * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
+  * @q_vector: Pointer to interrupt specific structure
+@@ -864,19 +867,29 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+  *
+  * This function is meant to retrieve a timestamp from the first buffer of an
+  * incoming frame.  The value is stored in little endian format starting on
+- * byte 8.
++ * byte 8
++ *
++ * Returns: 0 if success, nonzero if failure
+  **/
+-void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			 struct sk_buff *skb)
++int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
++			struct sk_buff *skb)
+ {
+-	__le64 *regval = (__le64 *)va;
+ 	struct igb_adapter *adapter = q_vector->adapter;
++	__le64 *regval = (__le64 *)va;
+ 	int adjust = 0;
+ 
++	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
++		return IGB_RET_PTP_DISABLED;
++
+ 	/* The timestamp is recorded in little endian format.
+ 	 * DWORD: 0        1        2        3
+ 	 * Field: Reserved Reserved SYSTIML  SYSTIMH
+ 	 */
++
++	/* check reserved dwords are zero, be/le doesn't matter for zero */
++	if (regval[0])
++		return IGB_RET_PTP_INVALID;
++
+ 	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
+ 				   le64_to_cpu(regval[1]));
+ 
+@@ -896,6 +909,8 @@ void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 	}
+ 	skb_hwtstamps(skb)->hwtstamp =
+ 		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
++
++	return 0;
+ }
+ 
+ /**
+@@ -906,13 +921,15 @@ void igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+  * This function is meant to retrieve a timestamp from the internal registers
+  * of the adapter and store it in the skb.
+  **/
+-void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector,
+-			 struct sk_buff *skb)
++void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb)
+ {
+ 	struct igb_adapter *adapter = q_vector->adapter;
+ 	struct e1000_hw *hw = &adapter->hw;
+-	u64 regval;
+ 	int adjust = 0;
++	u64 regval;
++
++	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
++		return;
+ 
+ 	/* If this bit is set, then the RX registers contain the time stamp. No
+ 	 * other packet will be time stamped until we read these registers, so
+-- 
+2.30.1
+
 
 
