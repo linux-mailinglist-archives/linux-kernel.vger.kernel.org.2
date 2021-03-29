@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FCF34D0DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3341234D0DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhC2NBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:01:50 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:34500 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhC2NBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:01:25 -0400
-Received: by mail-lf1-f50.google.com with SMTP id i26so18250463lfl.1;
-        Mon, 29 Mar 2021 06:01:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=egthqhzn5ZpLM0FjZqjc5wIxAZteYh+EG3fvKfyV1Xo=;
-        b=fqdNo0jrNOKjK/JBcKWSZuirMuuOPQ4x9dvESe8QTn85IJxTSzHGDKoD4bqggFXeJN
-         20s26mbZ5nVtdgV8dGCNinuN/lSJVxBZaNX+jTl0u2jspT3aXhF7jkUFPUScYeHnyjSY
-         74nrVL4G8pr0HZjKO6dffiAdhp6YJ3n4m5q83zDyvJGOMf4/pF/WdgUnuiEEsyd+KCJA
-         rjobmB1gCVcnqAhbQSoxwqosbfq9aZgX9AnC0gdzbl2tKwGtN2PvpZDDKjOBmgKUEftc
-         TYx3/ljyO2xHj6YJ7UpVwvFlDeiShS5RYRtMODfPdd7573L+a8bmxsrXbifXxAiaFE6X
-         ooTQ==
-X-Gm-Message-State: AOAM533fFCmXlevapZAofZc7EeX7TxD5Oh9O6+PR6RnoV1CTTXIb9nzm
-        1bCrHG15ioJIAHZ/W4giAmk=
-X-Google-Smtp-Source: ABdhPJz/t/pzX0cY5Mt6X3cYJF2gO1TnhOQmbCB1RUE8aruUyLPGUXQ5PP5yS/WJgA6wlf8swZURAw==
-X-Received: by 2002:a05:6512:1116:: with SMTP id l22mr16043625lfg.61.1617022883230;
-        Mon, 29 Mar 2021 06:01:23 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id f11sm1917198lfm.230.2021.03.29.06.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:01:22 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 16:01:15 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH v5 19/19] MAINTAINERS: Add ROHM BD71815AGW
-Message-ID: <95272c5cf3919f725ce96f2cf3054fd2bdbeb06a.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+        id S231810AbhC2NBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:01:52 -0400
+Received: from mga11.intel.com ([192.55.52.93]:38158 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231569AbhC2NB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:01:28 -0400
+IronPort-SDR: IZ4WvCnN/rFWLCZ0t0+yM4JxD1/NxasVKi+gGIt1PZUnpLUmsYZ2Qw7THHjt/dMBuW9D74aErp
+ Zh39Sg16Y6sQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="188275054"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="188275054"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 06:01:26 -0700
+IronPort-SDR: r29PVR40HJDKTPxnh2BdepZ2i6qkER5CYOGByOT3/Lm06gJBDSe6vdRkyLv4TeOa0FYGKNR1VK
+ Nq8h5aza3AAQ==
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="376417615"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 06:01:23 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lQrWA-00H1cf-Md; Mon, 29 Mar 2021 16:01:18 +0300
+Date:   Mon, 29 Mar 2021 16:01:18 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 3/8] software node: Show properties and their values
+ in sysfs
+Message-ID: <YGHPnkoB/wP6u6HC@smile.fi.intel.com>
+References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
+ <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
+ <YGAmB2Nwph6pArXc@kroah.com>
+ <CAHp75VfFzqpdR+6p9vQww-ujQcw3L-V_N7ezUTGhcRmvwvqMZg@mail.gmail.com>
+ <YGB+YMh1MsQao3zS@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <YGB+YMh1MsQao3zS@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD71815AGW drivers.
-New regulator and GPIO drivers were introduced for these PMICs.
+On Sun, Mar 28, 2021 at 03:02:24PM +0200, Greg Kroah-Hartman wrote:
+> On Sun, Mar 28, 2021 at 03:56:26PM +0300, Andy Shevchenko wrote:
+> > On Sun, Mar 28, 2021 at 9:47 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
+> > > > It's very convenient to see what properties and their values
+> > > > are currently being assigned in the registered software nodes.
+> > > >
+> > > > Show properties and their values in sysfs.
+> > 
+> > ...
+> > 
+> > > > +             for (i = 0; i < prop->length / sizeof(u8); i++)
+> > > > +                     len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
+> > >
+> > > No, sysfs is "one value per file", and that is not what you are showing
+> > > here at all :(
+> > 
+> > It is following: it's a "one value" for property in question,
+> > 
+> > As we may read in [1]: "...so it is socially acceptable to express an
+> > array of values of the same type."
+> > 
+> > And here is exactly the case: *values of the same type*.
+> 
+> So what is it going to look like exactly?
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes since v3:
- - No changes
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+Basically we have two approaches (already done in the kernel!) use space or
+comma for a separator. So:
+ - for boolean it will be an empty string (and it's one value always)
+ - for integers it will be, for example, '0,1,2' (w/o single quotes)
+   for property array with values 0, 1, and 2
+ - for plain integers or arrays out of 1 element it will be plain integer
+ - for strings it will be, for example, '"str1","str2"' (w/o single quotes)
+   for array of string { "str1", "str2" }
+ - for single string or array out of 1 element, it will be '"str"' (w/o single
+   quotes)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9e876927c60d..c251af6bfc03 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15452,18 +15452,21 @@ F:	Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
- F:	Documentation/devicetree/bindings/regulator/rohm,bd70528-regulator.txt
- F:	drivers/clk/clk-bd718x7.c
- F:	drivers/gpio/gpio-bd70528.c
-+F:	drivers/gpio/gpio-bd71815.c
- F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
-+F:	drivers/regulator/bd71815-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
-+F:	include/linux/mfd/rohm-bd71815.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
- F:	include/linux/mfd/rohm-generic.h
+This should be a part of documentation.
+
+> And what tool is going to be
+> there to parse this mess?  Who is going to to use it?
+
+I guess something like hwinfo (needs a patch).
+
+The idea behind that this is following what ACPI and DT provides to the users
+via /sys/firmware/ (however, in binary format). I can re-do to provide a
+binary, and it will effectively make software nodes in align with the rest.
+
 -- 
-2.25.4
+With Best Regards,
+Andy Shevchenko
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
