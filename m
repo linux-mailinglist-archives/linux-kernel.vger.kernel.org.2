@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D7834D059
+	by mail.lfdr.de (Postfix) with ESMTP id 9774634D058
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhC2MsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:48:22 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:39442 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhC2MsS (ORCPT
+        id S231320AbhC2MsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:48:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29731 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231208AbhC2MsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:48:18 -0400
-Received: by mail-ot1-f53.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so12133521ote.6;
-        Mon, 29 Mar 2021 05:48:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2/qRvSZnocrUkJIjUj3RIeK2bv6WeJu2zPlnvgABVUs=;
-        b=En8d3DFEBB20JOcs19dsetZjgt64wz2vlhMc7Q/QWDAN4fn/qNpro9yisx3LQ/Z8cc
-         uzs1n1P+BgxuJJlO1cxXsnNQcp4XQUOAJLqk5hzuu0bWwdVPvzexeJZn/wmVdWC9I8DV
-         pPnDqjseekTb8Mc5z8oCYn0C0VQmaNNAVDvJn95t1AwvQncD28YEdSJ0gD4vfn8TLj74
-         OTHEYqtmaikvBJZk2FkLOZReohn5SqdwseKWkja4F8fcm0pTF1fVhEGDYcKnJGxCLf/M
-         lGPyIRt1H9iwRoe8Wc95f/pLOO2zaW3Z3cEZZbYERgwAtx9zxJ6Wx76oCxg7k5CZkdVU
-         5wHg==
-X-Gm-Message-State: AOAM532d4zh/APz5XrAqYtq7ZF12YIBQsX06ziGFrDxwSFNrbW1vSPG4
-        ZRe4oH/uQBILjsH7Prb5nvaO1zUBaGWroxN4fwwjf30B
-X-Google-Smtp-Source: ABdhPJwkgJLl49WQ4DxYiQVIcNf/J/OnassAwchwhv0O0Rs+I5HMhr+pP4QpbTC0BN/6y8NIvD6p8GS/V8ODT7ZoALA=
-X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr23083606otr.321.1617022098413;
- Mon, 29 Mar 2021 05:48:18 -0700 (PDT)
+        Mon, 29 Mar 2021 08:48:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617022096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=StRb7UVN5Yp/VEOKdrPoTELQdTs1f4wblUD2484mrPw=;
+        b=UQJoXHai4wj6yoX5tj4sjSFmdrezsvYdwgFpr9lGqtdOWAwKNhXaecwjLIPvz2r2pwQ6JL
+        S8wAOxqTsm/v7NfeysbtgBIxmblcvv+wTc8jiL7Sh8yeLZ6pbU84DMtueBnxc4FFJnsZhZ
+        5m9lPQdLPJQZtHwAmJ6iSKNk3A04MY8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-1cfcLZwAN1m63PTtdQ7PHQ-1; Mon, 29 Mar 2021 08:48:12 -0400
+X-MC-Unique: 1cfcLZwAN1m63PTtdQ7PHQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6593A1018F74;
+        Mon, 29 Mar 2021 12:48:10 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D58719C45;
+        Mon, 29 Mar 2021 12:48:05 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wei Huang <wei.huang2@amd.com>, Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei.kernel@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/vPMU: Forbid reading from MSR_F15H_PERF MSRs when guest doesn't have X86_FEATURE_PERFCTR_CORE
+Date:   Mon, 29 Mar 2021 14:48:04 +0200
+Message-Id: <20210329124804.170173-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20210326001922.4767-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210326001922.4767-1-unixbhaskar@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 29 Mar 2021 14:48:03 +0200
-Message-ID: <CAJZ5v0izUkL=7NSFuefNYcqdq2vSxseDCCLKUTOZGC82WjJNPg@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 1:22 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
-> s/optimzation/optimization/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  include/acpi/acoutput.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
-> index 1538a6853822..1b4c45815695 100644
-> --- a/include/acpi/acoutput.h
-> +++ b/include/acpi/acoutput.h
-> @@ -362,7 +362,7 @@
->   *
->   * A less-safe version of the macros is provided for optional use if the
->   * compiler uses excessive CPU stack (for example, this may happen in the
-> - * debug case if code optimzation is disabled.)
-> + * debug case if code optimization is disabled.)
->   */
->
->  /* Exit trace helper macro */
-> --
+MSR_F15H_PERF_CTL0-5, MSR_F15H_PERF_CTR0-5 MSRs have a CPUID bit assigned
+to them (X86_FEATURE_PERFCTR_CORE) and when it wasn't exposed to the guest
+the correct behavior is to inject #GP an not just return zero.
 
-Erik, could you pick up this patch, please?  It is simple enough IMV ...
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/x86.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index fe806e894212..125453155ede 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3381,6 +3381,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		msr_info->data = 0;
+ 		break;
+ 	case MSR_F15H_PERF_CTL0 ... MSR_F15H_PERF_CTR5:
++		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
++			return kvm_pmu_get_msr(vcpu, msr_info);
++		if (!msr_info->host_initiated)
++			return 1;
++		msr_info->data = 0;
++		break;
+ 	case MSR_K7_EVNTSEL0 ... MSR_K7_EVNTSEL3:
+ 	case MSR_K7_PERFCTR0 ... MSR_K7_PERFCTR3:
+ 	case MSR_P6_PERFCTR0 ... MSR_P6_PERFCTR1:
+-- 
+2.30.2
+
