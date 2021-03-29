@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922B234D705
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F3A34D73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhC2S0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S231654AbhC2Sbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhC2S01 (ORCPT
+        with ESMTP id S231524AbhC2Sba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:26:27 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:26:27 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m7so9946082pgj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:26:27 -0700 (PDT)
+        Mon, 29 Mar 2021 14:31:30 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E6327C061574;
+        Mon, 29 Mar 2021 11:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u+59y0AgHiCfa77pcnvLNXwvfOfWr12NxzeqiJWwICM=;
-        b=tvc0JlPZB8KS4gWQqc3cM0KfLUX2R4UXyDMt7DKDT1Mm1ogaDmzTmMvdYRkvoJsXcx
-         s2qQjvRu1JexihwYHvQ4vrexUlbJGnrq9XlA7HIwIojtQUTgKzL0N/lvsA0emx4asMDV
-         IEGD5KJZOvtIrdQRAC+TW7dyncY3IPDd8sQsR5cLkqLTp7n9hGiiK9dO9z6knnwtihcD
-         MATMTm0EZ4ZAICybtQC5wK8ctU8k86o07hkx35QjZES5X6n+CDyKuEpsmidGHfDciwsb
-         fYhfAVKdNZox00icj/0jAsx5J287lNMYdFHoidLDDG4Th32d0Ag3DFqMWSO+bRV1vnNC
-         QbGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=u+59y0AgHiCfa77pcnvLNXwvfOfWr12NxzeqiJWwICM=;
-        b=FGvsCs6iBzRNy6746pYZPMQWs98/MxtizG2Xrke6NG4N3jPVPRa6eU1CdKUH/md7vM
-         Dm7p8xCcwcastk36njZPoB46O5FB6MYA03I4tuDlIr9ta8OkNCfHdNtmJ4Q390WpbwoP
-         zPtNUeN2FpTTEib24/bqAe/OWNsPEuZdQ3rIgdJDI64hZRUUxJzGfQwPMlgA7fS39U4v
-         3NUIETZ7HnGisRp4r11sQLwHAS9J2X/M7BU2YCUt7RJDt4o+xAY7nZDrK3/iPFDsBJFJ
-         G2YYtDXemhOQd7lZ03ur40rtQhwLZ1FicqlPQILepAnItciST+eIWO3oGc+sp3LkHy3w
-         l7qQ==
-X-Gm-Message-State: AOAM5310AHDakE/Vfz9Ud4QoKlSEcl8kEEXyUS57ZACWcBDnwO3adxEh
-        apVc1ZNOJ50acVOf1mIR05g=
-X-Google-Smtp-Source: ABdhPJwp8ypTTZarskX1sJRiiD2a2nR+WHK4mxCU+pXx+fgTZeG9QwpK6DEFiWtzZ7tCN7QppynIeg==
-X-Received: by 2002:a63:4944:: with SMTP id y4mr3304413pgk.9.1617042386769;
-        Mon, 29 Mar 2021 11:26:26 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:e9af:f14a:516c:eaef])
-        by smtp.gmail.com with ESMTPSA id w191sm20034744pfd.25.2021.03.29.11.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 11:26:25 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH] mm: change size_t to unsigned int for cma_alloc
-Date:   Mon, 29 Mar 2021 11:25:53 -0700
-Message-Id: <20210329182553.3129234-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=9CYVVSdbdIN1CqoSzahmxkYgo2mgL2GjKI
+        5zP4cVXEs=; b=KJWdSb/TJcKR5yNesAvzq5MBEond1rkkI7McqDa7koDle4b1SC
+        akS/DCnzY9OQ6K7j58zz8D+PrTcm56+GgQGVtpJwwDBH/9DjFLl/crGebyHlwXFO
+        ACxxwNl+/TSZa7C6DPttQ2jeas3KWDgYxcJrQ6EHjpxWpxGK28Id9Bwl8=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnuJrxHGJgRPhpAA--.5621S2;
+        Tue, 30 Mar 2021 02:31:14 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:26:17 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 9/9] riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
+Message-ID: <20210330022617.525104ce@xhacker>
+In-Reply-To: <20210330022144.150edc6e@xhacker>
+References: <20210330022144.150edc6e@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnuJrxHGJgRPhpAA--.5621S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3Cw48Cr4DZw4DKF13CFg_yoW3ZrX_Ja
+        yxJF9xur1rJaykCFZ2gr4fZr1jv3y8WF18uF1Y9ryUZa42gw13X3Zxt3Z5ZF15Zw13WF4x
+        Z3yIqF4UGr1UWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4kYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JV
+        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r4j6F4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUcyCGUU
+        UUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-size_t in cma_alloc is confusing since it makes people think
-it's byte count, not pages. Fix it.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Link: https://lore.kernel.org/linux-mm/20210324043434.GP1719932@casper.infradead.org/
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
+Now we can set ARCH_HAS_STRICT_MODULE_RWX for MMU riscv platforms, this
+is good from security perspective.
+
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- include/linux/cma.h | 2 +-
- mm/cma.c            | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/cma.h b/include/linux/cma.h
-index 217999c8a762..a873edc20ca2 100644
---- a/include/linux/cma.h
-+++ b/include/linux/cma.h
-@@ -44,7 +44,7 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
- 					unsigned int order_per_bit,
- 					const char *name,
- 					struct cma **res_cma);
--extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-+extern struct page *cma_alloc(struct cma *cma, unsigned int count, unsigned int align,
- 			      bool no_warn);
- extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
- 
-diff --git a/mm/cma.c b/mm/cma.c
-index 08c45157911a..24dc01e26d45 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -423,21 +423,21 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
-  * This function allocates part of contiguous memory on specific
-  * contiguous memory area.
-  */
--struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-+struct page *cma_alloc(struct cma *cma, unsigned int count, unsigned int align,
- 		       bool no_warn)
- {
- 	unsigned long mask, offset;
- 	unsigned long pfn = -1;
- 	unsigned long start = 0;
- 	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
--	size_t i;
-+	unsigned int i;
- 	struct page *page = NULL;
- 	int ret = -ENOMEM;
- 
- 	if (!cma || !cma->count || !cma->bitmap)
- 		goto out;
- 
--	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-+	pr_debug("%s(cma %p, count %u, align %d)\n", __func__, (void *)cma,
- 		 count, align);
- 
- 	if (!count)
-@@ -500,7 +500,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 	}
- 
- 	if (ret && !no_warn) {
--		pr_err_ratelimited("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
-+		pr_err_ratelimited("%s: %s: alloc failed, req-size: %u pages, ret: %d\n",
- 				   __func__, cma->name, count, ret);
- 		cma_debug_show_areas(cma);
- 	}
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 87d7b52f278f..9716be3674a2 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -28,6 +28,7 @@ config RISCV
+ 	select ARCH_HAS_SET_DIRECT_MAP
+ 	select ARCH_HAS_SET_MEMORY
+ 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
++	select ARCH_HAS_STRICT_MODULE_RWX if MMU
+ 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+2.31.0
+
 
