@@ -2,106 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDE534CD8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FDF34CD70
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhC2KCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:02:10 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:53767 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhC2KBU (ORCPT
+        id S231803AbhC2J5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:57:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231651AbhC2J5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:01:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617012080; x=1648548080;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=leVblOH1MY8DwoTNFe/JSw6Rm5p0N8qVukn2RO/GPfI=;
-  b=h873+Ve24RWPiJ7RnmahSc3MYHwhjE4hxfW8MaPCQZaa3Me244lVJcRJ
-   tw4vLsQxEOZ8pccABPryyed1v72ZYuRFeU8lDwV5VKjDZs4C4D+yp38qa
-   a/eUHVdgxugG/LgzkA4MpG89I7lAa3gmGih/y/Dv1S9y0fRWzIJ1VzObD
-   vZrRHIhT8C4+X5UCJc50nfpf8IdOFDuY3jte5nIwtLcCV0F2TiZOMsmXH
-   p3+vZcxWqJOrHeV5rhcR34WsekLbYCiHHZdLi7zJfLAkaPAGtK3SXz49V
-   3oOhsM1VxxIic4kt5efaL4ZA5QSQd6bgw2tVNiCkxm7p9bWIm81Ev7Sfm
-   Q==;
-IronPort-SDR: ZoZ+nI/wsZeYVRPBx+aV6O5YDDBDF00oohmnwoe5Tq2WRFRZZZw/bRcHCCDasDdX3TyS84B569
- +dtzZ1IU3bg0MyRfbqSkNIxrTOA8Hu4WA52b8V9BRpDk5OPqQnI7Pw4kbxM1W914bmcb0mOMn/
- 6Esd1XkIowklYg4gCE6Jqgsz1h6pHzqqxMGu8ye/phYxdjKIeLLQPQHzQzURQh9pEaTi8nJ2xM
- Nm3jA+KxkwV950vwtG1YPL/d/K5igl6/7w89gyelHdvZvYQ57CUH+Z6HC0/vcDJEHzI/xKsECW
- cKU=
-X-IronPort-AV: E=Sophos;i="5.81,287,1610434800"; 
-   d="scan'208";a="111696168"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Mar 2021 03:01:20 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 29 Mar 2021 03:01:19 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 29 Mar 2021 03:01:17 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        <emil.velikov@collabora.com>, <ezequiel@collabora.com>
-Subject: [PATCH 7/7] ARM: configs: at91: Modernize UBI defconfig part
-Date:   Mon, 29 Mar 2021 11:56:45 +0200
-Message-ID: <4136c4443efce6f028eca74885870ac649981da1.1617010856.git.nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1617010856.git.nicolas.ferre@microchip.com>
-References: <cover.1617010856.git.nicolas.ferre@microchip.com>
+        Mon, 29 Mar 2021 05:57:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617011821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
+        b=AdWR3App76xedyVwMaWtX3fRx5lJ4G9gsjlR3g9YaKWFTBh2EzOxEq8PyvFcYsY3wPvjUb
+        Ug3HRNK5L8rkBLEo8zyTEqgeto4ZyVw1VvQmHhJaTfyXrp9eUfEJTmG2mZDtmh8Qv9HgFd
+        Hjt/RnauqKF5EgT2/WDh8udSPhzKCOo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-7ylDwRgzMGCKXsgASUNIsQ-1; Mon, 29 Mar 2021 05:56:58 -0400
+X-MC-Unique: 7ylDwRgzMGCKXsgASUNIsQ-1
+Received: by mail-ed1-f69.google.com with SMTP id a2so8342220edx.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:56:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
+        b=EkoXBd8yX5/vZMXx1fadOLFDKlHH0nZWwaegTWhxho/YXegYmYZgbi362ueuDk7a2q
+         HSSg4Yti+w8FpUVmumJwVOQ715yBrKEA0S1XdpKqEWklJdKc/5o2E25umkgmPVULpd/b
+         vLb2cc+olkEv2rkPXyc0bM4zW0ZgWIv0ncnVLZXqnwHQLslGDnroL1q4tpUZJcZhgeom
+         TpylueiVDaa0kDbragCndrJM9sUqax68TtlZE0U9fZfo282B8KwZ6+KpXe9moSc2XTGS
+         /fwNE0KP3f0RGUaMlAgHbcYzJj+FiQDf/vC7nvlcg+n/a8+mjKoy5pCCfuij2NTl9MvF
+         t7rg==
+X-Gm-Message-State: AOAM530ez5JKF8Yi5RhpQIgmWrxodnpyexNkjRbJ3YtRala7iaWHeqWO
+        ARBJlkP/et0/ndgy1Wvk+wine4FjvX/qCRFDbHWe7dgLOfjPbmxikd2kpUZ243FBWAQnUlftjCf
+        u18Mjcc+QnxH3hhwPy/q3cUWx
+X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469772edr.140.1617011817510;
+        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDlRH4ZFa+9wQzQgxfAWLizNcm57g67QjLhEohcKPFUr4Hm2YCdzaKDDcmOWBKfZRfKGZWFQ==
+X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469745edr.140.1617011817342;
+        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id de17sm7894616ejc.16.2021.03.29.02.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 02:56:56 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3E766180293; Mon, 29 Mar 2021 11:56:55 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
+In-Reply-To: <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-6-memxor@gmail.com>
+ <20210327021534.pjfjctcdczj7facs@ast-mbp>
+ <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
+ <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Mar 2021 11:56:55 +0200
+Message-ID: <87r1jyth94.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-UBI_GLUEBI is not so common and UBI_FASTMAP is used for several years.
-Make them part of a modernization of UBI defconfig options.
+> On Sat, Mar 27, 2021 at 09:32:58PM -0700, Andrii Nakryiko wrote:
+>> > I think it's better to start with new library for tc/xdp and have
+>> > libbpf as a dependency on that new lib.
+>> > For example we can add it as subdir in tools/lib/bpf/.
+>> >
+>> > Similarly I think integerating static linking into libbpf was a mistake.
+>> > It should be a sub library as well.
+>> >
+>> > If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
+>> > whatever else the users would appreciate that we don't shove single libbpf
+>> > to them with a ton of features that they might never use.
+>> 
+>> What's the concern exactly? The size of the library? Having 10
+>> micro-libraries has its own set of downsides, 
+>
+> specifically?
+>
+>> I'm not convinced that's
+>> a better situation for end users. And would certainly cause more
+>> hassle for libbpf developers and packagers.
+>
+> For developers and packagers.. yes.
+> For users.. quite the opposite.
+> The skel gen and static linking must be split out before the next libbpf release.
+> Not a single application linked with libbpf is going to use those pieces.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- arch/arm/configs/at91_dt_defconfig | 2 +-
- arch/arm/configs/sama5_defconfig   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I'd tend to agree about the skeleton generation, but I have one use case
+in mind where having the linker in library form would be handy:
+dynamically building an XDP program at load time from pre-compiled
+pieces.
 
-diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
-index e033d08c9cda..06c888a45eb3 100644
---- a/arch/arm/configs/at91_dt_defconfig
-+++ b/arch/arm/configs/at91_dt_defconfig
-@@ -54,7 +54,7 @@ CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
--CONFIG_MTD_UBI_GLUEBI=y
-+CONFIG_MTD_UBI_FASTMAP=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=4
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index 99d167623940..17db3b3e2dd3 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -63,7 +63,7 @@ CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=y
--CONFIG_MTD_UBI_GLUEBI=y
-+CONFIG_MTD_UBI_FASTMAP=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=4
--- 
-2.31.1
+Consider xdp-filter[0]: it's a simplistic packet filter that can filter
+on different bits of the packet header, mostly meant as a demonstration
+of XDP packet filtering performance. It's also using conditional
+compilation so that it can be loaded in a mode that skips parsing L4
+headers entirely if port-based filtering is not enabled. Right now we do
+that by pre-compiling five different variants of the XDP program and
+loading based on the selected feature set, but with linking in libbpf,
+we could instead have a single BPF program with granular filtering
+functions and just assemble the final program from those bits at load
+time.
+
+The actual xdp-filter program may be too simplistic to gain any
+performance for this, but I believe the general approach could be a way
+to realise the "improved performance through skipping code" promise of
+an XDP-based data path. Having linking be part of libbpf will make this
+straight-forward to integrate into applications.
+
+[0] https://github.com/xdp-project/xdp-tools/tree/master/xdp-filter
+
+> bpftool is one and only that needs them. Hence forcing libbpf users
+> to increase their .text with a dead code is a selfish call of libbpf
+> developers and packagers. The user's priorities must come first.
+>
+>> And what did you include in "core libbpf"?
+>
+> I would take this opportunity to split libbpf into maintainable pieces:
+> - libsysbpf - sys_bpf wrappers (pretty much tools/lib/bpf/bpf.c)
+> - libbpfutil - hash, strset
+> - libbtf - BTF read/write
+> - libbpfelf - ELF parsing, CORE, ksym, kconfig
+> - libbpfskel - skeleton gen used by bpftool only
+> - libbpflink - linker used by bpftool only
+> - libbpfnet - networking attachment via netlink including TC and XDP
+> - libbpftrace - perfbuf, ringbuf
+> - libxdp - Toke's xdp chaining
+> - libxsk - af_xdp logic
+
+Huh? You've got to be joking? How is that going to improve things for
+users? Just the cognitive load of figuring out which linker flags to use
+is going to be prohibitive. Not to mention the hassle of keeping
+multiple library versions in sync etc.
+
+If the concern is .text size, surely there are better ways to fix that?
+LTO is the obvious "automagic" solution, but even without that, just
+supporting conditional compilation via defines in the existing libbpf
+ought to achieve the same thing without exposing the gory details to the
+users?
+
+-Toke
 
