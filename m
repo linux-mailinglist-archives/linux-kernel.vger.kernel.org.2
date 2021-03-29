@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CC134CB9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAEC34CBA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhC2Itu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
+        id S235327AbhC2IuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234593AbhC2IdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:33:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9351B619BB;
-        Mon, 29 Mar 2021 08:32:13 +0000 (UTC)
+        id S234622AbhC2IdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A92E619C7;
+        Mon, 29 Mar 2021 08:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006734;
-        bh=cJR31kfGQQ6cjZttozJrDMs4iSToI1B1p7gYoFsNArw=;
+        s=korg; t=1617006754;
+        bh=5rIhYsyhLKT6aAO0BKtbxp2bcFQuLbnBCgGvZd217ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+OEADgDgANYVyiVbkB9C8v2s34fvfHOg9Xi/q/+l47DmbOEL/xtwE2p6SRR24Luh
-         SE8zmiOtEnVmTiC1KtWD5wwh/plk9TBf4n6W11X1H5L1Bqg2lE5XM+immVrqhGI02Q
-         AJaSbeBuPcARefcyxY+gK+6XTCPbegPFBNm5ME2A=
+        b=qd91zp/KjukR6LCHdBuIz9/iKGFW3ZfDNWjiQQlkIGkvabxuVHcrexUkc7oqT1wIk
+         aYpkJUp5Th26gsEPf2PsJdxvevX/IRh/wa5RfZKfjMmHS+429/+IeN9SMObESQupF/
+         vniX324m/CFxaUAOm8tOJCD0PzBDLu6BGAyFk9Qc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Dillon Varone <dillon.varone@amd.com>,
-        Jun Lei <Jun.Lei@amd.com>, Eryk Brol <eryk.brol@amd.com>,
+        stable@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
+        Zhan Liu <zhan.liu@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 045/254] drm/amd/display: Enabled pipe harvesting in dcn30
-Date:   Mon, 29 Mar 2021 09:56:01 +0200
-Message-Id: <20210329075634.656274218@linuxfoundation.org>
+Subject: [PATCH 5.11 046/254] drm/amdgpu/display: Use wm_table.entries for dcn301 calculate_wm
+Date:   Mon, 29 Mar 2021 09:56:02 +0200
+Message-Id: <20210329075634.687840889@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -42,81 +42,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dillon Varone <dillon.varone@amd.com>
+From: Zhan Liu <zhan.liu@amd.com>
 
-[ Upstream commit d2c91285958a3e77db99c352c136af4243f8f529 ]
+[ Upstream commit eda29602f1a8b2b32d8c8c354232d9d1ee1c064d ]
 
-[Why & How]
-Ported logic from dcn21 for reading in pipe fusing to dcn30.
-Supported configurations are 1 and 6 pipes. Invalid fusing
-will revert to 1 pipe being enabled.
+[Why]
+For DGPU Navi, the wm_table.nv_entries are used. These entires are not
+populated for DCN301 Vangogh APU, but instead wm_table.entries are.
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Dillon Varone <dillon.varone@amd.com>
-Reviewed-by: Jun Lei <Jun.Lei@amd.com>
-Acked-by: Eryk Brol <eryk.brol@amd.com>
+[How]
+Use DCN21 Renoir style wm calculations.
+
+Signed-off-by: Leo Li <sunpeng.li@amd.com>
+Signed-off-by: Zhan Liu <zhan.liu@amd.com>
+Reviewed-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Acked-by: Zhan Liu <zhan.liu@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/dcn30/dcn30_resource.c | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ .../amd/display/dc/dcn301/dcn301_resource.c   | 96 ++++++++++++++++++-
+ 1 file changed, 95 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-index 5e126fdf6ec1..7ec8936346b2 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-@@ -2601,6 +2601,19 @@ static const struct resource_funcs dcn30_res_pool_funcs = {
- 	.patch_unknown_plane_state = dcn20_patch_unknown_plane_state,
- };
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
+index 35f5bf08ae96..23bc208cbfa4 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
+@@ -1722,12 +1722,106 @@ static void dcn301_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *b
+ 	dml_init_instance(&dc->dml, &dcn3_01_soc, &dcn3_01_ip, DML_PROJECT_DCN30);
+ }
  
-+#define CTX ctx
-+
-+#define REG(reg_name) \
-+	(DCN_BASE.instance[0].segment[mm ## reg_name ## _BASE_IDX] + mm ## reg_name)
-+
-+static uint32_t read_pipe_fuses(struct dc_context *ctx)
++static void calculate_wm_set_for_vlevel(
++		int vlevel,
++		struct wm_range_table_entry *table_entry,
++		struct dcn_watermarks *wm_set,
++		struct display_mode_lib *dml,
++		display_e2e_pipe_params_st *pipes,
++		int pipe_cnt)
 +{
-+	uint32_t value = REG_READ(CC_DC_PIPE_DIS);
-+	/* Support for max 6 pipes */
-+	value = value & 0x3f;
-+	return value;
++	double dram_clock_change_latency_cached = dml->soc.dram_clock_change_latency_us;
++
++	ASSERT(vlevel < dml->soc.num_states);
++	/* only pipe 0 is read for voltage and dcf/soc clocks */
++	pipes[0].clks_cfg.voltage = vlevel;
++	pipes[0].clks_cfg.dcfclk_mhz = dml->soc.clock_limits[vlevel].dcfclk_mhz;
++	pipes[0].clks_cfg.socclk_mhz = dml->soc.clock_limits[vlevel].socclk_mhz;
++
++	dml->soc.dram_clock_change_latency_us = table_entry->pstate_latency_us;
++	dml->soc.sr_exit_time_us = table_entry->sr_exit_time_us;
++	dml->soc.sr_enter_plus_exit_time_us = table_entry->sr_enter_plus_exit_time_us;
++
++	wm_set->urgent_ns = get_wm_urgent(dml, pipes, pipe_cnt) * 1000;
++	wm_set->cstate_pstate.cstate_enter_plus_exit_ns = get_wm_stutter_enter_exit(dml, pipes, pipe_cnt) * 1000;
++	wm_set->cstate_pstate.cstate_exit_ns = get_wm_stutter_exit(dml, pipes, pipe_cnt) * 1000;
++	wm_set->cstate_pstate.pstate_change_ns = get_wm_dram_clock_change(dml, pipes, pipe_cnt) * 1000;
++	wm_set->pte_meta_urgent_ns = get_wm_memory_trip(dml, pipes, pipe_cnt) * 1000;
++	wm_set->frac_urg_bw_nom = get_fraction_of_urgent_bandwidth(dml, pipes, pipe_cnt) * 1000;
++	wm_set->frac_urg_bw_flip = get_fraction_of_urgent_bandwidth_imm_flip(dml, pipes, pipe_cnt) * 1000;
++	wm_set->urgent_latency_ns = get_urgent_latency(dml, pipes, pipe_cnt) * 1000;
++	dml->soc.dram_clock_change_latency_us = dram_clock_change_latency_cached;
++
 +}
 +
- static bool dcn30_resource_construct(
- 	uint8_t num_virtual_links,
- 	struct dc *dc,
-@@ -2610,6 +2623,15 @@ static bool dcn30_resource_construct(
- 	struct dc_context *ctx = dc->ctx;
- 	struct irq_service_init_data init_data;
- 	struct ddc_service_init_data ddc_init_data;
-+	uint32_t pipe_fuses = read_pipe_fuses(ctx);
-+	uint32_t num_pipes = 0;
++static void dcn301_calculate_wm_and_dlg(
++		struct dc *dc, struct dc_state *context,
++		display_e2e_pipe_params_st *pipes,
++		int pipe_cnt,
++		int vlevel_req)
++{
++	int i, pipe_idx;
++	int vlevel, vlevel_max;
++	struct wm_range_table_entry *table_entry;
++	struct clk_bw_params *bw_params = dc->clk_mgr->bw_params;
 +
-+	if (!(pipe_fuses == 0 || pipe_fuses == 0x3e)) {
-+		BREAK_TO_DEBUGGER();
-+		dm_error("DC: Unexpected fuse recipe for navi2x !\n");
-+		/* fault to single pipe */
-+		pipe_fuses = 0x3e;
++	ASSERT(bw_params);
++
++	vlevel_max = bw_params->clk_table.num_entries - 1;
++
++	/* WM Set D */
++	table_entry = &bw_params->wm_table.entries[WM_D];
++	if (table_entry->wm_type == WM_TYPE_RETRAINING)
++		vlevel = 0;
++	else
++		vlevel = vlevel_max;
++	calculate_wm_set_for_vlevel(vlevel, table_entry, &context->bw_ctx.bw.dcn.watermarks.d,
++						&context->bw_ctx.dml, pipes, pipe_cnt);
++	/* WM Set C */
++	table_entry = &bw_params->wm_table.entries[WM_C];
++	vlevel = min(max(vlevel_req, 2), vlevel_max);
++	calculate_wm_set_for_vlevel(vlevel, table_entry, &context->bw_ctx.bw.dcn.watermarks.c,
++						&context->bw_ctx.dml, pipes, pipe_cnt);
++	/* WM Set B */
++	table_entry = &bw_params->wm_table.entries[WM_B];
++	vlevel = min(max(vlevel_req, 1), vlevel_max);
++	calculate_wm_set_for_vlevel(vlevel, table_entry, &context->bw_ctx.bw.dcn.watermarks.b,
++						&context->bw_ctx.dml, pipes, pipe_cnt);
++
++	/* WM Set A */
++	table_entry = &bw_params->wm_table.entries[WM_A];
++	vlevel = min(vlevel_req, vlevel_max);
++	calculate_wm_set_for_vlevel(vlevel, table_entry, &context->bw_ctx.bw.dcn.watermarks.a,
++						&context->bw_ctx.dml, pipes, pipe_cnt);
++
++	for (i = 0, pipe_idx = 0; i < dc->res_pool->pipe_count; i++) {
++		if (!context->res_ctx.pipe_ctx[i].stream)
++			continue;
++
++		pipes[pipe_idx].clks_cfg.dispclk_mhz = get_dispclk_calculated(&context->bw_ctx.dml, pipes, pipe_cnt);
++		pipes[pipe_idx].clks_cfg.dppclk_mhz = get_dppclk_calculated(&context->bw_ctx.dml, pipes, pipe_cnt, pipe_idx);
++
++		if (dc->config.forced_clocks) {
++			pipes[pipe_idx].clks_cfg.dispclk_mhz = context->bw_ctx.dml.soc.clock_limits[0].dispclk_mhz;
++			pipes[pipe_idx].clks_cfg.dppclk_mhz = context->bw_ctx.dml.soc.clock_limits[0].dppclk_mhz;
++		}
++		if (dc->debug.min_disp_clk_khz > pipes[pipe_idx].clks_cfg.dispclk_mhz * 1000)
++			pipes[pipe_idx].clks_cfg.dispclk_mhz = dc->debug.min_disp_clk_khz / 1000.0;
++		if (dc->debug.min_dpp_clk_khz > pipes[pipe_idx].clks_cfg.dppclk_mhz * 1000)
++			pipes[pipe_idx].clks_cfg.dppclk_mhz = dc->debug.min_dpp_clk_khz / 1000.0;
++
++		pipe_idx++;
 +	}
- 
- 	DC_FP_START();
- 
-@@ -2739,6 +2761,15 @@ static bool dcn30_resource_construct(
- 	/* PP Lib and SMU interfaces */
- 	init_soc_bounding_box(dc, pool);
- 
-+	num_pipes = dcn3_0_ip.max_num_dpp;
 +
-+	for (i = 0; i < dcn3_0_ip.max_num_dpp; i++)
-+		if (pipe_fuses & 1 << i)
-+			num_pipes--;
++	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
++}
 +
-+	dcn3_0_ip.max_num_dpp = num_pipes;
-+	dcn3_0_ip.max_num_otg = num_pipes;
-+
- 	dml_init_instance(&dc->dml, &dcn3_0_soc, &dcn3_0_ip, DML_PROJECT_DCN30);
- 
- 	/* IRQ */
+ static struct resource_funcs dcn301_res_pool_funcs = {
+ 	.destroy = dcn301_destroy_resource_pool,
+ 	.link_enc_create = dcn301_link_encoder_create,
+ 	.panel_cntl_create = dcn301_panel_cntl_create,
+ 	.validate_bandwidth = dcn30_validate_bandwidth,
+-	.calculate_wm_and_dlg = dcn30_calculate_wm_and_dlg,
++	.calculate_wm_and_dlg = dcn301_calculate_wm_and_dlg,
+ 	.populate_dml_pipes = dcn30_populate_dml_pipes_from_context,
+ 	.acquire_idle_pipe_for_layer = dcn20_acquire_idle_pipe_for_layer,
+ 	.add_stream_to_ctx = dcn30_add_stream_to_ctx,
 -- 
 2.30.1
 
