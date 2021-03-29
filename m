@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446C634CA45
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0C634C819
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhC2IgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        id S232005AbhC2ITu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233689AbhC2IWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4D0A61477;
-        Mon, 29 Mar 2021 08:22:10 +0000 (UTC)
+        id S232807AbhC2IMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:12:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A78B561494;
+        Mon, 29 Mar 2021 08:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006131;
-        bh=ysffmYUDo0/7c8mGFGOe47UZnwJ8LUZUvFt5CO9ScjY=;
+        s=korg; t=1617005529;
+        bh=kbDaZe2/kZ5vMMsOndNBVim3i+CzIXnVFlyKzsWhDjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bDmDhrWN0c6fY4MQLGf2ebAmNNesl5D67H+bMUo5Ro1VTXS1CcJwJIHCbkLqGrqWE
-         HZMPQVwIVYUK2ADgTQ0Fs3xeDxQK7O2ab6mkapBS+ABdm3ydP/HcEJR0wphoDQ9M42
-         ihhR4aI7QnshvOgKcSEmcWaaGgOgG7kZXy48pRR0=
+        b=UXXtDp/pp0oXcf9r+wbHOobQoIyCcNIgiA5FzZf3xOYpRae3W6oEWGF6J2rZdaVxp
+         28Rp9WoEgMgRpinSSATVc34dDiGd83TLuo9UxHrrG3lJ4hwUycjUzS0vfHwAwl9kpC
+         LhFWcWrGK3U7GlafVNGyrf7RrMlBX9gKpESdB6CY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        syzbot <syzkaller@googlegroups.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 102/221] macvlan: macvlan_count_rx() needs to be aware of preemption
+Subject: [PATCH 5.4 005/111] atm: lanai: dont run lanai_dev_close if not open
 Date:   Mon, 29 Mar 2021 09:57:13 +0200
-Message-Id: <20210329075632.608593193@linuxfoundation.org>
+Message-Id: <20210329075615.368606678@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,87 +40,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit dd4fa1dae9f4847cc1fd78ca468ad69e16e5db3e ]
+[ Upstream commit a2bd45834e83d6c5a04d397bde13d744a4812dfc ]
 
-macvlan_count_rx() can be called from process context, it is thus
-necessary to disable preemption before calling u64_stats_update_begin()
+lanai_dev_open() can fail. When it fail, lanai->base is unmapped and the
+pci device is disabled. The caller, lanai_init_one(), then tries to run
+atm_dev_deregister(). This will subsequently call lanai_dev_close() and
+use the already released MMIO area.
 
-syzbot was able to spot this on 32bit arch:
+To fix this issue, set the lanai->base to NULL if open fail,
+and test the flag in lanai_dev_close().
 
-WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
-WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
-Modules linked in:
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 4632 Comm: kworker/1:3 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: ARM-Versatile Express
-Workqueue: events macvlan_process_broadcast
-Backtrace:
-[<82740468>] (dump_backtrace) from [<827406dc>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
- r7:00000080 r6:60000093 r5:00000000 r4:8422a3c4
-[<827406c4>] (show_stack) from [<82751b58>] (__dump_stack lib/dump_stack.c:79 [inline])
-[<827406c4>] (show_stack) from [<82751b58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
-[<82751aa0>] (dump_stack) from [<82741270>] (panic+0x130/0x378 kernel/panic.c:231)
- r7:830209b4 r6:84069ea4 r5:00000000 r4:844350d0
-[<82741140>] (panic) from [<80244924>] (__warn+0xb0/0x164 kernel/panic.c:605)
- r3:8404ec8c r2:00000000 r1:00000000 r0:830209b4
- r7:0000010f
-[<80244874>] (__warn) from [<82741520>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
- r7:81363f70 r6:0000010f r5:83018e50 r4:00000000
-[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
-[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
- r8:5a109000 r7:0000000f r6:a568dac0 r5:89802300 r4:00000001
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (u64_stats_update_begin include/linux/u64_stats_sync.h:128 [inline])
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_count_rx include/linux/if_macvlan.h:47 [inline])
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_broadcast+0x154/0x26c drivers/net/macvlan.c:291)
- r5:89802300 r4:8a927740
-[<8136499c>] (macvlan_broadcast) from [<81365020>] (macvlan_process_broadcast+0x258/0x2d0 drivers/net/macvlan.c:317)
- r10:81364f78 r9:8a86d000 r8:8a9c7e7c r7:8413aa5c r6:00000000 r5:00000000
- r4:89802840
-[<81364dc8>] (macvlan_process_broadcast) from [<802696a4>] (process_one_work+0x2d4/0x998 kernel/workqueue.c:2275)
- r10:00000008 r9:8404ec98 r8:84367a02 r7:ddfe6400 r6:ddfe2d40 r5:898dac80
- r4:8a86d43c
-[<802693d0>] (process_one_work) from [<80269dcc>] (worker_thread+0x64/0x54c kernel/workqueue.c:2421)
- r10:00000008 r9:8a9c6000 r8:84006d00 r7:ddfe2d78 r6:898dac94 r5:ddfe2d40
- r4:898dac80
-[<80269d68>] (worker_thread) from [<80271f40>] (kthread+0x184/0x1a4 kernel/kthread.c:292)
- r10:85247e64 r9:898dac80 r8:80269d68 r7:00000000 r6:8a9c6000 r5:89a2ee40
- r4:8a97bd00
-[<80271dbc>] (kthread) from [<80200114>] (ret_from_fork+0x14/0x20 arch/arm/kernel/entry-common.S:158)
-Exception stack(0x8a9c7fb0 to 0x8a9c7ff8)
+[    8.324153] lanai: lanai_start() failed, err=19
+[    8.324819] lanai(itf 0): shutting down interface
+[    8.325211] BUG: unable to handle page fault for address: ffffc90000180024
+[    8.325781] #PF: supervisor write access in kernel mode
+[    8.326215] #PF: error_code(0x0002) - not-present page
+[    8.326641] PGD 100000067 P4D 100000067 PUD 100139067 PMD 10013a067 PTE 0
+[    8.327206] Oops: 0002 [#1] SMP KASAN NOPTI
+[    8.327557] CPU: 0 PID: 95 Comm: modprobe Not tainted 5.11.0-rc7-00090-gdcc0b49040c7 #12
+[    8.328229] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-4
+[    8.329145] RIP: 0010:lanai_dev_close+0x4f/0xe5 [lanai]
+[    8.329587] Code: 00 48 c7 c7 00 d3 01 c0 e8 49 4e 0a c2 48 8d bd 08 02 00 00 e8 6e 52 14 c1 48 80
+[    8.330917] RSP: 0018:ffff8881029ef680 EFLAGS: 00010246
+[    8.331196] RAX: 000000000003fffe RBX: ffff888102fb4800 RCX: ffffffffc001a98a
+[    8.331572] RDX: ffffc90000180000 RSI: 0000000000000246 RDI: ffff888102fb4000
+[    8.331948] RBP: ffff888102fb4000 R08: ffffffff8115da8a R09: ffffed102053deaa
+[    8.332326] R10: 0000000000000003 R11: ffffed102053dea9 R12: ffff888102fb48a4
+[    8.332701] R13: ffffffffc00123c0 R14: ffff888102fb4b90 R15: ffff888102fb4b88
+[    8.333077] FS:  00007f08eb9056a0(0000) GS:ffff88815b400000(0000) knlGS:0000000000000000
+[    8.333502] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    8.333806] CR2: ffffc90000180024 CR3: 0000000102a28000 CR4: 00000000000006f0
+[    8.334182] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    8.334557] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    8.334932] Call Trace:
+[    8.335066]  atm_dev_deregister+0x161/0x1a0 [atm]
+[    8.335324]  lanai_init_one.cold+0x20c/0x96d [lanai]
+[    8.335594]  ? lanai_send+0x2a0/0x2a0 [lanai]
+[    8.335831]  local_pci_probe+0x6f/0xb0
+[    8.336039]  pci_device_probe+0x171/0x240
+[    8.336255]  ? pci_device_remove+0xe0/0xe0
+[    8.336475]  ? kernfs_create_link+0xb6/0x110
+[    8.336704]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
+[    8.336983]  really_probe+0x161/0x420
+[    8.337181]  driver_probe_device+0x6d/0xd0
+[    8.337401]  device_driver_attach+0x82/0x90
+[    8.337626]  ? device_driver_attach+0x90/0x90
+[    8.337859]  __driver_attach+0x60/0x100
+[    8.338065]  ? device_driver_attach+0x90/0x90
+[    8.338298]  bus_for_each_dev+0xe1/0x140
+[    8.338511]  ? subsys_dev_iter_exit+0x10/0x10
+[    8.338745]  ? klist_node_init+0x61/0x80
+[    8.338956]  bus_add_driver+0x254/0x2a0
+[    8.339164]  driver_register+0xd3/0x150
+[    8.339370]  ? 0xffffffffc0028000
+[    8.339550]  do_one_initcall+0x84/0x250
+[    8.339755]  ? trace_event_raw_event_initcall_finish+0x150/0x150
+[    8.340076]  ? free_vmap_area_noflush+0x1a5/0x5c0
+[    8.340329]  ? unpoison_range+0xf/0x30
+[    8.340532]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+[    8.340806]  ? unpoison_range+0xf/0x30
+[    8.341014]  ? unpoison_range+0xf/0x30
+[    8.341217]  do_init_module+0xf8/0x350
+[    8.341419]  load_module+0x3fe6/0x4340
+[    8.341621]  ? vm_unmap_ram+0x1d0/0x1d0
+[    8.341826]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+[    8.342101]  ? module_frob_arch_sections+0x20/0x20
+[    8.342358]  ? __do_sys_finit_module+0x108/0x170
+[    8.342604]  __do_sys_finit_module+0x108/0x170
+[    8.342841]  ? __ia32_sys_init_module+0x40/0x40
+[    8.343083]  ? file_open_root+0x200/0x200
+[    8.343298]  ? do_sys_open+0x85/0xe0
+[    8.343491]  ? filp_open+0x50/0x50
+[    8.343675]  ? exit_to_user_mode_prepare+0xfc/0x130
+[    8.343935]  do_syscall_64+0x33/0x40
+[    8.344132]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[    8.344401] RIP: 0033:0x7f08eb887cf7
+[    8.344594] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 41
+[    8.345565] RSP: 002b:00007ffcd5c98ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[    8.345962] RAX: ffffffffffffffda RBX: 00000000008fea70 RCX: 00007f08eb887cf7
+[    8.346336] RDX: 0000000000000000 RSI: 00000000008fd9e0 RDI: 0000000000000003
+[    8.346711] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+[    8.347085] R10: 00007f08eb8eb300 R11: 0000000000000246 R12: 00000000008fd9e0
+[    8.347460] R13: 0000000000000000 R14: 00000000008fddd0 R15: 0000000000000001
+[    8.347836] Modules linked in: lanai(+) atm
+[    8.348065] CR2: ffffc90000180024
+[    8.348244] ---[ end trace 7fdc1c668f2003e5 ]---
+[    8.348490] RIP: 0010:lanai_dev_close+0x4f/0xe5 [lanai]
+[    8.348772] Code: 00 48 c7 c7 00 d3 01 c0 e8 49 4e 0a c2 48 8d bd 08 02 00 00 e8 6e 52 14 c1 48 80
+[    8.349745] RSP: 0018:ffff8881029ef680 EFLAGS: 00010246
+[    8.350022] RAX: 000000000003fffe RBX: ffff888102fb4800 RCX: ffffffffc001a98a
+[    8.350397] RDX: ffffc90000180000 RSI: 0000000000000246 RDI: ffff888102fb4000
+[    8.350772] RBP: ffff888102fb4000 R08: ffffffff8115da8a R09: ffffed102053deaa
+[    8.351151] R10: 0000000000000003 R11: ffffed102053dea9 R12: ffff888102fb48a4
+[    8.351525] R13: ffffffffc00123c0 R14: ffff888102fb4b90 R15: ffff888102fb4b88
+[    8.351918] FS:  00007f08eb9056a0(0000) GS:ffff88815b400000(0000) knlGS:0000000000000000
+[    8.352343] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    8.352647] CR2: ffffc90000180024 CR3: 0000000102a28000 CR4: 00000000000006f0
+[    8.353022] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    8.353397] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    8.353958] modprobe (95) used greatest stack depth: 26216 bytes left
 
-Fixes: 412ca1550cbe ("macvlan: Move broadcasts into a work queue")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/if_macvlan.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/atm/lanai.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
-index a367ead4bf4b..e11555989090 100644
---- a/include/linux/if_macvlan.h
-+++ b/include/linux/if_macvlan.h
-@@ -42,13 +42,14 @@ static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
- 	if (likely(success)) {
- 		struct vlan_pcpu_stats *pcpu_stats;
+diff --git a/drivers/atm/lanai.c b/drivers/atm/lanai.c
+index 645a6bc1df88..c6b38112bcf4 100644
+--- a/drivers/atm/lanai.c
++++ b/drivers/atm/lanai.c
+@@ -2234,6 +2234,7 @@ static int lanai_dev_open(struct atm_dev *atmdev)
+ 	conf1_write(lanai);
+ #endif
+ 	iounmap(lanai->base);
++	lanai->base = NULL;
+     error_pci:
+ 	pci_disable_device(lanai->pci);
+     error:
+@@ -2246,6 +2247,8 @@ static int lanai_dev_open(struct atm_dev *atmdev)
+ static void lanai_dev_close(struct atm_dev *atmdev)
+ {
+ 	struct lanai_dev *lanai = (struct lanai_dev *) atmdev->dev_data;
++	if (lanai->base==NULL)
++		return;
+ 	printk(KERN_INFO DEV_LABEL "(itf %d): shutting down interface\n",
+ 	    lanai->number);
+ 	lanai_timed_poll_stop(lanai);
+@@ -2555,7 +2558,7 @@ static int lanai_init_one(struct pci_dev *pci,
+ 	struct atm_dev *atmdev;
+ 	int result;
  
--		pcpu_stats = this_cpu_ptr(vlan->pcpu_stats);
-+		pcpu_stats = get_cpu_ptr(vlan->pcpu_stats);
- 		u64_stats_update_begin(&pcpu_stats->syncp);
- 		pcpu_stats->rx_packets++;
- 		pcpu_stats->rx_bytes += len;
- 		if (multicast)
- 			pcpu_stats->rx_multicast++;
- 		u64_stats_update_end(&pcpu_stats->syncp);
-+		put_cpu_ptr(vlan->pcpu_stats);
- 	} else {
- 		this_cpu_inc(vlan->pcpu_stats->rx_errors);
- 	}
+-	lanai = kmalloc(sizeof(*lanai), GFP_KERNEL);
++	lanai = kzalloc(sizeof(*lanai), GFP_KERNEL);
+ 	if (lanai == NULL) {
+ 		printk(KERN_ERR DEV_LABEL
+ 		       ": couldn't allocate dev_data structure!\n");
 -- 
 2.30.1
 
