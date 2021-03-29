@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610BF34CA0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D515D34C7E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbhC2Iep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:34:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
+        id S233162AbhC2IS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232827AbhC2IVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:21:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 160EF61959;
-        Mon, 29 Mar 2021 08:21:23 +0000 (UTC)
+        id S232579AbhC2ILM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:11:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F92C61477;
+        Mon, 29 Mar 2021 08:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006084;
-        bh=LFZ5WWqgCpb/MekxtAIe1lSomTvhgAiDJJD+Y5p9Rso=;
+        s=korg; t=1617005472;
+        bh=wW2S0guIdoxmwc/oiZjh0kP318nef3czKsKtt+SjyFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V32xWW2zx6dmrNS8lqjN7tZitTlvXCcvpOJnNmZhAGPA8fp7ip989gWUabbpeAlLB
-         1+HTI61ME/J+BgIuVtSCxcLK+iqSXrJcgS/rJTXsKWrurEQkb4B+swP91goslBdjYv
-         7lZ762DynMGXlHDqU+9bD2Hb6j+c+NWJLdLY5dmY=
+        b=YtezQxrSdB1mIH99FPaHze2gxmnR8SLc+gvsh9cVNNb2O1GjRVw6xpyec82SYfUq9
+         MJDEB/bGgwcOmjygTEUPCWYngfCHReV1jn1W9DjAJ0IEvnLKCVuDm2rtKCYWvEA77O
+         TREmEfkRCCi3AGDHbkXd/SsEWco0TB6Na0ZQ2i/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 113/221] ftgmac100: Restart MAC HW once
+Subject: [PATCH 5.4 016/111] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
 Date:   Mon, 29 Mar 2021 09:57:24 +0200
-Message-Id: <20210329075632.984594778@linuxfoundation.org>
+Message-Id: <20210329075615.730401032@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Timo Rothenpieler <timo@rothenpieler.org>
 
-[ Upstream commit 6897087323a2fde46df32917462750c069668b2f ]
+[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
 
-The interrupt handler may set the flag to reset the mac in the future,
-but that flag is not cleared once the reset has occurred.
+This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
+With the default being m, it's impossible to build the module into the
+kernel.
 
-Fixes: 10cbd6407609 ("ftgmac100: Rework NAPI & interrupts handling")
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/faraday/ftgmac100.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 80fb1f537bb3..c9c380c50879 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1308,6 +1308,7 @@ static int ftgmac100_poll(struct napi_struct *napi, int budget)
- 	 */
- 	if (unlikely(priv->need_mac_restart)) {
- 		ftgmac100_start_hw(priv);
-+		priv->need_mac_restart = false;
+diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
+index e7dd07f47825..e84c187d942e 100644
+--- a/fs/nfs/Kconfig
++++ b/fs/nfs/Kconfig
+@@ -127,7 +127,7 @@ config PNFS_BLOCK
+ config PNFS_FLEXFILE_LAYOUT
+ 	tristate
+ 	depends on NFS_V4_1 && NFS_V3
+-	default m
++	default NFS_V4
  
- 		/* Re-enable "bad" interrupts */
- 		iowrite32(FTGMAC100_INT_BAD,
+ config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
+ 	string "NFSv4.1 Implementation ID Domain"
 -- 
 2.30.1
 
