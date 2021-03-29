@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE6634C6AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A766D34C56E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhC2IJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48570 "EHLO mail.kernel.org"
+        id S231163AbhC2IAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:00:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231643AbhC2IF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D9966196F;
-        Mon, 29 Mar 2021 08:05:28 +0000 (UTC)
+        id S229441AbhC2H7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:59:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8114261969;
+        Mon, 29 Mar 2021 07:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005129;
-        bh=6OcSODOYqwJboTZ9frUoduypl0F1XliqrHBhqruTSDQ=;
+        s=korg; t=1617004790;
+        bh=L+OjKZDtRg77oC6iupFoK//kSUoajNgKI8lXu5a7W84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ifjPKv5BBaTCRMMs377etgZOM+JeejpCah6sgB0lbGq9P6K8/wR5dX9lyJlRRhgBj
-         UvXUc0eORtD2oNfFR4EmoR/N7F69pO6Ut2bPoDRxp4xrXhwdmCTbTLt3IKkc27Divh
-         LO02ecBaoXq87a233IS1hB4GX56j4TquAVV2y3JY=
+        b=DeWfGekbItxwPA1L4Byz7PeWVWgKXItm5eUuQ91SmaUoU5PICvkoETX+H7nTZPf41
+         G1MbiVK5Ibt1nQrACD9VGsbh56xOx7BfTc9elkOUCacWYDC+oAcRxHexcXkEXzwl9I
+         saNn7UYUxhFTaOsRpmGOX0v5WiSN7mNA9vgpILcM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Heiko Thiery <heiko.thiery@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 06/59] ixgbe: Fix memleak in ixgbe_configure_clsu32
+Subject: [PATCH 4.4 01/33] net: fec: ptp: avoid register access when ipg clock is disabled
 Date:   Mon, 29 Mar 2021 09:57:46 +0200
-Message-Id: <20210329075609.106903223@linuxfoundation.org>
+Message-Id: <20210329075605.334220928@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,40 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Heiko Thiery <heiko.thiery@gmail.com>
 
-[ Upstream commit 7a766381634da19fc837619b0a34590498d9d29a ]
+[ Upstream commit 6a4d7234ae9a3bb31181f348ade9bbdb55aeb5c5 ]
 
-When ixgbe_fdir_write_perfect_filter_82599() fails,
-input allocated by kzalloc() has not been freed,
-which leads to memleak.
+When accessing the timecounter register on an i.MX8MQ the kernel hangs.
+This is only the case when the interface is down. This can be reproduced
+by reading with 'phc_ctrl eth0 get'.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
+the igp clock is disabled when the interface is down and leads to a
+system hang.
+
+So we check if the ptp clock status before reading the timecounter
+register.
+
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Link: https://lore.kernel.org/r/20210225211514.9115-1-heiko.thiery@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 9c3fa0b55551..e9205c893531 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -9266,8 +9266,10 @@ static int ixgbe_configure_clsu32(struct ixgbe_adapter *adapter,
- 	ixgbe_atr_compute_perfect_hash_82599(&input->filter, mask);
- 	err = ixgbe_fdir_write_perfect_filter_82599(hw, &input->filter,
- 						    input->sw_idx, queue);
--	if (!err)
--		ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
-+	if (err)
-+		goto err_out_w_lock;
-+
-+	ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
- 	spin_unlock(&adapter->fdir_perfect_lock);
+diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
+index f9e74461bdc0..123181612595 100644
+--- a/drivers/net/ethernet/freescale/fec_ptp.c
++++ b/drivers/net/ethernet/freescale/fec_ptp.c
+@@ -396,9 +396,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ 	u64 ns;
+ 	unsigned long flags;
  
- 	if ((uhtid != 0x800) && (adapter->jump_tables[uhtid]))
++	mutex_lock(&adapter->ptp_clk_mutex);
++	/* Check the ptp clock */
++	if (!adapter->ptp_clk_on) {
++		mutex_unlock(&adapter->ptp_clk_mutex);
++		return -EINVAL;
++	}
+ 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
+ 	ns = timecounter_read(&adapter->tc);
+ 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
++	mutex_unlock(&adapter->ptp_clk_mutex);
+ 
+ 	*ts = ns_to_timespec64(ns);
+ 
 -- 
 2.30.1
 
