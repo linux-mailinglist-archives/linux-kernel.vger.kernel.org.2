@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76E634C803
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321A734CBD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhC2ITK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        id S236433AbhC2Ixf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232207AbhC2ILl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:11:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 581AC61494;
-        Mon, 29 Mar 2021 08:11:40 +0000 (UTC)
+        id S234132AbhC2Iek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AADC6192E;
+        Mon, 29 Mar 2021 08:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005500;
-        bh=IrGIXmQxI09MYQmttRJ9qPN1HtP2WUP1gbuUnWj39mg=;
+        s=korg; t=1617006878;
+        bh=/IaRkj5I1eZTVi7n0vXdatiwwU9B6S2ofbBeqWXW9yc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xOVNkDJ7J33AXfSUErCMbdeC/yIHizWc42sJJt3qVFsWg8ZDyB0NKYAZMs1VC+90b
-         71Y4BmbchUMBl6ChDJajJdyp1++oSPYk9WDKnk/ehSRtI7+Q7SUFT2iuX9FC0TvAG8
-         kIfCTCQp6xmFGZ2HVl+zaGtKj5L95JLTgXqo6Kts=
+        b=e3lL6U1n+Duul1jGN8J5lEptBBqTy/lZHSF5dhpqS1DxRT7pq0u/1j/s1pK2wi/qF
+         1J/e1xa+e0EiAg5PGnY7HT3poVtqdYH7VcqBEvIyxX+OJDENIpHjN+OhPBlYTr+r6l
+         UvxD8pqppsrSMwnJsive468q1EowN1zM7nFRMNMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/111] irqchip/ingenic: Add support for the JZ4760
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 136/254] clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1 clk
 Date:   Mon, 29 Mar 2021 09:57:32 +0200
-Message-Id: <20210329075615.988295818@linuxfoundation.org>
+Message-Id: <20210329075637.694977270@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 5fbecd2389f48e1415799c63130d0cdce1cf3f60 ]
+[ Upstream commit 148ddaa89d4a0a927c4353398096cc33687755c1 ]
 
-Add support for the interrupt controller found in the JZ4760 SoC, which
-works exactly like the one in the JZ4770.
+While picking commit a8cd989e1a57 ("mmc: sdhci-msm: Warn about
+overclocking SD/MMC") back to my tree I was surprised that it was
+reporting warnings.  I thought I fixed those!  Looking closer at the
+fix, I see that I totally bungled it (or at least I halfway bungled
+it).  The SD card clock got fixed (and that was the one I was really
+focused on fixing), but I totally adjusted the wrong clock for eMMC.
+Sigh.  Let's fix my dumb mistake.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210307172014.73481-2-paul@crapouillou.net
+Now both SD and eMMC have floor for the "apps" clock.
+
+This doesn't matter a lot for the final clock rate for HS400 eMMC but
+could matter if someone happens to put some slower eMMC on a sc7180.
+We also transition through some of these lower rates sometimes and
+having them wrong could cause problems during these transitions.
+These were the messages I was seeing at boot:
+  mmc1: Card appears overclocked; req 52000000 Hz, actual 100000000 Hz
+  mmc1: Card appears overclocked; req 52000000 Hz, actual 100000000 Hz
+  mmc1: Card appears overclocked; req 104000000 Hz, actual 192000000 Hz
+
+Fixes: 6d37a8d19283 ("clk: qcom: gcc-sc7180: Use floor ops for sdcc clks")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20210224095013.1.I2e2ba4978cfca06520dfb5d757768f9c42140f7c@changeid
+Reviewed-by: Taniya Das <tdas@codeaurora.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-ingenic-tcu.c | 1 +
- drivers/irqchip/irq-ingenic.c     | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/clk/qcom/gcc-sc7180.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
-index 6d05cefe9d79..02a82723a57a 100644
---- a/drivers/irqchip/irq-ingenic-tcu.c
-+++ b/drivers/irqchip/irq-ingenic-tcu.c
-@@ -179,4 +179,5 @@ static int __init ingenic_tcu_irq_init(struct device_node *np,
- }
- IRQCHIP_DECLARE(jz4740_tcu_irq, "ingenic,jz4740-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4725b_tcu_irq, "ingenic,jz4725b-tcu", ingenic_tcu_irq_init);
-+IRQCHIP_DECLARE(jz4760_tcu_irq, "ingenic,jz4760-tcu", ingenic_tcu_irq_init);
- IRQCHIP_DECLARE(jz4770_tcu_irq, "ingenic,jz4770-tcu", ingenic_tcu_irq_init);
-diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
-index dda512dfe2c1..31bc11f15bfa 100644
---- a/drivers/irqchip/irq-ingenic.c
-+++ b/drivers/irqchip/irq-ingenic.c
-@@ -168,6 +168,7 @@ static int __init intc_2chip_of_init(struct device_node *node,
- {
- 	return ingenic_intc_of_init(node, 2);
- }
-+IRQCHIP_DECLARE(jz4760_intc, "ingenic,jz4760-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4770_intc, "ingenic,jz4770-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4775_intc, "ingenic,jz4775-intc", intc_2chip_of_init);
- IRQCHIP_DECLARE(jz4780_intc, "ingenic,jz4780-intc", intc_2chip_of_init);
+diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
+index 88e896abb663..da8b627ca156 100644
+--- a/drivers/clk/qcom/gcc-sc7180.c
++++ b/drivers/clk/qcom/gcc-sc7180.c
+@@ -620,7 +620,7 @@ static struct clk_rcg2 gcc_sdcc1_apps_clk_src = {
+ 		.name = "gcc_sdcc1_apps_clk_src",
+ 		.parent_data = gcc_parent_data_1,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_floor_ops,
+ 	},
+ };
+ 
+@@ -642,7 +642,7 @@ static struct clk_rcg2 gcc_sdcc1_ice_core_clk_src = {
+ 		.name = "gcc_sdcc1_ice_core_clk_src",
+ 		.parent_data = gcc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_floor_ops,
++		.ops = &clk_rcg2_ops,
+ 	},
+ };
+ 
 -- 
 2.30.1
 
