@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB30234C48C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC534C48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC2HG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:06:28 -0400
-Received: from www381.your-server.de ([78.46.137.84]:36858 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhC2HGT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:06:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=go7FKVgJ9/ZPz+OtwD52LLLt4SGNDzqZQ/KSBZeA42E=; b=bvMSiYb2EOVzbhpEN8D1Cd3Z59
-        ZSHSEdjXc89SyhFLOYI3b2IS5AmZiO+9/VkcmfmXVp1GDaxgp0/bxK5bcDeyKb7nsVR9SQvlPOVGu
-        2i90F0bAmIHKSuTbjbrUEwy549SnifHU9VxNuPJueU6OJc1QhjiV0qbrQj8G81tLy64a0vLQ9ua2P
-        EcB/cMMH59feRcrg+Lu7uwSX0W4b+H7boheRxUViwalVt76jbNdb88qCosDAbSsFdOePfKwb/oIHY
-        EkIx6lf6ViXijmzXYIkAZP8tQOKVuysGolL5LG5vM/ZizSXmehxGjcunQv042ufdvSxv9860jrvlA
-        VgIEf5/Q==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lQlyZ-0009jg-Cu; Mon, 29 Mar 2021 09:06:15 +0200
-Received: from [2001:a61:2aba:2d01:224:d7ff:fe9f:8154]
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lQlyZ-000DR2-8N; Mon, 29 Mar 2021 09:06:15 +0200
-Subject: Re: [PATCH 3/3] iio: adc: ad7923: register device with
- devm_iio_device_register
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>,
-        Michael.Hennerich@analog.com, jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1616966903.git.lucas.p.stankus@gmail.com>
- <b0146465d52f4e259f5f95c83c71e72f065093da.1616966903.git.lucas.p.stankus@gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <1548d948-bd01-a8db-6ecc-720bb7ca73a9@metafoo.de>
-Date:   Mon, 29 Mar 2021 09:06:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <b0146465d52f4e259f5f95c83c71e72f065093da.1616966903.git.lucas.p.stankus@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26123/Sun Mar 28 13:10:54 2021)
+        id S230494AbhC2HHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:07:37 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:43227 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhC2HHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:07:25 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F83YN0Lyxz9txqm;
+        Mon, 29 Mar 2021 09:07:20 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Bbovh61E9OCv; Mon, 29 Mar 2021 09:07:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F83YM6fvRz9txql;
+        Mon, 29 Mar 2021 09:07:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 115298B79E;
+        Mon, 29 Mar 2021 09:07:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3-O8-dTqcO5q; Mon, 29 Mar 2021 09:07:21 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC4B68B7A2;
+        Mon, 29 Mar 2021 09:07:20 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BFFFA67611; Mon, 29 Mar 2021 07:07:20 +0000 (UTC)
+Message-Id: <db20abbecb129c49d3c663de67dac6a87501ac0b.1617001615.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/8xx: Load modules closer to kernel text
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 29 Mar 2021 07:07:20 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/28/21 11:46 PM, Lucas Stankus wrote:
-> Registers the device using the devm variant.
-> This is the final step of converting the ad7923 to only use devm routines,
-> meaning that the ad7923_remove() function is no longer needed to release
-> resources on device detach.
-> 
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+On the 8xx, TASK_SIZE is 0x80000000. The space between TASK_SIZE and
+PAGE_OFFSET is not used.
 
-Hi,
+Use it to load modules in order to minimise the distance between
+kernel text and modules and avoid trampolines in modules to access
+kernel functions or other module functions.
 
-Thanks for the patches.T his looks good, just one small comment.
+Define a 16Mbytes area for modules, that's more than enough.
 
-> ---
->   drivers/iio/adc/ad7923.c | 12 +-----------
->   1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7923.c b/drivers/iio/adc/ad7923.c
-> index d07eaf3111ed..f7af2f194789 100644
-> --- a/drivers/iio/adc/ad7923.c
-> +++ b/drivers/iio/adc/ad7923.c
-> @@ -356,16 +356,7 @@ static int ad7923_probe(struct spi_device *spi)
->   	if (ret)
->   		return ret;
->   
-> -	return iio_device_register(indio_dev);
-> -}
-> -
-> -static int ad7923_remove(struct spi_device *spi)
-> -{
-> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+DEBUG logs in module_32.c without the patch:
 
-This removes the last user of get_drvdata() on the SPI device. This means you 
-can also remove the spi_set_drvdata() in the probe function.
+[ 1572.588822] module_32: Applying ADD relocate section 13 to 12
+[ 1572.588891] module_32: Doing plt for call to 0xc00671a4 at 0xcae04024
+[ 1572.588964] module_32: Initialized plt for 0xc00671a4 at cae04000
+[ 1572.589037] module_32: REL24 value = CAE04000. location = CAE04024
+[ 1572.589110] module_32: Location before: 48000001.
+[ 1572.589171] module_32: Location after: 4BFFFFDD.
+[ 1572.589231] module_32: ie. jump to 03FFFFDC+CAE04024 = CEE04000
+[ 1572.589317] module_32: Applying ADD relocate section 15 to 14
+[ 1572.589386] module_32: Doing plt for call to 0xc00671a4 at 0xcadfc018
+[ 1572.589457] module_32: Initialized plt for 0xc00671a4 at cadfc000
+[ 1572.589529] module_32: REL24 value = CADFC000. location = CADFC018
+[ 1572.589601] module_32: Location before: 48000000.
+[ 1572.589661] module_32: Location after: 4BFFFFE8.
+[ 1572.589723] module_32: ie. jump to 03FFFFE8+CADFC018 = CEDFC000
 
-> -
-> -	iio_device_unregister(indio_dev);
-> -
-> -	return 0;
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
->   }
+With the patch:
+
+[  279.404671] module_32: Applying ADD relocate section 13 to 12
+[  279.404741] module_32: REL24 value = C00671B4. location = BF808024
+[  279.404814] module_32: Location before: 48000001.
+[  279.404874] module_32: Location after: 4885F191.
+[  279.404933] module_32: ie. jump to 0085F190+BF808024 = C00671B4
+[  279.405016] module_32: Applying ADD relocate section 15 to 14
+[  279.405085] module_32: REL24 value = C00671B4. location = BF800018
+[  279.405156] module_32: Location before: 48000000.
+[  279.405215] module_32: Location after: 4886719C.
+[  279.405275] module_32: ie. jump to 0086719C+BF800018 = C00671B4
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/powerpc/include/asm/nohash/32/mmu-8xx.h b/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
+index 478249959baa..7902a42d6d3e 100644
+--- a/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/mmu-8xx.h
+@@ -172,6 +172,9 @@
+ 
+ #define mmu_linear_psize	MMU_PAGE_8M
+ 
++#define MODULES_VADDR	(PAGE_OFFSET - SZ_16M)
++#define MODULES_END	PAGE_OFFSET
++
+ #ifndef __ASSEMBLY__
+ 
+ #include <linux/mmdebug.h>
+-- 
+2.25.0
+
