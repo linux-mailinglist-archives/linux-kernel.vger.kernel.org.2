@@ -2,129 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FF934C6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4DD34C9B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhC2IKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:10:23 -0400
-Received: from comms.puri.sm ([159.203.221.185]:46964 "EHLO comms.puri.sm"
+        id S231859AbhC2Ibm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:31:42 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:42218 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231849AbhC2IGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 31C1BDFD66;
-        Mon, 29 Mar 2021 01:05:37 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id i8V-yNlrLhxp; Mon, 29 Mar 2021 01:05:35 -0700 (PDT)
-Message-ID: <e7a4d08fd3dba4fd22a1907476fad4334a4fbe10.camel@puri.sm>
-Subject: Re: [PATCH v3 1/4] scsi: add expecting_media_change flag to error
- path
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        martin.petersen@oracle.com, stern@rowland.harvard.edu
-Date:   Mon, 29 Mar 2021 10:05:30 +0200
-In-Reply-To: <22533564-9f21-df1a-8cab-7996ccadc788@acm.org>
-References: <20210328102531.1114535-1-martin.kepplinger@puri.sm>
-         <20210328102531.1114535-2-martin.kepplinger@puri.sm>
-         <22533564-9f21-df1a-8cab-7996ccadc788@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-Content-Transfer-Encoding: 8bit
+        id S233374AbhC2IUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:20:01 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D2AD61A0F5A;
+        Mon, 29 Mar 2021 10:19:59 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 32CC41A26A8;
+        Mon, 29 Mar 2021 10:19:57 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8C4DF402A8;
+        Mon, 29 Mar 2021 10:19:53 +0200 (CEST)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     shawnguo@kernel.org
+Cc:     l.stach@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] arm64: dts: imx8mq-evk: add one regulator used to power up pcie phy
+Date:   Mon, 29 Mar 2021 16:06:03 +0800
+Message-Id: <1617005163-29824-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, dem 28.03.2021 um 09:53 -0700 schrieb Bart Van Assche:
-> On 3/28/21 3:25 AM, Martin Kepplinger wrote:
-> > diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-> > index 08c06c56331c..c62915d34ba4 100644
-> > --- a/drivers/scsi/scsi_error.c
-> > +++ b/drivers/scsi/scsi_error.c
-> > @@ -585,6 +585,18 @@ int scsi_check_sense(struct scsi_cmnd *scmd)
-> >                                 return NEEDS_RETRY;
-> >                         }
-> >                 }
-> > +               if (scmd->device->expecting_media_change) {
-> > +                       if (sshdr.asc == 0x28 && sshdr.ascq ==
-> > 0x00) {
-> > +                               /*
-> > +                                * clear the expecting_media_change
-> > in
-> > +                                * scsi_decide_disposition()
-> > because we
-> > +                                * need to catch possible "fail
-> > fast" overrides
-> > +                                * that block readahead can cause.
-> > +                                */
-> > +                               return NEEDS_RETRY;
-> > +                       }
-> > +               }
-> 
-> Introducing a new state variable carries some risk, namely that a
-> path
-> that should set or clear the state variable is overlooked. Is there
-> an
-> approach that does not require to introduce a new state variable,
-> e.g.
-> to send a REQUEST SENSE command after a resume?
-> 
-> Thanks,
-> 
-> Bart.
+Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
+In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
+sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
+the VREG_BYPASS bits of GPR registers should be cleared from default
+value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
+turned on.
 
-wow, thanks for that. Indeed my first tests succeed with the below
-change, that doesn't use the error-path additions at all (not setting
-expecting_media_change), and sends a request sense instead.
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+---
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-I'm just too little of a scsi developer that I know whether the below
-change correctly does what you had in mind. Does it?
-
-
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3707,6 +3707,10 @@ static int sd_resume_runtime(struct device *dev)
- {
-        struct scsi_disk *sdkp = dev_get_drvdata(dev);
-        struct scsi_device *sdp = sdkp->device;
-+       const int timeout = sdp->request_queue->rq_timeout
-+               * SD_FLUSH_TIMEOUT_MULTIPLIER;
-+       int retries, res;
-+       struct scsi_sense_hdr my_sshdr;
-        int ret;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+index 85b045253a0e..4d2035e3dd7c 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+@@ -318,6 +318,7 @@
+ 		 <&clk IMX8MQ_CLK_PCIE1_PHY>,
+ 		 <&pcie0_refclk>;
+ 	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
++	vph-supply = <&vgen5_reg>;
+ 	status = "okay";
+ };
  
-        if (!sdkp)      /* E.g.: runtime resume at the start of
-sd_probe() */
-@@ -3714,10 +3718,25 @@ static int sd_resume_runtime(struct device
-*dev)
- 
-        /*
-         * This devices issues a MEDIA CHANGE unit attention when
--        * resuming from suspend. Ignore the next one now.
-+        * resuming from suspend.
-         */
--       if (sdp->sdev_bflags & BLIST_MEDIA_CHANGE)
--               sdkp->device->expecting_media_change = 1;
-+       if (sdp->sdev_bflags & BLIST_MEDIA_CHANGE) {
-+               for (retries = 3; retries > 0; --retries) {
-+                       unsigned char cmd[10] = { 0 };
-+
-+                       cmd[0] = REQUEST_SENSE;
-+                       /*
-+                        * Leave the rest of the command zero to
-indicate
-+                        * flush everything.
-+                        */
-+                       res = scsi_execute(sdp, cmd, DMA_NONE, NULL, 0,
-NULL, &my_sshdr,
-+                                       timeout, sdkp->max_retries, 0,
-RQF_PM, NULL);
-+                       if (res == 0)
-+                               break;
-+               }
-+       }
- 
-        return sd_resume(dev);
+-- 
+2.17.1
 
