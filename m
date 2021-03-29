@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C1E34D56F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8B234D590
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhC2Qul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S229502AbhC2Qxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhC2QuS (ORCPT
+        with ESMTP id S229479AbhC2Qxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:50:18 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D9AC061574;
-        Mon, 29 Mar 2021 09:50:18 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c17so10243743pfn.6;
-        Mon, 29 Mar 2021 09:50:18 -0700 (PDT)
+        Mon, 29 Mar 2021 12:53:38 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99F5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:53:37 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id q26so13058379qkm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:53:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E4Uo8oC0q+k3/BuQcrCo0FLHeLVxH/nrRmm5Yh0sXuo=;
-        b=W1d57UJnJq+zVXdWhh1fBDsFoR/Ax++MBqi9TwsiwD5HqR9kEy14TbZ+fC64mCZMO4
-         6LQouzK9oF43qBDPgQL5ha4dGt5ea14MkOlGxQor6bxp83W7K81/wgtsmfmpZ5CPScAA
-         Z8soUsdfyrMoipb3c73AYkO+JFJ+T4ZrOb23L+E6+ZjyaitFFJqFjcz7Vm9S9o3rWCx5
-         wmBrVNaqDXC594pgCYdMC3fYTVDvhZJ4yKEctr4pm1woe8xQhHDX39r4siTNpG2s2oQu
-         +Ry5FZ4Q7N66v2TpYRIJTmbXD57kuYTYQGNK0AaIyaAtZHOTeh5WPjE71n8dZYC8pMTn
-         Dsaw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZRSWFn6sDTnWj31Ge7dRmuXWY5dPnlyjzxRDAOMtyF8=;
+        b=WygmQm1qMDmfY/dti7lonDd2AkzmSsz95cmmN4EA838MXM8wIdMZhzVOyyLhzAY/w1
+         nIw0EAj4d2QZKTFe6bLzWAkPIfTuu6K9yfjg4bwTPoQuHPbnYPgLKbOa80x9irMuDmgg
+         cAr+0cC12bw3Vbjyrw/fS6+L0XQEIN13UlU1NzgS+UB7dbgmTvccF4BNYgp/uLRGCfh4
+         PmqrURDMZ9gT+F+S/NjxmXsCKiCHCWGu4anYJLOXWMzAtjokdWBuILL0LbQuyYplMFlc
+         985TS4hQFVh5GcvQeBgbxTgGHE7NcPcBrEK6cX6jyfsh4aY0Of1pOL497Lup+TgkT12h
+         3oyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E4Uo8oC0q+k3/BuQcrCo0FLHeLVxH/nrRmm5Yh0sXuo=;
-        b=p1Bzgb6vcdkzWs8iB33frE0V9QgpUm/Nz745lzul8afeZtnhmzNk9kromlhnWm/8/g
-         /VeARzygB1kQQZUCr4pbnmWtIEvgJSGXEnXA0G+UExOToUHX0QB3Z1KLv9NQZHsM2I1i
-         X8xPhasUpEN4VlxCQ+O3TP38SBSfDSG/3lE+fKdj9gkUFMbM8oEh8li332j1ohJ6o/Ct
-         VoJcNFtIZZ+MXOndik3rM/n2r6vJNrUUkfcy3BMaXZ2QeWDTEPFDRS+ewHjgK6HYjN/n
-         vTVVCm+7BPlqhfH0YpWm0xg6lyxuTaZrQSQuBd0eEBvsFI8ztSypIwGSOFCgkTCQzec4
-         grKg==
-X-Gm-Message-State: AOAM533RmCIYK04f4xRYk8IcfJSyZdS9aOBERldlcgFKUObOsalWKstg
-        N6/+VP3XCLrL0rwKifYJRE+ym9HNJN4=
-X-Google-Smtp-Source: ABdhPJx1aSGZR/V4p9ArJLKexrO6w/tcuIGBi3Xug+TG0A2hl9p1z1ZDAbPksQ8QTTGYe45Mbev5GQ==
-X-Received: by 2002:a05:6a00:b86:b029:207:8ac9:85de with SMTP id g6-20020a056a000b86b02902078ac985demr25341671pfj.66.1617036616584;
-        Mon, 29 Mar 2021 09:50:16 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id m1sm20482pjf.8.2021.03.29.09.50.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 09:50:15 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] PCI: brcmstb: Use reset/rearm instead of
- deassert/assert
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jim Quinlan <jim2101024@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210312204556.5387-1-jim2101024@gmail.com>
- <20210312204556.5387-3-jim2101024@gmail.com>
- <20210329161040.GB9677@lpieralisi>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <71903454-c20c-31f7-aaee-0d05eb22db7f@gmail.com>
-Date:   Mon, 29 Mar 2021 09:50:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ZRSWFn6sDTnWj31Ge7dRmuXWY5dPnlyjzxRDAOMtyF8=;
+        b=qJYWQzEoexRb6jKeFj5lcWLM/GN3w0uqYbXIQL8G0kQKACtTzTMfbYZUW7AetkFz0D
+         cNGSGCGc5rvWb8FZKOm9HmZe9PAc3iZjMx84JSI07ASb84l5jFjKJTi67vx+937bO1L0
+         EIFDIqMzSVch68e2Lxf5bnG2p7y8tjfM0Of0AV2humgq9CbNmx+l44LOX8pYkfg0CJgG
+         J2q4u3ZE5LM1ZJ8B1fXCPMbyLETwoFVUUyBMunOnuT4MYQA+BZNrh2GKpo9w5uzuA0WG
+         DnrccFv10MdgIB5NqrR7/8hQx467b8AtE7KI62ZHSqDw2agQSB3++1yJamp5vjNc5X1l
+         lNXA==
+X-Gm-Message-State: AOAM533WzfmlidGoitinWy1gXWRpMmlnKVhmy1Uto5BYM7KaZ9UP8A6T
+        rrRT66x0bwPzWP2O1pPV/MA=
+X-Google-Smtp-Source: ABdhPJwBGESAAZnjMxS4JMwOOjjnfqtZJ5Ln7gMJ3AXgQHLh3PMxfP4mzO0xqz9mn5cQWjzQTdaEqg==
+X-Received: by 2002:a05:620a:525:: with SMTP id h5mr26509611qkh.100.1617036816735;
+        Mon, 29 Mar 2021 09:53:36 -0700 (PDT)
+Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
+        by smtp.gmail.com with ESMTPSA id j3sm13967483qki.84.2021.03.29.09.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 09:53:36 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     schwab@linux-m68k.org, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
+Subject: [PATCH v3] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
+Date:   Mon, 29 Mar 2021 12:53:29 -0400
+Message-Id: <20210329165329.27994-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210329161040.GB9677@lpieralisi>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 9:10 AM, Lorenzo Pieralisi wrote:
-> On Fri, Mar 12, 2021 at 03:45:55PM -0500, Jim Quinlan wrote:
->> The Broadcom STB PCIe RC uses a reset control "rescal" for certain chips.
->> The "rescal" implements a "pulse reset" so using assert/deassert is wrong
->> for this device.  Instead, we use reset/rearm.  We need to use rearm so
->> that we can reset it after a suspend/resume cycle; w/o using "rearm", the
->> "rescal" device will only ever fire once.
->>
->> Of course for suspend/resume to work we also need to put the reset/rearm
->> calls in the suspend and resume routines.
-> 
-> Actually - I am sorry but it looks like you will have to split the patch
-> in two since this is two logical changes.
+When LATENCYTOP, LOCKDEP, or FAULT_INJECTION_STACKTRACE_FILTER
+is enabled and ARCH_WANT_FRAME_POINTERS
+is disabled, Kbuild gives a warning such as:
 
-I do not believe this can be easily split, since there is currently a
-misused of the reset controller API and this patch fixes all call sites
-at once. It would not really make sense to fix probe/remove and then
-leave suspend/resume broken in the same manner.
+WARNING: unmet direct dependencies detected for FRAME_POINTER
+  Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
+  Selected by [y]:
+  - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+
+Depending on ARCH_WANT_FRAME_POINTERS causes a
+recursive dependency error.
+ARCH_WANT_FRAME_POINTERS is to be selected by the architecture,
+and is not supposed to be overridden by other config options.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ lib/Kconfig.debug | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 2779c29d9981..417c3d3e521b 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1363,7 +1363,7 @@ config LOCKDEP
+ 	bool
+ 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+ 	select STACKTRACE
+-	select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !X86
++	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+ 	select KALLSYMS
+ 	select KALLSYMS_ALL
+ 
+@@ -1665,7 +1665,7 @@ config LATENCYTOP
+ 	depends on DEBUG_KERNEL
+ 	depends on STACKTRACE_SUPPORT
+ 	depends on PROC_FS
+-	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
++	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+ 	select KALLSYMS
+ 	select KALLSYMS_ALL
+ 	select STACKTRACE
+@@ -1918,7 +1918,7 @@ config FAULT_INJECTION_STACKTRACE_FILTER
+ 	depends on FAULT_INJECTION_DEBUG_FS && STACKTRACE_SUPPORT
+ 	depends on !X86_64
+ 	select STACKTRACE
+-	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
++	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+ 	help
+ 	  Provide stacktrace filter for fault-injection capabilities
+ 
 -- 
-Florian
+2.25.1
+
