@@ -2,122 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB1034D2F2
+	by mail.lfdr.de (Postfix) with ESMTP id A722C34D2F4
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhC2O5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbhC2O5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:57:04 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF807C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:57:04 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id j2so14049722ybj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kKi8HN+bpgIonbipayQY6bUaqDWQRM56PWjQCa1XcVc=;
-        b=QHeXTIE0ojKJtQ0VDW1civaMMSYxCTYIxgjq32eR6dbldNbJ7h34t8c01oC8YDfRcV
-         +VfX7+582QTTxV7FU2T+0vinC8y9SAnTAPI2oyf4H2fJoytHlIUn/HU1KebfH/VjGAOA
-         gUDS5T0FIs1S8Hyvg6Iw76337LbQmKY4tI39R/AtDZoGCVkZy+8FqZDzE0eArbRy39Ua
-         DPUVqWL1FDXXwDvhxpJZ8HpSprI9KioF7qtuh+GGsZ09Gst3MBl6CyJigBzZRWpk4aF7
-         /ExD1o3GqUcKDji/hVdsgRgXcEjq/aY3FAb/1WNU6JDHKh4f6xlC3SviRJ/gTj51od+O
-         juqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kKi8HN+bpgIonbipayQY6bUaqDWQRM56PWjQCa1XcVc=;
-        b=ipSP1ETRSo4siWxTebq3emBkru48Qf/ekPCRLAS90VtuNXGimZRQnWOyyu8dE3H6Lt
-         jULj3AZn2aZdlw+1qy5Ol+XJtdWYLFpMkRP/Z05yQQ/0MNkMElzmOMkXxtISgnXbD0AR
-         HSY6dfClVxjsmXxoqYv8bRwiK4raKH79R9q5ZviTIUvWhXdnrhHCH6rPnRXaWzXV0w/s
-         IP3Uz+izr8bdTGr5gPMyqCkjD7yC/Agqfwy6KOEkGkDrpIogvCg1hwhAjUID6aDUsRp4
-         v6e3MCY7zRzTJVDL/bYpBwIaLnWPA2f6YTPy14mFynT/xs0uiVJ3ng0SNdE51xSYEHez
-         6nYA==
-X-Gm-Message-State: AOAM5322tuM76qFr2onWaF9vNnyEM0fpcNA5ZWgjvATwrkGekGXiGMN8
-        Ul2DGtlUeN7sRXvmA2gYWShwtBvalSvVt1yyxt+3MQ==
-X-Google-Smtp-Source: ABdhPJzu5ULT+omARvahbH1jKInTaaNAdmdNq4fRz3u1JYVIeDwdMailkmG8CbM4ZA/xaEU/YPrnxVrzakIRb4bNgp0=
-X-Received: by 2002:a25:69c1:: with SMTP id e184mr38733388ybc.345.1617029823530;
- Mon, 29 Mar 2021 07:57:03 -0700 (PDT)
+        id S230229AbhC2O5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231304AbhC2O5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:57:10 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68CAF60C3D;
+        Mon, 29 Mar 2021 14:57:07 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 15:57:13 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
+        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
+Subject: Re: [PATCH 08/10] platform/x86: toshiba_acpi: use device-managed
+ for wwan_rfkill management
+Message-ID: <20210329155713.3c19c0d1@jic23-huawei>
+In-Reply-To: <20210324125548.45983-9-aardelean@deviqon.com>
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+        <20210324125548.45983-9-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
- <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org> <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
-In-Reply-To: <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Mon, 29 Mar 2021 07:56:52 -0700
-Message-ID: <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 24 Mar 2021 14:55:46 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-On Thu, Mar 25, 2021 at 11:57 PM <sbhanu@codeaurora.org> wrote:
->
-> >>> +                       max-frequency = <192000000>;
-> >> Why do you need to specify this?
-> This helps to avoid lower speed modes running in high clock rate,
-> and As Veerabhadrarao Badiganti mentioned
+> This change converts the wwan_rfkill object to be free'd automatically when
+> the parent refcount goes to zero.
+> There are 2 cleanup operations required: rfkill_unregister() and
+> rfkill_destroy(). Since they don't have any devm_ variants, they are hooked
+> via devm_add_action_or_reset().
+> 
+> The main reason to do this is to enforce ordering on cleanup, when the
+> Toshiba ACPI device is cleaned up.
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Superficially looks fine to me though I don't know much about rfkill.
 
-Just to be clear, both Stephen and I agree that you should remove
-"max-frequency" here (see previous discussion). Bjorn is, of course,
-the file decision maker. However, unless he says "yeah, totally keep
-it in" I'd suggest dropping it from the next version.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
+> ---
+>  drivers/platform/x86/toshiba_acpi.c | 40 ++++++++++++++++++++++-------
+>  1 file changed, 31 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+> index 12860ef60e4d..a1249f6dde9a 100644
+> --- a/drivers/platform/x86/toshiba_acpi.c
+> +++ b/drivers/platform/x86/toshiba_acpi.c
+> @@ -2591,7 +2591,22 @@ static const struct rfkill_ops wwan_rfk_ops = {
+>  	.poll = toshiba_acpi_wwan_poll,
+>  };
+>  
+> -static int toshiba_acpi_setup_wwan_rfkill(struct toshiba_acpi_dev *dev)
+> +static void toshiba_acpi_rfkill_destroy(void *data)
+> +{
+> +	struct rfkill *wwan_rfk = data;
+> +
+> +	rfkill_destroy(wwan_rfk);
+> +}
+> +
+> +static void toshiba_acpi_rfkill_unreg(void *data)
+> +{
+> +	struct rfkill *wwan_rfk = data;
+> +
+> +	rfkill_unregister(wwan_rfk);
+> +}
+> +
+> +static int toshiba_acpi_setup_wwan_rfkill(struct device *parent,
+> +					  struct toshiba_acpi_dev *dev)
+>  {
+>  	int ret = toshiba_wireless_status(dev);
+>  
+> @@ -2608,15 +2623,27 @@ static int toshiba_acpi_setup_wwan_rfkill(struct toshiba_acpi_dev *dev)
+>  		return -ENOMEM;
+>  	}
+>  
+> +	ret = devm_add_action_or_reset(parent, toshiba_acpi_rfkill_destroy,
+> +				       dev->wwan_rfk);
+> +	if (ret)
+> +		return ret;
+> +
+>  	rfkill_set_hw_state(dev->wwan_rfk, !dev->killswitch);
+>  
+>  	ret = rfkill_register(dev->wwan_rfk);
+>  	if (ret) {
+>  		pr_err("Unable to register WWAN rfkill device\n");
+> -		rfkill_destroy(dev->wwan_rfk);
+> +		return ret;
+>  	}
+>  
+> -	return ret;
+> +	ret = devm_add_action_or_reset(parent, toshiba_acpi_rfkill_unreg,
+> +				       dev->wwan_rfk);
+> +	if (ret) {
+> +		dev->wwan_rfk = NULL;
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -2996,11 +3023,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
+>  		sysfs_remove_group(&dev->acpi_dev->dev.kobj,
+>  				   &toshiba_attr_group);
+>  
+> -	if (dev->wwan_rfk) {
+> -		rfkill_unregister(dev->wwan_rfk);
+> -		rfkill_destroy(dev->wwan_rfk);
+> -	}
+> -
+>  	return 0;
+>  }
+>  
+> @@ -3189,7 +3211,7 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  
+>  	toshiba_wwan_available(dev);
+>  	if (dev->wwan_supported)
+> -		toshiba_acpi_setup_wwan_rfkill(dev);
+> +		toshiba_acpi_setup_wwan_rfkill(parent, dev);
+>  
+>  	toshiba_cooling_method_available(dev);
+>  
 
-> >>> +                                       required-opps =
-> >>> <&rpmhpd_opp_low_svs>;
-> >>> +                                       opp-peak-kBps = <1200000
-> >>> 76000>;
-> >>> +                                       opp-avg-kBps = <1200000
-> >>> 50000>;
-> >> Why are the kBps numbers so vastly different than the ones on sc7180
-> >> for the same OPP point. That implies:
-> >>
-> >> a) sc7180 is wrong.
-> >>
-> >> b) This patch is wrong.
-> >>
-> >> c) The numbers are essentially random and don't really matter.
-> >>
-> >> Can you identify which of a), b), or c) is correct, or propose an
-> >> alternate explanation of the difference?
-> >>
->
-> We calculated bus votes values for both sc7180 and sc7280 with ICB tool,
-> above mentioned values we got for sc7280.
-
-I don't know what an ICB tool is. Please clarify.
-
-Also: just because a tool spits out numbers that doesn't mean it's
-correct. Presumably the tool could be wrong or incorrectly configured.
-We need to understand why these numbers are different.
-
--Doug
