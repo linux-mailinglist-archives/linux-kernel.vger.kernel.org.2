@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AD634CC3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5129134C63A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236960AbhC2I57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
+        id S231966AbhC2IGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234880AbhC2Iha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5BB619AD;
-        Mon, 29 Mar 2021 08:36:57 +0000 (UTC)
+        id S231529AbhC2IDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7553E6197F;
+        Mon, 29 Mar 2021 08:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007018;
-        bh=L7Fwug4gfuftkbhU3TAzQvA8hI675+RQP9+lRw31ZSo=;
+        s=korg; t=1617005024;
+        bh=tqZMQWvnmuLFIUGCzxrH5iKoGmauhrdvP5QFvrqN6aQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1RY5jV6fwaLiD/8ncoDNNrPKCCp/EHeGlDEVciqHJQWO9GmmTMqOSRSCfXlNZh4n
-         Wh15NiWgLvMY93FoXx1Yfz2xhpqwjO0XC/VGdse16o2Yv0SJ9h8nTxZNsMhVmZhuN5
-         3Dyo0GNecftGzhU30WrKrhpALQZvW/CzkJazi/PY=
+        b=CxOPuNXU0y72/p8a6RwVplwX8WGl9Je374pdAmtk9roDetH+XVQGiNJmYfj38m/ya
+         DPRVkyvFKBnLswW4I2I4RD23QEqM5jIiVgEou+PRUkejh/ZXXg2TtYGtsh6HarJVNt
+         YhGJWh57C5NDXZ/NKVwYUFu9GKOQRxzDrTsk7p+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 189/254] platform/x86: dell-wmi-sysman: Fix crash caused by calling kset_unregister twice
-Date:   Mon, 29 Mar 2021 09:58:25 +0200
-Message-Id: <20210329075639.333705534@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 51/53] net: sched: validate stab values
+Date:   Mon, 29 Mar 2021 09:58:26 +0200
+Message-Id: <20210329075609.193504389@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit d939cd96b9df6dcde1605fab23bbd6307e11f930 ]
+commit e323d865b36134e8c5c82c834df89109a5c60dab upstream.
 
-On some system the WMI GUIDs used by dell-wmi-sysman are present but there
-are no enum type attributes, this causes init_bios_attributes() to return
--ENODEV, after which sysman_init() does a "goto fail_create_group" and then
-calls release_attributes_data().
+iproute2 package is well behaved, but malicious user space can
+provide illegal shift values and trigger UBSAN reports.
 
-release_attributes_data() calls kset_unregister(wmi_priv.main_dir_kset);
-but before this commit it was missing a "wmi_priv.main_dir_kset = NULL;"
-statement; and after calling release_attributes_data() the sysman_init()
-error handling does this:
+Add stab parameter to red_check_params() to validate user input.
 
-        if (wmi_priv.main_dir_kset) {
-                kset_unregister(wmi_priv.main_dir_kset);
-                wmi_priv.main_dir_kset = NULL;
-        }
+syzbot reported:
 
-Which causes a second kset_unregister(wmi_priv.main_dir_kset), leading to
-a double-free, which causes a crash.
+UBSAN: shift-out-of-bounds in ./include/net/red.h:312:18
+shift exponent 111 is too large for 64-bit type 'long unsigned int'
+CPU: 1 PID: 14662 Comm: syz-executor.3 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+ red_calc_qavg_from_idle_time include/net/red.h:312 [inline]
+ red_calc_qavg include/net/red.h:353 [inline]
+ choke_enqueue.cold+0x18/0x3dd net/sched/sch_choke.c:221
+ __dev_xmit_skb net/core/dev.c:3837 [inline]
+ __dev_queue_xmit+0x1943/0x2e00 net/core/dev.c:4150
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip6_finish_output2+0x911/0x1700 net/ipv6/ip6_output.c:117
+ __ip6_finish_output net/ipv6/ip6_output.c:182 [inline]
+ __ip6_finish_output+0x4c1/0xe10 net/ipv6/ip6_output.c:161
+ ip6_finish_output+0x35/0x200 net/ipv6/ip6_output.c:192
+ NF_HOOK_COND include/linux/netfilter.h:290 [inline]
+ ip6_output+0x1e4/0x530 net/ipv6/ip6_output.c:215
+ dst_output include/net/dst.h:448 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ NF_HOOK include/linux/netfilter.h:295 [inline]
+ ip6_xmit+0x127e/0x1eb0 net/ipv6/ip6_output.c:320
+ inet6_csk_xmit+0x358/0x630 net/ipv6/inet6_connection_sock.c:135
+ dccp_transmit_skb+0x973/0x12c0 net/dccp/output.c:138
+ dccp_send_reset+0x21b/0x2b0 net/dccp/output.c:535
+ dccp_finish_passive_close net/dccp/proto.c:123 [inline]
+ dccp_finish_passive_close+0xed/0x140 net/dccp/proto.c:118
+ dccp_terminate_connection net/dccp/proto.c:958 [inline]
+ dccp_close+0xb3c/0xe60 net/dccp/proto.c:1028
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
 
-Add the missing "wmi_priv.main_dir_kset = NULL;" statement to
-release_attributes_data() to fix this double-free crash.
-
-Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
-Cc: Divya Bharathi <Divya_Bharathi@dell.com>
-Cc: Mario Limonciello <mario.limonciello@dell.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210321115901.35072-2-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8afa10cbe281 ("net_sched: red: Avoid illegal values")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/dell-wmi-sysman/sysman.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/red.h     |   10 +++++++++-
+ net/sched/sch_choke.c |    7 ++++---
+ net/sched/sch_gred.c  |    2 +-
+ net/sched/sch_red.c   |    7 +++++--
+ net/sched/sch_sfq.c   |    2 +-
+ 5 files changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-index cb81010ba1a2..c1997db74cca 100644
---- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-@@ -388,6 +388,7 @@ static void release_attributes_data(void)
- 	if (wmi_priv.main_dir_kset) {
- 		destroy_attribute_objs(wmi_priv.main_dir_kset);
- 		kset_unregister(wmi_priv.main_dir_kset);
-+		wmi_priv.main_dir_kset = NULL;
- 	}
- 	mutex_unlock(&wmi_priv.mutex);
+--- a/include/net/red.h
++++ b/include/net/red.h
+@@ -167,7 +167,8 @@ static inline void red_set_vars(struct r
+ 	v->qcount	= -1;
+ }
  
--- 
-2.30.1
-
+-static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog, u8 Scell_log)
++static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog,
++				    u8 Scell_log, u8 *stab)
+ {
+ 	if (fls(qth_min) + Wlog > 32)
+ 		return false;
+@@ -177,6 +178,13 @@ static inline bool red_check_params(u32
+ 		return false;
+ 	if (qth_max < qth_min)
+ 		return false;
++	if (stab) {
++		int i;
++
++		for (i = 0; i < RED_STAB_SIZE; i++)
++			if (stab[i] >= 32)
++				return false;
++	}
+ 	return true;
+ }
+ 
+--- a/net/sched/sch_choke.c
++++ b/net/sched/sch_choke.c
+@@ -409,6 +409,7 @@ static int choke_change(struct Qdisc *sc
+ 	struct sk_buff **old = NULL;
+ 	unsigned int mask;
+ 	u32 max_P;
++	u8 *stab;
+ 
+ 	if (opt == NULL)
+ 		return -EINVAL;
+@@ -424,8 +425,8 @@ static int choke_change(struct Qdisc *sc
+ 	max_P = tb[TCA_CHOKE_MAX_P] ? nla_get_u32(tb[TCA_CHOKE_MAX_P]) : 0;
+ 
+ 	ctl = nla_data(tb[TCA_CHOKE_PARMS]);
+-
+-	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
++	stab = nla_data(tb[TCA_CHOKE_STAB]);
++	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log, stab))
+ 		return -EINVAL;
+ 
+ 	if (ctl->limit > CHOKE_MAX_QUEUE)
+@@ -478,7 +479,7 @@ static int choke_change(struct Qdisc *sc
+ 
+ 	red_set_parms(&q->parms, ctl->qth_min, ctl->qth_max, ctl->Wlog,
+ 		      ctl->Plog, ctl->Scell_log,
+-		      nla_data(tb[TCA_CHOKE_STAB]),
++		      stab,
+ 		      max_P);
+ 	red_set_vars(&q->vars);
+ 
+--- a/net/sched/sch_gred.c
++++ b/net/sched/sch_gred.c
+@@ -356,7 +356,7 @@ static inline int gred_change_vq(struct
+ 	struct gred_sched *table = qdisc_priv(sch);
+ 	struct gred_sched_data *q = table->tab[dp];
+ 
+-	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
++	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log, stab))
+ 		return -EINVAL;
+ 
+ 	if (!q) {
+--- a/net/sched/sch_red.c
++++ b/net/sched/sch_red.c
+@@ -169,6 +169,7 @@ static int red_change(struct Qdisc *sch,
+ 	struct Qdisc *child = NULL;
+ 	int err;
+ 	u32 max_P;
++	u8 *stab;
+ 
+ 	if (opt == NULL)
+ 		return -EINVAL;
+@@ -184,7 +185,9 @@ static int red_change(struct Qdisc *sch,
+ 	max_P = tb[TCA_RED_MAX_P] ? nla_get_u32(tb[TCA_RED_MAX_P]) : 0;
+ 
+ 	ctl = nla_data(tb[TCA_RED_PARMS]);
+-	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
++	stab = nla_data(tb[TCA_RED_STAB]);
++	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog,
++			      ctl->Scell_log, stab))
+ 		return -EINVAL;
+ 
+ 	if (ctl->limit > 0) {
+@@ -206,7 +209,7 @@ static int red_change(struct Qdisc *sch,
+ 	red_set_parms(&q->parms,
+ 		      ctl->qth_min, ctl->qth_max, ctl->Wlog,
+ 		      ctl->Plog, ctl->Scell_log,
+-		      nla_data(tb[TCA_RED_STAB]),
++		      stab,
+ 		      max_P);
+ 	red_set_vars(&q->vars);
+ 
+--- a/net/sched/sch_sfq.c
++++ b/net/sched/sch_sfq.c
+@@ -645,7 +645,7 @@ static int sfq_change(struct Qdisc *sch,
+ 	}
+ 
+ 	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
+-					ctl_v1->Wlog, ctl_v1->Scell_log))
++					ctl_v1->Wlog, ctl_v1->Scell_log, NULL))
+ 		return -EINVAL;
+ 	if (ctl_v1 && ctl_v1->qth_min) {
+ 		p = kmalloc(sizeof(*p), GFP_KERNEL);
 
 
