@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10D434CD71
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8E634CD6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhC2J5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbhC2J5S (ORCPT
+        id S231620AbhC2J4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:56:55 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:59109 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231901AbhC2J4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:57:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441DBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/TxZye4/Hu8uIyAyFOXSED4o2sCKVRpCpOWqX8q9jJk=; b=q48GVPqhqcqlFe3D5Rdz/xZtag
-        k5cM5qHiSFhG3NEhrVb+F4M3BRDvDN1GZUJSRTxWmIKRzjwd4ybiGAtJ95Wb1j5qIB9Klkw87rgVf
-        /sYazUSfkTfw1ATbhFJ+NkVa6ExZIYXhHXV6fXZG4U9rWwUFWong1Wt3JDs4iI/smchtgSsmHR0sa
-        YORcQdaH1JqsoxMX/O/rdfpa+RKu/WFcI1Iz/1AY5W4eQ4n41hju9cEp8B2yGgW5TFu5B+FrSqx50
-        oJSzvSvTZ+B7V+LRJUlOBdRgeX0VcXXaJ+ytchsV01kMK8J9DF/qdfgLBR6Yj4YuapojsD2Pd5xhk
-        3b2TejTA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQocJ-000Yeh-W0; Mon, 29 Mar 2021 09:55:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 589523007CD;
-        Mon, 29 Mar 2021 11:55:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 38AA920709457; Mon, 29 Mar 2021 11:55:24 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 11:55:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
+        Mon, 29 Mar 2021 05:56:35 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 893075C008F;
+        Mon, 29 Mar 2021 05:56:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 29 Mar 2021 05:56:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=hlmPwDW0xIb+jOtVKY6Nlely5rp4huLJ54bPI4YY1
+        7c=; b=lPrMq7DF/wVe7vN+IpzPFVw30uJIRCaBYUvhB/A+k7tg7F2w8k5S4MAJN
+        B65s7ZpYrggNic5ZWMH3HApKD/FL7LgvGaia8EdPnBxIuARXjPmOzGzgu+AsNQYr
+        uUU39nUjM2rBiZV4pl1RSfrAv1j6JmUL1n1jYg5YkRhjVYd5I1nwgxaFDTE6179x
+        oAZT6Qmmv70+ykTKDsBtwj86opiEnfzjbEUhfyXxxsMft1aLEP4MAkJ9vKQR99mG
+        P9FkGzH8F4Zo1aUNkyUrL8kevooUvcbqIsH1PSWU5OTggx/R8uH/Zu4879Tko3Z4
+        c/N/CvXFGD0pdP9rj0RZIOb1CfDcQ==
+X-ME-Sender: <xms:UqRhYPwUMZO0Pu2_gB_aXKpgPDsD5HbNqyhXzIMy-0tmvtizbr8w4A>
+    <xme:UqRhYHRzBu1EidtSKZC54AL3IO2B6WFVn-247gtP8Dzil5Fsf1ll-KUJ13-2ZmAfH
+    FZUzCydyt0Q_NeMSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurheptgfghfggufffkfhfjgfvofesthhqmhdthhdtjeenucfhrhhomhepffgrphhh
+    nhgvucfrrhgvshhtohhnqdfmvghnuggrlhcuoeguphhksehnohhntggvfihorhgurdhorh
+    hgqeenucggtffrrghtthgvrhhnpeejuedugfdtkeevjeeitdejueefteduvefhgfejffev
+    gfeihfdtvedvffetgeeuveenucfkphepkedvrdekvddrvddukedrudegtdenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeguphhksehnohhntggv
+    fihorhgurdhorhhg
+X-ME-Proxy: <xmx:UqRhYJW4ybXMYwCrflmC23VXKJBIv519v-mFAFyNPeniw_hUZd3QmQ>
+    <xmx:UqRhYJjh-Ea5l3aPmcLtajFp2gc5TN8rptFpFOSVxdF8MD127b_XPw>
+    <xmx:UqRhYBBiCtfktkLOJK30-N74k4utfN5tB2q2aUEGq5n88bb8xzL6wQ>
+    <xmx:UqRhYEOhWQSHmUGIIUdhshoJSOGohsHYPOIoMZwiPl3JB89fHFBCBA>
+Received: from [192.168.178.60] (dslc-082-082-218-140.pools.arcor-ip.net [82.82.218.140])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E722224005A;
+        Mon, 29 Mar 2021 05:56:33 -0400 (EDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Daphne Preston-Kendal <dpk@nonceword.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an error when TAI has not been configured
+Date:   Mon, 29 Mar 2021 11:56:31 +0200
+Message-Id: <2505F20D-ED84-4B36-9504-8A8C756C992E@nonceword.org>
+References: <YGGbAIoCKDbZLQQ0@localhost>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
-Subject: Re: [PATCH resend 2/8] sched: core scheduling tagging infrastructure
-Message-ID: <YGGkDHWQkYLyrVJW@hirez.programming.kicks-ass.net>
-References: <20210324214020.34142-1-joel@joelfernandes.org>
- <20210324214020.34142-3-joel@joelfernandes.org>
- <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
- <CABk29NthG_W_GyBknf1rZ35xbkppdPwosR+6ka=kCs70teoEqA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29NthG_W_GyBknf1rZ35xbkppdPwosR+6ka=kCs70teoEqA@mail.gmail.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+In-Reply-To: <YGGbAIoCKDbZLQQ0@localhost>
+To:     Miroslav Lichvar <mlichvar@redhat.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 08:19:57PM -0700, Josh Don wrote:
-> On Fri, Mar 26, 2021 at 5:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On 29 Mar 2021, at 11:16, Miroslav Lichvar <mlichvar@redhat.com> wrote:
 
-> > I've spend the past few hours rewriting patches #2 and #3, and adapting
-> > #4. The thing was working before I added SHARE_FROM back and introduced
-> > GET, but now I'm seeing a few FAILs from the selftest.
-> >
-> > I'm too tired to make sense of anything much, or even focus my eyes
-> > consistently, so I'll have to prod at it some more next week, but I've
-> > pushed out the lot to my queue.git:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/core-sched
-> 
-> Thanks, I'll take a look next week.
+> =EF=BB=BFOn Fri, Mar 26, 2021 at 08:28:59PM -0700, Richard Cochran wrote:
+>> Using ntpd on Debian, the service will set the offset, but only after
+>> synchronization with the upstream server has been established, and
+>> this takes about five minutes, IIRC.
+>=20
+> With the iburst option it shouldn't take more than 10 seconds. There
+> might be an issue wrt stepping the clock when the initial offset is
+> large. In Fedora and derived distros using chrony by default the
+> TAI-UTC offset should be set right on the first update of the clock as
+> expected.
 
-OK, fixed the fails. My tired head made it unconditionally return the
-cookie-id of 'current' instead of task. Pushed out an update.
+Yeah, I personally am not really concerned about the immediate post-boot env=
+ironment. As long as it=E2=80=99s ready by the time userland services are st=
+arting, I think most applications that need TAI will be satisfied.
 
-> > Also, we really need a better name than coretag.c.
-> 
-> Yea, we don't really otherwise use the phrase "tagging". core_sched.c
-> is probably too confusing given we have sched/core.c.
+>> Getting back to the original point of the kernel returning an error,
+>> I don't see a need for this.  Applications that require correct leap
+>> seconds can simply call adjtimex() and wait until the initial zero
+>> value is changed by ntpd/etc to the correct offset.  That isn't
+>> fundamentally harder than calling clock_gettime() and waiting until
+>> the error would go away.
+>=20
+> There are at least two issues with handling a zero offset as a special
+> value. One is that zero could potentially be a valid value in distant
+> future.
 
-Right, so I tried core_sched and my fingers already hate it as much as
-kernel/scftorture.c (which I'd assumed my fingers would get used to
-eventually, but noooo).
+Since even a single negative leap second was, until recently, considered (qu=
+ite literally) astronomically unlikely, and even now (where the earth is spi=
+nning faster than ever hitherto expected) the most likely scenario by far se=
+ems to be that it=E2=80=99ll just be a longer wait than usual for the next p=
+ositive leap second, I=E2=80=99d say minus 37 leap seconds is a prospect for=
+ the very very distant future indeed. But in theory, yes.
 
-Looking at kernel/sched/ C is very overrepresented, so we really don't
-want another I think. B, E, G, H, J, K, N, seem to still be available in
-the first half of the alphabet. Maybe, bonghits.c, gabbleduck.c ?
+> The other is that the kernel updates the offset when a leap
+> second is inserted/deleted even if the original offset is zero, so
+> checking for zero (in the kernel or an application) works only until
+> the first leap second after boot.
+
+This is a problem and definitely speaks for having a way to tell whether CLO=
+CK_TAI has been set up at all.
+
+> The kernel would need to set a flag that the offset was set. Returning
+> an error in clock_gettime() until the offset is set sounds reasonable
+> to me, but I have no idea how many of the existing applications it
+> would break.
+
+Given that CLOCK_TAI doesn=E2=80=99t exist except on Linux, any portable Uni=
+x application is likely to have a fallback of some kind, though perhaps only=
+ at compile time.
+
+Daphne Preston-Kendal
+
+
