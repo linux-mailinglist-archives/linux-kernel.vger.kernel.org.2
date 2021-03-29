@@ -2,109 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6A434D0FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013FD34D0FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhC2NIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:08:36 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:40568 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhC2NIP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:08:15 -0400
-Received: by mail-vs1-f42.google.com with SMTP id v29so2373826vsi.7;
-        Mon, 29 Mar 2021 06:08:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+63Txv4HMbvp0BnWBDVOQtdOyhYc/l6Vd8gKqugtRUg=;
-        b=jTQwNPQwnmSHkZqGRH9yuehUpf7vW9QZDsE4PTWc8kT4ZGuJqKeMRczRV2C5EVUnS6
-         A+hVUaPo8pVVlFsP1Ik2z9h8674ynp6XkeIlriqpChQJWV1VSkCXcUK/GKYuYLsySUNO
-         L2Wzwh6wvZLnptxswNKw/pk5Ccx5Zxj6MCEtz3Ei/L+MQH1nfqZm8mTjH+Su/Afq2cy6
-         HJUrtgdApjbwvLmFGT+6/L3KKctwWe77PpWb+ywzvKVl0tJ08R4N9qdulsheDXagQx0N
-         vcv5H/Gt7Ur35PBXkKX3FUSvkxSfOK5P4X+6w8xfaogjGgEzmMbIktvSmFnhTt25Ed1H
-         7gIw==
-X-Gm-Message-State: AOAM532qEsM/0CQXHi7I10ryEEG8VimC+xSAZKZcE6Iqq98YcCIq974i
-        CeHFfdd/Hg/6wWLu0KHO2c3HUwY4MUpRNuvrf6I=
-X-Google-Smtp-Source: ABdhPJzSsijhkAmkKkskweEa8lEzgCTgNfIY/32SCSndupArW0/sIyCoCsuKkrnFuR8hNy59Iot842IbVBU1vsBfpcE=
-X-Received: by 2002:a67:efd0:: with SMTP id s16mr14526105vsp.3.1617023294693;
- Mon, 29 Mar 2021 06:08:14 -0700 (PDT)
+        id S230434AbhC2NJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:09:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231219AbhC2NJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:09:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFD861938;
+        Mon, 29 Mar 2021 13:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617023344;
+        bh=0mW1Eac3+iXhHdHANgj2Bo8GzVviuR9JKoGTVZo/2WU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pKGRzpjtmgHZlWXjJZJFMQ0mEdk9Svhq6uglGW056CFeVUlGZ9UH9IVcG/KmbJnVi
+         qiq5j3lrTKJQ21uk/nocfxb89lEh5jGQ2J4DDCwFB70B5gY69ndF+gLLZNv0d7GHO9
+         JYVym3JgR06Ug4sVKa0C5q4qsG9G7Oxxf7bRFn2hC7HpJey+Rd/ZW5Yx6hIQdxmS6R
+         dqeNauOx18BXfi7/ioWPI1697/UpfwmBYmshHE0CoB3nu1/ZjgmfbcJv5kSSGluygv
+         uyOrKGcPpa8ItioTQ6743pq2ykPvDbfU+/PdBr+6LFEPtUfM8P4G7BhUsEvniugbzy
+         mH1jVU3iH7sRQ==
+Received: by mail-ot1-f47.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso12145219ott.13;
+        Mon, 29 Mar 2021 06:09:04 -0700 (PDT)
+X-Gm-Message-State: AOAM532Lw1nsQH5qm1sXeM/iCEA1sRvRtZJH880KTb8b/HU0bDUbfBs9
+        N9VlcXy0jJ4VHNIaKdIfB6WBD1/rL065ABF+VKs=
+X-Google-Smtp-Source: ABdhPJwiDMXllU6nOARguspc345TOcgmm9MngH2fqOEhobZvVcPWGU1AW6rYHtU1Lp6iByYC2hr1mUz4pP9wEJZggYE=
+X-Received: by 2002:a9d:7ccf:: with SMTP id r15mr11790905otn.108.1617023343628;
+ Mon, 29 Mar 2021 06:09:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-4-aford173@gmail.com>
- <CAMuHMdXjQV7YrW5T_P4tkJk_d44NNTQ8Eu7v2ReESjg6R3tvfw@mail.gmail.com> <CAHCN7xLWDx_AjtN7=moJ6VFsimuf16AJOhrxEryvdw5VnKsJwA@mail.gmail.com>
-In-Reply-To: <CAHCN7xLWDx_AjtN7=moJ6VFsimuf16AJOhrxEryvdw5VnKsJwA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 29 Mar 2021 15:08:03 +0200
-Message-ID: <CAMuHMdUG4gmaVvbg13TMcA8+FL5-7+Qxmdh3X+CNCJQdq_vPkQ@mail.gmail.com>
-Subject: Re: [PATCH V3 4/5] net: ethernet: ravb: Enable optional refclk
-To:     Adam Ford <aford173@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210329075633.135869143@linuxfoundation.org> <20210329075640.480623043@linuxfoundation.org>
+ <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com> <YGGoHdprUT/AscHa@kroah.com>
+In-Reply-To: <YGGoHdprUT/AscHa@kroah.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 29 Mar 2021 15:08:52 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEwMSbS1LC7sPSjSifLF8jYVyGcHvvkf9nfrf-fwo4d9w@mail.gmail.com>
+Message-ID: <CAMj1kXEwMSbS1LC7sPSjSifLF8jYVyGcHvvkf9nfrf-fwo4d9w@mail.gmail.com>
+Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Mon, Mar 29, 2021 at 2:45 PM Adam Ford <aford173@gmail.com> wrote:
-> On Thu, Mar 4, 2021 at 2:08 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
-> > > For devices that use a programmable clock for the AVB reference clock,
-> > > the driver may need to enable them.  Add code to find the optional clock
-> > > and enable it when available.
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
-> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> > > @@ -2148,6 +2148,13 @@ static int ravb_probe(struct platform_device *pdev)
-> > >                 goto out_release;
-> > >         }
-> > >
-> > > +       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
-> > > +       if (IS_ERR(priv->refclk)) {
-> > > +               error = PTR_ERR(priv->refclk);
-> > > +               goto out_release;
-> > > +       }
-> > > +       clk_prepare_enable(priv->refclk);
-> > > +
-> >
-> > Shouldn't the reference clock be disabled in case of any failure below?
-> >
-> I'll generate a V4.
+On Mon, 29 Mar 2021 at 12:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Should I just regenerate this patch since it seems like the rest are
-> OK, or should I regenerate the whole series?
+> On Mon, Mar 29, 2021 at 03:05:25PM +0530, Naresh Kamboju wrote:
+> > On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Anshuman Khandual <anshuman.khandual@arm.com>
+> > >
+> > > [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
+> > >
+> > > This overrides arch_get_mappable_range() on arm64 platform which will be
+> > > used with recently added generic framework.  It drops
+> > > inside_linear_region() and subsequent check in arch_add_memory() which are
+> > > no longer required.  It also adds a VM_BUG_ON() check that would ensure
+> > > that mhp_range_allowed() has already been called.
+> > >
+> > > Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
+> > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > Cc: Heiko Carstens <hca@linux.ibm.com>
+> > > Cc: Jason Wang <jasowang@redhat.com>
+> > > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > > Cc: Michal Hocko <mhocko@kernel.org>
+> > > Cc: Oscar Salvador <osalvador@suse.de>
+> > > Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+> > > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> > > Cc: teawater <teawaterz@linux.alibaba.com>
+> > > Cc: Vasily Gorbik <gor@linux.ibm.com>
+> > > Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  arch/arm64/mm/mmu.c | 15 +++++++--------
+> > >  1 file changed, 7 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> > > index 6f0648777d34..92b3be127796 100644
+> > > --- a/arch/arm64/mm/mmu.c
+> > > +++ b/arch/arm64/mm/mmu.c
+> > > @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+> > >         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+> > >  }
+> > >
+> > > -static bool inside_linear_region(u64 start, u64 size)
+> > > +struct range arch_get_mappable_range(void)
+> > >  {
+> > > +       struct range mhp_range;
+> > > +
+> > >         /*
+> > >          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+> > >          * accommodating both its ends but excluding PAGE_END. Max physical
+> > >          * range which can be mapped inside this linear mapping range, must
+> > >          * also be derived from its end points.
+> > >          */
+> > > -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+> > > -              (start + size - 1) <= __pa(PAGE_END - 1);
+> > > +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> > > +       mhp_range.end =  __pa(PAGE_END - 1);
+> > > +       return mhp_range;
+> > >  }
+> > >
+> > >  int arch_add_memory(int nid, u64 start, u64 size,
+> > > @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> > >  {
+> > >         int ret, flags = 0;
+> > >
+> > > -       if (!inside_linear_region(start, size)) {
+> > > -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+> > > -               return -EINVAL;
+> > > -       }
+> > > -
+> > > +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> > >         if (rodata_full || debug_pagealloc_enabled())
+> > >                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+> >
+> > The stable rc 5.10 and 5.11 builds failed for arm64 architecture
+> > due to below warnings / errors,
+> >
+> > > Anshuman Khandual <anshuman.khandual@arm.com>
+> > >     arm64/mm: define arch_get_mappable_range()
+> >
+> >
+> >   arch/arm64/mm/mmu.c: In function 'arch_add_memory':
+> >   arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
+> > 'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
+> > [-Werror=implicit-function-declaration]
+> >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> >                ^
+> >   include/linux/build_bug.h:30:63: note: in definition of macro
+> > 'BUILD_BUG_ON_INVALID'
+> >    #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+> >                                                                  ^
+> >   arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
+> >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
+> >     ^~~~~~~~~
+> >
+> > Build link,
+> > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
+> > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
+>
+> thanks, will go drop this, and the patch that was after it in the
+> series, from both trees and will push out a -rc2.
+>
 
-As the DT bindings haven't been applied yet, I think it would be
-best if you would send a v4 with just the patches for the netdev
-tree (i.e. DT bindings patch 1 and driver patch 4).
-
-I will take the DT patches from this series, once the bindings have been
-accepted.
-
-Thank you!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Why were these picked up in the first place? I don't see any fixes or
+cc:stable tags, and the commit log clearly describes that the change
+is preparatory work for enabling arm64 support into a recently
+introduced generic framework.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Ard.
