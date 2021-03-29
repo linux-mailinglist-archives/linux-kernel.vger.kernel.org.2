@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0834D9DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C14E34D9E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhC2WGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhC2WFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:05:46 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC066C061574;
-        Mon, 29 Mar 2021 15:05:46 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id n8so14511839oie.10;
-        Mon, 29 Mar 2021 15:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cXchIXgTru6lEgHh29ZMONP+CbdmGHjLyQHJAiTIW2U=;
-        b=a8Cr1k0CycqQLM2Ma1U9jdbx2hGmZw0zeVt2SeUQgvIDR6B4k7uEbkGC+GWzMeSDsu
-         QMECj1qhIhsYmzPpshZPD6wLgusTOUlYjx6wn9saMpRTlI+3+pNc36F87X5p/I3WlmLq
-         qqYUmzxf4mtfEoX7NqE8t72wPIf1Rytxbx4405JrzBbApg54M/3WNtn1gRlILnDgwhGX
-         EhFXF7a1ntP7WU4y0G0SPZdBxHDDkKgGxaOVNzts2MlI/JYfVIdVqQMzWE4XtNfgrTG4
-         xhmpeBYGLMGVD/UGtBCaLjhFY4vc6rIKrlV80Hm4t6WVsAYhxpSmc0vNA8fefOzS/LYn
-         1mBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cXchIXgTru6lEgHh29ZMONP+CbdmGHjLyQHJAiTIW2U=;
-        b=A+85LCX+xAfcPg5c29JSTKzbYahTB+xYoeB/UjJOHPGUVGQ88F7Wm6cbRd31Zii7Js
-         KCLqVW4zvr6/JfNhWPWBhbC7iywk86aTrmHNumli7lthkBuBEnaHqCaSQ9yKBRLjqfl5
-         de0XaNQbGI5TPye/VzH2eKnNyqabAxHqj6DggUUwQ2HNvtfCod71K4tuHFXc4LVSztp8
-         wE5MOUDfmyHaBkQzccHkHFkzrIeB3d3Oj85fB44H3o6d4VZm9aZIHoCLaJVyjl608KIT
-         kR50cEKidskl02xNFpoXEu0+321bktAtei06ahMjqUNY0kmISRZzGM4X93zraR29x0jl
-         FU5A==
-X-Gm-Message-State: AOAM532M1zv7bUz6mp5bBE67S6C0zoL7XqnKlJPQGoEYOiK0hzv8eZXX
-        pVlLG7Gjf9NRA0R6zObeKmw=
-X-Google-Smtp-Source: ABdhPJztdEBSSuQSZFsyRHJNepwudmEUHnZH93iM79LGeDyrlm+PTSp84wHRniJzrNJifnCiFGpykg==
-X-Received: by 2002:a05:6808:146:: with SMTP id h6mr905260oie.118.1617055546217;
-        Mon, 29 Mar 2021 15:05:46 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g13sm4648933otq.3.2021.03.29.15.05.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 29 Mar 2021 15:05:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 29 Mar 2021 15:05:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     robh+dt@kernel.org, jdelvare@suse.com, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] hwmon: (pmbus): Add driver for BluTek BPA-RS600
-Message-ID: <20210329220544.GA222182@roeck-us.net>
-References: <20210317040231.21490-1-chris.packham@alliedtelesis.co.nz>
- <20210317040231.21490-3-chris.packham@alliedtelesis.co.nz>
+        id S231340AbhC2WHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:07:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231543AbhC2WHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:07:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3AA84B138;
+        Mon, 29 Mar 2021 22:07:06 +0000 (UTC)
+Subject: Re: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210326112650.307890-1-slyfox@gentoo.org>
+ <4e23d404-5125-6c9c-4aa7-5eff0fa1ba33@redhat.com>
+ <469d6417-64a5-fe99-1214-bb0351833b74@suse.cz>
+ <CA+fCnZcZvBT97y3zEatnTvi+RBW5bCrQRim9uK6wobYQOdgNhg@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <a32ffcd0-136f-4cc6-341b-16926e3787bd@suse.cz>
+Date:   Tue, 30 Mar 2021 00:07:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317040231.21490-3-chris.packham@alliedtelesis.co.nz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CA+fCnZcZvBT97y3zEatnTvi+RBW5bCrQRim9uK6wobYQOdgNhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 05:02:31PM +1300, Chris Packham wrote:
-> The BPA-RS600 is a compact 600W AC to DC removable power supply module.
+On 3/30/21 12:00 AM, Andrey Konovalov wrote:
+> On Mon, Mar 29, 2021 at 2:10 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> > commit 855a9c4018f3219db8be7e4b9a65ab22aebfde82
+>> > Author: Andrey Konovalov <andreyknvl@gmail.com>
+>> > Date:   Thu Mar 18 17:01:40 2021 +1100
+>> >
+>> >     kasan, mm: integrate page_alloc init with HW_TAGS
+>>
+>> But the mmotm patch/-next commit also changes post_alloc_hook()
+>>
+>> Before the patch it was:
+>> kernel_unpoison_pages(page, 1 << order);
+>> ...
+>> kernel_init_free_pages(page, 1 << order);
+>>
+>> Now it is (for !kasan_has_integrated_init()):
+>>
+>> kernel_init_free_pages(page, 1 << order);
+>>
+>> kernel_unpoison_pages(page, 1 << order);
+>>
+>> That has to be wrong, because we init the page with zeroes and then call
+>> kernel_unpoison_pages() which checks for the 0xaa pattern. Andrey?
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> It's similar to free_pages_prepare(): kernel_unpoison_pages() and
+> want_init_on_alloc() are exclusive, so the order shouldn't matter. Am
+> I missing something?
 
-Applied to hwmon-next.
-
-Thanks,
-Guenter
+Yeah, when the allocation has __GFP_ZERO, want_init_on_alloc() will return true
+even with the static branches disabled.
