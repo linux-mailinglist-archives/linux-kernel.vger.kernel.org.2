@@ -2,222 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393C434D2E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FF234D2E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhC2OxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:53:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230402AbhC2Owo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:52:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 563EBABB1;
-        Mon, 29 Mar 2021 14:52:43 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 15c5f649;
-        Mon, 29 Mar 2021 14:54:03 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 15:54:03 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, dgilbert@redhat.com,
-        seth.forshee@canonical.com
-Subject: Re: [PATCH v2 1/2] fuse: Add support for FUSE_SETXATTR_V2
-Message-ID: <YGHqC7bZuh+ytg+p@suse.de>
-References: <20210325151823.572089-1-vgoyal@redhat.com>
- <20210325151823.572089-2-vgoyal@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        id S230522AbhC2Oyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:54:40 -0400
+Received: from mail-bn8nam12on2083.outbound.protection.outlook.com ([40.107.237.83]:22400
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230402AbhC2OyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:54:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e5w0WSJVNR/+no7jn5AomdJpsHph5RJD/NWFmZNWzXdUsB4BKeuAC8XpRFwY+a95ZwuMyf7fM8KrgCdjsnmvvqVDv4HQfhjOXLyQsj4qBtex2DfHIfDWDCvTfDbUH0WO5Pb8DvvQcsNPmepiDdR5VrTqrWjx+J74gBc6hQvmCpnaP+40DgjwJ6VAgCSkOga5oJQiwfyaWLtjnHY412a5azZ+uz0Q5K3JRBPnxOrv3fdaS5pA35CWB2RtPSuRgyjHbIY8fQ+9N/laYFLYonODzqszBbbEBmTZMyZarIWtj0j6PXEHFqNfOthB5c4YulVf5hWWNWgaAyG8R+AyDEpR9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PxjjSXplRwON+BLljQJlmZ41Vl4SNTDKrHU7FDF1ysw=;
+ b=CUM2noj9Bdo+n/fWL5x8mbHGRGJncZ6EtBsVlvclkMy3AxOtuiqSe5ayapLjDOM/zDquqaxK0NTFXETY/P4J3zTSYGb8uW0HFQzJQHsVM1p9QZ3cwCuzTd+06gftr6fekkPaJ9eqUw4gI0Gfnim4bH4AJibrL7SJxuGygUYQzriAWK9i/IdS7nVarR/U0SV+XVTAHhcXIMXPx8/6Nejtg1+HsfoaUEydhH117/fRAUn5ki6JLRn43jvUrD2/nkd42SVOtVWx73WMZ6cr0HXj0OIav8BqGySahGEPlkUPIdTVex/R7xyv+6MWIz31IJvNIJR/Ph5hgbwXnbqaKwGtgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PxjjSXplRwON+BLljQJlmZ41Vl4SNTDKrHU7FDF1ysw=;
+ b=DYgNdyYHiotkqURM7mUzbYlwjwRHtlnk+SnFuqHTf0RCG9NwYEBxouj4jF2qtOAil9ZWw0+EhT74UKsiFkijG+aHd3VOPb3xIOqdCy4KEMGA9SOo1qpXYhYV/Pf+mEp1/y5pTA3UUtXdqajZmG8UE01dJIvlA5yBAOykmhrz8LlSMAfiHqpD6obmPMYBkp/VUU4bGkMwkK0hA/hT9S8hBeaZAODKySjV+jlr/nrgLc2AFQ1o5f1o0aNjjpYPLlrqjtCKG95P+7DLpBYKCqLkcJvkje0HejxXN8VOCApJYXS5kHEq+7zqnC8GlTLT56cAbqUcLzY3EfEUjS+yg7fNZQ==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0108.namprd12.prod.outlook.com (2603:10b6:4:58::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Mon, 29 Mar
+ 2021 14:54:06 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 14:54:06 +0000
+Date:   Mon, 29 Mar 2021 11:54:05 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] thunderbolt: Fix a leak in tb_retimer_add()
+Message-ID: <20210329145405.GD2356281@nvidia.com>
+References: <YGFulvAa5Kz6HTsd@mwanda>
+ <20210329130220.GY2356281@nvidia.com>
+ <20210329144323.GI2542@lahna.fi.intel.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210325151823.572089-2-vgoyal@redhat.com>
+In-Reply-To: <20210329144323.GI2542@lahna.fi.intel.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 14:54:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lQtHJ-0055XG-3x; Mon, 29 Mar 2021 11:54:05 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 08aeba1a-60cc-4ee4-5fc3-08d8f2c28051
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0108:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0108DCCD418E80C8D84855CDC27E9@DM5PR1201MB0108.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9DxYdXKyhX1d7H2u4R3VXEcYbvmR6SpEEp0YrMPDzdkBHVuIGYjWqFVV7A5Rk0zfOjwsdlGxKp6g4XoczgZ7ExXNEQ7YB6kEk2BdxKgHeTQ3S3fpTqxhV8k/GtmZMSgKaa8ky/w4oa02U4b17Tx7QIuGyJzAi4UTuai3HEyO4EQiJNiSN55azDpnCoecgs/FZ9y7+tQn+qWZQGwXYOx9LeHhWIqrfaL9lRRIOLy9mpCijT3+0pGi+pdLbTGrKrEDNOTCc3hReurl/gYxbgK1otyZIVrou8RS6dnx+G2R1bgPXIalOZ0prxNZrnVeDrb8xuJWApaL6y4P8PamCNHKDh1QyLUNchN1gfH017XU+O2vqu5sG6IpjULxAJmno12Gyxr1HjiKXcog6/KUW0i7SyOdhJTtzFrKV7gO0Y/NDRZ1TPKR3HWV4+KMRpXQ4UfhRbq7P5jIHLg/mEtc/fj8/ujQ89aja/LLQIUMob23Rp1UByCQQrTbweshA+33qlde/DUXDPn0Ryk8wBkCBJmLdI3QrQriyuPtQHUjLW2OH6RFpsCP5RZMUxyyqj9uyKiFmnhuQ2qlc9HK+mJwhvToRF/gATI6wISbuSfwTYe9ddU/K35u2xOlUu7aGPLYPkml1j3wupc3wcqMYQk0XSuwojjQmZKcujr1vqdnkqpqQ2I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(26005)(9786002)(186003)(478600001)(9746002)(38100700001)(86362001)(8936002)(1076003)(4744005)(2906002)(8676002)(426003)(316002)(54906003)(4326008)(6916009)(83380400001)(2616005)(66946007)(66556008)(66476007)(36756003)(5660300002)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xb+sJj8TQ46MToPHtmscWAfBb6pxn/YIggdLIawnnpmxQKELApM2OPeeM6KN?=
+ =?us-ascii?Q?hLlCiEbGiaUuk963OQDQbblljVZuZ7E7JwgxlqApu+3zdL0ol2b9Yc+F47Up?=
+ =?us-ascii?Q?HLUEoJsnQgkP2trSHziNC+RbOrgEt7YGFYHbiV+kksJ4wHZliMDxYXUeDHPc?=
+ =?us-ascii?Q?yjPOozjPqw5ZIQol4v3AqwngVda72stfhbIK/g4mwluDXP8EPx8GsCPTuibB?=
+ =?us-ascii?Q?sVmZvOtMhY5AyYsc80yUmRh+xwnqcQre3NSUkbNWMzPjE0DTFQweV9VQs/NE?=
+ =?us-ascii?Q?x+Rckz3EoJq7d091JBw3FORbeqjc4uuljZn0W1jlQ3lpDcfi6POsYRnX2WlV?=
+ =?us-ascii?Q?i1X/yKp7Sd/UEg7Kwv+1eUedPY0tngz0AG5idgg3g46y6Qljmqkmr825wQY1?=
+ =?us-ascii?Q?erTilGWR1PAATPewOoHlhxhlle5SJrDvMXFe7GV0cKYnkUZ6oC+dp0fdzEiv?=
+ =?us-ascii?Q?+xrk4OTF31Keog7C0y64Kby4vQ3f/r8uHQXMaeKjxwpFJEZPEIQ9dKN79D/d?=
+ =?us-ascii?Q?CW0/cwB5Pluj4lvtlFhrG3iotD6NmDHULBcserGP6ps9eKX0OcPz044bva5K?=
+ =?us-ascii?Q?xet/bbBtqjPib5BnVqU08TTRUoYScHsXTPZYcE+HOO1hwK+1f79M+pphcMoc?=
+ =?us-ascii?Q?QSQHsKFhPe/ByP4TQJPx0Woy99rCA80QGIM9maD1xgFYwiI7zAiLmFw2YSF4?=
+ =?us-ascii?Q?Q2dJIRvrdKFpdWTUzItW7L/Df5ADfkHoC1w3yV7wHb0lDayCy2/dz0jIAf17?=
+ =?us-ascii?Q?cAC30b6huGUpUC+oLQckWX6og590vzUrvFK14qqsG49kwJ4/PbYnW+EfPKil?=
+ =?us-ascii?Q?+dHdOqNQlNDZ0zelcahx7b9QpYezQXRWRkGQqZ/FeXDBKUUoAdNH4DlQ/VEI?=
+ =?us-ascii?Q?2hI2txemlGrTVFt5kzwaNX4uErvXIjDN8yma8C5OD+RYvSFb+YhyvwxSjTgN?=
+ =?us-ascii?Q?VHC1ul8EpNDf8xnfnjydzGmFOJdMFI7qa4ahkJZIxWAqDjafceWWs3pid4FH?=
+ =?us-ascii?Q?yfM3Dj4HE4WsGyDaz5On9qwuJYGiEtigZsinNbAyZZVuvXjw1pfVz7BdOtJf?=
+ =?us-ascii?Q?wY4cvkMogOu+dLjs0QarcT4Qo601kJtDOSf1PUZzXMLxyEKjuO2xa4nvDBvL?=
+ =?us-ascii?Q?jvJj8MdyfK09QWvUYZVmRsD2vITDlnRn2kjYhm9nqXAxvMW903kZdpe4ww6j?=
+ =?us-ascii?Q?Yu7UaUIJzHuEtfGxH4wlf0YaLqq2ySp0cfGid92R1AOk33DcmlXig5cFsS2D?=
+ =?us-ascii?Q?rS2PZucLlrTLsVFRU2or8z2wxdl2wjO7aogqM/+h4yqvM5fwyJkZNFqgbE7z?=
+ =?us-ascii?Q?d5zrH8DWt/fv7KhkzpAIYGe5VEZXNkyIzY8wkNy/Lz3Vtw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08aeba1a-60cc-4ee4-5fc3-08d8f2c28051
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 14:54:06.5807
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /TGykYXGSWU2GyhbBpYSbPWgAdM8AJGUaviXBvcKxEVCEu0Wd9susH4tWIGkcV3o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:18:22AM -0400, Vivek Goyal wrote:
-> Fuse client needs to send additional information to file server when
-> it calls SETXATTR(system.posix_acl_access). Right now there is no extra
-> space in fuse_setxattr_in. So introduce a v2 of the structure which has
-> more space in it and can be used to send extra flags.
-> 
-> "struct fuse_setxattr_in_v2" is only used if file server opts-in for it using
-> flag FUSE_SETXATTR_V2 during feature negotiations.
-> 
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/fuse/acl.c             |  2 +-
->  fs/fuse/fuse_i.h          |  5 ++++-
->  fs/fuse/inode.c           |  4 +++-
->  fs/fuse/xattr.c           | 21 +++++++++++++++------
->  include/uapi/linux/fuse.h | 10 ++++++++++
->  5 files changed, 33 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
-> index e9c0f916349d..d31260a139d4 100644
-> --- a/fs/fuse/acl.c
-> +++ b/fs/fuse/acl.c
-> @@ -94,7 +94,7 @@ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  			return ret;
->  		}
->  
-> -		ret = fuse_setxattr(inode, name, value, size, 0);
-> +		ret = fuse_setxattr(inode, name, value, size, 0, 0);
->  		kfree(value);
->  	} else {
->  		ret = fuse_removexattr(inode, name);
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 63d97a15ffde..d00bf0b9a38c 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -668,6 +668,9 @@ struct fuse_conn {
->  	/** Is setxattr not implemented by fs? */
->  	unsigned no_setxattr:1;
->  
-> +	/** Does file server support setxattr_v2 */
-> +	unsigned setxattr_v2:1;
-> +
->  	/** Is getxattr not implemented by fs? */
->  	unsigned no_getxattr:1;
->  
-> @@ -1170,7 +1173,7 @@ void fuse_unlock_inode(struct inode *inode, bool locked);
->  bool fuse_lock_inode(struct inode *inode);
->  
->  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
-> -		  size_t size, int flags);
-> +		  size_t size, int flags, unsigned extra_flags);
->  ssize_t fuse_getxattr(struct inode *inode, const char *name, void *value,
->  		      size_t size);
->  ssize_t fuse_listxattr(struct dentry *entry, char *list, size_t size);
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index b0e18b470e91..1c726df13f80 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1052,6 +1052,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
->  				fc->handle_killpriv_v2 = 1;
->  				fm->sb->s_flags |= SB_NOSEC;
->  			}
-> +			if (arg->flags & FUSE_SETXATTR_V2)
-> +				fc->setxattr_v2 = 1;
->  		} else {
->  			ra_pages = fc->max_read / PAGE_SIZE;
->  			fc->no_lock = 1;
-> @@ -1095,7 +1097,7 @@ void fuse_send_init(struct fuse_mount *fm)
->  		FUSE_PARALLEL_DIROPS | FUSE_HANDLE_KILLPRIV | FUSE_POSIX_ACL |
->  		FUSE_ABORT_ERROR | FUSE_MAX_PAGES | FUSE_CACHE_SYMLINKS |
->  		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
-> -		FUSE_HANDLE_KILLPRIV_V2;
-> +		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_V2;
->  #ifdef CONFIG_FUSE_DAX
->  	if (fm->fc->dax)
->  		ia->in.flags |= FUSE_MAP_ALIGNMENT;
-> diff --git a/fs/fuse/xattr.c b/fs/fuse/xattr.c
-> index 1a7d7ace54e1..f2aae72653dc 100644
-> --- a/fs/fuse/xattr.c
-> +++ b/fs/fuse/xattr.c
-> @@ -12,24 +12,33 @@
->  #include <linux/posix_acl_xattr.h>
->  
->  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
-> -		  size_t size, int flags)
-> +		  size_t size, int flags, unsigned extra_flags)
->  {
->  	struct fuse_mount *fm = get_fuse_mount(inode);
->  	FUSE_ARGS(args);
->  	struct fuse_setxattr_in inarg;
-> +	struct fuse_setxattr_in_v2 inarg_v2;
-> +	bool setxattr_v2 = fm->fc->setxattr_v2;
->  	int err;
->  
->  	if (fm->fc->no_setxattr)
->  		return -EOPNOTSUPP;
->  
->  	memset(&inarg, 0, sizeof(inarg));
-> -	inarg.size = size;
-> -	inarg.flags = flags;
-> +	memset(&inarg_v2, 0, sizeof(inarg_v2));
-> +	if (setxattr_v2) {
-> +		inarg_v2.size = size;
-> +		inarg_v2.flags = flags;
-> +		inarg_v2.setxattr_flags = extra_flags;
-> +	} else {
-> +		inarg.size = size;
-> +		inarg.flags = flags;
-> +	}
->  	args.opcode = FUSE_SETXATTR;
->  	args.nodeid = get_node_id(inode);
->  	args.in_numargs = 3;
-> -	args.in_args[0].size = sizeof(inarg);
-> -	args.in_args[0].value = &inarg;
-> +	args.in_args[0].size = setxattr_v2 ? sizeof(inarg_v2) : sizeof(inarg);
-> +	args.in_args[0].value = setxattr_v2 ? &inarg_v2 : (void *)&inarg;
+On Mon, Mar 29, 2021 at 05:43:23PM +0300, Mika Westerberg wrote:
 
-And yet another minor:
+> The nvm is a separate (physical Linux) device that gets added under this
+> one. It cannot be added before AFAICT.
 
-It's a bit awkward to have to cast '&inarg' to 'void *' just because
-you're using the ternary operator.  Why not use an 'if' statement instead
-for initializing .size and .value?
+Hum, yes, but then it is odd that a parent is holding sysfs attributes
+that refer to a child.
 
-Cheers,
---
-Luís
-
->  	args.in_args[1].size = strlen(name) + 1;
->  	args.in_args[1].value = name;
->  	args.in_args[2].size = size;
-> @@ -199,7 +208,7 @@ static int fuse_xattr_set(const struct xattr_handler *handler,
->  	if (!value)
->  		return fuse_removexattr(inode, name);
->  
-> -	return fuse_setxattr(inode, name, value, size, flags);
-> +	return fuse_setxattr(inode, name, value, size, flags, 0);
->  }
->  
->  static bool no_xattr_list(struct dentry *dentry)
-> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> index 54442612c48b..1bb555c1c117 100644
-> --- a/include/uapi/linux/fuse.h
-> +++ b/include/uapi/linux/fuse.h
-> @@ -179,6 +179,7 @@
->   *  7.33
->   *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
->   *  - add FUSE_OPEN_KILL_SUIDGID
-> + *  - add FUSE_SETXATTR_V2
->   */
->  
->  #ifndef _LINUX_FUSE_H
-> @@ -330,6 +331,7 @@ struct fuse_file_lock {
->   *			does not have CAP_FSETID. Additionally upon
->   *			write/truncate sgid is killed only if file has group
->   *			execute permission. (Same as Linux VFS behavior).
-> + * FUSE_SETXATTR_V2:	Does file server support V2 of struct fuse_setxattr_in
->   */
->  #define FUSE_ASYNC_READ		(1 << 0)
->  #define FUSE_POSIX_LOCKS	(1 << 1)
-> @@ -360,6 +362,7 @@ struct fuse_file_lock {
->  #define FUSE_MAP_ALIGNMENT	(1 << 26)
->  #define FUSE_SUBMOUNTS		(1 << 27)
->  #define FUSE_HANDLE_KILLPRIV_V2	(1 << 28)
-> +#define FUSE_SETXATTR_V2	(1 << 29)
->  
->  /**
->   * CUSE INIT request/reply flags
-> @@ -686,6 +689,13 @@ struct fuse_setxattr_in {
->  	uint32_t	flags;
->  };
->  
-> +struct fuse_setxattr_in_v2 {
-> +	uint32_t	size;
-> +	uint32_t	flags;
-> +	uint32_t	setxattr_flags;
-> +	uint32_t	padding;
-> +};
-> +
->  struct fuse_getxattr_in {
->  	uint32_t	size;
->  	uint32_t	padding;
-> -- 
-> 2.25.4
+> The code you refer actually looks like this:
 > 
+> static ssize_t nvm_authenticate_store(struct device *dev,
+>  	struct device_attribute *attr, const char *buf, size_t count)
+> {
+> 	...
+>         if (!mutex_trylock(&rt->tb->lock)) {
+>                 ret = restart_syscall();
+>                 goto exit_rpm;
+>         }
+
+Is that lock held during tb_retimer_nvm_add() I looked for a bit and
+didn't find something. So someplace more than 4 call site above
+mandatory locking is being held?
+
+static void tb_retimer_remove(struct tb_retimer *rt)
+{
+	dev_info(&rt->dev, "retimer disconnected\n");
+	tb_nvm_free(rt->nvm);
+	device_unregister(&rt->dev);
+}
+
+Here too?
+
+And this is why it is all trylock because it deadlocks with unregister
+otherwise?
+
+Jason
