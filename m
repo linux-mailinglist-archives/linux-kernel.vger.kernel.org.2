@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF71034C57A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676FC34C84D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhC2IAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
+        id S233555AbhC2IVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhC2IAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 660A56196E;
-        Mon, 29 Mar 2021 08:00:19 +0000 (UTC)
+        id S232624AbhC2INZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:13:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D2E61494;
+        Mon, 29 Mar 2021 08:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004821;
-        bh=NE1a96pDxkwvBxLprRkGw9JSKBj3i2OYm48K5voJhWo=;
+        s=korg; t=1617005604;
+        bh=LCfOYbdDrWCE+GJPVozw9HGEGOggj0If07yc6i7jxEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qt7jbxEcXcW8gRmKwEvNjqM8fXiWpcH+hG4x3Vbbtq8JN40j1H4wS+VbuhDM3j73D
-         1vLNTj9/lcul4ySuST1Le1XjUJoxLF9/ZFlBmRvxbQ9XVsB98EiRb98rM/CmuhYGkP
-         WDJXiRyPYDkdLWwzthfHcI+3h+fZ6IwVGPLNpzj8=
+        b=mEKgKyAX8MgoqXroU9n+4F6n0NhsYpfvMxc6ZRK9tLmD8/ouvGY1J7J2j6/yXz70K
+         k8yAmbDDdHGOG5b4aSNk8B4XoBO1s47gnCkQBvRuAXOvugssQYaKvYiUjfDiqWP0RW
+         gswGjFgH+8c8GPrU0VDuSiwK4ir6p2pv9CydLUYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@suse.de>, Hugh Dickins <hughd@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/33] x86/tlb: Flush global mappings when KAISER is disabled
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 052/111] dm ioctl: fix out of bounds array access when no devices
 Date:   Mon, 29 Mar 2021 09:58:00 +0200
-Message-Id: <20210329075605.759394499@linuxfoundation.org>
+Message-Id: <20210329075616.927073964@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,102 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-Jim Mattson reported that Debian 9 guests using a 4.9-stable kernel
-are exploding during alternatives patching:
+commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
 
-  kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
-  invalid opcode: 0000 [#1] SMP
-  Modules linked in:
-  CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.0-13-amd64 #1 Debian 4.9.228-1
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Call Trace:
-   swap_entry_free
-   swap_entry_free
-   text_poke_bp
-   swap_entry_free
-   arch_jump_label_transform
-   set_debug_rodata
-   __jump_label_update
-   static_key_slow_inc
-   frontswap_register_ops
-   init_zswap
-   init_frontswap
-   do_one_initcall
-   set_debug_rodata
-   kernel_init_freeable
-   rest_init
-   kernel_init
-   ret_from_fork
+If there are not any dm devices, we need to zero the "dev" argument in
+the first structure dm_name_list. However, this can cause out of
+bounds write, because the "needed" variable is zero and len may be
+less than eight.
 
-triggering the BUG_ON in text_poke() which verifies whether patched
-instruction bytes have actually landed at the destination.
+Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
+too small to hold the "nl->dev" value.
 
-Further debugging showed that the TLB flush before that check is
-insufficient because there could be global mappings left in the TLB,
-leading to a stale mapping getting used.
-
-I say "global mappings" because the hardware configuration is a new one:
-machine is an AMD, which means, KAISER/PTI doesn't need to be enabled
-there, which also means there's no user/kernel pagetables split and
-therefore the TLB can have global mappings.
-
-And the configuration is new one for a second reason: because that AMD
-machine supports PCID and INVPCID, which leads the CPU detection code to
-set the synthetic X86_FEATURE_INVPCID_SINGLE flag.
-
-Now, __native_flush_tlb_single() does invalidate global mappings when
-X86_FEATURE_INVPCID_SINGLE is *not* set and returns.
-
-When X86_FEATURE_INVPCID_SINGLE is set, however, it invalidates the
-requested address from both PCIDs in the KAISER-enabled case. But if
-KAISER is not enabled and the machine has global mappings in the TLB,
-then those global mappings do not get invalidated, which would lead to
-the above mismatch from using a stale TLB entry.
-
-So make sure to flush those global mappings in the KAISER disabled case.
-
-Co-debugged by Babu Moger <babu.moger@amd.com>.
-
-Reported-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Tested-by: Jim Mattson <jmattson@google.com>
-Link: https://lkml.kernel.org/r/CALMp9eRDSW66%2BXvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/tlbflush.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/md/dm-ioctl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 8dab88b85785..33a594f728de 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -245,12 +245,15 @@ static inline void __native_flush_tlb_single(unsigned long addr)
- 	 * ASID.  But, userspace flushes are probably much more
- 	 * important performance-wise.
- 	 *
--	 * Make sure to do only a single invpcid when KAISER is
--	 * disabled and we have only a single ASID.
-+	 * In the KAISER disabled case, do an INVLPG to make sure
-+	 * the mapping is flushed in case it is a global one.
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -529,7 +529,7 @@ static int list_devices(struct file *fil
+ 	 * Grab our output buffer.
  	 */
--	if (kaiser_enabled)
-+	if (kaiser_enabled) {
- 		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
--	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-+		invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-+	} else {
-+		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
-+	}
- }
- 
- static inline void __flush_tlb_all(void)
--- 
-2.30.1
-
+ 	nl = orig_nl = get_result_buffer(param, param_size, &len);
+-	if (len < needed) {
++	if (len < needed || len < sizeof(nl->dev)) {
+ 		param->flags |= DM_BUFFER_FULL_FLAG;
+ 		goto out;
+ 	}
 
 
