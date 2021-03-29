@@ -2,119 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E634B34D80B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7E034D81D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhC2TXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhC2TXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:23:02 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5B8C061574;
-        Mon, 29 Mar 2021 12:23:02 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id o5so13589854qkb.0;
-        Mon, 29 Mar 2021 12:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3aAg/cWdAj4lRmlMtK4LkLX6r/m6JweeUeBCVUAgBV4=;
-        b=QuW7m2EWanQSPCJesyGh0kNW6T5woKO4zsnh1/mzyCrQFz73EuPo9mndgyJCT1MrX6
-         YA/q5OCIJ9yTsF41T5r2I86K8GVY3sjuSkBMFuju8CRiG5CtFTWELJoisqDLGHb+4oxH
-         OwYbHCOuwqMiY19SwpLtqnZ0pxjYlFU9RmqVdVUN5G11UlhDBr9Q0aXB5YJT5oRzEIIy
-         e8kovT7oun4aUc2lCwEjFdgzV5/E0C93vW3g6QnDgMgR0aMeYe5vbf0AnB92ta5g6wEH
-         5baEyT48PfH+r8BpasFfXqqPkKzZRtrEhEHv5ds+ZVYVZj/7h9K4I1329pZ0ETFEZg0J
-         p/vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3aAg/cWdAj4lRmlMtK4LkLX6r/m6JweeUeBCVUAgBV4=;
-        b=SjzHvF+Mj7ErIqMqTdSBgM9R7zWPVZwhZofPlJmKJOYPMMq20vdGKp9ozR97GZK0ry
-         ECkLd5arLmruFbCZUHz5ACh2OCtdF1MC1WeFAiigRxF73leCdoEqm5ypsQ9G80e3dUyu
-         VEaZP1yj3LtJ/Zzz4onIcZokMd/3pMuUSOxIxdT9T10Y0lJRmEG4YbwBzJDlPa/KjM4m
-         BeddjKUfMwEUwIoEXkDfXcwVk5jUi2elAAPxWQAmJdM2FKaLexaV/RckAwaz5YBjPszv
-         xkeFb5pE3tnR7JtMEbxauRRAaw1VsDxJgbLI2x9TmPu0B1cWUdLqTy94ae/SMUX9z/8a
-         TQCA==
-X-Gm-Message-State: AOAM5306kLJ4Ud+CvZ6N2Q2kj61QPbix4flD7x4k57qtt7urgyHZWKsG
-        9m1FMV/JG0pt+2y3lA+bcaY=
-X-Google-Smtp-Source: ABdhPJwg2Q7NNiixwEvKlISU8+d3yTPZja/yZbNVoce24fBi5ZiUC2pphQJhAWpMhy67b0Kg5iU3rg==
-X-Received: by 2002:a37:6887:: with SMTP id d129mr26732247qkc.252.1617045781812;
-        Mon, 29 Mar 2021 12:23:01 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id i14sm11734313qtq.81.2021.03.29.12.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:23:01 -0700 (PDT)
-Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
- to .dtso
-To:     Rob Herring <robh@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210324223713.1334666-1-frowand.list@gmail.com>
- <20210327174035.GA291160@robh.at.kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
-Date:   Mon, 29 Mar 2021 14:23:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231627AbhC2T15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:27:57 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:54130 "EHLO mengyan1223.wang"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229955AbhC2T1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 15:27:35 -0400
+Received: from [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e] (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id D718C65B2D;
+        Mon, 29 Mar 2021 15:27:23 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1617046055;
+        bh=q5jy06gXbsh54zTcjXzkpHo6iPU/YhiGMix3TqY8BK4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hg/Gc597690mti/NLTwXW6eufoo40Y0FP61MRrSTcqtmdukiixS07cWw2xjn9/Ipn
+         nNFA4csrZtwx0neVRRo6IQNXbOwejpumm2sQN8z/eQuoSwoZ/AXHcNASsM9Z+Qr+Pz
+         +ZHCHnG+6iUs46Z4iYdKoJvTabQwRWdaLymrD1B8ijcWq7UX06Q79eiohSyCktTKng
+         a14eSX2wdS3GSIliKyke8imRGdN2ITbYjwwwCN0v/d5gXUjOJvs1Xs7CAAI15g2xyK
+         aHaPfvz4cagvj2dz+MlehKdzSNxmR+cLosYlmKvV1YG90qEqf0rDe9I90xdZBj2rq8
+         mBNCzDIY/CN/Q==
+Message-ID: <97c520ce107aa4d5fd96e2c380c8acdb63d45c37.camel@mengyan1223.wang>
+Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
+From:   Xi Ruoyao <xry111@mengyan1223.wang>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Dan =?ISO-8859-1?Q?Hor=E1k?= <dan@danny.cz>,
+        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org
+Date:   Tue, 30 Mar 2021 03:27:15 +0800
+In-Reply-To: <84b3911173ad6beb246ba0a77f93d888ee6b393e.camel@mengyan1223.wang>
+References: <20210329175348.26859-1-xry111@mengyan1223.wang>
+         <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
+         <be9042b9294bda450659d3cd418c5e8759d57319.camel@mengyan1223.wang>
+         <9a11c873-a362-b5d1-6d9c-e937034e267d@gmail.com>
+         <bf9e05d4a6ece3e8bf1f732b011d3e54bbf8000e.camel@mengyan1223.wang>
+         <84b3911173ad6beb246ba0a77f93d888ee6b393e.camel@mengyan1223.wang>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 
 MIME-Version: 1.0
-In-Reply-To: <20210327174035.GA291160@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/27/21 12:40 PM, Rob Herring wrote:
-> On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
->> From: Frank Rowand <frank.rowand@sony.com>
->>
->> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
->> source file.
->>
->> Rename unittest .dts overlay source files to use .dtso suffix.
+Hi Christian,
+
+I don't think there is any constraint implemented to ensure `num_entries %
+AMDGPU_GPU_PAGES_IN_CPU_PAGE == 0`.  For example, in `amdgpu_vm_bo_map()`:
+
+        /* validate the parameters */
+        if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
+            size == 0 || size & AMDGPU_GPU_PAGE_MASK)
+                return -EINVAL;
+
+/* snip */
+
+        saddr /= AMDGPU_GPU_PAGE_SIZE;
+        eaddr /= AMDGPU_GPU_PAGE_SIZE;
+
+/* snip */
+
+        mapping->start = saddr;
+        mapping->last = eaddr;
+
+
+If we really want to ensure (mapping->last - mapping->start + 1) %
+AMDGPU_GPU_PAGES_IN_CPU_PAGE == 0, then we should replace "AMDGPU_GPU_PAGE_MASK"
+in "validate the parameters" with "PAGE_MASK".
+
+I tried it and it broke userspace: Xorg startup fails with EINVAL with this
+change.
+
+On 2021-03-30 02:30 +0800, Xi Ruoyao wrote:
+> On 2021-03-30 02:21 +0800, Xi Ruoyao wrote:
+> > On 2021-03-29 20:10 +0200, Christian König wrote:
+> > > You need to identify the root cause of this, most likely start or last 
+> > > are not a multiple of AMDGPU_GPU_PAGES_IN_CPU_PAGE.
+> > 
+> > I printk'ed the value of start & last, they are all a multiple of 4
+> > (AMDGPU_GPU_PAGES_IN_CPU_PAGE).
+> > 
+> > However... `num_entries = last - start + 1` so it became some irrational
+> > thing...  Either this line is wrong, or someone called
+> > amdgpu_vm_bo_update_mapping with [start, last) instead of [start, last], which
+> > is unexpected.
 > 
-> I'm pretty lukewarm on .dtso...
-
-I was originally also, but I'm warming up to it.
-
+> I added BUG_ON(num_entries % AMDGPU_GPU_PAGES_IN_CPU_PAGE != 0), get:
 > 
->>
->> Update Makefile to build .dtbo.o objects instead of .dtb.o from
->> unittest overlay source files.
->>
->> Modify unitest.c to use .dtbo.o based symbols instead of .dtb.o
->>
->> Modify Makefile.lib %.dtbo rule to depend upon %.dtso instead of %.dts
->>
->> Documentation/devicetree/of_unittest.rst was already out of date.
->> This commit would make it even more out of date.  Delete the document
->> instead of continuing the maintenance burden of keeping the document
->> in sync with the source.
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c90750>]
+> > amdgpu_vm_bo_update_mapping.constprop.0+0x218/0xae8
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c922b8>]
+> > amdgpu_vm_bo_update+0x270/0x4c0
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c823ec>]
+> > amdgpu_gem_va_ioctl+0x40c/0x430
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c1cae4>]
+> > drm_ioctl_kernel+0xcc/0x120
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c1cfd8>]
+> > drm_ioctl+0x220/0x408
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c5ea48>]
+> > amdgpu_drm_ioctl+0x58/0x98
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff838feac4>] sys_ioctl+0xcc/0xe8
+> > Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff836e74f0>]
+> > syscall_common+0x34/0x58
+> > 
 > 
-> This should be a separate change. It's also going to collide with my doc 
-> improvements.
-
-I'll split it out.
-
+> > > > > > BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+> > > > > > Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
+> > > > > > Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> > > > > > Reported-by: Dan Horák <dan@danny.cz>
+> > > > > > Cc: stable@vger.kernel.org
+> > > > > > Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> > > > > > ---
+> > > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+> > > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > > > b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > > > index ad91c0c3c423..cee0cc9c8085 100644
+> > > > > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > > > > > @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct
+> > > > > > amdgpu_device *adev,
+> > > > > >                  }
+> > > > > >                  start = tmp;
+> > > > > >    
+> > > > > > -       } while (unlikely(start != last + 1));
+> > > > > > +       } while (unlikely(start < last + 1));
+> > > > > >    
+> > > > > >          r = vm->update_funcs->commit(&params, fence);
+> > > > > >    
+> > > > > > 
+> > > > > > base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+> > > 
+> > 
 > 
-> Improvements here would be better than just deleting.
 
-OK, I'll make the document more abstract so that code
-changes will be less likely to require document changes.
+-- 
+Xi Ruoyao <xry111@mengyan1223.wang>
+School of Aerospace Science and Technology, Xidian University
 
--Frank
