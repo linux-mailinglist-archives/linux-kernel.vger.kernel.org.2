@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9BA34CC25
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCEF34C748
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhC2I4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
+        id S232151AbhC2INt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:13:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234388AbhC2Ig7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:36:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B7D619A0;
-        Mon, 29 Mar 2021 08:36:12 +0000 (UTC)
+        id S232252AbhC2IIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:08:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4785861477;
+        Mon, 29 Mar 2021 08:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006973;
-        bh=YnhR0fW0rO5W1niRWWE47ZOFiFU2dHcUJfrdNzIeCBY=;
+        s=korg; t=1617005301;
+        bh=GQ25XYlmhriTUSqz13rXz1MKWRd4eaKqssJQYl9P4pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nxA208s3AaygIs/2WhyaGz5i8sRCAcC77q+scxh7T3ckExaRS4bdQ/uvehCGZhdV1
-         Pw5f2zL4CymMvONT73Q0zuavcSoqHL2/wvbxWpHJ5NSgLty1AkjlxjU3JvPJJTW971
-         mXmXTIp7ToLaGm2TvKPrn3fhW7/DV2pQZr+TAdKI=
+        b=YEwUWF8k25Gs2H3aieOik9fU5Ia/7gpREvFf5A/5YC375oeIux3MwsEgLDkP3v7Ly
+         C/VW7CoKPKvqPV4FmCUKbfB8C3TYN9giWFuxExCMN/cjcK9rAwpZzLyBhCdHKF4lxt
+         ziF9d9E8orD1xS0D7nQ7SE74n0Q+H0uwP+dmKCxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 174/254] octeontx2-af: Remove TOS field from MKEX TX
+Subject: [PATCH 4.19 34/72] veth: Store queue_mapping independently of XDP prog presence
 Date:   Mon, 29 Mar 2021 09:58:10 +0200
-Message-Id: <20210329075638.878782160@linuxfoundation.org>
+Message-Id: <20210329075611.410468033@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-[ Upstream commit ce86c2a531e2f2995ee55ea527c1f39ba1d95f73 ]
+[ Upstream commit edbea922025169c0e5cdca5ebf7bf5374cc5566c ]
 
-The MKEX profile describes what packet fields need to be extracted from
-the input packet and how to place those packet fields in the output key
-for MCAM matching.  The MKEX profile can be in a way where higher layer
-packet fields can overwrite lower layer packet fields in output MCAM
-Key.
-Hence MKEX profile is always ensured that there are no overlaps between
-any of the layers. But the commit 42006910b5ea
-("octeontx2-af: cleanup KPU config data") introduced TX TOS field which
-overlaps with DMAC in MCAM key.
-This led to AF driver returning error when TX rule is installed with
-DMAC as match criteria since DMAC gets overwritten and cannot be
-supported. This patch fixes the issue by removing TOS field from MKEX TX
-profile.
+Currently, veth_xmit() would call the skb_record_rx_queue() only when
+there is XDP program loaded on peer interface in native mode.
 
-Fixes: 42006910b5ea ("octeontx2-af: cleanup KPU config data")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+If peer has XDP prog in generic mode, then netif_receive_generic_xdp()
+has a call to netif_get_rxqueue(skb), so for multi-queue veth it will
+not be possible to grab a correct rxq.
+
+To fix that, store queue_mapping independently of XDP prog presence on
+peer interface.
+
+Fixes: 638264dc9022 ("veth: Support per queue XDP ring")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Link: https://lore.kernel.org/bpf/20210303152903.11172-1-maciej.fijalkowski@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/veth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-index b192692b4fc4..5c372d2c24a1 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-@@ -13499,8 +13499,6 @@ static struct npc_mcam_kex npc_mkex_default = {
- 			[NPC_LT_LC_IP] = {
- 				/* SIP+DIP: 8 bytes, KW2[63:0] */
- 				KEX_LD_CFG(0x07, 0xc, 0x1, 0x0, 0x10),
--				/* TOS: 1 byte, KW1[63:56] */
--				KEX_LD_CFG(0x0, 0x1, 0x1, 0x0, 0xf),
- 			},
- 			/* Layer C: IPv6 */
- 			[NPC_LT_LC_IP6] = {
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 2abbad1abaf2..fd1843fd256b 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -197,8 +197,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (rxq < rcv->real_num_rx_queues) {
+ 		rq = &rcv_priv->rq[rxq];
+ 		rcv_xdp = rcu_access_pointer(rq->xdp_prog);
+-		if (rcv_xdp)
+-			skb_record_rx_queue(skb, rxq);
++		skb_record_rx_queue(skb, rxq);
+ 	}
+ 
+ 	if (likely(veth_forward_skb(rcv, skb, rq, rcv_xdp) == NET_RX_SUCCESS)) {
 -- 
 2.30.1
 
