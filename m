@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA1734D795
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B0E34D796
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhC2SuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:50:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38444 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhC2Stf (ORCPT
+        id S231404AbhC2SuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:50:06 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:35611 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230224AbhC2Str (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:49:35 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617043774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jKxCL0ncWKe7zPEzTZWASnthFKodIPfsqi1oXGFkefU=;
-        b=m7pWTXsOVhoQhSejYS3+GlX30pT0MHU2527Ok8kEmic1LUR0MURLTQydsaOg5mOeH/PdwD
-        dWGVa5Z3dYCpic9TSUiLttwddP2wc3aYukB9TELAS5aA7qBwevxQVrpD/PXoR7pXyhaS5Q
-        SPFoXdlLd2CnAftK6L5e0TThvybs1nY7zEr2VnpE31g0WNyQQRJePgfMobWDRVq5BjtzYE
-        //YN1Q9vpJyGK+bfbGnMWuD23tbT6uYkTqN5aiPWZbwvCdmReDalE2C7QGEdw7gET52hMj
-        FWkO8x5JNMSOP8YV7E6VzoCSrhZwUxFLO6+qtsMAtCmJG8VsIkQbspPwE9aJ4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617043774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jKxCL0ncWKe7zPEzTZWASnthFKodIPfsqi1oXGFkefU=;
-        b=GVJgaksnA6ObJd+0LpC0i61HwIlweMsMgNpP0neuKbbZQ1i+FE4Z/RY2PiHdxw5XkxywPu
-        Q/G8cGphADZabYCw==
-To:     Len Brown <lenb@kernel.org>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown\, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu\, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the first use of dynamic user state
-In-Reply-To: <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
-References: <20210221185637.19281-1-chang.seok.bae@intel.com> <20210221185637.19281-15-chang.seok.bae@intel.com> <87o8fda2ye.fsf@nanos.tec.linutronix.de> <CAJvTdKkZEWTsqhXLC+qiQ49c2xn7GDF95PfTBi0rw1FnE--JKQ@mail.gmail.com> <87r1jyaxum.ffs@nanos.tec.linutronix.de> <CAJvTdKnBRmogm6zF0KyDtx1VC_bpRa8_H1P9mxtMP06fy8a57g@mail.gmail.com>
-Date:   Mon, 29 Mar 2021 20:49:33 +0200
-Message-ID: <87ft0d7q2q.ffs@nanos.tec.linutronix.de>
+        Mon, 29 Mar 2021 14:49:47 -0400
+Received: (qmail 945935 invoked by uid 1000); 29 Mar 2021 14:49:46 -0400
+Date:   Mon, 29 Mar 2021 14:49:46 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] usb: Iterator for ports
+Message-ID: <20210329184946.GA944482@rowland.harvard.edu>
+References: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
+ <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29 2021 at 11:43, Len Brown wrote:
-> On Mon, Mar 29, 2021 at 9:33 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> But yes, if a bare metal OS doesn't support any threading libraries
-> that query XCR0 with xgetbv, and they don't care about the performance
-> impact of switching XCR0, they could choose to switch XCR0 and
-> would want to TILERELEASE to assure C6 access, if it is enabled.
+On Mon, Mar 29, 2021 at 11:44:25AM +0300, Heikki Krogerus wrote:
+> Introducing usb_for_each_port(). It works the same way as
+> usb_for_each_dev(), but instead of going through every USB
+> device in the system, it walks through the USB ports in the
+> system.
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/usb/core/usb.c | 46 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/usb.h    |  1 +
+>  2 files changed, 47 insertions(+)
+> 
+> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> index 2ce3667ec6fae..62368c4ed37af 100644
+> --- a/drivers/usb/core/usb.c
+> +++ b/drivers/usb/core/usb.c
+> @@ -398,6 +398,52 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
+>  }
+>  EXPORT_SYMBOL_GPL(usb_for_each_dev);
+>  
+> +struct each_hub_arg {
+> +	void *data;
+> +	int (*fn)(struct device *, void *);
+> +};
+> +
+> +static int __each_hub(struct usb_device *hdev, void *data)
+> +{
+> +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
+> +	struct usb_hub *hub;
+> +	int ret = 0;
+> +	int i;
+> +
+> +	hub = usb_hub_to_struct_hub(hdev);
+> +	if (!hub)
+> +		return 0;
 
-That's not the point. The C6 issue has nothing to do with the ABI
-considerations vs. XCR0.
+What happens if the hub is removed exactly now?  Although hdev is 
+reference-counted (and the loop iterator does take a reference to it), 
+usb_hub_to_struct_hub doesn't take a reference to hub.  And hub->ports 
+isn't refcounted at all.
 
-According to documentation it is irrelevant whether AMX usage is
-disabled via XCR0, CR4.OSXSAVE or XFD[18]. In any case the effect of
-AMX INIT=0 will prevent C6.
+> +
+> +	mutex_lock(&usb_port_peer_mutex);
+> +
+> +	for (i = 0; i < hdev->maxchild; i++) {
+> +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	mutex_unlock(&usb_port_peer_mutex);
 
-As I explained in great length there are enough ways to get into a
-situation where this can happen and a CPU goes idle with AMX INIT=0.
+I have a feeling that it would be better to take and release this mutex 
+in usb_for_each_port (or its caller), so that it is held over the whole 
+loop.
 
-So what are we supposed to do?
+Alan Stern
 
-   - Use TILERELEASE on context switch after XSAVES?
-
-   - Any other mechanism on context switch
-
-   - Clear XFD[18] when going idle and issue TILERELEASE depending
-     on the last state
-
-   - Use any other means to set the thing back into INIT=1 state when
-     going idle
-
-There is no option 'shrug and ignore' unfortunately.
-
-Thanks,
-
-        tglx
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * usb_for_each_port - interate over all USB ports in the system
+> + * @data: data pointer that will be handed to the callback function
+> + * @fn: callback function to be called for each USB port
+> + *
+> + * Iterate over all USB ports and call @fn for each, passing it @data. If it
+> + * returns anything other than 0, we break the iteration prematurely and return
+> + * that value.
+> + */
+> +int usb_for_each_port(void *data, int (*fn)(struct device *, void *))
+> +{
+> +	struct each_hub_arg arg = {data, fn};
+> +
+> +	return usb_for_each_dev(&arg, __each_hub);
+> +}
+> +EXPORT_SYMBOL_GPL(usb_for_each_port);
+> +
+>  /**
+>   * usb_release_dev - free a usb device structure when all users of it are finished.
+>   * @dev: device that's been disconnected
+> diff --git a/include/linux/usb.h b/include/linux/usb.h
+> index ddd2f5b2a2827..e4d2eb703cf89 100644
+> --- a/include/linux/usb.h
+> +++ b/include/linux/usb.h
+> @@ -871,6 +871,7 @@ extern int usb_match_one_id(struct usb_interface *interface,
+>  			    const struct usb_device_id *id);
+>  
+>  extern int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *));
+> +int usb_for_each_port(void *data, int (*fn)(struct device *, void *));
+>  extern struct usb_interface *usb_find_interface(struct usb_driver *drv,
+>  		int minor);
+>  extern struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
+> -- 
+> 2.30.2
+> 
