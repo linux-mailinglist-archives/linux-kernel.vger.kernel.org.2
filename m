@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D648234C635
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3740134CB08
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhC2IF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
+        id S235318AbhC2Iml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhC2IDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DDD61976;
-        Mon, 29 Mar 2021 08:03:34 +0000 (UTC)
+        id S232726AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 701A66195B;
+        Mon, 29 Mar 2021 08:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005015;
-        bh=cLvc1Hf0v65YzDrHgoD7P8Caz0A9l7JkjQlHRmCaVSo=;
+        s=korg; t=1617006255;
+        bh=xyP2UB9BdRoWwoaWobPKiomwwDNHLHWEVcDBrD8BMwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kp27MxaMcyqFOy1idJrSRcX8AygWIqtY3zUpvhIZ/qIqLvEennQixIlEWhTHoCAhF
-         xSNRMcEoIvXsPf8RAZSm3nkivckIp6AsdQHnu7m5KZn6VSP1+W6db1DGb8SFNMNH6v
-         oURQc4yc7OI1rFzdjxTwXt7bcuk6UTmLEcKWO8nA=
+        b=0vtjj2U74Xn+FOLsjUYX+Pr9wz/+bkWfZPgiEsreQfYzEFzBYNFHko/nWhHjiE4+7
+         uuqNp5aaqTHxvofaRtfCSR1w2aeL84KtfPtOCgtf3AN/mFxizdxvNjyGsLm9hIP5oD
+         y85/tMTZlGs6IxDqYq+Q8h7sjGKdL9hLzVrIiWQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gratian Crisan <gratian.crisan@ni.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 49/53] futex: Handle transient "ownerless" rtmutex state correctly
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 173/221] net/mlx5e: Fix error path for ethtool set-priv-flag
 Date:   Mon, 29 Mar 2021 09:58:24 +0200
-Message-Id: <20210329075609.128212818@linuxfoundation.org>
+Message-Id: <20210329075634.924069516@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,81 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+From: Aya Levin <ayal@nvidia.com>
 
-commit 9f5d1c336a10c0d24e83e40b4c1b9539f7dba627 upstream.
+[ Upstream commit 4eacfe72e3e037e3fc019113df32c39a705148c2 ]
 
-Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
-This is one possible chain of events leading to this:
+Expose error value when failing to comply to command:
+$ ethtool --set-priv-flags eth2 rx_cqe_compress [on/off]
 
-Task Prio       Operation
-T1   120	lock(F)
-T2   120	lock(F)   -> blocks (top waiter)
-T3   50 (RT)	lock(F)   -> boosts T1 and blocks (new top waiter)
-XX   		timeout/  -> wakes T2
-		signal
-T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
-T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
-     			     and the lower priority T2 cannot steal the lock.
-     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
-
-The comment states that this is invalid and rt_mutex_real_owner() must
-return a non NULL owner when the trylock failed, but in case of a queued
-and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
-state. The higher priority waiter has simply not yet managed to take over
-the rtmutex.
-
-The BUG_ON() is therefore wrong and this is just another retry condition in
-fixup_pi_state_owner().
-
-Drop the locks, so that T3 can make progress, and then try the fixup again.
-
-Gratian provided a great analysis, traces and a reproducer. The analysis is
-to the point, but it confused the hell out of that tglx dude who had to
-page in all the futex horrors again. Condensed version is above.
-
-[ tglx: Wrote comment and changelog ]
-
-Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
-Link: https://lore.kernel.org/r/87sg9pkvf7.fsf@nanos.tec.linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: be7e87f92b58 ("net/mlx5e: Fail safe cqe compressing/moderation mode setting")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2497,10 +2497,22 @@ retry:
- 		}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index b8622440243b..bcd05457647e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -1873,6 +1873,7 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
+ {
+ 	struct mlx5e_priv *priv = netdev_priv(netdev);
+ 	struct mlx5_core_dev *mdev = priv->mdev;
++	int err;
  
- 		/*
--		 * Since we just failed the trylock; there must be an owner.
-+		 * The trylock just failed, so either there is an owner or
-+		 * there is a higher priority waiter than this one.
- 		 */
- 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
--		BUG_ON(!newowner);
-+		/*
-+		 * If the higher priority waiter has not yet taken over the
-+		 * rtmutex then newowner is NULL. We can't return here with
-+		 * that state because it's inconsistent vs. the user space
-+		 * state. So drop the locks and try again. It's a valid
-+		 * situation and not any different from the other retry
-+		 * conditions.
-+		 */
-+		if (unlikely(!newowner)) {
-+			err = -EAGAIN;
-+			goto handle_err;
-+		}
- 	} else {
- 		WARN_ON_ONCE(argowner != current);
- 		if (oldowner == current) {
+ 	if (!MLX5_CAP_GEN(mdev, cqe_compression))
+ 		return -EOPNOTSUPP;
+@@ -1882,7 +1883,10 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	mlx5e_modify_rx_cqe_compression_locked(priv, enable);
++	err = mlx5e_modify_rx_cqe_compression_locked(priv, enable);
++	if (err)
++		return err;
++
+ 	priv->channels.params.rx_cqe_compress_def = enable;
+ 
+ 	return 0;
+-- 
+2.30.1
+
 
 
