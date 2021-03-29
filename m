@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21E834C87F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6570634C880
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbhC2IXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:23:01 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15373 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbhC2IO5 (ORCPT
+        id S234156AbhC2IXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:23:04 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:64571 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231664AbhC2IO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:57 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F850y21LZz9sGd;
-        Mon, 29 Mar 2021 16:12:50 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 16:14:47 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
-Date:   Mon, 29 Mar 2021 16:14:35 +0800
-Message-ID: <20210329081435.2200-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Mon, 29 Mar 2021 04:14:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617005696; x=1648541696;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=e2WFHxZxnSPuPoi26ReVTCejhaJhc4RfFUNwNTOn8HU=;
+  b=Ubh8ywl1G32dxv+smYnVfnFUw9tSpB32Heo6eDopKah176G4kNstX9Oy
+   2iOqTPTBcl+5QrQrP05VH73ciWfkzP0Ybq9uADlB2RPlOgSkCiC84Jj0t
+   NaClgRj25Z99gdAvKA6fYZP5oUpgnjFNWULxGG1qa/48wD3cAFtdnHViu
+   T3W2lIPKmbXfHjcIgOzNEsQ2GHXBvDp4OoNVbt2ya6SSjVSq953mta9Jd
+   vCI69zjEP94Ft4IJl6zW/6N4985AdFPT68kPgGx3mqanTPNg/kym/buLc
+   DgGXf8b5poMO8VzH8Q59siwsj28cj/jEocikmpSRiBAat6nHDq7IphFZc
+   g==;
+IronPort-SDR: iWQSdqQUypGYzato6mSpTdIG49u3cbQ1IoleuLXcu5qQcArvp1rVIPm4Jf1fWRckp6fzlTy/qS
+ TxStjsobq9DR2ENeI2XEatMYPPzdkdxdKvYZ+VoIvyEVTw4OuprSc9oCVu7FTpkRDVil0roXE0
+ 9u1AbJ6nAsLv9dyG5m6/q+kPDMaHZWq2GFtWXnPvvk+bjEgA4qKlQhYDPbGfNn9Uq3xYYDLBnU
+ 7lcCbnsL2i7eQ3hQd6TG5D7le0BQXIDkdBavxayG0hUN+Ljt7tIt5Bt3PXepotGTLQfEr1f/+U
+ 3Hg=
+X-IronPort-AV: E=Sophos;i="5.81,287,1610434800"; 
+   d="scan'208";a="49206192"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Mar 2021 01:14:55 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 29 Mar 2021 01:14:54 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 29 Mar 2021 01:14:52 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH linux-next 0/1] Sparx5 SerDes: Fixed stack frame size warning
+Date:   Mon, 29 Mar 2021 10:14:37 +0200
+Message-ID: <20210329081438.558885-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The property "dmas" contains two items: DMA "TX" and "RX" channel,
-Therefore, its value also needs to be written in two parts.
+- The SerDes driver changes its table based register operations into direct
+  register operations to avoid the large stack footprint reported by a
+  kernel robot.
+- The 25g reset operation was changed slightly to make it equivalent to the
+  20g reset operation.
 
-Otherwise, below YAML check warning is reported:
-Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
-i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
+Steen Hegelund (1):
+  phy: Sparx5 Eth SerDes: Use direct register operations
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/microchip/sparx5_serdes.c | 1869 +++++++++++++------------
+ 1 file changed, 951 insertions(+), 918 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-index 6f71294909a5fb4..803627e984f6089 100644
---- a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-@@ -81,6 +81,6 @@ examples:
-          interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-          clock-names = "osc", "apb_clk";
-          clocks = <&scmi_clk KEEM_BAY_PSS_AUX_I2S3>, <&scmi_clk KEEM_BAY_PSS_I2S3>;
--         dmas = <&axi_dma0 29 &axi_dma0 33>;
-+         dmas = <&axi_dma0 29>, <&axi_dma0 33>;
-          dma-names = "tx", "rx";
-      };
 -- 
-1.8.3
-
+2.31.1
 
