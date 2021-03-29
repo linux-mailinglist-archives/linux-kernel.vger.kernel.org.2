@@ -2,147 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FF234D2E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A621534D2EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhC2Oyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:54:40 -0400
-Received: from mail-bn8nam12on2083.outbound.protection.outlook.com ([40.107.237.83]:22400
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230402AbhC2OyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:54:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e5w0WSJVNR/+no7jn5AomdJpsHph5RJD/NWFmZNWzXdUsB4BKeuAC8XpRFwY+a95ZwuMyf7fM8KrgCdjsnmvvqVDv4HQfhjOXLyQsj4qBtex2DfHIfDWDCvTfDbUH0WO5Pb8DvvQcsNPmepiDdR5VrTqrWjx+J74gBc6hQvmCpnaP+40DgjwJ6VAgCSkOga5oJQiwfyaWLtjnHY412a5azZ+uz0Q5K3JRBPnxOrv3fdaS5pA35CWB2RtPSuRgyjHbIY8fQ+9N/laYFLYonODzqszBbbEBmTZMyZarIWtj0j6PXEHFqNfOthB5c4YulVf5hWWNWgaAyG8R+AyDEpR9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxjjSXplRwON+BLljQJlmZ41Vl4SNTDKrHU7FDF1ysw=;
- b=CUM2noj9Bdo+n/fWL5x8mbHGRGJncZ6EtBsVlvclkMy3AxOtuiqSe5ayapLjDOM/zDquqaxK0NTFXETY/P4J3zTSYGb8uW0HFQzJQHsVM1p9QZ3cwCuzTd+06gftr6fekkPaJ9eqUw4gI0Gfnim4bH4AJibrL7SJxuGygUYQzriAWK9i/IdS7nVarR/U0SV+XVTAHhcXIMXPx8/6Nejtg1+HsfoaUEydhH117/fRAUn5ki6JLRn43jvUrD2/nkd42SVOtVWx73WMZ6cr0HXj0OIav8BqGySahGEPlkUPIdTVex/R7xyv+6MWIz31IJvNIJR/Ph5hgbwXnbqaKwGtgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxjjSXplRwON+BLljQJlmZ41Vl4SNTDKrHU7FDF1ysw=;
- b=DYgNdyYHiotkqURM7mUzbYlwjwRHtlnk+SnFuqHTf0RCG9NwYEBxouj4jF2qtOAil9ZWw0+EhT74UKsiFkijG+aHd3VOPb3xIOqdCy4KEMGA9SOo1qpXYhYV/Pf+mEp1/y5pTA3UUtXdqajZmG8UE01dJIvlA5yBAOykmhrz8LlSMAfiHqpD6obmPMYBkp/VUU4bGkMwkK0hA/hT9S8hBeaZAODKySjV+jlr/nrgLc2AFQ1o5f1o0aNjjpYPLlrqjtCKG95P+7DLpBYKCqLkcJvkje0HejxXN8VOCApJYXS5kHEq+7zqnC8GlTLT56cAbqUcLzY3EfEUjS+yg7fNZQ==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0108.namprd12.prod.outlook.com (2603:10b6:4:58::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Mon, 29 Mar
- 2021 14:54:06 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 14:54:06 +0000
-Date:   Mon, 29 Mar 2021 11:54:05 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Kranthi Kuntala <kranthi.kuntala@intel.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] thunderbolt: Fix a leak in tb_retimer_add()
-Message-ID: <20210329145405.GD2356281@nvidia.com>
-References: <YGFulvAa5Kz6HTsd@mwanda>
- <20210329130220.GY2356281@nvidia.com>
- <20210329144323.GI2542@lahna.fi.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329144323.GI2542@lahna.fi.intel.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        id S231321AbhC2Oyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhC2Oyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:54:39 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E02C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:54:38 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id i6so2401530pgs.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5MEBgMlFtr+qxbmpKO8IW3rS99OFMlWLKykyxAuuxkw=;
+        b=iSXU1lHcTUj38J05Z9GV3nilDz0wRKt476JZoxbOrRSXRik4PcbqdzYYeizLtVJCNY
+         sNQuslsEuyQ+XvlSULwLKyM5SNpTDb+IQf44HVuPfuYF+Hf4g/UhPkxgU47vp42B075o
+         kSXlNLW0Jtyl+JpT3lE0f3ZT5GXevf5Mhqgxkj22S8EvOwzwU1iWALW5gD/xxxWXnnnk
+         C0UeWW5kA2Qq6A4UOaY+OFnBLd5rQT/vMrD59FriEiw7FmpwVUq2H9iHYvII6vFLCDuz
+         NpI2Nmh3L7jVUVNzBi9hY0iSdHshQ0PtAkfriQhzpTMMx6x4nPxhjVlDXV4GanaBEX5v
+         NUfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5MEBgMlFtr+qxbmpKO8IW3rS99OFMlWLKykyxAuuxkw=;
+        b=fxHWNXdc4HxkEeIwjrmiv20OeCjm+I4UTCcW9OnWcdMvyGD67il9/zjLy1Aac18LQt
+         bLAyljUiu65G1gCZlHTti11nh5l5CrkXejXWcjjOo0TESjCS1NxBnLnuL67xK2nAAf6w
+         Ebj8cHFGAl7G0XVzijQTGmWvh4DHIiDUinYm8HZmO6pIDYSE759wBE7rkAGxmcNEZTFF
+         WEU35yzlqEH49mlAtXBGbfEU/N81nKJPhncC47iQJEk+njQLi3NUMMHisJfHYSKvRU1P
+         W1xqiPLaQ0PReF2jlOp/66A/tXsH1Exw+12eidY3vMxL/oxTAJxc7IRb4d6/M7vauuOm
+         lKJA==
+X-Gm-Message-State: AOAM531qUxAcOQ/kSpN6K0SO3i2yUMBM3eQQ2gw0Nkh97CMiF/l7AMJ3
+        NjgaH/0V4Fvi9XcPWhycbdIqQmY+vLKhrwNvhzwhEg==
+X-Google-Smtp-Source: ABdhPJzzV8lmH/853u2GQr5Sdz0U+AIsZJ78rGGmOSXdGUQCGk3zpC0zStZZ2upiaJ1Nge2MqpdgwsXK218jh4upu8o=
+X-Received: by 2002:a63:d841:: with SMTP id k1mr9886568pgj.440.1617029678142;
+ Mon, 29 Mar 2021 07:54:38 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 14:54:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lQtHJ-0055XG-3x; Mon, 29 Mar 2021 11:54:05 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 08aeba1a-60cc-4ee4-5fc3-08d8f2c28051
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0108:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0108DCCD418E80C8D84855CDC27E9@DM5PR1201MB0108.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9DxYdXKyhX1d7H2u4R3VXEcYbvmR6SpEEp0YrMPDzdkBHVuIGYjWqFVV7A5Rk0zfOjwsdlGxKp6g4XoczgZ7ExXNEQ7YB6kEk2BdxKgHeTQ3S3fpTqxhV8k/GtmZMSgKaa8ky/w4oa02U4b17Tx7QIuGyJzAi4UTuai3HEyO4EQiJNiSN55azDpnCoecgs/FZ9y7+tQn+qWZQGwXYOx9LeHhWIqrfaL9lRRIOLy9mpCijT3+0pGi+pdLbTGrKrEDNOTCc3hReurl/gYxbgK1otyZIVrou8RS6dnx+G2R1bgPXIalOZ0prxNZrnVeDrb8xuJWApaL6y4P8PamCNHKDh1QyLUNchN1gfH017XU+O2vqu5sG6IpjULxAJmno12Gyxr1HjiKXcog6/KUW0i7SyOdhJTtzFrKV7gO0Y/NDRZ1TPKR3HWV4+KMRpXQ4UfhRbq7P5jIHLg/mEtc/fj8/ujQ89aja/LLQIUMob23Rp1UByCQQrTbweshA+33qlde/DUXDPn0Ryk8wBkCBJmLdI3QrQriyuPtQHUjLW2OH6RFpsCP5RZMUxyyqj9uyKiFmnhuQ2qlc9HK+mJwhvToRF/gATI6wISbuSfwTYe9ddU/K35u2xOlUu7aGPLYPkml1j3wupc3wcqMYQk0XSuwojjQmZKcujr1vqdnkqpqQ2I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(26005)(9786002)(186003)(478600001)(9746002)(38100700001)(86362001)(8936002)(1076003)(4744005)(2906002)(8676002)(426003)(316002)(54906003)(4326008)(6916009)(83380400001)(2616005)(66946007)(66556008)(66476007)(36756003)(5660300002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xb+sJj8TQ46MToPHtmscWAfBb6pxn/YIggdLIawnnpmxQKELApM2OPeeM6KN?=
- =?us-ascii?Q?hLlCiEbGiaUuk963OQDQbblljVZuZ7E7JwgxlqApu+3zdL0ol2b9Yc+F47Up?=
- =?us-ascii?Q?HLUEoJsnQgkP2trSHziNC+RbOrgEt7YGFYHbiV+kksJ4wHZliMDxYXUeDHPc?=
- =?us-ascii?Q?yjPOozjPqw5ZIQol4v3AqwngVda72stfhbIK/g4mwluDXP8EPx8GsCPTuibB?=
- =?us-ascii?Q?sVmZvOtMhY5AyYsc80yUmRh+xwnqcQre3NSUkbNWMzPjE0DTFQweV9VQs/NE?=
- =?us-ascii?Q?x+Rckz3EoJq7d091JBw3FORbeqjc4uuljZn0W1jlQ3lpDcfi6POsYRnX2WlV?=
- =?us-ascii?Q?i1X/yKp7Sd/UEg7Kwv+1eUedPY0tngz0AG5idgg3g46y6Qljmqkmr825wQY1?=
- =?us-ascii?Q?erTilGWR1PAATPewOoHlhxhlle5SJrDvMXFe7GV0cKYnkUZ6oC+dp0fdzEiv?=
- =?us-ascii?Q?+xrk4OTF31Keog7C0y64Kby4vQ3f/r8uHQXMaeKjxwpFJEZPEIQ9dKN79D/d?=
- =?us-ascii?Q?CW0/cwB5Pluj4lvtlFhrG3iotD6NmDHULBcserGP6ps9eKX0OcPz044bva5K?=
- =?us-ascii?Q?xet/bbBtqjPib5BnVqU08TTRUoYScHsXTPZYcE+HOO1hwK+1f79M+pphcMoc?=
- =?us-ascii?Q?QSQHsKFhPe/ByP4TQJPx0Woy99rCA80QGIM9maD1xgFYwiI7zAiLmFw2YSF4?=
- =?us-ascii?Q?Q2dJIRvrdKFpdWTUzItW7L/Df5ADfkHoC1w3yV7wHb0lDayCy2/dz0jIAf17?=
- =?us-ascii?Q?cAC30b6huGUpUC+oLQckWX6og590vzUrvFK14qqsG49kwJ4/PbYnW+EfPKil?=
- =?us-ascii?Q?+dHdOqNQlNDZ0zelcahx7b9QpYezQXRWRkGQqZ/FeXDBKUUoAdNH4DlQ/VEI?=
- =?us-ascii?Q?2hI2txemlGrTVFt5kzwaNX4uErvXIjDN8yma8C5OD+RYvSFb+YhyvwxSjTgN?=
- =?us-ascii?Q?VHC1ul8EpNDf8xnfnjydzGmFOJdMFI7qa4ahkJZIxWAqDjafceWWs3pid4FH?=
- =?us-ascii?Q?yfM3Dj4HE4WsGyDaz5On9qwuJYGiEtigZsinNbAyZZVuvXjw1pfVz7BdOtJf?=
- =?us-ascii?Q?wY4cvkMogOu+dLjs0QarcT4Qo601kJtDOSf1PUZzXMLxyEKjuO2xa4nvDBvL?=
- =?us-ascii?Q?jvJj8MdyfK09QWvUYZVmRsD2vITDlnRn2kjYhm9nqXAxvMW903kZdpe4ww6j?=
- =?us-ascii?Q?Yu7UaUIJzHuEtfGxH4wlf0YaLqq2ySp0cfGid92R1AOk33DcmlXig5cFsS2D?=
- =?us-ascii?Q?rS2PZucLlrTLsVFRU2or8z2wxdl2wjO7aogqM/+h4yqvM5fwyJkZNFqgbE7z?=
- =?us-ascii?Q?d5zrH8DWt/fv7KhkzpAIYGe5VEZXNkyIzY8wkNy/Lz3Vtw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08aeba1a-60cc-4ee4-5fc3-08d8f2c28051
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 14:54:06.5807
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /TGykYXGSWU2GyhbBpYSbPWgAdM8AJGUaviXBvcKxEVCEu0Wd9susH4tWIGkcV3o
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0108
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 29 Mar 2021 16:54:26 +0200
+Message-ID: <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 05:43:23PM +0300, Mika Westerberg wrote:
+On Fri, Feb 26, 2021 at 2:25 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> CONFIG_KASAN_STACK and CONFIG_KASAN_STACK_ENABLE both enable KASAN stack
+> instrumentation, but we should only need one config, so that we remove
+> CONFIG_KASAN_STACK_ENABLE and make CONFIG_KASAN_STACK workable.  see [1].
+>
+> When enable KASAN stack instrumentation, then for gcc we could do no
+> prompt and default value y, and for clang prompt and default value n.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=210221
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>
+> v4: After this patch sent, someone had modification about KASAN_STACK,
+>     so I need to rebase codebase. Thank Andrey for your pointing.
+>
+> ---
+>  arch/arm64/kernel/sleep.S        |  2 +-
+>  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+>  include/linux/kasan.h            |  2 +-
+>  lib/Kconfig.kasan                |  8 ++------
+>  mm/kasan/common.c                |  2 +-
+>  mm/kasan/kasan.h                 |  2 +-
+>  mm/kasan/report_generic.c        |  2 +-
+>  scripts/Makefile.kasan           | 10 ++++++++--
+>  security/Kconfig.hardening       |  4 ++--
+>  9 files changed, 18 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> index 5bfd9b87f85d..4ea9392f86e0 100644
+> --- a/arch/arm64/kernel/sleep.S
+> +++ b/arch/arm64/kernel/sleep.S
+> @@ -134,7 +134,7 @@ SYM_FUNC_START(_cpu_resume)
+>          */
+>         bl      cpu_do_resume
+>
+> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+>         mov     x0, sp
+>         bl      kasan_unpoison_task_stack_below
+>  #endif
+> diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> index 56b6865afb2a..d5d8a352eafa 100644
+> --- a/arch/x86/kernel/acpi/wakeup_64.S
+> +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> @@ -115,7 +115,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+>         movq    pt_regs_r14(%rax), %r14
+>         movq    pt_regs_r15(%rax), %r15
+>
+> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+>         /*
+>          * The suspend path may have poisoned some areas deeper in the stack,
+>          * which we now need to unpoison.
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index b91732bd05d7..14f72ec96492 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -330,7 +330,7 @@ static inline bool kasan_check_byte(const void *address)
+>
+>  #endif /* CONFIG_KASAN */
+>
+> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+>  void kasan_unpoison_task_stack(struct task_struct *task);
+>  #else
+>  static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index 624ae1df7984..cffc2ebbf185 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -138,9 +138,10 @@ config KASAN_INLINE
+>
+>  endchoice
+>
+> -config KASAN_STACK_ENABLE
+> +config KASAN_STACK
+>         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+>         depends on KASAN_GENERIC || KASAN_SW_TAGS
+> +       default y if CC_IS_GCC
+>         help
+>           The LLVM stack address sanitizer has a know problem that
+>           causes excessive stack usage in a lot of functions, see
+> @@ -154,11 +155,6 @@ config KASAN_STACK_ENABLE
+>           CONFIG_COMPILE_TEST.  On gcc it is assumed to always be safe
+>           to use and enabled by default.
+>
+> -config KASAN_STACK
+> -       int
+> -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+> -       default 0
+> -
+>  config KASAN_SW_TAGS_IDENTIFY
+>         bool "Enable memory corruption identification"
+>         depends on KASAN_SW_TAGS
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index b5e08d4cefec..7b53291dafa1 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *address, size_t size)
+>         kasan_unpoison(address, size);
+>  }
+>
+> -#if CONFIG_KASAN_STACK
+> +#ifdef CONFIG_KASAN_STACK
+>  /* Unpoison the entire stack for a task. */
+>  void kasan_unpoison_task_stack(struct task_struct *task)
+>  {
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8c55634d6edd..3436c6bf7c0c 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -231,7 +231,7 @@ void *kasan_find_first_bad_addr(void *addr, size_t size);
+>  const char *kasan_get_bug_type(struct kasan_access_info *info);
+>  void kasan_metadata_fetch_row(char *buffer, void *row);
+>
+> -#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
+> +#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
+>  void kasan_print_address_stack_frame(const void *addr);
+>  #else
+>  static inline void kasan_print_address_stack_frame(const void *addr) { }
+> diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+> index 41f374585144..de732bc341c5 100644
+> --- a/mm/kasan/report_generic.c
+> +++ b/mm/kasan/report_generic.c
+> @@ -128,7 +128,7 @@ void kasan_metadata_fetch_row(char *buffer, void *row)
+>         memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
+>  }
+>
+> -#if CONFIG_KASAN_STACK
+> +#ifdef CONFIG_KASAN_STACK
+>  static bool __must_check tokenize_frame_descr(const char **frame_descr,
+>                                               char *token, size_t max_tok_len,
+>                                               unsigned long *value)
+> diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+> index 1e000cc2e7b4..abf231d209b1 100644
+> --- a/scripts/Makefile.kasan
+> +++ b/scripts/Makefile.kasan
+> @@ -2,6 +2,12 @@
+>  CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+>  KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
+>
+> +ifdef CONFIG_KASAN_STACK
+> +       stack_enable := 1
+> +else
+> +       stack_enable := 0
+> +endif
+> +
+>  ifdef CONFIG_KASAN_GENERIC
+>
+>  ifdef CONFIG_KASAN_INLINE
+> @@ -27,7 +33,7 @@ else
+>         CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
+>          $(call cc-param,asan-globals=1) \
+>          $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
+> -        $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
+> +        $(call cc-param,asan-stack=$(stack_enable)) \
+>          $(call cc-param,asan-instrument-allocas=1)
+>  endif
+>
+> @@ -42,7 +48,7 @@ else
+>  endif
+>
+>  CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
+> -               -mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
+> +               -mllvm -hwasan-instrument-stack=$(stack_enable) \
+>                 -mllvm -hwasan-use-short-granules=0 \
+>                 $(instrumentation_flags)
+>
+> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+> index 269967c4fc1b..a56c36470cb1 100644
+> --- a/security/Kconfig.hardening
+> +++ b/security/Kconfig.hardening
+> @@ -64,7 +64,7 @@ choice
+>         config GCC_PLUGIN_STRUCTLEAK_BYREF
+>                 bool "zero-init structs passed by reference (strong)"
+>                 depends on GCC_PLUGINS
+> -               depends on !(KASAN && KASAN_STACK=1)
+> +               depends on !(KASAN && KASAN_STACK)
+>                 select GCC_PLUGIN_STRUCTLEAK
+>                 help
+>                   Zero-initialize any structures on the stack that may
+> @@ -82,7 +82,7 @@ choice
+>         config GCC_PLUGIN_STRUCTLEAK_BYREF_ALL
+>                 bool "zero-init anything passed by reference (very strong)"
+>                 depends on GCC_PLUGINS
+> -               depends on !(KASAN && KASAN_STACK=1)
+> +               depends on !(KASAN && KASAN_STACK)
+>                 select GCC_PLUGIN_STRUCTLEAK
+>                 help
+>                   Zero-initialize any stack variables that may be passed
+> --
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210226012531.29231-1-walter-zh.wu%40mediatek.com.
 
-> The nvm is a separate (physical Linux) device that gets added under this
-> one. It cannot be added before AFAICT.
+Hi Andrew,
 
-Hum, yes, but then it is odd that a parent is holding sysfs attributes
-that refer to a child.
+Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
+that was merged into 5.12-rc causes a build time warning:
 
-> The code you refer actually looks like this:
-> 
-> static ssize_t nvm_authenticate_store(struct device *dev,
->  	struct device_attribute *attr, const char *buf, size_t count)
-> {
-> 	...
->         if (!mutex_trylock(&rt->tb->lock)) {
->                 ret = restart_syscall();
->                 goto exit_rpm;
->         }
+include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
+defined, evaluates to 0 [-Wundef]
+#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
 
-Is that lock held during tb_retimer_nvm_add() I looked for a bit and
-didn't find something. So someplace more than 4 call site above
-mandatory locking is being held?
+The fix for it would either be reverting the patch (which would leave
+the initial issue unfixed) or applying this "kasan: remove redundant
+config option" patch.
 
-static void tb_retimer_remove(struct tb_retimer *rt)
-{
-	dev_info(&rt->dev, "retimer disconnected\n");
-	tb_nvm_free(rt->nvm);
-	device_unregister(&rt->dev);
-}
+Would it be possible to send this patch (with the fix-up you have in
+mm) for the next 5.12-rc?
 
-Here too?
+Here are the required tags:
 
-And this is why it is all trylock because it deadlocks with unregister
-otherwise?
+Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
+Cc: stable@vger.kernel.org
 
-Jason
+Thanks!
