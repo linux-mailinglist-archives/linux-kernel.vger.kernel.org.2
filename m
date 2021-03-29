@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A872434DC86
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB0134DC89
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhC2XdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:33:25 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50555 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhC2XdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:33:08 -0400
-Received: by mail-il1-f198.google.com with SMTP id b14so12945555ilv.17
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:33:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=lMlioT72BHXScbFHNZMJLoPdODEiwb40F9vPrqeqLoM=;
-        b=cM4M6EnLAqB+BDV7/9am65C3lZV35sIIPfsHXaWrBBQnMr32F+sxG1neBWUF+omYmB
-         7qUXYmyU1eiXbmLcyVmHoBveooK1nUGWRHKEOhzyiQdy8XTtf2zyp+FPlgJhcQWxJ+/y
-         iwnLqv0Ga50yOktR6YVvbrIycdr+JcL3ZmciVwkHw3fFbueSGb4DLsi/+LfIzkZP60tu
-         pBVYV4pZO2g25LQ7Ju9De6YYTN0jjpKuwwqJqJ77f8rOTWrJoBP1Ruv7ivQimsIFS4u4
-         +Y8VHovUrDfAJ4u6Kd9ru+CeDz3rngrSrtTMhZqGqx7or3zn4vZ7BMnILhaQweojOXZ8
-         0AVQ==
-X-Gm-Message-State: AOAM5318ZKSXxNc2pJIUc3EowocXo82Vjzz1Ik7KE+Z7NCjneKmY/qGl
-        G0tXuTNI+8Q9cS0zEpvNrSzn1vg3edcNpMd0gi+bMfaLunDM
-X-Google-Smtp-Source: ABdhPJwbpo1qBtqFDEAozEtKpv7+6pbc039Tmkz4JX4dPkyQ4fE1JV42MwydMp0mlXFrwMNWtxLegYbPzDkz6Bc18A4ABmxVHB+9
+        id S229689AbhC2Xhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:37:47 -0400
+Received: from mga05.intel.com ([192.55.52.43]:36270 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhC2XhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 19:37:22 -0400
+IronPort-SDR: au4yAXltEfuJLtduDfcsq7D4RPCOOUCFFO2FL03khYjkKdPDeP17Z6OdpE8LWT5CHxp6K5ZddP
+ 8lSNOvlbaZcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="276813212"
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="276813212"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 16:37:21 -0700
+IronPort-SDR: UG4alv6Ix5ImdAI8wQ8xG58wQ8RHFtP0i+1Iso15tIUsqM5vAIrYDGtJNh455GsStNvOJ3Fb5/
+ v1DyIpll1pqA==
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="444834611"
+Received: from ajzangar-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.145.70])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 16:37:20 -0700
+Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <837afe840f5826bf7fcba07a5e483d7e2283db34.1617059703.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <377A7B0B-9959-4AFC-A575-7AC20FEE6077@amacapital.net>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <10834a17-cae4-d0e3-c82b-f69da7f9141a@linux.intel.com>
+Date:   Mon, 29 Mar 2021 16:37:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:378c:: with SMTP id w12mr26304998jal.127.1617060787957;
- Mon, 29 Mar 2021 16:33:07 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 16:33:07 -0700
-In-Reply-To: <f96bff2f-bcd5-a04f-4130-1c3a933f97a2@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8bb1905beb54dcf@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in create_worker_cb
-From:   syzbot <syzbot+099593561bbd1805b839@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <377A7B0B-9959-4AFC-A575-7AC20FEE6077@amacapital.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+099593561bbd1805b839@syzkaller.appspotmail.com
+On 3/29/21 4:23 PM, Andy Lutomirski wrote:
+> 
+>> On Mar 29, 2021, at 4:17 PM, Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>>
+>> ﻿In non-root TDX guest mode, MWAIT, MONITOR and WBINVD instructions
+>> are not supported. So handle #VE due to these instructions
+>> appropriately.
+> 
+> Is there something I missed elsewhere in the code that checks CPL?
+We don't check for CPL explicitly. But if we are reaching here, then we
+executing these instructions with wrong CPL.
+> 
 
-Tested on:
-
-commit:         24996dbd io_uring: reg buffer overflow checks hardening
-git tree:       git://git.kernel.dk/linux-block for-5.13/io_uring
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cbb3af9ca0d22f7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=099593561bbd1805b839
-compiler:       
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
