@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD5934CB66
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9ACE34CB69
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhC2IrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S235615AbhC2IrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234415AbhC2I2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8C661581;
-        Mon, 29 Mar 2021 08:28:07 +0000 (UTC)
+        id S234592AbhC2I2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:28:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 449E4614A7;
+        Mon, 29 Mar 2021 08:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006488;
-        bh=t549l9Uw5gYRXHZbXiDetHBjMekwEXPSC78muQDnEsI=;
+        s=korg; t=1617006525;
+        bh=7UBMc4X3Jzz8xGANcBroRUpjrifXZzex4w0Bq7V40Ng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWQKabXOnYhfX3obDvEFSEUd8uFuK2HCT5nQaOHzHuT19KQHtM2o1/aKYGKuQkmFO
-         0Bk2/hfAIy/pLawrTeoIedGY3dRs+gClPfy0+han7erVHrZGqp9lCfPATMpqaG4QhP
-         EvEPvov6yd/HjfQeXZnctPQTNSIpA2sjW17uun4c=
+        b=slKUbngSwPrMK2PvUGPA9WsGKP9BgewiPhCPWrFn1gLd66ozTOcJ8pb7Pnz2GAFkb
+         BgW6BhALHwrQYNRa2I+Xze27Bjgji8MkZk07MabJiyF5mEeJ8YjdUJzhigY9bCmsHV
+         wAwEiskYzU4Ne8M4yDnNo7KpWNhiUwWLSwAsgkiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 033/254] umem: fix error return code in mm_pci_probe()
-Date:   Mon, 29 Mar 2021 09:55:49 +0200
-Message-Id: <20210329075634.235935598@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Gardner <rob.gardner@oracle.com>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 034/254] sparc64: Fix opcode filtering in handling of no fault loads
+Date:   Mon, 29 Mar 2021 09:55:50 +0200
+Message-Id: <20210329075634.266973443@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -40,47 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Rob Gardner <rob.gardner@oracle.com>
 
-[ Upstream commit eeb05595d22c19c8f814ff893dcf88ec277a2365 ]
+[ Upstream commit e5e8b80d352ec999d2bba3ea584f541c83f4ca3f ]
 
-Fix to return negative error code -ENOMEM from the blk_alloc_queue()
-and dma_alloc_coherent() error handling cases instead of 0, as done
-elsewhere in this function.
+is_no_fault_exception() has two bugs which were discovered via random
+opcode testing with stress-ng. Both are caused by improper filtering
+of opcodes.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20210308123501.2573816-1-weiyongjun1@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The first bug can be triggered by a floating point store with a no-fault
+ASI, for instance "sta %f0, [%g0] #ASI_PNF", opcode C1A01040.
+
+The code first tests op3[5] (0x1000000), which denotes a floating
+point instruction, and then tests op3[2] (0x200000), which denotes a
+store instruction. But these bits are not mutually exclusive, and the
+above mentioned opcode has both bits set. The intent is to filter out
+stores, so the test for stores must be done first in order to have
+any effect.
+
+The second bug can be triggered by a floating point load with one of
+the invalid ASI values 0x8e or 0x8f, which pass this check in
+is_no_fault_exception():
+     if ((asi & 0xf2) == ASI_PNF)
+
+An example instruction is "ldqa [%l7 + %o7] #ASI 0x8f, %f38",
+opcode CF95D1EF. Asi values greater than 0x8b (ASI_SNFL) are fatal
+in handle_ldf_stq(), and is_no_fault_exception() must not allow these
+invalid asi values to make it that far.
+
+In both of these cases, handle_ldf_stq() reacts by calling
+sun4v_data_access_exception() or spitfire_data_access_exception(),
+which call is_no_fault_exception() and results in an infinite
+recursion.
+
+Signed-off-by: Rob Gardner <rob.gardner@oracle.com>
+Tested-by: Anatoly Pugachev <matorola@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/umem.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/sparc/kernel/traps_64.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/block/umem.c b/drivers/block/umem.c
-index 2b95d7b33b91..5eb44e4a91ee 100644
---- a/drivers/block/umem.c
-+++ b/drivers/block/umem.c
-@@ -877,6 +877,7 @@ static int mm_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	if (card->mm_pages[0].desc == NULL ||
- 	    card->mm_pages[1].desc == NULL) {
- 		dev_printk(KERN_ERR, &card->dev->dev, "alloc failed\n");
-+		ret = -ENOMEM;
- 		goto failed_alloc;
+diff --git a/arch/sparc/kernel/traps_64.c b/arch/sparc/kernel/traps_64.c
+index d92e5eaa4c1d..a850dccd78ea 100644
+--- a/arch/sparc/kernel/traps_64.c
++++ b/arch/sparc/kernel/traps_64.c
+@@ -275,14 +275,13 @@ bool is_no_fault_exception(struct pt_regs *regs)
+ 			asi = (regs->tstate >> 24); /* saved %asi       */
+ 		else
+ 			asi = (insn >> 5);	    /* immediate asi    */
+-		if ((asi & 0xf2) == ASI_PNF) {
+-			if (insn & 0x1000000) {     /* op3[5:4]=3       */
+-				handle_ldf_stq(insn, regs);
+-				return true;
+-			} else if (insn & 0x200000) { /* op3[2], stores */
++		if ((asi & 0xf6) == ASI_PNF) {
++			if (insn & 0x200000)        /* op3[2], stores   */
+ 				return false;
+-			}
+-			handle_ld_nf(insn, regs);
++			if (insn & 0x1000000)       /* op3[5:4]=3 (fp)  */
++				handle_ldf_stq(insn, regs);
++			else
++				handle_ld_nf(insn, regs);
+ 			return true;
+ 		}
  	}
- 	reset_page(&card->mm_pages[0]);
-@@ -888,8 +889,10 @@ static int mm_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	spin_lock_init(&card->lock);
- 
- 	card->queue = blk_alloc_queue(NUMA_NO_NODE);
--	if (!card->queue)
-+	if (!card->queue) {
-+		ret = -ENOMEM;
- 		goto failed_alloc;
-+	}
- 
- 	tasklet_init(&card->tasklet, process_page, (unsigned long)card);
- 
 -- 
 2.30.1
 
