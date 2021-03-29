@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D3D34D561
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC4E34D569
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhC2Qqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhC2Qq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:46:29 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07980C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:46:28 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u9so20490637ejj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KgBMGmQCGLl4y6Xk9OO++PqGivhTIXsjSzI0EdEG61Q=;
-        b=ywebtNJMhasTzI8DQPJIXLfRgTk6bwco/TQMbndr0OHObnM7O4Y9kwZmHtl5ok9xP0
-         XcL279cusq6h6HSkXzoTCy7glcdQwu5mqlM9Whhche7cFxk/LefL5r+5I789+WbABUkL
-         FJ3yWGVK1eTB70vLHW8r2spfIOa5lxvZeaFGZ+br9VkfDBRHvGmHcHClJ3TDlztK2ucS
-         BvQtl+0wzNI3PqOaFGvsso3W9KsFm9MolKUfy7Cy3pPJ5VhtFOd4eJETkqcPRJgfVzM2
-         t2xATKb8hI0+gWjDzCXpHVkBv9yOs++/HvjuymdxdgP+7vqRBHI0AnQvQTuVdDV1Fsw9
-         LA2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KgBMGmQCGLl4y6Xk9OO++PqGivhTIXsjSzI0EdEG61Q=;
-        b=fLQU0JSEMRaeprm3tYqJEdE8p0E/xl7ldDh/MHfTe5hFFdg0Y5yQKdsP5MSYHGnoZT
-         mdyCNP/IhaHwWWDlaKykc2+cNRqjCREo7K5a2qyTWjQWbe+yBFyIiygnV7n42Ivu/0qB
-         AvVFi+wQZNvxPOKlLRIz3dAFw6lNsJ8v7m9UDMvy0VMnFGZJ9FokCJGzcx8wVDv1lQoq
-         7yvr9sda0BcvmBezHWOR/d1+8l+Zf4MC9KuEYakm8ZSPWHK7jPpNOnPBNHFKPOq8WT//
-         MkkgKA6ggCe0rMF4oDi9DZqNpbrJ+L/67X/dpbm2AZ64fvgdQSIZXmrlKJXV/xjr+Xnn
-         1Zew==
-X-Gm-Message-State: AOAM530ZLL7yPBA566NUHsWeosfbixYKlWdPvsudhY2VFKqrzub+R0ud
-        GCRMCvMd+RXLuuXiXvgrA0U7mzKUErT0OrgspHSoyw==
-X-Google-Smtp-Source: ABdhPJzM8tKMUpgAHNhszW8yS9QPi/vZay9sCsuzF863VZX/60gCgs+uBmeN2eQ1xy1gyMqOoQvxrR52qchgf1xmAjI=
-X-Received: by 2002:a17:906:1386:: with SMTP id f6mr29091143ejc.45.1617036387736;
- Mon, 29 Mar 2021 09:46:27 -0700 (PDT)
+        id S231173AbhC2Qsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:48:35 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:45770 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229630AbhC2QsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:48:17 -0400
+Received: from [172.17.203.2] (port=58345 helo=deneb.enyo.de)
+        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lQv3d-0006Ik-Dr; Mon, 29 Mar 2021 16:48:05 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1lQv3d-000688-9F; Mon, 29 Mar 2021 18:48:05 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Len Brown via Libc-alpha <libc-alpha@sourceware.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, Len Brown <lenb@kernel.org>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kyle Huey <me@kylehuey.com>, Andy Lutomirski <luto@kernel.org>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+        <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
+        <CAJvTdKm8aQPwQMXFQWgVb5dfJ88ds3d0=uHOyWeueUqfya9Nsw@mail.gmail.com>
+        <YF8B3M9qihZzCf3n@kroah.com>
+        <CAJvTdK=QbPRtZ9zPgu8c9tqxOtaG3apo7u4BBTXP0--qVWA5ig@mail.gmail.com>
+        <CAJvTdKkKhCFpaWm1hb8r3GHx10KBRQvpJNTtYPSAc6m28A7sQA@mail.gmail.com>
+Date:   Mon, 29 Mar 2021 18:48:05 +0200
+In-Reply-To: <CAJvTdKkKhCFpaWm1hb8r3GHx10KBRQvpJNTtYPSAc6m28A7sQA@mail.gmail.com>
+        (Len Brown via Libc-alpha's message of "Mon, 29 Mar 2021 12:38:59
+        -0400")
+Message-ID: <87eefxucsa.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-References: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210326161247.GA819704@bjorn-Precision-5520>
-In-Reply-To: <20210326161247.GA819704@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 29 Mar 2021 09:46:15 -0700
-Message-ID: <CAPcyv4h_c46tBpemKksciHL4DWu356h7T8A-0eHKUW9H3CZkKw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Allow drivers to claim exclusive access to config regions
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 9:12 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Christoph]
->
-> On Wed, Mar 24, 2021 at 06:23:54PM -0700, Dan Williams wrote:
-> > The PCIE Data Object Exchange (DOE) mailbox is a protocol run over
-> > configuration cycles. It assumes one initiator at a time is
-> > reading/writing the data registers. If userspace reads from the response
-> > data payload it may steal data that a kernel driver was expecting to
-> > read. If userspace writes to the request payload it may corrupt the
-> > request a driver was trying to send.
->
-> IIUC the problem we're talking about is that userspace config access,
-> e.g., via "lspci" or "setpci" may interfere with kernel usage of DOE.
-> I attached what I think are the relevant bits from the spec.
->
-> It looks to me like config *reads* should not be a problem: A read of
-> Write Data Mailbox always returns 0 and looks innocuous.  A userspace
-> read of Read Data Mailbox may return a DW of the data object, but it
-> doesn't advance the cursor, so it shouldn't interfere with a kernel
-> read.
->
-> A write to Write Data Mailbox could obviously corrupt an object being
-> written to the device.  A config write to Read Data Mailbox *does*
-> advance the cursor, so that would definitely interfere with a kernel
-> user.
->
-> So I think we're really talking about an issue with "setpci" and I
-> don't expect "lspci" to be a problem.  "setpci" is a valuable tool,
-> and the fact that it can hose your system is not really news.  I don't
-> know how hard we should work to protect against that.
+* Len Brown via Libc-alpha:
 
-True, the threat is smaller than I was reading, I apologize for that
-noise. Temporary blocking over kernel DOE cycles seems sufficient for
-now.
+>> In particular, the library may use instructions that main() doesn't know exist.
+>
+> And so I'll ask my question another way.
+>
+> How is it okay to change the value of XCR0 during the run time of a
+> program?
+>
+> I submit that it is not, and that is a deal-killer for a
+> request/release API.
+>
+> eg.  main() doesn't know that the math library wants to use AMX, and
+> neither does the threading library.  So main() doesn't know to call
+> the API before either library is invoked.  The threading library
+> starts up and creates user-space threads based on the initial value
+> from XCR0.  Then the math library calls the API, which adds bits to
+> XCRO, and then the user-space context switch in the threading
+> library corrupts data because the new XCR0 size doesn't match the
+> initial size.
+
+I agree that this doesn't quite work.  (Today, it's not the thread
+library, but the glibc dynamic loader trampoline.)
+
+I disagree that CPU feature enablement has been a failure.  I think we
+are pretty good at enabling new CPU features on older operating
+systems, not just bleeding edge mainline kernels.  Part of that is
+that anything but the kernel stays out of the way, and most features
+are available directly via inline assembly (you can even use .byte
+hacks if you want).  There is no need to switch to new userspace
+libraries, compile out-of-tree kernel drivers that have specific
+firmware requirements, and so on.
+
+If the operations that need a huge context can be made idempotent,
+with periodic checkpoints, it might be possible to avoid saving the
+context completely by some rseq-like construct.
