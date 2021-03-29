@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D98634D56B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C1E34D56F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhC2QtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S230052AbhC2Qul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhC2Qsj (ORCPT
+        with ESMTP id S230226AbhC2QuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:48:39 -0400
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCD6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:48:38 -0700 (PDT)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F8JS42VlrzMpnYQ;
-        Mon, 29 Mar 2021 18:48:36 +0200 (CEST)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F8JS36lhyzlppyy;
-        Mon, 29 Mar 2021 18:48:35 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Vivek Goyal <vgoyal@redhat.com>, stable@vger.kernel.org,
-        syzbot <syzkaller@googlegroups.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v1] ovl: Fix leaked dentry
-Date:   Mon, 29 Mar 2021 18:49:07 +0200
-Message-Id: <20210329164907.2133175-1-mic@digikod.net>
-X-Mailer: git-send-email 2.30.2
+        Mon, 29 Mar 2021 12:50:18 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D9AC061574;
+        Mon, 29 Mar 2021 09:50:18 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id c17so10243743pfn.6;
+        Mon, 29 Mar 2021 09:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E4Uo8oC0q+k3/BuQcrCo0FLHeLVxH/nrRmm5Yh0sXuo=;
+        b=W1d57UJnJq+zVXdWhh1fBDsFoR/Ax++MBqi9TwsiwD5HqR9kEy14TbZ+fC64mCZMO4
+         6LQouzK9oF43qBDPgQL5ha4dGt5ea14MkOlGxQor6bxp83W7K81/wgtsmfmpZ5CPScAA
+         Z8soUsdfyrMoipb3c73AYkO+JFJ+T4ZrOb23L+E6+ZjyaitFFJqFjcz7Vm9S9o3rWCx5
+         wmBrVNaqDXC594pgCYdMC3fYTVDvhZJ4yKEctr4pm1woe8xQhHDX39r4siTNpG2s2oQu
+         +Ry5FZ4Q7N66v2TpYRIJTmbXD57kuYTYQGNK0AaIyaAtZHOTeh5WPjE71n8dZYC8pMTn
+         Dsaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E4Uo8oC0q+k3/BuQcrCo0FLHeLVxH/nrRmm5Yh0sXuo=;
+        b=p1Bzgb6vcdkzWs8iB33frE0V9QgpUm/Nz745lzul8afeZtnhmzNk9kromlhnWm/8/g
+         /VeARzygB1kQQZUCr4pbnmWtIEvgJSGXEnXA0G+UExOToUHX0QB3Z1KLv9NQZHsM2I1i
+         X8xPhasUpEN4VlxCQ+O3TP38SBSfDSG/3lE+fKdj9gkUFMbM8oEh8li332j1ohJ6o/Ct
+         VoJcNFtIZZ+MXOndik3rM/n2r6vJNrUUkfcy3BMaXZ2QeWDTEPFDRS+ewHjgK6HYjN/n
+         vTVVCm+7BPlqhfH0YpWm0xg6lyxuTaZrQSQuBd0eEBvsFI8ztSypIwGSOFCgkTCQzec4
+         grKg==
+X-Gm-Message-State: AOAM533RmCIYK04f4xRYk8IcfJSyZdS9aOBERldlcgFKUObOsalWKstg
+        N6/+VP3XCLrL0rwKifYJRE+ym9HNJN4=
+X-Google-Smtp-Source: ABdhPJx1aSGZR/V4p9ArJLKexrO6w/tcuIGBi3Xug+TG0A2hl9p1z1ZDAbPksQ8QTTGYe45Mbev5GQ==
+X-Received: by 2002:a05:6a00:b86:b029:207:8ac9:85de with SMTP id g6-20020a056a000b86b02902078ac985demr25341671pfj.66.1617036616584;
+        Mon, 29 Mar 2021 09:50:16 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m1sm20482pjf.8.2021.03.29.09.50.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 09:50:15 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] PCI: brcmstb: Use reset/rearm instead of
+ deassert/assert
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jim Quinlan <jim2101024@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210312204556.5387-1-jim2101024@gmail.com>
+ <20210312204556.5387-3-jim2101024@gmail.com>
+ <20210329161040.GB9677@lpieralisi>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <71903454-c20c-31f7-aaee-0d05eb22db7f@gmail.com>
+Date:   Mon, 29 Mar 2021 09:50:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329161040.GB9677@lpieralisi>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+On 3/29/21 9:10 AM, Lorenzo Pieralisi wrote:
+> On Fri, Mar 12, 2021 at 03:45:55PM -0500, Jim Quinlan wrote:
+>> The Broadcom STB PCIe RC uses a reset control "rescal" for certain chips.
+>> The "rescal" implements a "pulse reset" so using assert/deassert is wrong
+>> for this device.  Instead, we use reset/rearm.  We need to use rearm so
+>> that we can reset it after a suspend/resume cycle; w/o using "rearm", the
+>> "rescal" device will only ever fire once.
+>>
+>> Of course for suspend/resume to work we also need to put the reset/rearm
+>> calls in the suspend and resume routines.
+> 
+> Actually - I am sorry but it looks like you will have to split the patch
+> in two since this is two logical changes.
 
-Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
-ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
-metacopy error, which leads to dentry leaks when shutting down the
-related superblock:
-
-  overlayfs: refusing to follow metacopy origin for (/file0)
-  ...
-  BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
-  ...
-  WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
-  CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
-  ...
-  RIP: 0010:umount_check.cold+0x107/0x14d
-  ...
-  Call Trace:
-   d_walk+0x28c/0x950
-   ? dentry_lru_isolate+0x2b0/0x2b0
-   ? __kasan_slab_free+0x12/0x20
-   do_one_tree+0x33/0x60
-   shrink_dcache_for_umount+0x78/0x1d0
-   generic_shutdown_super+0x70/0x440
-   kill_anon_super+0x3e/0x70
-   deactivate_locked_super+0xc4/0x160
-   deactivate_super+0xfa/0x140
-   cleanup_mnt+0x22e/0x370
-   __cleanup_mnt+0x1a/0x30
-   task_work_run+0x139/0x210
-   do_exit+0xb0c/0x2820
-   ? __kasan_check_read+0x1d/0x30
-   ? find_held_lock+0x35/0x160
-   ? lock_release+0x1b6/0x660
-   ? mm_update_next_owner+0xa20/0xa20
-   ? reacquire_held_locks+0x3f0/0x3f0
-   ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
-   do_group_exit+0x135/0x380
-   __do_sys_exit_group.isra.0+0x20/0x20
-   __x64_sys_exit_group+0x3c/0x50
-   do_syscall_64+0x45/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-  ...
-  VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
-
-This fix has been tested with a syzkaller reproducer.
-
-Cc: Amir Goldstein <amir73il@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: <stable@vger.kernel.org> # v5.7+
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
----
- fs/overlayfs/namei.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-index 3fe05fb5d145..424c594afd79 100644
---- a/fs/overlayfs/namei.c
-+++ b/fs/overlayfs/namei.c
-@@ -921,6 +921,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
- 		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
- 			err = -EPERM;
- 			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
-+			dput(this);
- 			goto out_put;
- 		}
- 
-
-base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+I do not believe this can be easily split, since there is currently a
+misused of the reset controller API and this patch fixes all call sites
+at once. It would not really make sense to fix probe/remove and then
+leave suspend/resume broken in the same manner.
 -- 
-2.30.2
-
+Florian
