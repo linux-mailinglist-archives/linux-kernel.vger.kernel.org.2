@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5129134C63A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA034CB07
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhC2IGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:06:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46592 "EHLO mail.kernel.org"
+        id S235300AbhC2Imj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231529AbhC2IDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7553E6197F;
-        Mon, 29 Mar 2021 08:03:43 +0000 (UTC)
+        id S232904AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED00E619C2;
+        Mon, 29 Mar 2021 08:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005024;
-        bh=tqZMQWvnmuLFIUGCzxrH5iKoGmauhrdvP5QFvrqN6aQ=;
+        s=korg; t=1617006260;
+        bh=9IfONxfl7zOM+uNS+hW2gVz03E0r6Wo4qXb85vEd4j4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CxOPuNXU0y72/p8a6RwVplwX8WGl9Je374pdAmtk9roDetH+XVQGiNJmYfj38m/ya
-         DPRVkyvFKBnLswW4I2I4RD23QEqM5jIiVgEou+PRUkejh/ZXXg2TtYGtsh6HarJVNt
-         YhGJWh57C5NDXZ/NKVwYUFu9GKOQRxzDrTsk7p+U=
+        b=Gn5YU7EWaoR4KqLjv1OcjQ7w1TWj7S5XqHKnv/XNuzve1/VanT9+52FLiUh6T8pkU
+         9/JAL3sGdfsxoaBjoFL+yZrfv1s3w/tkGgwZscI/7OulJAtdOKVFPio9xzcpIWbekM
+         v7k/9KhW88W1UxmPZzJHFlzm4y+u94VlBTSbKPz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 51/53] net: sched: validate stab values
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 175/221] net: bridge: dont notify switchdev for local FDB addresses
 Date:   Mon, 29 Mar 2021 09:58:26 +0200
-Message-Id: <20210329075609.193504389@linuxfoundation.org>
+Message-Id: <20210329075634.986056008@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,178 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit e323d865b36134e8c5c82c834df89109a5c60dab upstream.
+[ Upstream commit 6ab4c3117aec4e08007d9e971fa4133e1de1082d ]
 
-iproute2 package is well behaved, but malicious user space can
-provide illegal shift values and trigger UBSAN reports.
+As explained in this discussion:
+https://lore.kernel.org/netdev/20210117193009.io3nungdwuzmo5f7@skbuf/
 
-Add stab parameter to red_check_params() to validate user input.
+the switchdev notifiers for FDB entries managed to have a zero-day bug.
+The bridge would not say that this entry is local:
 
-syzbot reported:
+ip link add br0 type bridge
+ip link set swp0 master br0
+bridge fdb add dev swp0 00:01:02:03:04:05 master local
 
-UBSAN: shift-out-of-bounds in ./include/net/red.h:312:18
-shift exponent 111 is too large for 64-bit type 'long unsigned int'
-CPU: 1 PID: 14662 Comm: syz-executor.3 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- red_calc_qavg_from_idle_time include/net/red.h:312 [inline]
- red_calc_qavg include/net/red.h:353 [inline]
- choke_enqueue.cold+0x18/0x3dd net/sched/sch_choke.c:221
- __dev_xmit_skb net/core/dev.c:3837 [inline]
- __dev_queue_xmit+0x1943/0x2e00 net/core/dev.c:4150
- neigh_hh_output include/net/neighbour.h:499 [inline]
- neigh_output include/net/neighbour.h:508 [inline]
- ip6_finish_output2+0x911/0x1700 net/ipv6/ip6_output.c:117
- __ip6_finish_output net/ipv6/ip6_output.c:182 [inline]
- __ip6_finish_output+0x4c1/0xe10 net/ipv6/ip6_output.c:161
- ip6_finish_output+0x35/0x200 net/ipv6/ip6_output.c:192
- NF_HOOK_COND include/linux/netfilter.h:290 [inline]
- ip6_output+0x1e4/0x530 net/ipv6/ip6_output.c:215
- dst_output include/net/dst.h:448 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- NF_HOOK include/linux/netfilter.h:295 [inline]
- ip6_xmit+0x127e/0x1eb0 net/ipv6/ip6_output.c:320
- inet6_csk_xmit+0x358/0x630 net/ipv6/inet6_connection_sock.c:135
- dccp_transmit_skb+0x973/0x12c0 net/dccp/output.c:138
- dccp_send_reset+0x21b/0x2b0 net/dccp/output.c:535
- dccp_finish_passive_close net/dccp/proto.c:123 [inline]
- dccp_finish_passive_close+0xed/0x140 net/dccp/proto.c:118
- dccp_terminate_connection net/dccp/proto.c:958 [inline]
- dccp_close+0xb3c/0xe60 net/dccp/proto.c:1028
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
- inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
- __sock_release+0xcd/0x280 net/socket.c:599
- sock_close+0x18/0x20 net/socket.c:1258
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+and the switchdev driver would be more than happy to offload it as a
+normal static FDB entry. This is despite the fact that 'local' and
+non-'local' entries have completely opposite directions: a local entry
+is locally terminated and not forwarded, whereas a static entry is
+forwarded and not locally terminated. So, for example, DSA would install
+this entry on swp0 instead of installing it on the CPU port as it should.
 
-Fixes: 8afa10cbe281 ("net_sched: red: Avoid illegal values")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+There is an even sadder part, which is that the 'local' flag is implicit
+if 'static' is not specified, meaning that this command produces the
+same result of adding a 'local' entry:
+
+bridge fdb add dev swp0 00:01:02:03:04:05 master
+
+I've updated the man pages for 'bridge', and after reading it now, it
+should be pretty clear to any user that the commands above were broken
+and should have never resulted in the 00:01:02:03:04:05 address being
+forwarded (this behavior is coherent with non-switchdev interfaces):
+https://patchwork.kernel.org/project/netdevbpf/cover/20210211104502.2081443-1-olteanv@gmail.com/
+If you're a user reading this and this is what you want, just use:
+
+bridge fdb add dev swp0 00:01:02:03:04:05 master static
+
+Because switchdev should have given drivers the means from day one to
+classify FDB entries as local/non-local, but didn't, it means that all
+drivers are currently broken. So we can just as well omit the switchdev
+notifications for local FDB entries, which is exactly what this patch
+does to close the bug in stable trees. For further development work
+where drivers might want to trap the local FDB entries to the host, we
+can add a 'bool is_local' to br_switchdev_fdb_call_notifiers(), and
+selectively make drivers act upon that bit, while all the others ignore
+those entries if the 'is_local' bit is set.
+
+Fixes: 6b26b51b1d13 ("net: bridge: Add support for notifying devices about FDB add/del")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/red.h     |   10 +++++++++-
- net/sched/sch_choke.c |    7 ++++---
- net/sched/sch_gred.c  |    2 +-
- net/sched/sch_red.c   |    7 +++++--
- net/sched/sch_sfq.c   |    2 +-
- 5 files changed, 20 insertions(+), 8 deletions(-)
+ net/bridge/br_switchdev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/include/net/red.h
-+++ b/include/net/red.h
-@@ -167,7 +167,8 @@ static inline void red_set_vars(struct r
- 	v->qcount	= -1;
- }
- 
--static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog, u8 Scell_log)
-+static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog,
-+				    u8 Scell_log, u8 *stab)
+diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
+index 015209bf44aa..3c42095fa75f 100644
+--- a/net/bridge/br_switchdev.c
++++ b/net/bridge/br_switchdev.c
+@@ -123,6 +123,8 @@ br_switchdev_fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
  {
- 	if (fls(qth_min) + Wlog > 32)
- 		return false;
-@@ -177,6 +178,13 @@ static inline bool red_check_params(u32
- 		return false;
- 	if (qth_max < qth_min)
- 		return false;
-+	if (stab) {
-+		int i;
-+
-+		for (i = 0; i < RED_STAB_SIZE; i++)
-+			if (stab[i] >= 32)
-+				return false;
-+	}
- 	return true;
- }
+ 	if (!fdb->dst)
+ 		return;
++	if (test_bit(BR_FDB_LOCAL, &fdb->flags))
++		return;
  
---- a/net/sched/sch_choke.c
-+++ b/net/sched/sch_choke.c
-@@ -409,6 +409,7 @@ static int choke_change(struct Qdisc *sc
- 	struct sk_buff **old = NULL;
- 	unsigned int mask;
- 	u32 max_P;
-+	u8 *stab;
- 
- 	if (opt == NULL)
- 		return -EINVAL;
-@@ -424,8 +425,8 @@ static int choke_change(struct Qdisc *sc
- 	max_P = tb[TCA_CHOKE_MAX_P] ? nla_get_u32(tb[TCA_CHOKE_MAX_P]) : 0;
- 
- 	ctl = nla_data(tb[TCA_CHOKE_PARMS]);
--
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
-+	stab = nla_data(tb[TCA_CHOKE_STAB]);
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log, stab))
- 		return -EINVAL;
- 
- 	if (ctl->limit > CHOKE_MAX_QUEUE)
-@@ -478,7 +479,7 @@ static int choke_change(struct Qdisc *sc
- 
- 	red_set_parms(&q->parms, ctl->qth_min, ctl->qth_max, ctl->Wlog,
- 		      ctl->Plog, ctl->Scell_log,
--		      nla_data(tb[TCA_CHOKE_STAB]),
-+		      stab,
- 		      max_P);
- 	red_set_vars(&q->vars);
- 
---- a/net/sched/sch_gred.c
-+++ b/net/sched/sch_gred.c
-@@ -356,7 +356,7 @@ static inline int gred_change_vq(struct
- 	struct gred_sched *table = qdisc_priv(sch);
- 	struct gred_sched_data *q = table->tab[dp];
- 
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log, stab))
- 		return -EINVAL;
- 
- 	if (!q) {
---- a/net/sched/sch_red.c
-+++ b/net/sched/sch_red.c
-@@ -169,6 +169,7 @@ static int red_change(struct Qdisc *sch,
- 	struct Qdisc *child = NULL;
- 	int err;
- 	u32 max_P;
-+	u8 *stab;
- 
- 	if (opt == NULL)
- 		return -EINVAL;
-@@ -184,7 +185,9 @@ static int red_change(struct Qdisc *sch,
- 	max_P = tb[TCA_RED_MAX_P] ? nla_get_u32(tb[TCA_RED_MAX_P]) : 0;
- 
- 	ctl = nla_data(tb[TCA_RED_PARMS]);
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
-+	stab = nla_data(tb[TCA_RED_STAB]);
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog,
-+			      ctl->Scell_log, stab))
- 		return -EINVAL;
- 
- 	if (ctl->limit > 0) {
-@@ -206,7 +209,7 @@ static int red_change(struct Qdisc *sch,
- 	red_set_parms(&q->parms,
- 		      ctl->qth_min, ctl->qth_max, ctl->Wlog,
- 		      ctl->Plog, ctl->Scell_log,
--		      nla_data(tb[TCA_RED_STAB]),
-+		      stab,
- 		      max_P);
- 	red_set_vars(&q->vars);
- 
---- a/net/sched/sch_sfq.c
-+++ b/net/sched/sch_sfq.c
-@@ -645,7 +645,7 @@ static int sfq_change(struct Qdisc *sch,
- 	}
- 
- 	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
--					ctl_v1->Wlog, ctl_v1->Scell_log))
-+					ctl_v1->Wlog, ctl_v1->Scell_log, NULL))
- 		return -EINVAL;
- 	if (ctl_v1 && ctl_v1->qth_min) {
- 		p = kmalloc(sizeof(*p), GFP_KERNEL);
+ 	switch (type) {
+ 	case RTM_DELNEIGH:
+-- 
+2.30.1
+
 
 
