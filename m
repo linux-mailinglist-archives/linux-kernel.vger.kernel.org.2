@@ -2,42 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEEC34CC8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D6F34CB3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237491AbhC2JEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:04:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34862 "EHLO mail.kernel.org"
+        id S234991AbhC2IpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:45:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234986AbhC2Ijx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55F5A60234;
-        Mon, 29 Mar 2021 08:39:43 +0000 (UTC)
+        id S234058AbhC2I1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:27:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEB961959;
+        Mon, 29 Mar 2021 08:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007184;
-        bh=Dk3r0ZdhFIWard0fq8Ye0DQWn4Wqw12Mv55RKxKgo10=;
+        s=korg; t=1617006397;
+        bh=mn59pqmpapYyvMvd3w6aPOstX0re7g6q5OevhBUXP68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fujiaLyCVtz5Qhi+W3WVDSQWJBl359G9MdgAghFA5F/X/2MXPTHUZzpb0GNsEI1FT
-         WdCxBHL4CA2W9snTn21qPDDZZZ8J4hGwwyOrbu2OfcC9TubRhd5FWSetvosOyBRfjz
-         YFE/QYukhH7ZW7aZPq+e4YjgsSPhu8ndfSpKPqfk=
+        b=uWNNEd/OP0oBULtw2ZSwgF4vZ21uCIEuhTEq8m3brVNDUFnhu+tc0yll5h+WeHZY8
+         qPrlJL/LLu+2FlD8WGdo5W8ny1eTZHKxpsDAzUfSCKM4uc30dGWvOH8LVarWXsFykr
+         r6rvOCtvFhoieTgaS+B3LjRJgBRz8VfSXqnhLOH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 233/254] perf synthetic events: Avoid write of uninitialized memory when generating PERF_RECORD_MMAP* records
-Date:   Mon, 29 Mar 2021 09:59:09 +0200
-Message-Id: <20210329075640.747732797@linuxfoundation.org>
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 219/221] Revert "net: bonding: fix error return code of bond_neigh_init()"
+Date:   Mon, 29 Mar 2021 09:59:10 +0200
+Message-Id: <20210329075636.444052945@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,59 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: David S. Miller <davem@davemloft.net>
 
-[ Upstream commit 2a76f6de07906f0bb5f2a13fb02845db1695cc29 ]
+commit 080bfa1e6d928a5d1f185cc44e5f3c251df06df5 upstream.
 
-Account for alignment bytes in the zero-ing memset.
+This reverts commit 2055a99da8a253a357bdfd359b3338ef3375a26c.
 
-Fixes: 1a853e36871b533c ("perf record: Allow specifying a pid to record")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210309234945.419254-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This change rejects legitimate configurations.
+
+A slave doesn't need to exist nor implement ndo_slave_setup.
+
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/synthetic-events.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/bonding/bond_main.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 2947e3f3c6d9..dda0a6a3173d 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -384,7 +384,7 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -3918,15 +3918,11 @@ static int bond_neigh_init(struct neighb
  
- 	while (!io.eof) {
- 		static const char anonstr[] = "//anon";
--		size_t size;
-+		size_t size, aligned_size;
+ 	rcu_read_lock();
+ 	slave = bond_first_slave_rcu(bond);
+-	if (!slave) {
+-		ret = -EINVAL;
++	if (!slave)
+ 		goto out;
+-	}
+ 	slave_ops = slave->dev->netdev_ops;
+-	if (!slave_ops->ndo_neigh_setup) {
+-		ret = -EINVAL;
++	if (!slave_ops->ndo_neigh_setup)
+ 		goto out;
+-	}
  
- 		/* ensure null termination since stack will be reused. */
- 		event->mmap2.filename[0] = '\0';
-@@ -444,11 +444,12 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 		}
- 
- 		size = strlen(event->mmap2.filename) + 1;
--		size = PERF_ALIGN(size, sizeof(u64));
-+		aligned_size = PERF_ALIGN(size, sizeof(u64));
- 		event->mmap2.len -= event->mmap.start;
- 		event->mmap2.header.size = (sizeof(event->mmap2) -
--					(sizeof(event->mmap2.filename) - size));
--		memset(event->mmap2.filename + size, 0, machine->id_hdr_size);
-+					(sizeof(event->mmap2.filename) - aligned_size));
-+		memset(event->mmap2.filename + size, 0, machine->id_hdr_size +
-+			(aligned_size - size));
- 		event->mmap2.header.size += machine->id_hdr_size;
- 		event->mmap2.pid = tgid;
- 		event->mmap2.tid = pid;
--- 
-2.30.1
-
+ 	/* TODO: find another way [1] to implement this.
+ 	 * Passing a zeroed structure is fragile,
 
 
