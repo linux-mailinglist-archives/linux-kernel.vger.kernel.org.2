@@ -2,158 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E2A34D593
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9BF34D594
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhC2QzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S229822AbhC2Q4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhC2Qye (ORCPT
+        with ESMTP id S229630AbhC2Q43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:54:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A21C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:54:34 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQv9q-0004zl-2r; Mon, 29 Mar 2021 18:54:30 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQv9p-0005CS-Mf; Mon, 29 Mar 2021 18:54:29 +0200
-Date:   Mon, 29 Mar 2021 18:54:29 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <20210329165429.ookfliw4eq6zz2sg@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-2-clemens.gruber@pqgruber.com>
+        Mon, 29 Mar 2021 12:56:29 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4C1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:56:29 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id t18so6292986pjs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=41gsrhQeTp6iRdsdb+HSRGikGLjU4hdDe4OQqkyN7Qk=;
+        b=LnrkPfWPiMY+YoSb4/gORGVIa+wQfgD3GORzXUL4+w+m2w1LdZMM25aNWwHVP1Pe4D
+         7SNSphcAaPHrVJaqIw8ZJ9I4qLeISnRJD0JBpl+4K+50AX9RJB2c8pbXCab7vWB83wpZ
+         xx18ySZ2dL91F8VtMgQiRZt86T+zQAaG++bR2OcZpNCHZIU7akctyUgxs6jzznvEKMPx
+         NIa++j6wHE4nawRyiMF/UsUpg9SffBIlFgKKsVlxvGy02Cg1zw8jDELuv5c3N5gy8wkh
+         kVDd4xPmg4AR/HgQ+ISiSAqe7TZC5t/R1oahGAKHJCVKIVnuOKdHoCDQU8BYLqgA6ODz
+         AwPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=41gsrhQeTp6iRdsdb+HSRGikGLjU4hdDe4OQqkyN7Qk=;
+        b=Xl491yMHLtfI78RmA8yYd8mXRzX7+MJ8qOxXW/yYCPbpI/QQuv1tRPtTcM5uDI4Q10
+         X5S2ohUAMukqv5SSxkd/gYmJZUzoUcNTV2dqCDjv0l4X/T6b8FC95lq2Bvfj1b21zA8s
+         4D+yNQAUNcke2rIwp8PiutfgMv9fTh8gZ44xqmDIe+YA0BwyToOQsZtsxkTmgvvGY7X3
+         OjkTtByvGw/fPAiwYWG50g8gccUnWO05E2EewJG5Fi30fUjQVt8Zk105AyB66EkXlGdy
+         D7X1fooEZVly6RXrVWhOV6ctbx1UpIINkm7+0X2t/y3CSbTr8/fO87jOsL4JndDJCuXb
+         Ge+A==
+X-Gm-Message-State: AOAM533rnSXLx5WO/eE8liD7R+VYuDMaIlsGw2f0anJ4ULHiyU1AIALj
+        e91lvUbrlI5vlJZ2Cuqn5a6q6g==
+X-Google-Smtp-Source: ABdhPJyKmgxu98ePKQ1/ZuR9DsdDaHExb0sus5f3hmK2rRS/btm/O94L5GMF7gxOryyOPYXxX07rCw==
+X-Received: by 2002:a17:902:c204:b029:e7:32fd:bc8f with SMTP id 4-20020a170902c204b02900e732fdbc8fmr16366279pll.43.1617036988444;
+        Mon, 29 Mar 2021 09:56:28 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id y7sm18118497pfq.70.2021.03.29.09.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 09:56:27 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 10:56:25 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, anshuman.khandual@arm.com, maz@kernel.org,
+        catalin.marinas@arm.com, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v5 04/19] perf: aux: Add CoreSight PMU buffer formats
+Message-ID: <20210329165625.GC2236953@xps15>
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+ <20210323120647.454211-5-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jj5t55ipcok53hai"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329125707.182732-2-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210323120647.454211-5-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
 
---jj5t55ipcok53hai
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 29, 2021 at 02:57:02PM +0200, Clemens Gruber wrote:
-> Implements .get_state to read-out the current hardware state.
->=20
-> The hardware readout may return slightly different values than those
-> that were set in apply due to the limited range of possible prescale and
-> counter register values.
->=20
-> Also note that although the datasheet mentions 200 Hz as default
-> frequency when using the internal 25 MHz oscillator, the calculated
-> period from the default prescaler register setting of 30 is 5079040ns.
->=20
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+On Tue, Mar 23, 2021 at 12:06:32PM +0000, Suzuki K Poulose wrote:
+> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
+> generated by the ETM (associated with individual CPUs, like Intel PT)
+> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
+> 
+> The TMC-ETR applies formatting of the raw ETM trace data, as it
+> can collect traces from multiple ETMs, with the TraceID to indicate
+> the source of a given trace packet.
+> 
+> Arm Trace Buffer Extension is new "sink" IP, attached to individual
+> CPUs and thus do not provide additional formatting, like TMC-ETR.
+> 
+> Additionally, a system could have both TRBE *and* TMC-ETR for
+> the trace collection. e.g, TMC-ETR could be used as a single
+> trace buffer to collect data from multiple ETMs to correlate
+> the traces from different CPUs. It is possible to have a
+> perf session where some events end up collecting the trace
+> in TMC-ETR while the others in TRBE. Thus we need a way
+> to identify the type of the trace for each AUX record.
+> 
+> Define the trace formats exported by the CoreSight PMU.
+> We don't define the flags following the "ETM" as this
+> information is available to the user when issuing
+> the session. What is missing is the additional
+> formatting applied by the "sink" which is decided
+> at the runtime and the user may not have a control on.
+> 
+> So we define :
+>  - CORESIGHT format (indicates the Frame format)
+>  - RAW format (indicates the format of the source)
+> 
+> The default value is CORESIGHT format for all the records
+> (i,e == 0). Add the RAW format for others that use
+> raw format.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  drivers/pwm/pwm-pca9685.c | 41 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->=20
-> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> index 0ed1013737e3..fb026a25fb61 100644
-> --- a/drivers/pwm/pwm-pca9685.c
-> +++ b/drivers/pwm/pwm-pca9685.c
-> @@ -333,6 +333,46 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, =
-struct pwm_device *pwm,
->  	return 0;
->  }
-> =20
-> +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_devi=
-ce *pwm,
-> +				  struct pwm_state *state)
-> +{
-> +	struct pca9685 *pca =3D to_pca(chip);
-> +	unsigned long long duty;
-> +	unsigned int val =3D 0;
+>  include/uapi/linux/perf_event.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index f006eeab6f0e..63971eaef127 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -1162,6 +1162,10 @@ enum perf_callchain_context {
+>  #define PERF_AUX_FLAG_COLLISION			0x08	/* sample collided with another */
+>  #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00	/* PMU specific trace format type */
+>  
+> +/* CoreSight PMU AUX buffer formats */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000 /* Default for backward compatibility */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100 /* Raw format of the source */
 > +
-> +	/* Calculate (chip-wide) period from prescale value */
-> +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> +	state->period =3D (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ=
-) *
-> +			(val + 1);
 
-As we have PCA9685_OSC_CLOCK_MHZ =3D 25 this is an integer calculation
-without loss of precision. It might be worth to point that out in a
-comment. (Otherwise doing the division at the end might be more
-sensible.)
+Have you had time to review this patch?  Anything you'd like to see modified?
 
-> +	/* The (per-channel) polarity is fixed */
-> +	state->polarity =3D PWM_POLARITY_NORMAL;
-> +
-> +	if (pwm->hwpwm >=3D PCA9685_MAXCHAN) {
-> +		/*
-> +		 * The "all LEDs" channel does not support HW readout
-> +		 * Return 0 and disabled for backwards compatibility
-> +		 */
-> +		state->duty_cycle =3D 0;
-> +		state->enabled =3D false;
-> +		return;
-> +	}
-> +
-> +	duty =3D pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> +
-> +	state->enabled =3D !!duty;
-> +	if (!state->enabled) {
-> +		state->duty_cycle =3D 0;
-> +		return;
-> +	} else if (duty =3D=3D PCA9685_COUNTER_RANGE) {
-> +		state->duty_cycle =3D state->period;
-> +		return;
-> +	}
-> +
-> +	duty *=3D state->period;
-> +	state->duty_cycle =3D duty / PCA9685_COUNTER_RANGE;
+Thanks,
+Mathieu
 
-=2Eapply uses ROUND_CLOSEST to calculate duty from state->duty_cycle,
-still using / here (instead of ROUND_CLOSEST), but again as
-PCA9685_OSC_CLOCK_MHZ is 25 this calculation doesn't suffer from
-rounding errors. So if you feed the state returned here into .apply
-again, there is (as I want it) no change.
-
-The only annoyance is that if PCA9685_PRESCALE holds a value smaller
-than 3, .apply() will fail. Not sure there is any saner way to handle
-this.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---jj5t55ipcok53hai
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiBkIACgkQwfwUeK3K
-7AkXKAf9Edxq8VdhqE0oDz96RLGkPW0PEAiL6u8vB1+9uTC2lxfe6gMj6tqPZamt
-H/Jk4XXwbitFnMLIfgZMtfA+/CMwymtjYvd6FjY5+yt1MfFkGLyZNX5G3IccWPgE
-d4MUwF9bG0BGgTJHEnWqJLiJ8mkDpOX6FMYSDvRtKw9rlODXnq6wlxRws/tjtjXm
-SkSivomIoImBw6ZE6EHiImGjX+BzSBHeyztU5PwuxDGry05ZEaR4CX9p3sZE4GOU
-U7U87QEUnHLdK1+vZ/1RJAsV1RTOh4v2fZtDw3WCsW8GDjyN59B9Q8X2nMQH5Z3B
-K+ac83vQ/Hlzgdaa5rIliDTJ1Y3b6Q==
-=j+4H
------END PGP SIGNATURE-----
-
---jj5t55ipcok53hai--
+>  #define PERF_FLAG_FD_NO_GROUP		(1UL << 0)
+>  #define PERF_FLAG_FD_OUTPUT		(1UL << 1)
+>  #define PERF_FLAG_PID_CGROUP		(1UL << 2) /* pid=cgroup id, per-cpu mode only */
+> -- 
+> 2.24.1
+> 
