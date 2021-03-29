@@ -2,201 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D742634DA0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FFE34DA13
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhC2WTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:19:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28107 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231623AbhC2WSr (ORCPT
+        id S230421AbhC2WVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230444AbhC2WUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:18:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617056326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WUaW949Sngo6yyC4xTwj+erWp36FebBIUp15Ep+mJGo=;
-        b=NfoOOIhn4OfijpNMN6Hssai+l6yc+1NCa65dumqWFMsKgwnYN5oO9mrcgsc3WccMbWK0po
-        tYKkP0Q+WJl1XViJJ/3l+efz1oODoYU785o/7suuLYLV9JPpSy5IiOA2sgaaN+HrRzaVr/
-        Hy4dmq76HzEjyyu1wAZaVj7aji8mQhE=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-7rUhujMtNYGJjxXY-QvJyQ-1; Mon, 29 Mar 2021 18:18:44 -0400
-X-MC-Unique: 7rUhujMtNYGJjxXY-QvJyQ-1
-Received: by mail-qk1-f197.google.com with SMTP id v136so13214758qkb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:18:44 -0700 (PDT)
+        Mon, 29 Mar 2021 18:20:52 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C511C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:20:52 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id u20so17604734lja.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XEji2TAqL8EMOw/dECJ/SLHPykwIL6tdzk/9l++9ONM=;
+        b=Xm7vhW9fpntwFSs6+Gk3zPe6/sKChpK1gUaWx2UEolzwgdCJo2vumLIYJlyPge23nB
+         9dvzC9l//3Pn4WRhl2py7slEh8xf2C/jA1MuTeppti/T3EKkNI1Fyoj8zk7BE24Qt869
+         gUpGwmKnKRJfCN46q8tNJdnuN9mRHvszf8SL+Q6R/JPIYK/i+eClBM0ThzPGJHUZlM6N
+         zdiArhgV4Hz0R6zHa5WV2AB14peEFC77Wq0oSdRCOK7UJj1CnZlZFwL3iOLr+LnJUJIT
+         sB6xbk0C26JUh+RFMuRQLtEWwXMyTEn6fLW9WKz3JgInBBjMC3Ijev0tQuDDPBp+wnKN
+         PTSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WUaW949Sngo6yyC4xTwj+erWp36FebBIUp15Ep+mJGo=;
-        b=PjP0wfq/WS2FnpMypdQHvtQegtBgsZjQOgl6pnw5+HvVlynDd9+Lf96zeGKznDm9bS
-         YC7ySuQF6gNB+qFukzMOoEuSLGZI3MjfngdW9kDolCQpZPa2wFSV1El8XFhfoYtaARzX
-         +4iWbK9jmNd3E4G81lq09AamhHvSdp1uvVYhDLm6b82ikmppuVpVZNt8wI/CbStRX0WP
-         mRwNNVd/JujDwnwll3jj3HE0Xge1BUub+OvjGyxry98OlqAvkOkpawm+ksfNBlZuzXvF
-         vKqA+IxFjjcj0pIFBPOx4LGt0F1pOuzE+72Z76OeZIH/5ULKZBZ7kAl9RQiQjwfJnvNN
-         jpRw==
-X-Gm-Message-State: AOAM5315UTCn6sFkdLWSrjdyRVLxYlk8w1hvsRzCMKazVqreKkaVtsVy
-        7PtOgAjiO7M6M9onFGfpeFcdoyLrIVUMe1uoQnzW6XWHj4XQDs/+o+mbbq5RvRTbwa6Ri966iGv
-        sYa4zx4bSS+4o43cH60Q+pDKq
-X-Received: by 2002:ac8:1009:: with SMTP id z9mr24461427qti.128.1617056323589;
-        Mon, 29 Mar 2021 15:18:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxdKP9FUZ/PE3P0cEW+pqhOmx0ng44ycgosjq2R17bSMGFeko3E8KREiwoyB8K2f+jnIt6NQ==
-X-Received: by 2002:ac8:1009:: with SMTP id z9mr24461400qti.128.1617056323323;
-        Mon, 29 Mar 2021 15:18:43 -0700 (PDT)
-Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id i17sm12255215qtr.33.2021.03.29.15.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 15:18:42 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org
-Cc:     Axel Rasmussen <axelrasmussen@google.com>, peterx@redhat.com,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v5 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
-Date:   Mon, 29 Mar 2021 18:18:33 -0400
-Message-Id: <20210329221833.517923-5-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210329221833.517923-1-peterx@redhat.com>
-References: <20210329221833.517923-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XEji2TAqL8EMOw/dECJ/SLHPykwIL6tdzk/9l++9ONM=;
+        b=hEJRhIFI4/9ZkWxo1NRnaZvBAgNCYU4f97nvpTBY1st69wLrl5PPjfs/trZWthuO+X
+         gWxs8WxAmerMrM45euD/3p6EWhZiu0jvXre9mPb96mqzKDPJTrBzknsZBV20c7kVRXHE
+         LvjKWOL4xafgumbcqzK88at6ejwyUeckhxcCQjy3Zg5vXg58CKt8mELidZJzC+1CaiAd
+         SzL8dADbqc3HQezMhRkSwV1QX50OJZnPACZrIJ/TVNzQWMQQ9l216ZMQvz0tDA68TNRl
+         u++0K3fE5dCxpRvQAjdUFpeXlq2ejOA3AxDujVPrjV6rPYfkXtgkyoFZDuXBwLODWK8D
+         86WQ==
+X-Gm-Message-State: AOAM532D2kDPTl/MEPSo6TfzMU5dyXGK81/5DydriJtrpSg/tvbIc05h
+        Wpw1SB258NA6n3hni+HszoYvbWaHTOprWC5I6xA3Ow==
+X-Google-Smtp-Source: ABdhPJynPw5pUHvXH+sqNCv5EY3DjZXPvL5IqkOykyLYab0wXCEQlhycuJxSb4YXqShy3Ni3bKujxLUdjeIFmc0tzzs=
+X-Received: by 2002:a2e:509:: with SMTP id 9mr19246743ljf.170.1617056450500;
+ Mon, 29 Mar 2021 15:20:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210108015115.27920-1-john.stultz@linaro.org>
+ <87bldzwr6x.fsf@kernel.org> <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
+ <d95d0971-624e-a0e6-ac72-6ee3b1fb1106@synopsys.com> <06a44245-4f2f-69ba-fe46-b88a19f585c2@codeaurora.org>
+ <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com> <fa5cc67e-3873-e6d9-8727-d160740b027e@codeaurora.org>
+ <3db531c4-7058-68ec-8d4b-ff122c307697@synopsys.com> <8b5f7348-66d7-4902-eac8-593ab503db96@codeaurora.org>
+ <ee47c2c6-f931-6229-13cd-d41a28b3b9c7@codeaurora.org> <28bc3ce1-7ace-be25-7d7d-ca8ab1b0f0e9@synopsys.com>
+ <62c7ee3a-21c4-009d-bfc0-ce9d3a84fefe@codeaurora.org>
+In-Reply-To: <62c7ee3a-21c4-009d-bfc0-ce9d3a84fefe@codeaurora.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 29 Mar 2021 15:20:37 -0700
+Message-ID: <CALAqxLVuYY5ozpddrovVDXWi-dXWF72JpPuQQXjBYLYiSmCUNA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
+ switching modes in DRD
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yu Chen <chenyu56@huawei.com>,
+        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
+        Yang Fei <fei.yang@intel.com>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jun Li <lijun.kernel@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userfaultfd write-protect mode is supported starting from Linux 5.7.
+On Mon, Mar 29, 2021 at 3:15 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>
+>
+>
+> On 3/19/2021 4:09 PM, Thinh Nguyen wrote:
+> > Wesley Cheng wrote:
+> >>
+> >>
+> >> On 3/8/2021 10:33 PM, Wesley Cheng wrote:
+> >>>
+> >>>
+> >>> On 3/8/2021 7:05 PM, Thinh Nguyen wrote:
+> >>>> Wesley Cheng wrote:
+> >>>>>
+> >>>>> On 3/6/2021 3:41 PM, Thinh Nguyen wrote:
+> >>>>>> Wesley Cheng wrote:
+> >>>>>>> On 1/8/2021 4:44 PM, Thinh Nguyen wrote:
+> >>>>>>>> Hi,
+> >>>>>>>>
+> >>>>>>>> John Stultz wrote:
+> >>>>>>>>> On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
+> >>>>>>>>>> Hi,
+> >>>>>>>>>>
+> >>>>>>>>>> John Stultz <john.stultz@linaro.org> writes:
+> >>>>>>>>>>> From: Yu Chen <chenyu56@huawei.com>
+> >>>>>>>>>>>
+> >>>>>>>>>>> Just resending this, as discussion died out a bit and I'm not
+> >>>>>>>>>>> sure how to make further progress. See here for debug data that
+> >>>>>>>>>>> was requested last time around:
+> >>>>>>>>>>>   https://urldefense.com/v3/__https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnsnlqd3w$
+> >>>>>>>>>>>
+> >>>>>>>>>>> With the current dwc3 code on the HiKey960 we often see the
+> >>>>>>>>>>> COREIDLE flag get stuck off in __dwc3_gadget_start(), which
+> >>>>>>>>>>> seems to prevent the reset irq and causes the USB gadget to
+> >>>>>>>>>>> fail to initialize.
+> >>>>>>>>>>>
+> >>>>>>>>>>> We had seen occasional initialization failures with older
+> >>>>>>>>>>> kernels but with recent 5.x era kernels it seemed to be becoming
+> >>>>>>>>>>> much more common, so I dug back through some older trees and
+> >>>>>>>>>>> realized I dropped this quirk from Yu Chen during upstreaming
+> >>>>>>>>>>> as I couldn't provide a proper rational for it and it didn't
+> >>>>>>>>>>> seem to be necessary. I now realize I was wrong.
+> >>>>>>>>>>>
+> >>>>>>>>>>> After resubmitting the quirk, Thinh Nguyen pointed out that it
+> >>>>>>>>>>> shouldn't be a quirk at all and it is actually mentioned in the
+> >>>>>>>>>>> programming guide that it should be done when switching modes
+> >>>>>>>>>>> in DRD.
+> >>>>>>>>>>>
+> >>>>>>>>>>> So, to avoid these !COREIDLE lockups seen on HiKey960, this
+> >>>>>>>>>>> patch issues GCTL soft reset when switching modes if the
+> >>>>>>>>>>> controller is in DRD mode.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Cc: Felipe Balbi <balbi@kernel.org>
+> >>>>>>>>>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
+> >>>>>>>>>>> Cc: Yang Fei <fei.yang@intel.com>
+> >>>>>>>>>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
+> >>>>>>>>>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> >>>>>>>>>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
+> >>>>>>>>>>> Cc: Jun Li <lijun.kernel@gmail.com>
+> >>>>>>>>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >>>>>>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>>>>>> Cc: linux-usb@vger.kernel.org
+> >>>>>>>>>>> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> >>>>>>>>>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> >>>>>>>>>>> ---
+> >>>>>>>>>>> v2:
+> >>>>>>>>>>> * Rework to always call the GCTL soft reset in DRD mode,
+> >>>>>>>>>>>   rather then using a quirk as suggested by Thinh Nguyen
+> >>>>>>>>>>>
+> >>>>>>>>>>> v3:
+> >>>>>>>>>>> * Move GCTL soft reset under the spinlock as suggested by
+> >>>>>>>>>>>   Thinh Nguyen
+> >>>>>>>>>> Because this is such an invasive change, I would prefer that we get
+> >>>>>>>>>> Tested-By tags from a good fraction of the users before applying these
+> >>>>>>>>>> two changes.
+> >>>>>>>>> I'm happy to reach out to folks to try to get that. Though I'm
+> >>>>>>>>> wondering if it would be better to put it behind a dts quirk flag, as
+> >>>>>>>>> originally proposed?
+> >>>>>>>>>    https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnRWITZfc$
+> >>>>>>>>>
+> >>>>>>>>> That way folks can enable it for devices as they need?
+> >>>>>>>>>
+> >>>>>>>>> Again, I'm not trying to force this in as-is, just mostly sending it
+> >>>>>>>>> out again for discussion to understand what other approach might work.
+> >>>>>>>>>
+> >>>>>>>>> thanks
+> >>>>>>>>> -john
+> >>>>>>>> A quirk would imply something is broken/diverged from the design right?
+> >>>>>>>> But it's not the case here, and at least this is needed for HiKey960.
+> >>>>>>>> Also, I think Rob will be ok with not adding 1 more quirk to the dwc3
+> >>>>>>>> devicetree. :)
+> >>>>>>>>
+> >>>>>>>> BR,
+> >>>>>>>> Thinh
+> >>>>>>>>
+> >>>>>>> Hi All,
+> >>>>>>>
+> >>>>>>> Sorry for jumping in, but I checked the SNPS v1.90a databook, and that
+> >>>>>>> seemed to remove the requirement for the GCTL.softreset before writing
+> >>>>>>> to PRTCAPDIR.  Should we consider adding a controller version/IP check?
+> >>>>>>>
+> >>>>>> Hi Wesley,
+> >>>>>>
+> >>>>>> From what I see in the v1.90a databook and others, the flow remains the
+> >>>>>> same. I need to check internally, but I'm not aware of the change.
+> >>>>>>
+> >>>>> Hi Thinh,
+> >>>>>
+> >>>>> Hmmm, can you help check the register description for the PRTCAPDIR on
+> >>>>> your v1.90a databook?  (Table 1-19 Fields for Register: GCTL (Continued)
+> >>>>> Pg73)  When we compared the sequence in the description there to the
+> >>>>> previous versions it removed the GCTL.softreset.  If it still shows up
+> >>>>> on yours, then maybe my v1.90a isn't the final version?
+> >>>>>
+> >>>>> Thanks
+> >>>>> Wesley Cheng
+> >>>>>
+> >>>>
+> >>>> Hi Wesley,
+> >>>>
+> >>>> Actually your IP version type may use the newer flow. Can you print your
+> >>>> DWC3_VER_TYPE? I still need to verify internally to know which versions
+> >>>> need the update if any.
+> >>>>
+> >>>> Thanks,
+> >>>> Thinh
+> >>>>
+> >>> Hi Thinh,
+> >>>
+> >>> Sure, my DWC3_VER_TYPE output = 0x67612A2A
+> >>>
+> >>> Thanks
+> >>> Wesley Cheng
+> >>>
+> >> Hi Thinh,
+> >>
+> >> Would you happen to have an update on the required sequence on the
+> >> version shared?  Sorry for pushing, but we just wanted to finalize on
+> >> it, since it does cause some functional issues w/o the soft reset in
+> >> place, and causes a crash if we have the GCTL.softreset.
+> >>
+> >> Thanks
+> >> Wesley Cheng
+> >>
+> >
+> > Hi Wesley,
+> >
+> > I'm still trying to get that info for you. The versions without
+> > GCTL.softreset should be very new. The flow with GCTL.softreset should
+> > work for all versions and should not cause functional impact. We can
+> > create a change to optimize and remove GCTL.softreset for the newer
+> > controller versions at a later time.
+> >
+> > Since you and John Stultz have the setup that can be verified in the
+> > real world. It would be great if John or you provide a tested patch(es)
+> > to resolve this issue.
+> >
+> > Thanks,
+> > Thinh
+> >
+> Hi Thinh,
+>
+> Thanks for the input as always.  I tested the GCTL.softreset change just
+> now, and it is working fine at least on my set up.
+>
+> Not sure if we'd need input from other vendors as well to get this
+> change merged.
 
-Acked-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- man2/ioctl_userfaultfd.2 | 84 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 81 insertions(+), 3 deletions(-)
+Did you test the original patch from this thread unchanged, or did you
+have any modifications? If the latter, feel free to send it out and
+I'll validate it on my side.
 
-diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-index d4a8375b8..ca533a383 100644
---- a/man2/ioctl_userfaultfd.2
-+++ b/man2/ioctl_userfaultfd.2
-@@ -234,6 +234,11 @@ operation is supported.
- The
- .B UFFDIO_UNREGISTER
- operation is supported.
-+.TP
-+.B 1 << _UFFDIO_WRITEPROTECT
-+The
-+.B UFFDIO_WRITEPROTECT
-+operation is supported.
- .PP
- This
- .BR ioctl (2)
-@@ -322,9 +327,6 @@ Track page faults on missing pages.
- .B UFFDIO_REGISTER_MODE_WP
- Track page faults on write-protected pages.
- .PP
--Currently, the only supported mode is
--.BR UFFDIO_REGISTER_MODE_MISSING .
--.PP
- If the operation is successful, the kernel modifies the
- .I ioctls
- bit-mask field to indicate which
-@@ -443,6 +445,16 @@ operation:
- .TP
- .B UFFDIO_COPY_MODE_DONTWAKE
- Do not wake up the thread that waits for page-fault resolution
-+.TP
-+.B UFFDIO_COPY_MODE_WP
-+Copy the page with read-only permission.
-+This allows the user to trap the next write to the page,
-+which will block and generate another write-protect userfault message.
-+This is only used when both
-+.B UFFDIO_REGISTER_MODE_MISSING
-+and
-+.B UFFDIO_REGISTER_MODE_WP
-+modes are enabled for the registered range.
- .PP
- The
- .I copy
-@@ -654,6 +666,72 @@ field of the
- structure was not a multiple of the system page size; or
- .I len
- was zero; or the specified range was otherwise invalid.
-+.SS UFFDIO_WRITEPROTECT (Since Linux 5.7)
-+Write-protect or write-unprotect an userfaultfd registered memory range
-+registered with mode
-+.BR UFFDIO_REGISTER_MODE_WP .
-+.PP
-+The
-+.I argp
-+argument is a pointer to a
-+.I uffdio_range
-+structure as shown below:
-+.PP
-+.in +4n
-+.EX
-+struct uffdio_writeprotect {
-+    struct uffdio_range range;  /* Range to change write permission */
-+    __u64 mode;                 /* Mode to change write permission */
-+};
-+.EE
-+.in
-+There're two mode bits that are supported in this structure:
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+When this mode bit is set, the ioctl will be a write-protect operation upon the
-+memory range specified by
-+.IR range .
-+Otherwise it'll be a write-unprotect operation upon the specified range,
-+which can be used to resolve an userfaultfd write-protect page fault.
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_DONTWAKE
-+When this mode bit is set,
-+do not wake up any thread that waits for page-fault resolution after the operation.
-+This could only be specified if
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+is not specified.
-+.PP
-+This
-+.BR ioctl (2)
-+operation returns 0 on success.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the error.
-+Possible errors include:
-+.TP
-+.B EINVAL
-+The
-+.I start
-+or the
-+.I len
-+field of the
-+.I ufdio_range
-+structure was not a multiple of the system page size; or
-+.I len
-+was zero; or the specified range was otherwise invalid.
-+.TP
-+.B EAGAIN
-+The process was interrupted; retry this call.
-+.TP
-+.B ENOENT
-+The range specified in
-+.I range
-+is not valid.
-+For example, the virtual address does not exist,
-+or not registered with userfaultfd write-protect mode.
-+.TP
-+.B EFAULT
-+Encountered a generic fault during processing.
- .SH RETURN VALUE
- See descriptions of the individual operations, above.
- .SH ERRORS
--- 
-2.26.2
-
+thanks
+-john
