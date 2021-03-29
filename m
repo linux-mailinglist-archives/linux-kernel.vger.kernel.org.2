@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A55134CAF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F023634CC70
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhC2IlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
+        id S236578AbhC2JCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232754AbhC2IRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C37BC619C2;
-        Mon, 29 Mar 2021 08:16:27 +0000 (UTC)
+        id S233825AbhC2Ii1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:38:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 277EF61580;
+        Mon, 29 Mar 2021 08:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005788;
-        bh=jVpHT3HT7JE/3luCOdYVQh/Sr8a+M6O3OHX17rPfMoM=;
+        s=korg; t=1617007106;
+        bh=eghLgthahG554ZGl0095jz9fFgId/FojoOKssZKR2NU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A+RPZSlpvEYFEBvyo9G3cUIXY/+X/h67weXBg8jzgh9et3SCJh6IsHhxwlMvax6ys
-         vVZL779H8AiD1GxDZObEzfspSVut3l10Yn5boGohp1O1iNYfgNgJWyJ1pCpvRn5vZN
-         Woah6UnmNnMqXTKwN3le8ejm9ceSSCRV1Ou9olsI=
+        b=aNbQ1tpsgjYuByZl4Efts4V9ffm6OVM5GecAC/F/jWztsgnV49frgpWWo1t2VfgSP
+         6hL4RhCXIUvnUVNj30NXUK4+3Er/18e6aZvEl5HlTdCPYrnxQJqbx5NJXP3oav6aWj
+         OAhqdPOa7ivFoWOwN+koUGFddlV616TWj8xCnlTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 110/111] ext4: add reclaim checks to xattr code
-Date:   Mon, 29 Mar 2021 09:58:58 +0200
-Message-Id: <20210329075618.863448796@linuxfoundation.org>
+        stable@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 223/254] bpf: Use NOP_ATOMIC5 instead of emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG
+Date:   Mon, 29 Mar 2021 09:58:59 +0200
+Message-Id: <20210329075640.419966788@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Stanislav Fomichev <sdf@google.com>
 
-commit 163f0ec1df33cf468509ff38cbcbb5eb0d7fac60 upstream.
+[ Upstream commit b9082970478009b778aa9b22d5561eef35b53b63 ]
 
-Syzbot is reporting that ext4 can enter fs reclaim from kvmalloc() while
-the transaction is started like:
+__bpf_arch_text_poke does rewrite only for atomic nop5, emit_nops(xxx, 5)
+emits non-atomic one which breaks fentry/fexit with k8 atomics:
 
-  fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-  might_alloc include/linux/sched/mm.h:193 [inline]
-  slab_pre_alloc_hook mm/slab.h:493 [inline]
-  slab_alloc_node mm/slub.c:2817 [inline]
-  __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-  kmalloc_node include/linux/slab.h:575 [inline]
-  kvmalloc_node+0x61/0xf0 mm/util.c:587
-  kvmalloc include/linux/mm.h:781 [inline]
-  ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-  ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-  ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-  ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-  ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-  ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+P6_NOP5 == P6_NOP5_ATOMIC (0f1f440000 == 0f1f440000)
+K8_NOP5 != K8_NOP5_ATOMIC (6666906690 != 6666666690)
 
-This should be impossible since transaction start sets PF_MEMALLOC_NOFS.
-Add some assertions to the code to catch if something isn't working as
-expected early.
+Can be reproduced by doing "ideal_nops = k8_nops" in "arch_init_ideal_nops()
+and running fexit_bpf2bpf selftest.
 
-Link: https://lore.kernel.org/linux-ext4/000000000000563a0205bafb7970@google.com/
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210222171626.21884-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e21aa341785c ("bpf: Fix fexit trampoline.")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20210320000001.915366-1-sdf@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/xattr.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1476,6 +1476,9 @@ ext4_xattr_inode_cache_find(struct inode
- 	if (!ce)
- 		return NULL;
- 
-+	WARN_ON_ONCE(ext4_handle_valid(journal_current_handle()) &&
-+		     !(current->flags & PF_MEMALLOC_NOFS));
-+
- 	ea_data = ext4_kvmalloc(value_len, GFP_NOFS);
- 	if (!ea_data) {
- 		mb_cache_entry_put(ea_inode_cache, ce);
-@@ -2342,6 +2345,7 @@ ext4_xattr_set_handle(handle_t *handle,
- 			error = -ENOSPC;
- 			goto cleanup;
- 		}
-+		WARN_ON_ONCE(!(current->flags & PF_MEMALLOC_NOFS));
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 652bd64e422d..023ac12f54a2 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1811,7 +1811,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		/* remember return value in a stack for bpf prog to access */
+ 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+ 		im->ip_after_call = prog;
+-		emit_nops(&prog, 5);
++		memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
++		prog += X86_PATCH_SIZE;
  	}
  
- 	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
+ 	if (fmod_ret->nr_progs) {
+-- 
+2.30.1
+
 
 
