@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE11334C6FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C388734C779
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhC2IL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
+        id S230364AbhC2IPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:15:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231613AbhC2IGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A31AC6197F;
-        Mon, 29 Mar 2021 08:06:30 +0000 (UTC)
+        id S232201AbhC2IJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE0961932;
+        Mon, 29 Mar 2021 08:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005191;
-        bh=zNWJ3S6ipAU6dbDVMKFDhWmunigq6V3cEmVjjZAnHXE=;
+        s=korg; t=1617005383;
+        bh=skYx5TgqMEyPtjqOZvtQZwPYnA7TximPdWgLdghkIe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nLJyjDNEgdx4r2ylJCAE9NN+SZmzs8HAyKghEJwDHciyjRuispm4ufT3rBP7O3BOs
-         rSJtZwzRtBRFW9UBzDk4AkQhmh0w4neYhOD0MO1XYqg+7gUXRpNSWmdKzFo0+CWTJm
-         UDyHsgmUxYCySE8iBam3BvZ7/akx9p04jk23kAig=
+        b=M0FszjhMkC7mGAfBgixbchF6QYdZQ0e3jmljTv1ej9U+NCEKrN7bY/IdIil8otXFe
+         q3oLoM+s+Xk3PDo7odqNM55mMDKQTSTOXC7+/BjLGkJWJWF1dm3HXneQMQIXqobGpw
+         CCWFbZ47JTEx+jhRncpfsMbFG0QKb2M3sGcQBqKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+93976391bf299d425f44@syzkaller.appspotmail.com,
-        Markus Theil <markus.theil@tu-ilmenau.de>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 57/59] mac80211: fix double free in ibss_leave
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Milan Broz <gmazyland@gmail.com>
+Subject: [PATCH 4.19 61/72] dm verity: add root hash pkcs#7 signature verification
 Date:   Mon, 29 Mar 2021 09:58:37 +0200
-Message-Id: <20210329075610.737982828@linuxfoundation.org>
+Message-Id: <20210329075612.300337755@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Theil <markus.theil@tu-ilmenau.de>
+From: JeongHyeon Lee <jhs2.lee@samsung.com>
 
-commit 3bd801b14e0c5d29eeddc7336558beb3344efaa3 upstream.
+[ Upstream commit 88cd3e6cfac915f50f7aa7b699bdf053afec866e ]
 
-Clear beacon ie pointer and ie length after free
-in order to prevent double free.
+The verification is to support cases where the root hash is not secured
+by Trusted Boot, UEFI Secureboot or similar technologies.
 
-==================================================================
-BUG: KASAN: double-free or invalid-free \
-in ieee80211_ibss_leave+0x83/0xe0 net/mac80211/ibss.c:1876
+One of the use cases for this is for dm-verity volumes mounted after
+boot, the root hash provided during the creation of the dm-verity volume
+has to be secure and thus in-kernel validation implemented here will be
+used before we trust the root hash and allow the block device to be
+created.
 
-CPU: 0 PID: 8472 Comm: syz-executor100 Not tainted 5.11.0-rc6-syzkaller #0
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
- kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
- ____kasan_slab_free+0xcc/0xe0 mm/kasan/common.c:341
- kasan_slab_free include/linux/kasan.h:192 [inline]
- __cache_free mm/slab.c:3424 [inline]
- kfree+0xed/0x270 mm/slab.c:3760
- ieee80211_ibss_leave+0x83/0xe0 net/mac80211/ibss.c:1876
- rdev_leave_ibss net/wireless/rdev-ops.h:545 [inline]
- __cfg80211_leave_ibss+0x19a/0x4c0 net/wireless/ibss.c:212
- __cfg80211_leave+0x327/0x430 net/wireless/core.c:1172
- cfg80211_leave net/wireless/core.c:1221 [inline]
- cfg80211_netdev_notifier_call+0x9e8/0x12c0 net/wireless/core.c:1335
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
- call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
- call_netdevice_notifiers net/core/dev.c:2066 [inline]
- __dev_close_many+0xee/0x2e0 net/core/dev.c:1586
- __dev_close net/core/dev.c:1624 [inline]
- __dev_change_flags+0x2cb/0x730 net/core/dev.c:8476
- dev_change_flags+0x8a/0x160 net/core/dev.c:8549
- dev_ifsioc+0x210/0xa70 net/core/dev_ioctl.c:265
- dev_ioctl+0x1b1/0xc40 net/core/dev_ioctl.c:511
- sock_do_ioctl+0x148/0x2d0 net/socket.c:1060
- sock_ioctl+0x477/0x6a0 net/socket.c:1177
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The signature being provided for verification must verify the root hash
+and must be trusted by the builtin keyring for verification to succeed.
 
-Reported-by: syzbot+93976391bf299d425f44@syzkaller.appspotmail.com
-Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
-Link: https://lore.kernel.org/r/20210213133653.367130-1-markus.theil@tu-ilmenau.de
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The hash is added as a key of type "user" and the description is passed
+to the kernel so it can look it up and use it for verification.
+
+Adds CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG which can be turned on if root
+hash verification is needed.
+
+Kernel commandline dm_verity module parameter 'require_signatures' will
+indicate whether to force root hash signature verification (for all dm
+verity volumes).
+
+Signed-off-by: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
+Tested-and-Reviewed-by: Milan Broz <gmazyland@gmail.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/ibss.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/dm-verity-target.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/mac80211/ibss.c
-+++ b/net/mac80211/ibss.c
-@@ -1861,6 +1861,8 @@ int ieee80211_ibss_leave(struct ieee8021
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index 599be2d2b0ae..fa8c201fca77 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -34,7 +34,7 @@
+ #define DM_VERITY_OPT_IGN_ZEROES	"ignore_zero_blocks"
+ #define DM_VERITY_OPT_AT_MOST_ONCE	"check_at_most_once"
  
- 	/* remove beacon */
- 	kfree(sdata->u.ibss.ie);
-+	sdata->u.ibss.ie = NULL;
-+	sdata->u.ibss.ie_len = 0;
+-#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC)
++#define DM_VERITY_OPTS_MAX		(3 + DM_VERITY_OPTS_FEC)
  
- 	/* on the next join, re-program HT parameters */
- 	memset(&ifibss->ht_capa, 0, sizeof(ifibss->ht_capa));
+ static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
+ 
+-- 
+2.30.1
+
 
 
