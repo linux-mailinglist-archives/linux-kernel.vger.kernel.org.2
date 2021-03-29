@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E0C34C69C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296CD34C865
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhC2IIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48252 "EHLO mail.kernel.org"
+        id S232467AbhC2IV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:21:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231715AbhC2IFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E930961932;
-        Mon, 29 Mar 2021 08:05:07 +0000 (UTC)
+        id S232705AbhC2INo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:13:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF03A61477;
+        Mon, 29 Mar 2021 08:13:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005108;
-        bh=V1jICNUaOI9SiZN01Nr+FcrVDtq1erXjG/lyOxXFWJg=;
+        s=korg; t=1617005622;
+        bh=ysffmYUDo0/7c8mGFGOe47UZnwJ8LUZUvFt5CO9ScjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2cPhQMMvRibkz0pQCHBR+q+MrZx8pzLKxFWJe/wynCd3rlPWIlKIWw418c2vOu4gG
-         UMUrh5H71OtMl3Hg1yfPX/F6wAlnUXs5wSEH+RPgF6N1YVwzGijXJUB4XmXuZWzqYv
-         Fo/FsX1IGFgvMokvZEkREgJJZOQZ3tS2OfxcaroM=
+        b=rDStjHnm/g/e6Jv+h8f3i0GH7LNejo2bjp+lkvVQ8z19IqmbSdY8AqorwC1zRCFYP
+         9yIs/76bCjmDrADdWTR02D47YhuXQBQdnXxxh7v82XI5Y6wnpHEUj1h5+zj7fZA4q2
+         dL+1nx0NSjrU9mNHx4NyhREM6gb1+diLaHv/kue4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.14 26/59] arm64: dts: ls1043a: mark crypto engine dma coherent
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 058/111] macvlan: macvlan_count_rx() needs to be aware of preemption
 Date:   Mon, 29 Mar 2021 09:58:06 +0200
-Message-Id: <20210329075609.747722908@linuxfoundation.org>
+Message-Id: <20210329075617.134768780@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 4fb3a074755b7737c4081cffe0ccfa08c2f2d29d upstream.
+[ Upstream commit dd4fa1dae9f4847cc1fd78ca468ad69e16e5db3e ]
 
-Crypto engine (CAAM) on LS1043A platform is configured HW-coherent,
-mark accordingly the DT node.
+macvlan_count_rx() can be called from process context, it is thus
+necessary to disable preemption before calling u64_stats_update_begin()
 
-Lack of "dma-coherent" property for an IP that is configured HW-coherent
-can lead to problems, similar to what has been reported for LS1046A.
+syzbot was able to spot this on 32bit arch:
 
-Cc: <stable@vger.kernel.org> # v4.8+
-Fixes: 63dac35b58f4 ("arm64: dts: ls1043a: add crypto node")
-Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
+WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
+Modules linked in:
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 4632 Comm: kworker/1:3 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: ARM-Versatile Express
+Workqueue: events macvlan_process_broadcast
+Backtrace:
+[<82740468>] (dump_backtrace) from [<827406dc>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
+ r7:00000080 r6:60000093 r5:00000000 r4:8422a3c4
+[<827406c4>] (show_stack) from [<82751b58>] (__dump_stack lib/dump_stack.c:79 [inline])
+[<827406c4>] (show_stack) from [<82751b58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
+[<82751aa0>] (dump_stack) from [<82741270>] (panic+0x130/0x378 kernel/panic.c:231)
+ r7:830209b4 r6:84069ea4 r5:00000000 r4:844350d0
+[<82741140>] (panic) from [<80244924>] (__warn+0xb0/0x164 kernel/panic.c:605)
+ r3:8404ec8c r2:00000000 r1:00000000 r0:830209b4
+ r7:0000010f
+[<80244874>] (__warn) from [<82741520>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
+ r7:81363f70 r6:0000010f r5:83018e50 r4:00000000
+[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
+[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
+ r8:5a109000 r7:0000000f r6:a568dac0 r5:89802300 r4:00000001
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (u64_stats_update_begin include/linux/u64_stats_sync.h:128 [inline])
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_count_rx include/linux/if_macvlan.h:47 [inline])
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_broadcast+0x154/0x26c drivers/net/macvlan.c:291)
+ r5:89802300 r4:8a927740
+[<8136499c>] (macvlan_broadcast) from [<81365020>] (macvlan_process_broadcast+0x258/0x2d0 drivers/net/macvlan.c:317)
+ r10:81364f78 r9:8a86d000 r8:8a9c7e7c r7:8413aa5c r6:00000000 r5:00000000
+ r4:89802840
+[<81364dc8>] (macvlan_process_broadcast) from [<802696a4>] (process_one_work+0x2d4/0x998 kernel/workqueue.c:2275)
+ r10:00000008 r9:8404ec98 r8:84367a02 r7:ddfe6400 r6:ddfe2d40 r5:898dac80
+ r4:8a86d43c
+[<802693d0>] (process_one_work) from [<80269dcc>] (worker_thread+0x64/0x54c kernel/workqueue.c:2421)
+ r10:00000008 r9:8a9c6000 r8:84006d00 r7:ddfe2d78 r6:898dac94 r5:ddfe2d40
+ r4:898dac80
+[<80269d68>] (worker_thread) from [<80271f40>] (kthread+0x184/0x1a4 kernel/kthread.c:292)
+ r10:85247e64 r9:898dac80 r8:80269d68 r7:00000000 r6:8a9c6000 r5:89a2ee40
+ r4:8a97bd00
+[<80271dbc>] (kthread) from [<80200114>] (ret_from_fork+0x14/0x20 arch/arm/kernel/entry-common.S:158)
+Exception stack(0x8a9c7fb0 to 0x8a9c7ff8)
+
+Fixes: 412ca1550cbe ("macvlan: Move broadcasts into a work queue")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ include/linux/if_macvlan.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-@@ -219,6 +219,7 @@
- 			ranges = <0x0 0x00 0x1700000 0x100000>;
- 			reg = <0x00 0x1700000 0x0 0x100000>;
- 			interrupts = <0 75 0x4>;
-+			dma-coherent;
+diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
+index a367ead4bf4b..e11555989090 100644
+--- a/include/linux/if_macvlan.h
++++ b/include/linux/if_macvlan.h
+@@ -42,13 +42,14 @@ static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
+ 	if (likely(success)) {
+ 		struct vlan_pcpu_stats *pcpu_stats;
  
- 			sec_jr0: jr@10000 {
- 				compatible = "fsl,sec-v5.4-job-ring",
+-		pcpu_stats = this_cpu_ptr(vlan->pcpu_stats);
++		pcpu_stats = get_cpu_ptr(vlan->pcpu_stats);
+ 		u64_stats_update_begin(&pcpu_stats->syncp);
+ 		pcpu_stats->rx_packets++;
+ 		pcpu_stats->rx_bytes += len;
+ 		if (multicast)
+ 			pcpu_stats->rx_multicast++;
+ 		u64_stats_update_end(&pcpu_stats->syncp);
++		put_cpu_ptr(vlan->pcpu_stats);
+ 	} else {
+ 		this_cpu_inc(vlan->pcpu_stats->rx_errors);
+ 	}
+-- 
+2.30.1
+
 
 
