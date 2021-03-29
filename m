@@ -2,192 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E787334CE8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABDA34CE91
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhC2LOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:14:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51961 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231584AbhC2LNz (ORCPT
+        id S231873AbhC2LQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhC2LQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:13:55 -0400
-X-UUID: af5f7e916a054d958e140f1157c005bc-20210329
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=hFgBU9yLcCHCyobJXrDH3btoHx/jN6JEEmH0JPSgREg=;
-        b=VwbSU6dOtwWfcO6Xh4fRiI43G2aYtS2ogZXRXAwJl7vFV4fUtF147vFtkb3cRLZlrZq5vRs9gihGWp4zgz/Q+JlNi+0+ruaWLD4t8Ue6BX+xAvLwh/Ky+DwIZWBb2fCo4z5JUhhZTTZ3/DOypol+eeFDbl8PJ3IgXXq/YNtlJ8g=;
-X-UUID: af5f7e916a054d958e140f1157c005bc-20210329
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 719700478; Mon, 29 Mar 2021 19:13:50 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Mar 2021 19:13:49 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Mar 2021 19:13:49 +0800
-Message-ID: <1617016429.8590.3.camel@mtksdaap41>
-Subject: Re: [PATCH v6 4/8] dt-bindings: regulator: Add document for MT6359
- regulator
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        "Fei Shao" <fshao@chromium.org>, Ran Bi <ran.bi@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Mon, 29 Mar 2021 19:13:49 +0800
-In-Reply-To: <20210316212802.GA3670080@robh.at.kernel.org>
-References: <1615829757-3223-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1615829757-3223-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20210316212802.GA3670080@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 29 Mar 2021 07:16:16 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D01C061574;
+        Mon, 29 Mar 2021 04:16:14 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id b9so12413080wrt.8;
+        Mon, 29 Mar 2021 04:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AQihHYniNz1aK+Mb8EzSQ8aiiXXwcD1vtx1NnSetokE=;
+        b=CpmgBmJTBo1YRy8aVHbKgJorBDX0zR9pdgZxVHXQ+qkn0qykejsNdfBbA6JbTEICqT
+         tLelFsTDcjW0hZJ/HVvqu0xfMXOGVKqejISgBvD91ucwvjh/WAEQ3aMmbLun4ruNZBhU
+         InU4lTzZn8+I+LXrZiuwqYdLcujwlP/Q5RsdSWCsW4kqoVFXf+PL1RKp7mAKipHNmghw
+         OWO1BG/nJKx17+Sn7OQ2PdpC6mfaUt7kSB7eo0Ws1n2z9TFDPTqWQlvpXrPVV1cquZyf
+         B9rYsBncNE+qvyQH8gqP2GI5Y8Ad5/lofcaQpf3ShcTGV4GRCn63XkjUwf/ns8tvNl/8
+         0Gjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AQihHYniNz1aK+Mb8EzSQ8aiiXXwcD1vtx1NnSetokE=;
+        b=UP4ZssnwFiUsT2hQTSbgollsIxnc96cIG4/mRBh/1fzdNE/H66IY8wvc29W+bpIEqM
+         TCFHylUrLY4fdVsSvkgbB3AFtUy0RCc3XWB3i0tFUAssGTbynlRswTRAeIZ6mDOyg9PA
+         inllgoTbgO9ru/4lb/e6SlnaV62nSjqncERoBY9jMSEFFrIIeGQGshDRdQuN1YKAL7m5
+         OQ6Y9DG1e+775X+ixviyQCWP/zqDfpO7c5hv6DgYf8AMbhYWWW0zj2DaAqaAb7UNxQKf
+         xS8Pmh42qGlaIgMhMYwFlFqWJRVaMSoetC8TeSj0KHxSoCBkq4M3Cqz+5zHPaGIy7PKe
+         ot9w==
+X-Gm-Message-State: AOAM532jKcXEv+anHXbgYxmaqzMV3i02vZnMigvOn9TKl3UOOhkfxM66
+        U/uWmQDvKt8SM9gybR60lRE=
+X-Google-Smtp-Source: ABdhPJyxrHLcyVXpNXt4YFxuMZbcgowEBv/kwVAPs8P474s8n5AkInLUjIAR5NIAdEcj6/dIWnnAOg==
+X-Received: by 2002:a05:6000:120f:: with SMTP id e15mr26989126wrx.129.1617016570758;
+        Mon, 29 Mar 2021 04:16:10 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id t8sm30105786wrr.10.2021.03.29.04.16.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 04:16:10 -0700 (PDT)
+To:     Nina Wu <nina-cm.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Jackson-kt.Chang@mediatek.com
+References: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
+ <1616743871-8087-2-git-send-email-nina-cm.wu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH 2/2] soc: mediatek: Add mt8192 devapc driver
+Message-ID: <365d12f3-3553-f560-2418-7f0ab764a81a@gmail.com>
+Date:   Mon, 29 Mar 2021 13:16:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <1616743871-8087-2-git-send-email-nina-cm.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIFR1ZSwgMjAyMS0wMy0xNiBhdCAxNToyOCAtMDYwMCwgUm9iIEhlcnJpbmcgd3Jv
-dGU6DQo+IE9uIFR1ZSwgTWFyIDE2LCAyMDIxIGF0IDAxOjM1OjUzQU0gKzA4MDAsIEhzaW4tSHNp
-dW5nIFdhbmcgd3JvdGU6DQo+ID4gYWRkIGR0LWJpbmRpbmcgZG9jdW1lbnQgZm9yIE1lZGlhVGVr
-IE1UNjM1OSBQTUlDDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSHNpbi1Ic2l1bmcgV2FuZyA8
-aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gY2hhbmdlcyBzaW5j
-ZSB2NToNCj4gPiAtIG5vIGNoYW5nZS4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL3JlZ3Vs
-YXRvci9tdDYzNTktcmVndWxhdG9yLnlhbWwgIHwgMTY5ICsrKysrKysrKysrKysrKysrKw0KPiA+
-ICAxIGZpbGUgY2hhbmdlZCwgMTY5IGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1vZGUgMTAw
-NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZWd1bGF0b3IvbXQ2MzU5LXJl
-Z3VsYXRvci55YW1sDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3VsYXRvci55YW1sIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9yLnlhbWwN
-Cj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uNjJmZjkz
-ZWVmZDM5DQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3VsYXRvci55YW1sDQo+ID4gQEAgLTAs
-MCArMSwxNjkgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAgT1Ig
-QlNELTItQ2xhdXNlKQ0KPiA+ICslWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDogaHR0cDov
-L2RldmljZXRyZWUub3JnL3NjaGVtYXMvcmVndWxhdG9yL210NjM1OS1yZWd1bGF0b3IueWFtbCMN
-Cj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlh
-bWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogTVQ2MzU5IFJlZ3VsYXRvciBmcm9tIE1lZGlhVGVrIElu
-dGVncmF0ZWQNCj4gPiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsgIC0gSHNpbi1Ic2l1bmcg
-V2FuZyA8aHNpbi1oc2l1bmcud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gKw0KPiA+ICtkZXNjcmlw
-dGlvbjogfA0KPiA+ICsgIExpc3Qgb2YgcmVndWxhdG9ycyBwcm92aWRlZCBieSB0aGlzIGNvbnRy
-b2xsZXIuIEl0IGlzIG5hbWVkDQo+ID4gKyAgYWNjb3JkaW5nIHRvIGl0cyByZWd1bGF0b3IgdHlw
-ZSwgYnVja188bmFtZT4gYW5kIGxkb188bmFtZT4uDQo+ID4gKyAgTVQ2MzU5IHJlZ3VsYXRvcnMg
-bm9kZSBzaG91bGQgYmUgc3ViIG5vZGUgb2YgdGhlIE1UNjM5NyBNRkQgbm9kZS4NCj4gPiArDQo+
-ID4gK3Byb3BlcnRpZXM6DQo+ID4gKyAgJG5vZGVuYW1lOg0KPiA+ICsgICAgcGF0dGVybjogIl5w
-bWljJCINCj4gDQo+IFRoZSBlcnJvcnMgYXJlIGJlY2F1c2UgdGhpcyBzY2hlbWEgd2lsbCBiZSBh
-cHBsaWVkIHRvIGV2ZXJ5ICdwbWljJyBub2RlLg0KPiANCj4gPiArDQo+ID4gKyAgbXQ2MzU5cmVn
-dWxhdG9yOg0KPiANCj4gVGhlIG5vZGUgbmFtZSBoZXJlIHNob3VsZCBiZSBqdXN0ICdyZWd1bGF0
-b3JzJywgYnV0IHRoYXQgc2hvdWxkIGJlIGluIA0KPiB0aGUgTUZEIHNjaGVtYSBhbmQgeW91IHNo
-b3VsZCByZW1vdmUgdGhpcyBsZXZlbCBoZXJlLiBTbyB0aGUgTUZEIHdvdWxkIA0KPiBoYXZlOg0K
-PiANCj4gcHJvcGVydGllczoNCj4gICByZWd1bGF0b3JzOg0KPiAgICAgdHlwZTogb2JqZWN0DQo+
-ICAgICAkcmVmOiBzY2hlbWFzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9yLnlhbWwjDQo+IA0K
-PiA+ICsgICAgdHlwZTogb2JqZWN0DQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4gPiArICAgICAg
-bGlzdCBvZiByZWd1bGF0b3JzIHByb3ZpZGVkIGJ5IHRoaXMgY29udHJvbGxlci4NCj4gPiArDQo+
-ID4gKyAgICBwYXR0ZXJuUHJvcGVydGllczoNCj4gDQo+IEFuZCB0aGlzIHNob3VsZCBiZSBhdCB0
-aGUgdG9wIGxldmVsIG9mIHRoaXMgZG9jLg0KPiANCj4gPiArICAgICAgIl5idWNrX3YoczF8Z3B1
-MTF8bW9kZW18cHV8Y29yZXxzMnxwYXxwcm9jMnxwcm9jMXxjb3JlX3NzaHViKSQiOg0KPiA+ICsg
-ICAgICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgICAgICRyZWY6ICJyZWd1bGF0b3IueWFtbCMi
-DQo+ID4gKw0KPiA+ICsgICAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICByZWd1bGF0
-b3ItbmFtZToNCj4gPiArICAgICAgICAgICAgcGF0dGVybjogIl52KHMxfGdwdTExfG1vZGVtfHB1
-fGNvcmV8czJ8cGF8cHJvYzJ8cHJvYzF8Y29yZV9zc2h1YikkIg0KPiA+ICsNCj4gPiArICAgICAg
-ICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICsgICAgICAiXmxkb192
-KGlicnxyZjEyfHVzYnxjYW1pb3xlZnVzZXx4bzIyKSQiOg0KPiA+ICsgICAgICAgIHR5cGU6IG9i
-amVjdA0KPiA+ICsgICAgICAgICRyZWY6ICJyZWd1bGF0b3IueWFtbCMiDQo+ID4gKw0KPiA+ICsg
-ICAgICAgIHByb3BlcnRpZXM6DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZToNCj4gPiAr
-ICAgICAgICAgICAgcGF0dGVybjogIl52KGlicnxyZjEyfHVzYnxjYW1pb3xlZnVzZXx4bzIyKSQi
-DQo+ID4gKw0KPiA+ICsgICAgICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UNCj4gPiAr
-DQo+ID4gKyAgICAgICJebGRvX3YocmZja3xlbWN8YTEyfGEwOXx1ZnN8YmJjaykkIjoNCj4gPiAr
-ICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgICAgICAkcmVmOiAicmVndWxhdG9yLnlhbWwj
-Ig0KPiA+ICsNCj4gPiArICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgcmVndWxh
-dG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAgIHBhdHRlcm46ICJedihyZmNrfGVtY3xhMTJ8YTA5
-fHVmc3xiYmNrKSQiDQo+ID4gKw0KPiA+ICsgICAgICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczog
-ZmFsc2UNCj4gPiArDQo+ID4gKyAgICAgICJebGRvX3ZjbigxOHwxM3wzM18xX2J0fDEzXzFfd2lm
-aXwzM18yX2J0fDMzXzJfd2lmaSkkIjoNCj4gPiArICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiAr
-ICAgICAgICAkcmVmOiAicmVndWxhdG9yLnlhbWwjIg0KPiA+ICsNCj4gPiArICAgICAgICBwcm9w
-ZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAg
-IHBhdHRlcm46ICJedmNuKDE4fDEzfDMzXzFfYnR8MTNfMV93aWZpfDMzXzJfYnR8MzNfMl93aWZp
-KSQiDQo+ID4gKw0KPiA+ICsgICAgICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UNCj4g
-PiArDQo+ID4gKyAgICAgICJebGRvX3ZzcmFtXyhwcm9jMnxvdGhlcnN8bWR8cHJvYzF8b3RoZXJz
-X3NzaHViKSQiOg0KPiA+ICsgICAgICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgICAgICRyZWY6
-ICJyZWd1bGF0b3IueWFtbCMiDQo+ID4gKw0KPiA+ICsgICAgICAgIHByb3BlcnRpZXM6DQo+ID4g
-KyAgICAgICAgICByZWd1bGF0b3ItbmFtZToNCj4gPiArICAgICAgICAgICAgcGF0dGVybjogIl52
-c3JhbV8ocHJvYzJ8b3RoZXJzfG1kfHByb2MxfG90aGVyc19zc2h1YikkIg0KPiA+ICsNCj4gPiAr
-ICAgICAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICsgICAgICAi
-Xmxkb192KGZlfGJpZnxpbykyOCQiOg0KPiA+ICsgICAgICAgIHR5cGU6IG9iamVjdA0KPiA+ICsg
-ICAgICAgICRyZWY6ICJyZWd1bGF0b3IueWFtbCMiDQo+ID4gKw0KPiA+ICsgICAgICAgIHByb3Bl
-cnRpZXM6DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZToNCj4gPiArICAgICAgICAgICAg
-cGF0dGVybjogIl52KGZlfGJpZnxpbykyOCQiDQo+ID4gKw0KPiA+ICsgICAgICAgIHVuZXZhbHVh
-dGVkUHJvcGVydGllczogZmFsc2UNCj4gPiArDQo+ID4gKyAgICAgICJebGRvX3YoYXVkfGlvfGF1
-eHxyZnxtKTE4JCI6DQo+ID4gKyAgICAgICAgdHlwZTogb2JqZWN0DQo+ID4gKyAgICAgICAgJHJl
-ZjogInJlZ3VsYXRvci55YW1sIyINCj4gPiArDQo+ID4gKyAgICAgICAgcHJvcGVydGllczoNCj4g
-PiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lOg0KPiA+ICsgICAgICAgICAgICBwYXR0ZXJuOiAi
-XnYoYXVkfGlvfGF1eHxyZnxtKTE4JCINCj4gPiArDQo+ID4gKyAgICAgICAgdW5ldmFsdWF0ZWRQ
-cm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArICAgICAgIl5sZG9fdnNpbVsxMl0kIjoNCj4g
-PiArICAgICAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgICAgICAkcmVmOiAicmVndWxhdG9yLnlh
-bWwjIg0KPiA+ICsNCj4gPiArICAgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgICAgcmVn
-dWxhdG9yLW5hbWU6DQo+ID4gKyAgICAgICAgICAgIHBhdHRlcm46ICJednNpbVsxMl0kIg0KPiA+
-ICsNCj4gPiArICAgICAgICByZXF1aXJlZDoNCj4gPiArICAgICAgICAgIC0gcmVndWxhdG9yLW5h
-bWUNCj4gPiArDQo+ID4gKyAgICAgICAgdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+
-ICsNCj4gPiArYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICtleGFtcGxl
-czoNCj4gPiArICAtIHwNCj4gPiArICAgIHBtaWMgew0KPiA+ICsgICAgICBtdDYzNTlyZWd1bGF0
-b3Igew0KPiANCj4gSSBwcmVmZXIgdG8gc2VlIGEgc2luZ2xlIGNvbXBsZXRlIGV4YW1wbGUgaW4g
-dGhlIE1GRCBzY2hlbWEgcmF0aGVyIHRoYW4gDQo+IHBpZWNlbWVhbCBzY2hlbWFzIGluIGVhY2gg
-c3ViIHNjaGVtYS4NCj4gDQoNClRoYW5rcyBmb3IgeW91ciBjb21tZW50Lg0KSG93ZXZlciwgTVQ2
-Mzk3IG1mZCBkcml2ZXIgc3VwcG9ydHMgc2V2ZXJhbCBtZWRpYXRlayBwbWljcyB3aGljaCBoYXZl
-DQpkaWZmZXJlbnQgcmVndWxhdG9yIGNhcGFiaWxpdHksIHNvIGl0IGlzIGhhcmQgdG8gbGlzdCBh
-bGwgcmVndWxhdG9ycyBvZg0KZWFjaCBwbWljIGluIHRoZSBNRkQgc2NoZW1hLg0KDQpUaGFua3Mu
-DQoNCj4gPiArICAgICAgICBtdDYzNTlfdmdwdTExX2J1Y2tfcmVnOiBidWNrX3ZncHUxMSB7DQo+
-ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZSA9ICJ2Z3B1MTEiOw0KPiA+ICsgICAgICAgICAg
-cmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8NDAwMDAwPjsNCj4gPiArICAgICAgICAgIHJlZ3Vs
-YXRvci1tYXgtbWljcm92b2x0ID0gPDExOTM3NTA+Ow0KPiA+ICsgICAgICAgICAgcmVndWxhdG9y
-LWVuYWJsZS1yYW1wLWRlbGF5ID0gPDIwMD47DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItYWx3
-YXlzLW9uOw0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLWFsbG93ZWQtbW9kZXMgPSA8MCAxIDI+
-Ow0KPiA+ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIG10NjM1OV92Y2FtaW9fbGRv
-X3JlZzogbGRvX3ZjYW1pbyB7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZSA9ICJ2Y2Ft
-aW8iOw0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8MTcwMDAwMD47
-DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwxOTAwMDAwPjsNCj4g
-PiArICAgICAgICB9Ow0KPiA+ICsNCj4gPiArICAgICAgICBtdDYzNTlfdmNuMThfbGRvX3JlZzog
-bGRvX3ZjbjE4IHsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lID0gInZjbjE4IjsNCj4g
-PiArICAgICAgICAgIHJlZ3VsYXRvci1taW4tbWljcm92b2x0ID0gPDE4MDAwMDA+Ow0KPiA+ICsg
-ICAgICAgICAgcmVndWxhdG9yLW1heC1taWNyb3ZvbHQgPSA8MTgwMDAwMD47DQo+ID4gKyAgICAg
-ICAgICByZWd1bGF0b3ItZW5hYmxlLXJhbXAtZGVsYXkgPSA8MjQwPjsNCj4gPiArICAgICAgICB9
-Ow0KPiA+ICsNCj4gPiArICAgICAgICBtdDYzNTlfdnNyYW1fcHJvYzJfbGRvX3JlZzogbGRvX3Zz
-cmFtX3Byb2MyIHsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1uYW1lID0gInZzcmFtX3Byb2My
-IjsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1taW4tbWljcm92b2x0ID0gPDUwMDAwMD47DQo+
-ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwxMjkzNzUwPjsNCj4gPiAr
-ICAgICAgICAgIHJlZ3VsYXRvci1yYW1wLWRlbGF5ID0gPDc1MDA+Ow0KPiA+ICsgICAgICAgICAg
-cmVndWxhdG9yLWVuYWJsZS1yYW1wLWRlbGF5ID0gPDI0MD47DQo+ID4gKyAgICAgICAgICByZWd1
-bGF0b3ItYWx3YXlzLW9uOw0KPiA+ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIG10
-NjM1OV92ZmUyOF9sZG9fcmVnOiBsZG9fdmZlMjggew0KPiA+ICsgICAgICAgICAgcmVndWxhdG9y
-LW5hbWUgPSAidmZlMjgiOw0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQg
-PSA8MjgwMDAwMD47DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwy
-ODAwMDAwPjsNCj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1lbmFibGUtcmFtcC1kZWxheSA9IDwx
-MjA+Ow0KPiA+ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIG10NjM1OV92YXVkMThf
-bGRvX3JlZzogbGRvX3ZhdWQxOCB7DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbmFtZSA9ICJ2
-YXVkMTgiOw0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8MTgwMDAw
-MD47DQo+ID4gKyAgICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwxODAwMDAwPjsN
-Cj4gPiArICAgICAgICAgIHJlZ3VsYXRvci1lbmFibGUtcmFtcC1kZWxheSA9IDwyNDA+Ow0KPiA+
-ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIG10NjM1OV92c2ltMV9sZG9fcmVnOiBs
-ZG9fdnNpbTEgew0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yLW5hbWUgPSAidnNpbTEiOw0KPiA+
-ICsgICAgICAgICAgcmVndWxhdG9yLW1pbi1taWNyb3ZvbHQgPSA8MTcwMDAwMD47DQo+ID4gKyAg
-ICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDwzMTAwMDAwPjsNCj4gPiArICAgICAg
-ICAgIHJlZ3VsYXRvci1lbmFibGUtcmFtcC1kZWxheSA9IDw0ODA+Ow0KPiA+ICsgICAgICAgIH07
-DQo+ID4gKyAgICAgIH07DQo+ID4gKyAgICB9Ow0KPiA+ICsuLi4NCj4gPiAtLSANCj4gPiAyLjE4
-LjANCj4gPiANCg0K
+As a general comment:
 
+Please split your patch in several, one introducing changes to the existing code
+base which are needed for newer SoCs (depending on the changes more then one)
+and one which actually adds support for the new SoC.
+
+More comments below.
+
+
+On 26/03/2021 08:31, Nina Wu wrote:
+> From: Nina Wu <Nina-CM.Wu@mediatek.com>
+> 
+> The hardware architecture of mt8192 devapc is slightly
+> different from that of the previous IC.
+> We add necessary extensions to support mt8192 and be
+> back-compatible with other ICs.
+> 
+> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+> ---
+>  drivers/soc/mediatek/mtk-devapc.c | 213 ++++++++++++++++++++++++++++----------
+>  1 file changed, 156 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
+> index f1cea04..1e40a52 100644
+> --- a/drivers/soc/mediatek/mtk-devapc.c
+> +++ b/drivers/soc/mediatek/mtk-devapc.c
+> @@ -15,6 +15,11 @@
+>  #define VIO_MOD_TO_REG_IND(m)	((m) / 32)
+>  #define VIO_MOD_TO_REG_OFF(m)	((m) % 32)
+>  
+> +#define FOR_EACH_SLAVE_TYPE(ctx, idx) \
+> +	for ((idx) = 0; (idx) < (ctx)->slave_type_num; (idx)++)
+
+Not really needed, please drop.
+
+> +#define BASE(i)			(ctx->base_list[i])
+
+same here.
+
+> +#define VIO_IDX_NUM(i)		(ctx->vio_idx_num[i])
+
+same here.
+
+> +
+>  struct mtk_devapc_vio_dbgs {
+>  	union {
+>  		u32 vio_dbg0;
+> @@ -26,20 +31,28 @@ struct mtk_devapc_vio_dbgs {
+>  			u32 addr_h:4;
+>  			u32 resv:4;
+>  		} dbg0_bits;
+> +
+> +		/* Not used, reference only */
+> +		struct {
+> +			u32 dmnid:6;
+> +			u32 vio_w:1;
+> +			u32 vio_r:1;
+> +			u32 addr_h:4;
+> +			u32 resv:20;
+> +		} dbg0_bits_ver2;
+>  	};
+>  
+>  	u32 vio_dbg1;
+> +	u32 vio_dbg2;
+>  };
+>  
+>  struct mtk_devapc_data {
+> -	/* numbers of violation index */
+> -	u32 vio_idx_num;
+> -
+>  	/* reg offset */
+>  	u32 vio_mask_offset;
+>  	u32 vio_sta_offset;
+>  	u32 vio_dbg0_offset;
+>  	u32 vio_dbg1_offset;
+> +	u32 vio_dbg2_offset;
+>  	u32 apc_con_offset;
+>  	u32 vio_shift_sta_offset;
+>  	u32 vio_shift_sel_offset;
+> @@ -48,7 +61,10 @@ struct mtk_devapc_data {
+>  
+>  struct mtk_devapc_context {
+>  	struct device *dev;
+> -	void __iomem *infra_base;
+> +	u32 arch_ver;
+> +	u32 slave_type_num;
+> +	void __iomem **base_list;
+> +	u32 *vio_idx_num;
+>  	struct clk *infra_clk;
+>  	const struct mtk_devapc_data *data;
+>  };
+> @@ -56,39 +72,39 @@ struct mtk_devapc_context {
+>  static void clear_vio_status(struct mtk_devapc_context *ctx)
+>  {
+>  	void __iomem *reg;
+> -	int i;
+> +	int i, j;
+>  
+> -	reg = ctx->infra_base + ctx->data->vio_sta_offset;
+> +	FOR_EACH_SLAVE_TYPE(ctx, i) {
+> +		reg = BASE(i) + ctx->data->vio_sta_offset;
+>  
+> -	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
+> -		writel(GENMASK(31, 0), reg + 4 * i);
+> +		for (j = 0; j < VIO_MOD_TO_REG_IND(VIO_IDX_NUM(i) - 1); j++)
+> +			writel(GENMASK(31, 0), reg + 4 * j);
+> +
+> +		writel(GENMASK(VIO_MOD_TO_REG_OFF(VIO_IDX_NUM(i) - 1), 0),
+> +		       reg + 4 * j);
+> +	}
+>  
+> -	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1, 0),
+> -	       reg + 4 * i);
+>  }
+>  
+> -static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
+> +static void mask_module_irq(void __iomem *reg, int vio_idx_num, bool mask)
+>  {
+> -	void __iomem *reg;
+>  	u32 val;
+>  	int i;
+>  
+> -	reg = ctx->infra_base + ctx->data->vio_mask_offset;
+> -
+>  	if (mask)
+>  		val = GENMASK(31, 0);
+>  	else
+>  		val = 0;
+>  
+> -	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1; i++)
+> +	for (i = 0; i < VIO_MOD_TO_REG_IND(vio_idx_num - 1); i++)
+>  		writel(val, reg + 4 * i);
+>  
+>  	val = readl(reg + 4 * i);
+>  	if (mask)
+> -		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
+> +		val |= GENMASK(VIO_MOD_TO_REG_OFF(vio_idx_num - 1),
+>  			       0);
+>  	else
+> -		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1,
+> +		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(vio_idx_num - 1),
+>  				0);
+>  
+>  	writel(val, reg + 4 * i);
+> @@ -108,6 +124,8 @@ static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
+>   */
+>  static int devapc_sync_vio_dbg(struct mtk_devapc_context *ctx)
+>  {
+> +	int i;
+> +	void __iomem *reg_base;
+
+Not needed.
+
+>  	void __iomem *pd_vio_shift_sta_reg;
+>  	void __iomem *pd_vio_shift_sel_reg;
+>  	void __iomem *pd_vio_shift_con_reg;
+> @@ -115,57 +133,87 @@ static int devapc_sync_vio_dbg(struct mtk_devapc_context *ctx)
+>  	int ret;
+>  	u32 val;
+>  
+> -	pd_vio_shift_sta_reg = ctx->infra_base +
+> -			       ctx->data->vio_shift_sta_offset;
+> -	pd_vio_shift_sel_reg = ctx->infra_base +
+> -			       ctx->data->vio_shift_sel_offset;
+> -	pd_vio_shift_con_reg = ctx->infra_base +
+> -			       ctx->data->vio_shift_con_offset;
+> +	FOR_EACH_SLAVE_TYPE(ctx, i) {
+> +		reg_base = BASE(i);
+>  
+> -	/* Find the minimum shift group which has violation */
+> -	val = readl(pd_vio_shift_sta_reg);
+> -	if (!val)
+> -		return false;
+> +		pd_vio_shift_sta_reg = reg_base +
+> +				       ctx->data->vio_shift_sta_offset;
+> +		pd_vio_shift_sel_reg = reg_base +
+> +				       ctx->data->vio_shift_sel_offset;
+> +		pd_vio_shift_con_reg = reg_base +
+> +				       ctx->data->vio_shift_con_offset;
+>  
+> -	min_shift_group = __ffs(val);
+> +		/* Find the minimum shift group which has violation */
+> +		val = readl(pd_vio_shift_sta_reg);
+> +		if (!val)
+> +			continue;
+>  
+> -	/* Assign the group to sync */
+> -	writel(0x1 << min_shift_group, pd_vio_shift_sel_reg);
+> +		min_shift_group = __ffs(val);
+>  
+> -	/* Start syncing */
+> -	writel(0x1, pd_vio_shift_con_reg);
+> +		/* Assign the group to sync */
+> +		writel(0x1 << min_shift_group, pd_vio_shift_sel_reg);
+>  
+> -	ret = readl_poll_timeout(pd_vio_shift_con_reg, val, val == 0x3, 0,
+> -				 PHY_DEVAPC_TIMEOUT);
+> -	if (ret) {
+> -		dev_err(ctx->dev, "%s: Shift violation info failed\n", __func__);
+> -		return false;
+> -	}
+> +		/* Start syncing */
+> +		writel(0x1, pd_vio_shift_con_reg);
+> +
+> +		ret = readl_poll_timeout(pd_vio_shift_con_reg, val, val == 0x3,
+> +					 0, PHY_DEVAPC_TIMEOUT);
+> +		if (ret) {
+> +			dev_err(ctx->dev, "%s: Shift violation info failed\n",
+> +				__func__);
+> +			return -ETIMEDOUT;
+> +		}
+>  
+> -	/* Stop syncing */
+> -	writel(0x0, pd_vio_shift_con_reg);
+> +		/* Stop syncing */
+> +		writel(0x0, pd_vio_shift_con_reg);
+>  
+> -	/* Write clear */
+> -	writel(0x1 << min_shift_group, pd_vio_shift_sta_reg);
+> +		/* Write clear */
+> +		writel(0x1 << min_shift_group, pd_vio_shift_sta_reg);
+>  
+> -	return true;
+> +		return i;
+
+Not sure why you change that.
+
+> +	}
+> +
+> +	/* No violation found */
+> +	return -ENODATA;
+>  }
+>  
+>  /*
+>   * devapc_extract_vio_dbg - extract full violation information after doing
+>   *                          shift mechanism.
+>   */
+> -static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
+> +static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx,
+> +				   int vio_slave_type)
+>  {
+>  	struct mtk_devapc_vio_dbgs vio_dbgs;
+>  	void __iomem *vio_dbg0_reg;
+>  	void __iomem *vio_dbg1_reg;
+> +	void __iomem *vio_dbg2_reg;
+> +	u32 vio_addr, bus_id;
+>  
+> -	vio_dbg0_reg = ctx->infra_base + ctx->data->vio_dbg0_offset;
+> -	vio_dbg1_reg = ctx->infra_base + ctx->data->vio_dbg1_offset;
+> +	vio_dbg0_reg = BASE(vio_slave_type) + ctx->data->vio_dbg0_offset;
+> +	vio_dbg1_reg = BASE(vio_slave_type) + ctx->data->vio_dbg1_offset;
+> +	vio_dbg2_reg = BASE(vio_slave_type) + ctx->data->vio_dbg2_offset;
+>  
+>  	vio_dbgs.vio_dbg0 = readl(vio_dbg0_reg);
+>  	vio_dbgs.vio_dbg1 = readl(vio_dbg1_reg);
+> +	vio_dbgs.vio_dbg2 = readl(vio_dbg2_reg);
+> +
+> +	switch (ctx->arch_ver) {
+> +	case 1:
+> +		bus_id = vio_dbgs.dbg0_bits.mstid;
+> +		vio_addr = vio_dbgs.vio_dbg1;
+> +		break;
+> +	case 2:
+> +		bus_id = vio_dbgs.vio_dbg1;
+> +		vio_addr = vio_dbgs.vio_dbg2;
+> +
+> +		/* To align with the bit definition of arch_ver 1 */
+> +		vio_dbgs.vio_dbg0 = (vio_dbgs.vio_dbg0 << 16);
+> +		break;
+> +	default:
+> +		/* Not Supported */
+> +		return;
+> +	}
+>  
+>  	/* Print violation information */
+>  	if (vio_dbgs.dbg0_bits.vio_w)
+> @@ -174,8 +222,7 @@ static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
+>  		dev_info(ctx->dev, "Read Violation\n");
+>  
+>  	dev_info(ctx->dev, "Bus ID:0x%x, Dom ID:0x%x, Vio Addr:0x%x\n",
+> -		 vio_dbgs.dbg0_bits.mstid, vio_dbgs.dbg0_bits.dmnid,
+> -		 vio_dbgs.vio_dbg1);
+> +		 bus_id, vio_dbgs.dbg0_bits.dmnid, vio_addr);
+>  }
+>  
+>  /*
+> @@ -186,9 +233,10 @@ static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
+>  static irqreturn_t devapc_violation_irq(int irq_number, void *data)
+>  {
+>  	struct mtk_devapc_context *ctx = data;
+> +	int vio_slave_type;
+>  
+> -	while (devapc_sync_vio_dbg(ctx))
+> -		devapc_extract_vio_dbg(ctx);
+> +	while ((vio_slave_type = devapc_sync_vio_dbg(ctx)) >= 0)
+> +		devapc_extract_vio_dbg(ctx, vio_slave_type);
+>  
+>  	clear_vio_status(ctx);
+>  
+> @@ -200,9 +248,15 @@ static irqreturn_t devapc_violation_irq(int irq_number, void *data)
+>   */
+>  static void start_devapc(struct mtk_devapc_context *ctx)
+>  {
+> -	writel(BIT(31), ctx->infra_base + ctx->data->apc_con_offset);
+> +	int i;
+> +	void __iomem *reg_base;
+>  
+> -	mask_module_irq(ctx, false);
+> +	FOR_EACH_SLAVE_TYPE(ctx, i) {
+> +		writel(BIT(31), BASE(i) + ctx->data->apc_con_offset);
+> +
+> +		reg_base = BASE(i) + ctx->data->vio_mask_offset;
+> +		mask_module_irq(reg_base, VIO_IDX_NUM(i), false);
+> +	}
+>  }
+>  
+>  /*
+> @@ -210,13 +264,18 @@ static void start_devapc(struct mtk_devapc_context *ctx)
+>   */
+>  static void stop_devapc(struct mtk_devapc_context *ctx)
+>  {
+> -	mask_module_irq(ctx, true);
+> +	int i;
+> +	void __iomem *reg_base;
+> +
+> +	FOR_EACH_SLAVE_TYPE(ctx, i) {
+> +		reg_base = BASE(i) + ctx->data->vio_mask_offset;
+> +		mask_module_irq(reg_base, VIO_IDX_NUM(i), true);
+>  
+> -	writel(BIT(2), ctx->infra_base + ctx->data->apc_con_offset);
+> +		writel(BIT(2), BASE(i) + ctx->data->apc_con_offset);
+> +	}
+>  }
+>  
+>  static const struct mtk_devapc_data devapc_mt6779 = {
+> -	.vio_idx_num = 511,
+>  	.vio_mask_offset = 0x0,
+>  	.vio_sta_offset = 0x400,
+>  	.vio_dbg0_offset = 0x900,
+> @@ -227,11 +286,26 @@ static const struct mtk_devapc_data devapc_mt6779 = {
+>  	.vio_shift_con_offset = 0xF20,
+>  };
+>  
+> +static const struct mtk_devapc_data devapc_mt8192 = {
+> +	.vio_mask_offset = 0x0,
+> +	.vio_sta_offset = 0x400,
+> +	.vio_dbg0_offset = 0x900,
+> +	.vio_dbg1_offset = 0x904,
+> +	.vio_dbg2_offset = 0x908,
+> +	.apc_con_offset = 0xF00,
+> +	.vio_shift_sta_offset = 0xF20,
+> +	.vio_shift_sel_offset = 0xF30,
+> +	.vio_shift_con_offset = 0xF10,
+> +};
+> +
+>  static const struct of_device_id mtk_devapc_dt_match[] = {
+>  	{
+>  		.compatible = "mediatek,mt6779-devapc",
+>  		.data = &devapc_mt6779,
+>  	}, {
+> +		.compatible = "mediatek,mt8192-devapc",
+> +		.data = &devapc_mt8192,
+> +	}, {
+>  	},
+>  };
+>  
+> @@ -239,6 +313,7 @@ static int mtk_devapc_probe(struct platform_device *pdev)
+>  {
+>  	struct device_node *node = pdev->dev.of_node;
+>  	struct mtk_devapc_context *ctx;
+> +	int i;
+>  	u32 devapc_irq;
+>  	int ret;
+>  
+> @@ -252,8 +327,32 @@ static int mtk_devapc_probe(struct platform_device *pdev)
+>  	ctx->data = of_device_get_match_data(&pdev->dev);
+>  	ctx->dev = &pdev->dev;
+>  
+> -	ctx->infra_base = of_iomap(node, 0);
+> -	if (!ctx->infra_base)
+> +	if (of_property_read_u32(node, "version", &ctx->arch_ver))
+> +		return -EINVAL;
+> +
+> +	if (of_property_read_u32(node, "slave_type_num", &ctx->slave_type_num))
+
+arch_ver and slave_type_num can be ddriver internal parameters set through the
+DT data instead of through a new property.
+
+> +		return -EINVAL;
+> +
+> +	ctx->base_list = devm_kzalloc(&pdev->dev,
+> +				      sizeof(void *) * ctx->slave_type_num,
+> +				      GFP_KERNEL);
+> +	if (!ctx->base_list)
+> +		return -ENOMEM;
+> +
+> +	FOR_EACH_SLAVE_TYPE(ctx, i) {
+> +		BASE(i) = of_iomap(node, i);
+> +		if (!BASE(i))
+> +			return -EINVAL;
+> +	}
+> +
+> +	ctx->vio_idx_num = devm_kzalloc(&pdev->dev,
+> +					sizeof(u32) * ctx->slave_type_num,
+> +					GFP_KERNEL);
+> +	if (!ctx->vio_idx_num)
+> +		return -ENOMEM;
+> +
+> +	if (of_property_read_u32_array(node, "vio_idx_num",
+> +				       ctx->vio_idx_num, ctx->slave_type_num))
+>  		return -EINVAL;
+>  
+>  	devapc_irq = irq_of_parse_and_map(node, 0);
+> 
