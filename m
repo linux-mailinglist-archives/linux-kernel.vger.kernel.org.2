@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0956834C773
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BEE34CC7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhC2IPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
+        id S237080AbhC2JD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:03:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232584AbhC2IJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F996196C;
-        Mon, 29 Mar 2021 08:09:37 +0000 (UTC)
+        id S232058AbhC2Ii6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:38:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D7B561581;
+        Mon, 29 Mar 2021 08:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005378;
-        bh=srRYALXKlCfb65PR9LXfX3c/VUocKSHZURZS/aOd5Z0=;
+        s=korg; t=1617007137;
+        bh=LatsfoIWkuAEW3l1DdWNftvFA8jWNeJrMMS4hSV3nMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZDxm77VvDbYvZzY80NuX8T7kc66ikLZZazSfE2nYi88WWR43EXli9PTl7E8R1slB1
-         8wOxcLNjB0DwLqfvuv53XPmkO/BiGBaqQzizKlu2l1HdS0TmMY0ZBoy6N03szJgWF1
-         1stv6FlFwzqIQpynS68nhbt+VjTUqAB1iIlOcAX0=
+        b=r1IjJsqRBavDs6Q2ZmZU5ZOMc3jc2jdSfsOv3uiPErxs86L7lgmdxSRNuXu7sU7u4
+         JNQSE6Y9UYcX0HRvHBueXXq+1+hxDNh2wm8rlN8e270/baNVUPHGuaufI6iePgaH3E
+         rCCSVWCIvbUZVp4c/Ra+eE4Fc/s5leMfxrK1Z7uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Alaa Hleihel <alaa@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 59/72] ACPI: scan: Rearrange memory allocation in acpi_device_add()
-Date:   Mon, 29 Mar 2021 09:58:35 +0200
-Message-Id: <20210329075612.240388985@linuxfoundation.org>
+Subject: [PATCH 5.11 200/254] net/mlx5e: Allow to match on MPLS parameters only for MPLS over UDP
+Date:   Mon, 29 Mar 2021 09:58:36 +0200
+Message-Id: <20210329075639.671172004@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,125 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Alaa Hleihel <alaa@nvidia.com>
 
-[ Upstream commit c1013ff7a5472db637c56bb6237f8343398c03a7 ]
+[ Upstream commit 7d6c86e3ccb5ceea767df5c7a9a17cdfccd3df9a ]
 
-The upfront allocation of new_bus_id is done to avoid allocating
-memory under acpi_device_lock, but it doesn't really help,
-because (1) it leads to many unnecessary memory allocations for
-_ADR devices, (2) kstrdup_const() is run under that lock anyway and
-(3) it complicates the code.
+Currently, we support hardware offload only for MPLS over UDP.
+However, rules matching on MPLS parameters are now wrongly offloaded
+for regular MPLS, without actually taking the parameters into
+consideration when doing the offload.
+Fix it by rejecting such unsupported rules.
 
-Rearrange acpi_device_add() to allocate memory for a new struct
-acpi_device_bus_id instance only when necessary, eliminate a redundant
-local variable from it and reduce the number of labels in there.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 72046a91d134 ("net/mlx5e: Allow to match on mpls parameters")
+Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/scan.c | 57 +++++++++++++++++++++------------------------
- 1 file changed, 26 insertions(+), 31 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index d614cb72041e..712599019892 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -623,12 +623,23 @@ void acpi_bus_put_acpi_device(struct acpi_device *adev)
- 	put_device(&adev->dev);
- }
- 
-+static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
-+{
-+	struct acpi_device_bus_id *acpi_device_bus_id;
-+
-+	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
-+	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
-+		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
-+			return acpi_device_bus_id;
-+	}
-+	return NULL;
-+}
-+
- int acpi_device_add(struct acpi_device *device,
- 		    void (*release)(struct device *))
- {
-+	struct acpi_device_bus_id *acpi_device_bus_id;
- 	int result;
--	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
--	int found = 0;
- 
- 	if (device->handle) {
- 		acpi_status status;
-@@ -654,38 +665,26 @@ int acpi_device_add(struct acpi_device *device,
- 	INIT_LIST_HEAD(&device->del_list);
- 	mutex_init(&device->physical_node_lock);
- 
--	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
--	if (!new_bus_id) {
--		pr_err(PREFIX "Memory allocation error\n");
--		result = -ENOMEM;
--		goto err_detach;
--	}
--
- 	mutex_lock(&acpi_device_lock);
--	/*
--	 * Find suitable bus_id and instance number in acpi_bus_id_list
--	 * If failed, create one and link it into acpi_bus_id_list
--	 */
--	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
--		if (!strcmp(acpi_device_bus_id->bus_id,
--			    acpi_device_hid(device))) {
--			acpi_device_bus_id->instance_no++;
--			found = 1;
--			kfree(new_bus_id);
--			break;
-+
-+	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
-+	if (acpi_device_bus_id) {
-+		acpi_device_bus_id->instance_no++;
-+	} else {
-+		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
-+					     GFP_KERNEL);
-+		if (!acpi_device_bus_id) {
-+			result = -ENOMEM;
-+			goto err_unlock;
- 		}
--	}
--	if (!found) {
--		acpi_device_bus_id = new_bus_id;
- 		acpi_device_bus_id->bus_id =
- 			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
- 		if (!acpi_device_bus_id->bus_id) {
--			pr_err(PREFIX "Memory allocation error for bus id\n");
-+			kfree(acpi_device_bus_id);
- 			result = -ENOMEM;
--			goto err_free_new_bus_id;
-+			goto err_unlock;
- 		}
- 
--		acpi_device_bus_id->instance_no = 0;
- 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index e9b7da05f14a..95cbefed1b32 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -2595,6 +2595,16 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
+ 			*match_level = MLX5_MATCH_L4;
  	}
- 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
-@@ -720,13 +719,9 @@ int acpi_device_add(struct acpi_device *device,
- 		list_del(&device->node);
- 	list_del(&device->wakeup_list);
  
-- err_free_new_bus_id:
--	if (!found)
--		kfree(new_bus_id);
--
-+ err_unlock:
- 	mutex_unlock(&acpi_device_lock);
- 
-- err_detach:
- 	acpi_detach_data(device->handle, acpi_scan_drop_device);
- 	return result;
++	/* Currenlty supported only for MPLS over UDP */
++	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS) &&
++	    !netif_is_bareudp(filter_dev)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Matching on MPLS is supported only for MPLS over UDP");
++		netdev_err(priv->netdev,
++			   "Matching on MPLS is supported only for MPLS over UDP\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	return 0;
  }
+ 
 -- 
 2.30.1
 
