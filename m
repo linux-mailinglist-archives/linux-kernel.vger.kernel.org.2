@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED60734C503
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A68534C509
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhC2HdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhC2HdB (ORCPT
+        id S231151AbhC2Hep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:34:45 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:38291 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhC2HeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:33:01 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ABBC061574;
-        Mon, 29 Mar 2021 00:32:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F846s1t7Wz9sRf;
-        Mon, 29 Mar 2021 18:32:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617003174;
-        bh=Sr7+ycgnN7AD4oqdBODJCVbyuXKwdhgdzbwSLW2yg8c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dJRYced75v4wpTUpjdJV0NmZonn8wcrnOpqeEUTblsOYZZzHqbKJC1SqmUfi4o8CC
-         LaN2AxO7nCan7FmNZ8D+LQPKewgdW8xmHfHWrXw3Y2rJYzAgKZR4V+IJ19URJYRj4U
-         T0xFxmlTGH9l3Q+4VpXwX1JeXgLC8+mvyFHIGIGgyUxEU8f4fVms/HhnjbaYTiBjmI
-         DYUEtJWQNpS7A7sjeFAjEbxzk24BZsEgm6tPYVyxXiI61mBcZVX0B/LnI1Ctx3KS2G
-         dQP03gN+0GHRaeRtBlR2rl5YAToVZNwqMKNa+NuraDFUeJ51awN/MkG2lYeSGMLL9E
-         yK7CJDCx/11dg==
-Date:   Mon, 29 Mar 2021 18:32:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Finn Behrens <me@kloenk.de>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: linux-next: manual merge of the rust tree with the kbuild tree
-Message-ID: <20210329183252.09e820ef@canb.auug.org.au>
+        Mon, 29 Mar 2021 03:34:19 -0400
+Received: by mail-il1-f198.google.com with SMTP id o7so11258354ilt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=lBStvjRDQ5cgv9i64/xI95nXksjc9KFyRlQBs2TGHqI=;
+        b=WfRsD0Wum89dcNIH0Sbelh45/5eQXLHXM2phBIe30z6oT7lQTMJq6+jhZihJbqx9r3
+         sRDCnbRM2jR4XREvs364jpnwxSVufE+1O3+HoEZTyh4vN2BOhS9H4LrzFlPYB4ujj59X
+         yHn0tQanBuxO632Ic0ChwF+0/GF/LF+5nUI+c8xvbjMCon9C69/PwfN7bAyVLVIQcY9i
+         5d4nLGQ3MSr6AL9hOuyFrtPb1myDtL8N68hl8RQP3Gss4k4et3ZvcSEmh1BiiK+YbAoB
+         xDfll19fK3Xs6aEefrAchidpsKK9slha//Yp4EGyU8OzCQRyoCzmCjqMCR1uffj2BLQt
+         HSRw==
+X-Gm-Message-State: AOAM531v9MfHeOLErUKkA086AWIaA5fnXPZ0jAP68e1MZxF0UUSXQRaC
+        gOzvb/b4lVUiDUNsc9mWW9gXiQjjwn2NeJpWLUx3AT5H38oj
+X-Google-Smtp-Source: ABdhPJySMKAh0t5qZNyTGzPjJ6vKcA86/lle9pjA3BOncntSeIqti786AppiH6+JKm8btWC9s4fDNnV10I801jQXkvV32DqMYugG
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sv0pt/5amk2o1J4hUP1Fh0c";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a5e:990f:: with SMTP id t15mr12105880ioj.180.1617003258436;
+ Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 00:34:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d1e19505bea7e8b8@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in io_sq_thread
+From:   syzbot <syzbot+0cbf22e728582ade44f2@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sv0pt/5amk2o1J4hUP1Fh0c
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-Today's linux-next merge of the rust tree got a conflict in:
+HEAD commit:    81b1d39f Merge tag '5.12-rc4-smb3' of git://git.samba.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=156f3d9ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d4e9addca54f3b44
+dashboard link: https://syzkaller.appspot.com/bug?extid=0cbf22e728582ade44f2
 
-  Makefile
+Unfortunately, I don't have any reproducer for this issue yet.
 
-between commit:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0cbf22e728582ade44f2@syzkaller.appspotmail.com
 
-  b0600f0d9b54 ("kbuild: check the minimum assembler version in Kconfig")
+WARNING: suspicious RCU usage
+5.12.0-rc4-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
 
-from the kbuild tree and commit:
+other info that might help us debug this:
 
-  98898dfbdf72 ("Rust support")
 
-from the rust tree.
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by iou-sqp-10136/10139:
+ #0: ffff88801a5a8c70 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread+0xff2/0x13a0 fs/io_uring.c:6794
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+stack backtrace:
+CPU: 1 PID: 10139 Comm: iou-sqp-10136 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+ io_sq_thread+0xbae/0x13a0 fs/io_uring.c:6768
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc Makefile
-index 072e7a6a1a75,62b3bba38635..f86d011caedf
---- a/Makefile
-+++ b/Makefile
-@@@ -263,11 -270,7 +270,11 @@@ no-dot-config-targets :=3D $(clean-target
-  			 cscope gtags TAGS tags help% %docs check% coccicheck \
-  			 $(version_h) headers headers_% archheaders archscripts \
-  			 %asm-generic kernelversion %src-pkg dt_binding_check \
-- 			 outputmakefile
-+ 			 outputmakefile rustfmt rustfmtcheck
- +# Installation targets should not require compiler. Unfortunately, vdso_i=
-nstall
- +# is an exception where build artifacts may be updated. This must be fixe=
-d.
- +no-compiler-targets :=3D $(no-dot-config-targets) install dtbs_install \
- +			headers_install modules_install kernelrelease image_name
-  no-sync-config-targets :=3D $(no-dot-config-targets) %install kernelrelea=
-se \
-  			  image_name
-  single-targets :=3D %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtype=
-s %/
-@@@ -567,24 -588,31 +596,29 @@@ ifdef building_out_of_srctre
-  	{ echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
-  endif
- =20
-- # The expansion should be delayed until arch/$(SRCARCH)/Makefile is inclu=
-ded.
-- # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-- # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-- # and from include/config/auto.conf.cmd to detect the compiler upgrade.
-- CC_VERSION_TEXT =3D $(subst $(pound),,$(shell $(CC) --version 2>/dev/null=
- | head -n 1))
-+ TENTATIVE_CLANG_FLAGS :=3D -Werror=3Dunknown-warning-option
- =20
-- ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-  ifneq ($(CROSS_COMPILE),)
-- CLANG_FLAGS	+=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
-+ TENTATIVE_CLANG_FLAGS	+=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
- -GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
- -TENTATIVE_CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROS=
-S_COMPILE))
- -GCC_TOOLCHAIN	:=3D $(realpath $(GCC_TOOLCHAIN_DIR)/..)
- -endif
- -ifneq ($(GCC_TOOLCHAIN),)
- -TENTATIVE_CLANG_FLAGS	+=3D --gcc-toolchain=3D$(GCC_TOOLCHAIN)
-  endif
- -ifneq ($(LLVM_IAS),1)
- +ifeq ($(LLVM_IAS),1)
-- CLANG_FLAGS	+=3D -integrated-as
-++TENTATIVE_CLANG_FLAGS	+=3D -integrated-as
- +else
-- CLANG_FLAGS	+=3D -no-integrated-as
-+ TENTATIVE_CLANG_FLAGS	+=3D -no-integrated-as
- +GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
-- CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-++TENTATIVE_CLANG_FLAGS	+=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROS=
-S_COMPILE))
-  endif
-- CLANG_FLAGS	+=3D -Werror=3Dunknown-warning-option
-+=20
-+ export TENTATIVE_CLANG_FLAGS
-+=20
-+ # The expansion should be delayed until arch/$(SRCARCH)/Makefile is inclu=
-ded.
-+ # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-+ # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-+ # and from include/config/auto.conf.cmd to detect the compiler upgrade.
-+ CC_VERSION_TEXT =3D $(shell $(CC) --version 2>/dev/null | head -n 1 | sed=
- 's/\#//g')
-+=20
-+ ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-+ CLANG_FLAGS	+=3D $(TENTATIVE_CLANG_FLAGS)
-  KBUILD_CFLAGS	+=3D $(CLANG_FLAGS)
-  KBUILD_AFLAGS	+=3D $(CLANG_FLAGS)
-  export CLANG_FLAGS
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---Sig_/sv0pt/5amk2o1J4hUP1Fh0c
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhgqQACgkQAVBC80lX
-0GxhLQf9HO0abNScJR/jhS3TBc3cneW2HEcmORke+FeV+oWUFh5z1zeWZIH2spB8
-x7PGkvypoC4lfK9WnRamiEtxUUJTvGFLp5ilu6SD0eCD9HgzfOsyh71H7AHhvOcy
-7sqgfgObL6eTaqondrQKaHWWr4TaOYp9HIGsp03LOelDkbdRdNja/uawU9SazSyk
-aU8w6zC+deZ+vcY2GsM2JjA5K4f97zhVK3H05WuXytTxh4LzZ0MhISfyAwS1GmMA
-LOxYPVICdzJXnz5fQfVeLNgVEKFPXaE4YVKfNF6Iqx6lEP+mxtuYOWnn6jHAClik
-jvTWY/pY6E5hZ8BbKR0z1+5UFYW4Qg==
-=aXqs
------END PGP SIGNATURE-----
-
---Sig_/sv0pt/5amk2o1J4hUP1Fh0c--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
