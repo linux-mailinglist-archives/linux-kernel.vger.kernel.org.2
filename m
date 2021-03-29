@@ -2,118 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54A234CCC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D1D34CCC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhC2JJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:09:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35316 "EHLO mx2.suse.de"
+        id S231814AbhC2JOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:14:39 -0400
+Received: from mga05.intel.com ([192.55.52.43]:54674 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231707AbhC2JJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:09:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5DE2B3C6;
-        Mon, 29 Mar 2021 09:09:15 +0000 (UTC)
-Subject: Re: perf does not resolve plt symbols from libstdc++ right (.plt.sec
- problem)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Guenther <rguenther@suse.de>,
-        "H.J. Lu" <hjl.tools@gmail.com>
-References: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz>
-Message-ID: <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz>
-Date:   Mon, 29 Mar 2021 11:09:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231894AbhC2JMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:12:07 -0400
+IronPort-SDR: l7odrfuili1+VyEcjagOTThLa6Bejqevito28lxG+lTq3m9b7RsMIF7dym3kYeBzL8FhFt9TR1
+ JssazHNgorQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="276673296"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="276673296"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 02:11:20 -0700
+IronPort-SDR: JXLMRcuUMDniE16ReHpZgCwBjrg9hUHZCVTEBY5pPJQT8sJEZ3SZXlf9Sk2lnx5CP4MLzRypIY
+ 6LnOJhbFIIfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="376351738"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 29 Mar 2021 02:11:19 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lQnva-0004Si-RH; Mon, 29 Mar 2021 09:11:18 +0000
+Date:   Mon, 29 Mar 2021 17:11:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 1591584e2e762edecefde403c44d9c26c9ff72c9
+Message-ID: <606199a5.lc3zyXL4UozmVu9J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any ideas on this?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 1591584e2e762edecefde403c44d9c26c9ff72c9  x86/process/64: Move cpu_current_top_of_stack out of TSS
 
-On 11. 01. 21, 7:31, Jiri Slaby wrote:
-> Hi,
-> 
-> this e-mails is a follow-up of my report at:
-> https://bugzilla.suse.com/show_bug.cgi?id=1180681
-> 
-> There is a problem with *@plt symbols in some libraries, they are 
-> unresolved by perf (memcmp@plt in this case):
->  >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0 
->             l [.] 0x00000000000a51a0
-> 
-> On the other hand, plt symbols in other libraries are fine (memset@plt 
-> in this case):
->  >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10 
->             l [.] memset@plt
-> 
-> I dumped memcmp's .plt.rela entries in perf:
-> /usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 
-> hdr=10 entry=10
-> /usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10 
-> entry=10
-> 
-> The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 
-> 0xa1070 (perf's computed) = 0x4130.
-> 
-> The problem is perf assumes nth entry of .plt.rela to correspond to nth 
-> function in .plt, but memcmp is in .plt.sec in libstdc++.so:
-> 
->  > Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
->  >     Offset             Info             Type               Symbol's 
-> Value  Symbol's Name + Addend
->  > ...
->  > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT 
-> 0000000000000000 memcmp@GLIBC_2.2.5 + 0
-> 
-> Perf does this with the rela entries:
-> https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385 
-> 
-> 
-> It takes a symbol index from sym.r_info. Then it resolves its name from 
-> .dynsym, appending "@plt" to it. Then this name is added to perf's 
-> symbol table along with address which is computed as .rela.plt index 
-> multiplied by entry size (shdr_plt.sh_entsize) plus plt header 
-> (shdr_plt.sh_entsize on x86_64 too).
-> 
-> And from this comes (almost) the offset above:
->  > $ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
->  >  12 .plt          00003fb0  000000000009e020  000000000009e020 
-> 0009e020  2**4
->  >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160 
-> 000a2160  2**4
-> 
-> 0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds 
-> shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry 
-> (header).
-> 
-> Richard writes:
-> ======
-> .plt.sec is IIRC the "second" (sec) PLT entry - the one that will be 
-> used on the second call (and on).  This is used / emitted for ELF object 
-> instrumented for Intel CET.  The details escape me for the moment but I 
-> hope the x86 ABI documents this (and the constraints) in detail.
-> ======
-> 
-> How should perf find out whether to consider .plt or .plt.sec? Or 
-> generally, how to properly find an address of *@plt symbols like 
-> memcmp@plt above?
-> 
-> thanks,
+elapsed time: 722m
 
+configs tested: 142
+configs skipped: 60
 
--- 
-js
-suse labs
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                        sh7763rdp_defconfig
+arm                         lpc32xx_defconfig
+powerpc                     akebono_defconfig
+powerpc                    adder875_defconfig
+sh                         microdev_defconfig
+arm                        multi_v7_defconfig
+nds32                            alldefconfig
+arc                     haps_hs_smp_defconfig
+arm                      footbridge_defconfig
+ia64                            zx1_defconfig
+m68k                                defconfig
+arm                          imote2_defconfig
+h8300                       h8s-sim_defconfig
+m68k                         apollo_defconfig
+mips                        omega2p_defconfig
+um                             i386_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                       aspeed_g4_defconfig
+riscv                    nommu_k210_defconfig
+arm                       cns3420vb_defconfig
+sh                           sh2007_defconfig
+sh                           se7705_defconfig
+powerpc                      chrp32_defconfig
+powerpc                     rainier_defconfig
+powerpc                          g5_defconfig
+powerpc                     ppa8548_defconfig
+arm                        mini2440_defconfig
+arm                     am200epdkit_defconfig
+arm                           tegra_defconfig
+mips                      pistachio_defconfig
+openrisc                 simple_smp_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                          sdk7780_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                          r7785rp_defconfig
+m68k                       bvme6000_defconfig
+powerpc                     pq2fads_defconfig
+m68k                            q40_defconfig
+arc                           tb10x_defconfig
+arm                           h5000_defconfig
+arc                      axs103_smp_defconfig
+powerpc                      ppc6xx_defconfig
+arm                           spitz_defconfig
+arm                         s3c2410_defconfig
+arm                      jornada720_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210329
+i386                 randconfig-a004-20210329
+i386                 randconfig-a001-20210329
+i386                 randconfig-a002-20210329
+i386                 randconfig-a006-20210329
+i386                 randconfig-a005-20210329
+x86_64               randconfig-a015-20210328
+x86_64               randconfig-a012-20210328
+x86_64               randconfig-a013-20210328
+x86_64               randconfig-a014-20210328
+x86_64               randconfig-a016-20210328
+x86_64               randconfig-a011-20210328
+i386                 randconfig-a014-20210329
+i386                 randconfig-a011-20210329
+i386                 randconfig-a015-20210329
+i386                 randconfig-a016-20210329
+i386                 randconfig-a013-20210329
+i386                 randconfig-a012-20210329
+i386                 randconfig-a014-20210328
+i386                 randconfig-a011-20210328
+i386                 randconfig-a015-20210328
+i386                 randconfig-a016-20210328
+i386                 randconfig-a013-20210328
+i386                 randconfig-a012-20210328
+x86_64               randconfig-a002-20210329
+x86_64               randconfig-a003-20210329
+x86_64               randconfig-a001-20210329
+x86_64               randconfig-a004-20210329
+x86_64               randconfig-a006-20210329
+x86_64               randconfig-a005-20210329
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a002-20210328
+x86_64               randconfig-a003-20210328
+x86_64               randconfig-a001-20210328
+x86_64               randconfig-a006-20210328
+x86_64               randconfig-a005-20210328
+x86_64               randconfig-a004-20210328
+x86_64               randconfig-a015-20210329
+x86_64               randconfig-a012-20210329
+x86_64               randconfig-a013-20210329
+x86_64               randconfig-a014-20210329
+x86_64               randconfig-a011-20210329
+x86_64               randconfig-a016-20210329
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
