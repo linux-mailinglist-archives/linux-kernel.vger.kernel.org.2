@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAB734C8F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AD634CC3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhC2IZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
+        id S236960AbhC2I57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233148AbhC2IQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF14A61477;
-        Mon, 29 Mar 2021 08:16:13 +0000 (UTC)
+        id S234880AbhC2Iha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5BB619AD;
+        Mon, 29 Mar 2021 08:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005774;
-        bh=QzKNGjYBXGZvK+0oTzQfokndILUCu4ieBs+xb2Nd4sg=;
+        s=korg; t=1617007018;
+        bh=L7Fwug4gfuftkbhU3TAzQvA8hI675+RQP9+lRw31ZSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDdMevvFktCYf1ED8SDn84x2yZnf7mEiA0SuKk5tTFykMMK2tfHezpx5lmwknIHlW
-         iiQZ1wmSpL+7dUDHjjiBSMjIlQwn75FzEedwOnHbdm/CWUoSLfG9oTG+7eFrOBc/QZ
-         TRTJ/hgDhd6Los4Tj4/2zVAS1NoixbxbaiG3L9t8=
+        b=z1RY5jV6fwaLiD/8ncoDNNrPKCCp/EHeGlDEVciqHJQWO9GmmTMqOSRSCfXlNZh4n
+         Wh15NiWgLvMY93FoXx1Yfz2xhpqwjO0XC/VGdse16o2Yv0SJ9h8nTxZNsMhVmZhuN5
+         3Dyo0GNecftGzhU30WrKrhpALQZvW/CzkJazi/PY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 077/111] mac80211: fix rate mask reset
+Subject: [PATCH 5.11 189/254] platform/x86: dell-wmi-sysman: Fix crash caused by calling kset_unregister twice
 Date:   Mon, 29 Mar 2021 09:58:25 +0200
-Message-Id: <20210329075617.775630786@linuxfoundation.org>
+Message-Id: <20210329075639.333705534@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+[ Upstream commit d939cd96b9df6dcde1605fab23bbd6307e11f930 ]
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+On some system the WMI GUIDs used by dell-wmi-sysman are present but there
+are no enum type attributes, this causes init_bios_attributes() to return
+-ENODEV, after which sysman_init() does a "goto fail_create_group" and then
+calls release_attributes_data().
 
-Change the comparison accordingly.
+release_attributes_data() calls kset_unregister(wmi_priv.main_dir_kset);
+but before this commit it was missing a "wmi_priv.main_dir_kset = NULL;"
+statement; and after calling release_attributes_data() the sysman_init()
+error handling does this:
 
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
+        if (wmi_priv.main_dir_kset) {
+                kset_unregister(wmi_priv.main_dir_kset);
+                wmi_priv.main_dir_kset = NULL;
+        }
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Which causes a second kset_unregister(wmi_priv.main_dir_kset), leading to
+a double-free, which causes a crash.
+
+Add the missing "wmi_priv.main_dir_kset = NULL;" statement to
+release_attributes_data() to fix this double-free crash.
+
+Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
+Cc: Divya Bharathi <Divya_Bharathi@dell.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321115901.35072-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/platform/x86/dell-wmi-sysman/sysman.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index fa293feef935..677928bf13d1 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2906,14 +2906,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
+diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+index cb81010ba1a2..c1997db74cca 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
++++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+@@ -388,6 +388,7 @@ static void release_attributes_data(void)
+ 	if (wmi_priv.main_dir_kset) {
+ 		destroy_attribute_objs(wmi_priv.main_dir_kset);
+ 		kset_unregister(wmi_priv.main_dir_kset);
++		wmi_priv.main_dir_kset = NULL;
+ 	}
+ 	mutex_unlock(&wmi_priv.mutex);
  
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
- 
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
 -- 
 2.30.1
 
