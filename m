@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A8034CC30
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AB734C627
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236223AbhC2I5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:57:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
+        id S231614AbhC2IF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234771AbhC2IhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98138619BC;
-        Mon, 29 Mar 2021 08:36:36 +0000 (UTC)
+        id S232026AbhC2IDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5319861981;
+        Mon, 29 Mar 2021 08:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006997;
-        bh=uYF5F0D2Fc1nmTn3DBFUzrcUK4K49xvVym1WKs43eZc=;
+        s=korg; t=1617005001;
+        bh=lmEPBLVgIU6iXSGIJhGttAIrGiQ3KcEsOLjkepM9wZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bz9FklwWIgg4aih1xxMoxTJMXYJqEzj/j6a+/UQki3SQn86ibLfa+mgxGIj1zefuj
-         4/1j+e3/TjZ/Alq0GY3XkGY1DfyVFmd4BgB3JMeu94TTpuV+c4cTDn8YlFlkZb/feN
-         5ck9WSzQOP5xNSlydTb9ubi8GbyLLtFk4Q9DTRvw=
+        b=QxoQhzZya+Myn5mH/dopFw8LzwbY0olrlsUF7kKfa3lsgEFF2FG/7iGlGhSENlCQd
+         4auetahzkINyzff0gw1x9bFZQp/tlZy/NAFPq3I+da4gIbckLCFoY/k+7XAMZ9Z7RX
+         la3ozXXTWHqCIcvIz2r5jvueLQRG8IubwpbCxZ4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Davies <robdavies1977@gmail.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 182/254] r8152: limit the RX buffer size of RTL8153A for USB 2.0
-Date:   Mon, 29 Mar 2021 09:58:18 +0200
-Message-Id: <20210329075639.120186789@linuxfoundation.org>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 44/53] futex: Fix (possible) missed wakeup
+Date:   Mon, 29 Mar 2021 09:58:19 +0200
+Message-Id: <20210329075608.956552582@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hayes Wang <hayeswang@realtek.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit f91a50d8b51b5c8ef1cfb08115a005bba4250507 ]
+commit b061c38bef43406df8e73c5be06cbfacad5ee6ad upstream.
 
-If the USB host controller is EHCI, the throughput is reduced from
-300Mb/s to 60Mb/s, when the rx buffer size is modified from 16K to
-32K.
+We must not rely on wake_q_add() to delay the wakeup; in particular
+commit:
 
-According to the EHCI spec, the maximum size of the qTD is 20K.
-Therefore, when the driver uses more than 20K buffer, the latency
-time of EHCI would be increased. And, it let the RTL8153A get worse
-throughput.
+  1d0dcb3ad9d3 ("futex: Implement lockless wakeups")
 
-However, the driver uses alloc_pages() for rx buffer, so I limit
-the rx buffer to 16K rather than 20K.
+moved wake_q_add() before smp_store_release(&q->lock_ptr, NULL), which
+could result in futex_wait() waking before observing ->lock_ptr ==
+NULL and going back to sleep again.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205923
-Fixes: ec5791c202ac ("r8152: separate the rx buffer size")
-Reported-by: Robert Davies <robdavies1977@gmail.com>
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 1d0dcb3ad9d3 ("futex: Implement lockless wakeups")
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/r8152.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/futex.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index fd5ca11c4cbb..390d9e1fa7fe 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -6502,7 +6502,10 @@ static int rtl_ops_init(struct r8152 *tp)
- 		ops->in_nway		= rtl8153_in_nway;
- 		ops->hw_phy_cfg		= r8153_hw_phy_cfg;
- 		ops->autosuspend_en	= rtl8153_runtime_enable;
--		tp->rx_buf_sz		= 32 * 1024;
-+		if (tp->udev->speed < USB_SPEED_SUPER)
-+			tp->rx_buf_sz	= 16 * 1024;
-+		else
-+			tp->rx_buf_sz	= 32 * 1024;
- 		tp->eee_en		= true;
- 		tp->eee_adv		= MDIO_EEE_1000T | MDIO_EEE_100TX;
- 		break;
--- 
-2.30.1
-
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1553,11 +1553,7 @@ static void mark_wake_futex(struct wake_
+ 	if (WARN(q->pi_state || q->rt_waiter, "refusing to wake PI futex\n"))
+ 		return;
+ 
+-	/*
+-	 * Queue the task for later wakeup for after we've released
+-	 * the hb->lock. wake_q_add() grabs reference to p.
+-	 */
+-	wake_q_add(wake_q, p);
++	get_task_struct(p);
+ 	__unqueue_futex(q);
+ 	/*
+ 	 * The waiting task can free the futex_q as soon as
+@@ -1566,6 +1562,13 @@ static void mark_wake_futex(struct wake_
+ 	 * store to lock_ptr from getting ahead of the plist_del.
+ 	 */
+ 	smp_store_release(&q->lock_ptr, NULL);
++
++	/*
++	 * Queue the task for later wakeup for after we've released
++	 * the hb->lock. wake_q_add() grabs reference to p.
++	 */
++	wake_q_add(wake_q, p);
++	put_task_struct(p);
+ }
+ 
+ /*
 
 
