@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BBD34C64C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93C234C719
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhC2IGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46724 "EHLO mail.kernel.org"
+        id S233029AbhC2IMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:12:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231618AbhC2IDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C27461959;
-        Mon, 29 Mar 2021 08:03:54 +0000 (UTC)
+        id S231665AbhC2IHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DF1C61938;
+        Mon, 29 Mar 2021 08:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005035;
-        bh=Sepos0qn7ogREQUQReaVRdvkH4LNy6TqoeWdQ4e0K/U=;
+        s=korg; t=1617005273;
+        bh=Oy4NPOQ2oFcndlDvPhAMGvJ8TqT+mWlV5wxyRo1/Wb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zuhOn6rRAkhn6Xeu2ntYS9WCpM875x+1vyty/OvyCw1tkrIWJDUzheVZJGF+CSy/O
-         bPwTRBf4I3FMUeZYKEC6+B1etYTYd5Xme8MZF7V6P4YMTV899U51mL8scE9i3mWA85
-         iV1eaWvb5e+IiqeZKL5bGvVCU6V/3+0Tu+YHQRc0=
+        b=k6PLNN+NkCcgaJaugzN8kWG1VsSBlYaHtxrQPvYAV7gMhFTE4vQ7u3iZU6mrBGAqv
+         xFLo+FuoE5QY33CHwLZN9BhBFJE+ilTZfxHDbt0G0QF/p+6Lbu5EHt5+fE/r5JWn/0
+         ZM3RKTshOqjoWscOXarm0v4GwXcVJjgGpSO6l0v0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 25/53] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
-Date:   Mon, 29 Mar 2021 09:58:00 +0200
-Message-Id: <20210329075608.363613459@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 4.19 25/72] platform/x86: intel-vbtn: Stop reporting SW_DOCK events
+Date:   Mon, 29 Mar 2021 09:58:01 +0200
+Message-Id: <20210329075611.094405351@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +38,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b52912b8293f2c496f42583e65599aee606a0c18 ]
+commit 538d2dd0b9920334e6596977a664e9e7bac73703 upstream.
 
-There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
-that we have caught its return value but lack further handling.
-Check and terminate the execution flow just like other e1e_wphy()
-in this function.
+Stop reporting SW_DOCK events because this breaks suspend-on-lid-close.
 
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+SW_DOCK should only be reported for docking stations, but all the DSDTs in
+my DSDT collection which use the intel-vbtn code, always seem to use this
+for 2-in-1s / convertibles and set SW_DOCK=1 when in laptop-mode (in tandem
+with setting SW_TABLET_MODE=0).
+
+This causes userspace to think the laptop is docked to a port-replicator
+and to disable suspend-on-lid-close, which is undesirable.
+
+Map the dock events to KEY_IGNORE to avoid this broken SW_DOCK reporting.
+
+Note this may theoretically cause us to stop reporting SW_DOCK on some
+device where the 0xCA and 0xCB intel-vbtn events are actually used for
+reporting docking to a classic docking-station / port-replicator but
+I'm not aware of any such devices.
+
+Also the most important thing is that we only report SW_DOCK when it
+reliably reports being docked to a classic docking-station without any
+false positives, which clearly is not the case here. If there is a
+chance of reporting false positives then it is better to not report
+SW_DOCK at all.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321163513.72328-1-hdegoede@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/intel-vbtn.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
-index 6b03c8553e59..65deaf8f3004 100644
---- a/drivers/net/ethernet/intel/e1000e/82571.c
-+++ b/drivers/net/ethernet/intel/e1000e/82571.c
-@@ -917,6 +917,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
- 	} else {
- 		data &= ~IGP02E1000_PM_D0_LPLU;
- 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
-+		if (ret_val)
-+			return ret_val;
- 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
- 		 * during Dx states where the power conservation is most
- 		 * important.  During driver activity we should enable
--- 
-2.30.1
-
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -46,8 +46,16 @@ static const struct key_entry intel_vbtn
+ };
+ 
+ static const struct key_entry intel_vbtn_switchmap[] = {
+-	{ KE_SW,     0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
+-	{ KE_SW,     0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
++	/*
++	 * SW_DOCK should only be reported for docking stations, but DSDTs using the
++	 * intel-vbtn code, always seem to use this for 2-in-1s / convertibles and set
++	 * SW_DOCK=1 when in laptop-mode (in tandem with setting SW_TABLET_MODE=0).
++	 * This causes userspace to think the laptop is docked to a port-replicator
++	 * and to disable suspend-on-lid-close, which is undesirable.
++	 * Map the dock events to KEY_IGNORE to avoid this broken SW_DOCK reporting.
++	 */
++	{ KE_IGNORE, 0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
++	{ KE_IGNORE, 0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
+ 	{ KE_SW,     0xCC, { .sw = { SW_TABLET_MODE, 1 } } },	/* Tablet */
+ 	{ KE_SW,     0xCD, { .sw = { SW_TABLET_MODE, 0 } } },	/* Laptop */
+ };
 
 
