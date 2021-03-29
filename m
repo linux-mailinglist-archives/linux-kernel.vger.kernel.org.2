@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCFF34C641
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA0134CB49
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhC2IGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46566 "EHLO mail.kernel.org"
+        id S235338AbhC2Imm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhC2IDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B99661974;
-        Mon, 29 Mar 2021 08:03:40 +0000 (UTC)
+        id S232860AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3273E6197C;
+        Mon, 29 Mar 2021 08:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005021;
-        bh=rDzvt0X6sttH1YCUBD00Fw/jKkHsLU6e0wiS7skrXM4=;
+        s=korg; t=1617006257;
+        bh=AuSNW5X8D0kAWPMVJcOtVL3JKRzUloBfjvnmP3U005s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dZEXgWD7NYuV2ZMJLnvF/Ww4+osVrzulCVcE7zM89UcAMduhdA48sRl/OfoKXHLC5
-         Slwg+XGdAC5O44NVjbEBrip11DZHWcA/MlDLeGoX39tcwNiSEGJQ1AbbtChd5vENe0
-         P2vdCPbhpQnOUeKndpSF7w1lXpyo3N4qu8MYJ+Vs=
+        b=XgHIms9ibiJ8GYKDJ9yTWbrDU3S9TwaslXz6d5xeIRVp4QDpbm1owJdDjmaVh9gpe
+         u6+dSfwkBUx74d8twco4ZW8r+E1VPxnIsHNOVwyVUlNE62FYupEhwDsgneHsgpYZvo
+         rRxpFUF/ZXAkmcoSoobFakVjJiozoi0a0igYef6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Willi <martin@strongswan.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.9 50/53] can: dev: Move device back to init netns on owning netns delete
+        stable@vger.kernel.org, Ionela Voinescu <ionela.voinescu@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 174/221] PM: EM: postpone creating the debugfs dir till fs_initcall
 Date:   Mon, 29 Mar 2021 09:58:25 +0200
-Message-Id: <20210329075609.161133746@linuxfoundation.org>
+Message-Id: <20210329075634.955897304@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Willi <martin@strongswan.org>
+From: Lukasz Luba <lukasz.luba@arm.com>
 
-commit 3a5ca857079ea022e0b1b17fc154f7ad7dbc150f upstream.
+[ Upstream commit fb9d62b27ab1e07d625591549c314b7d406d21df ]
 
-When a non-initial netns is destroyed, the usual policy is to delete
-all virtual network interfaces contained, but move physical interfaces
-back to the initial netns. This keeps the physical interface visible
-on the system.
+The debugfs directory '/sys/kernel/debug/energy_model' is needed before
+the Energy Model registration can happen. With the recent change in
+debugfs subsystem it's not allowed to create this directory at early
+stage (core_initcall). Thus creating this directory would fail.
 
-CAN devices are somewhat special, as they define rtnl_link_ops even
-if they are physical devices. If a CAN interface is moved into a
-non-initial netns, destroying that netns lets the interface vanish
-instead of moving it back to the initial netns. default_device_exit()
-skips CAN interfaces due to having rtnl_link_ops set. Reproducer:
+Postpone the creation of the EM debug dir to later stage: fs_initcall.
 
-  ip netns add foo
-  ip link set can0 netns foo
-  ip netns delete foo
+It should be safe since all clients: CPUFreq drivers, Devfreq drivers
+will be initialized in later stages.
 
-WARNING: CPU: 1 PID: 84 at net/core/dev.c:11030 ops_exit_list+0x38/0x60
-CPU: 1 PID: 84 Comm: kworker/u4:2 Not tainted 5.10.19 #1
-Workqueue: netns cleanup_net
-[<c010e700>] (unwind_backtrace) from [<c010a1d8>] (show_stack+0x10/0x14)
-[<c010a1d8>] (show_stack) from [<c086dc10>] (dump_stack+0x94/0xa8)
-[<c086dc10>] (dump_stack) from [<c086b938>] (__warn+0xb8/0x114)
-[<c086b938>] (__warn) from [<c086ba10>] (warn_slowpath_fmt+0x7c/0xac)
-[<c086ba10>] (warn_slowpath_fmt) from [<c0629f20>] (ops_exit_list+0x38/0x60)
-[<c0629f20>] (ops_exit_list) from [<c062a5c4>] (cleanup_net+0x230/0x380)
-[<c062a5c4>] (cleanup_net) from [<c0142c20>] (process_one_work+0x1d8/0x438)
-[<c0142c20>] (process_one_work) from [<c0142ee4>] (worker_thread+0x64/0x5a8)
-[<c0142ee4>] (worker_thread) from [<c0148a98>] (kthread+0x148/0x14c)
-[<c0148a98>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+The custom debug log below prints the time of creation the EM debug dir
+at fs_initcall and successful registration of EMs at later stages.
 
-To properly restore physical CAN devices to the initial netns on owning
-netns exit, introduce a flag on rtnl_link_ops that can be set by drivers.
-For CAN devices setting this flag, default_device_exit() considers them
-non-virtual, applying the usual namespace move.
+[    1.505717] energy_model: creating rootdir
+[    3.698307] cpu cpu0: EM: created perf domain
+[    3.709022] cpu cpu1: EM: created perf domain
 
-The issue was introduced in the commit mentioned below, as at that time
-CAN devices did not have a dellink() operation.
-
-Fixes: e008b5fc8dc7 ("net: Simplfy default_device_exit and improve batching.")
-Link: https://lore.kernel.org/r/20210302122423.872326-1-martin@strongswan.org
-Signed-off-by: Martin Willi <martin@strongswan.org>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c   |    1 +
- include/net/rtnetlink.h |    2 ++
- net/core/dev.c          |    2 +-
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ kernel/power/energy_model.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -1084,6 +1084,7 @@ static void can_dellink(struct net_devic
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index c1ff7fa030ab..994ca8353543 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -85,7 +85,7 @@ static int __init em_debug_init(void)
  
- static struct rtnl_link_ops can_link_ops __read_mostly = {
- 	.kind		= "can",
-+	.netns_refund	= true,
- 	.maxtype	= IFLA_CAN_MAX,
- 	.policy		= can_policy,
- 	.setup		= can_setup,
---- a/include/net/rtnetlink.h
-+++ b/include/net/rtnetlink.h
-@@ -28,6 +28,7 @@ static inline int rtnl_msg_family(const
-  *
-  *	@list: Used internally
-  *	@kind: Identifier
-+ *	@netns_refund: Physical device, move to init_net on netns exit
-  *	@maxtype: Highest device specific netlink attribute number
-  *	@policy: Netlink policy for device specific attribute validation
-  *	@validate: Optional validation function for netlink/changelink parameters
-@@ -84,6 +85,7 @@ struct rtnl_link_ops {
- 	unsigned int		(*get_num_tx_queues)(void);
- 	unsigned int		(*get_num_rx_queues)(void);
- 
-+	bool			netns_refund;
- 	int			slave_maxtype;
- 	const struct nla_policy	*slave_policy;
- 	int			(*slave_validate)(struct nlattr *tb[],
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8300,7 +8300,7 @@ static void __net_exit default_device_ex
- 			continue;
- 
- 		/* Leave virtual devices for the generic cleanup */
--		if (dev->rtnl_link_ops)
-+		if (dev->rtnl_link_ops && !dev->rtnl_link_ops->netns_refund)
- 			continue;
- 
- 		/* Push remaining network devices to init_net */
+ 	return 0;
+ }
+-core_initcall(em_debug_init);
++fs_initcall(em_debug_init);
+ #else /* CONFIG_DEBUG_FS */
+ static void em_debug_create_pd(struct device *dev) {}
+ static void em_debug_remove_pd(struct device *dev) {}
+-- 
+2.30.1
+
 
 
