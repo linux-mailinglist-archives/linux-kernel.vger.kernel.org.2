@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85434CB4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8A034CC38
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhC2Imn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        id S236907AbhC2I5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:24:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5AFC61581;
-        Mon, 29 Mar 2021 08:24:11 +0000 (UTC)
+        id S234866AbhC2Ih3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F0E661932;
+        Mon, 29 Mar 2021 08:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006252;
-        bh=7CXtOLV9GsnVvCr7BJ+Vlm1+8Y2DrCcxIorQIc2cc0s=;
+        s=korg; t=1617007013;
+        bh=ySD/AyLDmWAgThpEcTD75lQI0DPswwRh7FMECb82zJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cc4UhNT8sVVU6HyY7fBEZ+NooorDWV4e85ayIviTvZxtmtObDjcSZAmx2+47GITow
-         Ogn5OVczzw45Ucu5yMNe2unv6ebSBNWnAtxFmBewdIUoaCsRA2cn/WqjZtJ0Iqnv0H
-         KhC3jYYuk8anAkyV61zWMRpACgG654+6nQivORJ8=
+        b=e/PoX4NxRKmt8upRN8SmBEVjFHdINF8c5V+ILDF8V7OvGojwlIV23TQ8YAr5GXbAr
+         WS8DrlnDaBbuP13DLwQAr0OkdAiD4j8hcVsvdMXiGfvORT5I8QKRsr6agStO0VzYUL
+         qTD1KMRnDU1USYWlSitYmiSPm88ksLpDH342yUYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dima Chumak <dchumak@nvidia.com>,
-        Paul Blakey <paulb@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com,
+        Zqiang <qiang.zhang@windriver.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 172/221] net/mlx5e: Offload tuple rewrite for non-CT flows
+Subject: [PATCH 5.11 187/254] bpf: Fix umd memory leak in copy_process()
 Date:   Mon, 29 Mar 2021 09:58:23 +0200
-Message-Id: <20210329075634.893922952@linuxfoundation.org>
+Message-Id: <20210329075639.272517285@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,106 +42,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dima Chumak <dchumak@nvidia.com>
+From: Zqiang <qiang.zhang@windriver.com>
 
-[ Upstream commit 96b5b4585843e3c83fb1930e5dfbefd0fb889c55 ]
+[ Upstream commit f60a85cad677c4f9bb4cadd764f1d106c38c7cf8 ]
 
-Setting connection tracking OVS flows and then setting non-CT flows that
-use tuple rewrite action (e.g. mod_tp_dst), causes the latter flows not
-being offloaded.
+The syzbot reported a memleak as follows:
 
-Fix by using a stricter condition in modify_header_match_supported() to
-check tuple rewrite support only for flows with CT action. The check is
-factored out into standalone modify_tuple_supported() function to aid
-readability.
+BUG: memory leak
+unreferenced object 0xffff888101b41d00 (size 120):
+  comm "kworker/u4:0", pid 8, jiffies 4294944270 (age 12.780s)
+  backtrace:
+    [<ffffffff8125dc56>] alloc_pid+0x66/0x560
+    [<ffffffff81226405>] copy_process+0x1465/0x25e0
+    [<ffffffff81227943>] kernel_clone+0xf3/0x670
+    [<ffffffff812281a1>] kernel_thread+0x61/0x80
+    [<ffffffff81253464>] call_usermodehelper_exec_work
+    [<ffffffff81253464>] call_usermodehelper_exec_work+0xc4/0x120
+    [<ffffffff812591c9>] process_one_work+0x2c9/0x600
+    [<ffffffff81259ab9>] worker_thread+0x59/0x5d0
+    [<ffffffff812611c8>] kthread+0x178/0x1b0
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
 
-Fixes: 7e36feeb0467 ("net/mlx5e: CT: Don't offload tuple rewrites for established tuples")
-Signed-off-by: Dima Chumak <dchumak@nvidia.com>
-Reviewed-by: Paul Blakey <paulb@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+unreferenced object 0xffff888110ef5c00 (size 232):
+  comm "kworker/u4:0", pid 8414, jiffies 4294944270 (age 12.780s)
+  backtrace:
+    [<ffffffff8154a0cf>] kmem_cache_zalloc
+    [<ffffffff8154a0cf>] __alloc_file+0x1f/0xf0
+    [<ffffffff8154a809>] alloc_empty_file+0x69/0x120
+    [<ffffffff8154a8f3>] alloc_file+0x33/0x1b0
+    [<ffffffff8154ab22>] alloc_file_pseudo+0xb2/0x140
+    [<ffffffff81559218>] create_pipe_files+0x138/0x2e0
+    [<ffffffff8126c793>] umd_setup+0x33/0x220
+    [<ffffffff81253574>] call_usermodehelper_exec_async+0xb4/0x1b0
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+
+After the UMD process exits, the pipe_to_umh/pipe_from_umh and
+tgid need to be released.
+
+Fixes: d71fa5c9763c ("bpf: Add kernel module with user mode driver that populates bpffs.")
+Reported-by: syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210317030915.2865-1-qiang.zhang@windriver.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/mellanox/mlx5/core/en/tc_ct.c    |  3 +-
- .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 44 ++++++++++++++-----
- 2 files changed, 35 insertions(+), 12 deletions(-)
+ include/linux/usermode_driver.h       |  1 +
+ kernel/bpf/preload/bpf_preload_kern.c | 19 +++++++++++++++----
+ kernel/usermode_driver.c              | 21 +++++++++++++++------
+ 3 files changed, 31 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-index 24e2c0d955b9..b42396df3111 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-@@ -1182,7 +1182,8 @@ int mlx5_tc_ct_add_no_trk_match(struct mlx5_flow_spec *spec)
+diff --git a/include/linux/usermode_driver.h b/include/linux/usermode_driver.h
+index 073a9e0ec07d..ad970416260d 100644
+--- a/include/linux/usermode_driver.h
++++ b/include/linux/usermode_driver.h
+@@ -14,5 +14,6 @@ struct umd_info {
+ int umd_load_blob(struct umd_info *info, const void *data, size_t len);
+ int umd_unload_blob(struct umd_info *info);
+ int fork_usermode_driver(struct umd_info *info);
++void umd_cleanup_helper(struct umd_info *info);
  
- 	mlx5e_tc_match_to_reg_get_match(spec, CTSTATE_TO_REG,
- 					&ctstate, &ctstate_mask);
--	if (ctstate_mask)
+ #endif /* __LINUX_USERMODE_DRIVER_H__ */
+diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
+index 79c5772465f1..53736e52c1df 100644
+--- a/kernel/bpf/preload/bpf_preload_kern.c
++++ b/kernel/bpf/preload/bpf_preload_kern.c
+@@ -60,9 +60,12 @@ static int finish(void)
+ 			 &magic, sizeof(magic), &pos);
+ 	if (n != sizeof(magic))
+ 		return -EPIPE;
 +
-+	if ((ctstate & ctstate_mask) == MLX5_CT_STATE_TRK_BIT)
- 		return -EOPNOTSUPP;
- 
- 	ctstate_mask |= MLX5_CT_STATE_TRK_BIT;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 77ee24d52203..930f19c598bb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -3210,6 +3210,37 @@ static int is_action_keys_supported(const struct flow_action_entry *act,
+ 	tgid = umd_ops.info.tgid;
+-	wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
+-	umd_ops.info.tgid = NULL;
++	if (tgid) {
++		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
++		umd_cleanup_helper(&umd_ops.info);
++	}
  	return 0;
  }
  
-+static bool modify_tuple_supported(bool modify_tuple, bool ct_clear,
-+				   bool ct_flow, struct netlink_ext_ack *extack,
-+				   struct mlx5e_priv *priv,
-+				   struct mlx5_flow_spec *spec)
-+{
-+	if (!modify_tuple || ct_clear)
-+		return true;
+@@ -80,10 +83,18 @@ static int __init load_umd(void)
+ 
+ static void __exit fini_umd(void)
+ {
++	struct pid *tgid;
 +
-+	if (ct_flow) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "can't offload tuple modification with non-clear ct()");
-+		netdev_info(priv->netdev,
-+			    "can't offload tuple modification with non-clear ct()");
-+		return false;
+ 	bpf_preload_ops = NULL;
++
+ 	/* kill UMD in case it's still there due to earlier error */
+-	kill_pid(umd_ops.info.tgid, SIGKILL, 1);
+-	umd_ops.info.tgid = NULL;
++	tgid = umd_ops.info.tgid;
++	if (tgid) {
++		kill_pid(tgid, SIGKILL, 1);
++
++		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
++		umd_cleanup_helper(&umd_ops.info);
 +	}
-+
-+	/* Add ct_state=-trk match so it will be offloaded for non ct flows
-+	 * (or after clear action), as otherwise, since the tuple is changed,
-+	 * we can't restore ct state
-+	 */
-+	if (mlx5_tc_ct_add_no_trk_match(spec)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "can't offload tuple modification with ct matches and no ct(clear) action");
-+		netdev_info(priv->netdev,
-+			    "can't offload tuple modification with ct matches and no ct(clear) action");
-+		return false;
-+	}
-+
-+	return true;
+ 	umd_unload_blob(&umd_ops.info);
+ }
+ late_initcall(load_umd);
+diff --git a/kernel/usermode_driver.c b/kernel/usermode_driver.c
+index 0b35212ffc3d..bb7bb3b478ab 100644
+--- a/kernel/usermode_driver.c
++++ b/kernel/usermode_driver.c
+@@ -139,13 +139,22 @@ static void umd_cleanup(struct subprocess_info *info)
+ 	struct umd_info *umd_info = info->data;
+ 
+ 	/* cleanup if umh_setup() was successful but exec failed */
+-	if (info->retval) {
+-		fput(umd_info->pipe_to_umh);
+-		fput(umd_info->pipe_from_umh);
+-		put_pid(umd_info->tgid);
+-		umd_info->tgid = NULL;
+-	}
++	if (info->retval)
++		umd_cleanup_helper(umd_info);
 +}
 +
- static bool modify_header_match_supported(struct mlx5e_priv *priv,
- 					  struct mlx5_flow_spec *spec,
- 					  struct flow_action *flow_action,
-@@ -3248,18 +3279,9 @@ static bool modify_header_match_supported(struct mlx5e_priv *priv,
- 			return err;
- 	}
++/**
++ * umd_cleanup_helper - release the resources which were allocated in umd_setup
++ * @info: information about usermode driver
++ */
++void umd_cleanup_helper(struct umd_info *info)
++{
++	fput(info->pipe_to_umh);
++	fput(info->pipe_from_umh);
++	put_pid(info->tgid);
++	info->tgid = NULL;
+ }
++EXPORT_SYMBOL_GPL(umd_cleanup_helper);
  
--	/* Add ct_state=-trk match so it will be offloaded for non ct flows
--	 * (or after clear action), as otherwise, since the tuple is changed,
--	 *  we can't restore ct state
--	 */
--	if (!ct_clear && modify_tuple &&
--	    mlx5_tc_ct_add_no_trk_match(spec)) {
--		NL_SET_ERR_MSG_MOD(extack,
--				   "can't offload tuple modify header with ct matches");
--		netdev_info(priv->netdev,
--			    "can't offload tuple modify header with ct matches");
-+	if (!modify_tuple_supported(modify_tuple, ct_clear, ct_flow, extack,
-+				    priv, spec))
- 		return false;
--	}
- 
- 	ip_proto = MLX5_GET(fte_match_set_lyr_2_4, headers_v, ip_protocol);
- 	if (modify_ip_header && ip_proto != IPPROTO_TCP &&
+ /**
+  * fork_usermode_driver - fork a usermode driver
 -- 
 2.30.1
 
