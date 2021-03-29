@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D634D023
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA5D34D028
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhC2Md2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:33:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhC2MdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:33:21 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3899B61930;
-        Mon, 29 Mar 2021 12:33:18 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 13:33:24 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] iio: buffer: return 0 for buffer getfd ioctl handler
-Message-ID: <20210329133324.67eef6d8@jic23-huawei>
-In-Reply-To: <20210322084135.17536-1-aardelean@deviqon.com>
-References: <20210322084135.17536-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231250AbhC2Me7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:34:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40702 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231278AbhC2Mem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:34:42 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TCY7qB150555;
+        Mon, 29 Mar 2021 08:34:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=whcVhMReQHlGlekds3WIWuvrBXxGmQLgC3fPH5ULlHA=;
+ b=ARElFuEBI6MNLmZus0HnzbN1BJoUT6jbRcoFMUwPVg2U9qmzseWczE0xF1jLWL4eYPBC
+ C6zrks2i1UeCHrQP0xBKq4K4Zf7Qas3yeZCxZB+kA6542VFqNjlW2qHSpjB+3VpxIOdZ
+ 4lFkZ6JET2iarl1ccGOeua89g4/C3HInIcEm9olrhLxEQNKteFg5JSce8RREG6xwBeYA
+ OF+5MleS6IEkyRVLZi5ExlXMu2TlmBRzrG8keOKlBLiUjGNJVcJ092iSogBa2lh6p+Wv
+ PAdPxa3Iu41YaY4fc9qmWZqp0PppQoLcA8GeV1AJuOT1b+v5Hl3yq/gFklcej86Vzfpf 9Q== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37jj8adtfr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 08:34:34 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12TCLn4C032005;
+        Mon, 29 Mar 2021 12:34:33 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 37hvb8hskh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 12:34:32 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12TCYU9l41091408
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 12:34:30 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09FCB11C052;
+        Mon, 29 Mar 2021 12:34:30 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB81611C04C;
+        Mon, 29 Mar 2021 12:34:29 +0000 (GMT)
+Received: from oc6887364776.ibm.com (unknown [9.152.212.155])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Mar 2021 12:34:29 +0000 (GMT)
+Subject: Re: [PATCH -next 2/2] s390/cio: use DECLARE_WAIT_QUEUE_HEAD() for
+ wait_queue
+To:     Shixin Liu <liushixin2@huawei.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329094019.67044-1-liushixin2@huawei.com>
+ <20210329094019.67044-2-liushixin2@huawei.com>
+From:   Vineeth Vijayan <vneethv@linux.ibm.com>
+Message-ID: <c8abb27b-2b4c-3484-8859-8b4482a4aa1c@linux.ibm.com>
+Date:   Mon, 29 Mar 2021 14:34:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210329094019.67044-2-liushixin2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Z_9keyXcNXjkzOlhkTksYZNA5hhQWkx0
+X-Proofpoint-ORIG-GUID: Z_9keyXcNXjkzOlhkTksYZNA5hhQWkx0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_08:2021-03-26,2021-03-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ impostorscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103290097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 10:41:35 +0200
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+For both the patches,
 
-> As Lars pointed out, we could either return the FD vs memcpy-ing it to the
-> userspace data object.
-> 
-> However, this comment exposed a bug. We should return 0 or negative from
-> these ioctl() handlers. Because an ioctl() handler can also return
-> IIO_IOCTL_UNHANDLED (which is positive 1), which means that the ioctl()
-> handler doesn't support this ioctl number. Positive 1 could also be a valid
-> FD number in some corner cases.
-> 
-> The reason we did this is to be able to differentiate between an error
-> code and an unsupported ioctl number; for unsupported ioctl numbers, the
-> main loop should keep going.
-> 
-> Maybe we should change this to a higher negative number, to avoid such
-> cases when/if we add more ioctl() handlers.
+Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-That sounds like a sensible follow up plan to me - perhaps we could
-use EOPNOTSUPP for this directly but add special handling for that in
-the core so it doesn't worry about it as long as someone supports the ioctl.
+I will correct the description, and Heiko/Vasily will pick this up and 
+will be part of the s390-tree patchset.
 
-> 
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Fixes: f73f7f4da5818 ("iio: buffer: add ioctl() to support opening extra buffers for IIO device")
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+On 3/29/21 11:40 AM, Shixin Liu wrote:
+> wait_queue_head_t can be initialized automatically with DECLARE_WAIT_QUEUE_HEAD()
+> rather than explicitly calling init_waitqueue_head().
 
-Applied to the togreg branch of iio.git and pushed out as testing.
+A minor checkpatch WARNING. I will modify this.
 
-Thanks,
-
-Jonathan
+>
+> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
 > ---
->  drivers/iio/industrialio-buffer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index ee5aab9d4a23..d7a15c9bb0cd 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1442,7 +1442,7 @@ static long iio_device_buffer_getfd(struct iio_dev *indio_dev, unsigned long arg
->  		goto error_free_ib;
->  	}
->  
-> -	return fd;
-> +	return 0;
->  
->  error_free_ib:
->  	kfree(ib);
-
+>   drivers/s390/cio/css.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+> index f01ef6325039..a974943c27da 100644
+> --- a/drivers/s390/cio/css.c
+> +++ b/drivers/s390/cio/css.c
+> @@ -652,13 +652,12 @@ static void css_sch_todo(struct work_struct *work)
+>   
+>   static struct idset *slow_subchannel_set;
+>   static DEFINE_SPINLOCK(slow_subchannel_lock);
+> -static wait_queue_head_t css_eval_wq;
+> +static DECLARE_WAIT_QUEUE_HEAD(css_eval_wq);
+>   static atomic_t css_eval_scheduled;
+>   
+>   static int __init slow_subchannel_init(void)
+>   {
+>   	atomic_set(&css_eval_scheduled, 0);
+> -	init_waitqueue_head(&css_eval_wq);
+>   	slow_subchannel_set = idset_sch_new();
+>   	if (!slow_subchannel_set) {
+>   		CIO_MSG_EVENT(0, "could not allocate slow subchannel set\n");
