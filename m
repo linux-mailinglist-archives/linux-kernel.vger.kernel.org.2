@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2530E34C717
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2260F34C572
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbhC2IMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50184 "EHLO mail.kernel.org"
+        id S231448AbhC2IAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:00:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232467AbhC2IHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D06B261990;
-        Mon, 29 Mar 2021 08:07:41 +0000 (UTC)
+        id S229711AbhC2H76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5045E6196D;
+        Mon, 29 Mar 2021 07:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005262;
-        bh=V7IOjocATIMWy4yobgvRr9veE/J1JwSutfeQVJSypk8=;
+        s=korg; t=1617004797;
+        bh=AgKnqvbMvHroSMbkDBCToxD0TGA2FODh/W8M2DulD64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vdMYm5ANA1fQFvaOr2DlA+A/Bzj4roxHIh1fvymyrBsO5XlHkInAuSWzqrUHkhiwS
-         HVD+XcmCeHBCo31gzYljRnaUocdnAt/iAjZmDjrLN8u+sf/ZfoKWeDyIerD7U7rB+x
-         VY1IedbGY3kCk2DV86deP+qmL5qtDKBzPBrBBWSQ=
+        b=PoEJF9zshVFXJJS2F3TPGztBnXK7B+TdCif3h79HO+MrauULEs9w3Yb+Ur+s9/nkx
+         cysu7cShZ2f4ro38ahqrZPViCZT4I0tfZ8dkHOoPyadK0tGNFU2hPewP0drPiIsdq1
+         MW3ld8hpVvsrErfVhrNQKeSPX4G+e1vVkgJvAETU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Martin Wilck <mwilck@suse.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/72] block: Suppress uevent for hidden device when removed
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 12/33] nfs: we dont support removing system.nfs4_acl
 Date:   Mon, 29 Mar 2021 09:57:57 +0200
-Message-Id: <20210329075610.970242719@linuxfoundation.org>
+Message-Id: <20210329075605.668884309@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+From: J. Bruce Fields <bfields@redhat.com>
 
-[ Upstream commit 9ec491447b90ad6a4056a9656b13f0b3a1e83043 ]
+[ Upstream commit 4f8be1f53bf615102d103c0509ffa9596f65b718 ]
 
-register_disk() suppress uevents for devices with the GENHD_FL_HIDDEN
-but enables uevents at the end again in order to announce disk after
-possible partitions are created.
+The NFSv4 protocol doesn't have any notion of reomoving an attribute, so
+removexattr(path,"system.nfs4_acl") doesn't make sense.
 
-When the device is removed the uevents are still on and user land sees
-'remove' messages for devices which were never 'add'ed to the system.
+There's no documented return value.  Arguably it could be EOPNOTSUPP but
+I'm a little worried an application might take that to mean that we
+don't support ACLs or xattrs.  How about EINVAL?
 
-  KERNEL[95481.571887] remove   /devices/virtual/nvme-fabrics/ctl/nvme5/nvme0c5n1 (block)
-
-Let's suppress the uevents for GENHD_FL_HIDDEN by not enabling the
-uevents at all.
-
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin Wilck <mwilck@suse.com>
-Link: https://lore.kernel.org/r/20210311151917.136091-1-dwagner@suse.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/genhd.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/nfs/nfs4proc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index aee2fa9de1a7..27a410d31087 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -623,10 +623,8 @@ static void register_disk(struct device *parent, struct gendisk *disk,
- 	disk->part0.holder_dir = kobject_create_and_add("holders", &ddev->kobj);
- 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 0c9386978d9d..92ca753723b5 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -4848,6 +4848,9 @@ static int __nfs4_proc_set_acl(struct inode *inode, const void *buf, size_t bufl
+ 	unsigned int npages = DIV_ROUND_UP(buflen, PAGE_SIZE);
+ 	int ret, i;
  
--	if (disk->flags & GENHD_FL_HIDDEN) {
--		dev_set_uevent_suppress(ddev, 0);
-+	if (disk->flags & GENHD_FL_HIDDEN)
- 		return;
--	}
- 
- 	/* No minors to use for partitions */
- 	if (!disk_part_scan_enabled(disk))
++	/* You can't remove system.nfs4_acl: */
++	if (buflen == 0)
++		return -EINVAL;
+ 	if (!nfs4_server_supports_acls(server))
+ 		return -EOPNOTSUPP;
+ 	if (npages > ARRAY_SIZE(pages))
 -- 
 2.30.1
 
