@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8A334D697
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34F834D6A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhC2SGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S231249AbhC2SMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhC2SFd (ORCPT
+        with ESMTP id S230220AbhC2SL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:05:33 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1ECC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:05:32 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id r193so13689272ior.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:05:32 -0700 (PDT)
+        Mon, 29 Mar 2021 14:11:56 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CE66C061574;
+        Mon, 29 Mar 2021 11:11:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CSxMJsHsrNVv3MWw4uspz06NBuEFbC6jAlhbAG5q4Yc=;
-        b=KanirahK5a2fMzGRvcgSGzRv8cGLlNCgBBXQxqsjdAU1B3j+mD5nOEyRTU6WvsOSBc
-         CGmlHF+dYa5MM2EFls0NYmMPNpMcrnC8nmjoPC9RqRscSmy3tKU+J9bgsQvfECakkMbt
-         pybULaBeChlhfhiBSkrErTYSc74wBm/pYTRws=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CSxMJsHsrNVv3MWw4uspz06NBuEFbC6jAlhbAG5q4Yc=;
-        b=h30cYBvQ8334/Ffnegl8m66EN9FUfvDajdPokxspdI7mkMm4q+LJmhLiqBUhIvyYrL
-         IuFgijrvIQLBrZLme9Ducr2Xqhuu8dYCffF7VfK7RzMSdBmAB55LY0OMalDNdEnFomRG
-         Y7ulltsQgkl2/x2JvDR/ZAHwVy69LKqcNQfkyEPts31ICY4uvxx7/jXKZzCP6QyVHVdN
-         ymKZOFr4UQ3ZsHMK5lUwv3BKtsgL3hV5inZ1JEZwvxTM4GoxR1/ixxeECSowQClokk5o
-         ginGnzHLcFJOkb5wLfyCtqy2LYBd6ps6ylO4c2LGeL7vt+lHoM6t/yjiwQGHDbCkriXB
-         Yg7g==
-X-Gm-Message-State: AOAM531yOgeBFTBnGjj4DXM37cSkr/g93dIwgadQwFYodLYm890twsjl
-        1oSpC+DmdYywo94HF56t64iDCjuOcJHVsg==
-X-Google-Smtp-Source: ABdhPJzrSkJCetnQCmMOZUlZg+/Q52o6CjuItR9qQFQ5tMpfAtN0jSMkmdqBQS7CUT0uTaG/eykrMg==
-X-Received: by 2002:a6b:bf07:: with SMTP id p7mr9526853iof.15.1617041131432;
-        Mon, 29 Mar 2021 11:05:31 -0700 (PDT)
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
-        by smtp.gmail.com with ESMTPSA id r15sm9984357iot.5.2021.03.29.11.05.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 11:05:31 -0700 (PDT)
-Received: by mail-io1-f41.google.com with SMTP id f19so13694892ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:05:30 -0700 (PDT)
-X-Received: by 2002:a02:850a:: with SMTP id g10mr25402626jai.140.1617041130498;
- Mon, 29 Mar 2021 11:05:30 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=3zf6/U9A8M8ip1VYXjzMP1VvO4uVgW0hwuc+66hNGZs=; b=QhDsZUgxI0khZ
+        oeP8jtXHs4bsfIJnOGNA8iWOgHAOJXo4KrXDF5fc+k/BQhyWAHmP+0bqOHYf48H/
+        j8sIeFj00NtYRYaWG7iQwZD7LViJ+EGMZtGLfHkZlBe00C4RUg0VLu7sDSxYIoZV
+        /HQQN43QCD+PBMtHSSFpPor+xdHsFU=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn70toGGJgbN9pAA--.4606S2;
+        Tue, 30 Mar 2021 02:11:52 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:06:56 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: add LDFLAGS when building test_verifier
+Message-ID: <20210330020656.26bb2dfd@xhacker>
 MIME-Version: 1.0
-References: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
- <20210329020746.GA250550@roeck-us.net>
-In-Reply-To: <20210329020746.GA250550@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 29 Mar 2021 11:05:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
-Message-ID: <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
-Subject: Re: Linux 5.12-rc5
-To:     Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDn70toGGJgbN9pAA--.4606S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyfGryxXr18JrWxXF13Jwb_yoWDCwbEyF
+        ZFkwn3urWkAFs5Aa1fWrnxur4v9345Kr1DuFn8Jry7CryUWwn8WF1kXr1fta4vg398ta42
+        qFs5XFyqyr4SgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+        WxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jUfHUUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 7:07 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> This is not really a new problem. I enabled devicetree unit tests
-> in the openrisc kernel and was rewarded with a crash.
-> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
-> has all the glorious details.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Hmm.
+This is useful for cross compile process to point linker to the
+correct libelf, libcap, libz path.
 
-I'm not sure I love that patch.
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't think the patch is _wrong_ per se, but if that "require 8 byte
-alignment" is a problem, then this seems to be papering over the issue
-rather than fixing it.
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 044bfdcf5b74..dac1c5094e28 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -447,7 +447,7 @@ verifier/tests.h: verifier/*.c
+ 		) > verifier/tests.h)
+ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+ 	$(call msg,BINARY,,$@)
+-	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
++	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+ 
+ # Make sure we are able to include and link libbpf against c++.
+ $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
+-- 
+2.31.0
 
-So your patch protects from a NULL pointer dereference, but the
-underlying issue seems to be a regression, and the fix sounds like the
-kernel shouldn't be so strict about alignment requirements.
 
-I guess we could make ARCH_SLAB_MINALIGN be at least 8 (perhaps only
-if the allocations is >= 8) but honestly, I don't think libfdt merits
-making such a big change. Small allocations are actually not uncommon
-in the kernel, and on 32-bit architectures I think 4-byte allocations
-are normal.
-
-So I'd be inclined to just remove the new
-
-        /* The device tree must be at an 8-byte aligned address */
-        if ((uintptr_t)fdt & 7)
-                return -FDT_ERR_ALIGNMENT;
-
-check in scripts/dtc/libfdt/fdt.c which I assume is the source of the
-problem. Rob?
-
-Your patch to then avoid the NULL pointer dereference seems to be then
-an additional safety, but not fixing the actual regression.
-
-          Linus
