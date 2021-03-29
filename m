@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A5534D0EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C096C34D0E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhC2NGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
+        id S231422AbhC2NF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhC2NFu (ORCPT
+        with ESMTP id S231136AbhC2NFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:05:50 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B331C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:49 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id ap14so6205532ejc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:49 -0700 (PDT)
+        Mon, 29 Mar 2021 09:05:52 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF22C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:50 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u5so19346851ejn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QcEAlZFU4CnirkermcUf7WLqW4ILifDoriBMp1wclsw=;
-        b=Zv7vqKqdbKaCe+ttBAYu0uJP+rHtpn/tDzxwRFNDM/u/r+LezsdPT3MdVF/mJs/nnq
-         KR3wl+xJJLhhJITi5C+p2dBEJmk7u3OOc5mQFvuctofum+nta5Ly6+Bu2yL1QwfjE0lZ
-         maCDT8ZVap0bS1mqGqh0/GoAcxluuUKGR4VpAfZEE43uLuGhAQX1v65Mt3cYBCYW0D44
-         gtbJKERW8v35SGaivFl9OKSypbINS+p7Ls2fM2u20X5EFxPJ6DYFeSz5NfP996S6DUK3
-         1I3MSWxhiKyir8DkFuq5vApPoixnjedCEmGvn7c9l561mQlqaQDMK4gizcShMIqoRigi
-         DbFA==
+        bh=3TViJ7SE5R90odfzRBnnvVIw5vnuAodunwkoluO1S3A=;
+        b=S4JWnbe8m/f5kUz+20WWyFWoqliHZrzU2+SBIg71qcaX/yOSNsja8dYiDdXtHYPJNm
+         EXLQ7ADyCYbmQ3iwyVd+lakWt1I8IZhIvJplvLReZodMYLBb9nkHdPnDkwAtNyhrGNT2
+         P9wF9K3g9e+K0C0YZL6SAFo7I+lL+fE09z0MELKkvQYJHLo0ps0un3IdQraZhx74uOPb
+         ywAKpaZYk7l2RLoKBi1bFVNOEPaLgWxzwLIw/mrcpvFBIDu+D5Ji8Tz0ZDEG/7V5iJI6
+         7gaHyZVSP5uFVeQ4qAUV3Ia3/yoVwH8sbr49MHQ/wB4TE9p8eqZLJjvyQnnmEcIYZP0g
+         C8jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QcEAlZFU4CnirkermcUf7WLqW4ILifDoriBMp1wclsw=;
-        b=kXfoLGpLEucIqB8ELz7Svu0PRSOPnXu2xfM4ZiBxQ9R4SA4N20q7RlLw9UM+yU22Qd
-         7oWVLn9jg2GeEdfCcWrItEpgmVEmc30KcUSz9Q8SwNQHP02O7Oa+ipiHROnUSnkWQbJz
-         uMQs1NfR534d1jlv0eb0XXtGWQ9WJwUjzVxXUfnYDAdqrLdH1aCttF+iB03iPRTIR9Oa
-         qVQCxTpkwexWq0X8+jFFT9jlQimvIgdPazPiPZnoSmeoQal+qyZ3/UFAHxaNQjsQBWSn
-         WL9r/V913mPmVXznVaTna+LHe4KA9qCXbWtFBVSa1ZaRgs5JrmADNL9I/kfdaAfDhySp
-         A7tA==
-X-Gm-Message-State: AOAM530ybdEmBv+0oHZZZkQ1/MBK9EIiXj3fIBQfh4ub5HOgvfKHN+EI
-        aWyYgBtWxP9Jt0DwFJNCgTuR0O+H2aHfew==
-X-Google-Smtp-Source: ABdhPJzbESUxfFbuY2RlLbd6A1uDSjL/MxHFKfRxC2zm7xHkzvbwA1o2zIgB4AtqhCi22+WIL0EVBw==
-X-Received: by 2002:a17:906:379b:: with SMTP id n27mr29339643ejc.182.1617023147779;
-        Mon, 29 Mar 2021 06:05:47 -0700 (PDT)
+        bh=3TViJ7SE5R90odfzRBnnvVIw5vnuAodunwkoluO1S3A=;
+        b=j6nQrFkP8+1W4q4fhQO1Qw39VSeDIM+yPs0uMcGQ97oXpguiLCQY0vG4rz8D0hw11w
+         6/0mnAuuYck7eoalrOSf3NtAxJklTxiaBzGEoFIgau2Y+T8ZIxKEmLK8K1/JVZGx6qW/
+         qwW4xldFCRlU2p7xIYfEDSFhzWqzLXjMqvvXjuE83y/mbcesyHCxdnwZCpE5LtksApq9
+         OpqXSiRMDtlOGRWYCmV/0YDO7PPUviyGc8NiMxrAUdR8yY4ivIo/zfFMTZWPTMqPUWb8
+         msftBagpEeDnskHyGY9h8TcypQaI7myUGLeEiqake6Ww+V8+81sjsRfJyltj3CaKDiB+
+         4CCA==
+X-Gm-Message-State: AOAM531BRnpmpctokfnAy4fr7fOVTlV6h5Fbc1siFIwleG0qedoggx33
+        vDtq5ioEIqa9AMjfAErXMH/6E0awmrsV3w==
+X-Google-Smtp-Source: ABdhPJyWInp8VA3LCdQAqlwxx3eS8nVmWVte8zbr44J5CvhVCb7rJ6J886W3mbZoCWaZ3x0uDWthfg==
+X-Received: by 2002:a17:906:f296:: with SMTP id gu22mr27894329ejb.20.1617023148821;
+        Mon, 29 Mar 2021 06:05:48 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.199.133])
         by smtp.gmail.com with ESMTPSA id gt37sm8123905ejc.12.2021.03.29.06.05.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:05:47 -0700 (PDT)
+        Mon, 29 Mar 2021 06:05:48 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 2/5] tracing: Add "last_func_repeats" to struct trace_array
-Date:   Mon, 29 Mar 2021 16:05:30 +0300
-Message-Id: <20210329130533.199507-3-y.karadz@gmail.com>
+Subject: [PATCH v2 3/5] tracing: Add method for recording "func_repeats" events
+Date:   Mon, 29 Mar 2021 16:05:31 +0300
+Message-Id: <20210329130533.199507-4-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210329130533.199507-1-y.karadz@gmail.com>
 References: <20210329130533.199507-1-y.karadz@gmail.com>
@@ -64,67 +64,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The field is used to keep track of the consecutive (on the same CPU) calls
-of a single function. This information is needed in order to consolidate
-the function tracing record in the cases when a single function is called
-number of times.
+This patch only provides the implementation of the method.
+Later we will used it in a combination with a new option for
+function tracing.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
 ---
- kernel/trace/trace.c |  1 +
- kernel/trace/trace.h | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
+ kernel/trace/trace.c | 26 ++++++++++++++++++++++++++
+ kernel/trace/trace.h |  4 ++++
+ 2 files changed, 30 insertions(+)
 
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 3c605957bb5c..6fcc159c34a8 100644
+index 6fcc159c34a8..0d3d14112f50 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -9103,6 +9103,7 @@ static int __remove_instance(struct trace_array *tr)
- 	ftrace_clear_pids(tr);
- 	ftrace_destroy_function_files(tr);
- 	tracefs_remove(tr->dir);
-+	free_percpu(tr->last_func_repeats);
- 	free_trace_buffers(tr);
+@@ -3116,6 +3116,32 @@ static void ftrace_trace_userstack(struct trace_array *tr,
  
- 	for (i = 0; i < tr->nr_topts; i++) {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 6a5b4c2a0fa7..1cd4da7ba769 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -262,6 +262,17 @@ struct cond_snapshot {
- 	cond_update_fn_t		update;
- };
+ #endif /* CONFIG_STACKTRACE */
  
-+/*
-+ * struct trace_func_repeats - used to keep track of the consecutive
-+ * (on the same CPU) calls of a single function.
-+ */
-+struct trace_func_repeats {
-+	unsigned long	ip;
-+	unsigned long	parent_ip;
-+	unsigned long	count;
-+	u64		ts_last_call;
-+};
-+
- /*
-  * The trace array - an array of per-CPU trace arrays. This is the
-  * highest level data structure that individual tracers deal with.
-@@ -358,8 +369,15 @@ struct trace_array {
- #ifdef CONFIG_TRACER_SNAPSHOT
- 	struct cond_snapshot	*cond_snapshot;
- #endif
-+	struct trace_func_repeats	__percpu *last_func_repeats;
- };
- 
-+static inline struct trace_func_repeats __percpu *
-+tracer_alloc_func_repeats(struct trace_array *tr)
++void trace_last_func_repeats(struct trace_array *tr,
++			     struct trace_func_repeats *last_info,
++			     unsigned int trace_ctx)
 +{
-+	return tr->last_func_repeats = alloc_percpu(struct trace_func_repeats);
++	struct trace_buffer *buffer = tr->array_buffer.buffer;
++	struct func_repeats_entry *entry;
++	struct ring_buffer_event *event;
++	u64 delta;
++
++	event = __trace_buffer_lock_reserve(buffer, TRACE_FUNC_REPEATS,
++					    sizeof(*entry), trace_ctx);
++	if (!event)
++		return;
++
++	delta = ring_buffer_event_time_stamp(buffer, event) -
++		last_info->ts_last_call;
++
++	entry = ring_buffer_event_data(event);
++	entry->ip = last_info->ip;
++	entry->parent_ip = last_info->parent_ip;
++	entry->count = last_info->count;
++	FUNC_REPEATS_SET_DELTA_TS(entry, delta)
++
++	__buffer_unlock_commit(buffer, event);
 +}
 +
- enum {
- 	TRACE_ARRAY_FL_GLOBAL	= (1 << 0)
- };
+ /* created for use with alloc_percpu */
+ struct trace_buffer_struct {
+ 	int nesting;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 1cd4da7ba769..e1f34119c036 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -701,6 +701,10 @@ static inline void __trace_stack(struct trace_array *tr, unsigned int trace_ctx,
+ }
+ #endif /* CONFIG_STACKTRACE */
+ 
++void trace_last_func_repeats(struct trace_array *tr,
++			     struct trace_func_repeats *last_info,
++			     unsigned int trace_ctx);
++
+ extern u64 ftrace_now(int cpu);
+ 
+ extern void trace_find_cmdline(int pid, char comm[]);
 -- 
 2.25.1
 
