@@ -2,141 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6EB34D897
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503B634D899
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhC2TtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S231253AbhC2TxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhC2Ts7 (ORCPT
+        with ESMTP id S229884AbhC2Twt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:48:59 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE66C061574;
-        Mon, 29 Mar 2021 12:48:59 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso13370102ott.13;
-        Mon, 29 Mar 2021 12:48:59 -0700 (PDT)
+        Mon, 29 Mar 2021 15:52:49 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25743C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:52:49 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i26so20181287lfl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:52:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EZJVh4jd4a7TViDLcP04oFUzaFvaj6RI7ATnPFJO1yM=;
-        b=H2a94AgTvVjaw6KwaLPzrKcmZfLzLo8GlBiQgL3VcBNcBQSR+1bLTOyLcsqLiVGGgp
-         punqsas8H2DOguJtqgkIotHyJHlnPQoc1/19aaMm1IeOZEv6jvEhEsJYWFR2m0KNC7S1
-         dO996YPCv4bKaD62O3HIxuY6Re7lcI6hRidHNN6y7Db/yRyIyNBBMczh9/lbfXI0xpfN
-         SCWJe9eIq6paiXR5nFzl5YIz892oGsfvrwV1JN8LArztC168jssSDg6Vum5TJkiqfAIU
-         ESLdqQNuBLqIBxEp78hfAN+RKPaaxUqhinvC20FUnpBH5WkTgHP5nD+8B1mFz3O5Gusp
-         tybQ==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVaNtyqpmAO63m1s9LIcA3e9oGAv9PR4s9Zo1hpVIaI=;
+        b=ouf1eR0EAiuh8+KvnQRm6oQZxsGxrv50BvfH8qQLs/34IWJg7jeBGtlotIQkdQxMTs
+         RSMYPEjNJUvlzQT7rVbWnW75BzMKalYUt8Xa3QpNR3f0rPAq3A5uagkEPoD2GBOtsqMm
+         89vtZ4mgogkyjXBDd806+m2LERGrv/3fFwFeD5mYchVIr6daX5/6xr8UiIR7BKXUzhg3
+         9cjCoZGUWELxMhUymtvjUIajkZlbHjondY0SNU9inIrTciutx8IkBLYtm2aYH3qFCVhv
+         K5ZJ/Tnjbb7KjKd4quUDkQ/mcrrTu2VAWMFVgtWVjatBbEwKEx868h+7v41Fh6CUiMg7
+         djug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EZJVh4jd4a7TViDLcP04oFUzaFvaj6RI7ATnPFJO1yM=;
-        b=c2RPovby7cBnWxkE65mPJvnCZRKIjJ7ygZ8QPhXS/xNE6af2aY9iNivnK9d6R01mOs
-         gEfvA0EhHPehlXIorlBcfQvl3vdTyFBQbGLgiHfZPV69WP9gRwHor3fFMEDalnLRU9eD
-         Kc/mokN/xX42nYEq7lihp1nQaFGQu754498z2N8k1fGzodFizSAaB9ZMGk+ALQ8KDxC6
-         hmThLvwHasU6LROpqQQrGDTYSsuqYvgkHHm79MHeY1IiYIVtwpZhgM/hrT1h0HxE+Ho4
-         YAusJqN5tl8x/CiI+o96GzORVXB2i6bi3mBr3r5FxRiOaF4q4V+zqSUTLGBH9rfCmrOE
-         djeg==
-X-Gm-Message-State: AOAM532zVgGksrTwQs0iqYRnB1FWKZMEsVGrzP6jc1m8xX3fv0Nw7iky
-        AeWnhbBhpKVR7z4ZUq7nMIFmiU3rgbnXgIBsKAE=
-X-Google-Smtp-Source: ABdhPJzZr4eOPtKELL2M99QxmfoGY3CfOePRuNX1fBdWQkPJxQeBu1FOT9tfG6nTvVdBvg+isR+dM1b84PqhQW4p2Ms=
-X-Received: by 2002:a9d:5508:: with SMTP id l8mr24687829oth.233.1617047338712;
- Mon, 29 Mar 2021 12:48:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVaNtyqpmAO63m1s9LIcA3e9oGAv9PR4s9Zo1hpVIaI=;
+        b=Hj9GODiD04FJ382mtI/BmmtBICXq6edIna23Yjne8vXsbZs3tmCO2iNjcsmblptZf4
+         NWrLZiSGK9h93eIFBcDRr6xAHiz3a2d1dhV+x0PTmMXHdzglx546P/QzCkhYaLox7zOd
+         iaCqUeIZ2fHz6G15VZqpjxefiLFXHPHTdlGZwNcIpVbUGAovou3ztRK9ia0SglEfgfW+
+         xiX9BwNydZumwHO6ZhhnnjoqsfYPkY0OrpRAIPWPHjl5/pjiBEQuCTneoDeZobrEFnNN
+         MnO5VsB7uaV8vKi423Y8wMA1melcHAyZWK4m7Ix7Gvk7+Np0QoTWdEy9TIytM6Eh9yTb
+         dptA==
+X-Gm-Message-State: AOAM532g3eC9ddJQR1kwuDscHdCLuVdZYSy8lrdpUaiBLHebTgOpHiey
+        BwLt8jBvadXVGLubvgxOCVp/PA==
+X-Google-Smtp-Source: ABdhPJwb1AaRiGLFqYY/0RAUVvJPzCAmHQRleTFa6K8lYjUEYoSKb2qk6H/CSzS01nJPZojNsofXWw==
+X-Received: by 2002:a19:740f:: with SMTP id v15mr16749480lfe.247.1617047567470;
+        Mon, 29 Mar 2021 12:52:47 -0700 (PDT)
+Received: from localhost.localdomain (host-193.106.246.138.static.3s.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id v2sm2535743ljg.89.2021.03.29.12.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 12:52:47 -0700 (PDT)
+From:   Angela Czubak <acz@semihalf.com>
+To:     rafael.j.wysocki@intel.com
+Cc:     akpm@linux-foundation.org, john.garry@huawei.com,
+        linux-kernel@vger.kernel.org, upstream@semihalf.com,
+        dtor@chromium.org, Angela Czubak <acz@semihalf.com>
+Subject: [PATCH] resource: Prevent irqresource_disabled() from erasing flags
+Date:   Mon, 29 Mar 2021 21:52:38 +0200
+Message-Id: <20210329195238.9455-1-acz@semihalf.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210326191906.43567-1-jim2101024@gmail.com> <20210326191906.43567-3-jim2101024@gmail.com>
- <20210329162539.GG5166@sirena.org.uk> <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
- <20210329171613.GI5166@sirena.org.uk>
-In-Reply-To: <20210329171613.GI5166@sirena.org.uk>
-From:   Jim Quinlan <jim2101024@gmail.com>
-Date:   Mon, 29 Mar 2021 15:48:46 -0400
-Message-ID: <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    /* Pmap_idx to avs pmap number */
-    const uint8_t pmap_idx_to_avs_id[20];
+Do not overwrite flags as it leads to erasing triggering and polarity
+information which might be useful in case of hard-coded interrupts.
+This way the information can be read later on even though mapping to
+APIC domain failed.
 
-On Mon, Mar 29, 2021 at 1:16 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Mar 29, 2021 at 12:39:50PM -0400, Jim Quinlan wrote:
-> > On Mon, Mar 29, 2021 at 12:25 PM Mark Brown <broonie@kernel.org>
->
-> > > Here you are figuring out a device local supply name...
->
-> > > > +     /*
-> > > > +      * Get the regulators that the EP devianswerces require.  We cannot use
-> > > > +      * pcie->dev as the device argument in regulator_bulk_get() since
-> > > > +      * it will not find the regulators.  Instead, use NULL and the
-> > > > +      * regulators are looked up by their name.
-> > > > +      */
-> > > > +     return regulator_bulk_get(NULL, pcie->num_supplies, pcie->supplies);
->
-> > > ...and here you are trying to look up that device local name in the
-> > > global namespace.  That's not going to work well, the global names that
-> > > supplies are labelled with may be completely different to what the chip
-> > > designer called them and there could easily be naming collisions between
-> > > different chips.
->
-> > "devm_regulator_bulk_get(pcie->dev, ...)"; is your concern about the
-> > NULL for the device and if so does this fix it?  If not, what do you
-> > suggest that I do?
->
-> If you use the struct device for the PCIe controller then that's going
-> to first try the PCIe controller then the global namespace so you still
-> have all the same problems.  You really need to use the struct device
-> for the device that is being supplied not some random other struct
-> device you happened to find in the system.
-Hello Mark,
-I'm not concerned about a namespace collision and I don't think you
-should be concerned either.  First, this driver is for Broadcom STB
-PCIe chips and boards, and we also deliver the DT to the customers.
-We typically do not have any other regulators in the DT besides the
-ones I am proposing.  For example, the 7216 SOC DT has 0 other
-regulators -- no namespace collision possible.  Our DT-generating
-scripts also flag namespace issues.  I admit that this driver is also
-used by RPi chips, but I can easily exclude this feature from the RPI
-if Nicolas has any objection.
+Signed-off-by: Angela Czubak <acz@semihalf.com>
+---
+Some Chromebooks use hard-coded interrupts in their ACPI tables.
+This is an excerpt as dumped on Relm:
 
-Further, if you want, I can restrict the search to the two regulators
-I am proposing to add to pci-bus.yaml:  "vpcie12v-supply" and
-"vpcie3v3-supply".
+...
+            Name (_HID, "ELAN0001")  // _HID: Hardware ID
+            Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
+            Name (_UID, 0x05)  // _UID: Unique ID
+            Name (ISTP, Zero)
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+            {
+                Name (BUF0, ResourceTemplate ()
+                {
+                    I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
+                        AddressingMode7Bit, "\\_SB.I2C1", 
+                        0x00, ResourceConsumer, , Exclusive,
+                        )
+                    Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
+                    {
+                        0x000000B8,
+                    }
+                })
+                Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */ 
+            }
+...
 
-Is the above enough to alleviate your concerns about global namespace collision?
+This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
+to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
+fails and irqresource_disabled() is issued, which leads to erasing triggering
+and polarity information.
+If that function added its flags instead of overwriting them the correct IRQ
+type would be set even for the hard-coded interrupts, which allows device driver
+to retrieve it.
+Please, let me know if this kind of modification is acceptable.
+Best Regards,
+Angela
 
->
-> As I said in my earlier reply I think either the driver core or PCI
-> needs something like Soundwire has which lets it create struct devices
-> for things that have been enumerated via software but not enumerated by
-> hardware and a callback or something which lets those devices take
-> whatever steps are needed to trigger probe.
+ include/linux/ioport.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can you please elaborate this further and in detail?  This sounds like
-a decent-size undertaking, and the last time I followed a review
-suggestion that was similar in spirit to this, the pullreq was
-ironically NAKed by the person who suggested it.  Do you really think
-it is necessary to construct such a subsystem just to avoid the  very
-remote possibility of a namespace collision which is our (Broadcom
-STB) responsibility and consequence to avoid?
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 55de385c839cf..647744d8514e0 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
+ {
+ 	res->start = irq;
+ 	res->end = irq;
+-	res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
++	res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
+ }
+ 
+ extern struct address_space *iomem_get_mapping(void);
+-- 
+2.17.1
 
-Regards,
-Jim Quinlan
-Broadcom STB
