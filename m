@@ -2,132 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B0E34D796
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D6B34D79F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhC2SuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:50:06 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:35611 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230224AbhC2Str (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:49:47 -0400
-Received: (qmail 945935 invoked by uid 1000); 29 Mar 2021 14:49:46 -0400
-Date:   Mon, 29 Mar 2021 14:49:46 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] usb: Iterator for ports
-Message-ID: <20210329184946.GA944482@rowland.harvard.edu>
-References: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
- <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230373AbhC2SzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:55:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229711AbhC2Syg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:54:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F25456044F;
+        Mon, 29 Mar 2021 18:54:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617044076;
+        bh=YzFvmZjaX/wip4oYWzPvYrI8AXGqz02EXSFRGlMPYYM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=mrBId4TAGmbrErBJW4cm0EqZkmZujzCYT2G6HLDvcxEoxHjA4wm7XlH37gRnX/lLm
+         YyiRk6av/JEj/uXtD3lUJNMUAZ/phfMhbXP+5Qs/GPtcSNUuIWw/6G8rHcRSvRJv6+
+         UA2jgjL+BNGEYjWStflsg8sKZF5arQX8wOa6Mug7b8+pwnF577kCosud5tVdggVKGt
+         U0d+4v18FTPaUzCfHbWS4Q1fYGvBdBzIold9Wlxc5pLM6YBL4QD6OXgO+8cVqvDESg
+         CsWwwyuQfAzbnhxHNg4XIkmRlYZhptNejIda/uJPfOM8EZL1VRggLKtNN9Dkdvo1Wc
+         ZTuIWdPeVQpKg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E190360074;
+        Mon, 29 Mar 2021 18:54:35 +0000 (UTC)
+Subject: Re: [PULL 0/2] xtensa fixes for 5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210329183648.2277-1-jcmvbkbc@gmail.com>
+References: <20210329183648.2277-1-jcmvbkbc@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210329183648.2277-1-jcmvbkbc@gmail.com>
+X-PR-Tracked-Remote: git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20210329
+X-PR-Tracked-Commit-Id: 7b9acbb6aad4f54623dcd4bd4b1a60fe0c727b09
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1e43c377a79f9189fea8f2711b399d4e8b4e609b
+Message-Id: <161704407586.2458.11452674669614615418.pr-tracker-bot@kernel.org>
+Date:   Mon, 29 Mar 2021 18:54:35 +0000
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:44:25AM +0300, Heikki Krogerus wrote:
-> Introducing usb_for_each_port(). It works the same way as
-> usb_for_each_dev(), but instead of going through every USB
-> device in the system, it walks through the USB ports in the
-> system.
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  drivers/usb/core/usb.c | 46 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/usb.h    |  1 +
->  2 files changed, 47 insertions(+)
-> 
-> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> index 2ce3667ec6fae..62368c4ed37af 100644
-> --- a/drivers/usb/core/usb.c
-> +++ b/drivers/usb/core/usb.c
-> @@ -398,6 +398,52 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
->  }
->  EXPORT_SYMBOL_GPL(usb_for_each_dev);
->  
-> +struct each_hub_arg {
-> +	void *data;
-> +	int (*fn)(struct device *, void *);
-> +};
-> +
-> +static int __each_hub(struct usb_device *hdev, void *data)
-> +{
-> +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
-> +	struct usb_hub *hub;
-> +	int ret = 0;
-> +	int i;
-> +
-> +	hub = usb_hub_to_struct_hub(hdev);
-> +	if (!hub)
-> +		return 0;
+The pull request you sent on Mon, 29 Mar 2021 11:36:48 -0700:
 
-What happens if the hub is removed exactly now?  Although hdev is 
-reference-counted (and the loop iterator does take a reference to it), 
-usb_hub_to_struct_hub doesn't take a reference to hub.  And hub->ports 
-isn't refcounted at all.
+> git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20210329
 
-> +
-> +	mutex_lock(&usb_port_peer_mutex);
-> +
-> +	for (i = 0; i < hdev->maxchild; i++) {
-> +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	mutex_unlock(&usb_port_peer_mutex);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1e43c377a79f9189fea8f2711b399d4e8b4e609b
 
-I have a feeling that it would be better to take and release this mutex 
-in usb_for_each_port (or its caller), so that it is held over the whole 
-loop.
+Thank you!
 
-Alan Stern
-
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * usb_for_each_port - interate over all USB ports in the system
-> + * @data: data pointer that will be handed to the callback function
-> + * @fn: callback function to be called for each USB port
-> + *
-> + * Iterate over all USB ports and call @fn for each, passing it @data. If it
-> + * returns anything other than 0, we break the iteration prematurely and return
-> + * that value.
-> + */
-> +int usb_for_each_port(void *data, int (*fn)(struct device *, void *))
-> +{
-> +	struct each_hub_arg arg = {data, fn};
-> +
-> +	return usb_for_each_dev(&arg, __each_hub);
-> +}
-> +EXPORT_SYMBOL_GPL(usb_for_each_port);
-> +
->  /**
->   * usb_release_dev - free a usb device structure when all users of it are finished.
->   * @dev: device that's been disconnected
-> diff --git a/include/linux/usb.h b/include/linux/usb.h
-> index ddd2f5b2a2827..e4d2eb703cf89 100644
-> --- a/include/linux/usb.h
-> +++ b/include/linux/usb.h
-> @@ -871,6 +871,7 @@ extern int usb_match_one_id(struct usb_interface *interface,
->  			    const struct usb_device_id *id);
->  
->  extern int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *));
-> +int usb_for_each_port(void *data, int (*fn)(struct device *, void *));
->  extern struct usb_interface *usb_find_interface(struct usb_driver *drv,
->  		int minor);
->  extern struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev,
-> -- 
-> 2.30.2
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
