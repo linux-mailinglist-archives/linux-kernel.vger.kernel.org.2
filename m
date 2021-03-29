@@ -2,96 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA6C34D8D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CCA34D8D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhC2UGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231772AbhC2UGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:06:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E8A61981
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617048375;
-        bh=lgDPeJMqjCmjbhaBvOeuRieB3PN5e/TDtj8+5tp48vo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uwi1QCJzG4Vp4YCRSv5W7XFGZLTpg6chpLx0soD1jzQmtYDTYxHw3cvN54ZTpi97R
-         3XGWIbmgjRkvr8lvBF0ukwg5PPM1Ma9LboN0+/3OrIK+UZUzroAqJy/gNb1XItTr46
-         U/aL0qcNLApt5GXZ672Qa72o9k9uAzGnCdVDUgXRSj7w8xmsRAePk4SRPJXFFGTW4A
-         f5QRCcKqU5pepjD5irWP3kSoNv1Lwk9CYKzFoou2/aFgTHtarx0uagKPJndaEL8zhR
-         kc2m//+bBYSaz2LYDeKLZRJe0dg2I/+eLS77mTeGyPNgja0yot1nU0++ETaeKi1CEy
-         Xvb5AxIYnKY9A==
-Received: by mail-oo1-f54.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so3243620ooa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 13:06:15 -0700 (PDT)
-X-Gm-Message-State: AOAM530XRjmtv4KDnsbIAHaZv0DiN6yPO8tKPwstQ0Brd27snSSGoYRk
-        mFyrhEV3o/45DWbGmVKyS9BwDW6aO7mqWnwW4WA=
-X-Google-Smtp-Source: ABdhPJyQvabMoKjf8AEqY6tMhe2VJ3yx2jyDzz56QCFu1dRyBpkiE4j33XCtV/PH3UwLaLjHzgjbx3o4aO2aFW3BV+A=
-X-Received: by 2002:a4a:e9a2:: with SMTP id t2mr22518548ood.15.1617048374402;
- Mon, 29 Mar 2021 13:06:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAGgoGu77PEEAJped5bnw4q8rFeDMebL92YWGDGFfNp_ZAnpJ8Q@mail.gmail.com>
- <YGFeQUuAaKgeaqCA@kroah.com> <CAGgoGu76FOJd74oVgnu5Sa3GKaHHyLTH+=hP+mLGzS+79Z26fA@mail.gmail.com>
-In-Reply-To: <CAGgoGu76FOJd74oVgnu5Sa3GKaHHyLTH+=hP+mLGzS+79Z26fA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 29 Mar 2021 22:06:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a24aFvCUeZiDE6jCTKm0hrPVc34sNYOPpZJkh_5HpgDSw@mail.gmail.com>
-Message-ID: <CAK8P3a24aFvCUeZiDE6jCTKm0hrPVc34sNYOPpZJkh_5HpgDSw@mail.gmail.com>
-Subject: Re: Compiling kernel-3.4.xxx with gcc-9.x. Need some help.
-To:     Fawad Lateef <fawadlateef@gmail.com>
-Cc:     Greg KH <greg@kroah.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231924AbhC2UHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231905AbhC2UHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:07:21 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240D1C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 13:07:21 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id u128so20311869ybf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 13:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=NOHWU2jsEa/0zjQcmOdfFuIgUG8Hlc9nuqXoIh83A5Q=;
+        b=ZedhW5SWdfomD/RnQ+SHrsEUCCBbuJiPY9OzxJ1ZFxXYEZzCuSc0SRKBj6vawvmRrX
+         39+YtgebEbfd/BN7ghUiBk400/OFFNODUez8lemMziyt09UJlv37pc/8jW0TJbkPVOMN
+         YiZKF/tGBBSHOYp6O0CIj2+Nwhs+At6wrK9HwHA1mrP7g5E6YEsdDlCWvuo9XsVp6s+8
+         l5XBKu6NE0qxj6pVKxCrSf3CwiTYBSoxWkSDJATwW6OxIvK6rn6Vus9ZCH9yrPvGzzov
+         Tlj/ZxEI9xnRDXbijtCFxfG8hQOT9VCP9CBCZ2NP63ocQ6Yj397+L60dJI7NrGwiHBog
+         ClmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=NOHWU2jsEa/0zjQcmOdfFuIgUG8Hlc9nuqXoIh83A5Q=;
+        b=qNfg9rt7BUFSpKlMas6Z1TGU75OrYWFs03ERunpfnykIhIAa5oWOXRmbP5zRC9ZrD5
+         4S4kCCuEclN9MV4LUXUrXdUPUsNJbLxrqFvVKwhqzns6riiu+d6xTwprbRifeF0Hj8dP
+         mBWOBJgLZQJ2r10G2u/dDsOdbKx3O3OEJy2HxZLW0N4fKjvTZJXEMp+DlsqZ0DsznYAX
+         1YOVZM0E3hc8DfbUbvHpBiNV+APNj5husEQFTaHTRECrYJX/TDVAoK7HJ6jOLR6Msiqd
+         SDfgJkwyFBdWng5AolPSW7HPV+5azPyvAlxoSaD2Op7yUXwbUxybXk2EvpgVrJSexVzR
+         oPIQ==
+X-Gm-Message-State: AOAM532VU5xzlQISsyudBahcKzfUmI3qHEc3+m2QBeojpGTl5vlPyqbA
+        t79yNpnVAv8IlxnavhmFCseL5Y05KipOGKDFl5pU
+X-Google-Smtp-Source: ABdhPJw/0VRaCDBP8zk5tGlA3BELqimxwRGMtryyVd9yN7S7UL0GRjrq9DemRQsdDJjZxBsQZXTW8l9Z0bC5Np6oXG7u
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:8578:c167:dddf:13a2])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:3188:: with SMTP id
+ x130mr15759667ybx.174.1617048440354; Mon, 29 Mar 2021 13:07:20 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 13:06:59 -0700
+Message-Id: <20210329200659.65971-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 9:23 PM Fawad Lateef <fawadlateef@gmail.com> wrote:
->
-> On Mon, 29 Mar 2021 at 06:57, Greg KH <greg@kroah.com> wrote:
-> >
-> > On Sun, Mar 28, 2021 at 10:20:50PM +0200, Fawad Lateef wrote:
-> > > Hi
-> > >
-> > > I am using an Olimex A20 SOM with NAND and due to some binary blob for
-> > > NAND driver, I am stuck with the sunxi kernel 3.4.xxx version. (Repo
-> > > here: https://github.com/linux-sunxi/linux-sunxi)
-> >
-> > Please work with the vendor that is forcing you to use this obsolete and
-> > insecure kernel version.  You are paying for that support, and they are
-> > the only ones that can support you.
-> >
->
-> The problem is vendor Olimex now have eMMC based SOM which is
-> supported by mainline kernel _but_ they still selling NAND SOM and
-> only supporting 3.4 kernel (as this is the only latest version from
-> sunxi with NAND support, after that sunxi is now moved away from NAND
-> too).
+Previously, we shared too much of the code with COPY and ZEROPAGE, so we
+manipulated things in various invalid ways:
 
-From a very quick look at the git history, I can tell that A20 NAND driver
-support was added in linux-4.8. Have you actually tried a modern kernel?
+- Previously, we unconditionally called shmem_inode_acct_block. In the
+  continue case, we're looking up an existing page which would have been
+  accounted for properly when it was allocated. So doing it twice
+  results in double-counting, and eventually leaking.
 
-There is also a howto document at
-https://linux-sunxi.org/Mainline_NAND_Howto
+- Previously, we made the pte writable whenever the VMA was writable.
+  However, for continue, consider this case:
 
-The olimex board specific dts files seem to be missing the entry for
-the nand controller. If you have trouble figuring out how to enable that
-from the howto above, Olimex should be able to prove a small patch
-for it.
+  1. A tmpfs file was created
+  2. The non-UFFD-registered side mmap()-s with MAP_SHARED
+  3. The UFFD-registered side mmap()-s with MAP_PRIVATE
 
-> > > I am currently using buildroot-2016 and gcc-5.5 for building the
-> > > kernel and every other package needed.
-> > >
-> > > Now the requirement is to move to the latest version of gcc-9.x, so
-> > > that we can have glibc++ provided by the gcc-9.1 toolchain.
-> > >
-> > > Main problem for moving to later versions of buildroot is the kernel
-> > > 3.4 which we couldn't to work with gcc-6 a few years ago _but_ now the
-> > > gcc-9.1 requirement is mandatory so now have to look into compiling
-> > > linux-3.4 with gcc-9.1 or above.
+  In this case, even though the UFFD-registered VMA may be writable, we
+  still want CoW behavior. So, check for this case and don't make the
+  pte writable.
 
-There is no need to compile user space and kernel with the same compiler.
+- The offset / max_off checking doesn't necessarily hurt anything, but
+  it's not needed in the CONTINUE case, so skip it.
 
-        Arnd
+- Previously, we unconditionally called ClearPageDirty() in the error
+  path. In the continue case though, since this is an existing page, it
+  might have already been dirty before we started touching it. So,
+  remember whether or not it was dirty before we set_page_dirty(), and
+  only clear the bit if it wasn't dirty before.
+
+- Previously, we unconditionally removed the page from the page cache in
+  the error path. But in the continue case, we didn't add it - it was
+  already there because the page is present in some second
+  (non-UFFD-registered) mapping. So, removing it is invalid.
+
+Because the error handling issues are easy to exercise in the selftest,
+make a small modification there to do so.
+
+Finally, refactor shmem_mcopy_atomic_pte a bit. By this point, we've
+added a lot of "if (!is_continue)"-s everywhere. It's cleaner to just
+check for that mode first thing, and then "goto" down to where the parts
+we actually want are. This leaves the code in between cleaner.
+
+Changes since v1:
+- Refactor to skip ahead with goto, instead of adding several more
+  "if (!is_continue)".
+- Fix unconditional ClearPageDirty().
+- Don't pte_mkwrite() when is_continue && !VM_SHARED.
+
+Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ mm/shmem.c                               | 67 ++++++++++++++----------
+ tools/testing/selftests/vm/userfaultfd.c | 12 +++++
+ 2 files changed, 51 insertions(+), 28 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index d2e0e81b7d2e..8ab1f1f29987 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2378,17 +2378,22 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	pte_t _dst_pte, *dst_pte;
+ 	int ret;
+ 	pgoff_t offset, max_off;
+-
+-	ret = -ENOMEM;
+-	if (!shmem_inode_acct_block(inode, 1))
+-		goto out;
++	int writable;
++	bool was_dirty;
+ 
+ 	if (is_continue) {
+ 		ret = -EFAULT;
+ 		page = find_lock_page(mapping, pgoff);
+ 		if (!page)
+-			goto out_unacct_blocks;
+-	} else if (!*pagep) {
++			goto out;
++		goto install_ptes;
++	}
++
++	ret = -ENOMEM;
++	if (!shmem_inode_acct_block(inode, 1))
++		goto out;
++
++	if (!*pagep) {
+ 		page = shmem_alloc_page(gfp, info, pgoff);
+ 		if (!page)
+ 			goto out_unacct_blocks;
+@@ -2415,13 +2420,11 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 		*pagep = NULL;
+ 	}
+ 
+-	if (!is_continue) {
+-		VM_BUG_ON(PageSwapBacked(page));
+-		VM_BUG_ON(PageLocked(page));
+-		__SetPageLocked(page);
+-		__SetPageSwapBacked(page);
+-		__SetPageUptodate(page);
+-	}
++	VM_BUG_ON(PageSwapBacked(page));
++	VM_BUG_ON(PageLocked(page));
++	__SetPageLocked(page);
++	__SetPageSwapBacked(page);
++	__SetPageUptodate(page);
+ 
+ 	ret = -EFAULT;
+ 	offset = linear_page_index(dst_vma, dst_addr);
+@@ -2429,16 +2432,18 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	if (unlikely(offset >= max_off))
+ 		goto out_release;
+ 
+-	/* If page wasn't already in the page cache, add it. */
+-	if (!is_continue) {
+-		ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
+-					      gfp & GFP_RECLAIM_MASK, dst_mm);
+-		if (ret)
+-			goto out_release;
+-	}
++	ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
++				      gfp & GFP_RECLAIM_MASK, dst_mm);
++	if (ret)
++		goto out_release;
+ 
++install_ptes:
+ 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+-	if (dst_vma->vm_flags & VM_WRITE)
++	/* For CONTINUE on a non-shared VMA, don't pte_mkwrite for CoW. */
++	writable = is_continue && !(dst_vma->vm_flags & VM_SHARED)
++		? 0
++		: dst_vma->vm_flags & VM_WRITE;
++	if (writable)
+ 		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
+ 	else {
+ 		/*
+@@ -2448,15 +2453,18 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 		 * unconditionally before unlock_page(), but doing it
+ 		 * only if VM_WRITE is not set is faster.
+ 		 */
++		was_dirty = PageDirty(page);
+ 		set_page_dirty(page);
+ 	}
+ 
+ 	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+ 
+-	ret = -EFAULT;
+-	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-	if (unlikely(offset >= max_off))
+-		goto out_release_unlock;
++	if (!is_continue) {
++		ret = -EFAULT;
++		max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
++		if (unlikely(offset >= max_off))
++			goto out_release_unlock;
++	}
+ 
+ 	ret = -EEXIST;
+ 	if (!pte_none(*dst_pte))
+@@ -2485,13 +2493,16 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	return ret;
+ out_release_unlock:
+ 	pte_unmap_unlock(dst_pte, ptl);
+-	ClearPageDirty(page);
+-	delete_from_page_cache(page);
++	if (!was_dirty)
++		ClearPageDirty(page);
++	if (!is_continue)
++		delete_from_page_cache(page);
+ out_release:
+ 	unlock_page(page);
+ 	put_page(page);
+ out_unacct_blocks:
+-	shmem_inode_unacct_blocks(inode, 1);
++	if (!is_continue)
++		shmem_inode_unacct_blocks(inode, 1);
+ 	goto out;
+ }
+ #endif /* CONFIG_USERFAULTFD */
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index f6c86b036d0f..d8541a59dae5 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -485,6 +485,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+ static void continue_range(int ufd, __u64 start, __u64 len)
+ {
+ 	struct uffdio_continue req;
++	int ret;
+ 
+ 	req.range.start = start;
+ 	req.range.len = len;
+@@ -493,6 +494,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
+ 	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
+ 		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
+ 		    (uint64_t)start);
++
++	/*
++	 * Error handling within the kernel for continue is subtly different
++	 * from copy or zeropage, so it may be a source of bugs. Trigger an
++	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
++	 */
++	req.mapped = 0;
++	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
++	if (ret >= 0 || req.mapped != -EEXIST)
++		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
++		    ret, req.mapped);
+ }
+ 
+ static void *locking_thread(void *arg)
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
