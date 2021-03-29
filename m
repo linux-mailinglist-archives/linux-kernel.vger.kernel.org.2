@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C92834CBDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EF534C5D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236507AbhC2Ixq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
+        id S232023AbhC2IDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:03:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234235AbhC2Iex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:34:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CADF7619AD;
-        Mon, 29 Mar 2021 08:34:52 +0000 (UTC)
+        id S231874AbhC2ICN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC636196F;
+        Mon, 29 Mar 2021 08:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006893;
-        bh=a0Je3Mx7OeomMmK/c6EPHcMSocIwScW6wMLIc9UEx1U=;
+        s=korg; t=1617004932;
+        bh=eyvwRZIPlZpP72HysB9lTTUVYz1mj0WrErunU7kassk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sikpMnY//l05xrxvapQHgTzc8UYnsVPERT90OWvwJWWyq+qX4zJ8+JsNPQc4u5w42
-         RrciwMXcmGzE24nGP1TQSzIEgtpsDaeq/ECwKFLRMF7ii/FFLoseeMmqU6hxs+q+bX
-         XFmxvG/qSbRDkXgxN+L75S8z7LJXPXAEiGiVRT3c=
+        b=JzeZQW3a0SIPUC/OHx6H9wa2rqohTn06J4OsRaI5TxAp1bxVkTccFf5zEMWb5PNeP
+         GymxsbK/pFZ36Bw9hyKdvrSi3CIOBLYai7TPvZPYS4G4QFxP6PqRJPVvvZwvyZhWbP
+         zn66g/5ApEwmVsyZRpMGj5rK723WlZU0BevzH7Ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Feng Tang <feng.tang@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 141/254] netfilter: ctnetlink: fix dump of the expect mask attribute
+Subject: [PATCH 4.9 02/53] powerpc/4xx: Fix build errors from mfdcr()
 Date:   Mon, 29 Mar 2021 09:57:37 +0200
-Message-Id: <20210329075637.848401895@linuxfoundation.org>
+Message-Id: <20210329075607.642341122@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit b58f33d49e426dc66e98ed73afb5d97b15a25f2d ]
+[ Upstream commit eead089311f4d935ab5d1d8fbb0c42ad44699ada ]
 
-Before this change, the mask is never included in the netlink message, so
-"conntrack -E expect" always prints 0.0.0.0.
+lkp reported a build error in fsp2.o:
 
-In older kernels the l3num callback struct was passed as argument, based
-on tuple->src.l3num. After the l3num indirection got removed, the call
-chain is based on m.src.l3num, but this value is 0xffff.
+  CC      arch/powerpc/platforms/44x/fsp2.o
+  {standard input}:577: Error: unsupported relocation against base
 
-Init l3num to the correct value.
+Which comes from:
 
-Fixes: f957be9d349a3 ("netfilter: conntrack: remove ctnetlink callbacks from l3 protocol trackers")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+  pr_err("GESR0: 0x%08x\n", mfdcr(base + PLB4OPB_GESR0));
+
+Where our mfdcr() macro is stringifying "base + PLB4OPB_GESR0", and
+passing that to the assembler, which obviously doesn't work.
+
+The mfdcr() macro already checks that the argument is constant using
+__builtin_constant_p(), and if not calls the out-of-line version of
+mfdcr(). But in this case GCC is smart enough to notice that "base +
+PLB4OPB_GESR0" will be constant, even though it's not something we can
+immediately stringify into a register number.
+
+Segher pointed out that passing the register number to the inline asm
+as a constant would be better, and in fact it fixes the build error,
+presumably because it gives GCC a chance to resolve the value.
+
+While we're at it, change mtdcr() similarly.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Segher Boessenkool <segher@kernel.crashing.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Acked-by: Feng Tang <feng.tang@intel.com>
+Link: https://lore.kernel.org/r/20210218123058.748882-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_netlink.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/include/asm/dcr-native.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 84caf3316946..e0c566b3df90 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2969,6 +2969,7 @@ static int ctnetlink_exp_dump_mask(struct sk_buff *skb,
- 	memset(&m, 0xFF, sizeof(m));
- 	memcpy(&m.src.u3, &mask->src.u3, sizeof(m.src.u3));
- 	m.src.u.all = mask->src.u.all;
-+	m.src.l3num = tuple->src.l3num;
- 	m.dst.protonum = tuple->dst.protonum;
- 
- 	nest_parms = nla_nest_start(skb, CTA_EXPECT_MASK);
+diff --git a/arch/powerpc/include/asm/dcr-native.h b/arch/powerpc/include/asm/dcr-native.h
+index 4a2beef74277..86fdda16bb73 100644
+--- a/arch/powerpc/include/asm/dcr-native.h
++++ b/arch/powerpc/include/asm/dcr-native.h
+@@ -65,8 +65,8 @@ static inline void mtdcrx(unsigned int reg, unsigned int val)
+ #define mfdcr(rn)						\
+ 	({unsigned int rval;					\
+ 	if (__builtin_constant_p(rn) && rn < 1024)		\
+-		asm volatile("mfdcr %0," __stringify(rn)	\
+-		              : "=r" (rval));			\
++		asm volatile("mfdcr %0, %1" : "=r" (rval)	\
++			      : "n" (rn));			\
+ 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
+ 		rval = mfdcrx(rn);				\
+ 	else							\
+@@ -76,8 +76,8 @@ static inline void mtdcrx(unsigned int reg, unsigned int val)
+ #define mtdcr(rn, v)						\
+ do {								\
+ 	if (__builtin_constant_p(rn) && rn < 1024)		\
+-		asm volatile("mtdcr " __stringify(rn) ",%0"	\
+-			      : : "r" (v)); 			\
++		asm volatile("mtdcr %0, %1"			\
++			      : : "n" (rn), "r" (v));		\
+ 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
+ 		mtdcrx(rn, v);					\
+ 	else							\
 -- 
 2.30.1
 
