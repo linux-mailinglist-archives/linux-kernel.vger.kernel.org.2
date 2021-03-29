@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEB134C861
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21E834C87F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbhC2IVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbhC2INl (ORCPT
+        id S234135AbhC2IXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:23:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15373 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232544AbhC2IO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6878BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 01:13:40 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lQn1h-0006Fj-Et; Mon, 29 Mar 2021 10:13:33 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lQn1g-0007I3-8u; Mon, 29 Mar 2021 10:13:32 +0200
-Date:   Mon, 29 Mar 2021 10:13:32 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-Message-ID: <20210329081332.oa7a7o7uhywawqqj@pengutronix.de>
-References: <20210309112615.625-1-o.rempel@pengutronix.de>
- <20210324055424.u4mbdewg4stndzgh@pengutronix.de>
- <20210329004458.GD22955@dragon>
+        Mon, 29 Mar 2021 04:14:57 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F850y21LZz9sGd;
+        Mon, 29 Mar 2021 16:12:50 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.179.202) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 16:14:47 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
+Date:   Mon, 29 Mar 2021 16:14:35 +0800
+Message-ID: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210329004458.GD22955@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:11:18 up 116 days, 22:17, 43 users,  load average: 0.26, 0.11,
- 0.03
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 08:44:59AM +0800, Shawn Guo wrote:
-> On Wed, Mar 24, 2021 at 06:54:24AM +0100, Oleksij Rempel wrote:
-> > Hi Shawn,
-> > 
-> > ping, do this patches need some ACK from some one?
-> 
-> As this will break existing DTBs, I need more ACKs from people to see
-> the consensus that this is the right thing to do.
+The property "dmas" contains two items: DMA "TX" and "RX" channel,
+Therefore, its value also needs to be written in two parts.
 
-Do you need ACKs from some concrete people?
+Otherwise, below YAML check warning is reported:
+Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
+i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
 
-Regards,
-Oleksij
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
+index 6f71294909a5fb4..803627e984f6089 100644
+--- a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
+@@ -81,6 +81,6 @@ examples:
+          interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+          clock-names = "osc", "apb_clk";
+          clocks = <&scmi_clk KEEM_BAY_PSS_AUX_I2S3>, <&scmi_clk KEEM_BAY_PSS_I2S3>;
+-         dmas = <&axi_dma0 29 &axi_dma0 33>;
++         dmas = <&axi_dma0 29>, <&axi_dma0 33>;
+          dma-names = "tx", "rx";
+      };
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.3
+
+
