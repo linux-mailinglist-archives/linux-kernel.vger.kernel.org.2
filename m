@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DE234CC2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D858734C74A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbhC2I4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        id S232774AbhC2IN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234686AbhC2IhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98A3B619B7;
-        Mon, 29 Mar 2021 08:36:20 +0000 (UTC)
+        id S232481AbhC2IIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:08:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A38D261601;
+        Mon, 29 Mar 2021 08:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006981;
-        bh=tu2wDbXbZgYo5OU+2U5aXiJgpGuERpERTU5bssKNt8Y=;
+        s=korg; t=1617005307;
+        bh=Wv9HBEGCTiCaY57mpX4PfPQHXHdX6ToNUa4oQJMWYcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f98ZRPsTxT0XcST+plp/2yVFJQsNPf/E5pJLyppef/ddyuSFmr9lJosZ1I+DYpZHm
-         r5dENHj7/KP5AkRsxql5Fwog7DopkggpuzsCcTweWsAdNN2YE2JFLiCYiQb/4V/Pgz
-         W4u4mGuygzSytUIgz1dJQNUVw4NZWVfo7FC6kVQQ=
+        b=oPUBcWXj0U6S2ibgzOQ9DuKyR79xEhRRLGnvtG/8QWMB04NUCOueBwcHqLYZUw/fq
+         85SFYsmRzCryb+IpN8pZ9ZAxN42zb4ny1zkMByxXAfouRzJBETRuo4XsTwncbBJljd
+         ZIEm5puXdNOGiNJdhKJbZqDIaP5LKMFM7U1gmnNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 176/254] octeontx2-pf: Clear RSS enable flag on interace down
+Subject: [PATCH 4.19 36/72] macvlan: macvlan_count_rx() needs to be aware of preemption
 Date:   Mon, 29 Mar 2021 09:58:12 +0200
-Message-Id: <20210329075638.940041930@linuxfoundation.org>
+Message-Id: <20210329075611.478784207@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +42,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geetha sowjanya <gakula@marvell.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit f12098ce9b43e1a6fcaa524acbd90f9118a74c0a ]
+[ Upstream commit dd4fa1dae9f4847cc1fd78ca468ad69e16e5db3e ]
 
-RSS configuration can not be get/set when interface is in down state
-as they required mbox communication. RSS enable flag status
-is used for set/get configuration. Current code do not clear the
-RSS enable flag on interface down which lead to mbox error while
-trying to set/get RSS configuration.
+macvlan_count_rx() can be called from process context, it is thus
+necessary to disable preemption before calling u64_stats_update_begin()
 
-Fixes: 85069e95e531 ("octeontx2-pf: Receive side scaling support")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+syzbot was able to spot this on 32bit arch:
+
+WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
+WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
+Modules linked in:
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 4632 Comm: kworker/1:3 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: ARM-Versatile Express
+Workqueue: events macvlan_process_broadcast
+Backtrace:
+[<82740468>] (dump_backtrace) from [<827406dc>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
+ r7:00000080 r6:60000093 r5:00000000 r4:8422a3c4
+[<827406c4>] (show_stack) from [<82751b58>] (__dump_stack lib/dump_stack.c:79 [inline])
+[<827406c4>] (show_stack) from [<82751b58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
+[<82751aa0>] (dump_stack) from [<82741270>] (panic+0x130/0x378 kernel/panic.c:231)
+ r7:830209b4 r6:84069ea4 r5:00000000 r4:844350d0
+[<82741140>] (panic) from [<80244924>] (__warn+0xb0/0x164 kernel/panic.c:605)
+ r3:8404ec8c r2:00000000 r1:00000000 r0:830209b4
+ r7:0000010f
+[<80244874>] (__warn) from [<82741520>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
+ r7:81363f70 r6:0000010f r5:83018e50 r4:00000000
+[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
+[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
+ r8:5a109000 r7:0000000f r6:a568dac0 r5:89802300 r4:00000001
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (u64_stats_update_begin include/linux/u64_stats_sync.h:128 [inline])
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_count_rx include/linux/if_macvlan.h:47 [inline])
+[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_broadcast+0x154/0x26c drivers/net/macvlan.c:291)
+ r5:89802300 r4:8a927740
+[<8136499c>] (macvlan_broadcast) from [<81365020>] (macvlan_process_broadcast+0x258/0x2d0 drivers/net/macvlan.c:317)
+ r10:81364f78 r9:8a86d000 r8:8a9c7e7c r7:8413aa5c r6:00000000 r5:00000000
+ r4:89802840
+[<81364dc8>] (macvlan_process_broadcast) from [<802696a4>] (process_one_work+0x2d4/0x998 kernel/workqueue.c:2275)
+ r10:00000008 r9:8404ec98 r8:84367a02 r7:ddfe6400 r6:ddfe2d40 r5:898dac80
+ r4:8a86d43c
+[<802693d0>] (process_one_work) from [<80269dcc>] (worker_thread+0x64/0x54c kernel/workqueue.c:2421)
+ r10:00000008 r9:8a9c6000 r8:84006d00 r7:ddfe2d78 r6:898dac94 r5:ddfe2d40
+ r4:898dac80
+[<80269d68>] (worker_thread) from [<80271f40>] (kthread+0x184/0x1a4 kernel/kthread.c:292)
+ r10:85247e64 r9:898dac80 r8:80269d68 r7:00000000 r6:8a9c6000 r5:89a2ee40
+ r4:8a97bd00
+[<80271dbc>] (kthread) from [<80200114>] (ret_from_fork+0x14/0x20 arch/arm/kernel/entry-common.S:158)
+Exception stack(0x8a9c7fb0 to 0x8a9c7ff8)
+
+Fixes: 412ca1550cbe ("macvlan: Move broadcasts into a work queue")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/if_macvlan.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 634d60655a74..07e841df5678 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1625,6 +1625,7 @@ int otx2_stop(struct net_device *netdev)
- 	struct otx2_nic *pf = netdev_priv(netdev);
- 	struct otx2_cq_poll *cq_poll = NULL;
- 	struct otx2_qset *qset = &pf->qset;
-+	struct otx2_rss_info *rss;
- 	int qidx, vec, wrk;
+diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
+index 2e55e4cdbd8a..1261559d70b4 100644
+--- a/include/linux/if_macvlan.h
++++ b/include/linux/if_macvlan.h
+@@ -43,13 +43,14 @@ static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
+ 	if (likely(success)) {
+ 		struct vlan_pcpu_stats *pcpu_stats;
  
- 	netif_carrier_off(netdev);
-@@ -1637,6 +1638,10 @@ int otx2_stop(struct net_device *netdev)
- 	/* First stop packet Rx/Tx */
- 	otx2_rxtx_enable(pf, false);
- 
-+	/* Clear RSS enable flag */
-+	rss = &pf->hw.rss_info;
-+	rss->enable = false;
-+
- 	/* Cleanup Queue IRQ */
- 	vec = pci_irq_vector(pf->pdev,
- 			     pf->hw.nix_msixoff + NIX_LF_QINT_VEC_START);
+-		pcpu_stats = this_cpu_ptr(vlan->pcpu_stats);
++		pcpu_stats = get_cpu_ptr(vlan->pcpu_stats);
+ 		u64_stats_update_begin(&pcpu_stats->syncp);
+ 		pcpu_stats->rx_packets++;
+ 		pcpu_stats->rx_bytes += len;
+ 		if (multicast)
+ 			pcpu_stats->rx_multicast++;
+ 		u64_stats_update_end(&pcpu_stats->syncp);
++		put_cpu_ptr(vlan->pcpu_stats);
+ 	} else {
+ 		this_cpu_inc(vlan->pcpu_stats->rx_errors);
+ 	}
 -- 
 2.30.1
 
