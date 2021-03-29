@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EFA34D7A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332B634D7A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhC2S4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:56:17 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53156 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231237AbhC2Szu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:55:50 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lQx2p-00Drfi-AO; Mon, 29 Mar 2021 20:55:23 +0200
-Date:   Mon, 29 Mar 2021 20:55:23 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH linux-next 1/1] phy: Sparx5 Eth SerDes: Use direct
- register operations
-Message-ID: <YGIimz9UnVYWfcXH@lunn.ch>
-References: <20210329081438.558885-1-steen.hegelund@microchip.com>
- <20210329081438.558885-2-steen.hegelund@microchip.com>
+        id S231219AbhC2S5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:57:52 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:36860 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhC2S5h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:57:37 -0400
+Received: by mail-ej1-f48.google.com with SMTP id a7so21091051ejs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:57:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fg4T1toksbX6wYWOQA9Y4u4lfMcCUeyne4oYFvBGONg=;
+        b=tu2i2XkLFLbz+col2+fcNBdbaYdNaUaUsgEPL6QZDK83kFnEKkgf1F8mV3viGYxxAo
+         SC9GBZxsSXZrGNwbPgFclTpiXHzf6jkhaTb+7YW2hKKPUXIj1xvrWIVQEmy3xEKyR8PS
+         JwJ+h3yABngjs8oL2koxPH/p3YKMoYJ7UbgiTCVBvfwc4HSEwCtaSGr18ssc7ElBTW8a
+         37zAYixpf9BpzrPXpWrbp4KoIqcVJQ/p2xFatFt6OC88GoDVhMq1SghIVjvH41DzMNgy
+         DA0aKYyl1l+cUW9IXGGs4Zg6EkyLjquHR4aHspXyOTk236k7WEO3i/hKUUvvdgLaStlJ
+         rGqA==
+X-Gm-Message-State: AOAM532mVZ3snVjbT8lR51Hpbaod4OjcrZDrVmpTW2euy5YyktJJt1FH
+        dBLWaIR4LvudVWxlNHouA+KRxWVaGI3QghjLs58=
+X-Google-Smtp-Source: ABdhPJygtQkRo0D4Yy9BT5cy38x+9L0MYd7T755PdhfzD0n6u1cHCRH3Gu6eL74xK/SC/007z1ts5mCoFYYBnkcMfEY=
+X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr30013433ejc.219.1617044256430;
+ Mon, 29 Mar 2021 11:57:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329081438.558885-2-steen.hegelund@microchip.com>
+References: <CAJvTdKm4qKw8D8b+NokBsdiE5yBj=LTiH50VuxJY2aAL8qQq6g@mail.gmail.com>
+ <09AB34BD-7DB8-4DBD-A538-F3AE642F8C8A@amacapital.net>
+In-Reply-To: <09AB34BD-7DB8-4DBD-A538-F3AE642F8C8A@amacapital.net>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 29 Mar 2021 14:57:25 -0400
+Message-ID: <CAJvTdKkZU3kFiC-5_xwVUNnwzM2QmVS3u1aY-RY=S6_Tw3f5zg@mail.gmail.com>
+Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
+ first use of dynamic user state
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:14:38AM +0200, Steen Hegelund wrote:
-> Use direct register operations instead of a table of register
-> information to lower the stack usage.
-> 
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/phy/microchip/sparx5_serdes.c | 1869 +++++++++++++------------
->  1 file changed, 951 insertions(+), 918 deletions(-)
-> 
-> diff --git a/drivers/phy/microchip/sparx5_serdes.c b/drivers/phy/microchip/sparx5_serdes.c
-> index 06bcf0c166cf..43de68a62c2f 100644
-> --- a/drivers/phy/microchip/sparx5_serdes.c
-> +++ b/drivers/phy/microchip/sparx5_serdes.c
-> @@ -343,12 +343,6 @@ struct sparx5_sd10g28_params {
->  	u8 fx_100;
->  };
->  
-> -struct sparx5_serdes_regval {
-> -	u32 value;
-> -	u32 mask;
-> -	void __iomem *addr;
-> -};
-> -
->  static struct sparx5_sd25g28_media_preset media_presets_25g[] = {
->  	{ /* ETH_MEDIA_DEFAULT */
->  		.cfg_en_adv               = 0,
-> @@ -945,431 +939,411 @@ static void sparx5_sd25g28_reset(void __iomem *regs[],
->  	}
->  }
->  
-> -static int sparx5_sd25g28_apply_params(struct device *dev,
-> -				       void __iomem *regs[],
-> -				       struct sparx5_sd25g28_params *params,
-> -				       u32 sd_index)
-> +static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
-> +				       struct sparx5_sd25g28_params *params)
->  {
-> -	struct sparx5_serdes_regval item[] = {
+On Mon, Mar 29, 2021 at 1:43 PM Andy Lutomirski <luto@amacapital.net> wrote:
 
-Could you just add const here, and then it is no longer on the stack?
+> > *switching* XCR0 on context switch is slow, but perfectly legal.
+>
+> How slow is it?  And how slow is switching XFD?  XFD is definitely serializing?
 
-   Andrew
+XCR0 writes in a VM guest cause a VMEXIT..
+XCR writes in a VM guest do not.
+
+I will find out what the relative cost is on bare metal, where VMEXIT
+is not an issue.
+-- 
+Len Brown, Intel Open Source Technology Center
