@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C3B34C50A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C4934C50B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhC2Heq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:34:46 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:43732 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhC2HeT (ORCPT
+        id S231321AbhC2Her (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:34:47 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:33992 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhC2HeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 03:34:19 -0400
-Received: by mail-il1-f197.google.com with SMTP id d15so11222703ila.10
+Received: by mail-il1-f200.google.com with SMTP id c16so11282989ile.1
         for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6nMBPjQoE5iHToTiMAu4u9310U6VWR1t5o9JInSRs9s=;
-        b=rkMJ6j4nxG+lyNxtdAlijM3MBp+uIfTBwWTZ4Shuh8T0wynDBxaEEgpE1Rj6xdlW0d
-         RpdXyIe0M3GM2W+AAlFB5PXBitlLSWJp0cvaQywDjrBm5njuBBQ3ygFAzVO+D26XESKD
-         MXLZS1C5gLxxka9KEVwje6fuAMKXlbFGSvC+zOvf8Ng79ZlXT8FGIy3oMrigdIXqiF5n
-         yyC/lMG6PWjFfhpFbaeAtvXPtZF2T890e6dWbZ8QKMSKD6jzo5vmPmylu5JX71sYt74Y
-         ryo49zkyIqPzfLjzZAyO+s2AoNMBFRR6mnldqIB4hXkxvwhkmOCbPf5jxAKpw0MqJZ6D
-         h+WQ==
-X-Gm-Message-State: AOAM530Rg+fIf2QuZTPVUYzAg+rTt9WPOmJf6ocfLzy7lUNjozdHFVI8
-        V5iZNKJEy1C3gmLrQKX0asDck2EBXB/DOmYdST5SbsXzVUtX
-X-Google-Smtp-Source: ABdhPJwdL/IYYrRcO+yUnQ2A2cK5EhVwQjgZEKggFvEeML0cInp7Mt7eMkmUBr29k25aE5EefqYzV+KXir++TJ1fNnDQRSmp1Grk
+        bh=rkx6f5eZxM8bJf3bhoFtK8wtJFTPJJFa5t60FGLf0/Q=;
+        b=Bbk0gv7IT8SuE+kkYCAvfemO47+LGeGQVflpjyaE4CJNA1dUIgSK2SX0XbR+0YymcR
+         uXwLPogOr4CMIVCnINzpi08RVjO78KJobb+msq341qoANC6OHzcG3i5xu6wGyN+tYSrR
+         c8GmzENPW5o0dFeqqgF/2Un493dImGxak7W70FYfcAitHPoTYhUmPopUo9WDMkz2vfDC
+         BOnttUvsFlHAIBbjgSXti1sfaaP9qk+AqqYPLuNunEO32O5/Mt13yyJdluTou+9iUBXf
+         t0rkAm919nMIb/g/iIZs3+X4df/bZSsl05lnqJDbNimGBjuAbmhHfLGKScexc3gLBfin
+         QTPA==
+X-Gm-Message-State: AOAM533bfxtYcRdeMZrwIryhR8CPXFsYzTPHQPlXPDb1JiuhEuk6udsg
+        c6cIXOs540l9tTf2RlRwFrGeF7/udx8ku35pLhpRp3lqOo6k
+X-Google-Smtp-Source: ABdhPJzYITpmri6/x2Ymkbatr4u8o4D5pL32ACoBzIVypQdBNjw4pvA13SQb2JFhAHLNwpjjb0JknvExUT5m3zQ5XAzWxMFfvIj0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:184c:: with SMTP id d12mr19247097ioi.8.1617003258247;
+X-Received: by 2002:a02:694b:: with SMTP id e72mr22964093jac.89.1617003258037;
  Mon, 29 Mar 2021 00:34:18 -0700 (PDT)
 Date:   Mon, 29 Mar 2021 00:34:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cefea605bea7e8c3@google.com>
-Subject: [syzbot] general protection fault in io_commit_cqring (2)
-From:   syzbot <syzbot+0e905eb8228070c457a0@syzkaller.appspotmail.com>
+Message-ID: <000000000000cbcdca05bea7e829@google.com>
+Subject: [syzbot] WARNING: still has locks held in io_sq_thread
+From:   syzbot <syzbot+796d767eb376810256f5@syzkaller.appspotmail.com>
 To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -49,65 +49,31 @@ syzbot found the following issue on:
 
 HEAD commit:    81b1d39f Merge tag '5.12-rc4-smb3' of git://git.samba.org/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ce6fe6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-dashboard link: https://syzkaller.appspot.com/bug?extid=0e905eb8228070c457a0
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e0ed06d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1144754ed00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10fcce62d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d4e9addca54f3b44
+dashboard link: https://syzkaller.appspot.com/bug?extid=796d767eb376810256f5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d06ddcd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150764bed00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0e905eb8228070c457a0@syzkaller.appspotmail.com
+Reported-by: syzbot+796d767eb376810256f5@syzkaller.appspotmail.com
 
-RBP: 00007ffe05a7c220 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-general protection fault, probably for non-canonical address 0xdffffc0000000018: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000c0-0x00000000000000c7]
-CPU: 1 PID: 8400 Comm: syz-executor278 Not tainted 5.12.0-rc4-syzkaller #0
+====================================
+WARNING: iou-sqp-8386/8387 still has locks held!
+5.12.0-rc4-syzkaller #0 Not tainted
+------------------------------------
+1 lock held by iou-sqp-8386/8387:
+ #0: ffff88801e1d2470 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread+0x24c/0x13a0 fs/io_uring.c:6731
+
+stack backtrace:
+CPU: 1 PID: 8387 Comm: iou-sqp-8386 Not tainted 5.12.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_commit_cqring+0x37f/0xc10 fs/io_uring.c:1318
-Code: 74 08 3c 03 0f 8e fa 05 00 00 48 8d bb c0 00 00 00 41 8b ac 24 00 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 b7
-RSP: 0018:ffffc90001c1fc78 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000018 RSI: ffffffff81db8861 RDI: 00000000000000c0
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000383f8f R11: 0000000000000000 R12: ffff888018166000
-R13: 0000000000000000 R14: 1ffff92000383fab R15: ffff8880181660c0
-FS:  00000000006c7300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd3db1886c0 CR3: 0000000021099000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- io_kill_timeouts+0x2b5/0x320 fs/io_uring.c:8606
- io_ring_ctx_wait_and_kill+0x1da/0x400 fs/io_uring.c:8629
- io_uring_create fs/io_uring.c:9572 [inline]
- io_uring_setup+0x10da/0x2ae0 fs/io_uring.c:9599
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ffd9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe05a7c208 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 000000000043ffd9
-RDX: 0000000000000020 RSI: 0000000020000080 RDI: 00000000000054ca
-RBP: 00007ffe05a7c220 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-Modules linked in:
----[ end trace a0b1f0cfec9b9808 ]---
-RIP: 0010:io_commit_cqring+0x37f/0xc10 fs/io_uring.c:1318
-Code: 74 08 3c 03 0f 8e fa 05 00 00 48 8d bb c0 00 00 00 41 8b ac 24 00 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 b7
-RSP: 0018:ffffc90001c1fc78 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000018 RSI: ffffffff81db8861 RDI: 00000000000000c0
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000383f8f R11: 0000000000000000 R12: ffff888018166000
-R13: 0000000000000000 R14: 1ffff92000383fab R15: ffff8880181660c0
-FS:  00000000006c7300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd3db1886c0 CR3: 0000000021099000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ try_to_freeze include/linux/freezer.h:66 [inline]
+ get_signal+0x171a/0x2150 kernel/signal.c:2576
+ io_sq_thread+0x8d2/0x13a0 fs/io_uring.c:6748
 
 
 ---
