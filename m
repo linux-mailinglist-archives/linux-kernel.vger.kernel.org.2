@@ -2,155 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375F834DC70
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F2C34DC74
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhC2X1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S230296AbhC2X3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhC2X0n (ORCPT
+        with ESMTP id S229873AbhC2X25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:26:43 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5424DC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:26:43 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so8483035pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:26:43 -0700 (PDT)
+        Mon, 29 Mar 2021 19:28:57 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F46C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:28:57 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id m132so15493075ybf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=waSXWCTE99vHc7CuELi75wqDgOVkGsht2MlSvB7uCsw=;
-        b=DuUgS+zBKM+nbZVWPBjSK6kgrfP+dSo5CaVxqCbvBdZuKCm7rjYfx7CdZabeqGjkfs
-         N/vkVulfy6TV4mCs7kr6AghHR/Ij4LerOXXZt2C2i7gidfWabkJwo9+9nzJnBpgpOfHM
-         Fup/QUvY25HVvioGMu9nzhw9EA/xek/JLyBQ+qQoZWuhfku4EQy6qDXW0Frvyn09rDcG
-         HElWcBiIlRubYPJAbr6tLigktZCEdpcQrx1Lbw8isX/a+caMRrk27dbq6g9lxhWcpF3j
-         6ZnQE+nWgP/ClS/RYOSBAXs4PuEyF8MzTme3WtE52/JFjhBdRvfiBOfecHvLvrgzGMw3
-         7v1w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WDde1oog8pONjUYe4veyTF77bnbUW5uOW/VjN8BRrfc=;
+        b=tR1uudSRQlnzL7FPxhVK1H2lmKlgH5Jstl69KtGaXiKfzpJeNtd3sKUREc83E14Hyg
+         KNtpU52k/3GvnCheolompf0OcGFwxjIztQl12NPKWvtVUo2Ca28hh6VmkNVc+jIKNYve
+         qR/5ZhPcLbSkgxU1WQSwPiF+Kkczewe7xqJWQApgPqPzpetjUWvmTZ7Qr41GdZDiJIJH
+         XibRwn4VLj8hlEfGH9NN6fS+EgkU8yH6ME68JPyNOJ8MKcOIyH806NIpP9D2drko4jdM
+         T3dCqd2FpbrDSQ8blvlO8F8dItLzhwn6XP5WAL3ZurP3FGTL5yuve9pXPXBjS913UV8N
+         utww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=waSXWCTE99vHc7CuELi75wqDgOVkGsht2MlSvB7uCsw=;
-        b=EH7QbgSbCoh1nDSo1UrCseG0x/bQfh8aDhYX50t2AYlyJea7V0AFH0wHNLK13PGXLM
-         DTICoBOlf9L+gFTBy/VfG4b7iqRlKplgzHJ0BK7M8SJ7lxRdR62+vV7/rd7oMWTD2aSd
-         C+C9OF9KrvNehX7+JhJm5hUv19epDym4QukYoYCn/Z1yzkI8dqThiyJiqmITChsdyj7+
-         bttABTfLcj0S7jse7K0tU/a/WY95U4UTLGqJF73DIOLYC1vW2b50R35lJms++7h1bzV3
-         32Li/nSvNTYEGwiOUX8xD5A49QK367uLoDhxskvYfr+0jyL1Sc5rBqh9M06oMntG18V0
-         +lnw==
-X-Gm-Message-State: AOAM530tFCVBDtAt9kowVNoK0YMpMhZB5HGavkLbS63GVnBhOcf4FRIz
-        9ZbY0s953PgPnBx/3WzSxrfuGA==
-X-Google-Smtp-Source: ABdhPJzpEjhA4161ybufAzfHgnh/4NyykpXzaxceoi8ELiUKaqV8u0Glmo011B8oX/jdmAp5hrcc4w==
-X-Received: by 2002:a17:902:f68c:b029:e5:ca30:8657 with SMTP id l12-20020a170902f68cb02900e5ca308657mr30950976plg.78.1617060402851;
-        Mon, 29 Mar 2021 16:26:42 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:e17c:78f7:dc94:55dd? ([2601:646:c200:1ef2:e17c:78f7:dc94:55dd])
-        by smtp.gmail.com with ESMTPSA id e3sm6214707pfm.43.2021.03.29.16.26.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 16:26:42 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: I915 CI-run with kfence enabled, issues found
-Date:   Mon, 29 Mar 2021 16:26:41 -0700
-Message-Id: <2F989294-F0D4-4F1C-86A6-E657F60EF2A8@amacapital.net>
-References: <CANpmjNO+_4C0dYs6K8Ofy-xVSYxO8OtXSRbW6vCXBYdjJSjqbQ@mail.gmail.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WDde1oog8pONjUYe4veyTF77bnbUW5uOW/VjN8BRrfc=;
+        b=bZNu7qQojJ+48aLORgixQkRRXLZ3rgh9pFipcsq5gJck6rTexeCqpr8x0VC12BK90b
+         pfDQ31NI4JCXNmwLqWh7aH3J8jwITk3Wpb/b2a0tqUQZrwvm3EoB6NfwWIiAtc2CxOkl
+         I9vG8PKB1CYLj7hbaKUxVg1caUImfNNUc7wQYzO/ktai5Xbi52hIBkHMNLX9aarzNsq0
+         U5h8os5orT/fLVtsAeVZ0+a5S61dISxdxgOgTUHyRso2XRta+bXIMPUVKuyhR1oJ1Vrg
+         HYME16fxwCBVzw1S+8NAbccVPKQADZcm6EXauwACCrhzwwcirC2DaOSSCf2d84zbPOo6
+         uoXg==
+X-Gm-Message-State: AOAM531vascDx84ov7G+YK75iaBbTw5MOt49BBb+9PfhrwqZOce/1qKl
+        NClxYFK8815Cg75k+JRpCugHPCs9TO+wBhfpYWLX/w==
+X-Google-Smtp-Source: ABdhPJxJ0sCTNyDyfI1b+8FrpLSQIIgEbs4baXc7OkRt3EK4dgFfRKGNOBy2PoOel1NkVVc1/6RzZA8g9VrfRrbLeWw=
+X-Received: by 2002:a25:b443:: with SMTP id c3mr43370477ybg.32.1617060536158;
+ Mon, 29 Mar 2021 16:28:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210205222644.2357303-9-saravanak@google.com>
+ <20210210114435.122242-1-tudor.ambarus@microchip.com> <20210210114435.122242-2-tudor.ambarus@microchip.com>
+ <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
+ <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com> <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
+ <161678243444.3012082.5031467952132861429@swboyd.mtv.corp.google.com>
+ <CAMuHMdV5PGUujsFP2TXMxij4UxVnrrurh_qVhq8+480w21jJAg@mail.gmail.com> <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
+In-Reply-To: <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 29 Mar 2021 16:28:20 -0700
+Message-ID: <CAGETcx8reqKoPoJ8dV7f9=SHYKmNhcVpkNHoCS-0L4UHCBahoA@mail.gmail.com>
+Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <CANpmjNO+_4C0dYs6K8Ofy-xVSYxO8OtXSRbW6vCXBYdjJSjqbQ@mail.gmail.com>
-To:     Marco Elver <elver@google.com>
-X-Mailer: iPhone Mail (18D61)
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        DOCUMENTATION <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetre
+        e@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>, linux-rpi-kernel" 
+        <linux-rpi-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 2:25 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Geert Uytterhoeven (2021-03-26 11:29:55)
+> > On Fri, Mar 26, 2021 at 7:13 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > Quoting Nicolas Saenz Julienne (2021-03-25 11:25:24)
+> > > > >
+> > > > > This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls
+> > > > > devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL
+> > > > > dev->of_node. I'm not sure if adding a check for a NULL np in
+> > > > > of_clk_add_hw_provider() is a right fix, though.
+> > > >
+> > > > I believe the right fix is not to call 'devm_of_clk_add_hw_provider()' if
+> > > > 'pdev->dev.of_node == NULL'. In such case, which is RPi3's, only the CPU clock
+> > > > is used, and it's defined and queried later through
+> > > > devm_clk_hw_register_clkdev().
+> > > >
+> > > > @Marek, I don't mind taking care of it if it's OK with you.
+> > > >
+> > >
+> > > Ah I see this is related to the patch I just reviewed. Can you reference
+> > > this in the commit text? And instead of putting the change into the clk
+> > > provider let's check for NULL 'np' in of_clk_add_hw_provider() instead
+> > > and return 0 if there's nothing to do. That way we don't visit this
+> > > problem over and over again.
+> >
+> > I'm not sure the latter is what we reall want: shouldn't calling
+> > *of*_clk_add_hw_provider() with a NULL np be a bug in the provider?
+> >
+>
+> I don't have a strong opinion either way. Would it be useful if the
+> function returned an error when 'np' is NULL?
 
-> On Mar 29, 2021, at 2:55 PM, Marco Elver <elver@google.com> wrote:
->=20
-> =EF=BB=BFOn Mon, 29 Mar 2021 at 23:47, Andy Lutomirski <luto@amacapital.ne=
-t> wrote:
->>=20
->>=20
->>>> On Mar 29, 2021, at 2:34 PM, Marco Elver <elver@google.com> wrote:
->>>=20
->>> =EF=BB=BFOn Mon, 29 Mar 2021 at 23:03, Dave Hansen <dave.hansen@intel.co=
-m> wrote:
->>>>> On 3/29/21 10:45 AM, Marco Elver wrote:
->>>>>> On Mon, 29 Mar 2021 at 19:32, Dave Hansen <dave.hansen@intel.com> wro=
-te:
->>>>> Doing it to all CPUs is too expensive, and we can tolerate this being
->>>>> approximate (nothing bad will happen, KFENCE might just miss a bug and=
+I lean towards returning an error. Not a strong opinion either.
 
->>>>> that's ok).
->>>> ...
->>>>>> BTW, the preempt checks in flush_tlb_one_kernel() are dependent on KP=
-TI
->>>>>> being enabled.  That's probably why you don't see this everywhere.  W=
-e
->>>>>> should probably have unconditional preempt checks in there.
->>>>>=20
->>>>> In which case I'll add a preempt_disable/enable() pair to
->>>>> kfence_protect_page() in arch/x86/include/asm/kfence.h.
->>>>=20
->>>> That sounds sane to me.  I'd just plead that the special situation (not=
+-Saravana
 
->>>> needing deterministic TLB flushes) is obvious.  We don't want any folks=
-
->>>> copying this code.
->>>>=20
->>>> BTW, I know you want to avoid the cost of IPIs, but have you considered=
-
->>>> any other low-cost ways to get quicker TLB flushes?  For instance, you
->>>> could loop over all CPUs and set cpu_tlbstate.invalidate_other=3D1.  Th=
-at
->>>> would induce a context switch at the next context switch without needin=
-g
->>>> an IPI.
->>>=20
->>> This is interesting. And it seems like it would work well for our
->>> usecase. Ideally we should only flush entries related to the page we
->>> changed. But it seems invalidate_other would flush the entire TLB.
->>>=20
->>> With PTI, flush_tlb_one_kernel() already does that for the current
->>> CPU, but now we'd flush entire TLBs for all CPUs and even if PTI is
->>> off.
->>>=20
->>> Do you have an intuition for how much this would affect large
->>> multi-socket systems? I currently can't quite say, and would err on
->>> the side of caution.
->>=20
->> Flushing the kernel TLB for all addresses
->> Is rather pricy. ISTR 600 cycles on Skylake, not to mention the cost of l=
-osing the TLB.  How common is this?
->=20
-> AFAIK, invalidate_other resets the asid, so it's not explicit and
-> perhaps cheaper?
->=20
-> In any case, if we were to do this, it'd be based on the sample
-> interval of KFENCE, which can be as low as 1ms. But this is a
-> production debugging feature, so the target machines are not test
-> machines. For those production deployments we'd be looking at every
-> ~500ms. But I know of other deployments that use <100ms.
->=20
-> Doesn't sound like much, but as you say, I also worry a bit about
-> losing the TLB across >100 CPUs even if it's every 500ms.
-
-On non-PTI, the only way to zap kernel mappings is to do a global flush, eit=
-her via INVPCID (expensive) or CR4 (extra expensive). In PTI mode, it=E2=80=99=
-s plausible that the implicit flush is good enough, and I=E2=80=99d be happy=
- to review the patch, but it=E2=80=99s a PTI only thing.  Much less expensiv=
-e in PTI mode, too, because it only needs to flush kernel mappings.
-
-If this is best-effort, it might be better to have some work in the exit to u=
-sermode path or a thread or similar that periodically does targeting single-=
-page zaps.
+> I guess the caller could
+> use that to figure out that it should register a clkdev. But it
+> shouldn't hurt to register both a clkdev lookup and a DT provider for
+> the same clk. The framework will try the DT path first and then fallback
+> to a clkdev lookup otherwise, so we'll be wasting memory for clkdev but
+> otherwise be fine.
+>
+> Really it feels like we should try to unify around a
+> devm_clk_add_hw_provider() API that figures out what to do based on if
+> the device has an of_node or not. That would mean implementing something
+> like clkdev but for a whole provider instead of a single clk. Then this
+> question of returning an error would be moot here.
