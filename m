@@ -2,138 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DCC34C1F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E829F34C1F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhC2CfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:35:11 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15026 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhC2CfH (ORCPT
+        id S230258AbhC2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:38:28 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42684 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230209AbhC2CiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:35:07 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F7xSC6NJ1zPk4n;
-        Mon, 29 Mar 2021 10:32:27 +0800 (CST)
-Received: from [10.174.176.191] (10.174.176.191) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 10:34:53 +0800
-Subject: Re: [PATCH v14 01/11] x86: kdump: replace the hard-coded alignment
- with macro CRASH_ALIGN
-To:     Baoquan He <bhe@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
- <20210130071025.65258-2-chenzhou10@huawei.com>
- <20210224141939.GA28965@arm.com> <20210225072426.GH3553@MiWiFi-R3L-srv>
- <121fa1e6-f1a3-d47f-bb1d-baaacf96fddc@huawei.com>
- <m14khykfeq.fsf@fess.ebiederm.org> <20210302074327.GC13714@MiWiFi-R3L-srv>
-CC:     Catalin Marinas <catalin.marinas@arm.com>, <mingo@redhat.com>,
-        <tglx@linutronix.de>, <rppt@kernel.org>, <dyoung@redhat.com>,
-        <will@kernel.org>, <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
-        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        Sun, 28 Mar 2021 22:38:08 -0400
+X-UUID: c454a20bfbdf47bf898bc1848c9f2b44-20210329
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VdVEz2wKHTnKSOp+VNzzGg9amBOswHbORRfeY500MUo=;
+        b=fm3bM6vF4lwuCzzIbz8jKvVOJIbhL1VMSKkyzPqTuU6+aXxsXo0GUyn4cMCQGmWqFYnjogFb5DOjEctNzPcaMvDN0c+XpFXX9WCyNDDyVDiIHcq2AYpaJm7XUEmio/WH7EDTMcfp0bt7yCWnjY0I+hQNtYFE5AfL7fx7SLZzPOQ=;
+X-UUID: c454a20bfbdf47bf898bc1848c9f2b44-20210329
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw01.mediatek.com
+        (envelope-from <nina-cm.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1172350892; Mon, 29 Mar 2021 10:38:02 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 29 Mar 2021 10:38:00 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Mar 2021 10:38:00 +0800
+Message-ID: <1616985480.26412.4.camel@mtksdccf07>
+Subject: Re: [PATCH 1/2] dt-bindings: devapc: Update bindings
+From:   Nina Wu <nina-cm.wu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <5cde3992-96cf-5d7d-a252-30d1d2847b59@huawei.com>
-Date:   Mon, 29 Mar 2021 10:34:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Neal Liu <neal.liu@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <Jackson-kt.Chang@mediatek.com>
+Date:   Mon, 29 Mar 2021 10:38:00 +0800
+In-Reply-To: <1616771454.300082.3384056.nullmailer@robh.at.kernel.org>
+References: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
+         <1616771454.300082.3384056.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20210302074327.GC13714@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.191]
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/2 15:43, Baoquan He wrote:
-> On 02/26/21 at 09:38am, Eric W. Biederman wrote:
->> chenzhou <chenzhou10@huawei.com> writes:
->>
->>> On 2021/2/25 15:25, Baoquan He wrote:
->>>> On 02/24/21 at 02:19pm, Catalin Marinas wrote:
->>>>> On Sat, Jan 30, 2021 at 03:10:15PM +0800, Chen Zhou wrote:
->>>>>> Move CRASH_ALIGN to header asm/kexec.h for later use. Besides, the
->>>>>> alignment of crash kernel regions in x86 is 16M(CRASH_ALIGN), but
->>>>>> function reserve_crashkernel() also used 1M alignment. So just
->>>>>> replace hard-coded alignment 1M with macro CRASH_ALIGN.
->>>>> [...]
->>>>>> @@ -510,7 +507,7 @@ static void __init reserve_crashkernel(void)
->>>>>>  	} else {
->>>>>>  		unsigned long long start;
->>>>>>  
->>>>>> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
->>>>>> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
->>>>>>  						  crash_base + crash_size);
->>>>>>  		if (start != crash_base) {
->>>>>>  			pr_info("crashkernel reservation failed - memory is in use.\n");
->>>>> There is a small functional change here for x86. Prior to this patch,
->>>>> crash_base passed by the user on the command line is allowed to be 1MB
->>>>> aligned. With this patch, such reservation will fail.
->>>>>
->>>>> Is the current behaviour a bug in the current x86 code or it does allow
->>>>> 1MB-aligned reservations?
->>>> Hmm, you are right. Here we should keep 1MB alignment as is because
->>>> users specify the address and size, their intention should be respected.
->>>> The 1MB alignment for fixed memory region reservation was introduced in
->>>> below commit, but it doesn't tell what is Eric's request at that time, I
->>>> guess it meant respecting users' specifying.
->>
->>> I think we could make the alignment unified. Why is the alignment system reserved and
->>> user specified different? Besides, there is no document about the 1MB alignment.
->>> How about adding the alignment size(16MB) in doc  if user specified
->>> start address as arm64 does.
->> Looking at what the code is doing.  Attempting to reserve a crash region
->> at the location the user specified.  Adding unnecessary alignment
->> constraints is totally broken. 
->>
->> I am not even certain enforcing a 1MB alignment makes sense.  I suspect
->> it was added so that we don't accidentally reserve low memory on x86.
->> Frankly I am not even certain that makes sense.
->>
->> Now in practice there might be an argument for 2MB alignment that goes
->> with huge page sizes on x86.  But until someone finds that there are
->> actual problems with 1MB alignment I would not touch it.
->>
->> The proper response to something that isn't documented and confusing is
->> not to arbitrarily change it and risk breaking users.  Especially in
->> this case where it is clear that adding additional alignment is total
->> nonsense.  The proper response to something that isn't clear and
->> documented is to dig in and document it, or to leave it alone and let it
-> Sounds reasonable. Then adding document or code comment around looks
-> like a good way to go further so that people can easily get why its
-> alignment is different than other reservation.
-Hi Baoquan & Eric,
-
-Sorry for late reply, i missed it earlier.
-
-Thanks for your explanation, i will just leave the 1MB alignment here as is.
-
-I will introduce CRASH_ALIGN_SPECIFIED to help make function reserve_crashkernel generic.
-CRASH_ALIGN_SPECIFIED is used for user specified start address which is distinct from
-default CRASH_ALIGN.
-
-Thanks,
-Chen Zhou
->
->> be the next persons problem.
->>
->> In this case there is no reason for changing this bit of code.
->> All CRASH_ALIGN is about is a default alignment when none is specified.
->> It is not a functional requirement but just something so that things
->> come out nicely.
->>
->>
->> Eric
->>
-> .
->
+SGksIFJvYg0KDQpJIGp1c3QgZm91bmQgdGhhdCB0aGVyZSBpcyB0aGUgdW4tbWVyZ2VkIGRlcGVu
+ZGVudCBwYXRjaC4NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1t
+ZWRpYXRlay9wYXRjaC8yMDIxMDMyNDEwNDExMC4xMzM4My03LWNodW4tamllLmNoZW5AbWVkaWF0
+ZWsuY29tLw0KDQpJIHdpbGwgYWRkIHRoaXMgdG8gY29tbWl0IG1lc3NhZ2UgaW4gdGhlIG5leHQg
+dmVyc2lvbi4NCg0KVGhhbmtzDQoNCk9uIEZyaSwgMjAyMS0wMy0yNiBhdCAwOToxMCAtMDYwMCwg
+Um9iIEhlcnJpbmcgd3JvdGU6DQo+IE9uIEZyaSwgMjYgTWFyIDIwMjEgMTU6MzE6MTAgKzA4MDAs
+IE5pbmEgV3Ugd3JvdGU6DQo+ID4gRnJvbTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRlay5j
+b20+DQo+ID4gDQo+ID4gVG8gc3VwcG9ydCBuZXdlciBoYXJkd2FyZSBhcmNoaXRlY3R1cmUgb2Yg
+ZGV2YXBjLA0KPiA+IHVwZGF0ZSBkZXZpY2UgdHJlZSBiaW5kaW5ncy4NCj4gPiANCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBOaW5hIFd1IDxOaW5hLUNNLld1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
+PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55YW1sICAgfCA0
+MSArKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0MSBpbnNlcnRp
+b25zKCspDQo+ID4gDQo+IA0KPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgZHRf
+YmluZGluZ19jaGVjaycgb24geW91ciBwYXRjaDoNCj4gDQo+IHlhbWxsaW50IHdhcm5pbmdzL2Vy
+cm9yczoNCj4gDQo+IGR0c2NoZW1hL2R0YyB3YXJuaW5ncy9lcnJvcnM6DQo+IC9idWlsZHMvcm9i
+aGVycmluZy9saW51eC1kdC1yZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3NvYy9tZWRpYXRlay9kZXZhcGMueWFtbDogcHJvcGVydGllczp2ZXJzaW9uOmVudW06IEZhbHNl
+IHNjaGVtYSBkb2VzIG5vdCBhbGxvdyBbMSwgMl0NCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4
+LWR0LXJldmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVr
+L2RldmFwYy55YW1sOiBwcm9wZXJ0aWVzOnNsYXZlX3R5cGVfbnVtOmVudW06IEZhbHNlIHNjaGVt
+YSBkb2VzIG5vdCBhbGxvdyBbMSwgNF0NCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4LWR0LXJl
+dmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFw
+Yy55YW1sOiBpZ25vcmluZywgZXJyb3IgaW4gc2NoZW1hOiBwcm9wZXJ0aWVzOiBzbGF2ZV90eXBl
+X251bTogZW51bQ0KPiB3YXJuaW5nOiBubyBzY2hlbWEgZm91bmQgaW4gZmlsZTogLi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55YW1sDQo+IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLmV4YW1w
+bGUuZHRzOjUxOjE4OiBmYXRhbCBlcnJvcjogZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5o
+OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQo+ICAgIDUxIHwgICAgICAgICAjaW5jbHVkZSA8
+ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5oPg0KPiAgICAgICB8ICAgICAgICAgICAgICAg
+ICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gY29tcGlsYXRpb24gdGVybWlu
+YXRlZC4NCj4gbWFrZVsxXTogKioqIFtzY3JpcHRzL01ha2VmaWxlLmxpYjozNDk6IERvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLmV4YW1wbGUuZHQu
+eWFtbF0gRXJyb3IgMQ0KPiBtYWtlWzFdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBqb2Jz
+Li4uLg0KPiBtYWtlOiAqKiogW01ha2VmaWxlOjEzODA6IGR0X2JpbmRpbmdfY2hlY2tdIEVycm9y
+IDINCj4gDQo+IFNlZSBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9wYXRjaHdv
+cmsub3psYWJzLm9yZy9wYXRjaC8xNDU4Njg3X187ISFDVFJOS0E5d01nMEFSYnchelptam03NExl
+ZWU4by1lYVFVQl95SFl2aC02Nmc4OFJnam96dl9lY1Nrd1cteWZvN0dfYzlvNi1wMEpsRmZzdDNW
+SSQgDQo+IA0KPiBUaGlzIGNoZWNrIGNhbiBmYWlsIGlmIHRoZXJlIGFyZSBhbnkgZGVwZW5kZW5j
+aWVzLiBUaGUgYmFzZSBmb3IgYSBwYXRjaA0KPiBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRoZSBtb3N0
+IHJlY2VudCByYzEuDQo+IA0KPiBJZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19j
+aGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlDQo+IGVycm9yKHMpLCB0aGVuIG1ha2Ugc3Vy
+ZSAneWFtbGxpbnQnIGlzIGluc3RhbGxlZCBhbmQgZHQtc2NoZW1hIGlzIHVwIHRvDQo+IGRhdGU6
+DQo+IA0KPiBwaXAzIGluc3RhbGwgZHRzY2hlbWEgLS11cGdyYWRlDQo+IA0KPiBQbGVhc2UgY2hl
+Y2sgYW5kIHJlLXN1Ym1pdC4NCj4gDQoNCg==
 
