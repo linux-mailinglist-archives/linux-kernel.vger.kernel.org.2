@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A766D34C56E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977B634CAE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhC2IAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:00:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
+        id S234896AbhC2Iku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhC2H7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:59:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8114261969;
-        Mon, 29 Mar 2021 07:59:49 +0000 (UTC)
+        id S232126AbhC2IHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F009961999;
+        Mon, 29 Mar 2021 08:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004790;
-        bh=L+OjKZDtRg77oC6iupFoK//kSUoajNgKI8lXu5a7W84=;
+        s=korg; t=1617005224;
+        bh=x/d2VF/3A3poxqsgLamUeBQ3qhEg9TOMAM6esh+e0qY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DeWfGekbItxwPA1L4Byz7PeWVWgKXItm5eUuQ91SmaUoU5PICvkoETX+H7nTZPf41
-         G1MbiVK5Ibt1nQrACD9VGsbh56xOx7BfTc9elkOUCacWYDC+oAcRxHexcXkEXzwl9I
-         saNn7UYUxhFTaOsRpmGOX0v5WiSN7mNA9vgpILcM=
+        b=1G7th7ajtUJmG4I+sXE53BUIOa32uxO8EvddY1qGv3OJk9XL5fqznLlkgB1Er4PyZ
+         YNQfR8gz9DnMS5LGF/45bzDtkt5coXePd4FV2AmAMUdqn7va5Spu/L2T88IKiGlRqf
+         r4o0ObiyudmGdu+rw5ui0fkYaREisyhOysI7t3Sw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Thiery <heiko.thiery@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 01/33] net: fec: ptp: avoid register access when ipg clock is disabled
+Subject: [PATCH 4.19 10/72] gpiolib: acpi: Add missing IRQF_ONESHOT
 Date:   Mon, 29 Mar 2021 09:57:46 +0200
-Message-Id: <20210329075605.334220928@linuxfoundation.org>
+Message-Id: <20210329075610.627181065@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,51 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Thiery <heiko.thiery@gmail.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit 6a4d7234ae9a3bb31181f348ade9bbdb55aeb5c5 ]
+[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
 
-When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-This is only the case when the interface is down. This can be reproduced
-by reading with 'phc_ctrl eth0 get'.
+fixed the following coccicheck:
+./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+primary handler requested without IRQF_ONESHOT
 
-Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-the igp clock is disabled when the interface is down and leads to a
-system hang.
+Make sure threaded IRQs without a primary handler are always request
+with IRQF_ONESHOT
 
-So we check if the ptp clock status before reading the timecounter
-register.
-
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Link: https://lore.kernel.org/r/20210225211514.9115-1-heiko.thiery@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpio/gpiolib-acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index f9e74461bdc0..123181612595 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -396,9 +396,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	u64 ns;
- 	unsigned long flags;
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 18f5973b9697..4ad34c6803ad 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -177,7 +177,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
+ 	int ret, value;
  
-+	mutex_lock(&adapter->ptp_clk_mutex);
-+	/* Check the ptp clock */
-+	if (!adapter->ptp_clk_on) {
-+		mutex_unlock(&adapter->ptp_clk_mutex);
-+		return -EINVAL;
-+	}
- 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
- 	ns = timecounter_read(&adapter->tc);
- 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
-+	mutex_unlock(&adapter->ptp_clk_mutex);
- 
- 	*ts = ns_to_timespec64(ns);
- 
+ 	ret = request_threaded_irq(event->irq, NULL, event->handler,
+-				   event->irqflags, "ACPI:Event", event);
++				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
+ 	if (ret) {
+ 		dev_err(acpi_gpio->chip->parent,
+ 			"Failed to setup interrupt handler for %d\n",
 -- 
 2.30.1
 
