@@ -2,280 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5217E34D628
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962B434D62F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhC2RjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:39:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230475AbhC2Ri4 (ORCPT
+        id S231152AbhC2Rkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhC2Rkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:38:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617039536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJW4TnVUJ4bhGHSGrgous6BbDZSVb6GpQoAwG+aui6U=;
-        b=cKe1KGaOtN1m2Jjm/d/tfrkv34keamhMs9AMUSeHZMnJcpqg63PCoGhekNe5y6ajxqUrEY
-        GTh85L9wzMjTcWJV6Ci2I5UKFf8R4bNGhqwqDMS9aQ5tL7ckaZcG55wsW3Kpucbi88CpdZ
-        7S80mtfrM0bhBxSztU0bQaKrl6B8Ebk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-1LdUAWD0P9CMN-QLrNF8ZQ-1; Mon, 29 Mar 2021 13:38:51 -0400
-X-MC-Unique: 1LdUAWD0P9CMN-QLrNF8ZQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE22D801814;
-        Mon, 29 Mar 2021 17:38:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CFFF51017CF5;
-        Mon, 29 Mar 2021 17:38:49 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 29 Mar 2021 19:38:50 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 19:38:48 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Igor Zhbanov <i.zhbanov@omprussia.ru>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Mutual debugging of 2 processes can stuck in unkillable stopped
- state
-Message-ID: <20210329173848.GC24849@redhat.com>
-References: <f2f32ffa-52ad-ff67-19d8-95305a70a6f8@omprussia.ru>
- <20210329164900.GB24849@redhat.com>
- <4124a89e-a62e-0c51-1f46-8409867a626a@omprussia.ru>
+        Mon, 29 Mar 2021 13:40:33 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E0FC061574;
+        Mon, 29 Mar 2021 10:40:33 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id m12so19662512lfq.10;
+        Mon, 29 Mar 2021 10:40:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dG/fDVlRANUKzxqs96ttVjSvp1RnJE01JtgwpiYp5OQ=;
+        b=e0jLrdsbKxVG48pYt7iAQGZucoca/DINeaYlEkj1ohC0O4iX6NSzuwcnGbwUIqf78t
+         +5aKfrFTW496gMzjemxHCEQU25vVyEDmHCdI3pj+LmUlVQLhHJQh+TmSCUyR2YtqIMFo
+         gs5fwJseylaM9kFxNqEyWa4z+1bPYXBBJiORajXTgLmAdIiOr73wZL9pM36KT70l51p/
+         E+5YtfTdF5eb3WBCy7Tb+WsrTu5WQX3Sg5xMpE5cnr5ou/xIKtDKcq7S6pZBIysWwdjh
+         qN9GKGe5+IZyLLU2rG/v1NnLZMZs8nLxJPlq9QKabt8s4xaN7aOLHEyZ8Ya3rvK9uROw
+         9pBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dG/fDVlRANUKzxqs96ttVjSvp1RnJE01JtgwpiYp5OQ=;
+        b=RQ3nGfR2AChpoDWa6DuTy1hGwa7l2rw4oVbaZU57GqO+4aPIgTKA+jG/XpDt32vrfJ
+         XfaATS5ijdUVAJWa8ihxilgSuePnErzywCGaJV5hdkDv+186lBK2UwGlp2fB/p7k8khN
+         ITQ4MhDEx3UFSjdCkXezu2BWGbEeRIOYdTWtwr4f4FteCCks7EK5D5IIFwQWXQkYGCbm
+         VFdHT9Ds76fXrhzlKSiXs9tInmiEl4ZJWtFRWRMiwvchRpeI+aMgkhG20Piu10/alv4m
+         AclOkZXVEpt5+H3TfmWjhBNu8JV6rSop/nEwBMjWPVXLp+CgNVoD56K1DOs4qeQCFt9R
+         K2rA==
+X-Gm-Message-State: AOAM5335BFFRkebZBJktBtOCYS7fGWtWdyXYcWZjt6boOBhRoXcfmMyh
+        Anni6qUzwo3gH72iNqHNmnE=
+X-Google-Smtp-Source: ABdhPJy2nwSd+qCv4LF8DeImyrM1BZPFbgWtI0tyhbrjbzPP4T/D2coD0TOYb2y+8jICMEOFWqs5bQ==
+X-Received: by 2002:a05:6512:2016:: with SMTP id a22mr17198967lfb.645.1617039631530;
+        Mon, 29 Mar 2021 10:40:31 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id f15sm1902605lfr.51.2021.03.29.10.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 10:40:31 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 29 Mar 2021 19:40:29 +0200
+To:     Matthew Wilcox <willy@infradead.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mm/vmalloc: Fix read of pointer area after it has
+ been free'd
+Message-ID: <20210329174029.GA457@pc638.lan>
+References: <20210329170730.121943-1-colin.king@canonical.com>
+ <20210329171434.GH351017@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4124a89e-a62e-0c51-1f46-8409867a626a@omprussia.ru>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210329171434.GH351017@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Igor,
+On Mon, Mar 29, 2021 at 06:14:34PM +0100, Matthew Wilcox wrote:
+> On Mon, Mar 29, 2021 at 06:07:30PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Currently the memory pointed to by area is being freed by the
+> > free_vm_area call and then area->nr_pages is referencing the
+> > free'd object. Fix this swapping the order of the warn_alloc
+> > message and the free.
+> > 
+> > Addresses-Coverity: ("Read from pointer after free")
+> > Fixes: 014ccf9b888d ("mm/vmalloc: improve allocation failure error messages")
+> 
+> i don't have this git sha.  if this is -next, the sha ids aren't stable
+> and shouldn't be referenced in commit logs, because these fixes should
+> just be squashed into the not-yet-upstream commits.
+> 
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  mm/vmalloc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index b73e4e715e0d..7936405749e4 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2790,11 +2790,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> >  	}
+> >  
+> >  	if (!pages) {
+> > -		free_vm_area(area);
+> >  		warn_alloc(gfp_mask, NULL,
+> >  			   "vmalloc size %lu allocation failure: "
+> >  			   "page array size %lu allocation failed",
+> >  			   area->nr_pages * PAGE_SIZE, array_size);
+> > +		free_vm_area(area);
+> >  		return NULL;
+> 
+> this fix looks right to me.
+> 
+That is from the linux-next. Same to me.
 
-So. As expected, they sleep in EVENT_EXIT _after_ you have already sent SIGKILL.
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Oh. I can only repeat that PTRACE_EVENT_EXIT must die ;) Or at least we should
-finally define its semantics.
-
-Igor, thanks for your report, but (I think) this has nothing to do with mutual
-debugging. I'll return to this problem in a couple of days, I'm a bit busy right
-now.
-
-Thanks,
-
-Oleg.
-
-On 03/29, Igor Zhbanov wrote:
-> Hi Oleg!
-> 
-> I've tried both 5.3.18 and 5.10.0. The behavior is the same.
-> The important thing is to run "exec strace -p ..." on the second terminal
-> to create the loop A->B->A.
-> 
-> So the last line from the first strace we see is:
-> ptrace(PTRACE_SEIZE, 1990, NULL, PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
-> 
-> I.e. it printed the syscall prior to its execution and hanged after the
-> execution.
-> 
-> izh@suse2:~> ps awux|grep strace
-> izh       1891  0.0  0.0  24752  3828 pts/1    ts+  19:52   0:00 strace -p 1990
-> izh       1990  0.0  0.0  24752  3628 pts/0    t+   19:53   0:00 strace -p 1891
-> 
-> izh@suse2:~> kill 1990 1891
-> izh@suse2:~> kill -9 1990 1891
-> 
-> izh@suse2:~> sudo cat /proc/1891/stack
-> [sudo] password for root:
-> [<0>] ptrace_stop+0x14a/0x260
-> [<0>] ptrace_do_notify+0x91/0xb0
-> [<0>] ptrace_notify+0x4e/0x70
-> [<0>] do_exit+0x910/0xb70
-> [<0>] do_group_exit+0x3a/0xa0
-> [<0>] get_signal+0x124/0x800
-> [<0>] arch_do_signal_or_restart+0xa9/0x290
-> [<0>] exit_to_user_mode_prepare+0xe7/0x1a0
-> [<0>] syscall_exit_to_user_mode+0x18/0x40
-> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> izh@suse2:~> sudo cat /proc/1990/stack
-> [<0>] ptrace_stop+0x14a/0x260
-> [<0>] ptrace_do_notify+0x91/0xb0
-> [<0>] ptrace_notify+0x4e/0x70
-> [<0>] do_exit+0x910/0xb70
-> [<0>] do_group_exit+0x3a/0xa0
-> [<0>] get_signal+0x124/0x800
-> [<0>] arch_do_signal_or_restart+0xa9/0x290
-> [<0>] exit_to_user_mode_prepare+0xe7/0x1a0
-> [<0>] syscall_exit_to_user_mode+0x18/0x40
-> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> izh@suse2:~> cat /proc/1891/status
-> Name:   strace
-> Umask:  0022
-> State:  t (tracing stop)
-> Tgid:   1891
-> Ngid:   0
-> Pid:    1891
-> PPid:   1890
-> TracerPid:      1990
-> Uid:    1000    1000    1000    1000
-> Gid:    100     100     100     100
-> FDSize: 256
-> Groups: 100
-> NStgid: 1891
-> NSpid:  1891
-> NSpgid: 1891
-> NSsid:  1891
-> VmPeak:    24752 kB
-> VmSize:    24752 kB
-> VmLck:         0 kB
-> VmPin:         0 kB
-> VmHWM:      3828 kB
-> VmRSS:      3828 kB
-> RssAnon:             520 kB
-> RssFile:            3308 kB
-> RssShmem:              0 kB
-> VmData:      284 kB
-> VmStk:       132 kB
-> VmExe:      1108 kB
-> VmLib:      2828 kB
-> VmPTE:        80 kB
-> VmSwap:        0 kB
-> HugetlbPages:          0 kB
-> CoreDumping:    0
-> THP_enabled:    1
-> Threads:        1
-> SigQ:   4/15639
-> SigPnd: 0000000000000000
-> ShdPnd: 0000000000014100
-> SigBlk: 0000000000002000
-> SigIgn: 0000000000300000
-> SigCgt: 0000000180007007
-> CapInh: 0000000000000000
-> CapPrm: 0000000000000000
-> CapEff: 0000000000000000
-> CapBnd: 000001ffffffffff
-> CapAmb: 0000000000000000
-> NoNewPrivs:     0
-> Seccomp:        0
-> Seccomp_filters:        0
-> Speculation_Store_Bypass:       vulnerable
-> SpeculationIndirectBranch:      always enabled
-> Cpus_allowed:   7
-> Cpus_allowed_list:      0-2
-> Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
-> Mems_allowed_list:      0
-> voluntary_ctxt_switches:        1561
-> nonvoluntary_ctxt_switches:     7
-> 
-> izh@suse2:~> cat /proc/1990/status
-> Name:   strace
-> Umask:  0022
-> State:  t (tracing stop)
-> Tgid:   1990
-> Ngid:   0
-> Pid:    1990
-> PPid:   1847
-> TracerPid:      1891
-> Uid:    1000    1000    1000    1000
-> Gid:    100     100     100     100
-> FDSize: 256
-> Groups: 100
-> NStgid: 1990
-> NSpid:  1990
-> NSpgid: 1990
-> NSsid:  1847
-> VmPeak:    24752 kB
-> VmSize:    24752 kB
-> VmLck:         0 kB
-> VmPin:         0 kB
-> VmHWM:      3628 kB
-> VmRSS:      3628 kB
-> RssAnon:             520 kB
-> RssFile:            3108 kB
-> RssShmem:              0 kB
-> VmData:      284 kB
-> VmStk:       132 kB
-> VmExe:      1108 kB
-> VmLib:      2828 kB
-> VmPTE:        88 kB
-> VmSwap:        0 kB
-> HugetlbPages:          0 kB
-> CoreDumping:    0
-> THP_enabled:    1
-> Threads:        1
-> SigQ:   4/15639
-> SigPnd: 0000000000000000
-> ShdPnd: 0000000000014100
-> SigBlk: 0000000000002000
-> SigIgn: 0000000000300000
-> SigCgt: 0000000180007007
-> CapInh: 0000000000000000
-> CapPrm: 0000000000000000
-> CapEff: 0000000000000000
-> CapBnd: 000001ffffffffff
-> CapAmb: 0000000000000000
-> NoNewPrivs:     0
-> Seccomp:        0
-> Seccomp_filters:        0
-> Speculation_Store_Bypass:       vulnerable
-> SpeculationIndirectBranch:      always enabled
-> Cpus_allowed:   7
-> Cpus_allowed_list:      0-2
-> Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
-> Mems_allowed_list:      0
-> voluntary_ctxt_switches:        180
-> nonvoluntary_ctxt_switches:     848
-> 
-> On 29.03.2021 19:49, Oleg Nesterov wrote:
-> >On 03/29, Igor Zhbanov wrote:
-> >>
-> >>Mutual debugging of 2 processes can stuck in unkillable stopped state
-> >
-> >can't reproduce and can't understand...
-> >
-> >>Hi!
-> >>
-> >>When one process, let's say "A", is tracing the another process "B", and the
-> >>process "B" is trying to attach to the process "A", then both of them are
-> >>getting stuck in the "t+" state. And they are ignoring all of the signals
-> >>including the SIGKILL,
-> >
-> >Why do you think so? What is your kernel version?
-> >
-> >"t" means TASK_TRACED, SIGKILL should wake it up and terminate.
-> >
-> >>so it is not possible to terminate them without
-> >>a reboot.
-> >>
-> >>To reproduce:
-> >>1) Run two terminals
-> >>2) Attach with "strace -p ..." from the first terminal to the shell (bash) of
-> >>    the second terminal.
-> >>3) In the second terminal run "exec strace -p ..." to attach to the PID of the
-> >>    first strace.
-> >>
-> >>Then you'll see that the second strace is hanging without any output. And the
-> >>first strace will output following and hang too:
-> >>ptrace(PTRACE_SEIZE, 11795, NULL,
-> >>        PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
-> >>
-> >>(The 11795 is the PID of the first strace itself.)
-> >>
-> >>And in the process list you will see following:
-> >>ps awux | grep strace
-> >>user   11776  0.0  0.0  24752  2248 pts/3    t+   13:53   0:00 strace -p 11795
-> >>user   11795  0.0  0.0  24752  3888 pts/1    t+   13:54   0:00 strace -p 11776
-> >
-> >OK, may be they sleep in PTRACE_EVENT_EXIT? After you tried to send SIGKILL?
-> >
-> >please show us the output from "cat /proc/{11795,11776}/stack". And
-> >"cat /proc/{11795,11776}/status" just in case.
-> 
-
+--
+Vlad Rezki
