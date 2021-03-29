@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7501734C5F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CD034C571
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhC2IEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
+        id S231424AbhC2IAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231940AbhC2ICo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AE761981;
-        Mon, 29 Mar 2021 08:02:35 +0000 (UTC)
+        id S229762AbhC2H7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5726196B;
+        Mon, 29 Mar 2021 07:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004956;
-        bh=BG4jTp2DQEnJmUtlKC/+k9EQ3yB9/XQr/geX0VFuXlM=;
+        s=korg; t=1617004795;
+        bh=ELKO9Cy2wCXnBkRN3a+2su6DS9jpGee7xyY3YKS/PnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AALZ8H/MjwW35fI9qwdp4Ee+8qb5wy1goJYxtV8KV3ufiXIAgUK7qx+WwyERwcIVE
-         4ZevyLgW/+Wt2Up8UCZx83dEAURDL10YmgKJIjHJm+UbULe28npKp3Ild8LE/1LA3g
-         k/Jyczvef5Pts2l1ICYyvy2T6M/dwDZQbG5+65sE=
+        b=kHZLNHdElddIhfZlqevYhA7sIjo2Tp31+neR3JW4Y4yPJr4KCZG7jRsYq53bkvk4d
+         oHLCiz5sJts5PeOOCr/anacmMYUf0GLNmdaZBY1X7DWuw0IbPiA7ZsFkTz4xEvds6G
+         GvX1s/JrTFmCkblzMRmje8gTcZ+agtt0xHMjtqiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 21/53] bus: omap_l3_noc: mark l3 irqs as IRQF_NO_THREAD
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Erhard F." <erhard_f@mailbox.org>,
+        Sasha Levin <sashal@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH 4.4 11/33] u64_stats,lockdep: Fix u64_stats_init() vs lockdep
 Date:   Mon, 29 Mar 2021 09:57:56 +0200
-Message-Id: <20210329075608.241621807@linuxfoundation.org>
+Message-Id: <20210329075605.637799024@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 7d7275b3e866cf8092bd12553ec53ba26864f7bb ]
+[ Upstream commit d5b0e0677bfd5efd17c5bbb00156931f0d41cb85 ]
 
-The main purpose of l3 IRQs is to catch OCP bus access errors and identify
-corresponding code places by showing call stack, so it's important to
-handle L3 interconnect errors as fast as possible. On RT these IRQs will
-became threaded and will be scheduled much more late from the moment actual
-error occurred so showing completely useless information.
+Jakub reported that:
 
-Hence, mark l3 IRQs as IRQF_NO_THREAD so they will not be forced threaded
-on RT or if force_irqthreads = true.
+    static struct net_device *rtl8139_init_board(struct pci_dev *pdev)
+    {
+	    ...
+	    u64_stats_init(&tp->rx_stats.syncp);
+	    u64_stats_init(&tp->tx_stats.syncp);
+	    ...
+    }
 
-Fixes: 0ee7261c9212 ("drivers: bus: Move the OMAP interconnect driver to drivers/bus/")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+results in lockdep getting confused between the RX and TX stats lock.
+This is because u64_stats_init() is an inline calling seqcount_init(),
+which is a macro using a static variable to generate a lockdep class.
+
+By wrapping that in an inline, we negate the effect of the macro and
+fold the static key variable, hence the confusion.
+
+Fix by also making u64_stats_init() a macro for the case where it
+matters, leaving the other case an inline for argument validation
+etc.
+
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Debugged-by: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: "Erhard F." <erhard_f@mailbox.org>
+Link: https://lkml.kernel.org/r/YEXicy6+9MksdLZh@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/omap_l3_noc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/u64_stats_sync.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
-index 5012e3ad1225..624f74d03a83 100644
---- a/drivers/bus/omap_l3_noc.c
-+++ b/drivers/bus/omap_l3_noc.c
-@@ -285,7 +285,7 @@ static int omap_l3_probe(struct platform_device *pdev)
- 	 */
- 	l3->debug_irq = platform_get_irq(pdev, 0);
- 	ret = devm_request_irq(l3->dev, l3->debug_irq, l3_interrupt_handler,
--			       0x0, "l3-dbg-irq", l3);
-+			       IRQF_NO_THREAD, "l3-dbg-irq", l3);
- 	if (ret) {
- 		dev_err(l3->dev, "request_irq failed for %d\n",
- 			l3->debug_irq);
-@@ -294,7 +294,7 @@ static int omap_l3_probe(struct platform_device *pdev)
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index df89c9bcba7d..7b38288dc239 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -68,12 +68,13 @@ struct u64_stats_sync {
+ };
  
- 	l3->app_irq = platform_get_irq(pdev, 1);
- 	ret = devm_request_irq(l3->dev, l3->app_irq, l3_interrupt_handler,
--			       0x0, "l3-app-irq", l3);
-+			       IRQF_NO_THREAD, "l3-app-irq", l3);
- 	if (ret)
- 		dev_err(l3->dev, "request_irq failed for %d\n", l3->app_irq);
  
++#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
++#define u64_stats_init(syncp)	seqcount_init(&(syncp)->seq)
++#else
+ static inline void u64_stats_init(struct u64_stats_sync *syncp)
+ {
+-#if BITS_PER_LONG == 32 && defined(CONFIG_SMP)
+-	seqcount_init(&syncp->seq);
+-#endif
+ }
++#endif
+ 
+ static inline void u64_stats_update_begin(struct u64_stats_sync *syncp)
+ {
 -- 
 2.30.1
 
