@@ -2,90 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E847934DC8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC72934DC9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhC2XjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        id S230411AbhC2XoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhC2XjQ (ORCPT
+        with ESMTP id S230212AbhC2XoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:39:16 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D194C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:39:16 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id v3so10445798pgq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:39:16 -0700 (PDT)
+        Mon, 29 Mar 2021 19:44:14 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635B7C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:44:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v6so20917835ybk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hN4WWhVcXw6nl268dQhfj4OLxqRRKkO70cVGJuR0GJ4=;
-        b=gaboA5c7IrFAj7LuI1vjBWj5jwE1J1LIh0VGAt6543i4QZYPqdKXNCfVfg6JsZco4X
-         5KTCYJNnb6KCxXFQJChNNgkUuRO5LC1crBbAZ38y33jDpwPihUnujH0RoyRi+Ynp5lVZ
-         Ar7xOYOtKu6tOQpkd/zppFDWY6xUa63N6D6XcdMLAClEQKDyIoh9W9BBHkyhPTszljiR
-         up3weRwPvSAFqsNruEfyJ24h1SxS2n7cmgLnQgFrHDpWkcsHozCZds3snTLIq0YnU2Rt
-         kmCN5AM6NfEyxv135yFb83jAzRUnLhPgY0jRnp4ThzpTE8MfwVPh6LD6XKk9n7XC1YUO
-         ImMw==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=uoU32IU0pqTRkbWEkjmYD519qCQDwaxCfM+B/mBEeuo=;
+        b=nsWDPG4/gHBmdumT95TxKr+RFTidK1afkH6jAkr7L0ngzD8b8e9ZPDpEmZpAeh2uyS
+         QPEYRRQl5TP8L0W8LhbBsrswqR3Wzjm1kkGwoco++CBEMZNWEQ6lOkM1fBeTttDtUCi/
+         Ltp9pspRsqyloBv1n3lFtDemERmM1N4opnVD/Mt1c4zVOhpM2j2Zq9sTXveOfUmrtD+Z
+         6b4k4PBuZydijBcvGlu2q16lGVL6PZz+HaRoS4x7wPVhW+BABzDYbzS/YSaDXTEfrz2u
+         bqRcMzJ1WzHXXnS5J3ait4UhU/etIqyINQUTlrvS1dRsBKBhRhSmJohg4pb+ignhth4j
+         5HFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hN4WWhVcXw6nl268dQhfj4OLxqRRKkO70cVGJuR0GJ4=;
-        b=rZIYS8ZbHoZ1kW28DO0+eajtIDxoL1R9DH/3Tc+Q3vteYLeym2pvv8bSYSlfDSel6m
-         KCj40Fg0Tz+D6HvzS97sIpnTgCbIlzBJK+bpDP0ZiTpagRXmCOHaDGrUnudN4MxKDu/q
-         79CohsPtN9v3QWLED5H1WRgonpesqZSxxs3EOsgtI29eg7rAsiB4Bf5j5rzKdTuuIc15
-         5u9IMJ9qD9XZDBefPXYH2MwzgUrbt0vOCujvIgiFSpH+ewSGGPCLO7tqjXIG4P0u43Xw
-         lEDZ/+/t/kOGr+a8ZizzvvLbQdwgvlTAbpqtk2Bdl3Sb3JEjR1afgTiNjN8y19Y+w7+I
-         BDVA==
-X-Gm-Message-State: AOAM532bR5QCoWt1/54DnyFH1oUhlmYvlYYsoW99LueRdLIR4h14bAgy
-        3TmnZDll1cUv5acdr1QLDOV7yQ==
-X-Google-Smtp-Source: ABdhPJwv8XKdbQZG2PAaW1+R5LbogOOS/V3hsriJEIhwI6g3Il7/yp4AXforO1ek2P+dl/B6i1Xdlg==
-X-Received: by 2002:aa7:87c5:0:b029:202:b279:c7e5 with SMTP id i5-20020aa787c50000b0290202b279c7e5mr27981197pfo.27.1617061155588;
-        Mon, 29 Mar 2021 16:39:15 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x125sm18622993pfd.124.2021.03.29.16.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 16:39:15 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 23:39:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-Message-ID: <YGJlH76t+BGrIDVc@google.com>
-References: <837afe840f5826bf7fcba07a5e483d7e2283db34.1617059703.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <377A7B0B-9959-4AFC-A575-7AC20FEE6077@amacapital.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <377A7B0B-9959-4AFC-A575-7AC20FEE6077@amacapital.net>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=uoU32IU0pqTRkbWEkjmYD519qCQDwaxCfM+B/mBEeuo=;
+        b=TN81Rbyq60nmcRE3Ort6Il1vv6SSrVuYcaiLdLWK1r+OH9mBsK0XT2aYUFKcm4BPdh
+         NICSw/UDVb3SlF6kyEgwLASZXtAb5GmmkrYzr0y8IWmyC1nbLDpaR3t999PpFHRRhZU/
+         9QI46Gor929w7pNbKYmUITtjo3hwLpf8AjFfm2TpvW+zPme3dDhuZqfaZTAHUo9YXxX3
+         m6MI4SEyffds+OZh/nC2Z2Q0emoGFTjLgSkvywCw+m+b5AMt8561fh1ePnI9bi4wUQe1
+         mPRpH9sz/iAMLyAWZJX8fPCNd7uWqzn7YYSOGLOuCvtGNslaIk5GqAPj4iJ+SPQN+c+Z
+         wHCA==
+X-Gm-Message-State: AOAM531LXUN6kSoep3ViuS2XHsubGPd1byB/Atlhdv888h6DAf/pSUbW
+        ygiSU6dfgmihQzLTBVaZmcQdQKPqESc4HoIwIb4w
+X-Google-Smtp-Source: ABdhPJwel6nkEx2Uf1jY/NOtLUUm4qo9nYXu+LKQeD/JFEoCY4Zo0CcVUV27K2q5Sw5mBSS1DEVk98amOijlC1q4s+YZ
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:8578:c167:dddf:13a2])
+ (user=axelrasmussen job=sendgmr) by 2002:a5b:751:: with SMTP id
+ s17mr778317ybq.108.1617061453526; Mon, 29 Mar 2021 16:44:13 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 16:41:31 -0700
+Message-Id: <20210329234131.304999-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v3] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021, Andy Lutomirski wrote:
-> 
-> > On Mar 29, 2021, at 4:17 PM, Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> > 
-> > ﻿In non-root TDX guest mode, MWAIT, MONITOR and WBINVD instructions
-> > are not supported. So handle #VE due to these instructions
-> > appropriately.
-> 
-> Is there something I missed elsewhere in the code that checks CPL?
+Previously, we shared too much of the code with COPY and ZEROPAGE, so we
+manipulated things in various invalid ways:
 
-#GP due to CPL!=0 has priority over VM-Exit, i.e. userspace will get a #GP
-directly; there will be no VM-Exit to the TDX Module and thus no #VE.
+- Previously, we unconditionally called shmem_inode_acct_block. In the
+  continue case, we're looking up an existing page which would have been
+  accounted for properly when it was allocated. So doing it twice
+  results in double-counting, and eventually leaking.
 
-SDM section "25.1.1 - Relative Priority of Faults and VM Exits".
+- Previously, we made the pte writable whenever the VMA was writable.
+  However, for continue, consider this case:
+
+  1. A tmpfs file was created
+  2. The non-UFFD-registered side mmap()-s with MAP_SHARED
+  3. The UFFD-registered side mmap()-s with MAP_PRIVATE
+
+  In this case, even though the UFFD-registered VMA may be writable, we
+  still want CoW behavior. So, check for this case and don't make the
+  pte writable.
+
+- The initial pgoff / max_off check isn't necessary, so we can skip past
+  it. The second one seems likely to be unnecessary too, but keep it
+  just in case. Modify both checks to use pgoff, as offset is equivalent
+  and not needed.
+
+- Previously, we unconditionally called ClearPageDirty() in the error
+  path. In the continue case though, since this is an existing page, it
+  might have already been dirty before we started touching it. It's very
+  problematic to clear the bit incorrectly, but not a problem to leave
+  it - so, just omit the ClearPageDirty() entirely.
+
+- Previously, we unconditionally removed the page from the page cache in
+  the error path. But in the continue case, we didn't add it - it was
+  already there because the page is present in some second
+  (non-UFFD-registered) mapping. So, removing it is invalid.
+
+Because the error handling issues are easy to exercise in the selftest,
+make a small modification there to do so.
+
+Finally, refactor shmem_mcopy_atomic_pte a bit. By this point, we've
+added a lot of "if (!is_continue)"-s everywhere. It's cleaner to just
+check for that mode first thing, and then "goto" down to where the parts
+we actually want are. This leaves the code in between cleaner.
+
+Changes since v2:
+- Drop the ClearPageDirty() entirely, instead of trying to remember the
+  old value.
+- Modify both pgoff / max_off checks to use pgoff. It's equivalent to
+  offset, but offset wasn't initialized until the first check (which
+  we're skipping).
+- Keep the second pgoff / max_off check in the continue case.
+
+Changes since v1:
+- Refactor to skip ahead with goto, instead of adding several more
+  "if (!is_continue)".
+- Fix unconditional ClearPageDirty().
+- Don't pte_mkwrite() when is_continue && !VM_SHARED.
+
+Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ mm/shmem.c                               | 60 +++++++++++++-----------
+ tools/testing/selftests/vm/userfaultfd.c | 12 +++++
+ 2 files changed, 44 insertions(+), 28 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index d2e0e81b7d2e..fbcce850a16e 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2377,18 +2377,22 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	struct page *page;
+ 	pte_t _dst_pte, *dst_pte;
+ 	int ret;
+-	pgoff_t offset, max_off;
+-
+-	ret = -ENOMEM;
+-	if (!shmem_inode_acct_block(inode, 1))
+-		goto out;
++	pgoff_t max_off;
++	int writable;
+ 
+ 	if (is_continue) {
+ 		ret = -EFAULT;
+ 		page = find_lock_page(mapping, pgoff);
+ 		if (!page)
+-			goto out_unacct_blocks;
+-	} else if (!*pagep) {
++			goto out;
++		goto install_ptes;
++	}
++
++	ret = -ENOMEM;
++	if (!shmem_inode_acct_block(inode, 1))
++		goto out;
++
++	if (!*pagep) {
+ 		page = shmem_alloc_page(gfp, info, pgoff);
+ 		if (!page)
+ 			goto out_unacct_blocks;
+@@ -2415,30 +2419,29 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 		*pagep = NULL;
+ 	}
+ 
+-	if (!is_continue) {
+-		VM_BUG_ON(PageSwapBacked(page));
+-		VM_BUG_ON(PageLocked(page));
+-		__SetPageLocked(page);
+-		__SetPageSwapBacked(page);
+-		__SetPageUptodate(page);
+-	}
++	VM_BUG_ON(PageSwapBacked(page));
++	VM_BUG_ON(PageLocked(page));
++	__SetPageLocked(page);
++	__SetPageSwapBacked(page);
++	__SetPageUptodate(page);
+ 
+ 	ret = -EFAULT;
+-	offset = linear_page_index(dst_vma, dst_addr);
+ 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-	if (unlikely(offset >= max_off))
++	if (unlikely(pgoff >= max_off))
+ 		goto out_release;
+ 
+-	/* If page wasn't already in the page cache, add it. */
+-	if (!is_continue) {
+-		ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
+-					      gfp & GFP_RECLAIM_MASK, dst_mm);
+-		if (ret)
+-			goto out_release;
+-	}
++	ret = shmem_add_to_page_cache(page, mapping, pgoff, NULL,
++				      gfp & GFP_RECLAIM_MASK, dst_mm);
++	if (ret)
++		goto out_release;
+ 
++install_ptes:
+ 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+-	if (dst_vma->vm_flags & VM_WRITE)
++	/* For CONTINUE on a non-shared VMA, don't pte_mkwrite for CoW. */
++	writable = is_continue && !(dst_vma->vm_flags & VM_SHARED)
++		? 0
++		: dst_vma->vm_flags & VM_WRITE;
++	if (writable)
+ 		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
+ 	else {
+ 		/*
+@@ -2455,7 +2458,7 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 
+ 	ret = -EFAULT;
+ 	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+-	if (unlikely(offset >= max_off))
++	if (unlikely(pgoff >= max_off))
+ 		goto out_release_unlock;
+ 
+ 	ret = -EEXIST;
+@@ -2485,13 +2488,14 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	return ret;
+ out_release_unlock:
+ 	pte_unmap_unlock(dst_pte, ptl);
+-	ClearPageDirty(page);
+-	delete_from_page_cache(page);
++	if (!is_continue)
++		delete_from_page_cache(page);
+ out_release:
+ 	unlock_page(page);
+ 	put_page(page);
+ out_unacct_blocks:
+-	shmem_inode_unacct_blocks(inode, 1);
++	if (!is_continue)
++		shmem_inode_unacct_blocks(inode, 1);
+ 	goto out;
+ }
+ #endif /* CONFIG_USERFAULTFD */
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index f6c86b036d0f..d8541a59dae5 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -485,6 +485,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+ static void continue_range(int ufd, __u64 start, __u64 len)
+ {
+ 	struct uffdio_continue req;
++	int ret;
+ 
+ 	req.range.start = start;
+ 	req.range.len = len;
+@@ -493,6 +494,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
+ 	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
+ 		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
+ 		    (uint64_t)start);
++
++	/*
++	 * Error handling within the kernel for continue is subtly different
++	 * from copy or zeropage, so it may be a source of bugs. Trigger an
++	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
++	 */
++	req.mapped = 0;
++	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
++	if (ret >= 0 || req.mapped != -EEXIST)
++		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
++		    ret, req.mapped);
+ }
+ 
+ static void *locking_thread(void *arg)
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
