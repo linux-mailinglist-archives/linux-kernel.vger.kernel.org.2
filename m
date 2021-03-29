@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC3634C5A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA1934CAEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhC2IB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
+        id S232855AbhC2Ik4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231419AbhC2IBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B833361969;
-        Mon, 29 Mar 2021 08:01:10 +0000 (UTC)
+        id S232412AbhC2IHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 525F66196F;
+        Mon, 29 Mar 2021 08:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004871;
-        bh=SIHhCZxrnfKiMp4P1TEUPAcpCiMriRCZ0H/FHgexX0Y=;
+        s=korg; t=1617005240;
+        bh=NdobjXfxkUlLQQgYLGkOOaDb142VgIraDp2YTCi1ccA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZInX6XDpEaNrGZ9J1NlO5XBCrumlQ1qGt+WLYMellAZBLT/AjU19eZkkuY6uaguA7
-         grZHLel6NmZE6kfu98u4r6d4Adr9+lOSUbCNVh6hAQMsNTMV02zZhGvmJLJKk8LaL5
-         9f5JufmCK5sWnvvRp3pAlDYNryyatV4GxqmvKVkM=
+        b=g69eJdDpmtxRoSRIKS+0RsQcJ8BNUWCjX29SI5OA5BYzQK5EZBx7BCfNpmH2rL1HV
+         CkEryNkqq6oNXMM9IukuCUEbWQ+n1EehHK1JTpBQjuJCUuZEvkkO/HoRxDPI1Sg32h
+         xSzPn8L8/iU3LK4oSAnFWKbG+M+QAToh0z4FwL1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 06/33] sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
+Subject: [PATCH 4.19 15/72] atm: uPD98402: fix incorrect allocation
 Date:   Mon, 29 Mar 2021 09:57:51 +0200
-Message-Id: <20210329075605.490105787@linuxfoundation.org>
+Message-Id: <20210329075610.780161572@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Efremov <efremov@linux.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 155b23e6e53475ca3b8c2a946299b4d4dd6a5a1e ]
+[ Upstream commit 3153724fc084d8ef640c611f269ddfb576d1dcb1 ]
 
-RXMAC_BC_FRM_CNT_COUNT added to mp->rx_bcasts twice in a row
-in niu_xmac_interrupt(). Remove the second addition.
+dev->dev_data is set in zatm.c, calling zatm_start() will overwrite this
+dev->dev_data in uPD98402_start() and a subsequent PRIV(dev)->lock
+(i.e dev->phy_data->lock) will result in a null-ptr-dereference.
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
+I believe this is a typo and what it actually want to do is to allocate
+phy_data instead of dev_data.
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/niu.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/atm/uPD98402.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sun/niu.c b/drivers/net/ethernet/sun/niu.c
-index 85f3a2c0d4dd..cc3b025ab7a7 100644
---- a/drivers/net/ethernet/sun/niu.c
-+++ b/drivers/net/ethernet/sun/niu.c
-@@ -3948,8 +3948,6 @@ static void niu_xmac_interrupt(struct niu *np)
- 		mp->rx_mcasts += RXMAC_MC_FRM_CNT_COUNT;
- 	if (val & XRXMAC_STATUS_RXBCAST_CNT_EXP)
- 		mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT;
--	if (val & XRXMAC_STATUS_RXBCAST_CNT_EXP)
--		mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT;
- 	if (val & XRXMAC_STATUS_RXHIST1_CNT_EXP)
- 		mp->rx_hist_cnt1 += RXMAC_HIST_CNT1_COUNT;
- 	if (val & XRXMAC_STATUS_RXHIST2_CNT_EXP)
+diff --git a/drivers/atm/uPD98402.c b/drivers/atm/uPD98402.c
+index 4fa13a807873..cf517fd148ea 100644
+--- a/drivers/atm/uPD98402.c
++++ b/drivers/atm/uPD98402.c
+@@ -210,7 +210,7 @@ static void uPD98402_int(struct atm_dev *dev)
+ static int uPD98402_start(struct atm_dev *dev)
+ {
+ 	DPRINTK("phy_start\n");
+-	if (!(dev->dev_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	spin_lock_init(&PRIV(dev)->lock);
+ 	memset(&PRIV(dev)->sonet_stats,0,sizeof(struct k_sonet_stats));
 -- 
 2.30.1
 
