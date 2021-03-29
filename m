@@ -2,108 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DF334D860
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD98B34D862
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhC2Tg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:36:29 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:51941 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhC2TgA (ORCPT
+        id S231675AbhC2ThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231128AbhC2Tgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:36:00 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 97F08196D;
-        Mon, 29 Mar 2021 15:35:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 29 Mar 2021 15:35:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=8oItlbJA/Jy/5SYgF7aFHMRrdB+
-        MtY7i3HsT/Byz47k=; b=aZrilUlYurqlB0Z3cG0jK1MX24hYF4rjpHG/uhFa57a
-        dK1xgdLOhmvn81w/pZPY7n3c/l8AS6f3wSw74smDQamdUd1K2iPLDq2izyW9fkiA
-        DLS2GjvhZBKq6fphRIG81VYoVaPzv34Dp2zpa2H+SlpfuRWKAE1wm5e28jruoKl9
-        qtu9RibwLdinkaYTRkQtk3LoyZxNO9B3KZoQjfn+qxy3HDDuteTuLj5tBmkLqoS+
-        6FU/Itpad+vf63igjW2MMx0YBwve5EsFWc3P5YAt7RFRI6iEmbENloCCbVpqtd1H
-        rUZM4Uyz2FbcRkC3ISDWfJwqhayqlnwR60h1k9zqXXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=8oItlb
-        JA/Jy/5SYgF7aFHMRrdB+MtY7i3HsT/Byz47k=; b=SADLuFxLL2Q1nBzd53vVYw
-        /jzICk7bd/kdeGAusL9bXPcobPQwA0gppkMz1NupSqHRN8y4kZO9tW11hyM2SvB0
-        92T93UmGTKMUr/emAGHFJls9Hv6Y869pCSU/4oSrBQGqV5TZgia8pDatwNbYe/I3
-        AXCi151DLDlMIpumaR8pR2Z8zX69YH1vGG3ppLX4AyrBxUxN5ojBsk2w/EJ4u35r
-        vr0pbDs0lPC6s1Jx8GOIynYBMHGvCYQx6lXg5PayS/aWAZm05sRi6NBNi4E70XLB
-        /RDSLZIO4mIe2r1qwg7GUHY6gpFEjQjdDOOxPXP4TpKakM7I0PW3j83nSE5Mat7A
-        ==
-X-ME-Sender: <xms:HSxiYF3DsdcqXd-pkBhzzcOA4ujMQXu_8lgGNhUEDENk0OZGr5VTPw>
-    <xme:HSxiYAWyFu3K9KHWAFMo2nejhinGZu-roQoSn4cAFbRPuvFmlf6-CiHLALFHvpCim
-    zhN5jC9pJs2TA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgudegtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgfetfe
-    fftedvffeltdegudduteffuddtudevfeevtdeugeeugefgieetheefteefnecuffhomhgr
-    ihhnpehgihhthhhusgdrtghomhenucfkphepkeefrdekiedrjeegrdeigeenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgr
-    hhdrtghomh
-X-ME-Proxy: <xmx:HSxiYA434YpZw2sjtuYrjybTpXDmCfu78wpHI6Or2-w0six6gMUfIg>
-    <xmx:HSxiYHIOQm1difaCJcY2HX3D1aNG1BWH2CnorFhEvWSC2eZpavFtCg>
-    <xmx:HSxiYBIyxuPcWfe_OS_1wLXw9OAvXTyv5KUMAu2UOp2eGEnehv5Dbg>
-    <xmx:HSxiYIn85_bLvmqvBfbUINJlS6nNT9RSvFGRf-jqAMa64REsxEc8WQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B74BA24005D;
-        Mon, 29 Mar 2021 15:35:56 -0400 (EDT)
-Date:   Mon, 29 Mar 2021 21:35:54 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Fawad Lateef <fawadlateef@gmail.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Compiling kernel-3.4.xxx with gcc-9.x. Need some help.
-Message-ID: <YGIsGlXzIGUpDR6D@kroah.com>
-References: <CAGgoGu77PEEAJped5bnw4q8rFeDMebL92YWGDGFfNp_ZAnpJ8Q@mail.gmail.com>
- <YGFeQUuAaKgeaqCA@kroah.com>
- <CAGgoGu76FOJd74oVgnu5Sa3GKaHHyLTH+=hP+mLGzS+79Z26fA@mail.gmail.com>
+        Mon, 29 Mar 2021 15:36:49 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF48C061574;
+        Mon, 29 Mar 2021 12:36:49 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id o19so15517266edc.3;
+        Mon, 29 Mar 2021 12:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HXb5EXzJ9acUERimB6ho5NVSB8Y8VyVg4M94D5L/HOM=;
+        b=CofKSEonRZOnXxo6VoPfMdSdBQidCfltrWE4tINepx7+9oG3jTSKS2XIYruNZU+dLU
+         VIaoSTgJyyFpzOmD4yi2WpPWJuc6qnbiJskzA2tDWfyOfStKsJ33lgeKkIjbArwjgnfx
+         9XWwx41n/7BBkVk6e83DLQAsB0y5rGhqAj8uOT8ZsGU7L5JbBamH6oY3ZWzBLGh+YOe5
+         ne+axUl4l6dDWgI3seBjFfgqP5JSpMjY3VSBwMEjbNnLw3ZjtDyiReasRpaFokNwNzcP
+         kM2EMgP+JJWjrrVMAcVHFnJSIBrChZSI6zC0JcKjP2qcrdALC/aPcdKoYbW64iNWoyq2
+         w73Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HXb5EXzJ9acUERimB6ho5NVSB8Y8VyVg4M94D5L/HOM=;
+        b=eLYu8JICQVRdcuRV5CvFgdXb5Xpfq5Lda8ylmOHdm8kIJGnS88xpYAemntn4SO2Kew
+         RYAiGV4BmCpv59uTyYy+w5cv3AEK1AbreUjN6C1KJ3tX2ulx4BEus5v5+Qc4qh5XNLsW
+         nKk6Q1BkP08vQG/wLW05YFA0SVijLajPgEy7GpJOeu5BzayS9lslweXXZMHQROm9PcQp
+         gVOU+uaHVmdwJtxqCSMnKg6HlZ4URyjKyrK90JL1PgS6eHSaLAiuaTzKrtTauWpMAgRy
+         kGZ6q7f4JniGix0Msqf5UviAPriZpMmSbTUgQT8lEqEJlaSd9mVJ9fPrtk443pBXr5sy
+         a7SA==
+X-Gm-Message-State: AOAM531E6K0YzP+9d5a7PcgaAc5cJRgptojf/cBo+Yrz/BZioqtATlPJ
+        3APpwCtDaTQpVOCnCbYs/Apwjj/xSnE=
+X-Google-Smtp-Source: ABdhPJwLSDAEF398fF1iUjClkbrtBHM+UjKBBKiBdnEtSAk0hMf0CEzHf12psHWT9y9vxfYZsxYCBQ==
+X-Received: by 2002:aa7:d813:: with SMTP id v19mr30086149edq.213.1617046608196;
+        Mon, 29 Mar 2021 12:36:48 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd? ([2a02:908:1252:fb60:8415:4d1c:ad0a:e8fd])
+        by smtp.gmail.com with ESMTPSA id u14sm8747191ejx.60.2021.03.29.12.36.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 12:36:47 -0700 (PDT)
+Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
+To:     Xi Ruoyao <xry111@mengyan1223.wang>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        =?UTF-8?Q?Dan_Hor=c3=a1k?= <dan@danny.cz>,
+        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org
+References: <20210329175348.26859-1-xry111@mengyan1223.wang>
+ <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
+ <be9042b9294bda450659d3cd418c5e8759d57319.camel@mengyan1223.wang>
+ <9a11c873-a362-b5d1-6d9c-e937034e267d@gmail.com>
+ <bf9e05d4a6ece3e8bf1f732b011d3e54bbf8000e.camel@mengyan1223.wang>
+ <84b3911173ad6beb246ba0a77f93d888ee6b393e.camel@mengyan1223.wang>
+ <97c520ce107aa4d5fd96e2c380c8acdb63d45c37.camel@mengyan1223.wang>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <7701fb71-9243-2d90-e1e1-d347a53b7d77@gmail.com>
+Date:   Mon, 29 Mar 2021 21:36:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGgoGu76FOJd74oVgnu5Sa3GKaHHyLTH+=hP+mLGzS+79Z26fA@mail.gmail.com>
+In-Reply-To: <97c520ce107aa4d5fd96e2c380c8acdb63d45c37.camel@mengyan1223.wang>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 09:20:32PM +0200, Fawad Lateef wrote:
-> Hi Greg,
-> 
-> 
-> 
-> On Mon, 29 Mar 2021 at 06:57, Greg KH <greg@kroah.com> wrote:
-> >
-> > On Sun, Mar 28, 2021 at 10:20:50PM +0200, Fawad Lateef wrote:
-> > > Hi
-> > >
-> > > I am using an Olimex A20 SOM with NAND and due to some binary blob for
-> > > NAND driver, I am stuck with the sunxi kernel 3.4.xxx version. (Repo
-> > > here: https://github.com/linux-sunxi/linux-sunxi)
-> >
-> > Please work with the vendor that is forcing you to use this obsolete and
-> > insecure kernel version.  You are paying for that support, and they are
-> > the only ones that can support you.
-> >
-> 
-> The problem is vendor Olimex now have eMMC based SOM which is
-> supported by mainline kernel _but_ they still selling NAND SOM and
-> only supporting 3.4 kernel (as this is the only latest version from
-> sunxi with NAND support, after that sunxi is now moved away from NAND
-> too).
+Am 29.03.21 um 21:27 schrieb Xi Ruoyao:
+> Hi Christian,
+>
+> I don't think there is any constraint implemented to ensure `num_entries %
+> AMDGPU_GPU_PAGES_IN_CPU_PAGE == 0`.  For example, in `amdgpu_vm_bo_map()`:
+>
+>          /* validate the parameters */
+>          if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
+>              size == 0 || size & AMDGPU_GPU_PAGE_MASK)
+>                  return -EINVAL;
+>
+> /* snip */
+>
+>          saddr /= AMDGPU_GPU_PAGE_SIZE;
+>          eaddr /= AMDGPU_GPU_PAGE_SIZE;
+>
+> /* snip */
+>
+>          mapping->start = saddr;
+>          mapping->last = eaddr;
+>
+>
+> If we really want to ensure (mapping->last - mapping->start + 1) %
+> AMDGPU_GPU_PAGES_IN_CPU_PAGE == 0, then we should replace "AMDGPU_GPU_PAGE_MASK"
+> in "validate the parameters" with "PAGE_MASK".
 
-If they are forcing you to use a binary kernel module, then they are the
-only ones that can give you support, sorry.  That should be included in
-the price you paid for the hardware.  If not, you need to go complain to
-your purchasing department :)
+Yeah, good point.
 
-Good luck!
+> I tried it and it broke userspace: Xorg startup fails with EINVAL with this
+> change.
 
-greg k-h
+Well in theory it is possible that we always fill the GPUVM on a 4k 
+basis while the native page size of the CPU is larger. Let me double 
+check the code.
+
+BTW: What code base are you based on? The code your post here is quite 
+outdated.
+
+Christian.
+
+>
+> On 2021-03-30 02:30 +0800, Xi Ruoyao wrote:
+>> On 2021-03-30 02:21 +0800, Xi Ruoyao wrote:
+>>> On 2021-03-29 20:10 +0200, Christian König wrote:
+>>>> You need to identify the root cause of this, most likely start or last
+>>>> are not a multiple of AMDGPU_GPU_PAGES_IN_CPU_PAGE.
+>>> I printk'ed the value of start & last, they are all a multiple of 4
+>>> (AMDGPU_GPU_PAGES_IN_CPU_PAGE).
+>>>
+>>> However... `num_entries = last - start + 1` so it became some irrational
+>>> thing...  Either this line is wrong, or someone called
+>>> amdgpu_vm_bo_update_mapping with [start, last) instead of [start, last], which
+>>> is unexpected.
+>> I added BUG_ON(num_entries % AMDGPU_GPU_PAGES_IN_CPU_PAGE != 0), get:
+>>
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c90750>]
+>>> amdgpu_vm_bo_update_mapping.constprop.0+0x218/0xae8
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c922b8>]
+>>> amdgpu_vm_bo_update+0x270/0x4c0
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c823ec>]
+>>> amdgpu_gem_va_ioctl+0x40c/0x430
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c1cae4>]
+>>> drm_ioctl_kernel+0xcc/0x120
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c1cfd8>]
+>>> drm_ioctl+0x220/0x408
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff83c5ea48>]
+>>> amdgpu_drm_ioctl+0x58/0x98
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff838feac4>] sys_ioctl+0xcc/0xe8
+>>> Mar 30 02:28:27 xry111-A1901 kernel: [<ffffffff836e74f0>]
+>>> syscall_common+0x34/0x58
+>>>
+>>>>>>> BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+>>>>>>> Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
+>>>>>>> Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
+>>>>>>> Reported-by: Dan Horák <dan@danny.cz>
+>>>>>>> Cc: stable@vger.kernel.org
+>>>>>>> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+>>>>>>> ---
+>>>>>>>     drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+>>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>> index ad91c0c3c423..cee0cc9c8085 100644
+>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>> @@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct
+>>>>>>> amdgpu_device *adev,
+>>>>>>>                   }
+>>>>>>>                   start = tmp;
+>>>>>>>     
+>>>>>>> -       } while (unlikely(start != last + 1));
+>>>>>>> +       } while (unlikely(start < last + 1));
+>>>>>>>     
+>>>>>>>           r = vm->update_funcs->commit(&params, fence);
+>>>>>>>     
+>>>>>>>
+>>>>>>> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+
