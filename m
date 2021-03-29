@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4FC34C710
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC1734C61C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhC2IME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50446 "EHLO mail.kernel.org"
+        id S232067AbhC2IE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232084AbhC2IG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 763096196B;
-        Mon, 29 Mar 2021 08:06:58 +0000 (UTC)
+        id S231154AbhC2IDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:03:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6E4D61969;
+        Mon, 29 Mar 2021 08:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005219;
-        bh=8UJMzBPjggGz5ADZ5BVeTwFFdkhhh/llMseGtcYDcnY=;
+        s=korg; t=1617004979;
+        bh=g2vrgh2c805/HPJwRpNuUE/eHD2ka+kPptCk+sRlgDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BglX6xwA/ciwO70v03ObAeTPBqHFIWROgdWCe+dGSh+98qVqb07IQDjXIXySVNBgP
-         RC51PTQfSOWn6I+K3ham0EPGwubYZPjBd7y6VYOl+pnDqTNQGKUMjaFoFqrAnLge27
-         20mXttIU7kyIqNIYvmD3taP89qgNf7iFmJ2p7GMQ=
+        b=CfDCYFdWU5ESX7SiBZG8xGmgKwaGaNZsF2BxRgeajL8ZSSBZLM80aLAspwq3qwWnP
+         xKbpLdnp0BK/QEkAxetb7DgbRGCefJM94k1uazcjgv+3TPJrqeI707Wcxg28jZYmj7
+         wD6LuICHpZM0FbOGY4FqDrU8H7TXU2jJt/8BjqCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 31/59] macvlan: macvlan_count_rx() needs to be aware of preemption
-Date:   Mon, 29 Mar 2021 09:58:11 +0200
-Message-Id: <20210329075609.918487932@linuxfoundation.org>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        juri.lelli@arm.com, bigeasy@linutronix.de, xlpang@redhat.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 37/53] futex: Use smp_store_release() in mark_wake_futex()
+Date:   Mon, 29 Mar 2021 09:58:12 +0200
+Message-Id: <20210329075608.735190492@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit dd4fa1dae9f4847cc1fd78ca468ad69e16e5db3e ]
+commit 1b367ece0d7e696cab1c8501bab282cc6a538b3f upstream.
 
-macvlan_count_rx() can be called from process context, it is thus
-necessary to disable preemption before calling u64_stats_update_begin()
+Since the futex_q can dissapear the instruction after assigning NULL,
+this really should be a RELEASE barrier. That stops loads from hitting
+dead memory too.
 
-syzbot was able to spot this on 32bit arch:
-
-WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
-WARNING: CPU: 1 PID: 4632 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
-Modules linked in:
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 4632 Comm: kworker/1:3 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: ARM-Versatile Express
-Workqueue: events macvlan_process_broadcast
-Backtrace:
-[<82740468>] (dump_backtrace) from [<827406dc>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
- r7:00000080 r6:60000093 r5:00000000 r4:8422a3c4
-[<827406c4>] (show_stack) from [<82751b58>] (__dump_stack lib/dump_stack.c:79 [inline])
-[<827406c4>] (show_stack) from [<82751b58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
-[<82751aa0>] (dump_stack) from [<82741270>] (panic+0x130/0x378 kernel/panic.c:231)
- r7:830209b4 r6:84069ea4 r5:00000000 r4:844350d0
-[<82741140>] (panic) from [<80244924>] (__warn+0xb0/0x164 kernel/panic.c:605)
- r3:8404ec8c r2:00000000 r1:00000000 r0:830209b4
- r7:0000010f
-[<80244874>] (__warn) from [<82741520>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
- r7:81363f70 r6:0000010f r5:83018e50 r4:00000000
-[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
-[<827414bc>] (warn_slowpath_fmt) from [<81363f70>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
- r8:5a109000 r7:0000000f r6:a568dac0 r5:89802300 r4:00000001
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (u64_stats_update_begin include/linux/u64_stats_sync.h:128 [inline])
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_count_rx include/linux/if_macvlan.h:47 [inline])
-[<81363e80>] (__seqprop_assert.constprop.0) from [<81364af0>] (macvlan_broadcast+0x154/0x26c drivers/net/macvlan.c:291)
- r5:89802300 r4:8a927740
-[<8136499c>] (macvlan_broadcast) from [<81365020>] (macvlan_process_broadcast+0x258/0x2d0 drivers/net/macvlan.c:317)
- r10:81364f78 r9:8a86d000 r8:8a9c7e7c r7:8413aa5c r6:00000000 r5:00000000
- r4:89802840
-[<81364dc8>] (macvlan_process_broadcast) from [<802696a4>] (process_one_work+0x2d4/0x998 kernel/workqueue.c:2275)
- r10:00000008 r9:8404ec98 r8:84367a02 r7:ddfe6400 r6:ddfe2d40 r5:898dac80
- r4:8a86d43c
-[<802693d0>] (process_one_work) from [<80269dcc>] (worker_thread+0x64/0x54c kernel/workqueue.c:2421)
- r10:00000008 r9:8a9c6000 r8:84006d00 r7:ddfe2d78 r6:898dac94 r5:ddfe2d40
- r4:898dac80
-[<80269d68>] (worker_thread) from [<80271f40>] (kthread+0x184/0x1a4 kernel/kthread.c:292)
- r10:85247e64 r9:898dac80 r8:80269d68 r7:00000000 r6:8a9c6000 r5:89a2ee40
- r4:8a97bd00
-[<80271dbc>] (kthread) from [<80200114>] (ret_from_fork+0x14/0x20 arch/arm/kernel/entry-common.S:158)
-Exception stack(0x8a9c7fb0 to 0x8a9c7ff8)
-
-Fixes: 412ca1550cbe ("macvlan: Move broadcasts into a work queue")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: juri.lelli@arm.com
+Cc: bigeasy@linutronix.de
+Cc: xlpang@redhat.com
+Cc: rostedt@goodmis.org
+Cc: mathieu.desnoyers@efficios.com
+Cc: jdesfossez@efficios.com
+Cc: dvhart@infradead.org
+Cc: bristot@redhat.com
+Link: http://lkml.kernel.org/r/20170322104151.604296452@infradead.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/if_macvlan.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/futex.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
-index 0e2c60efad2d..55a1d3260589 100644
---- a/include/linux/if_macvlan.h
-+++ b/include/linux/if_macvlan.h
-@@ -58,13 +58,14 @@ static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
- 	if (likely(success)) {
- 		struct vlan_pcpu_stats *pcpu_stats;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1565,8 +1565,7 @@ static void mark_wake_futex(struct wake_
+ 	 * memory barrier is required here to prevent the following
+ 	 * store to lock_ptr from getting ahead of the plist_del.
+ 	 */
+-	smp_wmb();
+-	q->lock_ptr = NULL;
++	smp_store_release(&q->lock_ptr, NULL);
+ }
  
--		pcpu_stats = this_cpu_ptr(vlan->pcpu_stats);
-+		pcpu_stats = get_cpu_ptr(vlan->pcpu_stats);
- 		u64_stats_update_begin(&pcpu_stats->syncp);
- 		pcpu_stats->rx_packets++;
- 		pcpu_stats->rx_bytes += len;
- 		if (multicast)
- 			pcpu_stats->rx_multicast++;
- 		u64_stats_update_end(&pcpu_stats->syncp);
-+		put_cpu_ptr(vlan->pcpu_stats);
- 	} else {
- 		this_cpu_inc(vlan->pcpu_stats->rx_errors);
- 	}
--- 
-2.30.1
-
+ /*
 
 
