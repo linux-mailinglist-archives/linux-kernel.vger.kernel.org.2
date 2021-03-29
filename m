@@ -2,186 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA2634D2F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A4C34D2F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhC2O60 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 10:58:26 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:36572 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhC2O6G (ORCPT
+        id S229656AbhC2O6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhC2O56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:58:06 -0400
-Received: by mail-lf1-f46.google.com with SMTP id n138so18916926lfa.3;
-        Mon, 29 Mar 2021 07:58:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=faG4TU2vNgmCikSBekGZBz25Hr88VzPfl/YRL0OakNk=;
-        b=GuFQwncG8RT/REvulOWuUFBt8BHPb+/FwvRBN2gGQr/dlVrc/4N6s1D1wxyX2xcZZ8
-         OYxWgwEoeoO2+A05V1lR3hOo4nivfnj5YbNdqEAuRzXk/50X3V2XYGjEPK516qj7NKLE
-         RH/qTt5lZxVz5mnLgvApwbwjwLhpcLu7ItbJhlC7hmGwqGt3QHVTqyVL0tUpzFP3cmeo
-         BP9ToP/9ar5/3kg4Rz7LNkZYzjFXBLiUKT8qDnEDP9Wa2auFjBhpN+7dYPMLNERuflKy
-         QKJton/ElFP3Yyf1R2J7TAnFmPhpQ63wLLJGjdmxoEoZDfrzMcdvTPlueMHWjf1PLJFV
-         1YZg==
-X-Gm-Message-State: AOAM532Gb6Jug2/3FeFBkubrfP20OZXmlfChfNZfKdpehjGkqE2uRwuY
-        zfk8vQ0XfDTebbtbQkdG/WWTdS3WboCLGV7muutrJpDgEdyaEw==
-X-Google-Smtp-Source: ABdhPJxCgX195e5PeWrEnM6BVpuIityMdSJCA2H/BXYHo3e0Vq6ecNuGbpojxy9Cin10bzIL+xdZBJBo/8Yuj9zVPaE=
-X-Received: by 2002:a05:6512:33ca:: with SMTP id d10mr16376219lfg.170.1617029885141;
- Mon, 29 Mar 2021 07:58:05 -0700 (PDT)
+        Mon, 29 Mar 2021 10:57:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB51C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:57:57 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617029875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=89OLqGCmDiFG02ByiCM7EbSbXUpQdtx+NtSMTPYy5WE=;
+        b=Lmhimi7O/3OamvzUjpTUvz2LuuakYEsVHAqb1mpThPe5ujFSI0K0XylTHG3MIvcj0B2oiz
+        xxDU19NDZlzkZeeBc5Llm+Qj9oo1Co3myfuZ10gTsfn4RFJhZ3+2/mYSpicWuaaEDUWg51
+        O6f58nKs8wK0nrCDe5rv4UxDvZpHekR7jtdqJRYWSuaJvjH7U1GemwjZ3TyCCK0557H6YX
+        1V50jPDRhmes4V5T/qdNEmxbCMqPCkVjHWpVsYla0/kWfGkaemxuIcABK5DWPuDylNK21K
+        6GKYv767eWOLnmqa4vze6T4n3mcd20xiLuOv17qw27y3bZ2kSj6HtPSknyjPUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617029875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=89OLqGCmDiFG02ByiCM7EbSbXUpQdtx+NtSMTPYy5WE=;
+        b=2c26pYtI3ud0zkqfdmNCtMZdihyn9If20Ml+PVNwyalvPD+LgqpVF0dR+saA11nUnsmGFu
+        wu4e/E3BWgkQ1dDw==
+To:     Richard Cochran <richardcochran@gmail.com>,
+        Miroslav Lichvar <mlichvar@redhat.com>
+Cc:     Daphne Preston-Kendall <dpk@nonceword.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        "Michael Kerrisk \(man-pages\)" <mtk.manpages@gmail.com>
+Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an error when TAI has not been configured
+In-Reply-To: <20210329142612.GC20909@hoboy.vegasvil.org>
+References: <87sg4iupzs.fsf@nanos.tec.linutronix.de> <20210327032859.GA3168@hoboy.vegasvil.org> <YGGbAIoCKDbZLQQ0@localhost> <20210329142612.GC20909@hoboy.vegasvil.org>
+Date:   Mon, 29 Mar 2021 16:57:55 +0200
+Message-ID: <87o8f26m8c.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210323224858.GA293698@embeddedor>
-In-Reply-To: <20210323224858.GA293698@embeddedor>
-Reply-To: chucklever@gmail.com
-From:   Chuck Lever <chuck.lever@oracle.com>
-Date:   Mon, 29 Mar 2021 10:57:54 -0400
-Message-ID: <CAFMMQGtZLNt-jsFFEJVGZaOQyVxckXEGbtan8oDZ-WUNSHkGWg@mail.gmail.com>
-Subject: Re: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the reply via gmail, the original patch did not show up in
-my Oracle mailbox.
+On Mon, Mar 29 2021 at 07:26, Richard Cochran wrote:
+> On Mon, Mar 29, 2021 at 11:16:48AM +0200, Miroslav Lichvar wrote:
+>> There are at least two issues with handling a zero offset as a special
+>> value. One is that zero could potentially be a valid value in distant
+>> future.
+>
+> I not losing sleep over that, but
+>
+>> The other is that the kernel updates the offset when a leap
+>> second is inserted/deleted even if the original offset is zero, so
+>> checking for zero (in the kernel or an application) works only until
+>> the first leap second after boot.
+>
+> oh, I didn't think of that.  I hate leap seconds.  Good thing Earth is
+> picking up the pace again!
+>  
+>> The kernel would need to set a flag that the offset was set. Returning
+>> an error in clock_gettime() until the offset is set sounds reasonable
+>> to me, but I have no idea how many of the existing applications it
+>> would break.
+>
+> I think it wiser to provide another way, sysfs or something else.
 
-I've been waiting for a resolution of this thread (and perhaps a
-Reviewed-by). But in
-the meantime I've committed this, provisionally, to the for-next topic branch in
+I think adjtimex is the right place and not yet another random file
+somewhere. Something like the below.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git
+Thanks,
 
-On Wed, Mar 24, 2021 at 4:39 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
->
-> Use an anonymous union with a couple of anonymous structs in order to
-> keep userspace unchanged:
->
-> $ pahole -C nfs_fhbase_new fs/nfsd/nfsfh.o
-> struct nfs_fhbase_new {
->         union {
->                 struct {
->                         __u8       fb_version_aux;       /*     0     1 */
->                         __u8       fb_auth_type_aux;     /*     1     1 */
->                         __u8       fb_fsid_type_aux;     /*     2     1 */
->                         __u8       fb_fileid_type_aux;   /*     3     1 */
->                         __u32      fb_auth[1];           /*     4     4 */
->                 };                                       /*     0     8 */
->                 struct {
->                         __u8       fb_version;           /*     0     1 */
->                         __u8       fb_auth_type;         /*     1     1 */
->                         __u8       fb_fsid_type;         /*     2     1 */
->                         __u8       fb_fileid_type;       /*     3     1 */
->                         __u32      fb_auth_flex[0];      /*     4     0 */
->                 };                                       /*     0     4 */
->         };                                               /*     0     8 */
->
->         /* size: 8, cachelines: 1, members: 1 */
->         /* last cacheline: 8 bytes */
-> };
->
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warnings:
->
-> fs/nfsd/nfsfh.c: In function ‘nfsd_set_fh_dentry’:
-> fs/nfsd/nfsfh.c:191:41: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->   191 |        ntohl((__force __be32)fh->fh_fsid[1])));
->       |                              ~~~~~~~~~~~^~~
-> ./include/linux/kdev_t.h:12:46: note: in definition of macro ‘MKDEV’
->    12 | #define MKDEV(ma,mi) (((ma) << MINORBITS) | (mi))
->       |                                              ^~
-> ./include/uapi/linux/byteorder/little_endian.h:40:26: note: in expansion of macro ‘__swab32’
->    40 | #define __be32_to_cpu(x) __swab32((__force __u32)(__be32)(x))
->       |                          ^~~~~~~~
-> ./include/linux/byteorder/generic.h:136:21: note: in expansion of macro ‘__be32_to_cpu’
->   136 | #define ___ntohl(x) __be32_to_cpu(x)
->       |                     ^~~~~~~~~~~~~
-> ./include/linux/byteorder/generic.h:140:18: note: in expansion of macro ‘___ntohl’
->   140 | #define ntohl(x) ___ntohl(x)
->       |                  ^~~~~~~~
-> fs/nfsd/nfsfh.c:191:8: note: in expansion of macro ‘ntohl’
->   191 |        ntohl((__force __be32)fh->fh_fsid[1])));
->       |        ^~~~~
-> fs/nfsd/nfsfh.c:192:32: warning: array subscript 2 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->   192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
->       |                     ~~~~~~~~~~~^~~
-> fs/nfsd/nfsfh.c:192:15: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->   192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
->       |    ~~~~~~~~~~~^~~
->
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
->
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  include/uapi/linux/nfsd/nfsfh.h | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
->
-> diff --git a/include/uapi/linux/nfsd/nfsfh.h b/include/uapi/linux/nfsd/nfsfh.h
-> index ff0ca88b1c8f..427294dd56a1 100644
-> --- a/include/uapi/linux/nfsd/nfsfh.h
-> +++ b/include/uapi/linux/nfsd/nfsfh.h
-> @@ -64,13 +64,24 @@ struct nfs_fhbase_old {
->   *   in include/linux/exportfs.h for currently registered values.
->   */
->  struct nfs_fhbase_new {
-> -       __u8            fb_version;     /* == 1, even => nfs_fhbase_old */
-> -       __u8            fb_auth_type;
-> -       __u8            fb_fsid_type;
-> -       __u8            fb_fileid_type;
-> -       __u32           fb_auth[1];
-> -/*     __u32           fb_fsid[0]; floating */
-> -/*     __u32           fb_fileid[0]; floating */
-> +       union {
-> +               struct {
-> +                       __u8            fb_version_aux; /* == 1, even => nfs_fhbase_old */
-> +                       __u8            fb_auth_type_aux;
-> +                       __u8            fb_fsid_type_aux;
-> +                       __u8            fb_fileid_type_aux;
-> +                       __u32           fb_auth[1];
-> +                       /*      __u32           fb_fsid[0]; floating */
-> +                       /*      __u32           fb_fileid[0]; floating */
-> +               };
-> +               struct {
-> +                       __u8            fb_version;     /* == 1, even => nfs_fhbase_old */
-> +                       __u8            fb_auth_type;
-> +                       __u8            fb_fsid_type;
-> +                       __u8            fb_fileid_type;
-> +                       __u32           fb_auth_flex[]; /* flexible-array member */
-> +               };
-> +       };
->  };
->
->  struct knfsd_fh {
-> @@ -97,7 +108,7 @@ struct knfsd_fh {
->  #define        fh_fsid_type            fh_base.fh_new.fb_fsid_type
->  #define        fh_auth_type            fh_base.fh_new.fb_auth_type
->  #define        fh_fileid_type          fh_base.fh_new.fb_fileid_type
-> -#define        fh_fsid                 fh_base.fh_new.fb_auth
-> +#define        fh_fsid                 fh_base.fh_new.fb_auth_flex
->
->  /* Do not use, provided for userspace compatiblity. */
->  #define        fh_auth                 fh_base.fh_new.fb_auth
-> --
-> 2.27.0
->
+        tglx
+---
+ include/uapi/linux/timex.h |    7 +++++--
+ kernel/time/ntp.c          |    4 +++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-
--- 
-When the world is being engulfed by a comet, go ahead and excrete
-where you want to.
+--- a/include/uapi/linux/timex.h
++++ b/include/uapi/linux/timex.h
+@@ -188,9 +188,12 @@ struct __kernel_timex {
+ #define STA_MODE	0x4000	/* mode (0 = PLL, 1 = FLL) (ro) */
+ #define STA_CLK		0x8000	/* clock source (0 = A, 1 = B) (ro) */
+ 
++#define STA_TAISET	0x10000 /* TAI offset was set via adjtimex (ro) */
++
+ /* read-only bits */
+-#define STA_RONLY (STA_PPSSIGNAL | STA_PPSJITTER | STA_PPSWANDER | \
+-	STA_PPSERROR | STA_CLOCKERR | STA_NANO | STA_MODE | STA_CLK)
++#define STA_RONLY (STA_PPSSIGNAL | STA_PPSJITTER | STA_PPSWANDER |	\
++		   STA_PPSERROR | STA_CLOCKERR | STA_NANO | STA_MODE |	\
++		   STA_CLK | STA_TAISET)
+ 
+ /*
+  * Clock states (time_state)
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -741,8 +741,10 @@ static inline void process_adjtimex_mode
+ 	}
+ 
+ 	if (txc->modes & ADJ_TAI &&
+-			txc->constant >= 0 && txc->constant <= MAX_TAI_OFFSET)
++	    txc->constant >= 0 && txc->constant <= MAX_TAI_OFFSET) {
+ 		*time_tai = txc->constant;
++		time_status |= STA_TAISET;
++	}
+ 
+ 	if (txc->modes & ADJ_OFFSET)
+ 		ntp_update_offset(txc->offset);
