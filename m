@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274A634CEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA3634CEB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhC2LSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:18:39 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:46732 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232208AbhC2LSD (ORCPT
+        id S232732AbhC2LSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232759AbhC2LS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:18:03 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 8714C405C4;
-        Mon, 29 Mar 2021 11:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1617016683; bh=iSxtzBdDE2cJnjE+FKkXJyxRBdv7BWhqnOaNUTMnKw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=MnleN+marL8tlDKG4oFA9Ec6DYnbs2I4LGW2YLQ4dFBxr64tLtSQOBYOdjl+vgrSv
-         1ppTkZS2ylh463eR28qs3/ykZLV9D9lS8P1axZXoLiTbsgnMjL4yHa0P/nrcmIB0lL
-         0M9Z0jRQ7Zp8JAzXstnVD5um6kpEcIs17H0tFLv2hMkADjiKkTNZUSfGI1PxDmhAHE
-         1FGf2Z9/3cLnetvbiPy3xylm5Rn2zfmKQcFJ5XdbsPgDaUqSz48L5eWmw6FXuyGlsA
-         Bair0CdR+WnTip2UaGAEoEetT8DzzYf4OCRBsm9uczPg7ZVfwE6gmcDcv76veTgwP9
-         vclu1ob9qiZsA==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 4D74EA022E;
-        Mon, 29 Mar 2021 11:18:02 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Subject: [PATCH v10 4/4] docs: ABI: Add sysfs documentation interface of dw-xdata-pcie driver
-Date:   Mon, 29 Mar 2021 13:17:48 +0200
-Message-Id: <438c4ca9f6cc9e1cb29a65c0d2cca9a3d3f181b1.1617016509.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
-References: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
-References: <cover.1617016509.git.gustavo.pimentel@synopsys.com>
+        Mon, 29 Mar 2021 07:18:29 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3BC061574;
+        Mon, 29 Mar 2021 04:18:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id j25so9673187pfe.2;
+        Mon, 29 Mar 2021 04:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hjM6kqJWcLsboF0CflsMyyl3j3b/v1YKhrm9/OL/HjU=;
+        b=ldBJwE/HqIUPhrTxrSSJEBWAd8qJr9zhY69pXN316hnkvpjBkXWHGlI8HJg+TAiGKV
+         EVpjF6zZnvRM1j60NlmvH0VnB86dLKzElQb+cirriEElfJeoiQSMu0hINz2T+Fg8PRaK
+         GoS8WvhnK3kNnQSoFs1HxvgkbIMgfvbxnSWTM8kO1S0edMYuIJYxyh1DutxmA1sQ8M1q
+         MO6GLLW2D9pPLahnHgj/Yrm5VHoxFHb/+V8oVzTyOLE6PB0QaykZQLwwykhMdtIdTdJP
+         xhvozAszwXfc1eCMa1ZWFD4O34NLlmRKMGLlGD915PTZuhNR9vDxn2KYLfBY77AuGduk
+         0NwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hjM6kqJWcLsboF0CflsMyyl3j3b/v1YKhrm9/OL/HjU=;
+        b=B01fiAnZKbRpcnwArBPPKedXVFURePpRjahw2MifaWMAM2dcJFjCEhR9CC/ei4m3hC
+         wpNETBoDqWgZPSiXvbuXv+qBTql+7JBBCNfgp+/CHMhcTD+mANNo1CzSAGpdlINgFpgc
+         1ywV26C4fEI6/5x1zX2gsRVtE6K4YBE+Ijbe1EX38umLp6Yz1LBsKsf8Jw9M0EjWNU9H
+         f+wpUGRP0MmDMtH5lUrqm23bPcT/7zXDf+MUw9g7wpCOTRHFK7xkgxDsBsF9XZFFJJFz
+         aiakkQk180oIeBgpXujwHdazQ9QmxgkdKFS6fi//n++nJ66jmnEm0ejPrKcCGlMONObN
+         zRGA==
+X-Gm-Message-State: AOAM532YiRfOX9xbY2GS6p02JY5GR7nkXFpbN9zwSDlbPHT4oNg4yaUf
+        SCSJy9u3QAjbJP+WL7kQ7m06DtvMyUfIbEx2J7M=
+X-Google-Smtp-Source: ABdhPJzsNkpwVlflfAYOG9eT+Z0IQauaEiOGqW3ToB14LhD9CWtZq3JdTcVIbg+7lIJgkhgNVA00zdRLmlRIl778hw0=
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
+ g136-20020a62528e0000b02901f5c5eea487mr24382446pfb.7.1617016708213; Mon, 29
+ Mar 2021 04:18:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210328035159.47259-1-julianbraha@gmail.com> <CA+U=DsrbZN51cR6tbyNuwQ-zZnauOrmqetGa6T8+RtcC58mxFg@mail.gmail.com>
+In-Reply-To: <CA+U=DsrbZN51cR6tbyNuwQ-zZnauOrmqetGa6T8+RtcC58mxFg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 14:18:12 +0300
+Message-ID: <CAHp75VezbdesY=wf0T8+ogkST-E+w80dJ=a9f0h9Ch3cPQOi4Q@mail.gmail.com>
+Subject: Re: [PATCH] drivers: iio: adc: fix unmet dependency on OF
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Julian Braha <julianbraha@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch describes the sysfs interface implemented on the dw-xdata-pcie
-driver.
+On Mon, Mar 29, 2021 at 9:43 AM Alexandru Ardelean
+<ardeleanalex@gmail.com> wrote:
+> On Sun, Mar 28, 2021 at 7:08 AM Julian Braha <julianbraha@gmail.com> wrote:
+> >
+> > When AD9467 is enabled, and OF is disabled,
+> > Kbuild gives the following warning:
+> >
+> > WARNING: unmet direct dependencies detected for ADI_AXI_ADC
+> >  Depends on [n]: IIO [=y] && HAS_IOMEM [=y] && OF [=n]
+> >  Selected by [y]:
+> >  - AD9467 [=y] && IIO [=y] && SPI [=y]
+> >
+> > This is because AD9467 selects ADI_AXI_ADC
+> > without selecting or depending on OF,
+> > despite ADI_AXI_ADC depending on OF.
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- Documentation/ABI/testing/sysfs-driver-xdata | 49 ++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+> Thanks for the patch.
+> This should have been fixed a bit differently with patch:
+> https://patchwork.kernel.org/project/linux-iio/patch/20210324182746.9337-1-aardelean@deviqon.com/
+>
+> Can you check if this fixes your setup?
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-xdata b/Documentation/ABI/testing/sysfs-driver-xdata
-new file mode 100644
-index 00000000..f574e8e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-xdata
-@@ -0,0 +1,49 @@
-+What:		/sys/class/misc/drivers/dw-xdata-pcie.<device>/write
-+Date:		April 2021
-+KernelVersion:	5.13
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create write TLPs frames - from the Root Complex to the
-+		Endpoint direction or to disable the PCIe traffic generator
-+		in all directions.
-+
-+		Write y/1/on to enable, n/0/off to disable
-+
-+		Usage e.g.
-+		 echo 1 > /sys/class/misc/dw-xdata-pcie.<device>/write
-+		or
-+		 echo 0 > /sys/class/misc/dw-xdata-pcie.<device>/write
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator in MB/s.
-+
-+		Usage e.g.
-+		 cat /sys/class/misc/dw-xdata-pcie.<device>/write
-+		 204
-+
-+		The file is read and write.
-+
-+What:		/sys/class/misc/dw-xdata-pcie.<device>/read
-+Date:		April 2021
-+KernelVersion:	5.13
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create read TLPs frames - from the Endpoint to the Root
-+		Complex direction or to disable the PCIe traffic generator
-+                in all directions.
-+
-+		Write y/1/on to enable, n/0/off to disable
-+
-+		Usage e.g.
-+		 echo 1 > /sys/class/misc/dw-xdata-pcie.<device>/read
-+		or
-+		 echo 0 > /sys/class/misc/dw-xdata-pcie.<device>/read
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator in MB/s.
-+
-+		Usage e.g.
-+		 cat /sys/class/misc/dw-xdata-pcie.<device>/read
-+		 199
-+
-+		The file is read and write.
+I have to add for sake of the clarification that we are trying really
+hard to make drivers agnostic to the device tree provider. In such a
+case the same driver can work for all existing providers (ACPI, DT,
+and board files with use of software nodes).
+
 -- 
-2.7.4
-
+With Best Regards,
+Andy Shevchenko
