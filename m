@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0612E34C6A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670A134C73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhC2IIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
+        id S232619AbhC2INX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:13:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232142AbhC2IFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1C061976;
-        Mon, 29 Mar 2021 08:05:10 +0000 (UTC)
+        id S232186AbhC2IIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:08:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 002C361938;
+        Mon, 29 Mar 2021 08:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005111;
+        s=korg; t=1617005293;
         bh=CyfuoQ0oaBUlKCO0uo5ft0bnWr/0cio78syw7yFJjKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m/D/2d1VuDmR379XVmF+Jz4vJt6XnJ5O+g/4VDgSmBEY18eDI63kQV8hdORHlb3ex
-         l6UHMH8OhtdRtlSofn2BRZvvaNjdQIOuBX4G4YaIi1i7NBg3aSEJPvqjRaBge1XX9c
-         7zfWiELwDeVTEzd5Mxm0TJe0OaXE7wotDjL9zOXg=
+        b=WM70/qrj4mGEKp+hqSueUixgprSDnk/NjUYkdgYM2yrUWHk/tnV7QRgjqFeZwu3Bc
+         H7le9YbJ5WASZbUP+b4CmxvD851IEK6hAG/Srs8zo+jnCFkTxdO4/T0KJwx6ILVuZT
+         OD/PC8uBrLZ3RlR7hy+FI5fl6il6r6I3JDLTVhHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
         Ludovic Desroches <ludovic.desroches@microchip.com>,
         Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH 4.14 27/59] ARM: dts: at91-sama5d27_som1: fix phy address to 7
+Subject: [PATCH 4.19 31/72] ARM: dts: at91-sama5d27_som1: fix phy address to 7
 Date:   Mon, 29 Mar 2021 09:58:07 +0200
-Message-Id: <20210329075609.778473866@linuxfoundation.org>
+Message-Id: <20210329075611.298114393@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
