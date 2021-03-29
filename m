@@ -2,170 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C8B34D6DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803C134D76F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhC2SS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhC2SS0 (ORCPT
+        id S231578AbhC2Sho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:37:44 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:48772 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231358AbhC2Shh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:18:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E85C061574;
-        Mon, 29 Mar 2021 11:18:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=bTIHTMUAkJkw0BJyN9SHCb13mzroPXcLVQ85NS5ula4=; b=bO5TdfffNiMSNU4XY+uWavCEd1
-        dFMbjtbNrX4HPrtHEXZuCwYePrOgtIdoWMIKkPRcRjI0zrQSO86okD1lxk4kkTTS9+Gi3izDJ4dcZ
-        tNF16E8wFeMXr0JoA5got9rnHnoILH5uYcP6rGB6HBAcR1blrTBS42biYs4qMGqz0isBdOlQkXVYJ
-        ysG3sReuQtlfukiUYAFsk9i4VwmexIPej9d7BUdDNaqC1Ts+Ax7gLgqRbM64Iayb3XzNNAZ/BM8gc
-        ZYDE4KV8BVY4wIHCAXv/UGP+0rslnjJTJi2tPHF6Z0/XDv3URbzPYmuzu0rKug/EmUan/SWeRco0q
-        vvXNgu2g==;
-Received: from [2601:1c0:6280:3f0::4557]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQwT0-0011Gm-8P; Mon, 29 Mar 2021 18:18:23 +0000
-Subject: Re: [PATCH] usb: dwc3: fix incorrect kernel-doc comment syntax in
- files
-To:     Aditya Srivastava <yashsri421@gmail.com>, balbi@kernel.org
-Cc:     lukas.bulwahn@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210329135108.27128-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <15c0a26f-851b-862c-a3ca-52989d428c89@infradead.org>
-Date:   Mon, 29 Mar 2021 11:18:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 29 Mar 2021 14:37:37 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 43deede600701cc8; Mon, 29 Mar 2021 20:37:35 +0200
+Received: from kreacher.localnet (89-64-81-131.dynamic.chello.pl [89.64.81.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5454F669165;
+        Mon, 29 Mar 2021 20:37:34 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+Subject: [PATCH v1 3/5] cpuidle: teo: Adjust handling of very short idle times
+Date:   Mon, 29 Mar 2021 20:19:03 +0200
+Message-ID: <7219614.EvYhyI6sBW@kreacher>
+In-Reply-To: <2764850.e9J7NaK4W3@kreacher>
+References: <2764850.e9J7NaK4W3@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210329135108.27128-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedguddvkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrudefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrudefuddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepthhglhigsehlihhnuhhtrhhonhhigidruggvpdhrtghp
+ thhtohepgidvtddulegtfihmsehsthhfgidrtggr
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 6:51 AM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> There are certain files in drivers/usb/dwc3, which follow this syntax,
-> but the content inside does not comply with kernel-doc.
-> Such lines were probably not meant for kernel-doc parsing, but are parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warnings from kernel-doc.
-> 
-> E.g., presence of kernel-doc like comment in drivers/usb/dwc3/io.h at
-> header causes this warnings by kernel-doc:
-> "warning: expecting prototype for h(). Prototype was for __DRIVERS_USB_DWC3_IO_H() instead"
-> 
-> Similarly for other files too.
-> 
-> Provide a simple fix by replacing such occurrences with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+If the time till the next timer event is shorter than the target
+residency of the first idle state (state 0), the TEO governor does
+not update its metrics for any idle states, but arguably it should
+record a "hit" for idle state 0 in that case, so modify it to do
+that.
 
-Thanks.
+Accordingly, also make it record an "early hit" for idle state 0 if
+the measured idle duration is less than its target residency, which
+allows one branch more to be dropped from teo_update().
 
-> ---
-> * Applies perfectly on next-20210326
-> 
->  drivers/usb/dwc3/debug.h         | 2 +-
->  drivers/usb/dwc3/debugfs.c       | 2 +-
->  drivers/usb/dwc3/dwc3-keystone.c | 2 +-
->  drivers/usb/dwc3/dwc3-pci.c      | 2 +-
->  drivers/usb/dwc3/io.h            | 2 +-
->  drivers/usb/dwc3/trace.c         | 2 +-
->  drivers/usb/dwc3/trace.h         | 2 +-
->  7 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/debug.h b/drivers/usb/dwc3/debug.h
-> index 8ab394942360..db231de46bb3 100644
-> --- a/drivers/usb/dwc3/debug.h
-> +++ b/drivers/usb/dwc3/debug.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/**
-> +/*
->   * debug.h - DesignWare USB3 DRD Controller Debug Header
->   *
->   * Copyright (C) 2010-2011 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/debugfs.c b/drivers/usb/dwc3/debugfs.c
-> index 5da4f6082d93..b0e3f434d219 100644
-> --- a/drivers/usb/dwc3/debugfs.c
-> +++ b/drivers/usb/dwc3/debugfs.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -/**
-> +/*
->   * debugfs.c - DesignWare USB3 DRD Controller DebugFS file
->   *
->   * Copyright (C) 2010-2011 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/dwc3-keystone.c b/drivers/usb/dwc3/dwc3-keystone.c
-> index 057056c0975e..1317959294e6 100644
-> --- a/drivers/usb/dwc3/dwc3-keystone.c
-> +++ b/drivers/usb/dwc3/dwc3-keystone.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -/**
-> +/*
->   * dwc3-keystone.c - Keystone Specific Glue layer
->   *
->   * Copyright (C) 2010-2013 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-> index 4c5c6972124a..4698c43af5ae 100644
-> --- a/drivers/usb/dwc3/dwc3-pci.c
-> +++ b/drivers/usb/dwc3/dwc3-pci.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -/**
-> +/*
->   * dwc3-pci.c - PCI Specific glue layer
->   *
->   * Copyright (C) 2010-2011 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/io.h b/drivers/usb/dwc3/io.h
-> index 76b73b116862..1e96ea339d48 100644
-> --- a/drivers/usb/dwc3/io.h
-> +++ b/drivers/usb/dwc3/io.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/**
-> +/*
->   * io.h - DesignWare USB3 DRD IO Header
->   *
->   * Copyright (C) 2010-2011 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/trace.c b/drivers/usb/dwc3/trace.c
-> index 1b45a9723eeb..088995885678 100644
-> --- a/drivers/usb/dwc3/trace.c
-> +++ b/drivers/usb/dwc3/trace.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -/**
-> +/*
->   * trace.c - DesignWare USB3 DRD Controller Trace Support
->   *
->   * Copyright (C) 2014 Texas Instruments Incorporated - https://www.ti.com
-> diff --git a/drivers/usb/dwc3/trace.h b/drivers/usb/dwc3/trace.h
-> index 97f4f1125a41..60883268adfc 100644
-> --- a/drivers/usb/dwc3/trace.h
-> +++ b/drivers/usb/dwc3/trace.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/**
-> +/*
->   * trace.h - DesignWare USB3 DRD Controller Trace Support
->   *
->   * Copyright (C) 2014 Texas Instruments Incorporated - https://www.ti.com
-> 
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpuidle/governors/teo.c |   32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
+
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -117,7 +117,8 @@ static DEFINE_PER_CPU(struct teo_cpu, te
+ static void teo_update(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+ {
+ 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
+-	int i, idx_hit = -1, idx_timer = -1;
++	int i, idx_hit = 0, idx_timer = 0;
++	unsigned int hits, misses;
+ 	u64 measured_ns;
+ 
+ 	if (cpu_data->time_span_ns >= cpu_data->sleep_length_ns) {
+@@ -174,25 +175,22 @@ static void teo_update(struct cpuidle_dr
+ 	 * also increase the "early hits" metric for the state that actually
+ 	 * matches the measured idle duration.
+ 	 */
+-	if (idx_timer >= 0) {
+-		unsigned int hits = cpu_data->states[idx_timer].hits;
+-		unsigned int misses = cpu_data->states[idx_timer].misses;
+-
+-		hits -= hits >> DECAY_SHIFT;
+-		misses -= misses >> DECAY_SHIFT;
+-
+-		if (idx_timer > idx_hit) {
+-			misses += PULSE;
+-			if (idx_hit >= 0)
+-				cpu_data->states[idx_hit].early_hits += PULSE;
+-		} else {
+-			hits += PULSE;
+-		}
++	hits = cpu_data->states[idx_timer].hits;
++	hits -= hits >> DECAY_SHIFT;
++
++	misses = cpu_data->states[idx_timer].misses;
++	misses -= misses >> DECAY_SHIFT;
+ 
+-		cpu_data->states[idx_timer].misses = misses;
+-		cpu_data->states[idx_timer].hits = hits;
++	if (idx_timer == idx_hit) {
++		hits += PULSE;
++	} else {
++		misses += PULSE;
++		cpu_data->states[idx_hit].early_hits += PULSE;
+ 	}
+ 
++	cpu_data->states[idx_timer].misses = misses;
++	cpu_data->states[idx_timer].hits = hits;
++
+ 	/*
+ 	 * Save idle duration values corresponding to non-timer wakeups for
+ 	 * pattern detection.
 
 
--- 
-~Randy
 
