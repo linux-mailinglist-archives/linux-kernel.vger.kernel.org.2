@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E627234C7D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B21634C9FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhC2ISS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
+        id S232768AbhC2Ieh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231754AbhC2ILG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:11:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 731B26196F;
-        Mon, 29 Mar 2021 08:11:05 +0000 (UTC)
+        id S233270AbhC2IVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B099E61554;
+        Mon, 29 Mar 2021 08:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005466;
-        bh=xqcx6d71Un00AaqJTis7UNPrbtDRn8FQVFgouZYa7lU=;
+        s=korg; t=1617006079;
+        bh=Qa5G5wdax085QRuIxKwFZtL3LCLuobDr38WuPDQeiR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K4Rm48JxlbaS2iR/eGD+ls2Jp388batxuKU6jmf35jTclASYGqgDDzzRy8ScLA5Xi
-         DqKMAxAn4MB4JS5ImQif60+z24GLuGSNHv6emQfq5o85qjGLgItdTDipR347qulwd+
-         q69+1zPVhr7fCqViGZ5934c7uQj8Tn4K2Ycu75sA=
+        b=lJ3uKEXdlEjek0FAz7wLLxUaEE05HSRjDwk6icjzHmXUv6t3q28W/MACg2AmKNdcf
+         iRSnWgGyqxZNNR2Vpn22IEEUaRVWDztwJKf1gCKBErxiaRlKzNxhYpyDkEpwJZ3OL+
+         slUKiK3aXItIeS88QlLYO9+nw25HNlRD87/d6hec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/111] cpufreq: blacklist Arm Vexpress platforms in cpufreq-dt-platdev
+Subject: [PATCH 5.10 111/221] net/qlcnic: Fix a use after free in qlcnic_83xx_get_minidump_template
 Date:   Mon, 29 Mar 2021 09:57:22 +0200
-Message-Id: <20210329075615.671330504@linuxfoundation.org>
+Message-Id: <20210329075632.916173766@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit fbb31cb805fd3574d3be7defc06a7fd2fd9af7d2 ]
+[ Upstream commit db74623a3850db99cb9692fda9e836a56b74198d ]
 
-Add "arm,vexpress" to cpufreq-dt-platdev blacklist since the actual
-scaling is handled by the firmware cpufreq drivers(scpi, scmi and
-vexpress-spc).
+In qlcnic_83xx_get_minidump_template, fw_dump->tmpl_hdr was freed by
+vfree(). But unfortunately, it is used when extended is true.
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: 7061b2bdd620e ("qlogic: Deletion of unnecessary checks before two function calls")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq-dt-platdev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index bca8d1f47fd2..1200842c3da4 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -103,6 +103,8 @@ static const struct of_device_id whitelist[] __initconst = {
- static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "allwinner,sun50i-h6", },
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
+index 7760a3394e93..7ecb3dfe30bd 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
+@@ -1425,6 +1425,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
  
-+	{ .compatible = "arm,vexpress", },
-+
- 	{ .compatible = "calxeda,highbank", },
- 	{ .compatible = "calxeda,ecx-2000", },
+ 	if (fw_dump->tmpl_hdr == NULL || current_version > prev_version) {
+ 		vfree(fw_dump->tmpl_hdr);
++		fw_dump->tmpl_hdr = NULL;
  
+ 		if (qlcnic_83xx_md_check_extended_dump_capability(adapter))
+ 			extended = !qlcnic_83xx_extend_md_capab(adapter);
+@@ -1443,6 +1444,8 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
+ 			struct qlcnic_83xx_dump_template_hdr *hdr;
+ 
+ 			hdr = fw_dump->tmpl_hdr;
++			if (!hdr)
++				return;
+ 			hdr->drv_cap_mask = 0x1f;
+ 			fw_dump->cap_mask = 0x1f;
+ 			dev_info(&pdev->dev,
 -- 
 2.30.1
 
