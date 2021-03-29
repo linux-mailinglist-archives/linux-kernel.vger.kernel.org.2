@@ -2,99 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E829F34C1F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70AA34C1FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhC2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:38:28 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42684 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230209AbhC2CiI (ORCPT
+        id S230307AbhC2Cjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230271AbhC2CjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:38:08 -0400
-X-UUID: c454a20bfbdf47bf898bc1848c9f2b44-20210329
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VdVEz2wKHTnKSOp+VNzzGg9amBOswHbORRfeY500MUo=;
-        b=fm3bM6vF4lwuCzzIbz8jKvVOJIbhL1VMSKkyzPqTuU6+aXxsXo0GUyn4cMCQGmWqFYnjogFb5DOjEctNzPcaMvDN0c+XpFXX9WCyNDDyVDiIHcq2AYpaJm7XUEmio/WH7EDTMcfp0bt7yCWnjY0I+hQNtYFE5AfL7fx7SLZzPOQ=;
-X-UUID: c454a20bfbdf47bf898bc1848c9f2b44-20210329
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw01.mediatek.com
-        (envelope-from <nina-cm.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1172350892; Mon, 29 Mar 2021 10:38:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Mar 2021 10:38:00 +0800
-Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 29 Mar 2021 10:38:00 +0800
-Message-ID: <1616985480.26412.4.camel@mtksdccf07>
-Subject: Re: [PATCH 1/2] dt-bindings: devapc: Update bindings
-From:   Nina Wu <nina-cm.wu@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Neal Liu <neal.liu@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <Jackson-kt.Chang@mediatek.com>
-Date:   Mon, 29 Mar 2021 10:38:00 +0800
-In-Reply-To: <1616771454.300082.3384056.nullmailer@robh.at.kernel.org>
-References: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
-         <1616771454.300082.3384056.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Sun, 28 Mar 2021 22:39:05 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0EAC061574;
+        Sun, 28 Mar 2021 19:38:54 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id w8so12274478ybt.3;
+        Sun, 28 Mar 2021 19:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=33INFIPrDA+cLi64cYDVf5nELFJnPwDCsojs1BYS9e0=;
+        b=SC1GDA/YlCTwqzfTlUPUqTarHSRijy6NQPPURkC+c5JedNIaUevKXRNN6GR3Rzfsvo
+         0X5VLT+yQIEW8jE++wPbLPbAYI/RmfWGlcSlUjd0FVD64QP7vbBFFAYFTIXQkPV9joPP
+         L1TivumWiKtT2TZTFj2O5IBxl0f0PLovY08i44p4UIK5oqEKJBDYdj6NvqlYyY7bsiZi
+         yKRPTykL1LqQNs7vC5fqbIaQdhGGOU6rEuNWipa6TATu+vUZsMRzQk02fnsRTqzD9BJr
+         /Feo7egdRN4e7y21/GeoKE/PAEUT4j+M2PCl+Tjty5bn/nsw8+GbnAnrKkS76+KfguKx
+         w2HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=33INFIPrDA+cLi64cYDVf5nELFJnPwDCsojs1BYS9e0=;
+        b=ktgYA49fB3yJmsnLWcoSmO4j74KHBKkMPJNokQfKJG5Dmjm6Ap58ENL1Ek779SbDZ+
+         8SMpiFeQkyLa7TNFksp/poGCeON5Gqs8rdUwfRcPHc1/7oHd8sh7AYoj8Z8Mpj9mXhnF
+         eXjVcDIofGd0EXnXzG4bQBYF8a/zWwgeWqiu6VpL5KFSPgbyujKFrCGAj6RsQrxlxmdi
+         5fIK9XyeJEoF9FWxJ4My2ltpSTxB6ARgwkxMMAOMxko5ZwqpMf9xg7yTq9MMUTAP96gy
+         qqaQVlkyz5uGDIkWMJGCnJWmT4Ph2yiDJrzXQTxigrp/P4SQnzunLnjzsqnaCzhgEIIW
+         ardQ==
+X-Gm-Message-State: AOAM532Wh8usAFwp85iauCj5ZLV7wWEanxtVL3PPpO6dBsNhTGdE+axn
+        AK92y0MrGvvgVHp/dSaSrLpVw8e5AVzdAdcJ0wdMRuNwLLLADg==
+X-Google-Smtp-Source: ABdhPJz1j+34Rh8ICwuMs7SviJVhKkh9I5jSrmbaTtDKcHP5T82buMHpLjfGwIL+UvptjDLIVK+QfP842TaGHHEd0Bs=
+X-Received: by 2002:a25:4982:: with SMTP id w124mr33691184yba.27.1616985533223;
+ Sun, 28 Mar 2021 19:38:53 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-6-memxor@gmail.com>
+ <20210327021534.pjfjctcdczj7facs@ast-mbp> <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
+ <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
+In-Reply-To: <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 28 Mar 2021 19:38:42 -0700
+Message-ID: <CAEf4BzZaWjVhfkr7vizir7PfbcsaN99yEwOoqKi32V4X17f0Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFJvYg0KDQpJIGp1c3QgZm91bmQgdGhhdCB0aGVyZSBpcyB0aGUgdW4tbWVyZ2VkIGRlcGVu
-ZGVudCBwYXRjaC4NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1t
-ZWRpYXRlay9wYXRjaC8yMDIxMDMyNDEwNDExMC4xMzM4My03LWNodW4tamllLmNoZW5AbWVkaWF0
-ZWsuY29tLw0KDQpJIHdpbGwgYWRkIHRoaXMgdG8gY29tbWl0IG1lc3NhZ2UgaW4gdGhlIG5leHQg
-dmVyc2lvbi4NCg0KVGhhbmtzDQoNCk9uIEZyaSwgMjAyMS0wMy0yNiBhdCAwOToxMCAtMDYwMCwg
-Um9iIEhlcnJpbmcgd3JvdGU6DQo+IE9uIEZyaSwgMjYgTWFyIDIwMjEgMTU6MzE6MTAgKzA4MDAs
-IE5pbmEgV3Ugd3JvdGU6DQo+ID4gRnJvbTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRlay5j
-b20+DQo+ID4gDQo+ID4gVG8gc3VwcG9ydCBuZXdlciBoYXJkd2FyZSBhcmNoaXRlY3R1cmUgb2Yg
-ZGV2YXBjLA0KPiA+IHVwZGF0ZSBkZXZpY2UgdHJlZSBiaW5kaW5ncy4NCj4gPiANCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBOaW5hIFd1IDxOaW5hLUNNLld1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55YW1sICAgfCA0
-MSArKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0MSBpbnNlcnRp
-b25zKCspDQo+ID4gDQo+IA0KPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgZHRf
-YmluZGluZ19jaGVjaycgb24geW91ciBwYXRjaDoNCj4gDQo+IHlhbWxsaW50IHdhcm5pbmdzL2Vy
-cm9yczoNCj4gDQo+IGR0c2NoZW1hL2R0YyB3YXJuaW5ncy9lcnJvcnM6DQo+IC9idWlsZHMvcm9i
-aGVycmluZy9saW51eC1kdC1yZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NvYy9tZWRpYXRlay9kZXZhcGMueWFtbDogcHJvcGVydGllczp2ZXJzaW9uOmVudW06IEZhbHNl
-IHNjaGVtYSBkb2VzIG5vdCBhbGxvdyBbMSwgMl0NCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4
-LWR0LXJldmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVr
-L2RldmFwYy55YW1sOiBwcm9wZXJ0aWVzOnNsYXZlX3R5cGVfbnVtOmVudW06IEZhbHNlIHNjaGVt
-YSBkb2VzIG5vdCBhbGxvdyBbMSwgNF0NCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4LWR0LXJl
-dmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFw
-Yy55YW1sOiBpZ25vcmluZywgZXJyb3IgaW4gc2NoZW1hOiBwcm9wZXJ0aWVzOiBzbGF2ZV90eXBl
-X251bTogZW51bQ0KPiB3YXJuaW5nOiBubyBzY2hlbWEgZm91bmQgaW4gZmlsZTogLi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55YW1sDQo+IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLmV4YW1w
-bGUuZHRzOjUxOjE4OiBmYXRhbCBlcnJvcjogZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5o
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQo+ICAgIDUxIHwgICAgICAgICAjaW5jbHVkZSA8
-ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5oPg0KPiAgICAgICB8ICAgICAgICAgICAgICAg
-ICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gY29tcGlsYXRpb24gdGVybWlu
-YXRlZC4NCj4gbWFrZVsxXTogKioqIFtzY3JpcHRzL01ha2VmaWxlLmxpYjozNDk6IERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLmV4YW1wbGUuZHQu
-eWFtbF0gRXJyb3IgMQ0KPiBtYWtlWzFdOiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBqb2Jz
-Li4uLg0KPiBtYWtlOiAqKiogW01ha2VmaWxlOjEzODA6IGR0X2JpbmRpbmdfY2hlY2tdIEVycm9y
-IDINCj4gDQo+IFNlZSBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9wYXRjaHdv
-cmsub3psYWJzLm9yZy9wYXRjaC8xNDU4Njg3X187ISFDVFJOS0E5d01nMEFSYnchelptam03NExl
-ZWU4by1lYVFVQl95SFl2aC02Nmc4OFJnam96dl9lY1Nrd1cteWZvN0dfYzlvNi1wMEpsRmZzdDNW
-SSQgDQo+IA0KPiBUaGlzIGNoZWNrIGNhbiBmYWlsIGlmIHRoZXJlIGFyZSBhbnkgZGVwZW5kZW5j
-aWVzLiBUaGUgYmFzZSBmb3IgYSBwYXRjaA0KPiBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRoZSBtb3N0
-IHJlY2VudCByYzEuDQo+IA0KPiBJZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19j
-aGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlDQo+IGVycm9yKHMpLCB0aGVuIG1ha2Ugc3Vy
-ZSAneWFtbGxpbnQnIGlzIGluc3RhbGxlZCBhbmQgZHQtc2NoZW1hIGlzIHVwIHRvDQo+IGRhdGU6
-DQo+IA0KPiBwaXAzIGluc3RhbGwgZHRzY2hlbWEgLS11cGdyYWRlDQo+IA0KPiBQbGVhc2UgY2hl
-Y2sgYW5kIHJlLXN1Ym1pdC4NCj4gDQoNCg==
+On Sun, Mar 28, 2021 at 6:40 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Mar 27, 2021 at 09:32:58PM -0700, Andrii Nakryiko wrote:
+> > > I think it's better to start with new library for tc/xdp and have
+> > > libbpf as a dependency on that new lib.
+> > > For example we can add it as subdir in tools/lib/bpf/.
+> > >
+> > > Similarly I think integerating static linking into libbpf was a mistake.
+> > > It should be a sub library as well.
+> > >
+> > > If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
+> > > whatever else the users would appreciate that we don't shove single libbpf
+> > > to them with a ton of features that they might never use.
+> >
+> > What's the concern exactly? The size of the library? Having 10
+> > micro-libraries has its own set of downsides,
+>
+> specifically?
 
+You didn't answer my question, but from what you write below I assume
+libbpf size is your main concern?
+
+As for downsides, I'm sure I'm not yet seeing all of the problems
+we'll encounter when splitting libbpf into 10 pieces. But as a user,
+having to figure out which libraries I need to use is a big hassle.
+E.g., for XDP application using ringbuf, I'll need libbpfelf,
+libbpftrace, libbpfnet, which implicitly also would depend on
+libsysbpf, libbtf, libbpfutil, I assume. So having to list 3 vs 1
+library is already annoying, but when statically linking I'd need to
+specify all 6. I'd very much rather know that it has to be -lbpf at it
+will provide me with all the basics (and it's already -lz and -lelf in
+static linking scenario, which I wish we could get rid of).
+
+>
+> > I'm not convinced that's
+> > a better situation for end users. And would certainly cause more
+> > hassle for libbpf developers and packagers.
+>
+> For developers and packagers.. yes.
+> For users.. quite the opposite.
+
+See above. I don't know which hassle is libbpf for users today. You
+were implying code size used for functionality users might not use
+(e.g., linker). Libbpf is a very small library, <300KB. There are
+users building tools for constrained embedded systems that use libbpf.
+There are/were various problems mentioned, but the size of libbpf
+wasn't yet one of them. We should certainly watch the code bloat, but
+we are not yet at the point where library is too big for users to be
+turned off. In shared library case it's even less of a concern.
+
+> The skel gen and static linking must be split out before the next libbpf release.
+> Not a single application linked with libbpf is going to use those pieces.
+> bpftool is one and only that needs them. Hence forcing libbpf users
+> to increase their .text with a dead code is a selfish call of libbpf
+> developers and packagers. The user's priorities must come first.
+>
+> > And what did you include in "core libbpf"?
+>
+> I would take this opportunity to split libbpf into maintainable pieces:
+> - libsysbpf - sys_bpf wrappers (pretty much tools/lib/bpf/bpf.c)
+> - libbpfutil - hash, strset
+
+strset and hash are internal data structures, I never intended to
+expose them through public APIs. I haven't investigated, but if we
+have a separate shared library (libbpfutil), I imagine we won't be
+able to hide those APIs, right?
+
+> - libbtf - BTF read/write
+> - libbpfelf - ELF parsing, CORE, ksym, kconfig
+> - libbpfskel - skeleton gen used by bpftool only
+
+skeleton generation is already part of bpftool, there is no need to
+split anything out
+
+> - libbpflink - linker used by bpftool only
+> - libbpfnet - networking attachment via netlink including TC and XDP
+> - libbpftrace - perfbuf, ringbuf
+
+ringbuf and perfbuf are both very small code-wise, and are used in
+majority of BPF applications anyways
+
+> - libxdp - Toke's xdp chaining
+> - libxsk - af_xdp logic
+>
+
+Now, if we look at libbpf .o files, we can approximately see what
+functionality is using most code:
+
+File                Size Percent
+
+bpf.o              17800    4.88
+bpf_prog_linfo.o    2952    0.81
+btf_dump.o         20472    5.61
+btf.o              58160   15.93
+hashmap.o           4056    1.11
+libbpf_errno.o      2912    0.80
+libbpf.o          190072   52.06
+libbpf_probes.o     6696    1.83
+linker.o           29408    8.05
+netlink.o           5944    1.63
+nlattr.o            2744    0.75
+ringbuf.o           6128    1.68
+str_error.o         1640    0.45
+strset.o            3656    1.00
+xsk.o              12456    3.41
+
+Total             365096  100.00
+
+so libbpf.o which has mostly bpf_object open/load logic and CO-RE take
+more than half already. And it depends on still more stuff in btf,
+hashmap, bpf, libbpf_probes, errno. But the final code size is even
+smaller, because libbpf.so is just 285128 bytes (not 365096 as implied
+by the table above), so even these numbers are pessimistic.
+
+linker.o, which is about 8% of the code right now, but is also
+actually taking less than 29KB, because when I remove linker.o and
+re-compile, the final libbpf.so goes from 285128 to 267576 = 17552
+reduction. Even if it grows 2x, I'd still say it's not a big deal.
+
+One reason to keep BPF linker in libbpf is that it is not only bpftool
+that would be using it. Our libbpf Rust bindings
+ is implementing its own BPF skeleton generation, and we'd like to use
+linker APIs to support static linking when using libbpf-rs without
+depending on bpftool. So having it in libbpf and not in bpftool is
+good when you consider the wider ecosystem.
+
+But again, let's just reflect for a second that we are talking about
+the library that takes less than 300KB total. It would be also
+interesting to experiment with LTO and its effect on final binaries
+when statically linking against libbpf. I haven't tried yet, though.
+
+
+> In the future the stack trace symbolization code can come
+> into libbpftrace or be a part of its own lib.
+> My upcoming loader program and signed prog generation logic
+> can be part of libbpfskel.
