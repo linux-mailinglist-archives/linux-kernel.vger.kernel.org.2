@@ -2,124 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E776634C59B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3F634C5C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhC2IBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:01:37 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:6380 "EHLO
+        id S231826AbhC2ICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:52 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:6828 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231596AbhC2IA6 (ORCPT
+        by vger.kernel.org with ESMTP id S231779AbhC2IBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:00:58 -0400
+        Mon, 29 Mar 2021 04:01:48 -0400
 Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T7w1iT002406;
-        Mon, 29 Mar 2021 10:00:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=YARP2pjSPKUGCU0uuAV6W5anS3B8C1Bjy68KpzSsA10=;
- b=476iQQ/ln+z8k2S6OM44WSlaUduFXgR3sPWrk7EGcvnGpTSfV4PsJ3whyb6fFFUAAijL
- kphHP5Upu8cPLnbEZ1ohP+9bvlV+bV4uieGCHOdpDKlL7gRAT2VeXgYoPXXQT3uSrAvs
- MuYk0TJvuqeuAYBl8fHi7qZUa35Lf2ZM6f+aFtrQoc51IVLgQFWkQE5BAGbKQwYrRjzU
- dycYNFrHmS/RNulAPdCDLucbv0eREmRBbGIXQm3cDX3gbFYubWTMYBiA9WJbMe1vtG8O
- HcbHTjLkSFcSSDOCr/aLbdXyv3A4KF6DjUTRaTg6KB/TptjMFjvUjG+hNt6fJaVuWhPi ZA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37jy132qvq-1
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T7w1VU002436;
+        Mon, 29 Mar 2021 10:00:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=yIOLZdcWTg/i/hNAy7PCnYN7jCAFFNCKIJbaV9azq4c=;
+ b=UyGlS34ozvlveaccKfqtwmSnjvW0+eHbE1PQppNKlmPoGv9YFwsgYRaNsHA/30+zDOyN
+ BzRGRX2xE/S6A5VhbBx0mFm2vnKtb5niTj/5KJ/4AfvPZJYXd2uumHqoAD+wbzs2zbK0
+ TyAgDqLAlqHVDTIABlVBtgqd/XgyzTHWxf5QcgKPhBz66YUUd7bExEcft6DlNkJwtZ8E
+ 5eX7apXUPP0re3mvc8yTIus8MZtyxv1Kf7jR2Suxltdt3Pcl0NJ5fnPUPFNEYdRO8ii1
+ oFxgPJizjK2wKLX9c8dzIhFUkObGotJcsu+NH9lsemKktwDvYyechm3q5bCrfR/NPRIP eA== 
+Received: from eur04-vi1-obe.outbound.protection.outlook.com (mail-vi1eur04lp2058.outbound.protection.outlook.com [104.47.14.58])
+        by mx07-00178001.pphosted.com with ESMTP id 37jy132qyp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 10:00:15 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 79E6110002A;
-        Mon, 29 Mar 2021 10:00:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 58DB92397B8;
-        Mon, 29 Mar 2021 10:00:13 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
- 2021 10:00:12 +0200
-Subject: Re: [PATCH v2 8/8] pinctrl: stm32: Add STM32H750 MCU pinctrl support
-To:     <dillon.minfei@gmail.com>, <robh+dt@kernel.org>,
-        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <vladimir.murzin@arm.com>, <afzal.mohd.ma@gmail.com>
-References: <1615530274-31422-1-git-send-email-dillon.minfei@gmail.com>
- <1615530274-31422-9-git-send-email-dillon.minfei@gmail.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <eb2437ef-ecd2-e258-b77b-2fe9f70205f2@foss.st.com>
-Date:   Mon, 29 Mar 2021 10:00:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1615530274-31422-9-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Mon, 29 Mar 2021 10:00:38 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q6Pl8a2w0tO0//sXy2aKK2Bobo3eUgowE+6TWeyZxarTWZd9sa2I0EQ2lJH5epSnJ7K+svtrdqrjU5fu022UqVnf3m4NhZh540AS7250OBA8yI/LyOUUoD7b4Cjn7C+hP3Qzr0JziBVSkepAQ9gw4X2jE531NkQRs3Op6hSsea1mOPrF0A1z9rXraQmxb37FLEqbQW7DQ15al3RFqeyxQq9jEGNE9zifEBNSsmWjKpk77CLSwoh8qJiUE9QSkDEvGpNhSLaZa9t0qFt8NBeYnslMhPWgTdyN59Q4cwC1JG1N4eKK0Yxqun7uMNXxrsb1Q2WhF+We4zRQuKZRRpOm7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yIOLZdcWTg/i/hNAy7PCnYN7jCAFFNCKIJbaV9azq4c=;
+ b=ercn/N2YUg8WKu/Az8cT7W9zzaHzb+mzH7tzNPhjSxqJgn4RNvFsgtj3ZGunfDYSpdj15ZUT7qNh+jgP+ytgLc0SSb7GLBASrNyAizkh+BGzJw1Iy/RdKHHzT+JFEKk7DPS/TIILXPMIR9ZtFAUSoqRvof5cc3jmBCGH3oWnrld+K3wC998SkX8+1Y8HVj9YPknDUMK2GvhFleRM0O05f+MG4guOXCg+nloud9LRZzvltfT4iU5qpG4Jow9SXykKVabuF65qowhRRv+hJAMboS031Mah+BlFtGDM70sh2VdAJwVm4+/24kM7IBBBM+t0EuA8jbpi/lbj6nFVpwTeHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=st.com; dmarc=pass action=none header.from=st.com; dkim=pass
+ header.d=st.com; arc=none
+Received: from DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:23d::22)
+ by DB6PR1001MB1429.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:b5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Mon, 29 Mar
+ 2021 08:00:31 +0000
+Received: from DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::81ed:3852:ada8:9b98]) by DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::81ed:3852:ada8:9b98%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 08:00:31 +0000
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: RE: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
+Thread-Topic: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
+Thread-Index: AQHXIotsEijZJQHh4E+llmTFXyVB9aqanZQA
+Date:   Mon, 29 Mar 2021 08:00:31 +0000
+Message-ID: <DB9PR10MB4746BFA99998CD92D43521BAF17E9@DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
+ <20210326215927.936377-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210326215927.936377-10-pierre-louis.bossart@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=st.com;
+x-originating-ip: [165.225.76.79]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1de9be7b-c681-41d5-e72f-08d8f288b9a7
+x-ms-traffictypediagnostic: DB6PR1001MB1429:
+x-microsoft-antispam-prvs: <DB6PR1001MB1429389E1049BDA259D2D771F17E9@DB6PR1001MB1429.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NFpZ840wp1n4ueqhNC/z6UeKv1bcbUdX57gIWbw+UGE5JQ4ekGg6wftPe3zvixkGemIuo54CqbQ37np5IaKtIwPjtxZgN3DoMEd9oEPLiFZlE3qSTup4q79KpZSvot1IZI1zat2bWYcFlyCSo1tmsQGCvCjBodwLiGwBQ9l5R/E9Evu4VgjsRl0gqr1EEMtJD+PU2RTLDpjFGqOKX6EUMy0mkmRQyaVv/LGGXAd+rH1RNEiyHiAj2cv1nYMLgUs4zfhFEtfkFrBDbf6AjZGQWAur65qeJCLf0EbrjVKm/9xo1bFF9QPG/rVBHYrX5t4O7cVq693cpn2e6T4uOGrLWM0ynXTwW24cfMUT0hcV9P7bw3kpFH/Wla9OBNfiSzCtzSbI7lE2KNn2j6/vsnMr2ACZqpO479IObzmYoTtaKWz7FuzPddbjWwwBkNUxWeLTK/seHEgUn/YWqMX7KUa0NH2537iedb5VdrEKwiLGXtkKIDE5q+PDOhuMaViqPyO/ooeGo1+CMqOU8n7wBmzySq8vsk7UgqkMHirenvdQun7ETWJnpj5XGEi/uuy71gmlRubJqEmd0JR1xpNgvdr/2PYjgufSEwInIKsZPs633lsc1X7vQ8m2grvaOWcNiIAT4RM3jlbB7qsa6agGpBZAOg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(478600001)(86362001)(5660300002)(4326008)(38100700001)(110136005)(54906003)(66946007)(6506007)(316002)(53546011)(83380400001)(8936002)(55236004)(26005)(9686003)(52536014)(7696005)(76116006)(64756008)(66556008)(66446008)(66476007)(2906002)(186003)(71200400001)(8676002)(55016002)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?7dSc54ZYX+pi1Z7jxDlVJfUAWtHHKLMd343T3JEDc3MHMBc5w+Fm+NX5lUyk?=
+ =?us-ascii?Q?1rnvICjINSmCG6LVCiNtJw4xBshJdPafo/tbaauEpX6W3Y9QVfODXvvmJefi?=
+ =?us-ascii?Q?P0uq5357gtv/YT8Q+ptGR8XKoV0dS5bNHubYJhen25Xf22AeUuCMhD9bYi1C?=
+ =?us-ascii?Q?epCjDcfhczYpILAOVyWdG/oAFJRf67D5P+8gQ2jhfiI5wLWLpjjjTMKj8flg?=
+ =?us-ascii?Q?9JqqZcP+nS8hx7VkKWhX3N2NiPBrSqZFKldZ4kMAiM9a7ftec/xRQya9iMoR?=
+ =?us-ascii?Q?9wkzqrJ01fagskyvniSRpoKiXW6rG3vJBF46ewSUuB/PUiCl6IQ5pee908y8?=
+ =?us-ascii?Q?tcGUF0LOKHBSCb7Mp4lhVQNnF8mEBaJG7zW6Wq3LtL+klEG5VJ+hQMtbcCcU?=
+ =?us-ascii?Q?W20flDd2JXWKCcEG1RhnuuoSC83Hqic1VMTvTVbI4h0gzLWTyDOLkTfPvL1O?=
+ =?us-ascii?Q?0QtYEnPmgtR2n8N1ezRka1UZxwDplmBypyU6yUXdwpHiTXMyHmVQ7lNKvu41?=
+ =?us-ascii?Q?a7Rbr9QhObUxb45tnw+dfYv79ObS64sTC9mh+JLGmvx6fSJNnRa5hPVdQ79Y?=
+ =?us-ascii?Q?Tsd+qJz2i3Gir8G+sX/2EQy5dO61zn1mhWrnuYF+SoQ9ADKPsnBFuUjdTgnr?=
+ =?us-ascii?Q?xVQA0uSyX+2CGnpRkx5jsGwLQxZdMEFYiXthEmQ76U/cOwz1S9zx7cAXltw5?=
+ =?us-ascii?Q?8hJt35Gy9oXkwKLahgiGRufz3BIQUxPq61XXjor1zVWF/9SHDMtGUgKMtBhO?=
+ =?us-ascii?Q?I9ydkTwsWeDE7tiewdYdjLem6o9w0vI7Tzjq0A9OH7/pjrbHKxdxWF2ldPTl?=
+ =?us-ascii?Q?6oxTvy/kXTW2uo4m+mevawWYP4KrcfC1ivPm90oziUk0o5Vq+8Jm9pbZflMz?=
+ =?us-ascii?Q?+rc2nc1iZ+OBABYJuTuZwbXXkFxXImNJgX2i90s9pz/hcSI4x1FSynfgYq7R?=
+ =?us-ascii?Q?+mOeQE/MrKXnYun3qeg147ZxJ5BPTvdllxM2MHR4MYfvBPtgJYPcmyrZ6DhZ?=
+ =?us-ascii?Q?cR43u3Bo5bhNOVy+241KEIvcREc1kQT5okLuemwElQPHNd0Qpqgqyef4zpMz?=
+ =?us-ascii?Q?gcExDhVXlhPMw079UodcfotDszru3/SL+YZVvVfr3VMHLH5GMI1cnEBd/1+Z?=
+ =?us-ascii?Q?gcO8GYat+2SF0VX9SqxRc0WQwcu0U/fk5nksTmUC5YZl3qhD5GipusNsW+sL?=
+ =?us-ascii?Q?PwWQ8bEz15GeZDWr64ZjtJWHbuPTf3l8kdhl2CpMxZLHlwY3jyQUF40NCwMH?=
+ =?us-ascii?Q?T7WT9fzZrnvyn9XUSNqZhoSUEgRl0LPkkj/ASJ4uX3ZQtPvP8H/Xhqv9Td2V?=
+ =?us-ascii?Q?MTw=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: ST.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1de9be7b-c681-41d5-e72f-08d8f288b9a7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2021 08:00:31.4629
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 75e027c9-20d5-47d5-b82f-77d7cd041e8f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bEjRkS2mWTw5CK408oi/53kpDUiUP+RLVZqP+jf9pAfhqeRXWKdA57FvqLskbHcdcnh8UeQSg0BYGL657kNSQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1429
+X-Proofpoint-GUID: JCQx20V0OoNtLXLBD5y0nlS1K_wYNuZo
+X-Proofpoint-ORIG-GUID: JCQx20V0OoNtLXLBD5y0nlS1K_wYNuZo
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-29_04:2021-03-26,2021-03-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 spamscore=0 malwarescore=0 impostorscore=0 adultscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+Hi,
 
-On 3/12/21 7:24 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> This patch adds STM32H750 pinctrl and GPIO support
-> since stm32h750 has the same pin alternate functions
-> with stm32h743, so just reuse the stm32h743's pinctrl
-> driver
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> -----Original Message-----
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Sent: vendredi 26 mars 2021 22:59
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de; broonie@kernel.org; linux-kernel@vger.kernel.org; Pier=
+re-
+> Louis Bossart <pierre-louis.bossart@linux.intel.com>; Arnaud POULIQUEN
+> <arnaud.pouliquen@st.com>; Liam Girdwood <lgirdwood@gmail.com>;
+> Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>
+> Subject: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
+>=20
+> cppcheck warning:
+>=20
+> sound/soc/sti/uniperif_player.c:1049:24: style:inconclusive: Function
+> 'uni_player_init' argument 2 names different: declaration 'uni_player'
+> definition 'player'. [funcArgNamesDifferent]
+>       struct uniperif *player)
+>                        ^
+> sound/soc/sti/uniperif.h:1375:24: note: Function 'uni_player_init'
+> argument 2 names different: declaration 'uni_player' definition 'player'.
+>       struct uniperif *uni_player);
+>                        ^
+> sound/soc/sti/uniperif_player.c:1049:24: note: Function 'uni_player_init'
+> argument 2 names different: declaration 'uni_player'
+> definition 'player'.
+>       struct uniperif *player)
+>                        ^
+> sound/soc/sti/uniperif_reader.c:411:24: style:inconclusive: Function
+> 'uni_reader_init' argument 2 names different: declaration 'uni_reader'
+> definition 'reader'. [funcArgNamesDifferent]
+>       struct uniperif *reader)
+>                        ^
+> sound/soc/sti/uniperif.h:1380:24: note: Function 'uni_reader_init'
+> argument 2 names different: declaration 'uni_reader' definition 'reader'.
+>       struct uniperif *uni_reader);
+>                        ^
+> sound/soc/sti/uniperif_reader.c:411:24: note: Function 'uni_reader_init'
+> argument 2 names different: declaration 'uni_reader'
+> definition 'reader'.
+>       struct uniperif *reader)
+>                        ^
+>=20
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
+>
+
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
+Thanks
+Arnaud
+
 > ---
-> v2:
-> - add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
->    have same pin alternate functions
-> - add STM32H750 to Kconfig description
-> 
->   drivers/pinctrl/stm32/Kconfig             | 2 +-
->   drivers/pinctrl/stm32/pinctrl-stm32h743.c | 3 +++
->   2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-> index f36f29113370..fb1ffc94c57f 100644
-> --- a/drivers/pinctrl/stm32/Kconfig
-> +++ b/drivers/pinctrl/stm32/Kconfig
-> @@ -35,7 +35,7 @@ config PINCTRL_STM32F769
->   	select PINCTRL_STM32
->   
->   config PINCTRL_STM32H743
-> -	bool "STMicroelectronics STM32H743 pin control" if COMPILE_TEST && !MACH_STM32H743
-> +	bool "STMicroelectronics STM32H743/STM32H750 pin control" if COMPILE_TEST && !MACH_STM32H743
->   	depends on OF && HAS_IOMEM
->   	default MACH_STM32H743
->   	select PINCTRL_STM32
-> diff --git a/drivers/pinctrl/stm32/pinctrl-stm32h743.c b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-> index ffe7b5271506..700206c7bc11 100644
-> --- a/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-> +++ b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
-> @@ -1966,6 +1966,9 @@ static const struct of_device_id stm32h743_pctrl_match[] = {
->   		.compatible = "st,stm32h743-pinctrl",
->   		.data = &stm32h743_match_data,
->   	},
-> +	{	.compatible = "st,stm32h750-pinctrl",
-> +		.data = &stm32h743_match_data,
-> +	},
+>  sound/soc/sti/uniperif.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h index
+> a16adeb7c1e9..2a5de328501c 100644
+> --- a/sound/soc/sti/uniperif.h
+> +++ b/sound/soc/sti/uniperif.h
+> @@ -1372,12 +1372,12 @@ static __maybe_unused const struct
+> snd_pcm_hardware uni_tdm_hw =3D {
+>=20
+>  /* uniperiph player*/
+>  int uni_player_init(struct platform_device *pdev,
+> -		    struct uniperif *uni_player);
+> +		    struct uniperif *player);
+>  int uni_player_resume(struct uniperif *player);
+>=20
+>  /* uniperiph reader */
+>  int uni_reader_init(struct platform_device *pdev,
+> -		    struct uniperif *uni_reader);
+> +		    struct uniperif *reader);
+>=20
+>  /* common */
+>  int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai,
+> --
+> 2.25.1
 
-If you use exactly the same driver (i.e. same ball out and AF mux) then 
-you don't have to create a new compatible for that. Just use the same 
-than h743.(so you don't have to factorize DT files).
-
-Regards
-Alex
-
->   	{ }
->   };
->   
-> 
