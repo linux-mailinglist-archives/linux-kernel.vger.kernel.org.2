@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B3C34C401
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7F034C411
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 08:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhC2Gtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 02:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhC2Gtg (ORCPT
+        id S230458AbhC2Gv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 02:51:27 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58203 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230344AbhC2Guz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 02:49:36 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1972C061574;
-        Sun, 28 Mar 2021 23:49:35 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id dm8so12990336edb.2;
-        Sun, 28 Mar 2021 23:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dvJrD38+Gd0ZZfT3SZAwY+e98dco9w+l9AERMmUkun4=;
-        b=ew+I8Zx3kLnvSgMLoTHkAJaNu+rvPBxtmPFiLXJz1lS4Tx+N+rBMis1LTjcK9rRx7n
-         2/Tav3DObTgXUf7PbtOWdAgB4s/F1Ie76PLgsyQ1HYFIUWAoviKOYes6dmy/GE0agGyh
-         +1SicMn1MhsCW4Q/8Nfpj+YyExvb1w8F9jKEQPgdqplos5pV3py7PWTEyJ6l3TogDnhX
-         NLp2uq5CavP+ukvEg73Z3axM8efl3Q4z1xbDKp17XSnuOKnrqFLcX+YgYMIiNyoup293
-         6NEm7YDoEdCXL4N2fSNioyFawWwE5gXGKqnCm0V/RgX9XHg4wI4tQi6Go4Kos+xcrih1
-         k7uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dvJrD38+Gd0ZZfT3SZAwY+e98dco9w+l9AERMmUkun4=;
-        b=f36sIXzfymYXWX1+/GLhzFKsTUlFf1OQHc7PONkCD2MaszATrfCxYwV2JHHCMqh8BA
-         XbhRw/N0eQZ3uC9LGMLQjKkjmnLe8NEogj7Cuihm8nZ3WOXaq8f0VKGfeoX3jJfL6gcr
-         s3Rc6ExGAeqfSc3aUNgspobXyyo8nZajnZ5QKKR+KCsI7qO08XNuBn22N8ctOKVwguz/
-         MF77wY+dVGrSmYKVKETuGESfmXWAjlVJMb/0r4KQw59LzbK9HRlx3cGbkRGEdNTmuTzt
-         5LkoIGCsXp/lRsXp+mvRu/JoyhKnvj8jIr6qk99Crm7cT+WQMKveorfpQ59Q7na+iIKR
-         DIFA==
-X-Gm-Message-State: AOAM530JmNdWarBr3pjrsm6S3C/DOwYwit1SRAS8v6kQsSXP0Ea6rVmA
-        lTybXHw1emtVDi7TBp0imDhCjuy/lWM=
-X-Google-Smtp-Source: ABdhPJydy6eDabhN/L6gwqCNv1MYhFf0/Yc5thGJOO9FABN3b0uIVZgU/ie3tTad8ORQ3j1ow6MYgg==
-X-Received: by 2002:aa7:cb90:: with SMTP id r16mr27693945edt.139.1617000573716;
-        Sun, 28 Mar 2021 23:49:33 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id eo22sm7682061ejc.0.2021.03.28.23.49.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 23:49:32 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 08:49:57 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: dt-bindings: nvidia,tegra210-ahub: Add missing
- child nodes
-Message-ID: <YGF4laeEP3v7bP9X@orome.fritz.box>
-References: <20210326195003.3756394-1-robh@kernel.org>
+        Mon, 29 Mar 2021 02:50:55 -0400
+X-UUID: c73173cc492e4759a94f7ffe8fabfda5-20210329
+X-UUID: c73173cc492e4759a94f7ffe8fabfda5-20210329
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1731230162; Mon, 29 Mar 2021 14:50:51 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 29 Mar 2021 14:50:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Mar 2021 14:50:49 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
+        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
+        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <sj.huang@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH 0/6] Mediatek pinctrl patch on mt8195 
+Date:   Mon, 29 Mar 2021 14:50:41 +0800
+Message-ID: <20210329065047.8388-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ijQsMv6nekEBJq7o"
-Content-Disposition: inline
-In-Reply-To: <20210326195003.3756394-1-robh@kernel.org>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series includes 6 patches:
+1.add pinctrl file on mt8195.
+2.add pinctrl binding document on mt8195.
+3.add pinctrl device node on mt8195.
+4.add pinctrl driver on MT8195.
+5.add pinctrl drive for I2C related pins on MT8195.
+6.add pinctrl rsel setting on MT8195.
 
---ijQsMv6nekEBJq7o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Zhiyong Tao (6):
+  dt-bindings: pinctrl: mt8195: add pinctrl file
+  dt-bindings: pinctrl: mt8195: add binding document
+  arm64: dts: mt8195: add pinctrl device node
+  pinctrl: add pinctrl driver on mt8195
+  pinctrl: add drive for I2C related pins on MT8195
+  pinctrl: add rsel setting on MT8195
 
-On Fri, Mar 26, 2021 at 01:50:03PM -0600, Rob Herring wrote:
-> The nvidia,tegra210-ahub binding is missing schema for child nodes. This
-> results in warnings if 'additionalProperties: false' is set (or when the
-> tools implement 'unevaluatedProperties' support). Add the child nodes
-> and reference their schema if one exists.
->=20
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: Sameer Pujar <spujar@nvidia.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-tegra@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->  - Also add 'dspk' child node
->=20
-> This patch ideally should be applied before this series[1].
->=20
-> [1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
-> ---
->  .../bindings/sound/nvidia,tegra210-ahub.yaml     | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+ .../bindings/pinctrl/pinctrl-mt8195.yaml      |  152 ++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi      |   21 +
+ drivers/pinctrl/mediatek/Kconfig              |    6 +
+ drivers/pinctrl/mediatek/Makefile             |    1 +
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     |  872 +++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  |   29 +
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |   14 +
+ drivers/pinctrl/mediatek/pinctrl-mtk-mt8195.h | 1669 +++++++++++++++++
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |   16 +
+ include/dt-bindings/pinctrl/mt8195-pinfunc.h  |  961 ++++++++++
+ 10 files changed, 3741 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mt8195.c
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mtk-mt8195.h
+ create mode 100644 include/dt-bindings/pinctrl/mt8195-pinfunc.h
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+--
+2.18.0
 
---ijQsMv6nekEBJq7o
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBheJMACgkQ3SOs138+
-s6GRJA//SwwwKllKwUX2o66Qc7knEWeus1NCiU3TvglA4jxSC+pf74q4wyOIWu3y
-T/LTXQBUaDsagPelNfETPnOJbdMbUjpNwHFSy3tsMbmP9LDC9caNOhLHgx5EICdq
-j//Ni9BhTN/GtLQup6XKKoE20g2Z+L9chB/8rh6lIBY98TTImJn5e/dZzEnhs00+
-oIWn7jhIQLGyICN5K3RBbtLaB4gBlIZExABmYOXCRL9Or6ku1KjrNpVFIGlRIn0Z
-FiaxFLJpDGAXITI+M8xVDFg6nEY2k0/iXLTC/dncmuWR7oyIJ3Z0eNB4vos3LNA6
-b9Cchxrx5bkOoGErHtROtPdmuvwFFKwlM1SR782EkuVDUHinVmyndTlF5ax9q/2c
-LK8T8/XPwr8V7Ip2EUxKcnotAsm3YK5KXma2O4pIxHdnFsgnMC4Rcz6WTQCsd1GV
-aMIqtS/7rZb/CyxiHsuJ8BdUWxgl5hT588cGKbVaNWpgGDYdIGpvHwbShnnGb6Ow
-P5O9EeBy93UxjrY5pZVWmBCOEPLuW1fSOhuGc9mYetjy4nJylBy9yDGkPQ6FxlgK
-a2eGJqEx199Gq7TwCpLZcv87mW6Njm4DqJJ4Cu2yp09ig/0uzIfE67RUVKqnVjSi
-DLBMBmqxdPzdjXYAfT7BXy/9TTcUKWR6wmh/LFZhALywMF+uT1Y=
-=znco
------END PGP SIGNATURE-----
-
---ijQsMv6nekEBJq7o--
