@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABA834C4E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253E834C4E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhC2H2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:28:46 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15378 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhC2H2c (ORCPT
+        id S231205AbhC2H2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:28:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15083 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhC2H2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 03:28:32 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F83zs0tT3zkgXG;
-        Mon, 29 Mar 2021 15:26:49 +0800 (CST)
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F83zQ4LVzz19Jm0;
+        Mon, 29 Mar 2021 15:26:26 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.179.202) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 15:28:20 +0800
+ 14.3.498.0; Mon, 29 Mar 2021 15:28:21 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -31,10 +31,12 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 0/2] dt-bindings: usb: dwc3-imx8mp: Use the correct name for child node "snps,dwc3"
-Date:   Mon, 29 Mar 2021 15:27:12 +0800
-Message-ID: <20210329072714.2135-1-thunder.leizhen@huawei.com>
+Subject: [PATCH 1/2] dt-bindings: usb: dwc3-imx8mp: Use the correct name for child node "snps,dwc3"
+Date:   Mon, 29 Mar 2021 15:27:13 +0800
+Message-ID: <20210329072714.2135-2-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
+In-Reply-To: <20210329072714.2135-1-thunder.leizhen@huawei.com>
+References: <20210329072714.2135-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -53,16 +55,41 @@ Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.example.dt.yaml: \
 dwc3@38100000: $nodename:0: 'dwc3@38100000' does not match '^usb(@.*)?'
         From schema: Documentation/devicetree/bindings/usb/snps,dwc3.yaml
 
+In addition, replace "type: object" with "$ref: snps,dwc3.yaml#". Ensure
+that all properties of the child node comply with snps,dwc3.yaml.
 
-Zhen Lei (2):
-  dt-bindings: usb: dwc3-imx8mp: Use the correct name for child node
-    "snps,dwc3"
-  arm64: dts: imx8mp: Use the correct name for child node "snps,dwc3"
-
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
  Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml | 9 +++------
- arch/arm64/boot/dts/freescale/imx8mp.dtsi                  | 4 ++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml b/Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml
+index cb4c6f6d3a33a3f..974032b1fda04fb 100644
+--- a/Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml
+@@ -52,11 +52,8 @@ properties:
+ # Required child node:
+ 
+ patternProperties:
+-  "^dwc3@[0-9a-f]+$":
+-    type: object
+-    description:
+-      A child node must exist to represent the core DWC3 IP block
+-      The content of the node is defined in dwc3.txt.
++  "^usb@[0-9a-f]+$":
++    $ref: snps,dwc3.yaml#
+ 
+ required:
+   - compatible
+@@ -87,7 +84,7 @@ examples:
+       dma-ranges = <0x40000000 0x40000000 0xc0000000>;
+       ranges;
+ 
+-      dwc3@38100000 {
++      usb@38100000 {
+         compatible = "snps,dwc3";
+         reg = <0x38100000 0x10000>;
+         clocks = <&clk IMX8MP_CLK_HSIO_AXI>,
 -- 
 1.8.3
 
