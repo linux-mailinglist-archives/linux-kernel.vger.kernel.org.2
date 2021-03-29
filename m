@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D1E34C4C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB30234C48C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhC2HTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 03:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhC2HTC (ORCPT
+        id S230220AbhC2HG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:06:28 -0400
+Received: from www381.your-server.de ([78.46.137.84]:36858 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhC2HGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:19:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C2DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 00:19:02 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        Mon, 29 Mar 2021 03:06:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=go7FKVgJ9/ZPz+OtwD52LLLt4SGNDzqZQ/KSBZeA42E=; b=bvMSiYb2EOVzbhpEN8D1Cd3Z59
+        ZSHSEdjXc89SyhFLOYI3b2IS5AmZiO+9/VkcmfmXVp1GDaxgp0/bxK5bcDeyKb7nsVR9SQvlPOVGu
+        2i90F0bAmIHKSuTbjbrUEwy549SnifHU9VxNuPJueU6OJc1QhjiV0qbrQj8G81tLy64a0vLQ9ua2P
+        EcB/cMMH59feRcrg+Lu7uwSX0W4b+H7boheRxUViwalVt76jbNdb88qCosDAbSsFdOePfKwb/oIHY
+        EkIx6lf6ViXijmzXYIkAZP8tQOKVuysGolL5LG5vM/ZizSXmehxGjcunQv042ufdvSxv9860jrvlA
+        VgIEf5/Q==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lQlyZ-0009jg-Cu; Mon, 29 Mar 2021 09:06:15 +0200
+Received: from [2001:a61:2aba:2d01:224:d7ff:fe9f:8154]
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lQmAl-0008RS-SU; Mon, 29 Mar 2021 09:18:51 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:44b9:f06e:1c40:69b1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 0D452602742;
-        Mon, 29 Mar 2021 07:01:37 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 09:01:36 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-Message-ID: <20210329070136.xbgjqc7fpuku7d2t@pengutronix.de>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
- <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
- <a5599800-53f4-c53f-abcc-e166ea9028b9@rasmusvillemoes.dk>
- <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
- <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
+        (envelope-from <lars@metafoo.de>)
+        id 1lQlyZ-000DR2-8N; Mon, 29 Mar 2021 09:06:15 +0200
+Subject: Re: [PATCH 3/3] iio: adc: ad7923: register device with
+ devm_iio_device_register
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>,
+        Michael.Hennerich@analog.com, jic23@kernel.org
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1616966903.git.lucas.p.stankus@gmail.com>
+ <b0146465d52f4e259f5f95c83c71e72f065093da.1616966903.git.lucas.p.stankus@gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <1548d948-bd01-a8db-6ecc-720bb7ca73a9@metafoo.de>
+Date:   Mon, 29 Mar 2021 09:06:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="no2yxwukvxsasx2v"
-Content-Disposition: inline
-In-Reply-To: <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <b0146465d52f4e259f5f95c83c71e72f065093da.1616966903.git.lucas.p.stankus@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26123/Sun Mar 28 13:10:54 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/28/21 11:46 PM, Lucas Stankus wrote:
+> Registers the device using the devm variant.
+> This is the final step of converting the ad7923 to only use devm routines,
+> meaning that the ad7923_remove() function is no longer needed to release
+> resources on device detach.
+> 
+> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
 
---no2yxwukvxsasx2v
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 23.03.2021 15:00:55, Rasmus Villemoes wrote:
-[...]
-> So let us guess that it's the ABI choice -mabi=3Dapcs-gnu
->=20
-> $ arm-linux-gnueabihf-gcc -O2 -msoft-float -mabi=3Dapcs-gnu -Q
-> --help=3Dtarget | grep struct
->   -mstructure-size-boundary=3D            32
->=20
-> Bingo. (-msoft-float is also included just as in the real command line
-> because gcc barfs otherwise).
->=20
-> Now what CONFIG_* knobs are responsible for putting -mabi=3Dapcs-gnu in
-> CFLAGS is left as an exercise for the reader. Regardless, it is not a
-> bug in the compiler. The error is the assumption that this language
+Thanks for the patches.T his looks good, just one small comment.
 
-For the record:
+> ---
+>   drivers/iio/adc/ad7923.c | 12 +-----------
+>   1 file changed, 1 insertion(+), 11 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7923.c b/drivers/iio/adc/ad7923.c
+> index d07eaf3111ed..f7af2f194789 100644
+> --- a/drivers/iio/adc/ad7923.c
+> +++ b/drivers/iio/adc/ad7923.c
+> @@ -356,16 +356,7 @@ static int ad7923_probe(struct spi_device *spi)
+>   	if (ret)
+>   		return ret;
+>   
+> -	return iio_device_register(indio_dev);
+> -}
+> -
+> -static int ad7923_remove(struct spi_device *spi)
+> -{
+> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 
-If CONFIG_AEABI is not set "-mabi=3Dapcs-gnu" is used, which leads to the
-bigger structure size boundary.
+This removes the last user of get_drvdata() on the SPI device. This means you 
+can also remove the spi_set_drvdata() in the probe function.
 
-| ifeq ($(CONFIG_AEABI),y)
-| CFLAGS_ABI      :=3D-mabi=3Daapcs-linux -mfpu=3Dvfp
-| else
-| CFLAGS_ABI      :=3D$(call cc-option,-mapcs-32,-mabi=3Dapcs-gnu) $(call c=
-c-option,-mno-thumb-interwork,)
-| endif
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---no2yxwukvxsasx2v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBhe00ACgkQqclaivrt
-76k/PQf/V4wzlOaxxCPhkLS9K/CuqzRFcuwvLONqKlnwLipN6bWjW7r8AU6IwtF9
-dZsm2Jd26fbOpfqiI30fG//Q7CQxHKSZGcXgy3iX/sAdIEAlAus3QMwZgQ9dHnzE
-hdTCWyu8BvbQ4HF43Kf4QkPA8pD6eaGu4PoDpYecY0t4x5fYukctCcQNOkGF/1F1
-MDbii6ekH7xCzq7sXtUmQvZb8EuXjHK5Y6qPgLnJIV4N9N2Uk4LZqckGBj5spqXk
-aBE2/idWrZdmLkB4VVjR9cFd1ynixgzzqswIwaTHVu7/t4hI6tS99B2P+j8LqKaa
-RWnJTfUMOngWKD54GuDlNBfUeOxFaw==
-=LRmw
------END PGP SIGNATURE-----
-
---no2yxwukvxsasx2v--
+> -
+> -	iio_device_unregister(indio_dev);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>   }
