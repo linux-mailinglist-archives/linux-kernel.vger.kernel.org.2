@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7FD34CFB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E37F34CFB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhC2MGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhC2MGV (ORCPT
+        id S231482AbhC2MHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:07:15 -0400
+Received: from outbound-smtp30.blacknight.com ([81.17.249.61]:39579 "EHLO
+        outbound-smtp30.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231477AbhC2MHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:06:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84573C061574;
-        Mon, 29 Mar 2021 05:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jPqmoCTVjpdR+TC/HOWruAFwqDXN0CS1n2BuyezFyoE=; b=pox+54wjS6cfy8s+m5nEx/JQK/
-        PVSxEknRetnIJIKU6ewOc6S9KDRXXsz2gEMkUQCeFoJvtGb1+3oppNz6a2o2CpIvEk27hUHVs03AY
-        1rGoLvEYqpV9RwdwHCMXO/SyA3LggcqdOQ1wyTa++ysesZhbGpn8WteTv/I3JgxGvzlfk+IiMY/pO
-        qEnLcpxpQN+9LqW9OurAmtvP9H/RRZWrjHzmNEoTwgtp+BIvPv9V49la1PHeagEaJny43hGF7r2Ia
-        cYhMe8z83tdl9GFmn++OoIWZGNAaJgJqRUoR/qWD1SyqoNmGPJuD1zuxR5a7Pi8OH7FnTYEeDWSoB
-        3GT7xicw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQqeC-001Wp8-8D; Mon, 29 Mar 2021 12:05:40 +0000
-Date:   Mon, 29 Mar 2021 13:05:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
-Message-ID: <20210329120532.GB351017@casper.infradead.org>
-References: <20210312131123.GZ3479805@casper.infradead.org>
- <YE8tQc66C6MW7EqY@suse.de>
- <20210315110659.GT2577561@casper.infradead.org>
- <YFMct4z1gEa8tXkh@suse.de>
- <CAJfpeguX7NrdTH4JLbCtkQ1u7TFvUh+8s7RmwB_wmuPHJsQyiA@mail.gmail.com>
- <20210318110302.nxddmrhmgmlw4adq@black.fi.intel.com>
- <YFM5mEZ8dZBhZWLI@suse.de>
- <20210318115543.GM3420@casper.infradead.org>
- <YFRoqYYqATd6R9GF@suse.de>
- <YGGXhomAy9SF3VwN@suse.de>
+        Mon, 29 Mar 2021 08:07:00 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp30.blacknight.com (Postfix) with ESMTPS id 42182BAA79
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 13:06:59 +0100 (IST)
+Received: (qmail 17289 invoked from network); 29 Mar 2021 12:06:59 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 29 Mar 2021 12:06:59 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Linux-MM <linux-mm@kvack.org>
+Cc:     Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce stat overhead
+Date:   Mon, 29 Mar 2021 13:06:42 +0100
+Message-Id: <20210329120648.19040-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGGXhomAy9SF3VwN@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:01:58AM +0100, Luis Henriques wrote:
-> On Fri, Mar 19, 2021 at 09:02:33AM +0000, Luis Henriques wrote:
-> > On Thu, Mar 18, 2021 at 11:55:43AM +0000, Matthew Wilcox wrote:
-> > > On Thu, Mar 18, 2021 at 11:29:28AM +0000, Luis Henriques wrote:
-> > > > On Thu, Mar 18, 2021 at 02:03:02PM +0300, Kirill A. Shutemov wrote:
-> > > > > On Thu, Mar 18, 2021 at 11:59:59AM +0100, Miklos Szeredi wrote:
-> > > > > > > [16247.536348] page:00000000dfe36ab1 refcount:673 mapcount:0 mapping:00000000f982a7f8 index:0x1400 pfn:0x4c65e00
-> > > > > > > [16247.536359] head:00000000dfe36ab1 order:9 compound_mapcount:0 compound_pincount:0
-> > > > > > 
-> > > > > > This is a compound page alright.   Have no idea how it got into fuse's
-> > > > > > pagecache.
-> > > > > 
-> > > > > 
-> > > > > Luis, do you have CONFIG_READ_ONLY_THP_FOR_FS enabled?
-> > > > 
-> > > > Yes, it looks like Tumbleweed kernels have that config option enabled by
-> > > > default.  And it this feature was introduced in 5.4 (the bug doesn't seem
-> > > > to be reproducible in 5.3).
-> > > 
-> > > Can you try adding this patch?
-> > > 
-> > > https://git.infradead.org/users/willy/pagecache.git/commitdiff/369a4fcd78369b7a026bdef465af9669bde98ef4
-> > 
-> > Good news, looks like this patch fixes the issue[1].  Thanks a lot
-> > everyone.  Is this already queued somewhere for 5.12?  Also, it would be
-> > nice to have it Cc'ed for stable kernels >= 5.4.
-> 
-> Ping.  Are you planning to push this for 5.12, or is that queued for the
-> 5.13 merged window?  Or "none of the above"? :)
+This series requires patches in Andrew's tree so the series is also
+available at
 
-Sorry, dropped the ball on this one.  This patch is good for that point
-in the patch series, but I'm not sure it works against upstream in all
-cases.  I need to spend some time evaluating it.  Thanks for the reminder.
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
+
+tldr: Jesper and Chuck, it would be nice to verify if this series helps
+	the allocation rate of the bulk page allocator. RT people, this
+	*partially* addresses some problems PREEMPT_RT has with the page
+	allocator but it needs review.
+
+The PCP (per-cpu page allocator in page_alloc.c) share locking requirements
+with vmstat which is inconvenient and causes some issues. Possibly because
+of that, the PCP list and vmstat share the same per-cpu space meaning that
+it's possible that vmstat updates dirty cache lines holding per-cpu lists
+across CPUs unless padding is used. The series splits that structure and
+separates the locking.
+
+Second, PREEMPT_RT considers the following sequence to be unsafe
+as documented in Documentation/locking/locktypes.rst
+
+   local_irq_disable();
+   spin_lock(&lock);
+
+The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
+-> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). This series explicitly
+separates the locking requirements for the PCP list (local_lock) and stat
+updates (irqs disabled). Once that is done, the length of time IRQs are
+disabled can be reduced and in some cases, IRQ disabling can be replaced
+with preempt_disable.
+
+After that, it was very obvious that zone_statistics in particular has way
+too much overhead and leaves IRQs disabled for longer than necessary. It
+has perfectly accurate counters requiring IRQs be disabled for parallel
+RMW sequences when inaccurate ones like vm_events would do. The series
+makes the NUMA statistics (NUMA_HIT and friends) inaccurate counters that
+only require preempt be disabled.
+
+Finally the bulk page allocator can then do all the stat updates in bulk
+with IRQs enabled which should improve the efficiency of the bulk page
+allocator. Technically, this could have been done without the local_lock
+and vmstat conversion work and the order simply reflects the timing of
+when different series were implemented.
+
+No performance data is included because despite the overhead of the
+stats, it's within the noise for most workloads but Jesper and Chuck may
+observe a significant different with the same tests used for the bulk
+page allocator. The series is more likely to be interesting to the RT
+folk in terms of slowing getting the PREEMPT tree into mainline.
+
+ drivers/base/node.c    |  18 +--
+ include/linux/mmzone.h |  29 +++--
+ include/linux/vmstat.h |  65 ++++++-----
+ mm/mempolicy.c         |   2 +-
+ mm/page_alloc.c        | 173 ++++++++++++++++------------
+ mm/vmstat.c            | 254 +++++++++++++++--------------------------
+ 6 files changed, 254 insertions(+), 287 deletions(-)
+
+-- 
+2.26.2
+
