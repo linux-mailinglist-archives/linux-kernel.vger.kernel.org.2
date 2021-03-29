@@ -2,245 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB66534DC51
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AEE34DC52
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhC2XLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:11:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29329 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230298AbhC2XLN (ORCPT
+        id S229655AbhC2XMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:12:54 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:35483 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhC2XMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:11:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617059472;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XhtxNP5tJzdHY/ymMrCncNhNVnZQrNACrTMh/EDPCmE=;
-        b=hd1dJ0DGJjsZ7Cv4JSaJT9fdDwbOP+qr4YTGVxunXULHelR8LO2DFJFR9+Ag5xNRU1bXQD
-        I2fiwyg4WZQth4d4oxQYqiX5FDHiYT4eHCgMBNuO1/R46WiwFOJj5j4aA/HK/kmnOsjAyO
-        T579CxlZR1uJXXadYXGOmnUXQtwjLh8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-MSu-jZjgOAmlu0mbo5C-cg-1; Mon, 29 Mar 2021 19:11:02 -0400
-X-MC-Unique: MSu-jZjgOAmlu0mbo5C-cg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2911180FCAA;
-        Mon, 29 Mar 2021 23:10:59 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2EDF65D9CC;
-        Mon, 29 Mar 2021 23:10:54 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 17:10:53 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
- vfio_pci drivers
-Message-ID: <20210329171053.7a2ebce3@omen.home.shazbot.org>
-In-Reply-To: <20210323193213.GM2356281@nvidia.com>
-References: <20210319162033.GA18218@lst.de>
-        <20210319162848.GZ2356281@nvidia.com>
-        <20210319163449.GA19186@lst.de>
-        <20210319113642.4a9b0be1@omen.home.shazbot.org>
-        <20210319200749.GB2356281@nvidia.com>
-        <20210319150809.31bcd292@omen.home.shazbot.org>
-        <20210319225943.GH2356281@nvidia.com>
-        <20210319224028.51b01435@x1.home.shazbot.org>
-        <20210321125818.GM2356281@nvidia.com>
-        <20210322104016.36eb3c1f@omen.home.shazbot.org>
-        <20210323193213.GM2356281@nvidia.com>
+        Mon, 29 Mar 2021 19:12:36 -0400
+Received: by mail-il1-f177.google.com with SMTP id 19so12653069ilj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 16:12:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cDI2yUT578MbhLhrd5imOPqltraD2SbMpCDp/zTtb7A=;
+        b=KEv1oRvNoag5fdnc1efLl+9Yr8k8eMY7zXJt4gCA6SKCH0SOS/FFwqUaWtT3RPy1B3
+         lAHlEAQtFGozeezJbp4jQy0BOztbLNw7SJOqmgpteilyjb/tMMV/AII+1D0gBxDuFH/2
+         z1DtBJzp1sE7DAwSPJUmmE+7PS6Pp5AJENKd5tf3Qs/fKp1l5xXoQp1//k1g9LoDYrE2
+         xO9ZuukXa8U7WkQDnNIzl3bywH6xqtG5F/38h1AmPlz2D3HajXoBVC/CCi1QI2AwxuKA
+         y7gI1dLjhhhglQwQJKPwlyZtX4346/fLTMK53zBLSNFXLBlUwk1z+L6UmVKRJvsY9yf8
+         3zUw==
+X-Gm-Message-State: AOAM530UvgtwdIsQpzjipjHKIzFSLBXB2prjIDoaW8m6cjrQwXqtVytR
+        Lig7qjSiUA+J3WK0CNjK8OE=
+X-Google-Smtp-Source: ABdhPJwwtHaVNEeCaZXwX85p2/tsQ1SGrAoxcD12EMmUbd6K+wpj4JzeKnfD3Cv4mOP19eOkVFAROw==
+X-Received: by 2002:a05:6e02:4b2:: with SMTP id e18mr21047589ils.42.1617059555996;
+        Mon, 29 Mar 2021 16:12:35 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id a7sm10200910ilj.64.2021.03.29.16.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 16:12:35 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 23:12:34 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rfc 3/4] percpu: on demand chunk depopulation
+Message-ID: <YGJe4hTfWCoQRFFc@google.com>
+References: <20210324190626.564297-1-guro@fb.com>
+ <20210324190626.564297-4-guro@fb.com>
+ <YGIotHUFTrPauwrP@google.com>
+ <YGI0IsSjGpqomJxh@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGI0IsSjGpqomJxh@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 16:32:13 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Mon, Mar 22, 2021 at 10:40:16AM -0600, Alex Williamson wrote:
-> 
-> > Of course if you start looking at features like migration support,
-> > that's more than likely not simply an additional region with optional
-> > information, it would need to interact with the actual state of the
-> > device.  For those, I would very much support use of a specific
-> > id_table.  That's not these.  
-> 
-> What I don't understand is why do we need two different ways of
-> inserting vendor code?
-
-Because a PCI id table only identifies the device, these drivers are
-looking for a device in the context of firmware dependencies.
-
-> > > new_id and driver_override should probably be in that disable list
-> > > too..  
-> > 
-> > We don't have this other world yet, nor is it clear that we will have
-> > it.  
-> 
-> We do today, it is obscure, but there is a whole set of config options
-> designed to disable the unsafe kernel features. Kernels booted with
-> secure boot and signed modules tend to enable a lot of them, for
-> instance. The people working on the IMA stuff tend to enable a lot
-> more as you can defeat the purpose of IMA if you can hijack the
-> kernel.
-> 
-> > What sort of id_table is the base vfio-pci driver expected to use?  
-> 
-> If it has a match table it would be all match, this is why I called it
-> a "universal driver"
-> 
-> If we have a flavour then the flavour controls the activation of
-> VFIO, not new_id or driver_override, and in vfio flavour mode we can
-> have an all match table, if we can resolve how to choose between two
-> drivers with overlapping matches.
-> 
-> > > > > This is why I want to try for fine grained autoloading first. It
-> > > > > really is the elegant solution if we can work it out.    
-> > > > 
-> > > > I just don't see how we create a manageable change to userspace.    
+On Mon, Mar 29, 2021 at 01:10:10PM -0700, Roman Gushchin wrote:
+> On Mon, Mar 29, 2021 at 07:21:24PM +0000, Dennis Zhou wrote:
+> > On Wed, Mar 24, 2021 at 12:06:25PM -0700, Roman Gushchin wrote:
+> > > To return unused memory to the system schedule an async
+> > > depopulation of percpu chunks.
 > > > 
-> > > I'm not sure I understand. Even if we add a new sysfs to set some
-> > > flavour then that is a pretty trivial change for userspace to move
-> > > from driver_override?  
+> > > To balance between scanning too much and creating an overhead because
+> > > of the pcpu_lock contention and scanning not enough, let's track an
+> > > amount of chunks to scan and mark chunks which are potentially a good
+> > > target for the depopulation with a new boolean flag.  The async
+> > > depopulation work will clear the flag after trying to depopulate a
+> > > chunk (successfully or not).
+> > > 
+> > > This commit suggest the following logic: if a chunk
+> > >   1) has more than 1/4 of total pages free and populated
+> > >   2) isn't a reserved chunk
+> > >   3) isn't entirely free
+> > >   4) isn't alone in the corresponding slot
 > > 
-> > Perhaps for some definition of trivial that I'm not familiar with.
-> > We're talking about changing libvirt and driverctl and every distro and
-> > user that's created a custom script outside of those.  Even changing
-> > from "vfio-pci" to "vfio-pci*" is a hurdle.  
+> > I'm not sure I like the check for alone that much. The reason being what
+> > about some odd case where each slot has a single chunk, but every slot
+> > is populated. It doesn't really make sense to keep them all around.
 > 
-> Sure, but it isn't like a major architectural shift, nor is it
-> mandatory unless you start using this new hardware class.
+> Yeah, I agree, I'm not sure either. Maybe we can just look at the total
+> number of populated empty pages and make sure it's not too low and not
+> too high. Btw, we should probably double PCPU_EMPTY_POP_PAGES_LOW/HIGH
+> if memcg accounting is on.
 > 
-> Userspace changes when we add kernel functionality.. The kernel just
-> has to keep working the way it used to for old functionality.
 
-Seems like we're bound to keep igd in the core as you propose below.
+Hmmm. pcpu_nr_populated and pcpu_nr_empty_pop_pages should probably be
+per chunk type now that you mention it.
 
-> > > Well, I read through the Intel GPU driver and this is how I felt it
-> > > works. It doesn't even check the firmware bit unless certain PCI IDs
-> > > are matched first.  
 > > 
-> > The IDs being only the PCI vendor ID and class code.    
+> > I think there is some decision making we can do here to handle packing
+> > post depopulation allocations into a handful of chunks. Depopulated
+> > chunks could be sidelined with say a flag ->depopulated to prevent the
+> > first attempt of allocations from using them. And then we could bring
+> > back a chunk 1 by 1 somehow to attempt to suffice the allocation.
+> > I'm not too sure if this is a good idea, just a thought.
 > 
-> I don't mean how vfio works, I mean how the Intel GPU driver works.
+> I thought about it in this way: depopulated chunks are not different to
+> new chunks, which are not yet fully populated. And they are naturally
+> de-prioritized by being located in higher slots (and at the tail of the list).
+> So I'm not sure we should handle them any special.
 > 
-> eg:
-> 
-> psb_pci_probe()
->  psb_driver_load()
->   psb_intel_opregion_setup()
->            if (memcmp(base, OPREGION_SIGNATURE, 16)) {
-> 
-> i915_pci_probe()
->  i915_driver_probe()
->   i915_driver_hw_probe()
->    intel_opregion_setup()
-> 	if (memcmp(buf, OPREGION_SIGNATURE, 16)) {
-> 
-> All of these memcmp's are protected by exact id_tables hung off the
-> pci_driver's id_table.
-> 
-> VFIO is the different case. In this case the ID match confirms that
-> the config space has the ASLS dword at the fixed offset. If the ID
-> doesn't match nothing should read the ASLS offset.
-> 
-> > > For NVIDIA GPU Max checked internally and we saw it looks very much
-> > > like how Intel GPU works. Only some PCI IDs trigger checking on the
-> > > feature the firmware thing is linked to.  
+
+I'm thinking of the following. Imagine 3 chunks, A and B in slot X, and
+C in slot X+1. If B gets depopulated followed by A getting exhausted,
+which chunk B or C should be used? If C is fully populated, we might
+want to use that one.
+
+I see that the priority is chunks at the very end, but I don't want to
+take something that doesn't reasonable generalize to any slot PAGE_SIZE
+and up. Or it should explicitly try to tackle only say the last N slots
+(but preferably the former).
+
 > > 
-> > And as Alexey noted, the table came up incomplete.  But also those same
-> > devices exist on platforms where this extension is completely
-> > irrelevant.  
+> > > it's a good target for depopulation.
+> > > 
+> > > If there are 2 or more of such chunks, an async depopulation
+> > > is scheduled.
+> > > 
+> > > Because chunk population and depopulation are opposite processes
+> > > which make a little sense together, split out the shrinking part of
+> > > pcpu_balance_populated() into pcpu_grow_populated() and make
+> > > pcpu_balance_populated() calling into pcpu_grow_populated() or
+> > > pcpu_shrink_populated() conditionally.
+> > > 
+> > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > ---
+> > >  mm/percpu-internal.h |   1 +
+> > >  mm/percpu.c          | 111 ++++++++++++++++++++++++++++++++-----------
+> > >  2 files changed, 85 insertions(+), 27 deletions(-)
+> > > 
+> > > diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+> > > index 18b768ac7dca..1c5b92af02eb 100644
+> > > --- a/mm/percpu-internal.h
+> > > +++ b/mm/percpu-internal.h
+> > > @@ -67,6 +67,7 @@ struct pcpu_chunk {
+> > >  
+> > >  	void			*data;		/* chunk data */
+> > >  	bool			immutable;	/* no [de]population allowed */
+> > > +	bool			depopulate;	/* depopulation hint */
+> > >  	int			start_offset;	/* the overlap with the previous
+> > >  						   region to have a page aligned
+> > >  						   base_addr */
+> > > diff --git a/mm/percpu.c b/mm/percpu.c
+> > > index 015d076893f5..148137f0fc0b 100644
+> > > --- a/mm/percpu.c
+> > > +++ b/mm/percpu.c
+> > > @@ -178,6 +178,12 @@ static LIST_HEAD(pcpu_map_extend_chunks);
+> > >   */
+> > >  int pcpu_nr_empty_pop_pages;
+> > >  
+> > > +/*
+> > > + * Track the number of chunks with a lot of free memory.
+> > > + * It's used to release unused pages to the system.
+> > > + */
+> > > +static int pcpu_nr_chunks_to_depopulate;
+> > > +
+> > >  /*
+> > >   * The number of populated pages in use by the allocator, protected by
+> > >   * pcpu_lock.  This number is kept per a unit per chunk (i.e. when a page gets
+> > > @@ -1955,6 +1961,11 @@ static void pcpu_balance_free(enum pcpu_chunk_type type)
+> > >  		if (chunk == list_first_entry(free_head, struct pcpu_chunk, list))
+> > >  			continue;
+> > >  
+> > > +		if (chunk->depopulate) {
+> > > +			chunk->depopulate = false;
+> > > +			pcpu_nr_chunks_to_depopulate--;
+> > > +		}
+> > > +
+> > >  		list_move(&chunk->list, &to_free);
+> > >  	}
+> > >  
+> > > @@ -1976,7 +1987,7 @@ static void pcpu_balance_free(enum pcpu_chunk_type type)
+> > >  }
+> > >  
+> > >  /**
+> > > - * pcpu_balance_populated - manage the amount of populated pages
+> > > + * pcpu_grow_populated - populate chunk(s) to satisfy atomic allocations
+> > >   * @type: chunk type
+> > >   *
+> > >   * Maintain a certain amount of populated pages to satisfy atomic allocations.
+> > > @@ -1985,35 +1996,15 @@ static void pcpu_balance_free(enum pcpu_chunk_type type)
+> > >   * allocation causes the failure as it is possible that requests can be
+> > >   * serviced from already backed regions.
+> > >   */
+> > > -static void pcpu_balance_populated(enum pcpu_chunk_type type)
+> > > +static void pcpu_grow_populated(enum pcpu_chunk_type type, int nr_to_pop)
+> > >  {
+> > >  	/* gfp flags passed to underlying allocators */
+> > >  	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+> > >  	struct list_head *pcpu_slot = pcpu_chunk_list(type);
+> > >  	struct pcpu_chunk *chunk;
+> > > -	int slot, nr_to_pop, ret;
+> > > +	int slot, ret;
+> > >  
+> > > -	/*
+> > > -	 * Ensure there are certain number of free populated pages for
+> > > -	 * atomic allocs.  Fill up from the most packed so that atomic
+> > > -	 * allocs don't increase fragmentation.  If atomic allocation
+> > > -	 * failed previously, always populate the maximum amount.  This
+> > > -	 * should prevent atomic allocs larger than PAGE_SIZE from keeping
+> > > -	 * failing indefinitely; however, large atomic allocs are not
+> > > -	 * something we support properly and can be highly unreliable and
+> > > -	 * inefficient.
+> > > -	 */
+> > >  retry_pop:
+> > > -	if (pcpu_atomic_alloc_failed) {
+> > > -		nr_to_pop = PCPU_EMPTY_POP_PAGES_HIGH;
+> > > -		/* best effort anyway, don't worry about synchronization */
+> > > -		pcpu_atomic_alloc_failed = false;
+> > > -	} else {
+> > > -		nr_to_pop = clamp(PCPU_EMPTY_POP_PAGES_HIGH -
+> > > -				  pcpu_nr_empty_pop_pages,
+> > > -				  0, PCPU_EMPTY_POP_PAGES_HIGH);
+> > > -	}
+> > > -
+> > >  	for (slot = pcpu_size_to_slot(PAGE_SIZE); slot < pcpu_nr_slots; slot++) {
+> > >  		unsigned int nr_unpop = 0, rs, re;
+> > >  
+> > > @@ -2084,9 +2075,18 @@ static void pcpu_shrink_populated(enum pcpu_chunk_type type)
+> > 
+> > I missed this in the review of patch 1, but pcpu_shrink only needs to
+> > iterate over:
+> > for (slot = pcpu_size_to_slot(PAGE_SIZE); slot < pcpu_nr_slots; slot++) {
 > 
-> I understood he ment that NVIDI GPUs *without* NVLINK can exist, but
-> the ID table we have here is supposed to be the NVLINK compatible
-> ID's.
-
-Those IDs are just for the SXM2 variants of the device that can
-exist on a variety of platforms, only one of which includes the
-firmware tables to activate the vfio support.
-
-> > So because we don't check for an Intel specific graphics firmware table
-> > when binding to Realtek NIC, we can leap to the conclusion that there
-> > must be a concise id_table we can create for IGD support?  
+> You mean skip first few slots?
+> Yeah, it's probably safe. I was afraid that a marked chunk can be moved to
+> one of such slots, so we'll never find it and will repeat scanning, but it seems
+> like it's not a possible scenario. Will adjust, thanks.
 > 
-> Concise? No, but we can see *today* what the ID table is supposed to
-> be by just loooking and the three probe functions that touch
-> OPREGION_SIGNATURE.
+> > 
+> > >  		list_for_each_entry(chunk, &pcpu_slot[slot], list) {
+> > >  			bool isolated = false;
+> > >  
+> > > -			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH)
+> > > +			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH ||
+> > > +			    pcpu_nr_chunks_to_depopulate < 1)
+> > >  				break;
+> > >  
+> > > +			/*
+> > > +			 * Don't try to depopulate a chunk again and again.
+> > > +			 */
+> > > +			if (!chunk->depopulate)
+> > > +				continue;
+> > > +			chunk->depopulate = false;
+> > > +			pcpu_nr_chunks_to_depopulate--;
+> > > +
+> > >  			for (i = 0, start = -1; i < chunk->nr_pages; i++) {
+> > >  				if (!chunk->nr_empty_pop_pages)
+> > >  					break;
+> > > @@ -2153,6 +2153,41 @@ static void pcpu_shrink_populated(enum pcpu_chunk_type type)
+> > >  	spin_unlock_irq(&pcpu_lock);
+> > >  }
+> > >  
+> > > +/**
+> > > + * pcpu_balance_populated - manage the amount of populated pages
+> > > + * @type: chunk type
+> > > + *
+> > > + * Populate or depopulate chunks to maintain a certain amount
+> > > + * of free pages to satisfy atomic allocations, but not waste
+> > > + * large amounts of memory.
+> > > + */
+> > > +static void pcpu_balance_populated(enum pcpu_chunk_type type)
+> > > +{
+> > > +	int nr_to_pop;
+> > > +
+> > > +	/*
+> > > +	 * Ensure there are certain number of free populated pages for
+> > > +	 * atomic allocs.  Fill up from the most packed so that atomic
+> > > +	 * allocs don't increase fragmentation.  If atomic allocation
+> > > +	 * failed previously, always populate the maximum amount.  This
+> > > +	 * should prevent atomic allocs larger than PAGE_SIZE from keeping
+> > > +	 * failing indefinitely; however, large atomic allocs are not
+> > > +	 * something we support properly and can be highly unreliable and
+> > > +	 * inefficient.
+> > > +	 */
+> > > +	if (pcpu_atomic_alloc_failed) {
+> > > +		nr_to_pop = PCPU_EMPTY_POP_PAGES_HIGH;
+> > > +		/* best effort anyway, don't worry about synchronization */
+> > > +		pcpu_atomic_alloc_failed = false;
+> > > +		pcpu_grow_populated(type, nr_to_pop);
+> > > +	} else if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH) {
+> > > +		nr_to_pop = PCPU_EMPTY_POP_PAGES_HIGH - pcpu_nr_empty_pop_pages;
+> > > +		pcpu_grow_populated(type, nr_to_pop);
+> > > +	} else if (pcpu_nr_chunks_to_depopulate > 0) {
+> > > +		pcpu_shrink_populated(type);
+> > > +	}
+> > > +}
+> > > +
+> > >  /**
+> > >   * pcpu_balance_workfn - manage the amount of free chunks and populated pages
+> > >   * @work: unused
+> > > @@ -2188,6 +2223,7 @@ void free_percpu(void __percpu *ptr)
+> > >  	int size, off;
+> > >  	bool need_balance = false;
+> > >  	struct list_head *pcpu_slot;
+> > > +	struct pcpu_chunk *pos;
+> > >  
+> > >  	if (!ptr)
+> > >  		return;
+> > > @@ -2207,15 +2243,36 @@ void free_percpu(void __percpu *ptr)
+> > >  
+> > >  	pcpu_memcg_free_hook(chunk, off, size);
+> > >  
+> > > -	/* if there are more than one fully free chunks, wake up grim reaper */
+> > >  	if (chunk->free_bytes == pcpu_unit_size) {
+> > > -		struct pcpu_chunk *pos;
+> > > -
+> > > +		/*
+> > > +		 * If there are more than one fully free chunks,
+> > > +		 * wake up grim reaper.
+> > > +		 */
+> > >  		list_for_each_entry(pos, &pcpu_slot[pcpu_nr_slots - 1], list)
+> > >  			if (pos != chunk) {
+> > >  				need_balance = true;
+> > >  				break;
+> > >  			}
+> > > +
+> > > +	} else if (chunk->nr_empty_pop_pages > chunk->nr_pages / 4) {
+> > 
+> > We should have this ignore the first and reserved chunks. While it
+> > shouldn't be possible in theory, it would be nice to just make it
+> > explicit here.
 > 
-> > There's a giant assumption above that I'm missing.  Are you expecting
-> > that vendors are actually going to keep up with submitting device IDs
-> > that they claim to have tested and support with vfio-pci and all other
-> > devices won't be allowed to bind?  That would single handedly destroy
-> > any non-enterprise use cases of vfio-pci.  
+> Ok, will do, makes sense to me!
 > 
-> Why not? They do it for the in-tree GPU drivers today! The ID table
-> for Intel GPU is even in a *header file* and we can just #include it
-> into vfio igd as well.
-
-Are you volunteering to maintain the vfio-pci-igd id_table, complete
-with the implicit expectation that those devices are known to work?
-Part of the disconnect we have here might be the intended level of
-support.  There's a Kconfig option around vfio igd support for more
-than one reason.
-
-I think you're looking for a significant inflection in vendor's stated
-support for vfio use cases, beyond the "best-effort, give it a try",
-that we currently have.  In some ways I look forward to that, so long
-as users can also use it as they do today (maybe not enterprise users).
-I sort of see imposing an id_table on igd support as trying to impose
-that "vendor condoned" use case before we actually have a vendor
-condoning it (or signing up to maintain an id table).
-
-> > So unless you want to do some bitkeeper archaeology, we've always
-> > allowed driver probes to fail and fall through to the next one, not
-> > even complaining with -ENODEV.  In practice it hasn't been an issue
-> > because how many drivers do you expect to have that would even try to
-> > claim a device.    
+> > 
+> > > +		/*
+> > > +		 * If there is more than one chunk in the slot and
+> > > +		 * at least 1/4 of its pages are empty, mark the chunk
+> > > +		 * as a target for the depopulation. If there is more
+> > > +		 * than one chunk like this, schedule an async balancing.
+> > > +		 */
+> > > +		int nslot = pcpu_chunk_slot(chunk);
+> > > +
+> > > +		list_for_each_entry(pos, &pcpu_slot[nslot], list)
+> > > +			if (pos != chunk && !chunk->depopulate &&
+> > > +			    !chunk->immutable) {
+> > > +				chunk->depopulate = true;
+> > > +				pcpu_nr_chunks_to_depopulate++;
+> > > +				break;
+> > > +			}
+> > > +
+> > > +		if (pcpu_nr_chunks_to_depopulate > 1)
+> > > +			need_balance = true;
+> > >  	}
+> > >  
+> > >  	trace_percpu_free_percpu(chunk->base_addr, off, ptr);
+> > > -- 
+> > > 2.30.2
+> > > 
+> > 
+> > Some questions I have:
+> > 1. How do we prevent unnecessary scanning for atomic allocations?
 > 
-> Do you know of anything using this ability? It might be helpful
-
-I don't.
-
-> > Ordering is only important when there's a catch-all so we need to
-> > figure out how to make that last among a class of drivers that will
-> > attempt to claim a device.  The softdep is a bit of a hack to do
-> > that, I'll admit, but I don't see how the alternate driver flavor
-> > universe solves having a catch-all either.  
+> Depopulated chunks tend to be at tail of the chunks lists in high(er) slots,
+> so they seem to be the last target for an atomic allocation, if there is
+> enough space in other chunks.
 > 
-> Haven't entirely got there yet, but I think the catch all probably has
-> to be handled by userspace udev/kmod in some way, as it is the only
-> thing that knows if there is a more specific module to load. This is
-> the biggest problem..
+
+I'm just not seeing a reason slot(PAGE_SIZE) can't have 2 chunks in it
+and get the second chunk gets depopulated.
+
+> > 2. Even in the normal case, should we try to pack future allocations
+> > into a smaller # of chunks in after depopulation?
 > 
-> And again, I feel this is all a big tangent, especially now that HCH
-> wants to delete the nvlink stuff we should just leave igd alone.
+> Well, there is one specific problem I'm trying to solve: if the percpu memory
+> is heavily inflated by something (e.g. by creating a ton of cgroups or bpf maps),
+> sometimes it's impossible to get the memory back at all, even if the absolute
+> majority of percpu objects was released. In this case there are many chunks
+> which are almost entirely empty, and the actual size of the needed percpu memory
+> is way less that the number of populated pages.
+> 
+> We can look at the percpu memory fragmentation as a more fundamental problem,
+> and probably the right thing to do long-term is to introduce some sort of a
+> slab allocator. At least, we can put small allocations (aka percpu reference
+> counters) into separate chunks. But this is obviously a way bigger change,
+> which unlikely can do into any stable branches, so I'd treat it separately.
+> Also, I'm not convinced that we really need it so much at the moment.
+> If the percpu usage is more or less stable, I don't see any pathological
+> fragmentation problem.
+> 
 
-Determining which things stay in vfio-pci-core and which things are
-split to variant drivers and how those variant drivers can match the
-devices they intend to support seems very inline with this series.  If
-igd stays as part of vfio-pci-core then I think we're drawing a
-parallel to z-pci support, where a significant part of that support is
-a set of extra data structures exposed through capabilities to support
-userspace use of the device.  Therefore extra regions or data
-structures through capabilities, where we're not changing device
-access, except as required for the platform (not the device) seem to be
-things that fit within the core, right?  Thanks,
+That makes sense. If we narrow the scope to reclaiming inflated usage,
+we could get rid of the 2 chunk in slot heuristic and scan up from
+slot(PAGE_SIZE), leaving a reasonable # of free pages,
+PCPU_EMPTY_POP_PAGES_LOW/HIGH, possibly just leaving those chunks
+untouched and then free anything else before the final slot which will
+be freed by the freeing path.
 
-Alex
+Thinking a little more about what you said earlier, they're basically
+new chunks, anything PAGE_SIZE and up shouldn't expect to find a home
+quickly.
 
+> > 3. What is the right frequency to do depopulation scanning? I think of
+> > the pcpu work item as a way to defer the 2 the freeing of chunks and in
+> > a way more immediately replenish free pages. Depopulation isn't
+> > necessarily as high a priority.
+> 
+> I think that the number of chunks which are potentially good for the
+> depopulation is a good metric. I've chosen 2 as a threshold, but I'm
+> fine with other ideas as well.
+> 
+
+We might need to untangle a few stats from global to per chunk_type.
+Thoughts? Having 1 chunk in each type isn't necessarily a bad thing, but
+having several 2+ is the problem?
+
+> Thank you!
