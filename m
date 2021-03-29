@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4227434D891
+	by mail.lfdr.de (Postfix) with ESMTP id B281934D892
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbhC2TrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
+        id S231770AbhC2TrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhC2Tq6 (ORCPT
+        with ESMTP id S231547AbhC2Tq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:46:58 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA69C061574;
+        Mon, 29 Mar 2021 15:46:59 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46A1C061756;
         Mon, 29 Mar 2021 12:46:58 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 184so17235900ljf.9;
-        Mon, 29 Mar 2021 12:46:57 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id u10so17280228lju.7;
+        Mon, 29 Mar 2021 12:46:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C4GHPpzkyHtlwelWWh2GVIiRpMBP8m1U6hjGVol+xG8=;
-        b=ViAeN+Bvgp8XqE3Jie/o+s3zn3NdCl4piicYQB4Jn7S13J4hWdrtdVcsXqgmiEvJ0G
-         infdcxHA8riGnPgxhoibZV0g+caLz2WqKFIU+0WLkLmv8EZRtS2R1wd5/YLi8CIWQd5R
-         pkRXm2vx6I+0xyd14aIo5kgQrYzbJoeK4kaSTPqf/zC/U/TOq1Dqu4PdXSDnAJ15QDJw
-         7hA9AkqWjHsBuSL2MNqKS7bWtYO0LozDhsFrswjYEAPhIVlXz7KudM0B4e22FSE0EHhn
-         V3tOVueOJtUtnLUVDcunTaSVmtak4IA8IFlQo7stQLbDHi7Rpx5tZbRquTRL19SwSpVT
-         N17g==
+        bh=U9m/vE1DNphlJsrYchwoexwhY0Aq5nAA6kFZ0qFRU/c=;
+        b=urDD6gw9VyK6JzSc7OkfGqU6GGBWbk7dG4CsL8sUd+aqLVPMrTYdkikyM/1bQFy77q
+         Cbdsi8/wSL4TqNEiIys7E7b6UQN1m36dKkjagcmU5ZIgrtrQcWP4DuZlnO8t/XBfLabF
+         Uj5Yto7RTKEBb0opkDe9vIFPY9grlf/jOu/Q7bkUp2CNjME7aAVWJBXg4WeI1BMR95E/
+         nSuveIkSw4Y+ajMHbqec2Y3lMJZW5xHjA3R+nuO7NflWUWLUpp31czn3R1Mgp8VZxf67
+         8BHCmi54OdwmBq6QY4ILah31OfOVMS+YiNXFyqY7/ow08+7QYocIOsSZmMcPpz+/opUp
+         LUQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C4GHPpzkyHtlwelWWh2GVIiRpMBP8m1U6hjGVol+xG8=;
-        b=Tdh0Fx0ZKwHVehzeutEecyz+eCOAUbp/SANQXHvBCPoenPxpqK9giVahSNLdR95K2X
-         fPGNa4qUq9qwzm+Cc5OBf5l3ccmCzgdT1rEhm3RYRFXtHwn2X6yiK0GTOoMft0WF2UG8
-         50zeIB+BDARXoOcrbH0tHpk+9Omhwn1k8i3G2ccRsVmyMLxCGBS+ZFp3mjUI4fcXRBPM
-         KL4hqyIZPTHKkDSd9+RhDJGTB+NvL1aygsRXnjxQFRSSS6Icm1y4ve7jOBcpk554s4Tu
-         ppvSTci++Hi04NZI5/RLHYXZR9oZpQA+SCGFuMNEdSnEOATcPw2W+1MOzOU08IfH3d80
-         Cvtw==
-X-Gm-Message-State: AOAM530mwmjnprtLWfcJKGE3MBjYLQPTqg76L/Ka9KqGmPnb5rOFQCDK
-        kOmZi+NNRHyt/rUa6VIKBWE=
-X-Google-Smtp-Source: ABdhPJzatMI4dwqZCfNHMPiPeR74Z1k3Oe9EznLkzfkoR84QROokFIXymhoyPDyFMdkXYIvdwo2K9A==
-X-Received: by 2002:a2e:8984:: with SMTP id c4mr18014883lji.456.1617047216606;
-        Mon, 29 Mar 2021 12:46:56 -0700 (PDT)
+        bh=U9m/vE1DNphlJsrYchwoexwhY0Aq5nAA6kFZ0qFRU/c=;
+        b=KJqPBTKhynYjU5vsI9QNwS/MUs57pelYVt4vx330iLoIvGTt31uaGb2TGf/qmzWzCU
+         lAb/hfESWaOmvib+sk4rZg8d9gxH7HD1KcYYYxtjMVP7jh4Ns3KwdH8hQMtnSo5gIdbz
+         5+9xObop7WpHg0j5vRqUdBm5DsSaPiUwyYObZVmKyhThuC1pleCqA/YmAQfqAre2yW+d
+         TUQLrWhs0ft1nukiZ5qIVX6FDpDdd/c6e7VnLd7MZCDtuFs+fSFAsBUO8vEjSCLXrbHo
+         w59Zb7mIGNvdKSEyr8hyTngyCXg/upBMP1YqgF8jYXTHHfYTvR4W+tafz3uNSVHjZPKL
+         Ec9Q==
+X-Gm-Message-State: AOAM530l0FLJpYg3te80iaRcvxaoZMalJur3PM2UAS6uO4boa/2JuojQ
+        02U8rFYF8vsOMSs8wlJ898g=
+X-Google-Smtp-Source: ABdhPJxEE3REID3XCkqHkD+RLcCPqrnLL9TrPskDPfrUNLQFTH4rc9Fl/wKimpYEH6vuqB+2wwn0gQ==
+X-Received: by 2002:a05:651c:d0:: with SMTP id 16mr18916830ljr.296.1617047217278;
+        Mon, 29 Mar 2021 12:46:57 -0700 (PDT)
 Received: from localhost.localdomain ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.gmail.com with ESMTPSA id p24sm1927693lfj.76.2021.03.29.12.46.55
+        by smtp.gmail.com with ESMTPSA id p24sm1927693lfj.76.2021.03.29.12.46.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:46:56 -0700 (PDT)
+        Mon, 29 Mar 2021 12:46:57 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -55,9 +55,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v1 2/6] dt-bindings: memory: tegra30: emc: Replace core regulator with power domain
-Date:   Mon, 29 Mar 2021 22:45:58 +0300
-Message-Id: <20210329194602.17049-3-digetx@gmail.com>
+Subject: [PATCH v1 3/6] dt-bindings: memory: tegra124: emc: Replace core regulator with power domain
+Date:   Mon, 29 Mar 2021 22:45:59 +0300
+Message-Id: <20210329194602.17049-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210329194602.17049-1-digetx@gmail.com>
 References: <20210329194602.17049-1-digetx@gmail.com>
@@ -75,16 +75,16 @@ regulator yet, and thus, it's okay to change it.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../bindings/memory-controllers/nvidia,tegra30-emc.yaml    | 7 ++++---
+ .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
-index 0a2e2c0d0fdd..4a2edb9b8bdc 100644
---- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-emc.yaml
-@@ -39,9 +39,10 @@ properties:
+diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+index 09bde65e1955..a7483547ccf8 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+@@ -37,9 +37,10 @@ properties:
      description:
-       Phandle of the Memory Controller node.
+       phandle of the memory controller node
  
 -  core-supply:
 +  power-domains:
@@ -95,7 +95,7 @@ index 0a2e2c0d0fdd..4a2edb9b8bdc 100644
  
    operating-points-v2:
      description:
-@@ -241,7 +242,7 @@ examples:
+@@ -370,7 +371,7 @@ examples:
  
          nvidia,memory-controller = <&mc>;
          operating-points-v2 = <&dvfs_opp_table>;
