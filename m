@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E965C34CC91
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8E334CB44
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhC2JEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35062 "EHLO mail.kernel.org"
+        id S235133AbhC2Ipq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233901AbhC2Ij6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:39:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0EB561581;
-        Mon, 29 Mar 2021 08:39:57 +0000 (UTC)
+        id S234076AbhC2I1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:27:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8491E619C3;
+        Mon, 29 Mar 2021 08:26:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007198;
-        bh=gwhNq8d4fSf+dDzRoH81xsU28DLGzEYLq+NJhnhdaBU=;
+        s=korg; t=1617006400;
+        bh=bIEDZuFsKuAvKMy90rwqNNGRjdBOBYGK8DrFVB9F2ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rVfPI8jm4aFHhAymvT07t2pmYHtPuw05aVAHr28mwIYqVRRNX58AxRgt8O5xD9Jbn
-         8QByaxtMwZidMHJGtuYAIre2H3MbHc1aOOcY3nJD8UmlGRZhzH6s/6gAF1IHhROnAS
-         9idw1X7JX4bbqUzoGTac/t2rjF29XQQpRWQJ3OGk=
+        b=Xv5FHkXbBLh9leh7Gj448grA1Tg2UDk53AD14Pl9iZWtZ4xgeD9DklOxGAJYj5Y+m
+         r+yCd2+ldefjezFyBzQLKxSV0PVPBrCBxd97p3om0Qqcn2TxWqT0x5CwaxbrfDUovJ
+         I8rMyn0Ne94JESlrZphNmy64RRIi0L0+f59tVV0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 234/254] io_uring: fix provide_buffers sign extension
-Date:   Mon, 29 Mar 2021 09:59:10 +0200
-Message-Id: <20210329075640.778664444@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 220/221] nvme: fix the nsid value to print in nvme_validate_or_alloc_ns
+Date:   Mon, 29 Mar 2021 09:59:11 +0200
+Message-Id: <20210329075636.478418211@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit d81269fecb8ce16eb07efafc9ff5520b2a31c486 ]
+commit f4f9fc29e56b6fa9d7fa65ec51d3c82aff99c99b upstream.
 
-io_provide_buffers_prep()'s "p->len * p->nbufs" to sign extension
-problems. Not a huge problem as it's only used for access_ok() and
-increases the checked length, but better to keep typing right.
+ns can be NULL at this point, and my move of the check from
+the original patch by Chaitanya broke this.
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: efe68c1ca8f49 ("io_uring: validate the full range of provided buffers for access")
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/562376a39509e260d8532186a06226e56eb1f594.1616149233.git.asml.silence@gmail.com
+Fixes: 0ec84df4953b ("nvme-core: check ctrl css before setting up zns")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index c3cfaa367138..5c4378694d54 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4214,6 +4214,7 @@ static int io_remove_buffers(struct io_kiocb *req, bool force_nonblock,
- static int io_provide_buffers_prep(struct io_kiocb *req,
- 				   const struct io_uring_sqe *sqe)
- {
-+	unsigned long size;
- 	struct io_provide_buf *p = &req->pbuf;
- 	u64 tmp;
- 
-@@ -4227,7 +4228,8 @@ static int io_provide_buffers_prep(struct io_kiocb *req,
- 	p->addr = READ_ONCE(sqe->addr);
- 	p->len = READ_ONCE(sqe->len);
- 
--	if (!access_ok(u64_to_user_ptr(p->addr), (p->len * p->nbufs)))
-+	size = (unsigned long)p->len * p->nbufs;
-+	if (!access_ok(u64_to_user_ptr(p->addr), size))
- 		return -EFAULT;
- 
- 	p->bgid = READ_ONCE(sqe->buf_group);
--- 
-2.30.1
-
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -4022,7 +4022,7 @@ static void nvme_validate_or_alloc_ns(st
+ 		if (!nvme_multi_css(ctrl)) {
+ 			dev_warn(ctrl->device,
+ 				"command set not reported for nsid: %d\n",
+-				ns->head->ns_id);
++				nsid);
+ 			break;
+ 		}
+ 		nvme_alloc_ns(ctrl, nsid, &ids);
 
 
