@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D7734C59F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F8F34CB0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhC2IBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:01:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42860 "EHLO mail.kernel.org"
+        id S235455AbhC2Imz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231656AbhC2IBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8647561969;
-        Mon, 29 Mar 2021 08:01:05 +0000 (UTC)
+        id S232520AbhC2IYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FB61619A7;
+        Mon, 29 Mar 2021 08:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004866;
-        bh=PfTHpepgMCNroHpt7zCW0QLcTAnxOqosylPN543hJdI=;
+        s=korg; t=1617006279;
+        bh=CPoIX7dP6d66bbp56DcfdrUV7Uqa+Xop0lvyNuYwMPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WxMIEvZ5TnSLeZez/8AVvvp2Yx7vTPyHho5f6att6Ch2hSBXJ0USquVGK2n7hW88w
-         J0Dw0r/23gfbFDS0BspSzQhM3i/1GIT9jIS3r7uc7ghxmqvurzsCiFvzTSHpfXv6jM
-         yHgY0AnSUr4Ek29jYs5pQjwlGRN6FpwD1pBtns7I=
+        b=oHlXGXeZReaD2cHzpuXqCDRvRqSkNWYVwv7kzCILA6TiFhH5hS+bAIGicl9fOKMfH
+         BJp6OziJiQvUBIwsWCaiC4HbZBB6X73CR7upXQxuiHvti/Z1grQdaDF/a2wo8ccTEI
+         2oNugHZ3XwViQ4/MFZM0sDsRk1GiBZmSmevysuWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 04/33] atm: lanai: dont run lanai_dev_close if not open
+Subject: [PATCH 5.10 138/221] nfp: flower: fix pre_tun mask id allocation
 Date:   Mon, 29 Mar 2021 09:57:49 +0200
-Message-Id: <20210329075605.426610201@linuxfoundation.org>
+Message-Id: <20210329075633.783557681@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,145 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-[ Upstream commit a2bd45834e83d6c5a04d397bde13d744a4812dfc ]
+[ Upstream commit d8ce0275e45ec809a33f98fc080fe7921b720dfb ]
 
-lanai_dev_open() can fail. When it fail, lanai->base is unmapped and the
-pci device is disabled. The caller, lanai_init_one(), then tries to run
-atm_dev_deregister(). This will subsequently call lanai_dev_close() and
-use the already released MMIO area.
+pre_tun_rule flows does not follow the usual add-flow path, instead
+they are used to update the pre_tun table on the firmware. This means
+that if the mask-id gets allocated here the firmware will never see the
+"NFP_FL_META_FLAG_MANAGE_MASK" flag for the specific mask id, which
+triggers the allocation on the firmware side. This leads to the firmware
+mask being corrupted and causing all sorts of strange behaviour.
 
-To fix this issue, set the lanai->base to NULL if open fail,
-and test the flag in lanai_dev_close().
-
-[    8.324153] lanai: lanai_start() failed, err=19
-[    8.324819] lanai(itf 0): shutting down interface
-[    8.325211] BUG: unable to handle page fault for address: ffffc90000180024
-[    8.325781] #PF: supervisor write access in kernel mode
-[    8.326215] #PF: error_code(0x0002) - not-present page
-[    8.326641] PGD 100000067 P4D 100000067 PUD 100139067 PMD 10013a067 PTE 0
-[    8.327206] Oops: 0002 [#1] SMP KASAN NOPTI
-[    8.327557] CPU: 0 PID: 95 Comm: modprobe Not tainted 5.11.0-rc7-00090-gdcc0b49040c7 #12
-[    8.328229] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-4
-[    8.329145] RIP: 0010:lanai_dev_close+0x4f/0xe5 [lanai]
-[    8.329587] Code: 00 48 c7 c7 00 d3 01 c0 e8 49 4e 0a c2 48 8d bd 08 02 00 00 e8 6e 52 14 c1 48 80
-[    8.330917] RSP: 0018:ffff8881029ef680 EFLAGS: 00010246
-[    8.331196] RAX: 000000000003fffe RBX: ffff888102fb4800 RCX: ffffffffc001a98a
-[    8.331572] RDX: ffffc90000180000 RSI: 0000000000000246 RDI: ffff888102fb4000
-[    8.331948] RBP: ffff888102fb4000 R08: ffffffff8115da8a R09: ffffed102053deaa
-[    8.332326] R10: 0000000000000003 R11: ffffed102053dea9 R12: ffff888102fb48a4
-[    8.332701] R13: ffffffffc00123c0 R14: ffff888102fb4b90 R15: ffff888102fb4b88
-[    8.333077] FS:  00007f08eb9056a0(0000) GS:ffff88815b400000(0000) knlGS:0000000000000000
-[    8.333502] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    8.333806] CR2: ffffc90000180024 CR3: 0000000102a28000 CR4: 00000000000006f0
-[    8.334182] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    8.334557] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    8.334932] Call Trace:
-[    8.335066]  atm_dev_deregister+0x161/0x1a0 [atm]
-[    8.335324]  lanai_init_one.cold+0x20c/0x96d [lanai]
-[    8.335594]  ? lanai_send+0x2a0/0x2a0 [lanai]
-[    8.335831]  local_pci_probe+0x6f/0xb0
-[    8.336039]  pci_device_probe+0x171/0x240
-[    8.336255]  ? pci_device_remove+0xe0/0xe0
-[    8.336475]  ? kernfs_create_link+0xb6/0x110
-[    8.336704]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
-[    8.336983]  really_probe+0x161/0x420
-[    8.337181]  driver_probe_device+0x6d/0xd0
-[    8.337401]  device_driver_attach+0x82/0x90
-[    8.337626]  ? device_driver_attach+0x90/0x90
-[    8.337859]  __driver_attach+0x60/0x100
-[    8.338065]  ? device_driver_attach+0x90/0x90
-[    8.338298]  bus_for_each_dev+0xe1/0x140
-[    8.338511]  ? subsys_dev_iter_exit+0x10/0x10
-[    8.338745]  ? klist_node_init+0x61/0x80
-[    8.338956]  bus_add_driver+0x254/0x2a0
-[    8.339164]  driver_register+0xd3/0x150
-[    8.339370]  ? 0xffffffffc0028000
-[    8.339550]  do_one_initcall+0x84/0x250
-[    8.339755]  ? trace_event_raw_event_initcall_finish+0x150/0x150
-[    8.340076]  ? free_vmap_area_noflush+0x1a5/0x5c0
-[    8.340329]  ? unpoison_range+0xf/0x30
-[    8.340532]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
-[    8.340806]  ? unpoison_range+0xf/0x30
-[    8.341014]  ? unpoison_range+0xf/0x30
-[    8.341217]  do_init_module+0xf8/0x350
-[    8.341419]  load_module+0x3fe6/0x4340
-[    8.341621]  ? vm_unmap_ram+0x1d0/0x1d0
-[    8.341826]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
-[    8.342101]  ? module_frob_arch_sections+0x20/0x20
-[    8.342358]  ? __do_sys_finit_module+0x108/0x170
-[    8.342604]  __do_sys_finit_module+0x108/0x170
-[    8.342841]  ? __ia32_sys_init_module+0x40/0x40
-[    8.343083]  ? file_open_root+0x200/0x200
-[    8.343298]  ? do_sys_open+0x85/0xe0
-[    8.343491]  ? filp_open+0x50/0x50
-[    8.343675]  ? exit_to_user_mode_prepare+0xfc/0x130
-[    8.343935]  do_syscall_64+0x33/0x40
-[    8.344132]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[    8.344401] RIP: 0033:0x7f08eb887cf7
-[    8.344594] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 41
-[    8.345565] RSP: 002b:00007ffcd5c98ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[    8.345962] RAX: ffffffffffffffda RBX: 00000000008fea70 RCX: 00007f08eb887cf7
-[    8.346336] RDX: 0000000000000000 RSI: 00000000008fd9e0 RDI: 0000000000000003
-[    8.346711] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
-[    8.347085] R10: 00007f08eb8eb300 R11: 0000000000000246 R12: 00000000008fd9e0
-[    8.347460] R13: 0000000000000000 R14: 00000000008fddd0 R15: 0000000000000001
-[    8.347836] Modules linked in: lanai(+) atm
-[    8.348065] CR2: ffffc90000180024
-[    8.348244] ---[ end trace 7fdc1c668f2003e5 ]---
-[    8.348490] RIP: 0010:lanai_dev_close+0x4f/0xe5 [lanai]
-[    8.348772] Code: 00 48 c7 c7 00 d3 01 c0 e8 49 4e 0a c2 48 8d bd 08 02 00 00 e8 6e 52 14 c1 48 80
-[    8.349745] RSP: 0018:ffff8881029ef680 EFLAGS: 00010246
-[    8.350022] RAX: 000000000003fffe RBX: ffff888102fb4800 RCX: ffffffffc001a98a
-[    8.350397] RDX: ffffc90000180000 RSI: 0000000000000246 RDI: ffff888102fb4000
-[    8.350772] RBP: ffff888102fb4000 R08: ffffffff8115da8a R09: ffffed102053deaa
-[    8.351151] R10: 0000000000000003 R11: ffffed102053dea9 R12: ffff888102fb48a4
-[    8.351525] R13: ffffffffc00123c0 R14: ffff888102fb4b90 R15: ffff888102fb4b88
-[    8.351918] FS:  00007f08eb9056a0(0000) GS:ffff88815b400000(0000) knlGS:0000000000000000
-[    8.352343] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    8.352647] CR2: ffffc90000180024 CR3: 0000000102a28000 CR4: 00000000000006f0
-[    8.353022] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    8.353397] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    8.353958] modprobe (95) used greatest stack depth: 26216 bytes left
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Fixes: f12725d98cbe ("nfp: flower: offload pre-tunnel rules")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/lanai.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../ethernet/netronome/nfp/flower/metadata.c  | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/atm/lanai.c b/drivers/atm/lanai.c
-index ce43ae3e87b3..3002b1177005 100644
---- a/drivers/atm/lanai.c
-+++ b/drivers/atm/lanai.c
-@@ -2239,6 +2239,7 @@ static int lanai_dev_open(struct atm_dev *atmdev)
- 	conf1_write(lanai);
- #endif
- 	iounmap(lanai->base);
-+	lanai->base = NULL;
-     error_pci:
- 	pci_disable_device(lanai->pci);
-     error:
-@@ -2251,6 +2252,8 @@ static int lanai_dev_open(struct atm_dev *atmdev)
- static void lanai_dev_close(struct atm_dev *atmdev)
- {
- 	struct lanai_dev *lanai = (struct lanai_dev *) atmdev->dev_data;
-+	if (lanai->base==NULL)
-+		return;
- 	printk(KERN_INFO DEV_LABEL "(itf %d): shutting down interface\n",
- 	    lanai->number);
- 	lanai_timed_poll_stop(lanai);
-@@ -2560,7 +2563,7 @@ static int lanai_init_one(struct pci_dev *pci,
- 	struct atm_dev *atmdev;
- 	int result;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/metadata.c b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+index 5defd31d481c..aa06fcb38f8b 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/metadata.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+@@ -327,8 +327,14 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 		goto err_free_ctx_entry;
+ 	}
  
--	lanai = kmalloc(sizeof(*lanai), GFP_KERNEL);
-+	lanai = kzalloc(sizeof(*lanai), GFP_KERNEL);
- 	if (lanai == NULL) {
- 		printk(KERN_ERR DEV_LABEL
- 		       ": couldn't allocate dev_data structure!\n");
++	/* Do net allocate a mask-id for pre_tun_rules. These flows are used to
++	 * configure the pre_tun table and are never actually send to the
++	 * firmware as an add-flow message. This causes the mask-id allocation
++	 * on the firmware to get out of sync if allocated here.
++	 */
+ 	new_mask_id = 0;
+-	if (!nfp_check_mask_add(app, nfp_flow->mask_data,
++	if (!nfp_flow->pre_tun_rule.dev &&
++	    !nfp_check_mask_add(app, nfp_flow->mask_data,
+ 				nfp_flow->meta.mask_len,
+ 				&nfp_flow->meta.flags, &new_mask_id)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot allocate a new mask id");
+@@ -359,7 +365,8 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 			goto err_remove_mask;
+ 		}
+ 
+-		if (!nfp_check_mask_remove(app, nfp_flow->mask_data,
++		if (!nfp_flow->pre_tun_rule.dev &&
++		    !nfp_check_mask_remove(app, nfp_flow->mask_data,
+ 					   nfp_flow->meta.mask_len,
+ 					   NULL, &new_mask_id)) {
+ 			NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot release mask id");
+@@ -374,8 +381,10 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 	return 0;
+ 
+ err_remove_mask:
+-	nfp_check_mask_remove(app, nfp_flow->mask_data, nfp_flow->meta.mask_len,
+-			      NULL, &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len,
++				      NULL, &new_mask_id);
+ err_remove_rhash:
+ 	WARN_ON_ONCE(rhashtable_remove_fast(&priv->stats_ctx_table,
+ 					    &ctx_entry->ht_node,
+@@ -406,9 +415,10 @@ int nfp_modify_flow_metadata(struct nfp_app *app,
+ 
+ 	__nfp_modify_flow_metadata(priv, nfp_flow);
+ 
+-	nfp_check_mask_remove(app, nfp_flow->mask_data,
+-			      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
+-			      &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
++				      &new_mask_id);
+ 
+ 	/* Update flow payload with mask ids. */
+ 	nfp_flow->unmasked_data[NFP_FL_MASK_ID_LOCATION] = new_mask_id;
 -- 
 2.30.1
 
