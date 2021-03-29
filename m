@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A6834D72A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D8034D703
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhC2SaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
+        id S231472AbhC2SZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhC2SaL (ORCPT
+        with ESMTP id S231308AbhC2SZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:30:11 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D950C061574;
-        Mon, 29 Mar 2021 11:30:09 -0700 (PDT)
+        Mon, 29 Mar 2021 14:25:32 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6C0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:25:31 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 184so16979739ljf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:25:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=MgvKzE3RWjWapRps+L/qSm8ZaZUnOBtKKG
-        ClBE5IhG0=; b=kroUk+J7j5wAL6f/z9Gvunn7IwgHTeE3rm6zSDEn51PQbACmPX
-        c4lshJok42Rb+iy8E/mc0tndtDJTyN//FL2Cfws+zA3eU/tC+xDDyJM8Q040nLbe
-        8fBY3uTLQhnFTq3PbcYhQYKEOlj6XOk1x3ey7T+Ok8m+FzXby+c4XMowI=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzk6eHGJgFvZpAA--.41814S2;
-        Tue, 30 Mar 2021 02:29:50 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:24:54 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 6/9] riscv: bpf: Move bpf_jit_alloc_exec() and
- bpf_jit_free_exec() to core
-Message-ID: <20210330022454.3d0feda2@xhacker>
-In-Reply-To: <20210330022144.150edc6e@xhacker>
-References: <20210330022144.150edc6e@xhacker>
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2dpHV13oSemjijajiv2fnI7bbtHFM2HWjOqGuAvrI7Q=;
+        b=fwE8UUsPQ4os/YO4GSbNy23LUIYQF9jlM57K/WfrhzNXebaNAy/zwy15UyW3Z/K3eW
+         cuLMd4xTn9HHeprw7/7qG+tLyPjEdz9V2mF9nlQ+0iC5IXigwvQpPkNvLtsgL8LYlKhl
+         HI8+UVUXChW4xU0VJ1a7ocPGAKPhDZV67JthPVhOXAmEVJi39bbHDaXzDXMVw0a3/e3N
+         igI/2F3vrQHD6uZG4tgTO8Oz2jhMEF+RzGeXfA28ujli/zIFJsncciPrPedE8CGs7tsf
+         RpgV7sjqXIl815z2oLP7kiorspOg6StAXkknvbjY7H6h5XohOoOW29lfjG12a58RuGC7
+         rxyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2dpHV13oSemjijajiv2fnI7bbtHFM2HWjOqGuAvrI7Q=;
+        b=VvJgHjUU9fzeuKD5gS3blV5ADLibKFwhBtDsbSD1zDWmf9VboNB4F036WvvZEMz3WR
+         UOREhzS4FVUwNWTLCmZAnBOlbo2//Ql7MxlR0C0uJ3ORnP3miHywUMqeH+QUq1C1DFJN
+         cfwE80uibrN9S7AAsYHy+uPdQPMkgwMyYrLTWpwUJgnGI5fy3IzDbox9HV0z3K/JZnTy
+         UHktK0DZ+rQ9Zfzk+o/cU8CZlEL1VSIZljfSQ5ydkMGueC2HocQxSn+NeDKXqeVly/3w
+         vjkVF61ewDT6/AMTDmOmssmjI5h+n2gotEGdA9RYzrmtLnnvkBlQoEG5/gYCGXe/R72x
+         LCKg==
+X-Gm-Message-State: AOAM532IZM3Y/BAQ//bQVDgVRZXmP57B24/S08Ar8wFZ/C4d6OFI487q
+        RacSQDeY62yn4NLvf2p7+9hpCCqgz3JedzmxQE+pTw==
+X-Google-Smtp-Source: ABdhPJxLC6IdXQWzkZo/5A1dFmvrH0DLUo4gNisGLZ/wV81vO8siyCZjD0Bnbd0b8+qDkXOGIJTY8bC8QhyW3wCmURc=
+X-Received: by 2002:a2e:5716:: with SMTP id l22mr18680924ljb.244.1617042330190;
+ Mon, 29 Mar 2021 11:25:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDHzk6eHGJgFvZpAA--.41814S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyftry5KF1fXw4fuw1kAFb_yoW8Cr1UpF
-        s7Cr13ArWvqw1xGryftay7WF1Yyrs5Wa1xWFWUuayrAanIqFW7Zw15Gw15XrZ8ZFyjgayF
-        krWYkr93Cw1kZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr
-        0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8tKsU
-        UUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <20210322115531.3987555-1-arnd@kernel.org>
+In-Reply-To: <20210322115531.3987555-1-arnd@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 29 Mar 2021 11:25:19 -0700
+Message-ID: <CAKwvOdmNUkS0Hh_9-kvcDoK-UTUOV8hXsQx-R2o_T02fxMhFLQ@mail.gmail.com>
+Subject: Re: [PATCH] lockdep: address clang -Wformat warning printing for %hd
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Mon, Mar 22, 2021 at 4:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Clang doesn't like format strings that truncate a 32-bit
+> value to something shorter:
+>
+> kernel/locking/lockdep.c:709:4: error: format specifies type 'short' but the argument has type 'int' [-Werror,-Wformat]
+>
+> In this case, the warning is a slightly questionable, as it could realize
+> that both class->wait_type_outer and class->wait_type_inner are in fact
+> 8-bit struct members, even though the result of the ?: operator becomes an
+> 'int'.
+>
+> However, there is really no point in printing the number as a 16-bit
+> 'short' rather than either an 8-bit or 32-bit number, so just change
+> it to a normal %d.
 
-We will drop the executable permissions of the code pages from the
-mapping at allocation time soon. Move bpf_jit_alloc_exec() and
-bpf_jit_free_exec() to bpf_jit_core.c so that they can be shared by
-both RV64I and RV32I.
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/net/bpf_jit_comp64.c | 13 -------------
- arch/riscv/net/bpf_jit_core.c   | 13 +++++++++++++
- 2 files changed, 13 insertions(+), 13 deletions(-)
+>
+> Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  kernel/locking/lockdep.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 70bf3e48eae3..bb3b0bc6ee17 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -705,7 +705,7 @@ static void print_lock_name(struct lock_class *class)
+>
+>         printk(KERN_CONT " (");
+>         __print_lock_name(class);
+> -       printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
+> +       printk(KERN_CONT "){%s}-{%d:%d}", usage,
+>                         class->wait_type_outer ?: class->wait_type_inner,
+>                         class->wait_type_inner);
+>  }
+> --
+> 2.29.2
+>
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index b44ff52f84a6..87e3bf5b9086 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1148,16 +1148,3 @@ void bpf_jit_build_epilogue(struct rv_jit_context *ctx)
- {
- 	__build_epilogue(false, ctx);
- }
--
--void *bpf_jit_alloc_exec(unsigned long size)
--{
--	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
--				    BPF_JIT_REGION_END, GFP_KERNEL,
--				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
--				    __builtin_return_address(0));
--}
--
--void bpf_jit_free_exec(void *addr)
--{
--	return vfree(addr);
--}
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index 3630d447352c..d8da819290b7 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -164,3 +164,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 					   tmp : orig_prog);
- 	return prog;
- }
-+
-+void *bpf_jit_alloc_exec(unsigned long size)
-+{
-+	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
-+				    BPF_JIT_REGION_END, GFP_KERNEL,
-+				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
-+				    __builtin_return_address(0));
-+}
-+
-+void bpf_jit_free_exec(void *addr)
-+{
-+	return vfree(addr);
-+}
+
 -- 
-2.31.0
-
-
+Thanks,
+~Nick Desaulniers
