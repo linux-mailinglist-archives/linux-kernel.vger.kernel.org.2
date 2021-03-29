@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8991A34CBDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A034CBDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhC2Ixv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
+        id S236529AbhC2Ixt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhC2Iet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:34:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3552619C4;
-        Mon, 29 Mar 2021 08:34:47 +0000 (UTC)
+        id S234203AbhC2Iev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 665AF61929;
+        Mon, 29 Mar 2021 08:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006888;
-        bh=Ub2kdMwNXi3brJbLP5F1N8eiE0AWvwvsQkRInf7Uy6Q=;
+        s=korg; t=1617006890;
+        bh=e53U7nlaCOALcoWHSz0ckvm1wTTWN1D9h3L20DQAsZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SgBe062QG8W5vx3MVANfyrwYXYi5UNNY7Wjty8B2vbKvob9EGKeqfWxGpidEvNJ2Y
-         o9543EsrirwijtDiH/XgVI5TAIlQuEkWLkyEU9FqJziaL0XqCUtay+seV8vwajcgZx
-         GeZwYiik7K7Hy14Wn7TpIYz5ukrprMKPRIrCC27M=
+        b=SbDejb4QLR8aBMp4TQw2jTrWZ86rYXEYpnvnSZLaY57R1gCNNCvppnLY10Z6r9tFS
+         LvWYqpuGhhZBTZkKNsETLWjSc2EkzoKsxCGaYxi36tas98TvhGqMt9pUr8j7J6ZmE1
+         yrq7U2N70bCPIT1VFzjWJDw4181lDbLXd4fJy/ek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        William Tu <u9012063@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 139/254] flow_dissector: fix byteorder of dissected ICMP ID
-Date:   Mon, 29 Mar 2021 09:57:35 +0200
-Message-Id: <20210329075637.787588432@linuxfoundation.org>
+Subject: [PATCH 5.11 140/254] selftests/bpf: Set gopt opt_class to 0 if get tunnel opt failed
+Date:   Mon, 29 Mar 2021 09:57:36 +0200
+Message-Id: <20210329075637.817894774@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -40,40 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit a25f822285420486f5da434efc8d940d42a83bce ]
+[ Upstream commit 31254dc9566221429d2cfb45fd5737985d70f2b6 ]
 
-flow_dissector_key_icmp::id is of type u16 (CPU byteorder),
-ICMP header has its ID field in network byteorder obviously.
-Sparse says:
+When fixing the bpf test_tunnel.sh geneve failure. I only fixed the IPv4
+part but forgot the IPv6 issue. Similar with the IPv4 fixes 557c223b643a
+("selftests/bpf: No need to drop the packet when there is no geneve opt"),
+when there is no tunnel option and bpf_skb_get_tunnel_opt() returns error,
+there is no need to drop the packets and break all geneve rx traffic.
+Just set opt_class to 0 and keep returning TC_ACT_OK at the end.
 
-net/core/flow_dissector.c:178:43: warning: restricted __be16 degrades to integer
-
-Convert ID value to CPU byteorder when storing it into
-flow_dissector_key_icmp.
-
-Fixes: 5dec597e5cd0 ("flow_dissector: extract more ICMP information")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 557c223b643a ("selftests/bpf: No need to drop the packet when there is no geneve opt")
+Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: William Tu <u9012063@gmail.com>
+Link: https://lore.kernel.org/bpf/20210309032214.2112438-1-liuhangbin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/flow_dissector.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 6f1adba6695f..7a06d4301617 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -175,7 +175,7 @@ void skb_flow_get_icmp_tci(const struct sk_buff *skb,
- 	 * avoid confusion with packets without such field
- 	 */
- 	if (icmp_has_id(ih->type))
--		key_icmp->id = ih->un.echo.id ? : 1;
-+		key_icmp->id = ih->un.echo.id ? ntohs(ih->un.echo.id) : 1;
- 	else
- 		key_icmp->id = 0;
- }
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index 9afe947cfae9..ba6eadfec565 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -508,10 +508,8 @@ int _ip6geneve_get_tunnel(struct __sk_buff *skb)
+ 	}
+ 
+ 	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
+-	if (ret < 0) {
+-		ERROR(ret);
+-		return TC_ACT_SHOT;
+-	}
++	if (ret < 0)
++		gopt.opt_class = 0;
+ 
+ 	bpf_trace_printk(fmt, sizeof(fmt),
+ 			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
 -- 
 2.30.1
 
