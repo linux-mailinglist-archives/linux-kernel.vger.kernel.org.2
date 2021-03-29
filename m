@@ -2,89 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC9534CCD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E7534CCDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235865AbhC2JRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:17:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235556AbhC2JQ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:16:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617009417;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NsTc/rI6/f3S2ghXI9Jzm7PWhr+5ThOqryu9f5h0Vn4=;
-        b=MqebJ3RnmgaAkkrqb1AtHrAvFbHH/1NeTZgDSwRkv9HST6EYL59z91zKgZglqHeAZ84C+Q
-        IErHLrrDQD13wyxgfSFhKfxZuCWRKW1mCptqdyAwiHSWUpvHqF6R6O2bsUiIhnBAet37GN
-        MryhLW5V5jMvJfv2i8JkWB8hRqqn2Ws=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-yjKmxqHONWOAaE4qGGHfHg-1; Mon, 29 Mar 2021 05:16:53 -0400
-X-MC-Unique: yjKmxqHONWOAaE4qGGHfHg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08744801814;
-        Mon, 29 Mar 2021 09:16:52 +0000 (UTC)
-Received: from localhost (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D94496E707;
-        Mon, 29 Mar 2021 09:16:49 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 11:16:48 +0200
-From:   Miroslav Lichvar <mlichvar@redhat.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Daphne Preston-Kendall <dpk@nonceword.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an
- error when TAI has not been configured
-Message-ID: <YGGbAIoCKDbZLQQ0@localhost>
-References: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
- <20210327032859.GA3168@hoboy.vegasvil.org>
+        id S231759AbhC2JRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:17:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231475AbhC2JR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:17:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 860C4B3C6;
+        Mon, 29 Mar 2021 09:17:28 +0000 (UTC)
+Subject: Re: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@linux.ie, tommy_huang@aspeedtech.com,
+        jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+        arc_sung@aspeedtech.com
+References: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
+ <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <b0e960ee-b987-69f7-13fd-0270c347ad5e@suse.de>
+Date:   Mon, 29 Mar 2021 11:17:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210327032859.GA3168@hoboy.vegasvil.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="yk9xlNx6TU4Iu7vesAK8wsRioi6pXzEAq"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 08:28:59PM -0700, Richard Cochran wrote:
-> Using ntpd on Debian, the service will set the offset, but only after
-> synchronization with the upstream server has been established, and
-> this takes about five minutes, IIRC.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--yk9xlNx6TU4Iu7vesAK8wsRioi6pXzEAq
+Content-Type: multipart/mixed; boundary="msd3iyUwJkOq6UTHwOp6BWT39SVHcClwd";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@linux.ie, tommy_huang@aspeedtech.com, jenmin_yuan@aspeedtech.com,
+ airlied@redhat.com, arc_sung@aspeedtech.com
+Message-ID: <b0e960ee-b987-69f7-13fd-0270c347ad5e@suse.de>
+Subject: Re: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
+References: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
+ <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
 
-With the iburst option it shouldn't take more than 10 seconds. There
-might be an issue wrt stepping the clock when the initial offset is
-large. In Fedora and derived distros using chrony by default the
-TAI-UTC offset should be set right on the first update of the clock as
-expected.
+--msd3iyUwJkOq6UTHwOp6BWT39SVHcClwd
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> Getting back to the original point of the kernel returning an error,
-> I don't see a need for this.  Applications that require correct leap
-> seconds can simply call adjtimex() and wait until the initial zero
-> value is changed by ntpd/etc to the correct offset.  That isn't
-> fundamentally harder than calling clock_gettime() and waiting until
-> the error would go away.
+Hi,
 
-There are at least two issues with handling a zero offset as a special
-value. One is that zero could potentially be a valid value in distant
-future. The other is that the kernel updates the offset when a leap
-second is inserted/deleted even if the original offset is zero, so
-checking for zero (in the kernel or an application) works only until
-the first leap second after boot.
+I cannot apply this patch. The error is shown below. Which tree do you=20
+use? Can you please move to drm-misc-next?
 
-The kernel would need to set a flag that the offset was set. Returning
-an error in clock_gettime() until the offset is set sounds reasonable
-to me, but I have no idea how many of the existing applications it
-would break.
+Applying: drm/ast: Disable fast reset after DRAM initial
+error: sha1 information is lacking or useless=20
+(drivers/gpu/drm/ast/ast_drv.h).
+error: could not build fake ancestor
+Patch failed at 0001 drm/ast: Disable fast reset after DRAM initial
+hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+dim: ERROR: git apply-mbox failed
 
--- 
-Miroslav Lichvar
+Best regards
+Thomas
 
+
+Am 19.03.21 um 10:23 schrieb KuoHsiang Chou:
+> [Bug][AST2500]
+>=20
+> V1:
+> When AST2500 acts as stand-alone VGA so that DRAM and DVO initializatio=
+n
+> have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+> However, HW suggests disable Fast reset mode after DRAM initializaton,
+> because fast reset mode is mainly designed for ARM ICE debugger.
+> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be=
+
+> first enabled to avoid system deadlock before disable fast reset mode.
+>=20
+> V2:
+> Use to_pci_dev() to get revision of PCI configuration.
+>=20
+> V3:
+> If SCU00 is not unlocked, just enter its password again.
+> It is unnecessary to clear AHB lock condition and restore WDT default
+> setting again, before Fast-reset clearing.
+>=20
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> ---
+>   drivers/gpu/drm/ast/ast_drv.h  |  1 +
+>   drivers/gpu/drm/ast/ast_main.c |  5 +++
+>   drivers/gpu/drm/ast/ast_post.c | 68 +++++++++++++++++++++------------=
+-
+>   3 files changed, 48 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
+v.h
+> index da6dfb677540..a2cf5fef2399 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+>   void ast_post_gpu(struct drm_device *dev);
+>   u32 ast_mindwm(struct ast_private *ast, u32 r);
+>   void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
+> +void ast_patch_ahb_2500(struct ast_private *ast);
+>   /* ast dp501 */
+>   void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+>   bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
+ain.c
+> index 3775fe26f792..0e4dfcc25623 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device =
+*dev, u32 *scu_rev)
+>   {
+>   	struct device_node *np =3D dev->pdev->dev.of_node;
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> +	struct pci_dev *pdev =3D to_pci_dev(dev->dev);
+>   	uint32_t data, jregd0, jregd1;
+>=20
+>   	/* Defaults */
+> @@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device=
+ *dev, u32 *scu_rev)
+>   	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff)=
+;
+>   	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff)=
+;
+>   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+> +		/* Patch AST2500 */
+> +		if (((pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=3D=
+ 0))
+> +			ast_patch_ahb_2500(ast);
+> +
+>   		/* Double check it's actually working */
+>   		data =3D ast_read32(ast, 0xf004);
+>   		if (data !=3D 0xFFFFFFFF) {
+> diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_p=
+ost.c
+> index 8902c2f84bf9..4f194c5fd2c2 100644
+> --- a/drivers/gpu/drm/ast/ast_post.c
+> +++ b/drivers/gpu/drm/ast/ast_post.c
+> @@ -2026,6 +2026,30 @@ static bool ast_dram_init_2500(struct ast_privat=
+e *ast)
+>   	return true;
+>   }
+>=20
+> +void ast_patch_ahb_2500(struct ast_private *ast)
+> +{
+> +	u32	data;
+> +
+> +	/* Clear bus lock condition */
+> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	data =3D ast_mindwm(ast, 0x1e6e2070);
+> +	if (data & 0x08000000) {					/* check fast reset */
+> +
+> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
+> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
+> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
+> +		udelay(1000);
+> +	}
+> +	do {
+> +		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +		data =3D ast_mindwm(ast, 0x1e6e2000);
+> +	}	while (data !=3D 1);
+> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
+> +}
+> +
+>   void ast_post_chip_2500(struct drm_device *dev)
+>   {
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> @@ -2033,39 +2057,31 @@ void ast_post_chip_2500(struct drm_device *dev)=
+
+>   	u8 reg;
+>=20
+>   	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
+> +	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
+>   		/* Clear bus lock condition */
+> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> -		ast_write32(ast, 0xf004, 0x1e6e0000);
+> -		ast_write32(ast, 0xf000, 0x1);
+> -		ast_write32(ast, 0x12000, 0x1688a8a8);
+> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
+> -			;
+> -
+> -		ast_write32(ast, 0x10000, 0xfc600309);
+> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
+> -			;
+> +		ast_patch_ahb_2500(ast);
+> +
+> +		/* Disable watchdog */
+> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
+> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
+> +		/* Reset USB port */
+> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
+> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
+> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
+> +			mdelay(100);
+> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
+> +		}
+> +		/* Modify eSPI reset pin */
+> +		temp =3D ast_mindwm(ast, 0x1E6E2070);
+> +		if (temp & 0x02000000)
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
+>=20
+>   		/* Slow down CPU/AHB CLK in VGA only mode */
+>   		temp =3D ast_read32(ast, 0x12008);
+>   		temp |=3D 0x73;
+>   		ast_write32(ast, 0x12008, temp);
+>=20
+> -		/* Reset USB port to patch USB unknown device issue */
+> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
+> -		temp |=3D 0x00004000;
+> -		ast_moutdwm(ast, 0x1e6e2094, temp);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
+> -		if (temp & 0x00800000) {
+> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+> -			mdelay(100);
+> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+> -		}
+> -
+>   		if (!ast_dram_init_2500(ast))
+>   			drm_err(dev, "DRAM init failed !\n");
+>=20
+> --
+> 2.18.4
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--msd3iyUwJkOq6UTHwOp6BWT39SVHcClwd--
+
+--yk9xlNx6TU4Iu7vesAK8wsRioi6pXzEAq
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBhmycFAwAAAAAACgkQlh/E3EQov+Ap
+Uw/+Ku+I5ZMkf134wcXjzEfhhRPZFnF/t0syp/H2xkjFh/7h1cv54OuvcZCKwBPNd9Aq15fCxnrt
+guVDXe/8LUjFL4AGcUdtPIKisAcZE1no7Jrx9Q3BKRR6xmis2hnrtrInpRpUbHp8bVXds6z3zZQY
+BlC+pRp10VMzB23ONztINU67/50fwcSAqozoVsY1kKOV314IM+N00qgVCvK/lEKjd/2CQo4+pVKx
+DXqgxhjXIxonTUpFMnKhUzu9waEFy+pzA8SeJDhyJ2HdkL9vC5c2czuitCF/MI03Ug0BYwbY9YwE
+MtdSc6lrHbc6P0DL/S1FMBv+exMc4HMAtXJwPCS5TeMZGhYCX4fFK0Ex8g9rDeF7Dk8ypCSR8B9d
+DR5N7IlMdUMIsuFEGP/WpJUykLyc0fmpTbPv5Z8EdlKIeg1dKQbxKBOgkDC4UNdQ8wB0Tl/p0fH4
+puaYRXm6G7W2MMsJ4f4oFOMfoO8dXozUO8aHbK6DIOGZoeqK/KklfolpGD0TE7oYE2dSKlFXijAh
+PwyAOWOLXHBFf2/ZaMCzmNPLhBH/5ofcuKq1HAVdkeaf+c4jLRNpvxmwp8ekTlt30x9Ss9nZb6cJ
+G+c9RGWAbTPaTbJMmQmDcFOPgt3hwRX0GTbUYKV+3hZC8GJ2CY6jMASiqxt2AzQ6z432h3ojLWpc
+pIw=
+=u8gq
+-----END PGP SIGNATURE-----
+
+--yk9xlNx6TU4Iu7vesAK8wsRioi6pXzEAq--
