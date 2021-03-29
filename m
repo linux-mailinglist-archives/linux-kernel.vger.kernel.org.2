@@ -2,63 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864D834CD26
+	by mail.lfdr.de (Postfix) with ESMTP id 16D8734CD25
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhC2Jc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhC2Jcv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:32:51 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C565C061574;
-        Mon, 29 Mar 2021 02:32:51 -0700 (PDT)
-Received: from pd956d63d.dip0.t-ipconnect.de ([217.86.214.61] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1lQoGL-00065Q-IZ; Mon, 29 Mar 2021 11:32:45 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2] staging: rtl8188eu: (trivial) remove a duplicate debug print
-Date:   Mon, 29 Mar 2021 11:32:15 +0200
-Message-Id: <20210329093215.16186-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210328175200.27069-1-martin@kaiser.cx>
-References: <20210328175200.27069-1-martin@kaiser.cx>
+        id S232359AbhC2Jcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:32:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:45292 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231654AbhC2Jcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:32:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDF80142F;
+        Mon, 29 Mar 2021 02:32:42 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.51.224])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65DE83F7D7;
+        Mon, 29 Mar 2021 02:32:41 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     gustavo.pimentel@synopsys.com, bhelgaas@google.com,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        toan@os.amperecomputing.com, linux-pci@vger.kernel.org,
+        robh@kernel.org
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, dann.frazier@canonical.com
+Subject: Re: [PATCH] PCI: xgene: fix a mistake about cfg address
+Date:   Mon, 29 Mar 2021 10:32:35 +0100
+Message-Id: <161701033575.5341.4105470875260495956.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20210328144118.305074-1-zhengdejin5@gmail.com>
+References: <20210328144118.305074-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep the one that shows the wakeup capability.
+On Sun, 28 Mar 2021 22:41:18 +0800, Dejin Zheng wrote:
+> It has a wrong modification to the xgene driver by the commit
+> e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
+> simplify codes and remove the res variable, But the following code
+> needs to use this res variable, So after this commit, the port->cfg_addr
+> will get a wrong address. Now, revert it.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-v2:
- - fix the subject line
+Applied to pci/xgene, thanks!
 
- drivers/staging/rtl8188eu/os_dep/usb_intf.c | 1 -
- 1 file changed, 1 deletion(-)
+[1/1] PCI: xgene: Fix cfg resource mapping
+      https://git.kernel.org/lpieralisi/pci/c/f243b619b4
 
-diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-index 91a3d34a1050..e18f1fff59ca 100644
---- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-@@ -377,7 +377,6 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
- 		dvobj->pusbdev->do_remote_wakeup = 1;
- 		pusb_intf->needs_remote_wakeup = 1;
- 		device_init_wakeup(&pusb_intf->dev, 1);
--		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
- 		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
- 			 device_may_wakeup(&pusb_intf->dev));
- 	}
--- 
-2.20.1
-
+Thanks,
+Lorenzo
