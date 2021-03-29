@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A768634C6C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FB234C5B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhC2IJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
+        id S231934AbhC2ICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231580AbhC2IFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79A0C61938;
-        Mon, 29 Mar 2021 08:05:41 +0000 (UTC)
+        id S231751AbhC2IBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE6B61974;
+        Mon, 29 Mar 2021 08:01:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005142;
-        bh=PzrJR67FvEnJOBrgFZg6b5pr2t3VI0la/+3L64PDOL4=;
+        s=korg; t=1617004901;
+        bh=25UboA02eXndeDnz59te/9bC4cvJyc6s1kdDpTMWjFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rF6UvN998eAmIniacdv+AcRTi9Jk02bCl/PEZsqTcnywffjb9GCba86n7vYtrynzX
-         gpbXRb1L3EJSKxw0vF8hxRCIxAOYxd1pmCkX1dTM+GM8QroeDiaA/2Rp20YI5rI/Dy
-         TthT0G+3+8roZFe9Sa4vkRG4YVS24XZ2pTON08tQ=
+        b=B8hBlXn8dEkUHKfQbs+pj0tneYKrYdeAYTqNiaOASPoiy1u46MiU0ZeumBaKD/MEY
+         05K3/LYmKrVjH4xqrp+XlrDaopuUiprQAZL8AlbrQi4gSDyTVA5ALjddLxWWLI/l43
+         QSXkR+G7Acet9a4ggQjX/bn0NGP2Se7x8by25+9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/59] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
+Subject: [PATCH 4.4 27/33] mac80211: fix rate mask reset
 Date:   Mon, 29 Mar 2021 09:58:12 +0200
-Message-Id: <20210329075609.949091231@linuxfoundation.org>
+Message-Id: <20210329075606.132283469@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
+[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
 
-Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
-bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
-qualify the phydev->dev_flags based on whether the port is connected to
-an internal or external PHY otherwise we risk having a flags collision
-with a completely different interpretation depending on the driver.
+Coverity reported the strange "if (~...)" condition that's
+always true. It suggested that ! was intended instead of ~,
+but upon further analysis I'm convinced that what really was
+intended was a comparison to 0xff/0xffff (in HT/VHT cases
+respectively), since this indicates that all of the rates
+are enabled.
 
-Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Change the comparison accordingly.
+
+I'm guessing this never really mattered because a reset to
+not having a rate mask is basically equivalent to having a
+mask that enables all rates.
+
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
+Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/bcm_sf2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/mac80211/cfg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index 7fc84ae562a2..11a72c4cbb92 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -613,8 +613,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
- 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
- 	 * the REG_PHY_REVISION register layout is.
- 	 */
--
--	return priv->hw_params.gphy_rev;
-+	if (priv->int_phy_mask & BIT(port))
-+		return priv->hw_params.gphy_rev;
-+	else
-+		return 0;
- }
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 8360fda24bca..eac20f4ab924 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -2448,14 +2448,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
+ 			continue;
  
- static void bcm_sf2_sw_adjust_link(struct dsa_switch *ds, int port,
+ 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
+-			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
+ 				sdata->rc_has_mcs_mask[i] = true;
+ 				break;
+ 			}
+ 		}
+ 
+ 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
+-			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
++			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
+ 				sdata->rc_has_vht_mcs_mask[i] = true;
+ 				break;
+ 			}
 -- 
 2.30.1
 
