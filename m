@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EE634C9AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3E34C9B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhC2IbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        id S233918AbhC2Ib2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:31:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233305AbhC2ITo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:19:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A980461601;
-        Mon, 29 Mar 2021 08:19:43 +0000 (UTC)
+        id S233327AbhC2ITr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:19:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AF8F61878;
+        Mon, 29 Mar 2021 08:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005984;
-        bh=kqLmg3L6lM80tubfHMERXklbLXUxYHXEpWR/kI0I+q0=;
+        s=korg; t=1617005987;
+        bh=8cDX63nTsCigsio/tMbSAwIghiv6J75VGU9t0q2FeDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bDv5HsHLe4E1VQlqI1Fo/VzTVOkBhmqE++fE9Y+AqmqlxhR4leQ3z+10zdVexg7fe
-         VG7YTHIB0gaosgwiFhsMK9/intsFhdBCEA+jpboBoD8IgDZhPbGnEYRU+mFUOytVZ0
-         lKSbxRiirjtvU7vzVsuF1gWCDYx//FKYlfuHx0+w=
+        b=01JI4HcJNkNMlLpXfh5v9tiUpAcURAtUJSZlr9U+dPxNQ4y849BTiS/RCVQRUd3uW
+         rLh0iLei4I/vB2taPaJEoE3j42rHmPbzVzXXpCB1sEWRRE1lA9eJOTbHlwgXzCzPWK
+         sQQ7KIMkxF6Jw+HM82SqlMGQPG8zVr7dzaOquyzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Jun <chenjun102@huawei.com>,
-        Marco Elver <elver@google.com>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 076/221] arm64: stacktrace: dont trace arch_stack_walk()
-Date:   Mon, 29 Mar 2021 09:56:47 +0200
-Message-Id: <20210329075631.725217944@linuxfoundation.org>
+        stable@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.10 077/221] arm64: dts: ls1046a: mark crypto engine dma coherent
+Date:   Mon, 29 Mar 2021 09:56:48 +0200
+Message-Id: <20210329075631.764797511@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
@@ -42,119 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Horia Geantă <horia.geanta@nxp.com>
 
-commit c607ab4f916d4d5259072eca34055d3f5a795c21 upstream.
+commit 9c3a16f88385e671b63a0de7b82b85e604a80f42 upstream.
 
-We recently converted arm64 to use arch_stack_walk() in commit:
+Crypto engine (CAAM) on LS1046A platform is configured HW-coherent,
+mark accordingly the DT node.
 
-  5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+As reported by Greg and Sascha, and explained by Robin, lack of
+"dma-coherent" property for an IP that is configured HW-coherent
+can lead to problems, e.g. on v5.11:
 
-The core stacktrace code expects that (when tracing the current task)
-arch_stack_walk() starts a trace at its caller, and does not include
-itself in the trace. However, arm64's arch_stack_walk() includes itself,
-and so traces include one more entry than callers expect. The core
-stacktrace code which calls arch_stack_walk() tries to skip a number of
-entries to prevent itself appearing in a trace, and the additional entry
-prevents skipping one of the core stacktrace functions, leaving this in
-the trace unexpectedly.
+> kernel BUG at drivers/crypto/caam/jr.c:247!
+> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.11.0-20210225-3-00039-g434215968816-dirty #12
+> Hardware name: TQ TQMLS1046A SoM on Arkona AT1130 (C300) board (DT)
+> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> pc : caam_jr_dequeue+0x98/0x57c
+> lr : caam_jr_dequeue+0x98/0x57c
+> sp : ffff800010003d50
+> x29: ffff800010003d50 x28: ffff8000118d4000
+> x27: ffff8000118d4328 x26: 00000000000001f0
+> x25: ffff0008022be480 x24: ffff0008022c6410
+> x23: 00000000000001f1 x22: ffff8000118d4329
+> x21: 0000000000004d80 x20: 00000000000001f1
+> x19: 0000000000000001 x18: 0000000000000020
+> x17: 0000000000000000 x16: 0000000000000015
+> x15: ffff800011690230 x14: 2e2e2e2e2e2e2e2e
+> x13: 2e2e2e2e2e2e2020 x12: 3030303030303030
+> x11: ffff800011700a38 x10: 00000000fffff000
+> x9 : ffff8000100ada30 x8 : ffff8000116a8a38
+> x7 : 0000000000000001 x6 : 0000000000000000
+> x5 : 0000000000000000 x4 : 0000000000000000
+> x3 : 00000000ffffffff x2 : 0000000000000000
+> x1 : 0000000000000000 x0 : 0000000000001800
+> Call trace:
+>  caam_jr_dequeue+0x98/0x57c
+>  tasklet_action_common.constprop.0+0x164/0x18c
+>  tasklet_action+0x44/0x54
+>  __do_softirq+0x160/0x454
+>  __irq_exit_rcu+0x164/0x16c
+>  irq_exit+0x1c/0x30
+>  __handle_domain_irq+0xc0/0x13c
+>  gic_handle_irq+0x5c/0xf0
+>  el1_irq+0xb4/0x180
+>  arch_cpu_idle+0x18/0x30
+>  default_idle_call+0x3c/0x1c0
+>  do_idle+0x23c/0x274
+>  cpu_startup_entry+0x34/0x70
+>  rest_init+0xdc/0xec
+>  arch_call_rest_init+0x1c/0x28
+>  start_kernel+0x4ac/0x4e4
+> Code: 91392021 912c2000 d377d8c6 97f24d96 (d4210000)
 
-We can fix this by having arm64's arch_stack_walk() begin the trace with
-its caller. The first value returned by the trace will be
-__builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
-first frame record to be unwound will be __builtin_frame_address(1),
-i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
-is also marked noinline.
-
-While __builtin_frame_address(1) is not safe in portable code, local GCC
-developers have confirmed that it is safe on arm64. To find the caller's
-frame record, the builtin can safely dereference the current function's
-frame record or (in theory) could stash the original FP into another GPR
-at function entry time, neither of which are problematic.
-
-Prior to this patch, the tracing code would unexpectedly show up in
-traces of the current task, e.g.
-
-| # cat /proc/self/stack
-| [<0>] stack_trace_save_tsk+0x98/0x100
-| [<0>] proc_pid_stack+0xb4/0x130
-| [<0>] proc_single_show+0x60/0x110
-| [<0>] seq_read_iter+0x230/0x4d0
-| [<0>] seq_read+0xdc/0x130
-| [<0>] vfs_read+0xac/0x1e0
-| [<0>] ksys_read+0x6c/0xfc
-| [<0>] __arm64_sys_read+0x20/0x30
-| [<0>] el0_svc_common.constprop.0+0x60/0x120
-| [<0>] do_el0_svc+0x24/0x90
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0_sync_handler+0x1a4/0x1b0
-| [<0>] el0_sync+0x170/0x180
-
-After this patch, the tracing code will not show up in such traces:
-
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xb4/0x130
-| [<0>] proc_single_show+0x60/0x110
-| [<0>] seq_read_iter+0x230/0x4d0
-| [<0>] seq_read+0xdc/0x130
-| [<0>] vfs_read+0xac/0x1e0
-| [<0>] ksys_read+0x6c/0xfc
-| [<0>] __arm64_sys_read+0x20/0x30
-| [<0>] el0_svc_common.constprop.0+0x60/0x120
-| [<0>] do_el0_svc+0x24/0x90
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0_sync_handler+0x1a4/0x1b0
-| [<0>] el0_sync+0x170/0x180
-
-Erring on the side of caution, I've given this a spin with a bunch of
-toolchains, verifying the output of /proc/self/stack and checking that
-the assembly looked sound. For GCC (where we require version 5.1.0 or
-later) I tested with the kernel.org crosstool binares for versions
-5.5.0, 6.4.0, 6.5.0, 7.3.0, 7.5.0, 8.1.0, 8.3.0, 8.4.0, 9.2.0, and
-10.1.0. For clang (where we require version 10.0.1 or later) I tested
-with the llvm.org binary releases of 11.0.0, and 11.0.1.
-
-Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Chen Jun <chenjun102@huawei.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.10.x
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210319184106.5688-1-mark.rutland@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.10+
+Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
+Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
+Reported-by: Greg Ungerer <gerg@kernel.org>
+Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
+Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Acked-by: Greg Ungerer <gerg@kernel.org>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/stacktrace.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -199,8 +199,9 @@ void show_stack(struct task_struct *tsk,
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -325,6 +325,7 @@
+ 			ranges = <0x0 0x00 0x1700000 0x100000>;
+ 			reg = <0x00 0x1700000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++			dma-coherent;
  
- #ifdef CONFIG_STACKTRACE
- 
--void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
--		     struct task_struct *task, struct pt_regs *regs)
-+noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
-+			      void *cookie, struct task_struct *task,
-+			      struct pt_regs *regs)
- {
- 	struct stackframe frame;
- 
-@@ -208,8 +209,8 @@ void arch_stack_walk(stack_trace_consume
- 		start_backtrace(&frame, regs->regs[29], regs->pc);
- 	else if (task == current)
- 		start_backtrace(&frame,
--				(unsigned long)__builtin_frame_address(0),
--				(unsigned long)arch_stack_walk);
-+				(unsigned long)__builtin_frame_address(1),
-+				(unsigned long)__builtin_return_address(0));
- 	else
- 		start_backtrace(&frame, thread_saved_fp(task),
- 				thread_saved_pc(task));
+ 			sec_jr0: jr@10000 {
+ 				compatible = "fsl,sec-v5.4-job-ring",
 
 
