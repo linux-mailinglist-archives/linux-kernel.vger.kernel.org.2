@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1F334CC1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C6234C649
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbhC2Izl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:55:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S232322AbhC2IGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234417AbhC2IgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:36:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7334C6192E;
-        Mon, 29 Mar 2021 08:35:54 +0000 (UTC)
+        id S231508AbhC2IEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:04:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2281761974;
+        Mon, 29 Mar 2021 08:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006954;
-        bh=g/C9XFXNB0xGDDSsgKumGA5DUmDJUcoXZj96GypIQD0=;
+        s=korg; t=1617005043;
+        bh=XBmUbx/B1aNooX2Qdv1DWXS5wfUGu1CjAdZlOct0fcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pX/jSw+Xo9aTHK/ZDtc5gEFKJ2JFpIBQLZtNajQDA6OvP8G0W+vKFQboO7MXGXn8H
-         7aNx8rKFGLwTZjCmA98B6KzMbc4GnBuD4cEsEzJ944P3URTN1+N9dvhNbY9cyTbNYu
-         V1VGlMjLGk10WWaEDFK4TsPSrbSVpeAWw7UY7iz8=
+        b=Kpar7EBFQAuiWp/xutRIykrV9a5rxWafjQpe+E3/GdqvTyBwfH40KeJgjzdQCopXu
+         KNEU5HSCAI89nGypX3BPL6Ru1cqutJOI+JytSuRVwUOSaIgdlqPnRiGbAb65UH+qE2
+         wo4Uy7SO/in0SgygbcJ5T2vF9ccK0mO7N6bnVxIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 167/254] netfilter: nftables: allow to update flowtable flags
+Subject: [PATCH 4.9 28/53] can: c_can: move runtime PM enable/disable to c_can_platform
 Date:   Mon, 29 Mar 2021 09:58:03 +0200
-Message-Id: <20210329075638.662367741@linuxfoundation.org>
+Message-Id: <20210329075608.455091539@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +42,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 7b35582cd04ace2fd1807c1b624934e465cc939d ]
+[ Upstream commit 6e2fe01dd6f98da6cae8b07cd5cfa67abc70d97d ]
 
-Honor flowtable flags from the control update path. Disallow disabling
-to toggle hardware offload support though.
+Currently doing modprobe c_can_pci will make the kernel complain:
 
-Fixes: 8bb69f3b2918 ("netfilter: nf_tables: add flowtable offload control plane")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+    Unbalanced pm_runtime_enable!
+
+this is caused by pm_runtime_enable() called before pm is initialized.
+
+This fix is similar to 227619c3ff7c, move those pm_enable/disable code
+to c_can_platform.
+
+Fixes: 4cdd34b26826 ("can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller")
+Link: http://lore.kernel.org/r/20210302025542.987600-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Tested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/netfilter/nf_tables.h |  3 +++
- net/netfilter/nf_tables_api.c     | 15 +++++++++++++++
- 2 files changed, 18 insertions(+)
+ drivers/net/can/c_can/c_can.c          | 24 +-----------------------
+ drivers/net/can/c_can/c_can_platform.c |  6 +++++-
+ 2 files changed, 6 insertions(+), 24 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 4b6ecf532623..6799f95eea65 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1531,6 +1531,7 @@ struct nft_trans_flowtable {
- 	struct nft_flowtable		*flowtable;
- 	bool				update;
- 	struct list_head		hook_list;
-+	u32				flags;
+diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+index 4ead5a18b794..c41ab2cb272e 100644
+--- a/drivers/net/can/c_can/c_can.c
++++ b/drivers/net/can/c_can/c_can.c
+@@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
+ 	.brp_inc = 1,
  };
  
- #define nft_trans_flowtable(trans)	\
-@@ -1539,6 +1540,8 @@ struct nft_trans_flowtable {
- 	(((struct nft_trans_flowtable *)trans->data)->update)
- #define nft_trans_flowtable_hooks(trans)	\
- 	(((struct nft_trans_flowtable *)trans->data)->hook_list)
-+#define nft_trans_flowtable_flags(trans)	\
-+	(((struct nft_trans_flowtable *)trans->data)->flags)
+-static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_enable(priv->device);
+-}
+-
+-static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
+-{
+-	if (priv->device)
+-		pm_runtime_disable(priv->device);
+-}
+-
+ static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
+ {
+ 	if (priv->device)
+@@ -1318,7 +1306,6 @@ static const struct net_device_ops c_can_netdev_ops = {
  
- int __init nft_chain_filter_init(void);
- void nft_chain_filter_fini(void);
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 2aae0df0d70d..24a7a6b17268 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6808,6 +6808,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
- 	struct nft_hook *hook, *next;
- 	struct nft_trans *trans;
- 	bool unregister = false;
-+	u32 flags;
+ int register_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
  	int err;
  
- 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
-@@ -6822,6 +6823,17 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
- 		}
- 	}
+ 	/* Deactivate pins to prevent DRA7 DCAN IP from being
+@@ -1328,28 +1315,19 @@ int register_c_can_dev(struct net_device *dev)
+ 	 */
+ 	pinctrl_pm_select_sleep_state(dev->dev.parent);
  
-+	if (nla[NFTA_FLOWTABLE_FLAGS]) {
-+		flags = ntohl(nla_get_be32(nla[NFTA_FLOWTABLE_FLAGS]));
-+		if (flags & ~NFT_FLOWTABLE_MASK)
-+			return -EOPNOTSUPP;
-+		if ((flowtable->data.flags & NFT_FLOWTABLE_HW_OFFLOAD) ^
-+		    (flags & NFT_FLOWTABLE_HW_OFFLOAD))
-+			return -EOPNOTSUPP;
-+	} else {
-+		flags = flowtable->data.flags;
-+	}
-+
- 	err = nft_register_flowtable_net_hooks(ctx->net, ctx->table,
- 					       &flowtable_hook.list, flowtable);
- 	if (err < 0)
-@@ -6835,6 +6847,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
- 		goto err_flowtable_update_hook;
- 	}
+-	c_can_pm_runtime_enable(priv);
+-
+ 	dev->flags |= IFF_ECHO;	/* we support local echo */
+ 	dev->netdev_ops = &c_can_netdev_ops;
  
-+	nft_trans_flowtable_flags(trans) = flags;
- 	nft_trans_flowtable(trans) = flowtable;
- 	nft_trans_flowtable_update(trans) = true;
- 	INIT_LIST_HEAD(&nft_trans_flowtable_hooks(trans));
-@@ -8144,6 +8157,8 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 			break;
- 		case NFT_MSG_NEWFLOWTABLE:
- 			if (nft_trans_flowtable_update(trans)) {
-+				nft_trans_flowtable(trans)->data.flags =
-+					nft_trans_flowtable_flags(trans);
- 				nf_tables_flowtable_notify(&trans->ctx,
- 							   nft_trans_flowtable(trans),
- 							   &nft_trans_flowtable_hooks(trans),
+ 	err = register_candev(dev);
+-	if (err)
+-		c_can_pm_runtime_disable(priv);
+-	else
++	if (!err)
+ 		devm_can_led_init(dev);
+-
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_c_can_dev);
+ 
+ void unregister_c_can_dev(struct net_device *dev)
+ {
+-	struct c_can_priv *priv = netdev_priv(dev);
+-
+ 	unregister_candev(dev);
+-
+-	c_can_pm_runtime_disable(priv);
+ }
+ EXPORT_SYMBOL_GPL(unregister_c_can_dev);
+ 
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 717530eac70c..c6a03f565e3f 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -29,6 +29,7 @@
+ #include <linux/list.h>
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/clk.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -385,6 +386,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, dev);
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+ 
++	pm_runtime_enable(priv->device);
+ 	ret = register_c_can_dev(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+@@ -397,6 +399,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ exit_free_device:
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ exit:
+ 	dev_err(&pdev->dev, "probe failed\n");
+@@ -407,9 +410,10 @@ exit:
+ static int c_can_plat_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
++	struct c_can_priv *priv = netdev_priv(dev);
+ 
+ 	unregister_c_can_dev(dev);
+-
++	pm_runtime_disable(priv->device);
+ 	free_c_can_dev(dev);
+ 
+ 	return 0;
 -- 
 2.30.1
 
