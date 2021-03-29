@@ -2,279 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676A434C315
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8E934C32D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhC2Fkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhC2Fj7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:39:59 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53406C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 22:39:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x26so9203075pfn.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 22:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HB5D+Df4b92NNL5INPCl0u4uegAPqn3yCpFmre75IO0=;
-        b=QsTCJsUtenWu7m/lcgk7/D6dS4/RxSsCneiEugMUPmFXoVB/w/hCEriKd2d23TIc42
-         cCUpYqRiWqPgXSD9UhFPbQxiFBFD+mOEXuq6WhSoi1E1QUmBpvQ0cCvW+bvP1fjDspOi
-         6hb+1SdbsoztenyIBR5SobwC2RqfxNyvFW83YYXXJhPvm2ZAM2yFjPKRJoIAHIgwpbhi
-         m5DHWxkeMt1ISXDQjppfjxdQbB7TrWFJy2//nGuDP0tdpsTNP8Lec4hPSKOkWb9Nhhrk
-         Cch+QWbJ1S0IED2XGD6QqGBjEW4cHPenFkDCJg49tDLFss1WvZEr/sW5fNB7CSeTslFh
-         9wxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HB5D+Df4b92NNL5INPCl0u4uegAPqn3yCpFmre75IO0=;
-        b=flv2b1b/u1LQA2h7aAaWa4cC9lhIZdSBVXFhDfGWe4ZUQtNaZ8440XUFeeMsZCFk49
-         Ms+HpXcrcH3lleglucUqFYy0s/q0/2ljQT2JKbi5IlXkf307nSqajbtmtzROTeZr1OPV
-         Nfep/BhUN63Mx2+aa1Yerp8+LDwcK0Mnxi/7bnX8rmGIYSLMg9IIFFr0+mQodH4iQihd
-         1RTg9K2+DWgxEgiXXvXUM6K0y459sQj7hhot4/JgMVSZmk4c9iWnl5M6njBGfFWgWwH5
-         zpnz0sYsFXVtbNTMvzm980mYuoVRhI9gbo5noWSasGvWQ8zS3sPpGiiXDgvayPO9G47m
-         ZKUw==
-X-Gm-Message-State: AOAM530MU9Ausbf3F7srzN1C9Wp4fARX0o8fTpwaW1g4LAt7R/+fCPvN
-        qfbQw+wrpfNb+a2S0e7iM00=
-X-Google-Smtp-Source: ABdhPJzieiUatqy4kDTmGo4BEBtkcDUxcyobC6MDD8OCAPaeAKvD8V8dXANtDM5fll9ZJ5H37sIh8w==
-X-Received: by 2002:a05:6a00:2345:b029:20b:c007:f9a4 with SMTP id j5-20020a056a002345b029020bc007f9a4mr23756778pfj.42.1616996383238;
-        Sun, 28 Mar 2021 22:39:43 -0700 (PDT)
-Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
-        by smtp.gmail.com with ESMTPSA id a22sm16663404pgw.52.2021.03.28.22.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 22:39:41 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 16:39:38 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        david@redhat.com, daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
-        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
-        jglisse@redhat.com, linux-mm@kvack.org
-Subject: Re: [PATCH v2] kernel/resource: Fix locking in
- request_free_mem_region
-Message-ID: <20210329053938.GP77072@balbir-desktop>
-References: <20210326012035.3853-1-apopple@nvidia.com>
- <20210326051536.GN77072@balbir-desktop>
- <2574877.iCKU5I5uxK@nvdebian>
+        id S230297AbhC2Ftk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:49:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:15632 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhC2FtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 01:49:25 -0400
+IronPort-SDR: cLO0AHKdrH1kXzRcwbUeJjOuZYhT0CrookATUbqjWo0VZeNfuXUhy5dO3bMn5SzpU3vo+KIv08
+ kQKQHZsPtzLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="255478706"
+X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
+   d="scan'208";a="255478706"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 22:49:23 -0700
+IronPort-SDR: t/wHvNuUyofxcUzRtyW16YZzvE2GIz4pUu4kq7TFfIAGk2lkMT5gCBZMNLI1DMCP5mmc3an8CS
+ IHjUPuthU6JA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
+   d="scan'208";a="417506661"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by orsmga008.jf.intel.com with ESMTP; 28 Mar 2021 22:49:20 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     peterz@infradead.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     eranian@google.com, andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH v4 00/16] KVM: x86/pmu: Add basic support to enable Guest PEBS via DS
+Date:   Mon, 29 Mar 2021 13:41:21 +0800
+Message-Id: <20210329054137.120994-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2574877.iCKU5I5uxK@nvdebian>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 12:55:15PM +1100, Alistair Popple wrote:
-> On Friday, 26 March 2021 4:15:36 PM AEDT Balbir Singh wrote:
-> > On Fri, Mar 26, 2021 at 12:20:35PM +1100, Alistair Popple wrote:
-> > > +static int __region_intersects(resource_size_t start, size_t size,
-> > > +                            unsigned long flags, unsigned long desc)
-> > > +{
-> > > +     struct resource res;
-> > > +     int type = 0; int other = 0;
-> > > +     struct resource *p;
-> > > +
-> > > +     res.start = start;
-> > > +     res.end = start + size - 1;
-> > > +
-> > > +     for (p = iomem_resource.child; p ; p = p->sibling) {
-> > > +             bool is_type = (((p->flags & flags) == flags) &&
-> > > +                             ((desc == IORES_DESC_NONE) ||
-> > > +                              (desc == p->desc)));
-> > 
-> > is_type is a bad name, are we saying "is" as in boolean question?
-> > Or is it short for something like intersection_type? I know you've
-> > just moved the code over :)
-> 
-> Yeah, I'm not a fan of that name either but I was just moving code over and 
-> couldn't come up with anything better :)
-> 
-> It is a boolean question though - it is checking to see if resource *p is the 
-> same type (flags+desc) of region as what is being checked for intersection.
->
-> > > +
-> > > +             if (resource_overlaps(p, &res))
-> > > +                     is_type ? type++ : other++;
-> > > +     }
-> > > +
-> > > +     if (type == 0)
-> > > +             return REGION_DISJOINT;
-> > > +
-> > > +     if (other == 0)
-> > > +             return REGION_INTERSECTS;
-> > > +
-> > > +     return REGION_MIXED;
-> > > +}
-> > > +
-> > >  /**
-> > >   * region_intersects() - determine intersection of region with known 
-> resources
-> > >   * @start: region start address
-> > > @@ -546,31 +574,12 @@ EXPORT_SYMBOL_GPL(page_is_ram);
-> > >  int region_intersects(resource_size_t start, size_t size, unsigned long 
-> flags,
-> > >                     unsigned long desc)
-> > >  {
-> > > -     struct resource res;
-> > > -     int type = 0; int other = 0;
-> > > -     struct resource *p;
-> > > -
-> > > -     res.start = start;
-> > > -     res.end = start + size - 1;
-> > > +     int rc;
-> > >
-> > >       read_lock(&resource_lock);
-> > > -     for (p = iomem_resource.child; p ; p = p->sibling) {
-> > > -             bool is_type = (((p->flags & flags) == flags) &&
-> > > -                             ((desc == IORES_DESC_NONE) ||
-> > > -                              (desc == p->desc)));
-> > > -
-> > > -             if (resource_overlaps(p, &res))
-> > > -                     is_type ? type++ : other++;
-> > > -     }
-> > > +     rc = __region_intersects(start, size, flags, desc);
-> > >       read_unlock(&resource_lock);
-> > > -
-> > > -     if (type == 0)
-> > > -             return REGION_DISJOINT;
-> > > -
-> > > -     if (other == 0)
-> > > -             return REGION_INTERSECTS;
-> > > -
-> > > -     return REGION_MIXED;
-> > > +     return rc;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(region_intersects);
-> > >
-> > > @@ -1171,31 +1180,17 @@ struct address_space *iomem_get_mapping(void)
-> > >       return smp_load_acquire(&iomem_inode)->i_mapping;
-> > >  }
-> > >
-> > > -/**
-> > > - * __request_region - create a new busy resource region
-> > > - * @parent: parent resource descriptor
-> > > - * @start: resource start address
-> > > - * @n: resource region size
-> > > - * @name: reserving caller's ID string
-> > > - * @flags: IO resource flags
-> > > - */
-> > > -struct resource * __request_region(struct resource *parent,
-> > > -                                resource_size_t start, resource_size_t n,
-> > > -                                const char *name, int flags)
-> > > +static bool request_region_locked(struct resource *parent,
-> > > +                                 struct resource *res, resource_size_t 
-> start,
-> > > +                                 resource_size_t n, const char *name, int 
-> flags)
-> > >  {
-> > > -     DECLARE_WAITQUEUE(wait, current);
-> > > -     struct resource *res = alloc_resource(GFP_KERNEL);
-> > >       struct resource *orig_parent = parent;
-> > > -
-> > > -     if (!res)
-> > > -             return NULL;
-> > > +     DECLARE_WAITQUEUE(wait, current);
-> > 
-> > This part of the diff looks confusing, do we have a waitqueue and we call
-> > schedule() within a function called with the lock held?
-> 
-> Good point. schedule() does get called but the lock is dropped first:
-> 
-> 		if (conflict->flags & flags & IORESOURCE_MUXED) {
-> 			add_wait_queue(&muxed_resource_wait, &wait);
-> 			write_unlock(&resource_lock);
-> 			set_current_state(TASK_UNINTERRUPTIBLE);
-> 			schedule();
-> 			remove_wait_queue(&muxed_resource_wait, &wait);
-> 			write_lock(&resource_lock);
-> 			continue;
-> 		}
-> 
-> This isn't an issue though as it's only used for request_muxed_region() which 
-> isn't used for the ZONE_DEVICE allocation and by design doesn't search for 
-> free space. Ie. IORESOURCE_MUXED will never be set for 
-> request_free_mem_region().
-> 
-> > >
-> > >       res->name = name;
-> > >       res->start = start;
-> > >       res->end = start + n - 1;
-> > >
-> > > -     write_lock(&resource_lock);
-> > > -
-> > >       for (;;) {
-> > >               struct resource *conflict;
-> > >
-> > > @@ -1230,16 +1225,39 @@ struct resource * __request_region(struct resource 
-> *parent,
-> > >                       write_lock(&resource_lock);
-> > >                       continue;
-> > >               }
-> > > -             /* Uhhuh, that didn't work out.. */
-> > > -             free_resource(res);
-> > > -             res = NULL;
-> > > -             break;
-> > > +             return false;
-> > >       }
-> > > -     write_unlock(&resource_lock);
-> > >
-> > >       if (res && orig_parent == &iomem_resource)
-> > >               revoke_iomem(res);
-> > >
-> > > +     return true;
-> > > +}
-> > > +
-> > > +/**
-> > > + * __request_region - create a new busy resource region
-> > > + * @parent: parent resource descriptor
-> > > + * @start: resource start address
-> > > + * @n: resource region size
-> > > + * @name: reserving caller's ID string
-> > > + * @flags: IO resource flags
-> > > + */
-> > > +struct resource *__request_region(struct resource *parent,
-> > > +                               resource_size_t start, resource_size_t n,
-> > > +                               const char *name, int flags)
-> > > +{
-> > > +     struct resource *res = alloc_resource(GFP_KERNEL);
-> > > +
-> > > +     if (!res)
-> > > +             return NULL;
-> > > +
-> > > +     write_lock(&resource_lock);
-> > > +     if (!request_region_locked(parent, res, start, n, name, flags)) {
-> > > +             /* Uhhuh, that didn't work out.. */
-> > > +             free_resource(res);
-> > > +             res = NULL;
-> > > +     }
-> > > +     write_unlock(&resource_lock);
-> > 
-> > Should the function be called __request_region_locked?
-> 
-> This is the name of original function, so this is just maintaining the 
-> original behaviour by taking the lock and calling the inner function 
-> (request_region_locked) rather than having it coded directly there.
-> 
-> __request_region() is rarely called directly and is mostly called via macros:
-> 
-> include/linux/ioport.h:#define request_region(start,n,name)             
-> __request_region(&ioport_resource, (start), (n), (name), 0)
-> include/linux/ioport.h:#define request_muxed_region(start,n,name)       
-> __request_region(&ioport_resource, (start), (n), (name), IORESOURCE_MUXED)
-> include/linux/ioport.h:#define __request_mem_region(start,n,name, excl) 
-> __request_region(&iomem_resource, (start), (n), (name), excl)
-> include/linux/ioport.h:#define request_mem_region(start,n,name) 
-> __request_region(&iomem_resource, (start), (n), (name), 0)
->
+The guest Precise Event Based Sampling (PEBS) feature can provide
+an architectural state of the instruction executed after the guest
+instruction that exactly caused the event. It needs new hardware
+facility only available on Intel Ice Lake Server platforms. This
+patch set enables the basic PEBS via DS feature for KVM guests on ICX.
 
-Makes sense, I guess this takes away from the caller having to call
-the API again in the case of a conflict (a caller might never succeed
-deterministically in the worst case)?
+We can use PEBS feature on the Linux guest like native:
 
-Acked-by: Balbir Singh <bsingharora@gmail.com>
- 
+  # perf record -e instructions:ppp ./br_instr a
+  # perf record -c 100000 -e instructions:pp ./br_instr a
+
+To emulate guest PEBS facility for the above perf usages,
+we need to implement 2 code paths:
+
+1) Fast path
+
+This is when the host assigned physical PMC has an identical index as
+the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+This path is used in most common use cases.
+
+2) Slow path
+
+This is when the host assigned physical PMC has a different index
+from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
+In this case, KVM needs to rewrite the PEBS records to change the
+applicable counter indexes to the virtual PMC indexes, which would
+otherwise contain the physical counter index written by PEBS facility,
+and switch the counter reset values to the offset corresponding to
+the physical counter indexes in the DS data structure.
+
+The previous version [0] enables both fast path and slow path, which
+seems a bit more complex as the first step. In this patchset, we want
+to start with the fast path to get the basic guest PEBS enabled while
+keeping the slow path disabled. More focused discussion on the slow
+path [1] is planned to be put to another patchset in the next step.
+
+Compared to later versions in subsequent steps, the functionality
+to support host-guest PEBS both enabled and the functionality to
+emulate guest PEBS when the counter is cross-mapped are missing
+in this patch set (neither of these are typical scenarios).
+
+With the basic support, the guest can retrieve the correct PEBS
+information from its own PEBS records on the Ice Lake servers.
+And we expect it should work when migrating to another Ice Lake
+and no regression about host perf is expected.
+
+Here are the results of pebs test from guest/host for same workload:
+
+perf report on guest:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1473377250
+# Overhead  Command   Shared Object      Symbol
+  57.74%  br_instr  br_instr           [.] lfsr_cond
+  41.40%  br_instr  br_instr           [.] cmp_end
+   0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+
+perf report on host:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1462721386
+# Overhead  Command   Shared Object     Symbol
+  57.90%  br_instr  br_instr          [.] lfsr_cond
+  41.95%  br_instr  br_instr          [.] cmp_end
+   0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+   Conclusion: the profiling results on the guest are similar tothat on the host.
+
+Please check more details in each commit and feel free to comment.
+
+Previous:
+[0] https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+[1] https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/
+
+v3->v4 Changelog:
+- Update this cover letter and propose a new upstream plan;
+[PERF]
+- Drop check host DS and move handler to handle_pmi_common();
+- Pass "struct kvm_pmu *" to intel_guest_get_msrs();
+- Propose new assignment logic for perf_guest_switch_msr();
+- Introduce x86_pmu.pebs_vmx for future capability maintenance;
+[KVM]
+- Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability;
+- Raising PEBS PMI only when OVF_BIT 62 is not set;
+- Make vmx_icl_pebs_cpu specific for PEBS-PDIR emulation;
+- Fix a bug for fixed_ctr_ctrl_mask;
+- Add two minor refactoring patches for reuse;
+
+Like Xu (16):
+  perf/x86/intel: Add x86_pmu.pebs_vmx for Ice Lake Servers
+  perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+  perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+  KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+  KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+  KVM: x86/pmu: Reprogram guest PEBS event to emulate guest PEBS counter
+  KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+  KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to manage guest DS buffer
+  KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
+  KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+  KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
+  KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+  KVM: x86/pmu: Disable guest PEBS before vm-entry in two cases
+  KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+  KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+  KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+
+ arch/x86/events/core.c            |   5 +-
+ arch/x86/events/intel/core.c      |  93 +++++++++++++++++++++++---
+ arch/x86/events/perf_event.h      |   5 +-
+ arch/x86/include/asm/kvm_host.h   |  16 +++++
+ arch/x86/include/asm/msr-index.h  |   6 ++
+ arch/x86/include/asm/perf_event.h |   5 +-
+ arch/x86/kvm/cpuid.c              |  24 ++-----
+ arch/x86/kvm/cpuid.h              |   5 ++
+ arch/x86/kvm/pmu.c                |  49 ++++++++++----
+ arch/x86/kvm/pmu.h                |  37 +++++++++++
+ arch/x86/kvm/vmx/capabilities.h   |  26 ++++++--
+ arch/x86/kvm/vmx/pmu_intel.c      | 105 ++++++++++++++++++++++++------
+ arch/x86/kvm/vmx/vmx.c            |  25 ++++++-
+ arch/x86/kvm/vmx/vmx.h            |   2 +-
+ arch/x86/kvm/x86.c                |  14 ++--
+ 15 files changed, 339 insertions(+), 78 deletions(-)
+
+-- 
+2.29.2
+
