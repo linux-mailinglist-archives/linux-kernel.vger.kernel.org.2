@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6B334C9B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F8B34CBAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233860AbhC2Ibd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
+        id S235698AbhC2IvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232541AbhC2ITu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD1B761580;
-        Mon, 29 Mar 2021 08:19:40 +0000 (UTC)
+        id S234689AbhC2Id1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBEB3619CF;
+        Mon, 29 Mar 2021 08:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005981;
-        bh=djpNkGju6d37DXQmFTxK3UK3zgNSMkShLn30xmyCwiw=;
+        s=korg; t=1617006774;
+        bh=pOih8Rd6RtCLJ2yoxnomHOd1MNcqtIZTOi+gSy7mnM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L3+q+QEnLlkflMvHBhiXnI3pB0CTivHWd/1XDeh0FWvcIJMWvb1pRh3W52+Z49dzu
-         Bz9/00A60yNZe+FnDplhYrsDKuO3SAzZ5WcNHDtWm1weI5N4wUPKz5Cf+jLUM8wI/4
-         ynBPSkndwxfK+aJ/iyK2qIONcI6zV7Np3e9j/LtI=
+        b=g3DQoGp15GrMB3J9dSU4MRenG9PG8V6GWtPElmENFvRPvl8aIhbE+vM3vzAjUs4JX
+         GOujxrH2gLpGbcOllv9rb0xIc93FB3ySE6MiM2b9FJ4TZDn32STFK5QvRbwZ6PwZsF
+         a15lqNhcnyzsbiWkxqPK6EDp+wI5IgULWXnGCsgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Bob Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.10 075/221] ACPICA: Always create namespace nodes using acpi_ns_create_node()
-Date:   Mon, 29 Mar 2021 09:56:46 +0200
-Message-Id: <20210329075631.691712911@linuxfoundation.org>
+        stable@vger.kernel.org, Federico Pellegrin <fede@evolware.org>,
+        Sandeep Sheriker Mallikarjun 
+        <sandeepsheriker.mallikarjun@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH 5.11 091/254] ARM: dts: at91: sam9x60: fix mux-mask for PA7 so it can be set to A, B and C
+Date:   Mon, 29 Mar 2021 09:56:47 +0200
+Message-Id: <20210329075636.171472082@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Federico Pellegrin <fede@evolware.org>
 
-commit 25928deeb1e4e2cdae1dccff349320c6841eb5f8 upstream.
+commit 664979bba8169d775959452def968d1a7c03901f upstream.
 
-ACPICA commit 29da9a2a3f5b2c60420893e5c6309a0586d7a329
+According to the datasheet PA7 can be set to either function A, B or
+C (see table 6-2 of DS60001579D). The previous value would permit just
+configuring with function C.
 
-ACPI is allocating an object using kmalloc(), but then frees it
-using kmem_cache_free(<"Acpi-Namespace" kmem_cache>).
-
-This is wrong and can lead to boot failures manifesting like this:
-
-    hpet0: 3 comparators, 64-bit 100.000000 MHz counter
-    clocksource: Switched to clocksource tsc-early
-    BUG: unable to handle page fault for address: 000000003ffe0018
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    PGD 0 P4D 0
-    Oops: 0000 [#1] SMP PTI
-    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.6.0+ #211
-    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-Ubuntu-1.8.2-1ubuntu1 04/01/2014
-    RIP: 0010:kmem_cache_alloc+0x70/0x1d0
-    Code: 00 00 4c 8b 45 00 65 49 8b 50 08 65 4c 03 05 6f cc e7 7e 4d 8b
-20 4d 85 e4 0f 84 3d 01 00 00 8b 45 20 48 8b 7d 00 48 8d 4a 01 <49> 8b
-   1c 04 4c 89 e0 65 48 0f c7 0f 0f 94 c0 84 c0 74 c5 8b 45 20
-    RSP: 0000:ffffc90000013df8 EFLAGS: 00010206
-    RAX: 0000000000000018 RBX: ffffffff81c49200 RCX: 0000000000000002
-    RDX: 0000000000000001 RSI: 0000000000000dc0 RDI: 000000000002b300
-    RBP: ffff88803e403d00 R08: ffff88803ec2b300 R09: 0000000000000001
-    R10: 0000000000000dc0 R11: 0000000000000006 R12: 000000003ffe0000
-    R13: ffffffff8110a583 R14: 0000000000000dc0 R15: ffffffff81c49a80
-    FS:  0000000000000000(0000) GS:ffff88803ec00000(0000)
-knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: 000000003ffe0018 CR3: 0000000001c0a001 CR4: 00000000003606f0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-     __trace_define_field+0x33/0xa0
-     event_trace_init+0xeb/0x2b4
-     tracer_init_tracefs+0x60/0x195
-     ? register_tracer+0x1e7/0x1e7
-     do_one_initcall+0x74/0x160
-     kernel_init_freeable+0x190/0x1f0
-     ? rest_init+0x9a/0x9a
-     kernel_init+0x5/0xf6
-     ret_from_fork+0x35/0x40
-    CR2: 000000003ffe0018
-    ---[ end trace 707efa023f2ee960 ]---
-    RIP: 0010:kmem_cache_alloc+0x70/0x1d0
-
-Bisection leads to unrelated changes in slab; Vlastimil Babka
-suggests an unrelated layout or slab merge change merely exposed
-the underlying bug.
-
-Link: https://lore.kernel.org/lkml/4dc93ff8-f86e-f4c9-ebeb-6d3153a78d03@oracle.com/
-Link: https://lore.kernel.org/r/a1461e21-c744-767d-6dfc-6641fd3e3ce2@siemens.com
-Link: https://github.com/acpica/acpica/commit/29da9a2a
-Fixes: f79c8e4136ea ("ACPICA: Namespace: simplify creation of the initial/default namespace")
-Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-Diagnosed-by: Vlastimil Babka <vbabka@suse.cz>
-Diagnosed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Federico Pellegrin <fede@evolware.org>
+Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
+Cc: <stable@vger.kernel.org> # 5.6+
+Cc: Sandeep Sheriker Mallikarjun <sandeepsheriker.mallikarjun@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/acpica/nsaccess.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/dts/at91-sam9x60ek.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/acpi/acpica/nsaccess.c
-+++ b/drivers/acpi/acpica/nsaccess.c
-@@ -99,13 +99,12 @@ acpi_status acpi_ns_root_initialize(void
- 		 * just create and link the new node(s) here.
- 		 */
- 		new_node =
--		    ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_namespace_node));
-+		    acpi_ns_create_node(*ACPI_CAST_PTR(u32, init_val->name));
- 		if (!new_node) {
- 			status = AE_NO_MEMORY;
- 			goto unlock_and_exit;
- 		}
- 
--		ACPI_COPY_NAMESEG(new_node->name.ascii, init_val->name);
- 		new_node->descriptor_type = ACPI_DESC_TYPE_NAMED;
- 		new_node->type = init_val->type;
- 
+--- a/arch/arm/boot/dts/at91-sam9x60ek.dts
++++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+@@ -336,7 +336,7 @@
+ &pinctrl {
+ 	atmel,mux-mask = <
+ 			 /*	A	B	C	*/
+-			 0xFFFFFE7F 0xC0E0397F 0xEF00019D	/* pioA */
++			 0xFFFFFEFF 0xC0E039FF 0xEF00019D	/* pioA */
+ 			 0x03FFFFFF 0x02FC7E68 0x00780000	/* pioB */
+ 			 0xffffffff 0xF83FFFFF 0xB800F3FC	/* pioC */
+ 			 0x003FFFFF 0x003F8000 0x00000000	/* pioD */
 
 
