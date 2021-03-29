@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB1234CB76
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B806034C91D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhC2Irr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
+        id S233780AbhC2I1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234412AbhC2I2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DEAF61990;
-        Mon, 29 Mar 2021 08:27:58 +0000 (UTC)
+        id S233264AbhC2IRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4731C6196E;
+        Mon, 29 Mar 2021 08:16:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006479;
-        bh=R+E+agaQQ3NJJaphVqPE8IIX/OIYsbUs2PnX1h5+9aI=;
+        s=korg; t=1617005818;
+        bh=mKRV0N9SBwXvBTUfqsAVI/V+AL+T3H/bcTuTKgboNPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sDYssTB8az2WGcIHoYoN3l0qN6nmVt0/oZX5FipL1fHDbrXkMjuLOnMHcMqOifkgS
-         Au3OICD1389ryjdqYkIQyU8dcTOFIrd3/F4jJXqMZptfTw5Zk0QEArkIqqlnIX31ym
-         iZzl8JKFPZrziRziqb9PGgDZTcUMlocEfAT95p2Q=
+        b=VG3HhRpstGJvmEMpix98KuDj5sy9e0fiMRQR7JrYGxPoc6yOed+jRaIB7uF5ZrBV9
+         FFk3rshVtON5S3zZ2hDQpu9OvokUVz1SrYYN0yYClhPwi4yEZeHZG6vtfEVnBug72f
+         b8evgMKB2ALZRsVUGEpGuZvFfn2zAQLD8ubgzd7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, Michael Braun <michael-dev@fami-braun.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 031/254] kbuild: add image_name to no-sync-config-targets
-Date:   Mon, 29 Mar 2021 09:55:47 +0200
-Message-Id: <20210329075634.165556293@linuxfoundation.org>
+Subject: [PATCH 5.10 017/221] gianfar: fix jumbo packets+napi+rx overrun crash
+Date:   Mon, 29 Mar 2021 09:55:48 +0200
+Message-Id: <20210329075629.758362380@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Michael Braun <michael-dev@fami-braun.de>
 
-[ Upstream commit 993bdde94547887faaad4a97f0b0480a6da271c3 ]
+[ Upstream commit d8861bab48b6c1fc3cdbcab8ff9d1eaea43afe7f ]
 
-'make image_name' needs include/config/auto.conf to show the correct
-output because KBUILD_IMAGE depends on CONFIG options, but should not
-attempt to resync the configuration.
+When using jumbo packets and overrunning rx queue with napi enabled,
+the following sequence is observed in gfar_add_rx_frag:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+   | lstatus                              |       | skb                   |
+t  | lstatus,  size, flags                | first | len, data_len, *ptr   |
+---+--------------------------------------+-------+-----------------------+
+13 | 18002348, 9032, INTERRUPT LAST       | 0     | 9600, 8000,  f554c12e |
+12 | 10000640, 1600, INTERRUPT            | 0     | 8000, 6400,  f554c12e |
+11 | 10000640, 1600, INTERRUPT            | 0     | 6400, 4800,  f554c12e |
+10 | 10000640, 1600, INTERRUPT            | 0     | 4800, 3200,  f554c12e |
+09 | 10000640, 1600, INTERRUPT            | 0     | 3200, 1600,  f554c12e |
+08 | 14000640, 1600, INTERRUPT FIRST      | 0     | 1600, 0,     f554c12e |
+07 | 14000640, 1600, INTERRUPT FIRST      | 1     | 0,    0,     f554c12e |
+06 | 1c000080, 128,  INTERRUPT LAST FIRST | 1     | 0,    0,     abf3bd6e |
+05 | 18002348, 9032, INTERRUPT LAST       | 0     | 8000, 6400,  c5a57780 |
+04 | 10000640, 1600, INTERRUPT            | 0     | 6400, 4800,  c5a57780 |
+03 | 10000640, 1600, INTERRUPT            | 0     | 4800, 3200,  c5a57780 |
+02 | 10000640, 1600, INTERRUPT            | 0     | 3200, 1600,  c5a57780 |
+01 | 10000640, 1600, INTERRUPT            | 0     | 1600, 0,     c5a57780 |
+00 | 14000640, 1600, INTERRUPT FIRST      | 1     | 0,    0,     c5a57780 |
+
+So at t=7 a new packets is started but not finished, probably due to rx
+overrun - but rx overrun is not indicated in the flags. Instead a new
+packets starts at t=8. This results in skb->len to exceed size for the LAST
+fragment at t=13 and thus a negative fragment size added to the skb.
+
+This then crashes:
+
+kernel BUG at include/linux/skbuff.h:2277!
+Oops: Exception in kernel mode, sig: 5 [#1]
+...
+NIP [c04689f4] skb_pull+0x2c/0x48
+LR [c03f62ac] gfar_clean_rx_ring+0x2e4/0x844
+Call Trace:
+[ec4bfd38] [c06a84c4] _raw_spin_unlock_irqrestore+0x60/0x7c (unreliable)
+[ec4bfda8] [c03f6a44] gfar_poll_rx_sq+0x48/0xe4
+[ec4bfdc8] [c048d504] __napi_poll+0x54/0x26c
+[ec4bfdf8] [c048d908] net_rx_action+0x138/0x2c0
+[ec4bfe68] [c06a8f34] __do_softirq+0x3a4/0x4fc
+[ec4bfed8] [c0040150] run_ksoftirqd+0x58/0x70
+[ec4bfee8] [c0066ecc] smpboot_thread_fn+0x184/0x1cc
+[ec4bff08] [c0062718] kthread+0x140/0x144
+[ec4bff38] [c0012350] ret_from_kernel_thread+0x14/0x1c
+
+This patch fixes this by checking for computed LAST fragment size, so a
+negative sized fragment is never added.
+In order to prevent the newer rx frame from getting corrupted, the FIRST
+flag is checked to discard the incomplete older frame.
+
+Signed-off-by: Michael Braun <michael-dev@fami-braun.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/gianfar.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 824d15c14be0..ace7d6131fa1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -265,7 +265,8 @@ no-dot-config-targets := $(clean-targets) \
- 			 $(version_h) headers headers_% archheaders archscripts \
- 			 %asm-generic kernelversion %src-pkg dt_binding_check \
- 			 outputmakefile
--no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
-+no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
-+			  image_name
- single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
+index d391a45cebb6..4fab2ee5bbf5 100644
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -2391,6 +2391,10 @@ static bool gfar_add_rx_frag(struct gfar_rx_buff *rxb, u32 lstatus,
+ 		if (lstatus & BD_LFLAG(RXBD_LAST))
+ 			size -= skb->len;
  
- config-build	:=
++		WARN(size < 0, "gianfar: rx fragment size underflow");
++		if (size < 0)
++			return false;
++
+ 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, page,
+ 				rxb->page_offset + RXBUF_ALIGNMENT,
+ 				size, GFAR_RXB_TRUESIZE);
+@@ -2553,6 +2557,17 @@ static int gfar_clean_rx_ring(struct gfar_priv_rx_q *rx_queue,
+ 		if (lstatus & BD_LFLAG(RXBD_EMPTY))
+ 			break;
+ 
++		/* lost RXBD_LAST descriptor due to overrun */
++		if (skb &&
++		    (lstatus & BD_LFLAG(RXBD_FIRST))) {
++			/* discard faulty buffer */
++			dev_kfree_skb(skb);
++			skb = NULL;
++			rx_queue->stats.rx_dropped++;
++
++			/* can continue normally */
++		}
++
+ 		/* order rx buffer descriptor reads */
+ 		rmb();
+ 
 -- 
 2.30.1
 
