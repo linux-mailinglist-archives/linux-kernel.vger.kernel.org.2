@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CE434CA3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E6D34CBDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhC2IgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:36:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        id S236485AbhC2Ixn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233641AbhC2IWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:22:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 783F661554;
-        Mon, 29 Mar 2021 08:21:51 +0000 (UTC)
+        id S231828AbhC2Iet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 718BD61934;
+        Mon, 29 Mar 2021 08:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006112;
-        bh=eJhow2aP8frR5raHpDke8z2xQSi9zRhdkkcFupAdxFg=;
+        s=korg; t=1617006885;
+        bh=qrDSPPK9FJwx9vaNsYfUqVqNwB9Z4bLg7uDKa6BWSfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ok58Y9wXiNeKcpFNNFvHHxQ9FuOPN5xXLNVOTKzc8UZhyGAfER8jFcfT+YMTOAR+7
-         vPGwf6cxkAA3PrrAyBQpmrGldlHRH7ZnLyBTFV8pdjtPlYWJglYF2bAw+9c63JfFKF
-         JVs+TiZwXVoHCeJIyvgNZl3EBrKmjxDFrVcX85ck=
+        b=Ev/w+GQHMxWPnAKnO+LU/MN1fAkbsX8xNIqp/wm1xfE3dtIt+iKvhD/1WHc2/J/74
+         glnUd/vqszLlrEtKfZlIQ/SyN/4WROvYC6FppxS9dArI7xLhES4hjAje9nNzHhlvfe
+         TQdswp/+LCNh50NaRbfekzBg8OhWSRvc+MfCBQCg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Tuong Lien <tuong.t.lien@dektech.com.au>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
         syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 122/221] tipc: better validate user input in tipc_nl_retrieve_key()
-Date:   Mon, 29 Mar 2021 09:57:33 +0200
-Message-Id: <20210329075633.287856111@linuxfoundation.org>
+Subject: [PATCH 5.11 138/254] net: qrtr: fix a kernel-infoleak in qrtr_recvmsg()
+Date:   Mon, 29 Mar 2021 09:57:34 +0200
+Message-Id: <20210329075637.757747215@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,126 +44,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 0217ed2848e8538bcf9172d97ed2eeb4a26041bb ]
+[ Upstream commit 50535249f624d0072cd885bcdce4e4b6fb770160 ]
 
-Before calling tipc_aead_key_size(ptr), we need to ensure
-we have enough data to dereference ptr->keylen.
+struct sockaddr_qrtr has a 2-byte hole, and qrtr_recvmsg() currently
+does not clear it before copying kernel data to user space.
 
-We probably also want to make sure tipc_aead_key_size()
-wont overflow with malicious ptr->keylen values.
+It might be too late to name the hole since sockaddr_qrtr structure is uapi.
 
-Syzbot reported:
-
-BUG: KMSAN: uninit-value in __tipc_nl_node_set_key net/tipc/node.c:2971 [inline]
-BUG: KMSAN: uninit-value in tipc_nl_node_set_key+0x9bf/0x13b0 net/tipc/node.c:3023
-CPU: 0 PID: 21060 Comm: syz-executor.5 Not tainted 5.11.0-rc7-syzkaller #0
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+CPU: 0 PID: 29705 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x21c/0x280 lib/dump_stack.c:120
  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- __tipc_nl_node_set_key net/tipc/node.c:2971 [inline]
- tipc_nl_node_set_key+0x9bf/0x13b0 net/tipc/node.c:3023
- genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x1319/0x1610 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x6fa/0x810 net/netlink/af_netlink.c:2494
- genl_rcv+0x63/0x80 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x11d6/0x14a0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x1740/0x1840 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x714/0x830 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:347 [inline]
- __do_compat_sys_sendmsg net/compat.c:354 [inline]
- __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
- __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f60549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f555a5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020000200
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
+ kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+ instrument_copy_to_user include/linux/instrumented.h:121 [inline]
+ _copy_to_user+0x1ac/0x270 lib/usercopy.c:33
+ copy_to_user include/linux/uaccess.h:209 [inline]
+ move_addr_to_user+0x3a2/0x640 net/socket.c:237
+ ____sys_recvmsg+0x696/0xd50 net/socket.c:2575
+ ___sys_recvmsg net/socket.c:2610 [inline]
+ do_recvmmsg+0xa97/0x22d0 net/socket.c:2710
+ __sys_recvmmsg net/socket.c:2789 [inline]
+ __do_sys_recvmmsg net/socket.c:2812 [inline]
+ __se_sys_recvmmsg+0x24a/0x410 net/socket.c:2805
+ __x64_sys_recvmmsg+0x62/0x80 net/socket.c:2805
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f43659d6188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000000000008 RSI: 0000000020003e40 RDI: 0000000000000003
+RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010060 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007f43659d6300 R15: 0000000000022000
 
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
- kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
- kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
- slab_alloc_node mm/slub.c:2907 [inline]
- __kmalloc_node_track_caller+0xa37/0x1430 mm/slub.c:4527
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x2f8/0xb30 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1099 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1176 [inline]
- netlink_sendmsg+0xdbc/0x1840 net/netlink/af_netlink.c:1894
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x714/0x830 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:347 [inline]
- __do_compat_sys_sendmsg net/compat.c:354 [inline]
- __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
- __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+Local variable ----addr@____sys_recvmsg created at:
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
 
-Fixes: e1f32190cf7d ("tipc: add support for AEAD key setting via netlink")
+Bytes 2-3 of 12 are uninitialized
+Memory access of size 12 starts at ffff88817c627b40
+Data copied to user address 0000000020000140
+
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Tuong Lien <tuong.t.lien@dektech.com.au>
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
+Cc: Courtney Cavin <courtney.cavin@sonymobile.com>
 Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/node.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ net/qrtr/qrtr.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/tipc/node.c b/net/tipc/node.c
-index 83978d5dae59..e4452d55851f 100644
---- a/net/tipc/node.c
-+++ b/net/tipc/node.c
-@@ -2855,17 +2855,22 @@ int tipc_nl_node_dump_monitor_peer(struct sk_buff *skb,
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index edb6ac17ceca..dfc820ee553a 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -1058,6 +1058,11 @@ static int qrtr_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	rc = copied;
  
- #ifdef CONFIG_TIPC_CRYPTO
- static int tipc_nl_retrieve_key(struct nlattr **attrs,
--				struct tipc_aead_key **key)
-+				struct tipc_aead_key **pkey)
- {
- 	struct nlattr *attr = attrs[TIPC_NLA_NODE_KEY];
-+	struct tipc_aead_key *key;
- 
- 	if (!attr)
- 		return -ENODATA;
- 
--	*key = (struct tipc_aead_key *)nla_data(attr);
--	if (nla_len(attr) < tipc_aead_key_size(*key))
-+	if (nla_len(attr) < sizeof(*key))
-+		return -EINVAL;
-+	key = (struct tipc_aead_key *)nla_data(attr);
-+	if (key->keylen > TIPC_AEAD_KEYLEN_MAX ||
-+	    nla_len(attr) < tipc_aead_key_size(key))
- 		return -EINVAL;
- 
-+	*pkey = key;
- 	return 0;
- }
- 
+ 	if (addr) {
++		/* There is an anonymous 2-byte hole after sq_family,
++		 * make sure to clear it.
++		 */
++		memset(addr, 0, sizeof(*addr));
++
+ 		addr->sq_family = AF_QIPCRTR;
+ 		addr->sq_node = cb->src_node;
+ 		addr->sq_port = cb->src_port;
 -- 
 2.30.1
 
