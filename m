@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC31434C6C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B5D34C761
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhC2IJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
+        id S232723AbhC2IO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231801AbhC2IFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD3936197C;
-        Mon, 29 Mar 2021 08:05:54 +0000 (UTC)
+        id S231643AbhC2IJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADCEB6193A;
+        Mon, 29 Mar 2021 08:09:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005155;
-        bh=9MQyLpCails/PN83xj+HAIVPTBA/Vb/18ZlIJRwSNJk=;
+        s=korg; t=1617005345;
+        bh=fAvM5UsLjHwQfH33osa5Mb1z7DtBFWCWw28q4GG6pGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W2POH8oE4ZPgVq0VUXbEGxejUMICY4oX0eNH/SHs/kqIkHsVmsNKj2sOa744IpFUV
-         cM4sAmTOk0ZDfbrpjJTpd4RX4nj2qiQG6Tlo5N+141N/VJgTySrOLVooR4BqogP7lz
-         uTY831iG1Do2NGW3SD/EniEeD7ugIxVSBP0SWIvs=
+        b=gRS4uBUmgCYAj59p055JBoCURqHnQp4/iHoajlf0vWgEyZIWhTGIhFYzacShVk7Xu
+         3UzKIxeyXbtWr7ZH7ZDSOhkNX0/X91w0exPZl8bK2iy6RERPnpk7MKc6ThhpdaQVbK
+         Z4i9GR7eka+Fd4SiMnYmQkeqMmJCb60aySIe18dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 45/59] arm64: kdump: update ppos when reading elfcorehdr
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 49/72] net: cdc-phonet: fix data-interface release on probe failure
 Date:   Mon, 29 Mar 2021 09:58:25 +0200
-Message-Id: <20210329075610.364027927@linuxfoundation.org>
+Message-Id: <20210329075611.900506511@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 141f8202cfa4192c3af79b6cbd68e7760bb01b5a ]
+[ Upstream commit c79a707072fe3fea0e3c92edee6ca85c1e53c29f ]
 
-The ppos points to a position in the old kernel memory (and in case of
-arm64 in the crash kernel since elfcorehdr is passed as a segment). The
-function should update the ppos by the amount that was read. This bug is
-not exposed by accident, but other platforms update this value properly.
-So, fix it in ARM64 version of elfcorehdr_read() as well.
+Set the disconnected flag before releasing the data interface in case
+netdev registration fails to avoid having the disconnect callback try to
+deregister the never registered netdev (and trigger a WARN_ON()).
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Fixes: e62aaeac426a ("arm64: kdump: provide /proc/vmcore file")
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210319205054.743368-1-pasha.tatashin@soleen.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 87cf65601e17 ("USB host CDC Phonet network interface driver")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/crash_dump.c | 2 ++
+ drivers/net/usb/cdc-phonet.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/kernel/crash_dump.c b/arch/arm64/kernel/crash_dump.c
-index f46d57c31443..76905a258550 100644
---- a/arch/arm64/kernel/crash_dump.c
-+++ b/arch/arm64/kernel/crash_dump.c
-@@ -67,5 +67,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- ssize_t elfcorehdr_read(char *buf, size_t count, u64 *ppos)
- {
- 	memcpy(buf, phys_to_virt((phys_addr_t)*ppos), count);
-+	*ppos += count;
-+
- 	return count;
- }
+diff --git a/drivers/net/usb/cdc-phonet.c b/drivers/net/usb/cdc-phonet.c
+index 78b16eb9e58c..f448e484a341 100644
+--- a/drivers/net/usb/cdc-phonet.c
++++ b/drivers/net/usb/cdc-phonet.c
+@@ -400,6 +400,8 @@ static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *i
+ 
+ 	err = register_netdev(dev);
+ 	if (err) {
++		/* Set disconnected flag so that disconnect() returns early. */
++		pnd->disconnected = 1;
+ 		usb_driver_release_interface(&usbpn_driver, data_intf);
+ 		goto out;
+ 	}
 -- 
 2.30.1
 
