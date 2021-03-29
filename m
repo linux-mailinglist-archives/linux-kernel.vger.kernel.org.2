@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE90D34D7B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA1F34D7BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhC2TES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhC2TED (ORCPT
+        id S231321AbhC2TEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:04:52 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:49607 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhC2TEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:04:03 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE61C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:04:03 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id by2so6970732qvb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9S+bGUd9aZDaRnQzBvs27iCy/h9nzkF8Ov8dhaqiwqs=;
-        b=eWVXCoWrV8VfDiWNZAeerOHLN4/+KZHc03zq3r0KE8I7mB0bFCyogNkYJnwAObQ/9l
-         dSS3wmIQ9AHl7DFQwLS2qEbx5OWChy0qTCHSEUoE85fShY/WtO+pOP1gd9SIzdoL+Dxo
-         ByqvFEtvo6iFkUhPhrREjF2WdKy2pMnbckytPCCoIcpSm1LMGu+ZUVp9YIhv+HWfaz9o
-         wph+f/9mwniABA7vFYM/16ez9a78XtsWiJYjnrec5xsJE2EksF5Fxcq3zUo1gEnuRIwf
-         6g1S3HzEmQOH3mxGHAvr8NFf8dPLxkrOpxlowPchkyxsnX8ZNpnA7zYzkMF4Qfiz53VG
-         lZ0A==
+        Mon, 29 Mar 2021 15:04:24 -0400
+Received: by mail-il1-f198.google.com with SMTP id t9so1078179ilo.16
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:04:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9S+bGUd9aZDaRnQzBvs27iCy/h9nzkF8Ov8dhaqiwqs=;
-        b=TZEtsq/Uv2KgCjocEntW9DrFF0+ZPlIdeSCIOmfoznozEYoi7CSdeiQYztWBOoy/EK
-         F/ZpY3AI2hrMvadsfmP/Ky6eH8xX4Ay7Q13tTIthdtWGkV8QphUBZoFDImidUBCnrLfx
-         z0RhuU3UYuG5yvONMakV5rElrBFcI8d24QSi5sxDm6LELb5Fq+bG2RNVbbnKZBRA0dZR
-         WsChTXEfxE9PxAGbG3NuUP9AxvfjqI1Q0YZ5YFJJcHfPV53sch2GhZlPK/2uTAp4ok4B
-         L12V3F7MP/sAOPBHd3r+82B+vcAw2EUOpk1ksyOcAzZG/kPFRHWSHJFHF3sv/8frHOSd
-         uHhA==
-X-Gm-Message-State: AOAM530mB2mWYATrURNIjbCJKbUPT0d42IzaZF5NVTQKasMWOIEHB3q+
-        IhXhB43S9Smqo1izPn7kK6A=
-X-Google-Smtp-Source: ABdhPJyfgVjidUPOZW0SNRMRivEZvWFn55bXuPEiPx11dxdOv6v/f7jaRvGcnLTF1L839SzGH9FtvA==
-X-Received: by 2002:a05:6214:b04:: with SMTP id u4mr26665394qvj.0.1617044642357;
-        Mon, 29 Mar 2021 12:04:02 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id 6sm11637739qth.82.2021.03.29.12.04.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:04:02 -0700 (PDT)
-Subject: Re: Linux 5.12-rc5
-To:     Rob Herring <robh@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wg89U6PLp1AGhaqUx4KAZtkvKS6kuNmb+zObQhf1jez+g@mail.gmail.com>
- <20210329020746.GA250550@roeck-us.net>
- <CAHk-=wiMoP9PifpuUnQ3xmAM_LmGARr+fxFuOSX1rvh2mz35Mw@mail.gmail.com>
- <CAL_JsqKxLy3Gc8d1Q23AQaWTKLmc_a28tokZZ08rHnV2qU0iew@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <824f80dc-7936-4f7b-b298-1b2c2ad60716@gmail.com>
-Date:   Mon, 29 Mar 2021 14:04:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=AVwORS39iJ9xu4q+8QfDhm/bQHx1mmyqlU6NHSMEreI=;
+        b=G4VweeexzHvlUTwd6J0kfoBtL1Dlw2UNlsx/xC66DgntrYASOmIP2Jypqmrjtl+5UI
+         UnQXRN+VS7dfXnDIgtzLwuYygAt4z1eJJDh7fDk0DxblJbKXzZlHLKqAooZWZMGkpZSV
+         sXJTl0cIR97FwBAhhY3SMejq/2yDQ2ol7AGfcE/E10Q+g9TZSBIMHXZL2q7Hs+3faxRx
+         nhKxGKR/W+sBiG3HoJRMsDTAm6OYwHZcZBi39f0KxzypLa3FflU8TvvTQBqxRdpCpXQu
+         bAfMIE4zuwTPZkGyXXWxDQL6TWq/wtXjt2VVgibP+exIZhNUGVwYn0F/PDbEEcv/VK+U
+         FuVg==
+X-Gm-Message-State: AOAM531I78/2Qy/QRn7vsnJzhMxr8gtlPkBc8ZY+X9KfUTT+2K/ExuAG
+        sfQSQILvgSeXcxiUq3dKaUAraN5rfRckS/UxO4LBqzSJxDm3
+X-Google-Smtp-Source: ABdhPJzij+5L3f78ELNrRqdMsg2a8aPkF73j90dz/KGPq1mV6Gr8xbTw5jXKHMWj/ShFwEsD5QrCVm1jB6gG8kHqvp13mi1rkuuL
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKxLy3Gc8d1Q23AQaWTKLmc_a28tokZZ08rHnV2qU0iew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:c72b:: with SMTP id h11mr25049724jao.70.1617044664398;
+ Mon, 29 Mar 2021 12:04:24 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 12:04:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ceb65005beb18c8f@google.com>
+Subject: [syzbot] WARNING in xfrm_alloc_compat (2)
+From:   syzbot <syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dima@arista.com, herbert@gondor.apana.org.au,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 1:41 PM, Rob Herring wrote:
-> n Mon, Mar 29, 2021 at 1:05 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> On Sun, Mar 28, 2021 at 7:07 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>
->>> This is not really a new problem. I enabled devicetree unit tests
->>> in the openrisc kernel and was rewarded with a crash.
->>> https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
->>> has all the glorious details.
->>
->> Hmm.
->>
->> I'm not sure I love that patch.
->>
->> I don't think the patch is _wrong_ per se, but if that "require 8 byte
->> alignment" is a problem, then this seems to be papering over the issue
->> rather than fixing it.
->>
->> So your patch protects from a NULL pointer dereference, but the
->> underlying issue seems to be a regression, and the fix sounds like the
->> kernel shouldn't be so strict about alignment requirements.
-> 
-> In the interest of the DT unittests not panicking and halting boot, I
-> think we should handle NULL pointer.
+Hello,
 
-Agreed.
+syzbot found the following issue on:
 
-> 
->> I guess we could make ARCH_SLAB_MINALIGN be at least 8 (perhaps only
->> if the allocations is >= 8) but honestly, I don't think libfdt merits
->> making such a big change. Small allocations are actually not uncommon
->> in the kernel, and on 32-bit architectures I think 4-byte allocations
->> are normal.
->>
->> So I'd be inclined to just remove the new
->>
->>         /* The device tree must be at an 8-byte aligned address */
->>         if ((uintptr_t)fdt & 7)
->>                 return -FDT_ERR_ALIGNMENT;
->>
->> check in scripts/dtc/libfdt/fdt.c which I assume is the source of the
->> problem. Rob?
-> 
-> That is the source, but I'd rather not remove it as we try to avoid
-> any modifications from upstream. And we've found a couple of cases of
-> not following documented alignment requirements.
+HEAD commit:    6c996e19 net: change netdev_unregister_timeout_secs min va..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=102e5926d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0ac79756537274e
+dashboard link: https://syzkaller.appspot.com/bug?extid=834ffd1afc7212eb8147
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a7b1aad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae6b7cd00000
 
-Agreed to not remove.  We can be properly aligned without changing
-kmemdup().
+The issue was bisected to:
 
-> 
->> Your patch to then avoid the NULL pointer dereference seems to be then
->> an additional safety, but not fixing the actual regression.
-> 
-> I think the right fix is not using kmemdup which copies the unittest dtb.A
+commit 5f3eea6b7e8f58cf5c8a9d4b9679dc19e9e67ba3
+Author: Dmitry Safonov <dima@arista.com>
+Date:   Mon Sep 21 14:36:53 2020 +0000
 
-This is not the only place a kmemdup() is used by overlays.
+    xfrm/compat: Attach xfrm dumps to 64=>32 bit translator
 
-I'll create a patch this week to fix all of the kmemdup() locations and add
-the null pointer check.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10694b3ad00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12694b3ad00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14694b3ad00000
 
--Frank
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com
+Fixes: 5f3eea6b7e8f ("xfrm/compat: Attach xfrm dumps to 64=>32 bit translator")
 
-> 
-> Rob
-> 
+netlink: 208 bytes leftover after parsing attributes in process `syz-executor193'.
+------------[ cut here ]------------
+unsupported nla_type 356
+WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_xlate64_attr net/xfrm/xfrm_compat.c:280 [inline]
+WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_xlate64 net/xfrm/xfrm_compat.c:301 [inline]
+WARNING: CPU: 1 PID: 8423 at net/xfrm/xfrm_compat.c:280 xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:328
+Modules linked in:
+CPU: 1 PID: 8423 Comm: syz-executor193 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:xfrm_xlate64_attr net/xfrm/xfrm_compat.c:280 [inline]
+RIP: 0010:xfrm_xlate64 net/xfrm/xfrm_compat.c:301 [inline]
+RIP: 0010:xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:328
+Code: de e8 5b d7 c3 f9 84 db 0f 85 b0 f8 ff ff e8 9e d0 c3 f9 8b 74 24 08 48 c7 c7 80 42 76 8a c6 05 39 2e 02 06 01 e8 74 b7 16 01 <0f> 0b e9 8d f8 ff ff e8 7b d0 c3 f9 8b 14 24 48 c7 c7 40 42 76 8a
+RSP: 0018:ffffc90000fff4b8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801b1554c0 RSI: ffffffff815c4d75 RDI: fffff520001ffe89
+RBP: 00000000000000d8 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bdb0e R11: 0000000000000000 R12: 00000000ffffffa1
+R13: ffff8880248eb8f8 R14: ffff888013256dc0 R15: ffff8880132568c0
+FS:  000000000092f300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200001e0 CR3: 0000000023271000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ xfrm_alloc_userspi+0x66a/0xa30 net/xfrm/xfrm_user.c:1448
+ xfrm_user_rcv_msg+0x42c/0x8b0 net/xfrm/xfrm_user.c:2812
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43f009
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe0986bcb8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f009
+RDX: 0000000000000000 RSI: 0000000020000580 RDI: 0000000000000003
+RBP: 0000000000402ff0 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403080
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
