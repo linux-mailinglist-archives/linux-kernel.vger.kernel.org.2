@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F195D34C79A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6273834CC31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhC2IQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:16:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53426 "EHLO mail.kernel.org"
+        id S236252AbhC2I5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhC2IKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:10:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 806856193A;
-        Mon, 29 Mar 2021 08:10:19 +0000 (UTC)
+        id S234759AbhC2IhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35DE6619BD;
+        Mon, 29 Mar 2021 08:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005420;
-        bh=vDTule297NDWrNcykvNF42jM+G426aawvxQSx5srp4Q=;
+        s=korg; t=1617006994;
+        bh=Hy4x0bw+r59JBIaZWpkaP3g5ChE2bRAVSysQzuZG3tE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oyo4UIL49k9eCjB3B+JwaxcHhyG97WsC+wn9bXnWxXLPloHcXnQNtCV0FVBzOG3AP
-         umJUbNuDIimEgc2pTAsTkut5OBM/JwGk7jFluMguTj0sZgnvLgLpLBHwM+Fs/Tz+vl
-         8kAbTyEXdqg/NrZVeBKiixnSIkXewPo03fav0B9Y=
+        b=aHUFlnODz/U6UyXC++Fo/eEF2On4sb6T9PrFS3i7OPDMgJTm3ecENqD6vetPA5WVw
+         G7cWXIT6HntoN5gjWIAWYdG2+L/LVRVvgYMUhxXyqDI+jNsP9s0rLhGCbrW7LvvkBq
+         HMRpAz2n2PE/GqwZU2NMvQIe/PH7Q6MuNsQWPT98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
+        stable@vger.kernel.org, Chen Yi <yiche@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 41/72] ftgmac100: Restart MAC HW once
+Subject: [PATCH 5.11 181/254] sctp: move sk_route_caps check and set into sctp_outq_flush_transports
 Date:   Mon, 29 Mar 2021 09:58:17 +0200
-Message-Id: <20210329075611.648734179@linuxfoundation.org>
+Message-Id: <20210329075639.089482341@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 6897087323a2fde46df32917462750c069668b2f ]
+[ Upstream commit 8ff0b1f08ea73e5c08f5addd23481e76a60e741c ]
 
-The interrupt handler may set the flag to reset the mac in the future,
-but that flag is not cleared once the reset has occurred.
+The sk's sk_route_caps is set in sctp_packet_config, and later it
+only needs to change when traversing the transport_list in a loop,
+as the dst might be changed in the tx path.
 
-Fixes: 10cbd6407609 ("ftgmac100: Rework NAPI & interrupts handling")
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+So move sk_route_caps check and set into sctp_outq_flush_transports
+from sctp_packet_transmit. This also fixes a dst leak reported by
+Chen Yi:
+
+  https://bugzilla.kernel.org/show_bug.cgi?id=212227
+
+As calling sk_setup_caps() in sctp_packet_transmit may also set the
+sk_route_caps for the ctrl sock in a netns. When the netns is being
+deleted, the ctrl sock's releasing is later than dst dev's deleting,
+which will cause this dev's deleting to hang and dmesg error occurs:
+
+  unregister_netdevice: waiting for xxx to become free. Usage count = 1
+
+Reported-by: Chen Yi <yiche@redhat.com>
+Fixes: bcd623d8e9fa ("sctp: call sk_setup_caps in sctp_packet_transmit instead")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/faraday/ftgmac100.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sctp/output.c   | 7 -------
+ net/sctp/outqueue.c | 7 +++++++
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index acf27c395286..964407deca35 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1333,6 +1333,7 @@ static int ftgmac100_poll(struct napi_struct *napi, int budget)
- 	 */
- 	if (unlikely(priv->need_mac_restart)) {
- 		ftgmac100_start_hw(priv);
-+		priv->need_mac_restart = false;
+diff --git a/net/sctp/output.c b/net/sctp/output.c
+index 6614c9fdc51e..a6aa17df09ef 100644
+--- a/net/sctp/output.c
++++ b/net/sctp/output.c
+@@ -584,13 +584,6 @@ int sctp_packet_transmit(struct sctp_packet *packet, gfp_t gfp)
+ 		goto out;
+ 	}
  
- 		/* Re-enable "bad" interrupts */
- 		iowrite32(FTGMAC100_INT_BAD,
+-	rcu_read_lock();
+-	if (__sk_dst_get(sk) != tp->dst) {
+-		dst_hold(tp->dst);
+-		sk_setup_caps(sk, tp->dst);
+-	}
+-	rcu_read_unlock();
+-
+ 	/* pack up chunks */
+ 	pkt_count = sctp_packet_pack(packet, head, gso, gfp);
+ 	if (!pkt_count) {
+diff --git a/net/sctp/outqueue.c b/net/sctp/outqueue.c
+index 3fd06a27105d..5cb1aa5f067b 100644
+--- a/net/sctp/outqueue.c
++++ b/net/sctp/outqueue.c
+@@ -1135,6 +1135,7 @@ static void sctp_outq_flush_data(struct sctp_flush_ctx *ctx,
+ 
+ static void sctp_outq_flush_transports(struct sctp_flush_ctx *ctx)
+ {
++	struct sock *sk = ctx->asoc->base.sk;
+ 	struct list_head *ltransport;
+ 	struct sctp_packet *packet;
+ 	struct sctp_transport *t;
+@@ -1144,6 +1145,12 @@ static void sctp_outq_flush_transports(struct sctp_flush_ctx *ctx)
+ 		t = list_entry(ltransport, struct sctp_transport, send_ready);
+ 		packet = &t->packet;
+ 		if (!sctp_packet_empty(packet)) {
++			rcu_read_lock();
++			if (t->dst && __sk_dst_get(sk) != t->dst) {
++				dst_hold(t->dst);
++				sk_setup_caps(sk, t->dst);
++			}
++			rcu_read_unlock();
+ 			error = sctp_packet_transmit(packet, ctx->gfp);
+ 			if (error < 0)
+ 				ctx->q->asoc->base.sk->sk_err = -error;
 -- 
 2.30.1
 
