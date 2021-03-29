@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E399834CB2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B0634CC72
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234745AbhC2IoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
+        id S236669AbhC2JC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233368AbhC2I0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:26:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49262619C1;
-        Mon, 29 Mar 2021 08:25:50 +0000 (UTC)
+        id S231484AbhC2Iic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:38:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D632A61580;
+        Mon, 29 Mar 2021 08:38:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006350;
-        bh=jDaxwurOAMo41ggXWSfxUng3tmQmN0UDPAc2n7ZuL4U=;
+        s=korg; t=1617007112;
+        bh=L0yof3fYAZhQJATqRhsgBP0IB9pNDg/DsJmCJqCVAyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SClb2Jp/feONwY9eUp9hzsNEDPYxJcdwGfIPLkblz9A3bAVvoDlri86tXHr2XjK4t
-         VjrAzOOeFpnbXVv/KdTvtBKe5jlWs/32hYBFIYpwupNaMH4iYQaNNRY/bIwEZvcDMQ
-         1mu6Du7tmDET59ONtf1NjympeAeNi8qbuh5ovX8Y=
+        b=zrrJ/Fb/YL1WcbSp9DFkDNq4l4tRxjEYxS9PMkowzmzUzmPcidralBBANj3XKMbtE
+         UwcsLqjMnZZ6if/sL8wx7pUZC25r0M5yfFwCq+Dl/+PJt9EUTPLeTdJUfXrcq6eSA4
+         zdO7wuC3uA2MOJwwV50C5q/VzeVMZ5ZmmGFRm4Zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Isaku Yamahata <isaku.yamahata@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 5.10 208/221] x86/mem_encrypt: Correct physical address calculation in __set_clr_pte_enc()
-Date:   Mon, 29 Mar 2021 09:58:59 +0200
-Message-Id: <20210329075636.053789669@linuxfoundation.org>
+        stable@vger.kernel.org, Divya Bharathi <Divya_Bharathi@dell.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 224/254] platform/x86: dell-wmi-sysman: Cleanup create_attributes_level_sysfs_files()
+Date:   Mon, 29 Mar 2021 09:59:00 +0200
+Message-Id: <20210329075640.449647237@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 8249d17d3194eac064a8ca5bc5ca0abc86feecde upstream.
+[ Upstream commit 35471138a9f7193482a2019e39643f575f8098dc ]
 
-The pfn variable contains the page frame number as returned by the
-pXX_pfn() functions, shifted to the right by PAGE_SHIFT to remove the
-page bits. After page protection computations are done to it, it gets
-shifted back to the physical address using page_level_shift().
+Cleanup create_attributes_level_sysfs_files():
 
-That is wrong, of course, because that function determines the shift
-length based on the level of the page in the page table but in all the
-cases, it was shifted by PAGE_SHIFT before.
+1. There is no need to call sysfs_remove_file() on error, sysman_init()
+will already call release_attributes_data() on failure which already does
+this.
 
-Therefore, shift it back using PAGE_SHIFT to get the correct physical
-address.
+2. There is no need for the pr_debug() calls sysfs_create_file() should
+never fail and if it does it will already complain about the problem
+itself.
 
- [ bp: Rewrite commit message. ]
-
-Fixes: dfaaec9033b8 ("x86: Add support for changing memory encryption attribute in early boot")
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/81abbae1657053eccc535c16151f63cd049dcb97.1616098294.git.isaku.yamahata@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Management Driver over WMI for Dell Systems")
+Cc: Divya Bharathi <Divya_Bharathi@dell.com>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210321115901.35072-8-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mem_encrypt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/dell-wmi-sysman/sysman.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -231,7 +231,7 @@ static void __init __set_clr_pte_enc(pte
- 	if (pgprot_val(old_prot) == pgprot_val(new_prot))
- 		return;
+diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+index 5dd9b29d939c..7410ccae650c 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
++++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+@@ -210,19 +210,17 @@ static struct kobj_attribute pending_reboot = __ATTR_RO(pending_reboot);
+  */
+ static int create_attributes_level_sysfs_files(void)
+ {
+-	int ret = sysfs_create_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
++	int ret;
  
--	pa = pfn << page_level_shift(level);
-+	pa = pfn << PAGE_SHIFT;
- 	size = page_level_size(level);
+-	if (ret) {
+-		pr_debug("could not create reset_bios file\n");
++	ret = sysfs_create_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
++	if (ret)
+ 		return ret;
+-	}
  
- 	/*
+ 	ret = sysfs_create_file(&wmi_priv.main_dir_kset->kobj, &pending_reboot.attr);
+-	if (ret) {
+-		pr_debug("could not create changing_pending_reboot file\n");
+-		sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
+-	}
+-	return ret;
++	if (ret)
++		return ret;
++
++	return 0;
+ }
+ 
+ static ssize_t wmi_sysman_attr_show(struct kobject *kobj, struct attribute *attr,
+-- 
+2.30.1
+
 
 
