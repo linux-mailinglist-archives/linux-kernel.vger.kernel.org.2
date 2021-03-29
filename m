@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CB634CE42
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6164234CE47
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhC2Kvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:51:51 -0400
-Received: from mga04.intel.com ([192.55.52.120]:40548 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232874AbhC2KvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:51:23 -0400
-IronPort-SDR: hPONAMHmb6HINYsAo7MyNkBtutuNoktle693u0HPg0mCE3ZRk/Cs5PkoPWHJSaAHfJf7WgF4th
- x4oaRUPhSFnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="189271548"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208,223";a="189271548"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 03:51:22 -0700
-IronPort-SDR: byE4YpQA5TutuYbQztm2QuCZ/XhoDd/QhR/OrMe8egrD964XiKLQ7vXjIfwSuJ2PZRdVLdG7dc
- JJ9uHUXtAm8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208,223";a="515955923"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Mar 2021 03:50:55 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/12] i2c: Remove support for dangling device properties
-Date:   Mon, 29 Mar 2021 13:50:47 +0300
-Message-Id: <20210329105047.51033-13-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
-References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
+        id S231751AbhC2KxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhC2Kww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:52:52 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F867C061574;
+        Mon, 29 Mar 2021 03:52:52 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso4979045pjh.2;
+        Mon, 29 Mar 2021 03:52:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xrN3y8SFuswUEy9SstpaTFpKn84sjynD3sgeMPr3kys=;
+        b=eOj/2SP4af+P3Nh5IKpHWMieBOCJ8HibDTBjFSBNTgLz6Opk7mcXcSJfzKo5YoaGdS
+         7rR1VdkTkVr9X7csKPcVMD2Eh+ksQeQEvsadqK48acBROtg/XzFjMmN1ZNAfLAz2SNo9
+         NjGUZaMkmwPlmyjMOGogBCY9NVA46XhTs4BkVnOoYgcQgySKFW9kTC8RL1s9SvcoD3dO
+         B/+55lSSg/fmuX/w0aPqFhkF76qabjYB9H0tcWkSHhs/3pIISDzhOAK45LHAFGY7ZulS
+         9MjdQm4bDgwoxo0XZ80WffcHpEqP6Gfl7oWq02sG0C9jOq94aLVuwXkT+ay674wDIFlO
+         RNLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xrN3y8SFuswUEy9SstpaTFpKn84sjynD3sgeMPr3kys=;
+        b=Cf040NIHc0hyl2QToIN8xkw51jj6ShbDrt/yOPcEO/jJuV7/RW1TG7SqyJnG1Wmhcf
+         EBAuB8kGKgbvI64X+98R9V/Y58BmhbQyLB3OGuG1J+tTCa7YJPRa2qQbj/B8Y2iCBEl2
+         ZsgdFDrFjHa1F4w1ajgJC6TZHqI02LqvCZXhGYuVSt09Ll+BF7pbkisap3+vlpWT3wEZ
+         NYU4iF+9ee3wMK+d7kMicncfF6akHtmRhcdN+nXcAz/YpBhuvCIc4IpLDaxHQDrFHT1w
+         ih2WusPQ2WmYIRCDn4Qh8Bb6mVGsO+pqpAc+baX1jmWCYLPU2ywTH2HMupbO6qbwFAJc
+         OIkQ==
+X-Gm-Message-State: AOAM530VqFiTTd+1MxKQSHrJVz0Bo1bx0IrSpxVK8S8ZznyGUeCRdhaa
+        6uUt7jHmX5Qi3dxt5Nnn+npaRo9go1Wd+8Hf/L8=
+X-Google-Smtp-Source: ABdhPJzmMjAr0Aw18HLpbxH+HNqlRRkm1Xnyf0R376212BmMML35Y/+VCDVF9sBiu+dd6CORmiiDgWqGsCyjFx5f/8M=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr26954806pjx.181.1617015171450;
+ Mon, 29 Mar 2021 03:52:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210328180124.8762-1-dmugil2000@gmail.com> <CAHp75Vdv4zAsn_v1TaUcYgY_PpQrfhfGNsc8=QTbPY=oFN_xbA@mail.gmail.com>
+In-Reply-To: <CAHp75Vdv4zAsn_v1TaUcYgY_PpQrfhfGNsc8=QTbPY=oFN_xbA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 29 Mar 2021 13:52:35 +0300
+Message-ID: <CAHp75VdS=Px4MdhA5mzzqaQEsMs3ur76m+tYb1inVqBFfu_CRA@mail.gmail.com>
+Subject: Re: [PATCH] iio: accel: da280: Drop unnecessarily used braces
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From now on only accepting complete software nodes.
++Cc: Hans (just for your opinion)
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/i2c/i2c-boardinfo.c | 11 -----------
- drivers/i2c/i2c-core-base.c | 15 +--------------
- include/linux/i2c.h         |  2 --
- 3 files changed, 1 insertion(+), 27 deletions(-)
+On Sun, Mar 28, 2021 at 10:40 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Sunday, March 28, 2021, Mugilraj Dhavachelvan <dmugil2000@gmail.com> w=
+rote:
+>>
+>> As per linux kernel coding style braces are not needed for single
+>> statement.
+>> Checkpatch
+>> warning: braces {} are not necessary for any arm of this statement
+>> 128: FILE: drivers/iio/accel/da280.c:128:
+>>
+>
+> While it=E2=80=99s the correct patch, I would rather recommend making the=
+ driver non-ACPI centric. I.e.:
+> - replace that custom function by device_get_match_data() call
+>
+> - replace that condition by something like
+> type =3D device_get_match_data();
+>
+> - drop ACPI_PTR()
+>
+> - replace acpi.h by mod_devicetable.h and property.h
+>
+> - convert to use ->probe_new()
+>
+>
+>  Everything, except the last one is in one patch, the last one is another=
+ patch.
+>
+>
+>
+>> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+>> ---
+>>  drivers/iio/accel/da280.c | 5 ++---
+>>  1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/iio/accel/da280.c b/drivers/iio/accel/da280.c
+>> index 227bea2d738b..31f290ae4386 100644
+>> --- a/drivers/iio/accel/da280.c
+>> +++ b/drivers/iio/accel/da280.c
+>> @@ -125,11 +125,10 @@ static int da280_probe(struct i2c_client *client,
+>>         indio_dev->modes =3D INDIO_DIRECT_MODE;
+>>         indio_dev->channels =3D da280_channels;
+>>
+>> -       if (ACPI_HANDLE(&client->dev)) {
+>> +       if (ACPI_HANDLE(&client->dev))
+>>                 chip =3D da280_match_acpi_device(&client->dev);
+>> -       } else {
+>> +       else
+>>                 chip =3D id->driver_data;
+>> -       }
+>>
+>>         if (chip =3D=3D da226) {
+>>                 indio_dev->name =3D "da226";
 
-diff --git a/drivers/i2c/i2c-boardinfo.c b/drivers/i2c/i2c-boardinfo.c
-index 8bc51d4e69df3..4df8ad092df38 100644
---- a/drivers/i2c/i2c-boardinfo.c
-+++ b/drivers/i2c/i2c-boardinfo.c
-@@ -47,7 +47,6 @@ EXPORT_SYMBOL_GPL(__i2c_first_dynamic_bus_num);
-  *
-  * The board info passed can safely be __initdata, but be careful of embedded
-  * pointers (for platform_data, functions, etc) since that won't be copied.
-- * Device properties are deep-copied though.
-  */
- int i2c_register_board_info(int busnum, struct i2c_board_info const *info, unsigned len)
- {
-@@ -72,16 +71,6 @@ int i2c_register_board_info(int busnum, struct i2c_board_info const *info, unsig
- 		devinfo->busnum = busnum;
- 		devinfo->board_info = *info;
- 
--		if (info->properties) {
--			devinfo->board_info.properties =
--					property_entries_dup(info->properties);
--			if (IS_ERR(devinfo->board_info.properties)) {
--				status = PTR_ERR(devinfo->board_info.properties);
--				kfree(devinfo);
--				break;
--			}
--		}
--
- 		if (info->resources) {
- 			devinfo->board_info.resources =
- 				kmemdup(info->resources,
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index a6a68081f54e1..916899ee1115f 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -910,23 +910,13 @@ i2c_new_client_device(struct i2c_adapter *adap, struct i2c_board_info const *inf
- 
- 	i2c_dev_set_name(adap, client, info);
- 
--	if (info->properties) {
--		status = device_add_properties(&client->dev, info->properties);
--		if (status) {
--			dev_err(&adap->dev,
--				"Failed to add properties to client %s: %d\n",
--				client->name, status);
--			goto out_err_put_of_node;
--		}
--	}
--
- 	if (info->swnode) {
- 		status = device_add_software_node(&client->dev, info->swnode);
- 		if (status) {
- 			dev_err(&adap->dev,
- 				"Failed to add software node to client %s: %d\n",
- 				client->name, status);
--			goto out_free_props;
-+			goto out_err_put_of_node;
- 		}
- 	}
- 
-@@ -941,9 +931,6 @@ i2c_new_client_device(struct i2c_adapter *adap, struct i2c_board_info const *inf
- 
- out_remove_swnode:
- 	device_remove_software_node(&client->dev);
--out_free_props:
--	if (info->properties)
--		device_remove_properties(&client->dev);
- out_err_put_of_node:
- 	of_node_put(info->of_node);
- out_err:
-diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-index cb1f882a3e88e..54b3ccc71e372 100644
---- a/include/linux/i2c.h
-+++ b/include/linux/i2c.h
-@@ -391,7 +391,6 @@ static inline bool i2c_detect_slave_mode(struct device *dev) { return false; }
-  * @platform_data: stored in i2c_client.dev.platform_data
-  * @of_node: pointer to OpenFirmware device node
-  * @fwnode: device node supplied by the platform firmware
-- * @properties: Deprecated - use swnode instead
-  * @swnode: software node for the device
-  * @resources: resources associated with the device
-  * @num_resources: number of resources in the @resources array
-@@ -416,7 +415,6 @@ struct i2c_board_info {
- 	void		*platform_data;
- 	struct device_node *of_node;
- 	struct fwnode_handle *fwnode;
--	const struct property_entry *properties;
- 	const struct software_node *swnode;
- 	const struct resource *resources;
- 	unsigned int	num_resources;
--- 
-2.30.2
-
+--=20
+With Best Regards,
+Andy Shevchenko
