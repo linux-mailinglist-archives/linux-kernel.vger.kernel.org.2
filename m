@@ -2,112 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533BB34C352
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AED334C360
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbhC2FwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        id S229955AbhC2Fzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhC2Fvz (ORCPT
+        with ESMTP id S229674AbhC2Fz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:51:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CBDC061574;
-        Sun, 28 Mar 2021 22:51:55 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id b83so16585929lfd.11;
-        Sun, 28 Mar 2021 22:51:55 -0700 (PDT)
+        Mon, 29 Mar 2021 01:55:27 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E50FC061574;
+        Sun, 28 Mar 2021 22:55:27 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id j7so8584074qtx.5;
+        Sun, 28 Mar 2021 22:55:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RTLEyGYV7yZnyiywVX1eOKOUOm0dlrQWocBPAeC79ME=;
-        b=hNAHBojYISzngalmZZEPtvRBfhgwq4l7m6YkXQek8/1QFA2rul3OVIBvlStI01aBHC
-         hxo9w3v7g05OYpns2vmFULGfBkX3dE1exCo6nX+P4Qc4/JSzgT2VPVSjSUQ2NonW2GYW
-         YDj0OUyKAwGXNc08nvbkhEu/8Xu6D0YL9enJTsggteQnKCOrjK2Onvb8rjCRt4boYdPX
-         Madcp2QIdCcHzrR+lrF9eEtm+54C6WoNmW808AtKEZWFvHGAfrcs6KB+XZdLzL/B45QS
-         0ETnX78rbx3ECTEcNkAsP9sTRdBRwWD7ARh5htEPboxnb4juYxjT9TiQCv8RqcS77diM
-         bULQ==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3sxooqOLO1y1jfA0hH8Tp6Do4156/VwnStLOftkWolU=;
+        b=Vlx9D3rNBdfV9Twbtu5elSlHPfi5IXXOKF2jGRNyYsk0o4ecYOB2cj/naEcloSDf8R
+         alIWlT36rpUX2jLbRw5jNyCb0r3zkvxNLxY/oU79NVWrIxn4iLG00+Wq2kw7CnCQbDa3
+         Vq5XIMiUAeKSjU0zJhBu0ZfLTacA025RRUEJktbgtvUYntzC2tJxy9ud0yj4A992QfYd
+         E65g7Sytx2VJjQoKcE9L8l3CpsnFO1Ta+UbOF/MzqyHx2L5IPQLP80F+olm2Uu7Gxp2I
+         iEptFFxpwRV3Tm3xQzYlhgiHlGq+3tuOwAAYp16fwL5O+70slP3kGBQQx1aeNOGA+OU6
+         i2Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RTLEyGYV7yZnyiywVX1eOKOUOm0dlrQWocBPAeC79ME=;
-        b=hP4rHLicsaiQlU+IRZYmVi/2UEunNLVZUXJW9g5mKBF8Svf8d1EGR+fjrcV/s8ZIXi
-         YJr/ozkJ0qbkZRh/2v6WSjZVjgkf0JExswjcctFP5ATND/5IgOhP1UBcHqC7JRNdTJle
-         MTWMIew8Y7mKKUU77sQ+q4nx0EcFI1cZSDpbJLFZSTNI3XCU5C3H4/IEaalBrvTHuyvV
-         rrWHsAvxKLyC6NJipNzO4r8hCl5ig9nHT1PuJCTbb6A8FIwQdKsfw3DpEbwI45+S7tOE
-         mZVokSjpikQwPz3il02d/E0XeOtd3wSFaUqEiWb4XD8lpct3iI/HJFtGZWRgOgkUZAO6
-         OX/w==
-X-Gm-Message-State: AOAM5311LU49dQjF4PPE82G5ZzSm3QUED69tl1fRDbarK9gS3/g1XSB7
-        dHIQtHNd6aZdtSmhg/XcyAEhZbkeWYc=
-X-Google-Smtp-Source: ABdhPJzUmHX+nuyzaEP26EJ10aru8aZC9ARy5zb2nWO8j/0CzMhFhLBvwpv8cuYyGvkhN9urB6hxlg==
-X-Received: by 2002:a05:6512:36c8:: with SMTP id e8mr14779024lfs.635.1616997113586;
-        Sun, 28 Mar 2021 22:51:53 -0700 (PDT)
-Received: from [10.0.0.42] (91-157-86-200.elisa-laajakaista.fi. [91.157.86.200])
-        by smtp.gmail.com with ESMTPSA id n18sm1360128lfl.148.2021.03.28.22.51.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Mar 2021 22:51:53 -0700 (PDT)
-Subject: Re: [PATCH 14/17] ASoC: ti: omap-abe-twl6040: remove useless
- assignment
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "open list:OMAP AUDIO SUPPORT" <linux-omap@vger.kernel.org>
-References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
- <20210326215927.936377-15-pierre-louis.bossart@linux.intel.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <c21d4306-4219-009c-289a-14aa5bb7f241@gmail.com>
-Date:   Mon, 29 Mar 2021 08:52:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=3sxooqOLO1y1jfA0hH8Tp6Do4156/VwnStLOftkWolU=;
+        b=sUid0KiCoSwNDDrZploOkd8zKYbn55CKZERWQVqyXajjY/wnEWHMfrFvWDOqE8BKt3
+         u+IrDTwfKpXCENjix/CO3wpzQAwJcqI4GA1GKrWgSZl0EMdPDaWHWQjKoOGrqaozQ3d3
+         XNAUU+GWp7zlKeE7VogHlonUe9AZ6Pxk/1goI2nhfp7Oj941W+RwZxVj1jIrxXZMCmSK
+         43cpu0Bam8XhvY08zwvX/cQ5mB97IBbP1ilowGwU0o6frosei6IcTKUI4FgK40iBPFBc
+         51WwaI5DsPgG2U0xxbLmckbCLXI53YcXyDHQW66ucBjIhdgbP7q/t/7MzwBeRXXVQDpO
+         vTMw==
+X-Gm-Message-State: AOAM530KJHu+8SK0HDigSXaaMs+Ems0spqbuWUHTPAqw5NRlFtpqUOdw
+        5cMTfqcKBau5N5dP8rnjE8qFXKh/LgMsuEae
+X-Google-Smtp-Source: ABdhPJyjMO9PATIBVElUDbHpz1rS/mlZe2xmTsSLkRGrzA/ytq1vxJ2tRlhHienza2FDGcd8/6DVxQ==
+X-Received: by 2002:ac8:6f2e:: with SMTP id i14mr21073963qtv.25.1616997326394;
+        Sun, 28 Mar 2021 22:55:26 -0700 (PDT)
+Received: from Gentoo ([156.146.37.195])
+        by smtp.gmail.com with ESMTPSA id f9sm10448869qto.46.2021.03.28.22.55.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 22:55:25 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 11:25:11 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
+        dave.jiang@intel.com, dan.j.williams@intel.com,
+        rdunlap@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/30] DMA: Mundane typo fixes
+Message-ID: <YGFrvwX8QngvwPbA@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
+        dave.jiang@intel.com, dan.j.williams@intel.com,
+        rdunlap@infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1616971780.git.unixbhaskar@gmail.com>
+ <20210329052910.GB26495@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210326215927.936377-15-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sWMMWipitTWX5OoP"
+Content-Disposition: inline
+In-Reply-To: <20210329052910.GB26495@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--sWMMWipitTWX5OoP
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-On 3/26/21 11:59 PM, Pierre-Louis Bossart wrote:
-> cppcheck warning:
-> 
-> sound/soc/ti/omap-abe-twl6040.c:173:10: style: Variable 'ret' is
-> assigned a value that is never used. [unreadVariable]
->  int ret = 0;
->          ^
+On 07:29 Mon 29 Mar 2021, Christoph Hellwig wrote:
+>I really don't think these typo patchbomb are that useful.  I'm all
+>for fixing typos when working with a subsystem, but I'm not sure these
+>patchbombs help anything.
+>
+I am sure you are holding the wrong end of the wand and grossly failing to
+understand.
 
-Thanks,
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Anyway, I hope I give a heads up ...find "your way" to fix those damn
+thing...it's glaring....
 
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/soc/ti/omap-abe-twl6040.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/ti/omap-abe-twl6040.c b/sound/soc/ti/omap-abe-twl6040.c
-> index 16ea039ff865..91cc9a4f44d7 100644
-> --- a/sound/soc/ti/omap-abe-twl6040.c
-> +++ b/sound/soc/ti/omap-abe-twl6040.c
-> @@ -170,7 +170,7 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm_runtime *rtd)
->  	struct snd_soc_card *card = rtd->card;
->  	struct abe_twl6040 *priv = snd_soc_card_get_drvdata(card);
->  	int hs_trim;
-> -	int ret = 0;
-> +	int ret;
->  
->  	/*
->  	 * Configure McPDM offset cancellation based on the HSOTRIM value from
-> 
+>On Mon, Mar 29, 2021 at 05:22:56AM +0530, Bhaskar Chowdhury wrote:
+>> This patch series fixes some trivial and rudimentary spellings in the COMMENT
+>> sections.
+>>
+>> Bhaskar Chowdhury (30):
+>>   acpi-dma.c: Fix couple of typos
+>>   altera-msgdma.c: Couple of typos fixed
+>>   amba-pl08x.c: Fixed couple of typos
+>>   bcm-sba-raid.c: Few typos fixed
+>>   bcm2835-dma.c: Fix a typo
+>>   idma64.c: Fix couple of typos
+>>   iop-adma.c: Few typos fixed
+>>   mv_xor.c: Fix a typo
+>>   mv_xor.h: Fixed a typo
+>>   mv_xor_v2.c: Fix a typo
+>>   nbpfaxi.c: Fixed a typo
+>>   of-dma.c: Fixed a typo
+>>   s3c24xx-dma.c: Fix a typo
+>>   Revert "s3c24xx-dma.c: Fix a typo"
+>>   s3c24xx-dma.c: Few typos fixed
+>>   st_fdma.h: Fix couple of typos
+>>   ste_dma40_ll.h: Fix a typo
+>>   tegra20-apb-dma.c: Fixed a typo
+>>   xgene-dma.c: Few spello fixes
+>>   at_hdmac.c: Quite a few spello fixes
+>>   owl-dma.c: Fix a typo
+>>   at_hdmac_regs.h: Couple of typo fixes
+>>   dma-jz4780.c: Fix a typo
+>>   Kconfig: Change Synopsys to Synopsis
+>>   ste_dma40.c: Few spello fixes
+>>   dw-axi-dmac-platform.c: Few typos fixed
+>>   dpaa2-qdma.c: Fix a typo
+>>   usb-dmac.c: Fix a typo
+>>   edma.c: Fix a typo
+>>   xilinx_dma.c: Fix a typo
+>>
+>>  drivers/dma/Kconfig                            |  8 ++++----
+>>  drivers/dma/acpi-dma.c                         |  4 ++--
+>>  drivers/dma/altera-msgdma.c                    |  4 ++--
+>>  drivers/dma/amba-pl08x.c                       |  4 ++--
+>>  drivers/dma/at_hdmac.c                         | 14 +++++++-------
+>>  drivers/dma/at_hdmac_regs.h                    |  4 ++--
+>>  drivers/dma/bcm-sba-raid.c                     |  8 ++++----
+>>  drivers/dma/bcm2835-dma.c                      |  2 +-
+>>  drivers/dma/dma-jz4780.c                       |  2 +-
+>>  drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c |  8 ++++----
+>>  drivers/dma/idma64.c                           |  4 ++--
+>>  drivers/dma/iop-adma.c                         |  6 +++---
+>>  drivers/dma/mv_xor.c                           |  2 +-
+>>  drivers/dma/mv_xor.h                           |  2 +-
+>>  drivers/dma/mv_xor_v2.c                        |  2 +-
+>>  drivers/dma/nbpfaxi.c                          |  2 +-
+>>  drivers/dma/of-dma.c                           |  2 +-
+>>  drivers/dma/owl-dma.c                          |  2 +-
+>>  drivers/dma/s3c24xx-dma.c                      |  6 +++---
+>>  drivers/dma/sh/shdmac.c                        |  2 +-
+>>  drivers/dma/sh/usb-dmac.c                      |  2 +-
+>>  drivers/dma/st_fdma.h                          |  4 ++--
+>>  drivers/dma/ste_dma40.c                        | 10 +++++-----
+>>  drivers/dma/ste_dma40_ll.h                     |  2 +-
+>>  drivers/dma/tegra20-apb-dma.c                  |  2 +-
+>>  drivers/dma/ti/edma.c                          |  2 +-
+>>  drivers/dma/xgene-dma.c                        |  6 +++---
+>>  drivers/dma/xilinx/xilinx_dma.c                |  2 +-
+>>  28 files changed, 59 insertions(+), 59 deletions(-)
+>>
+>> --
+>> 2.26.3
+>---end quoted text---
 
--- 
-Péter
+--sWMMWipitTWX5OoP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBha78ACgkQsjqdtxFL
+KRU5tAgAr1C5zvxnwKv4KhR9L2TClLDXSTaUY3OV1okoqlPp80479+s9NxY1Mdfb
+/dcKAncDa4LJOBe3vtl6RUzicAL+qMybaswSz7tR+hJjZRreWTpKOpeb/4CVZ2oS
+4MHOO6L8fKBFSQtnFKWj0MeNdZzoi+EIxEUKEu3IVZ8LY3Du4rLiiCElBKkxabcV
+v/N/kB9dvtqfHpGvire1GfBXJJGdWfWazs0+72IN4OSQacYtAcjgwALObuOP2Zmc
+hwsQgJQHEoKr2U1dmFaHlOvnU+qNmOmci4hkdVeF5sD7gFFomwXA3xW9USoMo9W1
+1cnEvFduJrGuL/e8jV3xI7KwNQVoUg==
+=XlPQ
+-----END PGP SIGNATURE-----
+
+--sWMMWipitTWX5OoP--
