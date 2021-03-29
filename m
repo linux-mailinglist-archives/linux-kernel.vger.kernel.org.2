@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1868E34CC44
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E761C34C862
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhC2I67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
+        id S233572AbhC2IVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhC2Ihf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 468306196E;
-        Mon, 29 Mar 2021 08:37:24 +0000 (UTC)
+        id S232637AbhC2INk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:13:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD7361959;
+        Mon, 29 Mar 2021 08:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007044;
-        bh=6GlC2+1Kik4I1fN3VDmxXUiskJCS6rKSVODO2sGCz2Y=;
+        s=korg; t=1617005608;
+        bh=o4u/VcO69L7DhtcHtxq/rNaFbwGDQVYq3qt12Vub5Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hX+5E4ExGWB8fkGDYphC+pCRsEyZ3cRxD7QDmlmGCmqUXOh8DTT4jOa7Q45fMUyIz
-         Xwc5H8agupfuxKpvZ+xu1ZheRAyygXFJ4HTr37+RcU53z1KW3qRVSBTRro/Gs+iAFM
-         zCOzW7ifZ3the3DufMMpHft2fEvIKHOg8HmoAADg=
+        b=NRE77AZ9hnRxYeFeBF8WoNfXh7A5icHExTWcA5EptjhCI3hGz0KOZLO24XzRLsi9u
+         CF/00pP2ceKwO+P+olUePXnLtyTNoumI0LyIUkm3tULwBC4fVpomliZ7PyRFKvzlNt
+         GxDCCdpoMTAAULDUAR/0cBNn1WTae7MMIwXOeb+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 165/254] net/sched: cls_flower: fix only mask bit check in the validate_ct_state
+Subject: [PATCH 5.4 053/111] bus: omap_l3_noc: mark l3 irqs as IRQF_NO_THREAD
 Date:   Mon, 29 Mar 2021 09:58:01 +0200
-Message-Id: <20210329075638.602018954@linuxfoundation.org>
+Message-Id: <20210329075616.958656004@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit afa536d8405a9ca36e45ba035554afbb8da27b82 ]
+[ Upstream commit 7d7275b3e866cf8092bd12553ec53ba26864f7bb ]
 
-The ct_state validate should not only check the mask bit and also
-check mask_bit & key_bit..
-For the +new+est case example, The 'new' and 'est' bits should be
-set in both state_mask and state flags. Or the -new-est case also
-will be reject by kernel.
-When Openvswitch with two flows
-ct_state=+trk+new,action=commit,forward
-ct_state=+trk+est,action=forward
+The main purpose of l3 IRQs is to catch OCP bus access errors and identify
+corresponding code places by showing call stack, so it's important to
+handle L3 interconnect errors as fast as possible. On RT these IRQs will
+became threaded and will be scheduled much more late from the moment actual
+error occurred so showing completely useless information.
 
-A packet go through the kernel  and the contrack state is invalid,
-The ct_state will be +trk-inv. Upcall to the ovs-vswitchd, the
-finally dp action will be drop with -new-est+trk.
+Hence, mark l3 IRQs as IRQF_NO_THREAD so they will not be forced threaded
+on RT or if force_irqthreads = true.
 
-Fixes: 1bcc51ac0731 ("net/sched: cls_flower: Reject invalid ct_state flags rules")
-Fixes: 3aed8b63336c ("net/sched: cls_flower: validate ct_state for invalid and reply flags")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
-Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0ee7261c9212 ("drivers: bus: Move the OMAP interconnect driver to drivers/bus/")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_flower.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/omap_l3_noc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
-index 46c1b3e9f66a..14316ba9b3b3 100644
---- a/net/sched/cls_flower.c
-+++ b/net/sched/cls_flower.c
-@@ -1432,7 +1432,7 @@ static int fl_set_key_ct(struct nlattr **tb,
- 			       &mask->ct_state, TCA_FLOWER_KEY_CT_STATE_MASK,
- 			       sizeof(key->ct_state));
+diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
+index b040447575ad..dcfb32ee5cb6 100644
+--- a/drivers/bus/omap_l3_noc.c
++++ b/drivers/bus/omap_l3_noc.c
+@@ -285,7 +285,7 @@ static int omap_l3_probe(struct platform_device *pdev)
+ 	 */
+ 	l3->debug_irq = platform_get_irq(pdev, 0);
+ 	ret = devm_request_irq(l3->dev, l3->debug_irq, l3_interrupt_handler,
+-			       0x0, "l3-dbg-irq", l3);
++			       IRQF_NO_THREAD, "l3-dbg-irq", l3);
+ 	if (ret) {
+ 		dev_err(l3->dev, "request_irq failed for %d\n",
+ 			l3->debug_irq);
+@@ -294,7 +294,7 @@ static int omap_l3_probe(struct platform_device *pdev)
  
--		err = fl_validate_ct_state(mask->ct_state,
-+		err = fl_validate_ct_state(key->ct_state & mask->ct_state,
- 					   tb[TCA_FLOWER_KEY_CT_STATE_MASK],
- 					   extack);
- 		if (err)
+ 	l3->app_irq = platform_get_irq(pdev, 1);
+ 	ret = devm_request_irq(l3->dev, l3->app_irq, l3_interrupt_handler,
+-			       0x0, "l3-app-irq", l3);
++			       IRQF_NO_THREAD, "l3-app-irq", l3);
+ 	if (ret)
+ 		dev_err(l3->dev, "request_irq failed for %d\n", l3->app_irq);
+ 
 -- 
 2.30.1
 
