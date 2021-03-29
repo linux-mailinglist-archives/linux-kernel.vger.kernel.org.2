@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE0C34CA3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482E934CBDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhC2IgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39144 "EHLO mail.kernel.org"
+        id S236585AbhC2Ix4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233666AbhC2IWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:22:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E8E61601;
-        Mon, 29 Mar 2021 08:22:07 +0000 (UTC)
+        id S234278AbhC2IfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:35:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEAE61879;
+        Mon, 29 Mar 2021 08:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006128;
-        bh=XZdW0vt0XFXg9vIcdEI77opC+PqakfdB/iYPtPi2TXs=;
+        s=korg; t=1617006898;
+        bh=Huz5TxqOh7UyjdG8lkFBjPUKrbpAMS/5rbkD7g+KQoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSAVQtBrdY8OscfbqNb8WO7imn8w7SlCtaBHRlSeRDBi2EQkpDsx8POC1gKLIPX5a
-         dXqaAuHx5PYiMpvPV1gCJPR/fZxhoRGpcrWY56hDGwyJkLQL8z5LE0Lgqx1RXkZ/wq
-         Kr+gWqnBqj1mIUcdYtVdPorfhkU0tFv6akTw0JA0=
+        b=Tu5GZZaZtTILEVSFQIhEC2lwP2aXzt5c+B2FRHy4jpTvQHXoVzJF1K0ojdhOGp1Cc
+         FFUNYVTCkzsbb9Am8Lk25B7lSb4nwBllAG8UOENuyX4eLC4J79x/SuUeQri/eMBhsP
+         CrqM3C2ocNhiDwTpWVk++4JCjDGf1KKwhHxwSHxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 128/221] can: kvaser_pciefd: Always disable bus load reporting
+Subject: [PATCH 5.11 143/254] net: phylink: Fix phylink_err() function name error in phylink_major_config
 Date:   Mon, 29 Mar 2021 09:57:39 +0200
-Message-Id: <20210329075633.473109005@linuxfoundation.org>
+Message-Id: <20210329075637.913790677@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-[ Upstream commit 7c6e6bce08f918b64459415f58061d4d6df44994 ]
+[ Upstream commit d82c6c1aaccd2877b6082cebcb1746a13648a16d ]
 
-Under certain circumstances, when switching from Kvaser's linuxcan driver
-(kvpciefd) to the SocketCAN driver (kvaser_pciefd), the bus load reporting
-is not disabled.
-This is flooding the kernel log with prints like:
-[3485.574677] kvaser_pciefd 0000:02:00.0: Received unexpected packet type 0x00000009
+if pl->mac_ops->mac_finish() failed, phylink_err should use
+"mac_finish" instead of "mac_prepare".
 
-Always put the controller in the expected state, instead of assuming that
-bus load reporting is inactive.
-
-Note: If bus load reporting is enabled when the driver is loaded, you will
-      still get a number of bus load packages (and printouts), before it is
-      disabled.
-
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
-Link: https://lore.kernel.org/r/20210309091724.31262-1-jimmyassarsson@gmail.com
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: b7ad14c2fe2d4 ("net: phylink: re-implement interface configuration with PCS")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/kvaser_pciefd.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/phy/phylink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 43151dd6cb1c..99323c273aa5 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -57,6 +57,7 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_KCAN_STAT_REG 0x418
- #define KVASER_PCIEFD_KCAN_MODE_REG 0x41c
- #define KVASER_PCIEFD_KCAN_BTRN_REG 0x420
-+#define KVASER_PCIEFD_KCAN_BUS_LOAD_REG 0x424
- #define KVASER_PCIEFD_KCAN_BTRD_REG 0x428
- #define KVASER_PCIEFD_KCAN_PWM_REG 0x430
- /* Loopback control register */
-@@ -949,6 +950,9 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
- 		timer_setup(&can->bec_poll_timer, kvaser_pciefd_bec_poll_timer,
- 			    0);
- 
-+		/* Disable Bus load reporting */
-+		iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_BUS_LOAD_REG);
-+
- 		tx_npackets = ioread32(can->reg_base +
- 				       KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
- 		if (((tx_npackets >> KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT) &
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index 84f6e197f965..add9156601af 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -472,7 +472,7 @@ static void phylink_major_config(struct phylink *pl, bool restart,
+ 		err = pl->mac_ops->mac_finish(pl->config, pl->cur_link_an_mode,
+ 					      state->interface);
+ 		if (err < 0)
+-			phylink_err(pl, "mac_prepare failed: %pe\n",
++			phylink_err(pl, "mac_finish failed: %pe\n",
+ 				    ERR_PTR(err));
+ 	}
+ }
 -- 
 2.30.1
 
