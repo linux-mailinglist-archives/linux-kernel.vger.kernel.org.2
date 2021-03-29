@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03AF34CEBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC8134CEC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhC2LTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhC2LSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:18:51 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S232347AbhC2LWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232206AbhC2LVp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:21:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD49C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 04:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rtyz5hktwyQm5GdRX1cmqiUToMOy31fqUOx4emPDbTA=; b=HU7UJYrf+JnrazLZO+MCNanPjC
+        BupyrV9OwMSCYJ2NiqPIzZdp3cQFYOmIccn+aa2A0ur3NIXXFIg1vBWZX8GSo+Jp/yLFQnCCU2df4
+        hV6v/qZ+YxZli8EsFvXy4sOJFWqFGzDkjQ6s1WhHkCDXD90AiE/JwJPSR7EOlhm4S2CeIdwkULQCK
+        YmHfHreQULkrbp5w8FHXauehgehRmV2AQVPRjRNG9pDZ2trA816rPBzVcslqVrfVLHGfEGFcPXS2z
+        QSMkqSEBiWXEEYoZBD+jx+NAtQlv8BCFv9vjbVOr4PhyWvT+N03BD88X1Ijkw29qiVClgD7S0HShp
+        rNdGMJsw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQpvK-001Seu-PA; Mon, 29 Mar 2021 11:19:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF18761554;
-        Mon, 29 Mar 2021 11:18:49 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 12:18:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Lucas Stankus <lucas.p.stankus@gmail.com>,
-        Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] iio: adc: ad7923: register device with
- devm_iio_device_register
-Message-ID: <20210329121856.0327b9a4@jic23-huawei>
-In-Reply-To: <1548d948-bd01-a8db-6ecc-720bb7ca73a9@metafoo.de>
-References: <cover.1616966903.git.lucas.p.stankus@gmail.com>
-        <b0146465d52f4e259f5f95c83c71e72f065093da.1616966903.git.lucas.p.stankus@gmail.com>
-        <1548d948-bd01-a8db-6ecc-720bb7ca73a9@metafoo.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C2235304B90;
+        Mon, 29 Mar 2021 13:19:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8DE19207539C2; Mon, 29 Mar 2021 13:19:07 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 13:19:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/debug: Don't disable IRQ when acquiring
+ sched_debug_lock
+Message-ID: <YGG3q1LxtaF1/wc1@hirez.programming.kicks-ass.net>
+References: <20210327232529.2349-1-longman@redhat.com>
+ <20210329102345.6awrhtlrueqwhrpi@maple.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329102345.6awrhtlrueqwhrpi@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 09:06:14 +0200
-Lars-Peter Clausen <lars@metafoo.de> wrote:
-
-> On 3/28/21 11:46 PM, Lucas Stankus wrote:
-> > Registers the device using the devm variant.
-> > This is the final step of converting the ad7923 to only use devm routines,
-> > meaning that the ad7923_remove() function is no longer needed to release
-> > resources on device detach.
-> > 
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>  
+On Mon, Mar 29, 2021 at 11:23:45AM +0100, Daniel Thompson wrote:
+> On Sat, Mar 27, 2021 at 07:25:28PM -0400, Waiman Long wrote:
+> > The sched_debug_lock was used only in print_cpu().  The
+> > print_cpu() function has two callers - sched_debug_show() and
+> > sysrq_sched_debug_show(). Both of them are invoked by user action
+> > (sched_debug file and sysrq-t). As print_cpu() won't be called from
+> > interrupt context at all, there is no point in disabling IRQ when
+> > acquiring sched_debug_lock.
 > 
-> Hi,
-> 
-> Thanks for the patches.T his looks good, just one small comment.
+> This looks like it introduces a deadlock risk if sysrq-t triggers from an
+> interrupt context. Has the behaviour of sysrq changed recently or will
+> tools like MAGIC_SYSRQ_SERIAL still trigger from interrupt context?
 
-On basis of saving everyone time, I've fixed up the comment from Lars
-below whilst applying.
-
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to see if they can find anything we missed.
-
-Thanks,
-
-Jonathan
-
-> 
-> > ---
-> >   drivers/iio/adc/ad7923.c | 12 +-----------
-> >   1 file changed, 1 insertion(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/ad7923.c b/drivers/iio/adc/ad7923.c
-> > index d07eaf3111ed..f7af2f194789 100644
-> > --- a/drivers/iio/adc/ad7923.c
-> > +++ b/drivers/iio/adc/ad7923.c
-> > @@ -356,16 +356,7 @@ static int ad7923_probe(struct spi_device *spi)
-> >   	if (ret)
-> >   		return ret;
-> >   
-> > -	return iio_device_register(indio_dev);
-> > -}
-> > -
-> > -static int ad7923_remove(struct spi_device *spi)
-> > -{
-> > -	struct iio_dev *indio_dev = spi_get_drvdata(spi);  
-> 
-> This removes the last user of get_drvdata() on the SPI device. This means you 
-> can also remove the spi_set_drvdata() in the probe function.
-> 
-> > -
-> > -	iio_device_unregister(indio_dev);
-> > -
-> > -	return 0;
-> > +	return devm_iio_device_register(&spi->dev, indio_dev);
-> >   }  
-
+Yeah, sysrq-t is very often interrupt context. The patch is clearly
+bogus.
