@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56D634E2FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C832734E301
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhC3IS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:18:56 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:23463 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhC3ISs (ORCPT
+        id S231536AbhC3IT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:19:28 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15821 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231430AbhC3ITC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:18:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617092328; x=1648628328;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+gyuP2o8c81Fb8w4sK4HiD0tTwx8CqW4Of6BFZ8CVpc=;
-  b=t3lD7ORaiAP00DXQRqkPI9L3sr63eH5EQ+Yu7fmR630sinq7Kko4AD3Z
-   4SXj8YwQ6fKqCEVjeGWHHntWeyEWTdWQ5mnX8u8jL3gaO65cUvHUrM9df
-   I8asi7FUnDiMZjNuUBZxqxkkHMFQ2JyXPIEe4Xw0AGiWojFPnch5Ar6KV
-   uFQoeTqQrwSr7n1hZprU2otAe0WUKVDEXFZVQviGpu6KL+8vPn8kog7vt
-   NOFsYtQk/QFJVYMhQqanohFrS8d/wQivERMod6FOdWqtrfVUoNQsdiT22
-   h1TZv1RxQYxC7PY4PrMZL17D+p07UKPlyQtRS0gp2CagNb5rtvLrwfojj
-   A==;
-IronPort-SDR: QOiXiy9v2yvWnu8splEZ7FCYjwOfZM9vsj+WkXS+Ez26JD7zAOsNo4nzyLB2nsJ/WVcL2p3uTd
- O0uYjcYzeP/WhLEfyD/Lbmvc+voqrTSDy0qTo7Om24f2skespBOB74BjMZpChKCSacFt0W++Pk
- jE+7GPbFvPCEFnbrIdeAb/v6OVaDpieiKwP3T+WBV6TwzB1t7uS2DRu6//8HbtBXpSBt2uWOz2
- E4aytVlV2W/oowrvLX+GN+pxdmYRPj6Zams5vQCQ/342xeshie3Ug3HEZZ8oklUiV8JxboZuC2
- H3U=
-X-IronPort-AV: E=Sophos;i="5.81,290,1610434800"; 
-   d="scan'208";a="49364921"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 01:18:47 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 30 Mar 2021 01:18:47 -0700
-Received: from den-her-m31857h.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 30 Mar 2021 01:18:45 -0700
-Message-ID: <2356027828f1fa424751e91e478ff4bc188e7f6d.camel@microchip.com>
-Subject: Re: [PATCH linux-next 1/1] phy: Sparx5 Eth SerDes: Use direct
- register operations
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Date:   Tue, 30 Mar 2021 10:18:44 +0200
-In-Reply-To: <YGIimz9UnVYWfcXH@lunn.ch>
-References: <20210329081438.558885-1-steen.hegelund@microchip.com>
-         <20210329081438.558885-2-steen.hegelund@microchip.com>
-         <YGIimz9UnVYWfcXH@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 30 Mar 2021 04:19:02 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8j3D04HCz9sKj;
+        Tue, 30 Mar 2021 16:16:56 +0800 (CST)
+Received: from huawei.com (10.67.174.53) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
+ 16:18:49 +0800
+From:   Liao Chang <liaochang1@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <guoren@linux.alibaba.com>,
+        <mhiramat@kernel.org>, <penberg@kernel.org>, <lkp@intel.com>,
+        <me@packi.ch>
+CC:     <liaochang1@huawei.com>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] riscv/kprobe: fix kernel panic when invoking sys_read traced by kprobe
+Date:   Tue, 30 Mar 2021 16:18:48 +0800
+Message-ID: <20210330081848.14043-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.53]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+The execution of sys_read end up hitting a BUG_ON() in __find_get_block
+after installing kprobe at sys_read, the BUG message like the following:
 
-On Mon, 2021-03-29 at 20:55 +0200, Andrew Lunn wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Mon, Mar 29, 2021 at 10:14:38AM +0200, Steen Hegelund wrote:
-> > Use direct register operations instead of a table of register
-> > information to lower the stack usage.
-> > 
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> >  drivers/phy/microchip/sparx5_serdes.c | 1869 +++++++++++++------------
-> >  1 file changed, 951 insertions(+), 918 deletions(-)
-> > 
-> > diff --git a/drivers/phy/microchip/sparx5_serdes.c b/drivers/phy/microchip/sparx5_serdes.c
-> > index 06bcf0c166cf..43de68a62c2f 100644
-> > --- a/drivers/phy/microchip/sparx5_serdes.c
-> > +++ b/drivers/phy/microchip/sparx5_serdes.c
-> > @@ -343,12 +343,6 @@ struct sparx5_sd10g28_params {
-> >       u8 fx_100;
-> >  };
-> > 
-> > -struct sparx5_serdes_regval {
-> > -     u32 value;
-> > -     u32 mask;
-> > -     void __iomem *addr;
-> > -};
-> > -
-> >  static struct sparx5_sd25g28_media_preset media_presets_25g[] = {
-> >       { /* ETH_MEDIA_DEFAULT */
-> >               .cfg_en_adv               = 0,
-> > @@ -945,431 +939,411 @@ static void sparx5_sd25g28_reset(void __iomem *regs[],
-> >       }
-> >  }
-> > 
-> > -static int sparx5_sd25g28_apply_params(struct device *dev,
-> > -                                    void __iomem *regs[],
-> > -                                    struct sparx5_sd25g28_params *params,
-> > -                                    u32 sd_index)
-> > +static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
-> > +                                    struct sparx5_sd25g28_params *params)
-> >  {
-> > -     struct sparx5_serdes_regval item[] = {
-> 
-> Could you just add const here, and then it is no longer on the stack?
-> 
->    Andrew
+[   65.708663] ------------[ cut here ]------------
+[   65.709987] kernel BUG at fs/buffer.c:1251!
+[   65.711283] Kernel BUG [#1]
+[   65.712032] Modules linked in:
+[   65.712925] CPU: 0 PID: 51 Comm: sh Not tainted 5.12.0-rc4 #1
+[   65.714407] Hardware name: riscv-virtio,qemu (DT)
+[   65.715696] epc : __find_get_block+0x218/0x2c8
+[   65.716835]  ra : __getblk_gfp+0x1c/0x4a
+[   65.717831] epc : ffffffe00019f11e ra : ffffffe00019f56a sp : ffffffe002437930
+[   65.719553]  gp : ffffffe000f06030 tp : ffffffe0015abc00 t0 : ffffffe00191e038
+[   65.721290]  t1 : ffffffe00191e038 t2 : 000000000000000a s0 : ffffffe002437960
+[   65.723051]  s1 : ffffffe00160ad00 a0 : ffffffe00160ad00 a1 : 000000000000012a
+[   65.724772]  a2 : 0000000000000400 a3 : 0000000000000008 a4 : 0000000000000040
+[   65.726545]  a5 : 0000000000000000 a6 : ffffffe00191e000 a7 : 0000000000000000
+[   65.728308]  s2 : 000000000000012a s3 : 0000000000000400 s4 : 0000000000000008
+[   65.730049]  s5 : 000000000000006c s6 : ffffffe00240f800 s7 : ffffffe000f080a8
+[   65.731802]  s8 : 0000000000000001 s9 : 000000000000012a s10: 0000000000000008
+[   65.733516]  s11: 0000000000000008 t3 : 00000000000003ff t4 : 000000000000000f
+[   65.734434]  t5 : 00000000000003ff t6 : 0000000000040000
+[   65.734613] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+[   65.734901] Call Trace:
+[   65.735076] [<ffffffe00019f11e>] __find_get_block+0x218/0x2c8
+[   65.735417] [<ffffffe00020017a>] __ext4_get_inode_loc+0xb2/0x2f6
+[   65.735618] [<ffffffe000201b6c>] ext4_get_inode_loc+0x3a/0x8a
+[   65.735802] [<ffffffe000203380>] ext4_reserve_inode_write+0x2e/0x8c
+[   65.735999] [<ffffffe00020357a>] __ext4_mark_inode_dirty+0x4c/0x18e
+[   65.736208] [<ffffffe000206bb0>] ext4_dirty_inode+0x46/0x66
+[   65.736387] [<ffffffe000192914>] __mark_inode_dirty+0x12c/0x3da
+[   65.736576] [<ffffffe000180dd2>] touch_atime+0x146/0x150
+[   65.736748] [<ffffffe00010d762>] filemap_read+0x234/0x246
+[   65.736920] [<ffffffe00010d834>] generic_file_read_iter+0xc0/0x114
+[   65.737114] [<ffffffe0001f5d7a>] ext4_file_read_iter+0x42/0xea
+[   65.737310] [<ffffffe000163f2c>] new_sync_read+0xe2/0x15a
+[   65.737483] [<ffffffe000165814>] vfs_read+0xca/0xf2
+[   65.737641] [<ffffffe000165bae>] ksys_read+0x5e/0xc8
+[   65.737816] [<ffffffe000165c26>] sys_read+0xe/0x16
+[   65.737973] [<ffffffe000003972>] ret_from_syscall+0x0/0x2
+[   65.738858] ---[ end trace fe93f985456c935d ]---
 
-No it still counts against the stack even as a const structure.
+A simple reproducer looks like:
+	echo 'p:myprobe sys_read fd=%a0 buf=%a1 count=%a2' > /sys/kernel/debug/tracing/kprobe_events
+	echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
+	cat /sys/kernel/debug/tracing/trace
 
-BR
-Steen
+Here's what happens to hit that BUG_ON():
 
+1) After installing kprobe at entry of sys_read, the first instruction
+   is replaced by 'ebreak' instruction on riscv64 platform.
+
+2) Once kernel reach the 'ebreak' instruction at the entry of sys_read,
+   it trap into the riscv breakpoint handler, where it do something to
+   setup for coming single-step of origin instruction, including backup
+   the 'sstatus' in pt_regs, followed by disable interrupt during single
+   stepping via clear 'SIE' bit of 'sstatus' in pt_regs.
+
+3) Then kernel restore to the instruction slot contains two instructions,
+   one is original instruction at entry of sys_read, the other is 'ebreak'.
+   Here it trigger a 'Instruction page fault' exception (value at 'scause'
+   is '0xc'), if PF is not filled into PageTabe for that slot yet.
+
+4) Again kernel trap into page fault exception handler, where it choose
+   different policy according to the state of running kprobe. Because
+   afte 2) the state is KPROBE_HIT_SS, so kernel reset the current kprobe
+   and 'pc' points back to the probe address.
+
+5) Because 'epc' point back to 'ebreak' instrution at sys_read probe,
+   kernel trap into breakpoint handler again, and repeat the operations
+   at 2), however 'sstatus' without 'SIE' is keep at 4), it cause the
+   real 'sstatus' saved at 2) is overwritten by the one withou 'SIE'.
+
+6) When kernel cross the probe the 'sstatus' CSR restore with value
+   without 'SIE', and reach __find_get_block where it requires the
+   interrupt must be enabled.
+
+Fix this is very trivial, just restore the value of 'sstatus' in pt_regs
+with backup one at 2) when the instruction being single stepped cause a
+page fault.
+
+Fixes: c22b0bcb1dd02 ("riscv: Add kprobes supported")
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
+---
+ arch/riscv/kernel/probes/kprobes.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index 7e2c78e2ca6b..d71f7c49a721 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -260,8 +260,10 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int trapnr)
+ 
+ 		if (kcb->kprobe_status == KPROBE_REENTER)
+ 			restore_previous_kprobe(kcb);
+-		else
++		else {
++			kprobes_restore_local_irqflag(kcb, regs);
+ 			reset_current_kprobe();
++		}
+ 
+ 		break;
+ 	case KPROBE_HIT_ACTIVE:
+-- 
+2.17.1
 
