@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6F434F061
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB1134F06C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhC3SAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232539AbhC3SA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:00:26 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEF7C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:00:25 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x16so17077101wrn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:00:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VUV5pK/QuRU2ZR99eXxkAP9hIr+VztkZsf8oLI/qjbc=;
-        b=TSaWl2q5amHTKrdskGiMaZYwPK2tjwCd2jQwS0afuforfjqhH+Zb+jDkCvIpD7uf6E
-         9qwyugtWHISrTF44ZoCnlM9i7nZr1Ro6e/XVd8CCUj0Zng2y55N+P0B+TbVEVZ9IQ4Gn
-         xlrbVjRklwEHSUJWC5qhAdszWI+gt2UGh0q5nyHglwQqi3Sa97mOCdoWicwB57MivsZu
-         2HrlEVTRUwayi196Ij6DZVrOlruSC4VaxnrHM5OSojd/rAhXhK7RSP++22KOXxB7XQz2
-         Z12RWSpTsm6S0kImg1AstfF9jvFnuOWm9FRRELOQAjSXdm0RpraMMHiIVhmz1YhlvIf2
-         RQDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUV5pK/QuRU2ZR99eXxkAP9hIr+VztkZsf8oLI/qjbc=;
-        b=X24vp6//NV07fn18HaST4zBufMk+o3VqXCgDNVSCn7qaU6HfDk4YesHEUSOHOCyCPS
-         J1xqOVBw521J6veK9XHFRlof8Y/an7bGZiz/9I7YlgONVpq50uRu6cGJmnI4Yd1GZttv
-         X/TUhGmWEDk0PvEvTw4ubzGeNx43zHFJlRs99K0RTl94BNPqcmsI0iLIF50/8R3CXjlh
-         4T2pIjCZ26diTEbL7EV4bjnLQ7nlA8p7Zt1PAWsWA0c8GgCScZ5B/1fZUfYy+RcjaG+C
-         fL8X45ErnoIyZBLGykxa2zUvnBZIlVL84+iO099Fwa/9mfdjSCYCdvFlKfJ9eZiXgRet
-         HSng==
-X-Gm-Message-State: AOAM531y62kjsfSUEgmJZDtCic6WT26jQHJ4jZT7WYFYOXA6fjSWxcg7
-        WX64KbfIDnBZz5U3Vm0HDL0jeLDtkq9QsA==
-X-Google-Smtp-Source: ABdhPJzkSVAIwBrOZjm9dD4pe4f5NBkShS9L4cQLFl/zd12YEgo4YwNXfzRymLRPhCkR22MkLTpKSg==
-X-Received: by 2002:a05:6000:5:: with SMTP id h5mr36054541wrx.97.1617127224233;
-        Tue, 30 Mar 2021 11:00:24 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cc47:54a6:8827:9be5? ([2a01:e34:ed2f:f020:cc47:54a6:8827:9be5])
-        by smtp.googlemail.com with ESMTPSA id g15sm4725218wmq.31.2021.03.30.11.00.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 11:00:23 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: qcom-spmi-temp-alarm: add support for
- GEN2 rev 1 PMIC peripherals
-To:     Guru Das Srinagesh <gurus@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-References: <944856eb819081268fab783236a916257de120e4.1596040416.git.gurus@codeaurora.org>
- <69c90a004b3f5b7ae282f5ec5ca2920a48f23e02.1596040416.git.gurus@codeaurora.org>
- <159661011044.1360974.2399567989389491381@swboyd.mtv.corp.google.com>
- <20210330174914.GA28865@codeaurora.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <4b5ee914-5947-aee9-94ce-9cdc8a73952f@linaro.org>
-Date:   Tue, 30 Mar 2021 20:00:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232471AbhC3SCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232656AbhC3SCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDDAE619BB;
+        Tue, 30 Mar 2021 18:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617127332;
+        bh=Y45/WrWYteUQd+k3a9s1FlymTzr+5CIVLdESSGSdwF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kgYgBPStEvsCMIrKhgF21xVDdGzCOn1xcuRLwHRqpqabpfBf/1jdmaEsOBzpWz5PK
+         qbGG8MCDcrvegDrLOcPxzngYY405ZCcshIWROJkkKBB/cLO0MsStdA3CQolyQyvaq7
+         fTCfdaR2PLx21Juk+7JqdWOy+Oe2SnVmcnFwiaNop14N9w09DeifCvLUlq2zcyDD+O
+         6tCFQFt6BvYxiJqRUPAwaTjViBq9x3eoWOfTIc8uon9uzYAjpEigz1CgisEurWTRX2
+         vwZ93G+pwV8ZrHH8a95pi59NsCWCUgbKORH6285tJwYf3Y1iJK9fSOZIl2hnND3Qtc
+         VgUvBl9eTmHiA==
+Date:   Tue, 30 Mar 2021 19:02:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <20210330180200.GK4976@sirena.org.uk>
+References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+ <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+ <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
+ <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
 MIME-Version: 1.0
-In-Reply-To: <20210330174914.GA28865@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DozTQjXnjm3C9Xhk"
+Content-Disposition: inline
+In-Reply-To: <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+X-Cookie: Memory fault - where am I?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/03/2021 19:49, Guru Das Srinagesh wrote:
-> On Tue, Aug 04, 2020 at 11:48:30PM -0700, Stephen Boyd wrote:
->> Quoting Guru Das Srinagesh (2020-07-29 09:52:52)
->>> From: David Collins <collinsd@codeaurora.org>
->>>
->>> Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
->>> major revision 1.  This revision utilizes a different temperature
->>> threshold mapping than earlier revisions.
->>>
->>> Signed-off-by: David Collins <collinsd@codeaurora.org>
->>> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
->>> ---
->>
->> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> 
-> + Daniel Lezcano
-> 
-> Hi Daniel,
-> 
-> I just checked Linus' tree and discovered that this patch has not been
-> applied - only the other patch in this series. Since this patch has been
-> reviewed already, could you please check if it's good to be applied as
-> well?
 
-Applied, thanks
+--DozTQjXnjm3C9Xhk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Mar 30, 2021 at 12:56:56PM -0500, Zev Weiss wrote:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> Okay, to expand a bit on the description in my initial message -- we've
+> got a single chassis with multiple server boards and a single manager board
+> that handles, among other things, power control for the servers.
+> The manager board has one LM25066 for each attached server, which acts as
+> the "power switch" for that server.  There thus really isn't any driver to
+> speak of for the downstream device.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+This sounds like you need a driver representing those server boards (or
+the slots they plug into perhaps) that represents everything about those
+boards to userspace, including power switching.  I don't see why you
+wouldn't have a driver for that - it's a thing that physically exists
+and clearly has some software control, and you'd presumably also expect
+to represent some labelling about the slot as well.
+
+--DozTQjXnjm3C9Xhk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjZ5cACgkQJNaLcl1U
+h9CdzQf9ERC9wd22hEhQ19B796qXQvItxatpQ4MJaOUZQsXyQ4k2FNls26aJN2x3
+luvG+wp65djxDvvIecDshqf+Jc1dKsfvLHWUX+BF2ITaFCUujBRPqqozGeAvtjrv
+wFaIMt77lymSGdd24bh7JzeM9QAuGzKcbgPu4SHdW1KRT24z+PY1+fxW2XjJFTlV
+4R2+TmHe3cfJEclZ9U3MpCL+CloA0WmNsvVfQA1aS/byFl4gd9IfDpUcelDHpyqd
+Rr3hExzCdIiBTczMlACJMQzBF3KvMY5gvX1cGav99Z8P4t+kiJKBlxkw/HNgnAVK
+4twhdleGMXt5++WJ4sHJKvk9nfSw1w==
+=ZTCR
+-----END PGP SIGNATURE-----
+
+--DozTQjXnjm3C9Xhk--
