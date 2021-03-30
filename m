@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3C034ECD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1510A34ECD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhC3Pnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:43:37 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34948 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbhC3PnS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:43:18 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3BCFB20B5680;
-        Tue, 30 Mar 2021 08:43:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3BCFB20B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617118997;
-        bh=Ex/hhLMgEI8y3lLUNawbT4uibtJe9r185X98zTx9OpQ=;
+        id S232014AbhC3Pqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231967AbhC3Pqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:46:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 447E061989;
+        Tue, 30 Mar 2021 15:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617119202;
+        bh=Gbo18e0zdm2kilYNA5VIkTdaGkhkqxzLYPQJfq+9ayg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fbxuq7OjRALgIqrYnzNwxEn3DruP91PxGjvmVvQMXcFA5ZrGr/IQpPOPutFhR8y2z
-         DG17Q0Rg0FvbzATQeKVAy0s3sPXOhb2vlXCFT0SCBir2g3IrhJpFHsvLSjyz/mtpAc
-         2vXBQQ8SMF2LfFjxTjQv/8YZTcrPi2EOXBU+3Qf0=
-Date:   Tue, 30 Mar 2021 10:43:15 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libnvdimm/region: Allow setting align attribute on
- regions without mappings
-Message-ID: <20210330154315.GD4749@sequoia>
-References: <20210326152645.85225-1-tyhicks@linux.microsoft.com>
- <87h7ks7vm5.fsf@linux.ibm.com>
+        b=iD5cUhyNwaSHFGPGWy1DHqumaX8i9IFq4p/6Ji1zYB+UtjApSg0fXrU6/4mSEAJgF
+         Jb9h1o3TW5a6VSO3VGYo3d3p+Tu/0mvQU1bpJgeFN6BamVc/ZWwxlTUgyioI6Cayrx
+         JHIJDI4mMMmjur/HQW/TIMvMtwUtHVF3NsFGDBGbrc1MdpNH04c8LYyezcHaMAgoRM
+         8j8O/H3oNzhVkCxzOP4TB1HrUiE+eATgM8qvR4U+FlBc5QLsePXiOZphniMCrawSGa
+         vk/Pg2OWmOXaZ+nAGUmlu915pPavQLjT3N7eMZk2e+1+4TOJxqpNhG2ax4lp9iaEX8
+         MH2lrbA/ru/8A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4877A40647; Tue, 30 Mar 2021 12:46:40 -0300 (-03)
+Date:   Tue, 30 Mar 2021 12:46:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Fabian Hemmer <copy@copy.sh>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Preserve identifier id in OCaml demangler
+Message-ID: <YGNH4F6tbZVJlUWN@kernel.org>
+References: <20210226075223.p3s5oz4jbxwnqjtv@nyu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h7ks7vm5.fsf@linux.ibm.com>
+In-Reply-To: <20210226075223.p3s5oz4jbxwnqjtv@nyu>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30 16:32:10, Aneesh Kumar K.V wrote:
-> Tyler Hicks <tyhicks@linux.microsoft.com> writes:
-> 
-> > The alignment constraint for namespace creation in a region was
-> > increased, from 2M to 16M, for non-PowerPC architectures in v5.7 with
-> > commit 2522afb86a8c ("libnvdimm/region: Introduce an 'align'
-> > attribute"). The thought behind the change was that region alignment
-> > should be uniform across all architectures and, since PowerPC had the
-> > largest alignment constraint of 16M, all architectures should conform to
-> > that alignment.
-> >
-> > The change regressed namespace creation in pre-defined regions that
-> > relied on 2M alignment but a workaround was provided in the form of a
-> > sysfs attribute, named 'align', that could be adjusted to a non-default
-> > alignment value.
-> >
-> > However, the sysfs attribute's store function returned an error (-ENXIO)
-> > when userspace attempted to change the alignment of a region that had no
-> > mappings. This affected 2M aligned regions of volatile memory that were
-> > defined in a device tree using "pmem-region" and created by the
-> > of_pmem_region_driver, since those regions do not contain mappings
-> > (ndr_mappings is 0).
-> >
-> > Allow userspace to set the align attribute on pre-existing regions that
-> > do not have mappings so that namespaces can still be within those
-> > regions, despite not being aligned to 16M.
-> >
-> > Fixes: 2522afb86a8c ("libnvdimm/region: Introduce an 'align' attribute")
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > ---
-> >  drivers/nvdimm/region_devs.c | 33 ++++++++++++++++++---------------
-> >  1 file changed, 18 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-> > index ef23119db574..09cff8aa6b40 100644
-> > --- a/drivers/nvdimm/region_devs.c
-> > +++ b/drivers/nvdimm/region_devs.c
-> > @@ -545,29 +545,32 @@ static ssize_t align_store(struct device *dev,
-> >  		struct device_attribute *attr, const char *buf, size_t len)
-> >  {
-> >  	struct nd_region *nd_region = to_nd_region(dev);
-> > -	unsigned long val, dpa;
-> > -	u32 remainder;
-> > +	unsigned long val;
-> >  	int rc;
-> >  
-> >  	rc = kstrtoul(buf, 0, &val);
-> >  	if (rc)
-> >  		return rc;
-> >  
-> > -	if (!nd_region->ndr_mappings)
-> > -		return -ENXIO;
-> > -
-> > -	/*
-> > -	 * Ensure space-align is evenly divisible by the region
-> > -	 * interleave-width because the kernel typically has no facility
-> > -	 * to determine which DIMM(s), dimm-physical-addresses, would
-> > -	 * contribute to the tail capacity in system-physical-address
-> > -	 * space for the namespace.
-> > -	 */
-> > -	dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
-> > -	if (!is_power_of_2(dpa) || dpa < PAGE_SIZE
-> > -			|| val > region_size(nd_region) || remainder)
-> > +	if (val > region_size(nd_region))
-> >  		return -EINVAL;
-> >  
-> > +	if (nd_region->ndr_mappings) {
-> > +		unsigned long dpa;
-> > +		u32 remainder;
-> > +
-> > +		/*
-> > +		 * Ensure space-align is evenly divisible by the region
-> > +		 * interleave-width because the kernel typically has no facility
-> > +		 * to determine which DIMM(s), dimm-physical-addresses, would
-> > +		 * contribute to the tail capacity in system-physical-address
-> > +		 * space for the namespace.
-> > +		 */
-> > +		dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
-> > +		if (!is_power_of_2(dpa) || dpa < PAGE_SIZE || remainder)
-> > +			return -EINVAL;
-> > +	}
-> 
-> We still want
-> 
-> else {
-> 
-> if (!is_power_of_2(val) || val < PAGE_SIZE)
->          return -EINVAL?
+Em Fri, Feb 26, 2021 at 02:52:23AM -0500, Fabian Hemmer escreveu:
+> Some OCaml developers reported that this bit of information is sometimes
+> useful for disambiguating functions for which the OCaml compiler assigns
+> the same name, e.g. nested or inlined functions.
 
-Yes, very good point. I'll send out a v2 that ensures val is a power of
-2 and at least page size.
+Sorry for the delay in processing, applied.
 
-Tyler
+- Arnaldo
+ 
+> Signed-off-by: Fabian Hemmer <copy@copy.sh>
+> ---
+>  tools/perf/tests/demangle-ocaml-test.c |  6 +++---
+>  tools/perf/util/demangle-ocaml.c       | 12 ------------
+>  2 files changed, 3 insertions(+), 15 deletions(-)
+> 
+> diff --git a/tools/perf/tests/demangle-ocaml-test.c b/tools/perf/tests/demangle-ocaml-test.c
+> index a273ed5163d7..1d232c2e2190 100644
+> --- a/tools/perf/tests/demangle-ocaml-test.c
+> +++ b/tools/perf/tests/demangle-ocaml-test.c
+> @@ -19,11 +19,11 @@ int test__demangle_ocaml(struct test *test __maybe_unused, int subtest __maybe_u
+>  		{ "main",
+>  		  NULL },
+>  		{ "camlStdlib__array__map_154",
+> -		  "Stdlib.array.map" },
+> +		  "Stdlib.array.map_154" },
+>  		{ "camlStdlib__anon_fn$5bstdlib$2eml$3a334$2c0$2d$2d54$5d_1453",
+> -		  "Stdlib.anon_fn[stdlib.ml:334,0--54]" },
+> +		  "Stdlib.anon_fn[stdlib.ml:334,0--54]_1453" },
+>  		{ "camlStdlib__bytes__$2b$2b_2205",
+> -		  "Stdlib.bytes.++" },
+> +		  "Stdlib.bytes.++_2205" },
+>  	};
+>  
+>  	for (i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
+> diff --git a/tools/perf/util/demangle-ocaml.c b/tools/perf/util/demangle-ocaml.c
+> index 3df14e67c622..9d707bb60b4b 100644
+> --- a/tools/perf/util/demangle-ocaml.c
+> +++ b/tools/perf/util/demangle-ocaml.c
+> @@ -64,17 +64,5 @@ ocaml_demangle_sym(const char *sym)
+>  	}
+>  	result[j] = '\0';
+>  
+> -	/* scan backwards to remove an "_" followed by decimal digits */
+> -	if (j != 0 && isdigit(result[j - 1])) {
+> -		while (--j) {
+> -			if (!isdigit(result[j])) {
+> -				break;
+> -			}
+> -		}
+> -		if (result[j] == '_') {
+> -			result[j] = '\0';
+> -		}
+> -	}
+> -
+>  	return result;
+>  }
+> -- 
+> 2.30.1
+> 
 
-> 
-> }
-> > +
-> >  	/*
-> >  	 * Given that space allocation consults this value multiple
-> >  	 * times ensure it does not change for the duration of the
-> > -- 
-> > 2.25.1
-> > _______________________________________________
-> > Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
-> > To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
-> 
+-- 
+
+- Arnaldo
