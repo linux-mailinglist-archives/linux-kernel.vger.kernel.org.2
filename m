@@ -2,270 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FC034E98C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9162F34E993
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhC3NsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:48:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:34596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhC3Nrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:47:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5A0F31B;
-        Tue, 30 Mar 2021 06:47:47 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE5623F719;
-        Tue, 30 Mar 2021 06:47:46 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-iio@vger.kernel.org
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com,
-        Jyoti Bhayana <jbhayana@google.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH v8 25/38] iio/scmi: Port driver to the new scmi_sensor_proto_ops interface
-Date:   Tue, 30 Mar 2021 14:47:11 +0100
-Message-Id: <20210330134711.1962-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210330123325.00000456@Huawei.com>
-References: <20210330123325.00000456@Huawei.com>
+        id S232154AbhC3Ns5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232132AbhC3Ns0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:48:26 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E672C061574;
+        Tue, 30 Mar 2021 06:48:25 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id r12so24939748ejr.5;
+        Tue, 30 Mar 2021 06:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nHesdm8MfmQq/Mx8NCgtXN0WgABESjsUY5mxQL3k6c0=;
+        b=HU+nGVhHLhCXmZLHy9oIKWEpLG2TT7397bG0JOVGqK++Lu3k5mhhHDMXAbhCdrPk4o
+         NKp+l1J4f3QcUxOIfgD50GzqUtDg5l/lNIvrfRiPaPwad4JLOrT2D17wVDyK/Rxgc+oh
+         1LDnNAUYkXr6x+HO8aWwWn6Bc1b78+qBaBWAlAHbmRyO9C5KE7DzKXpYAcZ6T19ceewp
+         8nhL8D4jXyybEejBBS6y2CfseUAlgWtl6SJDz7cD77ZZ8Eye+EMnBGdYmIGjmxhkncYj
+         +WGDYdMgCErgTSTUr0B16ngdNvAH8ZV8PpARH/iiQqYaNTnG2K5nkPv+FmxM3cSlz8iQ
+         PcGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nHesdm8MfmQq/Mx8NCgtXN0WgABESjsUY5mxQL3k6c0=;
+        b=ejNjUFjq+g8L3Je4PrC7NpprqZociZFOZeZLtaQZtV5LARqdg5otnI7GHGBErTvF4f
+         4yf1NIYlC6kwxiIrrwi2LrRgvvXjlpv6kCGIdt0orYUGss2heh2coq2SCUTxMmVUpf3k
+         h2cGhhRmo2w3Ry8VECwKNaBmovRC7tqFXL568+PaftIjBer25H7qNABMWq6yvDPZhp7k
+         a30NUQ5ngJDELPGkPfhpfWpYWLqlgiE6u3t8XJDHMwZAAZOV/Fcjcd4Hip3KRvDfv5u2
+         cHzan6sebu/UR0VMo62FuEWEC+bsqQnYnT6Tihc0AjwP2AXfNDhAQqS1+BwyhlwYqKLX
+         dX4A==
+X-Gm-Message-State: AOAM532dVDhAcQrI0Blx217aK5BKccrfL23sYCYpKO42vZ+WuiMFPGW7
+        x1dmoQu/KCVXniDG0mbVORk=
+X-Google-Smtp-Source: ABdhPJybuNlr/uWKtmzBSulIZS8xUoDGyJn5OtJZVqQ+xY3jp5m1fxhITb3prHky6PSlJwU9nUNSMw==
+X-Received: by 2002:a17:907:2d9f:: with SMTP id gt31mr33128669ejc.233.1617112104324;
+        Tue, 30 Mar 2021 06:48:24 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.140.160])
+        by smtp.gmail.com with ESMTPSA id l12sm11114681edb.39.2021.03.30.06.48.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 06:48:23 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] Add support for Actions Semi Owl socinfo
+Date:   Tue, 30 Mar 2021 16:48:15 +0300
+Message-Id: <cover.1617110420.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port the scmi iio driver to the new SCMI sensor interface based on
-protocol handles and common devm_get_ops().
+This patchset adds a socinfo driver which provides information about
+Actions Semi Owl SoCs to user space via sysfs: machine, family, soc_id,
+serial_number.
 
-Link: https://lore.kernel.org/r/20210316124903.35011-26-cristian.marussi@arm.com
-Cc: Jyoti Bhayana <jbhayana@google.com>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio@vger.kernel.org
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-----
-v7 --> v8
-- make sensor_ops NON global
----
- drivers/iio/common/scmi_sensors/scmi_iio.c | 100 ++++++++++-----------
- 1 file changed, 50 insertions(+), 50 deletions(-)
+Please note the serial number is currently available only for the S500
+SoC variant.
 
-diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-index 872d87ca6256..8f4154d92c68 100644
---- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-+++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-@@ -22,7 +22,8 @@
- #define SCMI_IIO_NUM_OF_AXIS 3
- 
- struct scmi_iio_priv {
--	struct scmi_handle *handle;
-+	const struct scmi_sensor_proto_ops *sensor_ops;
-+	struct scmi_protocol_handle *ph;
- 	const struct scmi_sensor_info *sensor_info;
- 	struct iio_dev *indio_dev;
- 	/* adding one additional channel for timestamp */
-@@ -82,7 +83,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
- static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
- {
- 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
--	u32 sensor_id = sensor->sensor_info->id;
- 	u32 sensor_config = 0;
- 	int err;
- 
-@@ -92,27 +92,12 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
- 
- 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
- 				    SCMI_SENS_CFG_SENSOR_ENABLE);
--
--	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
--			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
--			&sensor_id, &sensor->sensor_update_nb);
--	if (err) {
--		dev_err(&iio_dev->dev,
--			"Error in registering sensor update notifier for sensor %s err %d",
--			sensor->sensor_info->name, err);
--		return err;
--	}
--
--	err = sensor->handle->sensor_ops->config_set(sensor->handle,
--			sensor->sensor_info->id, sensor_config);
--	if (err) {
--		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
--				SCMI_PROTOCOL_SENSOR,
--				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
--				&sensor->sensor_update_nb);
-+	err = sensor->sensor_ops->config_set(sensor->ph,
-+					     sensor->sensor_info->id,
-+					     sensor_config);
-+	if (err)
- 		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
- 			sensor->sensor_info->name, err);
--	}
- 
- 	return err;
- }
-@@ -120,25 +105,14 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
- static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
- {
- 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
--	u32 sensor_id = sensor->sensor_info->id;
- 	u32 sensor_config = 0;
- 	int err;
- 
- 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
- 				    SCMI_SENS_CFG_SENSOR_DISABLE);
--
--	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
--			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
--			&sensor_id, &sensor->sensor_update_nb);
--	if (err) {
--		dev_err(&iio_dev->dev,
--			"Error in unregistering sensor update notifier for sensor %s err %d",
--			sensor->sensor_info->name, err);
--		return err;
--	}
--
--	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
--						     sensor_config);
-+	err = sensor->sensor_ops->config_set(sensor->ph,
-+					     sensor->sensor_info->id,
-+					     sensor_config);
- 	if (err) {
- 		dev_err(&iio_dev->dev,
- 			"Error in disabling sensor %s with err %d",
-@@ -161,8 +135,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
- 	u32 sensor_config;
- 	char buf[32];
- 
--	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
--			sensor->sensor_info->id, &sensor_config);
-+	int err = sensor->sensor_ops->config_get(sensor->ph,
-+						 sensor->sensor_info->id,
-+						 &sensor_config);
- 	if (err) {
- 		dev_err(&iio_dev->dev,
- 			"Error in getting sensor config for sensor %s err %d",
-@@ -208,8 +183,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
- 	sensor_config |=
- 		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
- 
--	err = sensor->handle->sensor_ops->config_set(sensor->handle,
--			sensor->sensor_info->id, sensor_config);
-+	err = sensor->sensor_ops->config_set(sensor->ph,
-+					     sensor->sensor_info->id,
-+					     sensor_config);
- 	if (err)
- 		dev_err(&iio_dev->dev,
- 			"Error in setting sensor update interval for sensor %s value %u err %d",
-@@ -274,8 +250,9 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
- 	u32 sensor_config;
- 	int mult;
- 
--	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
--			sensor->sensor_info->id, &sensor_config);
-+	int err = sensor->sensor_ops->config_get(sensor->ph,
-+						 sensor->sensor_info->id,
-+						 &sensor_config);
- 	if (err) {
- 		dev_err(&iio_dev->dev,
- 			"Error in getting sensor config for sensor %s err %d",
-@@ -542,15 +519,19 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
- 	return 0;
- }
- 
--static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
--					 struct scmi_handle *handle,
--					 const struct scmi_sensor_info *sensor_info)
-+static struct iio_dev *
-+scmi_alloc_iiodev(struct scmi_device *sdev,
-+		  const struct scmi_sensor_proto_ops *ops,
-+		  struct scmi_protocol_handle *ph,
-+		  const struct scmi_sensor_info *sensor_info)
- {
- 	struct iio_chan_spec *iio_channels;
- 	struct scmi_iio_priv *sensor;
- 	enum iio_modifier modifier;
- 	enum iio_chan_type type;
- 	struct iio_dev *iiodev;
-+	struct device *dev = &sdev->dev;
-+	const struct scmi_handle *handle = sdev->handle;
- 	int i, ret;
- 
- 	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
-@@ -560,7 +541,8 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
- 	iiodev->modes = INDIO_DIRECT_MODE;
- 	iiodev->dev.parent = dev;
- 	sensor = iio_priv(iiodev);
--	sensor->handle = handle;
-+	sensor->sensor_ops = ops;
-+	sensor->ph = ph;
- 	sensor->sensor_info = sensor_info;
- 	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
- 	sensor->indio_dev = iiodev;
-@@ -595,6 +577,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
- 					  sensor_info->axis[i].id);
- 	}
- 
-+	ret = handle->notify_ops->devm_event_notifier_register(sdev,
-+				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-+				&sensor->sensor_info->id,
-+				&sensor->sensor_update_nb);
-+	if (ret) {
-+		dev_err(&iiodev->dev,
-+			"Error in registering sensor update notifier for sensor %s err %d",
-+			sensor->sensor_info->name, ret);
-+		return ERR_PTR(ret);
-+	}
-+
- 	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
- 	iiodev->channels = iio_channels;
- 	return iiodev;
-@@ -604,24 +597,30 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
- {
- 	const struct scmi_sensor_info *sensor_info;
- 	struct scmi_handle *handle = sdev->handle;
-+	const struct scmi_sensor_proto_ops *sensor_ops;
-+	struct scmi_protocol_handle *ph;
- 	struct device *dev = &sdev->dev;
- 	struct iio_dev *scmi_iio_dev;
- 	u16 nr_sensors;
- 	int err = -ENODEV, i;
- 
--	if (!handle || !handle->sensor_ops) {
-+	if (!handle)
-+		return -ENODEV;
-+
-+	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
-+	if (IS_ERR(sensor_ops)) {
- 		dev_err(dev, "SCMI device has no sensor interface\n");
--		return -EINVAL;
-+		return PTR_ERR(sensor_ops);
- 	}
- 
--	nr_sensors = handle->sensor_ops->count_get(handle);
-+	nr_sensors = sensor_ops->count_get(ph);
- 	if (!nr_sensors) {
- 		dev_dbg(dev, "0 sensors found via SCMI bus\n");
- 		return -ENODEV;
- 	}
- 
- 	for (i = 0; i < nr_sensors; i++) {
--		sensor_info = handle->sensor_ops->info_get(handle, i);
-+		sensor_info = sensor_ops->info_get(ph, i);
- 		if (!sensor_info) {
- 			dev_err(dev, "SCMI sensor %d has missing info\n", i);
- 			return -EINVAL;
-@@ -636,7 +635,8 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
- 		    sensor_info->axis[0].type != RADIANS_SEC)
- 			continue;
- 
--		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
-+		scmi_iio_dev = scmi_alloc_iiodev(sdev, sensor_ops, ph,
-+						 sensor_info);
- 		if (IS_ERR(scmi_iio_dev)) {
- 			dev_err(dev,
- 				"failed to allocate IIO device for sensor %s: %ld\n",
+This has been tested on the S500 SoC based RoseapplePi SBC.
+
+Thanks,
+Cristi
+
+Changes in v2:
+ - Exposed the memory range for reading the SoC serial number under
+   /reserved-memory DT node, according to Rob's review; as a consequence
+   added a new binding document (actions,owl-soc-serial.yaml) and updated
+   owl-socinfo.yaml
+
+ - Replaced the unportable usage of system_serial_{low,high} globals
+   with a public API to provide external access to SoC serial number
+   parts (e.g. Owl Ethernet MAC driver will use this to generate a
+   stable MAC address)
+
+ - Rebased patch series on v5.12-rc5
+
+Cristian Ciocaltea (6):
+  dt-bindings: reserved-memory: Add Owl SoC serial number binding
+  dt-bindings: soc: actions: Add Actions Semi Owl socinfo binding
+  soc: actions: Add Actions Semi Owl socinfo driver
+  arm: dts: owl-s500: Add reserved-memory range for Owl SoC serial
+    number
+  arm: dts: owl-s500: Add socinfo support
+  MAINTAINERS: Add entries for Owl reserved-memory and socinfo bindings
+
+ .../actions,owl-soc-serial.yaml               |  53 ++++++
+ .../bindings/soc/actions/owl-socinfo.yaml     |  57 +++++++
+ MAINTAINERS                                   |   2 +
+ arch/arm/boot/dts/owl-s500.dtsi               |  13 +-
+ drivers/soc/actions/Kconfig                   |   8 +
+ drivers/soc/actions/Makefile                  |   1 +
+ drivers/soc/actions/owl-socinfo.c             | 152 ++++++++++++++++++
+ include/linux/soc/actions/owl-serial-number.h |  20 +++
+ 8 files changed, 305 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/actions,owl-soc-serial.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
+ create mode 100644 drivers/soc/actions/owl-socinfo.c
+ create mode 100644 include/linux/soc/actions/owl-serial-number.h
+
 -- 
-2.17.1
+2.31.1
 
