@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2824334EBDE
+	by mail.lfdr.de (Postfix) with ESMTP id CAD5B34EBE0
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhC3POa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232088AbhC3POa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 30 Mar 2021 11:14:30 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:45683 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhC3POE (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231782AbhC3POP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:14:04 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so15873879oty.12;
-        Tue, 30 Mar 2021 08:14:04 -0700 (PDT)
+        Tue, 30 Mar 2021 11:14:15 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A89AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:14:15 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v23so6329116ple.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vIzMPDz04b84H9wLsU0ADnLZmophOnDSnxj9+X0IXio=;
+        b=Ihny9oTRRghPDxOl8VGEJNdR4HiMF8IIqO1Xmi1YX3a3C1dUHgY5zVsjjz1hbvx1TT
+         +irCvHbgkr3D5lrJduHZh45lJRsmpkQPkeQgjvOhDfm7+JUXAUfsvOME+mc2+24Phjzs
+         iL83O0ROQOmC/XZ+/JebRn78JwBU8seS2xt4Sf9BALsohdAmPh9nEhMUhqA9YAqq3/S3
+         SRjP7+mroez/wL0A/cIA4xrasUqjTO8gQn7sVvqGfaKEIW7AHK5nCVfSERVLSUw/UhKY
+         b7itsE0RdtwVFaSeIgbx5D8ny8WNRWpaEfoxm9Usyq5QWcFvXba458XClp4JoBpsOQa+
+         UTMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwhcIZMLNXKMYK584OajTswbx7/K7IxB76OYbkncdKE=;
-        b=V3R2U+BvTnFje6xcZ3YRqTl7IigoqE/DoaiUgFXH+WCUtk9CgUgUDBuZeOEbyoLiNj
-         O2Lk0u9ODpsidUyN01iIfOLXxOuKa/8l9+rLAApxc9AAATtukvOP8L+LuM86MqwXMKlP
-         s8Bmm/lR8rhvvCL+WZM++GbtK+1CMEgdpwxel51N09KvEVMdIfMP6OzsAsKhBdvQ765k
-         PmlS4pJu+sxfaFsCNiziiczRTtF47tWDNMWWTzswQmrCI9QgPJkswThaAJkUI4i8pdr9
-         e/jkVIoeQCrpYBdBjRV8FefUw5B/lwMTHiD6O16E3V9HtbF+ZcXOMXJwQTWagCyg61DC
-         UHsw==
-X-Gm-Message-State: AOAM5304NdBVi/octaJye4NqgJPQFkXJAIlJf1nVnBWd6k8otM4gaor9
-        8gkDICdGcDVQ/XMDX0S77pkz3xJCNg==
-X-Google-Smtp-Source: ABdhPJwgVoIpPYH8wn8FHFtcTCwh9gjC6lA9kYPlBExGY8civWtgJdiBj51UikxqYjj4EpyHED5u8Q==
-X-Received: by 2002:a9d:67c2:: with SMTP id c2mr27944292otn.343.1617117244074;
-        Tue, 30 Mar 2021 08:14:04 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.136])
-        by smtp.gmail.com with ESMTPSA id o63sm5103331ota.6.2021.03.30.08.14.01
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vIzMPDz04b84H9wLsU0ADnLZmophOnDSnxj9+X0IXio=;
+        b=bQmWZ/35JWmU+O1tPdqTkak+wYBm4emrfVXWdNbSAKVIdkvuYUdPSmXb5igydJ19eq
+         Aeh02S67ks93e0HD3wUHX5apUvAZCxi0SN/+B5Jy4f/8wrcluIHT2alPPlhbAnXeAlcZ
+         SFq4Tvuj9RxcP7t4akoZ2LYJIS3rs3bOfrzYH48atGtXtfoaNMpOSza2STqjNJKgknxm
+         J6u2Xx1VTnuQA+RbFolapTlTnkYNGwl/WVWJEBUXOMFgmD/LtXzbi2/YiO6vLOfKIUSQ
+         s/wAcisDbg8cdFnPyygTxfefyREdtZ7SA5OYxRCvZQYCTMHWM8YNa5hPPhuQJQcgFwnc
+         4tYg==
+X-Gm-Message-State: AOAM530dje6XL5/QMmu36ukzzgwjn5xX/EWd6gJu8+fxkQpxj0u1OW2t
+        zLtcAN7Q9i5zbEe7Ped+6T+GEw==
+X-Google-Smtp-Source: ABdhPJyDuA+tWGKMXWpVm1t3j7nCUpiJIcqZP0dvfPoGsHHlGTteZjcA13YGKCQpPHx6Edpy04L0FQ==
+X-Received: by 2002:a17:90a:498d:: with SMTP id d13mr4970113pjh.47.1617117254839;
+        Tue, 30 Mar 2021 08:14:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id j30sm2667854pgm.59.2021.03.30.08.14.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 08:14:02 -0700 (PDT)
-Received: (nullmailer pid 320627 invoked by uid 1000);
-        Tue, 30 Mar 2021 15:13:59 -0000
-Date:   Tue, 30 Mar 2021 10:13:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     linux-i2c@vger.kernel.org, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com, wsa@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: i2c-mpc: Document interrupt property
- as required
-Message-ID: <20210330151359.GA320499@robh.at.kernel.org>
-References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
- <20210329015206.17437-2-chris.packham@alliedtelesis.co.nz>
+        Tue, 30 Mar 2021 08:14:14 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 15:14:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <YGNAQrWMl3AZQ3HG@google.com>
+References: <20210330020403.GA1285835@tassilo.jf.intel.com>
+ <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210329015206.17437-2-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 14:52:01 +1300, Chris Packham wrote:
-> All of the in-tree device-trees that use the one of the compatible
-> strings from i2c-mpc.c supply an interrupts property. Make this property
-> mandatory to aid refactoring the driver.
+On Mon, Mar 29, 2021, Andy Lutomirski wrote:
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mpc.txt | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> > On Mar 29, 2021, at 7:04 PM, Andi Kleen <ak@linux.intel.com> wrote:
+> > 
+> > ﻿
+> >> 
+> >>> No, if these instructions take a #VE then they were executed at CPL=0.  MONITOR
+> >>> and MWAIT will #UD without VM-Exit->#VE.  Same for WBINVD, s/#UD/#GP.
+> >> 
+> >> Dare I ask about XSETBV?
+> > 
+> > XGETBV does not cause a #VE, it just works normally. The guest has full
+> > AVX capabilities.
+> > 
 > 
+> X *SET* BV
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Heh, XSETBV also works normally, relative to the features enumerated in CPUID.
+XSAVES/XRSTORS support is fixed to '1' in the virtual CPU model.  A subset of
+the features managed by XSAVE can be hidden by the VMM, but attempting to enable
+unsupported features will #GP (either from hardware or injected by TDX Module),
+not #VE.
