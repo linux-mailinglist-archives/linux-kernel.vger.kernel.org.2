@@ -2,58 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546B634F03B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9F834F03E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhC3RzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:55:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232524AbhC3Ry7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:54:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B36FD619AB;
-        Tue, 30 Mar 2021 17:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617126898;
-        bh=yesn2P2b6cKTqwc/ApNdhDGqh1nvwMnUBdprspUhg6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bdULg5uX5G3w6ecEKzMY/ysuqoaRe8fWn8QawRj1DPYOItxOmHtFo/KK4ZuFrKjHo
-         UQn5F17Wu8hJbiUSfha1kJk3nt4EtmYtMyph2EtY1QNBES/lkjho1Y76flh00JdVsP
-         VjM9ExyXbFhgERg37eY3WxbrIMUGRYk2aBNltPA04gEJp8WtW3Dfn7xukN1JRCV4ET
-         Kibkg0RUD05hPp/UjY+jfGLZKFNW3h/xQpEfwOTC4rIYgLdgsL7E0OHbREWtM2jy2k
-         6Cf70RzD8CTndDvEOgUTG16FVKyLw0EUUgSM08ow0QAsA9ObNv1z1Ss6iu1uIfGI1X
-         X01KDMGmK8B4A==
-Date:   Tue, 30 Mar 2021 23:24:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     kostap@marvell.com
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkundrak@v3.sk,
-        linux@armlinux.org.uk, sebastian.hesselbarth@gmail.com,
-        gregory.clement@bootlin.com, andrew@lunn.ch, robh+dt@kernel.org,
-        kishon@ti.com, miquel.raynal@bootlin.com, mw@semihalf.com,
-        jaz@semihalf.com, nadavh@marvell.com, stefanc@marvell.com,
-        bpeled@marvell.com
-Subject: Re: [PATCH v3 0/5] Add support for CP110 UTMI PHY
-Message-ID: <YGNl7n8A4KNY2lq0@vkoul-mobl.Dlink>
-References: <20210307163343.25684-1-kostap@marvell.com>
+        id S232403AbhC3R41 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 30 Mar 2021 13:56:27 -0400
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:37555 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232439AbhC3R4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:56:19 -0400
+Received: by mail-ed1-f44.google.com with SMTP id x21so19224891eds.4;
+        Tue, 30 Mar 2021 10:56:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eD2VmTYsiHmGfgPXc7YnjSan4NfejYpT6i+aQbGS1AQ=;
+        b=imV7FOBi9QTMtR4TRBBADOy6MgvOxWcbMoa8tH4fK/T96eYCVZSGql6hBoVanJDqBQ
+         djfbbn2nYfD5vii4VhYm/dZkf7zsaxBJzurs8p8/Hrtm2RnceLG5TgmoZHIkAo9nmVV5
+         aDXRduKH2UxWDO/FpKavigDj6qRvHok2LrnE7lciedtho31NWjtN+VA4/uz3VvX335TI
+         zHy1XoDMcX5WhZ4KztSg4UAxSLdShdxYaG9xXleW9pnulRB8+HFRX30lIv5ZoMU42w+u
+         hfKLHhGRC9DZ+WskwQlgq+aQUyfZFnXfH9LRz+iD/mNaGndQS4sa6E741EPeVubQy8+d
+         g/VQ==
+X-Gm-Message-State: AOAM532ntZLI+7MPaFGebxXPKhIZLEfHJsssVpv72Og1jjnsINbicmWL
+        Xc0dtwV50OrdznfdqxnjqiEuy0juPh2ShF1X0q4=
+X-Google-Smtp-Source: ABdhPJyAsdrYjDD8h/eNXMBrRBDmmHH2cxBRAmOzZmLIkEc7+VobFc9felwB3YqEx/1FygS/xJ4sZJTVWOzg4owtJq0=
+X-Received: by 2002:a05:6402:4245:: with SMTP id g5mr35405148edb.306.1617126978544;
+ Tue, 30 Mar 2021 10:56:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307163343.25684-1-kostap@marvell.com>
+References: <CAJvTdKmQN7dXk7FifOqZRZRrOqOoB_6+VR9ORx_AfZWpVRePdA@mail.gmail.com>
+ <D652C16A-5CAC-48DF-B6B3-797DC61BBA30@amacapital.net>
+In-Reply-To: <D652C16A-5CAC-48DF-B6B3-797DC61BBA30@amacapital.net>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 30 Mar 2021 13:56:07 -0400
+Message-ID: <CAJvTdKnMPedpAQjPNDAibXBHYjLYLoJXNSfnnt9KDgit0jjvoA@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-03-21, 18:33, kostap@marvell.com wrote:
-> From: Konstantin Porotchkin <kostap@marvell.com>
-> 
-> This series of patches adds a new PHY driver for supporting CP110 UTMI
-> PHY in Linux. Currently the functionality of USB ports connected to
-> this PHY depends on boot loader setup.
-> The new driver eliminates kernel configuration dependency from the boot
-> loader. 
+On Tue, Mar 30, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wrote:
 
-Applied 1-3, thanks
+> > On Mar 30, 2021, at 10:01 AM, Len Brown <lenb@kernel.org> wrote:
 
--- 
-~Vinod
+> > Is it required (by the "ABI") that a user program has everything
+> > on the stack for user-space XSAVE/XRESTOR to get back
+> > to the state of the program just before receiving the signal?
+>
+> The current Linux signal frame format has XSTATE in uncompacted format,
+> so everything has to be there.
+> Maybe we could have an opt in new signal frame format, but the details would need to be worked out.
+>
+> It is certainly the case that a signal should be able to be delivered, run “async-signal-safe” code,
+> and return, without corrupting register contents.
+
+And so an an acknowledgement:
+
+We can't change the legacy signal stack format without breaking
+existing programs.  The legacy is uncompressed XSTATE.  It is a
+complete set of architectural state -- everything necessary to
+XRESTOR.  Further, the sigreturn flow allows the signal handler to
+*change* any of that state, so that it becomes active upon return from
+signal.
+
+And a proposal:
+
+Future programs, which know that they don't need the full-blown legacy
+signal stack format, can opt-in to a new format.  That new format, can
+be minimal (fast) by default.  Perhaps, as Noah suggests, it could
+have some sort of mechanism where the program can explicitly select
+which state components they would want included on their signal stack,
+and restored by sigreturn.
+
+If the new fast-signal format is successful, in a number of years, it
+will have spread to have taken over the world.
+
+thoughts?
+
+Len Brown, Intel Open Source Technology Center
