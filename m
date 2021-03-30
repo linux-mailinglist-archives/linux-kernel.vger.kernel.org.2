@@ -2,126 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E053E34F13E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EC334F13F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhC3StX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232922AbhC3Ssr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:48:47 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E145C061762;
-        Tue, 30 Mar 2021 11:48:47 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id u9so26329624ejj.7;
-        Tue, 30 Mar 2021 11:48:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eN+6HYZu9ai/bWKIofpS3d379/+m4z1HTTkJ2Rk0/xc=;
-        b=JylleUcVY9HtgGKw4+s9FRb45G3Ck5q4643g34+JGeKjbVSXRnrFiAs+VWREW3dpFU
-         rat6h3xYlWUyj8Zx3DnZPiVut0bOo27hqZQ0BeIi7LBgmOIDrA2yoC8gtrnUKA08T4/8
-         xbOKFuawNUPxf9YtrMeelgXIpMR4exct0ezzZW6XPA30WEnK/2IBUx+rR3+Q4YRkzuy5
-         KaH09YB3UqUZ3H3OP3giQOs4y3kG1QpcT+2vLfri+cg+NxXjleNsXKR04gxOh5uIFjyn
-         RpFtHMDDKv7He7O84rd0Y4s+ToUCgspRqYqBH9qNR2k0WQ4X1RY22eUyNzEh0026L+89
-         OQ0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eN+6HYZu9ai/bWKIofpS3d379/+m4z1HTTkJ2Rk0/xc=;
-        b=FK/GJt1nP5ULF1xks38DgtgAccdkQsvz9hH77o2V0/y4XGuH8tKrUCLF1LbcNSpqws
-         PaqTOnMbPLX2/3cyhLgPIzlWnWUKcMhLk3o2skHxOqyVaHUOHW9g10lc0d5wRjqwSFXw
-         RsTVvSlyia5hCSe8YoKau361WysJQeyy17jqw6M9JC12gehAKmsPUBX2RGXZXj8uhi4l
-         r6rYUslA4uXq3oMqn3B2aeIT7c0nFqmeCqN8WOocJ5s1rkVU93IqsVNaX+MELN0wWkjA
-         JuO/6AnneQDfyUUigJtY42X5VOBFBGuMuI4WPuFsbI7X59HwssFRO/XOB3ClUwLuLTqh
-         ctmQ==
-X-Gm-Message-State: AOAM533CjGPRjCpsdZB50RWmPBCE4wg2p4J4BEQUTDBGdlbBBbQmRBGE
-        i+hoQNsNSdxFpr3PaZrLMnN9CLqPZNPUseOVgoI=
-X-Google-Smtp-Source: ABdhPJzyy9+3wHeDgrA1FD8zLK6A8Db2R2IPn6AAPceZVkjSnuTDjVKtLdl17s9NBCOsiO8ALtXZ61D4+bz2N99zR1o=
-X-Received: by 2002:a17:906:4e17:: with SMTP id z23mr34847959eju.439.1617130126127;
- Tue, 30 Mar 2021 11:48:46 -0700 (PDT)
+        id S232938AbhC3StY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:49:24 -0400
+Received: from mail-bn8nam12on2060.outbound.protection.outlook.com ([40.107.237.60]:13888
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232927AbhC3StJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:49:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L+U6drQHtbMEQ/HJI4BC0BhJQa3j/EFrQVkH+sXvVWIh4JvLsp40Rsd3L3Jew9nGVsz3BGNESdeCfbzz/dubPTXuMelUTi+MlcZUizcVWyBgis1BeS5vdjx1oLFS23P9T0uERX6JEwd6Czp4wbf3QmF6qT4pElFvfKortS0JrHFHJ+Tmb/yPj+8JiP5tOALvQzpYvmrSVECqfoFjvHBPZ8mHHlxrDjh2VIADFW7+cua5ejRHQ2Wp5JTvaE7b5hcbTw3duttOK0UH9nmF1YtSL+zgcS1gspilxqc7/1aA3s/hGCAc/a9c5ZQAuNrGRcIvMnVtrbpfz3Gf8FOYXuJCiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5udlLvxI3MP/gf/TKC3f2iE+jHjQJnkwGLN47dqGSaM=;
+ b=WX0vugPxKz4Grbj/msRtAEH2lwYCPGgOw0t1f/2gF2PgOCft+0PpI7iqcr1GEC92z2lX1TJlwT71xYsUMHqyJB5fzvuZvtYALJu6uFa2rCTcj4Hkf+wb0Q2ooUnEkrHRWFdEUHA0R6w8cEX/jEzyHNVHhb1ptpzxITt/Dn9X/gs5f7uvz+Xf+JJ7xdygWmrMXZTwlhbcq/Q7yBtvIN/DSFn4QDMfr6tFMIaxJBrPZyxgvn5zoRu7bYhJy90mFERapF49KwgieIDEQPjZquE1hs3k54qEGGozIu1SzhajUCzvDOmpAJFvTVsFn9byn5BMo1G6TeB/es2GlmgCE4e7Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5udlLvxI3MP/gf/TKC3f2iE+jHjQJnkwGLN47dqGSaM=;
+ b=Q+DqdgUUJ9U/gOeoJSFLB0wMV3W3Ah4PeVzXwbJql1/BpW2yWWZuLzJkVSp7O8jBrqG6HIcb0M6DEhOtWM7jKgjPdh3gv8DeB9wDjzVjhGJOg1MpGYNGbbTFossFbjrBlQ1WPDGdh0oQteE7xDmaVKj6Y8R82z9Hf1WBKPuJTXZfUXoytGifStP+NirsFdoYznFzK8yjVC98biyX6peWOOKx15XGdsV38mZwmd2QBYSkpsV5spLLPjErxSusswRHnV+vz+5leQOe24HPoa3uwiozwES71Pgnypxh28sL+XqZEtI4ISInB+HhppTI+vdJcy9zalzYHjGq6t0smcr1Nw==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0202.namprd12.prod.outlook.com (2603:10b6:4:4d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Tue, 30 Mar
+ 2021 18:49:05 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 18:49:05 +0000
+Date:   Tue, 30 Mar 2021 15:49:03 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        bskeggs@redhat.com, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
+        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
+Message-ID: <20210330184903.GZ2356281@nvidia.com>
+References: <20210326000805.2518-1-apopple@nvidia.com>
+ <20210326000805.2518-4-apopple@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326000805.2518-4-apopple@nvidia.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BLAPR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::6) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210323124112.1229772-1-arnd@kernel.org>
-In-Reply-To: <20210323124112.1229772-1-arnd@kernel.org>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Tue, 30 Mar 2021 20:48:35 +0200
-Message-ID: <CA+fCnZfZre1d07eUq0PBzznn8b6Co0Scp9Dnwad6ZaGp4LyrCQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix hwasan build for gcc
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kbuild@vger.kernel.org, kasan-dev@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0001.namprd03.prod.outlook.com (2603:10b6:208:32b::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 18:49:05 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRJQF-0060Fl-7p; Tue, 30 Mar 2021 15:49:03 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc46dc5e-64cc-437c-a3f7-08d8f3ac7e4d
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0202:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0202AE498E86E7219E1202A6C27D9@DM5PR1201MB0202.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XJyR4MJv/43JkMYSUrm56Jv9u4vd0aIPwBRDnCLdDsdGUJP0oC+EKRbwxp04/HcQyAM1nWtxKcD2u0Rah41MxXDWZSine6PnNv0FM8rz4o9v+6fhdGppWuejrRxhbgl/MfXEhCaA0QZDZ0NdUZUKyeYjq3lWK/D/pFumJ+dLFSy5n6fCG5MxCweh7pBC3WMppRsAr5duv9fdEkKs4yv1jNnsA9g3M3e/7Fh+eEcffwaLHwDU+u3jEFm2Qg+j3NT6ai0sRT1QKsyDS/9ylxq1/64OFq8GGVh9dwnQbwrBnuSGfB4jLEv30FFg/EDelD4ykvJgy9fxcfU2LB3D+V7/zy9b43QXEMJOtMCaAgMxxMyaWEQm8NnTQ5lnYjI3JKJm/xKM48xXKzqMmrP7i5s7W82Ipd/KqL/lBWziycyMPWaE1Ae/hLNLS4q8mkbSj93dXj+cjzyjK3LHE6T83C9U+RrfuBDrXdRkE4NO5fFKixycxGVrzf6yPGoU56qQySjEJ5iB2UxXFA8zvRLm4u3QL/6tCNNGKlfPLgpVUcsvpVgFroFKXRi+I1NVUp4WuDZT9z8Mu2fVPPf8lV5RNpqoYFJKUs6ubXnVpaxCYv2hUpW252WYRL8p52J29YnJl9OMO20EJ5ID2VWWTNY3xmvrCssD2qTbP+VrkSNq8SSBH8Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(33656002)(7416002)(86362001)(316002)(9746002)(8676002)(2906002)(8936002)(9786002)(6636002)(478600001)(36756003)(426003)(5660300002)(38100700001)(1076003)(6862004)(2616005)(83380400001)(66556008)(37006003)(66476007)(186003)(66946007)(26005)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wCbIMzJSgjSgNyBI/DcLzb2kD/Wr0yvpM5L+NHvfR9gn3ajdDqgtqigzmd+z?=
+ =?us-ascii?Q?qUwQpm5TKdc54g/mWN+aZXFohgvdMSUJ8YsEd/oKyKuOJvOW1MMQqC+asH4b?=
+ =?us-ascii?Q?IwOCMPTVP4PT6OzTTzsGgIOxw6zsoISMu0/vfy75hbJ+HC/0V/k7IJqnDHUg?=
+ =?us-ascii?Q?PW9PrykxgnpUbHY/MIoIx3z2y6W0OMlt72l2cvDTHnY/duQwzTN6XJRoRULS?=
+ =?us-ascii?Q?a7AxDNX+a9TSW+o+tPhNwkYM1oqRyXfoZl2QmCkb342xdjIdtDd6MZHdGl3R?=
+ =?us-ascii?Q?iVM9FNs5rkV6aRLgQ5MrjU8i4ckehjHAJdpowYazigC3Je5SJPp6GTap3iiv?=
+ =?us-ascii?Q?QAx1h8OEIGMk4Zczh/JTzVp/hP1XuulasLyUjVLMMCw775Pnw9Yb+WDAhhgM?=
+ =?us-ascii?Q?vx8J8Cg1YW5LeT54C+nLPTpWoWG2TIrCrVRCw1903enbi+hhk15TjVHllMlD?=
+ =?us-ascii?Q?QMvfPjzQM2SQRIqBfZViy48a+V9lRQd3mA+HLuotyp/GobR1PSiw1N3AUqrh?=
+ =?us-ascii?Q?Ey0c1ZGG2TOjYyzDbwtVEsHNSRdHY9ml7cexyZXOlN8wZ093DBYbLkJPajMk?=
+ =?us-ascii?Q?UDVu9dN7aI00QvucN9u62Y/Xg8+ksABbiiRBGSJJ0Jy8sNZizp0347Hk0EZN?=
+ =?us-ascii?Q?w39165XXB0jYRmfURTETNvqcIU5D0i+aYwZOEgc4UoiU91SrpiomcuvfpWqr?=
+ =?us-ascii?Q?y32Po9LA/XA9E9JQ+JvXWYDAYBwB75rf+HhlK5I6rs5AEdbffXZK1rnmHA+D?=
+ =?us-ascii?Q?3ACFYWVs0a0CStrCArb9UyromsEtDGRy/LmBT6Z7ZOF5+2kFS+p2VTOMVmeK?=
+ =?us-ascii?Q?OK/CxPq40FvB4DFStQrX8Q3VJLZfM3G2YNsaMSdERA+lP1fE2pvTxje0qJ3R?=
+ =?us-ascii?Q?0+wiuvO5saEA9klSPqQOuiMyCnoGwvb6U8NTCkFUvFo/l41ZB2HWprn5QRJQ?=
+ =?us-ascii?Q?FoOlERgWdMKgVKMBLKvcTGee59FCFcEoXuHPr94JgIF6O0jzinFepoZPcrR8?=
+ =?us-ascii?Q?K1PSJllC2anyCaClwE3Au8FEi0M5z4iscMQBd9+BrdOB7LlWduZhL6rcPXcZ?=
+ =?us-ascii?Q?pwvQ1QMWczZLQ1Z3y0PvuEYUAdjTr1G+kjIAalVOJiDm9ZtfJPurBDj/z8b4?=
+ =?us-ascii?Q?woqbpuIu3goRty1XooBtuT0XjydXLuIeBB9HQOGiSXN2n2cNv4n0EHQtCgin?=
+ =?us-ascii?Q?LCy1MqMxj0CklN5Z7eCfxYgTQB7kgzYhH3q5JMwxzeeOuoFxi4g1PHaO6sUy?=
+ =?us-ascii?Q?BJHlMs4mQ2Vy7PF6Tv/cz5u/OiYwN7fmNfdVHbSCXB8k9xrS5bZX9JNSD7yj?=
+ =?us-ascii?Q?FY6LWHWTp8ao++JP+jKWEw/yG1X7dZIDREZaslWBORqoyw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc46dc5e-64cc-437c-a3f7-08d8f3ac7e4d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 18:49:05.8343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w+aDCrGDzh211idVdYY+Q5UWcUbAllLwASWx4KxgVAI518B8dRkEQ2MouwyvEb91
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0202
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc-11 adds support for -fsanitize=kernel-hwaddress, so it becomes
-> possible to enable CONFIG_KASAN_SW_TAGS.
->
-> Unfortunately this fails to build at the moment, because the
-> corresponding command line arguments use llvm specific syntax.
->
-> Change it to use the cc-param macro instead, which works on both
-> clang and gcc.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  scripts/Makefile.kasan | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-> index 1e000cc2e7b4..0a2789783d1b 100644
-> --- a/scripts/Makefile.kasan
-> +++ b/scripts/Makefile.kasan
-> @@ -36,14 +36,14 @@ endif # CONFIG_KASAN_GENERIC
->  ifdef CONFIG_KASAN_SW_TAGS
->
->  ifdef CONFIG_KASAN_INLINE
-> -    instrumentation_flags := -mllvm -hwasan-mapping-offset=$(KASAN_SHADOW_OFFSET)
-> +    instrumentation_flags := $(call cc-param,hwasan-mapping-offset=$(KASAN_SHADOW_OFFSET))
->  else
-> -    instrumentation_flags := -mllvm -hwasan-instrument-with-calls=1
-> +    instrumentation_flags := $(call cc-param,hwasan-instrument-with-calls=1)
->  endif
->
->  CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
-> -               -mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
-> -               -mllvm -hwasan-use-short-granules=0 \
-> +               $(call cc-param,hwasan-instrument-stack=$(CONFIG_KASAN_STACK)) \
-> +               $(call cc-param,hwasan-use-short-granules=0) \
->                 $(instrumentation_flags)
->
->  endif # CONFIG_KASAN_SW_TAGS
-> --
-> 2.29.2
->
+On Fri, Mar 26, 2021 at 11:08:00AM +1100, Alistair Popple wrote:
 
-Hi Arnd,
+> +static bool try_to_munlock_one(struct page *page, struct vm_area_struct *vma,
+> +		     unsigned long address, void *arg)
+> +{
 
-This patch breaks SW_TAGS build with Clang for me with:
+Is this function name right?
 
-arch/arm64/include/asm/current.h:19: undefined reference to `__hwasan_tls'
+> +	struct page_vma_mapped_walk pvmw = {
+> +		.page = page,
+> +		.vma = vma,
+> +		.address = address,
+> +	};
+> +
+> +	/* munlock has nothing to gain from examining un-locked vmas */
+> +	if (!(vma->vm_flags & VM_LOCKED))
+> +		return true;
+> +
+> +	while (page_vma_mapped_walk(&pvmw)) {
+> +		/* PTE-mapped THP are never mlocked */
+> +		if (!PageTransCompound(page)) {
+> +			/*
+> +			 * Holding pte lock, we do *not* need
+> +			 * mmap_lock here
+> +			 */
+> +			mlock_vma_page(page);
 
-The reason for this is that cc-param is only defined for
-KASAN_GENERIC, the definition needs to be moved.
+Because the only action this function seems to take is to call
+*mlock*_vma_page()
 
-Thanks!
+> +		}
+> +		page_vma_mapped_walk_done(&pvmw);
+> +
+> +		/* found a mlocked page, no point continuing munlock check */
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+>  /**
+>   * try_to_munlock - try to munlock a page
+>   * @page: the page to be munlocked
+> @@ -1796,8 +1821,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+>  void try_to_munlock(struct page *page)
+>  {
+
+But this is also called try_to_munlock ??
+
+/**
+ * try_to_munlock - try to munlock a page
+ * @page: the page to be munlocked
+ *
+ * Called from munlock code.  Checks all of the VMAs mapping the page
+ * to make sure nobody else has this page mlocked. The page will be
+ * returned with PG_mlocked cleared if no other vmas have it mlocked.
+ */
+
+So what clears PG_mlocked on this call path?
+
+Something needs attention here..
+
+Jason
