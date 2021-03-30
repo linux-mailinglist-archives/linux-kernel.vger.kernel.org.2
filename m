@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC21334F3B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8661F34F37D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhC3Vq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        id S233441AbhC3V3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbhC3Vq4 (ORCPT
+        with ESMTP id S233288AbhC3V2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:46:56 -0400
-X-Greylist: delayed 1226 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Mar 2021 14:46:56 PDT
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEE3C061574;
-        Tue, 30 Mar 2021 14:46:56 -0700 (PDT)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lRLrw-000CEQ-PW; Tue, 30 Mar 2021 23:25:48 +0200
-Received: from [85.7.101.30] (helo=pc-6.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lRLrw-000KZf-CJ; Tue, 30 Mar 2021 23:25:48 +0200
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
-Date:   Tue, 30 Mar 2021 23:25:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 30 Mar 2021 17:28:43 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD342C061574;
+        Tue, 30 Mar 2021 14:28:42 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 30so8926783qva.9;
+        Tue, 30 Mar 2021 14:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ijyhfQ+fdBvGo4/9WEvg+2IXq75NDRW57Oedihv3mO4=;
+        b=f9RyZpypffvWmRYdkEcjEkX2s4R4L944gJMfUKX0CN++k1SIfk70wFF/gDxYVi0h4T
+         Lsl0f5g5IahBSh9rt22YOw0bB3z4IG2B0T4kCejmxzwUfe6QXE4oT9NMYKrqphGOTV7J
+         X6bfKR6Auz7dR2iN+FJ4b3jSZqwkazZcr7SICayUCgbXqfFfId4rVEU/3iaZrX72iUCA
+         nQKEyQSVHKAUrV0t/y112eyVhB+KCwgl0NpFuTaxk+seJgVBKtMxGZLlyaNSRXyhUu6F
+         3fLvazzscIjhFvfml8YpHbE6uxC0uN2idxGjoEIFNkB/+pOSu8MY1ZXHwHH4U4Wv8kF6
+         O+sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ijyhfQ+fdBvGo4/9WEvg+2IXq75NDRW57Oedihv3mO4=;
+        b=bi0PFpR+0JcoEORmjdZch+Zh4EtG+TNtl7gNQ7eeDLReMGN1PGe0b9fYU6wXuMgOWh
+         Ug0qmzxRgwzQaxKiaBYkR8mDul/c+YsvewWM0rDA1iTQZCu5t5mkZHqn2TOIx4uQ/pLI
+         s7yzwcQdR0ext1kBq+3EYh+vXka42S64lCPoxb/W4fVgEJA2GQnlnOj0DRTCN00DGosA
+         EfELSrRPXiBOWk6LC8oYAZACy/d0lWC3B6KVH5BXvsCWYDbz/4h3M+D0Uw6NbWGwFgYF
+         lHxyFby2yrCthFtJKACZj8+AoAJK8ZKqt2OaUk5+qEw1KbjfKduwr6lNrO3k69eyFdUZ
+         2NYw==
+X-Gm-Message-State: AOAM532oixT7TM2p9YqGh77WHMopIO4MgXsh6JicNZFgmZRAxjXjCieW
+        mSH8WGkziJhCHtivFjxNiU3jk3NV7tr8eDjN+qY=
+X-Google-Smtp-Source: ABdhPJymiZLPb6oIxk780b6xbiIr9FUKsG5KMDofVApTmjlt2JiL5Jj67ELP7PBU37tlAXdKqHn5FYz9HnOTIyHLcP0=
+X-Received: by 2002:a05:6214:9c9:: with SMTP id dp9mr190591qvb.34.1617139721882;
+ Tue, 30 Mar 2021 14:28:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26125/Tue Mar 30 13:11:47 2021)
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvxmRcvkweGSRSLGEm5MJDM4M7nzkp9FwOwmhZ+h2RE0vA@mail.gmail.com> <91b01387-1814-0719-8a21-2beb150dfcd6@pengutronix.de>
+In-Reply-To: <91b01387-1814-0719-8a21-2beb150dfcd6@pengutronix.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 30 Mar 2021 23:28:30 +0200
+Message-ID: <CAFLxGvz9efpWS29f3vabbyDA46KVZ8kb2NNkJvLeafAb-rcXVg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>, keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 10:39 PM, Andrii Nakryiko wrote:
-> On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
->> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
->>> Is there some succinct but complete enough documentation/tutorial/etc
->>> that I can reasonably read to understand kernel APIs provided by TC
->>> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
->>> whether API makes sense or not. Please share links, if you have some.
->>
->> Hi Andrii,
->>
->> Unfortunately for the kernel API part, I couldn't find any when I was working
->> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
->> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
->> act_bpf.c) to grok anything I didn't understand. There's also similar code in
->> libnl (lib/route/{act,cls}.c).
->>
->> Other than that, these resources were useful (perhaps you already went through
->> some/all of them):
->>
->> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
->> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
->> tc(8), and tc-bpf(8) man pages
->>
->> I hope this is helpful!
-> 
-> Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
-> trying to catch up.
-> 
-> I was just wondering if it would be more natural instead of having
-> _dev _block variants and having to specify __u32 ifindex, __u32
-> parent_id, __u32 protocol, to have some struct specifying TC
-> "destination"? Maybe not, but I thought I'd bring this up early. So
-> you'd have just bpf_tc_cls_attach(), and you'd so something like
-> 
-> bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
-> 
-> or
-> 
-> bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
-> 
-> ? Or it's taking it too far?
-> 
-> But even if not, I think detaching can be unified between _dev and
-> _block, can't it?
+Ahmad,
 
-Do we even need the _block variant? I would rather prefer to take the chance
-and make it as simple as possible, and only iff really needed extend with
-other APIs, for example:
+On Wed, Mar 17, 2021 at 3:03 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-   bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
+> > I didn't closely follow the previous discussions, but is a module
+> > parameter really the right approach?
+> > Is there also a way to set it via something like device tree?
+>
+> Compiled-on sources are considered in the order: tpm, tee then caam.
+> Module parameters are the only override currently available.
 
-Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
-iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
-direct-action mode. This is /as simple as it gets/ and we don't need to bother
-users with more complex tc/cls_bpf internals unless desired. For example,
-extended APIs could add prio/parent so that multi-prog can be attached to a
-single cls_bpf instance, but even that could be a second step, imho.
+Okay. So in the ideal case only one of these backends is compiled in,
+but the list can get long.
 
+I'm asking because David and I currently port another caam-like
+mechanism to the most recent
+kernel which will also hook in there.
+Out driver adds trusted keys support (with caam alike blobs) for i.mx
+SoCs that come with DCP
+instead of CAAM.
+Patches will hopefully materialize soon.
+
+-- 
 Thanks,
-Daniel
+//richard
