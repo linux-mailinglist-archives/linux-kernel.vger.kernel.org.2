@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA8234EBF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBF734EBFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhC3PST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:18:19 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:61289 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbhC3PRo (ORCPT
+        id S232203AbhC3PSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:18:51 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38653 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231719AbhC3PSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:17:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617117464; x=1648653464;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=i7hqXDBFMEOH344k9HghH3EKm0gmYqjjMoYYpOlfG7k=;
-  b=sSpnUdxYkTcwakAyleNrtw+O6+Z2KHcsvxI0PrW1aAQ83xROdOJQ8NdV
-   RoHVKjbi2RHi8UxOKx8mZjRZBLwG5gtSn45vccLCbaZPBKN7hyyQWr0F7
-   sIlYwjP/6LQNd7egrI6Tk6rp2hYNXn5XPrWdyb9zJH3t1V3F97/Ur9EH6
-   fQd9PG4Gwjv5VQqNlPVFOLVsYADIc0BYKDQBm/wYa/XCJNn/CVMcarLHR
-   mMvucl33P30uYykh0dei07xloTB9novRlq+c7Nn7h226ITnPgHsEFuind
-   VkMFm+0spOJdYRz9MwMnW4sJU3PIbtgJ7yO5oICmVgKRGJRRHK5smBlKY
-   A==;
-IronPort-SDR: U9O3kSBVfij23VJN3kWbJ3je+zz+RMiXR7LRbIi6o5gkhZu85AMJIZzFIvJ86U3HVPsOoxH7OM
- 7znL/NhjmgEVChD9v1YsRi9ufEVAI9x5T5iWBkBUXAE2JMpjFTx7OflUa9Yw7YiNLCRMy2EMQK
- 1q423DvIHQ7VPLqPsE+XtUXIgg0rdeTXGaRQ/Qmnk4Sjy6YnblAwCparZ9FzLIlxqWHEGozIFj
- 2oJzICgm253FzpLTF4DsHvqQNxSk4aOmtfpWFZEMb4vBLIfw7+kfDtuIQebLN0Bb2OCXxWqLfJ
- AsA=
-X-IronPort-AV: E=Sophos;i="5.81,291,1610434800"; 
-   d="scan'208";a="121077763"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 08:17:31 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 30 Mar 2021 08:17:31 -0700
-Received: from dan-linux.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 30 Mar 2021 08:17:31 -0700
-From:   Dan Sneddon <dan.sneddon@microchip.com>
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Dan Sneddon <dan.sneddon@microchip.com>
-Subject: [PATCH] drm/atmel-hlcdc: Allow async page flips
-Date:   Tue, 30 Mar 2021 08:17:20 -0700
-Message-ID: <20210330151721.6616-1-dan.sneddon@microchip.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 30 Mar 2021 11:18:23 -0400
+Received: by mail-ot1-f49.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so15912641otk.5;
+        Tue, 30 Mar 2021 08:18:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PlZUNayRrmgaKgXVXtAL3PXk2F0oj39eu7kyoW5Ud/k=;
+        b=r6rHI1zJ+r6SgfV0txfGJp9CJp6K2NSmEJBQox0vOMTSK6rlH2W/46SyUYpw1kzhso
+         vwDWYCaNkIE7H62J8Pivg6buIKM8GlkftOKWE2zQMfmVBesyPHT4/mxflKW1r52iQL7Z
+         xwqOk2hRFMKmTXnKNMnssJt0pun1Me21cpDzftsVlXraIigB3eX9R/FYewGZwvVtsQPt
+         C/184K8rYICDpSwYHAgKRy1lEQqS0VljNCte7mnNo191QAgomweNwy9yzcLXPAI/BEP3
+         XC1EhX9VSJR3xjqef2L7ImxzNVUhMVX/vbjW+2fPa3WcUADZhfSieWfsboi/DRoNORNo
+         yqKg==
+X-Gm-Message-State: AOAM533b2DTKP8p8A/rx/iF1VxdkSCa/wkynEzuL0mIm88LdyfiM/YWa
+        rIfsZvCPV6DhYs8mm14Etw==
+X-Google-Smtp-Source: ABdhPJw8DvKlnSSfnVW/ySoAGDIq18w0ithxPe/i7w68DXnVExjOMD2+U4R56xLkHWo3rb9lqExncQ==
+X-Received: by 2002:a05:6830:1bf5:: with SMTP id k21mr28157540otb.129.1617117503382;
+        Tue, 30 Mar 2021 08:18:23 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.136])
+        by smtp.gmail.com with ESMTPSA id h59sm5190376otb.29.2021.03.30.08.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 08:18:21 -0700 (PDT)
+Received: (nullmailer pid 326348 invoked by uid 1000);
+        Tue, 30 Mar 2021 15:18:18 -0000
+Date:   Tue, 30 Mar 2021 10:18:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org, robh+dt@kernel.org,
+        linux@roeck-us.net, jdelvare@suse.com
+Subject: Re: [PATCH v2 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
+Message-ID: <20210330151818.GA321862@robh.at.kernel.org>
+References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
+ <20210329015206.17437-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329015206.17437-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is capable of doing async page flips so we need to tell the
-core to allow them.
+On Mon, 29 Mar 2021 14:52:02 +1300, Chris Packham wrote:
+> Convert i2c-mpc to YAML.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v2:
+>     - Rework compatible validation
+>     - Remove irrelevant i2ccontrol from example
+> 
+>  .../devicetree/bindings/i2c/i2c-mpc.txt       | 62 -------------
+>  .../devicetree/bindings/i2c/i2c-mpc.yaml      | 91 +++++++++++++++++++
+>  2 files changed, 91 insertions(+), 62 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+> 
 
-Signed-off-by: Dan Sneddon <dan.sneddon@microchip.com>
----
-
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-index 871293d1aeeb..f6c3d8809fd8 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
-@@ -686,6 +686,7 @@ static int atmel_hlcdc_dc_modeset_init(struct drm_device *dev)
- 	dev->mode_config.max_width = dc->desc->max_width;
- 	dev->mode_config.max_height = dc->desc->max_height;
- 	dev->mode_config.funcs = &mode_config_funcs;
-+	dev->mode_config.async_page_flip = true;
- 
- 	return 0;
- }
--- 
-2.17.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
