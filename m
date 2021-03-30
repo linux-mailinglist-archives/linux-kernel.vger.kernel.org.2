@@ -2,128 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6642234DCBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F3934DCBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhC3ABY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 20:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhC3ABN (ORCPT
+        id S230373AbhC3ACd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 20:02:33 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:38497 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhC3ACH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 20:01:13 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30247C061762;
-        Mon, 29 Mar 2021 17:01:13 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id j26so14538347iog.13;
-        Mon, 29 Mar 2021 17:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o1RVU8f6fFPGPUVdEsvhlniyHwKth2qLcDOfg9+oE/0=;
-        b=LbXHkh8g6WyZtVYhBmbQvX79th/toetfxmG/3BXUKws+HCG2fZIw8+T4v7AUNIYaER
-         xlY12DfqmmOZfPTYbMTAPukA+/jQmCsJZyvEKszt0Yp+5HfCJDfrInd38rHpOGSiJNSu
-         LFWVYiD0WBvvdoOJgl6echMQSENrvRB8h2PDT9TwfVTsSl0Vk6Q1ZMvVuojVdccNFxvm
-         zWOEtx31p92PcDDGAx9LVqkNZARhLm/i3bL0UStnZHogNZuNDqr+JRNQ0CZ3MM8RhsbF
-         HzG1s03MzmHP8iPVGuVB85kgJwkQQmwtN9SAX4wKwcVd3SA4KqKntKAPRX+oddBs8rMs
-         MKug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o1RVU8f6fFPGPUVdEsvhlniyHwKth2qLcDOfg9+oE/0=;
-        b=IA6fgfs+X2uKSLuZW8zbyEqhXSPhxG9v6Vcna59GllgEZgMJ10aHo6LrTv1cd8hNG5
-         Rta2sTGpJQb0h7hFHQBMQoAw24sjWow/BRzt9qfD+12f6CHP7lbN0DoIKpz/zFzcCFg/
-         pBR5Gu3ZA6ArgbBpS8cLdOS2Fguj2NciuDCPiKyl2u3+Zzf+TypGw6zND7yjr8VWVugP
-         yd8KAimn1RiFE4tpqxYlyWjVSzurM6LlzXYtfFMZLBA/523F1cMZ/vZRpHeXMTajWUtn
-         0GEsZ+3E/hcC7SRNDiOv6NwZDLhGTd28xNUrE54uf/Upxehb3nn/15gJpVRQMSVgvdw8
-         YdEQ==
-X-Gm-Message-State: AOAM530yRkN5uhsY5zNuhd/APYJfdn1wMjzAraqffd8IcVxTJVxk1Qwy
-        llL4LrJTcs2EgqPRSvpY+cWAeUF0yjo6r2JkGT4=
-X-Google-Smtp-Source: ABdhPJxr0CEiheZvBWeaASYN88d9OZ9gNYBFA2ls0TFGGlukYXvpbz506hPqg6AS23RwGni3XVQOC3Ny1NcGD/wjW3w=
-X-Received: by 2002:a6b:d60c:: with SMTP id w12mr6276709ioa.105.1617062472683;
- Mon, 29 Mar 2021 17:01:12 -0700 (PDT)
+        Mon, 29 Mar 2021 20:02:07 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id EBE6F100002;
+        Tue, 30 Mar 2021 00:02:05 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 02:02:05 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: ds1307: set uie_unsupported if no interrupt is
+ available
+Message-ID: <YGJqfVFVb7Z1LBTu@piout.net>
+References: <YFClVBShBuy9/VPY@piout.net>
+ <CGME20210316180430eucas1p1a3cb26f40772b0af75782ff84908d731@eucas1p1.samsung.com>
+ <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <20210326015229.141-1-alistair@alistair23.me> <20210326015229.141-4-alistair@alistair23.me>
- <YGIlsLgvE9y/jiGk@google.com>
-In-Reply-To: <YGIlsLgvE9y/jiGk@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Mon, 29 Mar 2021 20:00:41 -0400
-Message-ID: <CAKmqyKPKCa14haos--fVX3w7UrVxxjLP+vg_Aku82uK4LkqTPw@mail.gmail.com>
-Subject: Re: [PATCH v4 04/10] Input: wacom_i2c - Add touchscren properties
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- On Mon, Mar 29, 2021 at 3:08 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> On Thu, Mar 25, 2021 at 09:52:24PM -0400, Alistair Francis wrote:
-> > Connect touchscreen properties to the wacom_i2c.
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > ---
-> > v4:
-> >  - Add touchscreen_report_pos() as well
-> >
-> >  drivers/input/touchscreen/wacom_i2c.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> > index eada68770671..ee1829dd35f4 100644
-> > --- a/drivers/input/touchscreen/wacom_i2c.c
-> > +++ b/drivers/input/touchscreen/wacom_i2c.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/i2c.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/irq.h>
-> > +#include <linux/input/touchscreen.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/of.h>
-> >  #include <asm/unaligned.h>
-> > @@ -33,6 +34,7 @@ struct wacom_features {
-> >  struct wacom_i2c {
-> >       struct i2c_client *client;
-> >       struct input_dev *input;
-> > +     struct touchscreen_properties props;
-> >       u8 data[WACOM_QUERY_SIZE];
-> >       bool prox;
-> >       int tool;
-> > @@ -188,6 +190,9 @@ static int wacom_i2c_probe(struct i2c_client *client,
-> >       __set_bit(BTN_STYLUS2, input->keybit);
-> >       __set_bit(BTN_TOUCH, input->keybit);
-> >
-> > +     touchscreen_parse_properties(input, true, &wac_i2c->props);
-> > +     touchscreen_report_pos(input, &wac_i2c->props, features.x_max,
-> > +                            features.y_max, true);
->
-> ??? This goes into wacom_i2c_irq() where it previously used
-> input_report_abs() for X and Y so that transformations (swap, mirrot)
-> requested via device properties are applied to the coordinates.
+On 16/03/2021 19:04:14+0100, Lukasz Stelmach wrote:
+> OK, you are right. The problem seems to be elsewhere.
+> 
+> How about this scnario? We call rtc_update_irq_enable(). We read rtc
+> with __rtc_read_time() and calculate the alarm time. We get through
+> rtc_timer_enqueue() and down to __rtc_set_alarm(). We loose the race
+> condition (I can do it, I've got really slow connection to DS3231) and
+> we return -ETIME from __rtc_set_alarm()
+> 
+>     if (scheduled <= now)
+>         return -ETIME;
+> 
+> and 0 from rtc_timer_enqueue() and the very same zero from
+> rtc_update_irq_enable(). The caller of ioctl() thinks they can expect
+> interrupts when, in fact, they won't receive any.
+> 
+> The really weird stuff happens in rtc_timer_do_work(). For the timer to
+> be dequeued __rtc_set_alarm() needs to return EINVAL three times in a
+> row. In my setup this doesn't happen and the code keeps running loops
+> around "reporogram" and "again" labels.
+> 
+> With my patch we never risk the above race condition between
+> __rtc_read_time() in rtc_update_irq_enable() and the one in
+> __rtc_set_alarm(), because we know rtc doesn't support alarms before we
+> start the race. In fact there is another race between __rtc_read_time()
+> and actually setting the alarm in the chip.
+> 
+> IMHO the solution is to introduce RTC_HAS_ALARM flag for struct
+> rtc_device and check it at the very beginning of __rtc_set_alarm() the
+> same way it is being done in ds1337_set_alarm(). What are your thoughts?
+> 
 
-Ah sorry. I misunderstood what touchscreen_report_pos() does (and
-didn't read it).
+I did introduce RTC_FEATURE_ALARM for that in v5.12. I'm sending patches
+that are not well tested but should solve your issue.
 
-Looking at the actual code it seems that I need to remove
 
-input_report_abs(input, ABS_Y, y);
-input_report_abs(input, ABS_X, x);
-
-from wacom_i2c_irq() and add touchscreen_report_pos() to wacom_i2c_irq() instead
-
-I'll do that in the next version.
-
-Alistair
-
->
-> Thanks.
->
-> --
-> Dmitry
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
