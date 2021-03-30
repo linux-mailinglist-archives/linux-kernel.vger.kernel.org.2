@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1BD34EE32
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEBB34EE31
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhC3QpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
+        id S232487AbhC3QpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbhC3QpI (ORCPT
+        with ESMTP id S232336AbhC3QpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:45:08 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B154C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:08 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j18so16900645wra.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:08 -0700 (PDT)
+        Tue, 30 Mar 2021 12:45:09 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AC7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:09 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo8756763wmq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0HmJyYvfh3odbCbwdOHWuZiUzII2bd3LZhTWqsOobYI=;
-        b=N6ms+42hVq78eqMDHvrJ+KubWmadCxO/RdIMH/6ke8oTXSzQBpZSyFYwiJucLjMQfJ
-         wuRqinNGe7EwXnT2bZ8egaUn9iuIISaciRm355A60HCpPAWOPQQfRDJs2euDMW6Ir7La
-         oJ8xI146jd2PxEXMMoWofSec0N/BcDbCetmnGbig+K0aRbzILu2hcwwlJhBbUQk3tgKl
-         yehqR/nMxiVnC/k5hTEre8U/jmT53Ts6LSsid5lIpGi74uNAzq1e5cWgC7Tgdo2hZcFO
-         RtNQsDvpTpPrCTLse+qT1s3etR9QsB4RVnJ1hJt/MtA910vsR1QBQg7QjWcMRDsmMzUt
-         YLJA==
+        bh=dDw5EBc2NIDbfXjwrfN0J0Ba7xy8ebZtYdNOOedaL18=;
+        b=tB64OyfkremmQN5Lxk4mZ1ZV5XTwHIqVCy8P3EjOfHK3GW1+WRl4uzQqO4sBlRBcwe
+         tZ11xEsnwaTH3n1lzXp6Jgp9eB/NVSt6dLKIwzdAznOI7O1bNJ91h+bMlkP3V+e59IxT
+         Ngz1bbeXGKnV73umvPJCLx9+hZo7VME2rfM/9HlbUqhG0DsWC0R3JJOcgSEMs3t0wBLW
+         zcU0pZKNZQPUF5Pzz7GKGmrHlc5RgAR5P7nR1BK2xhXneqf6jFBBkkhr8BvTO73M/cfq
+         27PJvtmvrORM9pOSZfcAzNeuhvVYAIMBms6xxprokLIaRK8KC92vVUa7ICO2JKLsfb7t
+         ouOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0HmJyYvfh3odbCbwdOHWuZiUzII2bd3LZhTWqsOobYI=;
-        b=B7eO0MHQQqKB1s/DNdD41kHTvUK9jREsu7Mx/UHwUlVLc5q4V8WBnKGeF25/xx67cW
-         cr6uSzZuvH3Su+5gWovuJxtmGX1ih/J5BVXAvf4Qx9s61krbMibiwsaAuP2rRECTFI5V
-         NpD9kfb1d0tzq24nPHzNQYWNT+yie2t8oYptRVvsPnrZ6pwUAnQVFavPjgroBPISlLbu
-         vSzadsyW99mzPkdGdQV1oeL4kcjaZkHkLFA1ulkNRmAJ0odSXcTyUtC5JDqpLYKCs8cL
-         XkCPI7o4UDjSkr8tb+p0Q4jeTqH/tGQqDBM85E+osBHl//Up8T1jBZX2yQCS485lgcI+
-         Cpkw==
-X-Gm-Message-State: AOAM532ddyJSOfuw+iOKpNiXXtSdbTG4sHEMHwhOkrCGQdvH7eGIqC4U
-        5FBuiWCXwTsVIFaybqqPvzGopw==
-X-Google-Smtp-Source: ABdhPJyXF7nfP1hcwCVfZjQ+Nv2wGEGsayY2DesI2BlKYoJNiZWkKpKccBiEzU+tuwBhYUpiEe92RQ==
-X-Received: by 2002:a05:6000:3:: with SMTP id h3mr34598645wrx.91.1617122707218;
-        Tue, 30 Mar 2021 09:45:07 -0700 (PDT)
+        bh=dDw5EBc2NIDbfXjwrfN0J0Ba7xy8ebZtYdNOOedaL18=;
+        b=o6vaiKqFshSaV6tEcjK2qD9tYuONVbm+eXK6fGotvmoLAkGqdQ9+GDjZ2YCWNACvuk
+         /nUhMjmGDL48EQ93n9seJqgrdleSz/0udhQq9QsWXBAKZIjJnHzSxeavzAdjExW3Nh+b
+         uOMDHGjuNBXInWmSytG59LW4v5f0KTAodUzdftDNNe9H/Uu54Eib6CTK9R9y6IB5D8Tw
+         ZTD5klTtS9GYZq+p3zL48sSTZZDAJqpcXY8VeFRI146QJ8VQljcZwC0RlQaFRgrNMk4n
+         lTwZqxtsinHMrvXAnXsS0Nn5VwZsKJMZi+ceSlntL2JaqTsWDrbyPB49R04Yrnm2Bysd
+         SSXA==
+X-Gm-Message-State: AOAM531G2MlOROeoKvPE6SICnOnKMu34rSqGaNvYs7kAY8Kb7oPFcFun
+        qvPRNrgZh6BLnKqJfoEhZeOuOCX/kjygnw==
+X-Google-Smtp-Source: ABdhPJweOxPa1+8eE5m33CxyD6v1omczvxeDd+pXvbLfgAow70mN+MDiVOpC3dh3UQ3iyMrn/U0glQ==
+X-Received: by 2002:a1c:4382:: with SMTP id q124mr5078916wma.16.1617122708085;
+        Tue, 30 Mar 2021 09:45:08 -0700 (PDT)
 Received: from dell.default ([91.110.221.217])
-        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.06
+        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 09:45:06 -0700 (PDT)
+        Tue, 30 Mar 2021 09:45:07 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com
-Subject: [PATCH 06/31] fs: gfs2: lops: Help out worthy kernel-doc headers and demote others
-Date:   Tue, 30 Mar 2021 17:44:33 +0100
-Message-Id: <20210330164458.1625478-7-lee.jones@linaro.org>
+Subject: [PATCH 07/31] fs: gfs2: glock: Fix some deficient kernel-doc headers and demote non-conformant ones
+Date:   Tue, 30 Mar 2021 17:44:34 +0100
+Message-Id: <20210330164458.1625478-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210330164458.1625478-1-lee.jones@linaro.org>
 References: <20210330164458.1625478-1-lee.jones@linaro.org>
@@ -67,93 +67,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- fs/gfs2/lops.c:106: warning: Function parameter or member 'tr' not described in 'gfs2_unpin'
- fs/gfs2/lops.c:106: warning: Excess function parameter 'flags' description in 'gfs2_unpin'
- fs/gfs2/lops.c:300: warning: Function parameter or member 'biop' not described in 'gfs2_log_get_bio'
- fs/gfs2/lops.c:300: warning: Excess function parameter 'bio' description in 'gfs2_log_get_bio'
- fs/gfs2/lops.c:333: warning: Function parameter or member 'jd' not described in 'gfs2_log_write'
- fs/gfs2/lops.c:428: warning: Function parameter or member 'head' not described in 'gfs2_jhead_pg_srch'
- fs/gfs2/lops.c:471: warning: Function parameter or member 'head' not described in 'gfs2_jhead_process_page'
- fs/gfs2/lops.c:513: warning: Function parameter or member 'keep_cache' not described in 'gfs2_find_jhead'
- fs/gfs2/lops.c:983: warning: Function parameter or member 'sdp' not described in 'databuf_lo_before_commit'
- fs/gfs2/lops.c:983: warning: Function parameter or member 'tr' not described in 'databuf_lo_before_commit'
+ fs/gfs2/glock.c:365: warning: Function parameter or member 'gl' not described in 'do_error'
+ fs/gfs2/glock.c:365: warning: Function parameter or member 'ret' not described in 'do_error'
+ fs/gfs2/glock.c:461: warning: Function parameter or member 'new_state' not described in 'state_change'
+ fs/gfs2/glock.c:1277: warning: Function parameter or member 'delay' not described in 'handle_callback'
+ fs/gfs2/glock.c:1277: warning: Function parameter or member 'remote' not described in 'handle_callback'
+ fs/gfs2/glock.c:1578: warning: Function parameter or member 'p' not described in 'nq_m_sync'
+ fs/gfs2/glock.c:1993: warning: Excess function parameter 'wait' description in 'gfs2_gl_hash_clear'
 
 Cc: Bob Peterson <rpeterso@redhat.com>
 Cc: Andreas Gruenbacher <agruenba@redhat.com>
 Cc: cluster-devel@redhat.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- fs/gfs2/lops.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ fs/gfs2/glock.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index a82f4747aa8d5..390ac939aa757 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -92,13 +92,10 @@ static void maybe_release_space(struct gfs2_bufdata *bd)
- 	rgrp_unlock_local(rgd);
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 7cccc5e863a8a..c590e27aaf097 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -356,7 +356,7 @@ static void gfs2_holder_wake(struct gfs2_holder *gh)
+ 	}
  }
  
 -/**
 +/*
-  * gfs2_unpin - Unpin a buffer
-  * @sdp: the filesystem the buffer belongs to
-  * @bh: The buffer to unpin
-- * @ai:
-- * @flags: The inode dirty flags
+  * do_error - Something unexpected has happened during a lock request
+  *
+  */
+@@ -453,8 +453,7 @@ static inline struct gfs2_holder *find_first_waiter(const struct gfs2_glock *gl)
+ /**
+  * state_change - record that the glock is now in a different state
+  * @gl: the glock
+- * @new_state the new state
 - *
++ * @new_state: the new state
   */
  
- static void gfs2_unpin(struct gfs2_sbd *sdp, struct buffer_head *bh,
-@@ -281,7 +278,7 @@ static struct bio *gfs2_log_alloc_bio(struct gfs2_sbd *sdp, u64 blkno,
-  * gfs2_log_get_bio - Get cached log bio, or allocate a new one
-  * @sdp: The super block
-  * @blkno: The device block number we want to write to
-- * @bio: The bio to get or allocate
-+ * @biop: The bio to get or allocate
-  * @op: REQ_OP
-  * @end_io: The bi_end_io callback
-  * @flush: Always flush the current bio and allocate a new one?
-@@ -317,6 +314,7 @@ static struct bio *gfs2_log_get_bio(struct gfs2_sbd *sdp, u64 blkno,
- /**
-  * gfs2_log_write - write to log
-  * @sdp: the filesystem
-+ * @jd: The journal descriptor
-  * @page: the page to write
-  * @size: the size of the data to write
-  * @offset: the offset within the page 
-@@ -417,6 +415,7 @@ static void gfs2_end_log_read(struct bio *bio)
- /**
-  * gfs2_jhead_pg_srch - Look for the journal head in a given page.
-  * @jd: The journal descriptor
-+ * @head: the head journal to start from
-  * @page: The page to look in
-  *
-  * Returns: 1 if found, 0 otherwise.
-@@ -450,6 +449,7 @@ static bool gfs2_jhead_pg_srch(struct gfs2_jdesc *jd,
-  * gfs2_jhead_process_page - Search/cleanup a page
-  * @jd: The journal descriptor
-  * @index: Index of the page to look into
-+ * @head: the head journal to start from
-  * @done: If set, perform only cleanup, else search and set if found.
-  *
-  * Find the page with 'index' in the journal's mapping. Search the page for
-@@ -502,6 +502,7 @@ static struct bio *gfs2_chain_bio(struct bio *prev, unsigned int nr_iovecs)
-  * gfs2_find_jhead - find the head of a log
-  * @jd: The journal descriptor
-  * @head: The log descriptor for the head of the log is returned here
-+ * @keep_cache: If set inode pages will not be truncated
-  *
-  * Do a search of a journal by reading it in large chunks using bios and find
-  * the valid log entry with the highest sequence number.  (i.e. the log head)
-@@ -974,7 +975,7 @@ static void revoke_lo_after_scan(struct gfs2_jdesc *jd, int error, int pass)
- 	gfs2_revoke_clean(jd);
+ static void state_change(struct gfs2_glock *gl, unsigned int new_state)
+@@ -1263,7 +1262,7 @@ int gfs2_glock_async_wait(unsigned int num_gh, struct gfs2_holder *ghs)
+ 	return ret;
  }
  
 -/**
 +/*
-  * databuf_lo_before_commit - Scan the data buffers, writing as we go
+  * handle_callback - process a demote request
+  * @gl: the glock
+  * @state: the state the caller wants us to change to
+@@ -1568,6 +1567,7 @@ static int glock_compare(const void *arg_a, const void *arg_b)
+  * nq_m_sync - synchonously acquire more than one glock in deadlock free order
+  * @num_gh: the number of structures
+  * @ghs: an array of struct gfs2_holder structures
++ * @p: placeholder for the holder structure to pass back
   *
+  * Returns: 0 on success (all glocks acquired),
+  *          errno on failure (no glocks acquired)
+@@ -1984,7 +1984,6 @@ static void dump_glock_func(struct gfs2_glock *gl)
+ /**
+  * gfs2_gl_hash_clear - Empty out the glock hash table
+  * @sdp: the filesystem
+- * @wait: wait until it's all gone
+  *
+  * Called when unmounting the filesystem.
   */
 -- 
 2.27.0
