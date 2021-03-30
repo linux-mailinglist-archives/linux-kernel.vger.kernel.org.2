@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9995034F3EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972FD34F3EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhC3WDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:03:11 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:38509 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhC3WDE (ORCPT
+        id S232918AbhC3WDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:03:44 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:44547 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232686AbhC3WDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:03:04 -0400
-Received: by mail-ot1-f45.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so17028654otk.5;
-        Tue, 30 Mar 2021 15:03:04 -0700 (PDT)
+        Tue, 30 Mar 2021 18:03:41 -0400
+Received: by mail-ot1-f53.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso17016328oti.11;
+        Tue, 30 Mar 2021 15:03:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yJpdze/YBc9sInrzv3wWDWKmQfQKODZsyxGBfKEmBhg=;
-        b=OLiExuCUToCOn7wTnvEpL7dE4ZCCaWIErQXCx/Ps6YzHYNTamvsutibkZzU89FgOSY
-         C97Q1BAZkESuZLt+D5yPqvCiXjF5V5CSr7hSQeMIOrd/yPFA4ARCcQWOSDHMn8YX4aCN
-         Qnu0T/Xcww5Ag6+z6K0np/LpFeLmK88sXWUsDfzbpPNdHgStAsdj6baml03AVxSjrtz+
-         KfxK3YDpAVXR5X72toIMaekrgYQk5vmJ7vxBJIGfBIe/oqzDWioS4CRQQatdOHHvTGeQ
-         ER1Uifoo1SPu5Ob0dGTyYZ5FijAcTxO0uQ4mDwN21ERDb6t/VVsZzrxHp31iXH0yQJjb
-         xlew==
-X-Gm-Message-State: AOAM530NpuY4h5AhZZEsHnjVsSxNnYaeMzESsNhOzK5AC4eCCQEVhfpH
-        uvfM3/EUQojgl8B7IGpo6w==
-X-Google-Smtp-Source: ABdhPJyG0w+WJQJfpVr6Rdgy+U2B7ANI7OefcZrkENG6O0W6w8R85knK4/AD9sg4ymn6in2J//sG8g==
-X-Received: by 2002:a9d:3a4a:: with SMTP id j68mr72619otc.4.1617141784250;
-        Tue, 30 Mar 2021 15:03:04 -0700 (PDT)
+        bh=kT3zV71FJ+KWr7wDc18R/r+VQdMcPYEV3G2c+81a2Jk=;
+        b=hS3Et4u4j1B0Oa9dHBHFv5NLGFT3o+oMFm+qm7SkpXGk5J3scKNe6V7W39jqh7JF8V
+         ts5c5cdZmyCdI05GmqFfljx6YUX4NDZzV8/4ZnW2DsAgwSTLRTTejrARwv0TSKpOvCu0
+         U3uns5O1tSm3DZybT/n18d2JeCHk6xDpJ6PXy5VbrSuzWGUwiwU/09I0iEkEkTyaa79Y
+         x8vSXqliwYMBOlGpFD0vb+R0T3OSVOSkafQuGpt1OkYpQmi8/D8OpIPwF01xMnUnfNeO
+         HX3ZKmswJmIZ3IFROKfpH1pgfQHqbtfqUszkdbRn+VD60v39TuvpMuoPgQPm/C5AWEwY
+         O1tg==
+X-Gm-Message-State: AOAM532pz8WU9CGxW7BKDOFq0eu6/yK+A+ijT2a4FaUWT6ADs1gkw83T
+        e7RYDRWJqA4ULSeUU8LalA==
+X-Google-Smtp-Source: ABdhPJyh2I7htYL3QyX1DObBLG3JvR3UrFCpUcE/E4wzSOKe1drGK80ocIqUyt6nVh4CFLt6ehNY8Q==
+X-Received: by 2002:a9d:6a8a:: with SMTP id l10mr41666otq.107.1617141821156;
+        Tue, 30 Mar 2021 15:03:41 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i25sm31395otf.37.2021.03.30.15.03.02
+        by smtp.gmail.com with ESMTPSA id c9sm37793ooq.31.2021.03.30.15.03.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:03:03 -0700 (PDT)
-Received: (nullmailer pid 793329 invoked by uid 1000);
-        Tue, 30 Mar 2021 22:03:02 -0000
-Date:   Tue, 30 Mar 2021 17:03:02 -0500
+        Tue, 30 Mar 2021 15:03:40 -0700 (PDT)
+Received: (nullmailer pid 794287 invoked by uid 1000);
+        Tue, 30 Mar 2021 22:03:39 -0000
+Date:   Tue, 30 Mar 2021 17:03:39 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3-imx8mp: Use the correct name
- for child node "snps, dwc3"
-Message-ID: <20210330220302.GA793280@robh.at.kernel.org>
-References: <20210329072714.2135-1-thunder.leizhen@huawei.com>
- <20210329072714.2135-2-thunder.leizhen@huawei.com>
+        alsa-devel <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check
+ warning
+Message-ID: <20210330220339.GA794236@robh.at.kernel.org>
+References: <20210329081435.2200-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329072714.2135-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20210329081435.2200-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 15:27:13 +0800, Zhen Lei wrote:
-> File snps,dwc3.yaml describes the schema of Synopsys DesignWare USB3
-> Controller, it directly or indirectly contains "$ref: usb.yaml". So the
-> node name of "snps,dwc3" must start with "usb". Otherwise, the following
-> warning will be displayed:
+On Mon, 29 Mar 2021 16:14:35 +0800, Zhen Lei wrote:
+> The property "dmas" contains two items: DMA "TX" and "RX" channel,
+> Therefore, its value also needs to be written in two parts.
 > 
-> Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.example.dt.yaml: \
-> dwc3@38100000: $nodename:0: 'dwc3@38100000' does not match '^usb(@.*)?'
->         From schema: Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> 
-> In addition, replace "type: object" with "$ref: snps,dwc3.yaml#". Ensure
-> that all properties of the child node comply with snps,dwc3.yaml.
+> Otherwise, below YAML check warning is reported:
+> Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
+> i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
 > 
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  Documentation/devicetree/bindings/usb/fsl,imx8mp-dwc3.yaml | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>  Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
