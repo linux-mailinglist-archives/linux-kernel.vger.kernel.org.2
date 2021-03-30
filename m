@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEED234E407
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9006934E40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhC3JHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhC3JHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EBA36195C;
-        Tue, 30 Mar 2021 09:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617095263;
-        bh=7qB3edotA3AfLunJldFPJfFICblDdnzcTuA9B41cJes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cC6WGJi2M6/lE7qFVIp+Tj+ubqEsFD7e8ZpDWuFZ1aYebRfcksDroU/qAjHRHhbCC
-         ayqIoB15NP5y5QsnujZQJsgujUJC2cwVKG7M1QaEIfuFCUVjcS2W550oQV8tD1doie
-         TP+IgbzozclqlWC8neIqGB781WbIcNiBM3sEUIRE=
-Date:   Tue, 30 Mar 2021 11:07:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-Message-ID: <YGLqXI8HOaOrMq1B@kroah.com>
-References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
- <YF3jfshT3OSolcws@kroah.com>
- <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
+        id S231626AbhC3JIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231844AbhC3JI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:08:26 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E0EC061762;
+        Tue, 30 Mar 2021 02:08:25 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e7so17278421edu.10;
+        Tue, 30 Mar 2021 02:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JopkR36qP9iYAEOIFtxNujqvc003NWZkBhmUZm75cOM=;
+        b=IWh+xP0+Cah9/2eZ5h8CB+WdAzjNJgF3LvZT/J69iyISkhndXPSsuck6jThJw1jDi4
+         94VM4rkPcS3e/GUyawO2a8/vJvx/62n0lyD8LGJVHrhnu9AzvZLWX51BB1KxBSWmyMSY
+         atfHiMRy24a/rOvymm/5vPJ1GmHja+dR8Z39wh3QVgvyWldd/Eko8iTdFvgQN/hzNAgo
+         klCSuIpXU8qReX584PrLWpYBkNdqC0R507hWxNkn1scF9VI2ATUAgAX0o6sJMy4RBDq+
+         CAC0B4QKexnRfss4wdOTY61iLhcbCJNfAXMIT5qxtN+26p2P08bUfNEU8EppKnvPYom2
+         C86Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JopkR36qP9iYAEOIFtxNujqvc003NWZkBhmUZm75cOM=;
+        b=g+ZmcLwtvMvWGo6ixsLVMrE0aulbRpmjSOdzHCF6BRjgi8UVFuPgbOV/egpAsSHvBW
+         BTllppiHsqGsdpJhXZMIfEJgZGRaD9iJsKZMLx7LT3uWdj+17QEvfjFCxbhbckEhcNb6
+         VEir83YQcGhgYgO6FrXYzOsg3X/W/1hcO/FhYQAHFQqqSkgtf8IjrRvKXC1Fk5IHuxgn
+         OoMCCL5N0tfeHZTZAvF8I8J68D8uPWB7UO5P3J+XPeVV8HtUB9eYL4Xu0Rt47K35PvTC
+         DIK7PksAB8DGlOILgYiWqfzWE+T5NvTrlzVYsYV+U911uDx6zyk0sMxu81Q2spi6rR1p
+         Gsyw==
+X-Gm-Message-State: AOAM532wykFYq0tadoIlX3cN9vFLNfVOqIMHRZIgmpsjGsYLLKYCdIFM
+        Rt4noyi52UvJMUfu1pyOkUNM4qXDcF7cqQ==
+X-Google-Smtp-Source: ABdhPJzlzmpKwFgdz3z2MefSCBqgcQiLSKJVGJuycrRnBEYKxfpwiIRJ9hKB4WKLnfDCx4uGB8Zpnw==
+X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr32417401edc.14.1617095304521;
+        Tue, 30 Mar 2021 02:08:24 -0700 (PDT)
+Received: from anparri (host-95-232-15-7.retail.telecomitalia.it. [95.232.15.7])
+        by smtp.gmail.com with ESMTPSA id t6sm10362417edq.48.2021.03.30.02.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 02:08:24 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 11:08:15 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Olaf Hering <olaf@aepfle.de>
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 3/3] scsi: storvsc: Validate length of incoming packet in
+ storvsc_on_channel_callback()
+Message-ID: <20210330090815.GA1897@anparri>
+References: <20201217203321.4539-1-parri.andrea@gmail.com>
+ <20201217203321.4539-4-parri.andrea@gmail.com>
+ <YGICQc6HaYw8+uES@aepfle.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
+In-Reply-To: <YGICQc6HaYw8+uES@aepfle.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 02:12:04PM +0530, Sandeep Maheswaram wrote:
-> 
-> On 3/26/2021 7:07 PM, Greg Kroah-Hartman wrote:
-> > On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
-> > > This patch adds a shutdown callback to USB DWC core driver to ensure that
-> > > it is properly shutdown in reboot/shutdown path. This is required
-> > > where SMMU address translation is enabled like on SC7180
-> > > SoC and few others. If the hardware is still accessing memory after
-> > > SMMU translation is disabled as part of SMMU shutdown callback in
-> > > system reboot or shutdown path, then IOVAs(I/O virtual address)
-> > > which it was using will go on the bus as the physical addresses which
-> > > might result in unknown crashes (NoC/interconnect errors).
-> > > 
-> > > Previously this was added in dwc3 qcom glue driver.
-> > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
-> > > But observed kernel panic as glue driver shutdown getting called after
-> > > iommu shutdown. As we are adding iommu nodes in dwc core node
-> > > in device tree adding shutdown callback in core driver seems correct.
-> > So shouldn't you also remove this from the qcom glue driver at the same
-> > time?  Please submit both as a patch series.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Hi Greg,
-> 
-> The qcom glue driver patch is not merged yet. I have just mentioned for it for reference.
+Hi Olaf,
 
-You know that we can not add callbacks for no in-kernel user, so what
-good is this patch for now?
+On Mon, Mar 29, 2021 at 06:37:21PM +0200, Olaf Hering wrote:
+> On Thu, Dec 17, Andrea Parri (Microsoft) wrote:
+> 
+> > Check that the packet is of the expected size at least, don't copy data
+> > past the packet.
+> 
+> > +		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+> > +				stor_device->vmscsi_size_delta) {
+> > +			dev_err(&device->device, "Invalid packet len\n");
+> > +			continue;
+> > +		}
+> > +
+> 
+> Sorry for being late:
+> 
+> It might be just cosmetic, but should this check be done prior the call to vmbus_request_addr()?
 
-confused,
+TBH, I'm not immediately seeing why it 'should'; it could make sense to move
+the check on the packet data length.
 
-greg k-h
+
+> Unrelated: my copy of vmbus_request_addr() can return 0, which is apparently not handled by this loop in storvsc_on_channel_callback().
+
+Indeed, IDs of 0 are reserved for so called unsolicited messages; I think we
+should check that storvsc_on_io_completion() is not called on such messages.
+
+Thanks,
+  Andrea
