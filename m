@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5580634ECF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1EA34ECFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhC3PzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:55:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45704 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232201AbhC3Pyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:54:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 44DADAF10;
-        Tue, 30 Mar 2021 15:54:34 +0000 (UTC)
-Subject: Re: [PATCH mm] mm, kasan: fix for "integrate page_alloc init with
- HW_TAGS"
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <2e5e80481533e73876d5d187d1f278f9656df73a.1617118134.git.andreyknvl@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <115c3cd4-a5ec-ea4c-fdc8-a17a0990bd30@suse.cz>
-Date:   Tue, 30 Mar 2021 17:54:33 +0200
+        id S231782AbhC3P5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhC3P4r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:56:47 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB7CC061574;
+        Tue, 30 Mar 2021 08:56:47 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 15so20522404ljj.0;
+        Tue, 30 Mar 2021 08:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1RFM+ZM9KyafZD5tTYDT6to829rHhY1lLnOW+dPv69M=;
+        b=DQuPwSVOh4M/7TJnX1PdHYRw9dCsrSnO/KYuVw0WzxkJi1fOT0zLinopvOnB57Axbm
+         6CeIY/g2gMsyHTt3OHo0PWIy/EoRU4sKJX40fyoW/scrRmuJ52DYEm+16Nvq2vfDDkc8
+         8xHpt33l3BaMB6BZgJqWZAtwjyBNsP2MFO3mAl+B6vZ1Nj8jfL5rUuNHcAu0B5nx4wiH
+         /Qdsw5sWVAjDk7IFPaukGZKl8MibgHHWLUO3zqiILzQn3G/hFR14zLK2vkMi9uk9MhlF
+         pEiHMemDFAdTjNSvk+Hl0IX+l7cT2YlAtkxocXaUdZ44s6j9Jsyv7TaCGV4zsQB+uZCS
+         Fb7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1RFM+ZM9KyafZD5tTYDT6to829rHhY1lLnOW+dPv69M=;
+        b=hLVzXLTP3/XJawDTmwStnSuT2GBlN9czmdhHalWqsjogVMty0n/oRVDc2ieJ/0U84s
+         iLKexCQIMZoPEYXiEAYf8E5BZupysZjm4ITxPEFN5Yv9D8WqWerYGXwCccaWFr3zqZ15
+         B32ZsmG6PtIzEEINHE57JDKI+qJQMY3pq7bfsuKlRuEmjoSd8TSPFIEpZO1QtLCe7ppA
+         yjq/HNCAli+qRRf/pWl79d4HEAaeuOKN6jB4b8Dg4EEGRyfM/N6878bJs36cIgxrAf7F
+         IGxpfPHWh55h89p6c79oxFJIL/8oGjjgHGJ2VN5zgKTI1hqIxC2u9a6ATyQapozwe/7S
+         h19Q==
+X-Gm-Message-State: AOAM530SNq35Mfwed5FGLl8QQgycFxe6CUApQ7xhqUBXGR6ubWmK0bmX
+        +tB2fyTh9Cp2JviMG1N8kAm6T8361DE=
+X-Google-Smtp-Source: ABdhPJwsTUHFPHt8oCbr02Icg/z9JCPusTfU+uR/6AH+HSHSDp4oF3Vju5jCqn+Xh/lrmRabABh70g==
+X-Received: by 2002:a2e:6e17:: with SMTP id j23mr21299527ljc.209.1617119805594;
+        Tue, 30 Mar 2021 08:56:45 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-98.dynamic.spd-mgts.ru. [109.252.193.98])
+        by smtp.googlemail.com with ESMTPSA id z9sm204669lfu.274.2021.03.30.08.56.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 08:56:45 -0700 (PDT)
+Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210329194602.17049-1-digetx@gmail.com>
+ <20210329194602.17049-6-digetx@gmail.com>
+ <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+ <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
+Message-ID: <eb29dd93-214d-ba15-7825-888467bd782b@gmail.com>
+Date:   Tue, 30 Mar 2021 18:56:44 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <2e5e80481533e73876d5d187d1f278f9656df73a.1617118134.git.andreyknvl@google.com>
+In-Reply-To: <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 5:31 PM, Andrey Konovalov wrote:
-> My commit "integrate page_alloc init with HW_TAGS" changed the order of
-> kernel_unpoison_pages() and kernel_init_free_pages() calls. This leads
-> to __GFP_ZERO allocations being incorrectly poisoned when page poisoning
-> is enabled.
-
-Correction: This leads to check_poison_mem() complain about memory corruption
-because the poison pattern has already been overwritten by zeroes.
-
-> Fix by restoring the initial order. Also add a warning comment.
+30.03.2021 18:29, Dmitry Osipenko пишет:
+> 30.03.2021 11:48, Krzysztof Kozlowski пишет:
+>>> +  power-domains:
+>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>> +    description:
+>>> +      Phandle of the SoC "core" power domain.
+>> I think the core checks the type, so you only need to limit max items.
+>>
 > 
-> Reported-by: Vlastimil Babka <vbabka@suse.cz>
-> Reported-by: Sergei Trofimovich <slyfox@gentoo.org>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-I expect this will be folded to your patch in mmotm anyway, so the changelog is
-not as important...
-
-> ---
->  mm/page_alloc.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> It's a bit confusing that both variants work and it's not apparent what
+> variant is better.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 033bd92e8398..1fc5061f8ca1 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2328,6 +2328,12 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
->  	arch_alloc_page(page, order);
->  	debug_pagealloc_map_pages(page, 1 << order);
->  
-> +	/*
-> +	 * Page unpoisoning must happen before memory initialization.
-> +	 * Otherwise, a __GFP_ZERO allocation will not be initialized.
-
-... but the comment should be corrected too:
-"Otherwise, a __GFP_ZERO allocation will trigger a memory corruption report
-during unpoisoning."
-
-Thanks.
-
-> +	 */
-> +	kernel_unpoison_pages(page, 1 << order);
-> +
->  	/*
->  	 * As memory initialization might be integrated into KASAN,
->  	 * kasan_alloc_pages and kernel_init_free_pages must be
-> @@ -2338,7 +2344,6 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
->  	if (init && !kasan_has_integrated_init())
->  		kernel_init_free_pages(page, 1 << order);
->  
-> -	kernel_unpoison_pages(page, 1 << order);
->  	set_page_owner(page, order, gfp_flags);
->  }
->  
+> I actually used the max items limit initially and then changed it to
+> $ref phandle because it appeared to me that it's a better choice. I'll
+> switch back to the limit in v2, thanks.
 > 
 
+Although, I'm still not sure what is the best variant. Could you please
+clarify why maxItems is better?
+
+Seems the $ref phandle already limits domain items to 1. So I don't
+understand what's the difference.
