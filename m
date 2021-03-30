@@ -2,106 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9912034E194
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A37934E18D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhC3Gyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:54:43 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15035 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhC3GyY (ORCPT
+        id S230334AbhC3Gwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231213AbhC3GwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:54:24 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8g8w4mjvzPmkQ;
-        Tue, 30 Mar 2021 14:51:44 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 14:54:12 +0800
-From:   Hao Fang <fanghao11@huawei.com>
-To:     <linux@armlinux.org.uk>, <xuwei5@hisilicon.com>
-CC:     <haojian.zhuang@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <prime.zeng@hisilicon.com>,
-        <fanghao11@huawei.com>
-Subject: [PATCH] ARM: hisi: use the correct HiSilicon copyright
-Date:   Tue, 30 Mar 2021 14:51:40 +0800
-Message-ID: <1617087100-20949-1-git-send-email-fanghao11@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Tue, 30 Mar 2021 02:52:21 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD71AC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:52:20 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id j3so16849927edp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WPlavxZjx/CyaIqXYJqYgJcpIj73IOHsePZspM3MA+w=;
+        b=g95hRnCcekZQvzrjQ01I2gsQEe3rHCooMbaObjIIoXVvpmWxdSOUKcIxL/5GMKsdvU
+         HBZVQZ6upe+pTZE2rsUr+6Tz09JGlLDPeS3azrBIN9Pgt9Hr99FjT3D7bMZpFutg0HWY
+         dQX74wJ019zVGEpdZBfAFUKBiUQWSCuzHKPURdZbm+ScLUzQPDxcHKk1y6cOaRX+p74L
+         h12HRVu8qiKsykshn2CA/7/TZqJpZT5dxXjXEmrDEz4eVxFPZB5ctnbgwdQDmRJE6GDs
+         0MOzHHCUne7j1aGrE9wuGnMvER3z0yM+2pTImH5y2c6NxzLeOVxw385lGfWk/33r01Op
+         YRAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WPlavxZjx/CyaIqXYJqYgJcpIj73IOHsePZspM3MA+w=;
+        b=XWiDs+wqkuRk7y5UU719Pnk73S0NaQvWFwSe98sHX4gN2+vdNxiPUVaTF9ZEjFe0Y4
+         jhMab9gZMXtWcDESAIN374CX9sRMOzHLICPTauOhgNoj1P1V4MKb27tbvzqonjl4CTeL
+         TAgerNb9YgBHvc+pudsnJtpniELvEygntvgJ3kp0JXs6h+S6spHJezT+rs4juGnGFNov
+         SDMmpY2gKB54y7BKQa/bDjWm4y+4Ep+CbUjoWwtY4GflN1U6vRC/7u1DuDzpeOdtGrWj
+         54i7qUzosqWWmAogMvzhGSIrg2vuds7824X67NrqKyQtSzhnThZ5irX5T3hpwTAu6Ivb
+         bkAw==
+X-Gm-Message-State: AOAM533nmOxDgxYWi0cBTqtUoTBlDw9SW5JqmP9YAPV6ErEXJTcFDx+f
+        UnGK8E7Mb8SFM8sFjiwscWr1YGhwrXNI6JuM8Bh9I05cIJ68utnH
+X-Google-Smtp-Source: ABdhPJwR6UYcq49jWqG8rRJ37y+CmMERl2g2zWlLK5kdjYcTq2RwRbGmIBeaX2P9qU8oyENDAZNWx+FhDVGhgcamoCA=
+X-Received: by 2002:a05:6402:13ce:: with SMTP id a14mr32215276edx.365.1617087139272;
+ Mon, 29 Mar 2021 23:52:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 30 Mar 2021 12:22:07 +0530
+Message-ID: <CA+G9fYukKdQWRwXPC2V-9FvF8vgZbbvC0qGpBbRkix4WLUxMOw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/72] 4.19.184-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Hisilicon/HiSilicon/
-It should use capital S, according to
-https://www.hisilicon.com/en/terms-of-use.
+On Mon, 29 Mar 2021 at 13:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.184 release.
+> There are 72 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.184-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Hao Fang <fanghao11@huawei.com>
----
- arch/arm/mach-hisi/hisilicon.c | 4 ++--
- arch/arm/mach-hisi/hotplug.c   | 2 +-
- arch/arm/mach-hisi/platmcpm.c  | 2 +-
- arch/arm/mach-hisi/platsmp.c   | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/arch/arm/mach-hisi/hisilicon.c b/arch/arm/mach-hisi/hisilicon.c
-index 07ea28b..b8d14b3 100644
---- a/arch/arm/mach-hisi/hisilicon.c
-+++ b/arch/arm/mach-hisi/hisilicon.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * (Hisilicon's SoC based) flattened device tree enabled machine
-+ * (HiSilicon's SoC based) flattened device tree enabled machine
-  *
-- * Copyright (c) 2012-2013 Hisilicon Ltd.
-+ * Copyright (c) 2012-2013 HiSilicon Ltd.
-  * Copyright (c) 2012-2013 Linaro Ltd.
-  *
-  * Author: Haojian Zhuang <haojian.zhuang@linaro.org>
-diff --git a/arch/arm/mach-hisi/hotplug.c b/arch/arm/mach-hisi/hotplug.c
-index 5c5f255..c517941 100644
---- a/arch/arm/mach-hisi/hotplug.c
-+++ b/arch/arm/mach-hisi/hotplug.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) 2013 Linaro Ltd.
-- * Copyright (c) 2013 Hisilicon Limited.
-+ * Copyright (c) 2013 HiSilicon Limited.
-  */
- 
- #include <linux/cpu.h>
-diff --git a/arch/arm/mach-hisi/platmcpm.c b/arch/arm/mach-hisi/platmcpm.c
-index f155e32..96a4840 100644
---- a/arch/arm/mach-hisi/platmcpm.c
-+++ b/arch/arm/mach-hisi/platmcpm.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) 2013-2014 Linaro Ltd.
-- * Copyright (c) 2013-2014 Hisilicon Limited.
-+ * Copyright (c) 2013-2014 HiSilicon Limited.
-  */
- #include <linux/init.h>
- #include <linux/smp.h>
-diff --git a/arch/arm/mach-hisi/platsmp.c b/arch/arm/mach-hisi/platsmp.c
-index da7a09c..a56cc64 100644
---- a/arch/arm/mach-hisi/platsmp.c
-+++ b/arch/arm/mach-hisi/platsmp.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) 2013 Linaro Ltd.
-- * Copyright (c) 2013 Hisilicon Limited.
-+ * Copyright (c) 2013 HiSilicon Limited.
-  * Based on arch/arm/mach-vexpress/platsmp.c, Copyright (C) 2002 ARM Ltd.
-  */
- #include <linux/smp.h>
--- 
-2.8.1
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.184-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: bbd08292bae4049381e5537588ba9f581456c4d5
+git describe: v4.19.183-73-gbbd08292bae4
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.183-73-gbbd08292bae4
+
+No regressions (compared to build v4.19.183)
+
+No fixes (compared to build v4.19.183)
+
+Ran 57059 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- qemu-arm-debug
+- qemu-arm64-clang
+- qemu-arm64-debug
+- qemu-arm64-kasan
+- qemu-i386-debug
+- qemu-x86_64-clang
+- qemu-x86_64-debug
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-tc-testing
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-bpf
+* kselftest-intel_pstate
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-fs-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
