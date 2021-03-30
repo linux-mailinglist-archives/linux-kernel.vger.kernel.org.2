@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A170E34F1DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AEB34F1E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhC3T4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:56:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38346 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233239AbhC3T4H (ORCPT
+        id S233300AbhC3T6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233285AbhC3T6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:56:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617134167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iDpCsr20mdBOULwkGJuXRLZb9kndT3CLNs3zWssy9e0=;
-        b=S1k5uNeT3AVMm8n1iy1vSSeXSCXBKAxmysAI82QEoSkcR2t85VnUY3Sv5paWRrlJWzpnZ0
-        Dl765S2RUBeaW8En/Qe8b2rU5J9G0KJVAiHjNZZFPicLV0d9fo8hQ8vUThWZFU6Lem6PUQ
-        IbLt84GlhR+OwnACB3XWknCZIUq4qqE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-BcwzNrlrMEOtUCuak3ZFrA-1; Tue, 30 Mar 2021 15:56:02 -0400
-X-MC-Unique: BcwzNrlrMEOtUCuak3ZFrA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C1E01009E2D;
-        Tue, 30 Mar 2021 19:56:01 +0000 (UTC)
-Received: from ovpn-113-84.phx2.redhat.com (ovpn-113-84.phx2.redhat.com [10.3.113.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 540071349A;
-        Tue, 30 Mar 2021 19:56:00 +0000 (UTC)
-Message-ID: <504652e70f0a4e42e4927583b9ed47cd78590329.camel@redhat.com>
-Subject: Re: Fix hibernation in FIPS mode?
-From:   Simo Sorce <simo@redhat.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "crecklin@redhat.com" <crecklin@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 30 Mar 2021 15:55:59 -0400
-In-Reply-To: <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
-References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
-         <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
-         <4e95307db43e2f7cc8516e645b81db7db0dd8ad4.camel@redhat.com>
-         <CAMj1kXHg2RDgwmOhJkaAPoWeHpxnd6tixp94Kha1-bzNvCaQUg@mail.gmail.com>
-Organization: Red Hat, Inc.
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Tue, 30 Mar 2021 15:58:25 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098F6C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:58:25 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id c17so12883155pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wTEyxuaapP4d1SHF7RcerzFayP475kgkIctZEDORCvY=;
+        b=envgQwKOhZLGzYbrjTo3+nEI/ILCJz7AV2GNZ37sA4tCFJ/jO9jwiK5voJwg3r/eds
+         n/zOAXzsVLcOacfLuS5VHUc/Z+MqB19zQ52tsRetZLD7hBDRRdqbtww6YeIzEisRIyMw
+         UnfTrppUFQicAdk3Yb3QZQbrg/qIsNA3dGPVEIftHW0s1SOq7Hgyee3Ke9l4JB7cfcim
+         WfxyAvKImmJ2KZPyBj2tHvhaebrjJjZxU5509A9Ch4WA/EkIVJwDkd6/BmVOdrShBU9j
+         tfeAKC2/dsPTX8UPAidLNUSrGVz0OIl962YLH0QZ9VroDrpQvyJk5f+1O5KmnTp/LVWY
+         h0QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wTEyxuaapP4d1SHF7RcerzFayP475kgkIctZEDORCvY=;
+        b=d+mykZ25dPXTAX7MvkmCCDfFflIWKqJnpP4JOKqIw80vR02pSCaGFy/d55q8kpF3dW
+         XoOgRiA05GidCftpjrTmWEfVjKGjLGt3Cz+NxPxca7yIeNJBCCLO9IKXo6Y4goxTI4ob
+         EOSH70B9MJF9y1ChTU+uuaWPsC80JBT89zooFo5SFbc4HhcFvWZNHDkKRziScOW5wMWP
+         0Z0O4lJHk2/skqN5qG4h8VGW2hfeBMn+JL9On5QPGxDdeE3M1z8XHxCRu5F34e/oWKfZ
+         xEMJvLi5GSECNCMQ/RpuWHsiU9PVQvPuDKMMUJdow4+Vd91IVJxEqXqt6prnrbo8ZZQL
+         4kww==
+X-Gm-Message-State: AOAM5306KjT2DQ9yygON9+M+2Izsw82vKj5PE+QauZ/u211beeMRJkQ2
+        a5rtX0rB0tfb5okjXYKr+xq7sg==
+X-Google-Smtp-Source: ABdhPJy/H3xYrm77zteXXmXwOlrnRIg3rQpdyEYIba7syOVncG/8FqBI2t2hNnALYH3MbklxzEVjZA==
+X-Received: by 2002:a63:5361:: with SMTP id t33mr29952003pgl.439.1617134304318;
+        Tue, 30 Mar 2021 12:58:24 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id f16sm10723866pfj.220.2021.03.30.12.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 12:58:23 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 19:58:19 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
+Message-ID: <YGOC2wqn5k9WkY39@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-30 at 21:45 +0200, Ard Biesheuvel wrote:
-> On Tue, 30 Mar 2021 at 20:05, Simo Sorce <simo@redhat.com> wrote:
-> > On Tue, 2021-03-30 at 16:46 +0200, Rafael J. Wysocki wrote:
-> > > On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
-> > > > Hi,
-> > > > MD5 was marked incompliant with FIPS in 2009:
-> > > > a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
-> > > > a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
-> > > > 
-> > > > But hibernation_e820_save() is still using MD5, and fails in FIPS mode
-> > > > due to the 2018 patch:
-> > > > 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
-> > > > 
-> > > > As a result, hibernation doesn't work when FIPS is on.
-> > > > 
-> > > > Do you think if hibernation_e820_save() should be changed to use a
-> > > > FIPS-compliant algorithm like SHA-1?
-> > > 
-> > > I would say yes, it should.
-> > > 
-> > > > PS, currently it looks like FIPS mode is broken in the mainline:
-> > > > https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
-> > 
-> > FYI, SHA-1 is not a good choice, it is only permitted in HMAC
-> > constructions and only for specified uses. If you need to change
-> > algorithm you should go straight to SHA-2 or SHA-3 based hashes.
-> > 
+On Tue, Mar 30, 2021, Ben Gardon wrote:
+> On Thu, Mar 25, 2021 at 7:20 PM Sean Christopherson <seanjc@google.com> wrote:
+> > Patch 10 moves x86's memslot walkers into common KVM.  I chose x86 purely
+> > because I could actually test it.  All architectures use nearly identical
+> > code, so I don't think it actually matters in the end.
 > 
-> What is the reason for using a [broken] cryptographic hash here? if
-> this is just an integrity check, better use CRC32
+> I'm still reviewing 10 and 14-18. 10 is a huge change and the diff is
+> pretty hard to parse.
 
-If the integrity check is used exclusively to verify there were no
-accidental changes and is not used as a security measure, by all means
-I agree that using crc32 is a better idea.
+Ya :-/  I don't see an easy way to break it up without creating a massive diff,
+e.g. it could be staged in x86 and moved to common, but I don't think that would
+fundamentally change the diff.  Although I admittedly didn't spend _that_ much
+time thinking about how to break it up.
 
-Simo.
+> > Patches 11-13 move arm64, MIPS, and PPC to the new APIs.
+> >
+> > Patch 14 yanks out the old APIs.
+> >
+> > Patch 15 adds the mmu_lock elision, but only for unpaired notifications.
+> 
+> Reading through all this code and considering the changes I'm
+> preparing for the TDP MMU have me wondering if it might help to have a
+> more general purpose MMU lock context struct which could be embedded
+> in the structs added in this patch. I'm thinking something like:
+> enum kvm_mmu_lock_mode {
+>     KVM_MMU_LOCK_NONE,
+>     KVM_MMU_LOCK_READ,
+>     KVM_MMU_LOCK_WRITE,
+> };
+> 
+> struct kvm_mmu_lock_context {
+>     enum kvm_mmu_lock_mode lock_mode;
+>     bool can_block;
+>     bool can_yield;
 
--- 
-Simo Sorce
-RHEL Crypto Team
-Red Hat, Inc
+Not that it matters right now, but can_block and can_yield are the same thing.
+I considered s/can_yield/can_block to make it all consistent, but that felt like
+unnecessary thrash.
 
+>     bool flush;
 
+Drat.  This made me realize that the 'struct kvm_gfn_range' passed to arch code
+isn't tagged 'const'.  I thought I had done that, but obviously not.
 
+Anyways, what I was going to say before that realization is that the downside to
+putting flush into kvm_gfn_range is that it would have to lose its 'const'
+qualifier.  That's all a moot point if it's not easily constified though.
 
+Const aside, my gut reaction is that it will probably be cleaner to keep the
+flush stuff in arch code, separate from the kvm_gfn_range passed in by common
+KVM.  Looping 'flush' back into the helpers is x86 specific at this point, and
+AFAICT that's not likely to change any time soon.
+
+For rwlock support, if we get to the point where kvm_age_gfn() and/or
+kvm_test_age_gfn() can take mmu_lock for read, then it definitely makes sense to
+track locking in kvm_gfn_range, assuming it isn't the sole entity that prevents
+consifying kvm_range_range.
+
+> };
+> 
+> This could yield some grossly long lines, but it would also have
+> potential to unify a bunch of ad-hoc handling.
+> The above struct could also fit into a single byte, so it'd be pretty
+> easy to pass it around.
