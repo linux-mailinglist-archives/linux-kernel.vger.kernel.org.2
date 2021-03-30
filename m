@@ -2,195 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C027F34E632
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DA734E633
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhC3LOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
+        id S231965AbhC3LOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhC3LNo (ORCPT
+        with ESMTP id S231838AbhC3LNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:13:44 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B19C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:43 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id jy13so24256030ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:43 -0700 (PDT)
+        Tue, 30 Mar 2021 07:13:45 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04281C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:45 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id r12so24217025ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=erptaSPprH0WaslKZ9n3jNaVa5inopev0AJhMUk6UQE=;
-        b=u7Zyv2Zj/1FJV8UQb+1VBYWjYCL0MGuur6LUJdXIHcHPEL7deGCDdZxPe/GS1KXd4J
-         MgK3Br0f0N/mPbNSB/jvGs70GON4hEO4mstPVSAEErwfSh4Yu4Ge0H2CCQ2korr/2dyo
-         FD38/OqunlCSjS/rdFteUudcan7gRxZBPjhKkfTYg7hNQt5UctxozV1EY+OMqWif1nFX
-         DLTxYAL0now9rChDLnooi7/C3JXTGJqV7IZ4grUWtYRCWaqWWJpHPnHZHQykfM05oIE6
-         IQ9xlsURMLGNcqMQm3TofRIZ/DWLrr1KG9VDhk2g7oKEV4uvaAWHymNhqJhOj4fUBEK9
-         OQTA==
+        bh=RRs0gL7BVY1Q2W1XNEP/SMm5GsjRvhz4eiapy4iDOmA=;
+        b=FddqcqAyb8dU8UGQuqF0Ofgq9o9PW9ghclSk9x1+0JvknSfJz7wYZ/yDEHUrJcm9WO
+         qfQhAjTSkUkCJc/9ZoF/1bBTWatpA8p+AOPu8u+8fSRG4Ud+ZyuMhvLB3YzvUk1rsmJD
+         PgegQW7cwGFHDqa2u8trvuD3YVDs6nY2KLdFoVkkPoQ9YpkYQSRjlWRl/OzaiuUVnn4/
+         c+wuowBdZEaKJGSnUdPbwZrYenckiteYoAjP6Q2vmjjd8gIm7VXAD5LUyfAQ6iQosKkj
+         wfnPPkERerjMnvKJXrLGBw9zy0hpReyO66GiRBzWTq0XCCc2/wmDDUpd9Z7kA9b/QolV
+         noxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=erptaSPprH0WaslKZ9n3jNaVa5inopev0AJhMUk6UQE=;
-        b=UD7QaBDwISASAEtPyrTEgj9xNLX0feB17qPjMz4Q3LwiEDK63VcILNZ8dezMkFpOzB
-         ldYj987+INO83asd1I3JVk8dytHZTCsRLfgw76FUGFuR1EXLjmWX3PeiAl5cJu8ythOG
-         P+NnIBU3bOppFph1ZF/Ui4bfcPQACM5j97UzRSpLGOpEMnlkGuSm9LcAFM/eM9fAb7qX
-         OfT6cIzVG9JsdcljOZN3JTsCT3rVxkSoItIqisbXGcOtZlGFpJKh3MHqhhpmQyNwaF5F
-         DYBMgzxapHqyyjHBBdF+ExgcxxrLSTWzIqGPCJ5/k9xTRuSxO4TyR091c+vCdHr4S1xh
-         1fAA==
-X-Gm-Message-State: AOAM530/XUnbLyQdYKt2ySmSW8W8tZZAIlmWD46GrpVcPGYvceQyf/yO
-        Yod723ZthkPzdhDdKGlxJaKdow==
-X-Google-Smtp-Source: ABdhPJw0NSZabO8OKar9sFoBEcMCq9hU4SZp4k3CGokAlOIWFS72Vf2GpD9jJ3g1d3juHq7Sxkho2Q==
-X-Received: by 2002:a17:906:3b99:: with SMTP id u25mr32943269ejf.277.1617102822482;
-        Tue, 30 Mar 2021 04:13:42 -0700 (PDT)
+        bh=RRs0gL7BVY1Q2W1XNEP/SMm5GsjRvhz4eiapy4iDOmA=;
+        b=Wr0cqE2/8w95zvV6D0lUnkgHRM61bC/e6WvW/TWVvXik4n5BFWs6bqi3PMjyvzDK8F
+         pnkvKdr6BoLbgswJAXpb3maRLehF2KXdao2mgIs2IgybEH1iEjBSQvMhZqyYJa7Xfrzo
+         6jPwcqzzjIGtWrBAEQHJXh0BAaGjG6JsY7o031kpuGZCg7iFqc/V+JemIpCVz/f2OXYZ
+         VXSBDJTWvH1fyKAPffXdA4NadJqx1d7EhfNtKLMKH5KL5+DiSBuRRrRlNC439Y4Aw6Hm
+         BVqUkFRANH+w9bPZ8xyqTESWCNk6DAUY6z7kSLOyJmejr0xSc8fmslrJ9AyBuyuCB55s
+         nUrA==
+X-Gm-Message-State: AOAM532XDK3/KcpU/TkSYE8Uu+vk2v2QZ19sYC3O71t39nt8qn7buSNz
+        Y1ruurgNcb+htM/Qn+La8jTXoQ==
+X-Google-Smtp-Source: ABdhPJyUPxqYj8ek0kxIqE5nQSC/sZ6aURD+pSPZOqqUfsH0I8sit4//Sf5aY4orjl5y2pbjOBE5+w==
+X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr32560430eji.163.1617102823687;
+        Tue, 30 Mar 2021 04:13:43 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id r19sm10961308edp.52.2021.03.30.04.13.41
+        by smtp.gmail.com with ESMTPSA id r19sm10961308edp.52.2021.03.30.04.13.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 04:13:41 -0700 (PDT)
+        Tue, 30 Mar 2021 04:13:43 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Douglas Anderson <dianders@chromium.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 05/10] nvmem: brcm_nvram: new driver exposing Broadcom's NVRAM
-Date:   Tue, 30 Mar 2021 12:12:36 +0100
-Message-Id: <20210330111241.19401-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 06/10] nvmem: core: Add functions to make number reading easy
+Date:   Tue, 30 Mar 2021 12:12:37 +0100
+Message-Id: <20210330111241.19401-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210330111241.19401-1-srinivas.kandagatla@linaro.org>
 References: <20210330111241.19401-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Douglas Anderson <dianders@chromium.org>
 
-This driver provides access to Broadcom's NVRAM.
+Sometimes the clients of nvmem just want to get a number out of
+nvmem. They don't want to think about exactly how many bytes the nvmem
+cell took up. They just want the number. Let's make it easy.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+In general this concept is useful because nvmem space is precious and
+usually the fewest bits are allocated that will hold a given value on
+a given system. However, even though small numbers might be fine on
+one system that doesn't mean that logically the number couldn't be
+bigger. Imagine nvmem containing a max frequency for a component. On
+one system perhaps that fits in 16 bits. On another system it might
+fit in 32 bits. The code reading this number doesn't care--it just
+wants the number.
+
+We'll provide two functions: nvmem_cell_read_variable_le_u32() and
+nvmem_cell_read_variable_le_u64().
+
+Comparing these to the existing functions like nvmem_cell_read_u32():
+* These new functions have no problems if the value was stored in
+  nvmem in fewer bytes. It's OK to use these function as long as the
+  value stored will fit in 32-bits (or 64-bits).
+* These functions avoid problems that the earlier APIs had with bit
+  offsets. For instance, you can't use nvmem_cell_read_u32() to read a
+  value has nbits=32 and bit_offset=4 because the nvmem cell must be
+  at least 5 bytes big to hold this value. The new API accounts for
+  this and works fine.
+* These functions make it very explicit that they assume that the
+  number was stored in little endian format. The old functions made
+  this assumption whenever bit_offset was non-zero (see
+  nvmem_shift_read_buffer_in_place()) but didn't whenever the
+  bit_offset was zero.
+
+NOTE: it's assumed that we don't need an 8-bit or 16-bit version of
+this function. The 32-bit version of the function can be used to read
+8-bit or 16-bit data.
+
+At the moment, I'm only adding the "unsigned" versions of these
+functions, but if it ends up being useful someone could add a "signed"
+version that did 2's complement sign extension.
+
+At the moment, I'm only adding the "little endian" versions of these
+functions. Adding the "big endian" version would require adding "big
+endian" support to nvmem_shift_read_buffer_in_place().
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/Kconfig      |  9 +++++
- drivers/nvmem/Makefile     |  2 +
- drivers/nvmem/brcm_nvram.c | 78 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 89 insertions(+)
- create mode 100644 drivers/nvmem/brcm_nvram.c
+ drivers/nvmem/core.c           | 95 ++++++++++++++++++++++++++++++++++
+ include/linux/nvmem-consumer.h |  4 ++
+ 2 files changed, 99 insertions(+)
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 75d2594c16e1..642ddc699fd1 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -278,4 +278,13 @@ config NVMEM_RMEM
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index a5ab1e0c74cf..635e3131eb5f 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -1606,6 +1606,101 @@ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val)
+ }
+ EXPORT_SYMBOL_GPL(nvmem_cell_read_u64);
  
- 	  This driver can also be built as a module. If so, the module
- 	  will be called nvmem-rmem.
-+
-+config NVMEM_BRCM_NVRAM
-+	tristate "Broadcom's NVRAM support"
-+	depends on ARCH_BCM_5301X || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  This driver provides support for Broadcom's NVRAM that can be accessed
-+	  using I/O mapping.
-+
- endif
-diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 5376b8e0dae5..bbea1410240a 100644
---- a/drivers/nvmem/Makefile
-+++ b/drivers/nvmem/Makefile
-@@ -57,3 +57,5 @@ obj-$(CONFIG_SPRD_EFUSE)	+= nvmem_sprd_efuse.o
- nvmem_sprd_efuse-y		:= sprd-efuse.o
- obj-$(CONFIG_NVMEM_RMEM) 	+= nvmem-rmem.o
- nvmem-rmem-y			:= rmem.o
-+obj-$(CONFIG_NVMEM_BRCM_NVRAM)	+= nvmem_brcm_nvram.o
-+nvmem_brcm_nvram-y		:= brcm_nvram.o
-diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
-new file mode 100644
-index 000000000000..bd2ecaaf4585
---- /dev/null
-+++ b/drivers/nvmem/brcm_nvram.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Rafał Miłecki <rafal@milecki.pl>
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/nvmem-provider.h>
-+#include <linux/platform_device.h>
-+
-+struct brcm_nvram {
-+	struct device *dev;
-+	void __iomem *base;
-+};
-+
-+static int brcm_nvram_read(void *context, unsigned int offset, void *val,
-+			   size_t bytes)
++static void *nvmem_cell_read_variable_common(struct device *dev,
++					     const char *cell_id,
++					     size_t max_len, size_t *len)
 +{
-+	struct brcm_nvram *priv = context;
-+	u8 *dst = val;
++	struct nvmem_cell *cell;
++	int nbits;
++	void *buf;
 +
-+	while (bytes--)
-+		*dst++ = readb(priv->base + offset++);
++	cell = nvmem_cell_get(dev, cell_id);
++	if (IS_ERR(cell))
++		return cell;
++
++	nbits = cell->nbits;
++	buf = nvmem_cell_read(cell, len);
++	nvmem_cell_put(cell);
++	if (IS_ERR(buf))
++		return buf;
++
++	/*
++	 * If nbits is set then nvmem_cell_read() can significantly exaggerate
++	 * the length of the real data. Throw away the extra junk.
++	 */
++	if (nbits)
++		*len = DIV_ROUND_UP(nbits, 8);
++
++	if (*len > max_len) {
++		kfree(buf);
++		return ERR_PTR(-ERANGE);
++	}
++
++	return buf;
++}
++
++/**
++ * nvmem_cell_read_variable_le_u32() - Read up to 32-bits of data as a little endian number.
++ *
++ * @dev: Device that requests the nvmem cell.
++ * @cell_id: Name of nvmem cell to read.
++ * @val: pointer to output value.
++ *
++ * Return: 0 on success or negative errno.
++ */
++int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
++				    u32 *val)
++{
++	size_t len;
++	u8 *buf;
++	int i;
++
++	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
++	if (IS_ERR(buf))
++		return PTR_ERR(buf);
++
++	/* Copy w/ implicit endian conversion */
++	*val = 0;
++	for (i = 0; i < len; i++)
++		*val |= buf[i] << (8 * i);
++
++	kfree(buf);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(nvmem_cell_read_variable_le_u32);
 +
-+static int brcm_nvram_probe(struct platform_device *pdev)
++/**
++ * nvmem_cell_read_variable_le_u64() - Read up to 64-bits of data as a little endian number.
++ *
++ * @dev: Device that requests the nvmem cell.
++ * @cell_id: Name of nvmem cell to read.
++ * @val: pointer to output value.
++ *
++ * Return: 0 on success or negative errno.
++ */
++int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
++				    u64 *val)
 +{
-+	struct nvmem_config config = {
-+		.name = "brcm-nvram",
-+		.reg_read = brcm_nvram_read,
-+	};
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
-+	struct brcm_nvram *priv;
++	size_t len;
++	u8 *buf;
++	int i;
 +
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	priv->dev = dev;
++	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
++	if (IS_ERR(buf))
++		return PTR_ERR(buf);
 +
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
++	/* Copy w/ implicit endian conversion */
++	*val = 0;
++	for (i = 0; i < len; i++)
++		*val |= buf[i] << (8 * i);
 +
-+	config.dev = dev;
-+	config.priv = priv;
-+	config.size = resource_size(res);
++	kfree(buf);
 +
-+	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(nvmem_cell_read_variable_le_u64);
 +
-+static const struct of_device_id brcm_nvram_of_match_table[] = {
-+	{ .compatible = "brcm,nvram", },
-+	{},
-+};
-+
-+static struct platform_driver brcm_nvram_driver = {
-+	.probe = brcm_nvram_probe,
-+	.driver = {
-+		.name = "brcm_nvram",
-+		.of_match_table = brcm_nvram_of_match_table,
-+	},
-+};
-+
-+static int __init brcm_nvram_init(void)
-+{
-+	return platform_driver_register(&brcm_nvram_driver);
-+}
-+
-+subsys_initcall_sync(brcm_nvram_init);
-+
-+MODULE_AUTHOR("Rafał Miłecki");
-+MODULE_LICENSE("GPL");
-+MODULE_DEVICE_TABLE(of, brcm_nvram_of_match_table);
+ /**
+  * nvmem_device_cell_read() - Read a given nvmem device and cell
+  *
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index 052293f4cbdb..923dada24eb4 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -65,6 +65,10 @@ int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val);
+ int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val);
+ int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val);
+ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val);
++int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
++				    u32 *val);
++int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
++				    u64 *val);
+ 
+ /* direct nvmem device read/write interface */
+ struct nvmem_device *nvmem_device_get(struct device *dev, const char *name);
 -- 
 2.21.0
 
