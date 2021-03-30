@@ -2,80 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F3934DCBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B301634DCC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhC3ACd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 20:02:33 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:38497 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhC3ACH (ORCPT
+        id S230306AbhC3ADe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 20:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230204AbhC3ADJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 20:02:07 -0400
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id EBE6F100002;
-        Tue, 30 Mar 2021 00:02:05 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 02:02:05 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: ds1307: set uie_unsupported if no interrupt is
- available
-Message-ID: <YGJqfVFVb7Z1LBTu@piout.net>
-References: <YFClVBShBuy9/VPY@piout.net>
- <CGME20210316180430eucas1p1a3cb26f40772b0af75782ff84908d731@eucas1p1.samsung.com>
- <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
+        Mon, 29 Mar 2021 20:03:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58ACC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 17:03:08 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E2B03102;
+        Tue, 30 Mar 2021 02:03:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617062585;
+        bh=z08DZ+zSaLkhCxLYzk2DbSu2wZCH3gpsOvQtJqa4s8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I7jDfa1MyAI8vHprTjDaLv0F2CW7Ew2AwAn8x8RYuQmM2Zk9dI87gr5Aj3oqBwXxZ
+         5FdT9LJE0XpTaoSm6Ww6EyL6bqiSlW0uJoC7d/jtmXhDHGA/LVpZMF/EnGJF+4qtnj
+         2lrV+B8/IVPTk0EJ1jDpfYWf/I0z4ZMwdBECJw5I=
+Date:   Tue, 30 Mar 2021 03:02:20 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, dafna3@gmail.com, chunkuang.hu@kernel.org,
+        p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        enric.balletbo@collabora.com
+Subject: Re: [PATCH v2 1/3] drm/mediatek: Switch the hdmi bridge ops to the
+ atomic versions
+Message-ID: <YGJqjPp2COsP18As@pendragon.ideasonboard.com>
+References: <20210329153632.17559-1-dafna.hirschfeld@collabora.com>
+ <20210329153632.17559-2-dafna.hirschfeld@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <dleftjblbjc6w1.fsf%l.stelmach@samsung.com>
+In-Reply-To: <20210329153632.17559-2-dafna.hirschfeld@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 19:04:14+0100, Lukasz Stelmach wrote:
-> OK, you are right. The problem seems to be elsewhere.
-> 
-> How about this scnario? We call rtc_update_irq_enable(). We read rtc
-> with __rtc_read_time() and calculate the alarm time. We get through
-> rtc_timer_enqueue() and down to __rtc_set_alarm(). We loose the race
-> condition (I can do it, I've got really slow connection to DS3231) and
-> we return -ETIME from __rtc_set_alarm()
-> 
->     if (scheduled <= now)
->         return -ETIME;
-> 
-> and 0 from rtc_timer_enqueue() and the very same zero from
-> rtc_update_irq_enable(). The caller of ioctl() thinks they can expect
-> interrupts when, in fact, they won't receive any.
-> 
-> The really weird stuff happens in rtc_timer_do_work(). For the timer to
-> be dequeued __rtc_set_alarm() needs to return EINVAL three times in a
-> row. In my setup this doesn't happen and the code keeps running loops
-> around "reporogram" and "again" labels.
-> 
-> With my patch we never risk the above race condition between
-> __rtc_read_time() in rtc_update_irq_enable() and the one in
-> __rtc_set_alarm(), because we know rtc doesn't support alarms before we
-> start the race. In fact there is another race between __rtc_read_time()
-> and actually setting the alarm in the chip.
-> 
-> IMHO the solution is to introduce RTC_HAS_ALARM flag for struct
-> rtc_device and check it at the very beginning of __rtc_set_alarm() the
-> same way it is being done in ds1337_set_alarm(). What are your thoughts?
-> 
+Hi Dafna,
 
-I did introduce RTC_FEATURE_ALARM for that in v5.12. I'm sending patches
-that are not well tested but should solve your issue.
+Thank you for the patch.
 
+On Mon, Mar 29, 2021 at 05:36:30PM +0200, Dafna Hirschfeld wrote:
+> The bridge operation '.enable' and the audio cb '.get_eld'
+> access hdmi->conn. In the future we will want to support
+> the flag DRM_BRIDGE_ATTACH_NO_CONNECTOR and then we will
+> not have direct access to the connector.
+> The atomic version '.atomic_enable' allows accessing the
+> current connector from the state.
+> This patch switches the bridge to the atomic version to
+> prepare access to the connector in later patches.
+> 
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/gpu/drm/mediatek/mtk_hdmi.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> index 8ee55f9e2954..f2c810b767ef 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> @@ -1357,7 +1357,8 @@ static bool mtk_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
+>  	return true;
+>  }
+>  
+> -static void mtk_hdmi_bridge_disable(struct drm_bridge *bridge)
+> +static void mtk_hdmi_bridge_atomic_disable(struct drm_bridge *bridge,
+> +					   struct drm_bridge_state *old_bridge_state)
+>  {
+>  	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>  
+> @@ -1371,7 +1372,8 @@ static void mtk_hdmi_bridge_disable(struct drm_bridge *bridge)
+>  	hdmi->enabled = false;
+>  }
+>  
+> -static void mtk_hdmi_bridge_post_disable(struct drm_bridge *bridge)
+> +static void mtk_hdmi_bridge_atomic_post_disable(struct drm_bridge *bridge,
+> +						struct drm_bridge_state *old_state)
+>  {
+>  	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>  
+> @@ -1406,7 +1408,8 @@ static void mtk_hdmi_bridge_mode_set(struct drm_bridge *bridge,
+>  	drm_mode_copy(&hdmi->mode, adjusted_mode);
+>  }
+>  
+> -static void mtk_hdmi_bridge_pre_enable(struct drm_bridge *bridge)
+> +static void mtk_hdmi_bridge_atomic_pre_enable(struct drm_bridge *bridge,
+> +					      struct drm_bridge_state *old_state)
+>  {
+>  	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>  
+> @@ -1426,7 +1429,8 @@ static void mtk_hdmi_send_infoframe(struct mtk_hdmi *hdmi,
+>  		mtk_hdmi_setup_vendor_specific_infoframe(hdmi, mode);
+>  }
+>  
+> -static void mtk_hdmi_bridge_enable(struct drm_bridge *bridge)
+> +static void mtk_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
+> +					  struct drm_bridge_state *old_state)
+>  {
+>  	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>  
+> @@ -1440,13 +1444,16 @@ static void mtk_hdmi_bridge_enable(struct drm_bridge *bridge)
+>  }
+>  
+>  static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
+> +	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
+> +	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
+> +	.atomic_reset = drm_atomic_helper_bridge_reset,
+>  	.attach = mtk_hdmi_bridge_attach,
+>  	.mode_fixup = mtk_hdmi_bridge_mode_fixup,
+> -	.disable = mtk_hdmi_bridge_disable,
+> -	.post_disable = mtk_hdmi_bridge_post_disable,
+> +	.atomic_disable = mtk_hdmi_bridge_atomic_disable,
+> +	.atomic_post_disable = mtk_hdmi_bridge_atomic_post_disable,
+>  	.mode_set = mtk_hdmi_bridge_mode_set,
+> -	.pre_enable = mtk_hdmi_bridge_pre_enable,
+> -	.enable = mtk_hdmi_bridge_enable,
+> +	.atomic_pre_enable = mtk_hdmi_bridge_atomic_pre_enable,
+> +	.atomic_enable = mtk_hdmi_bridge_atomic_enable,
+>  };
+>  
+>  static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards,
+
+Laurent Pinchart
