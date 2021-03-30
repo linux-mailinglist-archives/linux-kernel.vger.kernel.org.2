@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37AD34EBA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BCB34EBC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhC3PL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:11:56 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:40534 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhC3PLd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:11:33 -0400
-Received: by mail-oi1-f177.google.com with SMTP id i3so16790925oik.7;
-        Tue, 30 Mar 2021 08:11:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hxiRgGrHFPg7KAvZ4t1c11BIVLtDAzthILe1SRoyjHA=;
-        b=kCIB4brpWMq9wT5v/1UGF3uuQu47jLJiBIgAQbuXJCJzE9pANxOhFAWn53Ir8h7Xnt
-         zV+tZCYcxpzZhoublL+IcjScGSoTBID8bNgEebVsHJZmunm7e99Ug5EjYHcki1vWue6b
-         5zzR6lS9L12YSC/TYus7Z6nVcYbttHLlDV5UDR6ELz8HNdccMMFNDSeYfRkkAdnpcrhh
-         qd+huGfJOKe7O4aZqHqkn93lZ+CkOBrBkkxNlvr5uLF8KB36x2h2YrIjGozVbzvQSG5W
-         RmIDTkZfZ6W2fBP9ygH99KMpg6l89cpP+UdwEVZyjlJBr0r3ySHphEr7hpxnuLmPj2/C
-         y6cA==
-X-Gm-Message-State: AOAM533qDCYOKFNpq18EDclPuReAwX5PVMrt6brg2lUrDxJfhNu61zOo
-        oU6dLKGqyXd7W6nckuYLZA==
-X-Google-Smtp-Source: ABdhPJw0XrDRTHQBPa6izTxumFKlle3x3qjyVFuTlT6uHcmzIoAeL/EtCJftHsR6dr6qDDl/OS2byg==
-X-Received: by 2002:a54:488a:: with SMTP id r10mr3636242oic.23.1617117093265;
-        Tue, 30 Mar 2021 08:11:33 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.136])
-        by smtp.gmail.com with ESMTPSA id e12sm4500621oou.33.2021.03.30.08.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 08:11:32 -0700 (PDT)
-Received: (nullmailer pid 317113 invoked by uid 1000);
-        Tue, 30 Mar 2021 15:11:29 -0000
-Date:   Tue, 30 Mar 2021 10:11:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ray Chi <raychi@google.com>
-Cc:     gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kyletso@google.com, badhri@google.com
-Subject: Re: [PATCH] dt-bindings: usb: dwc3: Add usb-psy-name string
-Message-ID: <20210330151129.GA314367@robh.at.kernel.org>
-References: <20210327191520.1824466-1-raychi@google.com>
+        id S232428AbhC3PMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231655AbhC3PLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:11:53 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35B3B619CD;
+        Tue, 30 Mar 2021 15:11:52 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRG22-004i6i-4k; Tue, 30 Mar 2021 16:11:50 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bharat Kumar Gogada <bharatku@xilinx.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: [PATCH v3 00/14] PCI/MSI: Getting rid of msi_controller, and other cleanups
+Date:   Tue, 30 Mar 2021 16:11:31 +0100
+Message-Id: <20210330151145.997953-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210327191520.1824466-1-raychi@google.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, bharatku@xilinx.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 03:15:20AM +0800, Ray Chi wrote:
-> This commit adds documentation for usb-psy-name string.
-> The string will use to find the power supply interface.
-> And then, DWC3 can use the interface to control charing
-> current with USB state and USB speed.
+This is a respin of the series described at [1].
 
-Why is this DWC3 specific?
+* From v2 [2]:
+  - Fixed the Xilinx driver, thanks to Bharat for testing it
+  - Dropped the no_msi attribute, and solely rely on msi_domain, which
+    has the same effect for the only platform that was using it.
+  - Fixed compilation on architectures that do not select the generic
+    MSI support
 
-Where does it find the power supply interface?
+* From v1:
+  - Extracted the changes dealing with the MSI capture address
+    for rcar and xilinx and moved them to separate patches
+  - Changed the rcar code to cope with c4e0fec2f7ee ("PCI: rcar: Always
+    allocate MSI addresses in 32bit space")
+  - Fixed rcar resume code
+  - Reworked commit messages
+  - Rebased onto v5.12-rc4
+  - Collected Acks, and TBs, with thanks.
 
-> 
-> Signed-off-by: Ray Chi <raychi@google.com>
-> ---
->  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> index 2247da77eac1..ad62f4552fad 100644
-> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> @@ -301,6 +301,13 @@ properties:
->      items:
->        enum: [1, 4, 8, 16, 32, 64, 128, 256]
->  
-> +  usb-psy-name:
-> +    description:
-> +      Contains the name for power supply interface. To follow
-> +      BC1.2 specification, DWC3 could use power supply interface
-> +      to control current with corresponding USB state and USB speed.
-> +    minItems: 1
-> +
->  unevaluatedProperties: false
->  
->  required:
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
+[1] https://lore.kernel.org/r/20210225151023.3642391-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210322184614.802565-1-maz@kernel.org
+
+Marc Zyngier (13):
+  PCI: tegra: Convert to MSI domains
+  PCI: rcar: Don't allocate extra memory for the MSI capture address
+  PCI: rcar: Convert to MSI domains
+  PCI: xilinx: Don't allocate extra memory for the MSI capture address
+  PCI: xilinx: Convert to MSI domains
+  PCI: hv: Drop msi_controller structure
+  PCI/MSI: Drop use of msi_controller from core code
+  PCI/MSI: Kill msi_controller structure
+  PCI/MSI: Kill default_teardown_msi_irqs()
+  PCI/MSI: Let PCI host bridges declare their reliance on MSI domains
+  PCI/MSI: Make pci_host_common_probe() declare its reliance on MSI
+    domains
+  PCI/MSI: Document the various ways of ending up with NO_MSI
+  PCI: Refactor HT advertising of NO_MSI flag
+
+Thomas Gleixner (1):
+  PCI: mediatek: Advertise lack of built-in MSI handling
+
+ drivers/pci/controller/Kconfig           |   4 +-
+ drivers/pci/controller/pci-host-common.c |   1 +
+ drivers/pci/controller/pci-hyperv.c      |   4 -
+ drivers/pci/controller/pci-tegra.c       | 343 ++++++++++++----------
+ drivers/pci/controller/pcie-mediatek.c   |   4 +
+ drivers/pci/controller/pcie-rcar-host.c  | 356 +++++++++++------------
+ drivers/pci/controller/pcie-xilinx.c     | 246 +++++++---------
+ drivers/pci/msi.c                        |  45 +--
+ drivers/pci/probe.c                      |   4 +-
+ drivers/pci/quirks.c                     |  15 +-
+ include/linux/msi.h                      |  17 +-
+ include/linux/pci.h                      |   3 +-
+ 12 files changed, 484 insertions(+), 558 deletions(-)
+
+-- 
+2.29.2
+
