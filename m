@@ -2,65 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B4234E43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA4234E44A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhC3JY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:24:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14634 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhC3JYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:24:36 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8kVD18MvzmbJD;
-        Tue, 30 Mar 2021 17:21:56 +0800 (CST)
-Received: from [10.67.103.212] (10.67.103.212) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 17:24:24 +0800
-Subject: Re: [PATCH v2 3/5] crypto: hisilicon/sgl - add some dfx logs
-To:     Joe Perches <joe@perches.com>, <herbert@gondor.apana.org.au>
-References: <1617089946-48078-1-git-send-email-yekai13@huawei.com>
- <1617089946-48078-4-git-send-email-yekai13@huawei.com>
- <c2dcae1a5ea1f6900e061fe1a7dc393dbaf1bdc5.camel@perches.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-From:   "yekai(A)" <yekai13@huawei.com>
-Message-ID: <a448fecd-96b1-614c-1bbf-1421d1b36e6f@huawei.com>
-Date:   Tue, 30 Mar 2021 17:24:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S231775AbhC3J1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:27:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29497 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231773AbhC3J0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:26:39 -0400
+IronPort-SDR: DS+na1goAYLlBj/96DxtW4sLhU/3Sp2u5JboPgAb0IaWsuuj0S9gTXtjIEhXS1g7ndOXOVgo48
+ RP5crxo1+YtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="178860870"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="178860870"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 02:26:38 -0700
+IronPort-SDR: JFuYIEolFJdWz4Sv28R+nQxwOke/2rsulxP06Fia9r9cjpjPcXAywFTcgkq40Tk6+sELd+CG/0
+ Ej8txvdJS3Pg==
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="516364791"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 02:26:35 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lRAds-00HHww-Nn; Tue, 30 Mar 2021 12:26:32 +0300
+Date:   Tue, 30 Mar 2021 12:26:32 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v2 5/6] software node: Introduce
+ SOFTWARE_NODE_REFERENCE() helper macro
+Message-ID: <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
+References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
+ <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
+ <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c2dcae1a5ea1f6900e061fe1a7dc393dbaf1bdc5.camel@perches.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-However, I think this log can be used to quickly locate the function or 
-module if dma alloc failed.
+On Mon, Mar 29, 2021 at 11:45:29PM +0100, Daniel Scally wrote:
+> On 29/03/2021 16:12, Andy Shevchenko wrote:
+> > This is useful to assign software node reference with arguments
+> > in a common way. Moreover, we have already couple of users that
+> > may be converted. And by the fact, one of them is moved right here
+> > to use the helper.
 
+...
 
-On 2021/3/30 15:56, Joe Perches wrote:
-> On Tue, 2021-03-30 at 15:39 +0800, Kai Ye wrote:
->> Add some dfx logs in some abnormal exit situations.
-> []
->> diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
-> []
->> @@ -87,8 +87,10 @@ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
->>   		block[i].sgl = dma_alloc_coherent(dev, block_size,
->>   						  &block[i].sgl_dma,
->>   						  GFP_KERNEL);
->> -		if (!block[i].sgl)
->> +		if (!block[i].sgl) {
->> +			dev_err(dev, "Fail to allocate hw SG buffer!\n");
-> This doesn't seem useful as dma_alloc_coherent does a dump_stack
-> by default on OOM.
->
->
-> .
->
+> > +		SOFTWARE_NODE_REFERENCE(&nodes[0]),
+> > +		SOFTWARE_NODE_REFERENCE(&nodes[1], 3, 4),
+
+...
+
+> > +#define SOFTWARE_NODE_REFERENCE(_ref_, ...)			\
+> > +(const struct software_node_ref_args) {				\
+> > +	.node = _ref_,						\
+> > +	.nargs = ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1,	\
+> > +	.args = { __VA_ARGS__ },				\
+> > +}
+
+...
+
+> > +	{ .pointer = &SOFTWARE_NODE_REFERENCE(_ref_, ##__VA_ARGS__), },	\
+> 
+> What are the .args intended to be used for? I actually had it in mind to
+> replace this with a simple pointer to a struct software_node, because I
+> can't see any users of them and the fact that it's actually storing a
+> pointer to a new variable is something that confused me for a good long
+> time when I wrote the cio2-bridge (though that's mostly due to my
+> relative inexperience of course, but still)
+
+It's to be in align with DT phandle references that can take arguments. While
+for now, indeed, we have no users of this, it might be changed in the future
+(I hadn't checked DesignWare DMA where I would like to transform the code to
+ use device properties eventually and there it might be the case).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
