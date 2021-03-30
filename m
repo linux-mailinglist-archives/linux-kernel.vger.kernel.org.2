@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E55434F509
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAD434F50D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhC3X2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36052 "EHLO mail.kernel.org"
+        id S232748AbhC3XaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232661AbhC3X2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 320D1619C5;
-        Tue, 30 Mar 2021 23:28:15 +0000 (UTC)
+        id S232589AbhC3X3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 19:29:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9B3619B9;
+        Tue, 30 Mar 2021 23:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617146895;
-        bh=JKd1VbmOyIxeYYnhoR9PcFkCGIARvQmU3qkgyQeXv8o=;
+        s=k20201202; t=1617146991;
+        bh=pFv56VvafOhxhfjfYu4/MQ1cLcgzzN0jhy6Oq7chMBI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oVnxqmExzEUKexrN+MwPe7c5hHq04spz3fIULCOflsuql5m/Ri/Egsjj28bhJo9yI
-         No5R3/f3rMxkMIPWhPaavTIAAXUCnEOq10zJQfmc09jexwwNzPYtQEing32+03PiDW
-         CtxmKCkALSsLn0/3ERWxqFWRjhNcayjSjOul0kApt7odjU7YbyzSyJ96Ok1dr4smxM
-         zk3miGcMU+Q2KwtgEC7QinlIEOHRrsThNf6m72kvZ7DCoZDJ2ts4ypib73/P3I6dAs
-         oZ6yDTxzJEfVyt9e92cYbRWKPV7fZ0WW7+ABr1b1OFbX8wE+0q4zqaK0V74Xp89hBb
-         Y6KCvZx+O26Xw==
-Date:   Tue, 30 Mar 2021 16:28:13 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-Message-ID: <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
- <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
- <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
- <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
- <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+        b=JNjyX8UgayeJPVIoMPEy/8EHfKuqS25d0xcGMlgoHcWN+gjm4WjdkGfGhgZWI9vdj
+         mRuanoNg6CUQM/qlxRYqzpQcEQJJD2qUZbmRENGRJgz5vQvBybljIkYtxwjZgZf+23
+         bp3ac/CaXNLuvRoj82swXuPkDPb+dxdVJCc8z3GW02qRmR6lDm6tobNIIkehyA8LKM
+         8ixSVtXOoT2q5Vd/1pjgDyUIqud6Tc1bCojrNdKEofkeiDBX6bvi0Lk4Q+sSPBUpyz
+         3yvBu+D0zO4t8c7sX+11Co58jJcHoVTs3FuEm4g/WHRz9l8j8vPj6LVnuUzNfzKM5E
+         XQvbSWLo5ezhA==
+Date:   Tue, 30 Mar 2021 16:29:46 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jian Cai <jiancai@google.com>
+Cc:     cjdb@google.com, manojgupta@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq: fix alignment mismatch.
+Message-ID: <20210330232946.m5p7426macyjduzm@archlinux-ax161>
+References: <20210330230249.709221-1-jiancai@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+In-Reply-To: <20210330230249.709221-1-jiancai@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:34:25AM -0700, Sagi Grimberg wrote:
-> 
-> > > It is, but in this situation, the controller is sending a second
-> > > completion that results in a use-after-free, which makes the
-> > > transport irrelevant. Unless there is some other flow (which is
-> > > unclear
-> > > to me) that causes this which is a bug that needs to be fixed rather
-> > > than hidden with a safeguard.
-> > > 
-> > 
-> > The kernel should not crash regardless of any network traffic that is
-> > sent to the system.  It should not be possible to either intentionally
-> > of mistakenly contruct packets that will deny service in this way.
-> 
-> This is not specific to nvme-tcp. I can build an rdma or pci controller
-> that can trigger the same crash... I saw a similar patch from Hannes
-> implemented in the scsi level, and not the individual scsi transports..
+Hi Jian,
 
-If scsi wants this too, this could be made generic at the blk-mq level.
-We just need to make something like blk_mq_tag_to_rq(), but return NULL
-if the request isn't started.
- 
-> I would also mention, that a crash is not even the scariest issue that
-> we can see here, because if the request happened to be reused we are
-> in the silent data corruption realm...
+On Tue, Mar 30, 2021 at 04:02:49PM -0700, Jian Cai wrote:
+> This fixes the mismatch of alignments between csd and its use as an
+> argument to smp_call_function_single_async, which causes build failure
+> when -Walign-mismatch in Clang is used.
+> 
+> Link:
+> http://crrev.com/c/1193732
+> 
+> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Jian Cai <jiancai@google.com>
 
-If this does happen, I think we have to come up with some way to
-mitigate it. We're not utilizing the full 16 bits of the command_id, so
-maybe we can append something like a generation sequence number that can
-be checked for validity.
+Thanks for the patch. This is effectively a revert of commit
+4ccafe032005 ("block: unalign call_single_data in struct request"),
+which I had brought up in this thread:
+
+https://lore.kernel.org/r/20210310182307.zzcbi5w5jrmveld4@archlinux-ax161/
+
+This is obviously a correct fix, I am not just sure what the impact to
+'struct request' will be.
+
+Cheers,
+Nathan
+
+> ---
+>  include/linux/blkdev.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index bc6bc8383b43..3b92330d95ad 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -231,7 +231,7 @@ struct request {
+>  	unsigned long deadline;
+>  
+>  	union {
+> -		struct __call_single_data csd;
+> +		call_single_data_t csd;
+>  		u64 fifo_time;
+>  	};
+>  
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
