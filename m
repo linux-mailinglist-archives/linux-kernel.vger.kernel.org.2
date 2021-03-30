@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95C634E73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA6034E740
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbhC3MMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:12:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231902AbhC3MM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:12:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0679661927;
-        Tue, 30 Mar 2021 12:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617106347;
-        bh=wV83M5loS9/1IR+EtJxcBtPYe9NMNPihyogQRcVXKmY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kIoHAr0cNaCPqQ+dnxe+RcHK+5MUmicutbewS9RlxqeEzfxTVji5PYube1FkbEbMd
-         vod6jvdSLRZfbYIzFGx1Z3Sif4yA/jKN1IbRvd656/YMgTlDdZ2K7uhx3mYu0jCBxw
-         xzdhe5x967PybxqscxEvRIOvKfn1WPotlhhI4w3iSuWJTDhpJP3caVobLuk/BkeARd
-         AzK2W6kSG/g7kOJK4jPraP/bayeLpDuByPlrsS23FabPFYrDL0X43wWdfbnHhNOgpe
-         ulZomk7rHUPgQ89H5gt/LhTrmT5fGweWyrvrxazwfvAgIJLvtf3Db2E8CHjghVtr5h
-         sOgW8yE6XUmpg==
-Date:   Tue, 30 Mar 2021 13:12:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: dt-bindings: nvidia, tegra210-ahub: Add missing
- child nodes
-Message-ID: <20210330121216.GA12507@sirena.org.uk>
-References: <20210326195003.3756394-1-robh@kernel.org>
+        id S231969AbhC3MNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:13:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15397 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231803AbhC3MNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:13:42 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8pGS1D3fznTpw;
+        Tue, 30 Mar 2021 20:12:00 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
+ 20:13:34 +0800
+From:   Chengyang Fan <cy.fan@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cy.fan@huawei.com>
+Subject: [PATCH] mm/ksm: remove unused parameter from remove_trailing_rmap_items()
+Date:   Tue, 30 Mar 2021 20:13:20 +0800
+Message-ID: <20210330121320.1693474-1-cy.fan@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
-Content-Disposition: inline
-In-Reply-To: <20210326195003.3756394-1-robh@kernel.org>
-X-Cookie: Earth is a beta site.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since commit 6514d511dbe5 ("ksm: singly-linked rmap_list") was
+merged, remove_trailing_rmap_items() doesn't use the 'mm_slot'
+parameter. So remove it, and update caller accordingly.
 
---M9NhX3UHpAaciwkO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
+---
+ mm/ksm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-On Fri, Mar 26, 2021 at 01:50:03PM -0600, Rob Herring wrote:
-> The nvidia,tegra210-ahub binding is missing schema for child nodes. This
-> results in warnings if 'additionalProperties: false' is set (or when the
-> tools implement 'unevaluatedProperties' support). Add the child nodes
-> and reference their schema if one exists.
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 9694ee2c71de..dd69f030c8c0 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -817,8 +817,7 @@ static void remove_rmap_item_from_tree(struct rmap_item *rmap_item)
+ 	cond_resched();		/* we're called from many long loops */
+ }
+ 
+-static void remove_trailing_rmap_items(struct mm_slot *mm_slot,
+-				       struct rmap_item **rmap_list)
++static void remove_trailing_rmap_items(struct rmap_item **rmap_list)
+ {
+ 	while (*rmap_list) {
+ 		struct rmap_item *rmap_item = *rmap_list;
+@@ -989,7 +988,7 @@ static int unmerge_and_remove_all_rmap_items(void)
+ 				goto error;
+ 		}
+ 
+-		remove_trailing_rmap_items(mm_slot, &mm_slot->rmap_list);
++		remove_trailing_rmap_items(&mm_slot->rmap_list);
+ 		mmap_read_unlock(mm);
+ 
+ 		spin_lock(&ksm_mmlist_lock);
+@@ -2337,7 +2336,7 @@ static struct rmap_item *scan_get_next_rmap_item(struct page **page)
+ 	 * Nuke all the rmap_items that are above this current rmap:
+ 	 * because there were no VM_MERGEABLE vmas with such addresses.
+ 	 */
+-	remove_trailing_rmap_items(slot, ksm_scan.rmap_list);
++	remove_trailing_rmap_items(ksm_scan.rmap_list);
+ 
+ 	spin_lock(&ksm_mmlist_lock);
+ 	ksm_scan.mm_slot = list_entry(slot->mm_list.next,
+-- 
+2.25.1
 
-This doesn't apply against current code, please check and resend:
-
-Applying: ASoC: dt-bindings: nvidia, tegra210-ahub: Add missing child nodes
-error: sha1 information is lacking or useless (Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml).
-error: could not build fake ancestor
-Patch failed at 0001 ASoC: dt-bindings: nvidia, tegra210-ahub: Add missing child nodes
-
---M9NhX3UHpAaciwkO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjFZ8ACgkQJNaLcl1U
-h9CHXwf/ePgayQNqRPYIM4d70daAEQGySAe4jmtllPLltZCPeroFEZ5Bme47h9/o
-x7ur5JZ7sAEwCclcmMY4ff7LZh5AZP2ucFjqzaBjm8dp+rWq3v4WEtqDYwlYXj2F
-Oppx9trwsMqm3RPODTpUoou21oL+ghI5AWA7qqhEQNKQ0ssbEALoKPyroimfCE3s
-i3qKiZ/VXZzQbhj+j1k4E/BvlveIvGKeEGlEKl8xWhi9D81RQKvrZGv+G7ExotVH
-k7xnHKnYfd1HSVJTIuOiESYXdyTaIDgWUUs/RUo0nLj7dreAWQRSPcF24v8knzR2
-4W5kclkcDhA6mujioXtCq/F4NFzGwA==
-=BEx1
------END PGP SIGNATURE-----
-
---M9NhX3UHpAaciwkO--
