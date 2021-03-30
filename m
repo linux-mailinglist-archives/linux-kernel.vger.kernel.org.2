@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3622634E363
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A1F34E367
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhC3ImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhC3ImE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:42:04 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD99C061762;
-        Tue, 30 Mar 2021 01:42:04 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso9812891wmi.3;
-        Tue, 30 Mar 2021 01:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=krsQLivBerECO2Nqnyy+OB10H1EDkhWoiyrKaCeb8Lg=;
-        b=oiNBDmPzq3Y8fePN7nMQ7AdgARgd2zgHYC8Ssu+rZLzCWiorRcFC+SCUNsS/6bFO2R
-         Fqhv/f0Yqr4jtU3zrQvvM208t/90Aq/yM2yzuYeSGYVugkImN1XgtIazsb9oXvEIallP
-         LHA1XhdAlyru9GKMTcn38n+SL9uz9mh96qNuf4XW1RVd/GWiVQFoGqg32SSQqdPuXJs4
-         VSIBP0SYFWDsdilp2V9Y7L+Q+t2THMCJTSFDVtVODcTbLuuKUofgu/LVRd8PEoE40750
-         yG8iC4QAz9/thXCSPNf0V9svWo3QAdziFFCW3YxM3JNB/y8b3De0CxxZpj0SlMKxU3Wm
-         ljjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=krsQLivBerECO2Nqnyy+OB10H1EDkhWoiyrKaCeb8Lg=;
-        b=EDuFHzJWR7dst/gWZ5HWZDiN4cxmBRgOozgzHY6uz18gS7U6vCKHpAIWBWqpkqyhh8
-         0PhGhZTAHmZ5GBCbeUqHfex3JKFdStrxIZMzAl+zDXyfiHhfLfmXkMUiJU1X+w0bk8FA
-         qbQS6zZRSmnc00ruk4meJObim/RMwxWSqW8/2eRiOPXVNIKdmprJR1pDmf6RCFBAEKls
-         J0Yv1ZW6bbXP+dFZypC+tj42AGtUl5bilRVdk7/Ug8lCdBU9rDBTMJq09XGjPE+A7e/Q
-         ToqZFFwcp196QkuOa8q+KwERMm3CV6YsD+75jigfYBGpwpCeHtuKrxdk5quX5xuy+AFf
-         PSng==
-X-Gm-Message-State: AOAM530qrBLmDE2sqHlPKghtX1eJo6nTyrQIEMm9He2K0/UbjIzE+XXP
-        j9DbDoJRHOCGsOr89hGakFw=
-X-Google-Smtp-Source: ABdhPJxXscwjMq30pZb/7xvIHlD4sO8yvNnKjS1cmRihsXZaHln4EdWnmUPxzuVBmI+hb/+tVRybtQ==
-X-Received: by 2002:a1c:b783:: with SMTP id h125mr2877539wmf.106.1617093723153;
-        Tue, 30 Mar 2021 01:42:03 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id c6sm32497708wri.32.2021.03.30.01.42.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 01:42:02 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] dt-bindings: nvmem: mediatek: add support for
- MediaTek mt8192 SoC
-To:     Yz.Wu@mediatek.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Seiya Wang <seiya.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>
-References: <1612151986-19820-1-git-send-email-Yz.Wu@mediatek.com>
- <1612151986-19820-2-git-send-email-Yz.Wu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <779f47d2-f735-aa78-c40c-8905cd9f65b9@gmail.com>
-Date:   Tue, 30 Mar 2021 10:42:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S231533AbhC3Imx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:42:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42973 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231679AbhC3Imi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:42:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617093758; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=6ZBUFntkKzGQ6dG5LrEqdA+1MgShIPk4qTagF0K+hzk=; b=uTxldaFsiMsGWKv0NjZ9DlCUmz8/+a3WSwfHZiiC8FqNVK0u186V+wZtO91CVcFXjcZyCymC
+ nkMT7a9QEmWBQYk6REUfrQC92wnEcJuhw7sycQXwebXT1z/GqNRy3FsjbMLDUQumbYwBNQqm
+ 8MFfvCKw5NECNf8XX9zV0JaaPGo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6062e465c39407c327260d25 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 08:42:13
+ GMT
+Sender: sanm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 566FFC433CA; Tue, 30 Mar 2021 08:42:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.252.226.205] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EDD28C433C6;
+        Tue, 30 Mar 2021 08:42:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EDD28C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sanm@codeaurora.org
+Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+ <YF3jfshT3OSolcws@kroah.com>
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+Message-ID: <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
+Date:   Tue, 30 Mar 2021 14:12:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1612151986-19820-2-git-send-email-Yz.Wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YF3jfshT3OSolcws@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 3/26/2021 7:07 PM, Greg Kroah-Hartman wrote:
+> On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
+>> This patch adds a shutdown callback to USB DWC core driver to ensure that
+>> it is properly shutdown in reboot/shutdown path. This is required
+>> where SMMU address translation is enabled like on SC7180
+>> SoC and few others. If the hardware is still accessing memory after
+>> SMMU translation is disabled as part of SMMU shutdown callback in
+>> system reboot or shutdown path, then IOVAs(I/O virtual address)
+>> which it was using will go on the bus as the physical addresses which
+>> might result in unknown crashes (NoC/interconnect errors).
+>>
+>> Previously this was added in dwc3 qcom glue driver.
+>> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
+>> But observed kernel panic as glue driver shutdown getting called after
+>> iommu shutdown. As we are adding iommu nodes in dwc core node
+>> in device tree adding shutdown callback in core driver seems correct.
+> So shouldn't you also remove this from the qcom glue driver at the same
+> time?  Please submit both as a patch series.
+>
+> thanks,
+>
+> greg k-h
 
-On 01/02/2021 04:59, Yz.Wu@mediatek.com wrote:
-> From: Ryan Wu <Yz.Wu@mediatek.com>
-> 
-> This updates dt-binding documentation for MediaTek mt8192
-> 
-> Signed-off-by: Ryan Wu <Yz.Wu@mediatek.com>
+Hi Greg,
 
-Applied to v5.12-next/dts64
+The qcom glue driver patch is not merged yet. I have just mentioned for it for reference.
 
-Please resend the DTS patch with the comments I made.
+Regards
+Sandeep
 
-> ---
-> This patch is based on v5.10-rc7.
-> ---
->  Documentation/devicetree/bindings/nvmem/mtk-efuse.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt b/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
-> index 0668c45..82dafa3 100644
-> --- a/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
-> +++ b/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
-> @@ -7,6 +7,7 @@ Required properties:
->  	      "mediatek,mt7622-efuse", "mediatek,efuse": for MT7622
->  	      "mediatek,mt7623-efuse", "mediatek,efuse": for MT7623
->  	      "mediatek,mt8173-efuse" or "mediatek,efuse": for MT8173
-> +	      "mediatek,mt8192-efuse", "mediatek,efuse": for MT8192
->  - reg: Should contain registers location and length
->  
->  = Data cells =
-> 
+
