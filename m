@@ -2,102 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911BB34EB90
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DD534EB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhC3PIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:08:37 -0400
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:45983 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhC3PIV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:08:21 -0400
-Received: by mail-oo1-f49.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so1948035oop.12;
-        Tue, 30 Mar 2021 08:08:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OERH4SlfSJi/bQ1a0OGx4vJZa22yHS7mOblk/gNxhCk=;
-        b=LroQUxNk2SzNV96DXGhO53nhbhHXfiDnZRz2DJMBRpmj85zCBXqalYZQqg4ynQVMIU
-         Sz7/EM6TgQOa2shTQRIaEK66X9V7kODyropDu9rwEcXyvv2CleejnQjdGGVEwFBLubEB
-         fnvIidEQsqdwnG0LD27I++JAePuA7V0/PC/jlGbM3ibDarLDR5JiDk+1my5DQeBsCvOW
-         wccfc9HBeiNZNHKNu+cUXNmdVd6dd1c8QLVc6/CzD3JRhvU2xW8tZllgl9ij+XAR/ZRq
-         9Gd4oHm07Z5znP65K2aeo7EuauSQKUoB1nyRXwyDbUrhf7S8ePQNZkEYiVZVItKVyf0l
-         Br7g==
-X-Gm-Message-State: AOAM532gIoDsZ5S1y3LjesEv2VmOojwNH+rwwT0xkzm8ANPg58KiTdYK
-        306t38OyN7+ws2OVaRUAHA==
-X-Google-Smtp-Source: ABdhPJxzTiT8Yx157v6YJmaw23rt6BCKJqe/1FjRziNV4+JIAfVmGBZdQjozMJwv7LdnO9EwUUdQxw==
-X-Received: by 2002:a05:6820:129:: with SMTP id i9mr25919449ood.80.1617116900980;
-        Tue, 30 Mar 2021 08:08:20 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.136])
-        by smtp.gmail.com with ESMTPSA id u7sm4467781ooq.13.2021.03.30.08.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 08:08:20 -0700 (PDT)
-Received: (nullmailer pid 312816 invoked by uid 1000);
-        Tue, 30 Mar 2021 15:08:16 -0000
-Date:   Tue, 30 Mar 2021 10:08:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-Message-ID: <20210330150816.GA306420@robh.at.kernel.org>
-References: <20210326191906.43567-1-jim2101024@gmail.com>
- <20210326191906.43567-2-jim2101024@gmail.com>
+        id S231229AbhC3PIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:08:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231752AbhC3PIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:08:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D61E9619CA;
+        Tue, 30 Mar 2021 15:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617116898;
+        bh=2y57qse0hlc7nRtLBBY8dgkFobyrvUeQUtu3XdIbcdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lY38yZkb9r5DYQysiyVASARgm/pt8kPD7V/m0B9ZzMRsjQA4RtJT6CpWT7OMCWHZV
+         o9F4aTaWTKN47bUXNuJ4rTkof5ARK2QTEQCTbMHtXLqUXbL4G1vtYy4xgXHHtuV1oG
+         DeQgRVf7vqATtfQo/7qozRR1gG63RBcxGoETJG3cAq5jL3szp0BgNHpsPCCSGp7lbQ
+         GYnQPI/M5ibpwhuczIlxPQtWHtkusPgRtOMQMx5e0OXivenaY8zXCFrOg2g3hO36Sy
+         22vjvKkArMuBYl2VWpZzc+tSWeqVNLZ1eHKG0H3wDi2NaUwKz9TvK4pQmcU3+/HAv6
+         DBzzKWNExcyLQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lRFyx-0002Vi-Gz; Tue, 30 Mar 2021 17:08:39 +0200
+Date:   Tue, 30 Mar 2021 17:08:39 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] USB: serial: xr: add support for XR2280X devices
+Message-ID: <YGM+9zmjJpnUeHMf@hovoldconsulting.com>
+References: <cover.1616571453.git.mchehab+huawei@kernel.org>
+ <385b5ba7739fd1d67b9b2b8fd70187ab19e8d00e.1616571453.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326191906.43567-2-jim2101024@gmail.com>
+In-Reply-To: <385b5ba7739fd1d67b9b2b8fd70187ab19e8d00e.1616571453.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:18:59PM -0400, Jim Quinlan wrote:
-> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> allows optional regulators to be attached and controlled by the PCIe RC
-> driver.  That being said, this driver searches in the DT subnode (the EP
-> node, eg pci@0,0) for the regulator property.
-> 
-> The use of a regulator property in the pcie EP subnode such as
-> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> file at
-> 
-> https://github.com/devicetree-org/dt-schema/pull/54
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index f90557f6deb8..ea3e6f55e365 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -156,5 +156,11 @@ examples:
->                                   <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
->                      brcm,enable-ssc;
->                      brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
-> +
-> +                    pcie-ep@0,0 {
-> +                            reg = <0x0 0x0 0x0 0x0 0x0>;
-> +                            compatible = "pci14e4,1688";
-> +                            vpcie12v-supply: <&vreg12>;
+On Wed, Mar 24, 2021 at 08:41:10AM +0100, Mauro Carvalho Chehab wrote:
+> There's nothing special on those devices either. They just
+> use a different set of registers.
 
-For other cases, these properties are in the host bridge node. If these 
-are standard PCI rails, then I think that's where they belong unless we 
-define slot nodes.
+This device also use 16-bit addresses and doesn't support CS5 and CS6.
 
-Rob
+Johan
