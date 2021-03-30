@@ -2,287 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5094934E467
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EBA34E399
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhC3J2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:28:04 -0400
-Received: from mail-eopbgr50042.outbound.protection.outlook.com ([40.107.5.42]:7464
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S231547AbhC3I46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:56:58 -0400
+Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:2945
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231814AbhC3J1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:27:42 -0400
+        id S230224AbhC3I4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:56:34 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iyrh6pbA+ts63ccSbdDihdj8xnk3RrnSrXgPFoxempLhQxIjt7F6zXXshHkwUCV/QD9gD5J7c59zp8/xaSCel0o7OsUjGceJK6dayvWM4QnA6C4jwMwcs8NdOkCIOTXM2ACDoyuEc1WtQ/LL604K+QriQRNHqZbICKt/jWm/GoFfknNovVOeNgoh7c8g2IbAqiZimkV1zsLcxfxisuFC4r2fG36SjwgJodr2Bs6JuEMngPHQjQN2ln6PUZsh4N8C5Ioc9XToTmeEiTLXQ6dDTDG+lHdvr9IV9JUigjmXxlLC4RkwAxBT/2pVleMMxVT8/8DowXHKtDvEZGhiPWfUaQ==
+ b=M2KW0EiYdfAhWOmug6PR+OMLK20KPJbAyPQkm09J8AevWuGU3jJiKnrXS+Kz8vhy2XKkXa6AvcmLE3ZD10BlkgzhofwxAxlKP0ivqlHvhC+aEEqHLxfrsyGu90LzClqCbPUHuhAEYB4VXavcw9cWUBwn8rRc9grbhcgr4GNKk5y3kzcZt4PLml3Sz8niTksXAZEeB0BWJZ7NCSbQBL6Wi3JAqsJb9ZXTlytXzUImqnSvFNpa7bTsFptDrnhpBuH2jfMuh44sSZcXx8VjKvXfzCbARo5hhQx0hvc201kRBA9jZww1MY/nq5wU15k9aIzw5sohGct4JVbuG5UOqLIN0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/KDbe6usScPk4BqCqIeicXhKTWCCKT5EravEfBo1a8U=;
- b=bn1YFrJgJxcYNr79EankPteV11s40jd0deVJuGHidkc3lFB6PSZ/HWh7xZxypasFJiMe+2zc1oyTtB7UkBjIkeWDEZ9F5Yrpi57gv6wOeko/Zclb8h8D/z1+BiQnBU/OhnQiWtmkd5xOIpy8nbZS/UtFMafDbZKaOHFNj0s7/NF4/L7BWM0u0+LSsDtOz2VqOXA59B3Ir7MBoCm+uF6ISpmAmJOZ1xCnXDS5GOK3xJTFZ1xphfaYDkiMe4c6n/zhK+rrzgXY2d4/QeWRF5bb5mX52O4RubGUNNISkE1VwxN/q0YsU5oYnWmLwRAmL6/frOujgmSFLHWmsDRs81xz4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
+ bh=OcLbZuPrAoF0vz+syYsFzQl/V2SXo31YQyW5HlYrO/A=;
+ b=evRG0CZAcGmG7SSZqsha0CWaqcoLuZ4PJ8Hrw6IMI4krg2lcLuiqgaRJ111drFRhwGobp1dED5++wGSOTxRThsS78Co/C6yra9XKY8h7XcffcG8nCWuDbwc0qMcef3xJ7C43sgJPe0fHsQ5NyQLnb2cYjj2YSr997MIup3p0nE/0V3Jht15IIqbH50XlgilKqpaIuVNvhjODKM1vWxQC7YA+IOxAesFkJy7gd58OwE/V84xa3JPW0O9UGbfzcc6XtIrF+iEPZVBHF0KRlDtEjLreu0cA7VWCBqBvSMcyJSD+tG+1TU/rzW1fcQP0254MKEs8JNXd9UbJj0EIllev3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/KDbe6usScPk4BqCqIeicXhKTWCCKT5EravEfBo1a8U=;
- b=NzXrF5f41zYTA20alL9EVHiuXvn3c+t3qKfufVeRmtZtPBYuNKDNZwl7FXBGJbj6gmppN85l6edIwtnn9xFjwHrB1lSH/LD3a8kUjIPvdPBw+0MC0TycMijxxQexd+deGP4q4dqtN2W2FAU/HATQeYbXpB3/GI2xevXQkXO1WYY=
-Authentication-Results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7595.eurprd04.prod.outlook.com (2603:10a6:10:20d::18) with
+ bh=OcLbZuPrAoF0vz+syYsFzQl/V2SXo31YQyW5HlYrO/A=;
+ b=NMOIfVUfDdDyWFRqoD6f4doI9/87quuiyZGmaiIZdxOXVHiybIp3Q28OF+mNdDGbAeXmn9Zt8n+epwfOzUthD9URk8pkz/x1qyyVwcZORmCkSnAfwnhWoM9/lbBu6xXxgJLdUyqLKKHDbbZ+q/nh81HTPFI00jOJLsrZ8V8FATw=
+Received: from BN9PR03CA0545.namprd03.prod.outlook.com (2603:10b6:408:138::10)
+ by BN6PR1201MB0116.namprd12.prod.outlook.com (2603:10b6:405:56::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Tue, 30 Mar
- 2021 09:27:39 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c57a:6964:f72c:21cf]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c57a:6964:f72c:21cf%11]) with mapi id 15.20.3977.033; Tue, 30 Mar
- 2021 09:27:39 +0000
-From:   peng.fan@oss.nxp.com
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 8/8] remoteproc: imx_rproc: support i.MX8MN/P
-Date:   Tue, 30 Mar 2021 17:12:54 +0800
-Message-Id: <1617095574-6764-9-git-send-email-peng.fan@oss.nxp.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Tue, 30 Mar
+ 2021 08:56:32 +0000
+Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:138:cafe::d) by BN9PR03CA0545.outlook.office365.com
+ (2603:10b6:408:138::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend
+ Transport; Tue, 30 Mar 2021 08:56:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 08:56:32 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
+ 2021 03:56:31 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
+ 2021 03:56:30 -0500
+Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
+ Transport; Tue, 30 Mar 2021 03:56:26 -0500
+From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <shumingf@realtek.com>, <flove@realtek.com>,
+        <kent_chen@realtek.com>, <jack.yu@realtek.com>,
+        <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+        <Sunil-kumar.Dommati@amd.com>,
+        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Ravulapati Vishnu vardhan rao" <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "open list" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x machine driver
+Date:   Tue, 30 Mar 2021 14:43:15 +0530
+Message-ID: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617095574-6764-1-git-send-email-peng.fan@oss.nxp.com>
-References: <1617095574-6764-1-git-send-email-peng.fan@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::21) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4020.0 via Frontend Transport; Tue, 30 Mar 2021 09:27:35 +0000
-X-MS-PublicTrafficType: Email
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d586f34b-0ddb-4c80-6286-08d8f35e0fbc
-X-MS-TrafficTypeDiagnostic: DBBPR04MB7595:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB75958691201682F172CACDC9C97D9@DBBPR04MB7595.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:335;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 252a04fb-5613-442c-6645-08d8f359b71a
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0116:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB01169646A18C9FEB801B4B68977D9@BN6PR1201MB0116.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rHGVLRYWYGKVb6npXfl1ztdP6jKIa622qggNSeuaysudi7zAp/NYq7X3ZBGlY+0d2GNNSpCbZaYKFC8KLC+qTjcTWYVsProZq6NfBnnzBo+PNl1d9l/Rbt9BprduiTsYpb/zhhYeeqLxVAmi+krFTm+U/0pkujAsCis/9bPzMXRxHVy6Y2Hg2znhO/chDg5ZD+UXV65AEABEwN3gqD/BiqINvmIR8Y4MmRxzyqC0P5vnLz+9a6ZRSWzvov/inYKCmhK6YalaJshcTy9fT9GRXKiaTq88tzKBl+ICzKGhZ/o/7ZXu4kytpl6ci7iU0sO+UJ2sxfUUc1EXgriHYP5s/D+1FJ3oYZhFT1mg00842oC2zled2yHe1NBmXn03RV8yaZA1uplppH9UPX3DFiY8x1Xa3HRf6VCuMA3vzGU9jazw+oloo8ylqNJSJSeY0q76EbJ8jzixbOFmgYbgVF//f+UzGyQGuEi38YTer9SC2gvRdC9//FDvPpB26bELCd3GrZ9+u3tUAUq55bFgXBgmsxKHytyz+w5LBqxAjUfuiIU5QMPPTb8dYbdD446LR3/u8tjhazuEA0CMq7OP/Vzin32FrlvrN9ArlQ07pKP4AhWF5V7vUI0Tko0BT0bNOppDfxTV6Em2/jSpblvnbOVC33laOEwkkRWU0/LF+i3OgJWUVnV6z6TJUGbN7/0gnWCJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(136003)(396003)(9686003)(66556008)(2616005)(86362001)(6666004)(6486002)(52116002)(956004)(8936002)(66476007)(38100700001)(26005)(4326008)(6506007)(186003)(83380400001)(16526019)(478600001)(7416002)(6512007)(2906002)(69590400012)(5660300002)(316002)(8676002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?U2yNEbfVhbntWUmTlJS+1Fmpgqlpf+RvbazWC4Y7yeZFBbPzuB1xN7VFOiTh?=
- =?us-ascii?Q?awmDF65skO+PVErWIearReAgXYIC9cOrm98yv0BFG208BplPMHIhjU8O5V7V?=
- =?us-ascii?Q?CUEoOO7r9J3YUUItsBLyRvdn3NeixiLXRWncYhpUEOLG2Rl8kOdn6+YY2pn2?=
- =?us-ascii?Q?nDBt91fMoq/1q1xQZ7ARS+SQd4Hp7jFWkwPYWvOq5tpCisIyAdQIAIFJUV+0?=
- =?us-ascii?Q?ees84AgIvX/ZAnho8JNFrNPkeMW0zw6VrA1nT9wwNpXajGEdKKpp+mXSHSaT?=
- =?us-ascii?Q?uEujNlwbNTVvcGrY9EDHP8YL3hLFVKQn93CfNQi+2nqq7xy3Dqjxz289+TFx?=
- =?us-ascii?Q?ZO5TO/rZNBU+KXTbdBMcWXnOOtHtSULb+LKEKuMRP6yjOwOJNVXuul7FslJb?=
- =?us-ascii?Q?yGfEiRcARnQ1KASCE14u1kBLYzYGmdiXYEK2OAAtzlhK0FIB1gZ6qqsxw5P7?=
- =?us-ascii?Q?OcTDmALitfYM7/kX64dzN3k8j2scuhJZ/VzUZi5r/10G891M0jotyp9As2Ee?=
- =?us-ascii?Q?DcI/VdpX68cwS7rS+s6FeIv1nt7S0CzorN0VjKFL92xoAqyOspXSl78W0h9g?=
- =?us-ascii?Q?1TLmdOIB/Epf5Qf+3CWTTgOu5q1w5rv0dZljTk35wqNRDYP1oZe+JSkcsfQy?=
- =?us-ascii?Q?mXyevg2Ggg4g/kbQ4p96aMm4wxC6PjAUBHO+nmijzlL0mlXlu8JHb9n/iNmo?=
- =?us-ascii?Q?fr+teoCU8VPh7H71Nmvplwqz8ZjYkrd9o5IZ1+W2sldDtkQzbp/cNzRZo6g+?=
- =?us-ascii?Q?T5GuiiqcpEOkxUsRsbI19ReKD+pgSAeAZswWLgEdGbSmAmDEBEoIu3Y+NhKQ?=
- =?us-ascii?Q?mmpuDqV/UxnHwIql6n1+1BeYyO3YcI43SectlMZPowjCzgj55QOyUaYJnpwp?=
- =?us-ascii?Q?1SX8fpop2SL81PLksDJJfmHtWFZwlxXy1jv9L4aLVodl6q4BpIA3Qgk3/gcb?=
- =?us-ascii?Q?/jrR1qhZeETdC5gVpUP9ItIv58Yb/pnMROxznTUCohSPM/op+oez3cZk2/Os?=
- =?us-ascii?Q?lNx31eL51lp4WNcURxxyQ94urI23tHx8ZNrvAcvBOmYuQEbji7ohuAPx4SVq?=
- =?us-ascii?Q?bATwH3V+x2wM6KIHq/APdf/XXr2Iq1yufmFosLm2p6UgdEUo2+AlDVHQQ0tE?=
- =?us-ascii?Q?H42Irjj+g0JrpZAYHUGD1IyrhfNDOGV7PUbMs9Eqvba842Cn+O6yq3o7ULcF?=
- =?us-ascii?Q?mU/w7ng7k/0+dbdb0+iYiTXkHTngB26rhkyzcenG8civ4LHD2fOZ/xz7EiUr?=
- =?us-ascii?Q?2vcEyT+bNuGr5FjidOFuVUdL1Jcsqmo9Rmf/l+ZBtrw3ND60uRWG9WlKKMUY?=
- =?us-ascii?Q?sU5B0upSJRRUN3uSqP2PLtYP?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d586f34b-0ddb-4c80-6286-08d8f35e0fbc
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 09:27:39.3552
+X-Microsoft-Antispam-Message-Info: 8t6gqmLu9IwB8ptyD2QFOefmVfk3E8vn68HJM+IHdvAi9xxBPuOY65G9KxaMpFm3XwVHa+TK1jeB7O1s5HL0hZf4+EGx6S1/+0r/dUUW7PEySsl2g386Zv+48VcTCfMRSQJwzc0TIb/qst9N2HTrKjDlhtBziOmD4W67wC9HNexvwXrqAkrwbhoLGZUjpfr2DhXZE7PhNMSNgF1lDlFwfg7rbgrxgsn9ClTDBrbeMk2NncF9snQg4K9hdcIcVKGHQUtvRYXNBGqbB1+4yOseh7aoUdkhF1yRGid/ezH4TjpGgOP2dyD6v8slGuDRsUJyijL0ReY4W32EN6G9YXQHkRNbEn7JXhkwAGEQHmbSL+u9nbA9PlNQyW1NQKj6mifpkk8P8qVNEQq5KhGjwV25VBxKYavtRRtgUc9ECy8Gc3LsBFGPlCQuAt9y5FQkrfDWjTUnWeEuYYOaieKlF42Icn7/DNKrrm9FbxZGAs+h06jWyTWUSFw4U/WSpIsLBaErF1m0sEUE/5qa/fZisazzknN7TZu4lxcH51NoXZTvfuW8P7okgKv+QeYug39QVg6KVu3zNBcV2i0SxTyO+Ru1Nm3S2C9N5CHZSQIhiRwtoZr+6UlvvT8EkwxFOhatD2+ExFXo0jpPyss5cUk1gj17FiyiL5zUZ0UbcOzcpZJobcccHBIG6N39gQAGHeQyHdK2IzCAC6pHmPg6q1PGlv8V+Sq+J6e3Icp/NLL6g4VDLkg=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(46966006)(36840700001)(478600001)(47076005)(81166007)(70206006)(356005)(7696005)(336012)(26005)(70586007)(36756003)(2906002)(82740400003)(316002)(110136005)(54906003)(4326008)(2616005)(82310400003)(86362001)(83380400001)(8676002)(36860700001)(426003)(6666004)(7416002)(8936002)(186003)(5660300002)(42413003)(32563001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 08:56:32.2074
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q1PFm1BeqXHSSH09dQoxOnpc2Dp8moFySSc2Ldmg0683mvYV60a/zgyo8zKcLN6xvpM1udqZXtdTZKIPl18a1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7595
+X-MS-Exchange-CrossTenant-Network-Message-Id: 252a04fb-5613-442c-6645-08d8f359b71a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Add ALC1015p codec support for acp3x machine driver.
 
-Add i.MX8MN/P remote processor(Cortex-M7) support, we are using ARM
-SMCCC to start/stop M core, not using regmap interface.
-
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- drivers/remoteproc/imx_rproc.c | 89 +++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 7 deletions(-)
+ sound/soc/amd/Kconfig                |  1 +
+ sound/soc/amd/acp3x-rt5682-max9836.c | 46 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 46 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-index b911a7539897..c0e96defe2c3 100644
---- a/drivers/remoteproc/imx_rproc.c
-+++ b/drivers/remoteproc/imx_rproc.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2017 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-  */
- 
-+#include <linux/arm-smccc.h>
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
-@@ -50,6 +51,11 @@
- 
- #define IMX_RPROC_MEM_MAX		32
- 
-+#define IMX_SIP_RPROC			0xC2000005
-+#define IMX_SIP_RPROC_START		0x00
-+#define IMX_SIP_RPROC_STARTED		0x01
-+#define IMX_SIP_RPROC_STOP		0x02
-+
- /**
-  * struct imx_rproc_mem - slim internal memory structure
-  * @cpu_addr: MPU virtual address of the memory region
-@@ -119,6 +125,36 @@ struct imx_rproc {
- 	enum imx_rproc_mode		mode;
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 256c192..ba5a85b 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -35,6 +35,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
+ 	select SND_SOC_CROS_EC_CODEC
+ 	select I2C_CROS_EC_TUNNEL
+ 	select SND_SOC_RT1015
++	select SND_SOC_RT1015P
+ 	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
+ 	help
+ 	 This option enables machine driver for RT5682 and MAX9835.
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index cea320a..8e11bb8 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -275,6 +275,8 @@ SND_SOC_DAILINK_DEF(rt5682,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00", "rt5682-aif1")));
+ SND_SOC_DAILINK_DEF(max,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("MX98357A:00", "HiFi")));
++SND_SOC_DAILINK_DEF(rt1015p,
++	DAILINK_COMP_ARRAY(COMP_CODEC("RTL1015:00", "HiFi")));
+ SND_SOC_DAILINK_DEF(rt1015,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC1015:00", "rt1015-aif"),
+ 			COMP_CODEC("i2c-10EC1015:01", "rt1015-aif")));
+@@ -419,6 +421,43 @@ static struct snd_soc_card acp3x_1015 = {
+ 	.num_controls = ARRAY_SIZE(acp3x_mc_1015_controls),
  };
  
-+static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
-+	/* dev addr , sys addr  , size	    , flags */
-+	/* ITCM   */
-+	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN },
-+	/* OCRAM_S */
-+	{ 0x00180000, 0x00180000, 0x00009000, 0 },
-+	/* OCRAM */
-+	{ 0x00900000, 0x00900000, 0x00020000, 0 },
-+	/* OCRAM */
-+	{ 0x00920000, 0x00920000, 0x00020000, 0 },
-+	/* OCRAM */
-+	{ 0x00940000, 0x00940000, 0x00050000, 0 },
-+	/* QSPI Code - alias */
-+	{ 0x08000000, 0x08000000, 0x08000000, 0 },
-+	/* DDR (Code) - alias */
-+	{ 0x10000000, 0x40000000, 0x0FFE0000, 0 },
-+	/* DTCM */
-+	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
-+	/* OCRAM_S - alias */
-+	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
-+	/* OCRAM */
-+	{ 0x20200000, 0x00900000, 0x00020000, ATT_OWN },
-+	/* OCRAM */
-+	{ 0x20220000, 0x00920000, 0x00020000, ATT_OWN },
-+	/* OCRAM */
-+	{ 0x20240000, 0x00940000, 0x00040000, ATT_OWN },
-+	/* DDR (Data) */
-+	{ 0x40000000, 0x40000000, 0x80000000, 0 },
++static const struct snd_soc_dapm_widget acp3x_1015p_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0,
++			 &acp3x_dmic_mux_control),
++	SND_SOC_DAPM_SPK("Speakers", NULL),
 +};
 +
- static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
- 	/* dev addr , sys addr  , size	    , flags */
- 	/* TCML - alias */
-@@ -205,6 +241,12 @@ static const struct imx_rproc_att imx_rproc_att_imx6sx[] = {
- 	{ 0x80000000, 0x80000000, 0x60000000, 0 },
- };
- 
-+static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mn = {
-+	.att		= imx_rproc_att_imx8mn,
-+	.att_size	= ARRAY_SIZE(imx_rproc_att_imx8mn),
-+	.method		= IMX_RPROC_SMC,
++static const struct snd_soc_dapm_route acp3x_1015p_route[] = {
++	{"Headphone Jack", NULL, "HPOL"},
++	{"Headphone Jack", NULL, "HPOR"},
++	{"IN1P", NULL, "Headset Mic"},
++	{"Dmic Mux", "Front Mic", "DMIC"},
++	{"Dmic Mux", "Rear Mic", "DMIC"},
++	/* speaker */
++	{ "Speakers", NULL, "Speaker" },
 +};
 +
- static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
- 	.src_reg	= IMX7D_SRC_SCR,
- 	.src_mask	= IMX7D_M4_RST_MASK,
-@@ -246,12 +288,24 @@ static int imx_rproc_start(struct rproc *rproc)
- 	struct imx_rproc *priv = rproc->priv;
- 	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
- 	struct device *dev = priv->dev;
-+	struct arm_smccc_res res;
- 	int ret;
- 
--	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
--				 dcfg->src_mask, dcfg->src_start);
-+	switch (dcfg->method) {
-+	case IMX_RPROC_MMIO:
-+		ret = regmap_update_bits(priv->regmap, dcfg->src_reg, dcfg->src_mask,
-+					 dcfg->src_start);
-+		break;
-+	case IMX_RPROC_SMC:
-+		arm_smccc_smc(IMX_SIP_RPROC, IMX_SIP_RPROC_START, 0, 0, 0, 0, 0, 0, &res);
-+		ret = res.a0;
-+		break;
-+	default:
-+		return -ENOTSUPP;
-+	}
++static const struct snd_kcontrol_new acp3x_mc_1015p_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Speakers"),
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
 +
- 	if (ret)
--		dev_err(dev, "Failed to enable M4!\n");
-+		dev_err(dev, "Failed to enable remote cores!\n");
- 
- 	return ret;
- }
-@@ -261,12 +315,26 @@ static int imx_rproc_stop(struct rproc *rproc)
- 	struct imx_rproc *priv = rproc->priv;
- 	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
- 	struct device *dev = priv->dev;
-+	struct arm_smccc_res res;
- 	int ret;
- 
--	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
--				 dcfg->src_mask, dcfg->src_stop);
-+	switch (dcfg->method) {
-+	case IMX_RPROC_MMIO:
-+		ret = regmap_update_bits(priv->regmap, dcfg->src_reg, dcfg->src_mask,
-+					 dcfg->src_stop);
-+		break;
-+	case IMX_RPROC_SMC:
-+		arm_smccc_smc(IMX_SIP_RPROC, IMX_SIP_RPROC_STOP, 0, 0, 0, 0, 0, 0, &res);
-+		ret = res.a0;
-+		if (res.a1)
-+			dev_info(dev, "Not in wfi, force stoped\n");
-+		break;
-+	default:
-+		return -ENOTSUPP;
-+	}
++static struct snd_soc_card acp3x_1015p = {
++	.name = "acp3xalc56821015p",
++	.owner = THIS_MODULE,
++	.dai_link = acp3x_dai,
++	.num_links = ARRAY_SIZE(acp3x_dai),
++	.dapm_widgets = acp3x_1015p_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(acp3x_1015p_widgets),
++	.dapm_routes = acp3x_1015p_route,
++	.num_dapm_routes = ARRAY_SIZE(acp3x_1015p_route),
++	.controls = acp3x_mc_1015p_controls,
++	.num_controls = ARRAY_SIZE(acp3x_mc_1015p_controls),
++};
 +
- 	if (ret)
--		dev_err(dev, "Failed to stop M4!\n");
-+		dev_err(dev, "Failed to stop remote cores\n");
- 
- 	return ret;
- }
-@@ -600,6 +668,7 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
+ void *soc_is_rltk_max(struct device *dev)
  {
- 	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
- 	struct device *dev = priv->dev;
-+	struct arm_smccc_res res;
- 	int ret;
- 	u32 val;
- 
-@@ -616,8 +685,12 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
- 			priv->mode = IMX_RPROC_EARLY_BOOT;
- 	}
- 
--	if (dcfg->method == IMX_RPROC_NONE)
-+	if (dcfg->method == IMX_RPROC_NONE) {
- 		priv->mode = IMX_RPROC_EARLY_BOOT;
-+	} else if (dcfg->method == IMX_RPROC_SMC) {
-+		arm_smccc_smc(IMX_SIP_RPROC, IMX_SIP_RPROC_STARTED, 0, 0, 0, 0, 0, 0, &res);
-+		priv->mode = res.a0 ? IMX_RPROC_EARLY_BOOT : IMX_RPROC_NORMAL;
-+	}
- 
- 	if (priv->mode == IMX_RPROC_EARLY_BOOT)
- 		priv->rproc->state = RPROC_DETACHED;
-@@ -747,6 +820,8 @@ static const struct of_device_id imx_rproc_of_match[] = {
- 	{ .compatible = "fsl,imx6sx-cm4", .data = &imx_rproc_cfg_imx6sx },
- 	{ .compatible = "fsl,imx8mq-cm4", .data = &imx_rproc_cfg_imx8mq },
- 	{ .compatible = "fsl,imx8mm-cm4", .data = &imx_rproc_cfg_imx8mq },
-+	{ .compatible = "fsl,imx8mn-cm7", .data = &imx_rproc_cfg_imx8mn },
-+	{ .compatible = "fsl,imx8mp-cm7", .data = &imx_rproc_cfg_imx8mn },
+ 	const struct acpi_device_id *match;
+@@ -435,6 +474,9 @@ static void card_spk_dai_link_present(struct snd_soc_dai_link *links,
+ 	if (!strcmp(card_name, "acp3xalc56821015")) {
+ 		links[1].codecs = rt1015;
+ 		links[1].num_codecs = ARRAY_SIZE(rt1015);
++	} else if (!strcmp(card_name, "acp3xalc56821015p")) {
++		links[1].codecs = rt1015p;
++		links[1].num_codecs = ARRAY_SIZE(rt1015p);
+ 	} else {
+ 		links[1].codecs = max;
+ 		links[1].num_codecs = ARRAY_SIZE(max);
+@@ -486,6 +528,7 @@ static int acp3x_probe(struct platform_device *pdev)
+ static const struct acpi_device_id acp3x_audio_acpi_match[] = {
+ 	{ "AMDI5682", (unsigned long)&acp3x_5682},
+ 	{ "AMDI1015", (unsigned long)&acp3x_1015},
++	{ "AMDP1015", (unsigned long)&acp3x_1015p},
  	{},
  };
- MODULE_DEVICE_TABLE(of, imx_rproc_of_match);
+ MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
+@@ -503,5 +546,6 @@ module_platform_driver(acp3x_audio);
+ 
+ MODULE_AUTHOR("akshu.agrawal@amd.com");
+ MODULE_AUTHOR("Vishnuvardhanrao.Ravulapati@amd.com");
+-MODULE_DESCRIPTION("ALC5682 ALC1015 & MAX98357 audio support");
++MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
++MODULE_DESCRIPTION("ALC5682 ALC1015, ALC1015P & MAX98357 audio support");
+ MODULE_LICENSE("GPL v2");
 -- 
-2.30.0
+2.7.4
 
