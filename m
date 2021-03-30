@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52AA34E4A4
+	by mail.lfdr.de (Postfix) with ESMTP id 8A34F34E4A3
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhC3JnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhC3JnN (ORCPT
+        id S231587AbhC3JnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:43:18 -0400
+Received: from smtp-190a.mail.infomaniak.ch ([185.125.25.10]:33303 "EHLO
+        smtp-190a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231481AbhC3JnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:43:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978ABC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:43:12 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 822021F45916
-Subject: Re: [PATCH] drm/mediatek: Add missing MODULE_DEVICE_TABLE()
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20210203110717.686204-1-enric.balletbo@collabora.com>
-Message-ID: <8c8309fb-babe-3ed4-d2a1-111fbab91e9f@collabora.com>
-Date:   Tue, 30 Mar 2021 11:43:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 30 Mar 2021 05:43:01 -0400
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F8kyW6mfzzMpvrk;
+        Tue, 30 Mar 2021 11:42:59 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F8kyV6y72zlh8TT;
+        Tue, 30 Mar 2021 11:42:58 +0200 (CEST)
+Subject: Re: [PATCH v1] ovl: Fix leaked dentry
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, stable@vger.kernel.org,
+        syzbot <syzkaller@googlegroups.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210329164907.2133175-1-mic@digikod.net>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <bfcd9935-f51d-a94e-2827-373ec0962e70@digikod.net>
+Date:   Tue, 30 Mar 2021 11:44:00 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20210203110717.686204-1-enric.balletbo@collabora.com>
+In-Reply-To: <20210329164907.2133175-1-mic@digikod.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 3/2/21 12:07, Enric Balletbo i Serra wrote:
-> From: Boris Brezillon <boris.brezillon@collabora.com>
+On 29/03/2021 18:49, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
 > 
-> This patch adds the missing MODULE_DEVICE_TABLE definitions on different
-> Mediatek drivers which generates correct modalias for automatic loading
-> when these drivers are compiled as an external module.
+> Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
+> ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
+> metacopy error, which leads to dentry leaks when shutting down the
+> related superblock:
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>   overlayfs: refusing to follow metacopy origin for (/file0)
+>   ...
+>   BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
+>   ...
+>   WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
+>   CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
+>   ...
+>   RIP: 0010:umount_check.cold+0x107/0x14d
+>   ...
+>   Call Trace:
+>    d_walk+0x28c/0x950
+>    ? dentry_lru_isolate+0x2b0/0x2b0
+>    ? __kasan_slab_free+0x12/0x20
+>    do_one_tree+0x33/0x60
+>    shrink_dcache_for_umount+0x78/0x1d0
+>    generic_shutdown_super+0x70/0x440
+>    kill_anon_super+0x3e/0x70
+>    deactivate_locked_super+0xc4/0x160
+>    deactivate_super+0xfa/0x140
+>    cleanup_mnt+0x22e/0x370
+>    __cleanup_mnt+0x1a/0x30
+>    task_work_run+0x139/0x210
+>    do_exit+0xb0c/0x2820
+>    ? __kasan_check_read+0x1d/0x30
+>    ? find_held_lock+0x35/0x160
+>    ? lock_release+0x1b6/0x660
+>    ? mm_update_next_owner+0xa20/0xa20
+>    ? reacquire_held_locks+0x3f0/0x3f0
+>    ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
+>    do_group_exit+0x135/0x380
+>    __do_sys_exit_group.isra.0+0x20/0x20
+>    __x64_sys_exit_group+0x3c/0x50
+>    do_syscall_64+0x45/0x70
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>   ...
+>   VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
+> 
+> This fix has been tested with a syzkaller reproducer.
+> 
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <stable@vger.kernel.org> # v5.7+
 
-A gentle ping for someone to review this patchset :-)
+The bogus commit 6815f479ca90 was applied on v5.7-rc2 but it is only
+available since v5.8+ .
 
-Thanks,
-  Enric
-
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
 > ---
+>  fs/overlayfs/namei.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->  drivers/gpu/drm/mediatek/mtk_cec.c      | 2 ++
->  drivers/gpu/drm/mediatek/mtk_dpi.c      | 1 +
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c  | 1 +
->  drivers/gpu/drm/mediatek/mtk_dsi.c      | 1 +
->  drivers/gpu/drm/mediatek/mtk_hdmi.c     | 1 +
->  drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c | 1 +
->  6 files changed, 7 insertions(+)
+> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+> index 3fe05fb5d145..424c594afd79 100644
+> --- a/fs/overlayfs/namei.c
+> +++ b/fs/overlayfs/namei.c
+> @@ -921,6 +921,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
+>  		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
+>  			err = -EPERM;
+>  			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
+> +			dput(this);
+>  			goto out_put;
+>  		}
+>  
 > 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
-> index cb29b649fcdb..3b86e626e459 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_cec.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_cec.c
-> @@ -7,6 +7,7 @@
->  #include <linux/delay.h>
->  #include <linux/io.h>
->  #include <linux/interrupt.h>
-> +#include <linux/module.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/platform_device.h>
->  
-> @@ -247,6 +248,7 @@ static const struct of_device_id mtk_cec_of_ids[] = {
->  	{ .compatible = "mediatek,mt8173-cec", },
->  	{}
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_cec_of_ids);
->  
->  struct platform_driver mtk_cec_driver = {
->  	.probe = mtk_cec_probe,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> index 52f11a63a330..2680370652fd 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -822,6 +822,7 @@ static const struct of_device_id mtk_dpi_of_ids[] = {
->  	},
->  	{ },
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_dpi_of_ids);
->  
->  struct platform_driver mtk_dpi_driver = {
->  	.probe = mtk_dpi_probe,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> index 5f49a809689b..e4645c8ae1c0 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -470,6 +470,7 @@ static const struct of_device_id mtk_drm_of_ids[] = {
->  	  .data = &mt8183_mmsys_driver_data},
->  	{ }
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_drm_of_ids);
->  
->  static int mtk_drm_probe(struct platform_device *pdev)
->  {
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> index 0527480c07be..c71ce62d1bec 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -1193,6 +1193,7 @@ static const struct of_device_id mtk_dsi_of_match[] = {
->  	  .data = &mt8183_dsi_driver_data },
->  	{ },
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_dsi_of_match);
->  
->  struct platform_driver mtk_dsi_driver = {
->  	.probe = mtk_dsi_probe,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> index 8ee55f9e2954..b4696a9d73f7 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -1818,6 +1818,7 @@ static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
->  	},
->  	{}
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_drm_hdmi_of_ids);
->  
->  static struct platform_driver mtk_hdmi_driver = {
->  	.probe = mtk_drm_hdmi_probe,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c b/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c
-> index 62dbad5675bb..6207eac88550 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c
-> @@ -335,6 +335,7 @@ static const struct of_device_id mtk_hdmi_ddc_match[] = {
->  	{ .compatible = "mediatek,mt8173-hdmi-ddc", },
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(of, mtk_hdmi_ddc_match);
->  
->  struct platform_driver mtk_hdmi_ddc_driver = {
->  	.probe = mtk_hdmi_ddc_probe,
+> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
 > 
