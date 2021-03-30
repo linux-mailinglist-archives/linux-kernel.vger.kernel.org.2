@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617D234F02B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A08C34F025
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhC3Rvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
+        id S232591AbhC3RuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:50:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:47553 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232292AbhC3Rvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A77B619CF;
-        Tue, 30 Mar 2021 17:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617126692;
-        bh=vH41Kssp0RaYEeKpGb5b46LRTKi8xAs+POHymbemXd8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=po0B30taUe5XpZJC2Az5xXpgelji6O7EJa1/Wp5yi4Xp7IRBkUradL0YHGUX1NcHO
-         YDpO9qK4MGDdbB2lKW6Pbbh2lZwVDEkyt/bnQzfLJBfjrd1AJZ+9ppNGpHy8KyGTCx
-         NVqA3sYobm5EMjLkR1kIdtV4EDp8Gk2mqUp0MwVG8XYoXzZ57/rOK7picZEg4n8442
-         mthrvg2sdc+/nzSbJMGkIlS7m+1sPjurthlxnHY+TX7QLeU3eH1dA4cPeFAyN2g2kE
-         QfV9Um64jc6HFuaN1eYnZDTKuJqBwCQ7nfBmPUG25oKE96S23TILORUoq8qtKbR2IA
-         ATzUeTrf3gPJw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Greentime Hu <green.hu@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] nds32: flush_dcache_page: use page_mapping_file to avoid races with swapoff
-Date:   Tue, 30 Mar 2021 20:51:26 +0300
-Message-Id: <20210330175126.26500-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S232577AbhC3Rtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:49:35 -0400
+IronPort-SDR: kBaf9suBOUPVGcdpslmifk0FSCQlG4gVDFUYb9dKAtPrL14zqxdMJY22lC/+9PUd8P+z9fGJ2S
+ m1OcMmOoZHWQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191851590"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="191851590"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 10:49:30 -0700
+IronPort-SDR: FKvLAxU7/mf8+wi6h4BaZT9P8YOdspJgTsnJqqPxQyxc4VzrRXVhYEv6CxKxIvTfM2cRClkXwf
+ b6SYPfDpn1+g==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="393695340"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 10:49:30 -0700
+Date:   Tue, 30 Mar 2021 10:52:00 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        jacob.jun.pan@linux.intel.com, "Luck, Tony" <tony.luck@intel.com>
+Subject: Re: [PATCH v2 1/4] iommu/vt-d: Enable write protect for supervisor
+ SVM
+Message-ID: <20210330105200.418bc42b@jacob-builder>
+In-Reply-To: <20210322175338.GA24424@roeck-us.net>
+References: <1614680040-1989-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614680040-1989-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210322175338.GA24424@roeck-us.net>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi Guenter,
 
-Commit cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-updated flush_dcache_page implementations on several architectures to use
-page_mapping_file() in order to avoid races between page_mapping() and
-swapoff().
+On Mon, 22 Mar 2021 10:53:38 -0700, Guenter Roeck <linux@roeck-us.net>
+wrote:
 
-This update missed arch/nds32 and there is a possibility of a race there.
+> On Tue, Mar 02, 2021 at 02:13:57AM -0800, Jacob Pan wrote:
+> > Write protect bit, when set, inhibits supervisor writes to the read-only
+> > pages. In supervisor shared virtual addressing (SVA), where page tables
+> > are shared between CPU and DMA, IOMMU PASID entry WPE bit should match
+> > CR0.WP bit in the CPU.
+> > This patch sets WPE bit for supervisor PASIDs if CR0.WP is set.
+> > 
+> > Signed-off-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---  
+> 
+> ia64:defconfig:
+> 
+> drivers/iommu/intel/pasid.c: In function 'pasid_enable_wpe':
+> drivers/iommu/intel/pasid.c:536:22: error: implicit declaration of
+> function 'read_cr0' drivers/iommu/intel/pasid.c:539:23: error:
+> 'X86_CR0_WP' undeclared
+> 
+> Maybe it _is_ time to retire ia64 ?
 
-Replace page_mapping() with page_mapping_file() in nds32 implementation of
-flush_dcache_page().
+Good catch, sorry for the late reply. I guess otherwise I will have to do
+some #ifdef?
 
-Fixes: cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/nds32/mm/cacheflush.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There are many basic x86 helpers are missing in ia64.
 
-diff --git a/arch/nds32/mm/cacheflush.c b/arch/nds32/mm/cacheflush.c
-index 6eb98a7ad27d..ad5344ef5d33 100644
---- a/arch/nds32/mm/cacheflush.c
-+++ b/arch/nds32/mm/cacheflush.c
-@@ -238,7 +238,7 @@ void flush_dcache_page(struct page *page)
- {
- 	struct address_space *mapping;
- 
--	mapping = page_mapping(page);
-+	mapping = page_mapping_file(page);
- 	if (mapping && !mapping_mapped(mapping))
- 		set_bit(PG_dcache_dirty, &page->flags);
- 	else {
--- 
-2.28.0
++Tony
+
+Thanks,
+
+Jacob
 
