@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F6434F210
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A1634F21A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhC3UVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
+        id S231979AbhC3UZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232394AbhC3UUl (ORCPT
+        with ESMTP id S229940AbhC3UZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:20:41 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B770C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:20:30 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id y32so11385782pga.11
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=+fvRCak5nT+7vsNsQ37FYFv5hB/hQM4I7Onizfja+Yk=;
-        b=dyo9hBcc2uhiFNIDb0P+xc3bKZmmyInA4bas7pmqj5KCVLdG2TYPs1dPhOUYmJjRm2
-         L8OX3M1ux4vxu3HbgUbSgVEokkRlNJ+9i8fvotEGIs8JZInGNe+3WEjmExm7boqErQvm
-         Dlj8mdvz3MpgGdFlVD7dpz/uwGarh6a43aGmosqomfy87p0D2V4h3r/g0fA8Tj1sYqbw
-         LIsj0coVi3FX4C/H6UFMTPZtzJLsWO72OBZUCV8Hsl8RSip1p6gyK5V8XhdQPTu6Xwt6
-         6/k1qgIQiij81yo7yqzX3mvU1HFiHBRAfDy0ydobg9JP+aW/S1KP2cmzGH0EJKcxWuNo
-         Zvew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=+fvRCak5nT+7vsNsQ37FYFv5hB/hQM4I7Onizfja+Yk=;
-        b=j/yIb7KbjuOPxlev1q9rwhkmFKuRfEvunTwLPvWuMREUh8qfjmTYTnSDWcfDPUV8HH
-         xNy6+8b/ikhmYSTIDXoqTtT9+8x+B+mgGMGy0bX8c4aqTPkO9K2F3v+2w98IvA/QR9kf
-         XJ2dUCYuK8hryOldPSXBddfN0MCfFm4M378HRZ8zV2rMwRr6fbFFERubhuJTa96Nq2No
-         MDROFIDig/KG6K50FVN/mzVBDoK9ldo6uPkyJl7r4R03IpY8bsKh1lwymKXpCLyXKPiW
-         8Xn3tb7ZWO2V4xuXSxyM6ZBIIafmk2bIcnpHkDYfr+Aiy1FX/7EDCw2nlsLMVuRkmRid
-         rCHg==
-X-Gm-Message-State: AOAM531iU5g7p+4GGfJf4eXWg2JjhA2FO8rSx8FqiZBjH3RES4EFNBZv
-        jD5LWsZSzfUPofODUILPtdAq5g==
-X-Google-Smtp-Source: ABdhPJwhMEkJzZ2fRP0OkCkDNZAazep5N/gSflrritdECzKkpf7jn2nsGX7tEg0YrqAN2rK4PvL83w==
-X-Received: by 2002:a63:545e:: with SMTP id e30mr30841258pgm.13.1617135629521;
-        Tue, 30 Mar 2021 13:20:29 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:30aa:f41a:f3f5:d36b? ([2601:646:c200:1ef2:30aa:f41a:f3f5:d36b])
-        by smtp.gmail.com with ESMTPSA id v25sm21757167pfn.51.2021.03.30.13.20.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 13:20:28 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
+        Tue, 30 Mar 2021 16:25:51 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B45C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:25:49 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7DF2A891AE;
+        Wed, 31 Mar 2021 09:25:44 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1617135944;
+        bh=4m8v9HvBECLx0AVTds4tNkir9Omth8wMQSEKITaxJI8=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=x25ZpYF/vY7Q1EefdXxnCCspSHSIoL4Y+pRluosHYljIoSvz9X8w1RO2btWaeyvMb
+         nc0mwf0uHnNkvRzyRAWvcaiIUK18Fjro9qmR9A1CXT3+hX/3bn84HydAItpO1b5rUK
+         3Ro8bJG56sJf5fuls4eUtZJkLzYD+8dA8uPCSGPcEnZBLV46BbbU1tqPo8Uzq3VSmr
+         RT8Bc1oxDfI+Zxt9BAmCgm5NMh6icciY28lXwtdrUptfFAaU889tdN84qQPR7KZHT6
+         vePYelDvTmZCjmZ4EwdgE4GrLJliKqbLkAiCoGOrvt4IZUEC/0RTKDlBqr3h0gyIya
+         Y8bRj3mB2E0Uw==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B606389480001>; Wed, 31 Mar 2021 09:25:44 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar 2021 09:25:44 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Wed, 31 Mar 2021 09:25:44 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the hwmon-staging tree
+Thread-Topic: linux-next: build warning after merge of the hwmon-staging tree
+Thread-Index: AQHXJTY5EZ1T8N+JOU2TKO1JFMK5WaqcIVyA
+Date:   Tue, 30 Mar 2021 20:25:43 +0000
+Message-ID: <b11339e2-cfc4-2f23-7161-3fae7750f4d3@alliedtelesis.co.nz>
+References: <20210330182758.3a28068f@canb.auug.org.au>
+In-Reply-To: <20210330182758.3a28068f@canb.auug.org.au>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <940F1469B40E3D4FA0C7C78336F03735@atlnz.lc>
 Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-Date:   Tue, 30 Mar 2021 13:20:27 -0700
-Message-Id: <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net>
-References: <d10affcb-d315-cebc-4162-084f0a1e4d43@intel.com>
-Cc:     Len Brown <lenb@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-In-Reply-To: <d10affcb-d315-cebc-4162-084f0a1e4d43@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: iPhone Mail (18D70)
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=dESyimp9J3IA:10 a=e9JJBxLuodXSJ980m6cA:9 a=pILNOxqGKmIA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My bad. I'll send a patch shortly
 
-> On Mar 30, 2021, at 12:12 PM, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> =EF=BB=BFOn 3/30/21 10:56 AM, Len Brown wrote:
->> On Tue, Mar 30, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wro=
-te:
->>>> On Mar 30, 2021, at 10:01 AM, Len Brown <lenb@kernel.org> wrote:
->>>> Is it required (by the "ABI") that a user program has everything
->>>> on the stack for user-space XSAVE/XRESTOR to get back
->>>> to the state of the program just before receiving the signal?
->>> The current Linux signal frame format has XSTATE in uncompacted format,
->>> so everything has to be there.
->>> Maybe we could have an opt in new signal frame format, but the details w=
-ould need to be worked out.
->>>=20
->>> It is certainly the case that a signal should be able to be delivered, r=
-un =E2=80=9Casync-signal-safe=E2=80=9D code,
->>> and return, without corrupting register contents.
->> And so an an acknowledgement:
->>=20
->> We can't change the legacy signal stack format without breaking
->> existing programs.  The legacy is uncompressed XSTATE.  It is a
->> complete set of architectural state -- everything necessary to
->> XRESTOR.  Further, the sigreturn flow allows the signal handler to
->> *change* any of that state, so that it becomes active upon return from
->> signal.
->=20
-> One nit with this: XRSTOR itself can work with the compacted format or
-> uncompacted format.  Unlike the XSAVE/XSAVEC side where compaction is
-> explicit from the instruction itself, XRSTOR changes its behavior by
-> reading XCOMP_BV.  There's no XRSTORC.
->=20
-> The issue with using the compacted format is when legacy software in the
-> signal handler needs to go access the state.  *That* is what can't
-> handle a change in the XSAVE buffer format (either optimized/XSAVEOPT,
-> or compacted/XSAVEC).
-
-The compacted format isn=E2=80=99t compact enough anyway. If we want to keep=
- AMX and AVX512 enabled in XCR0 then we need to further muck with the format=
- to omit the not-in-use features. I *think* we can pull this off in a way th=
-at still does the right thing wrt XRSTOR.
-
-If we go this route, I think we want a way for sigreturn to understand a poi=
-nter to the state instead of inline state to allow programs to change the st=
-ate.  Or maybe just to have a way to ask sigreturn to skip the restore entir=
-ely.=
+On 30/03/21 8:27 pm, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the hwmon-staging tree, today's linux-next build (htmldocs)
+> produced this warning:
+>
+> Documentation/hwmon/bpa-rs600.rst: WARNING: document isn't included in an=
+y toctree
+>
+> Introduced by commit
+>
+>    9a8210575cde ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
+>=
