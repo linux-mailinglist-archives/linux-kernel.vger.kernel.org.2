@@ -2,83 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC41834E97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BA634E97E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhC3Nno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:43:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34380 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbhC3Nn0 (ORCPT
+        id S232079AbhC3Npo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:45:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231574AbhC3NpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:43:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 64A351C0B7F; Tue, 30 Mar 2021 15:43:23 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 15:43:23 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Hao Fang <fanghao11@huawei.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        prime.zeng@hisilicon.com
-Subject: Re: [PATCH] mmc: dw_mmc-k3: use the correct HiSilicon copyright
-Message-ID: <20210330134323.GA3700@duo.ucw.cz>
-References: <1617086448-51054-1-git-send-email-fanghao11@huawei.com>
- <CAPDyKFoUUu=Rb0pHMZb+gKXPsKESBnXG=4U=n_XFMZJLHyY7kA@mail.gmail.com>
+        Tue, 30 Mar 2021 09:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617111916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TvixdV6Zx7/AWSYPQxJ6x7+mxKn8oXSTnyruFM7nqLc=;
+        b=La+Nj0m3eYrpEmUzLAmthvur7RgDbqtUw13NFFhNx5MjuZ0hLnFbFeIB5Uy5Dukv/ogvWz
+        EBv2p5b99SbMDF32poDOPNcIj/QPL5r6wiv2Ybp2RL7Bjdg1ZPC9UELbij16nrbAVAKLPH
+        ga2S+1wDqvxtGtdHo/IYlzwKdkAtkz8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-0KQpFX-RNWylaWlrF6Z8Pw-1; Tue, 30 Mar 2021 09:45:14 -0400
+X-MC-Unique: 0KQpFX-RNWylaWlrF6Z8Pw-1
+Received: by mail-qk1-f198.google.com with SMTP id b127so14472462qkf.19
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 06:45:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TvixdV6Zx7/AWSYPQxJ6x7+mxKn8oXSTnyruFM7nqLc=;
+        b=W3fhhLX5wC0bA90p7jORRiQOI71l7OyciAmnE49ZkBqO8dX6a45TyXErEi/H9Kgnnp
+         tpzpQXYe5OeMOLC36SlTmxSFrfz+PGJE3Ae/ZpoMMl1yWHFtzgULKQXz9tV3jhICUP6J
+         W3X2dnrRFWuI+B0UrDed80ZVspQz2XhjcfXZ36l0390R1zmMBzxAfcbWaEnLZ+WGU41K
+         NmONIGeNfarKycnSV2bNji9OJZ/c4/jjzqDXJ9u/3Au+V4j0Vyjs7gyw6IOfWNclNA5I
+         tQjWJMtkE7epRf5dWPQXbwZrJ7W0tsTA8TZo9eB0AcI/WsqzYz64u83ffSNkvEUPssh4
+         CvaA==
+X-Gm-Message-State: AOAM532YIm+814lhvFEwLNX+seljEEo8wc4mdGNgKcWh32LFxZ9TbGeV
+        xD+er76fDyxVvTTHDB76EGKcumhbNS5lgxRYd+xlrEEKbT1OU/Ug8A+IsygRebWsxHz3R509A8p
+        24M78aGX+kNLr7bWsX9+ttr9a
+X-Received: by 2002:a05:6214:21a5:: with SMTP id t5mr30882341qvc.23.1617111914305;
+        Tue, 30 Mar 2021 06:45:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWta3aXZ38aPclAoYDQJFro5Tq2uU5FOvwiKVCMd/yDGxvubtOY2HdUOFTotZZNLFON2BG/g==
+X-Received: by 2002:a05:6214:21a5:: with SMTP id t5mr30882305qvc.23.1617111914067;
+        Tue, 30 Mar 2021 06:45:14 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g11sm15745881qkk.5.2021.03.30.06.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 06:45:13 -0700 (PDT)
+Subject: Re: [PATCH V4 XRT Alveo 06/20] fpga: xrt: char dev node helper
+ functions
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
+ <20210324052947.27889-7-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <755d73b9-1e23-c2e9-1502-15df14b9ed35@redhat.com>
+Date:   Tue, 30 Mar 2021 06:45:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFoUUu=Rb0pHMZb+gKXPsKESBnXG=4U=n_XFMZJLHyY7kA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210324052947.27889-7-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is unclear from the changelog if this new patch was split from an existing patch or new content.
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+the file ops seem to come from mgmnt/main.c, which call what could be file ops here.  why is this complicated redirection needed ?
 
-Hi!
+On 3/23/21 10:29 PM, Lizhi Hou wrote:
+> Helper functions for char device node creation / removal for platform
+> drivers. This is part of platform driver infrastructure.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+> ---
+>  drivers/fpga/xrt/lib/cdev.c | 232 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 232 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/lib/cdev.c
+>
+> diff --git a/drivers/fpga/xrt/lib/cdev.c b/drivers/fpga/xrt/lib/cdev.c
+> new file mode 100644
+> index 000000000000..38efd24b6e10
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/cdev.c
+> @@ -0,0 +1,232 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA device node helper functions.
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include "xleaf.h"
+> +
+> +extern struct class *xrt_class;
+> +
+> +#define XRT_CDEV_DIR		"xfpga"
+maybe "xrt_fpga" or just "xrt"
+> +#define INODE2PDATA(inode)	\
+> +	container_of((inode)->i_cdev, struct xrt_subdev_platdata, xsp_cdev)
+> +#define INODE2PDEV(inode)	\
+> +	to_platform_device(kobj_to_dev((inode)->i_cdev->kobj.parent))
+> +#define CDEV_NAME(sysdev)	(strchr((sysdev)->kobj.name, '!') + 1)
+> +
+> +/* Allow it to be accessed from cdev. */
+> +static void xleaf_devnode_allowed(struct platform_device *pdev)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(pdev);
+> +
+> +	/* Allow new opens. */
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +	pdata->xsp_devnode_online = true;
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +}
+> +
+> +/* Turn off access from cdev and wait for all existing user to go away. */
+> +static int xleaf_devnode_disallowed(struct platform_device *pdev)
+> +{
+> +	int ret = 0;
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(pdev);
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	/* Prevent new opens. */
+> +	pdata->xsp_devnode_online = false;
+> +	/* Wait for existing user to close. */
+> +	while (!ret && pdata->xsp_devnode_ref) {
+> +		int rc;
+> +
+> +		mutex_unlock(&pdata->xsp_devnode_lock);
+> +		rc = wait_for_completion_killable(&pdata->xsp_devnode_comp);
+> +		mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +		if (rc == -ERESTARTSYS) {
+> +			/* Restore online state. */
+> +			pdata->xsp_devnode_online = true;
+> +			xrt_err(pdev, "%s is in use, ref=%d",
+> +				CDEV_NAME(pdata->xsp_sysdev),
+> +				pdata->xsp_devnode_ref);
+> +			ret = -EBUSY;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct platform_device *
+> +__xleaf_devnode_open(struct inode *inode, bool excl)
+> +{
+> +	struct xrt_subdev_platdata *pdata = INODE2PDATA(inode);
+> +	struct platform_device *pdev = INODE2PDEV(inode);
+> +	bool opened = false;
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	if (pdata->xsp_devnode_online) {
+> +		if (excl && pdata->xsp_devnode_ref) {
+> +			xrt_err(pdev, "%s has already been opened exclusively",
+> +				CDEV_NAME(pdata->xsp_sysdev));
+> +		} else if (!excl && pdata->xsp_devnode_excl) {
+> +			xrt_err(pdev, "%s has been opened exclusively",
+> +				CDEV_NAME(pdata->xsp_sysdev));
+> +		} else {
+> +			pdata->xsp_devnode_ref++;
+> +			pdata->xsp_devnode_excl = excl;
+> +			opened = true;
+> +			xrt_info(pdev, "opened %s, ref=%d",
+> +				 CDEV_NAME(pdata->xsp_sysdev),
+> +				 pdata->xsp_devnode_ref);
+> +		}
+> +	} else {
+> +		xrt_err(pdev, "%s is offline", CDEV_NAME(pdata->xsp_sysdev));
+> +	}
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +
+> +	pdev = opened ? pdev : NULL;
+> +	return pdev;
+> +}
+> +
+> +struct platform_device *
+> +xleaf_devnode_open_excl(struct inode *inode)
+> +{
+> +	return __xleaf_devnode_open(inode, true);
+> +}
+This function is unused, remove.
+> +
+> +struct platform_device *
+> +xleaf_devnode_open(struct inode *inode)
+> +{
+> +	return __xleaf_devnode_open(inode, false);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_devnode_open);
+does this really need to be exported ?
+> +
+> +void xleaf_devnode_close(struct inode *inode)
+> +{
+> +	struct xrt_subdev_platdata *pdata = INODE2PDATA(inode);
+> +	struct platform_device *pdev = INODE2PDEV(inode);
+> +	bool notify = false;
+> +
+> +	mutex_lock(&pdata->xsp_devnode_lock);
+> +
+> +	WARN_ON(pdata->xsp_devnode_ref == 0);
+> +	pdata->xsp_devnode_ref--;
+> +	if (pdata->xsp_devnode_ref == 0) {
+> +		pdata->xsp_devnode_excl = false;
+> +		notify = true;
+> +	}
+> +	if (notify) {
+> +		xrt_info(pdev, "closed %s, ref=%d",
+> +			 CDEV_NAME(pdata->xsp_sysdev), pdata->xsp_devnode_ref);
+xsp_devnode_ref will always be 0, so no need to report it.
+> +	} else {
+> +		xrt_info(pdev, "closed %s, notifying waiter",
+> +			 CDEV_NAME(pdata->xsp_sysdev));
+> +	}
+> +
+> +	mutex_unlock(&pdata->xsp_devnode_lock);
+> +
+> +	if (notify)
+> +		complete(&pdata->xsp_devnode_comp);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_devnode_close);
+> +
+> +static inline enum xrt_subdev_file_mode
+> +devnode_mode(struct xrt_subdev_drvdata *drvdata)
+> +{
+> +	return drvdata->xsd_file_ops.xsf_mode;
+> +}
+> +
+> +int xleaf_devnode_create(struct platform_device *pdev, const char *file_name,
+> +			 const char *inst_name)
+> +{
+> +	struct xrt_subdev_drvdata *drvdata = DEV_DRVDATA(pdev);
+> +	struct xrt_subdev_file_ops *fops = &drvdata->xsd_file_ops;
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(pdev);
+> +	struct cdev *cdevp;
+> +	struct device *sysdev;
+> +	int ret = 0;
+> +	char fname[256];
+> +
+> +	mutex_init(&pdata->xsp_devnode_lock);
+> +	init_completion(&pdata->xsp_devnode_comp);
+> +
+> +	cdevp = &DEV_PDATA(pdev)->xsp_cdev;
+> +	cdev_init(cdevp, &fops->xsf_ops);
+> +	cdevp->owner = fops->xsf_ops.owner;
+> +	cdevp->dev = MKDEV(MAJOR(fops->xsf_dev_t), pdev->id);
+> +
+> +	/*
+> +	 * Set pdev as parent of cdev so that when pdev (and its platform
+> +	 * data) will not be freed when cdev is not freed.
+> +	 */
+> +	cdev_set_parent(cdevp, &DEV(pdev)->kobj);
+> +
+> +	ret = cdev_add(cdevp, cdevp->dev, 1);
+> +	if (ret) {
+> +		xrt_err(pdev, "failed to add cdev: %d", ret);
+> +		goto failed;
+> +	}
+> +	if (!file_name)
+> +		file_name = pdev->name;
+> +	if (!inst_name) {
+> +		if (devnode_mode(drvdata) == XRT_SUBDEV_FILE_MULTI_INST) {
+> +			snprintf(fname, sizeof(fname), "%s/%s/%s.%u",
+> +				 XRT_CDEV_DIR, DEV_PDATA(pdev)->xsp_root_name,
+> +				 file_name, pdev->id);
+> +		} else {
+> +			snprintf(fname, sizeof(fname), "%s/%s/%s",
+> +				 XRT_CDEV_DIR, DEV_PDATA(pdev)->xsp_root_name,
+> +				 file_name);
+> +		}
+> +	} else {
+> +		snprintf(fname, sizeof(fname), "%s/%s/%s.%s", XRT_CDEV_DIR,
+> +			 DEV_PDATA(pdev)->xsp_root_name, file_name, inst_name);
+> +	}
+> +	sysdev = device_create(xrt_class, NULL, cdevp->dev, NULL, "%s", fname);
+> +	if (IS_ERR(sysdev)) {
+> +		ret = PTR_ERR(sysdev);
+> +		xrt_err(pdev, "failed to create device node: %d", ret);
+> +		goto failed_cdev_add;
+> +	}
+> +	pdata->xsp_sysdev = sysdev;
+> +
+> +	xleaf_devnode_allowed(pdev);
+> +
+> +	xrt_info(pdev, "created (%d, %d): /dev/%s",
+> +		 MAJOR(cdevp->dev), pdev->id, fname);
+> +	return 0;
+> +
+> +failed_cdev_add:
+> +	cdev_del(cdevp);
+> +failed:
+> +	cdevp->owner = NULL;
+> +	return ret;
+> +}
+> +
+> +int xleaf_devnode_destroy(struct platform_device *pdev)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(pdev);
+> +	struct cdev *cdevp = &pdata->xsp_cdev;
+> +	dev_t dev = cdevp->dev;
+> +	int rc;
+> +
+> +	rc = xleaf_devnode_disallowed(pdev);
+> +	if (rc)
+> +		return rc;
 
-> On Tue, 30 Mar 2021 at 08:43, Hao Fang <fanghao11@huawei.com> wrote:
-> >
-> > s/Hisilicon/HiSilicon/g.
-> > It should use capital S, according to
-> > https://www.hisilicon.com/en/terms-of-use.
-> >
-> > Signed-off-by: Hao Fang <fanghao11@huawei.com>
+Failure of one leaf to be destroyed is not handled well.
 
-> >  /*
-> >   * Copyright (c) 2013 Linaro Ltd.
-> > - * Copyright (c) 2013 Hisilicon Limited.
-> > + * Copyright (c) 2013 HiSilicon Limited.
->=20
-> This change looks really silly to me, but I am not a lawyer - so I
-> can't tell if this makes sense or not.
->=20
-> In any case, "Hisilicon" is being used all over the kernel - do you
-> intend to patch all places with similar changes like this one? Perhaps
-> just send a big tree-wide-patch instead and see what people think?
+could a able to destroy check be done over the whole group ?
 
-Plus, I'd expect authors to submit changes to copyright notices.
+Tom
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+> +
+> +	xrt_info(pdev, "removed (%d, %d): /dev/%s/%s", MAJOR(dev), MINOR(dev),
+> +		 XRT_CDEV_DIR, CDEV_NAME(pdata->xsp_sysdev));
+> +	device_destroy(xrt_class, cdevp->dev);
+> +	pdata->xsp_sysdev = NULL;
+> +	cdev_del(cdevp);
+> +	return 0;
+> +}
 
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYGMq+wAKCRAw5/Bqldv6
-8rYZAKCFJ2HU/daNZlq3Bw53OOssGEwL1wCgwJwZnDGPVaWOKTz5RDZsBYc7tdc=
-=4T3Q
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
