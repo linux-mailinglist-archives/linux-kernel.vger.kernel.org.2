@@ -2,114 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95F934E560
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A097034E562
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhC3KX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:23:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:56452 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231812AbhC3KWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:22:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9802ED1;
-        Tue, 30 Mar 2021 03:22:53 -0700 (PDT)
-Received: from bogus (unknown [10.57.57.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 288FC3F792;
-        Tue, 30 Mar 2021 03:22:52 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 11:22:44 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, Sudeep.Holla@arm.com,
-        Hector Yuan <hector.yuan@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v11 2/2] dt-bindings: cpufreq: add bindings for MediaTek
- cpufreq HW
-Message-ID: <20210330102244.7dkzemtgrm7epmpv@bogus>
-References: <1615549235-27700-1-git-send-email-hector.yuan@mediatek.com>
- <1615549235-27700-3-git-send-email-hector.yuan@mediatek.com>
- <20210324160750.GA3154702@robh.at.kernel.org>
- <20210330025643.mbeb7oqumv75o3y5@vireshk-i7>
+        id S231899AbhC3KX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231868AbhC3KXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 06:23:01 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB3FC061574;
+        Tue, 30 Mar 2021 03:23:01 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v23so5921441ple.9;
+        Tue, 30 Mar 2021 03:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=loVQVK73ZAxb2aZgHiSlAzK7vAqbOdexSFs2htiWZjU=;
+        b=tcbGLRVpaEdSRaWfXQare5GYcOukSynk37LJ95QxnztkuC7+KlkGUB188crfgA4KJ7
+         +P7zRJ9PGxi1BNZQFW+N+a6iHfycp8hq0FY6GSz3bTVxVnl/7ws7+0sygb9Nce048aVI
+         lezkqfeS1r8ufSqFTpAinRd95oTpr/dNziWNI/NtdHYkiWVAgq3uVIuq/UhPECsDIltN
+         2/EDSONvWLGnIlnRhsaJNhPrAhsyeFqcXrq5YF2xtkQfE2jKTac9GWBOvcfAzkgNqGM6
+         XySmwZlzhXBPPn0X7Y2qRCvY7+8Ltajmrl77vvekKGqiFIZzRUVyaLDeKVv5cwYcpnCO
+         WcmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=loVQVK73ZAxb2aZgHiSlAzK7vAqbOdexSFs2htiWZjU=;
+        b=CkPoTPQC25W8fpGjq7B9Q56Vb+lArF89g/QZmpeq1S8BQNLFGukQVB1YdbRCiv69D3
+         l+etw+HltPUz+w3YFB1o+dZ0QNiqCmPrmEZ6TlpmMkwjUaS/Op4GjZ90Oh067aSAwwgg
+         Rbo3d5563VcA7eY+WquHJPkQVViBjidbMP7V/k/AZS2PwJlcVFZ6ZC5KWGOfd/Uufqc/
+         NUW2TqLdoPmkOXpJ8gNS60UovEot+ONQPRHW+H/hCgvhSnpBm6/COuKAqjiRvHf0xygQ
+         QzjsmhJg+aNnIrvUXR5Cye7iLo2Zmw4RfI8WrM+Zg5XIBw4c1JJ4cdYVNmq2vWQfPOoq
+         pxEA==
+X-Gm-Message-State: AOAM531OrO/bHzTLgY3+CkLqiIjJU8v7hksjPpmPnEoO60tk5MwBd7YJ
+        3+bAJUcJV42XBJe0J3Tm9yvgb68LxDI9GRgzieE=
+X-Google-Smtp-Source: ABdhPJy8WaHfbziKRLgkNd2XcbtuyNeiyFHn00zpYZg9nPTkbkKtoO4fHJrjxmZ6rFzJKfhsh/hXD8MmSU4gRcnp9P4=
+X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
+ z2-20020a170902ee02b02900e65397d79cmr33046398plb.21.1617099780998; Tue, 30
+ Mar 2021 03:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330025643.mbeb7oqumv75o3y5@vireshk-i7>
-User-Agent: NeoMutt/20171215
+References: <20210330083254.15817-1-noltari@gmail.com>
+In-Reply-To: <20210330083254.15817-1-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 30 Mar 2021 13:22:45 +0300
+Message-ID: <CAHp75VeVJHt+jja614VN2eqJeaH=kP-qw5kTbLgDsg05_CWT3A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: bcm: bcm6362: fix warning
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:26:43AM +0530, Viresh Kumar wrote:
-> On 24-03-21, 10:07, Rob Herring wrote:
-> > On Fri, Mar 12, 2021 at 07:40:35PM +0800, Hector Yuan wrote:
-> > > From: "Hector.Yuan" <hector.yuan@mediatek.com>
-> > > 
-> > > Add devicetree bindings for MediaTek HW driver.
-> > > 
-> > > Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
-> > > ---
-> > >  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  127 ++++++++++++++++++++
-> > >  1 file changed, 127 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > > new file mode 100644
-> > > index 0000000..0f3ad47
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> > > @@ -0,0 +1,127 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: MediaTek's CPUFREQ Bindings
-> > > +
-> > > +maintainers:
-> > > +  - Hector Yuan <hector.yuan@mediatek.com>
-> > > +
-> > > +description:
-> > > +  CPUFREQ HW is a hardware engine used by MediaTek
-> > > +  SoCs to manage frequency in hardware. It is capable of controlling frequency
-> > > +  for multiple clusters.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: mediatek,cpufreq-hw
-> > > +
-> > > +  reg:
-> > > +    minItems: 1
-> > > +    maxItems: 2
-> > > +    description: |
-> > > +      Addresses and sizes for the memory of the
-> > > +      HW bases in each frequency domain.
-> > > +
-> > > +  "#performance-domain-cells":
-> > 
-> > A common binding schema for this and 'performance-domains' needs to land 
-> > first.
-> 
-> Sudeep, what happened to the series you had on this ? This patchset
-> has been blocked for a long time now, can we get that merged soonish
-> somehow ?
+On Tue, Mar 30, 2021 at 11:34 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> The current implementation of bcm6362_set_gpio() produces the following
+> warning on x86_64:
+> drivers/pinctrl/bcm/pinctrl-bcm6362.c: In function 'bcm6362_set_gpio':
+> drivers/pinctrl/bcm/pinctrl-bcm6362.c:503:8: warning: cast from pointer t=
+o integer of different size [-Wpointer-to-int-cast]
+>   503 |        (uint32_t) desc->drv_data, 0);
+>       |        ^
+>
+> Modify the code to make it similar to bcm63268_set_gpio() in order to fix=
+ the
+> warning.
+>
+> Fixes: 705791e23ecd ("pinctrl: add a pincontrol driver for BCM6362")
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> ---
+>  drivers/pinctrl/bcm/pinctrl-bcm6362.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6362.c b/drivers/pinctrl/bcm/=
+pinctrl-bcm6362.c
+> index eb7ec80353e9..6b5a1dfc2367 100644
+> --- a/drivers/pinctrl/bcm/pinctrl-bcm6362.c
+> +++ b/drivers/pinctrl/bcm/pinctrl-bcm6362.c
+> @@ -496,11 +496,12 @@ static int bcm6362_pinctrl_get_groups(struct pinctr=
+l_dev *pctldev,
+>  static void bcm6362_set_gpio(struct bcm63xx_pinctrl *pc, unsigned pin)
+>  {
+>         const struct pinctrl_pin_desc *desc =3D &bcm6362_pins[pin];
+> +       unsigned int basemode =3D (unsigned long) desc->drv_data;
 
-Sorry, it slipped through the cracks. I posted this as a fix for SCMI which
-we fixed it later. This got de-prioritised in my todo list. Sorry for that.
-I think main problem I had is to write a proper select statement in YAML
-scheme to check the DT nodes when it is present. I couldn't get anything
-similar for reference from clocks.
+Space between ) and d is not needed.
+Usually we use uintptr_t for casting pointers to the integers.
 
-I had "select: false" which I knew was not acceptable as it can't go throw
-dt_bindings_check. I am happy if someone wants to pick up and work on that
-to push the change or provide suggestions that I can try out. I am unable
-to spend more time trying to understand whole YAML schema ATM.
+>         unsigned int mask =3D bcm63xx_bank_pin(pin);
+>
+> -       if (desc->drv_data)
+> -               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG,
+> -                                  (uint32_t) desc->drv_data, 0);
+> +       if (basemode)
 
--- 
-Regards,
-Sudeep
+> +               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG, basemo=
+de,
+> +                                  0);
+
+Put it on one line for sake of the readability.
+
+>
+>         if (pin < BCM63XX_BANK_GPIOS) {
+>                 /* base mode 0 =3D> gpio 1 =3D> mux function */
+> --
+> 2.20.1
+>
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
