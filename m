@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6598A34E5F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8FE34E5FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhC3LAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhC3LAp (ORCPT
+        id S231736AbhC3LCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:02:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52268 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231637AbhC3LCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:00:45 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D55C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:00:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id m12so23103448lfq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=0APZS7qW26TQ2G+AjsqWhc2vH9zR/hdxgKlxQBPo6jY=;
-        b=i2knyJ1sOyCrZOtRxP2K/kzwfl6hxexD9Rgft0GYDLtQQutWd5WSAfzSWkjSA6ynsb
-         wxxEQ+lZtRH70LuUs8tWdz+WJRK4dZdQaey9OlXNMY1Eli0Ybq0tyfuXo4SpxDv0OQHB
-         hQoEwmisCyJeEvffAZPnX2REsyje4r4D55QmZSpSX8w08Cf9qdGmsjMWWTj3YapnU6VJ
-         0jryFctoc2KLsDvoClWWgRa+4jGf4vDsTVZzpQ19PgEObPyd3/d4//osE+L47O/fs5xt
-         3qg6GZ4jxGNsZrPE7zW01VJAFlw8jbiaKsdVjwXuVC1LpKM6e8IHG17GH1Ak8QkRVBIC
-         xVjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=0APZS7qW26TQ2G+AjsqWhc2vH9zR/hdxgKlxQBPo6jY=;
-        b=j068z7dgE9Whuc34KbJWFQO61U6JDpvyp9V2vB8FMtpOrWgeairOR96jVnj1R7HIia
-         u8m7HLIZDVjxsojdI5MlDgt7mDa2q7zp+qLIIr8NGo0x5NsG2YkDtZK95VsRC2mBlIW6
-         2TTKzQHxicnYa9zYRO8hmuRW18TGlgfaSPQG7y+J33hYhBBDwKn/KuccDcAEz6P2CXXa
-         Yxk1dmD3au5QHLyF52oDmbLuTMXh/uCjHh8acqecdBAkOPqNODHFelNtFkpDZnO5lNdc
-         RSGXItG3XnzRPsEzOFNOsPphtFe6Q8bU4nrII244UFb0n4faRMnzhPIUG0cnkNJuithO
-         qF6g==
-X-Gm-Message-State: AOAM531BhdIalFlV62Kl31+07glOiYcLQ+kvbwNApxK/Yv3Bn7EnwL+3
-        HcqVu9w0TXsYG9n9iGrymPEegw==
-X-Google-Smtp-Source: ABdhPJzgc2H73wOp9fwexyN8u+OrDRs+gsXXnZr5n49qEctr+PRLJjclKcSQoNWMtMy0TGrk3YOglg==
-X-Received: by 2002:ac2:4ac4:: with SMTP id m4mr18924716lfp.404.1617102042945;
-        Tue, 30 Mar 2021 04:00:42 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id h4sm1324240lfv.22.2021.03.30.04.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 04:00:39 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 13:00:37 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>
-Subject: [GIT PULL] OP-TEE memref size check for v5.13
-Message-ID: <20210330110037.GA1166563@jade>
+        Tue, 30 Mar 2021 07:02:00 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12UB1hNC118743;
+        Tue, 30 Mar 2021 06:01:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617102103;
+        bh=OMvuHxJr7BKv7RxoGD9YOG+EXTnCbM+J+kgdYHeSvLg=;
+        h=From:To:CC:Subject:Date;
+        b=TDIoDP0rgt4udmXhRuBVM9Rbm3Na5jj8lNoxyTa7z+4gHUQnqKydiDfenO/ClnL5f
+         FvYbUCYZNu/OTJXTUeFwknE1gEgZ6BXKf8thH5J+zeLYtvowV+6Cl9VxSVfPLPOlf4
+         1NF/MV3UvgHa6fXoXc59r4Qi2M0Z0APMqThrq4e4=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12UB1gXQ022730
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 30 Mar 2021 06:01:43 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 30
+ Mar 2021 06:01:42 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 30 Mar 2021 06:01:42 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12UB1dci094447;
+        Tue, 30 Mar 2021 06:01:40 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Swapnil Jakhade <sjakhade@cadence.com>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v2 0/5] j721e-wiz/cadence-torrent: Support to skip SERDES configuration
+Date:   Tue, 30 Mar 2021 16:31:33 +0530
+Message-ID: <20210330110138.24356-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+Add support to skip SERDES configuration if it's already configured in
+bootloader.
 
-Please pull this small patch for the OP-TEE driver to remove the invalid
-size check of outgoing memref parameters. This code path is only
-activated for a certain configuration of OP-TEE in secure world
-(CFG_CORE_DYN_SHM=n) so this problem isn't always visible.
+The wiz part was initially sent in [1] but that was sent more in the
+context of Sierra but this is in context of Torrent. The Sierra part
+would be sent later.
 
-Thanks,
-Jens
+v1 of the patch series can be found at [2].
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Changes from v1:
+1) Added a patch to wait for PIPE clock to be stable
+2) Added reviewed by from Swapnil
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20210310155445.534-1-kishon@ti.com
 
-are available in the Git repository at:
+Faiz Abbas (1):
+  phy: ti: j721e-wiz: Do not configure wiz if its already configured
 
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git/ tags/optee-memref-size-for-v5.13
+Kishon Vijay Abraham I (4):
+  phy: cadence-torrent: Group reset APIs and clock APIs
+  phy: cadence-torrent: Do not configure SERDES if it's already
+    configured
+  phy: cadence-torrent: Explicitly request exclusive reset control
+  phy: cadence-torrent: Add delay for PIPE clock to be stable
 
-for you to fetch changes up to c650b8dc7a7910eb25af0aac1720f778b29e679d:
+ drivers/phy/cadence/phy-cadence-torrent.c | 115 +++++++++++++++-------
+ drivers/phy/ti/phy-j721e-wiz.c            |  21 +++-
+ 2 files changed, 95 insertions(+), 41 deletions(-)
 
-  tee: optee: do not check memref size on return from Secure World (2021-03-30 10:44:50 +0200)
+-- 
+2.17.1
 
-----------------------------------------------------------------
-OP-TEE skip check of returned memref size
-
-----------------------------------------------------------------
-Jerome Forissier (1):
-      tee: optee: do not check memref size on return from Secure World
-
- drivers/tee/optee/core.c | 10 ----------
- 1 file changed, 10 deletions(-)
