@@ -2,163 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF1F34E5A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE11D34E5AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhC3Kop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
+        id S229693AbhC3Kpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhC3Koh (ORCPT
+        with ESMTP id S231761AbhC3KpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:44:37 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FF7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:44:37 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so7458696pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:44:37 -0700 (PDT)
+        Tue, 30 Mar 2021 06:45:14 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A6AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:45:13 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id v23so4884592uaq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U4UTdCcB3WVCxZspli0lltbVfgTksXjTHIiVIuKPdEc=;
-        b=X81T9M1HusNIU7yzUkbMq8G+76rIBCtyQIMCX77rAbeRKgbkOPxfPjWVnbOV5U9Jff
-         gQLM+3ofkKLvHQTPoOi7Tx1THZy/RWRYRKHesFoPHfTjLC0RqRzqit1HJi6Cql3RzOFD
-         ECaeNpMoi7KM668vR8hQcdFJKt1mx2sqcqxOc=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KA1n+JDKnSeg05rDwCgfj3wTUCCEx1+ImjZuwoLRDgY=;
+        b=lqUF3G4msKNfNioFzkAXbXB/9SAof6IGX3RHcUtvUDyiOczBnzb74KMfGN73L0n+xl
+         +Se0QtBcMXYJsRztsfF7UOrqpJcXMix3jUmxYGXYBwMvUjxhAosMPd0YaWls14J+9ANl
+         GaK5tcXcd5mIypluCcqcK4PQy1ft21EGdDt7j5z7/IP3zhrd4qIVi8d1BhF5HblUYoZV
+         MjXT4fuSXdkkda9Ww+nJ9klfpNfIQKXQgtk/swh/XaQP/z4febyDjOF4Ac1+InpHBsAQ
+         bI5cCyFV0IdLGZLKKRLNSjKljsWzLSnkaLORsyASIJ86v2v/KoEQDfoAEVIh14IXUoiT
+         60GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U4UTdCcB3WVCxZspli0lltbVfgTksXjTHIiVIuKPdEc=;
-        b=lr0ew68Qwo5MDWgZ+k9Qh7YSdsM7C7KkacgDeDALQLMmXi/0Gd7cxmzlJPTXmRGwE6
-         hLOJWgSOxCz2wTf1yZgkhkn8Dvb5sMZcasvm+hL3/MlsJmMYYpVCBrnHFmmUO/E3754p
-         GhV4h4PYMa+TC1xdYs3KdiVdVQEIdst7ZurRFz5VNqoCPskJQ3sZHlEuzz5mO/TPmyva
-         tBmXiz13tSt+4yJLlyD03qiA6V+UCUZLVmF5LJjOBN92+pKdrgwVyPjLC/LDXHKOsJum
-         Xb1PvoLdRXcGAJN75GGVkQFLyD6NR2MftS0Lr069GdguLEUZq0R5TuJph/UWFroP5kP+
-         YBRQ==
-X-Gm-Message-State: AOAM531dy8VJRHRjvnPG0aXCZabJ/B/C8m43LPb7NnlW5l4Q/kzJCeh/
-        Acu2gPilXAeNJ9q+yx1r+HYamck1v8XxcJyz
-X-Google-Smtp-Source: ABdhPJwJqKKOmVhnPqI3eRF4RXx9ihm/N3Q4eFXU2TLtl6wIII4nsHdWykklWZV/9tWhFzoWrnvAUQ==
-X-Received: by 2002:a17:90a:1f0e:: with SMTP id u14mr3746666pja.155.1617101076842;
-        Tue, 30 Mar 2021 03:44:36 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:71d0:f547:14ae:a717])
-        by smtp.gmail.com with ESMTPSA id t184sm1231078pgt.32.2021.03.30.03.44.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 03:44:36 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org,
-        weiyi.lu@mediatek.com, ck.hu@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
-Subject: [PATCH v2] soc: mediatek: mmsys: Add mt8183 mmsys routing table
-Date:   Tue, 30 Mar 2021 18:44:32 +0800
-Message-Id: <20210330104432.3432574-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KA1n+JDKnSeg05rDwCgfj3wTUCCEx1+ImjZuwoLRDgY=;
+        b=NuUT+SYqfZbW4Ugz+NNZRU5sdRTOs0cFY7rURuG47ZjtRLwyIoWRaDOmrup7j4MfP/
+         8o/5g+h335VIYM97NxBPfR3y4r4ZPYZ/VEL1DqtanufMqZGuBneQ8lzIgvN/ZeG9ZrdA
+         z7qH0QFYRFrRJmM1nassE84uRuUxYBD8o66a+AUT0UDR8pHru/3AIL5I/Ta756BND7PD
+         Uy79GFXIZCsTqritEc95XXcv0oZQYJ3tF3IMMOkDmpzjyv8jk6nPIYAnYjO5xi6QK8Kp
+         pWaf720fMw0kn8fUIb020kbbbFm8dzbCWC865Xb7Io/VR1t7VT+abA7ylSMQe3A5jTi7
+         baig==
+X-Gm-Message-State: AOAM531jDImJtT2epPmsQhzViWzuF3NXeJUnoLF/mAOB4VJNlNeRqxw5
+        YCNgpJE3JPDyU0qokB2AUAwn70UXgeW8BKPqveLc7Q==
+X-Google-Smtp-Source: ABdhPJyOR+5TV2pxTV236HAkY2P9NZKgB08njxIqK1Qk0yQRhxuPkc+j+UWrnhJN6Tf+QS2H0FpObL5nq6gOoxKOZXE=
+X-Received: by 2002:a9f:2843:: with SMTP id c61mr16130295uac.129.1617101112887;
+ Tue, 30 Mar 2021 03:45:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210325192834.42955-1-alcooperx@gmail.com>
+In-Reply-To: <20210325192834.42955-1-alcooperx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 30 Mar 2021 12:44:36 +0200
+Message-ID: <CAPDyKFpNB6-=35FqM=74Obv1KEDJg-XC9kgegQbCA0Q+rKT4_g@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-brcmstb: Remove CQE quirk
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mt8183 has different routing registers than mt8173.
+On Thu, 25 Mar 2021 at 20:28, Al Cooper <alcooperx@gmail.com> wrote:
+>
+> Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
+> latest chips have this fixed and earlier chips have other
+> CQE problems that prevent the feature from being enabled.
+>
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
-v1->v2:
-Move mt8183 routing table to mt8183-mmsys.h
+Applied for next, thanks!
 
-This patch is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git v5.12-next/soc
----
- drivers/soc/mediatek/mt8183-mmsys.h | 56 +++++++++++++++++++++++++++++
- drivers/soc/mediatek/mtk-mmsys.c    |  3 ++
- 2 files changed, 59 insertions(+)
- create mode 100644 drivers/soc/mediatek/mt8183-mmsys.h
+Kind regards
+Uffe
 
-diff --git a/drivers/soc/mediatek/mt8183-mmsys.h b/drivers/soc/mediatek/mt8183-mmsys.h
-new file mode 100644
-index 000000000000..38e9f683e5bd
---- /dev/null
-+++ b/drivers/soc/mediatek/mt8183-mmsys.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8183_MMSYS_H
-+#define __SOC_MEDIATEK_MT8183_MMSYS_H
-+
-+#include "mtk-mmsys.h"
-+
-+#define MT8183_DISP_OVL0_MOUT_EN		0xf00
-+#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
-+#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
-+#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
-+#define MT8183_DISP_PATH0_SEL_IN		0xf24
-+#define MT8183_DISP_DSI0_SEL_IN			0xf2c
-+#define MT8183_DISP_DPI0_SEL_IN			0xf30
-+#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
-+#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
-+
-+#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
-+#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
-+#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
-+#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
-+#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
-+#define MT8183_DSI0_SEL_IN_RDMA0		0x1
-+#define MT8183_DSI0_SEL_IN_RDMA1		0x3
-+#define MT8183_DPI0_SEL_IN_RDMA0		0x1
-+#define MT8183_DPI0_SEL_IN_RDMA1		0x2
-+#define MT8183_RDMA0_SOUT_COLOR0		0x1
-+#define MT8183_RDMA1_SOUT_DSI0			0x1
-+
-+static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
-+	{
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-+		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
-+	}, {
-+		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
-+		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-+		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-+		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
-+	}
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8183_MMSYS_H */
-+
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index c46d8ab8b0c2..ac68a989854e 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -10,6 +10,7 @@
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-mmsys.h>
- 
-+#include "mt8183-mmsys.h"
- #include "mtk-mmsys.h"
- 
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
-@@ -40,6 +41,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
- 
- static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.clk_driver = "clk-mt8183-mm",
-+	.routes = mmsys_mt8183_routing_table,
-+	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
- };
- 
- struct mtk_mmsys {
--- 
-2.31.0.291.g576ba9dcdaf-goog
 
+> ---
+>  drivers/mmc/host/sdhci-brcmstb.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+> index f9780c65ebe9..f24623aac2db 100644
+> --- a/drivers/mmc/host/sdhci-brcmstb.c
+> +++ b/drivers/mmc/host/sdhci-brcmstb.c
+> @@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
+>         if (dma64) {
+>                 dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
+>                 cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+> -               cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
+>         }
+>
+>         ret = cqhci_init(cq_host, host->mmc, dma64);
+>
+> base-commit: e138138003eb3b3d06cc91cf2e8c5dec77e2a31e
+> --
+> 2.17.1
+>
