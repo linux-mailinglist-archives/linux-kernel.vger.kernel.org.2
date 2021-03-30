@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9997334E428
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D206434E42E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhC3JRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:17:33 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45874 "EHLO inva020.nxp.com"
+        id S231643AbhC3JSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:18:33 -0400
+Received: from ni.piap.pl ([195.187.100.5]:43316 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231593AbhC3JRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:17:22 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C8F801A311F;
-        Tue, 30 Mar 2021 11:17:18 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BC1DE1A133F;
-        Tue, 30 Mar 2021 11:17:18 +0200 (CEST)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id A7FBA203DF;
-        Tue, 30 Mar 2021 11:17:18 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 12:17:18 +0300
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Jian Dong <dj0227@163.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, linux-imx@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        Jian Dong <dongjian@yulong.com>
-Subject: Re: [PATCH]  clk: imx: reference preceded by free
-Message-ID: <20210330091718.xd6phttmlyoegsnq@fsr-ub1664-175>
-References: <1616469034-9691-1-git-send-email-dj0227@163.com>
+        id S231438AbhC3JSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:18:00 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 423AC443A5D;
+        Tue, 30 Mar 2021 11:17:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 423AC443A5D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1617095874; bh=U2rsxJHSxkDfNMjPvbE4U2R3Ifu51mUaDNbjIjemCo0=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=CMx6RSUE3GH8pnvGM3gD0WNsqqMpaK2pQYvhUxkn8vWL8ZHTWYgZylsadjY+C/sgX
+         2B8FGtU+VCyWr3+CRP9iVq3NHwsuhIOOxjSfxKyQABC3UhLN4V2UCj5gnx/BiZPQZR
+         XvWjJbtvK5DwlplL9YlynSQbtMhZ0O1peB3YbiQc=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: RFC: dt-binding: media: document ON Semi AR0521 sensor bindings
+References: <m3o8fjs02a.fsf@t19.piap.pl>
+        <YFEBRGF20xhpHese@pendragon.ideasonboard.com>
+Sender: khalasa@piap.pl
+Date:   Tue, 30 Mar 2021 11:17:54 +0200
+In-Reply-To: <YFEBRGF20xhpHese@pendragon.ideasonboard.com> (Laurent Pinchart's
+        message of "Tue, 16 Mar 2021 21:04:36 +0200")
+Message-ID: <m3czvhxanx.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616469034-9691-1-git-send-email-dj0227@163.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-23 11:10:34, Jian Dong wrote:
-> From: Jian Dong <dongjian@yulong.com>
-> 
->  when register failed, clk will be freed, it will generate dangling pointer
->  problem in later reference. it should return directly.
-> 
-> Signed-off-by: Jian Dong <dongjian@yulong.com>
+Laurent Pinchart <laurent.pinchart@ideasonboard.com> writes:
 
-Applied, thanks.
+>> +  reg:
+>> +    description: I2C bus address of the sensor device
+>
+> You can drop this, it's implicit for I2C devices.
 
-> ---
->  drivers/clk/imx/clk-lpcg-scu.c | 1 +
->  drivers/clk/imx/clk-scu.c      | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
-> index 77be763..dd5abd0 100644
-> --- a/drivers/clk/imx/clk-lpcg-scu.c
-> +++ b/drivers/clk/imx/clk-lpcg-scu.c
-> @@ -114,6 +114,7 @@ struct clk_hw *__imx_clk_lpcg_scu(struct device *dev, const char *name,
->  	if (ret) {
->  		kfree(clk);
->  		hw = ERR_PTR(ret);
-> +		return hw;
->  	}
->  
->  	if (dev)
-> diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-> index 1f5518b7..f89b4da 100644
-> --- a/drivers/clk/imx/clk-scu.c
-> +++ b/drivers/clk/imx/clk-scu.c
-> @@ -426,6 +426,7 @@ struct clk_hw *__imx_clk_scu(struct device *dev, const char *name,
->  	if (ret) {
->  		kfree(clk);
->  		hw = ERR_PTR(ret);
-> +		return hw;
->  	}
->  
->  	if (dev)
-> -- 
-> 1.9.1
-> 
-> 
+Do you mean just dropping these two lines (and MaxItems: 1), and leaving
+"reg" in "required" and in the example? E.g.:
+...
+required:
+  - compatible
+  - reg
+  - clocks
+  - clock-names
+  - port
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/gpio/gpio.h>
+    #include <dt-bindings/clock/imx6qdl-clock.h>
+
+    i2c {
+            #address-cells =3D <1>;
+            #size-cells =3D <0>;
+
+            ar0521: camera-sensor@36 {
+                    compatible =3D "onnn,ar0521";
+                    reg =3D <0x36>;
+                    pinctrl-names =3D "default";
+
+...
+
+It protests with:
+
+Documentation/devicetree/bindings/media/i2c/onnn,ar0521.example.dt.yaml:
+camera-sensor@36: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /usr/src/linux/imx6/Documentation/devicetree/bindings/=
+media/i2c/onnn,ar0521.yaml
+
+Thus I'm currently leaving it as is.
+--=20
+Krzysztof Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
