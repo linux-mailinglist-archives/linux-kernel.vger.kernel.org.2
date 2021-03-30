@@ -2,269 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52A034F0C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800B934F0E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbhC3SRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:17:05 -0400
-Received: from mga04.intel.com ([192.55.52.120]:12952 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232632AbhC3SQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:16:55 -0400
-IronPort-SDR: +K5Z43PP7nt3HqbniO0UCfSzmFLrmfMs4I9We+fL6ifRkk59I05lF3PvQamxKZGMNJpJWGhFek
- lpAGrkLbqh/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="189586975"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="189586975"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 11:16:55 -0700
-IronPort-SDR: r1CHQaHCqUBh7lz/U8jhn0tOt5UaNWKmidETOyAVWz3yurQOT3VQtUtsHoAmO4zDcjzeuexZbo
- 18l35dcW1ZtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="438427038"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Mar 2021 11:16:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7385A397; Tue, 30 Mar 2021 21:17:06 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Corey Minyard <cminyard@mvista.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        openipmi-developer@lists.sourceforge.net,
+        id S232808AbhC3STH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232782AbhC3SSr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:18:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C918C061574;
+        Tue, 30 Mar 2021 11:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=KxGoy1weYbtqCANsJUAKQtRWb25OeKHfyfClNVXIBaM=; b=gbPTeAjgahdLzSFS7IrPEdFOWG
+        +5DgazEYkC/GgEruOlW/Hbb6e82wb0caoCT3AxFssyjF98qFWKiaqxManyYPM2dKrDpGWwNxXO/Qk
+        hUjY20ZPidsEh1h3xJL5VsWkBeAgdcJoLnUusm3Q+FPeBbgkxbhnJ5ZFeFzZk3F9VbCA9qEsXUIo8
+        R+dYBRK3ldbTMRybAOrQoddsWb16bNbRBLbS9oVSc/rrL0Sq50GzzFjCT1HoN7lozeociZMGq5RrK
+        BiP/fYKQm0k6Hysxd/+KyJ6TavmJD53Iu+Xo41pytJEKdM4C+DvlknOTYKP8iMrskljP3gDJibM1L
+        e/fz6THQ==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRIwc-003QJf-5Y; Tue, 30 Mar 2021 18:18:35 +0000
+Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
         linux-kernel@vger.kernel.org
-Cc:     Corey Minyard <minyard@acm.org>
-Subject: [PATCH v1 10/10] ipmi_si: Join string literals back
-Date:   Tue, 30 Mar 2021 21:16:49 +0300
-Message-Id: <20210330181649.66496-10-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
-References: <20210330181649.66496-1-andriy.shevchenko@linux.intel.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org
+References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com>
+ <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
+Date:   Tue, 30 Mar 2021 11:18:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For easy grepping on debug purposes join string literals back in
-the messages.
+Hi--
 
-No functional change.
+On 3/30/21 1:56 AM, Wolfram Sang wrote:
+> diff --git a/Documentation/dev-tools/gpio-logic-analyzer.rst b/Documentation/dev-tools/gpio-logic-analyzer.rst
+> new file mode 100644
+> index 000000000000..2847260736d4
+> --- /dev/null
+> +++ b/Documentation/dev-tools/gpio-logic-analyzer.rst
+> @@ -0,0 +1,63 @@
+> +Linux Kernel GPIO based logic analyzer
+> +======================================
+> +
+> +:Author: Wolfram Sang
+> +
+> +Introduction
+> +------------
+> +
+> +This document briefly describes how to run the software based in-kernel logic
+> +analyzer.
+> +
+> +Note that this is still a last resort analyzer which can be affected by
+> +latencies and non-determinant code paths. However, for e.g. remote development,
+> +it may be useful to get a first view and aid further debugging.
+> +
+> +Setup
+> +-----
+> +
+> +Tell the kernel which GPIOs are used as probes. For a DT based system:
+> +
+> +    i2c-analyzer {
+> +            compatible = "gpio-logic-analyzer";
+> +            probe-gpios = <&gpio6 21 GPIO_OPEN_DRAIN>, <&gpio6 4 GPIO_OPEN_DRAIN>;
+> +            probe-names = "SCL", "SDA";
+> +    };
+> +
+> +The binding documentation is in the ``misc`` folder of the Kernel binding
+> +documentation.
+> +
+> +Usage
+> +-----
+> +
+> +The logic analyzer is configurable via files in debugfs. However, it is
+> +strongly recommended to not use them directly, but to to use the
+> +``gpio-logic-analyzer`` script in the ``tools/debugging`` directory. Besides
+> +checking parameters more extensively, it will isolate a CPU core for you, so
+> +you will have least disturbance while measuring.
+> +
+> +The script has a help option explaining the parameters. For the above DT
+> +snipplet which analyzes an I2C bus at 400KHz on a Renesas Salvator-XS board,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/char/ipmi/ipmi_msghandler.c  |  3 +-
- drivers/char/ipmi/ipmi_si_hardcode.c | 50 +++++++++-------------------
- drivers/char/ipmi/ipmi_si_hotmod.c   |  5 ++-
- drivers/char/ipmi/ipmi_si_intf.c     | 25 +++++---------
- drivers/char/ipmi/ipmi_si_pci.c      |  4 +--
- drivers/char/ipmi/ipmi_si_platform.c | 17 +++++-----
- 6 files changed, 38 insertions(+), 66 deletions(-)
+   snippet
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index c7d37366d7bb..aaca8873a486 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -5207,7 +5207,6 @@ module_exit(cleanup_ipmi);
- module_init(ipmi_init_msghandler_mod);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Corey Minyard <minyard@mvista.com>");
--MODULE_DESCRIPTION("Incoming and outgoing message routing for an IPMI"
--		   " interface.");
-+MODULE_DESCRIPTION("Incoming and outgoing message routing for an IPMI interface.");
- MODULE_VERSION(IPMI_DRIVER_VERSION);
- MODULE_SOFTDEP("post: ipmi_devintf");
-diff --git a/drivers/char/ipmi/ipmi_si_hardcode.c b/drivers/char/ipmi/ipmi_si_hardcode.c
-index cf3797523469..47eee958edcc 100644
---- a/drivers/char/ipmi/ipmi_si_hardcode.c
-+++ b/drivers/char/ipmi/ipmi_si_hardcode.c
-@@ -32,47 +32,29 @@ static int slave_addrs[SI_MAX_PARMS] __initdata;
- static unsigned int num_slave_addrs __initdata;
- 
- module_param_string(type, si_type_str, MAX_SI_TYPE_STR, 0);
--MODULE_PARM_DESC(type, "Defines the type of each interface, each"
--		 " interface separated by commas.  The types are 'kcs',"
--		 " 'smic', and 'bt'.  For example si_type=kcs,bt will set"
--		 " the first interface to kcs and the second to bt");
-+MODULE_PARM_DESC(type,
-+		 "Defines the type of each interface, each interface separated by commas.  The types are 'kcs', 'smic', and 'bt'.  For example si_type=kcs,bt will set the first interface to kcs and the second to bt");
- module_param_hw_array(addrs, ulong, iomem, &num_addrs, 0);
--MODULE_PARM_DESC(addrs, "Sets the memory address of each interface, the"
--		 " addresses separated by commas.  Only use if an interface"
--		 " is in memory.  Otherwise, set it to zero or leave"
--		 " it blank.");
-+MODULE_PARM_DESC(addrs,
-+		 "Sets the memory address of each interface, the addresses separated by commas.  Only use if an interface is in memory.  Otherwise, set it to zero or leave it blank.");
- module_param_hw_array(ports, uint, ioport, &num_ports, 0);
--MODULE_PARM_DESC(ports, "Sets the port address of each interface, the"
--		 " addresses separated by commas.  Only use if an interface"
--		 " is a port.  Otherwise, set it to zero or leave"
--		 " it blank.");
-+MODULE_PARM_DESC(ports,
-+		 "Sets the port address of each interface, the addresses separated by commas.  Only use if an interface is a port.  Otherwise, set it to zero or leave it blank.");
- module_param_hw_array(irqs, int, irq, &num_irqs, 0);
--MODULE_PARM_DESC(irqs, "Sets the interrupt of each interface, the"
--		 " addresses separated by commas.  Only use if an interface"
--		 " has an interrupt.  Otherwise, set it to zero or leave"
--		 " it blank.");
-+MODULE_PARM_DESC(irqs,
-+		 "Sets the interrupt of each interface, the addresses separated by commas.  Only use if an interface has an interrupt.  Otherwise, set it to zero or leave it blank.");
- module_param_hw_array(regspacings, int, other, &num_regspacings, 0);
--MODULE_PARM_DESC(regspacings, "The number of bytes between the start address"
--		 " and each successive register used by the interface.  For"
--		 " instance, if the start address is 0xca2 and the spacing"
--		 " is 2, then the second address is at 0xca4.  Defaults"
--		 " to 1.");
-+MODULE_PARM_DESC(regspacings,
-+		 "The number of bytes between the start address and each successive register used by the interface.  For instance, if the start address is 0xca2 and the spacing is 2, then the second address is at 0xca4.  Defaults to 1.");
- module_param_hw_array(regsizes, int, other, &num_regsizes, 0);
--MODULE_PARM_DESC(regsizes, "The size of the specific IPMI register in bytes."
--		 " This should generally be 1, 2, 4, or 8 for an 8-bit,"
--		 " 16-bit, 32-bit, or 64-bit register.  Use this if you"
--		 " the 8-bit IPMI register has to be read from a larger"
--		 " register.");
-+MODULE_PARM_DESC(regsizes,
-+		 "The size of the specific IPMI register in bytes. This should generally be 1, 2, 4, or 8 for an 8-bit, 16-bit, 32-bit, or 64-bit register.  Use this if you the 8-bit IPMI register has to be read from a larger register.");
- module_param_hw_array(regshifts, int, other, &num_regshifts, 0);
--MODULE_PARM_DESC(regshifts, "The amount to shift the data read from the."
--		 " IPMI register, in bits.  For instance, if the data"
--		 " is read from a 32-bit word and the IPMI data is in"
--		 " bit 8-15, then the shift would be 8");
-+MODULE_PARM_DESC(regshifts,
-+		 "The amount to shift the data read from the. IPMI register, in bits.  For instance, if the data is read from a 32-bit word and the IPMI data is in bit 8-15, then the shift would be 8");
- module_param_hw_array(slave_addrs, int, other, &num_slave_addrs, 0);
--MODULE_PARM_DESC(slave_addrs, "Set the default IPMB slave address for"
--		 " the controller.  Normally this is 0x20, but can be"
--		 " overridden by this parm.  This is an array indexed"
--		 " by interface number.");
-+MODULE_PARM_DESC(slave_addrs,
-+		 "Set the default IPMB slave address for the controller.  Normally this is 0x20, but can be overridden by this parm.  This is an array indexed by interface number.");
- 
- static void __init ipmi_hardcode_init_one(const char *si_type_str,
- 					  unsigned int i,
-diff --git a/drivers/char/ipmi/ipmi_si_hotmod.c b/drivers/char/ipmi/ipmi_si_hotmod.c
-index a07ef37c0e3f..6b12a83ccd4c 100644
---- a/drivers/char/ipmi/ipmi_si_hotmod.c
-+++ b/drivers/char/ipmi/ipmi_si_hotmod.c
-@@ -17,9 +17,8 @@
- static int hotmod_handler(const char *val, const struct kernel_param *kp);
- 
- module_param_call(hotmod, hotmod_handler, NULL, NULL, 0200);
--MODULE_PARM_DESC(hotmod, "Add and remove interfaces.  See"
--		 " Documentation/driver-api/ipmi.rst in the kernel sources for the"
--		 " gory details.");
-+MODULE_PARM_DESC(hotmod,
-+		 "Add and remove interfaces.  See Documentation/driver-api/ipmi.rst in the kernel sources for the gory details.");
- 
- /*
-  * Parms come in as <op1>[:op2[:op3...]].  ops are:
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 1f568cc88b39..3fb991949f99 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -1167,9 +1167,8 @@ static int smi_start_processing(void            *send_info,
- 		new_smi->thread = kthread_run(ipmi_thread, new_smi,
- 					      "kipmi%d", new_smi->si_num);
- 		if (IS_ERR(new_smi->thread)) {
--			dev_notice(new_smi->io.dev, "Could not start"
--				   " kernel thread due to error %ld, only using"
--				   " timers to drive the interface\n",
-+			dev_notice(new_smi->io.dev,
-+				   "Could not start kernel thread due to error %ld, only using timers to drive the interface\n",
- 				   PTR_ERR(new_smi->thread));
- 			new_smi->thread = NULL;
- 		}
-@@ -1221,18 +1220,14 @@ static int smi_num; /* Used to sequence the SMIs */
- static const char * const addr_space_to_str[] = { "i/o", "mem" };
- 
- module_param_array(force_kipmid, int, &num_force_kipmid, 0);
--MODULE_PARM_DESC(force_kipmid, "Force the kipmi daemon to be enabled (1) or"
--		 " disabled(0).  Normally the IPMI driver auto-detects"
--		 " this, but the value may be overridden by this parm.");
-+MODULE_PARM_DESC(force_kipmid,
-+		 "Force the kipmi daemon to be enabled (1) or disabled(0).  Normally the IPMI driver auto-detects this, but the value may be overridden by this parm.");
- module_param(unload_when_empty, bool, 0);
--MODULE_PARM_DESC(unload_when_empty, "Unload the module if no interfaces are"
--		 " specified or found, default is 1.  Setting to 0"
--		 " is useful for hot add of devices using hotmod.");
-+MODULE_PARM_DESC(unload_when_empty,
-+		 "Unload the module if no interfaces are specified or found, default is 1.  Setting to 0 is useful for hot add of devices using hotmod.");
- module_param_array(kipmid_max_busy_us, uint, &num_max_busy_us, 0644);
- MODULE_PARM_DESC(kipmid_max_busy_us,
--		 "Max time (in microseconds) to busy-wait for IPMI data before"
--		 " sleeping. 0 (default) means to wait forever. Set to 100-500"
--		 " if kipmid is using up a lot of CPU time.");
-+		 "Max time (in microseconds) to busy-wait for IPMI data before sleeping. 0 (default) means to wait forever. Set to 100-500 if kipmid is using up a lot of CPU time.");
- 
- void ipmi_irq_finish_setup(struct si_sm_io *io)
- {
-@@ -1268,8 +1263,7 @@ int ipmi_std_irq_setup(struct si_sm_io *io)
- 			 SI_DEVICE_NAME,
- 			 io->irq_handler_data);
- 	if (rv) {
--		dev_warn(io->dev, "%s unable to claim interrupt %d,"
--			 " running polled\n",
-+		dev_warn(io->dev, "%s unable to claim interrupt %d, running polled\n",
- 			 SI_DEVICE_NAME, io->irq);
- 		io->irq = 0;
- 	} else {
-@@ -2298,5 +2292,4 @@ module_exit(cleanup_ipmi_si);
- MODULE_ALIAS("platform:dmi-ipmi-si");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Corey Minyard <minyard@mvista.com>");
--MODULE_DESCRIPTION("Interface to the IPMI driver for the KCS, SMIC, and BT"
--		   " system interfaces.");
-+MODULE_DESCRIPTION("Interface to the IPMI driver for the KCS, SMIC, and BT system interfaces.");
-diff --git a/drivers/char/ipmi/ipmi_si_pci.c b/drivers/char/ipmi/ipmi_si_pci.c
-index 0bc7efb6902c..74fa2055868b 100644
---- a/drivers/char/ipmi/ipmi_si_pci.c
-+++ b/drivers/char/ipmi/ipmi_si_pci.c
-@@ -16,8 +16,8 @@ static bool pci_registered;
- static bool si_trypci = true;
- 
- module_param_named(trypci, si_trypci, bool, 0);
--MODULE_PARM_DESC(trypci, "Setting this to zero will disable the"
--		 " default scan of the interfaces identified via pci");
-+MODULE_PARM_DESC(trypci,
-+		 "Setting this to zero will disable the default scan of the interfaces identified via pci");
- 
- #define PCI_DEVICE_ID_HP_MMC 0x121A
- 
-diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-index 023c88ea9c4c..32fa86b9b876 100644
---- a/drivers/char/ipmi/ipmi_si_platform.c
-+++ b/drivers/char/ipmi/ipmi_si_platform.c
-@@ -34,23 +34,22 @@ static bool          si_trydmi = false;
- #endif
- 
- module_param_named(tryplatform, si_tryplatform, bool, 0);
--MODULE_PARM_DESC(tryplatform, "Setting this to zero will disable the"
--		 " default scan of the interfaces identified via platform"
--		 " interfaces besides ACPI, OpenFirmware, and DMI");
-+MODULE_PARM_DESC(tryplatform,
-+		 "Setting this to zero will disable the default scan of the interfaces identified via platform interfaces besides ACPI, OpenFirmware, and DMI");
- #ifdef CONFIG_ACPI
- module_param_named(tryacpi, si_tryacpi, bool, 0);
--MODULE_PARM_DESC(tryacpi, "Setting this to zero will disable the"
--		 " default scan of the interfaces identified via ACPI");
-+MODULE_PARM_DESC(tryacpi,
-+		 "Setting this to zero will disable the default scan of the interfaces identified via ACPI");
- #endif
- #ifdef CONFIG_OF
- module_param_named(tryopenfirmware, si_tryopenfirmware, bool, 0);
--MODULE_PARM_DESC(tryopenfirmware, "Setting this to zero will disable the"
--		 " default scan of the interfaces identified via OpenFirmware");
-+MODULE_PARM_DESC(tryopenfirmware,
-+		 "Setting this to zero will disable the default scan of the interfaces identified via OpenFirmware");
- #endif
- #ifdef CONFIG_DMI
- module_param_named(trydmi, si_trydmi, bool, 0);
--MODULE_PARM_DESC(trydmi, "Setting this to zero will disable the"
--		 " default scan of the interfaces identified via DMI");
-+MODULE_PARM_DESC(trydmi,
-+		 "Setting this to zero will disable the default scan of the interfaces identified via DMI");
- #endif
- 
- #ifdef CONFIG_ACPI
+> +the following settings are used: The isolated CPU shall be CPU1 because it is a
+> +big core in a big.LITTLE setup. Because CPU1 is the default, we don't need a
+> +parameter. The bus speed is 400kHz. So, the sampling theorem says we need to
+> +sample at least at 800kHz. However, falling of both, SDA and SCL, in a start
+
+Is "falling" like a falling edge of a signal?
+If not, then I think "failing" would make more sense.
+Even "failing both".
+
+> +condition is faster, so we need a higher sampling frequency, e.g. ``-s
+> +1500000`` for 1.5MHz. Also, we don't want to sample right away but wait for a
+> +start condition on an idle bus. So, we need to set a trigger to a falling edge
+> +on SDA, i.e. ``-t "2F"``. Last is the duration, let us assume 15ms here which
+> +results in the parameter ``-d 15000``. So, altogether:
+> +
+> +    gpio-logic-analyzer -s 1500000 -t "2F" -d 15000
+> +
+> +Note that the process will return you back to the prompt but a sub-process is
+> +still sampling in the background. Unless this finished, you will not find a
+> +result file in the current or specified directory. Please also note that
+> +currently this sub-process is not killable! For the above example, we will then
+> +need to trigger I2C communication:
+> +
+> +    i2cdetect -y -r <your bus number>
+> +
+> +Result is a .sr file to be consumed with PulseView from the free Sigrok project. It is
+> +a zip file which also contains the binary sample data which may be consumed by others.
+> +The filename is the logic analyzer instance name plus a since-epoch timestamp.
+
+
+thanks.
 -- 
-2.30.2
+~Randy
 
