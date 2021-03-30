@@ -2,495 +2,1007 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C74A34EE1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBFD34EE25
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhC3QoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhC3Qn5 (ORCPT
+        id S232263AbhC3Qoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:44:46 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:14880 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231636AbhC3Qoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:43:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAB0C061574;
-        Tue, 30 Mar 2021 09:43:56 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so9751058pjb.4;
-        Tue, 30 Mar 2021 09:43:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aI0kKJOFMUBNOyyp/aEGkWxY/8kbGM6Csi0uKmp/Ds8=;
-        b=PGtNbzzoJ3WPTmq3Ucxez8HIr63kXuzvjmfGIiais/RyKJCjGb6rJ14bSwIICQG+6u
-         eSGu1/foNDyDFIRtWYleAEeCrpTtohhF+73aUTkDxgMsB9avbuWscxclE1rKW0RsIn4N
-         ugY7Nwymt8HAzxu621q1yP8Gc9pKRLnqtVUbH/ywxsrETq+Pvwejn7hc8l6SQHETAfX+
-         i/pUrORR8xhHJDYVU8RN/4J9GZ70W3SUFgciCk0/mXJ+LlFyFl20aPpT77b60g6keua1
-         0RC9iEpFb76w3brj25n8PxU/GdzAS5wELCWTQp5SCi1U3JlK2QDFqTI57+Z7VEam8UxD
-         qGaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aI0kKJOFMUBNOyyp/aEGkWxY/8kbGM6Csi0uKmp/Ds8=;
-        b=M3EwE9ZkxRavlN5X0pGyToBJIa/CkQTDLRuptsK0MN4iyUuuBeKoPNi4UDX0ayQE3J
-         cfYQ8QNtneNHOAnZs5GBfSiz6bVWaqtFPO2G1pIlDpI0Mo3HJ4PcU0bVjBEl9OY8YeeN
-         /u6AaJkhvgdymUVLQPFP/uEEwarMH9qTxx9/tzGi60874TwwqosLo7jc4Bkzf8kTnFsC
-         U0Z4o30HzR18PL3Sn5IoGO3xX1eIKXGT3VNUkLjRWhEbveNa0z+Nh7t1uVuUxkS0eemI
-         8vjMIykq4nWeOK0qborihxilYwALe/Foint/THNC+x6LdLpyM72nkICwBq3IUR0hR4QX
-         N2jA==
-X-Gm-Message-State: AOAM531n5198YpeswqbL2IpwGuJXcVxww5AP3QwMdShlnwvgXQwaBx3d
-        SVKF/WQ33m9Fv/u7fh8wC7ZT1av/AOax2JT0DIc=
-X-Google-Smtp-Source: ABdhPJxyVDBqrLKmc4vJqZuM2Gx0FVIgxmhTf0M+5qrRtJvI7d25r4xurHAvqV2HGKdBNuqs+WScJWhLuUFayyfFXus=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr33835156plq.17.1617122636125; Tue, 30
- Mar 2021 09:43:56 -0700 (PDT)
+        Tue, 30 Mar 2021 12:44:30 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UGgxi5007735;
+        Tue, 30 Mar 2021 18:44:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=kAcvdtNkeUI92k8x09e6A5+wB3yfnGGlGhdn1gdfR+s=;
+ b=yZGXz0sszsryrDiTCb9YOsXitoCj4h9O4Axn4seoIy05Usv0+c0bdAouTxrSRivEeJCQ
+ OA+E9wSpcisFoxSUeteqc1sCwN9vg/zVVwIW7XMBCdd8EggaPMgddwy+CpU/IlcBi/eb
+ u0Mri42rkad+j463O/UG5maAS+DM7L8L41K0CcU9p8qiE+zvvqiQZXwOnsYLBM1i2Neb
+ oX9dv15/4nlNlWKbZDo2V+4t4hKx4j8fb0i/8DU8CPiiV6cqMwh5h244KgKWoyQApKMs
+ H6WdyT5r8tZj4Ln0ztIkYJRgUv7wlnW4iIER6L23rD5ZinaSJTCxWn7pGeRLOTUHvvVb kA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37ksfh54k9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 18:44:04 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F194510002A;
+        Tue, 30 Mar 2021 18:44:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B5BD7221773;
+        Tue, 30 Mar 2021 18:44:02 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
+ 2021 18:44:01 +0200
+Subject: Re: [PATCH v8 3/6] ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to
+ support stm32h750
+To:     <dillon.minfei@gmail.com>, <robh@kernel.org>,
+        <valentin.caron@foss.st.com>, <rong.a.chen@intel.com>,
+        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <afzal.mohd.ma@gmail.com>, <gregkh@linuxfoundation.org>,
+        <erwan.leray@foss.st.com>, <erwan.leray@st.com>,
+        <linux-serial@vger.kernel.org>, <lkp@intel.com>,
+        <patrice.chotard@foss.st.com>
+References: <1617094704-10040-1-git-send-email-dillon.minfei@gmail.com>
+ <1617094704-10040-4-git-send-email-dillon.minfei@gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <d08d3195-5379-ff1e-fefd-f38297e18108@foss.st.com>
+Date:   Tue, 30 Mar 2021 18:44:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1617117762.git.sander@svanheule.net> <a41b04f4f92eacc98f51549f5ef35ecc28485255.1617117762.git.sander@svanheule.net>
-In-Reply-To: <a41b04f4f92eacc98f51549f5ef35ecc28485255.1617117762.git.sander@svanheule.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 19:43:38 +0300
-Message-ID: <CAHp75Vc_VzP_jxBmj3dYS9gYss-vVRrP1WAm1XRYxVNTzW5WTw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] gpio: Add Realtek Otto GPIO support
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bert Vermeulen <bert@biot.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1617094704-10040-4-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-30_08:2021-03-30,2021-03-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:27 PM Sander Vanheule <sander@svanheule.net> wrote:
->
-> Realtek MIPS SoCs (platform name Otto) have GPIO controllers with up to
-> 64 GPIOs, divided over two banks. Each bank has a set of registers for
-> 32 GPIOs, with support for edge-triggered interrupts.
->
-> Each GPIO bank consists of four 8-bit GPIO ports (ABCD and EFGH). Most
-> registers pack one bit per GPIO, except for the IMR register, which
-> packs two bits per GPIO (AB-CD).
->
-> Although the byte order is currently assumed to have port A..D at offset
-> 0x0..0x3, this has been observed to be reversed on other, Lexra-based,
-> SoCs (e.g. RTL8196E/97D/97F).
->
-> Interrupt support is disabled for the fallback devicetree-compatible
-> 'realtek,otto-gpio'. This allows for quick support of GPIO banks in
-> which the byte order would be unknown. In this case, the port ordering
-> in the IMR registers may not match the reversed order in the other
-> registers (DCBA, and BA-DC or DC-BA).
 
-Thanks for an update. Much better now!
-My comments below.
 
-After addressing them,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
->
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On 3/30/21 10:58 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> This patch is intend to add support stm32h750 value line,
+> just add stm32h7-pinctrl.dtsi for extending, with following changes:
+> 
+> - rename stm32h743-pinctrl.dtsi to stm32h7-pinctrl.dtsi
+> - update stm32h743i-{dico/eval}.dtsi to include stm32h7-pinctrl.dtsi
+> - add dts binding usart3, uart4
+>    usart3/uart4 pinctrl in stm32h7-pinctrl.dtsi
+>    usart3/uart4 register in stm32h743.dtsi
+> - add dts binding sdmmc2
+>    sdmmc2 pinctrl in stm32h7-pinctrl.dtsi
+>    sdmmc2 register in stm32h743.dtsi
+> - add spi1_pins pinctrl in stm32h7-pinctrl.dtsi
+> - move 'pin-controller' from stm32h7-pinctrl.dtsi to stm32h743.dtsi, to
+>    fix make dtbs_check warrnings
+>    arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: soc: 'i2c@40005C00',
+>    'i2c@58001C00' do not match any of the regexes:
+>    '@(0|[1-9a-f][0-9a-f]*)$', '^[^@]+$', 'pinctrl-[0-9]+'
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
 > ---
->  drivers/gpio/Kconfig             |  13 ++
->  drivers/gpio/Makefile            |   1 +
->  drivers/gpio/gpio-realtek-otto.c | 326 +++++++++++++++++++++++++++++++
->  3 files changed, 340 insertions(+)
->  create mode 100644 drivers/gpio/gpio-realtek-otto.c
->
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index e3607ec4c2e8..6fb13d6507db 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -502,6 +502,19 @@ config GPIO_RDA
->         help
->           Say Y here to support RDA Micro GPIO controller.
->
-> +config GPIO_REALTEK_OTTO
-> +       tristate "Realtek Otto GPIO support"
-> +       depends on MACH_REALTEK_RTL
-> +       default MACH_REALTEK_RTL
-> +       select GPIO_GENERIC
-> +       select GPIOLIB_IRQCHIP
-> +       help
-> +         The GPIO controller on the Otto MIPS platform supports up to two
-> +         banks of 32 GPIOs, with edge triggered interrupts. The 32 GPIOs
-> +         are grouped in four 8-bit wide ports.
-> +
-> +         When built as a module, the module will be called realtek_otto_gpio.
-> +
->  config GPIO_REG
->         bool
->         help
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index c58a90a3c3b1..8ace5934e3c3 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -124,6 +124,7 @@ obj-$(CONFIG_GPIO_RC5T583)          += gpio-rc5t583.o
->  obj-$(CONFIG_GPIO_RCAR)                        += gpio-rcar.o
->  obj-$(CONFIG_GPIO_RDA)                 += gpio-rda.o
->  obj-$(CONFIG_GPIO_RDC321X)             += gpio-rdc321x.o
-> +obj-$(CONFIG_GPIO_REALTEK_OTTO)                += gpio-realtek-otto.o
->  obj-$(CONFIG_GPIO_REG)                 += gpio-reg.o
->  obj-$(CONFIG_ARCH_SA1100)              += gpio-sa1100.o
->  obj-$(CONFIG_GPIO_SAMA5D2_PIOBU)       += gpio-sama5d2-piobu.o
-> diff --git a/drivers/gpio/gpio-realtek-otto.c b/drivers/gpio/gpio-realtek-otto.c
+> v8:
+> - drop '[PATCH v7 3/6] ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to
+>    support stm32h750' - stm32h743-pinctrl.dtsi file
+> - move compatible string "st,stm32h743-pinctrl" from stm32h7-pinctrl.dtsi
+>    to stm32h743.dtsi
+> - update stm32h743i-{dico/eval}.dtsi to include stm32h7-pinctrl.dtsi
+> - move file stm32h743.dtsi submit position to [PATCH V8 3/6]
+> 
+>   arch/arm/boot/dts/stm32h7-pinctrl.dtsi   | 341 +++++++++++++++++++++++++++++++
+>   arch/arm/boot/dts/stm32h743-pinctrl.dtsi | 306 ---------------------------
+>   arch/arm/boot/dts/stm32h743.dtsi         | 165 ++++++++++++++-
+>   arch/arm/boot/dts/stm32h743i-disco.dts   |   2 +-
+>   arch/arm/boot/dts/stm32h743i-eval.dts    |   2 +-
+>   5 files changed, 506 insertions(+), 310 deletions(-)
+>   create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+>   delete mode 100644 arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/stm32h7-pinctrl.dtsi b/arch/arm/boot/dts/stm32h7-pinctrl.dtsi
 > new file mode 100644
-> index 000000000000..05ce5d48e121
+> index 000000000000..a5c295eca081
 > --- /dev/null
-> +++ b/drivers/gpio/gpio-realtek-otto.c
-> @@ -0,0 +1,326 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <linux/gpio/driver.h>
-> +#include <linux/irq.h>
-> +#include <linux/minmax.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-
-In sorter order this goes before module.h.
-
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +
+> +++ b/arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+> @@ -0,0 +1,341 @@
 > +/*
-> + * Total register block size is 0x1C for one bank of four ports (A, B, C, D).
-> + * An optional second bank, with ports E, F, G, and H, may be present, starting
-> + * at register offset 0x1C.
-> + */
-> +
-> +/*
-> + * Pin select: (0) "normal", (1) "dedicate peripheral"
-> + * Not used on RTL8380/RTL8390, peripheral selection is managed by control bits
-> + * in the peripheral registers.
-> + */
-> +#define REALTEK_GPIO_REG_CNR           0x00
-> +/* Clear bit (0) for input, set bit (1) for output */
-> +#define REALTEK_GPIO_REG_DIR           0x08
-> +#define REALTEK_GPIO_REG_DATA          0x0C
-> +/* Read bit for IRQ status, write 1 to clear IRQ */
-> +#define REALTEK_GPIO_REG_ISR           0x10
-> +/* Two bits per GPIO in IMR registers */
-> +#define REALTEK_GPIO_REG_IMR           0x14
-> +#define REALTEK_GPIO_REG_IMR_AB                0x14
-> +#define REALTEK_GPIO_REG_IMR_CD                0x18
-> +#define REALTEK_GPIO_IMR_LINE_MASK     GENMASK(1, 0)
-> +#define REALTEK_GPIO_IRQ_EDGE_FALLING  1
-> +#define REALTEK_GPIO_IRQ_EDGE_RISING   2
-> +#define REALTEK_GPIO_IRQ_EDGE_BOTH     3
-> +
-> +#define REALTEK_GPIO_MAX               32
-> +#define REALTEK_GPIO_PORTS_PER_BANK    4
-> +
-> +/**
-> + * realtek_gpio_ctrl - Realtek Otto GPIO driver data
+> + * Copyright 2017 - Alexandre Torgue <alexandre.torgue@st.com>
 > + *
-> + * @gc: Associated gpio_chip instance
-> + * @base: Base address of the register block for a GPIO bank
-> + * @lock: Lock for accessing the IRQ registers and values
-> + * @intr_mask: Mask for interrupts lines
-> + * @intr_type: Interrupt type selection
+> + * This file is dual-licensed: you can use it either under the terms
+> + * of the GPL or the X11 license, at your option. Note that this dual
+> + * licensing only applies to this file, and not this project as a
+> + * whole.
 > + *
-> + * Because the interrupt mask register (IMR) combines the function of IRQ type
-> + * selection and masking, two extra values are stored. @intr_mask is used to
-> + * mask/unmask the interrupts for a GPIO port, and @intr_type is used to store
-> + * the selected interrupt types. The logical AND of these values is written to
-> + * IMR on changes.
-> + */
-> +struct realtek_gpio_ctrl {
-> +       struct gpio_chip gc;
-> +       void __iomem *base;
-> +       raw_spinlock_t lock;
-> +       u16 intr_mask[REALTEK_GPIO_PORTS_PER_BANK];
-> +       u16 intr_type[REALTEK_GPIO_PORTS_PER_BANK];
-> +};
-> +
-> +/* Expand with more flags as devices with other quirks are added */
-> +enum realtek_gpio_flags {
-> +       /*
-> +        * Allow disabling interrupts, for cases where the port order is
-> +        * unknown. This may result in a port mismatch between ISR and IMR.
-> +        * An interrupt would appear to come from a different line than the
-> +        * line the IRQ handler was assigned to, causing uncaught interrupts.
-> +        */
-> +       GPIO_INTERRUPTS_DISABLED = BIT(0),
-> +};
-> +
-> +static struct realtek_gpio_ctrl *irq_data_to_ctrl(struct irq_data *data)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(data);
-> +
-> +       return container_of(gc, struct realtek_gpio_ctrl, gc);
-> +}
-> +
-> +/*
-> + * Normal port order register access
+> + *  a) This file is free software; you can redistribute it and/or
+> + *     modify it under the terms of the GNU General Public License as
+> + *     published by the Free Software Foundation; either version 2 of the
+> + *     License, or (at your option) any later version.
 > + *
-> + * Port information is stored with the first port at offset 0, followed by the
-> + * second, etc. Most registers store one bit per GPIO and use a u8 value per
-> + * port. The two interrupt mask registers store two bits per GPIO, so use u16
-> + * values.
+> + *     This file is distributed in the hope that it will be useful,
+> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *     GNU General Public License for more details.
+> + *
+> + * Or, alternatively,
+> + *
+> + *  b) Permission is hereby granted, free of charge, to any person
+> + *     obtaining a copy of this software and associated documentation
+> + *     files (the "Software"), to deal in the Software without
+> + *     restriction, including without limitation the rights to use,
+> + *     copy, modify, merge, publish, distribute, sublicense, and/or
+> + *     sell copies of the Software, and to permit persons to whom the
+> + *     Software is furnished to do so, subject to the following
+> + *     conditions:
+> + *
+> + *     The above copyright notice and this permission notice shall be
+> + *     included in all copies or substantial portions of the Software.
+> + *
+> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + *     OTHER DEALINGS IN THE SOFTWARE.
 > + */
-> +static void realtek_gpio_write_imr(struct realtek_gpio_ctrl *ctrl,
-> +       unsigned int port, u16 irq_type, u16 irq_mask)
+> +
+> +#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+> +
+> +&pinctrl {
+> +
+> +	gpioa: gpio@58020000 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 0 16>;
+> +	};
+> +
 
-Okay, you use 1 TAB as indentation. I prefer a different style: under
-the first character after (, but it's up to you. I'm fine with either.
+You could move those entries directly into stm32h743.dtsi no ?
 
-> +{
-> +       iowrite16(irq_type & irq_mask, ctrl->base + REALTEK_GPIO_REG_IMR + 2 * port);
-> +}
+> +	gpiob: gpio@58020400 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 16 16>;
+> +	};
 > +
-> +static void realtek_gpio_clear_isr(struct realtek_gpio_ctrl *ctrl,
-> +       unsigned int port, u8 mask)
-> +{
-> +       iowrite8(mask, ctrl->base + REALTEK_GPIO_REG_ISR + port);
-> +}
+> +	gpioc: gpio@58020800 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 32 16>;
+> +	};
 > +
-> +static u8 realtek_gpio_read_isr(struct realtek_gpio_ctrl *ctrl,
-> +       unsigned int port)
-> +{
-> +       return ioread8(ctrl->base + REALTEK_GPIO_REG_ISR + port);
-> +}
+> +	gpiod: gpio@58020c00 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 48 16>;
+> +	};
 > +
-> +/* Set the rising and falling edge mask bits for a GPIO port pin */
-> +static u16 realtek_gpio_imr_bits(unsigned int pin, u16 value)
-> +{
-> +       return (value & REALTEK_GPIO_IMR_LINE_MASK) << 2 * pin;
-> +}
+> +	gpioe: gpio@58021000 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 64 16>;
+> +	};
 > +
-> +static void realtek_gpio_irq_ack(struct irq_data *data)
-> +{
-> +       struct realtek_gpio_ctrl *ctrl = irq_data_to_ctrl(data);
-> +       irq_hw_number_t line = irqd_to_hwirq(data);
-> +       unsigned int port = line / 8;
-> +       unsigned int port_pin = line % 8;
+> +	gpiof: gpio@58021400 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 80 16>;
+> +	};
 > +
-> +       realtek_gpio_clear_isr(ctrl, port, BIT(port_pin));
-> +}
+> +	gpiog: gpio@58021800 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 96 16>;
+> +	};
 > +
-> +static void realtek_gpio_irq_unmask(struct irq_data *data)
-> +{
-> +       struct realtek_gpio_ctrl *ctrl = irq_data_to_ctrl(data);
-> +       unsigned int line = irqd_to_hwirq(data);
-> +       unsigned int port = line / 8;
-> +       unsigned int port_pin = line % 8;
-> +       unsigned long flags;
-> +       u16 m;
+> +	gpioh: gpio@58021c00 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 112 16>;
+> +	};
 > +
-> +       raw_spin_lock_irqsave(&ctrl->lock, flags);
-> +       m = ctrl->intr_mask[port];
-> +       m |= realtek_gpio_imr_bits(port_pin, REALTEK_GPIO_IMR_LINE_MASK);
-> +       ctrl->intr_mask[port] = m;
-> +       realtek_gpio_write_imr(ctrl, port, ctrl->intr_type[port], m);
-> +       raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-> +}
+> +	gpioi: gpio@58022000 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 128 16>;
+> +	};
 > +
-> +static void realtek_gpio_irq_mask(struct irq_data *data)
-> +{
-> +       struct realtek_gpio_ctrl *ctrl = irq_data_to_ctrl(data);
-> +       unsigned int line = irqd_to_hwirq(data);
-> +       unsigned int port = line / 8;
-> +       unsigned int port_pin = line % 8;
-> +       unsigned long flags;
-> +       u16 m;
+> +	gpioj: gpio@58022400 {
+> +		status = "okay";
+> +		ngpios = <16>;
+> +		gpio-ranges = <&pinctrl 0 144 16>;
+> +	};
 > +
-> +       raw_spin_lock_irqsave(&ctrl->lock, flags);
-> +       m = ctrl->intr_mask[port];
-> +       m &= ~realtek_gpio_imr_bits(port_pin, REALTEK_GPIO_IMR_LINE_MASK);
-> +       ctrl->intr_mask[port] = m;
-> +       realtek_gpio_write_imr(ctrl, port, ctrl->intr_type[port], m);
-> +       raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-> +}
+> +	gpiok: gpio@58022800 {
+> +		status = "okay";
+> +		ngpios = <8>;
+> +		gpio-ranges = <&pinctrl 0 160 8>;
+> +	};
 > +
-> +static int realtek_gpio_irq_set_type(struct irq_data *data, unsigned int flow_type)
-> +{
-> +       struct realtek_gpio_ctrl *ctrl = irq_data_to_ctrl(data);
-> +       unsigned int line = irqd_to_hwirq(data);
-> +       unsigned int port = line / 8;
-> +       unsigned int port_pin = line % 8;
-> +       unsigned long flags;
-> +       u16 type, t;
+> +	i2c1_pins_a: i2c1-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('B', 6, AF4)>, /* I2C1_SCL */
+> +				 <STM32_PINMUX('B', 7, AF4)>; /* I2C1_SDA */
+> +			bias-disable;
+> +			drive-open-drain;
+> +			slew-rate = <0>;
+> +		};
+> +	};
 > +
-> +       switch (flow_type & IRQ_TYPE_SENSE_MASK) {
-> +       case IRQ_TYPE_EDGE_FALLING:
-> +               type = REALTEK_GPIO_IRQ_EDGE_FALLING;
-> +               break;
-> +       case IRQ_TYPE_EDGE_RISING:
-> +               type = REALTEK_GPIO_IRQ_EDGE_RISING;
-> +               break;
-> +       case IRQ_TYPE_EDGE_BOTH:
-> +               type = REALTEK_GPIO_IRQ_EDGE_BOTH;
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
+> +	ethernet_rmii: rmii-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('G', 11, AF11)>,
+> +				 <STM32_PINMUX('G', 13, AF11)>,
+> +				 <STM32_PINMUX('G', 12, AF11)>,
+> +				 <STM32_PINMUX('C', 4, AF11)>,
+> +				 <STM32_PINMUX('C', 5, AF11)>,
+> +				 <STM32_PINMUX('A', 7, AF11)>,
+> +				 <STM32_PINMUX('C', 1, AF11)>,
+> +				 <STM32_PINMUX('A', 2, AF11)>,
+> +				 <STM32_PINMUX('A', 1, AF11)>;
+> +			slew-rate = <2>;
+> +		};
+> +	};
 > +
-> +       irq_set_handler_locked(data, handle_edge_irq);
+> +	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> +				 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('C', 12, AF12)>, /* SDMMC1_CK */
+> +				 <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> +			slew-rate = <3>;
+> +			drive-push-pull;
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +       raw_spin_lock_irqsave(&ctrl->lock, flags);
-> +       t = ctrl->intr_type[port];
-> +       t &= ~realtek_gpio_imr_bits(port_pin, REALTEK_GPIO_IMR_LINE_MASK);
-> +       t |= realtek_gpio_imr_bits(port_pin, type);
-> +       ctrl->intr_type[port] = t;
-> +       realtek_gpio_write_imr(ctrl, port, t, ctrl->intr_mask[port]);
-> +       raw_spin_unlock_irqrestore(&ctrl->lock, flags);
+> +	sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> +				 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('C', 12, AF12)>; /* SDMMC1_CK */
+> +			slew-rate = <3>;
+> +			drive-push-pull;
+> +			bias-disable;
+> +		};
+> +		pins2{
+> +			pinmux = <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> +			slew-rate = <3>;
+> +			drive-open-drain;
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +       return 0;
-> +}
+> +	sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> +				 <STM32_PINMUX('C', 9, ANALOG)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('C', 10, ANALOG)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('C', 11, ANALOG)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('C', 12, ANALOG)>, /* SDMMC1_CK */
+> +				 <STM32_PINMUX('D', 2, ANALOG)>; /* SDMMC1_CMD */
+> +		};
+> +	};
 > +
-> +static void realtek_gpio_irq_handler(struct irq_desc *desc)
-> +{
-> +       struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> +       struct realtek_gpio_ctrl *ctrl = gpiochip_get_data(gc);
-> +       struct irq_chip *irq_chip = irq_desc_get_chip(desc);
-> +       unsigned int lines_done;
-> +       unsigned int port_pin_count;
-> +       unsigned int irq;
-> +       unsigned long status;
-> +       int offset;
+> +	sdmmc2_b4_pins_a: sdmmc2-b4-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC1_D0 */
+> +				 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('D', 6, AF11)>, /* SDMMC1_CK */
+> +				 <STM32_PINMUX('D', 7, AF11)>; /* SDMMC1_CMD */
+> +			slew-rate = <3>;
+> +			drive-push-pull;
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +       chained_irq_enter(irq_chip, desc);
+> +	sdmmc2_b4_od_pins_a: sdmmc2-b4-od-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> +				 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('D', 6, AF11)>; /* SDMMC1_CK */
+> +			slew-rate = <3>;
+> +			drive-push-pull;
+> +			bias-disable;
+> +		};
+> +		pins2{
+> +			pinmux = <STM32_PINMUX('D', 7, AF11)>; /* SDMMC1_CMD */
+> +			slew-rate = <3>;
+> +			drive-open-drain;
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +       for (lines_done = 0; lines_done < gc->ngpio; lines_done += 8) {
-> +               status = realtek_gpio_read_isr(ctrl, lines_done / 8);
-> +               port_pin_count = min(gc->ngpio - lines_done, 8U);
-> +               for_each_set_bit(offset, &status, port_pin_count) {
-> +                       irq = irq_find_mapping(gc->irq.domain, offset);
-> +                       generic_handle_irq(irq);
-> +               }
-> +       }
+> +	sdmmc2_b4_sleep_pins_a: sdmmc2-b4-sleep-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('B', 14, ANALOG)>, /* SDMMC1_D0 */
+> +				 <STM32_PINMUX('B', 15, ANALOG)>, /* SDMMC1_D1 */
+> +				 <STM32_PINMUX('B', 3, ANALOG)>, /* SDMMC1_D2 */
+> +				 <STM32_PINMUX('B', 4, ANALOG)>, /* SDMMC1_D3 */
+> +				 <STM32_PINMUX('D', 6, ANALOG)>, /* SDMMC1_CK */
+> +				 <STM32_PINMUX('D', 7, ANALOG)>; /* SDMMC1_CMD */
+> +		};
+> +	};
 > +
-> +       chained_irq_exit(irq_chip, desc);
-> +}
+> +	sdmmc1_dir_pins_a: sdmmc1-dir-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('C', 6, AF8)>, /* SDMMC1_D0DIR */
+> +				 <STM32_PINMUX('C', 7, AF8)>, /* SDMMC1_D123DIR */
+> +				 <STM32_PINMUX('B', 9, AF7)>; /* SDMMC1_CDIR */
+> +			slew-rate = <3>;
+> +			drive-push-pull;
+> +			bias-pull-up;
+> +		};
+> +		pins2{
+> +			pinmux = <STM32_PINMUX('B', 8, AF7)>; /* SDMMC1_CKIN */
+> +			bias-pull-up;
+> +		};
+> +	};
 > +
-> +static int realtek_gpio_irq_init(struct gpio_chip *gc)
-> +{
-> +       struct realtek_gpio_ctrl *ctrl = gpiochip_get_data(gc);
-> +       unsigned int port;
+> +	sdmmc1_dir_sleep_pins_a: sdmmc1-dir-sleep-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC1_D0DIR */
+> +				 <STM32_PINMUX('C', 7, ANALOG)>, /* SDMMC1_D123DIR */
+> +				 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC1_CDIR */
+> +				 <STM32_PINMUX('B', 8, ANALOG)>; /* SDMMC1_CKIN */
+> +		};
+> +	};
 > +
-> +       for (port = 0; (port * 8) < gc->ngpio; port++) {
-> +               realtek_gpio_write_imr(ctrl, port, 0, 0);
-> +               realtek_gpio_clear_isr(ctrl, port, GENMASK(7, 0));
-> +       }
+> +	usart1_pins: usart1-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('B', 14, AF4)>; /* USART1_TX */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('B', 15, AF4)>; /* USART1_RX */
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +       return 0;
-> +}
+> +	usart2_pins: usart2-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('D', 5, AF7)>; /* USART2_TX */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
+> +			bias-disable;
+> +		};
+> +	};
 > +
-> +static struct irq_chip realtek_gpio_irq_chip = {
-> +       .name = "realtek-otto-gpio",
-> +       .irq_ack = realtek_gpio_irq_ack,
-> +       .irq_mask = realtek_gpio_irq_mask,
-> +       .irq_unmask = realtek_gpio_irq_unmask,
-> +       .irq_set_type = realtek_gpio_irq_set_type,
+> +	usart3_pins: usart3-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('B', 10, AF7)>, /* USART3_TX */
+> +				 <STM32_PINMUX('D', 12, AF7)>; /* USART3_RTS_DE */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('B', 11, AF7)>, /* USART3_RX */
+> +				 <STM32_PINMUX('D', 11, AF7)>; /* USART3_CTS_NSS */
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	uart4_pins: uart4-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('A', 0, AF8)>; /* UART4_TX */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <0>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('I', 9, AF8)>; /* UART4_RX */
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	usbotg_hs_pins_a: usbotg-hs-0 {
+> +		pins {
+> +			pinmux = <STM32_PINMUX('H', 4, AF10)>,	/* ULPI_NXT */
+> +					 <STM32_PINMUX('I', 11, AF10)>, /* ULPI_DIR> */
+> +					 <STM32_PINMUX('C', 0, AF10)>,	/* ULPI_STP> */
+> +					 <STM32_PINMUX('A', 5, AF10)>,	/* ULPI_CK> */
+> +					 <STM32_PINMUX('A', 3, AF10)>,	/* ULPI_D0> */
+> +					 <STM32_PINMUX('B', 0, AF10)>,	/* ULPI_D1> */
+> +					 <STM32_PINMUX('B', 1, AF10)>,	/* ULPI_D2> */
+> +					 <STM32_PINMUX('B', 10, AF10)>, /* ULPI_D3> */
+> +					 <STM32_PINMUX('B', 11, AF10)>, /* ULPI_D4> */
+> +					 <STM32_PINMUX('B', 12, AF10)>, /* ULPI_D5> */
+> +					 <STM32_PINMUX('B', 13, AF10)>, /* ULPI_D6> */
+> +					 <STM32_PINMUX('B', 5, AF10)>;	/* ULPI_D7> */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <2>;
+> +		};
+> +	};
+> +
+> +	spi1_pins: spi1-0 {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('A', 5, AF5)>,
+> +				/* SPI1_CLK */
+> +				 <STM32_PINMUX('B', 5, AF5)>;
+> +				/* SPI1_MOSI */
+> +			bias-disable;
+> +			drive-push-pull;
+> +			slew-rate = <2>;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('G', 9, AF5)>;
+> +				/* SPI1_MISO */
+> +			bias-disable;
+> +		};
+> +	};
 > +};
 > +
-> +static const struct of_device_id realtek_gpio_of_match[] = {
-> +       {
-> +               .compatible = "realtek,otto-gpio",
-> +               .data = (void *)GPIO_INTERRUPTS_DISABLED,
-> +       },
-> +       {
-> +               .compatible = "realtek,rtl8380-gpio",
-> +       },
-> +       {
-> +               .compatible = "realtek,rtl8390-gpio",
-> +       },
-> +       {}
-> +};
-> +MODULE_DEVICE_TABLE(of, realtek_gpio_of_match);
+> diff --git a/arch/arm/boot/dts/stm32h743-pinctrl.dtsi b/arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> deleted file mode 100644
+> index fa5dcb6a5fdd..000000000000
+> --- a/arch/arm/boot/dts/stm32h743-pinctrl.dtsi
+> +++ /dev/null
+> @@ -1,306 +0,0 @@
+> -/*
+> - * Copyright 2017 - Alexandre Torgue <alexandre.torgue@st.com>
+> - *
+> - * This file is dual-licensed: you can use it either under the terms
+> - * of the GPL or the X11 license, at your option. Note that this dual
+> - * licensing only applies to this file, and not this project as a
+> - * whole.
+> - *
+> - *  a) This file is free software; you can redistribute it and/or
+> - *     modify it under the terms of the GNU General Public License as
+> - *     published by the Free Software Foundation; either version 2 of the
+> - *     License, or (at your option) any later version.
+> - *
+> - *     This file is distributed in the hope that it will be useful,
+> - *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - *     GNU General Public License for more details.
+> - *
+> - * Or, alternatively,
+> - *
+> - *  b) Permission is hereby granted, free of charge, to any person
+> - *     obtaining a copy of this software and associated documentation
+> - *     files (the "Software"), to deal in the Software without
+> - *     restriction, including without limitation the rights to use,
+> - *     copy, modify, merge, publish, distribute, sublicense, and/or
+> - *     sell copies of the Software, and to permit persons to whom the
+> - *     Software is furnished to do so, subject to the following
+> - *     conditions:
+> - *
+> - *     The above copyright notice and this permission notice shall be
+> - *     included in all copies or substantial portions of the Software.
+> - *
+> - *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> - *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> - *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> - *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> - *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> - *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> - *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> - *     OTHER DEALINGS IN THE SOFTWARE.
+> - */
+> -
+> -#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+> -
+> -/ {
+> -	soc {
+> -		pin-controller {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "st,stm32h743-pinctrl";
+> -			ranges = <0 0x58020000 0x3000>;
+> -			interrupt-parent = <&exti>;
+> -			st,syscfg = <&syscfg 0x8>;
+> -			pins-are-numbered;
+> -
+> -			gpioa: gpio@58020000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x0 0x400>;
+> -				clocks = <&rcc GPIOA_CK>;
+> -				st,bank-name = "GPIOA";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiob: gpio@58020400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x400 0x400>;
+> -				clocks = <&rcc GPIOB_CK>;
+> -				st,bank-name = "GPIOB";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioc: gpio@58020800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x800 0x400>;
+> -				clocks = <&rcc GPIOC_CK>;
+> -				st,bank-name = "GPIOC";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiod: gpio@58020c00 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0xc00 0x400>;
+> -				clocks = <&rcc GPIOD_CK>;
+> -				st,bank-name = "GPIOD";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioe: gpio@58021000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1000 0x400>;
+> -				clocks = <&rcc GPIOE_CK>;
+> -				st,bank-name = "GPIOE";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiof: gpio@58021400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1400 0x400>;
+> -				clocks = <&rcc GPIOF_CK>;
+> -				st,bank-name = "GPIOF";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiog: gpio@58021800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1800 0x400>;
+> -				clocks = <&rcc GPIOG_CK>;
+> -				st,bank-name = "GPIOG";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioh: gpio@58021c00 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x1c00 0x400>;
+> -				clocks = <&rcc GPIOH_CK>;
+> -				st,bank-name = "GPIOH";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioi: gpio@58022000 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2000 0x400>;
+> -				clocks = <&rcc GPIOI_CK>;
+> -				st,bank-name = "GPIOI";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpioj: gpio@58022400 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2400 0x400>;
+> -				clocks = <&rcc GPIOJ_CK>;
+> -				st,bank-name = "GPIOJ";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			gpiok: gpio@58022800 {
+> -				gpio-controller;
+> -				#gpio-cells = <2>;
+> -				reg = <0x2800 0x400>;
+> -				clocks = <&rcc GPIOK_CK>;
+> -				st,bank-name = "GPIOK";
+> -				interrupt-controller;
+> -				#interrupt-cells = <2>;
+> -			};
+> -
+> -			i2c1_pins_a: i2c1-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('B', 6, AF4)>, /* I2C1_SCL */
+> -						 <STM32_PINMUX('B', 7, AF4)>; /* I2C1_SDA */
+> -					bias-disable;
+> -					drive-open-drain;
+> -					slew-rate = <0>;
+> -				};
+> -			};
+> -
+> -			ethernet_rmii: rmii-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('G', 11, AF11)>,
+> -						 <STM32_PINMUX('G', 13, AF11)>,
+> -						 <STM32_PINMUX('G', 12, AF11)>,
+> -						 <STM32_PINMUX('C', 4, AF11)>,
+> -						 <STM32_PINMUX('C', 5, AF11)>,
+> -						 <STM32_PINMUX('A', 7, AF11)>,
+> -						 <STM32_PINMUX('C', 1, AF11)>,
+> -						 <STM32_PINMUX('A', 2, AF11)>,
+> -						 <STM32_PINMUX('A', 1, AF11)>;
+> -					slew-rate = <2>;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, AF12)>, /* SDMMC1_CK */
+> -						 <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, AF12)>; /* SDMMC1_CK */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-disable;
+> -				};
+> -				pins2{
+> -					pinmux = <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+> -					slew-rate = <3>;
+> -					drive-open-drain;
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
+> -						 <STM32_PINMUX('C', 9, ANALOG)>, /* SDMMC1_D1 */
+> -						 <STM32_PINMUX('C', 10, ANALOG)>, /* SDMMC1_D2 */
+> -						 <STM32_PINMUX('C', 11, ANALOG)>, /* SDMMC1_D3 */
+> -						 <STM32_PINMUX('C', 12, ANALOG)>, /* SDMMC1_CK */
+> -						 <STM32_PINMUX('D', 2, ANALOG)>; /* SDMMC1_CMD */
+> -				};
+> -			};
+> -
+> -			sdmmc1_dir_pins_a: sdmmc1-dir-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('C', 6, AF8)>, /* SDMMC1_D0DIR */
+> -						 <STM32_PINMUX('C', 7, AF8)>, /* SDMMC1_D123DIR */
+> -						 <STM32_PINMUX('B', 9, AF7)>; /* SDMMC1_CDIR */
+> -					slew-rate = <3>;
+> -					drive-push-pull;
+> -					bias-pull-up;
+> -				};
+> -				pins2{
+> -					pinmux = <STM32_PINMUX('B', 8, AF7)>; /* SDMMC1_CKIN */
+> -					bias-pull-up;
+> -				};
+> -			};
+> -
+> -			sdmmc1_dir_sleep_pins_a: sdmmc1-dir-sleep-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC1_D0DIR */
+> -						 <STM32_PINMUX('C', 7, ANALOG)>, /* SDMMC1_D123DIR */
+> -						 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC1_CDIR */
+> -						 <STM32_PINMUX('B', 8, ANALOG)>; /* SDMMC1_CKIN */
+> -				};
+> -			};
+> -
+> -			usart1_pins: usart1-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('B', 14, AF4)>; /* USART1_TX */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <0>;
+> -				};
+> -				pins2 {
+> -					pinmux = <STM32_PINMUX('B', 15, AF4)>; /* USART1_RX */
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			usart2_pins: usart2-0 {
+> -				pins1 {
+> -					pinmux = <STM32_PINMUX('D', 5, AF7)>; /* USART2_TX */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <0>;
+> -				};
+> -				pins2 {
+> -					pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
+> -					bias-disable;
+> -				};
+> -			};
+> -
+> -			usbotg_hs_pins_a: usbotg-hs-0 {
+> -				pins {
+> -					pinmux = <STM32_PINMUX('H', 4, AF10)>,	/* ULPI_NXT */
+> -							 <STM32_PINMUX('I', 11, AF10)>, /* ULPI_DIR> */
+> -							 <STM32_PINMUX('C', 0, AF10)>,	/* ULPI_STP> */
+> -							 <STM32_PINMUX('A', 5, AF10)>,	/* ULPI_CK> */
+> -							 <STM32_PINMUX('A', 3, AF10)>,	/* ULPI_D0> */
+> -							 <STM32_PINMUX('B', 0, AF10)>,	/* ULPI_D1> */
+> -							 <STM32_PINMUX('B', 1, AF10)>,	/* ULPI_D2> */
+> -							 <STM32_PINMUX('B', 10, AF10)>, /* ULPI_D3> */
+> -							 <STM32_PINMUX('B', 11, AF10)>, /* ULPI_D4> */
+> -							 <STM32_PINMUX('B', 12, AF10)>, /* ULPI_D5> */
+> -							 <STM32_PINMUX('B', 13, AF10)>, /* ULPI_D6> */
+> -							 <STM32_PINMUX('B', 5, AF10)>;	/* ULPI_D7> */
+> -					bias-disable;
+> -					drive-push-pull;
+> -					slew-rate = <2>;
+> -				};
+> -			};
+> -		};
+> -	};
+> -};
+> diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
+> index 4ebffb0a45a3..b58cae967b2a 100644
+> --- a/arch/arm/boot/dts/stm32h743.dtsi
+> +++ b/arch/arm/boot/dts/stm32h743.dtsi
+> @@ -135,6 +135,22 @@
+>   			clocks = <&rcc USART2_CK>;
+>   		};
+>   
+> +		usart3: serial@40004800 {
+> +			compatible = "st,stm32h7-uart";
+> +			reg = <0x40004800 0x400>;
+> +			interrupts = <39>;
+> +			status = "disabled";
+> +			clocks = <&rcc USART3_CK>;
+> +		};
 > +
-> +static int realtek_gpio_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       unsigned int dev_flags;
-> +       struct gpio_irq_chip *girq;
-> +       struct realtek_gpio_ctrl *ctrl;
-> +       u32 ngpios;
-> +       int err, irq;
+> +		uart4: serial@40004c00 {
+> +			compatible = "st,stm32h7-uart";
+> +			reg = <0x40004c00 0x400>;
+> +			interrupts = <52>;
+> +			status = "disabled";
+> +			clocks = <&rcc UART4_CK>;
+> +		};
 > +
-> +       ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-> +       if (!ctrl)
-> +               return -ENOMEM;
+>   		i2c1: i2c@40005400 {
+>   			compatible = "st,stm32f7-i2c";
+>   			#address-cells = <1>;
+> @@ -159,7 +175,7 @@
+>   			status = "disabled";
+>   		};
+>   
+> -		i2c3: i2c@40005C00 {
+> +		i2c3: i2c@40005c00 {
+>   			compatible = "st,stm32f7-i2c";
+>   			#address-cells = <1>;
+>   			#size-cells = <0>;
+> @@ -368,6 +384,20 @@
+>   			max-frequency = <120000000>;
+>   		};
+>   
+> +		sdmmc2: mmc@48022400 {
+> +			compatible = "arm,pl18x", "arm,primecell";
+> +			arm,primecell-periphid = <0x10153180>;
+> +			reg = <0x48022400 0x400>;
+> +			interrupts = <124>;
+> +			interrupt-names	= "cmd_irq";
+> +			clocks = <&rcc SDMMC2_CK>;
+> +			clock-names = "apb_pclk";
+> +			resets = <&rcc STM32H7_AHB2_RESET(SDMMC2)>;
+> +			cap-sd-highspeed;
+> +			cap-mmc-highspeed;
+> +			max-frequency = <120000000>;
+> +		};
 > +
-> +       dev_flags = (unsigned int) device_get_match_data(dev);
+>   		exti: interrupt-controller@58000000 {
+>   			compatible = "st,stm32h7-exti";
+>   			interrupt-controller;
+> @@ -392,7 +422,7 @@
+>   			status = "disabled";
+>   		};
+>   
+> -		i2c4: i2c@58001C00 {
+> +		i2c4: i2c@58001c00 {
+>   			compatible = "st,stm32f7-i2c";
+>   			#address-cells = <1>;
+>   			#size-cells = <0>;
+> @@ -555,6 +585,137 @@
+>   			snps,pbl = <8>;
+>   			status = "disabled";
+>   		};
 > +
-> +       if (device_property_read_u32(dev, "ngpios", &ngpios))
-> +               ngpios = REALTEK_GPIO_MAX;
-
-You may actually drop the conditional and do like this:
-
-       ngpios = REALTEK_GPIO_MAX;
-       device_property_read_u32(dev, "ngpios", &ngpios);
-       if (ngpios > ...)
-
-> +       if (ngpios > REALTEK_GPIO_MAX) {
-> +               dev_err(&pdev->dev, "invalid ngpios (max. %d)\n",
-> +                       REALTEK_GPIO_MAX);
-> +               return -EINVAL;
-> +       }
+> +		pinctrl: pin-controller@58020000 {
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			compatible = "st,stm32h743-pinctrl";
+> +			ranges = <0 0x58020000 0x3000>;
+> +			interrupt-parent = <&exti>;
+> +			st,syscfg = <&syscfg 0x8>;
+> +			pins-are-numbered;
 > +
-> +       ctrl->base = devm_platform_ioremap_resource(pdev, 0);
-> +       if (IS_ERR(ctrl->base))
-> +               return PTR_ERR(ctrl->base);
+> +			gpioa: gpio@58020000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x0 0x400>;
+> +				clocks = <&rcc GPIOA_CK>;
+> +				st,bank-name = "GPIOA";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +       raw_spin_lock_init(&ctrl->lock);
+> +			gpiob: gpio@58020400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x400 0x400>;
+> +				clocks = <&rcc GPIOB_CK>;
+> +				st,bank-name = "GPIOB";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +       err = bgpio_init(&ctrl->gc, dev, 4,
-> +               ctrl->base + REALTEK_GPIO_REG_DATA, NULL, NULL,
-> +               ctrl->base + REALTEK_GPIO_REG_DIR, NULL,
-> +               BGPIOF_BIG_ENDIAN_BYTE_ORDER);
-> +       if (err) {
-> +               dev_err(dev, "unable to init generic GPIO");
-> +               return err;
-> +       }
+> +			gpioc: gpio@58020800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x800 0x400>;
+> +				clocks = <&rcc GPIOC_CK>;
+> +				st,bank-name = "GPIOC";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +       ctrl->gc.ngpio = ngpios;
-> +       ctrl->gc.owner = THIS_MODULE;
+> +			gpiod: gpio@58020c00 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0xc00 0x400>;
+> +				clocks = <&rcc GPIOD_CK>;
+> +				st,bank-name = "GPIOD";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +       irq = platform_get_irq_optional(pdev, 0);
-> +       if (!(dev_flags & GPIO_INTERRUPTS_DISABLED) && irq > 0) {
-> +               girq = &ctrl->gc.irq;
-> +               girq->chip = &realtek_gpio_irq_chip;
-> +               girq->default_type = IRQ_TYPE_NONE;
-> +               girq->handler = handle_bad_irq;
-> +               girq->parent_handler = realtek_gpio_irq_handler;
-> +               girq->num_parents = 1;
-> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
-> +                                       sizeof(*girq->parents), GFP_KERNEL);
-> +               if (!girq->parents)
-> +                       return -ENOMEM;
-> +               girq->parents[0] = irq;
-> +               girq->init_hw = realtek_gpio_irq_init;
-> +       }
+> +			gpioe: gpio@58021000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1000 0x400>;
+> +				clocks = <&rcc GPIOE_CK>;
+> +				st,bank-name = "GPIOE";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +       return gpiochip_add_data(&ctrl->gc, ctrl);
-
-Either you have to have ->remove() callback defined or use
-devm_gpiochip_add_data() here.
-
-> +}
+> +			gpiof: gpio@58021400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1400 0x400>;
+> +				clocks = <&rcc GPIOF_CK>;
+> +				st,bank-name = "GPIOF";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +static struct platform_driver realtek_gpio_driver = {
-> +       .driver = {
-> +               .name = "realtek-otto-gpio",
-> +               .of_match_table = realtek_gpio_of_match,
-> +       },
-> +       .probe = realtek_gpio_probe,
-> +};
-> +module_platform_driver(realtek_gpio_driver);
+> +			gpiog: gpio@58021800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1800 0x400>;
+> +				clocks = <&rcc GPIOG_CK>;
+> +				st,bank-name = "GPIOG";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
 > +
-> +MODULE_DESCRIPTION("Realtek Otto GPIO support");
-> +MODULE_AUTHOR("Sander Vanheule <sander@svanheule.net>");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.30.2
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> +			gpioh: gpio@58021c00 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x1c00 0x400>;
+> +				clocks = <&rcc GPIOH_CK>;
+> +				st,bank-name = "GPIOH";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
+> +
+> +			gpioi: gpio@58022000 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2000 0x400>;
+> +				clocks = <&rcc GPIOI_CK>;
+> +				st,bank-name = "GPIOI";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
+> +
+> +			gpioj: gpio@58022400 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2400 0x400>;
+> +				clocks = <&rcc GPIOJ_CK>;
+> +				st,bank-name = "GPIOJ";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
+> +
+> +			gpiok: gpio@58022800 {
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +				reg = <0x2800 0x400>;
+> +				clocks = <&rcc GPIOK_CK>;
+> +				st,bank-name = "GPIOK";
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				status = "disabled";
+> +			};
+> +		};
+>   	};
+>   };
+>   
+> diff --git a/arch/arm/boot/dts/stm32h743i-disco.dts b/arch/arm/boot/dts/stm32h743i-disco.dts
+> index e446d311c520..59e01ce10318 100644
+> --- a/arch/arm/boot/dts/stm32h743i-disco.dts
+> +++ b/arch/arm/boot/dts/stm32h743i-disco.dts
+> @@ -42,7 +42,7 @@
+>   
+>   /dts-v1/;
+>   #include "stm32h743.dtsi"
+> -#include "stm32h743-pinctrl.dtsi"
+> +#include "stm32h7-pinctrl.dtsi"
+>   
+>   / {
+>   	model = "STMicroelectronics STM32H743i-Discovery board";
+> diff --git a/arch/arm/boot/dts/stm32h743i-eval.dts b/arch/arm/boot/dts/stm32h743i-eval.dts
+> index 8f398178f5e5..38cc7faf6884 100644
+> --- a/arch/arm/boot/dts/stm32h743i-eval.dts
+> +++ b/arch/arm/boot/dts/stm32h743i-eval.dts
+> @@ -42,7 +42,7 @@
+>   
+>   /dts-v1/;
+>   #include "stm32h743.dtsi"
+> -#include "stm32h743-pinctrl.dtsi"
+> +#include "stm32h7-pinctrl.dtsi"
+>   
+>   / {
+>   	model = "STMicroelectronics STM32H743i-EVAL board";
+> 
