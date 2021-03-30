@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73FF34E297
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA3534E2B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhC3Hx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhC3Hxo (ORCPT
+        id S231259AbhC3IF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:05:29 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14195 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhC3IFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:53:44 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AA4C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:53:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id w11so5735418ply.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sSZY0eJ77vdtYQefXb2yo/92zDLVSNWjzbsQ6OFfRDY=;
-        b=EVbwTv02+x9ZZzeuFpVvG1763ys6pi18GwTHaYzg7QhVSefOeHqlRabQ19roKqUvnc
-         61Ttv9P79rA9wnYQlp+7NssWHpG3zGqm3bb2u0wyzAbIZ/B4QoMMesxBuxvA/U0r1F87
-         KiT0NDeS9VkKWPopX175eLTj8oCEx0uYTU6UK8kX/O1FYbY5MguxiB3orbx0Za8hTVvM
-         1PyB+l+9zJ6IiD0+Q3XyDY7o8m7AYmTlc0m/y7Myjt9CL06a3/DisR48cNlT7B+j8Ukh
-         zap77UZ2CP9YEXnuxgn+FAKzZamGmnYzzHVzeFvWFJxr7RoNZAShd+75W2pMOL5VuQMd
-         T5kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sSZY0eJ77vdtYQefXb2yo/92zDLVSNWjzbsQ6OFfRDY=;
-        b=em/PLEZ6p2K7abQu4BAEs6SPqF0wsO7Us0TSx1kcnXAl6NzQ+m8OyW1PyD2q86gL05
-         R/UOeBVwo5u0GWQVkDSLwdp1d4zhtczdAvIGmR7LYIwNj738RgYpHRnDQSc0s56DpHa0
-         LSM51P7mqFU1byo9bqcHZUraNFD978GM1LJ1hLnD9O6sVfNYiAB15nj1Une5575BPCtB
-         Sv/kgBU6U9ZgFsamT4+qwvQpXE5CpkHgiYt5us51EUVJLnS8SdIumNBO3SAvys7MfAd8
-         FjPjrs7ozxuy1wI9YtaDEEM7hJwDfgRGUNysYd6XRGk59pfll7AAordRoHQenUta7fYg
-         al+g==
-X-Gm-Message-State: AOAM533J5bV9XEZiguKWjd6E1Rdr+an57svJI4DiIeS7lAMgoCbcKo9H
-        6t9DpAHERDJwN+B++e+C0r3/RCOGdgXIxGCD+OSf+A==
-X-Google-Smtp-Source: ABdhPJzrbhDosdqkF9Wl5ayuaorrj13GIgInJxIUci8Wxhc58N/za6y1BfQDth8/QPB2EY/A+2Eiyf+Cww2UkNfo/g0=
-X-Received: by 2002:a17:90b:4008:: with SMTP id ie8mr3140931pjb.231.1617090824200;
- Tue, 30 Mar 2021 00:53:44 -0700 (PDT)
+        Tue, 30 Mar 2021 04:05:16 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8hkd6BbrzmbPH;
+        Tue, 30 Mar 2021 16:02:33 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
+ 16:05:00 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH v2] crypto: hisilicon/sec - Fix a module parameter error
+Date:   Tue, 30 Mar 2021 16:02:32 +0800
+Message-ID: <1617091352-52938-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org> <1617067704-28850-4-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1617067704-28850-4-git-send-email-bbhatt@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Tue, 30 Mar 2021 10:01:53 +0200
-Message-ID: <CAMZdPi_wwBt99yGDw9AkeF0AB11_MyTr3o__srqj7QnpHzTX3w@mail.gmail.com>
-Subject: Re: [PATCH v1 3/7] bus: mhi: core: Handle EDL mode entry appropriately
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
-        Naveen Kumar <naveen.kumar@quectel.com>,
-        abickett@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 at 03:28, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
->
-> Device entering EDL or Emergency Download Mode will be in a
-> SYS_ERROR MHI state. This requires MHI host to proceed with the
-> EDL image download over BHI before device can enter an MHI READY
-> state and proceed with further bootup. Allow this to be handled
-> by relying on the execution environment check after SYS_ERROR
-> processing to determine whether to wait for an MHI READY or
-> download the EDL image over BHI after moving MHI PM state to
-> Power on Reset internally. This way handling is contained well
-> within the MHI core driver and helps pave the way for Flash
-> Programmer execution environment functionality.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+ctx_q_num is a module parameter set by the user to specify the
+number of qp queues required to create a ctx.
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+When the number of qp queues allocated by PF or VF is less than
+the ctx_q_num, an error will be reported when ctx is initialized
+in kernel mode, which leads to the problem that the registered
+algorithms cannot be used.
+
+Therefore, when PF or VF is initialized, if the number of qp queues
+is not enough to create a ctx, the kernel mode cannot be used,
+and there is no need to register the kernel mode algorithms.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+
+Changes in V2:
+ - Add algorithms unregistration processing
+
+ drivers/crypto/hisilicon/sec2/sec_main.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index b1818f7..8e2e2b1 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -867,10 +867,15 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		pci_warn(pdev, "Failed to init debugfs!\n");
+ 
+-	ret = hisi_qm_alg_register(qm, &sec_devices);
+-	if (ret < 0) {
+-		pr_err("Failed to register driver to crypto.\n");
+-		goto err_qm_stop;
++	if (qm->qp_num >= ctx_q_num) {
++		ret = hisi_qm_alg_register(qm, &sec_devices);
++		if (ret < 0) {
++			pr_err("Failed to register driver to crypto.\n");
++			goto err_qm_stop;
++		}
++	} else {
++		pci_warn(qm->pdev,
++			"Failed to use kernel mode, qp not enough!\n");
+ 	}
+ 
+ 	if (qm->uacce) {
+@@ -906,7 +911,9 @@ static void sec_remove(struct pci_dev *pdev)
+ 	struct hisi_qm *qm = pci_get_drvdata(pdev);
+ 
+ 	hisi_qm_wait_task_finish(qm, &sec_devices);
+-	hisi_qm_alg_unregister(qm, &sec_devices);
++	if (qm->qp_num >= ctx_q_num)
++		hisi_qm_alg_unregister(qm, &sec_devices);
++
+ 	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
+ 		hisi_qm_sriov_disable(pdev, true);
+ 
+-- 
+2.8.1
+
