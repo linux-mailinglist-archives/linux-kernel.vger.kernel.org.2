@@ -2,89 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAD434F50D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18D434F510
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbhC3XaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhC3X3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:29:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9B3619B9;
-        Tue, 30 Mar 2021 23:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617146991;
-        bh=pFv56VvafOhxhfjfYu4/MQ1cLcgzzN0jhy6Oq7chMBI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JNjyX8UgayeJPVIoMPEy/8EHfKuqS25d0xcGMlgoHcWN+gjm4WjdkGfGhgZWI9vdj
-         mRuanoNg6CUQM/qlxRYqzpQcEQJJD2qUZbmRENGRJgz5vQvBybljIkYtxwjZgZf+23
-         bp3ac/CaXNLuvRoj82swXuPkDPb+dxdVJCc8z3GW02qRmR6lDm6tobNIIkehyA8LKM
-         8ixSVtXOoT2q5Vd/1pjgDyUIqud6Tc1bCojrNdKEofkeiDBX6bvi0Lk4Q+sSPBUpyz
-         3yvBu+D0zO4t8c7sX+11Co58jJcHoVTs3FuEm4g/WHRz9l8j8vPj6LVnuUzNfzKM5E
-         XQvbSWLo5ezhA==
-Date:   Tue, 30 Mar 2021 16:29:46 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     cjdb@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: fix alignment mismatch.
-Message-ID: <20210330232946.m5p7426macyjduzm@archlinux-ax161>
-References: <20210330230249.709221-1-jiancai@google.com>
+        id S232969AbhC3XbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhC3Xav (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 19:30:51 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CECC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 16:30:50 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id h7so8472212ilj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 16:30:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o671+X957x3ohIb8lZy+lC6mbupaAR79VW4I7NvzAKM=;
+        b=q3+rZbXz4Tlokww2KCM+zuxWcJwwrl95Q65TPi93mxksx1cxTwhxtRQthFoKlW/aaE
+         xYID/mh8kTYSBSFSfeMbQi09UlsGYuv8sTi/J70kP03kPtupVHpt9VM/2P9gZqtyP8Mv
+         BkqWQSDaOHMyIQHFlG5WOBGaB6HIzl/+hJoq3s8i1M+lLfy/3H7DnwEUm82xCg/zAUNA
+         jg7s43cR2owsrmQgLifKwSvKOxA9Aac0QfDYalUL1M0kAly1px5zGaIeprVHZmph+p9s
+         VD6+cGjT+xJe4apJ1QbLt4mEgkKKQJ15CYKhdnnztORfoWmXVvrLogqWQow8RAfchHEl
+         8j4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o671+X957x3ohIb8lZy+lC6mbupaAR79VW4I7NvzAKM=;
+        b=V/iqULTwmxEWnUKLzyCZM2Z5rRG+ohaXAPs3+wiPHQYXsLhC6TZRew2qIeJpxKhvvc
+         52kRSnhnLkTiBQMfWxiL+NXeyJqKvir/tcxo/bhRKsAJwg7NQpzkwtiRWnj5omCnMyyj
+         xRg36rhCCtEvj5InHOHKwOUIFSvLihyOniSlfyecFSONc4uZ3vCj1WgLHcD/YgFx3wAj
+         8Hjgws/cTacN5EXbyAN2STS9cwWN/QAs/U8D/8y8HUxb4lDGT8IrPPXL1yFonoYErqV3
+         6glGTvRj7eOAlEbXyQyms+D+2ftLbWGV/3ZycbwpGcLSUdnAr+vbUpPzIDkM5+G23+GF
+         ZXYw==
+X-Gm-Message-State: AOAM533+1BXlxtz+5QPvcunl+EUUjxBWyiDWWOrdtSl+xp8w6rcLfCAj
+        m/UyUW1y0w/2YPyU6dpPzcCHv3yXNhfLZPbB3OKT6A==
+X-Google-Smtp-Source: ABdhPJzmBW6GzmEVr5Cuj8rTTicENZCXn7A7uW/m9mCcv0pU4T0pZyDhXHJKXWKktFLUDdPAX+wHrIkVeNo8GZEDhXY=
+X-Received: by 2002:a05:6e02:ee3:: with SMTP id j3mr520900ilk.85.1617147049699;
+ Tue, 30 Mar 2021 16:30:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330230249.709221-1-jiancai@google.com>
+References: <20210329234131.304999-1-axelrasmussen@google.com> <20210330205519.GK429942@xz-x1>
+In-Reply-To: <20210330205519.GK429942@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 30 Mar 2021 16:30:13 -0700
+Message-ID: <CAJHvVcikF9MJepyvf6riVKZEUxQvV1QMdoQoN5Kirs0TLcn-Dg@mail.gmail.com>
+Subject: Re: [PATCH v3] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jian,
+On Tue, Mar 30, 2021 at 1:55 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Mon, Mar 29, 2021 at 04:41:31PM -0700, Axel Rasmussen wrote:
+> > Previously, we shared too much of the code with COPY and ZEROPAGE, so we
+> > manipulated things in various invalid ways:
+> >
+> > - Previously, we unconditionally called shmem_inode_acct_block. In the
+> >   continue case, we're looking up an existing page which would have been
+> >   accounted for properly when it was allocated. So doing it twice
+> >   results in double-counting, and eventually leaking.
+> >
+> > - Previously, we made the pte writable whenever the VMA was writable.
+> >   However, for continue, consider this case:
+> >
+> >   1. A tmpfs file was created
+> >   2. The non-UFFD-registered side mmap()-s with MAP_SHARED
+> >   3. The UFFD-registered side mmap()-s with MAP_PRIVATE
+> >
+> >   In this case, even though the UFFD-registered VMA may be writable, we
+> >   still want CoW behavior. So, check for this case and don't make the
+> >   pte writable.
+> >
+> > - The initial pgoff / max_off check isn't necessary, so we can skip past
+> >   it. The second one seems likely to be unnecessary too, but keep it
+> >   just in case. Modify both checks to use pgoff, as offset is equivalent
+> >   and not needed.
+> >
+> > - Previously, we unconditionally called ClearPageDirty() in the error
+> >   path. In the continue case though, since this is an existing page, it
+> >   might have already been dirty before we started touching it. It's very
+> >   problematic to clear the bit incorrectly, but not a problem to leave
+> >   it - so, just omit the ClearPageDirty() entirely.
+> >
+> > - Previously, we unconditionally removed the page from the page cache in
+> >   the error path. But in the continue case, we didn't add it - it was
+> >   already there because the page is present in some second
+> >   (non-UFFD-registered) mapping. So, removing it is invalid.
+> >
+> > Because the error handling issues are easy to exercise in the selftest,
+> > make a small modification there to do so.
+> >
+> > Finally, refactor shmem_mcopy_atomic_pte a bit. By this point, we've
+> > added a lot of "if (!is_continue)"-s everywhere. It's cleaner to just
+> > check for that mode first thing, and then "goto" down to where the parts
+> > we actually want are. This leaves the code in between cleaner.
+> >
+> > Changes since v2:
+> > - Drop the ClearPageDirty() entirely, instead of trying to remember the
+> >   old value.
+> > - Modify both pgoff / max_off checks to use pgoff. It's equivalent to
+> >   offset, but offset wasn't initialized until the first check (which
+> >   we're skipping).
+> > - Keep the second pgoff / max_off check in the continue case.
+> >
+> > Changes since v1:
+> > - Refactor to skip ahead with goto, instead of adding several more
+> >   "if (!is_continue)".
+> > - Fix unconditional ClearPageDirty().
+> > - Don't pte_mkwrite() when is_continue && !VM_SHARED.
+> >
+> > Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  mm/shmem.c                               | 60 +++++++++++++-----------
+> >  tools/testing/selftests/vm/userfaultfd.c | 12 +++++
+> >  2 files changed, 44 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index d2e0e81b7d2e..fbcce850a16e 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -2377,18 +2377,22 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> >       struct page *page;
+> >       pte_t _dst_pte, *dst_pte;
+> >       int ret;
+> > -     pgoff_t offset, max_off;
+> > -
+> > -     ret = -ENOMEM;
+> > -     if (!shmem_inode_acct_block(inode, 1))
+> > -             goto out;
+> > +     pgoff_t max_off;
+> > +     int writable;
+>
+> Nit: can be bool.
+>
+> [...]
+>
+> > +install_ptes:
+> >       _dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+> > -     if (dst_vma->vm_flags & VM_WRITE)
+> > +     /* For CONTINUE on a non-shared VMA, don't pte_mkwrite for CoW. */
+> > +     writable = is_continue && !(dst_vma->vm_flags & VM_SHARED)
+> > +             ? 0
+> > +             : dst_vma->vm_flags & VM_WRITE;
+>
+> Nit: this code is slightly hard to read..  I'd slightly prefer "if
+> (is_continue)...".  But more below.
+>
+> > +     if (writable)
+> >               _dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
+> >       else {
+> >               /*
+> > @@ -2455,7 +2458,7 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> >
+> >       ret = -EFAULT;
+> >       max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> > -     if (unlikely(offset >= max_off))
+> > +     if (unlikely(pgoff >= max_off))
+> >               goto out_release_unlock;
+> >
+> >       ret = -EEXIST;
+> > @@ -2485,13 +2488,14 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> >       return ret;
+> >  out_release_unlock:
+> >       pte_unmap_unlock(dst_pte, ptl);
+> > -     ClearPageDirty(page);
+> > -     delete_from_page_cache(page);
+> > +     if (!is_continue)
+> > +             delete_from_page_cache(page);
+> >  out_release:
+> >       unlock_page(page);
+> >       put_page(page);
+> >  out_unacct_blocks:
+> > -     shmem_inode_unacct_blocks(inode, 1);
+> > +     if (!is_continue)
+> > +             shmem_inode_unacct_blocks(inode, 1);
+>
+> If you see we still have tons of "if (!is_continue)".  Those are the places
+> error prone.. even if not in this patch, could be in the patch when this
+> function got changed again.
+>
+> Sorry to say this a bit late: how about introduce a helper to install the pte?
 
-On Tue, Mar 30, 2021 at 04:02:49PM -0700, Jian Cai wrote:
-> This fixes the mismatch of alignments between csd and its use as an
-> argument to smp_call_function_single_async, which causes build failure
-> when -Walign-mismatch in Clang is used.
-> 
-> Link:
-> http://crrev.com/c/1193732
-> 
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Jian Cai <jiancai@google.com>
+No worries. :)
 
-Thanks for the patch. This is effectively a revert of commit
-4ccafe032005 ("block: unalign call_single_data in struct request"),
-which I had brought up in this thread:
+> Pesudo code:
+>
+> int shmem_install_uffd_pte(..., bool writable)
+> {
+>         ...
+>         _dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+>         if (dst_vma->vm_flags & VM_WRITE)
+>                 _dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
+>         else
+>                 set_page_dirty(page);
+>
+>         dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+>         if (!pte_none(*dst_pte)) {
+>                 pte_unmap_unlock(dst_pte, ptl);
+>                 return -EEXIST;
+>         }
+>
+>         inc_mm_counter(dst_mm, mm_counter_file(page));
+>         page_add_file_rmap(page, false);
+>         set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
+>
+>         /* No need to invalidate - it was non-present before */
+>         update_mmu_cache(dst_vma, dst_addr, dst_pte);
+>         pte_unmap_unlock(dst_pte, ptl);
+>         return 0;
+> }
+>
+> Then at the entry of shmem_mcopy_atomic_pte():
+>
+>         if (is_continue) {
+>                 page = find_lock_page(mapping, pgoff);
+>                 if (!page)
+>                     return -EFAULT;
+>                 ret = shmem_install_uffd_pte(...,
+>                         is_continue && !(dst_vma->vm_flags & VM_SHARED));
+>                 unlock_page(page);
+>                 if (ret)
+>                     put_page(page);
+>                 return ret;
+>         }
+>
+> Do you think this would be cleaner?
 
-https://lore.kernel.org/r/20210310182307.zzcbi5w5jrmveld4@archlinux-ax161/
+Yes, a refactor like that is promising. It's hard to say for certain
+without actually looking at the result - I'll spend some time tomorrow
+on a few options, and send along the cleanest version I come up with.
 
-This is obviously a correct fix, I am not just sure what the impact to
-'struct request' will be.
+Thanks for all the feedback and advice on this feature, Peter!
 
-Cheers,
-Nathan
-
-> ---
->  include/linux/blkdev.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index bc6bc8383b43..3b92330d95ad 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -231,7 +231,7 @@ struct request {
->  	unsigned long deadline;
->  
->  	union {
-> -		struct __call_single_data csd;
-> +		call_single_data_t csd;
->  		u64 fifo_time;
->  	};
->  
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
+>
+> --
+> Peter Xu
+>
