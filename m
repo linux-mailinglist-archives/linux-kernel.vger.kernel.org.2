@@ -2,98 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D1F34E5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E7334E5D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhC3Kvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:51:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49494 "EHLO mx2.suse.de"
+        id S231561AbhC3Kwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:52:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:30935 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhC3Kv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:51:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617101486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j0lrK2HLvgqtjwQNyAR8wDQpb72WULjjxhR0tTcwAR4=;
-        b=u2Zs7iXhTEI+aqxEpzy0q1lBVzxNz9X3Li9OgAGWgdzg2mmzDI5n+Kx2DRW+SvW3UvkeiO
-        I/pkw4LJYO8B3rgwUyTVMS607hHB5snXldDbj3JfR7MUV91kpHu2dQm6sn0UzTPxqFQtRe
-        XTI6K85LKK0XFCK8IupQFbH6/VMj2Vk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C5964B148;
-        Tue, 30 Mar 2021 10:51:26 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 12:51:26 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 04/12] module: Add printk format to add module build
- ID to stacktraces
-Message-ID: <YGMCrlUAlcxdlt06@alley>
-References: <20210324020443.1815557-1-swboyd@chromium.org>
- <20210324020443.1815557-5-swboyd@chromium.org>
- <6dfb8ca2-20f3-e58a-ad6b-db6a6472afe0@rasmusvillemoes.dk>
- <161661308874.3012082.15483899786731677633@swboyd.mtv.corp.google.com>
- <2785cae4-20be-85b5-7838-9a6dbd2baf72@rasmusvillemoes.dk>
- <161662492346.3012082.17886011577458863951@swboyd.mtv.corp.google.com>
+        id S231749AbhC3Kwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 06:52:31 -0400
+IronPort-SDR: kLNd0QQ57LodFRtLiQGqlFbQ/JCCfFt1zBnl8UeuqHDPwOeVmenhmODWv/Zcaiq0yzw0WIe0WJ
+ 2NxgdAOU6UKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="171760091"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="171760091"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 03:52:30 -0700
+IronPort-SDR: oYcoW620DWKKBN/2Q4Tyns6WetBaWYMV4jWqaM1IM9iUEUzNcWlRbSu2bDFIk1Xo+RIN4Xegsa
+ F545qXNvnCgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="376796209"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 30 Mar 2021 03:52:29 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRBz2-0005Er-99; Tue, 30 Mar 2021 10:52:28 +0000
+Date:   Tue, 30 Mar 2021 18:51:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ 9a98bc2cf08a095367449b3548c3d9ad4ad2cd20
+Message-ID: <606302bd.WD2S0mLBDovqnmb4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161662492346.3012082.17886011577458863951@swboyd.mtv.corp.google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-03-24 15:28:43, Stephen Boyd wrote:
-> Quoting Rasmus Villemoes (2021-03-24 15:21:34)
-> > On 24/03/2021 20.11, Stephen Boyd wrote:
-> > > Quoting Rasmus Villemoes (2021-03-24 02:57:13)
-> > 
-> > >>
-> > >> Is there any reason you didn't just make b an optional flag that could
-> > >> be specified with or without R? I suppose the parsing is more difficult
-> > >> with several orthogonal flags (see escaped_string()), but it's a little
-> > >> easier to understand. Dunno, it's not like we're gonna think of 10 other
-> > >> things that could be printed for a symbol, so perhaps it's fine.
-> > >>
-> > > 
-> > > I think I follow. So %pSb or %pSRb? If it's easier to understand then
-> > > sure. I was trying to avoid checking another character beyond fmt[1] but
-> > > it should be fine if fmt[1] is already 'R'.
-> 
-> I'm inclined to use %pSb and %pSRb. The code looks to simpler and I
-> suppose we can worry about different ordering/combination problems if it
-> comes to it.
->
-> ---8<---
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 41ddc353ebb8..0e94cba5ba20 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -968,6 +968,8 @@ char *symbol_string(char *buf, char *end, void *ptr,
->  #ifdef CONFIG_KALLSYMS
->         if (*fmt == 'B')
->                 sprint_backtrace(sym, value);
-> +       else if (*fmt == 'S' && (fmt[1] == 'b' || (fmt[1] == 'R' && fmt[2] == 'b')))
-> +               sprint_symbol_stacktrace(sym, value);
->         else if (*fmt != 's')
->                 sprint_symbol(sym, value);
->         else
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
+branch HEAD: 9a98bc2cf08a095367449b3548c3d9ad4ad2cd20  x86/vector: Add a sanity check to prevent IRQ2 allocations
 
-I prefer the extra "b" flag as well. It helps me to understand and
-memorize[*] the meaning.
+elapsed time: 728m
 
-[*] at least short-time memorize ;-)
+configs tested: 170
+configs skipped: 66
 
-Best Regards,
-Petr
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                     sequoia_defconfig
+powerpc                    gamecube_defconfig
+xtensa                          iss_defconfig
+powerpc                 mpc834x_mds_defconfig
+m68k                       m5208evb_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                         vf610m4_defconfig
+arm                        cerfcube_defconfig
+arm                          lpd270_defconfig
+m68k                        stmark2_defconfig
+powerpc                      pasemi_defconfig
+xtensa                  audio_kc705_defconfig
+arm                        magician_defconfig
+arm                       spear13xx_defconfig
+powerpc                           allnoconfig
+nios2                         3c120_defconfig
+sh                          polaris_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                        maltaup_defconfig
+arc                     nsimosci_hs_defconfig
+mips                   sb1250_swarm_defconfig
+arc                        vdk_hs38_defconfig
+mips                       capcella_defconfig
+arm                         lubbock_defconfig
+powerpc                       ppc64_defconfig
+arm                           h5000_defconfig
+arm                         orion5x_defconfig
+powerpc                    klondike_defconfig
+mips                      loongson3_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                             allyesconfig
+powerpc                      chrp32_defconfig
+sh                                  defconfig
+arm                            qcom_defconfig
+arm                           sama5_defconfig
+arc                        nsim_700_defconfig
+mips                          ath25_defconfig
+xtensa                generic_kc705_defconfig
+arm                         lpc18xx_defconfig
+powerpc                     rainier_defconfig
+um                                  defconfig
+arm                         shannon_defconfig
+powerpc                     akebono_defconfig
+arm                         socfpga_defconfig
+m68k                          atari_defconfig
+arc                    vdk_hs38_smp_defconfig
+sparc64                             defconfig
+arm                         hackkit_defconfig
+m68k                             alldefconfig
+parisc                generic-64bit_defconfig
+riscv                    nommu_virt_defconfig
+alpha                               defconfig
+arc                          axs101_defconfig
+mips                           xway_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                 canyonlands_defconfig
+sh                               alldefconfig
+sh                          r7780mp_defconfig
+arm                        spear6xx_defconfig
+arc                         haps_hs_defconfig
+mips                          malta_defconfig
+arm                         cm_x300_defconfig
+arm                      footbridge_defconfig
+arm                          iop32x_defconfig
+mips                      pistachio_defconfig
+s390                       zfcpdump_defconfig
+arm                      tct_hammer_defconfig
+x86_64                           alldefconfig
+m68k                        mvme147_defconfig
+powerpc                 mpc836x_rdk_defconfig
+nios2                            alldefconfig
+arm                          collie_defconfig
+arm                             pxa_defconfig
+alpha                            alldefconfig
+powerpc                    mvme5100_defconfig
+powerpc                      acadia_defconfig
+sh                           se7343_defconfig
+arm                           tegra_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+x86_64               randconfig-a002-20210329
+x86_64               randconfig-a003-20210329
+x86_64               randconfig-a006-20210329
+x86_64               randconfig-a001-20210329
+x86_64               randconfig-a005-20210329
+x86_64               randconfig-a004-20210329
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a003-20210329
+i386                 randconfig-a004-20210329
+i386                 randconfig-a002-20210329
+i386                 randconfig-a006-20210329
+i386                 randconfig-a005-20210329
+i386                 randconfig-a001-20210329
+i386                 randconfig-a014-20210329
+i386                 randconfig-a011-20210329
+i386                 randconfig-a015-20210329
+i386                 randconfig-a016-20210329
+i386                 randconfig-a013-20210329
+i386                 randconfig-a012-20210329
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
