@@ -2,223 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF4B34E9E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7E34E9E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhC3OJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbhC3OIk (ORCPT
+        id S231793AbhC3OKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:10:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41694 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231859AbhC3OJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:08:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A5FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 07:08:40 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lRF2U-0000Kj-3e; Tue, 30 Mar 2021 16:08:14 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:4ac3:d52e:3d04:f96e] (unknown [IPv6:2a03:f580:87bc:d400:4ac3:d52e:3d04:f96e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 7055A604226;
-        Tue, 30 Mar 2021 14:08:12 +0000 (UTC)
-Subject: Re: [PATCH net-next v1 2/3] net: phy: at803x: AR8085: add loopback
- support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, linux-imx@nxp.com,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210330135407.17010-1-o.rempel@pengutronix.de>
- <20210330135407.17010-3-o.rempel@pengutronix.de>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
- iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
- 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
- +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
- 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
- sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
- n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
- 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
- /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
- Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
- ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
- 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
- LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
- iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
- B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
- B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
- b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
- yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
- 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
- Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
- RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
- /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
- YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
- wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
- h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
- AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
- m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
- fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
- Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
- BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
- Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
- 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
- cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
- qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
- +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
- /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
- h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
- 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
- sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
- Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
- vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
- X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
- z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
- z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
- 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
- 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
- HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
- xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <de73886f-7264-2246-1c63-15e15ea1b17d@pengutronix.de>
-Date:   Tue, 30 Mar 2021 16:08:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 30 Mar 2021 10:09:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617113376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JjceWuLqxTVqN7nJGF6xvHg+l6EBFWCS4ZdW7zopx+w=;
+        b=glSSC0ck/f6kt31DqYIZhXjStyXssUUvLNU0MXszy123P+pedqMAPuidFjK5L3aScrjA+d
+        g60QYPkmEMusBdYbloMZXHSYmSLdBERLwth1ZaXAvr6XHm7jVwC9Palz03wgjlMZyZNUhF
+        TFG/7wkcCDd0560HOdtYve5xOkR0rV8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-KiW6mmzYOV6OSjZf91Aqfg-1; Tue, 30 Mar 2021 10:09:32 -0400
+X-MC-Unique: KiW6mmzYOV6OSjZf91Aqfg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 903ECDF8A0;
+        Tue, 30 Mar 2021 14:09:30 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-202.rdu2.redhat.com [10.10.118.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE2A35D9CC;
+        Tue, 30 Mar 2021 14:09:27 +0000 (UTC)
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org>
+ <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
+ <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
+ <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
+ <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
+ <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <4d0dbaa0-1f96-470c-0ed0-04f6827ea384@redhat.com>
+Date:   Tue, 30 Mar 2021 10:09:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210330135407.17010-3-o.rempel@pengutronix.de>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="9qnRxUEeQBGTfnIgj8hKgM8uPdrShHIE1"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9qnRxUEeQBGTfnIgj8hKgM8uPdrShHIE1
-Content-Type: multipart/mixed; boundary="ShqVL8TRdSmvaTCy9DzVvtglFq4r7MoPz";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>, Shawn Guo
- <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Fugang Duan <fugang.duan@nxp.com>
-Cc: Philippe Schenker <philippe.schenker@toradex.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Russell King <linux@armlinux.org.uk>, linux-imx@nxp.com,
- kernel@pengutronix.de, David Jander <david@protonic.nl>,
- Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
-Message-ID: <de73886f-7264-2246-1c63-15e15ea1b17d@pengutronix.de>
-Subject: Re: [PATCH net-next v1 2/3] net: phy: at803x: AR8085: add loopback
- support
-References: <20210330135407.17010-1-o.rempel@pengutronix.de>
- <20210330135407.17010-3-o.rempel@pengutronix.de>
-In-Reply-To: <20210330135407.17010-3-o.rempel@pengutronix.de>
-
---ShqVL8TRdSmvaTCy9DzVvtglFq4r7MoPz
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 3/30/21 3:54 PM, Oleksij Rempel wrote:
-> PHY loopback is needed for the ethernet controller self test support.
-> This PHY was tested with the FEC sefltest.
->=20
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/at803x.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->=20
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index d7799beb811c..8679738cf2ab 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -326,6 +326,30 @@ static int at803x_resume(struct phy_device *phydev=
-)
->  	return phy_modify(phydev, MII_BMCR, BMCR_PDOWN | BMCR_ISOLATE, 0);
->  }
-> =20
-> +static int at803x_loopback(struct phy_device *phydev, bool enable)
+On 3/29/21 11:13 PM, Guo Ren wrote:
+> On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>> On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
+>>> u32 a = 0x55aa66bb;
+>>> u16 *ptr = &a;
+>>>
+>>> CPU0                       CPU1
+>>> =========             =========
+>>> xchg16(ptr, new)     while(1)
+>>>                                      WRITE_ONCE(*(ptr + 1), x);
+>>>
+>>> When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
+>> Then I think your LL/SC is broken.
+>>
+>> That also means you really don't want to build super complex locking
+>> primitives on top, because that live-lock will percolate through.
+> Do you mean the below implementation has live-lock risk?
+> +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
 > +{
-> +	int ret;
+> +       u32 old, new, val = atomic_read(&lock->val);
 > +
-> +	if (enable)
-> +		ret =3D phy_clear_bits(phydev, MII_BMCR, BMCR_ANENABLE);
-> +	else
-> +		ret =3D phy_set_bits(phydev, MII_BMCR, BMCR_ANENABLE);
+> +       for (;;) {
+> +               new = (val & _Q_LOCKED_PENDING_MASK) | tail;
+> +               old = atomic_cmpxchg(&lock->val, val, new);
+> +               if (old == val)
+> +                       break;
 > +
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D genphy_loopback(phydev, enable);
-> +
-> +	/*
-> +	 * Loop back needs some time to start transmitting packets in the loo=
-p.
-> +	 * Documentation says nothing about it, so I take time which seems to=
+> +               val = old;
+> +       }
+> +       return old;
+> +}
+If there is a continuous stream of incoming spinlock takers, it is 
+possible that some cpus may have to wait a long time to set the tail 
+right. However, this should only happen on artificial workload. I doubt 
+it will happen with real workload or with limit number of cpus.
+>
+>> Step 1 would be to get your architecute fixed such that it can provide
+>> fwd progress guarantees for LL/SC. Otherwise there's absolutely no point
+>> in building complex systems with it.
+> Quote Waiman's comment [1] on xchg16 optimization:
+>
+> "This optimization is needed to make the qspinlock achieve performance
+> parity with ticket spinlock at light load."
+>
+> [1] https://lore.kernel.org/kvm/1429901803-29771-6-git-send-email-Waiman.Long@hp.com/
+>
+> So for a non-xhg16 machine:
+>   - ticket-lock for small numbers of CPUs
+>   - qspinlock for large numbers of CPUs
+>
+> Okay, I'll put all of them into the next patch :P
+>
+It is true that qspinlock may not offer much advantage when the number 
+of cpus is small. It shines for systems with many cpus. You may use 
+NR_CPUS to determine if the default should be ticket or qspinlock with 
+user override. To determine the right NR_CPUS threshold, you may need to 
+run on real SMP RISCV systems to find out.
 
-> +	 * work on AR8085.
-> +	 */
+Cheers,
+Longman
 
-/* Keep in mind the net multi line comment
- * style.
- */
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---ShqVL8TRdSmvaTCy9DzVvtglFq4r7MoPz--
-
---9qnRxUEeQBGTfnIgj8hKgM8uPdrShHIE1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBjMMkACgkQqclaivrt
-76kBigf/XXcPIOCb2UxASYnCZYYUU167hb/hzHYCXM3vC5m6/ZR0Y1pnVGo5Qq3m
-4Qit+og1nzN/K8Ki2TzAYGrGlbOV2KiMtH8mtPTom9IXTYhFxBwyrSBJeejHjJXT
-KYdGVyweOia3aXLN+gIL4fJty6PxjcIoCNmjRDo3trm2iStTylepJXL9zp9BKrDH
-jjVMfAlFpdga9w6E18arIgzn8ATUodlPTQoGNYZm1A0xIhAK6AtFc2QBbChVqgBt
-EQMJ+WPwcXH3wZ4TON3/sh2WTOOKhIpr1dikp39dCqTuUQXYEoJlliXjZ3LNRJPR
-ybfeyf58InU5SQZDHu/t3GfgUrQC5g==
-=laKh
------END PGP SIGNATURE-----
-
---9qnRxUEeQBGTfnIgj8hKgM8uPdrShHIE1--
