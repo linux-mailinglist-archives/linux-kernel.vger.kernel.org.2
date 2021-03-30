@@ -2,167 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D391E34F464
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3989034F470
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhC3Wkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbhC3Wkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:40:43 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9E4C061574;
-        Tue, 30 Mar 2021 15:40:40 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F94Cl2HCYz9sVm;
-        Wed, 31 Mar 2021 09:40:35 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617144037;
-        bh=ywPqiTvcnwI/MyxIao85KxRdULFyXrIiThWT8rsP/3M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uDqfd69pGE0c9EWZ25CzNpv0L3hIXU/Jx+A29WDrs2A6uAx5XbkfA9AlENpcqmaJ3
-         TYz6fihOlNvVwUZMD2E9yqBO2Tdaklq4HeY85xOIDxB6l2YDw8wBNsKP8GJ84Auhzc
-         +RZMEsjMFGzbp9d+/nnmCuwYPiQbmckXGpkBl+YfeMpf4WsEL5eDqtuOrFxmyWcqzE
-         kGPOjLmfhY7j0T0mFWLvIzjYB2A2UBr+YzMm7uUK/Q4IIarRuGXE92muMovtN4wp00
-         nRHZ2bQ8+Vt7rc0st/kKaritqKKXW+bPGW6wvAHQ2u7KE26l7Lj8CEXSQKoqai0cfh
-         qazcmuPqn30sw==
-Date:   Wed, 31 Mar 2021 09:40:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc:     Alexandre Ghiti <alex@ghiti.fr>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: linux-next: manual merge of the risc-v tree with Linus' tree
-Message-ID: <20210331094034.7481acca@canb.auug.org.au>
+        id S233032AbhC3WoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:44:11 -0400
+Received: from mail-bn7nam10on2056.outbound.protection.outlook.com ([40.107.92.56]:63400
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232924AbhC3Wnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 18:43:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ktJgiPkMuYh75SbjMbqzJQDTZIwwYpADt8X2x1sgXfq3TTCrTnPIj92pv0zVqlOU6z86EK/z3DNoQY0tk5RMHcsFNP7BgfM0AG90Veg40tNYQldF2jeGjBw9kwd4LbgU5FQukWHVNU47HQiscxK1ai6IPlGjK5/EN/H5QvebkZY+pt2ovPljwDSUam8nDpOgjRHtNgKho8Q5/gpLFXBWZXGra3mXyPyo2h/25MHSxKr8W+ib8rDpExsmbdXmz0jFxpUrg0fCESP5/vGW9kzEnYrlImrE/Ytkc75YsRcfVIOsazOtYXB2ox70l/VeGJuytsD1DBlF54sRYUIqFSZHPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNLphClAq7f+HN0c4BR9sHNfWb2MbBIS5R+KGKXClNQ=;
+ b=IE1Zq7Z13WLSZJSCacjXjXg05mfPgwNdYiO9vjyZ+Ueyx0vXKf2J/43SYlRWyAmIqItFHJoo8rZLCY+w84JbzKhNLVE3MENS53EPPxW4Cub1EwzbYgQnzS99XCsd3xWuUHAMn/S3171WiHr6Z7S8ZH6lh3TMlf1Cdsz3W73ZLyah7E8JwCPJq8fOrRW+Rgb+ZlN4ZgsnhH6ZOjaXBQzICLwgfsKnczySEqFjhNyyKbjWoDbEmygJQZbHSneK2eYi9leRS/MoGd2fnPh2TBQQVXtKMmZflQjeStJEZPUYs78jDyRgs7mx5j8WJ3mY2HjfZoQaWIYabwQHhjeZtbjJ8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SNLphClAq7f+HN0c4BR9sHNfWb2MbBIS5R+KGKXClNQ=;
+ b=OY0tuy2zncszr861bsNbSGLklMsXHIIyOWUEKKEqNLaPwsB5GYRW7ZdptuOxJj8f4RLoctXscvrd8WmbpWs78u3qMd64sF/dr40qDLGOamwtiDmzBt5a7eIaM3knz8UQvlmvz48ADgBqu8Fg7tRohtxm8Qi7z8dYaGdPkPTpyIgI2OAfS+nTkc7VKlFv5e8anuH2hzOs5sqq2Fd3cM8xcB/KVdGKdd54ShaFw81cszanHwHd9gL9yMkt6Rf4AsSCAFAFN8v4JwUxEnDPIs5dyKNx+w3c1lkgxXLlpqyKezgMOaZkcJktHZkW9k/7QlQ+cHc6ZaGYnAXlOegORNg7gA==
+Received: from DM5PR13CA0059.namprd13.prod.outlook.com (2603:10b6:3:117::21)
+ by MN2PR12MB3439.namprd12.prod.outlook.com (2603:10b6:208:cf::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
+ 2021 22:43:49 +0000
+Received: from DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:117:cafe::3c) by DM5PR13CA0059.outlook.office365.com
+ (2603:10b6:3:117::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
+ Transport; Tue, 30 Mar 2021 22:43:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
+ signed) header.d=none;linux-foundation.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT004.mail.protection.outlook.com (10.13.172.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 22:43:49 +0000
+Received: from [10.2.63.109] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
+ 2021 22:43:20 +0000
+Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
+        <daniel@ffwll.ch>, <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210326000805.2518-1-apopple@nvidia.com>
+ <20210326000805.2518-4-apopple@nvidia.com>
+ <20210330184903.GZ2356281@nvidia.com> <12442194.rtmf8Ope3M@nvdebian>
+ <20210330222440.GC2356281@nvidia.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <bce0605a-336f-99ba-5b65-a8e5a7e49e00@nvidia.com>
+Date:   Tue, 30 Mar 2021 15:43:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/88.qBoJwmNC3H1waBmbfHkL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210330222440.GC2356281@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0d0370a3-da74-4c03-9f36-08d8f3cd494a
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3439:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB34390BCA725A6B05EDAA4C50A87D9@MN2PR12MB3439.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yZoVVOIK+PbS8rTDmsqj9Nsrzi2ZWycM/4WXmljItK7pGeL9tNCF1Tw5rmY9zBSZqs5m12QV402mu10jNuLsm27HWtVTSUnQkOdJXl0O3f54gxnfU/2PSDpSB0vrv46uK1+RudQz0PqzyNRZzovoN626cfruycxGzyryhGcyZgJ8Y1+zrztMMLFtJayfRSJQVkGZ5xeOi4pcHy6hxFV6I35jrazjnOuJCyMPeye9tscuGNMXR6y8PqpBs0S4Rv3Sqf43Y+dAIBp4NFl7pePA18QpMykRU5YfhMHHU9nuEXCe2ezWRBc3Pq0CQVAL18+Nm3W2RzMgTVMpqxbSucHahiceG0KZNR7BCkDSTPhVF7IaiKfrHtwWqwGFzSeBHRlXRQKHyJJ9+6nMxp6bKHrJBITxgfGXS/9zoTKGBynOtxMK46IqwPjazPkFvKMupbXf0o8RRaEJO51nkUyIuNoqmGLgcQoWVLJ8z7+v+Zp6DnByyWIucTyN1Gm22q+pszcxYhF0lFns8sLwtb9yqj9iZslINaNVFAG5Tl8lZ922GzhYzEkQBzW6UqdTmxA7yNI/l5T5OZFFZ8lId0vbl7dLEShGa+LMikOYtirxK9t1zajIrvJ5XtQ+QmR7LGlmpQFU4cSZsaOQUlsn4YaGYD7NUfGWIxkxXRgGPnOu7KpFj0Xo1CgvdlPPILXnQrQNWMrS
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39860400002)(376002)(36840700001)(46966006)(2906002)(36756003)(70586007)(26005)(186003)(426003)(86362001)(336012)(16526019)(6636002)(478600001)(356005)(4326008)(83380400001)(36860700001)(7636003)(31696002)(82310400003)(2616005)(47076005)(53546011)(54906003)(31686004)(70206006)(16576012)(316002)(5660300002)(110136005)(8676002)(82740400003)(7416002)(36906005)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 22:43:49.5218
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d0370a3-da74-4c03-9f36-08d8f3cd494a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3439
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/88.qBoJwmNC3H1waBmbfHkL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 3/30/21 3:24 PM, Jason Gunthorpe wrote:
+...
+>> As far as I can tell this has always been called try_to_munlock() even though
+>> it appears to do the opposite.
+> 
+> Maybe we should change it then?
+> 
+>>> /**
+>>>   * try_to_munlock - try to munlock a page
+>>>   * @page: the page to be munlocked
+>>>   *
+>>>   * Called from munlock code.  Checks all of the VMAs mapping the page
+>>>   * to make sure nobody else has this page mlocked. The page will be
+>>>   * returned with PG_mlocked cleared if no other vmas have it mlocked.
+>>>   */
+>>
+>> In other words it sets PG_mlocked if one or more vmas has it mlocked. So
+>> try_to_mlock() might be a better name, except that seems to have the potential
+>> for confusion as well because it's only called from the munlock code path and
+>> never for mlock.
+> 
+> That explanation makes more sense.. This function looks like it is
+> 'set PG_mlocked of the page if any vm->flags has VM_LOCKED'
+> 
+> Maybe call it check_vm_locked or something then and reword the above
+> comment?
+> 
+> (and why is it OK to read vm->flags for this without any locking?)
+> 
+>>> Something needs attention here..
+>>
+>> I think the code is correct, but perhaps the naming could be better. Would be
+>> interested hearing any thoughts on renaming try_to_munlock() to try_to_mlock()
+>> as the current name appears based on the context it is called from (munlock)
+>> rather than what it does (mlock).
+> 
+> The point of this patch is to make it clearer, after all, so I'd
+> change something and maybe slightly clarify the comment.
+> 
 
-Hi all,
+I'd add that, after looking around the calling code, this is a really unhappy
+pre-existing situation. Anyone reading this has to remember at which point in the
+call stack the naming transitions from "do the opposite of what the name says",
+to "do what the name says".
 
-Today's linux-next merge of the risc-v tree got a conflict in:
++1 for renaming "munlock*" items to "mlock*", where applicable. good grief.
 
-  arch/riscv/mm/kasan_init.c
+Although, it seems reasonable to tack such renaming patches onto the tail end
+of this series. But whatever works.
 
-between commits:
-
-  f3773dd031de ("riscv: Ensure page table writes are flushed when initializ=
-ing KASAN vmalloc")
-  78947bdfd752 ("RISC-V: kasan: Declare kasan_shallow_populate() static")
-
-from Linus' tree and commit:
-
-  2da073c19641 ("riscv: Cleanup KASAN_VMALLOC support")
-
-from the risc-v tree.
-
-I fixed it up (I think - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/mm/kasan_init.c
-index 4f85c6d0ddf8,2c39f0386673..000000000000
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@@ -153,44 -141,31 +141,33 @@@ static void __init kasan_populate(void=20
- =20
-  	local_flush_tlb_all();
-  	memset(start, KASAN_SHADOW_INIT, end - start);
-  }
- =20
-+ static void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsign=
-ed long end)
-+ {
-+ 	unsigned long next;
-+ 	void *p;
-+ 	pgd_t *pgd_k =3D pgd_offset_k(vaddr);
-+=20
-+ 	do {
-+ 		next =3D pgd_addr_end(vaddr, end);
-+ 		if (pgd_page_vaddr(*pgd_k) =3D=3D (unsigned long)lm_alias(kasan_early_s=
-hadow_pmd)) {
-+ 			p =3D memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+ 			set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
-+ 		}
-+ 	} while (pgd_k++, vaddr =3D next, vaddr !=3D end);
-+ }
-+=20
-  static void __init kasan_shallow_populate(void *start, void *end)
-  {
-  	unsigned long vaddr =3D (unsigned long)start & PAGE_MASK;
-  	unsigned long vend =3D PAGE_ALIGN((unsigned long)end);
-- 	unsigned long pfn;
-- 	int index;
-- 	void *p;
-- 	pud_t *pud_dir, *pud_k;
-- 	pgd_t *pgd_dir, *pgd_k;
-- 	p4d_t *p4d_dir, *p4d_k;
--=20
-- 	while (vaddr < vend) {
-- 		index =3D pgd_index(vaddr);
-- 		pfn =3D csr_read(CSR_SATP) & SATP_PPN;
-- 		pgd_dir =3D (pgd_t *)pfn_to_virt(pfn) + index;
-- 		pgd_k =3D init_mm.pgd + index;
-- 		pgd_dir =3D pgd_offset_k(vaddr);
-- 		set_pgd(pgd_dir, *pgd_k);
--=20
-- 		p4d_dir =3D p4d_offset(pgd_dir, vaddr);
-- 		p4d_k  =3D p4d_offset(pgd_k, vaddr);
--=20
-- 		vaddr =3D (vaddr + PUD_SIZE) & PUD_MASK;
-- 		pud_dir =3D pud_offset(p4d_dir, vaddr);
-- 		pud_k =3D pud_offset(p4d_k, vaddr);
--=20
-- 		if (pud_present(*pud_dir)) {
-- 			p =3D early_alloc(PAGE_SIZE, NUMA_NO_NODE);
-- 			pud_populate(&init_mm, pud_dir, p);
-- 		}
-- 		vaddr +=3D PAGE_SIZE;
-- 	}
-+=20
-+ 	kasan_shallow_populate_pgd(vaddr, vend);
- +
- +	local_flush_tlb_all();
-  }
- =20
-  void __init kasan_init(void)
-  {
-  	phys_addr_t _start, _end;
-
---Sig_/88.qBoJwmNC3H1waBmbfHkL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBjqOIACgkQAVBC80lX
-0GwlbAf/W9WUrtXNPDQ2CqWk0OBDYzkAncOrSR/LzH4u5oDFwPyLLNe2nLUE2Tx9
-c17LittaibtJzijA7ZSPzVhbGSTqYSAohRunT355AIKZHfrPEND7n0WcHkpSMVLr
-zF0nC7UB9hkStKksp0Y16jBSjElg5EHNQq8IbYdHOO1w6SuosDArHSGQMAZ5L5wf
-ZbaiKnuvE3Gmq53PQNu5caWp8GQmyp0U6+3fMdGTPufiMpc1ai+Tr+kD6OhpZD/h
-NFAvmrHtnhVwyBIKO5/64l8W0wDtYDbQFHQQMUutMtKWjiGCNMu3p5ngOdhQr+Rs
-UGk+Xhp1emw+xMOx8Ub1GnyhTC3I4w==
-=Pxes
------END PGP SIGNATURE-----
-
---Sig_/88.qBoJwmNC3H1waBmbfHkL--
+thanks,
+-- 
+John Hubbard
+NVIDIA
