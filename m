@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE11D34E5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D450A34E5B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhC3Kpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhC3KpO (ORCPT
+        id S231807AbhC3Kr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:47:28 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:41108 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231370AbhC3Kq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:45:14 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A6AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:45:13 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id v23so4884592uaq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KA1n+JDKnSeg05rDwCgfj3wTUCCEx1+ImjZuwoLRDgY=;
-        b=lqUF3G4msKNfNioFzkAXbXB/9SAof6IGX3RHcUtvUDyiOczBnzb74KMfGN73L0n+xl
-         +Se0QtBcMXYJsRztsfF7UOrqpJcXMix3jUmxYGXYBwMvUjxhAosMPd0YaWls14J+9ANl
-         GaK5tcXcd5mIypluCcqcK4PQy1ft21EGdDt7j5z7/IP3zhrd4qIVi8d1BhF5HblUYoZV
-         MjXT4fuSXdkkda9Ww+nJ9klfpNfIQKXQgtk/swh/XaQP/z4febyDjOF4Ac1+InpHBsAQ
-         bI5cCyFV0IdLGZLKKRLNSjKljsWzLSnkaLORsyASIJ86v2v/KoEQDfoAEVIh14IXUoiT
-         60GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KA1n+JDKnSeg05rDwCgfj3wTUCCEx1+ImjZuwoLRDgY=;
-        b=NuUT+SYqfZbW4Ugz+NNZRU5sdRTOs0cFY7rURuG47ZjtRLwyIoWRaDOmrup7j4MfP/
-         8o/5g+h335VIYM97NxBPfR3y4r4ZPYZ/VEL1DqtanufMqZGuBneQ8lzIgvN/ZeG9ZrdA
-         z7qH0QFYRFrRJmM1nassE84uRuUxYBD8o66a+AUT0UDR8pHru/3AIL5I/Ta756BND7PD
-         Uy79GFXIZCsTqritEc95XXcv0oZQYJ3tF3IMMOkDmpzjyv8jk6nPIYAnYjO5xi6QK8Kp
-         pWaf720fMw0kn8fUIb020kbbbFm8dzbCWC865Xb7Io/VR1t7VT+abA7ylSMQe3A5jTi7
-         baig==
-X-Gm-Message-State: AOAM531jDImJtT2epPmsQhzViWzuF3NXeJUnoLF/mAOB4VJNlNeRqxw5
-        YCNgpJE3JPDyU0qokB2AUAwn70UXgeW8BKPqveLc7Q==
-X-Google-Smtp-Source: ABdhPJyOR+5TV2pxTV236HAkY2P9NZKgB08njxIqK1Qk0yQRhxuPkc+j+UWrnhJN6Tf+QS2H0FpObL5nq6gOoxKOZXE=
-X-Received: by 2002:a9f:2843:: with SMTP id c61mr16130295uac.129.1617101112887;
- Tue, 30 Mar 2021 03:45:12 -0700 (PDT)
+        Tue, 30 Mar 2021 06:46:59 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UAg2NH020739;
+        Tue, 30 Mar 2021 05:46:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=be7gahKOHkuRaNoGKguDexXs3BpP7vM9QCY/E9w655k=;
+ b=B+0giYs4sXwTukL/zPnY6u2/3etJTKd7FXnuJuL2FtGAtkA/Zi/wS6gtHp8JXaRGLs8L
+ QJy015G6HSlidJS0/blMbiu3Oze9YMIVYotEFjKKx1FRp1pSsbe9h9LTpHCsljuPRmFe
+ Ak6EkFpYIU7hq+kJKf1I73dlxWTxPOlRE8BK9rn8BDnr6hD45kr7KVJJ5/9KwavNRp9l
+ D0nwjshCOMyshZMHnoYgswhNuHJEaiBI5pT/FI7LK54KhatqQJt4aLjNMOcnJplAqlu6
+ qP4OWnQWcIoS3o4pCxl1kcmJZhWubft6xviarltQ2OewH2n8+afBOclLW/SUlZIokexk dQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 37kfhx1ed8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 30 Mar 2021 05:46:08 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 30 Mar
+ 2021 11:46:06 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 30 Mar 2021 11:46:06 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.138])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7077211D6;
+        Tue, 30 Mar 2021 10:46:00 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>,
+        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
+        <shuah@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v8 1/4] lib: vsprintf: scanf: Negative number must have field width > 1
+Date:   Tue, 30 Mar 2021 11:45:55 +0100
+Message-ID: <20210330104558.16481-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210325192834.42955-1-alcooperx@gmail.com>
-In-Reply-To: <20210325192834.42955-1-alcooperx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 30 Mar 2021 12:44:36 +0200
-Message-ID: <CAPDyKFpNB6-=35FqM=74Obv1KEDJg-XC9kgegQbCA0Q+rKT4_g@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-brcmstb: Remove CQE quirk
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 2C0J9MvZYOrwOKzf3SQbpi1CRS_fUTN-
+X-Proofpoint-ORIG-GUID: 2C0J9MvZYOrwOKzf3SQbpi1CRS_fUTN-
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=596
+ suspectscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103300076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 at 20:28, Al Cooper <alcooperx@gmail.com> wrote:
->
-> Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
-> latest chips have this fixed and earlier chips have other
-> CQE problems that prevent the feature from being enabled.
->
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+If a signed number field starts with a '-' the field width must be > 1,
+or unlimited, to allow at least one digit after the '-'.
 
-Applied for next, thanks!
+This patch adds a check for this. If a signed field starts with '-'
+and field_width == 1 the scanf will quit.
 
-Kind regards
-Uffe
+It is ok for a signed number field to have a field width of 1 if it
+starts with a digit. In that case the single digit can be converted.
 
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/vsprintf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> ---
->  drivers/mmc/host/sdhci-brcmstb.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
-> index f9780c65ebe9..f24623aac2db 100644
-> --- a/drivers/mmc/host/sdhci-brcmstb.c
-> +++ b/drivers/mmc/host/sdhci-brcmstb.c
-> @@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
->         if (dma64) {
->                 dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
->                 cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
-> -               cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
->         }
->
->         ret = cqhci_init(cq_host, host->mmc, dma64);
->
-> base-commit: e138138003eb3b3d06cc91cf2e8c5dec77e2a31e
-> --
-> 2.17.1
->
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 41ddc353ebb8..f78651e9b030 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -3466,8 +3466,12 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+ 		str = skip_spaces(str);
+ 
+ 		digit = *str;
+-		if (is_sign && digit == '-')
++		if (is_sign && digit == '-') {
++			if (field_width == 1)
++				break;
++
+ 			digit = *(str + 1);
++		}
+ 
+ 		if (!digit
+ 		    || (base == 16 && !isxdigit(digit))
+-- 
+2.20.1
+
