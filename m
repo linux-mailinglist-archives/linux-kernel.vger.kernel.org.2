@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD14734E2B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2B134E2B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhC3IGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhC3IGW (ORCPT
+        id S231424AbhC3IGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:06:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37512 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231301AbhC3IG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:06:22 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E80AC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:06:22 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso9045815pji.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ohWyba0j454EaOcs1wMSu7zcUbDYhtyMLYsDEhrXDGs=;
-        b=jqo9lLZ7GcMnZC5ZBsguOjSYs6hFI12Dfmn60MxS5gDNrO/+nY8Vn2rY4ywOySIC/k
-         QaZ3yvUp/zWMoXGE5D5p0Wf3cwyP0fPTwORkzq7VIU3Tn8pSVeL7osPiN9DAw4zCbc+T
-         H9uaV6epPrQ2WddQgw6oq0J+rbn8f5L+2JWKo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ohWyba0j454EaOcs1wMSu7zcUbDYhtyMLYsDEhrXDGs=;
-        b=sT/YDDH6HMIyo5wsS2/h8hgcnmlAeFESDVsbaD5gI0CejDDSN88rzm/pRDkclc5n2g
-         kVj/R/QlhRej/l1oTPc6ZqTK1fv9zLB6yNb1i1mnQuZd6PdWcd85VknKIGIS46uPDhgG
-         te/mb8d3VtqPeEz4p+MOZ2Fipstrb8mk4n35oc8ElPS57GOHPlczwPZJUb4ndL7BDW9/
-         z00L9rdqpg6PhwrhCgNud1oaQV4GxkWOnAhMcUUp71suQqILh8ECxy0oxCX/KXkY+mdL
-         lJ20Jpdm2zI+g4ekSO5Mj37fvj2y6Rg1JTFbZ3lrwlSUEDlbY2E5uNqhiz/rVkeJTtfO
-         uZEQ==
-X-Gm-Message-State: AOAM530waBUNwVAgrVnFPfT42mwU5ahipzUbBigzzaVukcmDsEjPGCKu
-        Kc8xMvV1NOtYO+xaiZRyfWabsg==
-X-Google-Smtp-Source: ABdhPJybMW7B8cavgdFxhd4SwS24cBzLl6Y5MZwunkIgjR2DOE2qND49L/uJeWGi9/heazJekmcuZw==
-X-Received: by 2002:a17:90b:e01:: with SMTP id ge1mr3199883pjb.117.1617091582045;
-        Tue, 30 Mar 2021 01:06:22 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:49fb:d79d:bee6:d970])
-        by smtp.gmail.com with ESMTPSA id f23sm19118913pfa.85.2021.03.30.01.06.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 01:06:21 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 0/2] usb: xhci-mtk: relax peridoc TT bandwidth checking
+        Tue, 30 Mar 2021 04:06:28 -0400
+X-UUID: 919b34e3c4c6490ca2e2fc9341e452c8-20210330
+X-UUID: 919b34e3c4c6490ca2e2fc9341e452c8-20210330
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 334879961; Tue, 30 Mar 2021 16:06:17 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 30 Mar 2021 16:06:15 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 30 Mar 2021 16:06:15 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <sumit.garg@linaro.org>
+CC:     <alexandru.elisei@arm.com>, <catalin.marinas@arm.com>,
+        <daniel.thompson@linaro.org>, <dianders@chromium.org>,
+        <lecopzer.chen@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <mark.rutland@arm.com>,
+        <swboyd@chromium.org>, <will@kernel.org>, <yj.chiang@mediatek.com>,
+        <lecopzer@gmail.com>
+Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
 Date:   Tue, 30 Mar 2021 16:06:15 +0800
-Message-Id: <20210330080617.3746932-1-ikjn@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Message-ID: <20210330080615.21938-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAFA6WYOL3m6UspT1QG8_DAEFpGxtX=7aT_zTAdntmuUCcBvg5A@mail.gmail.com>
+References: <CAFA6WYOL3m6UspT1QG8_DAEFpGxtX=7aT_zTAdntmuUCcBvg5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is for supporting typical full speed USB audio headsets
-with speaker, microphone, and control knobs together.
+> Hi Will, Mark,
+> 
+> On Fri, 15 Jan 2021 at 17:32, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > With the recent feature added to enable perf events to use pseudo NMIs
+> > as interrupts on platforms which support GICv3 or later, its now been
+> > possible to enable hard lockup detector (or NMI watchdog) on arm64
+> > platforms. So enable corresponding support.
+> >
+> > One thing to note here is that normally lockup detector is initialized
+> > just after the early initcalls but PMU on arm64 comes up much later as
+> > device_initcall(). So we need to re-initialize lockup detection once
+> > PMU has been initialized.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >
+> > Changes in v5:
+> > - Fix lockup_detector_init() invocation to be rather invoked from CPU
+> >   binded context as it makes heavy use of per-cpu variables and shouldn't
+> >   be invoked from preemptible context.
+> >
+> 
+> Do you have any further comments on this?
+> 
+> Lecopzer,
+> 
+> Does this feature work fine for you now?
 
-With current implementation, such a device cannot be configured
-due to xhci-mtk's bandwidth allocation failure even when there's
-enough bandwidth available.
+This really fixes the warning, I have a real hardware for testing this now.
+but do we need to call lockup_detector_init() for each cpu?
 
-Ikjoon Jang (2):
-  usb: xhci-mtk: remove unnecessary assignments in periodic TT scheduler
-  usb: xhci-mtk: relax periodic TT bandwidth checking
+In init/main.c, it's only called by cpu 0 for once.
 
- drivers/usb/host/xhci-mtk-sch.c | 120 +++++++++++---------------------
- drivers/usb/host/xhci-mtk.h     |   2 -
- 2 files changed, 41 insertions(+), 81 deletions(-)
 
--- 
-2.31.0.291.g576ba9dcdaf-goog
-
+BRs,
+Lecopzer
