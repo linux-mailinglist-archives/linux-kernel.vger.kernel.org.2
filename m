@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F93F34DD88
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5371A34DD7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhC3B3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:29:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24557 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhC3B2o (ORCPT
+        id S230446AbhC3B2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhC3B2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:28:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617067724; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=lwOjkKACdLF8hYYKY8FC5AVAMMPXgCd9mWOI9JZF8hI=; b=FhJxsL6HmqBWehs0Di+4DKKQIsio7Kgpnh5/N//Qe9wJDHpF+edHnT5XZPGzO8x0Kz6pFVQ3
- p7N3AzRFCYWFSBXBu70erll8PjTvr8mv9hxzX/7RTzZjKeCrG/WM4l7h2q4xJD2XUasmOZe+
- lLA9Hw8ji0Y88beiaTAEGqcojmQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60627ec087ce1fbb56a95bbb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 01:28:32
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C32A6C43463; Tue, 30 Mar 2021 01:28:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DFC6C43461;
-        Tue, 30 Mar 2021 01:28:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DFC6C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org, abickett@codeaurora.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 2/7] bus: mhi: core: Wait for ready after an EDL firmware download
-Date:   Mon, 29 Mar 2021 18:28:19 -0700
-Message-Id: <1617067704-28850-3-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
-References: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
+        Mon, 29 Mar 2021 21:28:21 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F1DC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:28:20 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id t14so12829464ilu.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=q4fT9GDDnemAhHBqdK9yrAIrxFWXoWZ0aF4SGoPq204=;
+        b=ZOUH7LtBeLP94znfKH2DHVk6PLBiGAM0aI/fkeBHkjvPme7bcehISmJ20IxDhuONPV
+         xD2DYmxaG8/1ImDsrC29712MyFaWHV+ufXVIZfdXbOo4UZTD1pav86I6+QDYG0xwPq9T
+         qPP+boxxQE+ek8qFbrzJMcQs9j1lADMqqV9ZM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q4fT9GDDnemAhHBqdK9yrAIrxFWXoWZ0aF4SGoPq204=;
+        b=gL4ofxjyMv3YNKMe0TjnmiHpySDIHlViXoIUhPbgW1EvNK0jnqoOP+BFOhQMazd+xc
+         GbwSTj93NrWB5+nC4swPCbzeLOLwheg8S2m7eLW88pCj+x29EEjuglgf4XRixd3dGYwL
+         gahGN9KehhrSMYID8exm1ysHpSsxsUcZz4wR227lU5/WU0U7Zrm79Dj3AvcxMzwwzjmQ
+         oShVCZPUZmRvxCO+nhy6Xp2g/CKEvV/Z+Fv8Bv8u2512C81N4xkq9HdS1tPa9c3tCLHZ
+         eAZIa8H6ExhSRqCaCU+SWyXPUts/LsmdxjK+4+uvVPQULqQwAgMLz2HvZ36VaK0Tpjvt
+         6rug==
+X-Gm-Message-State: AOAM533ZHT462Ko1gYIPnnfELwZSveusfXchJEkjyS8mIf33RefmnYJY
+        XriGsQ0JTZZfImG8liHYqXjecw==
+X-Google-Smtp-Source: ABdhPJwCMjSRvbi6xRWgTWRXMiy0E3QL3DIxWkXOJxJQJQmIgXfcTCgyAUjZ/pxXePHCtLzBrS2b+A==
+X-Received: by 2002:a92:4b08:: with SMTP id m8mr20439823ilg.140.1617067700451;
+        Mon, 29 Mar 2021 18:28:20 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l6sm10413952iln.45.2021.03.29.18.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 18:28:20 -0700 (PDT)
+Subject: Re: [PATCH 4.4 00/33] 4.4.264-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210329075605.290845195@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9e5edeb4-bea1-e4ce-3b2d-da0f000462e1@linuxfoundation.org>
+Date:   Mon, 29 Mar 2021 19:28:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the firmware load handler returns after the EDL image
-is downloaded. Wait for an MHI READY transition instead as the
-specification expects so as to proceed with further bootup such
-as device entering Flash Programmer execution environment.
+On 3/29/21 1:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.264 release.
+> There are 33 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.264-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/bus/mhi/core/boot.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-index 84c2117..0f0ae88 100644
---- a/drivers/bus/mhi/core/boot.c
-+++ b/drivers/bus/mhi/core/boot.c
-@@ -418,7 +418,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
- 
- 	/* If device is in pass through, do reset to ready state transition */
- 	if (mhi_cntrl->ee == MHI_EE_PTHRU)
--		goto fw_load_ee_pthru;
-+		goto fw_load_ready_state;
- 
- 	fw_name = (mhi_cntrl->ee == MHI_EE_EDL) ?
- 		mhi_cntrl->edl_image : mhi_cntrl->fw_image;
-@@ -460,10 +460,10 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
- 		goto error_fw_load;
- 	}
- 
--	/* Exit if EDL image was loaded */
-+	/* Wait for ready since EDL image was loaded */
- 	if (fw_name == mhi_cntrl->edl_image) {
- 		release_firmware(firmware);
--		return;
-+		goto fw_load_ready_state;
- 	}
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
-@@ -488,7 +488,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
- 
- 	release_firmware(firmware);
- 
--fw_load_ee_pthru:
-+fw_load_ready_state:
- 	/* Transitioning into MHI RESET->READY state */
- 	ret = mhi_ready_state_transition(mhi_cntrl);
- 	if (ret) {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
