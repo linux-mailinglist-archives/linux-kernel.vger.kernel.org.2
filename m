@@ -2,332 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D746534E61B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0CE34E62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhC3LJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:09:34 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39814 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhC3LJM (ORCPT
+        id S231889AbhC3LN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231529AbhC3LNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:09:12 -0400
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:2d37:13aa:2f32:9c00])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C251F1F45335;
-        Tue, 30 Mar 2021 12:09:10 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     dafna.hirschfeld@collabora.com, kernel@collabora.com,
-        dafna3@gmail.com, chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
-        airlied@linux.ie, daniel@ffwll.ch, enric.balletbo@collabora.com,
-        laurent.pinchart@ideasonboard.com
-Subject: [PATCH v3 2/2] drm/mediatek: Don't support hdmi connector creation
-Date:   Tue, 30 Mar 2021 13:09:02 +0200
-Message-Id: <20210330110902.14178-3-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210330110902.14178-1-dafna.hirschfeld@collabora.com>
-References: <20210330110902.14178-1-dafna.hirschfeld@collabora.com>
+        Tue, 30 Mar 2021 07:13:39 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3472C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id j3so17680402edp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TAaY2A0/mCi9VOST9TZhrIfnS/oSHi7K/wEizWqlU8E=;
+        b=ANEyfxRkBhoJ/3g33/L4M607hEMiy4qCAuPIkS1yjpeb/1cAwXCSrQF7UL5l0zRhhO
+         PeirrxeOGHLyc0msRykiHQjY9jwgcWw8lGF4y0/V6Jg93fNTRTObb5Meg/Zwsh19zDnQ
+         C7t7D1ZGHcM5E9YHiMqSc+3MpAywy7uxiz2U/n1FyVgqXIHqskZ1O5RIpid/HsIUD2fM
+         DyOY9ZeC/ABUQN8R5heHh08QaXEPL4imeZOGNx91Vit/dHv8UrGoQqfOnakfbWoNyL7d
+         nzq+J9lm4cge6LEtAXftskZ8/cCfoW4LmEi1nN7i8j19OF0eBu4VWIIeqnh4v/nKp7aO
+         twCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TAaY2A0/mCi9VOST9TZhrIfnS/oSHi7K/wEizWqlU8E=;
+        b=Vo+D1IU312AI6cE7CuppPTpDyGvHKimWz/TDdjxIoyYrTEEP+m2lSdd3xTeSUC6rJi
+         GUpQk6DA9Ls/4VG97zvPOSqs0NwoJFPLMEUHCxCy/JcQkEL5FcC2N/ViWMHrr6hiyWo8
+         drmOwQMBTGpBUs7vKRLO7oseGR1Jv+923PyMd9U2khg8GR/CVnmmq5e4ncDN2lPfX+oe
+         UQU2f8irgERXSCVlCkr25Y2l6Ag8OpH57RNlHoT9C6D3AW2Zgc1KKlXp5e8JrRE4OsdJ
+         CXghVmXhr1clVqJbez7rAsquypRKyr/1zsSWExEjeqCkve2bSX3zBy3Hd4x4gqeQvOL1
+         sc3g==
+X-Gm-Message-State: AOAM532fYOq8FqkZFDUOsAOpnUeG1qvZhaALaCf5tZWO4o2U/AZmZO+m
+        mZWWev16JwyMwVJp8+4I9xT5yg==
+X-Google-Smtp-Source: ABdhPJytqipTL9/SvBarg6HlfOpZsCGgI2fXl7ZS3MsB+jFR4wzwMf41bGnfZdA3yQD4S+5zQrgt7g==
+X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr34452394edc.235.1617102816399;
+        Tue, 30 Mar 2021 04:13:36 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id r19sm10961308edp.52.2021.03.30.04.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 04:13:35 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 00/10] nvmem: patches (set 1) for 5.13
+Date:   Tue, 30 Mar 2021 12:12:31 +0100
+Message-Id: <20210330111241.19401-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
-broke the display support for elm device since mtk_dpi calls
-drm_bridge_attach with the flag DRM_BRIDGE_ATTACH_NO_CONNECTOR
-while mtk_hdmi does not yet support this flag.
+Hi Greg,
 
-Fix this by accepting DRM_BRIDGE_ATTACH_NO_CONNECTOR in bridge attachment.
-Implement the drm_bridge_funcs .detect() and .get_edid() operations, and
-call drm_bridge_hpd_notify() to report HPD. This provides the
-necessary API to support disabling connector creation.
+Here are some nvmem patches for 5.13 which includes
+- adding support to new Broadcom NVRAM, MediaTek mt8192,
+ Qualcomm sc7280 nvmem provider
+- Add new function to make numbers reading easy
+- Update qfprom to support fuse blowing!
+- few minor fixes.
 
-In addition, the field 'conn' is removed from the mtk_hdmi struct since
-mtk_hdmi don't create a connector. It is replaced with a pointer
-'curr_conn' that points to the current connector which can be access
-through the global state.
+Can you please queue them up for 5.13.
 
-This patch is inspired by a similar patch for bridge/synopsys/dw-hdmi.c:
-commit ec971aaa6775 ("drm: bridge: dw-hdmi: Make connector creation optional")
-But with the difference that in mtk-hdmi only the option of not creating
-a connector is supported.
+thanks for you help,
+srini
 
-Fixes: f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
- drivers/gpu/drm/mediatek/mtk_hdmi.c | 151 +++++++++++-----------------
- 1 file changed, 56 insertions(+), 95 deletions(-)
+Colin Ian King (1):
+  nvmem: core: Fix unintentional sign extension issue
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-index f2c810b767ef..7fb358167f8d 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-@@ -153,7 +153,7 @@ struct mtk_hdmi_conf {
- struct mtk_hdmi {
- 	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
--	struct drm_connector conn;
-+	struct drm_connector *curr_conn;/* current connector (only valid when 'enabled') */
- 	struct device *dev;
- 	const struct mtk_hdmi_conf *conf;
- 	struct phy *phy;
-@@ -186,11 +186,6 @@ static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
- 	return container_of(b, struct mtk_hdmi, bridge);
- }
- 
--static inline struct mtk_hdmi *hdmi_ctx_from_conn(struct drm_connector *c)
--{
--	return container_of(c, struct mtk_hdmi, conn);
--}
--
- static u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset)
- {
- 	return readl(hdmi->regs + offset);
-@@ -974,7 +969,7 @@ static int mtk_hdmi_setup_avi_infoframe(struct mtk_hdmi *hdmi,
- 	ssize_t err;
- 
- 	err = drm_hdmi_avi_infoframe_from_display_mode(&frame,
--						       &hdmi->conn, mode);
-+						       hdmi->curr_conn, mode);
- 	if (err < 0) {
- 		dev_err(hdmi->dev,
- 			"Failed to get AVI infoframe from mode: %zd\n", err);
-@@ -1054,7 +1049,7 @@ static int mtk_hdmi_setup_vendor_specific_infoframe(struct mtk_hdmi *hdmi,
- 	ssize_t err;
- 
- 	err = drm_hdmi_vendor_infoframe_from_display_mode(&frame,
--							  &hdmi->conn, mode);
-+							  hdmi->curr_conn, mode);
- 	if (err) {
- 		dev_err(hdmi->dev,
- 			"Failed to get vendor infoframe from mode: %zd\n", err);
-@@ -1201,48 +1196,16 @@ mtk_hdmi_update_plugged_status(struct mtk_hdmi *hdmi)
- 	       connector_status_connected : connector_status_disconnected;
- }
- 
--static enum drm_connector_status hdmi_conn_detect(struct drm_connector *conn,
--						  bool force)
-+static enum drm_connector_status mtk_hdmi_detect(struct mtk_hdmi *hdmi)
- {
--	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
- 	return mtk_hdmi_update_plugged_status(hdmi);
- }
- 
--static void hdmi_conn_destroy(struct drm_connector *conn)
--{
--	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
--
--	mtk_cec_set_hpd_event(hdmi->cec_dev, NULL, NULL);
--
--	drm_connector_cleanup(conn);
--}
--
--static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
--{
--	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
--	struct edid *edid;
--	int ret;
--
--	if (!hdmi->ddc_adpt)
--		return -ENODEV;
--
--	edid = drm_get_edid(conn, hdmi->ddc_adpt);
--	if (!edid)
--		return -ENODEV;
--
--	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
--
--	drm_connector_update_edid_property(conn, edid);
--
--	ret = drm_add_edid_modes(conn, edid);
--	kfree(edid);
--	return ret;
--}
--
--static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
--				    struct drm_display_mode *mode)
-+static int mtk_hdmi_bridge_mode_valid(struct drm_bridge *bridge,
-+				      const struct drm_display_info *info,
-+				      const struct drm_display_mode *mode)
- {
--	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
-+	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
- 	struct drm_bridge *next_bridge;
- 
- 	dev_dbg(hdmi->dev, "xres=%d, yres=%d, refresh=%d, intl=%d clock=%d\n",
-@@ -1267,74 +1230,57 @@ static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
- 	return drm_mode_validate_size(mode, 0x1fff, 0x1fff);
- }
- 
--static struct drm_encoder *mtk_hdmi_conn_best_enc(struct drm_connector *conn)
--{
--	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
--
--	return hdmi->bridge.encoder;
--}
--
--static const struct drm_connector_funcs mtk_hdmi_connector_funcs = {
--	.detect = hdmi_conn_detect,
--	.fill_modes = drm_helper_probe_single_connector_modes,
--	.destroy = hdmi_conn_destroy,
--	.reset = drm_atomic_helper_connector_reset,
--	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
--	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
--};
--
--static const struct drm_connector_helper_funcs
--		mtk_hdmi_connector_helper_funcs = {
--	.get_modes = mtk_hdmi_conn_get_modes,
--	.mode_valid = mtk_hdmi_conn_mode_valid,
--	.best_encoder = mtk_hdmi_conn_best_enc,
--};
--
- static void mtk_hdmi_hpd_event(bool hpd, struct device *dev)
- {
- 	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
- 
--	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev)
-+	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev) {
-+		static enum drm_connector_status status;
-+
-+		status = mtk_hdmi_detect(hdmi);
- 		drm_helper_hpd_irq_event(hdmi->bridge.encoder->dev);
-+		drm_bridge_hpd_notify(&hdmi->bridge, status);
-+	}
- }
- 
- /*
-  * Bridge callbacks
-  */
- 
-+static enum drm_connector_status mtk_hdmi_bridge_detect(struct drm_bridge *bridge)
-+{
-+	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
-+
-+	return mtk_hdmi_detect(hdmi);
-+}
-+
-+static struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge,
-+					     struct drm_connector *connector)
-+{
-+	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
-+	struct edid *edid;
-+
-+	if (!hdmi->ddc_adpt)
-+		return NULL;
-+	edid = drm_get_edid(connector, hdmi->ddc_adpt);
-+	if (!edid)
-+		return NULL;
-+	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
-+	return edid;
-+}
-+
- static int mtk_hdmi_bridge_attach(struct drm_bridge *bridge,
- 				  enum drm_bridge_attach_flags flags)
- {
- 	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
- 	int ret;
- 
--	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
--		DRM_ERROR("Fix bridge driver to make connector optional!");
-+	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-+		DRM_ERROR("%s: The flag DRM_BRIDGE_ATTACH_NO_CONNECTOR must be supplied\n",
-+			  __func__);
- 		return -EINVAL;
- 	}
- 
--	ret = drm_connector_init_with_ddc(bridge->encoder->dev, &hdmi->conn,
--					  &mtk_hdmi_connector_funcs,
--					  DRM_MODE_CONNECTOR_HDMIA,
--					  hdmi->ddc_adpt);
--	if (ret) {
--		dev_err(hdmi->dev, "Failed to initialize connector: %d\n", ret);
--		return ret;
--	}
--	drm_connector_helper_add(&hdmi->conn, &mtk_hdmi_connector_helper_funcs);
--
--	hdmi->conn.polled = DRM_CONNECTOR_POLL_HPD;
--	hdmi->conn.interlace_allowed = true;
--	hdmi->conn.doublescan_allowed = false;
--
--	ret = drm_connector_attach_encoder(&hdmi->conn,
--						bridge->encoder);
--	if (ret) {
--		dev_err(hdmi->dev,
--			"Failed to attach connector to encoder: %d\n", ret);
--		return ret;
--	}
--
- 	if (hdmi->next_bridge) {
- 		ret = drm_bridge_attach(bridge->encoder, hdmi->next_bridge,
- 					bridge, flags);
-@@ -1369,6 +1315,8 @@ static void mtk_hdmi_bridge_atomic_disable(struct drm_bridge *bridge,
- 	clk_disable_unprepare(hdmi->clk[MTK_HDMI_CLK_HDMI_PIXEL]);
- 	clk_disable_unprepare(hdmi->clk[MTK_HDMI_CLK_HDMI_PLL]);
- 
-+	hdmi->curr_conn = NULL;
-+
- 	hdmi->enabled = false;
- }
- 
-@@ -1432,8 +1380,13 @@ static void mtk_hdmi_send_infoframe(struct mtk_hdmi *hdmi,
- static void mtk_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
- 					  struct drm_bridge_state *old_state)
- {
-+	struct drm_atomic_state *state = old_state->base.state;
- 	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
- 
-+	/* Retrieve the connector through the atomic state. */
-+	hdmi->curr_conn = drm_atomic_get_new_connector_for_encoder(state,
-+								   bridge->encoder);
-+
- 	mtk_hdmi_output_set_display_mode(hdmi, &hdmi->mode);
- 	clk_prepare_enable(hdmi->clk[MTK_HDMI_CLK_HDMI_PLL]);
- 	clk_prepare_enable(hdmi->clk[MTK_HDMI_CLK_HDMI_PIXEL]);
-@@ -1444,6 +1397,7 @@ static void mtk_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
- }
- 
- static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
-+	.mode_valid = mtk_hdmi_bridge_mode_valid,
- 	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
- 	.atomic_reset = drm_atomic_helper_bridge_reset,
-@@ -1454,6 +1408,8 @@ static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
- 	.mode_set = mtk_hdmi_bridge_mode_set,
- 	.atomic_pre_enable = mtk_hdmi_bridge_atomic_pre_enable,
- 	.atomic_enable = mtk_hdmi_bridge_atomic_enable,
-+	.detect = mtk_hdmi_bridge_detect,
-+	.get_edid = mtk_hdmi_bridge_get_edid,
- };
- 
- static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
-@@ -1669,8 +1625,10 @@ static int mtk_hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
- {
- 	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
- 
--	memcpy(buf, hdmi->conn.eld, min(sizeof(hdmi->conn.eld), len));
--
-+	if (hdmi->enabled)
-+		memcpy(buf, hdmi->curr_conn->eld, min(sizeof(hdmi->curr_conn->eld), len));
-+	else
-+		memset(buf, 0, len);
- 	return 0;
- }
- 
-@@ -1762,6 +1720,9 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
- 
- 	hdmi->bridge.funcs = &mtk_hdmi_bridge_funcs;
- 	hdmi->bridge.of_node = pdev->dev.of_node;
-+	hdmi->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
-+			 | DRM_BRIDGE_OP_HPD;
-+	hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
- 	drm_bridge_add(&hdmi->bridge);
- 
- 	ret = mtk_hdmi_clk_enable_audio(hdmi);
+Douglas Anderson (1):
+  nvmem: core: Add functions to make number reading easy
+
+Rafał Miłecki (2):
+  dt-bindings: nvmem: add Broadcom's NVRAM
+  nvmem: brcm_nvram: new driver exposing Broadcom's NVRAM
+
+Rajendra Nayak (2):
+  dt-bindings: nvmem: Add SoC compatible for sc7280
+  nvmem: qfprom: Add support for fuse blowing on sc7280
+
+Ravi Kumar Bokka (1):
+  drivers: nvmem: Fix voltage settings for QTI qfprom-efuse
+
+Ryan Wu (1):
+  dt-bindings: nvmem: mediatek: add support for MediaTek mt8192 SoC
+
+Srinivas Kandagatla (1):
+  nvmem: rmem: fix undefined reference to memremap
+
+Zheng Yongjun (1):
+  nvmem: convert comma to semicolon
+
+ .../devicetree/bindings/nvmem/brcm,nvram.yaml | 34 +++++++
+ .../devicetree/bindings/nvmem/mtk-efuse.txt   |  1 +
+ .../bindings/nvmem/qcom,qfprom.yaml           |  1 +
+ drivers/nvmem/Kconfig                         | 10 ++
+ drivers/nvmem/Makefile                        |  2 +
+ drivers/nvmem/brcm_nvram.c                    | 78 +++++++++++++++
+ drivers/nvmem/core.c                          | 95 +++++++++++++++++++
+ drivers/nvmem/qcom-spmi-sdam.c                |  2 +-
+ drivers/nvmem/qfprom.c                        | 44 +++++++++
+ drivers/nvmem/snvs_lpgpr.c                    |  2 +-
+ include/linux/nvmem-consumer.h                |  4 +
+ 11 files changed, 271 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml
+ create mode 100644 drivers/nvmem/brcm_nvram.c
+
 -- 
-2.17.1
+2.21.0
 
