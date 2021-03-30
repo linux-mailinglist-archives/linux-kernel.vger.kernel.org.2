@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F0E34F3E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3498634F3E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhC3WAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhC3WA3 (ORCPT
+        id S232495AbhC3WBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:01:38 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3323 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232893AbhC3WBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:00:29 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508C0C061574;
-        Tue, 30 Mar 2021 15:00:29 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v186so12691277pgv.7;
-        Tue, 30 Mar 2021 15:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtO4pVCtzVBgR7IqwEYI9V7XGb7phFtCoEr67g27Cik=;
-        b=uo86C2/TKA/bEjzQXrVuXAI6BUaWD5dnableFS9fGDPrcZ8J1RJUSHrvXMaq+f89eP
-         LETm5cLNKvXb7dzfhXjuokOW4YxthD3KLCc/z0jFnmke+fPmn9yeKcLwZq00/nhEtX40
-         NQytlXvLe+FkXrtodQmm6TuO1R+aSF2P8RKkLDfIkH4LmM65qI1WDekgNUKPWQIIFc9a
-         OIZ4S8Mq6Khf5Om5Z/QWV9lu12+zI1ezK5cygWvekSIJLVrQaE2jGk5l55QsJ5USFh5j
-         T/WSkIYRX2Pqqychlve2+UlH7U4Fq6nX/vYVUi5/O23G/6keMcPmu9yj/rHioXzJ2BLk
-         qF2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XtO4pVCtzVBgR7IqwEYI9V7XGb7phFtCoEr67g27Cik=;
-        b=MIyxfONkKcZ5SvaTUT1FPbtMD5htGTY6WQGMOT8K+o3NnhqV3tZp4APFBNkAh5HTXb
-         STEXQxBR7nsoqRYeLfRNIurANEPElKk2ynlYtp2+p/G/zPrEzneWd8AWoYGGxczr8eFx
-         fJnUww3uTPGlYwCK5nZRqFXPp00eBi1dwnoFQ2UCVuu67OF99dkTmU/lsgzyzbZIwKCh
-         nXjyneM2hjgjAaag57QFqrDuQyW3zT8NVaFNfgzJSa3TB1oAj3NbP5WHEUm9CoV4prbE
-         +EzprNxhSR6POmWe/v6S5VVPiMECLtQB0c9STB03RzUVnm373az9/UmbrGjBYmdqd3G+
-         nCDw==
-X-Gm-Message-State: AOAM531zIeu5cP0z6QSMKbydeQsZuXwy1MwwfCFsMb5tVeoMoc/TEzEJ
-        VuFJzeSLbWBS4xMW7Ur9UPm23EMsnP0=
-X-Google-Smtp-Source: ABdhPJySev1UyCL7ZUbiEejQWJVpL2cCId2EtN20PbzAjuk+sBs5VP7/8V4d1OCCN9SuAga/mv+d1A==
-X-Received: by 2002:a05:6a00:2163:b029:216:deaa:e386 with SMTP id r3-20020a056a002163b0290216deaae386mr56607pff.72.1617141628442;
-        Tue, 30 Mar 2021 15:00:28 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y4sm27389pfn.67.2021.03.30.15.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:00:27 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: phy: broadcom: Only advertise EEE for supported modes
-Date:   Tue, 30 Mar 2021 15:00:24 -0700
-Message-Id: <20210330220024.1459286-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Mar 2021 18:01:11 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F93GP6SqSz149cn;
+        Wed, 31 Mar 2021 05:57:49 +0800 (CST)
+Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 31 Mar 2021 06:01:08 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 31 Mar 2021 06:01:08 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Wed, 31 Mar 2021 06:01:08 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     yangyicong <yangyicong@huawei.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "Sergey.Semin@baikalelectronics.ru" 
+        <Sergey.Semin@baikalelectronics.ru>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "digetx@gmail.com" <digetx@gmail.com>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        John Garry <john.garry@huawei.com>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH 5/5] i2c: designware: Switch over to
+ i2c_freq_mode_string()
+Thread-Topic: [PATCH 5/5] i2c: designware: Switch over to
+ i2c_freq_mode_string()
+Thread-Index: AQHXJXAQhX+a0hiUXkCpTQNzS4ZJoKqdC6Iw//+Ck4CAAITk4A==
+Date:   Tue, 30 Mar 2021 22:01:08 +0000
+Message-ID: <4f6313fb620d4823bacf548224a29477@hisilicon.com>
+References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
+ <1617113966-40498-6-git-send-email-yangyicong@hisilicon.com>
+ <baa1c622040745b0b13e99e3f7bf2cd3@hisilicon.com>
+ <CAHp75VdY58Tm0FDcoVDWuw0LBKUFWC_hBCb5t=4WX_MPzsLvZw@mail.gmail.com>
+In-Reply-To: <CAHp75VdY58Tm0FDcoVDWuw0LBKUFWC_hBCb5t=4WX_MPzsLvZw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.63]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should not be advertising EEE for modes that we do not support,
-correct that oversight by looking at the PHY device supported linkmodes.
-
-Fixes: 99cec8a4dda2 ("net: phy: broadcom: Allow enabling or disabling of EEE")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/bcm-phy-lib.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/phy/bcm-phy-lib.c b/drivers/net/phy/bcm-phy-lib.c
-index 53282a6d5928..287cccf8f7f4 100644
---- a/drivers/net/phy/bcm-phy-lib.c
-+++ b/drivers/net/phy/bcm-phy-lib.c
-@@ -369,7 +369,7 @@ EXPORT_SYMBOL_GPL(bcm_phy_enable_apd);
- 
- int bcm_phy_set_eee(struct phy_device *phydev, bool enable)
- {
--	int val;
-+	int val, mask = 0;
- 
- 	/* Enable EEE at PHY level */
- 	val = phy_read_mmd(phydev, MDIO_MMD_AN, BRCM_CL45VEN_EEE_CONTROL);
-@@ -388,10 +388,17 @@ int bcm_phy_set_eee(struct phy_device *phydev, bool enable)
- 	if (val < 0)
- 		return val;
- 
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-+			      phydev->supported))
-+		mask |= MDIO_EEE_1000T;
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-+			      phydev->supported))
-+		mask |= MDIO_EEE_100TX;
-+
- 	if (enable)
--		val |= (MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val |= mask;
- 	else
--		val &= ~(MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val &= ~mask;
- 
- 	phy_write_mmd(phydev, MDIO_MMD_AN, BCM_CL45VEN_EEE_ADV, (u32)val);
- 
--- 
-2.25.1
-
+DQoNCkZyb206IEFuZHkgU2hldmNoZW5rbyBbbWFpbHRvOmFuZHkuc2hldmNoZW5rb0BnbWFpbC5j
+b21dIA0KU2VudDogV2VkbmVzZGF5LCBNYXJjaCAzMSwgMjAyMSAxMDo1NyBBTQ0KVG86IFNvbmcg
+QmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KQ2M6IHlh
+bmd5aWNvbmcgPHlhbmd5aWNvbmdAaHVhd2VpLmNvbT47IHdzYUBrZXJuZWwub3JnOyBhbmRyaXku
+c2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb207IGxpbnV4LWkyY0B2Z2VyLmtlcm5lbC5vcmc7IFNl
+cmdleS5TZW1pbkBiYWlrYWxlbGVjdHJvbmljcy5ydTsgbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZzsgZGlnZXR4QGdtYWlsLmNvbTsgdHJlZGluZ0BudmlkaWEuY29tOyBqYXJra28ubmlrdWxh
+QGxpbnV4LmludGVsLmNvbTsgcm1rK2tlcm5lbEBhcm1saW51eC5vcmcudWs7IEpvaG4gR2Fycnkg
+PGpvaG4uZ2FycnlAaHVhd2VpLmNvbT47IG1pa2Eud2VzdGVyYmVyZ0BsaW51eC5pbnRlbC5jb207
+IFplbmd0YW8gKEIpIDxwcmltZS56ZW5nQGhpc2lsaWNvbi5jb20+OyBMaW51eGFybSA8bGludXhh
+cm1AaHVhd2VpLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0ggNS81XSBpMmM6IGRlc2lnbndhcmU6
+IFN3aXRjaCBvdmVyIHRvIGkyY19mcmVxX21vZGVfc3RyaW5nKCkNCg0KDQoNCk9uIFdlZG5lc2Rh
+eSwgTWFyY2ggMzEsIDIwMjEsIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1
+YUBoaXNpbGljb24uY29tPiB3cm90ZToNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+IEZyb206IHlhbmd5aWNvbmcNCj4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAzMSwgMjAyMSAz
+OjE5IEFNDQo+IFRvOiB3c2FAa2VybmVsLm9yZzsgYW5kcml5LnNoZXZjaGVua29AbGludXguaW50
+ZWwuY29tOw0KPiBsaW51eC1pMmNAdmdlci5rZXJuZWwub3JnOyBTZXJnZXkuU2VtaW5AYmFpa2Fs
+ZWxlY3Ryb25pY3MucnU7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRp
+Z2V0eEBnbWFpbC5jb207IHRyZWRpbmdAbnZpZGlhLmNvbTsgamFya2tvLm5pa3VsYUBsaW51eC5p
+bnRlbC5jb207DQo+IHJtaytrZXJuZWxAYXJtbGludXgub3JnLnVrOyBTb25nIEJhbyBIdWEgKEJh
+cnJ5IFNvbmcpDQo+IDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT47IEpvaG4gR2FycnkgPGpv
+aG4uZ2FycnlAaHVhd2VpLmNvbT47DQo+IG1pa2Eud2VzdGVyYmVyZ0BsaW51eC5pbnRlbC5jb207
+IHlhbmd5aWNvbmcgPHlhbmd5aWNvbmdAaHVhd2VpLmNvbT47IFplbmd0YW8NCj4gKEIpIDxwcmlt
+ZS56ZW5nQGhpc2lsaWNvbi5jb20+OyBMaW51eGFybSA8bGludXhhcm1AaHVhd2VpLmNvbT4NCj4g
+U3ViamVjdDogW1BBVENIIDUvNV0gaTJjOiBkZXNpZ253YXJlOiBTd2l0Y2ggb3ZlciB0byBpMmNf
+ZnJlcV9tb2RlX3N0cmluZygpDQo+IA0KPiBGcm9tOiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5z
+aGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4NCj4gDQo+IFVzZSBnZW5lcmljIGkyY19mcmVxX21v
+ZGVfc3RyaW5nKCkgaGVscGVyIHRvIHByaW50IGNob3NlbiBidXMgc3BlZWQuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVs
+LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogWWljb25nIFlhbmcgPHlhbmd5aWNvbmdAaGlzaWxpY29u
+LmNvbT4NCj4gLS0tDQo+wqAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1kZXNpZ253YXJlLW1hc3Rl
+ci5jIHwgMjAgKysrKy0tLS0tLS0tLS0tLS0tLS0NCj7CoCAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
+cnRpb25zKCspLCAxNiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2ky
+Yy9idXNzZXMvaTJjLWRlc2lnbndhcmUtbWFzdGVyLmMNCj4gYi9kcml2ZXJzL2kyYy9idXNzZXMv
+aTJjLWRlc2lnbndhcmUtbWFzdGVyLmMNCj4gaW5kZXggZGQyN2I5ZC4uYjY0YzRjOCAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1kZXNpZ253YXJlLW1hc3Rlci5jDQo+ICsr
+KyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtZGVzaWdud2FyZS1tYXN0ZXIuYw0KPiBAQCAtMzUs
+MTAgKzM1LDEwIEBAIHN0YXRpYyB2b2lkIGkyY19kd19jb25maWd1cmVfZmlmb19tYXN0ZXIoc3Ry
+dWN0IGR3X2kyY19kZXYNCj4gKmRldikNCj4gDQo+wqAgc3RhdGljIGludCBpMmNfZHdfc2V0X3Rp
+bWluZ3NfbWFzdGVyKHN0cnVjdCBkd19pMmNfZGV2ICpkZXYpDQo+wqAgew0KPiAtwqAgwqAgwqBj
+b25zdCBjaGFyICptb2RlX3N0ciwgKmZwX3N0ciA9ICIiOw0KPsKgIMKgIMKgIMKgdTMyIGNvbXBf
+cGFyYW0xOw0KPsKgIMKgIMKgIMKgdTMyIHNkYV9mYWxsaW5nX3RpbWUsIHNjbF9mYWxsaW5nX3Rp
+bWU7DQo+wqAgwqAgwqAgwqBzdHJ1Y3QgaTJjX3RpbWluZ3MgKnQgPSAmZGV2LT50aW1pbmdzOw0K
+PiArwqAgwqAgwqBjb25zdCBjaGFyICpmcF9zdHIgPSAiIjsNCj7CoCDCoCDCoCDCoHUzMiBpY19j
+bGs7DQo+wqAgwqAgwqAgwqBpbnQgcmV0Ow0KPiANCj4gQEAgLTE1MywyMiArMTUzLDEwIEBAIHN0
+YXRpYyBpbnQgaTJjX2R3X3NldF90aW1pbmdzX21hc3RlcihzdHJ1Y3QgZHdfaTJjX2Rldg0KPiAq
+ZGV2KQ0KPiANCj7CoCDCoCDCoCDCoHJldCA9IGkyY19kd19zZXRfc2RhX2hvbGQoZGV2KTsNCj7C
+oCDCoCDCoCDCoGlmIChyZXQpDQo+IC3CoCDCoCDCoCDCoCDCoCDCoCDCoGdvdG8gb3V0Ow0KPiAt
+DQo+IC3CoCDCoCDCoHN3aXRjaCAoZGV2LT5tYXN0ZXJfY2ZnICYgRFdfSUNfQ09OX1NQRUVEX01B
+U0spIHsNCj4gLcKgIMKgIMKgY2FzZSBEV19JQ19DT05fU1BFRURfU1REOg0KPiAtwqAgwqAgwqAg
+wqAgwqAgwqAgwqBtb2RlX3N0ciA9ICJTdGFuZGFyZCBNb2RlIjsNCj4gLcKgIMKgIMKgIMKgIMKg
+IMKgIMKgYnJlYWs7DQo+IC3CoCDCoCDCoGNhc2UgRFdfSUNfQ09OX1NQRUVEX0hJR0g6DQo+IC3C
+oCDCoCDCoCDCoCDCoCDCoCDCoG1vZGVfc3RyID0gIkhpZ2ggU3BlZWQgTW9kZSI7DQo+IC3CoCDC
+oCDCoCDCoCDCoCDCoCDCoGJyZWFrOw0KPiAtwqAgwqAgwqBkZWZhdWx0Og0KPiAtwqAgwqAgwqAg
+wqAgwqAgwqAgwqBtb2RlX3N0ciA9ICJGYXN0IE1vZGUiOw0KPiAtwqAgwqAgwqB9DQo+IC3CoCDC
+oCDCoGRldl9kYmcoZGV2LT5kZXYsICJCdXMgc3BlZWQ6ICVzJXNcbiIsIG1vZGVfc3RyLCBmcF9z
+dHIpOw0KPiArwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4gcmV0Ow0KPiANCj4gLW91dDoNCj4g
+LcKgIMKgIMKgcmV0dXJuIHJldDsNCj4gK8KgIMKgIMKgZGV2X2RiZyhkZXYtPmRldiwgIkJ1cyBz
+cGVlZDogJXNcbiIsDQo+IGkyY19mcmVxX21vZGVfc3RyaW5nKHQtPmJ1c19mcmVxX2h6KSk7DQoN
+Cj4gV2VpcmQgdGhlIG9yaWdpbmFsIGNvZGUgd2FzIHByaW50aW5nIGJvdGggbW9kZSBhbmQgZnAu
+DQo+IEFuZCB5b3UgYXJlIHByaW50aW5nIG1vZGUgb25seS4NCg0KPj4gU29ycnksIGJ1dCBJIGRp
+ZG7igJl0IGdldCB3aGF0IHlvdSBtZWFuIGhlcmUuIFRoZSBjb2RlIGlzIGVxdWl2YWxlbnQsIGFu
+ZCBhY3R1YWxseSBpdCB3aWxsIHByaW50IGV2ZW4gbW9yZS4NCg0KVGhlIG9yaWdpbmFsIGNvZGUg
+d2lsbCBwcmludCB0aGUgc3RyaW5nIGZwX3N0cjoNCiVzJXNcbiIsIG1vZGVfc3RyLCBmcF9zdHIN
+Cg0KVGhlIG5ldyBjb2RlIGlzIHByaW50aW5nIG1vZGVfc3RyIG9ubHk6DQolcw0KDQo+ICvCoCDC
+oCDCoHJldHVybiAwOw0KPsKgIH0NCj4gDQo+wqAgLyoqDQo+IC0tDQo+IDIuOC4xDQoNCg0KLS0g
+DQpXaXRoIEJlc3QgUmVnYXJkcywNCkFuZHkgU2hldmNoZW5rbw0KDQo=
