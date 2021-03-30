@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4AF34E67A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506EE34E6C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhC3LpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:45:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41842 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhC3Los (ORCPT
+        id S232218AbhC3Lra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:47:30 -0400
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:52765 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232123AbhC3LrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:44:48 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jeremy.szu@canonical.com>)
-        id 1lRCnR-00083E-PE; Tue, 30 Mar 2021 11:44:34 +0000
-From:   Jeremy Szu <jeremy.szu@canonical.com>
-To:     tiwai@suse.com
-Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kailang Yang <kailang@realtek.com>,
-        Jian-Hong Pan <jhp@endlessos.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP 640 G8
-Date:   Tue, 30 Mar 2021 19:44:27 +0800
-Message-Id: <20210330114428.40490-1-jeremy.szu@canonical.com>
-X-Mailer: git-send-email 2.30.1
+        Tue, 30 Mar 2021 07:47:12 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id EBC5519F2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:47:10 +0100 (IST)
+Received: (qmail 11040 invoked from network); 30 Mar 2021 11:47:10 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 30 Mar 2021 11:47:10 -0000
+Date:   Tue, 30 Mar 2021 12:47:09 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: mm/page_alloc: add a bulk page allocator
+Message-ID: <20210330114709.GW3697@techsingularity.net>
+References: <61c479aa-18fe-82f3-c859-710c3555cbaa@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <61c479aa-18fe-82f3-c859-710c3555cbaa@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HP EliteBook 640 G8 Notebook PC is using ALC236 codec which is
-using 0x02 to control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+On Mon, Mar 29, 2021 at 04:18:09PM +0100, Colin Ian King wrote:
+> Hi,
+> 
+> Static analysis on linux-next with Coverity has found a potential
+> uninitialized variable issue in function __alloc_pages_bulk with the
+> following commit:
+> 
+> commit b0e0a469733fa571ddd8fe147247c9561b51b2da
+> Author: Mel Gorman <mgorman@techsingularity.net>
+> Date:   Mon Mar 29 11:12:24 2021 +1100
+> 
+>     mm/page_alloc: add a bulk page allocator
+> 
+> The analysis is as follows:
+> 
+> > <SNIP>
+>
+> 5050        if (nr_pages - nr_populated == 1)
+> 5051                goto failed;
+> 5052
+> 5053        /* May set ALLOC_NOFRAGMENT, fragmentation will return 1
+> page. */
+> 5054        gfp &= gfp_allowed_mask;
+> 5055        alloc_gfp = gfp;
+> 
+>     Uninitialized scalar variable (UNINIT)
+>     15. uninit_use_in_call: Using uninitialized value alloc_flags when
+> calling prepare_alloc_pages.
+> 
+> 5056        if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask,
+> &ac, &alloc_gfp, &alloc_flags))
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Ok, so Coverity thinks that alloc_flags is potentially uninitialised and
+without digging into every part of the report, Coverity is right.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 316b9b4ccb32..9d08b452e9ae 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8057,6 +8057,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+> <SNIP>
+>
+> So alloc_flags in gfp_to_alloc_flags_cma is being updated with the |=
+> operator and we managed to get to this path with uninitialized
+> alloc_flags.  Should alloc_flags be initialized to zero in
+> __alloc_page_bulk()?
+> 
+
+You are correct about the |= updating an initial value, but I think the
+initialized value should be ALLOC_WMARK_LOW. A value of 0 would be the same
+as ALLOC_WMARK_MIN and that would allow the bulk allocator to potentially
+consume too many pages without waking kswapd.  I'll put together a patch
+shortly. Thanks Colin!
+
 -- 
-2.30.1
-
+Mel Gorman
+SUSE Labs
