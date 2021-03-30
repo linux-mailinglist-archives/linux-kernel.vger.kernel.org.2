@@ -2,112 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CC234DE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D7134DE6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhC3C2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
+        id S231173AbhC3C3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhC3C20 (ORCPT
+        with ESMTP id S230494AbhC3C3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:28:26 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CE3C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:28:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id jy13so22467932ejc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:28:25 -0700 (PDT)
+        Mon, 29 Mar 2021 22:29:07 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D855AC061762;
+        Mon, 29 Mar 2021 19:29:06 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v8so5363576plz.10;
+        Mon, 29 Mar 2021 19:29:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=as6TC2k6xEEVIuVX9cZ9mNSha9Pgs1VOeqieHwq2ZAk=;
-        b=0/Hcptk+lGf7RA7QeLI8de294bHY+a6+K92ctHUL8ogRG3PRJi/RvJGGeRNOVzBZ6Y
-         Cug7wcbQjiIeazHgGQ4vY9/DrdQ7aLvEjhZq1YapIeA0UPEcsZfp9NbpBfl6HT/5g9o0
-         aqmC7ovktIlGdSVnLxllh5zgTglmUD5sCzQW1wRApjaK3i2NGFrZszCzgp/bD468XxID
-         UECyTZMdRNYozflEzmeZkUXjklvH21iraJm7mCNoaRLpuQq/grxfpcjSo8ZnodelOoIP
-         xc3Yh9CKjzz6wy2jtyPdtDuSibDTYKHT313SllBRLqt0iNYx47SubGDemTVLxHWd6dBV
-         8h0Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lu4a0Lz+tvaJ+7tvKxJ5rrNZMNtgZSuhMggyHT8ei7Y=;
+        b=rk9YOylG0DefTSPGN/Odz2q5+vEbI6WB3FVAKOvZrIZ83K4CuDIGyl72XYJCD+diCg
+         Q/ynC83KMQq5ZbPNbeLzLYPFKRZD4NcA8J13fGzlDuF98DiwJ4edHqApzKKlOl6vTg9T
+         QVa2iTNguVD8Q3nL+Ug4ni/kfbgzswNKHfZzu1ihC/3RZvyu8RS/j3SLHL3X8UxnI/F0
+         WEPoQyFvkltff26M9BxUTSv+EuCDS7m3BOYoQG2DxrCmx+F26KpWOfhiJVBE98V4YQK7
+         Sz2SjSDjbW3M4H4SK4e26sLEH3SFSnaxZp3SUxUmQrvqYWrRCqU2mPCeNVZWw/UdIUYu
+         KqTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=as6TC2k6xEEVIuVX9cZ9mNSha9Pgs1VOeqieHwq2ZAk=;
-        b=pHzK12NNZYzyOW+YdNldCUx4Po1lWJXaVRAg45elROJmNdKQnP4uCET5d+goZBbSi+
-         184f/7AfTn4rt9ka6g02VhJOuBfbHqx8oVgA6UH3f+GYNRwJWfotWKcAV8ritMk0Acwy
-         Y9XvlMc4U3KB/LN/DZ0+VnmyUqk0a+NqslhNWqAENvGH7PmUSRvIeYzoDJuQoKdQ8R0O
-         NBHHUS2Q7Io8fpPc9gTL7xrmPMhiNeDSWc47nbrMNX1o8kn4xaD+kX47NF1OwgYWjIcN
-         AK8bYOASYYE4yeMGg9r4yL5V+Fvn41tbfMqMyjBPen27ftxsqip3tUxOGNU99j7i0OL9
-         pweA==
-X-Gm-Message-State: AOAM531VerwLBU0i4Tehs5iUO2RTl0UYhG/JcASkqNhkknovD7X+ZRD1
-        zJFb6/hC59P0P6tOn4ga8RX70c4FGEKGXRA9b85gAA==
-X-Google-Smtp-Source: ABdhPJxrtj444vLfa7by3n/VVs+in8qeM1zAKOJDHyFcmwzb3ptLOzZ9Ug2uMihG+7mETsyFGgfEz+SqnKrX+SstUUA=
-X-Received: by 2002:a17:906:e0d6:: with SMTP id gl22mr30819105ejb.444.1617071304549;
- Mon, 29 Mar 2021 19:28:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-4-brad@pensando.io>
- <20210329155843.GD5166@sirena.org.uk>
-In-Reply-To: <20210329155843.GD5166@sirena.org.uk>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 29 Mar 2021 19:28:14 -0700
-Message-ID: <CAK9rFny3RZSP8=RnekcLNz0KrBfko8jkc4pyXpfiEyF2TUmr4w@mail.gmail.com>
-Subject: Re: [PATCH v2 03/13] spi: dw: Add support for Pensando Elba SoC SPI
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lu4a0Lz+tvaJ+7tvKxJ5rrNZMNtgZSuhMggyHT8ei7Y=;
+        b=sDJzF70ndNgBM8bkLB+tXe3r1O6ud4fByDSqyjN1uwt+JbqZp2kFsobNw8NrNaM8Fs
+         G9ty/2Dfk30lF+52J1o9B2LyrhUnX8QxE0Sz852mnbmp7pcNbLwcy4z0YDYzsCserUqN
+         dCuKObX89XjUDqhLTGnHMerwZv5WVnY+za9awMe1Buw2dBwCMddM+3/44GdiDs0uA9IH
+         nBI8KHQBuh3tqseGel4t2N80BCX8I3Y3oXLjo3lGl9ZpjDO8VondlpBWMy9JB+GWD98X
+         hzeB1cxYTwNjaPWzRGfciWNCYU+MTDcEwCBnKy3busIb6uUcvTcT2SwH/3ek1o/9erIv
+         5ccw==
+X-Gm-Message-State: AOAM530+WpjI/WZEUgIIjgBJTgBd5Cw2JjkhdHpBcvLynx7DhAiNBJil
+        58bfY8msAGP6J+J7Xgbe18I=
+X-Google-Smtp-Source: ABdhPJwh3gFqmwyzNbfqSdUMLgcsziEuxOYiGIZ8EhkeN0eWDe2/COfEvthZaBJk8UeraaKVWfEzxQ==
+X-Received: by 2002:a17:90a:7f87:: with SMTP id m7mr2011924pjl.64.1617071345387;
+        Mon, 29 Mar 2021 19:29:05 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id i13sm17681385pgi.3.2021.03.29.19.29.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Mar 2021 19:29:04 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     robh@kernel.org, valentin.caron@foss.st.com,
+        Alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
+        a.fatoum@pengutronix.de, mcoquelin.stm32@gmail.com,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com,
+        gregkh@linuxfoundation.org, erwan.leray@foss.st.com,
+        erwan.leray@st.com, linux-serial@vger.kernel.org, lkp@intel.com,
+        patrice.chotard@foss.st.com
+Cc:     dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v7 0/6] ARM: STM32: add art-pi(stm32h750xbh6) board support
+Date:   Tue, 30 Mar 2021 10:28:52 +0800
+Message-Id: <1617071338-9436-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 8:58 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sun, Mar 28, 2021 at 06:59:28PM -0700, Brad Larson wrote:
->
-> > @@ -56,7 +56,7 @@ struct dw_spi_mscc {
-> >  /*
-> >   * The Designware SPI controller (referred to as master in the documentation)
-> >   * automatically deasserts chip select when the tx fifo is empty. The chip
-> > - * selects then needs to be either driven as GPIOs or, for the first 4 using the
-> > + * selects then needs to be either driven as GPIOs or, for the first 4 using
-> >   * the SPI boot controller registers. the final chip select is an OR gate
-> >   * between the Designware SPI controller and the SPI boot controller.
-> >   */
->
-> This is an unrelated fix, please send as a separate patch as covered in
-> submitting-patches.rst.
+From: dillon min <dillon.minfei@gmail.com>
 
-I'll remove this.  Belongs in a trivial patch set.
+This patchset intend to add art-pi board support, this board developed
+by rt-thread(https://www.rt-thread.org/).
 
-> > @@ -237,6 +237,31 @@ static int dw_spi_canaan_k210_init(struct platform_device *pdev,
-> >       return 0;
-> >  }
-> >
-> > +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
-> > +{
-> > +     struct dw_spi *dws = spi_master_get_devdata(spi->master);
-> > +
-> > +     if (!enable) {
-> > +             /*
-> > +              * Using a GPIO-based chip-select, the DW SPI
-> > +              * controller still needs its own CS bit selected
-> > +              * to start the serial engine.  On Elba the specific
-> > +              * CS doesn't matter to start the serial engine,
-> > +              * so using CS0.
-> > +              */
->
-> Why does this comment only apply to one branch of the conditional?
+Board resources:
+8MiB QSPI flash
+16MiB SPI flash
+32MiB SDRAM
+AP6212 wifi,bt,fm comb
 
-It doesn't, I'll move it outside the conditional.
+sw context:
+- as stm32h750 just has 128k bytes internal flash, so running a fw on
+  internal flash to download u-boot/kernel to qspi flash, boot
+  u-boot/kernel from qspi flash. this fw is based on rt-thread.
+- kernel can be xip on qspi flash or load to sdram
+- root filesystem is jffs2(created by buildroot), stored on spi flash
+
+to support the boad, add following changes.
+- fix r0-r3, r12 register restore failed after svc call,
+- add dts binding
+- update yaml doc
+
+---
+changes in v7:
+- remove changes in
+  Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+  Hi Rob Herring
+  as you has already ack this patch, please ignore it. thanks
+  history link:
+  https://lore.kernel.org/lkml/1614758717-18223-4-git-send-email-dillon.minfei@gmail.com/
+  https://lore.kernel.org/lkml/20210308195033.GA2855292@robh.at.kernel.org/
+- remove "[PATCH v6 8/9] pinctrl: stm32: Add STM32H750 MCU pinctrl support"
+  remove "[PATCH v6 5/9] ARM: dts: stm32: add stm32h750-pinctrl.dtsi"
+- reference to stm32h743-pinctrl.dtsi in stm32h750i-art-pi.dts
+v6 link:
+https://lore.kernel.org/lkml/1616757302-7889-1-git-send-email-dillon.minfei@gmail.com/
+
+changes in v6:
+- add gpiox{gpio-ranges, ngpios} in stm32h7-pinctrl.dtsi
+- add status="disabled" in stm32h743.dtsi 
+
+changes in v5:
+- accroding to rob's suggestion, replace false with 'type: object'
+  of 'additionalProperties'.
+- add Tested-by: Valentin Caron <valentin.caron@foss.st.com>
+
+changes in v4:
+- use unevaluatedProperties: false to fix dtbs_check warrnings instead of
+  add 'bluetooth' in st,stm32-uart.yaml
+
+changes in v3:
+- fix dtbs_check warrning: (8002cbd78fd5 and 4bc21d3dd678)
+  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: pin-controller:
+     {'type': 'object'} is not allowed for {'#address-cells': [[1]], '#size-cells':
+     [[1]], 'ranges': [[0,
+
+  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: 'i2c@40005C00',
+     'i2c@58001C00' do not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$',
+     '^[^@]+$', 'pinctrl-[0-9]+'
+  >> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
+     'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
+
+changes in v2:
+- reorganize the pinctrl device tree about
+  stm32h7-pinctrl/stm32h743/750-pinctrl
+  stm32h7-pinctrl.dtsi --> stm32h743-pinctrl.dtsi --> stm32h743i-disco.dts
+                         |                          |-> stm32h743i-eval.dts
+                         |-> stm32h750-pinctrl.dtsi --> stm32h750i-art-pi.dts
+  same to the stm32f7/f4's pinctrl style
+- fix author name/copyright mistake
+- add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
+  have same pin alternate functions, update Kconfig description
+- make item in stm32h750i-art-pi.dts sort by letter
+
+*** BLURB HERE ***
+
+dillon min (6):
+  Documentation: arm: stm32: Add stm32h750 value line doc
+  dt-bindings: arm: stm32: Add compatible strings for ART-PI board
+  ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to support stm32h750
+  ARM: dts: stm32: add support for art-pi board based on stm32h750xbh6
+  ARM: stm32: Add a new SOC - STM32H750
+  dt-bindings: serial: stm32: Use 'type: object' instead of false for
+    'additionalProperties'
+
+ Documentation/arm/index.rst                        |   1 +
+ Documentation/arm/stm32/stm32h750-overview.rst     |  34 ++
+ .../devicetree/bindings/arm/stm32/stm32.yaml       |   4 +
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  |   3 +-
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/stm32h7-pinctrl.dtsi             | 341 +++++++++++++++++++++
+ arch/arm/boot/dts/stm32h743-pinctrl.dtsi           | 307 +------------------
+ arch/arm/boot/dts/stm32h743.dtsi                   | 164 +++++++++-
+ arch/arm/boot/dts/stm32h750.dtsi                   |   6 +
+ arch/arm/boot/dts/stm32h750i-art-pi.dts            | 229 ++++++++++++++
+ arch/arm/mach-stm32/board-dt.c                     |   1 +
+ 11 files changed, 787 insertions(+), 304 deletions(-)
+ create mode 100644 Documentation/arm/stm32/stm32h750-overview.rst
+ create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+
+-- 
+2.7.4
+
