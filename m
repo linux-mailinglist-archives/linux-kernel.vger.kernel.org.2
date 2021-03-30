@@ -2,167 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CB834E58B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9506234E593
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhC3Kfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
+        id S231220AbhC3Kin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhC3KfN (ORCPT
+        with ESMTP id S229633AbhC3KiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:35:13 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E0DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:35:13 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id e7so17559935edu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:35:13 -0700 (PDT)
+        Tue, 30 Mar 2021 06:38:11 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ECBC061574;
+        Tue, 30 Mar 2021 03:38:07 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id k25so16036190oic.4;
+        Tue, 30 Mar 2021 03:38:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6Y9LMyDk4b0iimwt+wvW5tEwZ7sVo50tBsIS9q6O8BE=;
-        b=mZZGYOlELnuyff8io3XcjGwmLOyC17x2BAEPKr7y0IH98IQ+7PnkjC3tLHSYxSNBmb
-         SHfyzcEYurFach/EVbZOaP1doU2i0smxrXCJf/HxgvwasQViz5cvsXRkZBNvGu25zEc4
-         iZMz4JbXHv7CMhieBG5whgaQ9PdaS7OrISzXThreOaLB/0uoZmmEfMKGcpN++pfUukjW
-         nqGAFYNlJPpgXvRsMgRURIZMV2qBv1tTGihVbnU/LBiupbnRUOR/cv3gQB6Syqoh7JlL
-         1NxWhxPmM88JeAniqmre6Lhzr+2dZ/ibQP51m9qUiRrkFc724BlwLFrQfNKwXvjMzZFL
-         hc9w==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=tYI/A8xZFqfEL3vlEbiBDN0fqgPdkBzIVS2DT5ANUHA=;
+        b=Xx08/QcfB2NYycui7+XTVsfSO38c4ecS/Cca0Nhaj5AACQLfktw3RVoOb2hoUMX+aO
+         nvCS/JFt3PDpdeS1Puzf+Ahy3dnkvOPwBPNAvflYev1oYEyL3jTfbMFtlKNCHbMO269Z
+         uJkpq7O92M4w8Z6eDXIT6C80MEJpUQE7GQGtsR8ZaYClKXjpq3ncOFQtkeyN9EF3zMLP
+         xu8zVruDVgnG7RWXkgBm4mX0/j37w4OtnZTonFcg3rtQZK39tsiaCtHbKNkXYGT/SVkV
+         tCRPiEwAs88Vcs7Q5BI3sdMiGXxZ6TFVG1ZBt+UrsMSqh4qDdMLg808AxQpNsKCONopy
+         WZtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6Y9LMyDk4b0iimwt+wvW5tEwZ7sVo50tBsIS9q6O8BE=;
-        b=q6A/AEY0eN/TDXV9nfJax7d8g4PwU/wdYMHLEX8CxVY8ch6/8vOjqUocQ8GK2HEauX
-         OQ/Pag3Y3ElJIrNTQKItwzitXned1w98F/oWOn7aAvDfQDT3njJERNT5F2SO9EoOrLi0
-         1A370y8jGWo4fgogVGELFsV4T7Kn3j2VfLE6/NKH2fJgHzUq0BzK+zmIKcHdJ7T6wSd5
-         EKJG9jQRX8moiJCHOD2qZmMMprZ1KBhfB0LB3k2EN4t4AJ/ovSyq5erNMiU8sjGV13VK
-         aXZh1u9uMbqLmIv38HoCGEK5s+Y+w0uasFYnnYgXbcCE0JlDYeJ+KY+Bxm8zfbmC4SIN
-         WvrQ==
-X-Gm-Message-State: AOAM5317Gmg4lhblfDLCtVT/8k7GFdHidk3ql9BMOedNMw+7dB4Hp3h+
-        nQBmviyYbgovesEV8+28sPFURQ==
-X-Google-Smtp-Source: ABdhPJzXribJX90G+5FtWdp57MiNA+X1KsdT7xNJEXdMj5f+GQHExjbyYMmfMNWYg4Y19YzzhQvKyA==
-X-Received: by 2002:a05:6402:13ca:: with SMTP id a10mr32840223edx.320.1617100512170;
-        Tue, 30 Mar 2021 03:35:12 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id u24sm10775642edt.85.2021.03.30.03.35.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Mar 2021 03:35:11 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/4] nvmem: core: allow specifying of_node
-To:     Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20210322181949.2805-1-michael@walle.cc>
- <20210322181949.2805-2-michael@walle.cc>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <835a8124-0a22-e885-0bd4-c7493520558e@linaro.org>
-Date:   Tue, 30 Mar 2021 11:35:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=tYI/A8xZFqfEL3vlEbiBDN0fqgPdkBzIVS2DT5ANUHA=;
+        b=UWKANdKoaK4taPUfSOoGpxJVLhprDZ6Hzv2qI6jpNv6Uno1ej+YfL9xo5BQUW6HUD6
+         Sm/791KQY131z7WQL+6/RvErB6bu5Lgzt6y6TfEeJLYQJ3W97+k/3kI05Ug4DGbMfoqM
+         yBenVaUelxtCvsaSrzJu8QR/ZCO4dWmlRRWqrWiSzdsR7yWnYAKcajVYRR5ineWw2bNy
+         069rVXHQHASkicUFYgbq+F3VV6e3TWURBkR7Aino3kuT+7H8TQk4Vnf7LT6Ast3AyvK3
+         CcREby0OoR/pWmmOiBKCkkVbN/VWPpkltNoO491cEyAQPmyynvthKYMLvKBJ5h53EulF
+         bwZQ==
+X-Gm-Message-State: AOAM531CAvhsYttYqNQlhcpulCDrT56XylYkEBbXrQAhdlKbl473RFQE
+        t7NQInkauAlnxfPK+5bO/uQIvtFJtAE=
+X-Google-Smtp-Source: ABdhPJy8kLundeuogKFR2GinrT13Yxlo9Ot1HtepJ3IXphPzlKL6nWjOQMCQvxUMLuT/T42XwIXBXA==
+X-Received: by 2002:aca:35d4:: with SMTP id c203mr2739600oia.10.1617100686629;
+        Tue, 30 Mar 2021 03:38:06 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r10sm5109717ots.33.2021.03.30.03.38.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 03:38:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: linux-next: build warning after merge of the hwmon-staging tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210330182758.3a28068f@canb.auug.org.au>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <c53866f0-61e6-c9e4-eced-a9dd8fdc341b@roeck-us.net>
+Date:   Tue, 30 Mar 2021 03:38:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210322181949.2805-2-michael@walle.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210330182758.3a28068f@canb.auug.org.au>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XI9gMVC9p2bEc04PmyHcAmbyd0gaac6Ks"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XI9gMVC9p2bEc04PmyHcAmbyd0gaac6Ks
+Content-Type: multipart/mixed; boundary="bQfBamDKWE6bSifB1IdRDY2Syw7hJL5Wp"
+
+--bQfBamDKWE6bSifB1IdRDY2Syw7hJL5Wp
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+On 3/30/21 12:27 AM, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the hwmon-staging tree, today's linux-next build (htmldoc=
+s)
+> produced this warning:
+>=20
+> Documentation/hwmon/bpa-rs600.rst: WARNING: document isn't included in =
+any toctree
+>=20
+> Introduced by commit
+>=20
+>   9a8210575cde ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
+>=20
+I fixed it up.
+
+Thanks,
+Guenter
 
 
-On 22/03/2021 18:19, Michael Walle wrote:
-> Until now, the of_node of the parent device is used. Some devices
-> provide more than just the nvmem provider. To avoid name space clashes,
-> add a way to allow specifying the nvmem cells in subnodes. Consider the
-> following example:
-> 
->      flash@0 {
->          compatible = "jedec,spi-nor";
-> 
->          partitions {
->              compatible = "fixed-partitions";
->              #address-cells = <1>;
->              #size-cells = <1>;
-> 
->              partition@0 {
->                  reg = <0x000000 0x010000>;
->              };
->          };
-> 
->          otp {
->              compatible = "mtd-user-otp";
+--bQfBamDKWE6bSifB1IdRDY2Syw7hJL5Wp--
 
-I would have expected this to come up as a proper device, but am not 
-100% sure how MTD handles flashes and its partitions.
+--XI9gMVC9p2bEc04PmyHcAmbyd0gaac6Ks
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
->              #address-cells = <1>;
->              #size-cells = <1>;
-> 
->              serial-number@0 {
->                  reg = <0x0 0x8>;
->              };
->          };
->      };
-> 
-> There the nvmem provider might be the MTD partition or the OTP region of
-> the flash.
-> 
-> Add a new config->of_node parameter, which if set, will be used instead
-> of the parent's of_node.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+-----BEGIN PGP SIGNATURE-----
 
-Patch is fine as it its.
-If you plan to take this via mtd tree here is my Ack
+iQIzBAEBCAAdFiEEiHPvMQj9QTOCiqgVyx8mb86fmYEFAmBi/4wACgkQyx8mb86f
+mYFn8w//bhS+iwAK5750XKzBME0lev+Lzpeq/prRMfSLBWFaetD/It6+K6LnR7JP
+qMrxe0NErooi6px1yPLfKNabgfYx4mh+aXUz0tbVOjKh2bhwLCG1WjXzITYgHX64
+NqOV2xXOgledWgrMLb6uYFNfZBT0yqw+DDPgGWrbTapwfdwAZQSqBgs8GbWU1J7w
+A8/hc/nlz8/M52W+dHaxP2k/oBRGLYFIt43U8k8Hg89qqb+t8TjjH5vaxstNoM9w
+9F06uMLbWle7gH/2TUSHZSEaTvg+6TAW3TA98v53McrJvIyu5JpNJeRNOlh7I628
+jxojAN1W7B0Ch/cBx4hznW0uH7iSs/91EJbK9xpoqbAjee1uuEPCCNuBtFZUKHk/
+QzsKMcHSEEz4/OlTvVFTJLMKbtI5g4kTRpJwcnbUs9/dX9xZ/Cse9VLejPZf7U1h
+txAefHrTzSWZ8G9VA+PXwiedPH5vETJ/gM0JZ4jYIMa022WCi6CGdciYEfpRCTQ8
+uNExfukvc6bZ487Fg5snKW0HhtX/qHWRSQmdeoEcIdbs17hkK29xVzH+3t3HacHg
+hxJO+c3jlSM+bVbuQRO2+NGPFHeeMrJZqWICqO3ysVHbRZmsbb+Tkja1Wc33C5RH
+LgxRPgwWJ19bx3V6tAZPiSgMXBumysGW3vn4mT/eWewxGJLxpW4=
+=nY5h
+-----END PGP SIGNATURE-----
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-
---srini
-
->   drivers/nvmem/core.c           | 4 +++-
->   include/linux/nvmem-provider.h | 2 ++
->   2 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index bca671ff4e54..62d363a399d3 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -789,7 +789,9 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->   	nvmem->reg_write = config->reg_write;
->   	nvmem->keepout = config->keepout;
->   	nvmem->nkeepout = config->nkeepout;
-> -	if (!config->no_of_node)
-> +	if (config->of_node)
-> +		nvmem->dev.of_node = config->of_node;
-> +	else if (!config->no_of_node)
->   		nvmem->dev.of_node = config->dev->of_node;
->   
->   	switch (config->id) {
-> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-> index e162b757b6d5..471cb7b9e896 100644
-> --- a/include/linux/nvmem-provider.h
-> +++ b/include/linux/nvmem-provider.h
-> @@ -57,6 +57,7 @@ struct nvmem_keepout {
->    * @type:	Type of the nvmem storage
->    * @read_only:	Device is read-only.
->    * @root_only:	Device is accessibly to root only.
-> + * @of_node:	If given, this will be used instead of the parent's of_node.
->    * @no_of_node:	Device should not use the parent's of_node even if it's !NULL.
->    * @reg_read:	Callback to read data.
->    * @reg_write:	Callback to write data.
-> @@ -86,6 +87,7 @@ struct nvmem_config {
->   	enum nvmem_type		type;
->   	bool			read_only;
->   	bool			root_only;
-> +	struct device_node	*of_node;
->   	bool			no_of_node;
->   	nvmem_reg_read_t	reg_read;
->   	nvmem_reg_write_t	reg_write;
-> 
+--XI9gMVC9p2bEc04PmyHcAmbyd0gaac6Ks--
