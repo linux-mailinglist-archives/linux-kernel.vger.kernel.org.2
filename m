@@ -2,171 +2,507 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5F734E030
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB61934E034
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhC3Ect (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 00:32:49 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:41923 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC3Ecl (ORCPT
+        id S230212AbhC3Efb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 00:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhC3EfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 00:32:41 -0400
-Received: by mail-lf1-f53.google.com with SMTP id b14so21717018lfv.8;
-        Mon, 29 Mar 2021 21:32:41 -0700 (PDT)
+        Tue, 30 Mar 2021 00:35:23 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00420C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:35:22 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x126so11256565pfc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=platinasystems-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9HMvGO0pv8F9QSlWRO81I9qN4FCljEdv9dWHzwt82NM=;
+        b=eg0EHBA6bBHmfcSq/SJ536SWni0QxuaTCDZPsmwcJ1ddrHO15itR5FK9g2tOrv9I+Y
+         urd79kA4VCjFZf2kkT4bA6GIv3lbK2ZlECnbHVKrpszcetxJ9nKYKY3ktEBzl3oK/uWG
+         9g5hHd6T9mVilzQ0NZYq3cTK1LsRuT3nHAMNwL7vguLhbV5XAENHSdbxMlGd158ApWFT
+         b7eRBnRJGK7FqKObJkDVrH/NejYU9fciCQkJcA9F2I+67FWlI7ih2wfkKLvDrnZYdP/I
+         NHrX0FsxxWM6V1znVVfoixfV6GDRSQbYYodx0XkexVv6t8IfAgli1X0tu4Xp2uKbvVtu
+         KFoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=RNVWpTsR1EU4/n7h7Ur5fWeNrn3CLUmS+LFxH0dWKP0=;
-        b=BcM9Fq9A8h7WhasyuuU1qHBn1sC+hkVdTbakXCd0SdB3gUq08l75adu1zut/vPTU17
-         CrgYgsf0L68R/yA4c8g0BDgfp/e8zEG1pBvNA8Ym/nNkvryTUswjB7RjnUpZnwvZAtLi
-         6qsSEaH1fOG1tmVua1le8JvZIUNifcI8wleqUvtMK0e4lR+DhSHzoBtzbteprxpdAzoH
-         IXdWr6wjieY31oztUt2cb54KdmddtiHmXp7Evoa/u+A59NElarI4m/TDfTUZok02ugRr
-         iHaYVlHlT3qdxZdZwEEFy0J6XGq+hhg5ZpRYV2qX7DyfYUoNZkkZMsg+iT7SVqKazjAm
-         ymJg==
-X-Gm-Message-State: AOAM532nuU7EwcczOUR2MKyk8dMjgmZqZyFGfiRhG0/OAJJmyqAW1fl7
-        m/HSsc58jlA4YhhI1VxsHEY=
-X-Google-Smtp-Source: ABdhPJxv09qQWoRgXLBttaTMtsa808i7c1tUSkRC6nXhlDV/KiDJ/fbxRUsHTYen7LhDM1jjY4YKaA==
-X-Received: by 2002:a05:6512:714:: with SMTP id b20mr17536838lfs.370.1617078760349;
-        Mon, 29 Mar 2021 21:32:40 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id g24sm2029548lfv.257.2021.03.29.21.32.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9HMvGO0pv8F9QSlWRO81I9qN4FCljEdv9dWHzwt82NM=;
+        b=bc629RQcYEq7NogFlCCjX+OY+LR/+ofJLxUV6QehQXb3MoVfLTjydcu2P/4WrB3yXP
+         41ccKlm4oMygEVxj1zBd94qcoD71OPp8UcaxY+PnnRbVAykHtflshvMsX7JwCsroMc51
+         I/ePz0Q/Q2iSSnnjWOnk8q4bjpi7uE9NDN2nQ8QYr4CLSLNQgppuCtHG4+H+svXWbttJ
+         lxG+4MdjNnJOlnnNWL6HazbcLwPA5ZEVN0H2g8EtrVS98eRRez9jPS3aG78BBguxUprE
+         uAlCHnqfoZm21EO9Gb+YPaLi9koJ0lZ7ph8XEDsm1eZIikaCpO19u+Tm5D3i/qadlq8g
+         243A==
+X-Gm-Message-State: AOAM532imV2ex1+1X6Dme5qZOkQ49YDNl5CCyFZLXtsqBueuBznRBm2m
+        CQmBKDNhsOgVvCOIxn5nGTQrsg==
+X-Google-Smtp-Source: ABdhPJzTQzwC5A7joaLVvzQK9FiYLz3QJindq+a5WdLW2g7d0/Ei63Ib57yw4kB/Scfx2zgzwOTs+w==
+X-Received: by 2002:a63:5c04:: with SMTP id q4mr26682972pgb.369.1617078922276;
+        Mon, 29 Mar 2021 21:35:22 -0700 (PDT)
+Received: from localhost.localdomain ([207.53.255.56])
+        by smtp.gmail.com with ESMTPSA id y7sm1259592pja.25.2021.03.29.21.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 21:32:39 -0700 (PDT)
-Message-ID: <92243c7b428d2025c1a9f3beb8db46995c9376d0.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from
- config
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-In-Reply-To: <YGHWZuNfbSDe+B6y@smile.fi.intel.com>
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-         <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-         <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
-         <bf12f668db2f0dce7dfc09351780e295da30714c.camel@fi.rohmeurope.com>
-         <YGHWZuNfbSDe+B6y@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 29 Mar 2021 21:35:21 -0700 (PDT)
+From:   Kevin Paul Herbert <kph@platinasystems.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org,
+        Tom Grennan <tgrennan@platinasystems.com>,
+        linux-kernel@vger.kernel.org,
+        Kevin Paul Herbert <kph@platinasystems.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] nvmem: Change to unified property interface
+Date:   Mon, 29 Mar 2021 21:34:56 -0700
+Message-Id: <20210330043455.2947639-1-kph@platinasystems.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210329223827.2851916-1-kph@platinasystems.com>
+References: <20210329223827.2851916-1-kph@platinasystems.com>
 MIME-Version: 1.0
-Date:   Tue, 30 Mar 2021 07:32:33 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Morning Folks,
+Change from using device tree (Open Firmware) APIs to the unified
+'fwnode' interface.
 
-On Mon, 2021-03-29 at 16:30 +0300, Andy Shevchenko wrote:
-> On Mon, Mar 29, 2021 at 03:20:07PM +0300, Matti Vaittinen wrote:
-> > On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:
-> > > On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
-> > > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > > > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
-> > > > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer
-> > > > > EOPNOTSUPP
-> > > > 
-> > > > Make the gpiolib allow drivers to return both so driver
-> > > > developers
-> > > > can avoid one of the checkpatch complaints.
-> > > 
-> > > Internally we are fine to use the ENOTSUPP.
-> > > Checkpatch false positives there.
-> > 
-> > I agree. OTOH, the checkpatch check makes sense to user-visible
-> > stuff.
-> > Yet, the checkpatch has hard time guessing what is user-visible -
-> > so it
-> > probably is easiest to nag about all ENOTSUPP uses as it does now.
-> > 
-> > > I doubt we need this change. Rather checkpatch should rephrase
-> > > this
-> > > to
-> > > point out that this is only applicable to _user-visible_ error
-> > > path.
-> > > Cc'ed Joe.
-> > 
-> > Yes, thanks for pulling Joe in.
-> > 
-> > Anyways, no matter what the warning says, all false positives are
-> > annoying. I don't see why we should stay with ENOTSUPP in gpiolib?
-> > (other than the burden of changing it).
-> 
-> For sake of the changing we are not changing the code.
-No. But for the sake of making it better / more consistent :)
+Change of_nvmem_cell_get() to fwnode_nvmem_cell_get(), and add a
+wrapper for of_nvmem_cell_get().
 
-Anyway - after giving this second thought (thanks Andy for provoking me
-to thinking this further) - I do agree with Andy that this particular
-change is bad. More I think of this, less I like the idea of having two
-separate return values to indicate the same thing. So we should support
-only one which makes my patch terrible.
+Change of_nvmem_device_get() to fwnode_nvmem_device_get(). There
+are no known accessors to the OF interface, so no need for a wrapper.
 
-For the sake of consistency it would be cleaner to use same, single
-value, for same error both inside the gpiolib and at user-interface.
-That would be EOPNOTSUPP. As I said, having two separate error codes to
-indicate same thing is confusing. Now the confusion is at the boundary
-of gpiolib and user-land. Please educate me - is there difference in
-the meaning of ENOTSUPP and EOPNOTSUPP or are they really indicating
-the same thing? If yes, then yes - correct fix would be to use only one
-and ditch the other. Whether the amount of work is such it is
-practically worth is another topic - but that would be the right thing
-to do (tm).
+The first version of this patch incorrectly had a wrapper for
+of_nvmem_device_get(), even though the comments about the patch
+not needing this were correct.
 
-> 
-> > But I have no strong opinion on this. All options I see have
-> > downsides.
-> > 
-> > Accepting both ENOTSUPP and EOPNOTSUPP is the easy way to avoid
-> > allowing checkpatch warnings - but I admit it isn't stylish.
-> 
-> I think the error code which is Linux kernel internal is for a
-> reason.
+Reported-by: kernel test robot <lkp@intel.com>
 
-If so, then the current checkpatch warning is even more questionable.
+Signed-off-by: Kevin Paul Herbert <kph@platinasystems.com>
+---
+ drivers/nvmem/core.c           | 176 ++++++++++++++++++++-------------
+ include/linux/nvmem-consumer.h |  31 +++---
+ 2 files changed, 125 insertions(+), 82 deletions(-)
 
-> 
-> > Converting all ENOTSUPP cases inside gpiolib to EOPNOTSUPP is
-> > teodious
-> > although end result might be nicer.
-> 
-> Why? You still missed the justification except satisfying some tool
-> that gives
-> you false positives. We don't do that. It's the tool that has to be
-> fixed /
-> amended.
-> 
-> > Leaving it as is gives annoying false-positives to driver
-> > developers.
-> > 
-> > My personal preference was this patch - others can have other view
-> > like
-> > Andy does. I'll leave this to community/maintainers to evaluate :)
-> 
-> This patch misses documentation fixes, for example.
-
-Valid point.
-
-> Also, do you suggest that we have to do the same in entire pin
-> control
-> subsystem?
-
-After reading/writing this, I am unsure. This is why the discussion is
-good :) I don't see why we should have two separate error codes for
-same thing - but as you put it:
-
-> I think the error code which is Linux kernel internal is for a
-> reason.
-
-not all of us thinks the same. So maybe I just don't get it? :)
-
-Best Regards
-	Matti Vaittinen
-
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index a5ab1e0c74cf..2e49304cd9a8 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -6,6 +6,7 @@
+  * Copyright (C) 2013 Maxime Ripard <maxime.ripard@free-electrons.com>
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/device.h>
+ #include <linux/export.h>
+ #include <linux/fs.h>
+@@ -17,6 +18,7 @@
+ #include <linux/nvmem-provider.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/of.h>
++#include <linux/property.h>
+ #include <linux/slab.h>
+ 
+ struct nvmem_device {
+@@ -52,7 +54,7 @@ struct nvmem_cell {
+ 	int			bytes;
+ 	int			bit_offset;
+ 	int			nbits;
+-	struct device_node	*np;
++	struct fwnode_handle	*fwnode;
+ 	struct nvmem_device	*nvmem;
+ 	struct list_head	node;
+ };
+@@ -424,7 +426,7 @@ static void nvmem_cell_drop(struct nvmem_cell *cell)
+ 	mutex_lock(&nvmem_mutex);
+ 	list_del(&cell->node);
+ 	mutex_unlock(&nvmem_mutex);
+-	of_node_put(cell->np);
++	fwnode_handle_put(cell->fwnode);
+ 	kfree_const(cell->name);
+ 	kfree(cell);
+ }
+@@ -670,39 +672,40 @@ static int nvmem_validate_keepouts(struct nvmem_device *nvmem)
+ 	return 0;
+ }
+ 
+-static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
++static int nvmem_add_cells_from_fw(struct nvmem_device *nvmem)
+ {
+-	struct device_node *parent, *child;
++	struct fwnode_handle *parent, *child;
+ 	struct device *dev = &nvmem->dev;
+ 	struct nvmem_cell *cell;
+-	const __be32 *addr;
+-	int len;
++	int rval;
++	u32 vals[2];
+ 
+-	parent = dev->of_node;
++	parent = dev_fwnode(dev);
+ 
+-	for_each_child_of_node(parent, child) {
+-		addr = of_get_property(child, "reg", &len);
+-		if (!addr)
++	fwnode_for_each_child_node(parent, child) {
++		rval = fwnode_property_read_u32_array(child, "reg", NULL, 2);
++		if (rval < 0)
+ 			continue;
+-		if (len < 2 * sizeof(u32)) {
+-			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
++		if (rval < 2) {
++			dev_err(dev, "nvmem: invalid reg %d on %pfw\n",
++				rval, child);
+ 			return -EINVAL;
+ 		}
+-
++		rval = fwnode_property_read_u32_array(child, "reg", vals, 2);
+ 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+ 		if (!cell)
+ 			return -ENOMEM;
+ 
+ 		cell->nvmem = nvmem;
+-		cell->np = of_node_get(child);
+-		cell->offset = be32_to_cpup(addr++);
+-		cell->bytes = be32_to_cpup(addr);
+-		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
+-
+-		addr = of_get_property(child, "bits", &len);
+-		if (addr && len == (2 * sizeof(u32))) {
+-			cell->bit_offset = be32_to_cpup(addr++);
+-			cell->nbits = be32_to_cpup(addr);
++		cell->fwnode = child;
++		cell->offset = vals[0];
++		cell->bytes = vals[1];
++		cell->name = kasprintf(GFP_KERNEL, "%pfwn", child);
++
++		rval = fwnode_property_read_u32_array(child, "bits", vals, 2);
++		if (rval >= 0) {
++			cell->bit_offset = vals[0];
++			cell->nbits = vals[1];
+ 		}
+ 
+ 		if (cell->nbits)
+@@ -715,7 +718,7 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
+-			of_node_put(cell->np);
++			fwnode_handle_put(cell->fwnode);
+ 			kfree(cell);
+ 			return -EINVAL;
+ 		}
+@@ -789,8 +792,10 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+ 	nvmem->reg_write = config->reg_write;
+ 	nvmem->keepout = config->keepout;
+ 	nvmem->nkeepout = config->nkeepout;
+-	if (!config->no_of_node)
++	if (!config->no_of_node) {
+ 		nvmem->dev.of_node = config->dev->of_node;
++		nvmem->dev.fwnode = config->dev->fwnode;
++	}
+ 
+ 	switch (config->id) {
+ 	case NVMEM_DEVID_NONE:
+@@ -841,7 +846,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+ 	if (rval)
+ 		goto err_remove_cells;
+ 
+-	rval = nvmem_add_cells_from_of(nvmem);
++	rval = nvmem_add_cells_from_fw(nvmem);
+ 	if (rval)
+ 		goto err_remove_cells;
+ 
+@@ -984,36 +989,46 @@ static void __nvmem_device_put(struct nvmem_device *nvmem)
+ 	kref_put(&nvmem->refcnt, nvmem_device_release);
+ }
+ 
+-#if IS_ENABLED(CONFIG_OF)
+ /**
+- * of_nvmem_device_get() - Get nvmem device from a given id
++ * fwnode_nvmem_device_get() - Get nvmem device from a given id
+  *
+- * @np: Device tree node that uses the nvmem device.
++ * @fwnode: Firmware node that uses the nvmem device.
+  * @id: nvmem name from nvmem-names property.
+  *
+  * Return: ERR_PTR() on error or a valid pointer to a struct nvmem_device
+  * on success.
+  */
+-struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
++struct nvmem_device *fwnode_nvmem_device_get(struct fwnode_handle *fwnode, const char *id)
+ {
+-
+-	struct device_node *nvmem_np;
++	struct fwnode_handle *nvmem_fwnode;
+ 	struct nvmem_device *nvmem;
+ 	int index = 0;
+ 
+ 	if (id)
+-		index = of_property_match_string(np, "nvmem-names", id);
+-
+-	nvmem_np = of_parse_phandle(np, "nvmem", index);
+-	if (!nvmem_np)
+-		return ERR_PTR(-ENOENT);
++		index = fwnode_property_match_string(fwnode, "nvmem-names", id);
++
++	if (is_of_node(fwnode)) {
++		struct device_node *nvmem_np = of_parse_phandle(to_of_node(fwnode),
++								"nvmem", index);
++		if (!nvmem_np)
++			return ERR_PTR(-ENOENT);
++		nvmem_fwnode = &nvmem_np->fwnode;
++	} else if (is_acpi_device_node(fwnode)) {
++		struct fwnode_reference_args args;
++		int rval = acpi_node_get_property_reference(fwnode,
++							    "nvmem", index, &args);
++		if (rval)
++			return ERR_PTR(rval);
++		nvmem_fwnode = args.fwnode;
++	} else {
++		return ERR_PTR(-ENXIO);
++	}
+ 
+-	nvmem = __nvmem_device_get(nvmem_np, device_match_of_node);
+-	of_node_put(nvmem_np);
++	nvmem = __nvmem_device_get(nvmem_fwnode, device_match_fwnode);
++	fwnode_handle_put(nvmem_fwnode);
+ 	return nvmem;
+ }
+-EXPORT_SYMBOL_GPL(of_nvmem_device_get);
+-#endif
++EXPORT_SYMBOL_GPL(fwnode_nvmem_device_get);
+ 
+ /**
+  * nvmem_device_get() - Get nvmem device from a given id
+@@ -1026,16 +1041,15 @@ EXPORT_SYMBOL_GPL(of_nvmem_device_get);
+  */
+ struct nvmem_device *nvmem_device_get(struct device *dev, const char *dev_name)
+ {
+-	if (dev->of_node) { /* try dt first */
+-		struct nvmem_device *nvmem;
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
+ 
+-		nvmem = of_nvmem_device_get(dev->of_node, dev_name);
++	if (fwnode) { /* try firmware tree first */
++		struct nvmem_device *nvmem;
+ 
++		nvmem = fwnode_nvmem_device_get(fwnode, dev_name);
+ 		if (!IS_ERR(nvmem) || PTR_ERR(nvmem) == -EPROBE_DEFER)
+ 			return nvmem;
+-
+ 	}
+-
+ 	return __nvmem_device_get((void *)dev_name, device_match_name);
+ }
+ EXPORT_SYMBOL_GPL(nvmem_device_get);
+@@ -1171,15 +1185,14 @@ nvmem_cell_get_from_lookup(struct device *dev, const char *con_id)
+ 	return cell;
+ }
+ 
+-#if IS_ENABLED(CONFIG_OF)
+ static struct nvmem_cell *
+-nvmem_find_cell_by_node(struct nvmem_device *nvmem, struct device_node *np)
++nvmem_find_cell_by_fwnode(struct nvmem_device *nvmem, struct fwnode_handle *fwnode)
+ {
+ 	struct nvmem_cell *iter, *cell = NULL;
+ 
+ 	mutex_lock(&nvmem_mutex);
+ 	list_for_each_entry(iter, &nvmem->cells, node) {
+-		if (np == iter->np) {
++		if (fwnode == iter->fwnode) {
+ 			cell = iter;
+ 			break;
+ 		}
+@@ -1190,42 +1203,67 @@ nvmem_find_cell_by_node(struct nvmem_device *nvmem, struct device_node *np)
+ }
+ 
+ /**
+- * of_nvmem_cell_get() - Get a nvmem cell from given device node and cell id
++ * fwnode_nvmem_cell_get() - Get a nvmem cell from given firmwar node and cell id
+  *
+- * @np: Device tree node that uses the nvmem cell.
++ * @fwnode: Firmware node that uses the nvmem cell.
+  * @id: nvmem cell name from nvmem-cell-names property, or NULL
+- *      for the cell at index 0 (the lone cell with no accompanying
+- *      nvmem-cell-names property).
++ *	for the cell at index 0 (the lone cell with no accompanying
++ *	nvmem-cell-names property).
+  *
+  * Return: Will be an ERR_PTR() on error or a valid pointer
+  * to a struct nvmem_cell.  The nvmem_cell will be freed by the
+  * nvmem_cell_put().
+  */
+-struct nvmem_cell *of_nvmem_cell_get(struct device_node *np, const char *id)
++struct nvmem_cell *fwnode_nvmem_cell_get(struct fwnode_handle *fwnode,
++					 const char *id)
+ {
+-	struct device_node *cell_np, *nvmem_np;
++	struct fwnode_handle *nvmem_fwnode, *cell_fwnode;
+ 	struct nvmem_device *nvmem;
+ 	struct nvmem_cell *cell;
+ 	int index = 0;
+ 
+ 	/* if cell name exists, find index to the name */
+-	if (id)
+-		index = of_property_match_string(np, "nvmem-cell-names", id);
++	if (id) {
++		index = fwnode_property_match_string(fwnode, "nvmem-cell-names", id);
++		if (index < 0)
++			return ERR_PTR(index);
++	}
+ 
+-	cell_np = of_parse_phandle(np, "nvmem-cells", index);
+-	if (!cell_np)
+-		return ERR_PTR(-ENOENT);
++	if (is_of_node(fwnode)) {
++		struct device_node *np = to_of_node(fwnode);
++		struct device_node *cell_np = of_parse_phandle(np, "nvmem-cells", index);
++
++		if (!cell_np)
++			return ERR_PTR(-EINVAL);
++		cell_fwnode = &cell_np->fwnode;
++	} else if (is_acpi_device_node(fwnode)) {
++		struct fwnode_reference_args args;
++		struct fwnode_handle *dev_fwnode;
++		int rval;
+ 
+-	nvmem_np = of_get_next_parent(cell_np);
+-	if (!nvmem_np)
++		rval = acpi_node_get_property_reference(fwnode,
++							"nvmem-cells", index, &args);
++		if (rval)
++			return ERR_PTR(rval);
++		dev_fwnode = args.fwnode;
++		cell_fwnode = fwnode_get_named_child_node(dev_fwnode,
++							  id ? id : "nvmem");
++		if (!cell_fwnode)
++			return ERR_PTR(-EINVAL);
++	} else {
++		return ERR_PTR(-ENXIO);
++	}
++
++	nvmem_fwnode = fwnode_get_next_parent(cell_fwnode);
++	if (!nvmem_fwnode)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	nvmem = __nvmem_device_get(nvmem_np, device_match_of_node);
+-	of_node_put(nvmem_np);
++	nvmem = __nvmem_device_get(nvmem_fwnode, device_match_fwnode);
++	fwnode_handle_put(nvmem_fwnode);
+ 	if (IS_ERR(nvmem))
+ 		return ERR_CAST(nvmem);
+ 
+-	cell = nvmem_find_cell_by_node(nvmem, cell_np);
++	cell = nvmem_find_cell_by_fwnode(nvmem, cell_fwnode);
+ 	if (!cell) {
+ 		__nvmem_device_put(nvmem);
+ 		return ERR_PTR(-ENOENT);
+@@ -1233,8 +1271,7 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_node *np, const char *id)
+ 
+ 	return cell;
+ }
+-EXPORT_SYMBOL_GPL(of_nvmem_cell_get);
+-#endif
++EXPORT_SYMBOL_GPL(fwnode_nvmem_cell_get);
+ 
+ /**
+  * nvmem_cell_get() - Get nvmem cell of device form a given cell name
+@@ -1251,14 +1288,15 @@ EXPORT_SYMBOL_GPL(of_nvmem_cell_get);
+ struct nvmem_cell *nvmem_cell_get(struct device *dev, const char *id)
+ {
+ 	struct nvmem_cell *cell;
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
+ 
+-	if (dev->of_node) { /* try dt first */
+-		cell = of_nvmem_cell_get(dev->of_node, id);
++	if (fwnode) { /* try firmware tree first */
++		cell = fwnode_nvmem_cell_get(fwnode, id);
+ 		if (!IS_ERR(cell) || PTR_ERR(cell) == -EPROBE_DEFER)
+ 			return cell;
+ 	}
+ 
+-	/* NULL cell id only allowed for device tree; invalid otherwise */
++	/* NULL cell_id only allowed for firmware tree; invalid otherwise */
+ 	if (!id)
+ 		return ERR_PTR(-EINVAL);
+ 
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index 052293f4cbdb..be407c2941fc 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -12,12 +12,14 @@
+ #include <linux/err.h>
+ #include <linux/errno.h>
+ #include <linux/notifier.h>
++#include <linux/of.h>
+ 
+ struct device;
+ struct device_node;
+ /* consumer cookie */
+ struct nvmem_cell;
+ struct nvmem_device;
++struct fwnode_handle;
+ 
+ struct nvmem_cell_info {
+ 	const char		*name;
+@@ -94,6 +96,10 @@ int nvmem_unregister_notifier(struct notifier_block *nb);
+ struct nvmem_device *nvmem_device_find(void *data,
+ 			int (*match)(struct device *dev, const void *data));
+ 
++struct nvmem_cell *fwnode_nvmem_cell_get(struct fwnode_handle *np,
++					 const char *name);
++struct nvmem_device *fwnode_nvmem_device_get(struct fwnode_handle *np,
++					     const char *name);
+ #else
+ 
+ static inline struct nvmem_cell *nvmem_cell_get(struct device *dev,
+@@ -221,25 +227,24 @@ static inline struct nvmem_device *nvmem_device_find(void *data,
+ 	return NULL;
+ }
+ 
+-#endif /* CONFIG_NVMEM */
+-
+-#if IS_ENABLED(CONFIG_NVMEM) && IS_ENABLED(CONFIG_OF)
+-struct nvmem_cell *of_nvmem_cell_get(struct device_node *np,
+-				     const char *id);
+-struct nvmem_device *of_nvmem_device_get(struct device_node *np,
+-					 const char *name);
+-#else
+-static inline struct nvmem_cell *of_nvmem_cell_get(struct device_node *np,
+-						   const char *id)
++static inline struct nvmem_cell *fwnode_nvmem_cell_get(struct fwnode_handle *np,
++						       const char *name)
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+ 
+-static inline struct nvmem_device *of_nvmem_device_get(struct device_node *np,
+-						       const char *name)
++static inline struct nvmem_device *fwnode_nvmem_device_get(struct fwnode_handle *np,
++							   const char *name)
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+-#endif /* CONFIG_NVMEM && CONFIG_OF */
++
++#endif /* CONFIG_NVMEM */
++
++static inline struct nvmem_device *of_nvmem_cell_get(struct device_node *np,
++						     const char *name)
++{
++	return np ? fwnode_nvmem_cell_get(&np->fwnode, name) : NULL;
++}
+ 
+ #endif  /* ifndef _LINUX_NVMEM_CONSUMER_H */
+-- 
+2.25.1
 
