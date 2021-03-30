@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C894E34EC15
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD0A34EC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhC3PWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231808AbhC3PVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:21:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 175F36195C;
-        Tue, 30 Mar 2021 15:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617117708;
-        bh=uGwUP3LzjKRd9E1KoxeHAndEnuORzm0H6YS3esSamOk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i5PF2w81bVXHY5TwySMtGBo2nNi4PqgeFA/qVDFG/2rM3QM9K/7S7YEUIKXO3HBne
-         1M3QsIheQ4jK+ZIEY62C/lfH8sJX1rXfqK7ndOiv9+G5vIC0+ZzHH+Ujyj2ms/oZZi
-         TZSsMkAX8ZN3CL4lQEBDoiG2G8bUwsZFS1IkwQTHhfD08H8CdKS3daBbvKqOJP/IJq
-         Re96AJv434bJ362Rwqfyb2xxnYRB62v+lP3xQElI++Gml8ko5h277pNBnddX3F87Q5
-         KzUD+4HQakv6avPe4N8zYdFiJOUtePIerogCzdcK5AoyrX6PtoEFobedlvsGIJLX8b
-         TWU0RlBtTdHLA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lRGC1-0002Y3-Sc; Tue, 30 Mar 2021 17:22:09 +0200
-Date:   Tue, 30 Mar 2021 17:22:09 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] USB: serial: add support for multi-interface
- functions
-Message-ID: <YGNCIT1ocatZ3V3/@hovoldconsulting.com>
-References: <20210330143820.9103-1-johan@kernel.org>
- <20210330143820.9103-4-johan@kernel.org>
- <e0b2984e7de0287c5811a10faaac4d5d6d7d91ef.camel@suse.com>
+        id S232065AbhC3PXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231874AbhC3PWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:22:54 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852D6C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:22:54 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id k8so16632355wrc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:22:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w8V0w5GOQQHkISfgPJAfMdvO2kYy36iSMSCiKff1Avk=;
+        b=UK1+56tkUkxiWzmRwystR96Cb2t9qheGXbUSyiN2dgeqKl5Hgl/wcbw7IfsGiBDN6a
+         U/X2/vZNS1xLCZtaBdzuywfO6MS3gcIdI+NqD3jPhHlkc0ShXx/R6Bk3+Qi2tEZHXmMi
+         pIyaaTYprHhpUG6PDxBTyGZn3RqSMEQ/uO5PCV2dgPMsToSNOiihQcQ33t25LjhK9gR9
+         9CuqqUi6ddoINX/lxm6jpVa2CMUxoZkYKrh9zqh/fSd1qY/caYxdU/O/rg6p92bW5xe7
+         quVMO5sraS/foEHHqu7cly5FmtbhWhQOA+XhrXcoxcE5laGESrX6+LDendnLlZ7twgLY
+         pAlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=w8V0w5GOQQHkISfgPJAfMdvO2kYy36iSMSCiKff1Avk=;
+        b=l66zRIlQ9o2ZhEDgYY2JxKy3Ql6AOM8ehxWDuoca92HrsUPoMRnDDJomcLbQvmDAFw
+         Qr3/t9O7kIE0gfPcb7kPFQo7V5vf3imkA6DG6GbB9I+f/jl+cm1ihSzcOjKQX+wtUXaN
+         g0r/HgSbtFi+uitrTFpnReiu8snwESICMS37ALk1MR+JmE4EGjkTAgQsipOYSaMZjX6d
+         WzZhEeUDDP9knyPQ3HHZGQ5WGukA5VFTAeSpo4aPI45e3aSZURBA/2uJ/4pYvpG/4Q91
+         bbv3aUb9sILfvkbnnGSTux2ae7M7cRIcAaQzPWojHPrbNT2oMjbraXQtsezfQWUzeoWY
+         7Iwg==
+X-Gm-Message-State: AOAM531O0/CPqqOAama13WnCC1Ptu7yVpTYHJTQQ0uHYQAlMk/7+b7h2
+        RQA0sOm9jmQTC7Q+T0nn3AvpUICL0zZ9Iokt
+X-Google-Smtp-Source: ABdhPJxESZmSpSlE6klTTQAJEKlYJe9e6WfAFm2Og41KDME4F0sRQvY34G+x1BpznTP2tl29sfIHsg==
+X-Received: by 2002:a5d:63d2:: with SMTP id c18mr34201127wrw.277.1617117772629;
+        Tue, 30 Mar 2021 08:22:52 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:2d11:7929:c1dd:292? ([2a01:e0a:90c:e290:2d11:7929:c1dd:292])
+        by smtp.gmail.com with ESMTPSA id r206sm4463718wma.46.2021.03.30.08.22.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 08:22:52 -0700 (PDT)
+Subject: Re: [PATCH 1/3] arm64: dts: meson: remove extra tab from ODROID
+ N2/N2+ ext_mdio node
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210329161256.31171-1-christianshewitt@gmail.com>
+ <20210329161256.31171-2-christianshewitt@gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <257db59f-fca6-ece4-f8c9-a2f4e1d95c49@baylibre.com>
+Date:   Tue, 30 Mar 2021 17:22:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0b2984e7de0287c5811a10faaac4d5d6d7d91ef.camel@suse.com>
+In-Reply-To: <20210329161256.31171-2-christianshewitt@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:44:32PM +0200, Oliver Neukum wrote:
-> Am Dienstag, den 30.03.2021, 16:38 +0200 schrieb Johan Hovold:
-> > @@ -1115,6 +1161,8 @@ static void usb_serial_disconnect(struct usb_interface *interface)
-> >         if (serial->type->disconnect)
-> >                 serial->type->disconnect(serial);
-> >  
-> > +       release_sibling(serial, interface);
-> > +
-> >         /* let the last holder of this object cause it to be cleaned up */
-> >         usb_serial_put(serial);
-> >         dev_info(dev, "device disconnected\n");
+On 29/03/2021 18:12, Christian Hewitt wrote:
+> Remove an extra tab from the ext_mdio node in the ODROID N2/N2+ common
+> dtsi file.
 > 
-> Hi,
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> does this assume you are called for the original interface first?
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> index 58ce569b2ace..2f8d574c30c0 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> @@ -410,7 +410,7 @@
+>  
+>  &ext_mdio {
+>  	external_phy: ethernet-phy@0 {
+> -		/* Realtek RTL8211F (0x001cc916) */	
+> +		/* Realtek RTL8211F (0x001cc916) */
+>  		reg = <0>;
+>  		max-speed = <1000>;
+>  
+> 
 
-No, I handle either interface being unbound first (e.g. see
-release_sibling()).
-
-> I am afraid that is an assumption you cannot make. In fact, if somebody
-> is doing odd things with sysfs you cannot even assume both will see a
-> disconnect()
-
-Right, but disconnect() will still be called also for the sibling
-interface as part of release_sibling() above.
-
-Johan
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
