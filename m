@@ -2,189 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4D434E900
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A4334E90E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhC3NZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:25:16 -0400
-Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:36768
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231910AbhC3NY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:24:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iZHSCov/CgGdovNj03iSKBWVMvZ/9jiVrJP027zt7WCZU+tg3CyHVNuYzAyjyd+x3yjyWQSJYzHrvqqbnUKh51OiwApFAg5EILHcx6YmC6BvaiR4wLFz2P8eaMZ4U0iFtfcPiLrvRNBnnVnliq30atd7Gh7InLGViXuwO4LmuSk1XjnQ7hr1ZqYPzgyHhFtOgWkQNBT7Wl8e46/NjXTE/+mt7R43P495fdzEcn7G8AjpJzzBab/wLMWKI4DxoVvOe84gCG/GStb7DT/2xDG71+O6VcjlmUDTDxYv3kJdBeqxFnViBzJWI1iwaMoIHyJXI8a7YeTaiBeC951K0G8etw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0XJH7ETVgHxScn+F/M4QQ+3qsyIlvXRa+cgv5L926M=;
- b=Z974IcaWN8CKPNBTcy9ka5ZhfP5dgjkQT2vUZVJUdNK07ne6BEkNm7veC8wifxe9Ua51gRPl0Uu1zOy22Hb+rajyo96+/f9fsSpaweMTa3sux8lp/XMo8+C1S5DwksPjH1M8xzb3Gf4Bsvpkc/HFHObyw8EJJ5nRWmsoL2lELhkkwUSlntWFgQrrXpBNZPoVYQkrGkATmT0fSbJomzO8x4Qn106RafRRjpf8ppcE+H9kinscy/OATYEaAy/Z0TINlCH4OJG7CiAsbgbsu/a+RBNAykW2flWnJxedFPJEpVH/1WWRdtV5oipZSsrd4E3Tv2t1S5sYOmS6On2nRQw+hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0XJH7ETVgHxScn+F/M4QQ+3qsyIlvXRa+cgv5L926M=;
- b=X2fcFfagjD0oNiVDXCyuKgQn/ZXflvlQ2lns1ZxNRlUPvJ2LdN199j/YNImYe9asymkWAEmVfNm/dPeeeVyz81Mdhq5uQ5Dk9SYkeilm2ccLIyAMiUBN5kK3JuJsHEH8ASIcjf8J1uDBoZ2Kk16duvOoh6idrxxlUn9M5RaS05FdXj7xLh+eAIV5RqRRpGflpSEyy2EK9P1RaBmhqFpAJPUw2CYbYKz8hyUn+D30+Qq4T9zNVcwhRq3caVxNHJX7iNvIPavzo1+uB2xT9Ky/C50U3g1g4UfZvRlh/G1+yfDa5GEK9TDqeSkE5f1ueG+BA4tXHXK2Q5Ae8w8CXlbZBQ==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1548.namprd12.prod.outlook.com (2603:10b6:4:a::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.29; Tue, 30 Mar 2021 13:24:55 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 13:24:54 +0000
-Date:   Tue, 30 Mar 2021 10:24:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210330132452.GA1403691@nvidia.com>
-References: <20210318172234.3e8c34f7@jacob-builder>
- <YFR10eeDVf5ZHV5l@myrica>
- <20210319124645.GP2356281@nvidia.com>
- <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
- <20210322120300.GU2356281@nvidia.com>
- <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB1886F14B4C7C58C99F54FAFF8C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886F14B4C7C58C99F54FAFF8C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR06CA0027.namprd06.prod.outlook.com
- (2603:10b6:208:23d::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232133AbhC3N0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:26:46 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:54317 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232244AbhC3N0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:26:21 -0400
+Received: by mail-io1-f70.google.com with SMTP id s6so13281237iom.21
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 06:26:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yCd+Hfl80LN5BCKjCkkfSE23KR1n57lste6JoMSf5pc=;
+        b=cpHgP1Xfj/8ehy28LO7sEWSTq49I+QI8DKAEsT6UV2hbanOTe0WmJk5J3whkaVxhVT
+         4YXB5XauRLkI3NTPr9OkefyqLn/CoTEtZ8B4Yw+JKgTfUno0o/lvioNuL9btAHwVIkdL
+         EANMIba2Cfaq4B9h5gGfB0dVrZAZQzMqJidNMi9c+ULrclgdYiHcszKDHRVVmXQCQ6AQ
+         i1DmZEEq/bBi5aW6lKPw/zNr22RpjtDr+Qd9cAQqEZn+/S2O77sPPG9euWtlerNPx1e2
+         lJx9C1zabtp3j6AW8BsVebVeAZxdAXGlRDllHsSXU3S3L0NGPwwaS+OkozILXgGka8C+
+         /25A==
+X-Gm-Message-State: AOAM530WezqV+Q8O9MgZqJlhSF2m2Jhpuv1cPJFF58ByHilZc4RSP+L3
+        OQBGHRa4aA+6ec27+Blb3sGFgb2MwmhCUJC3OlMrVfksR2Fm
+X-Google-Smtp-Source: ABdhPJw8Mer60mvRAwGBfLM9qexOORx3upAe0NXsf6zLsCtLJxPSc0BAgcn0GXq38jOZXhEtQ1LLkqIPDU4ZuEzzBjpjRjM8AIor
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR06CA0027.namprd06.prod.outlook.com (2603:10b6:208:23d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend Transport; Tue, 30 Mar 2021 13:24:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lREMW-005tIl-Ts; Tue, 30 Mar 2021 10:24:52 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f60efef0-b37d-4f05-f121-08d8f37f3487
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1548:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB15482CA8ED474C528ECB756FC27D9@DM5PR12MB1548.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rJbIRYK5kuX9RwiOkISa+IN0IHu0c0jrGxLLGQUYEnGt/XCISWqsP0HwXUEvwYzYw/to60cHSvfMVci0j20DMujDKxuaH60HiNkwcpvdS+ZQ8OlaSzmlHqeByvC0oK47msfrPAacdsw7CgRrLpvtFy4TF4Cur/BBEXRXAqMviP0egGeb+rN5bj4eq4IRmOclK+WPU2Ub66E38I7sVQrzA1GWGJxKAKucgwKvm8puO0y37dZgvt7mWtbqTFc0zfsrnE+jieFN4BDI8rNYej4cimYd8zMr0JXBIcrnt30pXfWwzEZgn7JhodiK9ebrAyMgHeIVSAJBhqpEvWRkTIUmRGZI2pYnuPsqp3eseqPezx0fLWoPJJeNlVpC+7yyPGsGU5j+G9q9K330UdqwuZlHXSU9egKiIYhcQ+DQXK2x2WcRnYP9hTFcbEDHMI5sx4HxBhMz3h7gl9jUO342BgPZ82ajV83WIOnZlPzyHlUocBLfEO321VbhGai+i4zNj8NNROWshaQuPygjPlIVAXxDJZVB7ijVMzGB1M3Lx0r6RUIQv96niZSgeP14pwYZfzFIuIJWUXN0stbIk2kq1tXBI0sD7rhy4CBSvcyRupLQW6AYs058X5C4/ZfoD+yAKPt9rBLce9oD//cmOLjsfxKjpjWaQzaWteBegpkwNpRG9Mc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(366004)(136003)(376002)(26005)(186003)(478600001)(2616005)(9746002)(9786002)(38100700001)(54906003)(1076003)(8676002)(2906002)(4326008)(426003)(83380400001)(6916009)(8936002)(66946007)(33656002)(66556008)(36756003)(7416002)(316002)(66476007)(86362001)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?elIJiTnReseKCl+tDtGEUImqRBtAO5tik+OEgFaJ3W9uFF9ymtALO5IMoB5X?=
- =?us-ascii?Q?0Nx0XIJDuRd4HB/YQfJL+hO5amVFI6n7g8h4ZNM9Rgl4EyGNOlDxhwktZEfa?=
- =?us-ascii?Q?bW8JiW9IH6HuAR1dvgGDijMSVDoSt9/uCDBcvsOvKQfbHADil/T1510QzLH2?=
- =?us-ascii?Q?kU2omHT4fmTzT2OPMV2WlaGla+dR0Kdi1nL/ywDDiy5j0Z3yUb9fUbAVwEca?=
- =?us-ascii?Q?lxhvrCUMagrSQMi9CM6LZQrTCHHBFrehGNm86/Rcb9L8QGxHZDK3rhQP+tn1?=
- =?us-ascii?Q?d+rbmt9qnZPfPwKk8WiBj50ssqiVpLiI21jRFjRpRYvzjTX+gtI2f0lcIG59?=
- =?us-ascii?Q?ffNfweIPJ8raKsStxVskYs2lPbj0N/3weiPuiHKi0S6TmBln22KE8DzOWA40?=
- =?us-ascii?Q?1+z5VW8E6lr/Yl91oqJ4F59uvHxzERN0MftOJnSV/Pj8Bwm12nhcLabxFpW5?=
- =?us-ascii?Q?ZpMinsEvtd/SEUT3pHuB4r5fl4H4Bqa5IrEX5yiDrQU92AuXv3E/HEroxMhA?=
- =?us-ascii?Q?XNZEG/FjsgEBhSeUPGvVOfjKPOSu9tn9XAJLQWKeZfkx7g98LyxWAFgrkfuO?=
- =?us-ascii?Q?Os1oE64Y1T5vPx1B3VkT9IadBzGRr9P2AFqIYyLXKvEHkrsHWoFLXJoPMo5Q?=
- =?us-ascii?Q?n4j3hUV1WDtCS3TtvXY/+/751zY8Nca8CFBlbTGgBh03jaD7uOjIwFq7RwfL?=
- =?us-ascii?Q?or4AWuBFHaziIxdljcgP7F+9LwpUu0KgoNDvilG/t8/Qru0yXULGbH7nYJVw?=
- =?us-ascii?Q?TH84pRPzydtFODXK1dicKPiSygX31VqFP9Y/zJ2e7JWEbIkBw6+EgxgXxrgm?=
- =?us-ascii?Q?K7+7JzmRQQeCVX9Cd5VpubpELMoz63qFmETTOZfXSvuuKYIA6Fxkluiu/DET?=
- =?us-ascii?Q?r418SEI7Nm65TUON1ojnU9cfho3xvwv6nXJqnjjK1pffD1uygz+mGaLNfaaK?=
- =?us-ascii?Q?kE5kXtxLnLz+jMoki9Yy/gfeWPEL5Fw3wU14bcHGyuUiee5wxl8bN3zHtZ21?=
- =?us-ascii?Q?EOzd7kg9t4DKAFSQ6OrCaZt2sEcSo14nd83prEGU0WRfCJMjRJcGAAqqCa/H?=
- =?us-ascii?Q?yCxNuZi1xWBc5T4o7OWI0MPxW86Bt2Bpn7WYXujnchRvXEyTKk4/fb6qv/Ij?=
- =?us-ascii?Q?6+m8cEQpiKyQ6huV+FpaXkumNx8CRO6PJUGGo/dDxwi130zKJl/H7oOYmX9u?=
- =?us-ascii?Q?OLlcMwOpHEvUwZJMiF5FcIwFGlgUkw7tBct3y5nZkpA3sGasU+2C6n++4Rj5?=
- =?us-ascii?Q?PIzZjIMtJorTzECXm53lDg1IjNiaclOw6fjtsIBQetj9Frj8g//kKIMLKRaq?=
- =?us-ascii?Q?rqjlSqpxlFvXs8NmS3DqBkn3QGNyPDdS2bPdqV2z9RMi7Q=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f60efef0-b37d-4f05-f121-08d8f37f3487
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 13:24:54.9260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Tqqp2KyTEEicKR7bI5dTyCJg4UyViuy3unTTwBjQtHjTVo/ef/4NTA/mraULB5Za
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1548
+X-Received: by 2002:a6b:b251:: with SMTP id b78mr24123601iof.95.1617110778508;
+ Tue, 30 Mar 2021 06:26:18 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 06:26:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000083f82005bec0f1ad@google.com>
+Subject: [syzbot] KMSAN: uninit-value in INET_ECN_decapsulate (2)
+From:   syzbot <syzbot+5e9c61d74e52a82b8ace@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 02:24:09AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Tuesday, March 30, 2021 12:32 AM
-> > > In terms of usage for guest SVA, an ioasid_set is mostly tied to a host mm,
-> > > the use case is as the following:
-> > 
-> > From that doc:
-> > 
-> >   It is imperative to enforce
-> >   VM-IOASID ownership such that a malicious guest cannot target DMA
-> >   traffic outside its own IOASIDs, or free an active IOASID that belongs
-> >   to another VM.
-> > 
-> > Huh?
-> > 
-> > Security in a PASID world comes from the IOMMU blocking access to the
-> > PASID except from approved PCI-ID's. If a VF/PF is assigned to a guest
-> > then that guest can cause the device to issue any PASID by having
-> > complete control and the vIOMMU is supposed to tell the real IOMMU
-> > what PASID's the device is alowed to access.
-> > 
-> > If a device is sharing a single PCI function with different security
-> > contexts (eg vfio mdev) then the device itself is responsible to
-> > ensure that only the secure interface can program a PASID and a less
-> > secure context can never self-enroll.
-> > 
-> > Here the mdev driver would have to consule with the vIOMMU to ensure
-> > the mdev device is allowed to access the PASID - is that what this
-> > set stuff is about?
-> > 
-> > If yes, it is backwards. The MDEV is the thing doing the security, the
-> > MDEV should have the list of allowed PASID's and a single PASID
-> > created under /dev/ioasid should be loaded into MDEV with some 'Ok you
-> > can use PASID xyz from FD abc' command.
-> > 
-> 
-> The 'set' is per-VM. Once the mdev is assigned to a VM, all valid PASID's
-> in the set of that VM are considered legitimate on this mdev.
+Hello,
 
-No! That is a major security problem!
+syzbot found the following issue on:
 
-PASID authorization is *PER DEVICE*.
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=166fe481d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b573c14b733efb1c
+dashboard link: https://syzkaller.appspot.com/bug?extid=5e9c61d74e52a82b8ace
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-If I map a device into VFIO in userspace with full control over the HW
-that device MUST ONLY have access to PASID's that have been registered
-with vfio.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This means each time you register a PASID vfio must tell the IOMMU
-driver to authorize the pci_device to access the PASID, the vIOMMU
-driver must tell the hypervisor and the mdev under the PCI device MUST
-have a per-device list of allowed PASIDs.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5e9c61d74e52a82b8ace@syzkaller.appspotmail.com
 
-Otherwise userspace in a VM with vfio could tell the mdev driver to
-talk to a PASID in the same VM but *that process doesn't own*. This is
-absolutely not allowed.
+=====================================================
+BUG: KMSAN: uninit-value in __INET_ECN_decapsulate include/net/inet_ecn.h:236 [inline]
+BUG: KMSAN: uninit-value in INET_ECN_decapsulate+0x329/0x1db0 include/net/inet_ecn.h:258
+CPU: 1 PID: 9058 Comm: syz-executor.1 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ __INET_ECN_decapsulate include/net/inet_ecn.h:236 [inline]
+ INET_ECN_decapsulate+0x329/0x1db0 include/net/inet_ecn.h:258
+ geneve_rx+0x216e/0x29d0 include/net/inet_ecn.h:304
+ geneve_udp_encap_recv+0x1055/0x1340 drivers/net/geneve.c:377
+ udp_queue_rcv_one_skb+0x1943/0x1af0 net/ipv4/udp.c:2095
+ udp_queue_rcv_skb+0x286/0x1040 net/ipv4/udp.c:2169
+ udp_unicast_rcv_skb net/ipv4/udp.c:2327 [inline]
+ __udp4_lib_rcv+0x3a1f/0x58f0 net/ipv4/udp.c:2396
+ udp_rcv+0x5c/0x70 net/ipv4/udp.c:2567
+ ip_protocol_deliver_rcu+0x572/0xc50 net/ipv4/ip_input.c:204
+ ip_local_deliver_finish net/ipv4/ip_input.c:231 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_local_deliver+0x585/0x8d0 net/ipv4/ip_input.c:252
+ dst_input include/net/dst.h:447 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:428 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_rcv+0x599/0x820 net/ipv4/ip_input.c:539
+ __netif_receive_skb_one_core net/core/dev.c:5323 [inline]
+ __netif_receive_skb+0x1ec/0x640 net/core/dev.c:5437
+ process_backlog+0x517/0xbd0 net/core/dev.c:6328
+ napi_poll+0x428/0x15c0 net/core/dev.c:6806
+ net_rx_action+0x34c/0xd30 net/core/dev.c:6889
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:343
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x6e/0x90 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:246 [inline]
+ __local_bh_enable_ip+0x184/0x1d0 kernel/softirq.c:196
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ rcu_read_unlock_bh include/linux/rcupdate.h:737 [inline]
+ __dev_queue_xmit+0x3b3e/0x45c0 net/core/dev.c:4178
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4184
+ packet_snd net/packet/af_packet.c:3006 [inline]
+ packet_sendmsg+0x8778/0x9a60 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ __sys_sendto+0x9ea/0xc60 net/socket.c:1975
+ __do_sys_sendto net/socket.c:1987 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:1983
+ __ia32_sys_sendto+0x6e/0x90 net/socket.c:1983
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f84549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f557e5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000171
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020000980
+RDX: 000000000000000e RSI: 0000000000000000 RDI: 00000000200002c0
+RBP: 0000000000000014 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
-Most likely the entire ioasid set and related need to be deleted as a
-kernel concept.
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2907 [inline]
+ __kmalloc_node_track_caller+0xa37/0x1430 mm/slub.c:4527
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x2f8/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1099 [inline]
+ alloc_skb_with_frags+0x1f3/0xc10 net/core/skbuff.c:5894
+ sock_alloc_send_pskb+0xdc1/0xf90 net/core/sock.c:2348
+ packet_alloc_skb net/packet/af_packet.c:2854 [inline]
+ packet_snd net/packet/af_packet.c:2949 [inline]
+ packet_sendmsg+0x6aab/0x9a60 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ __sys_sendto+0x9ea/0xc60 net/socket.c:1975
+ __do_sys_sendto net/socket.c:1987 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:1983
+ __ia32_sys_sendto+0x6e/0x90 net/socket.c:1983
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
 
-Jason
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
