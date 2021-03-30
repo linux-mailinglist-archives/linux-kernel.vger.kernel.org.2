@@ -2,125 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A097034E562
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CC534E56B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhC3KX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhC3KXB (ORCPT
+        id S231756AbhC3K1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:27:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231622AbhC3K0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:23:01 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB3FC061574;
-        Tue, 30 Mar 2021 03:23:01 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v23so5921441ple.9;
-        Tue, 30 Mar 2021 03:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=loVQVK73ZAxb2aZgHiSlAzK7vAqbOdexSFs2htiWZjU=;
-        b=tcbGLRVpaEdSRaWfXQare5GYcOukSynk37LJ95QxnztkuC7+KlkGUB188crfgA4KJ7
-         +P7zRJ9PGxi1BNZQFW+N+a6iHfycp8hq0FY6GSz3bTVxVnl/7ws7+0sygb9Nce048aVI
-         lezkqfeS1r8ufSqFTpAinRd95oTpr/dNziWNI/NtdHYkiWVAgq3uVIuq/UhPECsDIltN
-         2/EDSONvWLGnIlnRhsaJNhPrAhsyeFqcXrq5YF2xtkQfE2jKTac9GWBOvcfAzkgNqGM6
-         XySmwZlzhXBPPn0X7Y2qRCvY7+8Ltajmrl77vvekKGqiFIZzRUVyaLDeKVv5cwYcpnCO
-         WcmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=loVQVK73ZAxb2aZgHiSlAzK7vAqbOdexSFs2htiWZjU=;
-        b=CkPoTPQC25W8fpGjq7B9Q56Vb+lArF89g/QZmpeq1S8BQNLFGukQVB1YdbRCiv69D3
-         l+etw+HltPUz+w3YFB1o+dZ0QNiqCmPrmEZ6TlpmMkwjUaS/Op4GjZ90Oh067aSAwwgg
-         Rbo3d5563VcA7eY+WquHJPkQVViBjidbMP7V/k/AZS2PwJlcVFZ6ZC5KWGOfd/Uufqc/
-         NUW2TqLdoPmkOXpJ8gNS60UovEot+ONQPRHW+H/hCgvhSnpBm6/COuKAqjiRvHf0xygQ
-         QzjsmhJg+aNnIrvUXR5Cye7iLo2Zmw4RfI8WrM+Zg5XIBw4c1JJ4cdYVNmq2vWQfPOoq
-         pxEA==
-X-Gm-Message-State: AOAM531OrO/bHzTLgY3+CkLqiIjJU8v7hksjPpmPnEoO60tk5MwBd7YJ
-        3+bAJUcJV42XBJe0J3Tm9yvgb68LxDI9GRgzieE=
-X-Google-Smtp-Source: ABdhPJy8WaHfbziKRLgkNd2XcbtuyNeiyFHn00zpYZg9nPTkbkKtoO4fHJrjxmZ6rFzJKfhsh/hXD8MmSU4gRcnp9P4=
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
- z2-20020a170902ee02b02900e65397d79cmr33046398plb.21.1617099780998; Tue, 30
- Mar 2021 03:23:00 -0700 (PDT)
+        Tue, 30 Mar 2021 06:26:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617099998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lxROx2o/6DRRnp+9MXEaFMDAzKSz1bzyaU05jsWz6Zw=;
+        b=XSCsv0pHtLhAAgHY6QjGGIzvAJBbJyMyvf1lUe8UmHyu05l3LuspMplgaReG8udAKK/M/2
+        k8aBEMPsFJwjbyOJalCaPPVXE0W8+54chu3xV7+3FTMp3R3yTOoG8h7dRVvK1DYZJTxzMa
+        +9vdLYZQpHaoumNuZZTnVbpETOGSc7M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-ePKY2B8kOpGd90nq2jDdhw-1; Tue, 30 Mar 2021 06:26:34 -0400
+X-MC-Unique: ePKY2B8kOpGd90nq2jDdhw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F9FE801817;
+        Tue, 30 Mar 2021 10:26:33 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0E456E707;
+        Tue, 30 Mar 2021 10:26:31 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     x86@kernel.org, Len Brown <lenb@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPI: processor: Fix build when !CONFIG_HOTPLUG_CPU
+Date:   Tue, 30 Mar 2021 12:26:30 +0200
+Message-Id: <20210330102630.264398-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20210330083254.15817-1-noltari@gmail.com>
-In-Reply-To: <20210330083254.15817-1-noltari@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:22:45 +0300
-Message-ID: <CAHp75VeVJHt+jja614VN2eqJeaH=kP-qw5kTbLgDsg05_CWT3A@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: bcm: bcm6362: fix warning
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 11:34 AM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
->
-> The current implementation of bcm6362_set_gpio() produces the following
-> warning on x86_64:
-> drivers/pinctrl/bcm/pinctrl-bcm6362.c: In function 'bcm6362_set_gpio':
-> drivers/pinctrl/bcm/pinctrl-bcm6362.c:503:8: warning: cast from pointer t=
-o integer of different size [-Wpointer-to-int-cast]
->   503 |        (uint32_t) desc->drv_data, 0);
->       |        ^
->
-> Modify the code to make it similar to bcm63268_set_gpio() in order to fix=
- the
-> warning.
->
-> Fixes: 705791e23ecd ("pinctrl: add a pincontrol driver for BCM6362")
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> ---
->  drivers/pinctrl/bcm/pinctrl-bcm6362.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6362.c b/drivers/pinctrl/bcm/=
-pinctrl-bcm6362.c
-> index eb7ec80353e9..6b5a1dfc2367 100644
-> --- a/drivers/pinctrl/bcm/pinctrl-bcm6362.c
-> +++ b/drivers/pinctrl/bcm/pinctrl-bcm6362.c
-> @@ -496,11 +496,12 @@ static int bcm6362_pinctrl_get_groups(struct pinctr=
-l_dev *pctldev,
->  static void bcm6362_set_gpio(struct bcm63xx_pinctrl *pc, unsigned pin)
->  {
->         const struct pinctrl_pin_desc *desc =3D &bcm6362_pins[pin];
-> +       unsigned int basemode =3D (unsigned long) desc->drv_data;
+Kernel test robot reports build breakage with commit 5f5e49e999ac
+("ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()") when
+!CONFIG_HOTPLUG_CPU/!CONFIG_SMP. wakeup_cpu0() is defined under
+CONFIG_SMP and start_cpu0() under CONFIG_HOTPLUG_CPU which, in its turn,
+depend on CONFIG_SMP. Add #ifdef CONFIG_HOTPLUG_CPU to the block, this
+should be sufficient.
 
-Space between ) and d is not needed.
-Usually we use uintptr_t for casting pointers to the integers.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 5f5e49e999ac ("ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ drivers/acpi/processor_idle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->         unsigned int mask =3D bcm63xx_bank_pin(pin);
->
-> -       if (desc->drv_data)
-> -               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG,
-> -                                  (uint32_t) desc->drv_data, 0);
-> +       if (basemode)
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index f0c73f658880..0925b1477230 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -539,7 +539,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
+ 		} else
+ 			return -ENODEV;
+ 
+-#ifdef CONFIG_X86
++#if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
+ 		/* If NMI wants to wake up CPU0, start CPU0. */
+ 		if (wakeup_cpu0())
+ 			start_cpu0();
+-- 
+2.30.2
 
-> +               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG, basemo=
-de,
-> +                                  0);
-
-Put it on one line for sake of the readability.
-
->
->         if (pin < BCM63XX_BANK_GPIOS) {
->                 /* base mode 0 =3D> gpio 1 =3D> mux function */
-> --
-> 2.20.1
->
-
-
---=20
-With Best Regards,
-Andy Shevchenko
