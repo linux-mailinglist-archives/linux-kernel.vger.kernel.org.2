@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206F934E9C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91B334E9CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhC3OBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232183AbhC3OBF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:01:05 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084A3C061574;
-        Tue, 30 Mar 2021 07:01:05 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id q29so23869446lfb.4;
-        Tue, 30 Mar 2021 07:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iGvgsuwp0I2eWhVopPVff/lvYMxLTVGwlh7RJ+U1pxk=;
-        b=LY+1ete9iGAq1CfQSTDHPPtOdOE6NL84CvWmiYpYKXvryXMYuH+V6clockoWiNUwVT
-         BC9/lhNuHysKbsNi12qKii1fU4Fw6G1s7bkvB3fMY76wTJ0x8wzL2/pdLvB3u+zc5QV2
-         QfjiBj0AXZPAeKVb7/5txQ9KjVgPClPcH40UH8n70R0EDoq967sADJYb/NKavs9RzULT
-         mY40XUPqqfSzeS99bmQShOaRFASO9HLJyctrdaIcxzygOVoB/+aWXl31Wo7xTZdEtwnP
-         WtRwEM1Wr2+rqJuVCMx01TyZP97KxNa8tM8qZEWq10lOy/JSNNRZEzNAUCT8rzJgOLw1
-         n3sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iGvgsuwp0I2eWhVopPVff/lvYMxLTVGwlh7RJ+U1pxk=;
-        b=oYgFeAvZk9M4ThYlCgnI2NJpf6G1da4IFTOkcInO9Yw0rGarJrOne6YF7v1qDQ6z4T
-         6WPE+/9dB/6dZGaSR+wfUQbJn2Fzfey0c+Oo1r5E7LrRKjZZRUvm6RBiHZ8lhEuddWk0
-         4zTGE6qioeuXrEn8EP1IPrCbgKdAcK1mYya2Hb0iBZqlF6bvNqTCdpIIWpH8yYEmhFyw
-         QR7IIFzrHB+DKvA+XmXH6GkG9K2bNN9WcDX81KbqZEzMSK9ZccjSihvPMeSoH4ma5K1D
-         V+DXMmmIy70uS8iaE3j9U5ybI4eEfVf3E9ILpa/TEgn/UiW4yLw0U4/roXs/182we6hq
-         zJ3g==
-X-Gm-Message-State: AOAM531biyryTCxmoH9SssAucKronp1/IoF55eHZimzNy5MDyAC/KEtf
-        ULbqjydoMIRmrHCZMn82pl2OS5FNzQU7Ir2GZqU=
-X-Google-Smtp-Source: ABdhPJz6UjK0KeCBOXEpqIJ1M3cCDq/D+oOAaM8FZNZkSrHEtC5otfRJWXtjp7CRoczojnwsa7duZkFDQvINHBOsaRI=
-X-Received: by 2002:a19:f614:: with SMTP id x20mr19683060lfe.229.1617112863557;
- Tue, 30 Mar 2021 07:01:03 -0700 (PDT)
+        id S232209AbhC3OCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:02:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:22732 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232126AbhC3OBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:01:43 -0400
+IronPort-SDR: Zy3N3y632acAkcvIej9owgs0FIhABpwrRfGy1/4nDPSE/53KBD7L5svn4M5R1CkStteGXlwvQ5
+ bM/SmFLJPo8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="255761686"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="255761686"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 07:01:41 -0700
+IronPort-SDR: 5W+Pm6pxQg6paSSW3ZNE+fcuk5O4p375dGVxqhVSMpGKPVVVIqYWkyXryVZ5nDiysAb0acP8mz
+ X3GqIRXqeH+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="393618051"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga002.jf.intel.com with SMTP; 30 Mar 2021 07:01:32 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 30 Mar 2021 17:01:31 +0300
+Date:   Tue, 30 Mar 2021 17:01:31 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, robdclark@chromium.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-arm-msm@vger.kernel.org, Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 09/14] drm/edid: Use the cached EDID in drm_get_edid()
+ if eDP
+Message-ID: <YGMvO3PNDCiBmqov@intel.com>
+References: <20210330025345.3980086-1-dianders@chromium.org>
+ <20210329195255.v2.9.Ia7e9bb7cf6c51d960b9455fb0fa447cc68ece99d@changeid>
 MIME-Version: 1.0
-References: <20210309112615.625-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210309112615.625-1-o.rempel@pengutronix.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 30 Mar 2021 11:00:52 -0300
-Message-ID: <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329195255.v2.9.Ia7e9bb7cf6c51d960b9455fb0fa447cc68ece99d@changeid>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Mon, Mar 29, 2021 at 07:53:40PM -0700, Douglas Anderson wrote:
+> Each time we call drm_get_edid() we:
+> 1. Go out to the bus and ask for the EDID.
+> 2. Cache the EDID.
+> 
+> We can improve this to actually use the cached EDID so that if
+> drm_get_edid() is called multiple times then we don't need to go out
+> to the bus over and over again.
+> 
+> In normal DP/HDMI cases reading the EDID over and over again isn't
+> _that_ expensive so, presumably, this wasn't that critical in the
+> past. However for eDP going out to the bus can be expensive. This is
+> because eDP panels might be powered off before the EDID was requested
+> so we need to do power sequencing in addition to the transfer.
+> 
+> In theory we should be able to cache the EDID for all types of
+> displays. There is already code throwing the cache away when we detect
+> that a display was unplugged. However, it can be noted that it's
+> _extra_ safe to cache the EDID for eDP since eDP isn't a hot-pluggable
+> interface. If we get the EDID once then we've got the EDID and we
+> should never need to read it again. For now we'll only use the cache
+> for eDP both because it's more important and extra safe.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/drm_edid.c | 32 ++++++++++++++++++++++++++++----
+>  1 file changed, 28 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index c2bbe7bee7b6..fcbf468d73c9 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -2049,15 +2049,39 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+>  			  struct i2c_adapter *adapter)
+>  {
+>  	struct edid *edid;
+> +	size_t old_edid_size;
+> +	const struct edid *old_edid;
+>  
+>  	if (connector->force == DRM_FORCE_OFF)
+>  		return NULL;
+>  
+> -	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+> -		return NULL;
+> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
+> +	    connector->edid_blob_ptr) {
+> +		/*
+> +		 * eDP devices are non-removable, or at least not something
+> +		 * that's expected to be hot-pluggable. We can freely use
+> +		 * the cached EDID.
+> +		 *
+> +		 * NOTE: technically we could probably even use the cached
+> +		 * EDID even for non-eDP because the cached EDID should be
+> +		 * cleared if we ever notice a display is not connected, but
+> +		 * we'll use an abundance of caution and only do it for eDP.
+> +		 * It's more important for eDP anyway because the EDID may not
+> +		 * always be readable, like when the panel is powered down.
+> +		 */
+> +		old_edid = (const struct edid *)connector->edid_blob_ptr->data;
+> +		old_edid_size = ksize(old_edid);
+> +		edid = kmalloc(old_edid_size, GFP_KERNEL);
+> +		if (edid)
+> +			memcpy(edid, old_edid, old_edid_size);
+> +	} else {
+> +		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+> +			return NULL;
+> +
+> +		edid = drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter);
+> +		drm_connector_update_edid_property(connector, edid);
+> +	}
 
-On Tue, Mar 9, 2021 at 8:26 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> changes v2:
-> - rebase against latest kernel
-> - fix networking on RIoTBoard
->
-> This patch series tries to remove most of the imx6 and imx7 board
-> specific PHY configuration via fixup, as this breaks the PHYs when
-> connected to switch chips or USB Ethernet MACs.
->
-> Each patch has the possibility to break boards, but contains a
-> recommendation to fix the problem in a more portable and future-proof
-> way.
+This is a pretty low level function. Too low level for this caching
+IMO. So I think better just do it a bit higher up like other drivers.
 
-I think this series moves us in the right direction, even with the
-possibility to break old dtb's.
+>  
+> -	edid = drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter);
+> -	drm_connector_update_edid_property(connector, edid);
+>  	return edid;
+>  }
+>  EXPORT_SYMBOL(drm_get_edid);
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-
-Andrew, what do you think?
-
-Thanks
+-- 
+Ville Syrjälä
+Intel
