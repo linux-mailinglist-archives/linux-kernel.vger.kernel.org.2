@@ -2,128 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FD534E34A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E434534E34E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhC3IjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbhC3Iif (ORCPT
+        id S231588AbhC3IkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:40:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37559 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231547AbhC3Ijs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:38:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AA4C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:38:34 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lR9tH-0005fI-95; Tue, 30 Mar 2021 10:38:23 +0200
-Subject: Re: [PATCH v1 2/4] arm64: dts: imx8mq-nitrogen: add USB HOST support
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     devicetree@vger.kernel.org, will@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, linux-kernel@vger.kernel.org,
-        krzk@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, catalin.marinas@arm.com,
-        festevam@gmail.com, linux-arm-kernel@lists.infradead.org
-References: <20210330083514.5874-1-adrien.grassein@gmail.com>
- <20210330083514.5874-3-adrien.grassein@gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <0d173681-7eb6-798f-7d9b-66a221625d34@pengutronix.de>
-Date:   Tue, 30 Mar 2021 10:38:20 +0200
+        Tue, 30 Mar 2021 04:39:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617093588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KXQmTQDu9c+2SYac0KGEwbkl0f73KbuMpkS546ZCxxU=;
+        b=a8J8rAHoNgc9cJ9m+64LFCALLV5yb0lEGU4/eUS6xjpXBXmzfBskNh7Rh60D+OIaZAslEf
+        liCU+74sjy1xm97vrGi/Amx0Um5QihcLbmZSZpp1gUbxBS9Vsgq5qsNM0sGzVW4ZNp2QhM
+        sRJ8gEv0JPkhVlnOllouELaAI3YjslQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-JfDCLdmgMPezIKTDgvIweA-1; Tue, 30 Mar 2021 04:39:45 -0400
+X-MC-Unique: JfDCLdmgMPezIKTDgvIweA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82F241927800;
+        Tue, 30 Mar 2021 08:39:43 +0000 (UTC)
+Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 700A1299C4;
+        Tue, 30 Mar 2021 08:39:41 +0000 (UTC)
+Subject: Re: [PATCH v3] mm: page_alloc: ignore init_on_free=1 for
+ debug_pagealloc=1
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-mm@kvack.org
+References: <ea46d903-d201-5781-1f3c-f8d7fea5070e@suse.cz>
+ <20210329222555.3077928-1-slyfox@gentoo.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <181e57b8-d606-e974-47d4-7cceebfdfc87@redhat.com>
+Date:   Tue, 30 Mar 2021 10:39:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210330083514.5874-3-adrien.grassein@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210329222555.3077928-1-slyfox@gentoo.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Adrien,
-
-On 30.03.21 10:35, Adrien Grassein wrote:
-> Add the description for the USB host port.
-> At this time, the port will not work directly from the
-> kernel because it's connected through a resettable hub
-> that is not handle in the kernel. It should be controlled
-> in the bootloader or in the userspace.
-
-Couldn't you add a gpio-hog that gets the hub out of reset?
-
-Cheers,
-Ahmad
-
+On 30.03.21 00:25, Sergei Trofimovich wrote:
+> On !ARCH_SUPPORTS_DEBUG_PAGEALLOC (like ia64) debug_pagealloc=1
+> implies page_poison=on:
 > 
-> In the case of the Boundary's u-boot, this is done on the
-> boot script:
-> "
-> starting USB...
-> Bus usb@38100000: Register 2000140 NbrPorts 2
-> Starting the controller
-> USB XHCI 1.10
-> Bus usb@38200000: Register 2000140 NbrPorts 2
-> Starting the controller
-> USB XHCI 1.10
-> scanning bus usb@38100000 for devices... 1 USB Device(s) found
-> scanning bus usb@38200000 for devices... 3 USB Device(s) found
-> "
+>      if (page_poisoning_enabled() ||
+>           (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+>            debug_pagealloc_enabled()))
+>              static_branch_enable(&_page_poisoning_enabled);
 > 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> page_poison=on needs to override init_on_free=1.
+> 
+> Before the change it did not work as expected for the following case:
+> - have PAGE_POISONING=y
+> - have page_poison unset
+> - have !ARCH_SUPPORTS_DEBUG_PAGEALLOC arch (like ia64)
+> - have init_on_free=1
+> - have debug_pagealloc=1
+> 
+> That way we get both keys enabled:
+> - static_branch_enable(&init_on_free);
+> - static_branch_enable(&_page_poisoning_enabled);
+> 
+> which leads to poisoned pages returned for __GFP_ZERO pages.
+> 
+> After the change we execute only:
+> - static_branch_enable(&_page_poisoning_enabled);
+> and ignore init_on_free=1.
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Fixes: 8db26a3d4735 ("mm, page_poison: use static key more efficiently")
+> Cc: <stable@vger.kernel.org>
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: linux-mm@kvack.org
+> CC: David Hildenbrand <david@redhat.com>
+> CC: Andrey Konovalov <andreyknvl@gmail.com>
+> Link: https://lkml.org/lkml/2021/3/26/443
+> 
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 > ---
->  .../boot/dts/freescale/imx8mq-nitrogen.dts    | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> Change since v2:
+> - Added 'Fixes:' and 'CC: stable@' suggested by Vlastimil and David
+> - Renamed local variable to 'page_poisoning_requested' for
+>    consistency suggested by David
+> - Simplified initialization of page_poisoning_requested suggested
+>    by David
+> - Added 'Acked-by: Vlastimil'
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> index b46f45a82be1..7a52e247c527 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> @@ -213,6 +213,22 @@ &usb3_phy0 {
->  	status = "okay";
->  };
->  
-> +&usb_dwc3_1 {
-> +	dr_mode = "host";
-> +	status = "okay";
-> +};
-> +
-> +/*
-> + * On this board, USB host is connected to a resettable hub.
-> + * The reset signal is connected to the GPIO <&gpio1 14 GPIO_ACTIVE_LOW>.
-> + * You need to activate it in the bootloader or in the userspace.
-> + */
-> +&usb3_phy1 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb3_1>;
-> +};
-> +
->  &usdhc1 {
->  	assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
->  	assigned-clock-rates = <400000000>;
-> @@ -388,6 +404,12 @@ MX8MQ_IOMUXC_GPIO1_IO13_USB1_OTG_OC		0x16
->  		>;
->  	};
->  
-> +	pinctrl_usb3_1: usb3-1grp {
-> +		fsl,pins = <
-> +			MX8MQ_IOMUXC_GPIO1_IO14_GPIO1_IO14		0x16
-> +		>;
-> +	};
-> +
->  	pinctrl_usdhc1: usdhc1grp {
->  		fsl,pins = <
->  			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x83
+>   mm/page_alloc.c | 30 +++++++++++++++++-------------
+>   1 file changed, 17 insertions(+), 13 deletions(-)
 > 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index cfc72873961d..4bb3cdfc47f8 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -764,32 +764,36 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
+>    */
+>   void init_mem_debugging_and_hardening(void)
+>   {
+> +	bool page_poisoning_requested = false;
+> +
+> +#ifdef CONFIG_PAGE_POISONING
+> +	/*
+> +	 * Page poisoning is debug page alloc for some arches. If
+> +	 * either of those options are enabled, enable poisoning.
+> +	 */
+> +	if (page_poisoning_enabled() ||
+> +	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+> +	      debug_pagealloc_enabled())) {
+> +		static_branch_enable(&_page_poisoning_enabled);
+> +		page_poisoning_requested = true;
+> +	}
+> +#endif
+> +
+>   	if (_init_on_alloc_enabled_early) {
+> -		if (page_poisoning_enabled())
+> +		if (page_poisoning_requested)
+>   			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+>   				"will take precedence over init_on_alloc\n");
+>   		else
+>   			static_branch_enable(&init_on_alloc);
+>   	}
+>   	if (_init_on_free_enabled_early) {
+> -		if (page_poisoning_enabled())
+> +		if (page_poisoning_requested)
+>   			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+>   				"will take precedence over init_on_free\n");
+>   		else
+>   			static_branch_enable(&init_on_free);
+>   	}
+>   
+> -#ifdef CONFIG_PAGE_POISONING
+> -	/*
+> -	 * Page poisoning is debug page alloc for some arches. If
+> -	 * either of those options are enabled, enable poisoning.
+> -	 */
+> -	if (page_poisoning_enabled() ||
+> -	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
+> -	      debug_pagealloc_enabled()))
+> -		static_branch_enable(&_page_poisoning_enabled);
+> -#endif
+> -
+>   #ifdef CONFIG_DEBUG_PAGEALLOC
+>   	if (!debug_pagealloc_enabled())
+>   		return;
+> 
+
+Thanks!
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks,
+
+David / dhildenb
+
