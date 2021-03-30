@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED7634F4F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EC334F504
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhC3XSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:18:08 -0400
-Received: from rcdn-iport-5.cisco.com ([173.37.86.76]:27882 "EHLO
-        rcdn-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhC3XSA (ORCPT
+        id S233133AbhC3X1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhC3X1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:18:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2382; q=dns/txt; s=iport;
-  t=1617146280; x=1618355880;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NpSwJ7/ClV0xFgdKaewj2fSc7O+l5AnknwUQGTToK+Y=;
-  b=NpYaaqyIb419OAPIeXivXUupk0UR+3UMsDFYIukZFvH8wbUKa/715jAW
-   y60xTurkQyeqABca/mCII+oXBfYLhXoh67+R005FTWM5LYAkH5hTvHvHS
-   bzbfKEIqB38TMlYxQqnd7si7puB/3AcIRhfH/hiKczCxfopfYdtpMDhcx
-   w=;
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AEC8CkK39bx9e2WH6V837awqjBelyeYIsi2?=
- =?us-ascii?q?QD101hICF9WMbwra+Ttd4c0gL5jytUdXE7gNabOLSBR3S0z+8R3aA6O7C+UA?=
- =?us-ascii?q?76/Fa5NY0K1/qB/xTMEzDzn9Q26Y5OaK57YeecMXFbioLA7BC8A5IcxrC8gc?=
- =?us-ascii?q?SVrMP/61socg1wcaFn6G5Ce2WmO2l7XhNPC5Z8NLf03Kt6jgGtc3gWcci3b0?=
- =?us-ascii?q?NtN4P+jubGm578bRkNCwRP0mmzpAm14733GQXw5Hkjeg5IqI1PzUH11yTk+6?=
- =?us-ascii?q?PmiP2g0xnazWOW1YhOgcDs0MErPr3qtuElbhPxlw2veINtH5qFsTxdmpDX1H?=
- =?us-ascii?q?8a1P/RvhwnI8N/r0n0Q1jwix7s1w78uQxejUPf9Q=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BTAAAHsWNg/5tdJa1aHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgTwHAQELAYIqgUwBOTGMZYkrA5AIFopFgXwLAQEBDQEBNAQ?=
- =?us-ascii?q?BAYRQAoF6AiU0CQ4CAwEBDAEBBQEBAQIBBgRxhW6GRQEFOj8QCxguPBsGE4V?=
- =?us-ascii?q?4qxR1gTSJDIFEFA6BFwGNSSYcgUlChC4+iAuCKwSCQAcxXYIoEjcCk2kBiky?=
- =?us-ascii?q?cIoMRgSOVGoYcMRCDdaBNuBICBAYFAhaBVDqBWTMaCBsVgyRQGQ2OKxaORiE?=
- =?us-ascii?q?DLzgCBgoBAQMJjDQsghkBAQ?=
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="609596927"
-Received: from rcdn-core-4.cisco.com ([173.37.93.155])
-  by rcdn-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 23:17:55 +0000
-Received: from zorba ([10.24.9.230])
-        by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UNHrtN009883
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 30 Mar 2021 23:17:54 GMT
-Date:   Tue, 30 Mar 2021 16:17:53 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/8] CMDLINE: drivers: of: ifdef out cmdline section
-Message-ID: <20210330231717.GA2469518@zorba>
-References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
- <0c4b839f023f87c451c8aa3c4f7a8d92729c2f02.1617126961.git.danielwa@cisco.com>
- <CAL_Jsq+_gF9Cy7H6ic2q8dxnPf4+FsBa5pFYYRydJsEmDhnNhA@mail.gmail.com>
+        Tue, 30 Mar 2021 19:27:09 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7526BC061574;
+        Tue, 30 Mar 2021 16:27:09 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id 1so12574143qtb.0;
+        Tue, 30 Mar 2021 16:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v3/mQcvUwNsY/UJc2jxu3Abaa2D2bXGCJS30gIHPjEs=;
+        b=Q8okifF2x7Cis24xXyTCsqdK6HSPnuU+16cgfbDheWc8gugJ8X+B/ISr+bIh+Jo4GJ
+         Ft5oK8XVv+9fMVUiuGcSdRLYEpDj1o5+MvtnoxIxsauXhAGJwhviS9YUW6ZgMidlx1UW
+         GGxnpmetsT/F4eGykAZdpSBR/TkVjXqfxF7Rg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v3/mQcvUwNsY/UJc2jxu3Abaa2D2bXGCJS30gIHPjEs=;
+        b=LZF9HvZR6TzT/AKxrNHNslic1XNUrnY9plaCw3b/0jtl7RY+FbQbze8BU2grMIJhg/
+         /SjhZ7qGj3BSIVfXiKq0nJAuy1PcHgRrf8bb8tfT+SsSv8nH6ndHJwaLMFFVutDDigCP
+         PvqtV+KrKaz9As7j0p2sCPnEdINJUxM8/3eZQJAOPODQ5qTS4T0gv4BhHgxGVd2ZeZ4z
+         aUyFYIfKGIaVqW68Z5D7Z1V8q2BQESx2ut5HeaJoOHW+8D/raASu1YvLc+uFbp/cTov8
+         sG+tkmw7FaV9adwzKUWp3rQB4mCZgWdrKt8IkTp06qV7e5Dd4nMlIY0LCFZwJZocrGBp
+         nD8A==
+X-Gm-Message-State: AOAM533JRmffKMhdtqDKgzhccezQnTzP3nIqppAuiQvtbvKlAujePUwM
+        UMe7w3Et6LC6cDSOhdMBVUyCZBy2kISqsGv2RI8=
+X-Google-Smtp-Source: ABdhPJzEEpS2qBWaoDRJ4nevrrO4IATNTcu8uGU7/niHD9Gdp4fHrFKbwgSR99OPio8OGSwp13rYrGb8mGgTwFaYaCE=
+X-Received: by 2002:ac8:7547:: with SMTP id b7mr235856qtr.176.1617146828454;
+ Tue, 30 Mar 2021 16:27:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+_gF9Cy7H6ic2q8dxnPf4+FsBa5pFYYRydJsEmDhnNhA@mail.gmail.com>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.9.230, [10.24.9.230]
-X-Outbound-Node: rcdn-core-4.cisco.com
+References: <20210330002338.335-1-zev@bewilderbeest.net> <20210330002338.335-3-zev@bewilderbeest.net>
+ <20210330223902.GA837825@robh.at.kernel.org>
+In-Reply-To: <20210330223902.GA837825@robh.at.kernel.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 30 Mar 2021 23:26:56 +0000
+Message-ID: <CACPK8Xcfcsz7KCdfLuweGGbaxVKczhMb7+nxA9TMbsAbAbhi3g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: serial: 8250: update for aspeed,sirq-active-high
+To:     Rob Herring <robh@kernel.org>
+Cc:     Zev Weiss <zev@bewilderbeest.net>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 02:49:13PM -0500, Rob Herring wrote:
-> On Tue, Mar 30, 2021 at 12:57 PM Daniel Walker <danielwa@cisco.com> wrote:
+On Tue, 30 Mar 2021 at 22:39, Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Mar 29, 2021 at 07:23:37PM -0500, Zev Weiss wrote:
+> > Update DT bindings documentation for the new incarnation of the
+> > aspeed,sirq-polarity-sense property.
+>
+> Why?
+>
+> This isn't a compatible change.
+
+We want to depreciate support for this property. It should have never
+been added to the bindings; in it's current form it describes a
+relationship that afaict doesn't exist ("This unrelated register over
+here dictates the polarity of your virtual serial port IRQ"). See
+https://lore.kernel.org/lkml/20200812112400.2406734-1-joel@jms.id.au/
+
+The intent is to remove it from both the bindings and the code.
+There's already no users of it in any device tree.
+
+How would you like Zev to go about doing this?
+
+Cheers,
+
+Joel
+
+>
 > >
-> > It looks like there's some seepage of cmdline stuff into
-> > the generic device tree code. This conflicts with the
-> > generic cmdline implementation so I remove it in the case
-> > when that's enabled.
-> >
-> > Cc: xe-linux-external@cisco.com
-> > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> > Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 > > ---
-> >  drivers/of/fdt.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
+> >  Documentation/devicetree/bindings/serial/8250.yaml | 14 ++++++--------
+> >  1 file changed, 6 insertions(+), 8 deletions(-)
 > >
-> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > index dcc1dd96911a..d8805cd9717a 100644
-> > --- a/drivers/of/fdt.c
-> > +++ b/drivers/of/fdt.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/serial_core.h>
-> >  #include <linux/sysfs.h>
-> >  #include <linux/random.h>
-> > +#include <linux/cmdline.h>
+> > diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
+> > index f54cae9ff7b2..0bbb7121f720 100644
+> > --- a/Documentation/devicetree/bindings/serial/8250.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/8250.yaml
+> > @@ -13,7 +13,7 @@ allOf:
+> >    - $ref: /schemas/serial.yaml#
+> >    - if:
+> >        required:
+> > -        - aspeed,sirq-polarity-sense
+> > +        - aspeed,sirq-active-high
+> >      then:
+> >        properties:
+> >          compatible:
+> > @@ -181,13 +181,11 @@ properties:
+> >    rng-gpios: true
+> >    dcd-gpios: true
 > >
-> >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> >  #include <asm/page.h>
-> > @@ -1050,6 +1051,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+> > -  aspeed,sirq-polarity-sense:
+> > -    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +  aspeed,sirq-active-high:
+> > +    type: boolean
+> >      description: |
+> > -      Phandle to aspeed,ast2500-scu compatible syscon alongside register
+> > -      offset and bit number to identify how the SIRQ polarity should be
+> > -      configured. One possible data source is the LPC/eSPI mode bit. Only
+> > -      applicable to aspeed,ast2500-vuart.
+> > +      Set to indicate that the SIRQ polarity is active-high (default
+> > +      is active-low).  Only applicable to aspeed,ast2500-vuart.
 > >
-> >         /* Retrieve command line */
-> >         p = of_get_flat_dt_prop(node, "bootargs", &l);
-> > +
-> > +#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_GENERIC_CMDLINE_OF)
-> 
-> Moving in the wrong direction... This code already has too many
-> #ifdef's. I like Christophe's version as it gets rid of all the code
-> here.
- 
-It's temporary .. Notice CONFIG_GENERIC_CMDLINE_OF is only used on PowerPC. I
-experienced doubling on arm64 when this was used (i.e. the append and prepend
-was added twice).
-
-I don't think there are any other users which can't be moved outside the device
-tree code, but powerpc uses this function three times during boot up plus the
-prom_init user. It's possible to use the generic command line in all four places,
-but it become space inefficient.
-
-So the plan would be make the other architectures call the generic cmdline
-directly without this code, then powerpc would need to be reworked to call the
-generic commandline in it's own code hopefully just once.
-
-The end results would be this section would reduce down to one string copy and
-no command line stuff.
-
-Maybe you would rather I just use the generic command line in those three place
-and reduce this at the space code of powerpc ?
-
-Daniel
+> >  required:
+> >    - reg
+> > @@ -227,7 +225,7 @@ examples:
+> >          interrupts = <8>;
+> >          clocks = <&syscon ASPEED_CLK_APB>;
+> >          no-loopback-test;
+> > -        aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
+> > +        aspeed,sirq-active-high;
+> >      };
+> >
+> >  ...
+> > --
+> > 2.31.1
+> >
