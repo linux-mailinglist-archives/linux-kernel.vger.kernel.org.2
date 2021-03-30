@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB38434DEBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A470F34DECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhC3Cve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:51:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41025 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229762AbhC3Cv2 (ORCPT
+        id S231134AbhC3CyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhC3CyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:51:28 -0400
-X-UUID: 0c137f90c13f436787ea52a2694f622c-20210330
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=h3tgTgAhTPVHl6C7nGiDPVcZVqzWaFEKu+Mj0evMIr4=;
-        b=LI7e3Glzwpjv1aUej04C4LHb49W1O+HP+7QCPeYeNiwA4nkulkaLUAjZKbYHa+kRIPbMAy1thXHAoqgRTqNU235yUxSLgW3TvMS5vlolspzNH3jHdEQ31HWUtfeX6ONqGonQuGvD1wl5dqC1buA0UCC7mYVMLyMBDi1Ta0S9fpk=;
-X-UUID: 0c137f90c13f436787ea52a2694f622c-20210330
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <michael.kao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1474408315; Tue, 30 Mar 2021 10:51:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 30 Mar 2021 10:51:24 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 30 Mar 2021 10:51:24 +0800
-Message-ID: <1617072684.13941.2.camel@mtksdccf07>
-Subject: Re: [PATCH v2] thermal: cpufreq_cooling: fix slab OOB issue
-From:   Michael Kao <michael.kao@mediatek.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Zhang Rui <rui.zhang@intel.com>, <fan.chen@mediatek.com>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <devicetree@vger.kernel.org>,
-        brian-sy yang <brian-sy.yang@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Eduardo Valentin" <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 30 Mar 2021 10:51:24 +0800
-In-Reply-To: <20201229050831.19493-1-michael.kao@mediatek.com>
-References: <20201229050831.19493-1-michael.kao@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 29 Mar 2021 22:54:01 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1941FC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:01 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f10so10663286pgl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pyzpcly5+oL22ifqA9LcP9BWqlXKnbYel2OHd9y5j2k=;
+        b=kvMdz9ZBBO2CD3j+PC6tdVvNoYqpgwii81QhShzrYQgX8quKvl6YgQEHZtzMQ4wyZM
+         GSfXE8Q2D4AECcXNk+RA7NWljGszHvrR11DgRy0GA0mIXlhx8DYWJMVsKIttJwLT0Es5
+         m/5ZuBbBDE3VdZqM4XsmavbD8gkXnU1kozoX0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pyzpcly5+oL22ifqA9LcP9BWqlXKnbYel2OHd9y5j2k=;
+        b=KYNzeYoZC//OBwKElCFYkco3Iz+bL+9xajF4CZNXBmdLd4+fa0FSr+31RznNyZwVy0
+         Uc0SaxFFrINNlmYvKVlJHrvG1n8e50cOPUO8H92CNagX8dl7SQZRu4Zq2RLc7mHpyRJK
+         axG25WlSBCDxIeL5pkDmpczOJoTB6+sBh0oNx3G4t/FgTSkK/DWrYHTU7hAtFdgjWL+x
+         N8pKLbmLsVf8l2RNfnbvEZc9QRUHc3IBrJf7KsrP6+JOj3kYWtCU8ItuI4xWHZD5AuYq
+         K3tYgGc/jQw4gcWti9Sm2+pr2Z4CRum5JHRvpg1J0VY9dTnIKPrpM3Yi+dpPHv4gVUX3
+         zBOw==
+X-Gm-Message-State: AOAM533AVrD5o4+19UYhXArnxcWyvPiSfomTEGLNFwHUmLRE1y7W/o9o
+        Zdq3x+1dRWupBRwsUUQNgT6lXQ==
+X-Google-Smtp-Source: ABdhPJxSUvOXB9xrV/3JE5ZxT6ZkmAYWYDE+3PyLVvxsATrMI2E+/vKGASjep6ASrmsst+pXmFjlqg==
+X-Received: by 2002:a63:1e56:: with SMTP id p22mr26342059pgm.375.1617072840452;
+        Mon, 29 Mar 2021 19:54:00 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:f599:1ca7:742d:6b50])
+        by smtp.gmail.com with ESMTPSA id t17sm19152706pgk.25.2021.03.29.19.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 19:54:00 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        robdclark@chromium.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        linux-arm-msm@vger.kernel.org, Steev Klimaszewski <steev@kali.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/14] drm: Fix EDID reading on ti-sn65dsi86
+Date:   Mon, 29 Mar 2021 19:53:31 -0700
+Message-Id: <20210330025345.3980086-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBEYW5pZWwsDQoNCktpbmRseSBwaW5nLg0KQ2FuIHRoaXMgcGF0Y2ggYmUgbWVyZ2VkPyBP
-ciBhbnkgY29tbWVudD8NCg0KQlIsDQpNaWNoYWVsDQoNCk9uIFR1ZSwgMjAyMC0xMi0yOSBhdCAx
-MzowOCArMDgwMCwgTWljaGFlbCBLYW8gd3JvdGU6DQo+IEZyb206IGJyaWFuLXN5IHlhbmcgPGJy
-aWFuLXN5LnlhbmdAbWVkaWF0ZWsuY29tPg0KPiANCj4gU2xhYiBPT0IgaXNzdWUgaXMgc2Nhbm5l
-ZCBieSBLQVNBTiBpbiBjcHVfcG93ZXJfdG9fZnJlcSgpLg0KPiBJZiBwb3dlciBpcyBsaW1pdGVk
-IGJlbG93IHRoZSBwb3dlciBvZiBPUFAwIGluIEVNIHRhYmxlLA0KPiBpdCB3aWxsIGNhdXNlIHNs
-YWIgb3V0LW9mLWJvdW5kIGlzc3VlIHdpdGggbmVnYXRpdmUgYXJyYXkNCj4gaW5kZXguDQo+IA0K
-PiBSZXR1cm4gdGhlIGxvd2VzdCBmcmVxdWVuY3kgaWYgbGltaXRlZCBwb3dlciBjYW5ub3QgZm91
-bmQNCj4gYSBzdWl0YWJsZSBPUFAgaW4gRU0gdGFibGUgdG8gZml4IHRoaXMgaXNzdWUuDQo+IA0K
-PiBCYWNrdHJhY2U6DQo+IFs8ZmZmZmZmZDAyZDJhMzdmMD5dIGRpZSsweDEwNC8weDVhYw0KPiBb
-PGZmZmZmZmQwMmQyYTU2MzA+XSBidWdfaGFuZGxlcisweDY0LzB4ZDANCj4gWzxmZmZmZmZkMDJk
-Mjg4Y2U0Pl0gYnJrX2hhbmRsZXIrMHgxNjAvMHgyNTgNCj4gWzxmZmZmZmZkMDJkMjgxZTVjPl0g
-ZG9fZGVidWdfZXhjZXB0aW9uKzB4MjQ4LzB4M2YwDQo+IFs8ZmZmZmZmZDAyZDI4NDQ4OD5dIGVs
-MV9kYmcrMHgxNC8weGJjDQo+IFs8ZmZmZmZmZDAyZDc1ZDFkND5dIF9fa2FzYW5fcmVwb3J0KzB4
-MWRjLzB4MWUwDQo+IFs8ZmZmZmZmZDAyZDc1YzJlMD5dIGthc2FuX3JlcG9ydCsweDEwLzB4MjAN
-Cj4gWzxmZmZmZmZkMDJkNzVkZWY4Pl0gX19hc2FuX3JlcG9ydF9sb2FkOF9ub2Fib3J0KzB4MTgv
-MHgyOA0KPiBbPGZmZmZmZmQwMmU2ZmNlNWM+XSBjcHVmcmVxX3Bvd2VyMnN0YXRlKzB4MTgwLzB4
-NDNjDQo+IFs8ZmZmZmZmZDAyZTZlYWQ4MD5dIHBvd2VyX2FjdG9yX3NldF9wb3dlcisweDExNC8w
-eDFkNA0KPiBbPGZmZmZmZmQwMmU2ZmFjMjQ+XSBhbGxvY2F0ZV9wb3dlcisweGFlYy8weGRlMA0K
-PiBbPGZmZmZmZmQwMmU2ZjlmODA+XSBwb3dlcl9hbGxvY2F0b3JfdGhyb3R0bGUrMHgzZWMvMHg1
-YTQNCj4gWzxmZmZmZmZkMDJlNmVhODg4Pl0gaGFuZGxlX3RoZXJtYWxfdHJpcCsweDE2MC8weDI5
-NA0KPiBbPGZmZmZmZmQwMmU2ZWRkMDg+XSB0aGVybWFsX3pvbmVfZGV2aWNlX2NoZWNrKzB4ZTQv
-MHgxNTQNCj4gWzxmZmZmZmZkMDJkMzUxY2I0Pl0gcHJvY2Vzc19vbmVfd29yaysweDVlNC8weGUy
-OA0KPiBbPGZmZmZmZmQwMmQzNTJmNDQ+XSB3b3JrZXJfdGhyZWFkKzB4YTRjLzB4ZmFjDQo+IFs8
-ZmZmZmZmZDAyZDM2MDEyND5dIGt0aHJlYWQrMHgzM2MvMHgzNTgNCj4gWzxmZmZmZmZkMDJkMjg5
-OTQwPl0gcmV0X2Zyb21fZm9yaysweGMvMHgxOA0KPiANCj4gRml4ZXM6IDM3MWEzYmM3OWMxMWIg
-KCJ0aGVybWFsL2RyaXZlcnMvY3B1ZnJlcV9jb29saW5nOiBGaXggd3JvbmcgZnJlcXVlbmN5IGNv
-bnZlcnRlZCBmcm9tIHBvd2VyIikNCj4gU2lnbmVkLW9mZi1ieTogYnJpYW4tc3kgeWFuZyA8YnJp
-YW4tc3kueWFuZ0BtZWRpYXRlay5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhZWwgS2FvIDxt
-aWNoYWVsLmthb0BtZWRpYXRlay5jb20+DQo+IFJldmlld2VkLWJ5OiBMdWthc3ogTHViYSA8bHVr
-YXN6Lmx1YmFAYXJtLmNvbT4NCj4gLS0tDQo+IA0KPiBDaGFuZ2VzIGZyb20gdjE6DQo+IC0gYWRk
-IGZpeGVzIHRhZw0KPiAtIGFkZCByZXZpZXdlZC1ieQ0KPiANCj4gIGRyaXZlcnMvdGhlcm1hbC9j
-cHVmcmVxX2Nvb2xpbmcuYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
-KSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC9jcHVm
-cmVxX2Nvb2xpbmcuYyBiL2RyaXZlcnMvdGhlcm1hbC9jcHVmcmVxX2Nvb2xpbmcuYw0KPiBpbmRl
-eCBjYzI5NTlmMjJmMDEuLmZiMzNiMzQ4MGE4ZiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy90aGVy
-bWFsL2NwdWZyZXFfY29vbGluZy5jDQo+ICsrKyBiL2RyaXZlcnMvdGhlcm1hbC9jcHVmcmVxX2Nv
-b2xpbmcuYw0KPiBAQCAtMTIzLDcgKzEyMyw3IEBAIHN0YXRpYyB1MzIgY3B1X3Bvd2VyX3RvX2Zy
-ZXEoc3RydWN0IGNwdWZyZXFfY29vbGluZ19kZXZpY2UgKmNwdWZyZXFfY2RldiwNCj4gIHsNCj4g
-IAlpbnQgaTsNCj4gIA0KPiAtCWZvciAoaSA9IGNwdWZyZXFfY2Rldi0+bWF4X2xldmVsOyBpID49
-IDA7IGktLSkgew0KPiArCWZvciAoaSA9IGNwdWZyZXFfY2Rldi0+bWF4X2xldmVsOyBpID4gMDsg
-aS0tKSB7DQo+ICAJCWlmIChwb3dlciA+PSBjcHVmcmVxX2NkZXYtPmVtLT50YWJsZVtpXS5wb3dl
-cikNCj4gIAkJCWJyZWFrOw0KPiAgCX0NCg0K
+The primary goal of this series is to try to properly fix EDID reading
+for eDP panels using the ti-sn65dsi86 bridge.
+
+Previously we had a patch that added EDID reading but it turned out
+not to work at bootup. This caused some extra churn at bootup as we
+tried (and failed) to read the EDID several times and also ended up
+forcing us to use the hardcoded mode at boot. With this patch series I
+believe EDID reading is reliable at boot now and we never use the
+hardcoded mode.
+
+This series is the logical successor to the 3-part series containing
+the patch ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only
+if refclk") [1] though only one actual patch is the same between the
+two.
+
+This series starts out with some general / obvious fixes and moves on
+to some more specific and maybe controversial ones. I wouldn't object
+to some of the earlier ones landing if they look ready.
+
+This patch was developed against drm-misc-next on a
+sc7180-trogdor-lazor device. To get things booting for me, I had to
+use Stephen's patch [2] to keep from crashing but otherwise all the
+patches I needed were here.
+
+[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid/
+[2] https://lore.kernel.org/r/161706912161.3012082.17313817257247946143@swboyd.mtv.corp.google.com/
+
+Changes in v2:
+- Removed 2nd paragraph in commit message.
+
+Douglas Anderson (14):
+  drm/bridge: Fix the stop condition of drm_bridge_chain_pre_enable()
+  drm/bridge: ti-sn65dsi86: Simplify refclk handling
+  drm/bridge: ti-sn65dsi86: Remove incorrectly tagged kerneldoc comment
+  drm/bridge: ti-sn65dsi86: Reorder remove()
+  drm/bridge: ti-sn65dsi86: Move MIPI detach() / unregister() to
+    detach()
+  drm/bridge: ti-sn65dsi86: Move drm_panel_unprepare() to post_disable()
+  drm/bridge: ti-sn65dsi86: Get rid of the useless detect() function
+  drm/bridge: ti-sn65dsi86: Remove extra call:
+    drm_connector_update_edid_property()
+  drm/edid: Use the cached EDID in drm_get_edid() if eDP
+  drm/bridge: ti-sn65dsi86: Stop caching the EDID ourselves
+  drm/bridge: ti-sn65dsi86: Power things properly for reading the EDID
+  drm/bridge: ti-sn65dsi86: Read the EDID only if refclk was provided
+  drm/bridge: ti-sn65dsi86: Print an error if we fallback to panel modes
+  drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare /
+    prepare
+
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 125 ++++++++++++++++----------
+ drivers/gpu/drm/drm_bridge.c          |   3 +
+ drivers/gpu/drm/drm_edid.c            |  32 ++++++-
+ drivers/gpu/drm/panel/Kconfig         |   1 +
+ drivers/gpu/drm/panel/panel-simple.c  |  93 ++++++++++++++-----
+ 5 files changed, 184 insertions(+), 70 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
