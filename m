@@ -2,143 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D42B34DE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DFB34DEB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhC3CpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhC3CpA (ORCPT
+        id S231480AbhC3Cqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:46:55 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46796 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230506AbhC3Cqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:45:00 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C64C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:45:00 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id u21so22424115ejo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:45:00 -0700 (PDT)
+        Mon, 29 Mar 2021 22:46:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12U2jVfQ192653;
+        Tue, 30 Mar 2021 02:46:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
+ b=dfQdKtaO41cvf0/7BN1r2eWr77zzE1cqyO06wwFfPdvJ5L6SQ+TxL2rFbptRZpnWtluK
+ n9O+qhHRp5Os24OlsQeJ79Do3P7riIVdXHxLo1Bb47ezJrOKLiNwxgZ4znZTePQAegBE
+ 1Dv40cD+DiImNzDV+RLoGTgTcdnl46bvky+cSqJ7LrQODb7aSdJTTqklmq8E6nGTgVoh
+ rjKwAf0RZY8luoG8Fg/lXO29UO0OS7Nr+Ym2mjVkf8Cuz2/ooDMxf1bkQujNSezt+T6Z
+ eGp/kLzH2KYlvC5b+vDAVvS/J4s/LO46F8Hb+4lXq3EApWEY5/AUqw1GWB/jJwgFlZSq yg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37hv4r5g0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 02:46:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12U2ikwL036715;
+        Tue, 30 Mar 2021 02:46:39 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2041.outbound.protection.outlook.com [104.47.74.41])
+        by aserp3020.oracle.com with ESMTP id 37jekxxep1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 02:46:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b67wtT3v6ibiLIx8DAAwJS8hDleXRShureGAw5RLyKhXoX0/2huWurtqXAnofOBaIp0nhYy25w6ECP0pgkLcYtKMaK6P7NeafdOztdhyNkh48UMOwKpQmQWwfpPKeQk+U041aCvOuVip6fDUuvxqdpa6fPJE6LhNMpc9ibctXZT15esbokT6H8SUXXmr2AVL+uJALY74ZV4WJzw55OhHs7pmiADyxN6ZxA1zgD6TYNIDtvO0wGba9+iD46PzgWMGh6s0gc2X/uFdCT8rEcNP/NMp0h4QyZk9SkFiYlSF7mHeCOY/UJim15GJA7icfd0mEo32SwUQgVZ90rvKK8smeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
+ b=C9DR/X9agVzxLQjEQsNWOW9zw67BteqA1iXVPbAqhRNmhPZ3HQ0Mc5MUlm5ASBYxFYNFRlzZcty9l775H+BgjfbHi27wJK4fAOOt82Pq22qntgFYfMkLFRC66s+PUIQCmNN5NMJCNN3SBnIeLAv661fVyOIsrfU/t3dpptoGCk9TknkiLxYX9SXyKdrp8RpR9POWb03zp2OuCMeOaemIxbYT+fZ1pTt+mDbKnTib+77YX8P8reJmYvEdVDhD/MxOOdB//LPLuCvV7DtZR9vqxZ3HJve/v/BeBl9CuC9srPKQS5VZjMiI8fOPuOE7TkObTLRi+vbQTMklOMRI3Wg1wA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32flZyp3WozO8lIXzXD7USfpYU9mLvWV/46KDv96M4c=;
-        b=36V+7DKZW42b+x00xPJJkQ8AdCNvVhNdB2easokmT3xnPDOzIFk5JQfPcoYrQS0FV7
-         y/lY+UMQMHN7AHc6oKpD3jP2jNpFBziZjFVGC/U/ZxWB8Nw3JT2/l2kO5KErGODjmf4D
-         KdNgdRiPBNzzpsoE+P6Y68vkcoaGtCL5Tadh1FV4ach/gvSIbVFBFxL7f4SisSq2dfbf
-         kEq6hPyyYmsKQfurZV3/Q3EbHNdvjkZHHPE1L42miViRjss8i0BAyk4AMnWo2tJNX/U2
-         yIGysaj0uxLor2j3g06meF5dZf40fCbiysm/DCE6JjWtdJt7jAhyqrAPN7DKnebIeFoG
-         ip9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32flZyp3WozO8lIXzXD7USfpYU9mLvWV/46KDv96M4c=;
-        b=MwEatNRE9nEh457RBSB87aYPoneFydGk9bqbUbj8pNxS9XsGXvqnQpSTvYC11kIM8K
-         M16yALtJNqqZAZautygFJqvNj4TM/5f+nprPdshcqAhxjgTr8Ku6ua3OvVs0u6pBNUw2
-         eW/juFBLvByJ7VAI52AAH4llZkKX6/8P5kinxUKrQHxRiyOo8zpsnQN3eJPZWKnYvxFR
-         UtxTk+zjr7+gyYdOAuI82ivMeY2kr+ZJjL7fZbBH7/LYFvycWabRRYwynjQOozCmsctp
-         cWNP//mFQdrsxH7lbSYSZ/NNyrs2ZM9QXSkLTCkEInAfrJGjvIJVRQhJCsTYm5goo/0J
-         Iy0Q==
-X-Gm-Message-State: AOAM531TmprYsfzFmNt7bTZ8da34LpqpvdA8KbgdHoQJqp8giIZvI+GK
-        vNXK/WT+m0FJ8Kx8ybTj+bI9AYYAVBy4clyb6+71XQ==
-X-Google-Smtp-Source: ABdhPJymBNv/wStyAK7Xv3++W1Lyzxdz3kZId4lfpMyLUA0fLgtLQPj8xZGU514By7Gp7E3WvrYyMAVVt4CstCfZulY=
-X-Received: by 2002:a17:906:ecaa:: with SMTP id qh10mr31367400ejb.425.1617072298792;
- Mon, 29 Mar 2021 19:44:58 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
+ b=yDmJNOmZzPUq0HHFFeXKuY5cHxOnMT6kcUSXKR+EhONdt7S/VL5Qs1AISyUm6ugkJw2AtcDPKyXT2XUwS4WBotY2SDyCKR2395n1ug0O+Dw/YZ5xit0cMfdUS0A2FjWdN900anftGVSCKUXHXrtdmoSSA/IC2tTf4xEEhmAzhrw=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4439.namprd10.prod.outlook.com (2603:10b6:510:41::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.32; Tue, 30 Mar
+ 2021 02:46:37 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 02:46:37 +0000
+To:     <lduncan@suse.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix fnic driver to remove bogus ratelimit messages.
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq135wdicjr.fsf@ca-mkp.ca.oracle.com>
+References: <20210323172756.5743-1-lduncan@suse.com>
+Date:   Mon, 29 Mar 2021 22:46:34 -0400
+In-Reply-To: <20210323172756.5743-1-lduncan@suse.com> (lduncan@suse.com's
+        message of "Tue, 23 Mar 2021 10:27:56 -0700")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SA9PR10CA0006.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::11) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
-In-Reply-To: <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 29 Mar 2021 19:44:48 -0700
-Message-ID: <CAK9rFnzD98U_abHWUFkzghBkU5GX5d6Z1hOmQn7aXS=M7t_c8w@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR10CA0006.namprd10.prod.outlook.com (2603:10b6:806:a7::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Tue, 30 Mar 2021 02:46:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 706ec46b-e8f4-4975-21d3-08d8f32609e7
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4439:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4439513866BB4D13A930E66D8E7D9@PH0PR10MB4439.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aRatw1zzBJ6+lV4Dp4MNFNF6fuv8iW37Er2vsfXN0wsYCEh2h0LM4gLxjxG+X1LGxhLcebf44JQmSCuJK+bag3seMx36dYDLTaSdXNWhQKE4FVqj/Kib5kEoUMNlvdFGVo3PBJpPHIJzDJOVSsSwnV3ztBK77sbAWP+O+D1fV5MzTbgprhW/C5R0vJ1dTJuMgE4k2OCl7fFiFcMwfOjWmKx/S682wJ/E3CB7wjGN3rE+JlQU+hGKti6wkZmyGGhhcKYKYfsUPuKSuAjl0Mc5EQV1ruyURst+1nqB+Bn4h7rJaZ1xaY90Uo9C8AnZfn+z/VxvBxTKFWkDwps4X+XHvrEUJbnwDVqCfsv+XlI2ymz7zcngJqreCW6nxImbXPUrkNw3BqZozdw6lAtFHBV1SIj1DK2tuH1DjS9xQBn36tJAUguAqUMKcKQpc25+8zW+JFqAIIzvdCIP/DL9NlDKQiKspP/2K7VbaVf4/jHZ115y1VpOHZotC/j92Bd9jmLTXknDEPQQunG52zvwU9BNF3GSy9QqGGzIW5xpm1mn3B4J0SQHEfNZfiCwX/kptNTSpfa+Avw0WN4mkM6mb9+8gRMK1OajUsVjd3RYxxCuTemIASWOBGqUKi0B4jICxHYlnCrB/4YODmxVCziFo2pxZDiEji+6BaurlYSN5v4XZdg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(366004)(39860400002)(6916009)(4326008)(5660300002)(8676002)(478600001)(956004)(4744005)(8936002)(55016002)(36916002)(26005)(52116002)(2906002)(316002)(83380400001)(186003)(86362001)(16526019)(7696005)(66556008)(38100700001)(15650500001)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4hdHve2lZmgwJYMMo3nvP9Y2HRsZgd/jkm3sysyVnvtWESd3vwOVECI1Ad5J?=
+ =?us-ascii?Q?exhzfiXYW01c5gFaRMvT8fGsoQEPDjTeGvRQYSICINtK01TerceaZxMHRunZ?=
+ =?us-ascii?Q?qzfcfP/elb3uQFZ7762B4p2g3H0M8Hktn3kfADF53Rkd1sxebg3H7gJi4lVC?=
+ =?us-ascii?Q?C4CdVXQJUYjhYA0AkLZBPkBU5wvaT6JOtQPuLmCcOyGiaZf7ALp1POmSzDDG?=
+ =?us-ascii?Q?g8iO/EVPAyON0Dkgt63lwQYV6YHdN7GBKQkE0S5sd5EdaWRsROJjJNXID/5g?=
+ =?us-ascii?Q?d0KJe8OjNzXXMgmVMv/aDFCVN6nAJrQNyHRZtNwGaJQz/vrPf/mLdgw+v00x?=
+ =?us-ascii?Q?zbwcWms7bh3/qlLfCe65qyHaSiq9E42foxDyMNMlpN/lDYWUECnkE9QySUtg?=
+ =?us-ascii?Q?gluLYCBA1zta9r7q/7dlEvFYGqbfzXsiQEWLpsWbantmiENdkdQ0kapKsdXw?=
+ =?us-ascii?Q?CuCObGuhxUuEvorhtA00xTyfyBmYM0Eg3JcCZlBnuvcUiD6kgQT1mdxHKw/s?=
+ =?us-ascii?Q?qtcZAPMhEqYbFJXVGr3kTG+xA6pWORHOz93cSx0nYkkpfMJ+zn3sB+quuGDp?=
+ =?us-ascii?Q?J4lRb785Coz9MthpKtSNMDfLl7wAIb1wHUqvqq66K2LjXA4CN53jrk7P/tiN?=
+ =?us-ascii?Q?B44miQnBMCtxBOWCfI0J5Ai0EMtXCgUQXsyyu61RocTQZfscXErPADGKXPeT?=
+ =?us-ascii?Q?xLMjJv4WdeywOv0t0CAwxXc5T1SZz3AHZzwO93LruPSU7Z7dvQaumw8P8WyW?=
+ =?us-ascii?Q?2rnCUiaz4TYjH9Z7ZFydhYOObDOv1ydEkCedH3YRh1+FMYgkeN+BNs1W5LEC?=
+ =?us-ascii?Q?jNcuNEXFZQQxUUeD40u/hELn2rKEFxPwrRS4Dz0nYh3i6ieKiEvrO7At1ECl?=
+ =?us-ascii?Q?tnNZ9QGQD5AhUvzkKH4vrvn3CGVRd3rv4s5clD5jYQWYh6hP3QFngcRWxGsO?=
+ =?us-ascii?Q?tKcTEQXDUQx49fYnTuZzqWna9FvV/C5tBt63huyIpv9KaRyOL9ih60HspxDR?=
+ =?us-ascii?Q?mndIUa/cKM026UkqM3ZaEpzbRQRcqnZ9sGF5gGWis1Djsd3PzyPrdspyeT7E?=
+ =?us-ascii?Q?kWXOaNHdYLKTgznbt5GOMQT/aDAtBcfjfj0/sUlUP8LtGG/UMxOZb4aJx8uV?=
+ =?us-ascii?Q?i7/lRYb1zO1Xolkxge1S2fFzGcgIdsks8lOLBIjPDLP/Bh9pgufnA6TfLP0v?=
+ =?us-ascii?Q?siLw8bc6NBvwASu12IsJLoG92GjpVef4/2FIqpah8fQ0iyNcwqtF5MUmQ1Cv?=
+ =?us-ascii?Q?xnxkKZFABZsnAe7QMtxZSPCmZPJMCrs9NaChZ22pXl9UR6AuqAJB4TUgMABK?=
+ =?us-ascii?Q?AsRkjahUpJvGty5+dJlKqLXU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 706ec46b-e8f4-4975-21d3-08d8f32609e7
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 02:46:37.5236
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Nk84R6KLrKUl97ZmCc8WQAt1zfboh3Y3xjrTeipC4m1EtLt+br4Y2iCdfWqc46AyKR7GKyqkcXarPQa7zSg1I/vS8jYwyMRu5Eswb9K9r3c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4439
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103300017
+X-Proofpoint-ORIG-GUID: Y_fXlm7S9UG4Vg86dWXupWioCRcY9DAZ
+X-Proofpoint-GUID: Y_fXlm7S9UG4Vg86dWXupWioCRcY9DAZ
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103300017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 12:29 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> Hi Brad,
->
-> thanks for your patch!
->
-> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
->
-> > This GPIO driver is for the Pensando Elba SoC which
-> > provides control of four chip selects on two SPI busses.
-> >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> (...)
->
-> > +#include <linux/gpio.h>
->
-> Use this in new drivers:
-> #include <linux/gpio/driver.h>
->
-> > + * pin:             3            2        |       1            0
-> > + * bit:         7------6------5------4----|---3------2------1------0
-> > + *     cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
-> > + *                ssi1            |             ssi0
-> > + */
-> > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
-> > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
-> > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
->
-> So 2 bits per GPIO line in one register? (Nice doc!)
->
-> > +struct elba_spics_priv {
-> > +       void __iomem *base;
-> > +       spinlock_t lock;
-> > +       struct gpio_chip chip;
-> > +};
-> > +
-> > +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
-> > +{
-> > +       return -ENXIO;
-> > +}
->
-> Write a comment that the chip only supports output mode,
-> because it repurposes SPI CS pins as generic GPIO out,
-> maybe at the top of the file?
->
 
-I'll add a comment regarding gpio pin mode.  Yes output
-only mode as SPI chip-selects.
+Lee,
 
-> I suppose these systems also actually (ab)use the SPI cs
-> for things that are not really SPI CS? Because otherwise
-> this could just be part of the SPI driver (native chip select).
->
-> > +static const struct of_device_id ebla_spics_of_match[] = {
-> > +       { .compatible = "pensando,elba-spics" },
->
-> Have you documented this?
+> Commit b43abcbbd5b1 ("scsi: fnic: Ratelimit printks to avoid looding
+> when vlan is not set by the switch.i") added printk_ratelimit() in
+> front of a couple of debug-mode messages, to reduce logging overrun
+> when debugging the driver.
 
-Yes in Documentation/devicetree/bindings, I'll double check
-the content for completeness.  The SPI CS isn't used for
-something else, the integrated DesignWare IP doesn't
-support 4 chip-selects on two spi busses.
+Applied to 5.13/scsi-staging, thanks!
 
->
-> Other than that this is a nice and complete driver.
->
-> Yours,
-> Linus Walleij
-
-Thanks for the review!
+-- 
+Martin K. Petersen	Oracle Linux Engineering
