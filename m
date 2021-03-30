@@ -2,94 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26A034E23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0306934E23F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbhC3Hb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
+        id S231131AbhC3Hba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:31:30 -0400
+Received: from mga07.intel.com ([134.134.136.100]:24226 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhC3Ha7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:30:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C77E61953;
-        Tue, 30 Mar 2021 07:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617089459;
-        bh=89DgxQC8PTyukm1mDqpIejFWerzPhaf6+PaOBTtGORk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ugJCV1z8a13ckwEFFHho9/CI3tgJfQQoIpMtiiRRsMgxlj5IznPzdRTzXSB4/NXv3
-         4hln6kdANarsJhcWaWmR7DFSKrMP12h6YI06empfG+U5dVuCzX/xt+sQDmXucJkxZk
-         cYSQneGIMMAe4yg2sW6XpD9iXLvIGKlx2pGO18/R6IKzUPyRAU7zJ2+6ZMZt5eS4n9
-         u3isJL/kTza4kV2GQhIFJwtqssdzRf8m8zh7KXKagda8eMPu4br1WCDZ0TkJ88FgQU
-         LxOtqzZr5bvLj4yapYhVWSGd17sdgtwRND+0DUi2jMogQ5jU4/VkJJ4NGwiRKGowMW
-         RLvOt+Iw3d/NA==
-Received: by mail-ot1-f43.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso14793319otp.0;
-        Tue, 30 Mar 2021 00:30:59 -0700 (PDT)
-X-Gm-Message-State: AOAM532XDgmRf/u1m4JVxQH+NUW5P8dHGI5l+TgGpFdu4cYCuZhTnfEp
-        UV7ME+j1TwgfCYLUf2AE5rHO1drox+FiWfKbxLQ=
-X-Google-Smtp-Source: ABdhPJzB47EpuCrG2DPxUtcQLUjtwGSd7CDmaA1KZ8sXWWUdsAzjcJih0N/gxHCPpyQDUvPO55djW23VdIEwumFBnsk=
-X-Received: by 2002:a9d:316:: with SMTP id 22mr26071919otv.210.1617089458397;
- Tue, 30 Mar 2021 00:30:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <yq1wntpgxxr.fsf@ca-mkp.ca.oracle.com> <20210330071958.3788214-1-slyfox@gentoo.org>
-In-Reply-To: <20210330071958.3788214-1-slyfox@gentoo.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 30 Mar 2021 09:30:44 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a32frskYgoXi2ncOcLfhqcMDssSBp79p7WSRg3VPhmSdA@mail.gmail.com>
-Message-ID: <CAK8P3a32frskYgoXi2ncOcLfhqcMDssSBp79p7WSRg3VPhmSdA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] hpsa: use __packed on individual structs, not header-wide
-To:     Sergei Trofimovich <slyfox@gentoo.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Don Brace <don.brace@microchip.com>,
-        linux-ia64@vger.kernel.org, storagedev@microchip.com,
-        linux-scsi <linux-scsi@vger.kernel.org>, jszczype@redhat.com,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>, thenzl@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231133AbhC3HbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:31:25 -0400
+IronPort-SDR: KWqsCyN/90bAP5BNkm4Jmscn4o3JGQsraffZ6MYHlxxwPAjzxD3lJcZnE0lGlflqWj3BiOojeb
+ TtY17eMkB/Hg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255703138"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="255703138"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 00:31:24 -0700
+IronPort-SDR: c7x/pcWzvq34dYDlYvECbGrDbjnhbf9hSYAEqk3fSTk7qhunnERbK/71WLnzFAGkwgTmXbiO6x
+ 8Smkuo2gSr7g==
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="418045968"
+Received: from xguo30-mobl.ccr.corp.intel.com ([10.249.174.220])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 00:31:22 -0700
+Message-ID: <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
+Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed))
+ by __packed
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Date:   Tue, 30 Mar 2021 15:31:19 +0800
+In-Reply-To: <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+         <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com>
+         <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
+         <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 9:22 AM Sergei Trofimovich <slyfox@gentoo.org> wrote:
->
-> Some of the structs contain `atomic_t` values and are not intended to be
-> sent to IO controller as is.
->
-> The change adds __packed to every struct and union in the file.
-> Follow-up commits will fix `atomic_t` problems.
->
-> The commit is a no-op at least on ia64:
->     $ diff -u <(objdump -d -r old.o) <(objdump -d -r new.o)
+On Tue, 2021-03-30 at 10:23 +0800, Xiaofei Tan wrote:
+> Hi David,
+> 
+> On 2021/3/29 18:09, David Laight wrote:
+> > From: Xiaofei Tan
+> > > Sent: 27 March 2021 07:46
+> > > 
+> > > Replace __attribute__((packed)) by __packed following the
+> > > advice of checkpatch.pl.
+> > > 
+> > > Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> > > ---
+> > >  drivers/acpi/acpi_fpdt.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+> > > index a89a806..690a88a 100644
+> > > --- a/drivers/acpi/acpi_fpdt.c
+> > > +++ b/drivers/acpi/acpi_fpdt.c
+> > > @@ -53,7 +53,7 @@ struct resume_performance_record {
+> > >  	u32 resume_count;
+> > >  	u64 resume_prev;
+> > >  	u64 resume_avg;
+> > > -} __attribute__((packed));
+> > > +} __packed;
+> > > 
+> > >  struct boot_performance_record {
+> > >  	struct fpdt_record_header header;
+> > > @@ -63,13 +63,13 @@ struct boot_performance_record {
+> > >  	u64 bootloader_launch;
+> > >  	u64 exitbootservice_start;
+> > >  	u64 exitbootservice_end;
+> > > -} __attribute__((packed));
+> > > +} __packed;
+> > > 
+> > >  struct suspend_performance_record {
+> > >  	struct fpdt_record_header header;
+> > >  	u64 suspend_start;
+> > >  	u64 suspend_end;
+> > > -} __attribute__((packed));
+> > > +} __packed;
+> > 
+> > My standard question about 'packed' is whether it is actually
+> > needed.
+> > It should only be used if the structures might be misaligned in
+> > memory.
+> > If the only problem is that a 64bit item needs to be 32bit aligned
+> > then a suitable type should be used for those specific fields.
+> > 
+> > Those all look very dubious - the standard header isn't packed
+> > so everything must eb assumed to be at least 32bit aligned.
+> > 
+> > There are also other sub-structures that contain 64bit values.
+> > These don't contain padding - but that requires 64bit alignement.
+> > 
+> > The only problematic structure is the last one - which would have
+> > a 32bit pad after the header.
+> > Is this even right given than there are explicit alignment pads
+> > in some of the other structures.
+> > 
+> > If 64bit alignment isn't guaranteed then a '64bit aligned to 32bit'
+> > type should be used for the u64 fields.
+> > 
+> 
+> Yes, some of them has been aligned already, then nothing changed
+> when 
+> add this "packed ". Maybe the purpose of the original author is for 
+> extension, and can tell others that this struct need be packed.
+> 
 
-This looks better to me, but I think it still has the same potential bug in
-the CommandList definition. Moving from #pragma to annotating the
-misaligned structures as __packed is more of a cleanup that could
-be done separately from the bugfix, but it does make it a little more
-robust.
+The patch is upstreamed recently but it was made long time ago.
+I think the original problem is that one of the address, probably the
+suspend_performance record, is not 64bit aligned, thus we can not read
+the proper content of suspend_start and suspend_end, mapped from
+physical memory.
 
->  #define HPSA_INQUIRY 0x12
->  struct InquiryData {
->         u8 data_byte[36];
-> -};
-> +} __packed;
+I will try to find a machine to reproduce the problem with all
+__attribute__((packed)) removed to double confirm this.
 
-Marking this one and a few others as __packed is a bit silly, but
-also obviously harmless, and closer to the original version, so that's
-ok.
+thanks,
+rui
+> > 	David
+> > 
+> > -
+> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton
+> > Keynes, MK1 1PT, UK
+> > Registration No: 1397386 (Wales)
+> > 
+> > 
+> > .
+> > 
+> 
+> 
 
-> @@ -451,7 +452,7 @@ struct CommandList {
->         bool retry_pending;
->         struct hpsa_scsi_dev_t *device;
->         atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
-> -} __aligned(COMMANDLIST_ALIGNMENT);
-> +} __packed __aligned(COMMANDLIST_ALIGNMENT);
-
-You are still marking CommandList as __packed here, which is
-what caused the original problem. Please don't mark this one
-as __packed at all. If there are individual members that you want
-to be misaligned inside of the structure, you could mark those
-explicitly.
-
-      Arnd
