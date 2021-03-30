@@ -2,259 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5581334E226
+	by mail.lfdr.de (Postfix) with ESMTP id A1B5F34E227
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhC3H1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhC3H0z (ORCPT
+        id S231299AbhC3H1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:27:09 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:33315 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhC3H1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:26:55 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5270AC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:26:54 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b4so22274142lfi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=af4hT6RKaQH4UftQDbKN5QPOjXiK86/wlCCe+4hZGdc=;
-        b=NUla3ScpKv1xeAWa3oYor1HqrS/QBdHFVbD97Gy2NLtpj6f7l2kc1YuVycA+6xgDsi
-         9l7wkk1VeogBBuKyQgr52c9E9XztS56+62DQeXZEzEP9oeFxv1R4pBjtUE5YXoqeUmDR
-         ygTmKi3BM6um384QWqUj1HKRFKr64dVReOWoSQ/bOlimMNzeyk8RRDcabaNIj7rZs7CH
-         04Rj9WUsZ3jLmC/of9MwmcFN+nNvknx0r5TBXUfW+EsQ459b+GxjLJbw48HFQLRgf2nR
-         0j/rJpyVkw6WltmcEO5Sa5tf3UaXGLTHPOoHlWyOe9aVBQi78oClX+hFcLSfXjnPyKj2
-         d5HQ==
+        Tue, 30 Mar 2021 03:27:01 -0400
+Received: by mail-lj1-f182.google.com with SMTP id 15so18841310ljj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:27:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=af4hT6RKaQH4UftQDbKN5QPOjXiK86/wlCCe+4hZGdc=;
-        b=ZjwVEAT6yhaeoes4mENRtx7YWDcJRlQwNeKVAb7JhhiXweUJQSbtckjoMbnQ6/2CrE
-         ZalLNbkuG2Biy6xiXhT0IpgnAjOmokg+LG/ArcmwiOeGe6Lexo0/jA/KwldY269MfhQ6
-         B72zfxYcYVnTrx9/RntxXejTEuRoUDh5IX0bEc9nDUyn5m3Ju8PNbla7hnVxb/QeSprh
-         kXdFrGYlYfQaVZfjuEUvuNos88iDre/NE2xRAUNEp8Y5W0sJ3cKI7J2/yPmZN7cMAFGG
-         mnB2miaNntQX39HsNWXy0hy/nZeUYmw11YCMbmjltgi/aka5qXOE9FBWbwB3ajSViOxI
-         ZJYw==
-X-Gm-Message-State: AOAM531b+r9D6+Z522y3o5Tgyy9Pr+X2vDlGNgEdLNQEi1ZQqxlLBcj8
-        GEdV8dwOktpH5a6ik19kU57N2iCyZ5ydeU6QJ1BjYjQluewr3Q==
-X-Google-Smtp-Source: ABdhPJyXpKWyx5s4QOhIBteYopgz9DFHpopC0zHy2O9Ezg9gQDp3fJSR7hC5ck8fwafksnrhlZdfctLsahIPzGz4fGU=
-X-Received: by 2002:ac2:5970:: with SMTP id h16mr18009743lfp.108.1617089212472;
- Tue, 30 Mar 2021 00:26:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=vMl0C2b5ebpTnwdNSaTT+Ok9a/oj9pc9s8BQ0TZhX2Y=;
+        b=p+SIqhWsCzHL9v0DgOOFgywYKhM7cSGgM0KoBlNg2rEUpO34sOdrI6TRCJABmH3NuU
+         PO88f7nSY+7CS8l0hpePe7Ut9fDPVwBjqO7nrjaLMPPgNH2/Vz/ZUKCs2cCnksJc6uqJ
+         WeEybXWkoOBVN6EsM0IDO4p0JQSQ/l0msPFbcfjpTZBsx4o/ceM2uqPTJ91tBVPZIuOA
+         HvO1dOgpNX4zorDnOILk8dscVl0qrEgfozvVoka5ODnDVkbQ4S61KR6On6q+1Cqidns9
+         o2j8by6Fnm7tpt8T4nNoJOL5UzlLSqe/dd91MHSmm0bhqatFLlRP8xcqGHFgtFlZMNVP
+         1oaA==
+X-Gm-Message-State: AOAM532Q6ACWPQLW9hwY7MSxwkZPU/WVPY1E5tbxidnnxE+2hJqR/Xo9
+        MBwOBgNLzFr9qCQGvdp7ojaE4EtQ486NKIXQV9c=
+X-Google-Smtp-Source: ABdhPJzHXD1jkXu6wpwSOpRqV8k8ceYfNtd2iohTZb1CphSS2cEukPXqGYoemRKmM16Y7OvvNy72npTw/ykq35YbHgI=
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr19219630ljk.233.1617089220361;
+ Tue, 30 Mar 2021 00:27:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com> <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
- <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de> <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de> <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
- <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at> <YGDpA4yPWmTWEyx+@kernel.org>
-In-Reply-To: <YGDpA4yPWmTWEyx+@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 30 Mar 2021 12:56:41 +0530
-Message-ID: <CAFA6WYPGuyg+OEYU2+FS-uom29yj4AyN5VLwm6MYpX97D0Uy0w@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Gstir <david@sigma-star.at>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
+References: <20210319123527.173883-1-yangjihong1@huawei.com>
+ <33ba152e-b8ef-3057-744a-51cb8c478ff2@huawei.com> <CAM9d7cjT-Q8RBprzG=hwdxrgVpzf3RwECuJ1UvbQYpQ47migbg@mail.gmail.com>
+ <YF3OXfzl7FEV50Ir@kernel.org> <27703989-e510-c964-2af7-ef0a5611f8cf@huawei.com>
+In-Reply-To: <27703989-e510-c964-2af7-ef0a5611f8cf@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 30 Mar 2021 16:26:49 +0900
+Message-ID: <CAM9d7chhFnYyUv++RzJRXomHq0vZN2LrbCAOBPg67MDeg6saOw@mail.gmail.com>
+Subject: Re: [PATCH v7] perf annotate: Fix sample events lost in stdio mode
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, gustavoars@kernel.org,
+        mliska@suse.cz, linux-kernel <linux-kernel@vger.kernel.org>,
+        zhangjinhao2@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 01:07, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Sat, Mar 27, 2021 at 01:41:24PM +0100, David Gstir wrote:
-> > Hi!
+Hi Yang and Arnaldo,
+
+On Sat, Mar 27, 2021 at 11:16 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+> On 2021/3/26 20:06, Arnaldo Carvalho de Melo wrote:
+> > So it seems to be working, what am I missing? Is this strictly non
+> > group related?
 > >
-> > > On 25.03.2021, at 06:26, Sumit Garg <sumit.garg@linaro.org> wrote:
-> > >
-> > > On Wed, 24 Mar 2021 at 19:37, Ahmad Fatoum <a.fatoum@pengutronix.de> =
-wrote:
-> > >>
-> > >> Hello Sumit,
-> > >>
-> > >> On 24.03.21 11:47, Sumit Garg wrote:
-> > >>> On Wed, 24 Mar 2021 at 14:56, Ahmad Fatoum <a.fatoum@pengutronix.de=
-> wrote:
-> > >>>>
-> > >>>> Hello Mimi,
-> > >>>>
-> > >>>> On 23.03.21 19:07, Mimi Zohar wrote:
-> > >>>>> On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
-> > >>>>>> On 21.03.21 21:48, Horia Geant=C4=83 wrote:
-> > >>>>>>> caam has random number generation capabilities, so it's worth u=
-sing that
-> > >>>>>>> by implementing .get_random.
-> > >>>>>>
-> > >>>>>> If the CAAM HWRNG is already seeding the kernel RNG, why not use=
- the kernel's?
-> > >>>>>>
-> > >>>>>> Makes for less code duplication IMO.
-> > >>>>>
-> > >>>>> Using kernel RNG, in general, for trusted keys has been discussed
-> > >>>>> before.   Please refer to Dave Safford's detailed explanation for=
- not
-> > >>>>> using it [1].
-> > >>>>
-> > >>>> The argument seems to boil down to:
-> > >>>>
-> > >>>> - TPM RNG are known to be of good quality
-> > >>>> - Trusted keys always used it so far
-> > >>>>
-> > >>>> Both are fine by me for TPMs, but the CAAM backend is new code and=
- neither point
-> > >>>> really applies.
-> > >>>>
-> > >>>> get_random_bytes_wait is already used for generating key material =
-elsewhere.
-> > >>>> Why shouldn't new trusted key backends be able to do the same thin=
-g?
-> > >>>>
-> > >>>
-> > >>> Please refer to documented trusted keys behaviour here [1]. New
-> > >>> trusted key backends should align to this behaviour and in your cas=
-e
-> > >>> CAAM offers HWRNG so we should be better using that.
-> > >>
-> > >> Why is it better?
-> > >>
-> > >> Can you explain what benefit a CAAM user would have if the trusted k=
-ey
-> > >> randomness comes directly out of the CAAM instead of indirectly from
-> > >> the kernel entropy pool that is seeded by it?
-> > >
-> > > IMO, user trust in case of trusted keys comes from trusted keys
-> > > backend which is CAAM here. If a user doesn't trust that CAAM would
-> > > act as a reliable source for RNG then CAAM shouldn't be used as a
-> > > trust source in the first place.
-> > >
-> > > And I think building user's trust for kernel RNG implementation with
-> > > multiple entropy contributions is pretty difficult when compared with
-> > > CAAM HWRNG implementation.
-> >
-> > Generally speaking, I=E2=80=99d say trusting the CAAM RNG and trusting =
-in it=E2=80=99s
-> > other features are two separate things. However, reading through the CA=
-AM
-> > key blob spec I=E2=80=99ve got here, CAAM key blob keys (the keys that =
-secure a blob=E2=80=99s
-> > content) are generated using its internal RNG. So I=E2=80=99d save if t=
-he CAAM RNG
-> > is insecure, so are generated key blobs. Maybe somebody with more insig=
-ht
-> > into the CAAM internals can verify that, but I don=E2=80=99t see any po=
-int in using
-> > the kernel=E2=80=99s RNG as long as we let CAAM generate the key blob k=
-eys for us.
+> Yes, it is non group related.
+> This problem occurs only when different events need to be recorded at
+> the same time, i.e.:
+> perf record -e branch-misses -e branch-instructions -a sleep 1
 >
-> Here's my long'ish analysis. Please read it to the end if by ever means
-> possible, and apologies, I usually try to keep usually my comms short, bu=
-t
-> this requires some more meat than the usual.
->
-> The Bad News
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Now that we add multiple hardware trust sources for trusted keys, will
-> there ever be a scenario where a trusted key is originally sealed with a
-> backing hardware A, unsealed, and resealed with hardware B?
->
-> The hardware and vendor neutral way to generate the key material would be
-> unconditionally always just the kernel RNG.
->
-> CAAM is actually worse than TCG because it's not even a standards body, i=
-f
-> I got it right. Not a lot but at least a tiny fraction.
->
-> This brings an open item in TEE patches: trusted_tee_get_random() is an
-> issue in generating kernel material. I would rather replace that with
-> kernel RNG *for now*, because the same open question applies also to ARM
-> TEE. It's also a single company controlled backing technology.
->
-> By all practical means, I do trust ARM TEE in my personal life but this i=
-s
-> not important.
->
-> CAAM *and* TEE backends break the golden rule of putting as little trust =
-as
-> possible to anything, even not anything weird is clear at sight, as
-> security is essentially a game of known unknowns and unknown unknowns.
->
-> Unfortunately, TPM trusted keys started this bad security practice, and
-> obviously it cannot be fixed without breaking uapi backwards compatibilit=
-y.
->
-> This leaves me exactly two rational options:
->
-> A. Add a patch to remove trusted_tee_get_random() and use kernel RNG
->    instead.
-> B. Drop the whole TEE patch set up until I have good reasons to believe
->    that it's the best possible idea ever to use TEE RNG.
->
-> Doing does (A) does not disclude of doing (B) later on, if someone some
-> day sends a patch with sound reasoning.
->
-> It's also good to understand that when some day a vendor D, other than TC=
-G,
-> CAAM or ARM, comes up, we need to go again this lenghty and messy
-> discussion. Now this already puts an already accepted patch set into a
-> risk, because by being a responsible maintainer I would have legit reason=
-s
-> just simply to drop it.
->
-> OK, but....
->
-> The GOOD News
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> So there's actually option (C) that also fixes the TPM trustd keys issue:
->
-> Add a new kernel patch, which:
->
-> 1. Adds the use of kernel RNG as a boot option.
-> 2. If this boot option is not active, the subsystem will print a warning
->    to klog denoting this.
-> 3. Default is of course vendor RNG given the bad design issue in the TPM
->    trusted keys, but the warning in klog will help to address it at least
->    a bit.
-> 4. Document all this to Documentation/security/keys/trusted-encrypted.rst=
-.
->
-> I'd prefer the choice between A, B and C be concluded rather sooner than
-> later.
+> The output results of perf script and perf annotate do not match.
+> Some events are not output in perf annotate.
 
-Option (C) sounds reasonable to me but I would rather prefer an info
-message rather than warning as otherwise it would reflect that we are
-enforcing kernel RNG choice for a user to trust upon.
+Yeah I think it's related to sort keys.  The code works with a single
+hist_entry for each event and symbol.  But the default sort key
+creates multiple entries for different threads and it causes the
+confusion.
 
--Sumit
-
->
-> /Jarkko
+Thanks,
+Namhyung
