@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF8B34F155
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030F934F156
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhC3S7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:59:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36642 "EHLO
+        id S233016AbhC3S7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:59:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24632 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232971AbhC3S67 (ORCPT
+        by vger.kernel.org with ESMTP id S232972AbhC3S7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:58:59 -0400
+        Tue, 30 Mar 2021 14:59:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617130739;
+        s=mimecast20190719; t=1617130745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aPc+rabAZpzxBvkEBQsdws4dCgLq8Pb5mtjSkAQD3So=;
-        b=gUrBrfYvd1cofowOGL/fRh3EKT3BI4ir/1MPFLFREKSt/Xw21UF+Wc807aHJ0XXWw+fFlE
-        o4rcE90Q6eXXhP3W1+MaFSyEbbU5qsEXdgLog7aLkxeL3LH5rnVe+7fb4sl6fJzIIjZ1m1
-        gwXibSWct4gl8s832WScT6eM722b5ck=
+        bh=i9iBaLNrNdHy5Myw5Ru7jrMYIVd0xBvqef8GrfatpKg=;
+        b=ecPCAj7u2P+hQ+VdTc6EmGYHEppmXEY+fLfnp8tyrT4/bBiHmA2bTAyqLUtgi9vCULaxbH
+        EEdtUtCpJ+n5MWi9gi6zFoLPduGofxAAk8rN9HWj8hq2UQVreI/GD87ZIKg0Qw92sb3j6H
+        a/wqXlRlEXw55I4Jk3uFqgVzTxEQUnk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-gAWCBbpRMLS2c762orwA8w-1; Tue, 30 Mar 2021 14:58:57 -0400
-X-MC-Unique: gAWCBbpRMLS2c762orwA8w-1
+ us-mta-571-fdhN6NBVMuyp-UEVFAw1iw-1; Tue, 30 Mar 2021 14:59:04 -0400
+X-MC-Unique: fdhN6NBVMuyp-UEVFAw1iw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CD2B8030A1;
-        Tue, 30 Mar 2021 18:58:55 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FBE18030BB;
+        Tue, 30 Mar 2021 18:59:02 +0000 (UTC)
 Received: from localhost.localdomain.com (ovpn-112-41.ams2.redhat.com [10.36.112.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CEF819C44;
-        Tue, 30 Mar 2021 18:58:50 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C468719C44;
+        Tue, 30 Mar 2021 18:58:56 +0000 (UTC)
 From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -46,9 +46,9 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Alexander Graf <graf@amazon.com>,
         Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH 1/4] kvm: cpuid: adjust the returned nent field of kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
-Date:   Tue, 30 Mar 2021 20:58:38 +0200
-Message-Id: <20210330185841.44792-2-eesposit@redhat.com>
+Subject: [PATCH 2/4] Documentation: kvm: update KVM_GET_EMULATED_CPUID ioctl description
+Date:   Tue, 30 Mar 2021 20:58:39 +0200
+Message-Id: <20210330185841.44792-3-eesposit@redhat.com>
 In-Reply-To: <20210330185841.44792-1-eesposit@redhat.com>
 References: <20210330185841.44792-1-eesposit@redhat.com>
 MIME-Version: 1.0
@@ -58,39 +58,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
-a nent field inside the kvm_cpuid2 struct to be big enough to contain
-all entries that will be set by kvm.
-Therefore if the nent field is too high, kvm will adjust it to the
-right value. If too low, -E2BIG is returned.
+KVM_GET_EMULATED_CPUID returns -E2BIG if the nent field of
+struct kvm_cpuid2 is smaller than the actual entries, while
+it adjusts nent if the provided amount is bigger than the
+actual amount.
 
-However, when filling the entries do_cpuid_func() requires an
-additional entry, so if the right nent is known in advance,
-giving the exact number of entries won't work because it has to be increased
-by one.
+Update documentation accordingly. ENOMEM is just returned if the
+allocation fails, like all other calls.
 
 Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
 ---
- arch/x86/kvm/cpuid.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/virt/kvm/api.rst | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 6bd2f8b830e4..5412b48b9103 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -975,6 +975,12 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 307f2fcf1b02..8ba23bc2a625 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -3404,12 +3404,10 @@ which features are emulated by kvm instead of being present natively.
  
- 	if (cpuid->nent < 1)
- 		return -E2BIG;
-+
-+	/* if there are X entries, we need to allocate at least X+1
-+	 * entries but return the actual number of entries
-+	 */
-+	cpuid->nent++;
-+
- 	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
- 		cpuid->nent = KVM_MAX_CPUID_ENTRIES;
+ Userspace invokes KVM_GET_EMULATED_CPUID by passing a kvm_cpuid2
+ structure with the 'nent' field indicating the number of entries in
+-the variable-size array 'entries'. If the number of entries is too low
+-to describe the cpu capabilities, an error (E2BIG) is returned. If the
+-number is too high, the 'nent' field is adjusted and an error (ENOMEM)
+-is returned. If the number is just right, the 'nent' field is adjusted
+-to the number of valid entries in the 'entries' array, which is then
+-filled.
++the variable-size array 'entries'.
++If the number of entries is too low to describe the cpu
++capabilities, an error (E2BIG) is returned.  If the number is too high,
++the 'nent' field is adjusted and the entries array is filled.
  
+ The entries returned are the set CPUID bits of the respective features
+ which kvm emulates, as returned by the CPUID instruction, with unknown
 -- 
 2.30.2
 
