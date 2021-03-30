@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5471C34DE5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CC234DE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhC3C1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
+        id S230402AbhC3C2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhC3C0y (ORCPT
+        with ESMTP id S230494AbhC3C20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:26:54 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FCDC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:26:54 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id o10so21386750lfb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:26:53 -0700 (PDT)
+        Mon, 29 Mar 2021 22:28:26 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CE3C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:28:25 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id jy13so22467932ejc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=pensando.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o7mF1UI/ndoc7efLF1WEvgCjnwo/MnVD4tZwc7gstIY=;
-        b=HmTNTZhkr0viwYHwuWTH7w/vahMF78U2pKfc3dD1bE9CrKumXH7Thi+7zIDyTpJrtD
-         iGTG+g2sKa/wYJQC8gCwX+x1EcMC23CgY3hi++gRpOba/TFLpaloBG+UNWEOz2w6Djuf
-         mf4iDOVqr6CbHVKhXgxClBMkSynex4rlFJLvAIiwI22eiwnjXo4Irt8Njx6FrxA5qD5q
-         KUAeVgaiWgWODLTdCw5fv/nJQt5YUnp9iLOVOQFUmSVrCy+ZUlOshY4NASFgKN2oOFWM
-         loGLLZNmIbvxlTVCGaPKkhSHGAeHB8/gM+arqMh15wHyJERJhQT1yo9KHMnKuNQv+OX/
-         5oAw==
+        bh=as6TC2k6xEEVIuVX9cZ9mNSha9Pgs1VOeqieHwq2ZAk=;
+        b=0/Hcptk+lGf7RA7QeLI8de294bHY+a6+K92ctHUL8ogRG3PRJi/RvJGGeRNOVzBZ6Y
+         Cug7wcbQjiIeazHgGQ4vY9/DrdQ7aLvEjhZq1YapIeA0UPEcsZfp9NbpBfl6HT/5g9o0
+         aqmC7ovktIlGdSVnLxllh5zgTglmUD5sCzQW1wRApjaK3i2NGFrZszCzgp/bD468XxID
+         UECyTZMdRNYozflEzmeZkUXjklvH21iraJm7mCNoaRLpuQq/grxfpcjSo8ZnodelOoIP
+         xc3Yh9CKjzz6wy2jtyPdtDuSibDTYKHT313SllBRLqt0iNYx47SubGDemTVLxHWd6dBV
+         8h0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o7mF1UI/ndoc7efLF1WEvgCjnwo/MnVD4tZwc7gstIY=;
-        b=Wp3P9wmJdvGqjYqCYUZHPsyyAz58ZiofoD6x1q/hDPU7ItFSGJcEJ4vetrpytgQ484
-         Jz5c2Qggdq0X6HKGn1RJpx83AJdNpFwbyIJ3yY/fMUzeVXMdeTIbGAk/pJuix1pNJAv3
-         35ytTROmo4n/DU3DwFJQQAPfzpN7jYf08TBBoNSmDfMYHAajEKymM3wMl9IAyizBKM5P
-         lLBryFs6rf46KyYgzJD9c0Hnc0JeKY5Qq579LKWo7GdcYzmu2dnBkCtkzlpRCL6XlAWE
-         z8PeYfrDSv6tZfFm4yvChFBc+fBkmyaZnkreGtUL4MDSnAdNjM3VpoQS73rB9YhKu1zx
-         1KLA==
-X-Gm-Message-State: AOAM530ivCzTxz2xHpdBzHhcWDt9pODpP44oPWEk8Np4PlEKXrQvQ4xY
-        AziyF3BJjA9Eld+/kfY9EmH9a20bjqu/D2wB5bk=
-X-Google-Smtp-Source: ABdhPJzYE+I8Olw7EVD7VmjAnft6Maow6v6gio0aiOt4XLeHcx18bMih9gbn4BDNWen20m0VG9lXs5oy8bfRLNa0h2U=
-X-Received: by 2002:ac2:5933:: with SMTP id v19mr17633187lfi.405.1617071212523;
- Mon, 29 Mar 2021 19:26:52 -0700 (PDT)
+        bh=as6TC2k6xEEVIuVX9cZ9mNSha9Pgs1VOeqieHwq2ZAk=;
+        b=pHzK12NNZYzyOW+YdNldCUx4Po1lWJXaVRAg45elROJmNdKQnP4uCET5d+goZBbSi+
+         184f/7AfTn4rt9ka6g02VhJOuBfbHqx8oVgA6UH3f+GYNRwJWfotWKcAV8ritMk0Acwy
+         Y9XvlMc4U3KB/LN/DZ0+VnmyUqk0a+NqslhNWqAENvGH7PmUSRvIeYzoDJuQoKdQ8R0O
+         NBHHUS2Q7Io8fpPc9gTL7xrmPMhiNeDSWc47nbrMNX1o8kn4xaD+kX47NF1OwgYWjIcN
+         AK8bYOASYYE4yeMGg9r4yL5V+Fvn41tbfMqMyjBPen27ftxsqip3tUxOGNU99j7i0OL9
+         pweA==
+X-Gm-Message-State: AOAM531VerwLBU0i4Tehs5iUO2RTl0UYhG/JcASkqNhkknovD7X+ZRD1
+        zJFb6/hC59P0P6tOn4ga8RX70c4FGEKGXRA9b85gAA==
+X-Google-Smtp-Source: ABdhPJxrtj444vLfa7by3n/VVs+in8qeM1zAKOJDHyFcmwzb3ptLOzZ9Ug2uMihG+7mETsyFGgfEz+SqnKrX+SstUUA=
+X-Received: by 2002:a17:906:e0d6:: with SMTP id gl22mr30819105ejb.444.1617071304549;
+ Mon, 29 Mar 2021 19:28:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <1616984846-184466-1-git-send-email-zhaoqianligood@gmail.com>
-In-Reply-To: <1616984846-184466-1-git-send-email-zhaoqianligood@gmail.com>
-From:   qianli zhao <zhaoqianligood@gmail.com>
-Date:   Tue, 30 Mar 2021 10:26:41 +0800
-Message-ID: <CAPx_LQGMQzq=hQ0PzR_mXzi9Gp2X=5+Sk7fjvU5+QO_VVbnJQg@mail.gmail.com>
-Subject: Re: [PATCH V4] exit: trigger panic when global init has exited
-To:     christian@brauner.io, axboe@kernel.dk,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-4-brad@pensando.io>
+ <20210329155843.GD5166@sirena.org.uk>
+In-Reply-To: <20210329155843.GD5166@sirena.org.uk>
+From:   Brad Larson <brad@pensando.io>
+Date:   Mon, 29 Mar 2021 19:28:14 -0700
+Message-ID: <CAK9rFny3RZSP8=RnekcLNz0KrBfko8jkc4pyXpfiEyF2TUmr4w@mail.gmail.com>
+Subject: Re: [PATCH v2 03/13] spi: dw: Add support for Pensando Elba SoC SPI
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi, Eric, Oleg
+On Mon, Mar 29, 2021 at 8:58 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Sun, Mar 28, 2021 at 06:59:28PM -0700, Brad Larson wrote:
+>
+> > @@ -56,7 +56,7 @@ struct dw_spi_mscc {
+> >  /*
+> >   * The Designware SPI controller (referred to as master in the documentation)
+> >   * automatically deasserts chip select when the tx fifo is empty. The chip
+> > - * selects then needs to be either driven as GPIOs or, for the first 4 using the
+> > + * selects then needs to be either driven as GPIOs or, for the first 4 using
+> >   * the SPI boot controller registers. the final chip select is an OR gate
+> >   * between the Designware SPI controller and the SPI boot controller.
+> >   */
+>
+> This is an unrelated fix, please send as a separate patch as covered in
+> submitting-patches.rst.
 
-Any comment?
+I'll remove this.  Belongs in a trivial patch set.
 
-From the previous discussions, i think this change is necessary, but
-we need to confirm that move the decrement of signal->live is a
-safe.Here are some of my considerations
-There are three places that are going to be called besides do_exit().
-1. current_is_single_threaded()
-current_is_single_threaded() is used to check current process just has
-a single thread,my patch just moved the "signal->live--" position,this
-won't change anything,current_is_single_threaded() maybe get different
-value, after my patch,there is no change from the current logic.
+> > @@ -237,6 +237,31 @@ static int dw_spi_canaan_k210_init(struct platform_device *pdev,
+> >       return 0;
+> >  }
+> >
+> > +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
+> > +{
+> > +     struct dw_spi *dws = spi_master_get_devdata(spi->master);
+> > +
+> > +     if (!enable) {
+> > +             /*
+> > +              * Using a GPIO-based chip-select, the DW SPI
+> > +              * controller still needs its own CS bit selected
+> > +              * to start the serial engine.  On Elba the specific
+> > +              * CS doesn't matter to start the serial engine,
+> > +              * so using CS0.
+> > +              */
+>
+> Why does this comment only apply to one branch of the conditional?
 
-2.css_task_iter_advance()
-Same as above,css_task_iter_advance() just read "signal->live",this
-may return different value,but it same before my patch.
-css_task_iter_advance() cgroup_threadgroup_change_begin() held around
-setting PF_EXITING before signal->live is decremented,
-cgroup_threadgroup_rwsem(cgroup_threadgroup_change_begin()) is used
-for user to get expect stable threadgroup,cgroup has no dependencies
-on setting PF_EXITING or signal->live decrement.
-
-3.copy_process()
-copy_process() is called by fork(),copy_process will incremental
-"signal->live",signal->live is atomic operation,there is no race, the
-patch only move position,i don't see any new dependency problems
-
-Moving the decrement position mainly changes the order in which
-variables are assigned,we need to check if the change in the order of
-assignment has any side effects on other callers.
-i think acct_update_integrals(),sync_mm_rss() mainly updated some
-data,only exit_signals() and sched_exit() need attention.
-cgroup_threadgroup_change_begin() is called in exit_signals(),and
-css_task_iter_advance used "signal->live",it seems like it might be a
-little related.
-cgroup_threadgroup_change_begin() just give stable threadgroup for
-user,and css_task_iter_advance only check if group is dead, decrement
-of signal->live and sets PF_EXITING seems like safe.
-
-From my current analysis, this is safe.
+It doesn't, I'll move it outside the conditional.
