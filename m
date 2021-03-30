@@ -2,217 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB634E529
+	by mail.lfdr.de (Postfix) with ESMTP id 5F41534E52A
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhC3KMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhC3KL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:11:56 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CDDC061574;
-        Tue, 30 Mar 2021 03:11:56 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id y32so10225486pga.11;
-        Tue, 30 Mar 2021 03:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D64Z0ipiSGjIBRscBt7Hj8JlFiWyuPUHxNwLeCeVO14=;
-        b=pme7hRVQQ62mCdj/DJ8yYIZZwvljFEGqajaoqH2E0JKLyslpvRPinagWmsIb5R5VGn
-         j4TJmvArUzdFno47WEKPprN2+CPJE6ZX4b7bUDbRXRx7qHJNIxCClgRQrOvBg2gUX425
-         QHrH/9usLgf1GP8kdVzm5mapzgDlm7AeK4qYGBf10OqHZ0NbTB370kdZEAe7hjHO6f+J
-         xPwj3jZu1dR3NwhL7r9RcAhyhNgpZLC9R138Uf8yolgIRyN4U0Y3MwAhkY1BdKYr+9Q8
-         lzUCw3cGbdXWCAdgPlpCTiUSoWyT4m9pAKOpw1B/elmHMxSxDAIR6JoXxq4ip6MCDIBM
-         TLIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D64Z0ipiSGjIBRscBt7Hj8JlFiWyuPUHxNwLeCeVO14=;
-        b=uhsfyCmM3bBHhh2jtKFGHBYDNBQUqB//hI0ddWjLGHllzbPEAIhfWCgBUZS5mawRqX
-         WjeOwn0syAVqTPRZY9ad0J443czvx126XyLu95nsCB6B3P6UjnIw75lRi5mtqolWlT00
-         lsioT+PWluylVWTEh8tW9rl0OLZH9B98N5M4UebHjtWCWxMioL5k9IM6VaGZIxzQab5O
-         4x0B2+ZVRb1aQJTnNFIK0T60avzOrYwE26jFw6cqh3zzEakD3e6Zj1WozCZUtN0kUGRm
-         dwaN2OW6xAFpp3o6SdTtwR8I3sZ7q+hln074eZIneAcrf8NYM1v4vBh0XFgOf8CRKwGi
-         UxnQ==
-X-Gm-Message-State: AOAM533sgliVzr9oIFAmsAZjtp8X3dpfSyPNcJgg4JEOfHx4hBOg6NI5
-        XbG3Ji5CKB8YnB26GgjGuEBYC9aSk/2B72XOMHA=
-X-Google-Smtp-Source: ABdhPJyot5Mzdi+RZAdXsFR/oJ2wQd6fBrsoSnwBTwFD4jBvm8DtkP3JFA6R7w+tnluGW4uFfYU0N1p60KSrgUjY7Rw=
-X-Received: by 2002:a63:3e4b:: with SMTP id l72mr6674506pga.203.1617099116029;
- Tue, 30 Mar 2021 03:11:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com> <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:11:39 +0300
-Message-ID: <CAHp75VdRobc6jpFzAkd3U65BhiiNPLrF4qsnCKmsQBKMYbG4sg@mail.gmail.com>
-Subject: Re: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231696AbhC3KMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231370AbhC3KM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 06:12:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B475D61864;
+        Tue, 30 Mar 2021 10:12:26 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRBMF-004eKh-G8; Tue, 30 Mar 2021 11:12:23 +0100
+Date:   Tue, 30 Mar 2021 11:12:22 +0100
+Message-ID: <87r1jxq7ax.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        anshuman.khandual@arm.com, catalin.marinas@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>
+Subject: Re: [PATCH v5 07/19] arm64: kvm: Enable access to TRBE support for host
+In-Reply-To: <20210323120647.454211-8-suzuki.poulose@arm.com>
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+        <20210323120647.454211-8-suzuki.poulose@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, coresight@lists.linaro.org, mathieu.poirier@linaro.org, mike.leach@linaro.org, leo.yan@linaro.org, anshuman.khandual@arm.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, Alexandru.Elisei@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 3:58 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
->
-> Support GPO(s) found from ROHM BD71815 power management IC. The IC has two
-> GPO pins but only one is properly documented in data-sheet. The driver
+Hi Suzuki,
 
-in the datasheet
+[+ Alex]
 
-> exposes by default only the documented GPO. The second GPO is connected to
-> E5 pin and is marked as GND in data-sheet. Control for this undocumented
-
-in the datasheet
-
-> pin can be enabled using a special DT property.
->
-> This driver is derived from work by Peter Yang <yanglsh@embest-tech.com>
-> although not so much of original is left.
-
-of the original
-
-It seems you ignored my comments about the commit message. :-(
-
-
-
-> +struct bd71815_gpio {
-> +       struct gpio_chip chip;
-
-> +       struct device *dev;
-
-Wondering why you need this. Is it the same as chip.parent?
-
-> +       struct regmap *regmap;
-> +};
-
-...
-
-> +       int ret, bit;
+On Tue, 23 Mar 2021 12:06:35 +0000,
+Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> 
+> For a nvhe host, the EL2 must allow the EL1&0 translation
+> regime for TraceBuffer (MDCR_EL2.E2TB == 0b11). This must
+> be saved/restored over a trip to the guest. Also, before
+> entering the guest, we must flush any trace data if the
+> TRBE was enabled. And we must prohibit the generation
+> of trace while we are in EL1 by clearing the TRFCR_EL1.
+> 
+> For vhe, the EL2 must prevent the EL1 access to the Trace
+> Buffer.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  arch/arm64/include/asm/el2_setup.h | 13 +++++++++
+>  arch/arm64/include/asm/kvm_arm.h   |  2 ++
+>  arch/arm64/include/asm/kvm_host.h  |  2 ++
+>  arch/arm64/kernel/hyp-stub.S       |  3 ++-
+>  arch/arm64/kvm/debug.c             |  6 ++---
+>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 42 ++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/switch.c   |  1 +
+>  7 files changed, 65 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+> index d77d358f9395..bda918948471 100644
+> --- a/arch/arm64/include/asm/el2_setup.h
+> +++ b/arch/arm64/include/asm/el2_setup.h
+> @@ -65,6 +65,19 @@
+>  						// use EL1&0 translation.
+>  
+>  .Lskip_spe_\@:
+> +	/* Trace buffer */
+> +	ubfx	x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
+> +	cbz	x0, .Lskip_trace_\@		// Skip if TraceBuffer is not present
 > +
-> +       bit = BIT(offset);
-
-I prefer
-  int bit = BIT(offset);
-  int ret;
-but I think we already discussed that. OK.
-
-...
-
-> +       default:
-> +               break;
-> +       }
-> +       return -ENOTSUPP;
-
-Here is a waste of line. Why break instead of direct return?
-
-...
-
-> +/* Template for GPIO chip */
-> +static const struct gpio_chip bd71815gpo_chip = {
-> +       .label                  = "bd71815",
-> +       .owner                  = THIS_MODULE,
-> +       .get                    = bd71815gpo_get,
-> +       .get_direction          = bd71815gpo_direction_get,
-> +       .set                    = bd71815gpo_set,
-> +       .set_config             = bd71815_gpio_set_config,
-
-> +       .can_sleep              = 1,
-
-Strictly speaking this should be true (boolean type value).
-
-> +};
-
-...
-
-> +#define BD71815_TWO_GPIOS      0x3UL
-> +#define BD71815_ONE_GPIO       0x1UL
-
-Are they masks? Can you use BIT() and GENMASK()?
-
-...
-
-> +/*
-> + * Sigh. The BD71815 and BD71817 were originally designed to support two GPO
-> + * pins. At some point it was noticed the second GPO pin which is the E5 pin
-> + * located at the center of IC is hard to use on PCB (due to the location). It
-> + * was decided to not promote this second GPO and pin is marked as GND in the
-
-and the pin
-
-> + * datasheet. The functionality is still there though! I guess driving a GPO
-> + * connected to the ground is a bad idea. Thus we do not support it by default.
-> + * OTOH - the original driver written by colleagues at Embest did support
-> + * controlling this second GPO. It is thus possible this is used in some of the
-> + * products.
-> + *
-> + * This driver does not by default support configuring this second GPO
-> + * but allows using it by providing the DT property
-> + * "rohm,enable-hidden-gpo".
-> + */
-
-...
-
-> +       /*
-> +        * As writing of this the sysfs interface for GPIO control does not
-> +        * respect the valid_mask. Do not trust it but rather set the ngpios
-> +        * to 1 if "rohm,enable-hidden-gpo" is not given.
-> +        *
-> +        * This check can be removed later if the sysfs export is fixed and
-> +        * if the fix is backported.
-
-So, mark this comment with the TODO/FIXME keyword?
-
-> +        *
-> +        * For now it is safest to just set the ngpios though.
-> +        */
-
-...
-
-> +       ret = devm_gpiochip_add_data(dev, &g->chip, g);
-> +       if (ret < 0) {
-> +               dev_err(dev, "could not register gpiochip, %d\n", ret);
-> +               return ret;
-> +       }
+> +	mrs_s	x0, SYS_TRBIDR_EL1
+> +	and	x0, x0, TRBIDR_PROG
+> +	cbnz	x0, .Lskip_trace_\@		// If TRBE is available at EL2
 > +
-> +       return ret;
+> +	mov	x0, #(MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT)
+> +	orr	x2, x2, x0			// allow the EL1&0 translation
+> +						// to own it.
+> +
+> +.Lskip_trace_\@:
+>  	msr	mdcr_el2, x2			// Configure debug traps
+>  .endm
+>  
+> diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+> index 94d4025acc0b..692c9049befa 100644
+> --- a/arch/arm64/include/asm/kvm_arm.h
+> +++ b/arch/arm64/include/asm/kvm_arm.h
+> @@ -278,6 +278,8 @@
+>  #define CPTR_EL2_DEFAULT	CPTR_EL2_RES1
+>  
+>  /* Hyp Debug Configuration Register bits */
+> +#define MDCR_EL2_E2TB_MASK	(UL(0x3))
+> +#define MDCR_EL2_E2TB_SHIFT	(UL(24))
 
-This entire piece can be simplified by
+Where are these bits defined? DDI0487G_a has them as RES0.
 
-return devm_gpiochip_add_data(...);
+>  #define MDCR_EL2_TTRF		(1 << 19)
+>  #define MDCR_EL2_TPMS		(1 << 14)
+>  #define MDCR_EL2_E2PB_MASK	(UL(0x3))
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 3d10e6527f7d..80d0a1a82a4c 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -315,6 +315,8 @@ struct kvm_vcpu_arch {
+>  		struct kvm_guest_debug_arch regs;
+>  		/* Statistical profiling extension */
+>  		u64 pmscr_el1;
+> +		/* Self-hosted trace */
+> +		u64 trfcr_el1;
+>  	} host_debug_state;
+>  
+>  	/* VGIC state */
+> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> index 5eccbd62fec8..05d25e645b46 100644
+> --- a/arch/arm64/kernel/hyp-stub.S
+> +++ b/arch/arm64/kernel/hyp-stub.S
+> @@ -115,9 +115,10 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	mrs_s	x0, SYS_VBAR_EL12
+>  	msr	vbar_el1, x0
+>  
+> -	// Use EL2 translations for SPE and disable access from EL1
+> +	// Use EL2 translations for SPE & TRBE and disable access from EL1
+>  	mrs	x0, mdcr_el2
+>  	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
+> +	bic	x0, x0, #(MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT)
+>  	msr	mdcr_el2, x0
+>  
+>  	// Transfer the MM state from EL1 to EL2
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index dbc890511631..7b16f42d39f4 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -89,7 +89,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
+>   *  - Debug ROM Address (MDCR_EL2_TDRA)
+>   *  - OS related registers (MDCR_EL2_TDOSA)
+>   *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
+> - *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
+> + *  - Self-hosted Trace (MDCR_EL2_TTRF/MDCR_EL2_E2TB)
 
-...
+For the record, this is likely to conflict with [1], although that
+patch still has some issues.
 
-> +static struct platform_driver gpo_bd71815_driver = {
-> +       .driver = {
-> +               .name   = "bd71815-gpo",
-
-> +               .owner  = THIS_MODULE,
-
-Seems I commented on this. The module_*_driver() macro(s) will take care of it.
-
-> +       },
-> +       .probe          = gpo_bd71815_probe,
-> +};
-
+>   *
+>   * Additionally, KVM only traps guest accesses to the debug registers if
+>   * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
+> @@ -107,8 +107,8 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
+>  	trace_kvm_arm_setup_debug(vcpu, vcpu->guest_debug);
+>  
+>  	/*
+> -	 * This also clears MDCR_EL2_E2PB_MASK to disable guest access
+> -	 * to the profiling buffer.
+> +	 * This also clears MDCR_EL2_E2PB_MASK and MDCR_EL2_E2TB_MASK
+> +	 * to disable guest access to the profiling and trace buffers
+>  	 */
+>  	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
+>  	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index f401724f12ef..9499e18dd28f 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -58,10 +58,51 @@ static void __debug_restore_spe(u64 pmscr_el1)
+>  	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
+>  }
+>  
+> +static void __debug_save_trace(u64 *trfcr_el1)
+> +{
 > +
 
-Extra blank line. Drop it.
+Spurious blank line?
 
-> +module_platform_driver(gpo_bd71815_driver);
+> +	*trfcr_el1 = 0;
+> +
+> +	/* Check if we have TRBE */
+> +	if (!cpuid_feature_extract_unsigned_field(read_sysreg(id_aa64dfr0_el1),
+> +						  ID_AA64DFR0_TRBE_SHIFT))
+> +		return;
+
+Do we have a way to track this that doesn't involve reading an ID
+register? This is on the hot path, and is going to really suck badly
+with NV (which traps all ID regs for obvious reasons). I would have
+hoped that one way or another, we'd have a static key for this.
+
+> +
+> +	/* Check we can access the TRBE */
+> +	if ((read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_PROG))
+> +		return;
+> +
+> +	/* Check if the TRBE is enabled */
+> +	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_ENABLE))
+> +		return;
+> +	/*
+> +	 * Prohibit trace generation while we are in guest.
+> +	 * Since access to TRFCR_EL1 is trapped, the guest can't
+> +	 * modify the filtering set by the host.
+
+If TRFCR_EL1 is trapped, where is the trap handling? This series
+doesn't touch sys_regs.c, so I assume you rely on the "inject an UNDEF
+for anything unknown" default behaviour?
+
+If that's the case, I'd rather you add an explicit handler.
+
+> +	 */
+> +	*trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
+> +	write_sysreg_s(0, SYS_TRFCR_EL1);
+> +	isb();
+> +	/* Drain the trace buffer to memory */
+> +	tsb_csync();
+> +	dsb(nsh);
+> +}
+> +
+> +static void __debug_restore_trace(u64 trfcr_el1)
+> +{
+> +	if (!trfcr_el1)
+> +		return;
+> +
+> +	/* Restore trace filter controls */
+> +	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
+> +}
+> +
+>  void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+>  {
+>  	/* Disable and flush SPE data generation */
+>  	__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
+> +	/* Disable and flush Self-Hosted Trace generation */
+> +	__debug_save_trace(&vcpu->arch.host_debug_state.trfcr_el1);
+>  }
+>  
+>  void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+> @@ -72,6 +113,7 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+>  void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+>  {
+>  	__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
+> +	__debug_restore_trace(vcpu->arch.host_debug_state.trfcr_el1);
+>  }
+>  
+>  void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+> index 68ab6b4d5141..736805232521 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+> @@ -95,6 +95,7 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+>  
+>  	mdcr_el2 &= MDCR_EL2_HPMN_MASK;
+>  	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
+> +	mdcr_el2 |= MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT;
+>  
+>  	write_sysreg(mdcr_el2, mdcr_el2);
+>  	if (is_protected_kvm_enabled())
+> -- 
+> 2.24.1
+> 
+> 
+
+Thanks,
+
+	M.
+
+[1] https://lore.kernel.org/r/20210323180057.263356-1-alexandru.elisei@arm.com
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Without deviation from the norm, progress is not possible.
