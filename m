@@ -2,132 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F09234EDC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8BA34EDC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhC3Q1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhC3Q04 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:26:56 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B70EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:26:56 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 8so17988144ybc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E84xiuP96qdI7CJTKEoKUbx5Tud8k1cz/vlbjHEw4u0=;
-        b=NhyyBx3rsxS/8TIMF2Ga2ndhdkfALclaVvdMgUn9VzeEDA9vjUxsU0hrmepA76TfLt
-         u0X4694RTY7cucG2E7Ff8cg8WyEZtc72CatSnkWj4BIkSv+WQ56l3wybCFVpC7oO8/aY
-         n7JuOd68AJouHOTeOvP+UeSvFZ0DzJGOerJU8QYdsQ3N1WYHN/oNfRba5OmHqlCHvH3X
-         O+u1FJyU6EET1HxP051/l4PrUVO0W7xz7dyvd7Eu54lhSOAPhAsK3Kb11A1ssyc9J65P
-         MH/b7aHeZJaLunKWbnTsmaRedKpwTDaFc9GgNUVHXYtTbKTaLcBqisSEGID/TuBZAjHG
-         wbPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E84xiuP96qdI7CJTKEoKUbx5Tud8k1cz/vlbjHEw4u0=;
-        b=S4UIBvdydTk2jgE/CUtza2pnzAVoVQDVmp0fFvId73UrUWotKXEkvtSAF6plJ4zvtN
-         aWbnyyl4xo3h2xio+ACSUUN7wGgSpYxVRSEfWsUxmY+YejuykvIOM0E/pWqO8kJIQ7p8
-         MUA4ROYjLAtU4DeY7hNA6TEFS5exlgZRVGJfAjdqHwT+IVEY9YtRMJM5NOafzE2x+1rb
-         UxhatNcio6b/F1wlGioDXVLUSTilKX1ruJJwWxQYQONCLwsI6GZAbmW8nOy4+QUtE1Ia
-         gAUI4O5TxVYwlrvdhaTxqFI2SgVrb7zZg11XD4l69c6juSxaC5iEopzyUChSIUVfjtBA
-         EBMg==
-X-Gm-Message-State: AOAM531jehdpiz1/jorcLWPpkxgGk5L+8ndxVRc16DNXyfSg7SpVv1Qo
-        HS5FZ1W+p6+A3/pPRH0yE+MFMZLeMN260CyMgE/nTg==
-X-Google-Smtp-Source: ABdhPJzRju2GzsjyNoiA4fXciYHN4xAXYF+zjvtaWtSDSt0ofrTYQWng9+AP3dlitSrOgxr9jUO9qbtBbt2EI9ZSqHM=
-X-Received: by 2002:a25:d3cf:: with SMTP id e198mr45556943ybf.228.1617121615342;
- Tue, 30 Mar 2021 09:26:55 -0700 (PDT)
+        id S232141AbhC3Q1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:27:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21512 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232118AbhC3Q1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 12:27:36 -0400
+IronPort-SDR: oeUD/7vDc0Fji0gvMLnRLd6nPR8LREAu5oIR2YyGOkl3LlgsCN5Qqg2N7Q5V7ZEGJIn1w6WBYm
+ PlLIRZYQakcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191278483"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="191278483"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 09:27:36 -0700
+IronPort-SDR: rALFS58bsnZc5hncT56uEWexYkHiT78FgWZUhcfa6HK7mP//UDKSJXPUBuGq7qT1R5wnbu5fVl
+ 178aX246NBfg==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="455091940"
+Received: from leekevi1-mobl.amr.corp.intel.com (HELO [10.209.2.33]) ([10.209.2.33])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 09:27:34 -0700
+Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
+ machine driver
+To:     Mark Brown <broonie@kernel.org>,
+        "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, shumingf@realtek.com,
+        flove@realtek.com, kent_chen@realtek.com, jack.yu@realtek.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
+ <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
+ <20210330153534.GF4976@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <cd0d87e0-caa5-b671-9c91-1c5f35c2f017@linux.intel.com>
+Date:   Tue, 30 Mar 2021 11:27:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210205222644.2357303-9-saravanak@google.com>
- <20210210114435.122242-1-tudor.ambarus@microchip.com> <20210330154222.GA5411@roeck-us.net>
-In-Reply-To: <20210330154222.GA5411@roeck-us.net>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 30 Mar 2021 09:26:19 -0700
-Message-ID: <CAGETcx_k2dAHRWn4914s32KSdJ=WLDe6DeD50V2kvR+2dUPrMw@mail.gmail.com>
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Brown, Len" <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210330153534.GF4976@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 8:42 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, Feb 10, 2021 at 01:44:34PM +0200, Tudor Ambarus wrote:
-> > This is a follow-up for:
-> > commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
-> >
-> > The above commit updated the deprecated of_clk_add_provider(),
-> > but missed to update the preferred of_clk_add_hw_provider().
-> > Update it now.
-> >
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > Reviewed-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/clk/clk.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> > index 27ff90eacb1f..9370e4dfecae 100644
-> > --- a/drivers/clk/clk.c
-> > +++ b/drivers/clk/clk.c
-> > @@ -4594,6 +4594,8 @@ int of_clk_add_hw_provider(struct device_node *np,
-> >       if (ret < 0)
-> >               of_clk_del_provider(np);
-> >
-> > +     fwnode_dev_initialized(&np->fwnode, true);
-> > +
->
-> This causes a crash when booting raspi2 images in qemu.
->
-> [   22.123618] Unable to handle kernel NULL pointer dereference at virtual address 00000028
-> [   22.123830] pgd = (ptrval)
-> [   22.123992] [00000028] *pgd=00000000
-> [   22.124579] Internal error: Oops: 5 [#1] SMP ARM
+
+
+On 3/30/21 10:35 AM, Mark Brown wrote:
+> On Tue, Mar 30, 2021 at 09:12:11PM +0530, Mukunda,Vijendar wrote:
+>> On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
+> 
+>>>>    static const struct acpi_device_id acp3x_audio_acpi_match[] = {
+>>>>        { "AMDI5682", (unsigned long)&acp3x_5682},
+>>>>        { "AMDI1015", (unsigned long)&acp3x_1015},
+>>>> +    { "AMDP1015", (unsigned long)&acp3x_1015p},
+> 
+>>> This isn't a valid ACPI ID. AMDP does not exist in
+> 
 > ...
-> [   22.141624] [<c0a2f4d8>] (of_clk_add_hw_provider) from [<c0a2f54c>] (devm_of_clk_add_hw_provider+0x48/0x80)
-> [   22.141819] [<c0a2f54c>] (devm_of_clk_add_hw_provider) from [<c0a43ad8>] (raspberrypi_clk_probe+0x25c/0x384)
-> [   22.141976] [<c0a43ad8>] (raspberrypi_clk_probe) from [<c0c18da0>] (platform_probe+0x5c/0xb8)
-> [   22.142114] [<c0c18da0>] (platform_probe) from [<c0c16654>] (really_probe+0xf0/0x39c)
-> [   22.142246] [<c0c16654>] (really_probe) from [<c0c16968>] (driver_probe_device+0x68/0xc0)
-> [   22.142377] [<c0c16968>] (driver_probe_device) from [<c0c14834>] (bus_for_each_drv+0x84/0xc8)...
->
-> np can (and will) be NULL here. See of_clk_set_defaults().
+> 
+>>> There was a similar issue with Intel platforms using this part, we had
+>>> to use a different HID.
+> 
+>> Is it okay if i use "AMDI1016" for ALC1015P?
+> 
+> That's valid, though obviously you might regret that later on if someone
+> releases a CODEC with a 1016 name (equally well ACPI being what it is
+> there's no good options for naming).
 
-Thanks for the report. It was reported earlier by Marek and there's a
-discussion going on about it in the thread.
-
--Saravana
+wish granted, the 1016 already exists :-)
+you may want to align with what we did for Intel and use the same HID: 
+RTL1015
