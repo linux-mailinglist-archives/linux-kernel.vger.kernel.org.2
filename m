@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5903934F2FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792BA34F300
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhC3VUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhC3VUk (ORCPT
+        id S232450AbhC3VZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:25:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34720 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232503AbhC3VZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:20:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E73DC061574;
-        Tue, 30 Mar 2021 14:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nGIouhZDUCYWUhXG6ttkQe/9Kl8gmJMxUxdH8264KVo=; b=rhrp1SxlUOXQVkBAatku9ZeQaD
-        UF7YnSaF5xAgKOeSuK03fVKOS3StQ5eGvKvheN3brOwjXzEYNGgEpLsRIsOurmCTqo3dje9wSy0NI
-        q3LKxPFfgggmOjSISRMiCEt/KF0cnXWk33H3943IIa9oKpd/ZIZzgJicrv8hvEqsJcEBeH7fh4qxl
-        Oth16IXUdRaoIn8MHuYfEb8U8oSjxkhMVtA9NezZSbOxeJe6oRoqlHHS5sDPpxLCUHQzsEEmLbAWz
-        cJ0oRedqRswhSdGxEaVeHkvOzSMnU5KfhlKQO0ArFR7NQL16M7wvwW0vJ8gS5cm5xiYqXYlJUYV1G
-        As213jUg==;
-Received: from [2601:1c0:6280:3f0::4557]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRLmZ-003ckU-Qs; Tue, 30 Mar 2021 21:20:19 +0000
-Subject: Re: [PATCH] x86/sgx: fix incorrect kernel-doc comment syntax in files
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-sgx@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org
-References: <20210330211813.28030-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2449c5b6-852f-4e8e-6d71-3308938b12e0@infradead.org>
-Date:   Tue, 30 Mar 2021 14:20:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210330211813.28030-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 30 Mar 2021 17:25:26 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UL4537075355;
+        Tue, 30 Mar 2021 17:25:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=WGevOUYeABgQK1oYMwEC64xDN3lnfAnxL1yOftiflwk=;
+ b=dEj3I4gzgDKIccVgIPxbbRTWik5bdTPS1SwnipFIJTrRpDcTZESZUyCuoAzq8fdnnB8l
+ LnLeU6QU3RpkrgPwPQ85g/BcKuEb5hQAxqg6/dgA3o2z/o+W9BWItrYKEQ/tuO3pxUh3
+ Hgn5SEx8LVRQw3KAxJ3bOXqTvIv3A93HJxzhoeh2Ue9CAui1fawd6LSC6XvFVcFEB7U7
+ RkcrluYWYLBsdti5BM6IwtVS8UTOm/GD6cF2u7TjtE68ZEYePsrkvfDw+KKE6fPLhM90
+ Lfll9AfFiDWLfPedwfDI2p+IJ8eLufhtBm9BtHZI80KXKBERvvUqf0JVdOa0apBDnlnW 1w== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37mb3gse6r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 17:25:19 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12ULNCLC014104;
+        Tue, 30 Mar 2021 21:25:18 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01wdc.us.ibm.com with ESMTP id 37mav9gbwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 21:25:18 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12ULPH6W18678056
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 21:25:17 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4915C7805C;
+        Tue, 30 Mar 2021 21:25:17 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10DFA7805F;
+        Tue, 30 Mar 2021 21:25:15 +0000 (GMT)
+Received: from LAPTOP-E35P3CCB.rch.stglabs.ibm.com (unknown [9.65.217.212])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 30 Mar 2021 21:25:15 +0000 (GMT)
+From:   Brad Warrum <bwarrum@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Steven Royer <seroyer@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] MAINTAINERS: Update entry for ibmvmc driver
+Date:   Tue, 30 Mar 2021 16:22:38 -0500
+Message-Id: <20210330212238.2747-1-bwarrum@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vago9kDTWCfZYX3cwXsx_cUXQ375olaw
+X-Proofpoint-GUID: vago9kDTWCfZYX3cwXsx_cUXQ375olaw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-30_12:2021-03-30,2021-03-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 adultscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103300000 definitions=main-2103300154
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 2:18 PM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> There are certain files in arch/x86/kernel/cpu/sgx, which follow this
-> syntax, but the content inside does not comply with kernel-doc.
-> Such lines were probably not meant for kernel-doc parsing, but are parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warnings from kernel-doc.
-> 
-> E.g., presence of kernel-doc like comment in the header lines for
-> arch/x86/kernel/cpu/sgx/encl.h causes this warning:
-> "warning: expecting prototype for 2016(). Prototype was for _X86_ENCL_H() instead"
-> 
-> Similarly for arch/x86/kernel/cpu/sgx/arch.h too.
-> 
-> Provide a simple fix by replacing these occurrences with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Steve Royer has moved on to a different project and has asked
+that Ritu and I take over maintainership of the IBM Power
+Virtual Management Channel Driver.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Brad Warrum <bwarrum@linux.ibm.com>
+---
+ MAINTAINERS | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> ---
-> * Applies perfectly on next-20210326
-> 
->  arch/x86/kernel/cpu/sgx/arch.h | 2 +-
->  arch/x86/kernel/cpu/sgx/encl.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/kernel/cpu/sgx/arch.h
-> index 26315bea1cb4..70b84bbdaa1d 100644
-> --- a/arch/x86/kernel/cpu/sgx/arch.h
-> +++ b/arch/x86/kernel/cpu/sgx/arch.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/**
-> +/*
->   * Copyright(c) 2016-20 Intel Corporation.
->   *
->   * Contains data structures defined by the SGX architecture.  Data structures
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-> index d8d30ccbef4c..76b9bc1c5c30 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/**
-> +/*
->   * Copyright(c) 2016-20 Intel Corporation.
->   *
->   * Contains the software defined data structures for enclaves.
-> 
-
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6e91994b8d3b..d9fb56b544c6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8544,7 +8544,8 @@ S:	Supported
+ F:	drivers/scsi/ibmvscsi/ibmvfc*
+ 
+ IBM Power Virtual Management Channel Driver
+-M:	Steven Royer <seroyer@linux.ibm.com>
++M:	Brad Warrum <bwarrum@linux.ibm.com>
++M:	Ritu Agarwal <rituagar@linux.ibm.com>
+ S:	Supported
+ F:	drivers/misc/ibmvmc.*
+ 
 -- 
-~Randy
+2.17.1
 
