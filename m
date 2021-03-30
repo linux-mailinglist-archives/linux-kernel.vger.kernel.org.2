@@ -2,118 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECBA34ECE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BB334ECE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhC3Pth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:49:37 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:60125 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231622AbhC3PtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:49:22 -0400
-Received: (qmail 980943 invoked by uid 1000); 30 Mar 2021 11:49:21 -0400
-Date:   Tue, 30 Mar 2021 11:49:21 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] usb: Iterator for ports
-Message-ID: <20210330154921.GC980260@rowland.harvard.edu>
-References: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
- <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
- <20210329184946.GA944482@rowland.harvard.edu>
- <YGLqV4nB/lPS1AOF@kuha.fi.intel.com>
+        id S231622AbhC3PuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:50:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64711 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231991AbhC3PuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:50:07 -0400
+IronPort-SDR: YfAp4jE1+IsYs29iGbHnZKqjMCwK9qyVlPUHLFaHWT4CHRjB1vEf/Az31EJrbPry/WxG43J6bg
+ 1M+SGtHQtW/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="189553510"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="189553510"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:50:06 -0700
+IronPort-SDR: 41/9bI8WUCMUw1VAww60kVAXSnK+BEjNveSFmjwH6T3dAKa+HUb7txo1YTLEHj3EZNztQFi7U0
+ /0jbNrBIBmEA==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="445200586"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:50:00 -0700
+Received: by lahna (sSMTP sendmail emulation); Tue, 30 Mar 2021 18:49:57 +0300
+Date:   Tue, 30 Mar 2021 18:49:57 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Angela Czubak <acz@semihalf.com>, akpm@linux-foundation.org,
+        john.garry@huawei.com, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com, dtor@chromium.org,
+        linux-acpi <linux-acpi@intel.com>, rafael@kernel.org
+Subject: Re: [PATCH] resource: Prevent irqresource_disabled() from erasing
+ flags
+Message-ID: <20210330154957.GU2542@lahna.fi.intel.com>
+References: <20210329195238.9455-1-acz@semihalf.com>
+ <1c086b9e-d5c2-6e8d-1d81-748935b0dd64@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YGLqV4nB/lPS1AOF@kuha.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c086b9e-d5c2-6e8d-1d81-748935b0dd64@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:07:35PM +0300, Heikki Krogerus wrote:
-> On Mon, Mar 29, 2021 at 02:49:46PM -0400, Alan Stern wrote:
-> > On Mon, Mar 29, 2021 at 11:44:25AM +0300, Heikki Krogerus wrote:
-> > > Introducing usb_for_each_port(). It works the same way as
-> > > usb_for_each_dev(), but instead of going through every USB
-> > > device in the system, it walks through the USB ports in the
-> > > system.
-> > > 
-> > > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > ---
-> > >  drivers/usb/core/usb.c | 46 ++++++++++++++++++++++++++++++++++++++++++
-> > >  include/linux/usb.h    |  1 +
-> > >  2 files changed, 47 insertions(+)
-> > > 
-> > > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> > > index 2ce3667ec6fae..62368c4ed37af 100644
-> > > --- a/drivers/usb/core/usb.c
-> > > +++ b/drivers/usb/core/usb.c
-> > > @@ -398,6 +398,52 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(usb_for_each_dev);
-> > >  
-> > > +struct each_hub_arg {
-> > > +	void *data;
-> > > +	int (*fn)(struct device *, void *);
-> > > +};
-> > > +
-> > > +static int __each_hub(struct usb_device *hdev, void *data)
-> > > +{
-> > > +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
-> > > +	struct usb_hub *hub;
-> > > +	int ret = 0;
-> > > +	int i;
-> > > +
-> > > +	hub = usb_hub_to_struct_hub(hdev);
-> > > +	if (!hub)
-> > > +		return 0;
+Hi,
+
+On Tue, Mar 30, 2021 at 05:09:42PM +0200, Rafael J. Wysocki wrote:
+> On 3/29/2021 9:52 PM, Angela Czubak wrote:
+> > Do not overwrite flags as it leads to erasing triggering and polarity
+> > information which might be useful in case of hard-coded interrupts.
+> > This way the information can be read later on even though mapping to
+> > APIC domain failed.
 > > 
-> > What happens if the hub is removed exactly now?  Although hdev is 
-> > reference-counted (and the loop iterator does take a reference to it), 
-> > usb_hub_to_struct_hub doesn't take a reference to hub.  And hub->ports 
-> > isn't refcounted at all.
-> 
-> If the hub is removed right now, and if hub_disconnect() also manages
-> to remove the ports before we have time to take the lock below, then
-> hdev->maxchild will be 0 by the time we can take the lock. In that
-> case nothing happens here.
-
-Okay, good.
-
-> If on the other hand we manage to acquire the usb_port_peer_mutex
-> before hub_disconnect(), then hub_disconnect() will simply have to
-> wait until we are done, and only after that remove the ports.
-> 
-> > > +	mutex_lock(&usb_port_peer_mutex);
-> > > +
-> > > +	for (i = 0; i < hdev->maxchild; i++) {
-> > > +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
-> > > +		if (ret)
-> > > +			break;
-> > > +	}
-> > > +
-> > > +	mutex_unlock(&usb_port_peer_mutex);
+> > Signed-off-by: Angela Czubak <acz@semihalf.com>
+> > ---
+> > Some Chromebooks use hard-coded interrupts in their ACPI tables.
+> > This is an excerpt as dumped on Relm:
 > > 
-> > I have a feeling that it would be better to take and release this mutex 
-> > in usb_for_each_port (or its caller), so that it is held over the whole 
-> > loop.
+> > ...
+> >              Name (_HID, "ELAN0001")  // _HID: Hardware ID
+> >              Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
+> >              Name (_UID, 0x05)  // _UID: Unique ID
+> >              Name (ISTP, Zero)
+> >              Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+> >              {
+> >                  Name (BUF0, ResourceTemplate ()
+> >                  {
+> >                      I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
+> >                          AddressingMode7Bit, "\\_SB.I2C1",
+> >                          0x00, ResourceConsumer, , Exclusive,
+> >                          )
+> >                      Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
+> >                      {
+> >                          0x000000B8,
+> >                      }
+> >                  })
+> >                  Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */
+> >              }
+> > ...
+> > 
+> > This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
+> > to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
+> > fails and irqresource_disabled() is issued, which leads to erasing triggering
+> > and polarity information.
+> > If that function added its flags instead of overwriting them the correct IRQ
+> > type would be set even for the hard-coded interrupts, which allows device driver
+> > to retrieve it.
+> > Please, let me know if this kind of modification is acceptable.
 > 
-> I disagree. The lock is for the ports, not the hubs. We should take
-> the lock when we are going through the ports of a hub, but release it
-> between the hubs. Otherwise we will be only keeping things on hold for
-> a long period of time for no good reason (I for example have to
-> evaluate the _PLD of every single port which takes a lot of time). We
-> don't need to prevent other things from happening to the hubs at the
-> same time.
+> From the quick look it should not be problematic, but it needs to be checked
+> more carefully.
+> 
+> Mika, what do you think?
 
-All right, you convinced me.
+I think it makes sense. We still set IORESOURCE_DISABLED unconditionally
+so this should not cause issues. In theory at least :)
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-
-Alan Stern
+> >   include/linux/ioport.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+> > index 55de385c839cf..647744d8514e0 100644
+> > --- a/include/linux/ioport.h
+> > +++ b/include/linux/ioport.h
+> > @@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
+> >   {
+> >   	res->start = irq;
+> >   	res->end = irq;
+> > -	res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
+> > +	res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
+> >   }
+> >   extern struct address_space *iomem_get_mapping(void);
+> 
