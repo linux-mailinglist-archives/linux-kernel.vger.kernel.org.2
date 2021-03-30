@@ -2,147 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D4C34E13C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BF834E176
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhC3G2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:28:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45464 "EHLO mail.kernel.org"
+        id S231224AbhC3GrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:47:16 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:35286 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhC3G2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F09B61989;
-        Tue, 30 Mar 2021 06:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617085684;
-        bh=nayM5SKcKbHhEUcOm1Bpv22PdU7DGZfI45+sXYoCtTE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IMv2XD/wEsVjpGtT55oa1LNc8j8RhbdTKjnNQ5KxitgKHLKqBILXoWrnh+x6ttIrA
-         q1J2ephhR/I+5tbpOWeMuB3USIbVJVtaYngvXciiXFf9EoW5AJMfUlYa/upofTvij7
-         92BAKbaWUOLgdgyBp9vx8sTXcXC0m/FMahnH8oTzjzNcv1QNpGPFX9wB24ghUbUrxV
-         uJNCGihskGr9rgMAHL/U1Ix6m5+kb2J5EeEygcWzA+S9GwRcZlNAr1DH4PD2CXYBx1
-         wW2pFlV8bEtbCUoixFLJ4Wcl7LC7ClMjMpphge7lJj98NFp7lmQEnUO+ukZ6tRkNZJ
-         NT3E+9qpRLMIg==
-Received: by mail-lf1-f50.google.com with SMTP id b4so22056122lfi.6;
-        Mon, 29 Mar 2021 23:28:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531jSTbFN7ONC7jpkr5E+86oNRWn37+Pxd4iX6hJO3EgmnZyQ63B
-        ieoSyq5ZQ4r4iq+hIY8YQTf0hu7qTOVrJ8V7CSI=
-X-Google-Smtp-Source: ABdhPJzWJhIlP8ARSkCvemMJ/FDg5buGQEms6F/qyqWvpnvopcR6D0UAUgTZIBVE9j5JQUWiWacZQWv2FbJpDMaNh5s=
-X-Received: by 2002:a05:6512:3709:: with SMTP id z9mr18100548lfr.557.1617085681939;
- Mon, 29 Mar 2021 23:28:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
- <DM6PR04MB62011884B58F1F4BD5909D308D7D9@DM6PR04MB6201.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB62011884B58F1F4BD5909D308D7D9@DM6PR04MB6201.namprd04.prod.outlook.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 30 Mar 2021 14:27:50 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT5_RnAsYuO-Co1TeURPDAvwgKZb2hRfxdxbnd0ZZL9hw@mail.gmail.com>
-Message-ID: <CAJF2gTT5_RnAsYuO-Co1TeURPDAvwgKZb2hRfxdxbnd0ZZL9hw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Anup Patel <Anup.Patel@wdc.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230463AbhC3Gq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 02:46:58 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 85BB420594F;
+        Tue, 30 Mar 2021 08:46:54 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 104332058F2;
+        Tue, 30 Mar 2021 08:46:51 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9DE5E402B0;
+        Tue, 30 Mar 2021 08:46:46 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: ak5558: Add support for ak5552
+Date:   Tue, 30 Mar 2021 14:32:51 +0800
+Message-Id: <1617085972-6094-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:54 PM Anup Patel <Anup.Patel@wdc.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Guo Ren <guoren@kernel.org>
-> > Sent: 30 March 2021 08:44
-> > To: Peter Zijlstra <peterz@infradead.org>
-> > Cc: linux-riscv <linux-riscv@lists.infradead.org>; Linux Kernel Mailing List
-> > <linux-kernel@vger.kernel.org>; linux-csky@vger.kernel.org; linux-arch
-> > <linux-arch@vger.kernel.org>; Guo Ren <guoren@linux.alibaba.com>; Will
-> > Deacon <will@kernel.org>; Ingo Molnar <mingo@redhat.com>; Waiman
-> > Long <longman@redhat.com>; Arnd Bergmann <arnd@arndb.de>; Anup
-> > Patel <anup@brainfault.org>
-> > Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
-> > ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-> >
-> > On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org>
-> > wrote:
-> > >
-> > > On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
-> > > > u32 a = 0x55aa66bb;
-> > > > u16 *ptr = &a;
-> > > >
-> > > > CPU0                       CPU1
-> > > > =========             =========
-> > > > xchg16(ptr, new)     while(1)
-> > > >                                     WRITE_ONCE(*(ptr + 1), x);
-> > > >
-> > > > When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
-> > >
-> > > Then I think your LL/SC is broken.
-> > >
-> > > That also means you really don't want to build super complex locking
-> > > primitives on top, because that live-lock will percolate through.
-> > Do you mean the below implementation has live-lock risk?
-> > +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-> > +{
-> > +       u32 old, new, val = atomic_read(&lock->val);
-> > +
-> > +       for (;;) {
-> > +               new = (val & _Q_LOCKED_PENDING_MASK) | tail;
-> > +               old = atomic_cmpxchg(&lock->val, val, new);
-> > +               if (old == val)
-> > +                       break;
-> > +
-> > +               val = old;
-> > +       }
-> > +       return old;
-> > +}
-> >
-> >
-> > >
-> > > Step 1 would be to get your architecute fixed such that it can provide
-> > > fwd progress guarantees for LL/SC. Otherwise there's absolutely no
-> > > point in building complex systems with it.
-> >
-> > Quote Waiman's comment [1] on xchg16 optimization:
-> >
-> > "This optimization is needed to make the qspinlock achieve performance
-> > parity with ticket spinlock at light load."
-> >
-> > [1] https://lore.kernel.org/kvm/1429901803-29771-6-git-send-email-
-> > Waiman.Long@hp.com/
-> >
-> > So for a non-xhg16 machine:
-> >  - ticket-lock for small numbers of CPUs
-> >  - qspinlock for large numbers of CPUs
-> >
-> > Okay, I'll put all of them into the next patch
->
-> I would suggest to have separate Kconfig opitons for ticket spinlock
-> in Linux RISC-V which will be disabled by default. This means Linux
-> RISC-V will use qspinlock by default and use ticket spinlock only when
-> ticket spinlock kconfig is enabled.
-OK
+From: Viorel Suman <viorel.suman@nxp.com>
 
->
-> Regards,
-> Anup
+AK5552 is a 32-bit 2ch ADC and has the same register
+map as AK5558.
 
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/ak5558.c | 93 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 88 insertions(+), 5 deletions(-)
 
-
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 85bdd0534180..af12afa83b4f 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -9,6 +9,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
++#include <linux/of_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+@@ -23,6 +24,11 @@
+ 
+ #include "ak5558.h"
+ 
++enum ak555x_type {
++	AK5558,
++	AK5552,
++};
++
+ #define AK5558_NUM_SUPPLIES 2
+ static const char *ak5558_supply_names[AK5558_NUM_SUPPLIES] = {
+ 	"DVDD",
+@@ -59,6 +65,15 @@ static const struct soc_enum ak5558_mono_enum[] = {
+ 			ARRAY_SIZE(mono_texts), mono_texts),
+ };
+ 
++static const char * const mono_5552_texts[] = {
++	"2 Slot", "1 Slot (Fixed)", "2 Slot", "1 Slot (Optimal)",
++};
++
++static const struct soc_enum ak5552_mono_enum[] = {
++	SOC_ENUM_SINGLE(AK5558_01_POWER_MANAGEMENT2, 1,
++			ARRAY_SIZE(mono_5552_texts), mono_5552_texts),
++};
++
+ static const char * const digfil_texts[] = {
+ 	"Sharp Roll-Off", "Show Roll-Off",
+ 	"Short Delay Sharp Roll-Off", "Short Delay Show Roll-Off",
+@@ -74,6 +89,11 @@ static const struct snd_kcontrol_new ak5558_snd_controls[] = {
+ 	SOC_ENUM("AK5558 Digital Filter", ak5558_adcset_enum[0]),
+ };
+ 
++static const struct snd_kcontrol_new ak5552_snd_controls[] = {
++	SOC_ENUM("AK5552 Monaural Mode", ak5552_mono_enum[0]),
++	SOC_ENUM("AK5552 Digital Filter", ak5558_adcset_enum[0]),
++};
++
+ static const struct snd_soc_dapm_widget ak5558_dapm_widgets[] = {
+ 	/* Analog Input */
+ 	SND_SOC_DAPM_INPUT("AIN1"),
+@@ -97,6 +117,17 @@ static const struct snd_soc_dapm_widget ak5558_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("SDTO", "Capture", 0, SND_SOC_NOPM, 0, 0),
+ };
+ 
++static const struct snd_soc_dapm_widget ak5552_dapm_widgets[] = {
++	/* Analog Input */
++	SND_SOC_DAPM_INPUT("AIN1"),
++	SND_SOC_DAPM_INPUT("AIN2"),
++
++	SND_SOC_DAPM_ADC("ADC Ch1", NULL, AK5558_00_POWER_MANAGEMENT1, 0, 0),
++	SND_SOC_DAPM_ADC("ADC Ch2", NULL, AK5558_00_POWER_MANAGEMENT1, 1, 0),
++
++	SND_SOC_DAPM_AIF_OUT("SDTO", "Capture", 0, SND_SOC_NOPM, 0, 0),
++};
++
+ static const struct snd_soc_dapm_route ak5558_intercon[] = {
+ 	{"ADC Ch1", NULL, "AIN1"},
+ 	{"SDTO", NULL, "ADC Ch1"},
+@@ -123,6 +154,14 @@ static const struct snd_soc_dapm_route ak5558_intercon[] = {
+ 	{"SDTO", NULL, "ADC Ch8"},
+ };
+ 
++static const struct snd_soc_dapm_route ak5552_intercon[] = {
++	{"ADC Ch1", NULL, "AIN1"},
++	{"SDTO", NULL, "ADC Ch1"},
++
++	{"ADC Ch2", NULL, "AIN2"},
++	{"SDTO", NULL, "ADC Ch2"},
++};
++
+ static int ak5558_set_mcki(struct snd_soc_component *component)
+ {
+ 	return snd_soc_component_update_bits(component, AK5558_02_CONTROL1, AK5558_CKS,
+@@ -267,6 +306,18 @@ static struct snd_soc_dai_driver ak5558_dai = {
+ 	.ops = &ak5558_dai_ops,
+ };
+ 
++static struct snd_soc_dai_driver ak5552_dai = {
++	.name = "ak5558-aif",
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_KNOT,
++		.formats = AK5558_FORMATS,
++	},
++	.ops = &ak5558_dai_ops,
++};
++
+ static void ak5558_power_off(struct ak5558_priv *ak5558)
+ {
+ 	if (!ak5558->reset_gpiod)
+@@ -354,6 +405,21 @@ static const struct snd_soc_component_driver soc_codec_dev_ak5558 = {
+ 	.non_legacy_dai_naming	= 1,
+ };
+ 
++static const struct snd_soc_component_driver soc_codec_dev_ak5552 = {
++	.probe			= ak5558_probe,
++	.remove			= ak5558_remove,
++	.controls		= ak5552_snd_controls,
++	.num_controls		= ARRAY_SIZE(ak5552_snd_controls),
++	.dapm_widgets		= ak5552_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ak5552_dapm_widgets),
++	.dapm_routes		= ak5552_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(ak5552_intercon),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
++
+ static const struct regmap_config ak5558_regmap = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -368,6 +434,7 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct ak5558_priv *ak5558;
+ 	int ret = 0;
++	int dev_id;
+ 	int i;
+ 
+ 	ak5558 = devm_kzalloc(&i2c->dev, sizeof(*ak5558), GFP_KERNEL);
+@@ -396,11 +463,26 @@ static int ak5558_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(&i2c->dev,
+-				     &soc_codec_dev_ak5558,
+-				     &ak5558_dai, 1);
+-	if (ret)
++	dev_id = (uintptr_t)of_device_get_match_data(&i2c->dev);
++	switch (dev_id) {
++	case AK5552:
++		ret = devm_snd_soc_register_component(&i2c->dev,
++						      &soc_codec_dev_ak5552,
++						      &ak5552_dai, 1);
++		break;
++	case AK5558:
++		ret = devm_snd_soc_register_component(&i2c->dev,
++						      &soc_codec_dev_ak5558,
++						      &ak5558_dai, 1);
++		break;
++	default:
++		dev_err(&i2c->dev, "unexpected device type\n");
++		return -EINVAL;
++	}
++	if (ret < 0) {
++		dev_err(&i2c->dev, "failed to register component: %d\n", ret);
+ 		return ret;
++	}
+ 
+ 	pm_runtime_enable(&i2c->dev);
+ 	regcache_cache_only(ak5558->regmap, true);
+@@ -416,7 +498,8 @@ static int ak5558_i2c_remove(struct i2c_client *i2c)
+ }
+ 
+ static const struct of_device_id ak5558_i2c_dt_ids[] __maybe_unused = {
+-	{ .compatible = "asahi-kasei,ak5558"},
++	{ .compatible = "asahi-kasei,ak5558", .data = (void *) AK5558 },
++	{ .compatible = "asahi-kasei,ak5552", .data = (void *) AK5552 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ak5558_i2c_dt_ids);
 -- 
-Best Regards
- Guo Ren
+2.27.0
 
-ML: https://lore.kernel.org/linux-csky/
