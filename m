@@ -2,104 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D2034EFD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D7534EF30
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhC3Rf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:35:58 -0400
-Received: from alln-iport-1.cisco.com ([173.37.142.88]:44166 "EHLO
-        alln-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhC3Rf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:35:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1151; q=dns/txt; s=iport;
-  t=1617125727; x=1618335327;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0ijngtCeHVdaxTwLB1CJ9gXZHFg+3Ll7FC+tYt3/onQ=;
-  b=li7y2ltezZOotuwwyOUotvrPz7XVAYJc038G6jI4RGALQU6EcTSNH5gs
-   kGVctT7csWEVyUC1UYKaW+GwD2pZmvq8p5Zjm6O7nxz6+TuM7Rqo8LXif
-   Gief6En+DptJ+u3CfK42c0k5x/TakQeJ0xDwyMvK6my7p4E8lWZPveZ6N
-   c=;
-X-IPAS-Result: =?us-ascii?q?A0AYAAAUYGNgmJldJa1aGwEBAQEBAQEBBQEBARIBAQEDA?=
- =?us-ascii?q?wEBAUCBPgQBAQELAYN2ATmWQQOQCBaKRRSBaAsBAQENAQE0BAEBhFACgXoCJ?=
- =?us-ascii?q?TYHDgIDAQEBAwIDAQEBAQEFAQEBAgEGBBQBAQEBAQEBAYZDhkUBAgM6PxALG?=
- =?us-ascii?q?BUZPBsGgwODCKsndYE0iQuBRBQOgRcBjUkmHIFJQoESgxw+g3mBBoUVIgSBZ?=
- =?us-ascii?q?WGBEIIEOR8UkSyCQIpMnCKDEYEjmzYxEIM4im+WG7gSAgQGBQIWgVoBMYFbM?=
- =?us-ascii?q?xoIGxWDJU8ZDY44jk8hA2cCBgoBAQMJiR8BAQ?=
-IronPort-HdrOrdr: A9a23:L439FKp7WPX8plUepRxP7I0aV5twL9V00zAX/kB9WHVpW+aT/v
- rAoN0w0xjohDENHFwhg8mHIqmcQXXanKQFhLU5F7GkQQXgpS+UPJhvhLGSoQHINiXi+odmv5
- tIXLN5DLTLYGRSrcG/2wWgFsZl/d/vytHNuc7771NACT5ncLth6QARMHf5LmRTSBNdDZQ0UL
- qwj/AnmxOadX4abtu2CxA+NoCpm/TxmJ3rehIADRI8gTPvsRqT9LX4HxKEty1xbxpzx94ZnV
- TtokjQ+rik98q20Abb0HXeq65LgcL7xsFYbfb87fQ9G3HLlhuiYphnVvmkuj04ydvfkWoCoZ
- 3rvwoqOdh15jfqWlyN5THp2wXmzV8Vmhnf9WM=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="668294645"
-Received: from rcdn-core-2.cisco.com ([173.37.93.153])
-  by alln-iport-1.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:35:26 +0000
-Received: from zorba ([10.24.8.123])
-        by rcdn-core-2.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UHZMBO032401
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 30 Mar 2021 17:35:24 GMT
-Date:   Tue, 30 Mar 2021 10:35:21 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210330173521.GT109100@zorba>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba>
- <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
- <20210325195956.GM109100@zorba>
- <20210329100750.GB3207@willie-the-truck>
+        id S232400AbhC3RRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:17:02 -0400
+Received: from mga05.intel.com ([192.55.52.43]:48516 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232265AbhC3RQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:16:51 -0400
+IronPort-SDR: g4DYjAZoAHD7ySBVs0JKYQtTKwUxp4QSdMfr9j9kuBSRVJ+psjruJ0S/dwgOUazODQLdokm/u1
+ xYJxAVw7sd7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="276991736"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="276991736"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 10:16:51 -0700
+IronPort-SDR: 9w6/7yH7gcgtSN4GQ2dkKSGGjuCPN6S8sg7WqVKFMElqtlecX6G1CH4yicdHxVbNAXaq4z1n9b
+ c8J3OyDOp8/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="445236910"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Mar 2021 10:16:50 -0700
+Subject: Re: [PATCH] firmware: stratix10-svc: extend SVC driver to get the
+ firmware version
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Richard Gong <richard.gong@intel.com>
+References: <1617114785-22211-1-git-send-email-richard.gong@linux.intel.com>
+ <1617114785-22211-2-git-send-email-richard.gong@linux.intel.com>
+ <YGNOruQFFvD0fgBb@epycbox.lan>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <5431015b-4b04-c95e-c5d5-6b28c38dc123@linux.intel.com>
+Date:   Tue, 30 Mar 2021 12:36:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329100750.GB3207@willie-the-truck>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
-X-Outbound-Node: rcdn-core-2.cisco.com
+In-Reply-To: <YGNOruQFFvD0fgBb@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:07:51AM +0100, Will Deacon wrote:
-> On Thu, Mar 25, 2021 at 12:59:56PM -0700, Daniel Walker wrote:
-> > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> > > 
-> > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> > > 
-> > > Let's only provide once CMDLINE as of today, and ask the user to select
-> > > whether he wants it appended or prepended or replacee. Then no need to
-> > > change all existing config to rename CONFIG_CMDLINE into either of the new
-> > > ones.
-> > > 
-> > > That's the main difference between my series and Daniel's series. So I'll
-> > > finish taking Will's comment into account and we'll send out a v3 soon.
-> > 
-> > It doesn't solve the needs of Cisco, I've stated many times your changes have
-> > little value. Please stop submitting them.
-> 
-> FWIW, they're useful for arm64 and I will gladly review the updated series.
-> 
-> I don't think asking people to stop submitting patches is ever the right
-> answer. Please don't do that.
 
-Why ? It's me nacking his series, is that not allowed anymore ?
+Hi Moritz,
 
-Daniel
+On 3/30/21 11:15 AM, Moritz Fischer wrote:
+> Hi Richard,
+> 
+> On Tue, Mar 30, 2021 at 09:33:05AM -0500, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Extend Intel service layer driver to get the firmware version running at
+>> FPGA device. Therefore FPGA manager driver, one of Intel service layer
+>> driver's client, can decide whether to handle the newly added bitstream
+>> authentication function based on the retrieved firmware version.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> Acked-by: Moritz Fischr <mdf@kernel.org>
+>> ---
+>>   drivers/firmware/stratix10-svc.c                    | 12 ++++++++++--
+>>   include/linux/firmware/intel/stratix10-smc.h        | 21 +++++++++++++++++++--
+>>   include/linux/firmware/intel/stratix10-svc-client.h |  4 ++++
+>>   3 files changed, 33 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+>> index 3aa489d..1443bbd 100644
+>> --- a/drivers/firmware/stratix10-svc.c
+>> +++ b/drivers/firmware/stratix10-svc.c
+>> @@ -306,6 +306,7 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
+>>   		break;
+>>   	case COMMAND_RSU_RETRY:
+>>   	case COMMAND_RSU_MAX_RETRY:
+>> +	case COMMAND_FIRMWARE_VERSION:
+>>   		cb_data->status = BIT(SVC_STATUS_OK);
+>>   		cb_data->kaddr1 = &res.a1;
+>>   		break;
+>> @@ -422,6 +423,11 @@ static int svc_normal_to_secure_thread(void *data)
+>>   			a1 = 0;
+>>   			a2 = 0;
+>>   			break;
+>> +		case COMMAND_FIRMWARE_VERSION:
+>> +			a0 = INTEL_SIP_SMC_FIRMWARE_VERSION;
+>> +			a1 = 0;
+>> +			a2 = 0;
+>> +			break;
+>>   		default:
+>>   			pr_warn("it shouldn't happen\n");
+>>   			break;
+>> @@ -487,11 +493,13 @@ static int svc_normal_to_secure_thread(void *data)
+>>   
+>>   			/*
+>>   			 * be compatible with older version firmware which
+>> -			 * doesn't support RSU notify or retry
+>> +			 * doesn't support RSU notify, retry or bitstream
+>> +			 * authentication.
+>>   			 */
+>>   			if ((pdata->command == COMMAND_RSU_RETRY) ||
+>>   			    (pdata->command == COMMAND_RSU_MAX_RETRY) ||
+>> -				(pdata->command == COMMAND_RSU_NOTIFY)) {
+>> +			    (pdata->command == COMMAND_RSU_NOTIFY) ||
+>> +			    (pdata->command == COMMAND_FIRMWARE_VERSION)) {
+>>   				cbdata->status =
+>>   					BIT(SVC_STATUS_NO_SUPPORT);
+>>   				cbdata->kaddr1 = NULL;
+>> diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
+>> index c3e5ab0..505fcca 100644
+>> --- a/include/linux/firmware/intel/stratix10-smc.h
+>> +++ b/include/linux/firmware/intel/stratix10-smc.h
+>> @@ -321,8 +321,6 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
+>>   #define INTEL_SIP_SMC_ECC_DBE \
+>>   	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_ECC_DBE)
+>>   
+>> -#endif
+>> -
+>>   /**
+>>    * Request INTEL_SIP_SMC_RSU_NOTIFY
+>>    *
+>> @@ -404,3 +402,22 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
+>>   #define INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY 18
+>>   #define INTEL_SIP_SMC_RSU_MAX_RETRY \
+>>   	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY)
+>> +
+>> +/**
+>> + * Request INTEL_SIP_SMC_FIRMWARE_VERSION
+>> + *
+>> + * Sync call used to query the version of running firmware
+>> + *
+>> + * Call register usage:
+>> + * a0 INTEL_SIP_SMC_FIRMWARE_VERSION
+>> + * a1-a7 not used
+>> + *
+>> + * Return status:
+>> + * a0 INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR
+>> + * a1 running firmware version
+>> + */
+>> +#define INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION 31
+>> +#define INTEL_SIP_SMC_FIRMWARE_VERSION \
+>> +	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION)
+>> +
+>> +#endif
+>> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+>> index 19781b0f..18c1841 100644
+>> --- a/include/linux/firmware/intel/stratix10-svc-client.h
+>> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
+>> @@ -104,6 +104,9 @@ struct stratix10_svc_chan;
+>>    *
+>>    * @COMMAND_RSU_DCMF_VERSION: query firmware for the DCMF version, return status
+>>    * is SVC_STATUS_OK or SVC_STATUS_ERROR
+>> + *
+>> + * @COMMAND_FIRMWARE_VERSION: query running firmware version, return status
+>> + * is SVC_STATUS_OK or SVC_STATUS_ERROR
+>>    */
+>>   enum stratix10_svc_command_code {
+>>   	COMMAND_NOOP = 0,
+>> @@ -117,6 +120,7 @@ enum stratix10_svc_command_code {
+>>   	COMMAND_RSU_RETRY,
+>>   	COMMAND_RSU_MAX_RETRY,
+>>   	COMMAND_RSU_DCMF_VERSION,
+>> +	COMMAND_FIRMWARE_VERSION,
+>>   };
+>>   
+>>   /**
+>> -- 
+>> 2.7.4
+>>
+> 
+> Let's hold off on this patch until we have sorted the rest of this patch
+> series out. As it stands it doesn't have a in-tree user.
+> OK,
+
+Regards,
+Richard
+
+> Thanks,
+> Moritz
+> 
