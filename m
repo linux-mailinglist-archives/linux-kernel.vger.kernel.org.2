@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E429B34EDFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BD234EE06
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhC3Qeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        id S232225AbhC3QgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhC3Qeo (ORCPT
+        with ESMTP id S232201AbhC3QgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:34:44 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6293C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:34:43 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z1so18963673edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:34:43 -0700 (PDT)
+        Tue, 30 Mar 2021 12:36:13 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F071AC061574;
+        Tue, 30 Mar 2021 09:36:12 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id k8so17057262iop.12;
+        Tue, 30 Mar 2021 09:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tb1iiWaE4NYfh8qMRuLct9CC/jvF2xlsJa5BguwsPYc=;
-        b=HmXrspowOmFkqTO6GyLVRZ/0IYeywcjYLrET9yDo3B6x+GI5nAcYaAgXkFrg2+ORlg
-         qAD3HkbBo40pWwfDlPcJwlZqoXMAr2aTPi9u+T9iN0kti+jW86OMfyjuykUHZchpVUkz
-         lAwX898XL466Le7KPtVCmwHicyyt22tXUnmKeqqYHqT5H0uJkE05lL4ktYixDB9c4tF1
-         FYx0jfcel8ZC8LQij9K3KUxuxTlgdnR6Pk7+RUTAQzLNhFltu8RtQ1J6nO/uVDTIoMgz
-         TtOIdWjw9pbxsH107tZiq0d+BpI/vR4fBTr+Wk3NaVrydjgDxsQpEgOLANaZB4vNd0N3
-         U/ow==
+         :cc:content-transfer-encoding;
+        bh=oeYjBqHc7PZBTMmBxWJLQqVGY7NmsdQtgDUEsBknHEY=;
+        b=fOmINC19Y9ovXara48by0IaM2ntvQEqUCo2suwUTHdeuAq30HWiP0fyuk7Iut1O4R7
+         1jr7uXmUkxL0tgLUEesdncOHKI+aJoQmZhxPfEdk2IXx+rU4wcJktkuUUZ25+8NtFPd3
+         66o7lSsw5mkXXKDbCiRS66aTMBiK3iHL+ucH/kilPOmK39NxpBwmCLVZTGK7H28mMTTD
+         GYVaxzkm3H/xZKUe37Gw3RiP3W9h4XhF35lTl2lUgWjVWS/5itI5gh2gBmmgwXxtVUlA
+         9hjUak1DPjzLZqP3YO/Qh0koOyJ/6LQus5ybTuypCvS7d7YsqZC0EGvNiF6UDDQSQTax
+         kS5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tb1iiWaE4NYfh8qMRuLct9CC/jvF2xlsJa5BguwsPYc=;
-        b=SPKPhL1iuczo+iIcOLrR/LGPe1cTK9qGN//wq0O5XxXNaEVeBp6RpgiAprmDV9uBz1
-         Q/xrXE9ybuWme20n5mJpnHAtY37BvsqeVM+Mg9Zuu2iaAccuJo4BH2VbFjbqauY7z260
-         h6SnNKHr2yk5UJwXoXMQEOTbY9h3I9XkNc8xKUmX6b1EoVB4Ziz4WSyLv7uIVSejIW7a
-         B2jDsSOflKD/uGLlozxc6dSC6OtL+8hu0OmIYuQt23qnOzyJ/2WCz2QilkIlLkHF0rf0
-         mEd+AdVchc0hl3eVbSz8VazgdcN/R0MSc2OrpBaS5VchcE0JhXzHXqhwUbV4bsTyNM+d
-         /tbw==
-X-Gm-Message-State: AOAM533CkoDJNgId71naAT4AqozjvfwoWhmixiMg+UC8LO7WeMu6VdfI
-        o7ADPW3XzFfnGbkbS7d96Uar9HKgfCVVMN+KzTVJVzOs
-X-Google-Smtp-Source: ABdhPJwSK0oW6GQDVlUqBmcJJcMsPvnCYbuT/7DEydBQpl73UZHju2ZhcVyexOOCFuXwNKF9/u2BnbBsYvc/va/W06M=
-X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr34909966edd.313.1617122082598;
- Tue, 30 Mar 2021 09:34:42 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oeYjBqHc7PZBTMmBxWJLQqVGY7NmsdQtgDUEsBknHEY=;
+        b=RNtsJCae9PoCKnkYWISkx+yWw5B9LhdRP1u/4PAm4KuVpcgEH3na1+46mBA+YYhXjf
+         O3Zs4J3d+XCf8KKr1hERZhrTRZrPaWOwk79QvV0ILQP09ksuMPlKXqxGEDwjap2OzA84
+         2GtzbipFLjf6iKQ1jpkJFCMp30Fj9msboK1TE+/6uscD//9uIRBRnXfcBtG+enIXSZMV
+         5ClUOik7ysNnadeiKGBVvBeLSK3I8ehGQY7Pz9FqDc5YFm+9NsBV04dax3HB6r07OqCq
+         723iAoxZTDMrDx7+33y//BPIDoT3kZyPWYLHTJwCYd6gkTAUkMuxMkwxB14weaohZ1/0
+         VUIw==
+X-Gm-Message-State: AOAM531rTbwYxsq+1rqkmZfO8zab+0go9pgPd2BbML2cXvvSKY2NSmjW
+        LgGcsejr7d237Gsh/gNi0qL6PexetI+hb2Sr+FXUBF4MHY2OlA==
+X-Google-Smtp-Source: ABdhPJyxNQ1hK/Oi+il7wYXauWWUmOq85abvhZYkrAMxGbUZZrfoWppAI82AQPjyknVOdY3yQa/gX0upGGzKVddZTCk=
+X-Received: by 2002:a5d:8707:: with SMTP id u7mr24519616iom.18.1617122172459;
+ Tue, 30 Mar 2021 09:36:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329193828.179993-1-shy828301@gmail.com> <624d1172-cdf9-ce82-aa0b-6646f3bee757@nvidia.com>
-In-Reply-To: <624d1172-cdf9-ce82-aa0b-6646f3bee757@nvidia.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 30 Mar 2021 09:34:30 -0700
-Message-ID: <CAHbLzkqWhKRaXpjkCp2JUMJ9wn3aTeCyG+3NjVZt3mDhXAE9GA@mail.gmail.com>
-Subject: Re: [PATCH] mm: gup: remove FOLL_SPLIT
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CALCv0x1NauG_13DmmzwYaRDaq3qjmvEdyi7=XzF04KR06Q=WHA@mail.gmail.com>
+ <m1wnuqhaew.fsf@fess.ebiederm.org> <CALCv0x1Wka10b-mgb1wRHW-W-qRaZOKvJ_-ptq85Hj849PFPSw@mail.gmail.com>
+ <m1blc1gxdx.fsf@fess.ebiederm.org> <CALCv0x2-Q9o7k1jhzN73nZ9F5+tcp7T8SkLKQWXW=1gLLJNegA@mail.gmail.com>
+ <m1r1kwdyo0.fsf@fess.ebiederm.org> <CALCv0x0FQN+LSUkJaSsV=MCjpFokfgHeqSTHYOTpzA6cOyvQoA@mail.gmail.com>
+ <e52b2625-8d33-c081-adeb-f92f64ca1e8e@wanyeetech.com> <CALCv0x29Dvs2R=Hg9FebGUFZpd+vN1Lzz2N6a2Zohgo47ZhsGg@mail.gmail.com>
+ <05dc921e-da71-4e71-6132-736eccd35680@wanyeetech.com> <CAHk-=whHhEQW52FYV+J68Z+OZd5tUPv=Fa_o06n9Jj5J4wJU4w@mail.gmail.com>
+In-Reply-To: <CAHk-=whHhEQW52FYV+J68Z+OZd5tUPv=Fa_o06n9Jj5J4wJU4w@mail.gmail.com>
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Date:   Tue, 30 Mar 2021 09:36:01 -0700
+Message-ID: <CALCv0x3V5kN_hU2-=XPPo=QETyQ2kSUc+4Z_=2kT7ecE5meA3w@mail.gmail.com>
+Subject: Re: exec error: BUG: Bad rss-counter
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
+On Tue, Mar 30, 2021 at 9:11 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On 3/29/21 12:38 PM, Yang Shi wrote:
-> > Since commit 5a52c9df62b4 ("uprobe: use FOLL_SPLIT_PMD instead of FOLL_SPLIT")
-> > and commit ba925fa35057 ("s390/gmap: improve THP splitting") FOLL_SPLIT
-> > has not been used anymore.  Remove the dead code.
+> On Mon, Mar 29, 2021 at 9:56 PM Zhou Yanjie <zhouyanjie@wanyeetech.com> w=
+rote:
 > >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >   include/linux/mm.h |  1 -
-> >   mm/gup.c           | 28 ++--------------------------
-> >   2 files changed, 2 insertions(+), 27 deletions(-)
+> > On 2021/3/29 =E4=B8=8A=E5=8D=8810:48, Ilya Lipnitskiy wrote:
+> > >
+> > > Try:
+> > > diff --git a/mm/memory.c b/mm/memory.c
+> > > index c8e357627318..1fd753245369 100644
+> > > --- a/mm/memory.c
+> > > +++ b/mm/memory.c
+> > > @@ -166,7 +166,7 @@ static int __init init_zero_pfn(void)
+> > >          zero_pfn =3D page_to_pfn(ZERO_PAGE(0));
+> > >          return 0;
+> > >   }
+> > > -core_initcall(init_zero_pfn);
+> > > +early_initcall(init_zero_pfn);
 > >
+> > It works, thanks!
 >
-> Looks nice.
+> Looks good to me - init_zero_pfn() can be called early, because it
+> depends on paging_init() will should have happened long before any
+> initcalls in setup_arch().
 >
-> As long as I'm running git grep here, there is one more search hit that should also
-> be fixed up, as part of a "remove FOLL_SPLIT" patch:
->
-> git grep -nw FOLL_SPLIT
-> Documentation/vm/transhuge.rst:57:follow_page, the FOLL_SPLIT bit can be specified as a parameter to
->
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Ilya, mind sending a signed-off version with a nice commit message,
+> and I'll apply it.
+Sorry, I could have done better linking it to this thread - I actually
+did submit it recently - please see
+https://lkml.kernel.org/r/20210330044208.8305-1-ilya.lipnitskiy@gmail.com
 
-Thanks. Removed the reference to FOLL_SPLIT in documentation for v2.
-
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
->
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 8ba434287387..3568836841f9 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2780,7 +2780,6 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
-> >   #define FOLL_NOWAIT 0x20    /* if a disk transfer is needed, start the IO
-> >                                * and return without waiting upon it */
-> >   #define FOLL_POPULATE       0x40    /* fault in page */
-> > -#define FOLL_SPLIT   0x80    /* don't return transhuge pages, split them */
-> >   #define FOLL_HWPOISON       0x100   /* check page is hwpoisoned */
-> >   #define FOLL_NUMA   0x200   /* force NUMA hinting page fault */
-> >   #define FOLL_MIGRATION      0x400   /* wait for page to replace migration entry */
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index e40579624f10..f3d45a8f18ae 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -435,18 +435,6 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
-> >               }
-> >       }
-> >
-> > -     if (flags & FOLL_SPLIT && PageTransCompound(page)) {
-> > -             get_page(page);
-> > -             pte_unmap_unlock(ptep, ptl);
-> > -             lock_page(page);
-> > -             ret = split_huge_page(page);
-> > -             unlock_page(page);
-> > -             put_page(page);
-> > -             if (ret)
-> > -                     return ERR_PTR(ret);
-> > -             goto retry;
-> > -     }
-> > -
-> >       /* try_grab_page() does nothing unless FOLL_GET or FOLL_PIN is set. */
-> >       if (unlikely(!try_grab_page(page, flags))) {
-> >               page = ERR_PTR(-ENOMEM);
-> > @@ -591,7 +579,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
-> >               spin_unlock(ptl);
-> >               return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-> >       }
-> > -     if (flags & (FOLL_SPLIT | FOLL_SPLIT_PMD)) {
-> > +     if (flags & FOLL_SPLIT_PMD) {
-> >               int ret;
-> >               page = pmd_page(*pmd);
-> >               if (is_huge_zero_page(page)) {
-> > @@ -600,19 +588,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
-> >                       split_huge_pmd(vma, pmd, address);
-> >                       if (pmd_trans_unstable(pmd))
-> >                               ret = -EBUSY;
-> > -             } else if (flags & FOLL_SPLIT) {
-> > -                     if (unlikely(!try_get_page(page))) {
-> > -                             spin_unlock(ptl);
-> > -                             return ERR_PTR(-ENOMEM);
-> > -                     }
-> > -                     spin_unlock(ptl);
-> > -                     lock_page(page);
-> > -                     ret = split_huge_page(page);
-> > -                     unlock_page(page);
-> > -                     put_page(page);
-> > -                     if (pmd_none(*pmd))
-> > -                             return no_page_table(vma, flags);
-> > -             } else {  /* flags & FOLL_SPLIT_PMD */
-> > +             } else {
-> >                       spin_unlock(ptl);
-> >                       split_huge_pmd(vma, pmd, address);
-> >                       ret = pte_alloc(mm, pmd) ? -ENOMEM : 0;
-> >
->
+Ilya
