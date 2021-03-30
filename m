@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A6E34E7D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC8534E7E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhC3Msi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhC3Msa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:48:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A84C061574;
-        Tue, 30 Mar 2021 05:48:29 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id s17so19735738ljc.5;
-        Tue, 30 Mar 2021 05:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=C/SEHAMdttQjA7hTIweXyWliIsCysW2EFbhutxpfmc8=;
-        b=TWscK29HM7I/ddYkmtOgngIPWJTO1qpM0RVwB79bRr9h/HZtVMEDWtNB7g+t5nHJnw
-         1eKHgE05+y4tqg4uEM/JQ6/Lf2LOR1F7EfqPbDjp2oOgAEDRdg0SBZ0AhYLWCv8DyUZK
-         0vs1q9JCtsw2D+2yQkYayxcofjRTmOtraV86dndLMm86Hl5v45xIuuD6EKVEDcBwREPr
-         UL8fwSaDMOlk4sytfubMIV5iStzNgJ3YA4MqDWZQau0mcgayOizgl6TYEWiFXl+FsY8x
-         uUOjNo4TrrNov1jnPfF2RfVnwhOjTCs4vrYsXbKUSWWOv4hbmA2xKaxWZcbBL1GXMhCm
-         gXfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=C/SEHAMdttQjA7hTIweXyWliIsCysW2EFbhutxpfmc8=;
-        b=eLjYofkWaUcjp3KdLZemqWEf3A42aevrHYVWKoN6yvVjYhoi4bxbAYx3schhmfbKJy
-         aFpkwoE8sHsbozGc9/7pmlo8PHkhL7mXobUXgrCVYb3LP14+hzen20ClADBMT5qrk2Hu
-         zYf7Une1YBWLRNI9DRuNaer9Kp2RK2FnsC/a6PF8wny/39CIvVuMRuoSdT5Ti5gmm0qF
-         9HieYaZE5Or8cg4E8rXtXg1RDbiTjc1KYX2BUZBfScW1BX/o/Ine93nvRBoKUXjmxEg/
-         ta+IHhWYMDINbyJkoSoOVxkN2JiLrVYykXFcPd38IC93K3eDPJfujJiqDYZ3WfQ1qoKa
-         qFHw==
-X-Gm-Message-State: AOAM5317NSV+5LU6YCEPAbb+s3TYR9fOWL1fhu8NV0IJaB7lZLI+KZaV
-        EBFfKrKnaRz0RarqqjuY7EA=
-X-Google-Smtp-Source: ABdhPJyX9Npm/QMJKR4GWGM6FPXPKELHcT0PzZlOHr7Xeb4lumVtKBsLPYD35g2ae2eWqtXumI9xSw==
-X-Received: by 2002:a2e:b5cd:: with SMTP id g13mr20825946ljn.372.1617108508345;
-        Tue, 30 Mar 2021 05:48:28 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.229.149])
-        by smtp.gmail.com with ESMTPSA id x29sm2267266lfn.60.2021.03.30.05.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 05:48:27 -0700 (PDT)
-Message-ID: <302c485c2209d54b88b54daa189589c76b4a66d0.camel@gmail.com>
-Subject: Re: [PATCH] wireless/nl80211.c: fix uninitialized variable
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
-Date:   Tue, 30 Mar 2021 15:48:24 +0300
-In-Reply-To: <CAM1DhOjWgN_0GVBeX+pf+9mk_ysaN9pF4agAFUNEkzhxpFR4=w@mail.gmail.com>
-References: <20210329163036.135761-1-alaaemadhossney.ae@gmail.com>
-         <YGIaaezqxNmhVcmn@kroah.com>
-         <CAM1DhOgA9DDaGSGFxKgXBONopoo4rLJZheK2jzW_BK-mJrNZKQ@mail.gmail.com>
-         <YGIjOZauy9kPwINV@kroah.com>
-         <CAM1DhOjWgN_0GVBeX+pf+9mk_ysaN9pF4agAFUNEkzhxpFR4=w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 
+        id S232042AbhC3Mtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:49:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52766 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232009AbhC3MtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:49:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617108549; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=96qHzHGoEEUmPTxHIx4FwcAj71je9EFrRv4IZ94Y4BU=;
+ b=CqyiyVK8g9Kg9ElNsOG5mhpui7p1j0/ztxQfMcU3L39/7duTm4UwTQd9qsM+FCWAAZqgx5RX
+ /wG0uGLohz9XLhatQDdYx8jg8VoudK1Pu0V7Byc8MSKwx1L10mlh/kw6Ctpmy225ZFyFmjOt
+ 7EKR2INK2/K4hHQctll25UNmn9E=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60631e2c0a4a07ffdade47ff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 12:48:44
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C1F7C43461; Tue, 30 Mar 2021 12:48:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E52CDC433C6;
+        Tue, 30 Mar 2021 12:48:43 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 30 Mar 2021 18:18:43 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
+In-Reply-To: <YGMIoM3xIZzRvU3i@kroah.com>
+References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+ <YF3jfshT3OSolcws@kroah.com>
+ <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
+ <YGLqXI8HOaOrMq1B@kroah.com>
+ <d2348b758fa57acf53885b67f066e0a1@codeaurora.org>
+ <YGMIoM3xIZzRvU3i@kroah.com>
+Message-ID: <c984ff015109ed606d2933125d385015@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On Tue, 2021-03-30 at 14:42 +0200, Alaa Emad wrote:
+On 2021-03-30 16:46, Greg Kroah-Hartman wrote:
+> On Tue, Mar 30, 2021 at 03:25:58PM +0530, Sai Prakash Ranjan wrote:
+>> On 2021-03-30 14:37, Greg Kroah-Hartman wrote:
+>> > On Tue, Mar 30, 2021 at 02:12:04PM +0530, Sandeep Maheswaram wrote:
+>> > >
+>> > > On 3/26/2021 7:07 PM, Greg Kroah-Hartman wrote:
+>> > > > On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
+>> > > > > This patch adds a shutdown callback to USB DWC core driver to ensure that
+>> > > > > it is properly shutdown in reboot/shutdown path. This is required
+>> > > > > where SMMU address translation is enabled like on SC7180
+>> > > > > SoC and few others. If the hardware is still accessing memory after
+>> > > > > SMMU translation is disabled as part of SMMU shutdown callback in
+>> > > > > system reboot or shutdown path, then IOVAs(I/O virtual address)
+>> > > > > which it was using will go on the bus as the physical addresses which
+>> > > > > might result in unknown crashes (NoC/interconnect errors).
+>> > > > >
+>> > > > > Previously this was added in dwc3 qcom glue driver.
+>> > > > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
+>> > > > > But observed kernel panic as glue driver shutdown getting called after
+>> > > > > iommu shutdown. As we are adding iommu nodes in dwc core node
+>> > > > > in device tree adding shutdown callback in core driver seems correct.
+>> > > > So shouldn't you also remove this from the qcom glue driver at the same
+>> > > > time?  Please submit both as a patch series.
+>> > > >
+>> > > > thanks,
+>> > > >
+>> > > > greg k-h
+>> > >
+>> > > Hi Greg,
+>> > >
+>> > > The qcom glue driver patch is not merged yet. I have just mentioned
+>> > > for it for reference.
+>> >
+>> > You know that we can not add callbacks for no in-kernel user, so what
+>> > good is this patch for now?
+>> >
+>> 
+>> What in-kernel user? Since when does shutdown callback need an 
+>> in-kernel
+>> user? When you reboot or shutdown a system, it gets called. The reason
+>> why the shutdown callback is needed is provided in the commit text.
 > 
-> 
-> On Mon, 29 Mar 2021 at 20:58, Greg KH <gregkh@linuxfoundation.org>
-> wrote:
-> > On Mon, Mar 29, 2021 at 08:41:38PM +0200, Alaa Emad wrote:
-> > > On Mon, 29 Mar 2021 at 20:20, Greg KH <gregkh@linuxfoundation.org>
-> > wrote:
-> > > 
-> > > > On Mon, Mar 29, 2021 at 06:30:36PM +0200, Alaa Emad wrote:
-> > > > > Reported-by:
-> > syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
-> > > > > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> > > > 
-> > > > You need to provide some changelog text here, I know I can not
-> > take
-> > > > patches without that, maybe the wireless maintainer is more
-> > flexible :)
-> > > > 
-> > >   you mean explain what i did , right?
-> > 
-> > Yes, explain why this change is needed.
-> > 
-> 
-> 
->   
->   This change fix  KMSAN uninit-value in net/wireless/nl80211.c:225 ,
-> That because of `fixedlen` variable uninitialized. 
->    So I initialized it by zero because the code assigned value to it
-> after that and doesn't depend on any stored value in it . 
+> As I can't see the patch here, I have no idea...
 
-You should add this message to the patch, not just write it to
-maintainer.
+You are replying now to the same patch which adds this shutdown callback 
+:)
+Anyways the qcom dwc3 driver patch which is abandoned which is also 
+mentioned
+in the commit text is here [1] and the new shutdown callback patch which 
+we
+are both replying to is in here [2]
 
-I think, this link might be
-useful https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html
+[1] 
+https://lore.kernel.org/lkml/1605162619-10064-1-git-send-email-sanm@codeaurora.org/
 
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> 
-> 
-> Thanks ,
-> Alaa
-> -- 
-> You received this message because you are subscribed to the Google
-> Groups "syzkaller" group.
-> To unsubscribe from this group and stop receiving emails from it, send
-> an email to syzkaller+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit
-> https://groups.google.com/d/msgid/syzkaller/CAM1DhOjWgN_0GVBeX%2Bpf%2B9mk_ysaN9pF4agAFUNEkzhxpFR4%3Dw%40mail.gmail.com
-> .
+[2] 
+https://lore.kernel.org/lkml/1616527652-7937-1-git-send-email-sanm@codeaurora.org/
 
-With regards,
-Pavel Skripkin
+Thanks,
+Sai
 
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
