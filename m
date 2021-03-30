@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A19734E5E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DE034E5F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhC3K5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:57:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231825AbhC3K44 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:56:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617101815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S231697AbhC3K7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:59:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57324 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230303AbhC3K70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 06:59:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617101964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rYqzNHiuAl/aoLjb89NUxhkCMXfILPBrl172tqHnnHE=;
-        b=CNfyjNv8F23LnMAJNDnUNFKhwn/+7qb3AMe4+LBSVke3MjdtxoflURxkmkRK1pxz29h/wa
-        vnfIkHKNay0CZroZ6iXTvyo6Xn63R2rHoOCxuLAkmRYilhPRBTOBrNjn4OI/wGtZljeK1R
-        LcBsMTqOVdAh6cAaCzlQRs3q0Qh8TMU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-QtawEJw8Mw-wLLJGoyMRlA-1; Tue, 30 Mar 2021 06:56:53 -0400
-X-MC-Unique: QtawEJw8Mw-wLLJGoyMRlA-1
-Received: by mail-ej1-f72.google.com with SMTP id mj6so7024008ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:56:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rYqzNHiuAl/aoLjb89NUxhkCMXfILPBrl172tqHnnHE=;
-        b=GMP6XX3K8bQlDaDJXQ7n/VqIzwRlLBrEuk/LJNfe60azQEUGzh7O4y3j8nRqm+Tyao
-         e3yocqjjSv6aqryI0lS4tG0VBNpu94PuE5tLrrPRotBgvli8Y3jSL73CTqyytPUZixQS
-         cWMfjY4Ba8Ts3/pseRBcF98LuUUmfwBeuzRyYd6zaX2H3CO6gXTIpbGYxW69JLM1sd3o
-         taowcmkHYGNzzV4iMHU0oIXSM2ez5uKO/plcw3c6bojYT2oWr878meTFVXJgOwWN8YKi
-         voW3+lpNVnrs3tYBabXG9C17BDfJeizx5tforhf78XrRG5pRJhY4uCLEvCP9LlzaSAPp
-         w44A==
-X-Gm-Message-State: AOAM530Y2178e9aoMCOE8cwJ+b7k05DA8DBx1kh9ZJUw17Vdgz0IYWkk
-        lvQt68ssyqaQ4g8PDlPGZBJHKX684Eh33QZVtydC1N1Z7vdshOrgSJRqwEd4WV0NAz7RtpdkvfW
-        oe0i7+oPcE/krz8duFjVBxlmo
-X-Received: by 2002:a05:6402:270e:: with SMTP id y14mr32945863edd.283.1617101812706;
-        Tue, 30 Mar 2021 03:56:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxk85EwNcCIjfgTHncBkIRpyvOFJP73cc6LgtyJnG141Ecwyc7yx0+jNJ7jYIvKmaPJ/RYKmg==
-X-Received: by 2002:a05:6402:270e:: with SMTP id y14mr32945855edd.283.1617101812562;
-        Tue, 30 Mar 2021 03:56:52 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gq9sm5631143ejb.62.2021.03.30.03.56.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 03:56:52 -0700 (PDT)
-Subject: Re: [PATCH 11/11] [RFC] drm/i915/dp: fix array overflow warning
-To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, imre.deak@intel.com
-Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Animesh Manna <animesh.manna@intel.com>,
-        Sean Paul <seanpaul@chromium.org>
-References: <20210322160253.4032422-1-arnd@kernel.org>
- <20210322160253.4032422-12-arnd@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <949db606-ac48-69ae-b0f7-b1cba6fc2d7f@redhat.com>
-Date:   Tue, 30 Mar 2021 12:56:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=qmeQCq04jT8rHPiUv6/LBiRXDPMlB3aXGtuUdtytZnk=;
+        b=li3HODFHgB9/S6azBGw7BuW78uUknYi4ocXmKFhZbr6W6SBSJ89moi2Bct3jdiNqgtIUVL
+        zb7xAfevGnBAUzJzXMb6giL32J7yimdf50q70jaNrpWD5DHROz+zbKCYb/w+TO/1l1yYL0
+        OUnPfN9/gCj4wD3kMO4ZHijf44GkbaI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 783D7B242;
+        Tue, 30 Mar 2021 10:59:24 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 12:59:23 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        peter enderborg <peter.enderborg@sony.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, kexec@lists.infradead.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sasha Levin <sashal@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        x86@kernel.org
+Subject: Re: [PATCH v2 00/12] Add build ID to stacktraces
+Message-ID: <YGMEi6i8ksa9+adD@alley>
+References: <20210324020443.1815557-1-swboyd@chromium.org>
+ <20210324085543.GA2660708@infradead.org>
+ <dbb430e1-2223-9df0-2563-4b017d6b409d@sony.com>
+ <161671450646.3012082.10177164412320557022@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210322160253.4032422-12-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <161671450646.3012082.10177164412320557022@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/22/21 5:02 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu 2021-03-25 16:21:46, Stephen Boyd wrote:
+> Quoting peter enderborg (2021-03-25 04:06:17)
+> > On 3/24/21 9:55 AM, Christoph Hellwig wrote:
+> > > On Tue, Mar 23, 2021 at 07:04:31PM -0700, Stephen Boyd wrote:
+> > >>  x5 : 0000000000000000 x4 : 0000000000000001
+> > >>  x3 : 0000000000000008 x2 : ffffff93fef25a70
+> > >>  x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+> > >>  Call trace:
+> > >>   lkdtm_WARNING+0x28/0x30 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+> > >>   direct_entry+0x16c/0x1b4 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+> > > Yikes.  No, please do not make the backtraces a complete mess for
+> > > something that serves absolutely no need.
 > 
-> gcc-11 warns that intel_dp_check_mst_status() has a local array of
-> fourteen bytes and passes the last four bytes into a function that
-> expects a six-byte array:
+> It serves a need. Please look at the patches to understand that I'm
+> adding the buildid to automatically find the associated debug
+> information on distros.
 > 
-> drivers/gpu/drm/i915/display/intel_dp.c: In function ‘intel_dp_check_mst_status’:
-> drivers/gpu/drm/i915/display/intel_dp.c:4556:22: error: ‘drm_dp_channel_eq_ok’ reading 6 bytes from a region of size 4 [-Werror=stringop-overread]
->  4556 |                     !drm_dp_channel_eq_ok(&esi[10], intel_dp->lane_count)) {
->       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/i915/display/intel_dp.c:4556:22: note: referencing argument 1 of type ‘const u8 *’ {aka ‘const unsigned char *’}
-> In file included from drivers/gpu/drm/i915/display/intel_dp.c:38:
-> include/drm/drm_dp_helper.h:1459:6: note: in a call to function ‘drm_dp_channel_eq_ok’
->  1459 | bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
->       |      ^~~~~~~~~~~~~~~~~~~~
+> > 
+> > Would a "verbose" flag be acceptable solution?��� Something like write 1 to /sys/kernel/debug/verbose_stack to get the extra info.
+> > 
+> > I think I see a need for it.
+> > 
 > 
-> Clearly something is wrong here, but I can't quite figure out what.
-> Changing the array size to 16 bytes avoids the warning, but is
-> probably the wrong solution here.
+> Or a kernel config option and a commandline parameter? That would be OK
+> for me as I said on v1 of this series. I'll add that in for the next
+> patch series given all the distaste for some more hex characters next to
+> the module name.
 
-The drm displayport-helpers indeed expect a 6 bytes buffer, but they
-usually only consume 4 bytes.
+IMHO, a build configure option would fit the best here.
 
-I don't think that changing the DP_DPRX_ESI_LEN is a good fix here,
-since it is used in multiple places, but the esi array already gets
-zero-ed out by its initializer, so we can just pass 2 extra 0 bytes
-to give drm_dp_channel_eq_ok() call the 6 byte buffer its prototype
-specifies by doing this:
+It does not make sense to show the ID when the kernel vendor does
+not have a service to download the related binaries. But it makes
+sense to show the buildid by default when the provider/distro has
+the service and want to use the ID when handling bug reports.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index 897711d9d7d3..147962d4ad06 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -4538,7 +4538,11 @@ intel_dp_check_mst_status(struct intel_dp *intel_dp)
- 	drm_WARN_ON_ONCE(&i915->drm, intel_dp->active_mst_links < 0);
- 
- 	for (;;) {
--		u8 esi[DP_DPRX_ESI_LEN] = {};
-+		/*
-+		 * drm_dp_channel_eq_ok() expects a 6 byte large buffer, but
-+		 * the ESI info only contains 4 bytes, pass 2 extra 0 bytes.
-+		 */
-+		u8 esi[DP_DPRX_ESI_LEN + 2] = {};
- 		bool handled;
- 		int retry;
- 
+We could always add boot/run time options when people really need it.
 
-So i915 devs, would such a fix be acceptable ?
-
-Regards,
-
-Hans
-
-
-
-
-
-
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 8c12d5375607..830e2515f119 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -65,7 +65,7 @@
->  #include "intel_vdsc.h"
->  #include "intel_vrr.h"
->  
-> -#define DP_DPRX_ESI_LEN 14
-> +#define DP_DPRX_ESI_LEN 16
->  
->  /* DP DSC throughput values used for slice count calculations KPixels/s */
->  #define DP_DSC_PEAK_PIXEL_RATE			2720000
-> 
-
+Best Regards,
+Petr
