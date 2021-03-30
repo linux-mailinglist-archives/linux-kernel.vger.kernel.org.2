@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E490E34E7B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374C834E7BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhC3MoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:44:19 -0400
-Received: from smtp2-2.goneo.de ([85.220.129.34]:52076 "EHLO smtp2-2.goneo.de"
+        id S232045AbhC3Mp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:45:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhC3Mnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:43:51 -0400
-Received: from [192.168.1.127] (unknown [85.16.47.255])
-        by smtp2.goneo.de (Postfix) with ESMTPSA id B700C203843D;
-        Tue, 30 Mar 2021 14:43:45 +0200 (CEST)
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210325184615.08526aed@coco.lan>
- <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
- <87tuozyslu.fsf@meer.lwn.net> <20210325191435.GZ1719932@casper.infradead.org>
- <87a6qrx7wf.fsf@meer.lwn.net> <20210325221437.GA1719932@casper.infradead.org>
- <87wntux3w7.fsf@meer.lwn.net> <20210329144204.GF351017@casper.infradead.org>
- <874kgtq079.fsf@intel.com> <20210329185843.GK351017@casper.infradead.org>
- <87tuosoov6.fsf@intel.com>
-From:   Markus Heiser <markus.heiser@darmarit.de>
-Message-ID: <0ad14d9d-5694-432a-6376-b776a4acebfa@darmarit.de>
-Date:   Tue, 30 Mar 2021 14:43:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232040AbhC3MpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:45:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32E9461957;
+        Tue, 30 Mar 2021 12:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617108323;
+        bh=CeJ4++sMVlMfilqcsFK96eYuyISeLwyu0ENP8ZyXN7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bLHylBKg9SAq4TKe8FP5QoVt3kJaqkh88UdeafDlKovJ65J7fW/srg+XhWje0q+Ky
+         qgTv38vNtFN6V1KHv9Tli1tfgRkXlQ352IxZzGEToLfF8UA3WbjjAFikZ40FPXrYiR
+         G2QkvDht/t9pjuFDGt0h3t0UWvX/8y6FNDI+IBNg=
+Date:   Tue, 30 Mar 2021 14:45:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     tanghui20 <tanghui20@huawei.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon - check if debugfs opened
+Message-ID: <YGMdYZg9b5Gta58V@kroah.com>
+References: <1616833980-11006-1-git-send-email-tanghui20@huawei.com>
+ <YGCcQnFHXEMW9Jz/@kroah.com>
+ <17d627e8-b89a-bbb8-f5d7-11210b859ac7@huawei.com>
+ <YGMYKquXSaju9H+A@kroah.com>
+ <4b3dc5bb-e6d0-4cfb-c3ca-d3b652879823@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <87tuosoov6.fsf@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b3dc5bb-e6d0-4cfb-c3ca-d3b652879823@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 30, 2021 at 08:40:07PM +0800, tanghui20 wrote:
+> 
+> 
+> On 2021/3/30 20:23, Greg KH wrote:
+> > On Tue, Mar 30, 2021 at 08:09:46PM +0800, tanghui20 wrote:
+> > > 
+> > > 
+> > > On 2021/3/28 23:09, Greg KH wrote:
+> > > > On Sat, Mar 27, 2021 at 04:33:00PM +0800, Hui Tang wrote:
+> > > > > 'xx_debugfs_init' check if debugfs opened.
+> > > > > 
+> > > > > Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> > > > > ---
+> > > > >  drivers/crypto/hisilicon/hpre/hpre_main.c | 5 ++++-
+> > > > >  drivers/crypto/hisilicon/qm.c             | 3 +++
+> > > > >  drivers/crypto/hisilicon/sec2/sec_main.c  | 5 ++++-
+> > > > >  drivers/crypto/hisilicon/zip/zip_main.c   | 3 +++
+> > > > >  4 files changed, 14 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > > > index c7ab06d..f2605c4 100644
+> > > > > --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > > > +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > > > @@ -779,6 +779,9 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
+> > > > >  	struct device *dev = &qm->pdev->dev;
+> > > > >  	int ret;
+> > > > > 
+> > > > > +	if (!debugfs_initialized())
+> > > > > +		return -ENOENT;
+> > > > 
+> > > > Why?  What does this help with?  Why does the code care if debugfs is
+> > > > running or not?
+> > > > 
+> > > When !CONFIG_DEBUG_FS, there is no problem if debugfs is not checked,
+> > > but if checking debugfs, a series of stub functions of debugfs can be
+> > > skipped and 'xx_debugfs_init' will be return immediately.
+> > 
+> > And have you measured an actual speed difference for that?  I would be
+> > amazed if you could...
+> > 
+> 
+> I think what you said makes sense.
+> I am confused when to use 'debugfs_initialized'.
 
-Am 30.03.21 um 13:35 schrieb Jani Nikula:
->> If the introduction were "/*rST" instead of "/**", would we have
->> consensus?  It gives us a path to let people intermix kernel-doc and
->> hawkmoth comments in the same file, which would be amazing.
+Never, you should not care about that at all.
 
-> If you want to allow two syntaxes for documentation comments (current
-> kernel-doc and pure reStructuredText with just the comment markers and
-> indentation removed) I think the natural first step would be to modify
-> kernel-doc the perl script to support that. It would probably even be
-> trivial.
+thanks,
 
-My 2cent: to tag the markup of the documentation, in python they
-use a variable named __docformat__ [PEP-258] / e.g.:
-
-         __docformat__ = "restructuredtext en"
-
-[PEP-258] https://www.python.org/dev/peps/pep-0258/#choice-of-docstring-format
-
- > Perhaps the bare minimum is running rustdoc first, and generating the
- > results into Sphinx static pages [1], to make them part of the
- > whole. Even if the HTML style might be different.
-
-Cross referencing will be problematic, I think.
-
-   -- Markus --
+greg k-h
