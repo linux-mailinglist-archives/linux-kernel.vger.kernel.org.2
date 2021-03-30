@@ -2,80 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A8334F40F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D3A34F414
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhC3WKt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 30 Mar 2021 18:10:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44778 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232894AbhC3WKR (ORCPT
+        id S232840AbhC3WPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231951AbhC3WPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:10:17 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-141-FmJUjqj9ObmGu4umX09xKQ-1; Tue, 30 Mar 2021 23:10:13 +0100
-X-MC-Unique: FmJUjqj9ObmGu4umX09xKQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 30 Mar 2021 23:10:13 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 30 Mar 2021 23:10:13 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/3] MIPS: uaccess: Remove get_fs/set_fs call sites
-Thread-Topic: [PATCH 2/3] MIPS: uaccess: Remove get_fs/set_fs call sites
-Thread-Index: AQHXJY0yDUIm9QRgRkmPSPWPs+HsZKqdFp4Q
-Date:   Tue, 30 Mar 2021 22:10:13 +0000
-Message-ID: <5d1aa493b9e7441194677855de560544@AcuMS.aculab.com>
-References: <20210330172702.146909-1-tsbogend@alpha.franken.de>
- <20210330172702.146909-3-tsbogend@alpha.franken.de>
- <20210330174943.GB15145@lst.de>
-In-Reply-To: <20210330174943.GB15145@lst.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 30 Mar 2021 18:15:14 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A33C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id t18so8474768pjs.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CEJVo99ddrzFsx+Y7vim0XaXbjg0vh0wW249qitilJc=;
+        b=meUgQ8XuuGX2w/BSIG4Hz4EF7XC9+2efqf9gHbw/McANGT1S0Z0TwooXm0EwVoeeC9
+         VE8+hDP4ClO6laZGUWRq3SVtNUY/kdGhkrNvjHfnz4qTguvnPvdB9sio+aLJYHTz63na
+         0F//yTUTwk/POk31IhOjDpQm/II1tGnLMgLPg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CEJVo99ddrzFsx+Y7vim0XaXbjg0vh0wW249qitilJc=;
+        b=cxn/Irm8EqX8UJ9s6toEUruFrIf6B1aSFyW4YYjWf4pSdcDeqPFmDQ3DcbGgSvRppj
+         pYtIBN/Rm0ABylagetFdP7qphp4RMAPRgoZYWl5/k11tZ16tx62+c6ySL5dSEkVSkbg7
+         LF6Sq4l/iLQAxy5F/q4eROYuxnzUVIiiUN0y5gs1H1cgVnOVy3DLJVZXSiycWVXSUnDo
+         YVa9/A5E+nPgH/8F2aE9QIOiCc62yMXjN2yznWB0fgs0cX3LkueNW72bHD87yZaXFHCJ
+         kwYQ0x7nt2j9XLYJibhVv3yhlEKPgI43jmiP4/QIKstqZqDCUmMfkxwUEWuDy1PiN3iT
+         VInA==
+X-Gm-Message-State: AOAM533l9sUXS+F5E+iYALUZsshhjziC5LdsFpcaDqThg8nK9kMQ7SsB
+        Dlp7nprr/P1X4tB4F9Qd/s+uTg==
+X-Google-Smtp-Source: ABdhPJwNoj3YqVLpIvr86EesTfK7j0NfYhZD74Zo1vS33U/TjjIPnrqrAU2LRkP5QexaxBFNGQ6mcQ==
+X-Received: by 2002:a17:90a:8b07:: with SMTP id y7mr439343pjn.78.1617142514280;
+        Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
+Received: from localhost (201.59.83.34.bc.googleusercontent.com. [34.83.59.201])
+        by smtp.gmail.com with UTF8SMTPSA id q66sm124518pja.27.2021.03.30.15.15.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 15:15:13 -0700 (PDT)
+From:   Fritz Koenig <frkoenig@chromium.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, tiffany.lin@mediatek.com,
+        acourbot@chromium.org
+Cc:     Fritz Koenig <frkoenig@chromium.org>
+Subject: [PATCH] media: mtk-vcodec: vdec: Reduce padding in VIDIOC_TRY_FMT
+Date:   Tue, 30 Mar 2021 22:15:06 +0000
+Message-Id: <20210330221506.2278606-1-frkoenig@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 30 March 2021 18:50
-> 
-> On Tue, Mar 30, 2021 at 07:26:59PM +0200, Thomas Bogendoerfer wrote:
-> > +#define __get_data(x, ptr, u)						\
-> > +	(((u) == true) ? __get_udata((x), (ptr), sizeof(*(ptr))) :	\
-> > +			__get_kdata((x), (ptr), sizeof(*(ptr))))
-> > +
-> 
-> I'm a little worried about exposing this in uaccess.h.  Can you
-> have local helpers insted, preferably strongly typed for their
-> specific use cases?
+If the header has been parsed or the codec is stateless
+reduce the padding of the decoded frame.
+In stateless codecs width and height are specified by
+the application.
 
-For things that aren't performance critical it may be worth
-using a structure that contains both a kernel and user address
-(one of which will be NULL) and passing the offset as a separate
-parameter.
+Signed-off-by: Fritz Koenig <frkoenig@chromium.org>
+---
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 59 ++++++++++++-------
+ 1 file changed, 39 insertions(+), 20 deletions(-)
 
-(That might have been better for the socket option buffer.)
-
-	David
-
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+index 56d86e59421e..9c88454dc10c 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+@@ -653,7 +653,7 @@ static int vidioc_vdec_subscribe_evt(struct v4l2_fh *fh,
+ 	}
+ }
+ 
+-static int vidioc_try_fmt(struct v4l2_format *f,
++static int vidioc_try_fmt(struct v4l2_format *f, void *priv,
+ 			  const struct mtk_video_fmt *fmt)
+ {
+ 	struct v4l2_pix_format_mplane *pix_fmt_mp = &f->fmt.pix_mp;
+@@ -665,6 +665,7 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+ 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
+ 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+ 		int tmp_w, tmp_h;
++		struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
+ 
+ 		pix_fmt_mp->height = clamp(pix_fmt_mp->height,
+ 					MTK_VDEC_MIN_H,
+@@ -673,27 +674,45 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+ 					MTK_VDEC_MIN_W,
+ 					MTK_VDEC_MAX_W);
+ 
++		tmp_w = pix_fmt_mp->width;
++		tmp_h = pix_fmt_mp->height;
++
++		if (ctx->dev->vdec_pdata->uses_stateless_api ||
++			ctx->state >= MTK_STATE_HEADER) {
++			v4l_bound_align_image(&pix_fmt_mp->width,
++						MTK_VDEC_MIN_W,
++						MTK_VDEC_MAX_W, 4,
++						&pix_fmt_mp->height,
++						MTK_VDEC_MIN_H,
++						MTK_VDEC_MAX_H, 5, 6);
++
++			if (pix_fmt_mp->width < tmp_w &&
++				(pix_fmt_mp->width + 16) <= MTK_VDEC_MAX_W)
++				pix_fmt_mp->width += 16;
++			if (pix_fmt_mp->height < tmp_h &&
++				(pix_fmt_mp->height + 32) <= MTK_VDEC_MAX_H)
++				pix_fmt_mp->height += 32;
++		} else {
+ 		/*
+-		 * Find next closer width align 64, heign align 64, size align
++		 * Find next closer width align 64, height align 64, size align
+ 		 * 64 rectangle
+ 		 * Note: This only get default value, the real HW needed value
+ 		 *       only available when ctx in MTK_STATE_HEADER state
+ 		 */
+-		tmp_w = pix_fmt_mp->width;
+-		tmp_h = pix_fmt_mp->height;
+-		v4l_bound_align_image(&pix_fmt_mp->width,
+-					MTK_VDEC_MIN_W,
+-					MTK_VDEC_MAX_W, 6,
+-					&pix_fmt_mp->height,
+-					MTK_VDEC_MIN_H,
+-					MTK_VDEC_MAX_H, 6, 9);
 -
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-		if (pix_fmt_mp->width < tmp_w &&
+-			(pix_fmt_mp->width + 64) <= MTK_VDEC_MAX_W)
+-			pix_fmt_mp->width += 64;
+-		if (pix_fmt_mp->height < tmp_h &&
+-			(pix_fmt_mp->height + 64) <= MTK_VDEC_MAX_H)
+-			pix_fmt_mp->height += 64;
++			v4l_bound_align_image(&pix_fmt_mp->width,
++						MTK_VDEC_MIN_W,
++						MTK_VDEC_MAX_W, 6,
++						&pix_fmt_mp->height,
++						MTK_VDEC_MIN_H,
++						MTK_VDEC_MAX_H, 6, 9);
++
++			if (pix_fmt_mp->width < tmp_w &&
++				(pix_fmt_mp->width + 64) <= MTK_VDEC_MAX_W)
++				pix_fmt_mp->width += 64;
++			if (pix_fmt_mp->height < tmp_h &&
++				(pix_fmt_mp->height + 64) <= MTK_VDEC_MAX_H)
++				pix_fmt_mp->height += 64;
++		}
+ 
+ 		mtk_v4l2_debug(0,
+ 			"before resize width=%d, height=%d, after resize width=%d, height=%d, sizeimage=%d",
+@@ -729,7 +748,7 @@ static int vidioc_try_fmt_vid_cap_mplane(struct file *file, void *priv,
+ 		fmt = mtk_vdec_find_format(f);
+ 	}
+ 
+-	return vidioc_try_fmt(f, fmt);
++	return vidioc_try_fmt(f, priv, fmt);
+ }
+ 
+ static int vidioc_try_fmt_vid_out_mplane(struct file *file, void *priv,
+@@ -749,7 +768,7 @@ static int vidioc_try_fmt_vid_out_mplane(struct file *file, void *priv,
+ 		return -EINVAL;
+ 	}
+ 
+-	return vidioc_try_fmt(f, fmt);
++	return vidioc_try_fmt(f, priv, fmt);
+ }
+ 
+ static int vidioc_vdec_g_selection(struct file *file, void *priv,
+@@ -875,7 +894,7 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
+ 		return -EINVAL;
+ 
+ 	q_data->fmt = fmt;
+-	vidioc_try_fmt(f, q_data->fmt);
++	vidioc_try_fmt(f, priv, q_data->fmt);
+ 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+ 		q_data->sizeimage[0] = pix_mp->plane_fmt[0].sizeimage;
+ 		q_data->coded_width = pix_mp->width;
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
