@@ -2,584 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33C034E220
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5581334E226
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhC3HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:24:26 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:54424 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231430AbhC3HX4 (ORCPT
+        id S230436AbhC3H1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhC3H0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:23:56 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12U7N8ml006087;
-        Tue, 30 Mar 2021 09:23:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=4RpYS3bQohPu4twEz5+BT6akpE8YbokLzNgugBmqrfE=;
- b=ZLlbRfqohwbnJZjdih+W/EyYaBiUpdaHUXt+VqvD4jyEeRUKqtDobWDPs5r0vW7wnmsC
- Wxbk9zg308fjcvfqmodVAykz/tUyvRbOFWRb3vu8iqElla71Z3cwUV+bADRKi5K2asuu
- c4PxdhwGg+O7e4jlialZprndRTVIluiFycxyhqP0J2DRaCgyyNAkrvCXXgGJEKhOBzvf
- j6Fq59ZJ/yZB8GeTagKvmJHflWJdLLpjK+gXbKJxr2sIXwtNW3fCeMi7URCrDcJyZgxP
- BJNJZ4eryE6mbqxxEpX70g3Av5ukHCkrtUVd5hbrDd9/b57TkmhBVJqpisU/TQOUWPLn Gg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37krj722hc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Mar 2021 09:23:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5841510002A;
-        Tue, 30 Mar 2021 09:23:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4097B225FED;
-        Tue, 30 Mar 2021 09:23:41 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
- 2021 09:23:39 +0200
-Subject: Re: [PATCH v7 4/6] ARM: dts: stm32: add support for art-pi board
- based on stm32h750xbh6
-To:     <dillon.minfei@gmail.com>, <robh@kernel.org>,
-        <valentin.caron@foss.st.com>, <rong.a.chen@intel.com>,
-        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <afzal.mohd.ma@gmail.com>, <gregkh@linuxfoundation.org>,
-        <erwan.leray@foss.st.com>, <erwan.leray@st.com>,
-        <linux-serial@vger.kernel.org>, <lkp@intel.com>,
-        <patrice.chotard@foss.st.com>
-References: <1617071338-9436-1-git-send-email-dillon.minfei@gmail.com>
- <1617071338-9436-5-git-send-email-dillon.minfei@gmail.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <ada987c9-6631-18be-78c8-2246c60d5a4e@foss.st.com>
-Date:   Tue, 30 Mar 2021 09:23:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 30 Mar 2021 03:26:55 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5270AC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:26:54 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b4so22274142lfi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=af4hT6RKaQH4UftQDbKN5QPOjXiK86/wlCCe+4hZGdc=;
+        b=NUla3ScpKv1xeAWa3oYor1HqrS/QBdHFVbD97Gy2NLtpj6f7l2kc1YuVycA+6xgDsi
+         9l7wkk1VeogBBuKyQgr52c9E9XztS56+62DQeXZEzEP9oeFxv1R4pBjtUE5YXoqeUmDR
+         ygTmKi3BM6um384QWqUj1HKRFKr64dVReOWoSQ/bOlimMNzeyk8RRDcabaNIj7rZs7CH
+         04Rj9WUsZ3jLmC/of9MwmcFN+nNvknx0r5TBXUfW+EsQ459b+GxjLJbw48HFQLRgf2nR
+         0j/rJpyVkw6WltmcEO5Sa5tf3UaXGLTHPOoHlWyOe9aVBQi78oClX+hFcLSfXjnPyKj2
+         d5HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=af4hT6RKaQH4UftQDbKN5QPOjXiK86/wlCCe+4hZGdc=;
+        b=ZjwVEAT6yhaeoes4mENRtx7YWDcJRlQwNeKVAb7JhhiXweUJQSbtckjoMbnQ6/2CrE
+         ZalLNbkuG2Biy6xiXhT0IpgnAjOmokg+LG/ArcmwiOeGe6Lexo0/jA/KwldY269MfhQ6
+         B72zfxYcYVnTrx9/RntxXejTEuRoUDh5IX0bEc9nDUyn5m3Ju8PNbla7hnVxb/QeSprh
+         kXdFrGYlYfQaVZfjuEUvuNos88iDre/NE2xRAUNEp8Y5W0sJ3cKI7J2/yPmZN7cMAFGG
+         mnB2miaNntQX39HsNWXy0hy/nZeUYmw11YCMbmjltgi/aka5qXOE9FBWbwB3ajSViOxI
+         ZJYw==
+X-Gm-Message-State: AOAM531b+r9D6+Z522y3o5Tgyy9Pr+X2vDlGNgEdLNQEi1ZQqxlLBcj8
+        GEdV8dwOktpH5a6ik19kU57N2iCyZ5ydeU6QJ1BjYjQluewr3Q==
+X-Google-Smtp-Source: ABdhPJyXpKWyx5s4QOhIBteYopgz9DFHpopC0zHy2O9Ezg9gQDp3fJSR7hC5ck8fwafksnrhlZdfctLsahIPzGz4fGU=
+X-Received: by 2002:ac2:5970:: with SMTP id h16mr18009743lfp.108.1617089212472;
+ Tue, 30 Mar 2021 00:26:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617071338-9436-5-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-30_02:2021-03-26,2021-03-30 signatures=0
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com> <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de> <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
+ <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de> <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
+ <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at> <YGDpA4yPWmTWEyx+@kernel.org>
+In-Reply-To: <YGDpA4yPWmTWEyx+@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 30 Mar 2021 12:56:41 +0530
+Message-ID: <CAFA6WYPGuyg+OEYU2+FS-uom29yj4AyN5VLwm6MYpX97D0Uy0w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     David Gstir <david@sigma-star.at>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+On Mon, 29 Mar 2021 at 01:07, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Sat, Mar 27, 2021 at 01:41:24PM +0100, David Gstir wrote:
+> > Hi!
+> >
+> > > On 25.03.2021, at 06:26, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > On Wed, 24 Mar 2021 at 19:37, Ahmad Fatoum <a.fatoum@pengutronix.de> =
+wrote:
+> > >>
+> > >> Hello Sumit,
+> > >>
+> > >> On 24.03.21 11:47, Sumit Garg wrote:
+> > >>> On Wed, 24 Mar 2021 at 14:56, Ahmad Fatoum <a.fatoum@pengutronix.de=
+> wrote:
+> > >>>>
+> > >>>> Hello Mimi,
+> > >>>>
+> > >>>> On 23.03.21 19:07, Mimi Zohar wrote:
+> > >>>>> On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
+> > >>>>>> On 21.03.21 21:48, Horia Geant=C4=83 wrote:
+> > >>>>>>> caam has random number generation capabilities, so it's worth u=
+sing that
+> > >>>>>>> by implementing .get_random.
+> > >>>>>>
+> > >>>>>> If the CAAM HWRNG is already seeding the kernel RNG, why not use=
+ the kernel's?
+> > >>>>>>
+> > >>>>>> Makes for less code duplication IMO.
+> > >>>>>
+> > >>>>> Using kernel RNG, in general, for trusted keys has been discussed
+> > >>>>> before.   Please refer to Dave Safford's detailed explanation for=
+ not
+> > >>>>> using it [1].
+> > >>>>
+> > >>>> The argument seems to boil down to:
+> > >>>>
+> > >>>> - TPM RNG are known to be of good quality
+> > >>>> - Trusted keys always used it so far
+> > >>>>
+> > >>>> Both are fine by me for TPMs, but the CAAM backend is new code and=
+ neither point
+> > >>>> really applies.
+> > >>>>
+> > >>>> get_random_bytes_wait is already used for generating key material =
+elsewhere.
+> > >>>> Why shouldn't new trusted key backends be able to do the same thin=
+g?
+> > >>>>
+> > >>>
+> > >>> Please refer to documented trusted keys behaviour here [1]. New
+> > >>> trusted key backends should align to this behaviour and in your cas=
+e
+> > >>> CAAM offers HWRNG so we should be better using that.
+> > >>
+> > >> Why is it better?
+> > >>
+> > >> Can you explain what benefit a CAAM user would have if the trusted k=
+ey
+> > >> randomness comes directly out of the CAAM instead of indirectly from
+> > >> the kernel entropy pool that is seeded by it?
+> > >
+> > > IMO, user trust in case of trusted keys comes from trusted keys
+> > > backend which is CAAM here. If a user doesn't trust that CAAM would
+> > > act as a reliable source for RNG then CAAM shouldn't be used as a
+> > > trust source in the first place.
+> > >
+> > > And I think building user's trust for kernel RNG implementation with
+> > > multiple entropy contributions is pretty difficult when compared with
+> > > CAAM HWRNG implementation.
+> >
+> > Generally speaking, I=E2=80=99d say trusting the CAAM RNG and trusting =
+in it=E2=80=99s
+> > other features are two separate things. However, reading through the CA=
+AM
+> > key blob spec I=E2=80=99ve got here, CAAM key blob keys (the keys that =
+secure a blob=E2=80=99s
+> > content) are generated using its internal RNG. So I=E2=80=99d save if t=
+he CAAM RNG
+> > is insecure, so are generated key blobs. Maybe somebody with more insig=
+ht
+> > into the CAAM internals can verify that, but I don=E2=80=99t see any po=
+int in using
+> > the kernel=E2=80=99s RNG as long as we let CAAM generate the key blob k=
+eys for us.
+>
+> Here's my long'ish analysis. Please read it to the end if by ever means
+> possible, and apologies, I usually try to keep usually my comms short, bu=
+t
+> this requires some more meat than the usual.
+>
+> The Bad News
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Now that we add multiple hardware trust sources for trusted keys, will
+> there ever be a scenario where a trusted key is originally sealed with a
+> backing hardware A, unsealed, and resealed with hardware B?
+>
+> The hardware and vendor neutral way to generate the key material would be
+> unconditionally always just the kernel RNG.
+>
+> CAAM is actually worse than TCG because it's not even a standards body, i=
+f
+> I got it right. Not a lot but at least a tiny fraction.
+>
+> This brings an open item in TEE patches: trusted_tee_get_random() is an
+> issue in generating kernel material. I would rather replace that with
+> kernel RNG *for now*, because the same open question applies also to ARM
+> TEE. It's also a single company controlled backing technology.
+>
+> By all practical means, I do trust ARM TEE in my personal life but this i=
+s
+> not important.
+>
+> CAAM *and* TEE backends break the golden rule of putting as little trust =
+as
+> possible to anything, even not anything weird is clear at sight, as
+> security is essentially a game of known unknowns and unknown unknowns.
+>
+> Unfortunately, TPM trusted keys started this bad security practice, and
+> obviously it cannot be fixed without breaking uapi backwards compatibilit=
+y.
+>
+> This leaves me exactly two rational options:
+>
+> A. Add a patch to remove trusted_tee_get_random() and use kernel RNG
+>    instead.
+> B. Drop the whole TEE patch set up until I have good reasons to believe
+>    that it's the best possible idea ever to use TEE RNG.
+>
+> Doing does (A) does not disclude of doing (B) later on, if someone some
+> day sends a patch with sound reasoning.
+>
+> It's also good to understand that when some day a vendor D, other than TC=
+G,
+> CAAM or ARM, comes up, we need to go again this lenghty and messy
+> discussion. Now this already puts an already accepted patch set into a
+> risk, because by being a responsible maintainer I would have legit reason=
+s
+> just simply to drop it.
+>
+> OK, but....
+>
+> The GOOD News
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> So there's actually option (C) that also fixes the TPM trustd keys issue:
+>
+> Add a new kernel patch, which:
+>
+> 1. Adds the use of kernel RNG as a boot option.
+> 2. If this boot option is not active, the subsystem will print a warning
+>    to klog denoting this.
+> 3. Default is of course vendor RNG given the bad design issue in the TPM
+>    trusted keys, but the warning in klog will help to address it at least
+>    a bit.
+> 4. Document all this to Documentation/security/keys/trusted-encrypted.rst=
+.
+>
+> I'd prefer the choice between A, B and C be concluded rather sooner than
+> later.
 
-On 3/30/21 4:28 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> This patchset has following changes:
-> 
-> - introduce stm32h750.dtsi to support stm32h750 value line
-> - add stm32h750i-art-pi.dtb (arch/arm/boot/dts/Makefile)
-> - add dts binding usart3 for bt, uart4 for console
->    usart3/uart4 pinctrl in stm32h7-pinctrl.dtsi
->    usart3/uart4 register in stm32h743.dtsi
-> - add dts binding sdmmc2 for wifi
->    sdmmc2 pinctrl in stm32h7-pinctrl.dtsi
->    sdmmc2 register in stm32h743.dtsi
-> - add spi1 pinctrl in stm32h7-pinctrl.dtsi for spi flash
-> - add stm32h750-art-pi.dts to support art-pi board
-> - add pinctrl: pin-controller@58020000 {} to fix dtbs_check warrnings
-> 
-> art-pi board component:
-> - 8MiB qspi flash
-> - 16MiB spi flash
-> - 32MiB sdram
-> - ap6212 wifi&bt&fm
-> 
-> the detail board information can be found at:
-> https://art-pi.gitee.io/website/
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
-> v7:
-> - remove stm32h750-pinctrl.dtsi as it's has same ball out and AF mux with
->    stm32h743, so just reuse stm32h743's pinctrl.
-> - stm32h750i-art-pi.dts changes to include "stm32h743-pinctrl.dtsi"
-> 
->   arch/arm/boot/dts/Makefile              |   1 +
->   arch/arm/boot/dts/stm32h743.dtsi        | 164 ++++++++++++++++++++++-
->   arch/arm/boot/dts/stm32h750.dtsi        |   6 +
->   arch/arm/boot/dts/stm32h750i-art-pi.dts | 229 ++++++++++++++++++++++++++++++++
->   4 files changed, 398 insertions(+), 2 deletions(-)
->   create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
->   create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 8e5d4ab4e75e..a19c5ab9df84 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1071,6 +1071,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
->   	stm32746g-eval.dtb \
->   	stm32h743i-eval.dtb \
->   	stm32h743i-disco.dtb \
-> +	stm32h750i-art-pi.dtb \
->   	stm32mp153c-dhcom-drc02.dtb \
->   	stm32mp157a-avenger96.dtb \
->   	stm32mp157a-dhcor-avenger96.dtb \
-> diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
-> index 4ebffb0a45a3..a17e98648e2a 100644
-> --- a/arch/arm/boot/dts/stm32h743.dtsi
-> +++ b/arch/arm/boot/dts/stm32h743.dtsi
-> @@ -135,6 +135,22 @@
->   			clocks = <&rcc USART2_CK>;
->   		};
->   
-> +		usart3: serial@40004800 {
-> +			compatible = "st,stm32h7-uart";
-> +			reg = <0x40004800 0x400>;
-> +			interrupts = <39>;
-> +			status = "disabled";
-> +			clocks = <&rcc USART3_CK>;
-> +		};
-> +
-> +		uart4: serial@40004c00 {
-> +			compatible = "st,stm32h7-uart";
-> +			reg = <0x40004c00 0x400>;
-> +			interrupts = <52>;
-> +			status = "disabled";
-> +			clocks = <&rcc UART4_CK>;
-> +		};
-> +
->   		i2c1: i2c@40005400 {
->   			compatible = "st,stm32f7-i2c";
->   			#address-cells = <1>;
-> @@ -159,7 +175,7 @@
->   			status = "disabled";
->   		};
->   
-> -		i2c3: i2c@40005C00 {
-> +		i2c3: i2c@40005c00 {
->   			compatible = "st,stm32f7-i2c";
->   			#address-cells = <1>;
->   			#size-cells = <0>;
-> @@ -368,6 +384,20 @@
->   			max-frequency = <120000000>;
->   		};
->   
-> +		sdmmc2: mmc@48022400 {
-> +			compatible = "arm,pl18x", "arm,primecell";
-> +			arm,primecell-periphid = <0x10153180>;
-> +			reg = <0x48022400 0x400>;
-> +			interrupts = <124>;
-> +			interrupt-names	= "cmd_irq";
-> +			clocks = <&rcc SDMMC2_CK>;
-> +			clock-names = "apb_pclk";
-> +			resets = <&rcc STM32H7_AHB2_RESET(SDMMC2)>;
-> +			cap-sd-highspeed;
-> +			cap-mmc-highspeed;
-> +			max-frequency = <120000000>;
-> +		};
-> +
->   		exti: interrupt-controller@58000000 {
->   			compatible = "st,stm32h7-exti";
->   			interrupt-controller;
-> @@ -392,7 +422,7 @@
->   			status = "disabled";
->   		};
->   
-> -		i2c4: i2c@58001C00 {
-> +		i2c4: i2c@58001c00 {
->   			compatible = "st,stm32f7-i2c";
->   			#address-cells = <1>;
->   			#size-cells = <0>;
-> @@ -555,6 +585,136 @@
->   			snps,pbl = <8>;
->   			status = "disabled";
->   		};
-> +
-> +		pinctrl: pin-controller@58020000 {
+Option (C) sounds reasonable to me but I would rather prefer an info
+message rather than warning as otherwise it would reflect that we are
+enforcing kernel RNG choice for a user to trust upon.
 
-As said in my previous answer, can you do it in patch[3] please.
+-Sumit
 
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges = <0 0x58020000 0x3000>;
-> +			interrupt-parent = <&exti>;
-> +			st,syscfg = <&syscfg 0x8>;
-> +			pins-are-numbered;
-> +
-> +			gpioa: gpio@58020000 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x0 0x400>;
-> +				clocks = <&rcc GPIOA_CK>;
-> +				st,bank-name = "GPIOA";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpiob: gpio@58020400 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x400 0x400>;
-> +				clocks = <&rcc GPIOB_CK>;
-> +				st,bank-name = "GPIOB";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpioc: gpio@58020800 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x800 0x400>;
-> +				clocks = <&rcc GPIOC_CK>;
-> +				st,bank-name = "GPIOC";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpiod: gpio@58020c00 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0xc00 0x400>;
-> +				clocks = <&rcc GPIOD_CK>;
-> +				st,bank-name = "GPIOD";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpioe: gpio@58021000 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x1000 0x400>;
-> +				clocks = <&rcc GPIOE_CK>;
-> +				st,bank-name = "GPIOE";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpiof: gpio@58021400 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x1400 0x400>;
-> +				clocks = <&rcc GPIOF_CK>;
-> +				st,bank-name = "GPIOF";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpiog: gpio@58021800 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x1800 0x400>;
-> +				clocks = <&rcc GPIOG_CK>;
-> +				st,bank-name = "GPIOG";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpioh: gpio@58021c00 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x1c00 0x400>;
-> +				clocks = <&rcc GPIOH_CK>;
-> +				st,bank-name = "GPIOH";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpioi: gpio@58022000 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x2000 0x400>;
-> +				clocks = <&rcc GPIOI_CK>;
-> +				st,bank-name = "GPIOI";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpioj: gpio@58022400 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x2400 0x400>;
-> +				clocks = <&rcc GPIOJ_CK>;
-> +				st,bank-name = "GPIOJ";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +
-> +			gpiok: gpio@58022800 {
-> +				gpio-controller;
-> +				#gpio-cells = <2>;
-> +				reg = <0x2800 0x400>;
-> +				clocks = <&rcc GPIOK_CK>;
-> +				st,bank-name = "GPIOK";
-> +				interrupt-controller;
-> +				#interrupt-cells = <2>;
-> +				status = "disabled";
-> +			};
-> +		};
->   	};
->   };
->   
-> diff --git a/arch/arm/boot/dts/stm32h750.dtsi b/arch/arm/boot/dts/stm32h750.dtsi
-> new file mode 100644
-> index 000000000000..41e3b1e3a874
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/stm32h750.dtsi
-> @@ -0,0 +1,6 @@
-> +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
-> +/* Copyright (C) STMicroelectronics 2021 - All Rights Reserved */
-> +
-> +#include "stm32h743.dtsi"
-> +
-
-No need to create an empty file. Please drop it.
-
-> +
-> diff --git a/arch/arm/boot/dts/stm32h750i-art-pi.dts b/arch/arm/boot/dts/stm32h750i-art-pi.dts
-> new file mode 100644
-> index 000000000000..1d64f26f4d61
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/stm32h750i-art-pi.dts
-> @@ -0,0 +1,229 @@
-> +/*
-> + * Copyright 2021 - Dillon Min <dillon.minfei@gmail.com>
-> + *
-> + * This file is dual-licensed: you can use it either under the terms
-> + * of the GPL or the X11 license, at your option. Note that this dual
-> + * licensing only applies to this file, and not this project as a
-> + * whole.
-> + *
-> + *  a) This file is free software; you can redistribute it and/or
-> + *     modify it under the terms of the GNU General Public License as
-> + *     published by the Free Software Foundation; either version 2 of the
-> + *     License, or (at your option) any later version.
-> + *
-> + *     This file is distributed in the hope that it will be useful,
-> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *     GNU General Public License for more details.
-> + *
-> + * Or, alternatively,
-> + *
-> + *  b) Permission is hereby granted, free of charge, to any person
-> + *     obtaining a copy of this software and associated documentation
-> + *     files (the "Software"), to deal in the Software without
-> + *     restriction, including without limitation the rights to use,
-> + *     copy, modify, merge, publish, distribute, sublicense, and/or
-> + *     sell copies of the Software, and to permit persons to whom the
-> + *     Software is furnished to do so, subject to the following
-> + *     conditions:
-> + *
-> + *     The above copyright notice and this permission notice shall be
-> + *     included in all copies or substantial portions of the Software.
-> + *
-> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + *     OTHER DEALINGS IN THE SOFTWARE.
-> + *
-> + * For art-pi board resources, you can refer to link:
-> + * 	https://art-pi.gitee.io/website/
-> + */
-> +
-> +/dts-v1/;
-> +#include "stm32h750.dtsi"
-> +#include "stm32h743-pinctrl.dtsi"
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	model = "RT-Thread STM32H750i-ART-PI board";
-> +	compatible = "st,stm32h750i-art-pi", "st,stm32h750";
-> +
-> +	chosen {
-> +		bootargs = "root=/dev/ram";
-> +		stdout-path = "serial0:2000000n8";
-> +	};
-> +
-> +	memory@c0000000 {
-> +		device_type = "memory";
-> +		reg = <0xc0000000 0x2000000>;
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges;
-> +
-> +		linux,cma {
-> +			compatible = "shared-dma-pool";
-> +			no-map;
-> +			size = <0x100000>;
-> +			linux,dma-default;
-> +		};
-> +	};
-> +
-> +	aliases {
-> +		serial0 = &uart4;
-> +		serial1 = &usart3;
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		led-red {
-> +			gpios = <&gpioi 8 0>;
-> +		};
-> +		led-green {
-> +			gpios = <&gpioc 15 0>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	v3v3: regulator-v3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "v3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	wlan_pwr: regulator-wlan {
-> +		compatible = "regulator-fixed";
-> +
-> +		regulator-name = "wl-reg";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +
-> +		gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +};
-> +
-> +&clk_hse {
-> +	clock-frequency = <25000000>;
-> +};
-> +
-> +&dma1 {
-> +	status = "okay";
-> +};
-> +
-> +&dma2 {
-> +	status = "okay";
-> +};
-> +
-> +&mac {
-> +	status = "disabled";
-> +	pinctrl-0	= <&ethernet_rmii>;
-> +	pinctrl-names	= "default";
-> +	phy-mode	= "rmii";
-> +	phy-handle	= <&phy0>;
-> +
-> +	mdio0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "snps,dwmac-mdio";
-> +		phy0: ethernet-phy@0 {
-> +			reg = <0>;
-> +		};
-> +	};
-> +};
-> +
-> +&sdmmc1 {
-> +	pinctrl-names = "default", "opendrain", "sleep";
-> +	pinctrl-0 = <&sdmmc1_b4_pins_a>;
-> +	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
-> +	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
-> +	broken-cd;
-> +	st,neg-edge;
-> +	bus-width = <4>;
-> +	vmmc-supply = <&v3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&sdmmc2 {
-> +	pinctrl-names = "default", "opendrain", "sleep";
-> +	pinctrl-0 = <&sdmmc2_b4_pins_a>;
-> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
-> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
-> +	broken-cd;
-> +	non-removable;
-> +	st,neg-edge;
-> +	bus-width = <4>;
-> +	vmmc-supply = <&wlan_pwr>;
-> +	status = "okay";
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	brcmf: bcrmf@1 {
-> +		reg = <1>;
-> +		compatible = "brcm,bcm4329-fmac";
-> +	};
-> +};
-> +
-> +&spi1 {
-> +	status = "okay";
-> +	pinctrl-0 = <&spi1_pins>;
-> +	pinctrl-names = "default";
-> +	cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
-> +	dmas = <&dmamux1 37 0x400 0x05>,
-> +	       <&dmamux1 38 0x400 0x05>;
-> +	dma-names = "rx", "tx";
-> +
-> +	flash@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "winbond,w25q128", "jedec,spi-nor";
-> +		reg = <0>;
-> +		spi-max-frequency = <80000000>;
-> +
-> +		partition@0 {
-> +			label = "root filesystem";
-> +			reg = <0 0x1000000>;
-> +		};
-> +	};
-> +};
-> +
-> +&usart2 {
-> +	pinctrl-0 = <&usart2_pins>;
-> +	pinctrl-names = "default";
-> +	status = "disabled";
-> +};
-> +
-> +&usart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&usart3_pins>;
-> +	dmas = <&dmamux1 45 0x400 0x05>,
-> +	       <&dmamux1 46 0x400 0x05>;
-> +	dma-names = "rx", "tx";
-> +	st,hw-flow-ctrl;
-> +	status = "okay";
-> +
-> +	bluetooth {
-> +		compatible = "brcm,bcm43438-bt";
-> +		host-wakeup-gpios = <&gpioc 0 GPIO_ACTIVE_HIGH>;
-> +		device-wakeup-gpios = <&gpioi 10 GPIO_ACTIVE_HIGH>;
-> +		shutdown-gpios = <&gpioi 11 GPIO_ACTIVE_HIGH>;
-> +		max-speed = <115200>;
-> +	};
-> +};
-> +
-> +&uart4 {
-> +	pinctrl-0 = <&uart4_pins>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +};
-> +
-> +
-> 
+>
+> /Jarkko
