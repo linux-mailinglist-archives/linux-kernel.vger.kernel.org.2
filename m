@@ -2,110 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2237B34E534
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BA434E54C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhC3KPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S231740AbhC3KUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhC3KOx (ORCPT
+        with ESMTP id S231537AbhC3KUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:14:53 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7167FC061574;
-        Tue, 30 Mar 2021 03:14:53 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a12so2946003pfc.7;
-        Tue, 30 Mar 2021 03:14:53 -0700 (PDT)
+        Tue, 30 Mar 2021 06:20:34 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A19AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:20:33 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id k8so2228779pgf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V/FqWFnSs67qGcCEFGqG7am98bSaZbZjUwLFj3yQgog=;
-        b=khDuF+e2UuYu/nyY2Zxsnbnqhv47jLx34uo/yRN4QK2H6t+ttXEZhOrBD8rUGxgQtH
-         yGaa30NkbMvGs7tilcrtRgVmGNZtb2fXsrO0LiFioYnmhiNY92+a93ZfOMGBFc0uQhbe
-         B3QeVycVRAiHR5qa995KHYutnxDgvCI04oBHsg3YARBKMkBVOgObzGrsf7HL5gv2TzFl
-         oqUREAwz6TxMW4gyD/1ws7/t/GK+p7nVHM1BYpHz6+RaWfu9y4beFl5HN6VKsobi7zzX
-         UIOlPUBcmUSL+AF9sgOgqkIlKMVoadcsB0mPzBEjBZDcHDqFcWej0V29G37M/TaXhGpK
-         m65Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TU4CV4YLVkFbwG4kyfiazu8+2NmeG1063RTT/LGVd6w=;
+        b=0pg6UFsP/hE+myqG0q7Cv0BwoV83P31hKY44lzq2US9m0TbommXHTAt7kYU3yx+U5q
+         3TuSpxvEakTlPhIg+rmECo2YBk72hz8mDex4yNJNgZOMrWq6+Kui9Llw9SgEvaHlvXpy
+         sXgJfeRGV4Wp+gbeagkvkvYUECqRn+eVv6LTDcBK8Foh8TgwPenVSb15OLdpkUZrWuHN
+         tDyAiSX8TjCzKmkt+clyuNxagJ8Dg3fMGx90TVnwDmuB8Z/cwXqEv6wFMOfo4ENq/Hp+
+         QMS8pCd5Wi1WO9BqyYD/MZKIzhOSflUpKlVF0vSPMfP6N3QanFgIHTPnY5dt1Q+JAOrZ
+         DFlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V/FqWFnSs67qGcCEFGqG7am98bSaZbZjUwLFj3yQgog=;
-        b=XxkkbYdhc7wm8zDyWp8xr6EsnhGzEwNdzYREQ37JaLsAcBRhvFwePOaLK9YDhuLfXe
-         Kj04BrI1TqJXLGUZhiUoEepvyVqhV1+CiYUKJikde0J27mAxuMVTlIaegId8MlFtHka0
-         Y2RK7H+ypwPD8ABDuphPKIetmECVp8RR+v1JTNehWL20l927BuzMK4UNC0/Gr1N0aEPM
-         nkvCLh9c3WdVYiTQ4kEZpZVZAmu/RZou4I/6PKxnnkHLJMh4uc8yZtakOf942ExNvHFL
-         jDhVjwEilUQvfo2nzsMCizvGEhBWIh4CCwC55hd/8OS0ZgpZTFKdTb+r/F6zJh56TbQN
-         TB8w==
-X-Gm-Message-State: AOAM531wjIVvBHygL2xB0/wGX4M17a5kJMxFMrFs2hBMn/nj7HdL1Z/S
-        eP+2Vn5R9YHB0kRH8fLgq9Bmge0SH6AoP/e9HpI=
-X-Google-Smtp-Source: ABdhPJyILHEmzrLjVBkkaRHNJz9cY8t9hh5ubDELOkuJG/yLxLPEh9xv1zX8Yy2xEfobxgdNbHsAiXwFdw/fwQk6l9A=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr5652768pgm.74.1617099292871;
- Tue, 30 Mar 2021 03:14:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TU4CV4YLVkFbwG4kyfiazu8+2NmeG1063RTT/LGVd6w=;
+        b=eGZg/MVovs5GTMZIgBddDr14nTYPV5PB3Z2NvkgKFVq2BUqGh11pNC1FhbDOy6RPC/
+         kiYygCJz1T8aXYtsEyImFi45DfpDxRnHMjfp2j9Ta89bUI6TX8gs5Y7kU6CBT5a+6cBG
+         THS9sergCmmmHqec7AKz8MnlimRaADImdMbhrSP5kTdY3zK/auw3sELj5sNLZBF5+9fl
+         CN2AdjmMemOjurHmiv7FgJiAJNpubCOindE0MEcydLUxTmWKb8eE7WPbxACiE4gtJMQi
+         BtA6u091PVpzOkH2G6KtRc/bqwbCSSleAnuHWsYt3ffl4k64yh2Q7fNIi+t0oeur7ghw
+         bM/g==
+X-Gm-Message-State: AOAM531WTQ5nmARXdlkQf/kcoP9z1Kj2Qqi4bOwnsz/iIIxXybW+1+/r
+        QMvGEAn9a7TKAIO2hWebsHOQVw==
+X-Google-Smtp-Source: ABdhPJyER9cwj4Z/xC/2DKZfUBiRyk4g6KI/BsbAEu6XMj4TJnpWHTAL83PIbQsIvialX253VaTlng==
+X-Received: by 2002:a65:40c7:: with SMTP id u7mr11924136pgp.29.1617099632791;
+        Tue, 30 Mar 2021 03:20:32 -0700 (PDT)
+Received: from localhost.localdomain ([2408:8445:ad30:68d8:c87f:ca1b:dc00:4730])
+        by smtp.gmail.com with ESMTPSA id k10sm202259pfk.205.2021.03.30.03.20.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 30 Mar 2021 03:20:32 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, Muchun Song <songmuchun@bytedance.com>
+Subject: [RFC PATCH 00/15] Use obj_cgroup APIs to charge the LRU pages
+Date:   Tue, 30 Mar 2021 18:15:16 +0800
+Message-Id: <20210330101531.82752-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <cover.1616760183.git.sander@svanheule.net> <31e5a5aeb833c43c07daafcf939864497ff1c349.1616760183.git.sander@svanheule.net>
- <CAHp75Vdi06dLxJNCo4f1CA=cS1MuPwG0nEAnVqt8BRrz9bnOtw@mail.gmail.com>
- <f5059092c1d4f3a23683a2eebfa37cb739881a8a.camel@svanheule.net>
- <CAHp75VfTkfBqHc1S1aUm0Pr-=L_FNDUqkoH_x+KJgkXdZ33VAA@mail.gmail.com> <537a2becc81360f314a4293f7bb619ed2a377cb6.camel@svanheule.net>
-In-Reply-To: <537a2becc81360f314a4293f7bb619ed2a377cb6.camel@svanheule.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:14:36 +0300
-Message-ID: <CAHp75VftETTkOGx6AUvQi5s-ngo73WBdHnqsX84pCM6GAaHMyQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] gpio: Add Realtek Otto GPIO support
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bert Vermeulen <bert@biot.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 8:28 PM Sander Vanheule <sander@svanheule.net> wrote:
-> On Mon, 2021-03-29 at 13:26 +0300, Andy Shevchenko wrote:
-> > On Fri, Mar 26, 2021 at 11:11 PM Sander Vanheule <
-> > sander@svanheule.net> wrote:
+Since the following patchsets applied. All the kernel memory are charged
+with the new APIs of obj_cgroup.
 
-...
+	[v17,00/19] The new cgroup slab memory controller
+	[v5,0/7] Use obj_cgroup APIs to charge kmem pages
 
-> > AFAICS all, except one have this flag, I suggest you to do other way
-> > around, i.e. check compatible string in the code. Or do something more
-> > clever. What happens if you have this flag enabled for the fallback
-> > node?
-> >
-> > If two people ask the same, it might be a smoking gun.
-> >
->
-> Testing for the fallback wouldn't work, since of_device_is_compatible()
-> would always match. Setting the (inverse) flag only on the fallback
-> would indeed reduce the clutter.
->
-> If the port order is reversed w.r.t. to the current implementation,
-> enabling a GPIO+IRQ would enable the same pin on a different port. I
-> don't think the result would be catastrophical, but it would result in
-> unexpected behaviour. When A0 and C0 are then enabled, A0 interrupts
-> would actually come from C0, and vice versa.
->
->    Intended port | A | B | C | D
-> -----------------+---+---+---+---
-> Actual GPIO port | D | C | B | A
->  Actual IRQ port | B | A | D | C
->
-> If only the actual GPIO ports change, at least you can still use a
-> modified GPIO line number and polling. The user could just leave out
-> the optional irq-controller from the devicetree, but I would rather
-> have it enforced in some way.
+But user memory allocations (LRU pages) pinning memcgs for a long time -
+it exists at a larger scale and is causing recurring problems in the real
+world: page cache doesn't get reclaimed for a long time, or is used by the
+second, third, fourth, ... instance of the same job that was restarted into
+a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
+and make page reclaim very inefficient.
 
-OK! Thanks for clarification.
+We can convert LRU pages and most other raw memcg pins to the objcg direction
+to fix this problem, and then the LRU pages will not pin the memcgs.
+
+This patchset aims to make the LRU pages to drop the reference to memory
+cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+of the dying cgroups will not increase if we run the following test script.
+
+```bash
+#!/bin/bash
+
+cat /proc/cgroups | grep memory
+
+cd /sys/fs/cgroup/memory
+
+for i in range{1..500}
+do
+	mkdir test
+	echo $$ > test/cgroup.procs
+	sleep 60 &
+	echo $$ > cgroup.procs
+	echo `cat test/cgroup.procs` > cgroup.procs
+	rmdir test
+done
+
+cat /proc/cgroups | grep memory
+```
+
+Patch 1 aims to fix page charging in page replacement.
+Patch 2-5 are code cleanup and simplification.
+Patch 6-15 convert LRU pages pin to the objcg direction.
+
+Muchun Song (15):
+  mm: memcontrol: fix page charging in page replacement
+  mm: memcontrol: bail out early when !mm in get_mem_cgroup_from_mm
+  mm: memcontrol: remove the pgdata parameter of mem_cgroup_page_lruvec
+  mm: memcontrol: use lruvec_memcg in lruvec_holds_page_lru_lock
+  mm: memcontrol: simplify the logic of objcg pinning memcg
+  mm: memcontrol: move the objcg infrastructure out of CONFIG_MEMCG_KMEM
+  mm: memcontrol: introduce compact_lock_page_lruvec_irqsave
+  mm: memcontrol: make lruvec lock safe when the LRU pages reparented
+  mm: thp: introduce lock/unlock_split_queue{_irqsave}()
+  mm: thp: make deferred split queue lock safe when the LRU pages
+    reparented
+  mm: memcontrol: make all the callers of page_memcg() safe
+  mm: memcontrol: introduce memcg_reparent_ops
+  mm: memcontrol: use obj_cgroup APIs to charge the LRU pages
+  mm: memcontrol: rename {un}lock_page_memcg() to {un}lock_page_objcg()
+  mm: lru: add VM_BUG_ON_PAGE to lru maintenance function
+
+ Documentation/admin-guide/cgroup-v1/memory.rst |   2 +-
+ fs/buffer.c                                    |  13 +-
+ fs/fs-writeback.c                              |  23 +-
+ fs/iomap/buffered-io.c                         |   4 +-
+ include/linux/memcontrol.h                     | 197 +++++----
+ include/linux/mm_inline.h                      |   6 +
+ mm/compaction.c                                |  42 +-
+ mm/filemap.c                                   |   2 +-
+ mm/huge_memory.c                               | 175 +++++++-
+ mm/memcontrol.c                                | 578 +++++++++++++++++--------
+ mm/migrate.c                                   |   4 +
+ mm/page-writeback.c                            |  28 +-
+ mm/page_io.c                                   |   5 +-
+ mm/rmap.c                                      |  14 +-
+ mm/swap.c                                      |   7 +-
+ mm/vmscan.c                                    |   3 +-
+ mm/workingset.c                                |   2 +-
+ 17 files changed, 762 insertions(+), 343 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.11.0
+
