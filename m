@@ -2,47 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D0434E9DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1C734E9C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhC3OFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhC3OF0 (ORCPT
+        id S229633AbhC3OA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:00:26 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:32419 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231945AbhC3OAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:05:26 -0400
-X-Greylist: delayed 377 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Mar 2021 07:05:24 PDT
-Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45E1CC061574;
-        Tue, 30 Mar 2021 07:05:23 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id 9748DFF93C;
-        Tue, 30 Mar 2021 13:59:04 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 15:58:56 +0200
-From:   Max Staudt <max@enpas.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/12] i2c: icy: Constify the software node
-Message-ID: <20210330155856.3cf32fce.max@enpas.org>
-In-Reply-To: <20210329105047.51033-10-heikki.krogerus@linux.intel.com>
-References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
-        <20210329105047.51033-10-heikki.krogerus@linux.intel.com>
+        Tue, 30 Mar 2021 10:00:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617112799; x=1648648799;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=e+6jqtFQoj20JBsWq8UPo3OQgLckANKu/lmxYFx4keo=;
+  b=QdTT/eCSM7RP6DgwgfxgdJLKd3D41vuUyLZcj4GKTtJUzg+ULFMieba1
+   sCRxsLlmv0269/dYzPOs3Jg5Jfl1kiXwu20uCvknRwOVa9pOxCe6h6r2j
+   8Si0mfpffrInL5/Hw7U+mMbzHbOlSa1kZlkU41V0FsCVirl9Dx7wofaVF
+   JPT2mc1dsArrnr4qfWdjwU131AHXM1Ze/7E7LRDT/kutrgIxuGWwbJKNK
+   4ETfXRXCDAEtdjfXBMpNGP6KD3pnyeMLOdO0LhU3wJdqq6eyflXBgIeQl
+   ASTqoNxjUHuN/aZ3e9GPmKIfhvdVTlkXMGiZIuDiJeapQuEGGDi3Z1wX5
+   w==;
+IronPort-SDR: gzEjrJ7oqBzGCwd6nagMfuxvtAGgAyN1W6iBwnIxPaMSLfrzjL6siLRVpuO2numufDdnC4IoS8
+ XQce2O0/NbtaFZZ+JIDwEDVzrio+AzIm4K2cS1+qVaB6PWE9dDccdh0CISAfTRaBCVLzWKNx0v
+ EpJOQvCttsKFWWncdwb4dav/J3aCmP70M/u196PFoEOlOtYWBfGBZO1fM6Vt9/NklrQCQeNB9l
+ O4MdNj6OZtPomDEQ86LtgzmjDCwBJzf9RSJjBaU6QNJ1C5vlXfDW1s+9vIK2ckz0a+GsPOpCKt
+ KTc=
+X-IronPort-AV: E=Sophos;i="5.81,290,1610434800"; 
+   d="scan'208";a="115182180"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 06:59:59 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 30 Mar 2021 06:59:59 -0700
+Received: from den-her-m31857h.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 30 Mar 2021 06:59:56 -0700
+Message-ID: <807aa02ed3d54c2f9b31343e19df91526cc3c14e.camel@microchip.com>
+Subject: Re: [PATCH linux-next 1/1] phy: Sparx5 Eth SerDes: Use direct
+ register operations
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Date:   Tue, 30 Mar 2021 15:59:55 +0200
+In-Reply-To: <YGMo4K4b9GIUIGu8@lunn.ch>
+References: <20210329081438.558885-1-steen.hegelund@microchip.com>
+         <20210329081438.558885-2-steen.hegelund@microchip.com>
+         <YGIimz9UnVYWfcXH@lunn.ch>
+         <2356027828f1fa424751e91e478ff4bc188e7f6d.camel@microchip.com>
+         <YGMo4K4b9GIUIGu8@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This looks great, thank you for constifying this.
+Hi Andrew,
 
-Finally it's clean again, yet much more flexible than the original
-platform_data approach when I first submitted the driver.
+On Tue, 2021-03-30 at 15:34 +0200, Andrew Lunn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> > > > +static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
+> > > > +                                    struct sparx5_sd25g28_params *params)
+> > > >  {
+> > > > -     struct sparx5_serdes_regval item[] = {
+> > > 
+> > > Could you just add const here, and then it is no longer on the stack?
+> > > 
+> > >    Andrew
+> > 
+> > No it still counts against the stack even as a const structure.
+> 
+> I'm surprised. Maybe it needs static as well?
+> 
+> I'm just thinking you can get a much smaller patch if you don't need
+> to modify the table, just add additional qualifiers.
+> 
+>    Andrew
+
+
+I get your point, but the problem is that the initialization depends on the input parameters: serdes
+index, port index, media type, speed etc, so it cannot be made static, and making it const still
+uses the stack.
+
+BR
+Steen
 
 
 
-Thanks everyone for your work
-
-Max
