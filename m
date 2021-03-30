@@ -2,96 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C04634F28D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA92F34F289
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhC3UyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhC3Uxn (ORCPT
+        id S232388AbhC3Uxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:53:44 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:46880 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhC3Uxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:53:43 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC98BC061574;
-        Tue, 30 Mar 2021 13:53:41 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id s21so8396794pjq.1;
-        Tue, 30 Mar 2021 13:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=76Ftwc6j0K5A0mdhCxE35QoW2mVgwaH1Lt+VHIxvLcE=;
-        b=Xs33hE/uq+i7i05sdlY1p4nl+mEWK9rmNggt1oqffM7UMa+sAHYsFw3w9v6ReFViOK
-         PILw0yc/9qUNvp4sBCOFa9ITYvIkaAG0d2s1XrYNMhvw1djyn3hQVzq1DQQSgzg5hygY
-         HLintNu+m5cfEFGQlWFsFKpz5gNSz/fGKDlCGy+MchU71F2vpofB/34lvqUz0iIwZI4p
-         3flbBilRjtTyW3jC5V6TIpE1CxGSXIXJ5s1zSLdhR3qRKul4Zl6UiPqcEiZxnZgVgDJb
-         ji8r6U1hlxQWIbcuXXQ8fJxae/52xYDUCAaY/igmC5I9DI9RMFORgukd7ccp9fkG9oLb
-         UqIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=76Ftwc6j0K5A0mdhCxE35QoW2mVgwaH1Lt+VHIxvLcE=;
-        b=INS4+B/Saz2FCx7shpIgIgZA0DcYC4BZzQ7DCNmI7vajkJrW9wySQdqL6Zys7UacNM
-         uZrD//2dlAU1zSY3YF/sMkjbQAWpFGEO0pU5PpSmTnbSlF1Cqh3p14ecLQV8e7WjFl59
-         kTMHGuD1SvVfBGOrJZyMLvuvyC/9rDRWFCavO1C4w3eeM1/kflDy8X3JGZhFecS9SP9T
-         VmlgF2TiPSraDUWCev9DPZxTGcirOIsqzKd0B/LnBzWRHOs1KlI5uV8Q7ryR0q5spcgA
-         zL6DT/JR0sqT+QRNqyAeCMnNHFHJ7c8Qyzm4m/yRUnggrHwSxBTw7WYuq9vkRHWs9cBF
-         F4YQ==
-X-Gm-Message-State: AOAM531tGhYWegdFCm/aHR7+DHMbfoYIdnmWjhw8ZWVCpQx+4E3j+W7b
-        mnUcbH7fbI1JMe7TAfUl9u8LqO67cWHnCA==
-X-Google-Smtp-Source: ABdhPJwUjuJTIOCOPZKJifMZmhD87LnB9We54yGCEzll7ZIcimiVPqhJskN/NOLFeEebbRsY3yaCUA==
-X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr181610pjd.212.1617137620933;
-        Tue, 30 Mar 2021 13:53:40 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:d1c0:d79d:e260:a650])
-        by smtp.googlemail.com with ESMTPSA id fh19sm35622pjb.33.2021.03.30.13.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 13:53:40 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        rdunlap@infradead.org, aaro.koskinen@iki.fi, tony@atomide.com,
-        linux@armlinux.org.uk,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH] ARM: OMAP1: fix incorrect kernel-doc comment syntax in file
-Date:   Wed, 31 Mar 2021 02:23:30 +0530
-Message-Id: <20210330205330.26345-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 30 Mar 2021 16:53:35 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D759B20B5680;
+        Tue, 30 Mar 2021 13:53:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D759B20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617137615;
+        bh=1hO3MyNS8xTSnKJJ/WXMtndQnLinECt8pvApLwrBl4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RjmvaVFKrxUJHaAuSB1Bk2T/y2+uEkiMWpHr+KaMWVX3j3lpTCe1vcSAwObQsnSUY
+         npnISQGTbri6+ZirZuWnmGgbcFRUYZDmomuaqDC16IIQHz1VgXlaWYRzK4sEZO8N2s
+         O4SRPtfOVXDqf294ZGuNqwKJU1OLDEud5LIvqRoM=
+Date:   Tue, 30 Mar 2021 15:53:32 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Xingxing Su <suxingxing@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: Re: [PATCH] PCI: Don't use Printk in raw_spinlocks
+Message-ID: <20210330205332.GE4749@sequoia>
+References: <CAL_JsqKVn+e-eX+=kkSXxdwAmJUahrTdhuBKfVCXVZ8bQJ5MUw@mail.gmail.com>
+ <20200910184627.GA804924@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910184627.GA804924@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-The header for arch/arm/mach-omap1/timer.c follows this syntax, but the
-content inside does not comply with kernel-doc.
+On 2020-09-10 13:46:27, Bjorn Helgaas wrote:
+> On Thu, Sep 10, 2020 at 08:21:06AM -0600, Rob Herring wrote:
+> > On Wed, Sep 9, 2020 at 8:07 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > [+cc Mark, Florian, Rob, Scott]
+> > >
+> > > On Sat, Aug 01, 2020 at 09:25:49AM +0800, Xingxing Su wrote:
+> > > > Do not use printk in raw_spinlocks,
+> > > > it will cause BUG: Invalid wait context.
+> > > >
+> > > > The trace reported by lockdep follows.
+> > > >
+> > > > [    2.986113] =============================
+> > > > [    2.986115] [ BUG: Invalid wait context ]
+> > > > [    2.986116] 5.8.0-rc1+ #11 Not tainted
+> > > > [    2.986118] -----------------------------
+> > > > [    2.986120] swapper/0/1 is trying to lock:
+> > > > [    2.986122] ffffffff80f5ddd8 (console_owner){....}-{3:3}, at: console_unlock+0x284/0x820
+> > > > [    2.986130] other info that might help us debug this:
+> > > > [    2.986132] context-{5:5}
+> > > > [    2.986134] 3 locks held by swapper/0/1:
+> > > > [    2.986135]  #0: 98000007fa03c990 (&dev->mutex){....}-{0:0}, at: device_driver_attach+0x28/0x90
+> > > > [    2.986144]  #1: ffffffff80fb83a8 (pci_lock){....}-{2:2}, at: pci_bus_write_config_word+0x60/0xb8
+> > > > [    2.986152]  #2: ffffffff80f5ded0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x1b0/0x3b8
+> > > > [    2.986161] stack backtrace:
+> > > > [    2.986163] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1+ #11
+> > > > [    2.986164] Stack : 0000000000001d67 98000000030be9b0 0000000000000001 7b2aba74f6c4785b
+> > > > [    2.986172]         7b2aba74f6c4785b 0000000000000000 98000007f89cb438 ffffffff80e7dc80
+> > > > [    2.986181]         0000000000000001 000000000000000a 0000000000000001 0000000000000001
+> > > > [    2.986189]         ffffffff80f4e156 fffffffffffffffd ffffffff80cc2d98 fffffffff8000000
+> > > > [    2.986197]         0000000024000000 ffffffff80f40000 0000000000000000 0000000000000000
+> > > > [    2.986205]         ffffffff9500cce0 0000000000000000 ffffffff80f50000 ffffffff81546318
+> > > > [    2.986213]         ffffffff81c4c3c0 0000000000000018 ffffffffbc000000 0000000000000000
+> > > > [    2.986221]         ffffffff81340000 98000007f89c8000 98000007f89cb430 98000007f8a00000
+> > > > [    2.986229]         ffffffff806be568 0000000000000000 0000000000000000 0000000000000000
+> > > > [    2.986237]         0000000000000000 0000000000000000 ffffffff80211c1c 7b2aba74f6c4785b
+> > > > [    2.986245]         ...
+> > > > [    2.986250] Call Trace:
+> > > > [    2.986251] [<ffffffff80211c1c>] show_stack+0x9c/0x130
+> > > > [    2.986253] [<ffffffff806be568>] dump_stack+0xe8/0x150
+> > > > [    2.986255] [<ffffffff802ad408>] __lock_acquire+0x570/0x3250
+> > > > [    2.986257] [<ffffffff802abed0>] lock_acquire+0x118/0x558
+> > > > [    2.986259] [<ffffffff802be764>] console_unlock+0x2e4/0x820
+> > > > [    2.986261] [<ffffffff802c0a68>] vprintk_emit+0x1c0/0x3b8
+> > > > [    2.986263] [<ffffffff807f45a8>] dev_vprintk_emit+0x1c8/0x210
+> > > > [    2.986265] [<ffffffff807f462c>] dev_printk_emit+0x3c/0x60
+> > > > [    2.986267] [<ffffffff807f499c>] _dev_warn+0x5c/0x80
+> > > > [    2.986269] [<ffffffff806eea9c>] pci_generic_config_write32+0x154/0x160
+> > > > [    2.986271] [<ffffffff806edca4>] pci_bus_write_config_word+0x84/0xb8
+> > > > [    2.986273] [<ffffffff806f1664>] pci_setup_device+0x22c/0x768
+> > > > [    2.986275] [<ffffffff806f26a0>] pci_scan_single_device+0xc8/0x100
+> > > > [    2.986277] [<ffffffff806f2788>] pci_scan_slot+0xb0/0x178
+> > > > [    2.986279] [<ffffffff806f3ae4>] pci_scan_child_bus_extend+0x5c/0x370
+> > > > [    2.986281] [<ffffffff806f407c>] pci_scan_root_bus_bridge+0x6c/0xf0
+> > > > [    2.986283] [<ffffffff806f411c>] pci_host_probe+0x1c/0xd8
+> > > > [    2.986285] [<ffffffff807fa03c>] platform_drv_probe+0x54/0xb8
+> > > > [    2.986287] [<ffffffff807f71f8>] really_probe+0x130/0x388
+> > > > [    2.986289] [<ffffffff807f7594>] driver_probe_device+0x64/0xd8
+> > > > [    2.986291] [<ffffffff807f7844>] device_driver_attach+0x84/0x90
+> > > > [    2.986293] [<ffffffff807f7918>] __driver_attach+0xc8/0x128
+> > > > [    2.986295] [<ffffffff807f4cac>] bus_for_each_dev+0x74/0xd8
+> > > > [    2.986297] [<ffffffff807f6408>] bus_add_driver+0x170/0x250
+> > > > [    2.986299] [<ffffffff807f899c>] driver_register+0x84/0x150
+> > > > [    2.986301] [<ffffffff80200b08>] do_one_initcall+0x98/0x458
+> > > > [    2.986303] [<ffffffff810212dc>] kernel_init_freeable+0x2c0/0x36c
+> > > > [    2.986305] [<ffffffff80be7540>] kernel_init+0x10/0x128
+> > > > [    2.986307] [<ffffffff80209d44>] ret_from_kernel_thread+0x14/0x1c
+> > > >
+> > > > Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+> > > > ---
+> > > >  drivers/pci/access.c | 3 ---
+> > > >  1 file changed, 3 deletions(-)
+> > > >
+> > > > diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> > > > index 79c4a2e..b3fc164 100644
+> > > > --- a/drivers/pci/access.c
+> > > > +++ b/drivers/pci/access.c
+> > > > @@ -160,9 +160,6 @@ int pci_generic_config_write32(struct pci_bus *bus, unsigned int devfn,
+> > > >        * write happen to have any RW1C (write-one-to-clear) bits set, we
+> > > >        * just inadvertently cleared something we shouldn't have.
+> > > >        */
+> > > > -     dev_warn_ratelimited(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
+> > > > -                          size, pci_domain_nr(bus), bus->number,
+> > > > -                          PCI_SLOT(devfn), PCI_FUNC(devfn), where);
+> > >
+> > > We just changed this printk (see [1]), but I think we still have this
+> > > lockdep problem even after Mark's change.  So I guess we need another
+> > > think about this.
+> > >
+> > > Maybe we can print something when registering pci_ops that use
+> > > pci_generic_config_write32()?
+> > 
+> > That was my suggestion, but as Mark pointed out that doesn't work if
+> > pci_generic_config_write32 is wrapped (which is 4 out of 8 cases).
+> > 
+> > Also, 3 of the cases are only for the root bus (bridge). Are 32-bit
+> > writes to a bridge going to cause problems? For xgene, interestingly,
+> > with DT _write32 is needed, but for ACPI it is not (only _read32). I
+> > think xgene is practically dead though a few people still have
+> > systems, but likely xgene with DT is really dead. The ECAM case was
+> > for QCom server which is also pretty much dead. SA1100 nano-engine is
+> > really old and something only a few people have at most (Russell
+> > King). So ignoring all those, we're left with just loongson and iproc.
+> > Maybe just remove the warning?
+> 
+> Sigh, removing it sounds like the best option.
 
-This line was probably not meant for kernel-doc parsing, but is parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warning from kernel-doc:
-"warning: expecting prototype for OMAP1 Dual(). Prototype was for OMAP1610_GPTIMER1_BASE() instead"
+Hi Bjorn - Was this lockdep issue fixed in a different way than removing
+the use of printk? I'm mostly interested in reducing the RW1C warnings
+as Mark suggested here:
 
-Provide a simple fix by replacing this occurrence with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
+ https://lore.kernel.org/lkml/20200806041455.11070-1-mark.tomlinson@alliedtelesis.co.nz/
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-* Applies perfectly on next-20210326
+While thinking how best to rejuvenate that patch, I came across this
+thread in the archives and it seems like the plan shifted to completely
+removing this printk callsite to address the lockdep issue. However,
+neither patch ended up in Linus' tree nor in the current PCI tree (I
+only peeked in the next branch).
 
- arch/arm/mach-omap1/timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What's everyone's preference at this point?
 
-diff --git a/arch/arm/mach-omap1/timer.c b/arch/arm/mach-omap1/timer.c
-index 97fc2096b970..0411d5508d63 100644
---- a/arch/arm/mach-omap1/timer.c
-+++ b/arch/arm/mach-omap1/timer.c
-@@ -1,4 +1,4 @@
--/**
-+/*
-  * OMAP1 Dual-Mode Timers - platform device registration
-  *
-  * Contains first level initialization routines which internally
--- 
-2.17.1
+Thanks!
 
+Tyler
