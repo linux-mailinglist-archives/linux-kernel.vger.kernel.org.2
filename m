@@ -2,257 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE58234E0E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCF234E0E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhC3Fu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
+        id S230420AbhC3Fve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhC3Fuw (ORCPT
+        with ESMTP id S231154AbhC3FvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:50:52 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F30CC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:50:52 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id dm8so16749905edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:50:52 -0700 (PDT)
+        Tue, 30 Mar 2021 01:51:25 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FC6C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:51:25 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id u10so18549852lju.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Q7mjnvITW5POKusZesCDDAXlzdQv7Zg52myaiOsYaKU=;
-        b=h6EKKILdhOMo3nj+X7yTX/WnO2fS754IlwJ7yuibHwBw0OuJQAq9NthRXts+JsMTtL
-         KSBCV+nM0UKnHe3W6RUe5O1mYcLDjSp5uAc2GxcCA5QouWayBQOjUgYAGMXhg3JLk2mn
-         Pq8/BSt9+BUa6+siA9PM5uQHr6eUVKcRQD7S7TU/M7/8yY5vzB1uAKy64sNVw1WEfMU1
-         NncG09TW/FO634ya4QFp5uLgiT90NCzHcTcsnSIQgDOv3XcnXdC6j7OakYieTHeQieP7
-         Y2h08Gegw7s0+uTk+TB97YG2Hft1FhEzYtdjdN5Y10mxnGv8i/ZWTvK3qwpKDL/Hlmj8
-         lEHw==
+        bh=q6lEE2mLxUSxwFUa7GfL5LXw+GX8ZqMED2HXvAcd790=;
+        b=QWDQj/k//08OQqkLgKt3T0BFbwXuqS+LZt6L6iSTc0BsCjEFYh0/VLD9npTeuxxWsQ
+         97fkc+OgI/HFewPYFVTQjqec9xguXnT4goiwh7cv91Uvzs+fQgLuBy3pfDnHx537JOv+
+         pBulm1ChNlHQ6wlKqEXZndfqsxQ94GixOKN5sePQBcRIfXZ7lDgwolWcdjeDr2xUtHXI
+         2a1bUSdW6O31D8XCrS66t7QBaOjTf/YCYiaVLIf2VPF3dI0v34NGPxnf1K6KB45Ftkgr
+         GyBjG9C9MLS1CBL0YWsXov3mtTF1kpCQcG7HMQAUjcL6Wcvqv0it5T+c6D2/A565YeEK
+         Rsxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Q7mjnvITW5POKusZesCDDAXlzdQv7Zg52myaiOsYaKU=;
-        b=jB1fduXsks01rdjRoQIqgy4jpStF7BT4VEkrVQ0VH8V60WSkw1QGuQGAGpnc1IMcPK
-         UmN5fQOOdCRFt/ofoEBrVAtDe0UDv9GnGzAhv20r1ESpitYRyDzhyzp+k2VLJ6FT6lLS
-         2Z4a0CRyYgKR6ae5F7f8rDruTetTDusS+XSBFP8q/BjhTaOFw+mQYknjfxy6ueBlN9A1
-         QhNuFh8p3Itrrv96waH75zpN+NBPohlWZegxlWU3QTL80Pg616fhZomnsaqSSInP51eD
-         RbWysEIHJ+F46g5Sd98HDYG+6XxrrWwFaTsTOW8vBRWB02mxN9+hDFEiFQ1H4T8MdL9p
-         6EMA==
-X-Gm-Message-State: AOAM532VvKudgqpG0JqkKzmLtLDwXHbKtiEqrk/mxlLIJr5BWPE84wcg
-        h9JIAnJex0nojGsr5maLpZoIxz3e9gTtsg8QWE44Lw==
-X-Google-Smtp-Source: ABdhPJy6Tv10yyHVHI+Fl+Wj3tJfowaAtuTKGJ9SHoed2IDJ0VEgwjL/q/1AhyqIaK+PYzwXWUewcoJfWTNtJT7tB1Q=
-X-Received: by 2002:aa7:d287:: with SMTP id w7mr31517351edq.23.1617083451172;
- Mon, 29 Mar 2021 22:50:51 -0700 (PDT)
+        bh=q6lEE2mLxUSxwFUa7GfL5LXw+GX8ZqMED2HXvAcd790=;
+        b=E6qfNoG2BQmy/68O+cZdReUV1NQo3VhkzBBCTbaOfuOCmu/jKCqau//8mr3uDNI08W
+         qG0gmYjW2Ngh0cp96F4snU0j3geuroG+MOzQPvFS6i0IsfAwgkthgV/C/5EWjc569T8o
+         UPtQtxSqn8f8AlfIYvrmIRVAutFtbMkkdD45ydFIz6FQ2CEFq1siXb6OR1hI6bY7mJdd
+         qm2Kscg0XTcq8v4xVc+iuIpfNkm/7Z+0OUtomUuDUUNhixxbY264aQJmoHoZFRHWBkcS
+         IqFYrQQJ2b2/WfRAHeT+fbKoYeckmPLIxtI63/uGaJDDYs6D5YgGCEbNGc3sg8CfaEix
+         OGyg==
+X-Gm-Message-State: AOAM531AfuBeBKTEfdl/aElNIm94NWp2C1ar1NzvRxbzlhyldfDCgiiQ
+        lBH/V4MQvqgEzhsM7f/L+8liotTc/hW9mGpaTrM/ww==
+X-Google-Smtp-Source: ABdhPJwiUwnbbZmlObvrahOjCJ6o2HFElpU0UGc8nhlBKt2fEzygnVd4qkLRnIKdDWUW9FsXtGj8y7/NGKgsZ/G7KGM=
+X-Received: by 2002:a2e:8114:: with SMTP id d20mr20111828ljg.83.1617083483493;
+ Mon, 29 Mar 2021 22:51:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329075615.186199980@linuxfoundation.org>
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 30 Mar 2021 11:20:39 +0530
-Message-ID: <CA+G9fYuhZ-xO58ZxMUO9DHd+j4H-j4fG6nkgPzTThkw_Zheniw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/111] 5.4.109-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
+ <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
+ <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
+ <CAK8P3a3jpQ7dDiVG0s_DQiL6n_MdnhYHMjqFfJ92JJBJFPQZPQ@mail.gmail.com> <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com>
+In-Reply-To: <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 30 Mar 2021 11:21:12 +0530
+Message-ID: <CAAhSdy3UWZuiFKxMPiQD+QTXuwk7LuvxkHJNE1zs2EtErHdt5Q@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 13:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Mar 30, 2021 at 7:56 AM Guo Ren <guoren@kernel.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.109 release.
-> There are 111 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon, Mar 29, 2021 at 9:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Mon, Mar 29, 2021 at 2:52 PM Guo Ren <guoren@kernel.org> wrote:
+> > >
+> > > On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org>=
+ wrote:
+> > > >
+> > > > On Mon, Mar 29, 2021 at 01:16:53PM +0200, Peter Zijlstra wrote:
+> > > > > Anyway, an additional 'funny' is that I suspect you cannot prove =
+fwd
+> > > > > progress of the entire primitive with any of this on. But who car=
+es
+> > > > > about details anyway.. :/
+> > > >
+> > > > What's the architectural guarantee on LL/SC progress for RISC-V ?
+> > >
+> > > funct5    | aq | rl   | rs2 |  rs1  | funct3 | rd | opcode
+> > >      5          1    1      5       5         3        5          7
+> > > LR.W/D  ordering  0     addr    width   dest    AMO
+> > > SC.W/D  ordering  src  addr    width   dest    AMO
+> > >
+> > > LR.W loads a word from the address in rs1, places the sign-extended
+> > > value in rd, and registers a reservation set=E2=80=94a set of bytes t=
+hat
+> > > subsumes the bytes in the addressed word. SC.W conditionally writes a
+> > > word in rs2 to the address in rs1: the SC.W succeeds only if the
+> > > reservation is still valid and the reservation set contains the bytes
+> > > being written. If the SC.W succeeds, the instruction writes the word
+> > > in rs2 to memory, and it writes zero to rd. If the SC.W fails, the
+> > > instruction does not write to memory, and it writes a nonzero value t=
+o
+> > > rd. Regardless of success or failure, executing an SC.W instruction
+> > > *invalidates any reservation held by this hart*.
+> > >
+> > > More details, ref:
+> > > https://github.com/riscv/riscv-isa-manual
+> >
+> > I think section "3.5.3.2 Reservability PMA" [1] would be a more relevan=
+t
+> > link, as this defines memory areas that either do or do not have
+> > forward progress guarantees, including this part:
+> >
+> >    "When LR/SC is used for memory locations marked RsrvNonEventual,
+> >      software should provide alternative fall-back mechanisms used when
+> >      lack of progress is detected."
+> >
+> > My reading of this is that if the example you tried stalls, then either
+> > the PMA is not RsrvEventual, and it is wrong to rely on ll/sc on this,
+> > or that the PMA is marked RsrvEventual but the implementation is
+> > buggy.
+> Yes, PMA just defines physical memory region attributes, But in our
+> processor, when MMU is enabled (satp's value register > 2) in s-mode,
+> it will look at our custom PTE's attributes BIT(63) ref [1]:
 >
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
+>    PTE format:
+>    | 63 | 62 | 61 | 60 | 59 | 58-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+>      SO   C    B    SH   SE    RSW   D   A   G   U   X   W   R   V
+>      ^    ^    ^    ^    ^
+>    BIT(63): SO - Strong Order
+>    BIT(62): C  - Cacheable
+>    BIT(61): B  - Bufferable
+>    BIT(60): SH - Shareable
+>    BIT(59): SE - Security
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.109-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
+> So the memory also could be RsrvNone/RsrvEventual.
 >
-> thanks,
+> [1] https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2f=
+cc52afd0fcbf88
+
+Is this about your C-sky architecture or your RISC-V implementation.
+
+If these PTE bits are in your RISC-V implementation then clearly your
+RISC-V implementation is not compliant with the RISC-V privilege spec
+because these bits are not defined in RISC-V privilege spec.
+
+Regards,
+Anup
 >
-> greg k-h
-
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.109-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 7b78fa4bf15f02997c4dba22fe2bf2ca8aa9906f
-git describe: v5.4.108-112-g7b78fa4bf15f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.108-112-g7b78fa4bf15f
-
-No regressions (compared to build v5.4.108)
-
-No fixes (compared to build v5.4.108)
-
-Ran 59776 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-tc-testing
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* rcutorture
-* igt-gpu-tools
-* ssuite
-* kselftest-vsyscall-mode-native-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> >
+> > It also seems that the current "amoswap" based implementation
+> > would be reliable independent of RsrvEventual/RsrvNonEventual.
+> Yes, the hardware implementation of AMO could be different from LR/SC.
+> AMO could use ACE snoop holding to lock the bus in hw coherency
+> design, but LR/SC uses an exclusive monitor without locking the bus.
+>
+> > arm64 is already in the situation of having to choose between
+> > two cmpxchg() implementation at runtime to allow falling back to
+> > a slower but more general version, but it's best to avoid that if you
+> > can.
+> Current RISC-V needn't multiple versions to select, and all AMO &
+> LR/SC has been defined in the spec.
+>
+> RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
+> think LR/SC would be slower than CAS, and CAS is just good for code
+> size.
+>
+> >
+> >          Arnd
+> >
+> > [1] http://www.five-embeddev.com/riscv-isa-manual/latest/machine.html#a=
+tomicity-pmas
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
