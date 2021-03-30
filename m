@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40ACE34EF8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DB734EFA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhC3RdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:33:07 -0400
-Received: from alln-iport-6.cisco.com ([173.37.142.93]:39646 "EHLO
-        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhC3RdA (ORCPT
+        id S232488AbhC3Rep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:34:45 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59520 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232311AbhC3Re2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:33:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1192; q=dns/txt; s=iport;
-  t=1617125580; x=1618335180;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2LZfLmeECNVtSnr3Mh+CyIjZ9xFZqjH6FwYenu/bjCA=;
-  b=JXf7xD2yDz2zHs88ykxH8LWQPxBiCj+1zwbnkiZkIDAv7BzoqqreBeeJ
-   cxRZOjQ9D/btzDedZHZNtC8I84XMxa9szgd+ekkApVnfRxTeK20/tfhpW
-   mZPWYbrORXM4Wru/IndKDcn2kB4htKy+ox09ct+aa7lpV0BMjluPLYvYB
-   A=;
-X-IPAS-Result: =?us-ascii?q?A0ASAAC4X2NgmJtdJa1aGgEBAQEBAQEBAQEDAQEBARIBA?=
- =?us-ascii?q?QEBAgIBAQEBQIE/AgEBAQELAYN2ATkxlhEDkAgWilmBaAsBAQENAQE0BAEBh?=
- =?us-ascii?q?FACgXoCJTcGDgIDAQEBAwIDAQEBAQEFAQEBAgEGBBQBAQEBAQEBAYZDhkUBA?=
- =?us-ascii?q?gM6PxALGBUZPBsGE4JwgwirJXWBNIkLgUQUDoEXAY1JJhyBSUKELj6DeYEGh?=
- =?us-ascii?q?RUiBIFlYYEQggRYFAKRKoJAikycIoMRgSObNjEQgziKb5YbuBICBAYFAhaBa?=
- =?us-ascii?q?iKBWzMaCBsVgyRQGQ2OOI5PIQMvOAIGCgEBAwmJHwEB?=
-IronPort-HdrOrdr: A9a23:DnBJjKzmbOdjEo60P+GWKrPxd+skLtp033Aq2lEZdDV+eKWj+P
- yGtvIdyBPylXI9WGs4n8qBJamHRhrnhPtIyKMWOqqvWxSjhXuwIOhZnOnf6hDpBiGWzIRg/I
- h6dawWMrDNJHh8yf33+QypV+snqeP3lJyAocf74zNTQRpxa6dmhj0JaTqzNkFtXgFJCd4YOf
- Onh/ZvnDardXQJYsnTPBBsNNTrnNHFmInrZhQLHXcciDWmty+i67LxDnGjsCs2bjUn+9sf2F
- mAuxDl4OGZv+ujzBjH2yvo841Og9f60LJ4dauxo/lQDCnwgQC1Y4kkfLuOsFkO0ZiSwWdvts
- XQqBE9OMk20VftRyWepBvg3BSI6kdJ10Pf
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="711698846"
-Received: from rcdn-core-4.cisco.com ([173.37.93.155])
-  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:32:59 +0000
-Received: from zorba ([10.24.8.123])
-        by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UHWsUi019331
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 30 Mar 2021 17:32:57 GMT
-Date:   Tue, 30 Mar 2021 10:32:54 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Will Deacon <will@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210330173254.GS109100@zorba>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba>
- <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
- <20210325195956.GM109100@zorba>
- <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com>
+        Tue, 30 Mar 2021 13:34:28 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12UHXtnt056809;
+        Tue, 30 Mar 2021 12:33:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617125635;
+        bh=klDN3SRCgEm92mzhH+b10dVnhg4f/bIDdg6mQxTtm4o=;
+        h=From:To:CC:Subject:Date;
+        b=DHU9Kl08+poeyMRGZ5LTonGYtO7avzKKZPcvTTCoiUpl9Ktnuu2CYUcLN67MxO0QL
+         c+PXjfelxxXwJx/WMkyYUeY9TaFO46ja46uDOiAAch4VTI8+pakFrtBXwEZcgahdv7
+         1n+BOxAQcroO2uGMB0Xv+sHyr8gCxw9jq+Jx1qRI=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12UHXtdE031312
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 30 Mar 2021 12:33:55 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 30
+ Mar 2021 12:33:55 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 30 Mar 2021 12:33:55 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12UHXmgh125244;
+        Tue, 30 Mar 2021 12:33:49 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 00/16] CSI2RX support on J721E
+Date:   Tue, 30 Mar 2021 23:03:32 +0530
+Message-ID: <20210330173348.30135-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
-X-Outbound-Node: rcdn-core-4.cisco.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 05:29:44PM -0600, Rob Herring wrote:
-> On Thu, Mar 25, 2021 at 2:00 PM Daniel Walker <danielwa@cisco.com> wrote:
-> >
-> > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> > >
-> > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> > >
-> > > Let's only provide once CMDLINE as of today, and ask the user to select
-> > > whether he wants it appended or prepended or replacee. Then no need to
-> > > change all existing config to rename CONFIG_CMDLINE into either of the new
-> > > ones.
-> > >
-> > > That's the main difference between my series and Daniel's series. So I'll
-> > > finish taking Will's comment into account and we'll send out a v3 soon.
-> >
-> > It doesn't solve the needs of Cisco, I've stated many times your changes have
-> > little value. Please stop submitting them.
-> 
-> Can you please outline what those needs are which aren't met?
+Hi,
 
-append AND prepend at the same time on all architectures. Christophe doesn't
-understand the need, and hence tries to minimize the feature set which is
-incompatible with Cisco needs and all the other out of tree users.
+This series adds support for CSI2 capture on J721E. It includes some
+fixes to the Cadence CSI2RX driver, adds Rx support to Cadence DPHY
+driver, and finally adds the TI CSI2RX wrapper driver.
 
-Daniel
+Tested on TI's J721E with OV5640 sensor.
+
+Paul Kocialkowski (1):
+  phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+
+Pratyush Yadav (15):
+  phy: cdns-dphy: Prepare for Rx support
+  phy: cdns-dphy: Allow setting mode
+  phy: cdns-dphy: Add Rx support
+  media: cadence: csi2rx: Add external DPHY support
+  media: cadence: csi2rx: Soft reset the streams before starting capture
+  media: cadence: csi2rx: Set the STOP bit when stopping a stream
+  media: cadence: csi2rx: Fix stream data configuration
+  media: cadence: csi2rx: Turn subdev power on before starting stream
+  media: cadence: csi2rx: Add wrappers for subdev calls
+  dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+  dt-bindings: media: Add DT bindings for TI CSI2RX driver
+  media: ti-vpe: csi2rx: Add CSI2RX support
+  dt-bindings: phy: Convert Cadence DPHY binding to YAML
+  dt-bindings: phy: cdns,dphy: make clocks optional
+  dt-bindings: phy: cdns,dphy: add power-domains property
+
+ .../devicetree/bindings/media/ti,csi2rx.yaml  |  70 ++
+ .../devicetree/bindings/phy/cdns,dphy.txt     |  20 -
+ .../devicetree/bindings/phy/cdns,dphy.yaml    |  52 +
+ MAINTAINERS                                   |   7 +
+ drivers/dma/ti/k3-psil-j721e.c                |  10 +
+ drivers/media/platform/Kconfig                |  11 +
+ drivers/media/platform/cadence/cdns-csi2rx.c  | 269 ++++-
+ drivers/media/platform/ti-vpe/Makefile        |   1 +
+ drivers/media/platform/ti-vpe/ti-csi2rx.c     | 964 ++++++++++++++++++
+ drivers/phy/cadence/cdns-dphy.c               | 407 +++++++-
+ include/linux/phy/phy-mipi-dphy.h             |  13 +
+ 11 files changed, 1754 insertions(+), 70 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/ti,csi2rx.yaml
+ delete mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+ create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
+
+--
+2.30.0
+
