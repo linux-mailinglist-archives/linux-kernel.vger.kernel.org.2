@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED7E34E1BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A7F34E1AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhC3HGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:06:18 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:40344 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbhC3HF4 (ORCPT
+        id S230435AbhC3HDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:03:17 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:45747 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhC3HCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:05:56 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id B6735E02FA;
-        Tue, 30 Mar 2021 15:05:49 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Wang Qing <wangqing@vivo.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-hams@vger.kernel.org,
-        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net
-Cc:     gregkh@linuxfoundation.org
-Subject: [PATCH 6/6] net/decnet: Delete obsolete TODO file
-Date:   Tue, 30 Mar 2021 15:02:49 +0800
-Message-Id: <1617087773-7183-7-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
-References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTk0fTkJNGE8eTExMVkpNSkxLQ0xCTktDTkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PCI6CAw*Tz8UAjcXPh88TgE8
-        Ej0aCk5VSlVKTUpMS0NMQk5KSkxKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFPS0xNNwY+
-X-HM-Tid: 0a7881f3eed02c17kusnb6735e02fa
+        Tue, 30 Mar 2021 03:02:55 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C643820002;
+        Tue, 30 Mar 2021 07:02:50 +0000 (UTC)
+Subject: Re: [PATCH] implement flush_cache_vmap and flush_cache_vunmap for
+ RISC-V
+To:     Jiuyang Liu <liu@jiuyang.me>
+Cc:     Andrew Waterman <waterman@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210329015510.44110-1-liu@jiuyang.me>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <9749165b-32d4-94a2-7c8a-e219fdf1b102@ghiti.fr>
+Date:   Tue, 30 Mar 2021 03:02:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210329015510.44110-1-liu@jiuyang.me>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TODO file here has not been updated from 2005, and the function 
-development described in the file have been implemented or abandoned.
+Hi Jiuyang,
 
-Its existence will mislead developers seeking to view outdated information.
+Le 3/28/21 à 9:55 PM, Jiuyang Liu a écrit :
+> This patch implements flush_cache_vmap and flush_cache_vunmap for
+> RISC-V, since these functions might modify PTE. Without this patch,
+> SFENCE.VMA won't be added to related codes, which might introduce a bug
+> in some out-of-order micro-architecture implementations.
+> 
+> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+> ---
+>   arch/riscv/include/asm/cacheflush.h | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
+> index 23ff70350992..4adf25248c43 100644
+> --- a/arch/riscv/include/asm/cacheflush.h
+> +++ b/arch/riscv/include/asm/cacheflush.h
+> @@ -8,6 +8,14 @@
+>   
+>   #include <linux/mm.h>
+>   
+> +/*
+> + * flush_cache_vmap and flush_cache_vunmap might modify PTE, needs SFENCE.VMA.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- net/decnet/TODO | 40 ----------------------------------------
- 1 file changed, 40 deletions(-)
- delete mode 100644 net/decnet/TODO
+"might modify PTE" is not entirely true I think, this is what happens 
+before using this function that might modify PTE, those functions ensure 
+those modifications are made visible.
 
-diff --git a/net/decnet/TODO b/net/decnet/TODO
-deleted file mode 100644
-index 358e9eb..0000000
---- a/net/decnet/TODO
-+++ /dev/null
-@@ -1,40 +0,0 @@
--Steve's quick list of things that need finishing off:
--[they are in no particular order and range from the trivial to the long winded]
--
-- o Proper timeouts on each neighbour (in routing mode) rather than
--   just the 60 second On-Ethernet cache value.
--
-- o Support for X.25 linklayer
--
-- o Support for DDCMP link layer
--
-- o The DDCMP device itself
--
-- o PPP support (rfc1762)
--
-- o Lots of testing with real applications
--
-- o Verify errors etc. against POSIX 1003.1g (draft)
--
-- o Using send/recvmsg() to get at connect/disconnect data (POSIX 1003.1g)
--   [maybe this should be done at socket level... the control data in the
--    send/recvmsg() calls should simply be a vector of set/getsockopt()
--    calls]
--
-- o check MSG_CTRUNC is set where it should be.
--
-- o Find all the commonality between DECnet and IPv4 routing code and extract
--   it into a small library of routines. [probably a project for 2.7.xx]
--
-- o Add perfect socket hashing - an idea suggested by Paul Koning. Currently
--   we have a half-way house scheme which seems to work reasonably well, but
--   the full scheme is still worth implementing, its not not top of my list
--   right now.
--
-- o Add session control message flow control
--
-- o Add NSP message flow control
--
-- o DECnet sendpages() function
--
-- o AIO for DECnet
--- 
-2.7.4
+> + * - flush_cache_vmap is invoked after map_kernel_range() has installed the page table entries.
+> + * - flush_cache_vunmap is invoked before unmap_kernel_range() deletes the page table entries
+> + */
+> +#define flush_cache_vmap(start, end) flush_tlb_all()
+> +#define flush_cache_vunmap(start, end) flush_tlb_all()
+> +
+>   static inline void local_flush_icache_all(void)
+>   {
+>   	asm volatile ("fence.i" ::: "memory");
+> 
 
+FWIW, you can add:
+
+Reviewed-by: Alexandre Ghiti <alex@ghiti.fr>
+
+Thanks,
+
+Alex
