@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F65734E156
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7158234E15D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhC3GkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:40:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14954 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhC3GkD (ORCPT
+        id S231144AbhC3GlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:41:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15813 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhC3Gkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:40:03 -0400
+        Tue, 30 Mar 2021 02:40:51 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8frx3ZxVzyNHW;
-        Tue, 30 Mar 2021 14:37:53 +0800 (CST)
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8fsv3H9Dz92s3;
+        Tue, 30 Mar 2021 14:38:43 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 14:39:46 +0800
+ 14.3.498.0; Tue, 30 Mar 2021 14:40:37 +0800
 From:   Hao Fang <fanghao11@huawei.com>
-To:     <wsa@kernel.org>, <thor.thayer@linux.intel.com>, <mani@kernel.org>,
-        <bjorn.andersson@linaro.org>, <tiantao6@hisilicon.com>,
-        <zhengdejin5@gmail.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <sre@kernel.org>, <haojian.zhuang@linaro.org>,
+        <xuwei5@hisilicon.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
-Subject: [PATCH] i2c: hix5hd2: use the correct HiSilicon copyright
-Date:   Tue, 30 Mar 2021 14:37:14 +0800
-Message-ID: <1617086234-35270-1-git-send-email-fanghao11@huawei.com>
+Subject: [PATCH] power: reset: hisi-reboot: use the correct HiSilicon copyright
+Date:   Tue, 30 Mar 2021 14:38:05 +0800
+Message-ID: <1617086285-36565-1-git-send-email-fanghao11@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -42,22 +41,24 @@ https://www.hisilicon.com/en/terms-of-use.
 
 Signed-off-by: Hao Fang <fanghao11@huawei.com>
 ---
- drivers/i2c/busses/i2c-hix5hd2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/reset/hisi-reboot.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-hix5hd2.c b/drivers/i2c/busses/i2c-hix5hd2.c
-index c45f226..aa00ba8 100644
---- a/drivers/i2c/busses/i2c-hix5hd2.c
-+++ b/drivers/i2c/busses/i2c-hix5hd2.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/drivers/power/reset/hisi-reboot.c b/drivers/power/reset/hisi-reboot.c
+index 0ba5fdc..5abc5f6 100644
+--- a/drivers/power/reset/hisi-reboot.c
++++ b/drivers/power/reset/hisi-reboot.c
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * Copyright (c) 2014 Linaro Ltd.
-- * Copyright (c) 2014 Hisilicon Limited.
-+ * Copyright (c) 2014 HiSilicon Limited.
+- * Hisilicon SoC reset code
++ * HiSilicon SoC reset code
   *
-  * Now only support 7 bit address.
-  */
+- * Copyright (c) 2014 Hisilicon Ltd.
++ * Copyright (c) 2014 HiSilicon Ltd.
+  * Copyright (c) 2014 Linaro Ltd.
+  *
+  * Author: Haojian Zhuang <haojian.zhuang@linaro.org>
 -- 
 2.8.1
 
