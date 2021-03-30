@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE28A34E516
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD77734E519
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhC3KGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:06:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38726 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229633AbhC3KGb (ORCPT
+        id S231576AbhC3KIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:08:11 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:36013 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231269AbhC3KH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:06:31 -0400
-X-UUID: 9500d5b3866a4e98be3859ff00f6738f-20210330
-X-UUID: 9500d5b3866a4e98be3859ff00f6738f-20210330
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1021986996; Tue, 30 Mar 2021 18:06:28 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 30 Mar 2021 18:06:26 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 30 Mar 2021 18:06:26 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
-        <maz@kernel.org>
-CC:     <julien.thierry@arm.com>, <lecopzer@gmail.com>,
-        <yj.chiang@mediatek.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH] irqchip/gic-v3: Fix IPRIORITYR can't perform byte operations in GIC-600
-Date:   Tue, 30 Mar 2021 18:06:19 +0800
-Message-ID: <20210330100619.24747-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 30 Mar 2021 06:07:58 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 3726E22236;
+        Tue, 30 Mar 2021 12:07:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1617098876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tiLq4LE7BnrDVBVgGUBZ/04kcMa38cE2DDY48MfDYgU=;
+        b=Rma71OlPQQXc0DGu35iz2chpo6I+EegIfjfHWe5vFVJ4Qe4qGnMjrn44My6ocspogp+iIg
+        jTr6N+XQXP2KLOwJbN3+OOmFUxfH+XvHlK2EVC8j/qTmKbz/UE0bDPoyX57BWR/69zysHl
+        24HRXFHEeX0+MN3YfA/+ofFnZ6Li/Ko=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 30 Mar 2021 12:07:56 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        =?UTF-8?Q?Rafa?= =?UTF-8?Q?=C5=82_Mi=C5=82ecki?= 
+        <rafal@milecki.pl>
+Subject: Re: [RFC PATCH 3/4] dt-bindings: mtd: add OTP bindings
+In-Reply-To: <20210327170920.GA249312@robh.at.kernel.org>
+References: <20210322181949.2805-1-michael@walle.cc>
+ <20210322181949.2805-4-michael@walle.cc>
+ <20210327170920.GA249312@robh.at.kernel.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <1c3e047fe0527abbeb73cd34219f6b49@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pseudo-NMI enabled, register_nmi() set priority of specific IRQ
-by byte ops, and this doesn't work in GIC-600.
+Hi Rob,
 
-We have asked ARM Support [1]:
-> Please refer to following description in
-> "2.1.2 Distributor ACE-Lite slave interface" of GIC-600 TRM for
-> the GIC600 ACE-lite slave interface supported sizes:
->   "The GIC-600 only accepts single beat accesses of the sizes for
->   each register that are shown in the Programmers model,
->   see Chapter 4 Programmer's model on page 4-102.
->   All other accesses are rejected and given either an
->   OKAY or SLVERR response that is based on the GICT_ERR0CTLR.UE bit.".
+Am 2021-03-27 18:09, schrieb Rob Herring:
+>> +    spi {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +
+>> +        flash@0 {
+>> +            reg = <0>;
+>> +            compatible = "some,flash";
+> 
+> Soon (in linux-next, but off by default) this will be a warning for
+> undocumented compatible string. Use a real device.
 
-Thus the register needs to be written by double word operation and
-the step will be: read 32bit, set byte and write it back.
+Two questions:
+(1) I guess this is also true for "PATCH 2/4", where you already added
+     your Reviewed-by?
+(2) I'd add the "jedec,spi-nor" because, that is the one I target. But
+     before doing so, I'd need to add the otp subnode to the spi-nor
+     schema, correct? Otherwise, the schema validation will fail. Eg.
 
-[1] https://services.arm.com/support/s/case/5003t00001L4Pba
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -9,6 +9,9 @@ title: SPI NOR flash ST M25Pxx (and similar) serial 
+flash chips
+  maintainers:
+    - Rob Herring <robh@kernel.org>
 
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
----
- drivers/irqchip/irq-gic-v3.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
++allOf:
++  - $ref: "mtd.yaml#"
++
+  properties:
+    compatible:
+      oneOf:
+@@ -82,6 +85,9 @@ patternProperties:
+    '^partition@':
+      type: object
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index eb0ee356a629..cfc5a6ad30dc 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -440,10 +440,21 @@ static void gic_irq_set_prio(struct irq_data *d, u8 prio)
- {
- 	void __iomem *base = gic_dist_base(d);
- 	u32 offset, index;
-+	u32 val, prio_offset_mask, prio_offset_shift;
- 
- 	offset = convert_offset_index(d, GICD_IPRIORITYR, &index);
- 
--	writeb_relaxed(prio, base + offset + index);
-+	/*
-+	 * GIC-600 memory mapping register doesn't support byte opteration,
-+	 * thus read 32-bits from register, set bytes and wtire back to it.
-+	 */
-+	prio_offset_shift = (index & 0x3) * 8;
-+	prio_offset_mask = GENMASK(prio_offset_shift + 7, prio_offset_shift);
-+	index &= ~0x3;
-+	val = readl_relaxed(base + offset + index);
-+	val &= ~prio_offset_mask;
-+	val |= prio << prio_offset_shift;
-+	writel_relaxed(val, base + offset + index);
- }
- 
- static u32 gic_get_ppi_index(struct irq_data *d)
--- 
-2.18.0
++  "^otp(-[0-9]+)?$":
++    type: object
++
+  additionalProperties: false
 
+  examples:
+
+-michael
