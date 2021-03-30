@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3467334E712
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0585634E716
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhC3MFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:05:47 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:38712 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbhC3MFf (ORCPT
+        id S232043AbhC3MGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:06:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14636 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231934AbhC3MFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:05:35 -0400
-Received: by mail-oi1-f175.google.com with SMTP id f9so16231476oiw.5;
-        Tue, 30 Mar 2021 05:05:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/gSpMHBqfF0ztmaxY0HWMjy3Yg1wW/3Zssdp7txxPh0=;
-        b=Ttm1kyC1kcyFaRJm9074us8dPCGlQGfYVkrGjEIjI2AxNYnBNRdfAfLXnWz4kLqcqo
-         Z+WHG61wiNaTDO5wFJEYFfS3fLzIYLPbVAOe7z9mNTsyZ6BhMbZsOT/mxuJEYMO0lMce
-         /2ZQTMWaKQ+b/uPU4N1T6hgrFUBsiEBs9kehI6FzVuUjM9RmFlo19TKoNv8KM/Wlx+on
-         1I3WZAgqTUenzbsBlF/2R30r+rxx5rx3Q+9oAsE3UHmGwgyqNJqIwV1BuOxSsby6wIEC
-         F9l8P+cC1hZA5BCMR4NTlrOQg3Rr1kU4AXNPsIW+duxPFO4UeX90/dO3KkBYDDNpPE2v
-         odFg==
-X-Gm-Message-State: AOAM530G72OtTYVg0vweA+tsxT5DCIe2qs2xP0gu0K9W4q9bSCuwB1Nv
-        ztZjKk47e3s6Inl/MPFitkFAvwInwWqiE/2N2mo=
-X-Google-Smtp-Source: ABdhPJyvALkfL8/HLhMkZXqqpPnJFTbVIs7Jgdkb82xywZuWf677uaTgXhH1KFNPxVY899UjtUcAwYGNcjmtiKQbHqY=
-X-Received: by 2002:aca:c4c5:: with SMTP id u188mr2948538oif.71.1617105934975;
- Tue, 30 Mar 2021 05:05:34 -0700 (PDT)
+        Tue, 30 Mar 2021 08:05:46 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8p4B659dznVL7;
+        Tue, 30 Mar 2021 20:03:06 +0800 (CST)
+Received: from huawei.com (10.67.174.96) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
+ 20:05:33 +0800
+From:   Zhang Jianhua <zhangjianhua18@huawei.com>
+To:     <ath9k-devel@qca.qualcomm.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <zhangjianhua18@huawei.com>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <johnny.chenyi@huawei.com>
+Subject: [PATCH -next v2] drivers: net: CONFIG_ATH9K select LEDS_CLASS and NEW_LEDS
+Date:   Tue, 30 Mar 2021 20:05:33 +0800
+Message-ID: <20210330120533.102712-1-zhangjianhua18@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210326001922.4767-1-unixbhaskar@gmail.com> <CAJZ5v0izUkL=7NSFuefNYcqdq2vSxseDCCLKUTOZGC82WjJNPg@mail.gmail.com>
- <MWHPR11MB15993DB0504FBD17DB4B1792F07D9@MWHPR11MB1599.namprd11.prod.outlook.com>
-In-Reply-To: <MWHPR11MB15993DB0504FBD17DB4B1792F07D9@MWHPR11MB1599.namprd11.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 30 Mar 2021 14:05:23 +0200
-Message-ID: <CAJZ5v0gf4i+HLPYzETCiG740FCXBHe5hf2PeCfCiqVJODhaMyg@mail.gmail.com>
-Subject: Re: [Devel] Re: [PATCH] ACPICA: Fix a typo
-To:     "Kaneda, Erik" <erik.kaneda@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.96]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 2:19 AM Kaneda, Erik <erik.kaneda@intel.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Rafael J. Wysocki <rafael@kernel.org>
-> > Sent: Monday, March 29, 2021 5:48 AM
-> > To: Bhaskar Chowdhury <unixbhaskar@gmail.com>; Kaneda, Erik
-> > <erik.kaneda@intel.com>
-> > Cc: Wysocki, Rafael J <rafael.j.wysocki@intel.com>; ACPI Devel Maling List
-> > <linux-acpi@vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE
-> > (ACPICA) <devel@acpica.org>; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>; Randy Dunlap <rdunlap@infradead.org>
-> > Subject: [Devel] Re: [PATCH] ACPICA: Fix a typo
-> >
-> > On Fri, Mar 26, 2021 at 1:22 AM Bhaskar Chowdhury
-> > <unixbhaskar@gmail.com> wrote:
-> > >
-> > >
-> > > s/optimzation/optimization/
-> > >
-> > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> > > ---
-> > >  include/acpi/acoutput.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
-> > > index 1538a6853822..1b4c45815695 100644
-> > > --- a/include/acpi/acoutput.h
-> > > +++ b/include/acpi/acoutput.h
-> > > @@ -362,7 +362,7 @@
-> > >   *
-> > >   * A less-safe version of the macros is provided for optional use if the
-> > >   * compiler uses excessive CPU stack (for example, this may happen in the
-> > > - * debug case if code optimzation is disabled.)
-> > > + * debug case if code optimization is disabled.)
-> > >   */
-> > >
-> > >  /* Exit trace helper macro */
-> > > --
-> >
-> > Erik, could you pick up this patch, please?  It is simple enough IMV ...
->
-> No problem, I'll pick it up
+If CONFIG_ATH9K=y, the following errors will be seen while compiling
+gpio.c
 
-Thanks!
+drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_deinit_leds':
+gpio.c:(.text+0x604): undefined reference to `led_classdev_unregister'
+gpio.c:(.text+0x604): relocation truncated to fit: R_AARCH64_CALL26
+against undefined symbol `led_classdev_unregister'
+drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_init_leds':
+gpio.c:(.text+0x708): undefined reference to `led_classdev_register_ext'
+gpio.c:(.text+0x708): relocation truncated to fit: R_AARCH64_CALL26
+against undefined symbol `led_classdev_register_ext'
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
+
+---
+v2:
+add 'select NEW_LEDS'
+---
+ drivers/net/wireless/ath/ath9k/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+index e150d82eddb6..0a73ede3148a 100644
+--- a/drivers/net/wireless/ath/ath9k/Kconfig
++++ b/drivers/net/wireless/ath/ath9k/Kconfig
+@@ -24,6 +24,8 @@ config ATH9K
+ 	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	select ATH9K_HW
+ 	select ATH9K_COMMON
++	select NEW_LEDS
++	select LEDS_CLASS
+ 	help
+ 	  This module adds support for wireless adapters based on
+ 	  Atheros IEEE 802.11n AR5008, AR9001 and AR9002 family
+-- 
+2.17.1
+
