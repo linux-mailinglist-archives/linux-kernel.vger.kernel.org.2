@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972FD34F3EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AB034F3F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhC3WDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:03:44 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:44547 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbhC3WDl (ORCPT
+        id S232849AbhC3WEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhC3WEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:03:41 -0400
-Received: by mail-ot1-f53.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso17016328oti.11;
-        Tue, 30 Mar 2021 15:03:41 -0700 (PDT)
+        Tue, 30 Mar 2021 18:04:30 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC600C061574;
+        Tue, 30 Mar 2021 15:04:29 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id g15so17462199qkl.4;
+        Tue, 30 Mar 2021 15:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rsLcyiUdjDO/JwPlLGDRZPqtjPzq/FefLI/0r769QmU=;
+        b=fnuxO4RjIrvHDZ5iK/ytdE3WACshx3AxcJyhSkUNgT5Y1FXc3gOgTDdoJHClzNggxh
+         iBcHnl50i/gHSU03HQHZcr2at0f8vJWJC2ryWdkE/legp7YM+7Cc+w4qIw2ze7JvdgS8
+         kr4xPTw9Q6xckiwKtC0aSq7ixuiTlyvMuV8hjkJ1BjMKVggsEVmv5luUT0Cn8YZgK6nI
+         4z5cjIBXh6Fy5c81Do2qyeUharaKX0PPoD2uCClNIjW7dgU2X3eeOiqyqIRzdmzP6+eP
+         HVWAut/yxf7qZBNvpQthz9Abq+MqEixM2r0eskkznkRJOYfnrgMHPhBYpL+NTCz7W1VX
+         OzFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kT3zV71FJ+KWr7wDc18R/r+VQdMcPYEV3G2c+81a2Jk=;
-        b=hS3Et4u4j1B0Oa9dHBHFv5NLGFT3o+oMFm+qm7SkpXGk5J3scKNe6V7W39jqh7JF8V
-         ts5c5cdZmyCdI05GmqFfljx6YUX4NDZzV8/4ZnW2DsAgwSTLRTTejrARwv0TSKpOvCu0
-         U3uns5O1tSm3DZybT/n18d2JeCHk6xDpJ6PXy5VbrSuzWGUwiwU/09I0iEkEkTyaa79Y
-         x8vSXqliwYMBOlGpFD0vb+R0T3OSVOSkafQuGpt1OkYpQmi8/D8OpIPwF01xMnUnfNeO
-         HX3ZKmswJmIZ3IFROKfpH1pgfQHqbtfqUszkdbRn+VD60v39TuvpMuoPgQPm/C5AWEwY
-         O1tg==
-X-Gm-Message-State: AOAM532pz8WU9CGxW7BKDOFq0eu6/yK+A+ijT2a4FaUWT6ADs1gkw83T
-        e7RYDRWJqA4ULSeUU8LalA==
-X-Google-Smtp-Source: ABdhPJyh2I7htYL3QyX1DObBLG3JvR3UrFCpUcE/E4wzSOKe1drGK80ocIqUyt6nVh4CFLt6ehNY8Q==
-X-Received: by 2002:a9d:6a8a:: with SMTP id l10mr41666otq.107.1617141821156;
-        Tue, 30 Mar 2021 15:03:41 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c9sm37793ooq.31.2021.03.30.15.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:03:40 -0700 (PDT)
-Received: (nullmailer pid 794287 invoked by uid 1000);
-        Tue, 30 Mar 2021 22:03:39 -0000
-Date:   Tue, 30 Mar 2021 17:03:39 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check
- warning
-Message-ID: <20210330220339.GA794236@robh.at.kernel.org>
-References: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rsLcyiUdjDO/JwPlLGDRZPqtjPzq/FefLI/0r769QmU=;
+        b=MuPOq0qhzQHV2vY3kHuzhum1pa+kZs2s1gHlXDQAuPsS0v3cxIZMpwlN4GbNViSS5I
+         Pj8GqO4dm9MyuKOJVCSaI/Y7DmrOpRAYK1ZycpeYifwSju0yNae9GyveEcSiDp1Z0ODR
+         OxA4MVWTsylZLbifmP/vtJ/T9u+nkuiJUFI/DdDdFSkrmbVJGi3ujH/qk+UhHgtf/UFO
+         U89b2f4c0JwiRruHiGRtDhY4YE5esabKT9/R6laCiW+HEp2O+zzjtYVou8MZ1Bzke3OJ
+         xJ8DhtmEH5I+Hnnc9CManyzGvznshg9fcr6NbzyRYDNjS2Y+qQIAjIHsN6kaTj+xulAt
+         hE7w==
+X-Gm-Message-State: AOAM5309oLqb2f5yCkWpDqdm8mKXG9wv9psNMq/rdJEcRaVKVBMDmuEE
+        5AiWaEUnJbwKQSgsxU+n98pVJIJBitIz9x7OVs4=
+X-Google-Smtp-Source: ABdhPJzDPkf/1Aa4r0AHY7myn8WGS18l9zpACXjvhATeiELfuLBPTtt7chiH9HTWcsTFt6EdhCgi+k0trKe9U+QYL30=
+X-Received: by 2002:a05:620a:14ae:: with SMTP id x14mr364123qkj.237.1617141869090;
+ Tue, 30 Mar 2021 15:04:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
+In-Reply-To: <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Wed, 31 Mar 2021 00:04:17 +0200
+Message-ID: <CAFLxGvwNomKOo3mQLMxYGDA8T8zN=Szpo2q5jrp4D1CaMHydWA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 16:14:35 +0800, Zhen Lei wrote:
-> The property "dmas" contains two items: DMA "TX" and "RX" channel,
-> Therefore, its value also needs to be written in two parts.
-> 
-> Otherwise, below YAML check warning is reported:
-> Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
-> i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Ahmad,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Wed, Mar 17, 2021 at 3:08 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>     keyctl add trusted $KEYNAME "load $(cat ~/kmk.blob)" @s
+
+Is there a reason why we can't pass the desired backend name in the
+trusted key parameters?
+e.g.
+keyctl add trusted $KEYNAME "backendtype caam load $(cat ~/kmk.blob)" @s
+
+-- 
+Thanks,
+//richard
