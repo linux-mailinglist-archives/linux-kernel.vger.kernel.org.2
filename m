@@ -2,266 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E900E34F04B
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC3834F04A
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhC3R5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:57:36 -0400
-Received: from rcdn-iport-2.cisco.com ([173.37.86.73]:52297 "EHLO
-        rcdn-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbhC3R5I (ORCPT
+        id S232675AbhC3R5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:57:34 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:48347 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhC3R47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:57:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=7816; q=dns/txt; s=iport;
-  t=1617127028; x=1618336628;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PVYj4/JEMLiilwFZR8HYiGm4NMCrkVblgX2Uf1aFQnA=;
-  b=WMnXntK/F9vpcYe+CVWlo9lVh4ech+S6AK8/FIymnYtv9ZTCwIR4MoDl
-   Jdip37tttjUPUd0/Z93PvqUcrYyMNetvjIlbJqz3EwV3WYlDefA+zyJ+f
-   5KB7H20LAH+WC94fbaxydXiEpwPdm3VIViJSyDKl3X19WPgfzmXQNzJn0
-   U=;
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="881996291"
-Received: from rcdn-core-2.cisco.com ([173.37.93.153])
-  by rcdn-iport-2.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:57:07 +0000
-Received: from zorba.cisco.com ([10.24.8.123])
-        by rcdn-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12UHv6CE024502;
-        Tue, 30 Mar 2021 17:57:06 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     xe-linux-external@cisco.com, Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] CMDLINE: add generic builtin command line
-Date:   Tue, 30 Mar 2021 10:56:56 -0700
-Message-Id: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Mar 2021 13:56:59 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 8E16F8C;
+        Tue, 30 Mar 2021 10:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617127019;
+        bh=vkNDQZl9zqd2neyuTS3BDG1tfovdHaLGI2EfgQJp3os=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PlnBWX/ocnp+K3KqeKPhEbw+pUmxlPzcNplFen0zZty14F3wMH30rQOZX4GYkJ3vY
+         8cTAm6/d2HsLfdDF0lxrNb2F+dcfx2N8ZYaw8Kngzl0oEF2mAPZ8XEOnIcVuvIAVxl
+         ugkfb+QUFPgxmk6pV0foRupxdvNpIxyKumvIpfTo=
+Date:   Tue, 30 Mar 2021 12:56:56 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+ <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+ <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
-X-Outbound-Node: rcdn-core-2.cisco.com
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210330174221.GJ4976@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code allows architectures to use a generic builtin command line.
-The state of the builtin command line options across architecture is
-diverse. MIPS and X86 once has similar systems, then mips added some
-options to allow extending the command line. Powerpc did something
-simiar in adding the ability to extend. Even with mips and powerpc
-enhancement the needs of Cisco are not met on these platforms.
+On Tue, Mar 30, 2021 at 12:42:21PM CDT, Mark Brown wrote:
+>On Tue, Mar 30, 2021 at 12:19:29PM -0500, Zev Weiss wrote:
+>> On Tue, Mar 30, 2021 at 06:22:54AM CDT, Mark Brown wrote:
+>> > On Tue, Mar 30, 2021 at 03:34:16AM -0700, Guenter Roeck wrote:
+>
+>> > > (and I don't know if the userspace consumer code is appropriate - you
+>> > > might want to check with the regulator maintainer on that).
+>
+>> > It's not, you should never see this in a production system.
+>
+>> Sorry, can you clarify what exactly "this" refers to here?
+>
+>The userspace consumer.
+>
+>> > I can't really tell what the issue is here without more context, the
+>> > global name list should not be relevant for much in a system that's well
+>> > configured so it sounds like it's user error.
+>
+>> My initial attempt I guess followed the existing ltc2978 code a little too
+>> closely and I ended up with all my lm25066 regulators registered under the
+>> same (static) name, so when I went to attach the reg-userspace-consumer
+>> instances to them by way of that name I got this:
+>
+>I don't know what you're trying to do or why, nor how you're going about
+>achieving it so I can't really comment.  Like I say anything that's
+>instantiating a userspace consumer in upstream code is broken, it's
+>there for test during development of regulator drivers.  Whatever device
+>is supplied by the regulator should have a driver which should control
+>the regulator at runtime if that is needed.
 
-The code in this commit unifies the code into a generic
-header file under the CONFIG_GENERIC_CMDLINE option. When this
-option is enabled the architecture can call the cmdline_add_builtin()
-to add the builtin command line.
+Okay, to expand a bit on the description in my initial message -- we've
+got a single chassis with multiple server boards and a single manager 
+board that handles, among other things, power control for the servers.
+The manager board has one LM25066 for each attached server, which acts 
+as the "power switch" for that server.  There thus really isn't any 
+driver to speak of for the downstream device.
 
-This unified implementation offers the same functionality needed by
-Cisco on all platform which use it.
+We need to be able to toggle that power switch from userspace on the 
+manager board, which we could achieve via i2cset, but we don't want to 
+give up the sensors provided by the hwmon driver.
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- include/linux/cmdline.h | 98 +++++++++++++++++++++++++++++++++++++++++
- init/Kconfig            | 72 ++++++++++++++++++++++++++++++
- 2 files changed, 170 insertions(+)
- create mode 100644 include/linux/cmdline.h
+The hardware seems perfectly capable of providing the functionality we 
+need -- is there any way of implementing the requisite kernel support in 
+a way that the relevant subsystem maintainers would find palatable, or 
+is carrying an out-of-tree patch my only option for this?
 
-diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-new file mode 100644
-index 000000000000..439c4585feba
---- /dev/null
-+++ b/include/linux/cmdline.h
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_CMDLINE_H
-+#define _LINUX_CMDLINE_H
-+
-+/*
-+ *
-+ * Copyright (C) 2006,2021. Cisco Systems, Inc.
-+ *
-+ * Generic Append/Prepend cmdline support.
-+ */
-+
-+#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_CMDLINE_BOOL)
-+
-+#ifndef CONFIG_CMDLINE_OVERRIDE
-+#define GENERIC_CMDLINE_NEED_STRLCAT
-+#define CMDLINE_PREPEND CONFIG_CMDLINE_PREPEND
-+#define CMDLINE_APPEND CONFIG_CMDLINE_APPEND
-+
-+/*
-+ * This function will append or prepend a builtin command line to the command
-+ * line provided by the bootloader. Kconfig options can be used to alter
-+ * the behavior of this builtin command line.
-+ * @dest: The destination of the final appended/prepended string
-+ * @src: The starting string or NULL if there isn't one.
-+ * @tmp: temporary space used for prepending
-+ * @length: the maximum length of the strings above.
-+ * @cmdline_strlcpy: point to a compatible strlcpy
-+ * @cmdline_strlcat: point to a compatible strlcat
-+ */
-+static inline void
-+__cmdline_add_builtin(char *dest, const char *src, char *tmp, unsigned long length,
-+		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size),
-+		size_t (*cmdline_strlcat)(char *dest, const char *src, size_t count))
-+{
-+	if (src != dest && src != NULL) {
-+		cmdline_strlcpy(dest, " ", length);
-+		cmdline_strlcat(dest, src, length);
-+	}
-+
-+	if (sizeof(CONFIG_CMDLINE_APPEND) > 1)
-+		cmdline_strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
-+
-+	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {
-+		cmdline_strlcpy(tmp, CONFIG_CMDLINE_PREPEND " ", length);
-+		cmdline_strlcat(tmp, dest, length);
-+		cmdline_strlcpy(dest, tmp, length);
-+	}
-+}
-+
-+#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)			\
-+{														\
-+	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {								\
-+		static label char cmdline_tmp_space[length];							\
-+		__cmdline_add_builtin(dest, src, cmdline_tmp_space, length, cmdline_strlcpy, cmdline_strlcat);	\
-+	} else if (sizeof(CONFIG_CMDLINE_APPEND) > 1) {								\
-+		__cmdline_add_builtin(dest, src, NULL, length, cmdline_strlcpy, cmdline_strlcat);		\
-+	}													\
-+}
-+#define cmdline_add_builtin(dest, src, length)	\
-+	cmdline_add_builtin_custom(dest, src, length, __initdata, strlcpy, strlcat)
-+
-+#else /* CONFIG_CMDLINE_OVERRIDE */
-+
-+#define CMDLINE_PREPEND CONFIG_CMDLINE_PREPEND
-+#define CMDLINE_APPEND CONFIG_CMDLINE_APPEND
-+
-+static inline void
-+__cmdline_add_builtin_custom(char *dest, const char *src, unsigned long length,
-+		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size))
-+{
-+	cmdline_strlcpy(dest, CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND, length);
-+}
-+#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)	\
-+	__cmdline_add_builtin_custom(dest, src, length, cmdline_strlcpy)
-+#define cmdline_add_builtin(dest, src, length)	\
-+	__cmdline_add_builtin_custom(dest, src, length, strlcpy)
-+#endif /* !CONFIG_CMDLINE_OVERRIDE */
-+
-+#else /* !CONFIG_GENERIC_CMDLINE || !CONFIG_CMDLINE_BOOL */
-+
-+#define CMDLINE_PREPEND ""
-+#define CMDLINE_APPEND ""
-+
-+static inline void
-+__cmdline_add_builtin_custom(char *dest, const char *src, unsigned long length,
-+		size_t (*cmdline_strlcpy)(char *dest, const char *src, size_t size))
-+{
-+	if (src != NULL)
-+		cmdline_strlcpy(dest, src, length);
-+}
-+#define cmdline_add_builtin_custom(dest, src, length, label, cmdline_strlcpy, cmdline_strlcat)	\
-+	__cmdline_add_builtin_custom(dest, src, length, cmdline_strlcpy)
-+#define cmdline_add_builtin(dest, src, length)	\
-+	__cmdline_add_builtin_custom(dest, src, length, strlcpy)	\
-+
-+#endif /* CONFIG_GENERIC_CMDLINE */
-+
-+#endif /* _LINUX_CMDLINE_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 5f5c776ef192..84f06f62550a 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2034,6 +2034,78 @@ config PROFILING
- config TRACEPOINTS
- 	bool
- 
-+config GENERIC_CMDLINE
-+	bool
-+
-+config GENERIC_CMDLINE_OF
-+	bool
-+
-+
-+if GENERIC_CMDLINE
-+
-+config CMDLINE_BOOL
-+	bool "Built-in kernel command line"
-+	help
-+	  Allow for specifying boot arguments to the kernel at
-+	  build time.  On some systems (e.g. embedded ones), it is
-+	  necessary or convenient to provide some or all of the
-+	  kernel boot arguments with the kernel itself (that is,
-+	  to not rely on the boot loader to provide them.)
-+
-+	  To compile command line arguments into the kernel,
-+	  set this option to 'Y', then fill in the
-+	  the boot arguments in CONFIG_CMDLINE.
-+
-+	  Systems with fully functional boot loaders (i.e. non-embedded)
-+	  should leave this option set to 'N'.
-+
-+config CMDLINE_APPEND
-+	string "Built-in kernel command string append"
-+	depends on CMDLINE_BOOL
-+	default ""
-+	help
-+	  Enter arguments here that should be compiled into the kernel
-+	  image and used at boot time.  If the boot loader provides a
-+	  command line at boot time, this string is appended to it to
-+	  form the full kernel command line, when the system boots.
-+
-+	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
-+	  change this behavior.
-+
-+	  In most cases, the command line (whether built-in or provided
-+	  by the boot loader) should specify the device for the root
-+	  file system.
-+
-+config CMDLINE_PREPEND
-+	string "Built-in kernel command string prepend"
-+	depends on CMDLINE_BOOL
-+	default ""
-+	help
-+	  Enter arguments here that should be compiled into the kernel
-+	  image and used at boot time.  If the boot loader provides a
-+	  command line at boot time, this string is prepended to it to
-+	  form the full kernel command line, when the system boots.
-+
-+	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
-+	  change this behavior.
-+
-+	  In most cases, the command line (whether built-in or provided
-+	  by the boot loader) should specify the device for the root
-+	  file system.
-+
-+config CMDLINE_OVERRIDE
-+	bool "Built-in command line overrides boot loader arguments"
-+	depends on CMDLINE_BOOL
-+	help
-+	  Set this option to 'Y' to have the kernel ignore the boot loader
-+	  command line, and use ONLY the built-in command line. In this case
-+	  append and prepend strings are concatenated to form the full
-+	  command line.
-+
-+	  This is used to work around broken boot loaders.  This should
-+	  be set to 'N' under normal conditions.
-+endif
-+
- endmenu		# General setup
- 
- source "arch/Kconfig"
--- 
-2.25.1
+
+Thanks,
+Zev
 
