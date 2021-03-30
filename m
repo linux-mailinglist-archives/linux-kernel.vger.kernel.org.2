@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5CF34EC72
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3F934EC7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhC3P3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhC3P3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:29:24 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF19C061574;
-        Tue, 30 Mar 2021 08:29:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id b14so24396030lfv.8;
-        Tue, 30 Mar 2021 08:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OSsJ/4+KgnHiu5gezRczsING3scAbDi33DDKOpy2Q28=;
-        b=dOTBZNhnDGa7nDdY5+QtDDh48H+hcfPpTnDpCUbV/Fpi47iVCM5+kQe7Bd5hH+8/oh
-         nVvlCz204RTDlF9lWgnzhBSFr4oOYA3ONB75zwe5dISLTRY9o/3Xdwjjm87GEtIMNrXw
-         tpYBDG4VZEfS7dTli+6+2dVQ3mw5TtZ70CqIdNpKO6Z8juq5BYmDNgC0SWI3pXzFSBLC
-         GgLdRqe2dp/BQ/W4SRNGzUVmKVdyxKw/SBg3pKbK6AYdKAH4nPbHD/Fan4vP/1u8za5C
-         UpEXUraQAXOwOZmTT9xPq5QG0vcQAF9aSPbbrTQZ0XrPki/5KB41lwM8EHtz0Mk+N4Ps
-         LW6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OSsJ/4+KgnHiu5gezRczsING3scAbDi33DDKOpy2Q28=;
-        b=L3iztkydrbC/sX5EgfoCVtjTWzZNG/wZpFR//sbOz5loQ2RF5uyNLvC0TzP3S6z38S
-         L++OgQHi8mB9hIMQyo0DoOpTcXfn2OEz9hh28/NTabPktTULJf2mbDTqrlcojcyCfnDc
-         cOAD6JIJxPN7d1OSj1PuY7pYm0HXSq+YRaiCovWquzasc9KpkE7//uQKlbobhXwNpm4e
-         +UmHbA0Gj4vmo9epYwseN2nGIEuq6QK9NDXbkmevXZUtJ6n2o2ztVCld5nsiAVgrUggQ
-         oY3pZ8e3m6bwG6LhHBGV54Mvvdo121z6WeYizxKd9xD8w1+T6dwEYMegj3sSzlDrJJWW
-         qvng==
-X-Gm-Message-State: AOAM532/5WY4F8gapYq52/qFefKaojG/qzb/OKXAaehPlSoYaDt6+sCw
-        xDa+QOGPcrvOTS6FP3OyeC9Unit7krs=
-X-Google-Smtp-Source: ABdhPJyKCU1iIoyVTxHNos8jN66if7O3aIGQJzgxIM5LJMHGkYFrvzuq6bdiWgUgY2yvRdMUYeADPg==
-X-Received: by 2002:ac2:41d4:: with SMTP id d20mr19473965lfi.213.1617118162380;
-        Tue, 30 Mar 2021 08:29:22 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id z7sm2743362ljo.64.2021.03.30.08.29.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:29:22 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-6-digetx@gmail.com>
- <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
-Date:   Tue, 30 Mar 2021 18:29:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231992AbhC3PbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:31:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232432AbhC3Pag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:30:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 847AD619A7;
+        Tue, 30 Mar 2021 15:30:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617118235;
+        bh=v1dbBvYnlnpeTi3yQZ8GGvJpMY8lThR6ab6uDmszjNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ty9EUPL3HTj8+YrfsfYyzLPCIKZuI8lC98RSM576+OaLbAQtCG9IyX+JMnsZbZjb2
+         b3iF6sKWOqywqKAtqXDBC2EVlssXjBIIiNxcHGSfgQFHDa0gCoXj/lGn/sFaYlWSdO
+         4Rc3grw7579SkDENhbiqf2Uy81ekouIzL4RiDjovcXuZei+fwFZtHywx//4XaCsPR7
+         FHgP2mVFsuX3CKmO0F0GDV7WUPdsYwOlfkzBA2enlSvLzscXw1SkHAUJ568xfgFaqM
+         MDCpT9XQQC77ZEQ9CcRJGiMpQz0QZ60WTKOmT90LWEH2lkF30ayIPoftEE6OLuwl7Z
+         /+xEaYmRTLUyg==
+Date:   Tue, 30 Mar 2021 16:30:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+Message-ID: <20210330153023.GE4976@sirena.org.uk>
+References: <20210326191906.43567-1-jim2101024@gmail.com>
+ <20210326191906.43567-2-jim2101024@gmail.com>
+ <20210330150816.GA306420@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JBi0ZxuS5uaEhkUZ"
+Content-Disposition: inline
+In-Reply-To: <20210330150816.GA306420@robh.at.kernel.org>
+X-Cookie: Memory fault - where am I?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 11:48, Krzysztof Kozlowski пишет:
->> +  power-domains:
->> +    $ref: /schemas/types.yaml#/definitions/phandle
->> +    description:
->> +      Phandle of the SoC "core" power domain.
-> I think the core checks the type, so you only need to limit max items.
-> 
 
-It's a bit confusing that both variants work and it's not apparent what
-variant is better.
+--JBi0ZxuS5uaEhkUZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I actually used the max items limit initially and then changed it to
-$ref phandle because it appeared to me that it's a better choice. I'll
-switch back to the limit in v2, thanks.
+On Tue, Mar 30, 2021 at 10:08:16AM -0500, Rob Herring wrote:
+> On Fri, Mar 26, 2021 at 03:18:59PM -0400, Jim Quinlan wrote:
+
+> > +                    pcie-ep@0,0 {
+> > +                            reg =3D <0x0 0x0 0x0 0x0 0x0>;
+> > +                            compatible =3D "pci14e4,1688";
+> > +                            vpcie12v-supply: <&vreg12>;
+
+> For other cases, these properties are in the host bridge node. If these=
+=20
+> are standard PCI rails, then I think that's where they belong unless we=
+=20
+> define slot nodes.
+
+For a soldered down part I'd expect we'd want both (if the host even
+cares) - for anything except a supply that I/O or something else shared
+is referenced off there's no great reason why it has to be physically
+the same supply going to every device on the bus so each device should
+be able to specify separately.
+
+--JBi0ZxuS5uaEhkUZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjRA8ACgkQJNaLcl1U
+h9ANmwf7BttjRKh+uxAdgHhy0rI2LYRxFUkT8SfE/LGAEH8CvkYc4HHNnh0Ej99C
+FwJ0PuvncXiHwDAJnbhiiOTNvb7b8yaQFR/IBYXJ1QWXj2LGaLZAmRKVKxtwRJmq
+R5YMCL0owt8qits6jfUtrJgzwxRjmG7Rh1ailPmE30WMvd8zchuSaDWAdT6BaNdt
+jeWaonyazB0MM1TzVtR9Aiov/vMfdBLT692mVzO4QCtCmoUwDU0PInMh5lKcihYQ
+65HCHT/xknVn7Rph+qacZKLozK+skalElePvTK79cYb9+8LhwnOZ8FsIQ98ACQNI
+zvtnhgexwvQ8tldRw8qp8iB3eDzlCg==
+=hPcY
+-----END PGP SIGNATURE-----
+
+--JBi0ZxuS5uaEhkUZ--
