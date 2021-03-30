@@ -2,136 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309BF34E76E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E5034E775
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhC3MWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhC3MWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:22:14 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34173C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:22:14 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id f16so19683829ljm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:22:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pJNbEb32RRFyVDLPn81JyD/bPBWZa/kNrAZr1BiSP1w=;
-        b=jJXra8JyRr28Ri9Kh50Maf13vL8FqoOYMzvk4p27Ttgv5b7uNNe75UrU4iT0RBkfNm
-         GUUyKhT1YMemKc0IuRfF2qPmA7IxyciKvNHD30bE9X8xGjZOwbqSBwypqrUQpqlB38zI
-         kw5Y0xJI82YmGjMSuC+tevxrBrNBimLDeZG13Zf2BMJ0ktI6kNjcbBRAWszMEobrrz5e
-         tpxx7uJAVkHvCI9ISzkaazvrGX/snyKDClOzQMLZRDkSAlplQBmQpiiWOMITSwBQpnSs
-         xEcVWPOlbk4sK79Ux8EhDa4Ew6JR4MlSuWapxq7VaXXC6quyypuR6T43gxi69V4yiLPx
-         i1sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pJNbEb32RRFyVDLPn81JyD/bPBWZa/kNrAZr1BiSP1w=;
-        b=R+y0fqdugGbjs+Tu/4AcFvwJUHaqBLutuvBXjlowfMtxUVhGKX9SOyQiMiDlYDoo4p
-         VUhi4z2Zklskw7B9SupYo27NrQQ7z+HgzJWD2zG1t5FigEIXykkACmNyNLvP01PSPWFR
-         sqSOw/XYuCD/B8z1klkuVpKkdcmArYlNTE2S2hPUhnbaxj06VN5cbtKpWBlpqnWBR/TN
-         HpsUoNEyjWGDD2T3Rjd369ge3twr83262+v0ih/TU3QRMmMRTaGf7+S91djWYOWbOWf+
-         QQhZTIEaggfXFoVnY/FDo4TN0HQaKE6k3fR23cZwj2oJJkp6dFoy6q2YZlVUpPz/6Afq
-         5WDg==
-X-Gm-Message-State: AOAM530urFmRW3tyS8yW413K5rhiH5FTyqEbwGGLbR9DPc0uf4LBoReR
-        dBZarh9n4U5QbiPwfBeMi7GpjFYh5qNCFx5PgeV4wg==
-X-Google-Smtp-Source: ABdhPJwZCAdho/WBGi1nNYG0210SXgvGhNSwcDGCpqmZOA+NrWob4mXZndnEaF4yCuqPvMATbL4X1/KB+t4UUkIU2Vo=
-X-Received: by 2002:a2e:96c3:: with SMTP id d3mr21678300ljj.284.1617106932675;
- Tue, 30 Mar 2021 05:22:12 -0700 (PDT)
+        id S231976AbhC3MXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:23:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231946AbhC3MXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09313619B4;
+        Tue, 30 Mar 2021 12:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617106989;
+        bh=yxo5rnWB+u+L34D4axkwi6is/nDXRLXgw1WNc2SqjAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jremJgB5GbpLL6qR5c/hJw1/S4Aom1a/TGynXipXbKQdyRy1zpm7pAWmc3/uemB6e
+         Ucb5l+X4RWP9mX7HlmJBpAxELRmfrk8N3Z0WawXXdVBT3/FyL7HJQuSSGeV4ehC8h3
+         TIPEYHqTdVbWbbJco87fhAsDs/vTA2Pl5NgNzes8=
+Date:   Tue, 30 Mar 2021 14:23:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     tanghui20 <tanghui20@huawei.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon - check if debugfs opened
+Message-ID: <YGMYKquXSaju9H+A@kroah.com>
+References: <1616833980-11006-1-git-send-email-tanghui20@huawei.com>
+ <YGCcQnFHXEMW9Jz/@kroah.com>
+ <17d627e8-b89a-bbb8-f5d7-11210b859ac7@huawei.com>
 MIME-Version: 1.0
-References: <20210330120657.54173-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210330120657.54173-1-wangkefeng.wang@huawei.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 30 Mar 2021 14:22:01 +0200
-Message-ID: <CAKfTPtB54L4Eq+Fh2bfJfc24T603O5QRwZNH3_AVmFumMx6Uxw@mail.gmail.com>
-Subject: Re: [PATCH -next] sched/fair: Move update_nohz_stats() under CONFIG_NO_HZ_COMMON
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17d627e8-b89a-bbb8-f5d7-11210b859ac7@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 at 14:06, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> update_nohz_stats() only call _nohz_idle_balance() under CONFIG_NO_HZ_COMMON.
+On Tue, Mar 30, 2021 at 08:09:46PM +0800, tanghui20 wrote:
+> 
+> 
+> On 2021/3/28 23:09, Greg KH wrote:
+> > On Sat, Mar 27, 2021 at 04:33:00PM +0800, Hui Tang wrote:
+> > > 'xx_debugfs_init' check if debugfs opened.
+> > > 
+> > > Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> > > ---
+> > >  drivers/crypto/hisilicon/hpre/hpre_main.c | 5 ++++-
+> > >  drivers/crypto/hisilicon/qm.c             | 3 +++
+> > >  drivers/crypto/hisilicon/sec2/sec_main.c  | 5 ++++-
+> > >  drivers/crypto/hisilicon/zip/zip_main.c   | 3 +++
+> > >  4 files changed, 14 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > index c7ab06d..f2605c4 100644
+> > > --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> > > @@ -779,6 +779,9 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
+> > >  	struct device *dev = &qm->pdev->dev;
+> > >  	int ret;
+> > > 
+> > > +	if (!debugfs_initialized())
+> > > +		return -ENOENT;
+> > 
+> > Why?  What does this help with?  Why does the code care if debugfs is
+> > running or not?
+> > 
+> When !CONFIG_DEBUG_FS, there is no problem if debugfs is not checked,
+> but if checking debugfs, a series of stub functions of debugfs can be
+> skipped and 'xx_debugfs_init' will be return immediately.
 
-a similar patch has already been sent and reviewed :
-20210329144029.29200-1-yuehaibing@huawei.com
+And have you measured an actual speed difference for that?  I would be
+amazed if you could...
 
->
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  kernel/sched/fair.c | 40 ++++++++++++++++++----------------------
->  1 file changed, 18 insertions(+), 22 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6d73bdbb2d40..2a20ada83cbb 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8395,28 +8395,6 @@ group_type group_classify(unsigned int imbalance_pct,
->         return group_has_spare;
->  }
->
-> -static bool update_nohz_stats(struct rq *rq)
-> -{
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -       unsigned int cpu = rq->cpu;
-> -
-> -       if (!rq->has_blocked_load)
-> -               return false;
-> -
-> -       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> -               return false;
-> -
-> -       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
-> -               return true;
-> -
-> -       update_blocked_averages(cpu);
-> -
-> -       return rq->has_blocked_load;
-> -#else
-> -       return false;
-> -#endif
-> -}
-> -
->  /**
->   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
->   * @env: The load balancing environment.
-> @@ -10380,6 +10358,24 @@ void nohz_balance_enter_idle(int cpu)
->         WRITE_ONCE(nohz.has_blocked, 1);
->  }
->
-> +static bool update_nohz_stats(struct rq *rq)
-> +{
-> +       unsigned int cpu = rq->cpu;
-> +
-> +       if (!rq->has_blocked_load)
-> +               return false;
-> +
-> +       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> +               return false;
-> +
-> +       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
-> +               return true;
-> +
-> +       update_blocked_averages(cpu);
-> +
-> +       return rq->has_blocked_load;
-> +}
-> +
->  /*
->   * Internal function that runs load balance for all idle cpus. The load balance
->   * can be a simple update of blocked load or a complete load balance with
-> --
-> 2.26.2
->
+thanks,
+
+greg k-h
