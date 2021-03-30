@@ -2,222 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5135A34EF51
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151C934EF54
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhC3RX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:23:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:42696 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhC3RXL (ORCPT
+        id S232420AbhC3RYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhC3RXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:23:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617124990; x=1648660990;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=hWeb1+TRWPqxCyB/ieGKfNFvG7dBHh2X0HpH2Qfdr8s=;
-  b=Az8wGMOytETJyjHybfreuZ6z+W5yHnH7LLzcA4nbWXluN0F5jV5OG+9+
-   demRAPabAikqj0GwXYKh+uSNkSjEY1rdXWkfF+B4PO9+pWrcPI5r+kCFM
-   2Hzv6YH6rHBBq/8o6zaCKo8xrmaVXxreOOXv4f36zpyNtfo/LZBXWAD1p
-   /nuGO4E5gtaufhU3il/X9vPcIEpvZW9vwMZtlBXROf1JJ+zlqI3S7cmGJ
-   /gG9XA3YS8OVJOnivyoR2PLsyN13VDAdAPxDWe627JyoFFitZzTIF3VyB
-   wbRLrTVWjlMT89tW8W1qNAJ54saXCB5q4moqZsW9fuEwc++elyMz4IYkl
-   A==;
-IronPort-SDR: UNc8k8Yfv9C8YJGe3lsCoYBewliCXdicrThVYbj5F0+8de/P2oXVBlsPicY38uAvbDbfRSU2YH
- hP/LjPRZqLcmp7QB8lPGOvsyiCJ3e247e0bK3g9FVODUT3RUW3eP+7skWF5Xzg6QGUqbwrgHIJ
- /xqJOVuE1NyxLk/hixG1bEtK4Fck2K8SRA35pnSpm5feTSirMx0vSg+aPI07ZQtOnUZmoy1Vo/
- m7XyovUqUBkP1u/4eoXygpcn5CcHR/yK74i9ogoecxmXVW5r2C6+/UsYs4NpHXA62txetf3qvU
- Nv0=
-X-IronPort-AV: E=Sophos;i="5.81,291,1610434800"; 
-   d="scan'208";a="109107089"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 10:23:10 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 30 Mar 2021 10:23:10 -0700
-Received: from [10.171.246.97] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 30 Mar 2021 10:23:08 -0700
-Subject: Re: [RESEND PATCH 4/5] clk: at91: clk-master: add register definition
- for sama7g5's master clock
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210324094353.1710114-1-claudiu.beznea@microchip.com>
- <20210324094353.1710114-5-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <607e986b-1170-503a-84cc-ee9a9f32fd32@microchip.com>
-Date:   Tue, 30 Mar 2021 19:23:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 30 Mar 2021 13:23:48 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDABC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:23:48 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id jy13so26037396ejc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=32JzxatUQabuENP6ffJt7g448VuqQqAUlwpVZTSNv9k=;
+        b=PGGcyAGp3wdj470VpYmMyE1kvuXW5Ch7C+h7F1239iibVPd/bNHBijlQr2hA33Fbxu
+         Xuwc0dW+42IyfQG2oIimzT7YbQsbrAdsNpeY/sS29+wslYaOIC+bksBT2s71gjkdOW8B
+         C0O+z5ZeOsw3r5SenH3l+QJjua0uhurBS8xCx9Sc70K9kiJHpJTMcj7J8e7Sfan/GTlj
+         TntVBFyWHm8OzGLBvERQdEV4yzz/34/I1i6VKiP72kG3FAkpheRCXub+Sb/SCF+7Pfrp
+         DXUOBWWMUBdyhQXN4tk2Vzxjdy2prcRcmsc9sZOQGogI7+m2Pq/EAwzDu62Ay8cpimIy
+         WpGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=32JzxatUQabuENP6ffJt7g448VuqQqAUlwpVZTSNv9k=;
+        b=bQ0gh53MdjV3eoojXzFIOGZtUxURxu7a9dO3PCWCzG3fAmTxQy83OzFrvUQtYVQqGE
+         w9bJQTRsRfoWORJAgywt6KgrqA5rFDKgwBVHURM700Q74YL7eFHxUQycHGnjVvHVwJPw
+         zxc8ltqzSW7s0PGFSOM7B60pv2S80tnpZgDsDCV6y2FHvtD3FZz79tr99YKi6bFetpDP
+         jysWi/8hFBN1iVqVYln5TbgbgjTBOW7ZpNHizM2l2dqjsIz/ypcesWwW072U9x3Oqnkt
+         1gRBD2TkL+hKOgMlZPboiOax4sSK339PFTHEIacbfc6KK5UH0ahf+Kgvcsedrf0pO883
+         0Mpw==
+X-Gm-Message-State: AOAM532XPc8NYRalcBZ6Xk4FqCI9Cxvq3IHqpn2J9HUAUL44mhj4WjjM
+        sronLe/ZJ1YFyoEhi0kv6IIbWdFh/xrbELE8Umv45g==
+X-Google-Smtp-Source: ABdhPJzGUld0QGldf6zyCn9CnbjHu5dlmKzXS25uf7frVJHMzwz6hpjCgbpb/SKoYulelZuCLu5xKsln+BniUj3sXXU=
+X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr34086733ejb.503.1617125026643;
+ Tue, 30 Mar 2021 10:23:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210324094353.1710114-5-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYvs2+0f=271is1fn4LzWh8VQkF5rR0AjN2__hRPWCWScg@mail.gmail.com>
+In-Reply-To: <CA+G9fYvs2+0f=271is1fn4LzWh8VQkF5rR0AjN2__hRPWCWScg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 30 Mar 2021 22:53:34 +0530
+Message-ID: <CA+G9fYvFn3yDp0hdsawd66C3YNykz1cx0S4cUn_kp_N4g2LaYQ@mail.gmail.com>
+Subject: Re: WARNING: at fs/proc/generic.c:717 remove_proc_entry
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, gladkov.alexey@gmail.com,
+        Colin King <colin.king@canonical.com>,
+        Greg KH <gregkh@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 at 10:43, Claudiu Beznea wrote:
-> Add register definitions for SAMA7G5's master clock. These would be
-> also used by architecture specific power saving code. With this, update
-> also clk-master.c.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
->   drivers/clk/at91/clk-master.c | 51 +++++++++++++++++------------------
->   include/linux/clk/at91_pmc.h  | 26 ++++++++++++++++++
->   2 files changed, 50 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
-> index 6f1fb2eb2a8d..a6a393bb1def 100644
-> --- a/drivers/clk/at91/clk-master.c
-> +++ b/drivers/clk/at91/clk-master.c
-> @@ -17,15 +17,7 @@
->   #define MASTER_DIV_SHIFT	8
->   #define MASTER_DIV_MASK		0x7
->   
-> -#define PMC_MCR			0x30
-> -#define PMC_MCR_ID_MSK		GENMASK(3, 0)
-> -#define PMC_MCR_CMD		BIT(7)
-> -#define PMC_MCR_DIV		GENMASK(10, 8)
-> -#define PMC_MCR_CSS		GENMASK(20, 16)
->   #define PMC_MCR_CSS_SHIFT	(16)
-> -#define PMC_MCR_EN		BIT(28)
-> -
-> -#define PMC_MCR_ID(x)		((x) & PMC_MCR_ID_MSK)
->   
->   #define MASTER_MAX_ID		4
->   
-> @@ -685,17 +677,20 @@ static void clk_sama7g5_master_set(struct clk_master *master,
->   
->   	spin_lock_irqsave(master->lock, flags);
->   
-> -	regmap_write(master->regmap, PMC_MCR, PMC_MCR_ID(master->id));
-> -	regmap_read(master->regmap, PMC_MCR, &val);
-> -	regmap_update_bits(master->regmap, PMC_MCR,
-> -			   (status ? PMC_MCR_EN : 0) | PMC_MCR_CSS | PMC_MCR_DIV |
-> -			   PMC_MCR_CMD | PMC_MCR_ID_MSK,
-> -			   (status ? PMC_MCR_EN : 0) |
-> +	regmap_write(master->regmap, AT91_PMC_MCR_V2,
-> +		     AT91_PMC_MCR_V2_ID(master->id));
-> +	regmap_read(master->regmap, AT91_PMC_MCR_V2, &val);
-> +	regmap_update_bits(master->regmap, AT91_PMC_MCR_V2,
-> +			   (status ? AT91_PMC_MCR_V2_EN : 0) |
-> +			   AT91_PMC_MCR_V2_CSS | AT91_PMC_MCR_V2_DIV |
-> +			   AT91_PMC_MCR_V2_CMD | AT91_PMC_MCR_V2_ID_MSK,
-> +			   (status ? AT91_PMC_MCR_V2_EN : 0) |
+Small correction,
+As per available test data the good tag is next-20210326.
+GOOD: next-20210326
+BAD: next-20210330
 
-Ok, here also. Can't we make it simpler to read?
+On Tue, 30 Mar 2021 at 22:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> While running kselftest gpio on x86_64 and i386 the following warnings were
+> noticed and the device did not recover.
+>
 
->   			   (master->parent << PMC_MCR_CSS_SHIFT) |
->   			   (master->div << MASTER_DIV_SHIFT) |
-> -			   PMC_MCR_CMD | PMC_MCR_ID(master->id));
-> +			   AT91_PMC_MCR_V2_CMD |
-> +			   AT91_PMC_MCR_V2_ID(master->id));
->   
-> -	cparent = (val & PMC_MCR_CSS) >> PMC_MCR_CSS_SHIFT;
-> +	cparent = (val & AT91_PMC_MCR_V2_CSS) >> PMC_MCR_CSS_SHIFT;
->   
->   	/* Wait here only if parent is being changed. */
->   	while ((cparent != master->parent) && !clk_master_ready(master))
-> @@ -720,10 +715,12 @@ static void clk_sama7g5_master_disable(struct clk_hw *hw)
->   
->   	spin_lock_irqsave(master->lock, flags);
->   
-> -	regmap_write(master->regmap, PMC_MCR, master->id);
-> -	regmap_update_bits(master->regmap, PMC_MCR,
-> -			   PMC_MCR_EN | PMC_MCR_CMD | PMC_MCR_ID_MSK,
-> -			   PMC_MCR_CMD | PMC_MCR_ID(master->id));
-> +	regmap_write(master->regmap, AT91_PMC_MCR_V2, master->id);
-> +	regmap_update_bits(master->regmap, AT91_PMC_MCR_V2,
-> +			   AT91_PMC_MCR_V2_EN | AT91_PMC_MCR_V2_CMD |
-> +			   AT91_PMC_MCR_V2_ID_MSK,
-> +			   AT91_PMC_MCR_V2_CMD |
-> +			   AT91_PMC_MCR_V2_ID(master->id));
->   
->   	spin_unlock_irqrestore(master->lock, flags);
->   }
-> @@ -736,12 +733,12 @@ static int clk_sama7g5_master_is_enabled(struct clk_hw *hw)
->   
->   	spin_lock_irqsave(master->lock, flags);
->   
-> -	regmap_write(master->regmap, PMC_MCR, master->id);
-> -	regmap_read(master->regmap, PMC_MCR, &val);
-> +	regmap_write(master->regmap, AT91_PMC_MCR_V2, master->id);
-> +	regmap_read(master->regmap, AT91_PMC_MCR_V2, &val);
->   
->   	spin_unlock_irqrestore(master->lock, flags);
->   
-> -	return !!(val & PMC_MCR_EN);
-> +	return !!(val & AT91_PMC_MCR_V2_EN);
->   }
->   
->   static int clk_sama7g5_master_set_rate(struct clk_hw *hw, unsigned long rate,
-> @@ -837,10 +834,10 @@ at91_clk_sama7g5_register_master(struct regmap *regmap,
->   	master->mux_table = mux_table;
->   
->   	spin_lock_irqsave(master->lock, flags);
-> -	regmap_write(master->regmap, PMC_MCR, master->id);
-> -	regmap_read(master->regmap, PMC_MCR, &val);
-> -	master->parent = (val & PMC_MCR_CSS) >> PMC_MCR_CSS_SHIFT;
-> -	master->div = (val & PMC_MCR_DIV) >> MASTER_DIV_SHIFT;
-> +	regmap_write(master->regmap, AT91_PMC_MCR_V2, master->id);
-> +	regmap_read(master->regmap, AT91_PMC_MCR_V2, &val);
-> +	master->parent = (val & AT91_PMC_MCR_V2_CSS) >> PMC_MCR_CSS_SHIFT;
-> +	master->div = (val & AT91_PMC_MCR_V2_DIV) >> MASTER_DIV_SHIFT;
->   	spin_unlock_irqrestore(master->lock, flags);
->   
->   	hw = &master->hw;
-> diff --git a/include/linux/clk/at91_pmc.h b/include/linux/clk/at91_pmc.h
-> index a4f82e836a7c..ccb3f034bfa9 100644
-> --- a/include/linux/clk/at91_pmc.h
-> +++ b/include/linux/clk/at91_pmc.h
-> @@ -137,6 +137,32 @@
->   #define			AT91_PMC_PLLADIV2_ON		(1 << 12)
->   #define		AT91_PMC_H32MXDIV	BIT(24)
->   
-> +#define	AT91_PMC_MCR_V2		0x30				/* Master Clock Register [SAMA7G5 only] */
-> +#define		AT91_PMC_MCR_V2_ID_MSK	(0xF)
-> +#define			AT91_PMC_MCR_V2_ID(_id)		((_id) & AT91_PMC_MCR_V2_ID_MSK)
-> +#define		AT91_PMC_MCR_V2_CMD	(1 << 7)
-> +#define		AT91_PMC_MCR_V2_DIV	(7 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV1		(0 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV2		(1 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV4		(2 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV8		(3 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV16		(4 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV32		(5 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV64		(6 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV3		(7 << 8)
-> +#define		AT91_PMC_MCR_V2_CSS	(0x1F << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MD_SLCK	(0 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_TD_SLCK	(1 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MAINCK	(2 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MCK0	(3 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_SYSPLL	(5 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_DDRPLL	(6 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_IMGPLL	(7 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_BAUDPLL	(8 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_AUDIOPLL	(9 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_ETHPLL	(10 << 16)
-> +#define		AT91_PMC_MCR_V2_EN	(1 << 28)
-> +
->   #define AT91_PMC_XTALF		0x34			/* Main XTAL Frequency Register [SAMA7G5 only] */
->   
->   #define	AT91_PMC_USB		0x38			/* USB Clock Register [some SAM9 only] */
-> 
+GOOD: next-20210326
 
-Autherwise, it's fine. Thanks. Best regards,
-   Nicolas
-
--- 
-Nicolas Ferre
+> BAD: next-20210330
+>
+> steps to reproduce:
+> -------------------
+> # Boot linux next tag 20210330 on x86_64 machine
+> # cd /opt/kselftests/default-in-kernel/
+> # ./gpio-mockup.sh --> which is doing modprobe gpio-mockup
+>
+> Test log:
+> ------------
+> # selftests: gpio: gpio-mockup.sh
+> # 1.  Module load tests
+> # 1.1.  dynamic allocation of gpio
+> # ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
+> # test failed: line value is 127 when 1 was[   46.136044]
+> ------------[ cut here ]------------
+> [   46.141916] remove_proc_entry: removing non-empty directory
+> 'irq/3', leaking at least 'ttyS1'
+>  expected
+> # GPI[   46.150471] WARNING: CPU: 2 PID: 603 at
+> /usr/src/kernel/fs/proc/generic.c:717 remove_proc_entry+0x1a8/0x1c0
+> [   46.161566] Modules linked in: gpio_mockup(-) x86_pkg_temp_thermal fuse
+> [   46.168195] CPU: 2 PID: 603 Comm: modprobe Not tainted
+> 5.12.0-rc5-next-20210330 #1
+> [   46.175793] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   46.183217] RIP: 0010:remove_proc_entry+0x1a8/0x1c0
+> O gpio-mockup te[   46.188128] Code: 40 bc 24 a8 48 c7 c7 98 4a 6a a8
+> 48 0f 45 c2 49 8b 94 24 b0 00 00 00 4c 8b 80 d8 00 00 00 48 8b 92 d8
+> 00 00 00 e8 38 36 cb ff <0f> 0b e9 5b ff ff ff e8 0c f4 c5 00 66 90 66
+> 2e 0f 1f 84 00 00 00
+> [   46.208252] RSP: 0018:ffff9da080293c58 EFLAGS: 00010286
+> [   46.213511] RAX: 0000000000000000 RBX: ffff93e8403bcbb8 RCX: 0000000000000000
+> [   46.220650] RDX: 0000000000000001 RSI: ffff93e9afb177f0 RDI: ffff93e9afb177f0
+> [   46.227820] RBP: ffff9da080293c88 R08: 0000000000000001 R09: 0000000000000001
+> [   46.235018] R10: ffff9da080293a80 R11: ffff9da080293a08 R12: ffff93e8403bcb00
+> [   46.242165] R13: ffff93e840263100 R14: 0000000000000001 R15: 0000000000000000
+> st FAIL
+> [   46.249303] FS:  00007f7dc2501740(0000) GS:ffff93e9afb00000(0000)
+> knlGS:0000000000000000
+> [   46.258164] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   46.263977] CR2: 00007f7dc1de67f0 CR3: 000000014f292003 CR4: 00000000003706e0
+> [   46.271124] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   46.278292] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   46.285459] Call Trace:
+> [   46.287926]  unregister_irq_proc+0xf8/0x110
+> [   46.292128]  free_desc+0x2e/0x70
+> [   46.295393]  irq_free_descs+0x54/0x80
+> [   46.299102]  irq_domain_free_irqs+0x11b/0x150
+> [   46.303507]  irq_dispose_mapping+0x77/0x120
+> [   46.307711]  gpio_mockup_dispose_mappings+0x4c/0x60 [gpio_mockup]
+> [   46.313817]  devm_action_release+0x15/0x20
+> [   46.317933]  release_nodes+0x11e/0x220
+> [   46.321707]  devres_release_all+0x3c/0x50
+> [   46.325733]  device_release_driver_internal+0x10e/0x1d0
+> [   46.331016]  driver_detach+0x4d/0xa0
+> [   46.334609]  bus_remove_driver+0x5f/0xe0
+> [   46.338553]  driver_unregister+0x2f/0x50
+> [   46.342495]  platform_driver_unregister+0x12/0x20
+> [   46.347218]  gpio_mockup_exit+0x1f/0x5cc [gpio_mockup]
+> [   46.352374]  __x64_sys_delete_module+0x15b/0x260
+> [   46.357082]  do_syscall_64+0x37/0x50
+> [   46.360676]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   46.365748] RIP: 0033:0x7f7dc1e0f997
+> [   46.369342] Code: 73 01 c3 48 8b 0d 01 a5 2b 00 f7 d8 64 89 01 48
+> 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00
+> 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d1 a4 2b 00 f7 d8 64 89
+> 01 48
+> [   46.388108] RSP: 002b:00007ffe35506e78 EFLAGS: 00000206 ORIG_RAX:
+> 00000000000000b0
+> [   46.395708] RAX: ffffffffffffffda RBX: 000000000134ebd0 RCX: 00007f7dc1e0f997
+> [   46.402883] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000000000134ec38
+> [   46.410031] RBP: 0000000000000000 R08: 00007ffe35505e41 R09: 0000000000000000
+> [   46.417183] R10: 00000000000008da R11: 0000000000000206 R12: 000000000134ec38
+> [   46.424331] R13: 0000000000000001 R14: 000000000134ec38 R15: 00007ffe35508238
+> [   46.431507] irq event stamp: 6645
+> [   46.434845] hardirqs last  enabled at (6655): [<ffffffffa6e4fc4e>]
+> console_unlock+0x34e/0x550
+> [   46.443380] hardirqs last disabled at (6664): [<ffffffffa6e4fcb9>]
+> console_unlock+0x3b9/0x550
+> [   46.451915] softirqs last  enabled at (6564): [<ffffffffa800030e>]
+> __do_softirq+0x30e/0x421
+> [   46.460333] softirqs last disabled at (6559): [<ffffffffa6dce643>]
+> irq_exit_rcu+0xb3/0xc0
+> [   46.468548] ---[ end trace 89d0119dab1b1498 ]---
+> [ 46.477938] remove_proc_entry: removing non-empty directory 'irq/4',
+> leaking at least 'ttyS0'
+> [ 46.486512] WARNING: CPU: 0 PID: 603 at
+> /usr/src/kernel/fs/proc/generic.c:717 remove_proc_entry+0x1a8/0x1c0
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> metadata:
+>   git branch: master
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   git describe: next-20210330
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-next/995/config
+>
+> Full test log:
+> https://lkft.validation.linaro.org/scheduler/job/2463479#L1481
+>
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210330/testrun/4268028/suite/linux-log-parser/test/check-kernel-exception-2462521/log
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
