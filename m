@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDB434F2C8
+	by mail.lfdr.de (Postfix) with ESMTP id 52BF434F2C7
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhC3VIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:08:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhC3VIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230151AbhC3VIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:08:52 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43986 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232057AbhC3VIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 30 Mar 2021 17:08:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDC08619C5
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 21:08:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617138504;
-        bh=EfaVkmECL99LjE1GBi1qyVo83qG2SVDQjHaRutFWP0o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f8RRuS+HnMl60xMQy17BAfl/cBhvSX4suSx+9ocyuftDHZ5xbVLfQtamsdRugRKv/
-         NQTfuHlML26dRaMBXqqWsX88Iov7iQ8LeHfIt4rA9J86G1TQKe7IgEbo9BAJmmSgrX
-         tR5lI4IZ52gfFTY07CtU8RpsppdbVqsmK2Ro+VjmkhD33ND4q3QZw9t12HgR0NanRw
-         d9WZ2jZyEmhGztDCaULUpiMCVZVl/NHADdCLsZF0f7sId6r1euuSbgbeQy+wZqLZmA
-         063Zo9FyIZjTNgei5Azb6/F9/hzvyGIG7aZ064yiQ6lbvKEdpUFsoPA43NWZBFHZES
-         j+B7x4gATIrrQ==
-Received: by mail-qk1-f175.google.com with SMTP id v70so17334452qkb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:08:23 -0700 (PDT)
-X-Gm-Message-State: AOAM5322odDF8NWeLzYKykKUiTdaWAvAmOD7RzsjBCrBzgfCi+aQpqgi
-        H53W7cd6X9Rp1mtLLD4UqTo78JtM5l7IWW33xA==
-X-Google-Smtp-Source: ABdhPJz9TD/pM9pa1pJ4sadIoVyzSuRapbFz7ZtiFKT/fFlgnL0VRp1K18TT+vem1ZxGi6UqeZflLtuOA1lLBkmhP6E=
-X-Received: by 2002:a37:d82:: with SMTP id 124mr158857qkn.311.1617138502980;
- Tue, 30 Mar 2021 14:08:22 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id d12so63202ioo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:08:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Lzi5bMKkls9Xd2UZQOCL76vuZtMRxKtuq8CWVbFaDwU=;
+        b=nIZz/4bzotyf/AML44L5FXgyf9t+QPV5EhsRK1Oft9wNoBj/fhViJ1RA+hUHbzekQe
+         XCE/v4xKYJem+0U8WmcnUigGjIcZWySWuxJzqtakDz5lGvFJbf8fN+oXhSOqA4I2H9fN
+         1soGTbBDnAyolRAYgYkVTI1cd2xYIq9IE7XpMC1YkMgxV+TjCDghAaoJ9/ofkzJQ/0Np
+         ozkrfirh1eYPEHqGfxuJyod7Ki7QoHckH18W4hG2yNRYk/pvD3BMdS/EMhptmbTyfcVi
+         9i4Ks0d6HDfou9mllHzBK+snzd/WUcyHoXHuQjryBZuTBMpthszag/eILC+YOtUpofKp
+         a9zg==
+X-Gm-Message-State: AOAM530X0T9jUdYS6B0yEGMmvA0PJyy04E6mNQzkRKc4xYqXoHLIplId
+        zIXW6ukL4EukZKp+6pMp7lJgcAXxY+1sO0uTQtZRaq3drHle
+X-Google-Smtp-Source: ABdhPJxj/cahfDX/Wrs5v8qHwLjSug1dsd7i2JNx264ZuSNHlwc4fNN+7j7Zxgj7fElQQLIMmGfwtAxqJMmwo+izYrOgnlk2QYCT
 MIME-Version: 1.0
-References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-3-robh@kernel.org>
- <20210330153125.GC6567@willie-the-truck> <CAL_JsqKN4=T4tHofEoBoWVEZSQEj_m=561_kEdEEkz5szHszhQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqKN4=T4tHofEoBoWVEZSQEj_m=561_kEdEEkz5szHszhQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 30 Mar 2021 16:08:11 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKqKKb8uXSxQKT4ZMqMv8dt3ABpP+T8x+A1-zb2RKjCNA@mail.gmail.com>
-Message-ID: <CAL_JsqKqKKb8uXSxQKT4ZMqMv8dt3ABpP+T8x+A1-zb2RKjCNA@mail.gmail.com>
-Subject: Re: [PATCH v6 02/10] arm64: perf: Enable PMU counter direct access
- for perf event
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a02:6654:: with SMTP id l20mr196612jaf.55.1617138504084;
+ Tue, 30 Mar 2021 14:08:24 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 14:08:24 -0700
+In-Reply-To: <00000000000073afff05bbe9a54d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000016afc505bec766d3@google.com>
+Subject: Re: [syzbot] WARNING in ieee802154_del_seclevel
+From:   syzbot <syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, info@sophiescuban.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:09 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, Mar 30, 2021 at 10:31 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Wed, Mar 10, 2021 at 05:08:29PM -0700, Rob Herring wrote:
-> > > From: Raphael Gault <raphael.gault@arm.com>
-> > >
-> > > Keep track of event opened with direct access to the hardware counters
-> > > and modify permissions while they are open.
-> > >
-> > > The strategy used here is the same which x86 uses: every time an event
-> > > is mapped, the permissions are set if required. The atomic field added
-> > > in the mm_context helps keep track of the different event opened and
-> > > de-activate the permissions when all are unmapped.
-> > > We also need to update the permissions in the context switch code so
-> > > that tasks keep the right permissions.
-> > >
-> > > In order to enable 64-bit counters for userspace when available, a new
-> > > config1 bit is added for userspace to indicate it wants userspace counter
-> > > access. This bit allows the kernel to decide if chaining should be
-> > > disabled and chaining and userspace access are incompatible.
-> > > The modes for config1 are as follows:
-> > >
-> > > config1 = 0 or 2 : user access enabled and always 32-bit
-> > > config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
-> > > config1 = 3 : user access enabled and counter size matches underlying counter.
+syzbot has found a reproducer for the following issue on:
 
-[...]
+HEAD commit:    37f368d8 lan743x: remove redundant intializations of point..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ede3bed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=fbf4fc11a819824e027b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d31a11d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ca3611d00000
 
-> > > @@ -980,9 +1032,23 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
-> > >                                      &armv8_pmuv3_perf_cache_map,
-> > >                                      ARMV8_PMU_EVTYPE_EVENT);
-> > >
-> > > -     if (armv8pmu_event_is_64bit(event))
-> > > +     if (armv8pmu_event_want_user_access(event) || !armv8pmu_event_is_64bit(event)) {
-> > > +             event->hw.flags |= ARMPMU_EL0_RD_CNTR;
-> >
-> > Why do you set this for all 32-bit events?
->
-> It goes back to the config1 bits as explained in the commit msg. We
-> can always support user access for 32-bit counters, but for 64-bit
-> counters the user has to request both user access and 64-bit counters.
-> We could require explicit user access request for 32-bit access, but I
-> thought it was better to not require userspace to do something Arm
-> specific on open.
->
-> > The logic here feels like it
-> > could with a bit of untangling.
->
-> Yes, I don't love it, but couldn't come up with anything better. It is
-> complicated by the fact that flags have to be set before we assign the
-> counter and can't set/change them when we assign the counter. It would
-> take a lot of refactoring with armpmu code to fix that.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
 
-How's this instead?:
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+WARNING: CPU: 1 PID: 8394 at kernel/locking/mutex.c:931 __mutex_lock_common kernel/locking/mutex.c:931 [inline]
+WARNING: CPU: 1 PID: 8394 at kernel/locking/mutex.c:931 __mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
+Modules linked in:
+CPU: 1 PID: 8394 Comm: syz-executor533 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:931 [inline]
+RIP: 0010:__mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
+Code: 08 84 d2 0f 85 a3 04 00 00 8b 05 18 cb be 04 85 c0 0f 85 12 f5 ff ff 48 c7 c6 20 8b 6b 89 48 c7 c7 e0 88 6b 89 e8 b2 3b bd ff <0f> 0b e9 f8 f4 ff ff 65 48 8b 1c 25 00 f0 01 00 be 08 00 00 00 48
+RSP: 0018:ffffc90002a2f3f8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888020b554c0 RSI: ffffffff815c51f5 RDI: fffff52000545e71
+RBP: ffff8880195a4c90 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bdf8e R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffc90002a2f5a8 R15: ffff888014580014
+FS:  0000000001f49300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc43046ba8 CR3: 0000000011a5a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ieee802154_del_seclevel+0x3f/0x70 net/mac802154/cfg.c:382
+ rdev_del_seclevel net/ieee802154/rdev-ops.h:284 [inline]
+ nl802154_del_llsec_seclevel+0x1a7/0x250 net/ieee802154/nl802154.c:2093
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x440909
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc43047c38 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000440909
+RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffc43047dd8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403c10
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
 
-if (armv8pmu_event_want_user_access(event) || !armv8pmu_event_is_64bit(event))
-        event->hw.flags |= ARMPMU_EL0_RD_CNTR;
-
-/*
-* At this point, the counter is not assigned. If a 64-bit counter is
-* requested, we must make sure the h/w has 64-bit counters if we set
-* the event size to 64-bit because chaining is not supported with
-* userspace access. This may still fail later on if the CPU cycle
-* counter is in use.
-*/
-if (armv8pmu_event_is_64bit(event) &&
-    (!armv8pmu_event_want_user_access(event) ||
-     armv8pmu_has_long_event(cpu_pmu) || (hw_event_id ==
-ARMV8_PMUV3_PERFCTR_CPU_CYCLES)))
-        event->hw.flags |= ARMPMU_EVT_64BIT;
-
-> > > +             /*
-> > > +              * At this point, the counter is not assigned. If a 64-bit
-> > > +              * counter is requested, we must make sure the h/w has 64-bit
-> > > +              * counters if we set the event size to 64-bit because chaining
-> > > +              * is not supported with userspace access. This may still fail
-> > > +              * later on if the CPU cycle counter is in use.
-> > > +              */
-> > > +             if (armv8pmu_event_is_64bit(event) &&
-> > > +                 (armv8pmu_has_long_event(armpmu) ||
-> > > +                  hw_event_id == ARMV8_PMUV3_PERFCTR_CPU_CYCLES))
-> > > +                     event->hw.flags |= ARMPMU_EVT_64BIT;
-> > > +     } else if (armv8pmu_event_is_64bit(event))
-> > >               event->hw.flags |= ARMPMU_EVT_64BIT;
