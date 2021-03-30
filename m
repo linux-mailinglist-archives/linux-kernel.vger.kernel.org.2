@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC7E34E9E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA9134E9F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhC3OKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:10:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41694 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231859AbhC3OJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:09:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617113376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JjceWuLqxTVqN7nJGF6xvHg+l6EBFWCS4ZdW7zopx+w=;
-        b=glSSC0ck/f6kt31DqYIZhXjStyXssUUvLNU0MXszy123P+pedqMAPuidFjK5L3aScrjA+d
-        g60QYPkmEMusBdYbloMZXHSYmSLdBERLwth1ZaXAvr6XHm7jVwC9Palz03wgjlMZyZNUhF
-        TFG/7wkcCDd0560HOdtYve5xOkR0rV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-KiW6mmzYOV6OSjZf91Aqfg-1; Tue, 30 Mar 2021 10:09:32 -0400
-X-MC-Unique: KiW6mmzYOV6OSjZf91Aqfg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 903ECDF8A0;
-        Tue, 30 Mar 2021 14:09:30 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-202.rdu2.redhat.com [10.10.118.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE2A35D9CC;
-        Tue, 30 Mar 2021 14:09:27 +0000 (UTC)
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org>
- <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <4d0dbaa0-1f96-470c-0ed0-04f6827ea384@redhat.com>
-Date:   Tue, 30 Mar 2021 10:09:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231911AbhC3OLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:11:10 -0400
+Received: from mail-co1nam11on2115.outbound.protection.outlook.com ([40.107.220.115]:2816
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231803AbhC3OKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:10:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RJVm2z6jrNIQKeMzklEiamOWZT52IFaqVovOKHByEqrbUq08oawc8tTOnxUXxogsbdv0YeUzS+EegdJ3sVDJ2wTetOsMNzcZlnWU67jT6DXiiqa118cUSTY121zug+uh7N3tF/M4johHj5DBrtGUQB+9WqhXCzbxFhXz3HYJsQRIIoF9h9WNWO3wetdpYH8t98veJvSKugsPeV2pPDRkc6b56Bqi1w64RtcJ1m+F9ljVcskZB7VmMNj2ThBT4fttXZD5YX/GtEzLk1DzIT3FlSeZg1yHEKLJ3vZEcwOa96EUeJBujMFUPRNnID8kODe1OxHU3Qz2T0Wt7Ss/ywCXbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SGaNVQD5x5rpuDUHjPygn89EnlhnqwajxUtmJtQ1tjI=;
+ b=EVd0U2USwcgqIYDDuRIF76nC5E5euX0PLWEGnwzlbt3bLW4KhHjR0H3nXyKKtkqGsnp91dk/NHMvILWiFxvcYjF0a3q2aIElx8r8OJ/OdGG0tvzn+RgisXOfqqA5gMJHv0LWr5/wIs8YE0Ap1EgSqyBSuQVMrEvJbM1cyaR3DnOAyumizODKB5rpMMwp/+gxH5hDxguIQPsM+3fQC6mVpRyHSzJROKxFC/Bcc8nmbpcxoinJru9Iaf+JGLmOqgcZghoZ2JoA0XhjZWHLnEBpxD+0NaFNOs8Ks6+pFpbnU4DfhBObHBln6Jm1NE4SDV25wXZ5QqKY+ghwAO5yCiuKGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SGaNVQD5x5rpuDUHjPygn89EnlhnqwajxUtmJtQ1tjI=;
+ b=MnjHol6kivPOTvDD1C0jNNGzN/eaWnXxaUYw5myJgpal3r6bQ0Q6UlE2q8Fn06PeCLO6d0zg37caApH05kAELQqg7XLw4bxmhw2B6QgiF8oH59CuPH5nVHKRCfdK/kF8riFbG8h+ynIYZ+KFC5rI1syeROL20VkgUHjRESRQvME=
+Authentication-Results: acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ MWHPR01MB2736.prod.exchangelabs.com (2603:10b6:300:f3::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.33; Tue, 30 Mar 2021 14:10:50 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503%5]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 14:10:50 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc:     openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: [PATCH v2 0/3] Add Aspeed SSIF BMC driver
+Date:   Tue, 30 Mar 2021 21:10:26 +0700
+Message-Id: <20210330141029.20412-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [118.69.219.201]
+X-ClientProxiedBy: HK0PR03CA0120.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::36) To MW2PR0102MB3482.prod.exchangelabs.com
+ (2603:10b6:302:c::32)
 MIME-Version: 1.0
-In-Reply-To: <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by HK0PR03CA0120.apcprd03.prod.outlook.com (2603:1096:203:b0::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29 via Frontend Transport; Tue, 30 Mar 2021 14:10:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eb1e580d-9674-497c-2526-08d8f3859f00
+X-MS-TrafficTypeDiagnostic: MWHPR01MB2736:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR01MB2736A8344B26B21FF4827779F27D9@MWHPR01MB2736.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ophLFFlekC5fOWK2mZZrfcwtfEltT3ymCjS2doJIysU1t35D2fCHhXcCwAkQn+6p/ywD6my++L5+aXilJ1ua0b0UQAbHHokYn5T53ykZExZYBkKg9Uv6uiQ231o5PXeeIuiworGNt81iF87A577gm0PZ9HcWUqKaub1niJ2+Faikiya2jJXKqy2wI/dBZc8OH/fWV99k0Dl++M6gHoHH2xl4nq8niBeZVxTgqrnw8xI3TMsdStwzlJCZt2MYe94V4X7myDotoERayH8lPUo3ktYAdNiByqdTDkzHwN/R1ct+kOXgcCQP8DBnYlQjui0vOZp8/ar84mJjrhMyheaVBGGWIZHxsH/2xfmZXNnX/iTIDt+qTLi1HRm3Ocog/c2iDaCJ7avnwjQLsj75Q1HKaBGMhh7jQNt4IxAOhxjdcF9R6NQVy+VPaVY5FZ7NMIQzPJkiBz6YR23MqxOwtru9IieUfDLjYiZVSY3Z6kQp5ocUw8xHiKvvL+Rosz667Sk32k+m/DDsB/Je4Vl0fIBFSVYK9xcJFRvLyeusMLudSZbfb0tXbDM4BEhEy89RiXpA0VF6mlkV8PEkor4Dl7I/eUcZPWIKKbTkX+zLX33vt5HxUGvt5QwPfue4dmU1H1NmyY4eLF7kgfm2RPLX9yS6EsyT0pSRYhthnDC0Wl6jZc0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(366004)(39850400004)(8676002)(107886003)(86362001)(6512007)(5660300002)(4326008)(921005)(186003)(38100700001)(26005)(956004)(2616005)(16526019)(2906002)(66476007)(110136005)(6486002)(66556008)(66946007)(54906003)(7416002)(83380400001)(1076003)(4744005)(478600001)(52116002)(316002)(6666004)(8936002)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5SPvRRxpNzydOPmiFOL2GEGR7Yg8upPT6OpFf9+z/06DLtvaHYhhY6FHQN9V?=
+ =?us-ascii?Q?htrAO0S/MArr2VzMyB8ytjm1r0GU+8sWQyhoDeHpuetWvxJsiEEJDoywFNm/?=
+ =?us-ascii?Q?QcLR9t919Lx8f533TN1BR8NpdCPOA2m2QXvWvEoTnW03jImShL5pX3Iaqty2?=
+ =?us-ascii?Q?TK5p00cjP8gp+PB5bj4Pk6BPNAPIKjvN45996sZ1pTc646p7Geb6vFPyT70j?=
+ =?us-ascii?Q?hD7Bj8B+wL5bF4+k9mBLx/EmKjZb0fcVKZ/y9cyBxFeawnSBSJomNzgQHtym?=
+ =?us-ascii?Q?E0PgrcfhD5RVbK56U6goVvB3hLRiFuifiY7mJE0z3BnvvECgIXvo5JqUKaLe?=
+ =?us-ascii?Q?tAnw5ZRXOCkbx7hjTMzhTdeMUZjuMK1G++X/zYZzaYxRvcYhVxfbXVwbaI4o?=
+ =?us-ascii?Q?Jr9JWhAzvf2c4JhH8PdmPpWm/dtnKnUJTdh//qmeI9xONaTxDjHKiDjSWvpY?=
+ =?us-ascii?Q?Ak8IUzxwiymB9E5mG/WrW5Ixt9NTKVaWE9y2Jd3+dLXGug7f0MRzekTsyODs?=
+ =?us-ascii?Q?eDTsDhj5MZS7vhz+0hVMhegP86F5JmpPfkNu00HXu12FighOV5TuoYNGdy/+?=
+ =?us-ascii?Q?/FtrFraw2zBar2iL69XThzLoY2lTsGYzqwF18dABB/AteX62JmYnH3/ct+Gh?=
+ =?us-ascii?Q?sg9FIsSHp6inqaFrPD0Pp0DoLtPNi6d3/dNfStoxd6yu+89LzMl7cWojhnxN?=
+ =?us-ascii?Q?JtjBU5Q+dF2pkln59k0vMBiFyjhrtTNXhnhvM9/gHgfOMx1bUO2qjeQTHxwH?=
+ =?us-ascii?Q?8j4NU6vXOmaIwjr32ugZ3rWl7S3wAxIyiMjUT/SVC4aeD2prfLwsdTSNFt9Q?=
+ =?us-ascii?Q?ZIdaDO54LBX3qFDeaVhzfPbVnY2BlSqdzAxCt43vfm74ZeLyjnq6j6XcT3Ny?=
+ =?us-ascii?Q?ZIh7ptsCdKISo/wO/JlxdQhFOJud94bd7sQRCgCaCo8+zy3yrRTyQNgor4lc?=
+ =?us-ascii?Q?Wbv6ftBCNTmBapZnPx5PrIGFKfYpbVoQ0aj//8lh47K1VCoMLTrLuO7u/Jdh?=
+ =?us-ascii?Q?ie8wJ7N2vvZ64FgUjsHczjbAatFfbSZa9OsmglJAqAHNBSzbEzbKmu9jgQKQ?=
+ =?us-ascii?Q?CDPo2Lvt8BXBXemJw++VqaJ2AEWknNhW+68m5yF2L2DE6MTpQYVgATJl4q14?=
+ =?us-ascii?Q?l2skR+FOe9REba33fK3fxS6x4G119UgvSyg7gUprXf+JYHCJ0qRa8OPeAczl?=
+ =?us-ascii?Q?Qgv2GsPHaES5+3d0lX+rzxHpRu6bR5SPdbjs3DjVOSsyxEny5M/4TKQ4FInT?=
+ =?us-ascii?Q?loYWQ+B4nMpGZE8o4fuijvAbGYPCkWbRH5IDKNyCEjE7OXOM9T/mzKPyPzRC?=
+ =?us-ascii?Q?/bYij0RvQvUucn8VBw8ZqWWJ?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb1e580d-9674-497c-2526-08d8f3859f00
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 14:10:50.5107
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KpOGeTzAsU5M6gClLTCsg2P+k7hmQC69a8zmWa9v4oa/2bpVBgEd0rSCHNmOFG9AxM4KdeWhMQRqQ5SHzuetsqsR8mJ++MRKC8LfBgV5F1U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR01MB2736
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 11:13 PM, Guo Ren wrote:
-> On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
->> On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
->>> u32 a = 0x55aa66bb;
->>> u16 *ptr = &a;
->>>
->>> CPU0                       CPU1
->>> =========             =========
->>> xchg16(ptr, new)     while(1)
->>>                                      WRITE_ONCE(*(ptr + 1), x);
->>>
->>> When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
->> Then I think your LL/SC is broken.
->>
->> That also means you really don't want to build super complex locking
->> primitives on top, because that live-lock will percolate through.
-> Do you mean the below implementation has live-lock risk?
-> +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-> +{
-> +       u32 old, new, val = atomic_read(&lock->val);
-> +
-> +       for (;;) {
-> +               new = (val & _Q_LOCKED_PENDING_MASK) | tail;
-> +               old = atomic_cmpxchg(&lock->val, val, new);
-> +               if (old == val)
-> +                       break;
-> +
-> +               val = old;
-> +       }
-> +       return old;
-> +}
-If there is a continuous stream of incoming spinlock takers, it is 
-possible that some cpus may have to wait a long time to set the tail 
-right. However, this should only happen on artificial workload. I doubt 
-it will happen with real workload or with limit number of cpus.
->
->> Step 1 would be to get your architecute fixed such that it can provide
->> fwd progress guarantees for LL/SC. Otherwise there's absolutely no point
->> in building complex systems with it.
-> Quote Waiman's comment [1] on xchg16 optimization:
->
-> "This optimization is needed to make the qspinlock achieve performance
-> parity with ticket spinlock at light load."
->
-> [1] https://lore.kernel.org/kvm/1429901803-29771-6-git-send-email-Waiman.Long@hp.com/
->
-> So for a non-xhg16 machine:
->   - ticket-lock for small numbers of CPUs
->   - qspinlock for large numbers of CPUs
->
-> Okay, I'll put all of them into the next patch :P
->
-It is true that qspinlock may not offer much advantage when the number 
-of cpus is small. It shines for systems with many cpus. You may use 
-NR_CPUS to determine if the default should be ticket or qspinlock with 
-user override. To determine the right NR_CPUS threshold, you may need to 
-run on real SMP RISCV systems to find out.
+This series add support for the Aspeed specific SSIF BMC driver which
+is to perform in-band IPMI communication with the host in management
+(BMC) side.
 
-Cheers,
-Longman
+v2:
+  + Fixed compiling error with COMPILE_TEST for arc
+
+Quan Nguyen (3):
+  i2c: i2c-core-smbus: Expose PEC calculate function for generic use
+  drivers: char: ipmi: Add Aspeed SSIF BMC driver
+  bindings: ipmi: Add binding for Aspeed SSIF BMC driver
+
+ .../bindings/ipmi/aspeed-ssif-bmc.txt         |  18 +
+ drivers/char/ipmi/Kconfig                     |  22 +
+ drivers/char/ipmi/Makefile                    |   2 +
+ drivers/char/ipmi/ssif_bmc.c                  | 645 ++++++++++++++++++
+ drivers/char/ipmi/ssif_bmc.h                  |  92 +++
+ drivers/char/ipmi/ssif_bmc_aspeed.c           | 132 ++++
+ drivers/i2c/i2c-core-smbus.c                  |  12 +-
+ include/linux/i2c.h                           |   1 +
+ 8 files changed, 922 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.txt
+ create mode 100644 drivers/char/ipmi/ssif_bmc.c
+ create mode 100644 drivers/char/ipmi/ssif_bmc.h
+ create mode 100644 drivers/char/ipmi/ssif_bmc_aspeed.c
+
+-- 
+2.28.0
 
