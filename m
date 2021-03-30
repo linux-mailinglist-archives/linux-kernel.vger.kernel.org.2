@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53D234EF88
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ACE34EF8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhC3Rb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbhC3Rb0 (ORCPT
+        id S232183AbhC3RdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:33:07 -0400
+Received: from alln-iport-6.cisco.com ([173.37.142.93]:39646 "EHLO
+        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhC3RdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:31:26 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E79C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:31:26 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id z1so19165043edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tCBIVqvfgxaF1YfBYLDN7JqUVslSSW/Boru1WpFdoTc=;
-        b=nfotVrj7OqnLetyZFzqpRRMkGUuwvkuuRkyiZR8STNsHR3gwtnndBEt1+gaDLL7SNe
-         yGi3B1sK/JbtVrmiOrvGjD0+4nE8NjKYe+F9Pj8PCkJ+EO7ZSDmH1YlOh+w1LZnkRh84
-         pxp/qSnxdxg41NBaPKvG2zm1pyGsYJeKRIvRAjLlrQSxRHS+spHWGoLTkSxwr95tYk6X
-         r+o+nmGeOrvCJ2oo/TtOGbUAq6Bm9RT7TB9HRT9pT2uoH3sutsl5AeW4zyqhpbJcXcC4
-         eja6qxxWHv3F+1KVOEbfiZSfeTNWG3PvpdikFFgZbZXCYTwMrCUxascBfXzTMYdhypEn
-         HUsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tCBIVqvfgxaF1YfBYLDN7JqUVslSSW/Boru1WpFdoTc=;
-        b=AUvUX65AWIl7RQkfz1GsZ+ztNPa+t0XBgeLRdA8hvB993M5tvfUak5nu5zbRa806Ln
-         Fl8J8SZoHiuHaNpd7EplqxbyOl+wBR/u11C5Df4nEWlU3imCT2L7z5LB0YY5zFTsTtKY
-         dGpJHLOg+LspJH6SEJPtlUaZ+Vs86eixKIxjRCSnm0yZyiTSR40PxpdAqcwdwNXGW8PM
-         f/3RPkOq2w9jiXoWZ69RyoFV7IkllSwZdv0pZkqJa2BE0l5nOK1huqhoJLcjxYAQoccO
-         SbBG8CJvkEldDuiXqNkavmVS90kxfqiDYlvgnNNKMwszKCDamETshA47x+DMkRbNzXHO
-         xD1A==
-X-Gm-Message-State: AOAM533/Rhh7gR4RtJOxSFVATX14Y1NbTqosTHkWnSWK3/YIW4pzFsGv
-        RvzZKhUrLl2GYi5+5fyibAPJFJprnzjBgP/TEYu88Q==
-X-Google-Smtp-Source: ABdhPJxUyZgfJzpTqVJMJqnUf9yXQ4xYQNsN4auVji2tGa9c/lwSsVFd6BRHcmE5uRnmmfFvQcem0OyODK1LIcTGKug=
-X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr34824354edu.52.1617125485198;
- Tue, 30 Mar 2021 10:31:25 -0700 (PDT)
+        Tue, 30 Mar 2021 13:33:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1192; q=dns/txt; s=iport;
+  t=1617125580; x=1618335180;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2LZfLmeECNVtSnr3Mh+CyIjZ9xFZqjH6FwYenu/bjCA=;
+  b=JXf7xD2yDz2zHs88ykxH8LWQPxBiCj+1zwbnkiZkIDAv7BzoqqreBeeJ
+   cxRZOjQ9D/btzDedZHZNtC8I84XMxa9szgd+ekkApVnfRxTeK20/tfhpW
+   mZPWYbrORXM4Wru/IndKDcn2kB4htKy+ox09ct+aa7lpV0BMjluPLYvYB
+   A=;
+X-IPAS-Result: =?us-ascii?q?A0ASAAC4X2NgmJtdJa1aGgEBAQEBAQEBAQEDAQEBARIBA?=
+ =?us-ascii?q?QEBAgIBAQEBQIE/AgEBAQELAYN2ATkxlhEDkAgWilmBaAsBAQENAQE0BAEBh?=
+ =?us-ascii?q?FACgXoCJTcGDgIDAQEBAwIDAQEBAQEFAQEBAgEGBBQBAQEBAQEBAYZDhkUBA?=
+ =?us-ascii?q?gM6PxALGBUZPBsGE4JwgwirJXWBNIkLgUQUDoEXAY1JJhyBSUKELj6DeYEGh?=
+ =?us-ascii?q?RUiBIFlYYEQggRYFAKRKoJAikycIoMRgSObNjEQgziKb5YbuBICBAYFAhaBa?=
+ =?us-ascii?q?iKBWzMaCBsVgyRQGQ2OOI5PIQMvOAIGCgEBAwmJHwEB?=
+IronPort-HdrOrdr: A9a23:DnBJjKzmbOdjEo60P+GWKrPxd+skLtp033Aq2lEZdDV+eKWj+P
+ yGtvIdyBPylXI9WGs4n8qBJamHRhrnhPtIyKMWOqqvWxSjhXuwIOhZnOnf6hDpBiGWzIRg/I
+ h6dawWMrDNJHh8yf33+QypV+snqeP3lJyAocf74zNTQRpxa6dmhj0JaTqzNkFtXgFJCd4YOf
+ Onh/ZvnDardXQJYsnTPBBsNNTrnNHFmInrZhQLHXcciDWmty+i67LxDnGjsCs2bjUn+9sf2F
+ mAuxDl4OGZv+ujzBjH2yvo841Og9f60LJ4dauxo/lQDCnwgQC1Y4kkfLuOsFkO0ZiSwWdvts
+ XQqBE9OMk20VftRyWepBvg3BSI6kdJ10Pf
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
+   d="scan'208";a="711698846"
+Received: from rcdn-core-4.cisco.com ([173.37.93.155])
+  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:32:59 +0000
+Received: from zorba ([10.24.8.123])
+        by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UHWsUi019331
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 30 Mar 2021 17:32:57 GMT
+Date:   Tue, 30 Mar 2021 10:32:54 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Will Deacon <will@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
+Message-ID: <20210330173254.GS109100@zorba>
+References: <20210309000247.2989531-4-danielwa@cisco.com>
+ <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
+ <20210309212944.GR109100@zorba>
+ <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
+ <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
+ <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
+ <20210325195956.GM109100@zorba>
+ <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com>
 MIME-Version: 1.0
-References: <161707245893.2072157.6743322596719518693.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161707246948.2072157.2116502455691653472.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210330111620.GK2356281@nvidia.com> <CAPcyv4iGByX1+CoUnc3SJahvoT0NGNnbkcDLyEkSJ8YFC9PBUg@mail.gmail.com>
- <20210330154712.GR2356281@nvidia.com> <CAPcyv4hL-B=1hostoj9t6EE5impmcDR2-wsgahvBKdzL9LbqLg@mail.gmail.com>
- <20210330170253.GU2356281@nvidia.com>
-In-Reply-To: <20210330170253.GU2356281@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 30 Mar 2021 10:31:15 -0700
-Message-ID: <CAPcyv4ixD=+PejHErT_FLtEyXsm4mk+93R7mQ0uFtd_kd-fs1w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] cxl/mem: Fix synchronization mechanism for device
- removal vs ioctl operations
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
+X-Outbound-Node: rcdn-core-4.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:03 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Tue, Mar 30, 2021 at 09:05:29AM -0700, Dan Williams wrote:
->
-> > > If you can't clearly point to the *data* under RCU protection it is
-> > > being used wrong.
+On Thu, Mar 25, 2021 at 05:29:44PM -0600, Rob Herring wrote:
+> On Thu, Mar 25, 2021 at 2:00 PM Daniel Walker <danielwa@cisco.com> wrote:
 > >
-> > Agree.
+> > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
+> > >
+> > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
+> > >
+> > > Let's only provide once CMDLINE as of today, and ask the user to select
+> > > whether he wants it appended or prepended or replacee. Then no need to
+> > > change all existing config to rename CONFIG_CMDLINE into either of the new
+> > > ones.
+> > >
+> > > That's the main difference between my series and Daniel's series. So I'll
+> > > finish taking Will's comment into account and we'll send out a v3 soon.
 > >
-> > The data being protected is the value of
-> > dev->kobj.state_in_sysfs. The
->
-> So where is that read under:
->
-> +       idx = srcu_read_lock(&cxl_memdev_srcu);
-> +       rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
-> +       srcu_read_unlock(&cxl_memdev_srcu, idx);
->
-> ?
+> > It doesn't solve the needs of Cisco, I've stated many times your changes have
+> > little value. Please stop submitting them.
+> 
+> Can you please outline what those needs are which aren't met?
 
-device_is_registered() inside __cxl_memdev_ioctl().
+append AND prepend at the same time on all architectures. Christophe doesn't
+understand the need, and hence tries to minimize the feature set which is
+incompatible with Cisco needs and all the other out of tree users.
 
-> It can't read the RCU protected data outside the RCU critical region,
-> and it can't read/write RCU protected data without using the helper
-> macros which insert the required barriers.
-
-The required barriers are there. srcu_read_lock() +
-device_is_registered() is paired with cdev_device_del() +
-synchronize_rcu().
-
-> IMHO this can't use 'dev->kobj.state_in_sysfs' as the RCU protected data.
-
-This usage of srcu is functionally equivalent to replacing
-srcu_read_lock() with down_read() and the shutdown path with:
-
-cdev_device_del(...);
-down_write(...):
-up_write(...);
-
-...to flush readers that read ->state_in_sysfs == 1.
+Daniel
