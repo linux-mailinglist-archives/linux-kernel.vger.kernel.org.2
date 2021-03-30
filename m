@@ -2,114 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F2034EDB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF38C34EDC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhC3QZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        id S231803AbhC3Q0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhC3QYy (ORCPT
+        with ESMTP id S231655AbhC3Q0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:24:54 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964B8C061574;
-        Tue, 30 Mar 2021 09:24:53 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id o126so24740991lfa.0;
-        Tue, 30 Mar 2021 09:24:53 -0700 (PDT)
+        Tue, 30 Mar 2021 12:26:22 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAFEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:26:11 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so7950945pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=339UXax5F8QdHr8UBYu8EdZcLhvc9+zU3y6Hdd2n1J4=;
-        b=qlvOclVDnZBS8PoE5hSdIeacO7StUs2cVwGa1tUXP5aiZpOgEaILI0zZjzaspFMs28
-         1oSI4bYqlTwCMnioZWSicvgAbirtaZ95YB1ImzCJUtrK9fk8ODpgHiATlaeCLFoPiIMV
-         ImadC2KsDSWxhEtt9k5MqTjKkI3kkYa7wE8Om6KD2eKvwhr6Ivu4WA3qkbu8W5T75ePm
-         dtB5p99k7hFOsHhgo4dhWyBKvxEjBlw8gE4vQrnfh1WU1+xSx7bTnVK8HSsq9pcWyA5K
-         vkh3nbfNaEQ3BsPf2fbwLzeqlg5Ou4TBZrgA2MBXvT0HAjSTW+JrcTvb/JlrI+isOV43
-         IQzA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rNaWr4eEJxR4UHgnqDYqEjy0PxjcuOcUite8WmTqZL8=;
+        b=hDnIf4caC1eYmUJVfPtL+F4i3OM9JZ4qDjYpXkPzcKkflPe8z4we/gZ+aET7TaCKJz
+         BGopcg1i7aAsz1sTZ7Vqo5AxqZQKvQtc32PB6FR2JuaGxqpISK2o350OYJkY/6zlUInC
+         dvLpPavce/JyYfKKjUhtbDqQiUyvU9RdrjG09x4/ragSPsMltW8hxdLrjYQDToVELXhy
+         1/P1NKe1KQpcrARtkS6vWqY86G0rjjVOu4jegOryjZNyommXWD15RW9zcCari5i2ugLb
+         nfD0EIITKDA9xbfhqu0gDIL+d8OrJG53Znbgsm575M4yolDhixoJz6TDqiSrTbdEvn0h
+         1kpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=339UXax5F8QdHr8UBYu8EdZcLhvc9+zU3y6Hdd2n1J4=;
-        b=c+NQft15KooCHjdOSO8a5cT97Tq7TdnA/5PDmWZ0WJDP1Q6iVbJMGAKeSGezqMEy4I
-         qq77rpYz4rjjrxEHaHRVCTOPXOImBT6H8NB+1gxbuozFbfm1N//lHF4Sgfgdn1h/3la9
-         1m0ArXrvNFad3ili5vvUj6HG6jdISfEPmUu4FD4K7GqoxDWfgln7ydxLgEMQPAmIOz36
-         8+oJdg/Kf9T0KxePk4pVaih1bh2IM4Rr390wsqTI1ZAhjtRnLkOdpS8KHyYIwUrf/yS0
-         T2dKVTfkCIw5pD5LZgjVX5cZmsbOEH1uiEW/jn2e54VaVmnr/JIizfWSa0jFf09kb5xs
-         uGiw==
-X-Gm-Message-State: AOAM532iMvLi4Pndk2J9s2K0o62mVHXcDmuQxqliwGdeupM4pAyAs6sw
-        WFmRxyxZsw51olv9GTlQVIE=
-X-Google-Smtp-Source: ABdhPJzoRcas0MxCnuDZ9ZRCeCbO6KYtWxEOLGqqnMJeQrpS+ht6SG1ElAitmGTlsZBauPbiA0oUzQ==
-X-Received: by 2002:a19:b8c:: with SMTP id 134mr21452120lfl.430.1617121492193;
-        Tue, 30 Mar 2021 09:24:52 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-98.dynamic.spd-mgts.ru. [109.252.193.98])
-        by smtp.googlemail.com with ESMTPSA id 188sm2315632lfo.0.2021.03.30.09.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 09:24:51 -0700 (PDT)
-Subject: Re: [PATCH v5 3/5] i2c: add support for HiSilicon I2C controller
-To:     Yicong Yang <yangyicong@hisilicon.com>, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org
-Cc:     treding@nvidia.com, jarkko.nikula@linux.intel.com,
-        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
-        john.garry@huawei.com, mika.westerberg@linux.intel.com,
-        prime.zeng@huawei.com, linuxarm@huawei.com
-References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
- <1617113966-40498-4-git-send-email-yangyicong@hisilicon.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b761fa05-1bf9-ce4c-e2b5-f39b418f0da9@gmail.com>
-Date:   Tue, 30 Mar 2021 19:24:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rNaWr4eEJxR4UHgnqDYqEjy0PxjcuOcUite8WmTqZL8=;
+        b=Dqq3fZCteYzliz+iP6sG06kjNajnerZaNwG+9KtCxxFrDfmEF40h/sdzlnor5Ja5kG
+         tJTjhuGJ2kTbsVGCygac+X6Mz4AcgC9B/IBvNcQJRDU9sma5cFPcgRT/4+EzNr4Xi2/6
+         0A3deWtI+erCH28FWE6oTrZoyPpnpYKUYt5arimkmopP22Mdpih/ZbvKQ+fkRwibFDgp
+         jEXVtlrvCdlbE9qUoksMv0T54xmfPOzEmmhC3u0cdjkU+eoSfnVa2PmwQPDdiccJykti
+         kI3Zl92B3JWgkXYPdEsZ/63hD5S15ErbQOsaWkMFASzqOE3QEfM8XNBF0DvZdHoED2++
+         HXGg==
+X-Gm-Message-State: AOAM533Bc63PeI5qDOF0P1aFLPsPDaupWCfbMjuBRvUcWuZpLgcWVaVq
+        vrfXEJTHcTgqnkKtBqHcGjrEds7HIx4CigPFOUAy1w==
+X-Google-Smtp-Source: ABdhPJy6dqqGNIVfmOtkRr3IFyzMK8/iCKlYRJ2Y7XOmUbx6f1/TRMX1lbiT38TFbpFq4VTs81mGb/YYCMBgPu/od8g=
+X-Received: by 2002:a17:90a:901:: with SMTP id n1mr5114222pjn.147.1617121571073;
+ Tue, 30 Mar 2021 09:26:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617113966-40498-4-git-send-email-yangyicong@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210329205249.6b557510@canb.auug.org.au> <83263d0d-1f3f-8a3c-8a95-49e0cfa15051@de.ibm.com>
+ <4419611b-3282-2197-884c-332025cdada8@de.ibm.com> <CAMZfGtUaTdmpcw1dr_rWQZTz3UTh9ZFavr0WBSa_obENPasgFw@mail.gmail.com>
+ <7c27fc2e-5cea-5a17-6e30-8ae1cb291274@de.ibm.com>
+In-Reply-To: <7c27fc2e-5cea-5a17-6e30-8ae1cb291274@de.ibm.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 31 Mar 2021 00:25:34 +0800
+Message-ID: <CAMZfGtV9w24cJAwYsQuhvVpdLiYssjdfwfXApNK51zacr31c3w@mail.gmail.com>
+Subject: Re: [External] RE: kernel warning percpu ref in obj_cgroup_release
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 17:19, Yicong Yang пишет:
-...
-> +struct hisi_i2c_controller {
-> +	struct i2c_adapter adapter;
-> +	void __iomem *iobase;
-> +	struct device *dev;
-> +	int irq;
-> +
-> +	/* Intermediates for recording the transfer process */
-> +	struct completion *completion;
-> +	struct i2c_msg *msgs;
-> +	int msg_num;
-> +	int msg_tx_idx;
-> +	int buf_tx_idx;
-> +	int msg_rx_idx;
-> +	int buf_rx_idx;
-> +	u16 tar_addr;
-> +	u32 xfer_err;
-> +
-> +	/* I2C bus configuration */
-> +	struct i2c_timings t;
-> +	u64 clk_rate_khz;
+On Tue, Mar 30, 2021 at 11:10 PM Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
+>
+>
+> On 30.03.21 15:49, Muchun Song wrote:
+> > On Tue, Mar 30, 2021 at 9:27 PM Christian Borntraeger
+> > <borntraeger@de.ibm.com> wrote:
+> >>
+> >> So bisect shows this for belows warning:
+> >
+> > Thanks for your effort on this. Can you share your config?
+>
+> attached (but its s390x) for next-20210330
 
-Looks like the u64 is overkill here and it doesn't allow you to use
-COMPILE_TEST because 32bit arches can divide u64 only using the
-do_div(), please fix this.
+Thanks. Can you apply the following patch and help me test?
+Very Thanks.
 
-...
-> +static const struct acpi_device_id hisi_i2c_acpi_ids[] = {
-> +	{ "HISI03D1", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, hisi_i2c_acpi_ids);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 7fdc92e1983e..579408e4d46f 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -793,6 +793,12 @@ static inline void obj_cgroup_get(struct obj_cgroup *o=
+bjcg)
+        percpu_ref_get(&objcg->refcnt);
+ }
 
-> +MODULE_ALIAS("platform:hisi-i2c");
++static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
++                                      unsigned long nr)
++{
++       percpu_ref_get_many(&objcg->refcnt, nr);
++}
++
+ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+ {
+        percpu_ref_put(&objcg->refcnt);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c0b83a396299..1634dba1044c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3133,7 +3133,10 @@ void split_page_memcg(struct page *head, unsigned in=
+t nr)
 
+        for (i =3D 1; i < nr; i++)
+                head[i].memcg_data =3D head->memcg_data;
+-       css_get_many(&memcg->css, nr - 1);
++       if (PageMemcgKmem(head))
++               obj_cgroup_get_many(__page_objcg(head), nr - 1);
++       else
++               css_get_many(&memcg->css, nr - 1);
+ }
 
-Nit: I think the MODULE_ALIAS shouldn't be necessary for this driver
-since it will be matched by the ACPI table. You should be able to remove
-it safely.
+ #ifdef CONFIG_MEMCG_SWAP
+
+>
+> The problem goes away when I add
+> cgroup_controllers =3D [  ]
+> to /etc/libvirt/qemu.conf
+>
+> The testcase that triggers the problem starts and stops multipe KVM guest=
+s with 248 CPUs.
+> Do we happen to have maybe only a byte of refcount space?
+>
+>
+> >
+> >>
+> >> 636c3ef8229ecb4e7d045e86f36505d24a8f019a is the first bad commit
+> >> commit 636c3ef8229ecb4e7d045e86f36505d24a8f019a
+> >> Author: Muchun Song <songmuchun@bytedance.com>
+> >> Date:   Mon Mar 29 11:12:06 2021 +1100
+> >>
+> >>       mm: memcontrol: use obj_cgroup APIs to charge kmem pages
+> >>
+> >>       Since Roman's series "The new cgroup slab memory controller" app=
+lied.  All
+> >>       slab objects are charged via the new APIs of obj_cgroup.  The ne=
+w APIs
+> >>       introduce a struct obj_cgroup to charge slab objects.  It preven=
+ts
+> >>       long-living objects from pinning the original memory cgroup in t=
+he memory.
+> >>       But there are still some corner objects (e.g.  allocations large=
+r than
+> >>       order-1 page on SLUB) which are not charged via the new APIs.  T=
+hose
+> >>       objects (include the pages which are allocated from buddy alloca=
+tor
+> >>       directly) are charged as kmem pages which still hold a reference=
+ to the
+> >>       memory cgroup.
+> >>
+> >>       We want to reuse the obj_cgroup APIs to charge the kmem pages.  =
+If we do
+> >>       that, we should store an object cgroup pointer to page->memcg_da=
+ta for the
+> >>       kmem pages.
+> >>
+> >>       Finally, page->memcg_data will have 3 different meanings.
+> >>
+> >>         1) For the slab pages, page->memcg_data points to an object cg=
+roups
+> >>            vector.
+> >>
+> >>         2) For the kmem pages (exclude the slab pages), page->memcg_da=
+ta
+> >>            points to an object cgroup.
+> >>
+> >>         3) For the user pages (e.g. the LRU pages), page->memcg_data p=
+oints
+> >>            to a memory cgroup.
+> >>
+> >>       We do not change the behavior of page_memcg() and page_memcg_rcu=
+().  They
+> >>       are also suitable for LRU pages and kmem pages.  Why?
+> >>
+> >>       Because memory allocations pinning memcgs for a long time - it e=
+xists at a
+> >>       larger scale and is causing recurring problems in the real world=
+: page
+> >>       cache doesn't get reclaimed for a long time, or is used by the s=
+econd,
+> >>       third, fourth, ...  instance of the same job that was restarted =
+into a new
+> >>       cgroup every time.  Unreclaimable dying cgroups pile up, waste m=
+emory, and
+> >>       make page reclaim very inefficient.
+> >>
+> >>       We can convert LRU pages and most other raw memcg pins to the ob=
+jcg
+> >>       direction to fix this problem, and then the page->memcg will alw=
+ays point
+> >>       to an object cgroup pointer.  At that time, LRU pages and kmem p=
+ages will
+> >>       be treated the same.  The implementation of page_memcg() will re=
+move the
+> >>       kmem page check.
+> >>
+> >>       This patch aims to charge the kmem pages by using the new APIs o=
+f
+> >>       obj_cgroup.  Finally, the page->memcg_data of the kmem page poin=
+ts to an
+> >>       object cgroup.  We can use the __page_objcg() to get the object =
+cgroup
+> >>       associated with a kmem page.  Or we can use page_memcg() to get =
+the memory
+> >>       cgroup associated with a kmem page, but caller must ensure that =
+the
+> >>       returned memcg won't be released (e.g.  acquire the rcu_read_loc=
+k or
+> >>       css_set_lock).
+> >>
+> >>       Link: https://lkml.kernel.org/r/20210319163821.20704-6-songmuchu=
+n@bytedance.com
+> >>       Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>       Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >>       Cc: Michal Hocko <mhocko@kernel.org>
+> >>       Cc: Roman Gushchin <guro@fb.com>
+> >>       Cc: Shakeel Butt <shakeelb@google.com>
+> >>       Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> >>       Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+> >>       Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >>       Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> >>
+> >>    include/linux/memcontrol.h | 116 ++++++++++++++++++++++++++++++++++=
++----------
+> >>    mm/memcontrol.c            | 110 +++++++++++++++++++++-------------=
+--------
+> >>    2 files changed, 145 insertions(+), 81 deletions(-)
+> >>
+> >>
+> >>
+> >>
+> >>
+> >> On 30.03.21 13:32, Christian Borntraeger wrote:
+> >> [...]
+> >>>
+> >>> This next (328 is fine) triggers several bugs during our KVM CI run:
+> >>>
+> >>> [ 1506.494716] ------------[ cut here ]------------
+> >>> [ 1506.494730] percpu ref (obj_cgroup_release) <=3D 0 (-1) after swit=
+ching to atomic
+> >>> [ 1506.494766] WARNING: CPU: 6 PID: 0 at lib/percpu-refcount.c:196 pe=
+rcpu_ref_switch_to_atomic_rcu+0x1ea/0x1f8
+> >>> [ 1506.494774] Modules linked in: kvm vhost_vsock vmw_vsock_virtio_tr=
+ansport_common vsock vhost vhost_iotlb xt_CHECKSUM xt_MASQUERADE xt_conntra=
+ck ipt_REJECT xt_tcpudp nft_compat nf_nat_tftp nft_objref nf_conntrack_tftp=
+ nft_counter bridge stp llc nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib =
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct dm_service_=
+time nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set=
+ nf_tables nfnetlink zfcp scsi_transport_fc rpcrdma sunrpc dm_multipath rdm=
+a_ucm scsi_dh_rdac scsi_dh_emc rdma_cm scsi_dh_alua iw_cm ib_cm mlx5_ib ib_=
+uverbs dm_mod ib_core s390_trng vfio_ccw vfio_mdev mdev vfio_iommu_type1 zc=
+rypt_cex4 vfio eadm_sch sch_fq_codel configfs ip_tables x_tables ghash_s390=
+ prng aes_s390 des_s390 libdes sha3_512_s390 sha3_256_s390 mlx5_core sha512=
+_s390 sha256_s390 sha1_s390 sha_common nvme nvme_core pkey zcrypt rng_core =
+autofs4 [last unloaded: vfio_ap]
+> >>> [ 1506.494832] CPU: 6 PID: 0 Comm: swapper/6 Not tainted 5.12.0-20210=
+330.rc4.git0.9d49ed9ca93b.300.fc33.s390x+next #1
+> >>> [ 1506.494834] Hardware name: IBM 8561 T01 703 (LPAR)
+> >>> [ 1506.494836] Krnl PSW : 0704c00180000000 00000002d71dd21e (percpu_r=
+ef_switch_to_atomic_rcu+0x1ee/0x1f8)
+> >>> [ 1506.494840]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC=
+:0 PM:0 RI:0 EA:3
+> >>> [ 1506.494842] Krnl GPRS: c0000000fffeffff 00000002f7256818 000000000=
+0000043 00000000fffeffff
+> >>> [ 1506.494844]            00000000ffffffea 0000038000000001 000000000=
+0000000 000003800000017c
+> >>> [ 1506.494846]            00000002d7924988 0000000227eb97a0 000003ff5=
+413c7e0 7fffffffffffffff
+> >>> [ 1506.494848]            0000000080360000 00000002f726b570 00000002d=
+71dd21a 00000380000bba28
+> >>> [ 1506.494856] Krnl Code: 00000002d71dd20e: e3309fe8ff04        lg   =
+   %r3,-24(%r9)
+> >>>                             00000002d71dd214: c0e5001eb556        bra=
+sl   %r14,00000002d75b3cc0
+> >>>                            #00000002d71dd21a: af000000            mc =
+     0,0
+> >>>                            >00000002d71dd21e: a7f4ffcc            brc=
+     15,00000002d71dd1b6
+> >>>                             00000002d71dd222: 0707                bcr=
+     0,%r7
+> >>>                             00000002d71dd224: 0707                bcr=
+     0,%r7
+> >>>                             00000002d71dd226: 0707                bcr=
+     0,%r7
+> >>>                             00000002d71dd228: eb6ff0480024        stm=
+g    %r6,%r15,72(%r15)
+> >>> [ 1506.494928] Call Trace:
+> >>> [ 1506.494933]  [<00000002d71dd21e>] percpu_ref_switch_to_atomic_rcu+=
+0x1ee/0x1f8
+> >>> [ 1506.494940] ([<00000002d71dd21a>] percpu_ref_switch_to_atomic_rcu+=
+0x1ea/0x1f8)
+> >>> [ 1506.494942]  [<00000002d6b8a6c6>] rcu_do_batch+0x146/0x608
+> >>> [ 1506.494946]  [<00000002d6b8ec04>] rcu_core+0x124/0x1d0
+> >>> [ 1506.494948]  [<00000002d75d0222>] __do_softirq+0x13a/0x3c8
+> >>> [ 1506.494952]  [<00000002d6b05306>] irq_exit+0xce/0xf8
+> >>> [ 1506.494955]  [<00000002d75c1eb4>] do_ext_irq+0xdc/0x170
+> >>> [ 1506.494957]  [<00000002d75cdea4>] ext_int_handler+0xc4/0xf4
+> >>> [ 1506.494959]  [<0000000000000000>] 0x0
+> >>> [ 1506.494963]  [<00000002d75cd9c2>] default_idle_call+0x42/0x110
+> >>> [ 1506.494965]  [<00000002d6b411a0>] do_idle+0xd8/0x168
+> >>> [ 1506.494968]  [<00000002d6b413ee>] cpu_startup_entry+0x36/0x40
+> >>> [ 1506.494971]  [<00000002d6ac730a>] smp_start_secondary+0x82/0x88
+> >>> [ 1506.494974] Last Breaking-Event-Address:
+> >>> [ 1506.494975]  [<00000002d6b71898>] vprintk_emit+0xa8/0x110
+> >>> [ 1506.494978] Kernel panic - not syncing: panic_on_warn set ...
+> >>>
+> >>>
+> >>>
+> >>> I will try to bisect this, but if anyone has an idea. CC some candida=
+tes.
+> >>
