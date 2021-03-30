@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC92834E244
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4759534E24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhC3Her (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhC3HeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:34:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D1761957;
-        Tue, 30 Mar 2021 07:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617089655;
-        bh=YtguDODw8Uj/hE0IRHyy+onzpCZQS84rIgWYYMtsB8E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rt3OaYykxMqzqMwR/09kXKocomqoYkBD7dGW2fk8T6GGtr3z3fIlZ76/GaLVGn6U4
-         a/J/5ce9TayAuAfr7Hn/l9YINP5jaaMcJbdsV0LNg3CuSw7axu1G+sI2MsoTXf6fus
-         8gaWOHLi5KD+Req07Wjb7blmGp67SLvEwmybP5v3Rqf1twp1icUzg20dYnh6fkbSgX
-         CS1Vz5UbQUibD3vECLRdceMe8W4yH/h9h8s3lq5NZF0meT/K1cr7SmzD2i6CJq79ku
-         99lVpHilpQnuDC4ZDjW2P1GIJqEUz9Q3GAHnX7Cq5JuzvVe4iAixsdg8+zLl7AC7cI
-         HAyAUrpaLBIZg==
-Received: by mail-oi1-f179.google.com with SMTP id x207so15630905oif.1;
-        Tue, 30 Mar 2021 00:34:15 -0700 (PDT)
-X-Gm-Message-State: AOAM532DpQsj2IdKANAO00X6A4MBWwpwiuDpy0RZjnx8gF8Y3hGpvqkx
-        H/BZPVgIp+9G0K5hZe1RyNp3xLwqa0MxrHFSrws=
-X-Google-Smtp-Source: ABdhPJw0JQhzHmFxsYjMFHKlfwtjreUcv9Xt8M6EVj8RxkFv3RdkCCY+IC2JvTqgveJWXVah6ctFL0OE0khmM55zXSc=
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr2303636oie.4.1617089654371;
- Tue, 30 Mar 2021 00:34:14 -0700 (PDT)
+        id S230463AbhC3Hha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:37:30 -0400
+Received: from mail-vk1-f175.google.com ([209.85.221.175]:36372 "EHLO
+        mail-vk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhC3HhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:37:09 -0400
+Received: by mail-vk1-f175.google.com with SMTP id d82so3356958vkd.3;
+        Tue, 30 Mar 2021 00:37:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qvQNG7MoGzFYXtjqbLKR5ZoQOrdPV7hI4S5BKtxl8bw=;
+        b=rGYGgYTih5Uo2/LE2JLJ/wAZYzopMtFL3ebMQRerah9g+915+i8/iu/WZwjFW2p2jM
+         nQhYpkVr16nmWOCR0OooSaZ0qppkdkh5wTeL7acTbuXBZkilP/IRgwbCDFzpzt5to+e9
+         1nlXJ2WnfdB33vWzFl8X1v5sMLVM2OwO431wyHU6i81p6cN2us01rwVJmgSCzEASr325
+         y0X9cC4mgpKrwV+PWrZizNBHBEwpYog1u6NX27EzR9pZ2SZ4h/jaMiPdnyxKZ8vyTWJg
+         oqm6Q8ry9OtE/2j21QtwatXy2CeWGwZGziHvhq1t420UhN+Jce87OwJAvscOtYN1rG4P
+         BifA==
+X-Gm-Message-State: AOAM533akIS5osjrMxlsFAwRO7I2rDOcFC5YY0dDXoHwUHGmUud0+vRM
+        YhsjajBHBkIQbtNFZzJerrVSZj14A5K0bzQYYBiTtYRA9do=
+X-Google-Smtp-Source: ABdhPJxPLly45TgC6QKXizIcqd1cjiPQH0CtyhWUI5AhbVx3eCiOGrlDOEM2Bzut8wOVPvzfiO4RoVF21DSV2kwPAw0=
+X-Received: by 2002:a1f:e543:: with SMTP id c64mr16591580vkh.2.1617089828934;
+ Tue, 30 Mar 2021 00:37:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <yq1wntpgxxr.fsf@ca-mkp.ca.oracle.com> <20210330071958.3788214-1-slyfox@gentoo.org>
- <20210330071958.3788214-3-slyfox@gentoo.org>
-In-Reply-To: <20210330071958.3788214-3-slyfox@gentoo.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 30 Mar 2021 09:34:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2CmQpKynwGbtdWH+1L4=SkX2y4XKggT=8DrnsjxU4hSw@mail.gmail.com>
-Message-ID: <CAK8P3a2CmQpKynwGbtdWH+1L4=SkX2y4XKggT=8DrnsjxU4hSw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] hpsa: add an assert to prevent from __packed reintroduction
-To:     Sergei Trofimovich <slyfox@gentoo.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Don Brace <don.brace@microchip.com>,
-        linux-ia64@vger.kernel.org, storagedev@microchip.com,
-        linux-scsi <linux-scsi@vger.kernel.org>, jszczype@redhat.com,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>, thenzl@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210329131401.15724766@canb.auug.org.au>
+In-Reply-To: <20210329131401.15724766@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 30 Mar 2021 09:36:57 +0200
+Message-ID: <CAMuHMdXtjy4HDzK2y2+3Fb788=OQAv_OQJaw31FRL0pkjLXb4g@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the drm tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        shaoyunl <shaoyun.liu@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 9:23 AM Sergei Trofimovich <slyfox@gentoo.org> wrote:
+Hi Stephen,
 
-> +/*
-> + * Make sure our embedded atomic variable is aligned. Otherwise we break atomic
-> + * operations on architectures that don't support unaligned atomics like IA64.
-> + *
-> + * The assert guards against reintroductin against unwanted __packed to
-> + * the struct CommandList.
-> + */
-> +static_assert(offsetof(struct CommandList, refcount) % __alignof__(atomic_t) == 0);
-> +
+On Mon, Mar 29, 2021 at 4:16 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Today's linux-next merge of the drm tree got a conflict in:
+>
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+>
+> between commits:
+>
+>   9adb125dde69 ("drm/amdgpu: re-enable suspend phase 2 for S0ix")
+>   4021229e32bd ("drm/amdgpu/swsmu: skip gfx cgpg on s0ix suspend")
+>   9bb735abcbd8 ("drm/amdgpu: update comments about s0ix suspend/resume")
+>
+> from Linus' tree and commit:
+>
+>   e3c1b0712fdb ("drm/amdgpu: Reset the devices in the XGMI hive duirng probe")
+>
+> from the drm tree.
+>
+> I fixed it up (I think - see below) and can carry the fix as necessary.
+> This is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+>
+> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index 8a5a8ff5d362,0f82c5d21237..000000000000
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@@ -2743,16 -2712,15 +2720,25 @@@ static int amdgpu_device_ip_suspend_pha
+>                         continue;
+>                 }
+>
+>  +              /* skip suspend of gfx and psp for S0ix
+>  +               * gfx is in gfxoff state, so on resume it will exit gfxoff just
+>  +               * like at runtime. PSP is also part of the always on hardware
+>  +               * so no need to suspend it.
+>  +               */
+>  +              if (adev->in_s0ix &&
+>  +                  (adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_PSP ||
+>  +                   adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_GFX))
+>  +                      continue;
+>  +
+> +               /* skip unnecessary suspend if we do not initialize them yet */
+> +               if (adev->gmc.xgmi.pending_reset &&
+> +                   !(adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_GMC ||
+> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_SMC ||
+> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_COMMON ||
+> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_IH)) {
+> +                       adev->ip_blocks[i].status.hw = false;
+> +                       continue;
+> +               }
+>                 /* XXX handle errors */
+>                 r = adev->ip_blocks[i].version->funcs->suspend(adev);
+>                 /* XXX handle errors */
 
-There are a few other members that need to be aligned: the work_struct
-has another
-atomic_t inside it, and there are a few pointers that might rely on
-being written to
-atomically.
+The above is not what you have in next-20210329?
+Your tree has a second copy of the first conflict block after the second:
 
-While you could add a static_assert for each member, the easier solution is to
-just not ask for the members to be misaligned in the first place.
+                /* skip suspend of gfx and psp for S0ix
+                [...]
+                /* skip unnecessary suspend if we do not initialize them yet */
+                [...]
+                /* skip suspend of gfx and psp for S0ix
 
-       Arnd
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
