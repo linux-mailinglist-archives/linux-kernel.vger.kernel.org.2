@@ -2,136 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5E634E86C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D4734E89E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhC3NGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:06:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:60836 "EHLO foss.arm.com"
+        id S232253AbhC3NLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:11:45 -0400
+Received: from elvis.franken.de ([193.175.24.41]:37693 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232169AbhC3NGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:06:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D47F131B;
-        Tue, 30 Mar 2021 06:06:44 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B7A883F694;
-        Tue, 30 Mar 2021 06:06:43 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 14:06:37 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        tglx@linutronix.de, lecopzer@gmail.com, yj.chiang@mediatek.com,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH] irqchip/gic-v3: Fix IPRIORITYR can't perform byte
- operations in GIC-600
-Message-ID: <20210330130637.GA26263@lpieralisi>
-References: <20210330100619.24747-1-lecopzer.chen@mediatek.com>
- <87o8f1q6c6.wl-maz@kernel.org>
- <20210330110546.GA24881@lpieralisi>
+        id S231971AbhC3NLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:11:38 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lRE9U-000488-00; Tue, 30 Mar 2021 15:11:24 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 405B2C1DF5; Tue, 30 Mar 2021 15:07:40 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 15:07:40 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/6] mips/sgi-ip27: Delete obsolete TODO file
+Message-ID: <20210330130740.GA11217@alpha.franken.de>
+References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+ <1617087773-7183-2-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330110546.GA24881@lpieralisi>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1617087773-7183-2-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:05:46PM +0100, Lorenzo Pieralisi wrote:
-> On Tue, Mar 30, 2021 at 11:33:13AM +0100, Marc Zyngier wrote:
-> > [+Lorenzo, +Julien on an actual email address]
-> > 
-> > On Tue, 30 Mar 2021 11:06:19 +0100,
-> > Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
-> > > 
-> > > When pseudo-NMI enabled, register_nmi() set priority of specific IRQ
-> > > by byte ops, and this doesn't work in GIC-600.
-> > > 
-> > > We have asked ARM Support [1]:
-> > > > Please refer to following description in
-> > > > "2.1.2 Distributor ACE-Lite slave interface" of GIC-600 TRM for
-> > > > the GIC600 ACE-lite slave interface supported sizes:
-> > > >   "The GIC-600 only accepts single beat accesses of the sizes for
-> > > >   each register that are shown in the Programmers model,
-> > > >   see Chapter 4 Programmer's model on page 4-102.
-> > > >   All other accesses are rejected and given either an
-> > > >   OKAY or SLVERR response that is based on the GICT_ERR0CTLR.UE bit.".
-> > > 
-> > > Thus the register needs to be written by double word operation and
-> > > the step will be: read 32bit, set byte and write it back.
-> > > 
-> > > [1] https://services.arm.com/support/s/case/5003t00001L4Pba
-> > 
-> > You do realise that this link:
-> > 
-> > - is unusable for most people as it is behind a registration interface
-> > - discloses confidential information to other people
-> > 
-> > I strongly suggest you stop posting such links.
-> > 
-> > > 
-> > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > ---
-> > >  drivers/irqchip/irq-gic-v3.c | 13 ++++++++++++-
-> > >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > > index eb0ee356a629..cfc5a6ad30dc 100644
-> > > --- a/drivers/irqchip/irq-gic-v3.c
-> > > +++ b/drivers/irqchip/irq-gic-v3.c
-> > > @@ -440,10 +440,21 @@ static void gic_irq_set_prio(struct irq_data *d, u8 prio)
-> > >  {
-> > >  	void __iomem *base = gic_dist_base(d);
-> > >  	u32 offset, index;
-> > > +	u32 val, prio_offset_mask, prio_offset_shift;
-> > >  
-> > >  	offset = convert_offset_index(d, GICD_IPRIORITYR, &index);
-> > >  
-> > > -	writeb_relaxed(prio, base + offset + index);
-> > > +	/*
-> > > +	 * GIC-600 memory mapping register doesn't support byte opteration,
-> > > +	 * thus read 32-bits from register, set bytes and wtire back to it.
-> > > +	 */
-> > > +	prio_offset_shift = (index & 0x3) * 8;
-> > > +	prio_offset_mask = GENMASK(prio_offset_shift + 7, prio_offset_shift);
-> > > +	index &= ~0x3;
-> > > +	val = readl_relaxed(base + offset + index);
-> > > +	val &= ~prio_offset_mask;
-> > > +	val |= prio << prio_offset_shift;
-> > > +	writel_relaxed(val, base + offset + index);
-> > >  }
-> > >  
-> > >  static u32 gic_get_ppi_index(struct irq_data *d)
-> > 
-> > From the architecture spec:
-> > 
-> > <quote>
-> > 11.1.3 GIC memory-mapped register access
-> > 
-> > In any system, access to the following registers must be supported:
-> > 
-> > [...]
-> > * Byte accesses to:
-> > 	- GICD_IPRIORITYR<n>.
-> > 	- GICD_ITARGETSR<n>.
-> > 	- GICD_SPENDSGIR<n>.
-> > 	- GICD_CPENDSGIR<n>.
-> > 	- GICR_IPRIORITYR<n>.
-> > </quote>
-> > 
-> > So if GIC600 doesn't follow this architectural requirement, this is a
-> > HW erratum, and I want an actual description of the HW issue together
-> > with an erratum number.
-> > 
-> > Lorenzo, can you please investigate on your side?
+On Tue, Mar 30, 2021 at 03:02:44PM +0800, Wang Qing wrote:
+> The TODO file here has not been updated for 15 years, and the function 
+> development described in the file have been implemented or abandoned.
 > 
-> Sure - I will look into it and report back.
+> Its existence will mislead developers seeking to view outdated information.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  arch/mips/sgi-ip27/TODO | 19 -------------------
+>  1 file changed, 19 deletions(-)
+>  delete mode 100644 arch/mips/sgi-ip27/TODO
 
-Checked - I don't think this patch is needed so it should be dropped and
-a follow-up discussion can continue in the relevant/appropriate forum -
-if there is anything left to discuss.
+applied to mips-next.
 
-Thanks,
-Lorenzo
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
