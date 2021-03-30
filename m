@@ -2,150 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ACE34E604
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C775D34E606
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhC3LDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:03:07 -0400
-Received: from mail-vi1eur05on2049.outbound.protection.outlook.com ([40.107.21.49]:45470
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231872AbhC3LCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:02:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lKJ/G/qmruJb/zmi5K0u8DnRJBvIuN+9xUJoDgOkT428HIx1pz7e1wWmfnFivtEMCh8z+tQoNrF7cspJeLFmx6vruHmV7Xqo0qog7+yWAr9a2f/sLYNFfBD9FxLtVr0bed4NpfCOxjrAeg2o/u8CcNce41YIo82Kpg1EsHFenXD3u9u6iiGgySoJHEQc1+X3Mhqxu2cwGT0HDDyCZSPzJH7qUDlofUpvf+lawy2Mx8oyalX0HfqSVhWn/PUcNVk9F5HwmEFZrDFOMoXyUJRAdihiTtX0CJUqw2Lf6q15Yrn+vbzLz3ZTKZWIU78NgYouCWtqZR1RNgxBUqZei3zJwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+NVghAHHkaVufr1JGM7PM3zMSgxfT1Zf+czadhYusv4=;
- b=O49nranNIpPebDO6nVswo1F1XK0Ac5w+jLehRjZ/CrU2kE79oXp9wNZkOByPgEHs01LmlivhrZorDMjCCdJi995lQgQTsFIY0WzYwLD//JriS6KlZrIgSqeW2whYvQDccUxuEWdXkGHaX0Yas1KTYma2bab81Mxi/iKsGbwy8gO8WPejwT7PuMXNvPj+FyG62guRu/YCeJfZTMNlE9Esf8QC4jhDSIcGoVAnZfkzOy4kAUghRnzZHs7bFRv+h3Kj73JNDfdgYSTiIAAzRFslWfXxp6SCa9ZVHBklqOl0LlK2KGJS91Wc3Pbxk7QIstVItNG/Ptvy2gYxsTQ4GdVS+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+        id S231330AbhC3LEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhC3LEO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:04:14 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13115C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:14 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so1126662pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+NVghAHHkaVufr1JGM7PM3zMSgxfT1Zf+czadhYusv4=;
- b=VljOvMsaxHVYSrjZ8AaxTaMo4RcLgqmgh8K/vtQh8FDZZ9/05PUNShqnHWmW+tvF8K2uYmmw1JQFEuwO3P0+rbpk4d/EEpQEB2gp5mz6lGZ6zypZy1nUHVj+BBUsgNf4+fIkesX74ERyx31JSWS2vFH8WwKxESZeK0L/kkn6WSs=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR03MB3067.eurprd03.prod.outlook.com (2603:10a6:7:5e::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3933.32; Tue, 30 Mar 2021 11:02:35 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd%3]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 11:02:35 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>
-CC:     linux-power <linux-power@fi.rohmeurope.com>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
-Thread-Topic: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
-Thread-Index: AQHXJJsGjHVvEbwzhkqZmf3zCM/hD6qcUO+AgAAMBN+AAAI1gA==
-Date:   Tue, 30 Mar 2021 11:02:34 +0000
-Message-ID: <1d44856fc20e3b5821848ee32ea968c3ea79aa3c.camel@fi.rohmeurope.com>
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-         <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
-         <CAHp75VdRobc6jpFzAkd3U65BhiiNPLrF4qsnCKmsQBKMYbG4sg@mail.gmail.com>
-         <d4e78b93a62d2882492b46942a927293bad81d66.camel@fi.rohmeurope.com>
-         <CAHp75Vce8sUsVz0YgHLDFbVMEmbYzaUZ-nRwgOeEfDHowEnxrw@mail.gmail.com>
-In-Reply-To: <CAHp75Vce8sUsVz0YgHLDFbVMEmbYzaUZ-nRwgOeEfDHowEnxrw@mail.gmail.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [2001:14ba:16e2:8300::2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0bd75b1f-7c0a-4813-5be1-08d8f36b5303
-x-ms-traffictypediagnostic: HE1PR03MB3067:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR03MB3067B79B9A7C2FED1754227EAD7D9@HE1PR03MB3067.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oQ64pgoi9R4P4ElntqIDNJyzG1ihnmN9UnZhtUdOTh07KylQpG01+qysiY7wAemShJ9teKqXYMLvbzNulw5sJGrSa6eoyIPOJgemml5z04jlVYBXBtDsgD6bq07ijGF84sQ02hTbPxcnD2gsbp3mqIbfvx9/hukx7y3DNNMayQvEEaXArNsXrqKwS+54siFec2lagG+tttTBUZIpY4WSsfbd6Zx1UJDOxbHux41akOQm+bH3EC8L6xOPaXiN1+ohuX/Ozxf+s9AgGoAdqAZ0/55ZlbPtX/7SY11bQFINRmcB0P7GzPqHszhjP4B/owM7SQ5SaeC/GGTJyD66RpFjRcks49OuB/PFB72UMQViARUzTmQ7C0UHMRwEaImBn6KoXD6Ud93N4P6Xsj7tQ5DhC7MS7p+Mr8FZfroQzGnB57fEC2Av/WX6QUpc3Qi8Rz9g2WZQmNKtRixVwWnd2f8S3n/R2/3M9r/qM5xyX7Nppt1k4f5zCb16wTdEHbeb8sQ/MelauGIcG0cIavt1MPAH0TyzPpeEizp4kwbED2unkAlMVoYtU0oWRq6Q9ZrkEchokSKKIrWdPO6wTwr8PG1BWtvvmODIQDQ2oTZOP4WOh9iz/567f/Q8/E+F9hq9IxmRqCB/VTTcufl4RqJnyBku1h5R6P9mE/eMlNzaHcjSRUg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(136003)(376002)(366004)(346002)(2616005)(6486002)(38100700001)(6916009)(186003)(76116006)(66946007)(66476007)(64756008)(66446008)(66556008)(316002)(53546011)(6506007)(54906003)(5660300002)(4326008)(8936002)(8676002)(71200400001)(478600001)(6512007)(3450700001)(86362001)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?VFg4cWo3S0tHL0l1WnI1RGt1bC81clI2VGQ0MjhZa0dEc253aUZCTGJidnpW?=
- =?utf-8?B?S2pVbkJhSlVmY3JwSGJxV1FZVXBhWmxRQTZiUDFlcVgwNGc1bVkzdm9qYXNU?=
- =?utf-8?B?NDFtMmZzRmJCVENzMGZpK2dPaGpqNi8xQ2FsY1BMaXA3anZudjgvc2ZsbS8v?=
- =?utf-8?B?bkMyVVZDQlNmZ0RBRGYwTWhKbnl5N1lCem5MUGlYZFVJNmxpYmdveHFuRVdC?=
- =?utf-8?B?RlRYUUttOE5oV1lmYWphRllKcTVObUNIK3FTd09sNUN6cEFHTFpNR3M5TXIz?=
- =?utf-8?B?bWlZYU81eGxPVm1OMUF0emU3T0ROUlFkQW93ZTNPVG9pdC82OTA3TktNK3BZ?=
- =?utf-8?B?R3E0TnlYUXVvbTYyK3ZubVNMT0RZMG16dU1KU21vU1BVT1pKUGJSVDlxK1Zv?=
- =?utf-8?B?dHh2bHNZYzdwSlozeEwzNVQ5eUs0OUM5MEwyWTBvL1RQT1F4eEllOElYTGVO?=
- =?utf-8?B?emFSWlRSVzdDR29GSXNHY1F4eXdRVjM1MlFPTjdNVTJ1emRqQklwdDdubTBN?=
- =?utf-8?B?REFsSW9hZndiaGhvY0QvLzdqY0QrQVM2RUJVUU1BcHByUEo4djZPSjQ3ZnIr?=
- =?utf-8?B?RjlJRlVLUWxteTE2M0FVTk5QdUtkWGFxYlZNVE5MTlRoSzBPTUxyajk0TUdz?=
- =?utf-8?B?WUJGRmREZUdJbnRvY2l5bjF0YjFZT0k0R3ZwTHpObDllZmlxNkg1dWJDNjdC?=
- =?utf-8?B?RkQ4bmd1VXFCT1dUOVEzZEduR3V1UzBkOWJRQ3lDbWQ1b3VuYm4xVTlyVTFF?=
- =?utf-8?B?ZFZnTTQyMmFCdTNQalRuK0Y1aTd2Nmt2bWlQb3RIT3N4aDkvN1JHWWdqSlRu?=
- =?utf-8?B?NlpES3U2VU05ZGk3L0dJcjgzcGdoSXVvVzRyR3ZLWk51OXdsOWlPemQwZGpx?=
- =?utf-8?B?aSs1L21XWE5UdzVwUUpGVXJIYjBKM2FnaVdUaEhzaThYTHZyT1NNem9sM2hh?=
- =?utf-8?B?YTQyT2NxeWVwdjlVNURrUHArdXpzWlMwQ1MvdjFPL1dvSmRKeUxOSmQ3Q0pt?=
- =?utf-8?B?SldCVVdJYzJCNS8vRXBuOFVtd2dZekpJMTZjaHR4Y0VMSTV4OEdVK3BWRzg5?=
- =?utf-8?B?SHBOL0FNQm9kcFV4b2ZCQVpGbVlmVWVQY0U2TXZXditnTTFFWVo0bzlBVjgz?=
- =?utf-8?B?WlREbzF3THFaWFFkalFac2pLdVFSMzg4YUQva040d21CZlpZZi9WM2hybnpr?=
- =?utf-8?B?U0hXYjRXZUp4ZnJXSXVkb3FGR1pSODRwNGRaa21nbG5abjVrWXBoWG9IWGhz?=
- =?utf-8?B?SEpUT2R5T0VQZjh4ZStFK1BWSU1jcXcxVFpMNXc1RXBYenlNUitkRFk0cXBq?=
- =?utf-8?B?WUtLbmRWMW03TWV6SUpUZXE3MzZzamw5L0xtQmFoREdBbzFpYXcxT3BKenJY?=
- =?utf-8?B?Y09peWhqaVB2YndtVnhDWnlSNHR0MEhCV2FzTEQ4T0dIRVU5OUw2U3RubTJ1?=
- =?utf-8?B?eTlmQkpqdTZiVFkwbVFqZDR4eVpKUXlFMm5sZXJTMHh1T25YNTU5VkQvN2lD?=
- =?utf-8?B?dG1vQ3ZDdmhvSHJhdWMzNFlGcDMrMlp0NHBUb3JFNWR1SzhOc3ZxZm5RcWEw?=
- =?utf-8?B?MVFNRmUyYmQ0aWgxQkFHOUdBdHptRkRQLzFubmN0empGTFN6MmtjdmtUS1Uy?=
- =?utf-8?B?OVk2NVBHdEozNVowZVVJMGxuSmdnSnU1VFB0RlJ6dTVzRWQzTTA2N0dab2xr?=
- =?utf-8?B?NS9uZ0grRUdEb0h6WUFzbEU1dndsUENSaWJJWENYUW1iNUxhd29RVFpuSlVx?=
- =?utf-8?B?Y0FEV0c3dXQ3ZTNyN0NoUUNXV0Y2Y2tBSUVKampBRkNRK016Yy9RZldoUHVr?=
- =?utf-8?Q?d2JBBAZHjQSET/0eSU4A0lM0ZCyHQjdhs5Ld4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1BFABFB9ED8CBE499515BC27B7AFC1D0@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1uOmRf70nwjPexMU7vu5zsRvN84Lc19GFdHvTFC/5Ac=;
+        b=wb/6nFjbwZZKWqXtIQeqnvJbv2elv4rmhOe3RJmSmcwVKfdOBYKJGVBe/1ihCB1krw
+         Vz3vg4jLAWpxnkoJYSt20pjyLCTWeCNtGJeJZeSepe93LDHKyfFoDka3IiFgx8W5ZDHQ
+         c9TX4UWOhK1qAnmz9BT+gpizZF2vVJ/5Jch9+bgjh4GJ3rt9B4vY8TSRAbnj9D0aly4/
+         zGMkoCHambpr6oxx8dlQbD6p6cMnCAJqH2LjOKf90ymE/Ucl9bDxeAKEidgQY7zV3Y0U
+         ovgK0ekRsRnYUnZWGs4ApsPGUxRV8Bjb20KB4F/916hzGVUJHUPYfVI7sDQU33jiRACX
+         zdQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1uOmRf70nwjPexMU7vu5zsRvN84Lc19GFdHvTFC/5Ac=;
+        b=ByT7iqMQsK2OWassbhPKMWijcdfwie6sIynDWmSooPyepiJmMNx4x7vJo3wxlot3ji
+         aU0sspV/T8V6wKsFpyyH2WnbgRo/FWjAIlCdkzoGCt9XgE9eDLRJTsIi7b6//GxOVoBP
+         +c/l7R9L7JJ3Ubs2AzZq9g9QOmQgNGB+65bFLIjHu+5rbK65gAMJUphzqOe51DlF3Aqj
+         cWUFhD60o7XlqrqYVcjixRaLR/l/bIs789K55kqXgoU7ujuLVgg0GDVsllaYBNdkaJjl
+         wKZw2BtncCjEZQIn6KKwIaZ7cMn2Uld3ip7lcMpi9Gq0QINjgsLgw4aZaekH9SMl/NYe
+         N5kg==
+X-Gm-Message-State: AOAM531UGSC79LYnNCjBtYNgI3sWEbdd/Ew1SQ58c/hUdU5cBZqeEWpm
+        rnl29EYqXh4A+lXHL3CvmdcGESk6zjftPvc3clKGIA==
+X-Google-Smtp-Source: ABdhPJzd1lV2/gI6lGRtjYkJzDp1FXJTAWEHbCywc2cUqrl7tYNY20xMbFRHs/LvMsMygjL2PUHDy9z1lxjZWmLwTDc=
+X-Received: by 2002:a17:902:7d8d:b029:e6:4061:b767 with SMTP id
+ a13-20020a1709027d8db02900e64061b767mr32920843plm.32.1617102253430; Tue, 30
+ Mar 2021 04:04:13 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bd75b1f-7c0a-4813-5be1-08d8f36b5303
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2021 11:02:35.1345
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g4lU1gC3DTYo4I9zz3kjcB4WciwinM0/nMIto0MsyDl1/OXuNn6qyIiyztE7zHj972t/5w6o3OrNg0/0sqF/7+2QcL2dznLWy6wckrvn5tKi8bBAJ10R/FiV4Crc4RN1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB3067
+References: <20210326203807.105754-1-lyude@redhat.com> <20210326203807.105754-18-lyude@redhat.com>
+In-Reply-To: <20210326203807.105754-18-lyude@redhat.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 30 Mar 2021 13:04:02 +0200
+Message-ID: <CAG3jFysKfeCtZbojD1bSUimnbeRa7yyq7OKH=0JWfXTSUsgc9A@mail.gmail.com>
+Subject: Re: [PATCH v2 17/20] drm/dp: Convert drm_dp_helper.c to using drm_err/drm_dbg_*()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIDIwMjEtMDMtMzAgYXQgMTM6NTQgKzAzMDAsIEFuZHkgU2hldmNoZW5rbyB3cm90
-ZToNCj4gT24gVHVlLCBNYXIgMzAsIDIwMjEgYXQgMTo0MyBQTSBNYXR0aSBWYWl0dGluZW4NCj4g
-PG1hdHRpLnZhaXR0aW5lbkBmaS5yb2htZXVyb3BlLmNvbT4gd3JvdGU6DQo+ID4gT24gVHVlLCAy
-MDIxLTAzLTMwIGF0IDEzOjExICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6DQo+IA0KPiAu
-Li4NCj4gDQo+ID4gQW5keSwgaG93IGZhdGFsIGRvIHlvdSB0aGluayB0aGVzZSBpc3N1ZXMgYXJl
-PyBJIGRpZCBwdXQgdGhlc2UNCj4gPiBjb21tZW50cw0KPiA+IG9uIG15ICd0aGluZ3MgdG8gY2xl
-YW4tdXAnIGxpc3QuDQo+ID4gDQo+ID4gSWYgeW91IGRvbid0IHNlZSB0aGVtIGFzIGZhdGFsLCB0
-aGVuIEkgcmF0aGVyIG5vdCByZXNlbmQgd2hvbGUNCj4gPiBzZXJpZXMNCj4gPiBvZiAxOSBwYXRj
-aGVzIGp1c3QgZm9yIHRoZXNlLiBJIGFtIGFueXdheSBnb2luZyB0byByZXdvcmsgdGhlIFJPSE0N
-Cj4gPiBQTUlDDQo+ID4gR1BJTyBkcml2ZXJzIHdoaWNoIEkgaGF2ZSBhdXRob3JlZCBkdXJpbmcg
-dGhlIG5leHQgY291cGxlIG9mIG1vbnRocw0KPiA+IGZvcg0KPiA+IHJlZ21hcF9ncGlvIHVzYWdl
-LiBUaGlzIHNlcmllcyBoYXMgbW9zdCBvZiB0aGUgYWNrcyBleGNlcHQgZm9yIHRoZQ0KPiA+IHJl
-Z3VsYXRvciBwYXJ0IC0gc28gSSB3YXMgYWJvdXQgdG8gc3VnZ2VzdCB0byBMZWUgdGhhdCBwZXJo
-YXBzIGhlDQo+ID4gY291bGQNCj4gPiBhcHBseSBvdGhlciBidXQgcmVndWxhdG9yIHN0dWZmIHRv
-IE1GRCBzbyBJIGNvdWxkIHNxdWVlemUgdGhlDQo+ID4gcmVjaXBpZW50DQo+ID4gbGlzdCBhbmQg
-YW1vdW50IG9mIHBhdGNoZXMgaW4gc2VyaWVzLg0KPiANCj4gSSB1bmRlcnN0YW5kIHRoYXQuIEkn
-bSBub3QgYSBtYWludGFpbmVyLCBidXQgbXkgcGVyc29uYWwgdmlldyBpcyB0aGF0DQo+IGl0IGNh
-biBiZSBmaXhlZCBpbiBmb2xsb3cgdXBzLg0KDQpUaGFua3MgQW5keS4gVGhlIHNlcmllcyBhbHJl
-YWR5IGhhZCBhY2tzIGZyb20gQmFydG9zeiBhbmQgTGludXMgc28gSQ0KaG9wZSB0aGV5IGFyZSBh
-bHNvIE9rIHdpdGggZml4aW5nIHRoZXNlIHdoZW4gcmV3b3JraW5nIGZvciByZWdtYXBfZ3Bpbw0K
-KEkgaW50ZW5kIHRvIGRvIHRoYXQgZHVyaW5nIDUuMTMtcmMgY3ljbGUpLg0KDQpCZXN0IFJlZ2Fy
-ZHMNCglNYXR0aSBWYWl0dGluZW4NCg==
+Hey Lyude,
+
+Looks good to me.
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+
+
+On Fri, 26 Mar 2021 at 21:40, Lyude Paul <lyude@redhat.com> wrote:
+>
+> Now that we've added a back-pointer to drm_device to drm_dp_aux, made
+> drm_dp_aux available to any functions in drm_dp_helper.c which need to
+> print to the kernel log, and ensured all of our logging uses a consistent
+> format, let's do the final step of the conversion and actually move
+> everything over to using drm_err() and drm_dbg_*().
+>
+> This was done by using the following cocci script:
+>
+>   @@
+>   expression list expr;
+>   @@
+>
+>   (
+>   - DRM_DEBUG_KMS(expr);
+>   + drm_dbg_kms(aux->drm_dev, expr);
+>   |
+>   - DRM_DEBUG_DP(expr);
+>   + drm_dbg_dp(aux->drm_dev, expr);
+>   |
+>   - DRM_DEBUG_ATOMIC(expr);
+>   + drm_dbg_atomic(aux->drm_dev, expr);
+>   |
+>   - DRM_DEBUG_KMS_RATELIMITED(expr);
+>   + drm_dbg_kms_ratelimited(aux->drm_dev, expr);
+>   |
+>   - DRM_ERROR(expr);
+>   + drm_err(aux->drm_dev, expr);
+>   )
+>
+> Followed by correcting the resulting line-wrapping in the results by hand.
+>
+> v2:
+> * Fix indenting in drm_dp_dump_access
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: Robert Foss <robert.foss@linaro.org>
+> ---
+>  drivers/gpu/drm/drm_dp_helper.c | 121 ++++++++++++++++----------------
+>  1 file changed, 59 insertions(+), 62 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+> index 54e19d7b9c51..4940db0bcaae 100644
+> --- a/drivers/gpu/drm/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/drm_dp_helper.c
+> @@ -139,8 +139,8 @@ void drm_dp_link_train_clock_recovery_delay(const struct drm_dp_aux *aux,
+>                                          DP_TRAINING_AUX_RD_MASK;
+>
+>         if (rd_interval > 4)
+> -               DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
+> -                             aux->name, rd_interval);
+> +               drm_dbg_kms(aux->drm_dev, "%s: AUX interval %lu, out of range (max 4)\n",
+> +                           aux->name, rd_interval);
+>
+>         if (rd_interval == 0 || dpcd[DP_DPCD_REV] >= DP_DPCD_REV_14)
+>                 rd_interval = 100;
+> @@ -155,8 +155,8 @@ static void __drm_dp_link_train_channel_eq_delay(const struct drm_dp_aux *aux,
+>                                                  unsigned long rd_interval)
+>  {
+>         if (rd_interval > 4)
+> -               DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
+> -                             aux->name, rd_interval);
+> +               drm_dbg_kms(aux->drm_dev, "%s: AUX interval %lu, out of range (max 4)\n",
+> +                           aux->name, rd_interval);
+>
+>         if (rd_interval == 0)
+>                 rd_interval = 400;
+> @@ -220,11 +220,11 @@ drm_dp_dump_access(const struct drm_dp_aux *aux,
+>         const char *arrow = request == DP_AUX_NATIVE_READ ? "->" : "<-";
+>
+>         if (ret > 0)
+> -               DRM_DEBUG_DP("%s: 0x%05x AUX %s (ret=%3d) %*ph\n",
+> -                            aux->name, offset, arrow, ret, min(ret, 20), buffer);
+> +               drm_dbg_dp(aux->drm_dev, "%s: 0x%05x AUX %s (ret=%3d) %*ph\n",
+> +                          aux->name, offset, arrow, ret, min(ret, 20), buffer);
+>         else
+> -               DRM_DEBUG_DP("%s: 0x%05x AUX %s (ret=%3d)\n",
+> -                            aux->name, offset, arrow, ret);
+> +               drm_dbg_dp(aux->drm_dev, "%s: 0x%05x AUX %s (ret=%3d)\n",
+> +                          aux->name, offset, arrow, ret);
+>  }
+>
+>  /**
+> @@ -287,8 +287,8 @@ static int drm_dp_dpcd_access(struct drm_dp_aux *aux, u8 request,
+>                         err = ret;
+>         }
+>
+> -       DRM_DEBUG_KMS("%s: Too many retries, giving up. First error: %d\n",
+> -                     aux->name, err);
+> +       drm_dbg_kms(aux->drm_dev, "%s: Too many retries, giving up. First error: %d\n",
+> +                   aux->name, err);
+>         ret = err;
+>
+>  unlock:
+> @@ -524,44 +524,44 @@ bool drm_dp_send_real_edid_checksum(struct drm_dp_aux *aux,
+>
+>         if (drm_dp_dpcd_read(aux, DP_DEVICE_SERVICE_IRQ_VECTOR,
+>                              &auto_test_req, 1) < 1) {
+> -               DRM_ERROR("%s: DPCD failed read at register 0x%x\n",
+> -                         aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
+> +               drm_err(aux->drm_dev, "%s: DPCD failed read at register 0x%x\n",
+> +                       aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
+>                 return false;
+>         }
+>         auto_test_req &= DP_AUTOMATED_TEST_REQUEST;
+>
+>         if (drm_dp_dpcd_read(aux, DP_TEST_REQUEST, &link_edid_read, 1) < 1) {
+> -               DRM_ERROR("%s: DPCD failed read at register 0x%x\n",
+> -                         aux->name, DP_TEST_REQUEST);
+> +               drm_err(aux->drm_dev, "%s: DPCD failed read at register 0x%x\n",
+> +                       aux->name, DP_TEST_REQUEST);
+>                 return false;
+>         }
+>         link_edid_read &= DP_TEST_LINK_EDID_READ;
+>
+>         if (!auto_test_req || !link_edid_read) {
+> -               DRM_DEBUG_KMS("%s: Source DUT does not support TEST_EDID_READ\n",
+> -                             aux->name);
+> +               drm_dbg_kms(aux->drm_dev, "%s: Source DUT does not support TEST_EDID_READ\n",
+> +                           aux->name);
+>                 return false;
+>         }
+>
+>         if (drm_dp_dpcd_write(aux, DP_DEVICE_SERVICE_IRQ_VECTOR,
+>                               &auto_test_req, 1) < 1) {
+> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
+> -                         aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
+> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
+> +                       aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
+>                 return false;
+>         }
+>
+>         /* send back checksum for the last edid extension block data */
+>         if (drm_dp_dpcd_write(aux, DP_TEST_EDID_CHECKSUM,
+>                               &real_edid_checksum, 1) < 1) {
+> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
+> -                         aux->name, DP_TEST_EDID_CHECKSUM);
+> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
+> +                       aux->name, DP_TEST_EDID_CHECKSUM);
+>                 return false;
+>         }
+>
+>         test_resp |= DP_TEST_EDID_CHECKSUM_WRITE;
+>         if (drm_dp_dpcd_write(aux, DP_TEST_RESPONSE, &test_resp, 1) < 1) {
+> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
+> -                         aux->name, DP_TEST_RESPONSE);
+> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
+> +                       aux->name, DP_TEST_RESPONSE);
+>                 return false;
+>         }
+>
+> @@ -604,17 +604,16 @@ static int drm_dp_read_extended_dpcd_caps(struct drm_dp_aux *aux,
+>                 return -EIO;
+>
+>         if (dpcd[DP_DPCD_REV] > dpcd_ext[DP_DPCD_REV]) {
+> -               DRM_DEBUG_KMS("%s: Extended DPCD rev less than base DPCD rev (%d > %d)\n",
+> -                             aux->name, dpcd[DP_DPCD_REV],
+> -                             dpcd_ext[DP_DPCD_REV]);
+> +               drm_dbg_kms(aux->drm_dev,
+> +                           "%s: Extended DPCD rev less than base DPCD rev (%d > %d)\n",
+> +                           aux->name, dpcd[DP_DPCD_REV], dpcd_ext[DP_DPCD_REV]);
+>                 return 0;
+>         }
+>
+>         if (!memcmp(dpcd, dpcd_ext, sizeof(dpcd_ext)))
+>                 return 0;
+>
+> -       DRM_DEBUG_KMS("%s: Base DPCD: %*ph\n",
+> -                     aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
+> +       drm_dbg_kms(aux->drm_dev, "%s: Base DPCD: %*ph\n", aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
+>
+>         memcpy(dpcd, dpcd_ext, sizeof(dpcd_ext));
+>
+> @@ -649,8 +648,7 @@ int drm_dp_read_dpcd_caps(struct drm_dp_aux *aux,
+>         if (ret < 0)
+>                 return ret;
+>
+> -       DRM_DEBUG_KMS("%s: DPCD: %*ph\n",
+> -                     aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
+> +       drm_dbg_kms(aux->drm_dev, "%s: DPCD: %*ph\n", aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
+>
+>         return ret;
+>  }
+> @@ -694,8 +692,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
+>         if (ret != len)
+>                 return -EIO;
+>
+> -       DRM_DEBUG_KMS("%s: DPCD DFP: %*ph\n",
+> -                     aux->name, len, downstream_ports);
+> +       drm_dbg_kms(aux->drm_dev, "%s: DPCD DFP: %*ph\n", aux->name, len, downstream_ports);
+>
+>         return 0;
+>  }
+> @@ -1412,11 +1409,11 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>                          * Avoid spamming the kernel log with timeout errors.
+>                          */
+>                         if (ret == -ETIMEDOUT)
+> -                               DRM_DEBUG_KMS_RATELIMITED("%s: transaction timed out\n",
+> -                                                         aux->name);
+> +                               drm_dbg_kms_ratelimited(aux->drm_dev, "%s: transaction timed out\n",
+> +                                                       aux->name);
+>                         else
+> -                               DRM_DEBUG_KMS("%s: transaction failed: %d\n",
+> -                                             aux->name, ret);
+> +                               drm_dbg_kms(aux->drm_dev, "%s: transaction failed: %d\n",
+> +                                           aux->name, ret);
+>                         return ret;
+>                 }
+>
+> @@ -1430,12 +1427,12 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>                         break;
+>
+>                 case DP_AUX_NATIVE_REPLY_NACK:
+> -                       DRM_DEBUG_KMS("%s: native nack (result=%d, size=%zu)\n",
+> -                                     aux->name, ret, msg->size);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: native nack (result=%d, size=%zu)\n",
+> +                                   aux->name, ret, msg->size);
+>                         return -EREMOTEIO;
+>
+>                 case DP_AUX_NATIVE_REPLY_DEFER:
+> -                       DRM_DEBUG_KMS("%s: native defer\n", aux->name);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: native defer\n", aux->name);
+>                         /*
+>                          * We could check for I2C bit rate capabilities and if
+>                          * available adjust this interval. We could also be
+> @@ -1449,8 +1446,8 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>                         continue;
+>
+>                 default:
+> -                       DRM_ERROR("%s: invalid native reply %#04x\n",
+> -                                 aux->name, msg->reply);
+> +                       drm_err(aux->drm_dev, "%s: invalid native reply %#04x\n",
+> +                               aux->name, msg->reply);
+>                         return -EREMOTEIO;
+>                 }
+>
+> @@ -1465,13 +1462,13 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>                         return ret;
+>
+>                 case DP_AUX_I2C_REPLY_NACK:
+> -                       DRM_DEBUG_KMS("%s: I2C nack (result=%d, size=%zu)\n",
+> -                                     aux->name, ret, msg->size);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: I2C nack (result=%d, size=%zu)\n",
+> +                                   aux->name, ret, msg->size);
+>                         aux->i2c_nack_count++;
+>                         return -EREMOTEIO;
+>
+>                 case DP_AUX_I2C_REPLY_DEFER:
+> -                       DRM_DEBUG_KMS("%s: I2C defer\n", aux->name);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: I2C defer\n", aux->name);
+>                         /* DP Compliance Test 4.2.2.5 Requirement:
+>                          * Must have at least 7 retries for I2C defers on the
+>                          * transaction to pass this test
+> @@ -1485,13 +1482,13 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>                         continue;
+>
+>                 default:
+> -                       DRM_ERROR("%s: invalid I2C reply %#04x\n",
+> -                                 aux->name, msg->reply);
+> +                       drm_err(aux->drm_dev, "%s: invalid I2C reply %#04x\n",
+> +                               aux->name, msg->reply);
+>                         return -EREMOTEIO;
+>                 }
+>         }
+>
+> -       DRM_DEBUG_KMS("%s: Too many retries, giving up\n", aux->name);
+> +       drm_dbg_kms(aux->drm_dev, "%s: Too many retries, giving up\n", aux->name);
+>         return -EREMOTEIO;
+>  }
+>
+> @@ -1520,8 +1517,9 @@ static int drm_dp_i2c_drain_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *o
+>                         return err == 0 ? -EPROTO : err;
+>
+>                 if (err < msg.size && err < ret) {
+> -                       DRM_DEBUG_KMS("%s: Partial I2C reply: requested %zu bytes got %d bytes\n",
+> -                                     aux->name, msg.size, err);
+> +                       drm_dbg_kms(aux->drm_dev,
+> +                                   "%s: Partial I2C reply: requested %zu bytes got %d bytes\n",
+> +                                   aux->name, msg.size, err);
+>                         ret = err;
+>                 }
+>
+> @@ -1700,12 +1698,11 @@ static void drm_dp_aux_crc_work(struct work_struct *work)
+>                 }
+>
+>                 if (ret == -EAGAIN) {
+> -                       DRM_DEBUG_KMS("%s: Get CRC failed after retrying: %d\n",
+> -                                     aux->name, ret);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: Get CRC failed after retrying: %d\n",
+> +                                   aux->name, ret);
+>                         continue;
+>                 } else if (ret) {
+> -                       DRM_DEBUG_KMS("%s: Failed to get a CRC: %d\n",
+> -                                     aux->name, ret);
+> +                       drm_dbg_kms(aux->drm_dev, "%s: Failed to get a CRC: %d\n", aux->name, ret);
+>                         continue;
+>                 }
+>
+> @@ -2006,13 +2003,12 @@ int drm_dp_read_desc(struct drm_dp_aux *aux, struct drm_dp_desc *desc,
+>
+>         dev_id_len = strnlen(ident->device_id, sizeof(ident->device_id));
+>
+> -       DRM_DEBUG_KMS("%s: DP %s: OUI %*phD dev-ID %*pE HW-rev %d.%d SW-rev %d.%d quirks 0x%04x\n",
+> -                     aux->name, is_branch ? "branch" : "sink",
+> -                     (int)sizeof(ident->oui), ident->oui,
+> -                     dev_id_len, ident->device_id,
+> -                     ident->hw_rev >> 4, ident->hw_rev & 0xf,
+> -                     ident->sw_major_rev, ident->sw_minor_rev,
+> -                     desc->quirks);
+> +       drm_dbg_kms(aux->drm_dev,
+> +                   "%s: DP %s: OUI %*phD dev-ID %*pE HW-rev %d.%d SW-rev %d.%d quirks 0x%04x\n",
+> +                   aux->name, is_branch ? "branch" : "sink",
+> +                   (int)sizeof(ident->oui), ident->oui, dev_id_len,
+> +                   ident->device_id, ident->hw_rev >> 4, ident->hw_rev & 0xf,
+> +                   ident->sw_major_rev, ident->sw_minor_rev, desc->quirks);
+>
+>         return 0;
+>  }
+> @@ -2774,7 +2770,8 @@ int drm_dp_pcon_frl_enable(struct drm_dp_aux *aux)
+>         if (ret < 0)
+>                 return ret;
+>         if (!(buf & DP_PCON_ENABLE_SOURCE_CTL_MODE)) {
+> -               DRM_DEBUG_KMS("%s: PCON in Autonomous mode, can't enable FRL\n", aux->name);
+> +               drm_dbg_kms(aux->drm_dev, "%s: PCON in Autonomous mode, can't enable FRL\n",
+> +                           aux->name);
+>                 return -EINVAL;
+>         }
+>         buf |= DP_PCON_ENABLE_HDMI_LINK;
+> @@ -2869,8 +2866,8 @@ void drm_dp_pcon_hdmi_frl_link_error_count(struct drm_dp_aux *aux,
+>                         num_error = 0;
+>                 }
+>
+> -               DRM_ERROR("%s: More than %d errors since the last read for lane %d",
+> -                         aux->name, num_error, i);
+> +               drm_err(aux->drm_dev, "%s: More than %d errors since the last read for lane %d",
+> +                       aux->name, num_error, i);
+>         }
+>  }
+>  EXPORT_SYMBOL(drm_dp_pcon_hdmi_frl_link_error_count);
+> --
+> 2.30.2
+>
