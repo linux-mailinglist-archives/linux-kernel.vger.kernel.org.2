@@ -2,168 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE06134F2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C3534F2F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhC3VOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhC3VOm (ORCPT
+        id S232705AbhC3VP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:15:58 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:44008 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232450AbhC3VPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:14:42 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E9BC061574;
-        Tue, 30 Mar 2021 14:14:41 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id i9so17353968qka.2;
-        Tue, 30 Mar 2021 14:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ggozfWBPW8IuLIjloW6WSrwVHoKc5x/0lF7TLz027Y=;
-        b=vOri9Y+PBjDsorPl7YPFn8uYnFAt2bbwsF1irc/UoeCWg2FuGAdfhAmAryiWLbwGfP
-         8M58Ydu/8nmNIQZaelGmUC+1PwKtGx/U3S58yFNQYQR8+S7fxKOL6j43RFKSz6szPcxf
-         XgnGXQjJRLLXz8x4Vx8ThJpjB37S3//llCWahX/nc81rmmrDQjKFL2/ldUdWYSaz5FoL
-         MJhdcD4a26Z5pT0WThRfN9bssZv2xJE2A0KuyNzfd8N+51UI/iF4q9Ldplkya1yqsnA4
-         CFdt8s9V9XYeXKr5b1pbWKRcq19TLStc9Rew6TF2GLruCKfKBuIdCvEHPM1SzUxfks1f
-         uajg==
+        Tue, 30 Mar 2021 17:15:48 -0400
+Received: by mail-ot1-f48.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so16886379otn.10;
+        Tue, 30 Mar 2021 14:15:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=+ggozfWBPW8IuLIjloW6WSrwVHoKc5x/0lF7TLz027Y=;
-        b=d4k/90huA6z5Qwul4sIRE7yurcjZUKBA7HgCFWpxehrI58QJjbF9qBwXLGdbkO6TVu
-         lK2QMANuH+DqPHhWJNKHzf3cDZ34pcFgDEXm7vsmh7gMmLl2kxMc8Sq7dlxQB0VCoMmr
-         fVh4cdxaDFwJeJT1ouPsNuH5esh5Zh9Veae15DehbHY/TRDeSqktfX1y/0hPzQdxzIOl
-         36hQk8QmJSYja7T+WKbh1PyGLOehIRzRDjkaoFL8s+vret9zAL0c70k5PX15ql/5Og8h
-         B1rpR8tL057uunqPEmCWTESIh9+nZ/ReF0TP1DRq/GtCWO54M3l1mEzOGEbgOVEbSRZg
-         4xRQ==
-X-Gm-Message-State: AOAM530nblRGvCAW6a760RrthtQpULWQFx3SUgF4AJNKh0uCsYvvxKjA
-        iWscjrU5kQE6B9xQg4WFwM98WU0sOQdNiFqc
-X-Google-Smtp-Source: ABdhPJwbD+N/GjB0AlKqJVMu0SfsvPdMs9oaHoiPjFBTbDnbbPd1HJfEWQMejjZPYQPo+ef3Vr0RGw==
-X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr231264qkm.306.1617138881199;
-        Tue, 30 Mar 2021 14:14:41 -0700 (PDT)
-Received: from Gentoo ([143.244.44.215])
-        by smtp.gmail.com with ESMTPSA id x21sm16567967qkj.25.2021.03.30.14.14.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4vChBJJ6EYanz1jBGjgMMr+PeNDASuUg2ns+WfjA4bE=;
+        b=Y4NdCJdErHKaL02ZuUGc2ZE1hE7jk4HCNXXd+PI46gRdVXlKemjcOUEWnIvNlnYIyK
+         Ct4YyshrTRPqXUayqy4KSqw37z5kPYGrQ93YN9F89gbIyEXdyhA96v1PgXpFb2d8QtiH
+         6Xgtjq8SKtcQrONkPcswltGHJ1/k043SPK84fDFhdkaYpqiZvtqidiigsPP6SSILnYGP
+         wb16v8OXdzs3kxZTb3cX5FAFSTX4h0zEANlkTGqttLX9Zl1Hi+6EWwrjRBi/Tj//2s3V
+         armZ7WbxKk0yxjASiBBhcR/VnWw4XDRmIQAk8J95i/r7xsaGcHe4Lx+ygCx6I0ajCitn
+         zCrg==
+X-Gm-Message-State: AOAM531fWlprwUXDfjRIx3fqm/ABvC3VjjLTMMut3oC7blWBZ46n01dS
+        GCAf9r1uD7Ehl8dmZhwqZw==
+X-Google-Smtp-Source: ABdhPJz0LTLMITQ7Y8/X5B6FbMkC38+yfV0Tx1qBMnvJjdAy8X4mInt+GzTPko2+l4MglZX/rGRzRA==
+X-Received: by 2002:a9d:171d:: with SMTP id i29mr28517424ota.294.1617138948168;
+        Tue, 30 Mar 2021 14:15:48 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j4sm15914oom.11.2021.03.30.14.14.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 14:14:40 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 02:44:22 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hch@lst.de, iommu@lists.linux-foundation.org,
-        linuxppc-dev@lists.ozlabs.org, dave.jiang@intel.com,
-        dan.j.williams@intel.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 24/30] Kconfig: Change Synopsys to Synopsis
-Message-ID: <YGOUrpsQzrIPEHIU@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>, dmaengine@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, hch@lst.de,
-        iommu@lists.linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
-        dave.jiang@intel.com, dan.j.williams@intel.com,
-        rdunlap@infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1616971780.git.unixbhaskar@gmail.com>
- <1262e9e62498f961e5172205e66a9ef7c6f0f69d.1616971780.git.unixbhaskar@gmail.com>
- <8f80fb1b-b2d0-b66a-24b0-bd92dc6cd4b6@arm.com>
+        Tue, 30 Mar 2021 14:14:51 -0700 (PDT)
+Received: (nullmailer pid 729378 invoked by uid 1000);
+        Tue, 30 Mar 2021 21:14:44 -0000
+Date:   Tue, 30 Mar 2021 16:14:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: mfd: Add bindings for Ampere Altra
+ SMPro drivers
+Message-ID: <20210330211443.GA326528@robh.at.kernel.org>
+References: <20210329015238.19474-1-quan@os.amperecomputing.com>
+ <20210329015238.19474-2-quan@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZkHisyvIHxtmch2f"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8f80fb1b-b2d0-b66a-24b0-bd92dc6cd4b6@arm.com>
+In-Reply-To: <20210329015238.19474-2-quan@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 08:52:35AM +0700, Quan Nguyen wrote:
+> Adds device tree bindings for SMPro drivers found on the Mt.Jade hardware
+> reference platform with Ampere's Altra Processor family.
+> 
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> ---
+>  .../bindings/hwmon/ampere,ac01-hwmon.yaml     | 27 ++++++
+>  .../devicetree/bindings/mfd/ampere,smpro.yaml | 82 +++++++++++++++++++
+>  2 files changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+> new file mode 100644
+> index 000000000000..015130a281f4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+> @@ -0,0 +1,27 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/ampere,ac01-hwmon.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hardware monitoring driver for the Ampere Altra SMPro
+> +
+> +maintainers:
+> +  - Quan Nguyen <quan@os.amperecomputing.com>
+> +
+> +description: |
+> +  This module is part of the Ampere Altra SMPro multi-function device. For more
+> +  details see ../mfd/ampere,smpro.yaml.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ampere,ac01-hwmon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> diff --git a/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml b/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+> new file mode 100644
+> index 000000000000..bf789c8a3d7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/ampere,smpro.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ampere Altra SMPro firmware driver
+> +
+> +maintainers:
+> +  - Quan Nguyen <quan@os.amperecomputing.com>
+> +
+> +description: |
+> +  Ampere Altra SMPro firmware may contain different blocks like hardware
+> +  monitoring, error monitoring and other miscellaneous features.
+> +
+> +properties:
+> +  compatible:
+> +    const: ampere,smpro
 
---ZkHisyvIHxtmch2f
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Only 1 version of SMPro? Needs to be more specific or provide details on 
+how the exact version of firmware/hardware is discovered.
 
-On 12:43 Tue 30 Mar 2021, Robin Murphy wrote:
->On 2021-03-29 00:53, Bhaskar Chowdhury wrote:
->> s/Synopsys/Synopsis/  .....two different places.
->
->Erm, that is definitely not a typo... :/
->
+> +
+> +  reg:
+> +    description:
+> +      I2C device address.
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^hwmon(@[0-9a-f]+)?$":
+> +    $ref: ../hwmon/ampere,ac01-hwmon.yaml
+> +
+> +  "^misc(@[0-9a-f]+)?$":
+> +    type: object
+> +    description: Ampere Altra SMPro Misc driver
 
->> ..and for some unknown reason it introduce a empty line deleted and added
->> back.
->
->Presumably your editor is configured to trim trailing whitespace on save.
->
->Furthermore, there are several instances in the other patches where your
->"corrections" are grammatically incorrect, I'm not sure what the deal is
->with patch #14, and you've also used the wrong subsystem name (it should
->be "dmaengine"). It's great to want to clean things up, but please pay a
->bit of care and attention to what you're actually doing.
+Bindings describe h/w, not drivers.
 
+> +    properties:
+> +      compatible:
+> +        const: "ampere,ac01-misc"
+> +
+> +  "^errmon(@[0-9a-f]+)?$":
+> +    type: object
+> +    description: Ampere Altra SMPro Error Monitor driver
+> +    properties:
+> +      compatible:
+> +        const: "ampere,ac01-errmon"
+> +
+> +required:
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        smpro@4f {
+> +            compatible = "ampere,smpro";
+> +            reg = <0x4f>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            hwmon {
+> +                compatible = "ampere,ac01-hwmon";
+> +            };
+> +
+> +            misc {
+> +                compatible = "ampere,ac01-misc";
+> +            };
+> +
+> +            errmon {
+> +                compatible = "ampere,ac01-errmon";
+> +            };
 
-Thank you so much, I shall be more careful.
->
->Robin.
->
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>   drivers/dma/Kconfig | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
->> index 0c2827fd8c19..30e8cc26f43b 100644
->> --- a/drivers/dma/Kconfig
->> +++ b/drivers/dma/Kconfig
->> @@ -170,15 +170,15 @@ config DMA_SUN6I
->>   	  Support for the DMA engine first found in Allwinner A31 SoCs.
->>
->>   config DW_AXI_DMAC
->> -	tristate "Synopsys DesignWare AXI DMA support"
->> +	tristate "Synopsis DesignWare AXI DMA support"
->>   	depends on OF || COMPILE_TEST
->>   	depends on HAS_IOMEM
->>   	select DMA_ENGINE
->>   	select DMA_VIRTUAL_CHANNELS
->>   	help
->> -	  Enable support for Synopsys DesignWare AXI DMA controller.
->> +	  Enable support for Synopsis DesignWare AXI DMA controller.
->>   	  NOTE: This driver wasn't tested on 64 bit platform because
->> -	  of lack 64 bit platform with Synopsys DW AXI DMAC.
->> +	  of lack 64 bit platform with Synopsis DW AXI DMAC.
->>
->>   config EP93XX_DMA
->>   	bool "Cirrus Logic EP93xx DMA support"
->> @@ -394,7 +394,7 @@ config MOXART_DMA
->>   	select DMA_VIRTUAL_CHANNELS
->>   	help
->>   	  Enable support for the MOXA ART SoC DMA controller.
->> -
->> +
->>   	  Say Y here if you enabled MMP ADMA, otherwise say N.
->>
->>   config MPC512X_DMA
->> --
->> 2.26.3
->>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->>
+None of the child nodes have any resources in DT, so you don't need 
+them in DT.
 
---ZkHisyvIHxtmch2f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBjlK0ACgkQsjqdtxFL
-KRV/Awf/WgJ4kZNXg13Lymj81qWKh0xQChcPR1byavkwRKFeyk4mIQDv4/V33f03
-x8lKJRgdvwchbQrJXtz1HkobUN2Yx2wQ8aprpF+kOiv0brN8c7TE92xf7dxnjL7T
-3SSjbN44aYkmCCyV/Em37qXQi4/WrhZbP70K2P89e++Xsjb/rElNBwlmQzyjx0Jt
-KIiXNgr5vFaqJOtwrMFOwDqparI5v70FJjHSTjZMHPPJTiIuYwMSl4r57ABV2s+7
-jXyj1J6ePWL0sfX8h4eo2sBFtcuirP8NZMJbHw4lA0JG8FE6nBDAiFohWucgPBdo
-8vzWlWSOOWJTt5N84XfYEPiJB1caGg==
-=WK+C
------END PGP SIGNATURE-----
-
---ZkHisyvIHxtmch2f--
+Rob
