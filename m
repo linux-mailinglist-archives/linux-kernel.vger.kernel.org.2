@@ -2,383 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24A334E37D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA0B34E381
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhC3It0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:49:26 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36989 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhC3Is4 (ORCPT
+        id S229530AbhC3IvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:51:04 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33959 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229816AbhC3Iu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:48:56 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lRA3T-0004lL-E2
-        for linux-kernel@vger.kernel.org; Tue, 30 Mar 2021 08:48:55 +0000
-Received: by mail-wr1-f72.google.com with SMTP id m13so8819696wri.16
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:48:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=klQmGv60Fj1L8SIUk4QGLeKpz6t2wilREmbvV+IHG9o=;
-        b=Sd/vu8jJuMv6vDTWckS3+aFbOhgZpTBVwoozA81KgHFczhfIvUEpv1krgtGxezj9Hi
-         AZYqaLE+XnUgEznAD36iGiQVtD3kcby3tA6SBrPgeMuq970zHh4pmZYk6IPZiJi99Apl
-         e0C4Suy3fGHvXhL3gFU1aIla/DykqSco2MM5pMsQq9rfDyXNZkEbvnsiqOibN0wu7E8R
-         HG5UhRX54me9xTtY/G3tABEmP3/4urfv4J5ytN/nvh/yOEmcqTIlfsUgtTEjmYrl8LrP
-         E+tS5KWPqJiUTeWOKZhvLbybBGITYcf0FMohffKMIbkjeGeRREmJ2HQ77fR1ShRmnKv1
-         EcjA==
-X-Gm-Message-State: AOAM532P3iAAcznge4DfH0PkF7W5xfT4iuZaESuVTiKmhcUJTf6TBD0K
-        CIuIZIcNTNPjCkkDimJAckm0K4Q9Kb65d8cR1Ss5EMaNn9xjqDYkWrl+ljpflPuHN3ARu1Awc87
-        wrkG+KWiklNENAudJk5xFvmF8muu3zosVMSzkF6339g==
-X-Received: by 2002:a1c:7407:: with SMTP id p7mr2905275wmc.51.1617094135042;
-        Tue, 30 Mar 2021 01:48:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVTs+PddCKPalHGYjD7MxlC/SymLJ4ZLrIrpB8wLKJGNPHy98StbpBdHD6uSLIVZn8s4g2tw==
-X-Received: by 2002:a1c:7407:: with SMTP id p7mr2905264wmc.51.1617094134832;
-        Tue, 30 Mar 2021 01:48:54 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id u3sm33760826wrt.82.2021.03.30.01.48.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 01:48:54 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-6-digetx@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
-Date:   Tue, 30 Mar 2021 10:48:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 30 Mar 2021 04:50:59 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 488B85C01DD;
+        Tue, 30 Mar 2021 04:50:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 30 Mar 2021 04:50:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=DYuF8ynynyUmg6f7TaD/4Cm9Ex5
+        LmsY3DCYS1inVb+I=; b=RjkMMZ7Ogm7XVBdnoG+lxUzzkh2Votx/DWQ8H5r073x
+        shyp3beqFmAg3LZrmP74zPJqge02q7IxfqoZVxClXkv+lYtOCsCuNTYuQomhIWsi
+        8CMqjMnC+mrU0V4T/ajmGnSf4raTGWxzb/8LZka+C2paburpNHLhYNoEJQjH0k3b
+        5ZfXaDnNsfimby32c1BHSQxs0wTEhKguVpwX4zrzp2bbyMJQgY1r3ESzodnbgPs4
+        Tf7ev3vC59jAwrckodGZiLQx1LeQvc0C1H4LLKYL+/smbYMI/RmZmdvu4pU5rW9C
+        aBlE/4jelctzuv1oUwWEDkQ/5O8ra4C6K5Xn8srHn6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DYuF8y
+        nynyUmg6f7TaD/4Cm9Ex5LmsY3DCYS1inVb+I=; b=crrIKOXWIkCv14bpXIgj8k
+        ig9wzz/YtRttVsnNfF2dlCBDsYM3IVF+ITz6WxYxOqMxNnMo5VqL/KL+tM5TpNfA
+        CD/jiKQtRcR528hipEuHFZVF8EAsldzjull9tb1gqOSUPkNoOZDA4uj7PocO5qqT
+        77CGFpeYy6+Bgo/SLtEJYCoAp4BL5qoZGpIegiLVOIzfFP/xRBO/c8jf8aa3OnRs
+        H3p1eRbqHpPRUR8vtrGfbfuN6aaq1GnPHuJRsYZl2ptrlK7Tksv0jz6QiZMYhfUg
+        Ysu+xq7l2WV8zlspu6iwI/Ss8jFcAMHlcY4lywvlSRUx4vJ2xD8YVTOH2MRx2oAg
+        ==
+X-ME-Sender: <xms:ceZiYPyPNdrsF0mBbr03CZBJiDa8VXPf83eWhZLgBj8Vt7my0Ma5Bg>
+    <xme:ceZiYHM38LQcwayQkxBVAux4N7UNl3iZd0IrzGWNItWYZXD7gSLuEjnwAf0OHrt0E
+    UTIG4uyx_lsY6baNWc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeitddgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ceZiYGPjQVV2XUxnND-PXMX7ke_SDLPcyCft6hHNox67yrAuzOcO8A>
+    <xmx:ceZiYBSwR7r-OhYrX97o78AWzm0u9gwMhVDnzHPheY66jLTXc5o0Lw>
+    <xmx:ceZiYAD6JnJEUvK_VmY-tkOWxdSqlDeC4Wqfi6hOLg1ilXOu0bLWug>
+    <xmx:cuZiYCEJd4-PJCjRtwtPtTEKuUXnXH1M_QVxvFvl09LxRATGwYthIA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 224C224005C;
+        Tue, 30 Mar 2021 04:50:57 -0400 (EDT)
+Date:   Tue, 30 Mar 2021 10:50:54 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-sunxi@googlegroups.com
+Subject: Re: [RFC PATCH] arm64: dts: allwinner: a64/h5: Add CPU idle states
+Message-ID: <20210330085054.6ijkwc2jww6ovkvl@gilmour>
+References: <20210322062514.40747-1-samuel@sholland.org>
+ <20210323015627.08f9afd6@slackpad.fritz.box>
+ <ca26bade-abab-8e01-8014-bc7c72ea13fc@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <20210329194602.17049-6-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fqu5tsevk4cqb364"
+Content-Disposition: inline
+In-Reply-To: <ca26bade-abab-8e01-8014-bc7c72ea13fc@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/03/2021 21:46, Dmitry Osipenko wrote:
-> Convert Tegra20 External Memory Controller binding to schema.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
->  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
->  2 files changed, 294 insertions(+), 130 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> deleted file mode 100644
-> index d2250498c36d..000000000000
-> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> +++ /dev/null
-> @@ -1,130 +0,0 @@
-> -Embedded Memory Controller
-> -
-> -Properties:
-> -- name : Should be emc
-> -- #address-cells : Should be 1
-> -- #size-cells : Should be 0
-> -- compatible : Should contain "nvidia,tegra20-emc".
-> -- reg : Offset and length of the register set for the device
-> -- nvidia,use-ram-code : If present, the sub-nodes will be addressed
-> -  and chosen using the ramcode board selector. If omitted, only one
-> -  set of tables can be present and said tables will be used
-> -  irrespective of ram-code configuration.
-> -- interrupts : Should contain EMC General interrupt.
-> -- clocks : Should contain EMC clock.
-> -- nvidia,memory-controller : Phandle of the Memory Controller node.
-> -- #interconnect-cells : Should be 0.
-> -- operating-points-v2: See ../bindings/opp/opp.txt for details.
-> -
-> -For each opp entry in 'operating-points-v2' table:
-> -- opp-supported-hw: One bitfield indicating SoC process ID mask
-> -
-> -	A bitwise AND is performed against this value and if any bit
-> -	matches, the OPP gets enabled.
-> -
-> -Optional properties:
-> -- power-domains: Phandle of the SoC "core" power domain.
-> -
-> -Child device nodes describe the memory settings for different configurations and clock rates.
-> -
-> -Example:
-> -
-> -	opp_table: opp-table {
-> -		compatible = "operating-points-v2";
-> -
-> -		opp@36000000 {
-> -			opp-microvolt = <950000 950000 1300000>;
-> -			opp-hz = /bits/ 64 <36000000>;
-> -		};
-> -		...
-> -	};
-> -
-> -	memory-controller@7000f400 {
-> -		#address-cells = < 1 >;
-> -		#size-cells = < 0 >;
-> -		#interconnect-cells = <0>;
-> -		compatible = "nvidia,tegra20-emc";
-> -		reg = <0x7000f400 0x400>;
-> -		interrupts = <0 78 0x04>;
-> -		clocks = <&tegra_car TEGRA20_CLK_EMC>;
-> -		nvidia,memory-controller = <&mc>;
-> -		power-domains = <&domain>;
-> -		operating-points-v2 = <&opp_table>;
-> -	}
-> -
-> -
-> -Embedded Memory Controller ram-code table
-> -
-> -If the emc node has the nvidia,use-ram-code property present, then the
-> -next level of nodes below the emc table are used to specify which settings
-> -apply for which ram-code settings.
-> -
-> -If the emc node lacks the nvidia,use-ram-code property, this level is omitted
-> -and the tables are stored directly under the emc node (see below).
-> -
-> -Properties:
-> -
-> -- name : Should be emc-tables
-> -- nvidia,ram-code : the binary representation of the ram-code board strappings
-> -  for which this node (and children) are valid.
-> -
-> -
-> -
-> -Embedded Memory Controller configuration table
-> -
-> -This is a table containing the EMC register settings for the various
-> -operating speeds of the memory controller. They are always located as
-> -subnodes of the emc controller node.
-> -
-> -There are two ways of specifying which tables to use:
-> -
-> -* The simplest is if there is just one set of tables in the device tree,
-> -  and they will always be used (based on which frequency is used).
-> -  This is the preferred method, especially when firmware can fill in
-> -  this information based on the specific system information and just
-> -  pass it on to the kernel.
-> -
-> -* The slightly more complex one is when more than one memory configuration
-> -  might exist on the system.  The Tegra20 platform handles this during
-> -  early boot by selecting one out of possible 4 memory settings based
-> -  on a 2-pin "ram code" bootstrap setting on the board. The values of
-> -  these strappings can be read through a register in the SoC, and thus
-> -  used to select which tables to use.
-> -
-> -Properties:
-> -- name : Should be emc-table
-> -- compatible : Should contain "nvidia,tegra20-emc-table".
-> -- reg : either an opaque enumerator to tell different tables apart, or
-> -  the valid frequency for which the table should be used (in kHz).
-> -- clock-frequency : the clock frequency for the EMC at which this
-> -  table should be used (in kHz).
-> -- nvidia,emc-registers : a 46 word array of EMC registers to be programmed
-> -  for operation at the 'clock-frequency' setting.
-> -  The order and contents of the registers are:
-> -    RC, RFC, RAS, RP, R2W, W2R, R2P, W2P, RD_RCD, WR_RCD, RRD, REXT,
-> -    WDV, QUSE, QRST, QSAFE, RDV, REFRESH, BURST_REFRESH_NUM, PDEX2WR,
-> -    PDEX2RD, PCHG2PDEN, ACT2PDEN, AR2PDEN, RW2PDEN, TXSR, TCKE, TFAW,
-> -    TRPAB, TCLKSTABLE, TCLKSTOP, TREFBW, QUSE_EXTRA, FBIO_CFG6, ODT_WRITE,
-> -    ODT_READ, FBIO_CFG5, CFG_DIG_DLL, DLL_XFORM_DQS, DLL_XFORM_QUSE,
-> -    ZCAL_REF_CNT, ZCAL_WAIT_CNT, AUTO_CAL_INTERVAL, CFG_CLKTRIM_0,
-> -    CFG_CLKTRIM_1, CFG_CLKTRIM_2
-> -
-> -		emc-table@166000 {
-> -			reg = <166000>;
-> -			compatible = "nvidia,tegra20-emc-table";
-> -			clock-frequency = < 166000 >;
-> -			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 >;
-> -		};
-> -
-> -		emc-table@333000 {
-> -			reg = <333000>;
-> -			compatible = "nvidia,tegra20-emc-table";
-> -			clock-frequency = < 333000 >;
-> -			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> -						 0 0 0 0 >;
-> -		};
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-> new file mode 100644
-> index 000000000000..9665fdd80b22
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-> @@ -0,0 +1,294 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/nvidia,tegra20-emc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra20 SoC External Memory Controller
-> +
-> +maintainers:
-> +  - Dmitry Osipenko <digetx@gmail.com>
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +
-> +description: |
-> +  The External Memory Controller (EMC) interfaces with the off-chip SDRAM to
-> +  service the request stream sent from Memory Controller. The EMC also has
-> +  various performance-affecting settings beyond the obvious SDRAM configuration
-> +  parameters and initialization settings. Tegra20 EMC supports multiple JEDEC
-> +  standard protocols: DDR1, LPDDR2 and DDR2.
-> +
-> +properties:
-> +  compatible:
-> +    const: nvidia,tegra20-emc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
 
-An idea for a follow-up patch (not needed here) - add the clock-names
-and get the clock by name in the driver.
+--fqu5tsevk4cqb364
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  "#interconnect-cells":
-> +    const: 0
-> +
-> +  nvidia,memory-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle of the Memory Controller node.
-> +
-> +  power-domains:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle of the SoC "core" power domain.
+Hi Samuel,
 
-I think the core checks the type, so you only need to limit max items.
+On Tue, Mar 23, 2021 at 11:44:50PM -0500, Samuel Holland wrote:
+> On 3/22/21 8:56 PM, Andre Przywara wrote:
+> >> I'm sending this patch as an RFC because it raises questions about how
+> >> we handle firmware versioning. How far back does (or should) our suppo=
+rt
+> >> for old TF-A and Crust versions go?
+> >>
+> >> cpuidle has a problem that without working firmware support, CPUs will
+> >> enter idle states and be unable to wake up. As a result, the system wi=
+ll
+> >> hang at some point during boot, usually before getting to userspace.
+> >>
+> >> For over a year[0], TF-A has exposed the PSCI CPU_SUSPEND function when
+> >> a SCPI implementation is present[1]. Implementing CPU_SUSPEND is
+> >> required for implementing SYSTEM_SUSPEND[2], even if CPU_SUSPEND is not
+> >> itself used for anything.=20
+> >>
+> >> However, there was no code to actually wake up a CPU once it called the
+> >> CPU_SUSPEND function, because I could not find the register providing
+> >> the necessary information. The fact that CPU_SUSPEND was broken affect=
+ed
+> >> nobody, because nothing ever called it -- there were no idle states in
+> >> the DTS. In hindsight, what I should have done was always return failu=
+re
+> >> from sunxi_validate_power_state(), but that ship has long sailed.
+> >>
+> >> I finally found the elusive register and implemented the wakeup code
+> >> earlier this month[3]. So now, CPU_SUSPEND actually works, if all of
+> >> your firmware is up to date, and cpuidle works if you add the states in
+> >> your device tree.
+> >>
+> >> Unfortunately, there is currently nothing verifying that compatibility.
+> >> So you can get into four possible scenarios:
+> >>   1) No idle states in DTS, any firmware =3D> Linux works, with baseli=
+ne
+> >>      power consumption.
+> >>   2) Idle states added to DTS, no Crust/SCPI =3D> Linux works, but eve=
+ry
+> >>      attempt to enter an idle state is rejected because CPU_SUSPEND is
+> >>      not hooked up. So power consumption increases by a sizable amount.
+> >>   3) Idle states added to DTS, "old" Crust/SCPI (before [3]) =3D> Linux
+> >>      fails to boot, because CPUs never return from idle states.
+> >>   4) Idle states added to DTS, "new" Crust/SCPI (after [3]) =3D> Linux
+> >>      works, with improved power consumption compared to the baseline.
+> >>
+> >> Obviously, we want to prevent scenario 3 if possible.
+> >=20
+> > So I think the core of the problem is that the DT describes some
+> > firmware feature, but we have the DT bundled with the kernel, not the
+> > firmware.
+>=20
+> I would say the core problem is that the firmware lies about supporting
+> PSCI CPU_SUSPEND. Linux shouldn't be calling CPU_SUSPEND if the firmware
+> declares it as unavailable, regardless of what is in the DTS.
 
-> +
-> +  operating-points-v2:
-> +    description:
-> +      Should contain freqs and voltages and opp-supported-hw property, which
-> +      is a bitfield indicating SoC process ID mask.
-> +
-> +  nvidia,use-ram-code:
-> +    type: boolean
-> +    description:
-> +      If present, the emc-tables@ sub-nodes will be addressed.
-> +
-> +patternProperties:
-> +  "^emc-table@[0-9]+$":
+I would say we have two core problems :)
 
-This might not be easy but you should add constraints when emc-table and
-emc-tables are expected. The schema should check if proper node is used
-depending on "nvidia,use-ram-code".
+> (Technically, per the PSCI standard, CPU_SUSPEND is a mandatory
+> function, but a quick survey of the TF-A platforms shows it is far from
+> universally implemented.)
 
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        const: nvidia,tegra20-emc-table
-> +
-> +      clock-frequency:
-> +        description:
-> +          Memory clock rate in kHz.
-> +        minimum: 1000
-> +        maximum: 900000
-> +
-> +      reg:
-> +        maxItems: 1
-> +        description:
-> +          Either an opaque enumerator to tell different tables apart, or
-> +          the valid frequency for which the table should be used (in kHz).
-> +
-> +      nvidia,emc-registers:
-> +        description:
-> +          EMC timing characterization data. These are the registers
-> +          (see section "15.4.1 EMC Registers" in the TRM) whose values
-> +          need to be specified, according to the board documentation.
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> +        items:
-> +          - description: EMC_RC
-> +          - description: EMC_RFC
-> +          - description: EMC_RAS
-> +          - description: EMC_RP
-> +          - description: EMC_R2W
-> +          - description: EMC_W2R
-> +          - description: EMC_R2P
-> +          - description: EMC_W2P
-> +          - description: EMC_RD_RCD
-> +          - description: EMC_WR_RCD
-> +          - description: EMC_RRD
-> +          - description: EMC_REXT
-> +          - description: EMC_WDV
-> +          - description: EMC_QUSE
-> +          - description: EMC_QRST
-> +          - description: EMC_QSAFE
-> +          - description: EMC_RDV
-> +          - description: EMC_REFRESH
-> +          - description: EMC_BURST_REFRESH_NUM
-> +          - description: EMC_PDEX2WR
-> +          - description: EMC_PDEX2RD
-> +          - description: EMC_PCHG2PDEN
-> +          - description: EMC_ACT2PDEN
-> +          - description: EMC_AR2PDEN
-> +          - description: EMC_RW2PDEN
-> +          - description: EMC_TXSR
-> +          - description: EMC_TCKE
-> +          - description: EMC_TFAW
-> +          - description: EMC_TRPAB
-> +          - description: EMC_TCLKSTABLE
-> +          - description: EMC_TCLKSTOP
-> +          - description: EMC_TREFBW
-> +          - description: EMC_QUSE_EXTRA
-> +          - description: EMC_FBIO_CFG6
-> +          - description: EMC_ODT_WRITE
-> +          - description: EMC_ODT_READ
-> +          - description: EMC_FBIO_CFG5
-> +          - description: EMC_CFG_DIG_DLL
-> +          - description: EMC_DLL_XFORM_DQS
-> +          - description: EMC_DLL_XFORM_QUSE
-> +          - description: EMC_ZCAL_REF_CNT
-> +          - description: EMC_ZCAL_WAIT_CNT
-> +          - description: EMC_AUTO_CAL_INTERVAL
-> +          - description: EMC_CFG_CLKTRIM_0
-> +          - description: EMC_CFG_CLKTRIM_1
-> +          - description: EMC_CFG_CLKTRIM_2
-> +
-> +    required:
-> +      - clock-frequency
-> +      - compatible
-> +      - reg
-> +      - nvidia,emc-registers
-> +
-> +    additionalProperties: false
-> +
-> +  "^emc-tables@[a-z0-9\\-]+$":
+U-boot also implements CPU_SUSPEND but will return -1 if you don't have
+an implementation. I guess that at the moment we shouldn't be reporting
+it as supported if we don't
 
-Why \ and - in the pattern?
+But I also agree with Andre here, we shouldn't list cpuidles
+capabilities in the DTS if we don't always have them either.
 
-Best regards,
-Krzysztof
+> > So is there any way we can detect an older crust version in U-Boot,
+> > then remove any potential idle states from the DT?
+>=20
+> Let's assume that we are using a functioning SoC (H3) or the secure fuse
+> is blown (A64) and therefore U-Boot cannot access SRAM A2. I can think
+> of three ways it can learn about crust:
+>=20
+> a) PSCI_FEATURES (e.g. is CPU_SUSPEND supported)
+> b) Metadata in the FIT image
+> c) Custom SMCs
+>=20
+> TF-A has some additional methods available:
+>=20
+> d) The SCPI-reported firmware version
+> e) The magic number at the beginning of the firmware binary
+>=20
+> > Granted, this requires recent U-Boot as well, but at least we could try
+> > to mitigate the worst case a bit?
+>=20
+> If we're okay with modifying firmware to solve this problem, then I
+> propose the following solution:
+>=20
+> 1) Version bump crust or change its magic number.
+> 2) Modify TF-A to only report CPU_SUSPEND as available if it detects the
+>    new crust version. This would involve conditionally setting
+>    sunxi_scpi_psci_ops.validate_power_state, and updating psci_setup.c
+>    to also check for .validate_power_state when setting psci_caps.
+> 3) Modify the Linux PSCI client to respect PSCI_FEATURES when setting
+>    psci_ops.cpu_suspend. cpuidle-psci checks for this function before
+>    setting up idle states.
+> 4) Finally, after some time, add the idle states to the DTS.
+>=20
+> In fact, this solution solves both scenarios 2 and 3, because it also
+> takes care of the native PM implementation, which doesn't implement
+> CPU_SUSPEND at all.
+>=20
+> Does that sound workable?
+
+If we can add the DT node at boot in crust (or in TF-A), then we don't
+really need PSCI_FEATURES, and it would magically work once the firmware
+is updated. It looks like a solid plan otherwise
+
+Maxime
+
+--fqu5tsevk4cqb364
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYGLmbgAKCRDj7w1vZxhR
+xR6GAP9Xd46Sh1ZKV6TSYgW3Ro2ikOoq7BAh96jMt2rg5YtKswEArrxcKgP0z8lf
+RvhIhSmKDy+iQ+pMz2uu+FJp4/x9+gk=
+=05SX
+-----END PGP SIGNATURE-----
+
+--fqu5tsevk4cqb364--
