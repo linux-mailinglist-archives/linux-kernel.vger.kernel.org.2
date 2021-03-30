@@ -2,181 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347DC34F477
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A11A34F484
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhC3Wor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232988AbhC3Wo1 (ORCPT
+        id S233087AbhC3WqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:46:17 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:43589 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232967AbhC3Wpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:44:27 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9224C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:44:24 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id q9so9041539qvm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yB9UXx4euC3dVXDwExAh5VQzx8TVjtxe2UHS0AN58TQ=;
-        b=aQamFp1Zhjay23SpYkC7BS7c6FNQ6us330jhOYcr/0sFTHugimuYHz4PRTsH9VScit
-         yVQQrU5ilvT8kk/DUwXONR/SqfUZ3Km+QcgP7KFTxTlzH2jKxOW4NbzWJyyfIuRbjxNh
-         DsSOVQQLpwYHwrqwmB406grnXG13/rLzHLc9kirSpWVPNSMiUkkccjo+oB8w+M5BvCHF
-         rq+97GQg+yMoPUD9Tq+rUmdVf+O+IF4oKBNpULufz8Aspbad5vGNI4rHsWvEmYC56Ttn
-         f17CK3Q12VvkcbIg0wimMFqxEggg/TEcUTCoJgLs1V/TRdGv4lsxWtaYE/5XvzRiUtba
-         dsjw==
+        Tue, 30 Mar 2021 18:45:54 -0400
+Received: by mail-oi1-f182.google.com with SMTP id n8so18067732oie.10;
+        Tue, 30 Mar 2021 15:45:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yB9UXx4euC3dVXDwExAh5VQzx8TVjtxe2UHS0AN58TQ=;
-        b=lKFmmDxJ3Fg/1r1ViQLeC6TRfnumIS/Ag1UGjRMQwra4jstmoWF7McHj46UtJ+0UK1
-         bn5lKNEsMubbVSJWZPxkg+eRdJeZvjrMSLkW2j8yEu8uj4YxnGvE7qSQ0nXqY0wyMTOo
-         ZW3iyhQXaCfYeGoKpY/tQnxH13TORx2a7NEwCZzVCWhI+0OJraNjUMTkaYB6vKz0OhCF
-         fKa+C84yBn+3ZjKTIQSWm5F4sT6jOvyhkLCkNmfa4vedHf7NSzYQvbos+6omh+79OTk4
-         ErGU+I/2l1c0cAXRdJy3BNl0YjcoISuVihOCTX7s0UNfuJacv8rw/dWGFcOjYNR/ZDCo
-         iAXQ==
-X-Gm-Message-State: AOAM533172iB3yjcjVpzLn1MwbsaVawhJX68jUFMvgQ5sLaw7poddff7
-        QXP7w5XN5bkmPUPRslS/serACho7E+H6HGZrCNxCSQ==
-X-Google-Smtp-Source: ABdhPJxrPKTkhsCw0bpzF/F2wqfMm9+pMnRnbscf7NowWDBijWWeyXFgsd+ZYWkwK/YF9kZ1bhXKRJ1Gcl4UkYv6so4=
-X-Received: by 2002:ad4:4ae6:: with SMTP id cp6mr196533qvb.43.1617144263775;
- Tue, 30 Mar 2021 15:44:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323035706.572953-1-joshdon@google.com> <20210324112739.GO15768@suse.de>
- <CABk29Nv7qwWcn4nUe_cxH-pJnppUVjHan+f-iHc8hEyPJ37jxA@mail.gmail.com>
-In-Reply-To: <CABk29Nv7qwWcn4nUe_cxH-pJnppUVjHan+f-iHc8hEyPJ37jxA@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 30 Mar 2021 15:44:12 -0700
-Message-ID: <CABk29NsQ21F3A6EPmCf+pJG7ojDFog9zD-ri8LO8OVW6sXeusQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
-To:     Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cLGY/U77bjaTReaj2IIARZWRCCbRNc7FTLFruMbM/vg=;
+        b=XekdCQ8KlZQi7e/+9+/AtwCxZR/TdIcQ64FuX/Fd7DXWAaPtGJql14+5JZDUxZir8J
+         CE+RCNwQMQxpza5wjtn9j6NsijImZwD2SEYAWRVnXKzvDA24rpWU6SDDGlFyqVclWbzt
+         /26WKC8LErHribyMgGfad9YJtIMG7qTi49FEzJywANi3H+R9gEs53sk8/zWOYfGxYhXx
+         4V1uq6JCqLPcUC+CGU92zfObC7BYX/xEsRg33EKHQ5GB6cB+ZJ5/+mdnIBshLDbEQX8t
+         VM8bkK1+M64X/u5BE11AYv+MZU6Zqhn96jl1vj/UL7cBw/TxOEoC+0bIOkTlgLfb5UJO
+         XCgA==
+X-Gm-Message-State: AOAM533ht2nkVCL3OJrM6aJjyb+eQq/UIYDiLwA+jtot7MUp6M6igSQO
+        SAEDOyOIojzcK17CBACdqg==
+X-Google-Smtp-Source: ABdhPJwEBrY+z1c9H+Ydo5wbfdprtBqSKqvER/L2vbgFu9N7KHmRm7qB+S0Adse53LXloREJLLHdAw==
+X-Received: by 2002:a54:4492:: with SMTP id v18mr141539oiv.49.1617144353522;
+        Tue, 30 Mar 2021 15:45:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s193sm79142oih.52.2021.03.30.15.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 15:45:52 -0700 (PDT)
+Received: (nullmailer pid 850891 invoked by uid 1000);
+        Tue, 30 Mar 2021 22:45:51 -0000
+Date:   Tue, 30 Mar 2021 17:45:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: renesas, rsnd: Clear warning
+ 'dais' is a required property
+Message-ID: <20210330224551.GA842101@robh.at.kernel.org>
+References: <20210330030631.2253-1-thunder.leizhen@huawei.com>
+ <20210330030631.2253-2-thunder.leizhen@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330030631.2253-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+On Tue, Mar 30, 2021 at 11:06:30AM +0800, Zhen Lei wrote:
+> When I do dt_binding_check, below warning is reported:
+> Documentation/devicetree/bindings/sound/renesas,rsnd.example.dt.yaml: \
+> sound@ec500000: 'dais' is a required property
+> 
+> I looked at all the dts files in the "arch/arm64/boot/dts/renesas/"
+> directory, I found that all nodes that contain the "dais" property have
+> compatible string: "audio-graph-card". So I can be sure that the
+> "$ref: audio-graph.yaml#" should be corrected to
+> "$ref: audio-graph-card.yaml#".
+> 
+> In addition, not all nodes have compatible string "audio-graph-card", so
+> the "$ref: audio-graph-card.yaml#" should be described as "anyOf". To
+> ensure the validation of "anyOf" always passes, group it with the "if"
+> statement, because the result of the "if" statement is always not empty.
 
-Since you've already pulled the need_resched warning patch into your
-tree, I'm including just the diff based on that patch (in response to
-Mel's comments) below. This should be squashed into the original
-patch.
+'anyOf' is probably not right here.
 
-Thanks,
-Josh
+In any case, the is going to conflict with my series[1].
 
----
-From 85796b4d299b1cf3f99bde154a356ce1061221b7 Mon Sep 17 00:00:00 2001
-From: Josh Don <joshdon@google.com>
-Date: Mon, 22 Mar 2021 20:57:06 -0700
-Subject: [PATCH] fixup: sched: Warn on long periods of pending need_resched
+Rob
 
----
- kernel/sched/core.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 6fdf15eebc0d..c07a4c17205f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -61,17 +61,13 @@ const_debug unsigned int sysctl_sched_features =
-
- /*
-  * Print a warning if need_resched is set for the given duration (if
-- * resched_latency_warn_enabled is set).
-+ * LATENCY_WARN is enabled).
-  *
-  * If sysctl_resched_latency_warn_once is set, only one warning will be shown
-  * per boot.
-- *
-- * Resched latency will be ignored for the first resched_boot_quiet_sec, to
-- * reduce false alarms.
-  */
--int sysctl_resched_latency_warn_ms = 100;
--int sysctl_resched_latency_warn_once = 1;
--static const long resched_boot_quiet_sec = 600;
-+__read_mostly int sysctl_resched_latency_warn_ms = 100;
-+__read_mostly int sysctl_resched_latency_warn_once = 1;
- #endif /* CONFIG_SCHED_DEBUG */
-
- /*
-@@ -4542,20 +4538,19 @@ unsigned long long task_sched_runtime(struct
-task_struct *p)
- }
-
- #ifdef CONFIG_SCHED_DEBUG
--static u64 resched_latency_check(struct rq *rq)
-+static u64 cpu_resched_latency(struct rq *rq)
- {
-  int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
-- u64 need_resched_latency, now = rq_clock(rq);
-+ u64 resched_latency, now = rq_clock(rq);
-  static bool warned_once;
-
-  if (sysctl_resched_latency_warn_once && warned_once)
-  return 0;
-
-- if (!need_resched() || WARN_ON_ONCE(latency_warn_ms < 2))
-+ if (!need_resched() || !latency_warn_ms)
-  return 0;
-
-- /* Disable this warning for the first few mins after boot */
-- if (now < resched_boot_quiet_sec * NSEC_PER_SEC)
-+ if (system_state == SYSTEM_BOOTING)
-  return 0;
-
-  if (!rq->last_seen_need_resched_ns) {
-@@ -4565,13 +4560,13 @@ static u64 resched_latency_check(struct rq *rq)
-  }
-
-  rq->ticks_without_resched++;
-- need_resched_latency = now - rq->last_seen_need_resched_ns;
-- if (need_resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
-+ resched_latency = now - rq->last_seen_need_resched_ns;
-+ if (resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
-  return 0;
-
-  warned_once = true;
-
-- return need_resched_latency;
-+ return resched_latency;
- }
-
- static int __init setup_resched_latency_warn_ms(char *str)
-@@ -4588,7 +4583,7 @@ static int __init setup_resched_latency_warn_ms(char *str)
- }
- __setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
- #else
--static inline u64 resched_latency_check(struct rq *rq) { return 0; }
-+static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
- #endif /* CONFIG_SCHED_DEBUG */
-
- /*
-@@ -4614,7 +4609,7 @@ void scheduler_tick(void)
-  update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
-  curr->sched_class->task_tick(rq, curr, 0);
-  if (sched_feat(LATENCY_WARN))
-- resched_latency = resched_latency_check(rq);
-+ resched_latency = cpu_resched_latency(rq);
-  calc_global_load_tick(rq);
-
-  rq_unlock(rq, &rf);
--- 
-2.31.0.291.g576ba9dcdaf-goog
+[1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
