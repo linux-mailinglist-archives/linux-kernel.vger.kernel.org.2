@@ -2,159 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D8E34E2F2
+	by mail.lfdr.de (Postfix) with ESMTP id D43B234E2F3
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhC3IPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhC3IPP (ORCPT
+        id S231506AbhC3IPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:15:44 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:44396 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231395AbhC3IPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:15:15 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D408C061764;
-        Tue, 30 Mar 2021 01:15:13 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h25so11188133pgm.3;
-        Tue, 30 Mar 2021 01:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3gDOC0Z8XAHbqFwCKdnmHJhX1d7vqsYcID7spPCLu5I=;
-        b=pGCNEDaTrN3AHSTGljZgtNy5UYQtAcSOIdS0yv7w1jopGUUYzsIS6WjcT/JHAd2GOV
-         YwV/D9YJNr6dany6dy6hcm1wLekHfBihFXlCdsrdDEXQG6AJ3exPJPPT+SMA4t6yGX4T
-         s+fbUUhfsoFRmnMM8jFcYatzrYqEdP3+kAMFjI9vwtLxMYLfKQ0yHzkmcIKGDO54jzSz
-         Na7+EujqqnAXCbwkPG2YYjxJ6dzn+d36xycvEGF/St3VleFR1EJlIhW35rFKLbS9gnjN
-         gutr+YWB77FVgmpasJyJLu4QIFrfXOmdAEE8Rj89MHzBIjXzpfd9xnj7AgduAtnC/55/
-         XQEA==
+        Tue, 30 Mar 2021 04:15:18 -0400
+Received: by mail-il1-f200.google.com with SMTP id j18so13611106ila.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:15:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3gDOC0Z8XAHbqFwCKdnmHJhX1d7vqsYcID7spPCLu5I=;
-        b=osYRJTFl14slRGVDuoARBf4Gjfhl3wFFUZalmvSKLRCEltPsJOHLvjtFK93hdvTcw/
-         M6tl7QUaAHaSdofCh/pPz9d2ZkD/QQb+ABYRc7CbBEJeQNXSXP7akWviewohJYT7/Gfj
-         fptbiOBcsw+soaqQ4W3Wd4GNUOpIi1Oofcsft2lhr6gOvJqE+Ygezj7f63yDHxOqNf9W
-         t2lhNNXa5EIjSeTzfBcdiu+tsCUJ37w+8L1IfhheROnu9IP7G6YVuwgU9Q9G62HYjClf
-         P1EKdgjml47hJJ8w9Od2FsVv1TqyFvIF6xufl+MCvG3UbDih1EU19UbkuBLZuXtr9s0f
-         ZkkQ==
-X-Gm-Message-State: AOAM532c99t7SLFsKIqoq9PTGwjMhYvovMgrc7m3BuIpPd2P1atNDS0N
-        lmQ7df2QvGnLtKSU3RVBRT3Nm3wQRVWBjY/a
-X-Google-Smtp-Source: ABdhPJxg6ZAutLMLoP1f0Pv7BdtYsOfweV3TfVh6CMeUI036JsmhfN+aCX8NawWvcWOk66blgOnprg==
-X-Received: by 2002:a62:dd8e:0:b029:20a:309:2fcd with SMTP id w136-20020a62dd8e0000b029020a03092fcdmr28785940pff.35.1617092112627;
-        Tue, 30 Mar 2021 01:15:12 -0700 (PDT)
-Received: from localhost.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id f20sm19496672pfa.10.2021.03.30.01.15.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 01:15:12 -0700 (PDT)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     david@lechnology.com, zhangxuezhi1@yulong.com, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] dt-bindings: display: sitronix,st7789v-dbi: Add Waveshare 2inch LCD module
-Date:   Tue, 30 Mar 2021 08:15:05 +0000
-Message-Id: <20210330081505.116351-1-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zYXf/slRk7VawuClIizAYDwXZvagn572A8aIc7ReDl4=;
+        b=sJ6BwLapnpr8vgGhjbr4vr8FslrxDYRDQGLi1ab3BHVSKPm1wrZ+XVT8PKJJiF6xgZ
+         Q62Kc/u97Kw/kyUy5FqTSSAHl+juNgEbquAijJhSInZCEujzCwlrGDOTCBfkivbKuzYP
+         aspp+F4UWn9BEPcF3g+v8rlqOHcE1oEIUZG8WQIO6T06ahaZQhT9imFQq3SbbTs8ndsq
+         CwQMXxq/pTo+MIbOxukiqFw3W4iCDLXVGX0F7W6jkSRYIK8Nt+/qacaXPEmUFrlSxsg8
+         dUcpN3FfrNTUZxkNw6jffAb/vgSUp6o61Oi3r4eowrwmDhsrmWVx3DsH8mSugixSQIoV
+         VepQ==
+X-Gm-Message-State: AOAM532djvLt7NhiRP/56m/9hzVGD/opd/dDJ5az8uGYsQfx2V2AAT0m
+        yWZoandCxhzg/9C3iMTYEzJHs93h8ju5YoJahbkgIHjF8Ffa
+X-Google-Smtp-Source: ABdhPJwKJk0QKq5P4gjbg6O26k6KLl6vZZ+uQRlwsxirGFxfu7T2rZ5tmW0ogaRjzVH4A8+WcLGN1ORfqi4nybJIw7rDuYLZ6Q/8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:9042:: with SMTP id y2mr28513880jaf.94.1617092117553;
+ Tue, 30 Mar 2021 01:15:17 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 01:15:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003c668005bebc9969@google.com>
+Subject: [syzbot] possible deadlock in ip_mc_drop_socket
+From:   syzbot <syzbot+35ace9909754e04618b9@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Xuezhi Zhang" <zhangxuezhi1@yulong.com>
+Hello,
 
-Document support for the Waveshare 2inch LCD module display, which is a
-240x320 2" TFT display driven by a Sitronix ST7789V TFT Controller.
+syzbot found the following issue on:
 
-Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+HEAD commit:    fb6ec87f net: dsa: Fix type was not set for devlink port
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=12dd978ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+dashboard link: https://syzkaller.appspot.com/bug?extid=35ace9909754e04618b9
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+35ace9909754e04618b9@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-rc4-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.4/31420 is trying to acquire lock:
+ffffffff8d66b1a8 (rtnl_mutex){+.+.}-{3:3}, at: ip_mc_drop_socket+0x89/0x260 net/ipv4/igmp.c:2671
+
+but task is already holding lock:
+ffff888059d6c4a0 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
+ffff888059d6c4a0 (sk_lock-AF_INET){+.+.}-{0:0}, at: mptcp_release+0x55/0x120 net/mptcp/protocol.c:3431
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (sk_lock-AF_INET){+.+.}-{0:0}:
+       lock_sock_nested+0xca/0x120 net/core/sock.c:3071
+       lock_sock include/net/sock.h:1600 [inline]
+       do_ip_setsockopt net/ipv4/ip_sockglue.c:945 [inline]
+       ip_setsockopt+0x1d2/0x3a00 net/ipv4/ip_sockglue.c:1423
+       udp_setsockopt+0x76/0xc0 net/ipv4/udp.c:2719
+       __sys_setsockopt+0x2db/0x610 net/socket.c:2117
+       __do_sys_setsockopt net/socket.c:2128 [inline]
+       __se_sys_setsockopt net/socket.c:2125 [inline]
+       __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (rtnl_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2936 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+       validate_chain kernel/locking/lockdep.c:3674 [inline]
+       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+       lock_acquire kernel/locking/lockdep.c:5510 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       ip_mc_drop_socket+0x89/0x260 net/ipv4/igmp.c:2671
+       mptcp_release+0xab/0x120 net/mptcp/protocol.c:3438
+       __sock_release+0xcd/0x280 net/socket.c:599
+       sock_close+0x18/0x20 net/socket.c:1258
+       __fput+0x288/0x920 fs/file_table.c:280
+       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+       exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(sk_lock-AF_INET);
+                               lock(rtnl_mutex);
+                               lock(sk_lock-AF_INET);
+  lock(rtnl_mutex);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/31420:
+ #0: ffff88802ee8e190 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #0: ffff88802ee8e190 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:598
+ #1: ffff888059d6c4a0 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
+ #1: ffff888059d6c4a0 (sk_lock-AF_INET){+.+.}-{0:0}, at: mptcp_release+0x55/0x120 net/mptcp/protocol.c:3431
+
+stack backtrace:
+CPU: 0 PID: 31420 Comm: syz-executor.4 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2127
+ check_prev_add kernel/locking/lockdep.c:2936 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+ validate_chain kernel/locking/lockdep.c:3674 [inline]
+ __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+ ip_mc_drop_socket+0x89/0x260 net/ipv4/igmp.c:2671
+ mptcp_release+0xab/0x120 net/mptcp/protocol.c:3438
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x41926b
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
+RSP: 002b:00007ffc0696dff0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 000000000041926b
+RDX: 0000000000570b58 RSI: 000000000d1147dc RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b31a25db8
+R10: 00007ffc0696e0e0 R11: 0000000000000293 R12: 0000000000094f5f
+R13: 00000000000003e8 R14: 000000000056bf60 R15: 0000000000094f24
+
+
 ---
-v2:change compatible name.
-v3:change auther name.
----
- .../display/sitronix,st7789v-dbi.yaml         | 72 +++++++++++++++++++
- 1 file changed, 72 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml b/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
-new file mode 100644
-index 000000000000..6abf82966230
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/sitronix,st7789v-dbi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sitronix ST7789V Display Panels Device Tree Bindings
-+
-+maintainers:
-+  - Carlis <zhangxuezhi1@yulong.com>
-+
-+description:
-+  This binding is for display panels using a Sitronix ST7789V
-+  controller in SPI mode.
-+
-+allOf:
-+  - $ref: panel/panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - description:
-+          Waveshare 2" 240x320 Color TFT LCD
-+        items:
-+          - enum:
-+              - waveshare,ws2inch
-+          - const: sitronix,st7789v-dbi
-+
-+  spi-max-frequency:
-+    maximum: 32000000
-+
-+  dc-gpios:
-+    maxItems: 1
-+    description: Display data/command selection (D/CX)
-+
-+  backlight: true
-+  reg: true
-+  reset-gpios: true
-+  rotation: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - dc-gpios
-+  - reset-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    backlight: backlight {
-+            compatible = "gpio-backlight";
-+            gpios = <&gpio 18 GPIO_ACTIVE_HIGH>;
-+    };
-+
-+    spi {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            display@0{
-+                    compatible = "waveshare,ws2inch", "sitronix,st7789v-dbi";
-+                    reg = <0>;
-+                    spi-max-frequency = <32000000>;
-+                    dc-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
-+                    reset-gpios = <&gpio 27 GPIO_ACTIVE_HIGH>;
-+                    rotation = <270>;
-+            };
-+    };
-+
-+...
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
