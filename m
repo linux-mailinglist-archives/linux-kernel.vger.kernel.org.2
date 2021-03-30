@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A464F34E64F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A88334E653
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhC3LXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:23:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55488 "EHLO mail.kernel.org"
+        id S231637AbhC3Lba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:31:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:58144 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229633AbhC3LXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:23:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9247461987;
-        Tue, 30 Mar 2021 11:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617103386;
-        bh=P9SExgjbYY0iz0ly5S6s+o+0gtVraFaw+byED+bjTq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OTRSOu3E1AA9QKGSiNcA/soQKSYqQrUNY3aHrzHim1hTUaL8wE4tpz6NfVU9XN7Ag
-         fO44Catmfp/wYb553FXcayPQmyom1e/+tvCZebn8wszTsFej0Z+ai4dk1/h8BfhTW9
-         X7efrmD5tZZO6iKEmkGxoKN6W4INm6H7vIvi8twA5UxyXp9jYfkPEl03tJCITRH2/C
-         e0K72lDLC/RXq1i3P0QTZdOi7mvKNtG1WL/oGlcUrLMetsZheUf6JjQaB/hw+c5nRp
-         pge2OaT6b/gqSXrN9l/Lu/9mWeefBLl+vDwWAXD9xhn8tPZqZpoxA/YzZBsnc1ZImD
-         5VlWSVRbbtcDg==
-Date:   Tue, 30 Mar 2021 12:22:54 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: Enabling pmbus power control
-Message-ID: <20210330112254.GB4976@sirena.org.uk>
-References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
- <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+        id S229633AbhC3LbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:31:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 191D11FB;
+        Tue, 30 Mar 2021 04:31:02 -0700 (PDT)
+Received: from [10.57.57.107] (unknown [10.57.57.107])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1CE93F694;
+        Tue, 30 Mar 2021 04:30:59 -0700 (PDT)
+Subject: Re: [PATCH v6 02/10] arm64: perf: Enable PMU counter direct access
+ for perf event
+To:     Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nd@arm.com
+References: <20210311000837.3630499-1-robh@kernel.org>
+ <20210311000837.3630499-3-robh@kernel.org>
+From:   Zachary Leaf <zachary.leaf@arm.com>
+Message-ID: <9e904f20-7943-ee44-9653-7aa949c3ba88@arm.com>
+Date:   Tue, 30 Mar 2021 12:30:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CUfgB8w4ZwR/yMy5"
-Content-Disposition: inline
-In-Reply-To: <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
-X-Cookie: Memory fault - where am I?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210311000837.3630499-3-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/03/2021 00:08, Rob Herring wrote:
+> 
+> In order to enable 64-bit counters for userspace when available, a new
+> config1 bit is added for userspace to indicate it wants userspace counter
+> access. This bit allows the kernel to decide if chaining should be
+> disabled and chaining and userspace access are incompatible.
+> The modes for config1 are as follows:
+> 
+> config1 = 0 or 2 : user access enabled and always 32-bit
+> config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
+> config1 = 3 : user access enabled and counter size matches underlying counter.
+> 
 
---CUfgB8w4ZwR/yMy5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for this Rob. That makes it extremely easy to request 64 bit
+userspace counters without having to worry about the underlying bit
+width supported on your system.
 
-On Tue, Mar 30, 2021 at 03:34:16AM -0700, Guenter Roeck wrote:
+The underlying PMUv3 bit width is otherwise not accessible from
+userspace as far as I can tell (e.g. the relevant PMUVer bits [11:8] of
+ID_AA64DFR0_EL1 are masked off when reading from EL0 [1]), and the
+workaround of requesting 64 bit, checking cap_user_rdpmc for userspace
+access, and retrying with 32 bit was not that user friendly. I think it
+makes a lot of sense for the kernel to handle/expose it here rather than
+handled in the application code.
 
-> (and I don't know if the userspace consumer code is appropriate - you
-> might want to check with the regulator maintainer on that).
+I think it's worth mentioning here if anyone searches, is that the 32
+bit counter behaviour when added to the perf_event_mmap_page->offset is
+effectively the same as a single 64 bit counter due to the offset being
+incremented on overflow. Using a true 64 bit counter can avoid the
+overhead of handling an interrupt for each overflow (and obviously has a
+lot more headroom before it overflows, if you require very long running
+perf stats).
 
-It's not, you should never see this in a production system.
+I have tested the new config1 flags on N1-SDP and the behaviour is as
+expected.
 
-> > first attempt at this ran into problems with all the
-> > reg-userspace-consumer instances getting attached to the first
-> > regulator device, I think due to all of the regulators ending up under
-> > the same name in the global namespace of regulator_map_list.=A0 I worked
-> > around that by adding an ID counter to produce a unique name for each,
-> > though that changes device names in userspace-visible ways that I'm
-> > not sure would be considered OK for backwards compatibility.=A0 (I'm not
-> > familiar enough with the regulator code to know if there's a better
-> > way of fixing that problem.)=A0 The #if-ing to keep it behind a Kconfig
-
-> Maybe ask that question on the regulator mailing list.
-
-I can't really tell what the issue is here without more context, the
-global name list should not be relevant for much in a system that's well
-configured so it sounds like it's user error.
-
---CUfgB8w4ZwR/yMy5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjCg0ACgkQJNaLcl1U
-h9CrkAf/TSRg35eq8WabWWLzcTIUo/QdwVEdbLrcBq8sB22zW+lZicAOvpWCY+pa
-cit9c0IqFkH7TFZ7vTPgta4lKflluYv8TLmWlN5/9QZJHo8gWC1x4os/MnUwONzy
-vo9ZuPe7q12A+15s/yC6RZ5K2aV57fLUdsIaMd48nBO3oieK/NjK2bbJ+eixv1AL
-MG8hhAn+Z5J6OIklwFZJ/Lo4weOUUVS+opsnd1JSlU9lTzygdJOOcmbMvm92DlCH
-A/c1JxRmj8Tfdb6nNaISxh/s6DfUzf73Qbz5tWtbVjMOSqEPuwyY6vJtMYXu5ebD
-YVcpBXMdgNu4l/7aNSBFo+/lqI55ew==
-=co8z
------END PGP SIGNATURE-----
-
---CUfgB8w4ZwR/yMy5--
+[1]
+https://github.com/torvalds/linux/blob/master/Documentation/arm64/cpu-feature-registers.rst
