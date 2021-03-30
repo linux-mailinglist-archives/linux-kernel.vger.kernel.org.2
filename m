@@ -2,55 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D813B34F078
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B3034F073
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhC3SFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhC3SEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:04:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDA6C061574;
-        Tue, 30 Mar 2021 11:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DCGEHAzJrV8TqbrVal8s6ACJF5FQzaLRc2ecvWIp5uQ=; b=nTYQiqxt4PueC98KnAfNM3/O38
-        dbsuOomyHP2AAlRvuWq0ux8fPHd8F9AS3elAPMNs18HIxYepjNZEn5zSbr98Hqgpc1geeVaP204zl
-        21VSZivSVIBjFQjuP9Q5dfdbiE02OgX3PfxknYyjJ5nTU1XeXX6KFan2NEs9KUTaHkJbSCDKrUv8o
-        w7671ZbAJv3c9EdRAAhmW4H2S9m3c9VBPff0nUpyiYam9s558hgQKwh1z0gYhjmVeGie02WObM9wm
-        /MpbSlDcjoomg4zbRudswmcl9sBaeRONWyNKtFGiY6VPHaWHAzfcuuYA9REhs8wkOgeoyyf9kGOaF
-        k/pOWRSw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRIj2-003PGz-0F; Tue, 30 Mar 2021 18:04:28 +0000
-Date:   Tue, 30 Mar 2021 19:04:23 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2 1/8] block: introduce blk_ksm_is_empty()
-Message-ID: <20210330180423.GA811594@infradead.org>
-References: <20210325212609.492188-1-satyat@google.com>
- <20210325212609.492188-2-satyat@google.com>
+        id S232588AbhC3SEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:04:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232502AbhC3SEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:04:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E67619B9;
+        Tue, 30 Mar 2021 18:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617127472;
+        bh=PQ5S/TrXO84kqcGj5dGJdHVqnmimxvxf9DtcGJchqBU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mRB2J9y+/ZivoGmsa2n/wlr5fZ6PveJtyY0CTrAtzXlMpc2rsS9XP8nXYkS1GNXcx
+         lildalmwicnPpauB0KdQfELyvw5hsmx0qU+gm0Kf8voACOYxSXXsJfPEuwQFzm4d7s
+         UOGhRcm4yRvIMpXrQ4YtZIAp9y+YG5MRRmpxGY+HPG5BwZdkV+fgGsZNiktatTUmkK
+         B9fF1r0vejlg+dtO2T/D5TlSxtJ2t4bguu78Fv6fyoaod1cSn8JSElmSWXQddV8ppE
+         T+vb2d//4CcInE163bclzgsosS+cXeePZinQCcVDZBb6khlV6cx9RQmVOawvDGSmQo
+         JvDkdgKyq30LA==
+Date:   Tue, 30 Mar 2021 23:34:28 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Swapnil Jakhade <sjakhade@cadence.com>,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH v3 0/6] AM64: Add SERDES driver support
+Message-ID: <YGNoLHjKC0y/VIHl@vkoul-mobl.Dlink>
+References: <20210310120840.16447-1-kishon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325212609.492188-2-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210310120840.16447-1-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:26:02PM +0000, Satya Tangirala wrote:
-> This function checks if a given keyslot manager supports any encryption
-> mode/data unit size combination (and returns true if there is no such
-> supported combination). Helps clean up code a little.
+On 10-03-21, 17:38, Kishon Vijay Abraham I wrote:
+> AM64 uses the same SERDES as in J7200, however AM642 EVM doesn't
+> have a clock generator (unlike J7200 base board). Here the clock from
+> the SERDES has to be routed to the PCIE connector. This series adds
+> support to drive reference clock output from SERDES and also adds
+> SERDES (torrent) and SERDES wrapper (WIZ) bindings.
+> 
+> v1 of the patch series can be found @ [1]
+> v2 of the patch series can be found @ [3]
+> 
+> Changes from v2:
+> *) Sent the DT bindings as a separate series [4]
+> *) Remove enabling PHY output clock in isolation mode
+> 
+> Changes from v1:
+> *) Model the internal clocks without device tree input (Add #clock-cells
+>    to SERDES DT nodes for getting a reference to the clock using index
+>    to phandle). This is in accordance with comment given by Rob [2].
+>    However the existing method to model clocks from device tree is not
+>    removed to support upstreamed device tree.
+> *) Included a patch to fix modifying static data by instance specific
+>    initializations.
+> *) Added a fix to delete "clk_div_sel" clk provider during cleanup
 
-The name sounds a little strange to me, but the functionality looks
-ok.  A kerneldoc comment might be useful to describe what it does so
-that we don't have to rely on the name alone.
+Applied, thanks
+
+-- 
+~Vinod
