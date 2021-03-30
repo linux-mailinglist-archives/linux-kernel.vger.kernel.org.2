@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374C834E7BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C590234E7C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhC3Mp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232040AbhC3MpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:45:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32E9461957;
-        Tue, 30 Mar 2021 12:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617108323;
-        bh=CeJ4++sMVlMfilqcsFK96eYuyISeLwyu0ENP8ZyXN7c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bLHylBKg9SAq4TKe8FP5QoVt3kJaqkh88UdeafDlKovJ65J7fW/srg+XhWje0q+Ky
-         qgTv38vNtFN6V1KHv9Tli1tfgRkXlQ352IxZzGEToLfF8UA3WbjjAFikZ40FPXrYiR
-         G2QkvDht/t9pjuFDGt0h3t0UWvX/8y6FNDI+IBNg=
-Date:   Tue, 30 Mar 2021 14:45:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     tanghui20 <tanghui20@huawei.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon - check if debugfs opened
-Message-ID: <YGMdYZg9b5Gta58V@kroah.com>
-References: <1616833980-11006-1-git-send-email-tanghui20@huawei.com>
- <YGCcQnFHXEMW9Jz/@kroah.com>
- <17d627e8-b89a-bbb8-f5d7-11210b859ac7@huawei.com>
- <YGMYKquXSaju9H+A@kroah.com>
- <4b3dc5bb-e6d0-4cfb-c3ca-d3b652879823@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b3dc5bb-e6d0-4cfb-c3ca-d3b652879823@huawei.com>
+        id S231761AbhC3Mq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:46:29 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:35856 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232059AbhC3MqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:46:11 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 3B904400486;
+        Tue, 30 Mar 2021 20:46:08 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     zhouchuangao <zhouchuangao@vivo.com>
+Subject: [PATCH] message/fusion: Use BUG_ON instead of if condition followed by BUG.
+Date:   Tue, 30 Mar 2021 05:46:01 -0700
+Message-Id: <1617108361-6870-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTRoaH0NNS0pNGUIaVkpNSkxKS0NITUNPQ0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NiI6GRw6Tj8UAjcNQyw5KSsV
+        Kx8wCQJVSlVKTUpMSktDSE1DTEhOVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlKTU83Bg++
+X-HM-Tid: 0a78832b7c1bd991kuws3b904400486
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:40:07PM +0800, tanghui20 wrote:
-> 
-> 
-> On 2021/3/30 20:23, Greg KH wrote:
-> > On Tue, Mar 30, 2021 at 08:09:46PM +0800, tanghui20 wrote:
-> > > 
-> > > 
-> > > On 2021/3/28 23:09, Greg KH wrote:
-> > > > On Sat, Mar 27, 2021 at 04:33:00PM +0800, Hui Tang wrote:
-> > > > > 'xx_debugfs_init' check if debugfs opened.
-> > > > > 
-> > > > > Signed-off-by: Hui Tang <tanghui20@huawei.com>
-> > > > > ---
-> > > > >  drivers/crypto/hisilicon/hpre/hpre_main.c | 5 ++++-
-> > > > >  drivers/crypto/hisilicon/qm.c             | 3 +++
-> > > > >  drivers/crypto/hisilicon/sec2/sec_main.c  | 5 ++++-
-> > > > >  drivers/crypto/hisilicon/zip/zip_main.c   | 3 +++
-> > > > >  4 files changed, 14 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-> > > > > index c7ab06d..f2605c4 100644
-> > > > > --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-> > > > > +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-> > > > > @@ -779,6 +779,9 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
-> > > > >  	struct device *dev = &qm->pdev->dev;
-> > > > >  	int ret;
-> > > > > 
-> > > > > +	if (!debugfs_initialized())
-> > > > > +		return -ENOENT;
-> > > > 
-> > > > Why?  What does this help with?  Why does the code care if debugfs is
-> > > > running or not?
-> > > > 
-> > > When !CONFIG_DEBUG_FS, there is no problem if debugfs is not checked,
-> > > but if checking debugfs, a series of stub functions of debugfs can be
-> > > skipped and 'xx_debugfs_init' will be return immediately.
-> > 
-> > And have you measured an actual speed difference for that?  I would be
-> > amazed if you could...
-> > 
-> 
-> I think what you said makes sense.
-> I am confused when to use 'debugfs_initialized'.
+BUG_ON() uses unlikely in if(), which can be optimized at compile time.
 
-Never, you should not care about that at all.
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+---
+ drivers/message/fusion/mptsas.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-thanks,
+diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
+index 5eb0b33..5e425fd 100644
+--- a/drivers/message/fusion/mptsas.c
++++ b/drivers/message/fusion/mptsas.c
+@@ -3442,14 +3442,12 @@ mptsas_expander_event_add(MPT_ADAPTER *ioc,
+ 	__le64 sas_address;
+ 
+ 	port_info = kzalloc(sizeof(struct mptsas_portinfo), GFP_KERNEL);
+-	if (!port_info)
+-		BUG();
++	BUG_ON(!port_info);
+ 	port_info->num_phys = (expander_data->NumPhys) ?
+ 	    expander_data->NumPhys : 1;
+ 	port_info->phy_info = kcalloc(port_info->num_phys,
+ 	    sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+-	if (!port_info->phy_info)
+-		BUG();
++	BUG_ON(!port_info->phy_info);
+ 	memcpy(&sas_address, &expander_data->SASAddress, sizeof(__le64));
+ 	for (i = 0; i < port_info->num_phys; i++) {
+ 		port_info->phy_info[i].portinfo = port_info;
+-- 
+2.7.4
 
-greg k-h
