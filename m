@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7253B34EA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249BB34EA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhC3Ohm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50402 "EHLO mail.kernel.org"
+        id S232212AbhC3OiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231951AbhC3OhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:37:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD8C6619BD;
-        Tue, 30 Mar 2021 14:37:06 +0000 (UTC)
+        id S231982AbhC3OiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:38:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79774619CD;
+        Tue, 30 Mar 2021 14:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617115027;
-        bh=7N5l3ZIfotiyDGJq6YGwcyxdCzpYtn6rXpIa367Go3Y=;
+        s=k20201202; t=1617115085;
+        bh=g73wNQL4k2lRInaQ6dxIl0zoTR2Hfi58MBlUV2HHCkc=;
         h=From:To:Cc:Subject:Date:From;
-        b=HcRRgjIrquW58c+zFBT5gMK5xmgyroMz/BfLYDySSGooyppWHSNR7k68zRsPYl8Pb
-         5YHAyAjg90bz1JejMDBtkEJEJgzxjpvW5SQu2HNp3j8iG5+dTAABbNiciBtCbNHZeQ
-         LtoJ1+sH7gyZ2SoqTowP+pYWzn+zzVATzALAqw6vqk/JRa0ydki/Mc6ISAKvd3uVY2
-         ZEr4XLeJbWCFDSbyEVMEws4XxdKTlLaB6UA6XZdG9JR3mFRRE4HXmUiGKy06HFKZ03
-         iSRekWgQb4ovMvyBtwR2iKr5VghQigyfflTB8qxj2t8oBO7ceIoHHsGiCx+XT9b8ch
-         8j7eapmBL+YCw==
+        b=md9IPXStO783PgnO1IrO+hK6MdBy1oTGbtqgwYY5Q3FwdGSkLOt11S7DP94G9SiUs
+         vJ2x6LgsYhDBzSdcKXMflQ4NSrcPDg98mq5KBiXxS8U6cFGeGn5Ze02izDv9UpRcbF
+         cwOtCsM0GU6o2N2Mxy7kj63adb8GhFejM915GG2BXakf+whcA41tAi+pQK8v/g2kbY
+         jE7Q+BcGxkMaamYLarzvo3/3EOnte7zaTKo9TdO45Arrfmpv32OiyWD31gqL4h36Ns
+         TwrsnDmsfZv7qlfS+v/y8mNfniawIh2W2g/j4rNCXNQhPunPalz3Akpcp8KRbem/OV
+         sqpghxoYqkjzA==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lRFUm-0002Ma-CH; Tue, 30 Mar 2021 16:37:28 +0200
+        id 1lRFVj-0002Ni-89; Tue, 30 Mar 2021 16:38:27 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: serial: xr: fix CSIZE handling
-Date:   Tue, 30 Mar 2021 16:37:16 +0200
-Message-Id: <20210330143716.9042-1-johan@kernel.org>
+Subject: [PATCH 0/4] USB: serial: add support for multi-interface functions
+Date:   Tue, 30 Mar 2021 16:38:16 +0200
+Message-Id: <20210330143820.9103-1-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,33 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The XR21V141X does not have a 5- or 6-bit mode, but the current
-implementation failed to properly restore the old setting when CS5 or
-CS6 was requested. Instead an invalid request would be sent to the
-device.
+A single USB function can be implemented using a group of interfaces and
+this is for example commonly used for Communication Class devices.
+    
+This series adds support for multi-interface functions to USB serial
+core and exports an interface that allows drivers to claim a second
+sibling interface. The interface could easily be extended to allow
+claiming further interfaces if ever needed.
 
-Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/xr_serial.c | 5 +++++
- 1 file changed, 5 insertions(+)
+The final patch uses the new interface to properly claim both the
+control and data interface of Maxlinear/Exar devices.
 
-diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index 0ca04906da4b..c59c8b47a120 100644
---- a/drivers/usb/serial/xr_serial.c
-+++ b/drivers/usb/serial/xr_serial.c
-@@ -467,6 +467,11 @@ static void xr_set_termios(struct tty_struct *tty,
- 		termios->c_cflag &= ~CSIZE;
- 		if (old_termios)
- 			termios->c_cflag |= old_termios->c_cflag & CSIZE;
-+		else
-+			termios->c_cflag |= CS8;
-+
-+		if (C_CSIZE(tty) == CS7)
-+			bits |= XR21V141X_UART_DATA_7;
- 		else
- 			bits |= XR21V141X_UART_DATA_8;
- 		break;
+Johan
+
+
+Johan Hovold (4):
+  USB: serial: drop unused suspending flag
+  USB: serial: refactor endpoint classification
+  USB: serial: add support for multi-interface functions
+  USB: serial: xr: claim both interfaces
+
+ drivers/usb/serial/usb-serial.c | 135 ++++++++++++++++++++++++--------
+ drivers/usb/serial/xr_serial.c  |  26 +++++-
+ include/linux/usb/serial.h      |   8 +-
+ 3 files changed, 131 insertions(+), 38 deletions(-)
+
 -- 
 2.26.3
 
