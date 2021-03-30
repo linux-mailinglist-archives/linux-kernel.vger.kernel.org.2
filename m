@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792BA34F300
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC21334F3B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhC3VZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:25:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34720 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232503AbhC3VZ0 (ORCPT
+        id S232818AbhC3Vq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232838AbhC3Vq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:25:26 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UL4537075355;
-        Tue, 30 Mar 2021 17:25:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id; s=pp1;
- bh=WGevOUYeABgQK1oYMwEC64xDN3lnfAnxL1yOftiflwk=;
- b=dEj3I4gzgDKIccVgIPxbbRTWik5bdTPS1SwnipFIJTrRpDcTZESZUyCuoAzq8fdnnB8l
- LnLeU6QU3RpkrgPwPQ85g/BcKuEb5hQAxqg6/dgA3o2z/o+W9BWItrYKEQ/tuO3pxUh3
- Hgn5SEx8LVRQw3KAxJ3bOXqTvIv3A93HJxzhoeh2Ue9CAui1fawd6LSC6XvFVcFEB7U7
- RkcrluYWYLBsdti5BM6IwtVS8UTOm/GD6cF2u7TjtE68ZEYePsrkvfDw+KKE6fPLhM90
- Lfll9AfFiDWLfPedwfDI2p+IJ8eLufhtBm9BtHZI80KXKBERvvUqf0JVdOa0apBDnlnW 1w== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37mb3gse6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Mar 2021 17:25:19 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12ULNCLC014104;
-        Tue, 30 Mar 2021 21:25:18 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01wdc.us.ibm.com with ESMTP id 37mav9gbwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Mar 2021 21:25:18 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12ULPH6W18678056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Mar 2021 21:25:17 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4915C7805C;
-        Tue, 30 Mar 2021 21:25:17 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 10DFA7805F;
-        Tue, 30 Mar 2021 21:25:15 +0000 (GMT)
-Received: from LAPTOP-E35P3CCB.rch.stglabs.ibm.com (unknown [9.65.217.212])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 30 Mar 2021 21:25:15 +0000 (GMT)
-From:   Brad Warrum <bwarrum@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Steven Royer <seroyer@linux.ibm.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] MAINTAINERS: Update entry for ibmvmc driver
-Date:   Tue, 30 Mar 2021 16:22:38 -0500
-Message-Id: <20210330212238.2747-1-bwarrum@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vago9kDTWCfZYX3cwXsx_cUXQ375olaw
-X-Proofpoint-GUID: vago9kDTWCfZYX3cwXsx_cUXQ375olaw
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-30_12:2021-03-30,2021-03-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- mlxscore=0 phishscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1011 adultscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103300000 definitions=main-2103300154
+        Tue, 30 Mar 2021 17:46:56 -0400
+X-Greylist: delayed 1226 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Mar 2021 14:46:56 PDT
+Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEE3C061574;
+        Tue, 30 Mar 2021 14:46:56 -0700 (PDT)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lRLrw-000CEQ-PW; Tue, 30 Mar 2021 23:25:48 +0200
+Received: from [85.7.101.30] (helo=pc-6.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lRLrw-000KZf-CJ; Tue, 30 Mar 2021 23:25:48 +0200
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+Date:   Tue, 30 Mar 2021 23:25:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26125/Tue Mar 30 13:11:47 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steve Royer has moved on to a different project and has asked
-that Ritu and I take over maintainership of the IBM Power
-Virtual Management Channel Driver.
+On 3/30/21 10:39 PM, Andrii Nakryiko wrote:
+> On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+>> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
+>>> Is there some succinct but complete enough documentation/tutorial/etc
+>>> that I can reasonably read to understand kernel APIs provided by TC
+>>> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
+>>> whether API makes sense or not. Please share links, if you have some.
+>>
+>> Hi Andrii,
+>>
+>> Unfortunately for the kernel API part, I couldn't find any when I was working
+>> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
+>> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
+>> act_bpf.c) to grok anything I didn't understand. There's also similar code in
+>> libnl (lib/route/{act,cls}.c).
+>>
+>> Other than that, these resources were useful (perhaps you already went through
+>> some/all of them):
+>>
+>> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
+>> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
+>> tc(8), and tc-bpf(8) man pages
+>>
+>> I hope this is helpful!
+> 
+> Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
+> trying to catch up.
+> 
+> I was just wondering if it would be more natural instead of having
+> _dev _block variants and having to specify __u32 ifindex, __u32
+> parent_id, __u32 protocol, to have some struct specifying TC
+> "destination"? Maybe not, but I thought I'd bring this up early. So
+> you'd have just bpf_tc_cls_attach(), and you'd so something like
+> 
+> bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
+> 
+> or
+> 
+> bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
+> 
+> ? Or it's taking it too far?
+> 
+> But even if not, I think detaching can be unified between _dev and
+> _block, can't it?
 
-Signed-off-by: Brad Warrum <bwarrum@linux.ibm.com>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Do we even need the _block variant? I would rather prefer to take the chance
+and make it as simple as possible, and only iff really needed extend with
+other APIs, for example:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6e91994b8d3b..d9fb56b544c6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8544,7 +8544,8 @@ S:	Supported
- F:	drivers/scsi/ibmvscsi/ibmvfc*
- 
- IBM Power Virtual Management Channel Driver
--M:	Steven Royer <seroyer@linux.ibm.com>
-+M:	Brad Warrum <bwarrum@linux.ibm.com>
-+M:	Ritu Agarwal <rituagar@linux.ibm.com>
- S:	Supported
- F:	drivers/misc/ibmvmc.*
- 
--- 
-2.17.1
+   bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
 
+Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
+iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
+direct-action mode. This is /as simple as it gets/ and we don't need to bother
+users with more complex tc/cls_bpf internals unless desired. For example,
+extended APIs could add prio/parent so that multi-prog can be attached to a
+single cls_bpf instance, but even that could be a second step, imho.
+
+Thanks,
+Daniel
