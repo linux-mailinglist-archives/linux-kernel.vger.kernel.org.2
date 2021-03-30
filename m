@@ -2,164 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F295034ED46
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8243434ED4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhC3QNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:13:17 -0400
-Received: from mail-eopbgr40106.outbound.protection.outlook.com ([40.107.4.106]:28427
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232001AbhC3QNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:13:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mDER+yAxv0Fo9Aoc0OokorunSjLYrEMO8UKr+9aL8eXLWf4N2BemeubMLg6UlsnA3Bb65SC/0muh7kSN55H4sSM+Pklcp8pJV42OwUf5xPGds6B8ej2kXJFSsKRkfWZFfzoWSFMjP0IKYTSMqskcddcUDxKuOhrIFzc8ghvbRRHPMfaXxN44AFGyigJzpzg2nJmIcyt5yEZI+u9t3XEpZ2C5er88HLmGO7Pgaaxty7DJDchnPb4jM3wxbOTUji7UYNHtDCRCKbh4gAD5n8BSOCnSoGZhkAXtPt2ktH9ZY9CgrhwyBXtW3csbd0eCHgVNmMRRGHLiovI9qCYjBalH3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3PoFkhpbE9VLDnyDVid764+3XoazD+gGJAlTHbUQgvw=;
- b=QyDXlzzARkt/yYd/nQqQ8bH9xtb7H/vZPT3gPIY6PUsuHEE/A64QS48Hcfdf/ddUI567AWnZVe6Hb5mKp81JeCXpjaYuRO2UZiDFUK46MR0P94lBvau+cmp/rUERGnTHgvx5+93SzeA67aDnod4KwtJr0TEiI/dAUV1z15zx++YZo8kHi6s1YCdomHBTkdQuHRkbEvP5oBDAcetAG5yvd1bxfVwn340CRuMCY1ClPzI3WF3LxAKJw2CYwVctpRvrEkk5Txkl2pblmTd8lkVmH7AKyr+2gXOyySBT1LZQF/zfCpLq1B188G4d6zgFVcMnAb9iTix+eaRP3wznP1wG2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3PoFkhpbE9VLDnyDVid764+3XoazD+gGJAlTHbUQgvw=;
- b=Xo3k2KPnnyJ2dZttoxXA7tSqFdH3sVyY/UznECc7i8TEt5LqdR5psRPFKY4xpi0QhaJqjyLsqZcC3jnQS8aZXQdCktqTOah9OPwpeOTkcYJGDQLjoBQDRA1G4xjNUoHQCTQT+raI9prlmL4AC56toV6MoutEodiAw+ozEsRxyDQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB7PR02MB4601.eurprd02.prod.outlook.com (2603:10a6:10:60::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Tue, 30 Mar
- 2021 16:13:05 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::f945:54d7:845b:de92]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::f945:54d7:845b:de92%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 16:13:05 +0000
-Subject: Re: [PATCH v1 3/3] mux: gpio: Simplify code by using dev_err_probe()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20210326172401.33685-1-andriy.shevchenko@linux.intel.com>
- <20210326172401.33685-3-andriy.shevchenko@linux.intel.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <b01d838e-e306-389f-cab2-b445fe339250@axentia.se>
-Date:   Tue, 30 Mar 2021 18:13:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <20210326172401.33685-3-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.229.94.233]
-X-ClientProxiedBy: HE1PR0502CA0023.eurprd05.prod.outlook.com
- (2603:10a6:3:e3::33) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S231928AbhC3QP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:15:58 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:45851 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232085AbhC3QPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 12:15:44 -0400
+Received: by mail-pj1-f42.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso7909856pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:15:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2fI4VhHe8aki99no36i/27lg7qBg6asALWaTkAeQI+o=;
+        b=uV1tdn79yEPTx28E+UV/o024wXISvScqEYUzX0Cp244B5AW9yJ6D3rQs5by79KyDPG
+         jURDhdSLMj4sozKu2fqidmy32mFcj1ge6BtiEqc1VArFTGBxXEI8eolQXiZDZTf/Hkbi
+         +tUr3OX7FUATh+arrEzsIC1liFzB4brubvGJaR3nladnJse3aREPEG513xycDW3ZOb+s
+         omCuXminPLDU07e5/+mloUVuGdn38FmMO7AVHM//hBiElyEAWK9NfTxcAK6rekHCrsQK
+         WPqslq0vX+zB6s4fAU5nV57QRDWf+EqvfheXYwha/Q8dG3YTW8oA4pRdQLJDCGEzsqjK
+         BBGg==
+X-Gm-Message-State: AOAM531ngJbKYEq9hwp8w/9Rbr5lvR7hqX6/8bIkM25OPslQQWWIk2cz
+        jTVGLfYFpSuMEECTbMAARgU=
+X-Google-Smtp-Source: ABdhPJws1NvhGFKhFqZn4FZNjQsO+CBACwj1ql+2wSmLO0fRvCP6oJVKbgvcaChc5BPquNDvt9JYag==
+X-Received: by 2002:a17:90b:4910:: with SMTP id kr16mr4970022pjb.26.1617120944403;
+        Tue, 30 Mar 2021 09:15:44 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id v9sm22059294pfc.108.2021.03.30.09.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 09:15:43 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 09:15:42 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     richard.gong@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, mdf@kernel.org,
+        linux-kernel@vger.kernel.org, Richard Gong <richard.gong@intel.com>
+Subject: Re: [PATCH] firmware: stratix10-svc: extend SVC driver to get the
+ firmware version
+Message-ID: <YGNOruQFFvD0fgBb@epycbox.lan>
+References: <1617114785-22211-1-git-send-email-richard.gong@linux.intel.com>
+ <1617114785-22211-2-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by HE1PR0502CA0023.eurprd05.prod.outlook.com (2603:10a6:3:e3::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend Transport; Tue, 30 Mar 2021 16:13:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 18f3847e-f262-43f4-02db-08d8f396b36f
-X-MS-TrafficTypeDiagnostic: DB7PR02MB4601:
-X-Microsoft-Antispam-PRVS: <DB7PR02MB4601D82AACF8F2C9ABD3BE1EBC7D9@DB7PR02MB4601.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:246;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U2Z4vhCeZUwnJPHybCcbJH/8u4N/YADe52BlbFKhf3iYPU8ZU+R+P7BHCXjJ3nb+Z+M6YKPgrSGy7CkbsYoJX6SX4Zjbzrwsz3dveSiLjZPz8ErBn53EIcjTf/iK/a+Eor2TQURP1lDYexXzC6EKDHggZ0y7ojqzl2NcyYgjN0mq0Fgd3QED8+0pbs9n4Zluicc8nrgDpuvrApthmAGTS0f+Xp73eP4w5BoFXVwh+hS9F3X+OqX1wcOEzAdy+QpkYjOHN5v3lwfukTIJvKIgNv/QcMBSVW3fH+PuN3n5RVzaJhauCt3bxGLlkqgrkU/DZ5XgJ7u29+2SQ6bwOSN9KeOs7/NKN3gQY7ksUR04TzleeXnD147Af9u4mOulqrPBpLHcHgDgbfBEuvwD2XMoPmXcOAk+hoRt7Kfrm+TGBauzkky77WYVVY/JSfj865ET54MCfbd6h42by9CPEWY0Jv7DYR1p+2ePxR1GG+NyTfGB8rO2ixx0AP3yEvPb8zbrmLxHAHqHdtajkVxIwDjRoWfVp/IsLPnhmvPXcPu9F0zEMB4iUn0W8tN4GwSuV0Pi3fPFzppLLZPFccNjcBerh1Ch1kcnHCaAaf8fkFShAyaalApXFM/tfip99Xf9R0dzuI+rthOfD+N0Q7rXpifjsxv3ytFtteq38210thjeseMHtqEEkAKYhtEN8K8pHhrQcX/OItvLCPRN+5R9baring==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39830400003)(136003)(366004)(478600001)(956004)(5660300002)(2616005)(31686004)(8676002)(66946007)(8936002)(66556008)(16526019)(66476007)(36756003)(38100700001)(36916002)(53546011)(16576012)(83380400001)(2906002)(316002)(86362001)(26005)(31696002)(6486002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OENhdlVhUUd4TXRISzFDU0p2SmNsdUVUY09COExtRGpHc2t1ZjBua0xQK0Iv?=
- =?utf-8?B?RXpKQ1NZQU9oVVhpdTBXbEU1eHk1QnVQVXBGWTg3ODV0cGxJai9oUUVYcFo4?=
- =?utf-8?B?RUYwbjkyRUpQMml1QXYzbmZXYkJDUUtlTU0xS21CcjgzV0R4ZjRaTUU5LzZ4?=
- =?utf-8?B?TmVEZlZxaTNOWngzSDZnbkZyc1pHSXBSVXQ4bXBYS2o1K0F2N3J1MThqS2U3?=
- =?utf-8?B?WmJJR0VGbncvN2ZjQUNwaW1NRmdOZDc1WWZDanlab3Blakt6ZHdzQXgybHps?=
- =?utf-8?B?RmZTYzdoWHEzUzQyWm9wY0lTTU1sTjd5a3VqNElOWDNxV0hhZkRMbVFyWmZz?=
- =?utf-8?B?aTUwOWQxeHRFRTZxV0c4ZXBEMUVwOUlOVmF2YWU2YmFUWHVteUNFQXRKLytp?=
- =?utf-8?B?NnFpZUQyZURWeWJnczZacFRBeWo3dFZYU1hnTURWMEtBWlJYVkVqRjhmY3Z0?=
- =?utf-8?B?eVlBbGVyenpQN29yS1didXJnelBIOHpzdVU5TzVzQXdOZGZ5N2VhVzh3MHpv?=
- =?utf-8?B?ZkhQamUvekxvM0JVZjQweVlJRWxXZUFKUjA1SzRFdzNycXVSOE94eXNjTmxt?=
- =?utf-8?B?bGJzR1A1UW0vYWN1UXBIUWQ5NHdJVXA2bjdPK25MVTJaTlgyMThyVk1HQ0N5?=
- =?utf-8?B?YmFwL3lyT0RBTGMyT09hSVVSLzE5Rit6dFdqN1NPRklBREZsdmhpcnp3N2RP?=
- =?utf-8?B?THNlTW96MGdteTc3c2dkdlV0ZU9ZTHJQNW4vZDRIWmpiUytxdlRUVzNTZlpv?=
- =?utf-8?B?SkdBcmd4K0p3bmlsdVlWYXh3cm9lOGJ1TzFmdFdzMG5kMkNhRHkxclBSWnhZ?=
- =?utf-8?B?djBTMXhBRVdkT1VMRkJGY2huYkhneXZyQzNNWk5COEhsQ1d5M0oyV3hWdXdo?=
- =?utf-8?B?TDkwd0c1bDNxeHQ0aVJsTnlpWDR3OWVJdThxcWxqS3VZNWxJb0VJQW5kOTI4?=
- =?utf-8?B?OTdYRDFpS2tNVXBCTHRXajVMR0tyZHFtMnpFQkI4T3ZhQ0t3L3grNWcvcG5h?=
- =?utf-8?B?VDhxdHhwQ0RqUk8zekhzcVNwc3BXemZxMkVHSUlVNmdESitzOGtSd01VU0VT?=
- =?utf-8?B?eE1zcWZkTWpmbm5XRHhhVmgrMWdiYzRzUU1jSE41ZWtKeFVNZUZVL1lHMEM1?=
- =?utf-8?B?QkRGVmVodjd5WGRvTWZ2R0tEYm5vZFlMSVpoREpKalE5UXpVK1lqQnU0NlNM?=
- =?utf-8?B?NVFYMW1xOXlpRHp2QU53M0tid0VxRmRzYW4zVHozK3d5YTNkSG9WelczSkdB?=
- =?utf-8?B?a0R6Q1cyK1ZvbWtRSjB1dldQc1BEOGczWWVQWDAvZzk4ZkZiTkFCWUR5S0xN?=
- =?utf-8?B?eGFQMzZqNmliNW1iZ0JQYU0xbDRXVDQxYW5ZejJ2dUFIWnBGR2pQaVFEYlpY?=
- =?utf-8?B?RDJldlNIWTZFcExxbEVsZ0hhNzFVNkhDN1pXSkRwKzVWLzdjTXhZVDJBRnNz?=
- =?utf-8?B?OWVhTmFyYnpBMTkxdno4MnI2L0wrWUMyR3NqY21TUXpabXRzS2NJRHJnMXYx?=
- =?utf-8?B?alpSTjEvSjhlbWlQSDBoVXd0UFRRek1yV0ZNb09vdzIzOXZVaFZoZkhmMzJk?=
- =?utf-8?B?V3JwajJ1M2hnZE9jbWdFdXJSQ2VLeTg4MEcxVENrQ3ZFb2ZSTGJpZmV6MlBh?=
- =?utf-8?B?K3l3cnRubGdCc0FSeVgrYjZiYzBzNEcxcFJ4Y2JsMVRjWkxoUjhCSVZBRC8w?=
- =?utf-8?B?VXBZMmRPelVHVkJEQkVwV1o2cHRjamFDbjlXY01sNnBlekFZK3pSRUdYak5j?=
- =?utf-8?Q?zSSys3FG8P1w5TSmMIgoeOJLLfWbInzdQBQUjJs?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18f3847e-f262-43f4-02db-08d8f396b36f
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 16:13:05.4795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +rgexXukE9RT4vCDV6/yGm7mK6sQq0O1nzgLBDcOZ1FrXHnaYblrVVbumkUcTzDP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4601
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617114785-22211-2-git-send-email-richard.gong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Richard,
 
-On 2021-03-26 18:24, Andy Shevchenko wrote:
-> Use already prepared dev_err_probe() introduced by the commit
-> a787e5400a1c ("driver core: add device probe log helper").
-> It simplifies EPROBE_DEFER handling.
+On Tue, Mar 30, 2021 at 09:33:05AM -0500, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Extend Intel service layer driver to get the firmware version running at
+> FPGA device. Therefore FPGA manager driver, one of Intel service layer
+> driver's client, can decide whether to handle the newly added bitstream
+> authentication function based on the retrieved firmware version.
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> Acked-by: Moritz Fischr <mdf@kernel.org>
 > ---
->  drivers/mux/gpio.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+>  drivers/firmware/stratix10-svc.c                    | 12 ++++++++++--
+>  include/linux/firmware/intel/stratix10-smc.h        | 21 +++++++++++++++++++--
+>  include/linux/firmware/intel/stratix10-svc-client.h |  4 ++++
+>  3 files changed, 33 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mux/gpio.c b/drivers/mux/gpio.c
-> index e5ef9284e2b4..c3036bfffd50 100644
-> --- a/drivers/mux/gpio.c
-> +++ b/drivers/mux/gpio.c
-> @@ -65,12 +65,8 @@ static int mux_gpio_probe(struct platform_device *pdev)
->  	mux_chip->ops = &mux_gpio_ops;
+> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+> index 3aa489d..1443bbd 100644
+> --- a/drivers/firmware/stratix10-svc.c
+> +++ b/drivers/firmware/stratix10-svc.c
+> @@ -306,6 +306,7 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
+>  		break;
+>  	case COMMAND_RSU_RETRY:
+>  	case COMMAND_RSU_MAX_RETRY:
+> +	case COMMAND_FIRMWARE_VERSION:
+>  		cb_data->status = BIT(SVC_STATUS_OK);
+>  		cb_data->kaddr1 = &res.a1;
+>  		break;
+> @@ -422,6 +423,11 @@ static int svc_normal_to_secure_thread(void *data)
+>  			a1 = 0;
+>  			a2 = 0;
+>  			break;
+> +		case COMMAND_FIRMWARE_VERSION:
+> +			a0 = INTEL_SIP_SMC_FIRMWARE_VERSION;
+> +			a1 = 0;
+> +			a2 = 0;
+> +			break;
+>  		default:
+>  			pr_warn("it shouldn't happen\n");
+>  			break;
+> @@ -487,11 +493,13 @@ static int svc_normal_to_secure_thread(void *data)
 >  
->  	mux_gpio->gpios = devm_gpiod_get_array(dev, "mux", GPIOD_OUT_LOW);
-> -	if (IS_ERR(mux_gpio->gpios)) {
-> -		ret = PTR_ERR(mux_gpio->gpios);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get gpios\n");
-> -		return ret;
-> -	}
-> +	if (IS_ERR(mux_gpio->gpios))
-> +		return dev_err_probe(dev, PTR_ERR(mux_gpio->gpios), "failed to get gpios\n");
-
-Please break this line, keeping it as one line does not significantly
-increase readability. I know many people think long lines are super
-nice, but I'm not sold and am stubbornly sticking to 80 cols. I'd rater
-have room for one more window instead of wasting loads of screen on
-mostly short lines and a long one here and there. Sorry to be a pest,
-but coding-style.rst agrees with me:
-
-"The preferred limit on the length of a single line is 80 columns."
-
-So, with that changed,
-
-Acked-by: Peter Rosin <peda@axentia.se>
-
-Cheers,
-Peter
-
->  	WARN_ON(pins != mux_gpio->gpios->ndescs);
->  	mux_chip->mux->states = BIT(pins);
+>  			/*
+>  			 * be compatible with older version firmware which
+> -			 * doesn't support RSU notify or retry
+> +			 * doesn't support RSU notify, retry or bitstream
+> +			 * authentication.
+>  			 */
+>  			if ((pdata->command == COMMAND_RSU_RETRY) ||
+>  			    (pdata->command == COMMAND_RSU_MAX_RETRY) ||
+> -				(pdata->command == COMMAND_RSU_NOTIFY)) {
+> +			    (pdata->command == COMMAND_RSU_NOTIFY) ||
+> +			    (pdata->command == COMMAND_FIRMWARE_VERSION)) {
+>  				cbdata->status =
+>  					BIT(SVC_STATUS_NO_SUPPORT);
+>  				cbdata->kaddr1 = NULL;
+> diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
+> index c3e5ab0..505fcca 100644
+> --- a/include/linux/firmware/intel/stratix10-smc.h
+> +++ b/include/linux/firmware/intel/stratix10-smc.h
+> @@ -321,8 +321,6 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
+>  #define INTEL_SIP_SMC_ECC_DBE \
+>  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_ECC_DBE)
 >  
+> -#endif
+> -
+>  /**
+>   * Request INTEL_SIP_SMC_RSU_NOTIFY
+>   *
+> @@ -404,3 +402,22 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
+>  #define INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY 18
+>  #define INTEL_SIP_SMC_RSU_MAX_RETRY \
+>  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY)
+> +
+> +/**
+> + * Request INTEL_SIP_SMC_FIRMWARE_VERSION
+> + *
+> + * Sync call used to query the version of running firmware
+> + *
+> + * Call register usage:
+> + * a0 INTEL_SIP_SMC_FIRMWARE_VERSION
+> + * a1-a7 not used
+> + *
+> + * Return status:
+> + * a0 INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR
+> + * a1 running firmware version
+> + */
+> +#define INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION 31
+> +#define INTEL_SIP_SMC_FIRMWARE_VERSION \
+> +	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION)
+> +
+> +#endif
+> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+> index 19781b0f..18c1841 100644
+> --- a/include/linux/firmware/intel/stratix10-svc-client.h
+> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
+> @@ -104,6 +104,9 @@ struct stratix10_svc_chan;
+>   *
+>   * @COMMAND_RSU_DCMF_VERSION: query firmware for the DCMF version, return status
+>   * is SVC_STATUS_OK or SVC_STATUS_ERROR
+> + *
+> + * @COMMAND_FIRMWARE_VERSION: query running firmware version, return status
+> + * is SVC_STATUS_OK or SVC_STATUS_ERROR
+>   */
+>  enum stratix10_svc_command_code {
+>  	COMMAND_NOOP = 0,
+> @@ -117,6 +120,7 @@ enum stratix10_svc_command_code {
+>  	COMMAND_RSU_RETRY,
+>  	COMMAND_RSU_MAX_RETRY,
+>  	COMMAND_RSU_DCMF_VERSION,
+> +	COMMAND_FIRMWARE_VERSION,
+>  };
+>  
+>  /**
+> -- 
+> 2.7.4
 > 
+
+Let's hold off on this patch until we have sorted the rest of this patch
+series out. As it stands it doesn't have a in-tree user.
+
+Thanks,
+Moritz
