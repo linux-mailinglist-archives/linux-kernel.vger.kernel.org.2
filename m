@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1EA34ECFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAB834ED12
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhC3P5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhC3P4r (ORCPT
+        id S232242AbhC3QCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:02:23 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55237 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231794AbhC3QBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:56:47 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB7CC061574;
-        Tue, 30 Mar 2021 08:56:47 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 15so20522404ljj.0;
-        Tue, 30 Mar 2021 08:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1RFM+ZM9KyafZD5tTYDT6to829rHhY1lLnOW+dPv69M=;
-        b=DQuPwSVOh4M/7TJnX1PdHYRw9dCsrSnO/KYuVw0WzxkJi1fOT0zLinopvOnB57Axbm
-         6CeIY/g2gMsyHTt3OHo0PWIy/EoRU4sKJX40fyoW/scrRmuJ52DYEm+16Nvq2vfDDkc8
-         8xHpt33l3BaMB6BZgJqWZAtwjyBNsP2MFO3mAl+B6vZ1Nj8jfL5rUuNHcAu0B5nx4wiH
-         /Qdsw5sWVAjDk7IFPaukGZKl8MibgHHWLUO3zqiILzQn3G/hFR14zLK2vkMi9uk9MhlF
-         pEiHMemDFAdTjNSvk+Hl0IX+l7cT2YlAtkxocXaUdZ44s6j9Jsyv7TaCGV4zsQB+uZCS
-         Fb7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1RFM+ZM9KyafZD5tTYDT6to829rHhY1lLnOW+dPv69M=;
-        b=hLVzXLTP3/XJawDTmwStnSuT2GBlN9czmdhHalWqsjogVMty0n/oRVDc2ieJ/0U84s
-         iLKexCQIMZoPEYXiEAYf8E5BZupysZjm4ITxPEFN5Yv9D8WqWerYGXwCccaWFr3zqZ15
-         B32ZsmG6PtIzEEINHE57JDKI+qJQMY3pq7bfsuKlRuEmjoSd8TSPFIEpZO1QtLCe7ppA
-         yjq/HNCAli+qRRf/pWl79d4HEAaeuOKN6jB4b8Dg4EEGRyfM/N6878bJs36cIgxrAf7F
-         IGxpfPHWh55h89p6c79oxFJIL/8oGjjgHGJ2VN5zgKTI1hqIxC2u9a6ATyQapozwe/7S
-         h19Q==
-X-Gm-Message-State: AOAM530SNq35Mfwed5FGLl8QQgycFxe6CUApQ7xhqUBXGR6ubWmK0bmX
-        +tB2fyTh9Cp2JviMG1N8kAm6T8361DE=
-X-Google-Smtp-Source: ABdhPJwsTUHFPHt8oCbr02Icg/z9JCPusTfU+uR/6AH+HSHSDp4oF3Vju5jCqn+Xh/lrmRabABh70g==
-X-Received: by 2002:a2e:6e17:: with SMTP id j23mr21299527ljc.209.1617119805594;
-        Tue, 30 Mar 2021 08:56:45 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-98.dynamic.spd-mgts.ru. [109.252.193.98])
-        by smtp.googlemail.com with ESMTPSA id z9sm204669lfu.274.2021.03.30.08.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:56:45 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-6-digetx@gmail.com>
- <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
- <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
-Message-ID: <eb29dd93-214d-ba15-7825-888467bd782b@gmail.com>
-Date:   Tue, 30 Mar 2021 18:56:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 30 Mar 2021 12:01:48 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12UG0nHa013090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 12:00:49 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 32C5415C39CD; Tue, 30 Mar 2021 12:00:49 -0400 (EDT)
+Date:   Tue, 30 Mar 2021 12:00:49 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Shreeya Patel <shreeya.patel@collabora.com>,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YGNLMRmr+tQb8WQ3@mit.edu>
+References: <20210329204240.359184-1-shreeya.patel@collabora.com>
+ <20210329204240.359184-5-shreeya.patel@collabora.com>
+ <YGKGhxaozX3ND6iB@gmail.com>
+ <87v999pequ.fsf@collabora.com>
+ <YGK7iNRXcMr/ahsL@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGK7iNRXcMr/ahsL@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 18:29, Dmitry Osipenko пишет:
-> 30.03.2021 11:48, Krzysztof Kozlowski пишет:
->>> +  power-domains:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>> +    description:
->>> +      Phandle of the SoC "core" power domain.
->> I think the core checks the type, so you only need to limit max items.
->>
+On Mon, Mar 29, 2021 at 10:47:52PM -0700, Eric Biggers wrote:
+> > Isn't this a user problem?  If the modules required to boot are on the
+> > filesystem itself, you are in trouble.  But, if that is the case, your
+> > rootfs is case-insensitive and you gotta have utf8 as built-in or have
+> > it in an early userspace.
 > 
-> It's a bit confusing that both variants work and it's not apparent what
-> variant is better.
-> 
-> I actually used the max items limit initially and then changed it to
-> $ref phandle because it appeared to me that it's a better choice. I'll
-> switch back to the limit in v2, thanks.
-> 
+> We could make it the user's problem, but that seems rather unfriendly.
+> Especially because the utf8 module would be needed if the filesystem has the
+> casefold feature at all, regardless of whether any casefolded directories are
+> needed at boot time or not.  (Unless there is a plan to change that?)
 
-Although, I'm still not sure what is the best variant. Could you please
-clarify why maxItems is better?
+I guess I'm not that worried, since the vast majority of desktop
+distribution are using initial ramdisks these days.  And if someone
+did build a monolithic kernel that couldn't mount the root file
+system, they would figure that out pretty quickly.
 
-Seems the $ref phandle already limits domain items to 1. So I don't
-understand what's the difference.
+The biggest problem they would have with trying to enable encryption
+or casefolding on the root file system is that if they are using Grub,
+older versions of Grub would see an unknown incompat feature, and
+immediately have heartburn, and refuse to touch whatever file system
+/boot is located on.  If the distribution has /boot as a stand-alone
+partition, that won't be a problem, but if you have a single file
+system which includes the location of kernels and initrds' are
+located, the moment you try set the encryption or casefold on the file
+system, you're immediately hosed --- and if you do this on a laptop
+while you are on an airplane, without thinking things through, and
+without access to a rescue USB thumb drive, life can
+get... interesting.  (Why, yes, I'm speaking from direct experience;
+why do you ask?  :-)
+
+So in comparison to making such a mistake, building a kernel that was
+missing casefold, and needing to fall back to an older kernel is not
+really that bad of a user experience.  You just have to fall back the
+distro kernel, which most kernel developers who are dogfooding
+bleeding kernels are probably smart enough keep one around.
+
+We *could* teach ext4 to support mounting file systems that have
+casefold, without having the unicode module loaded, which would make
+things a bit better, but I'm not sure it's worth the effort.  We could
+even make the argument that letting the system boot, and then having
+access to some directories return ENOTSUPP would actually be a more
+confusing user experience than a simple hard failure when we try
+mounting the file system.
+
+Cheers,
+
+					- Ted
