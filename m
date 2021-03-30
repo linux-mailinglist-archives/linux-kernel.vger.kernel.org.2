@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C58434EB96
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B9A34EB9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhC3PKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:10:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:32623 "EHLO mga03.intel.com"
+        id S232100AbhC3PKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:10:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:20282 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231874AbhC3PJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:09:48 -0400
-IronPort-SDR: rNJhceoetM/G+IuRfXSYgeVtGpKHpjneiwOI/JX+kKdAPHQOWiVFO7HORJmMfXN+2XXqQZXPML
- b2ibcOJzZNhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191816894"
+        id S231782AbhC3PK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:10:28 -0400
+IronPort-SDR: 8CWu/hI/Ska7qS+I39b4wTsn+5EvfIJNIJUiFag6AeZwAVtO52tn553YXMufcYyCbXv4x2pRmW
+ yMBM8ilwCioQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191886981"
 X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="191816894"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:09:48 -0700
-IronPort-SDR: LZBLF35OpbKsekZsYWYC8Kwt+pNmJHfS5HV++apvkmZsiAr5LchciB8UlW0OdA5iMRiVW1UvHP
- p3uWO5EkANUA==
+   d="scan'208";a="191886981"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:10:27 -0700
+IronPort-SDR: oi7Yyfuch8HZERJecHeQqRr5F2Mu2hMYnxOFYheUaNBe5/MmXFsoF6unp/DilhQe9Q44PBq+og
+ QtEObkzjXBnQ==
 X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="418210317"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.131.38]) ([10.249.131.38])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:09:45 -0700
-Subject: Re: [PATCH] resource: Prevent irqresource_disabled() from erasing
- flags
-To:     Angela Czubak <acz@semihalf.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     akpm@linux-foundation.org, john.garry@huawei.com,
-        linux-kernel@vger.kernel.org, upstream@semihalf.com,
-        dtor@chromium.org, linux-acpi <linux-acpi@intel.com>,
-        rafael@kernel.org
-References: <20210329195238.9455-1-acz@semihalf.com>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <1c086b9e-d5c2-6e8d-1d81-748935b0dd64@intel.com>
-Date:   Tue, 30 Mar 2021 17:09:42 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+   d="scan'208";a="411669270"
+Received: from tkokeray-mobl.amr.corp.intel.com (HELO [10.252.143.165]) ([10.252.143.165])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:10:26 -0700
+Subject: Re: [PATCH v1 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Andi Kleen <ak@linux.intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <CALCETrUgEFy4shmh_pxOTzEVJZq8y23zK7cr51UhXba0KhQ8qg@mail.gmail.com>
+ <331b34e3d6153f0a7b0ab0a9a8cb5de71f0bfd93.1616803999.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d78f5f76-e04f-cab1-48f5-b6c1ba6a3811@intel.com>
+ <20210330150048.GB1285835@tassilo.jf.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <840efd72-65b1-385c-e9a6-343410c85221@intel.com>
+Date:   Tue, 30 Mar 2021 08:10:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210329195238.9455-1-acz@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210330150048.GB1285835@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/2021 9:52 PM, Angela Czubak wrote:
-> Do not overwrite flags as it leads to erasing triggering and polarity
-> information which might be useful in case of hard-coded interrupts.
-> This way the information can be read later on even though mapping to
-> APIC domain failed.
->
-> Signed-off-by: Angela Czubak <acz@semihalf.com>
-> ---
-> Some Chromebooks use hard-coded interrupts in their ACPI tables.
-> This is an excerpt as dumped on Relm:
->
-> ...
->              Name (_HID, "ELAN0001")  // _HID: Hardware ID
->              Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
->              Name (_UID, 0x05)  // _UID: Unique ID
->              Name (ISTP, Zero)
->              Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
->              {
->                  Name (BUF0, ResourceTemplate ()
->                  {
->                      I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
->                          AddressingMode7Bit, "\\_SB.I2C1",
->                          0x00, ResourceConsumer, , Exclusive,
->                          )
->                      Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
->                      {
->                          0x000000B8,
->                      }
->                  })
->                  Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */
->              }
-> ...
->
-> This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
-> to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
-> fails and irqresource_disabled() is issued, which leads to erasing triggering
-> and polarity information.
-> If that function added its flags instead of overwriting them the correct IRQ
-> type would be set even for the hard-coded interrupts, which allows device driver
-> to retrieve it.
-> Please, let me know if this kind of modification is acceptable.
+On 3/30/21 8:00 AM, Andi Kleen wrote:
+>>> +	/* MWAIT is not supported in TDX platform, so suppress it */
+>>> +	setup_clear_cpu_cap(X86_FEATURE_MWAIT);
+>> In fact, MWAIT bit returned by CPUID instruction is zero for TD guest. This
+>> is enforced by SEAM module.
+> Good point.
+>> Do we still need to safeguard it by setup_clear_cpu_cap() here?
+> I guess it doesn't hurt to do it explicitly.
 
- From the quick look it should not be problematic, but it needs to be 
-checked more carefully.
-
-Mika, what do you think?
-
-
->   include/linux/ioport.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-> index 55de385c839cf..647744d8514e0 100644
-> --- a/include/linux/ioport.h
-> +++ b/include/linux/ioport.h
-> @@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
->   {
->   	res->start = irq;
->   	res->end = irq;
-> -	res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
-> +	res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
->   }
->   
->   extern struct address_space *iomem_get_mapping(void);
-
-
+If this MWAIT behavior (clearing the CPUID bit) is part of the guest
+architecture, then it would also be appropriate to WARN() rather than
+silently clearing the X86_FEATURE bit.
