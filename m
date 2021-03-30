@@ -2,213 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EBA34E399
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538BF34E418
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhC3I46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:56:58 -0400
-Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:2945
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230224AbhC3I4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:56:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M2KW0EiYdfAhWOmug6PR+OMLK20KPJbAyPQkm09J8AevWuGU3jJiKnrXS+Kz8vhy2XKkXa6AvcmLE3ZD10BlkgzhofwxAxlKP0ivqlHvhC+aEEqHLxfrsyGu90LzClqCbPUHuhAEYB4VXavcw9cWUBwn8rRc9grbhcgr4GNKk5y3kzcZt4PLml3Sz8niTksXAZEeB0BWJZ7NCSbQBL6Wi3JAqsJb9ZXTlytXzUImqnSvFNpa7bTsFptDrnhpBuH2jfMuh44sSZcXx8VjKvXfzCbARo5hhQx0hvc201kRBA9jZww1MY/nq5wU15k9aIzw5sohGct4JVbuG5UOqLIN0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcLbZuPrAoF0vz+syYsFzQl/V2SXo31YQyW5HlYrO/A=;
- b=evRG0CZAcGmG7SSZqsha0CWaqcoLuZ4PJ8Hrw6IMI4krg2lcLuiqgaRJ111drFRhwGobp1dED5++wGSOTxRThsS78Co/C6yra9XKY8h7XcffcG8nCWuDbwc0qMcef3xJ7C43sgJPe0fHsQ5NyQLnb2cYjj2YSr997MIup3p0nE/0V3Jht15IIqbH50XlgilKqpaIuVNvhjODKM1vWxQC7YA+IOxAesFkJy7gd58OwE/V84xa3JPW0O9UGbfzcc6XtIrF+iEPZVBHF0KRlDtEjLreu0cA7VWCBqBvSMcyJSD+tG+1TU/rzW1fcQP0254MKEs8JNXd9UbJj0EIllev3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcLbZuPrAoF0vz+syYsFzQl/V2SXo31YQyW5HlYrO/A=;
- b=NMOIfVUfDdDyWFRqoD6f4doI9/87quuiyZGmaiIZdxOXVHiybIp3Q28OF+mNdDGbAeXmn9Zt8n+epwfOzUthD9URk8pkz/x1qyyVwcZORmCkSnAfwnhWoM9/lbBu6xXxgJLdUyqLKKHDbbZ+q/nh81HTPFI00jOJLsrZ8V8FATw=
-Received: from BN9PR03CA0545.namprd03.prod.outlook.com (2603:10b6:408:138::10)
- by BN6PR1201MB0116.namprd12.prod.outlook.com (2603:10b6:405:56::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Tue, 30 Mar
- 2021 08:56:32 +0000
-Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:138:cafe::d) by BN9PR03CA0545.outlook.office365.com
- (2603:10b6:408:138::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend
- Transport; Tue, 30 Mar 2021 08:56:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 08:56:32 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
- 2021 03:56:31 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
- 2021 03:56:30 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
- Transport; Tue, 30 Mar 2021 03:56:26 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <shumingf@realtek.com>, <flove@realtek.com>,
-        <kent_chen@realtek.com>, <jack.yu@realtek.com>,
-        <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>,
-        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Ravulapati Vishnu vardhan rao" <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        "open list" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x machine driver
-Date:   Tue, 30 Mar 2021 14:43:15 +0530
-Message-ID: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+        id S231512AbhC3JOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:14:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40212 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229816AbhC3JNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617095622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wb1xwTXO+Z1eRBnmRJEtGYdnn0qi6F4dPoEkpoQRveo=;
+        b=VFqJRJItgHdLxQEoYaagKJ4+dtSKq8JE9OH+A6WEIZofNh7xwmpeM5pCK9FSPwJbAqX3KY
+        iwPLm7IMNDpdHoyZWcJcp2j8/uN7VtHjl9Jn3npo9jStbx7zG5AWcOH4HRnqIWK5U5jOJk
+        je/Nva0BWAFV7M2+8dsCX75ix55/qXo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-535-JcCj9s0CM46WVe9KeVsZuQ-1; Tue, 30 Mar 2021 05:13:38 -0400
+X-MC-Unique: JcCj9s0CM46WVe9KeVsZuQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42BFF1009458;
+        Tue, 30 Mar 2021 09:13:36 +0000 (UTC)
+Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 953E66F978;
+        Tue, 30 Mar 2021 09:13:33 +0000 (UTC)
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
+        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
+        jglisse@redhat.com, linux-mm@kvack.org
+References: <20210326012035.3853-1-apopple@nvidia.com>
+ <9eef1283-28a3-845e-0e3e-80b763c9ec59@redhat.com>
+ <3158185.bARUjMUeyn@nvdebian>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v2] kernel/resource: Fix locking in
+ request_free_mem_region
+Message-ID: <e910441c-73a7-b57e-1330-ead65c4ff412@redhat.com>
+Date:   Tue, 30 Mar 2021 11:13:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 252a04fb-5613-442c-6645-08d8f359b71a
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0116:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB01169646A18C9FEB801B4B68977D9@BN6PR1201MB0116.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8t6gqmLu9IwB8ptyD2QFOefmVfk3E8vn68HJM+IHdvAi9xxBPuOY65G9KxaMpFm3XwVHa+TK1jeB7O1s5HL0hZf4+EGx6S1/+0r/dUUW7PEySsl2g386Zv+48VcTCfMRSQJwzc0TIb/qst9N2HTrKjDlhtBziOmD4W67wC9HNexvwXrqAkrwbhoLGZUjpfr2DhXZE7PhNMSNgF1lDlFwfg7rbgrxgsn9ClTDBrbeMk2NncF9snQg4K9hdcIcVKGHQUtvRYXNBGqbB1+4yOseh7aoUdkhF1yRGid/ezH4TjpGgOP2dyD6v8slGuDRsUJyijL0ReY4W32EN6G9YXQHkRNbEn7JXhkwAGEQHmbSL+u9nbA9PlNQyW1NQKj6mifpkk8P8qVNEQq5KhGjwV25VBxKYavtRRtgUc9ECy8Gc3LsBFGPlCQuAt9y5FQkrfDWjTUnWeEuYYOaieKlF42Icn7/DNKrrm9FbxZGAs+h06jWyTWUSFw4U/WSpIsLBaErF1m0sEUE/5qa/fZisazzknN7TZu4lxcH51NoXZTvfuW8P7okgKv+QeYug39QVg6KVu3zNBcV2i0SxTyO+Ru1Nm3S2C9N5CHZSQIhiRwtoZr+6UlvvT8EkwxFOhatD2+ExFXo0jpPyss5cUk1gj17FiyiL5zUZ0UbcOzcpZJobcccHBIG6N39gQAGHeQyHdK2IzCAC6pHmPg6q1PGlv8V+Sq+J6e3Icp/NLL6g4VDLkg=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(46966006)(36840700001)(478600001)(47076005)(81166007)(70206006)(356005)(7696005)(336012)(26005)(70586007)(36756003)(2906002)(82740400003)(316002)(110136005)(54906003)(4326008)(2616005)(82310400003)(86362001)(83380400001)(8676002)(36860700001)(426003)(6666004)(7416002)(8936002)(186003)(5660300002)(42413003)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 08:56:32.2074
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 252a04fb-5613-442c-6645-08d8f359b71a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0116
+In-Reply-To: <3158185.bARUjMUeyn@nvdebian>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ALC1015p codec support for acp3x machine driver.
+On 29.03.21 03:37, Alistair Popple wrote:
+> On Friday, 26 March 2021 7:57:51 PM AEDT David Hildenbrand wrote:
+>> On 26.03.21 02:20, Alistair Popple wrote:
+>>> request_free_mem_region() is used to find an empty range of physical
+>>> addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
+>>> over the range of possible addresses using region_intersects() to see if
+>>> the range is free.
+>>
+>> Just a high-level question: how does this iteract with memory
+>> hot(un)plug? IOW, how defines and manages the "range of possible
+>> addresses" ?
+> 
+> Both the driver and the maximum physical address bits available define the
+> range of possible addresses for device private memory. From
+> __request_free_mem_region():
+> 
+> end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
+> addr = end - size + 1UL;
+> 
+> There is no lower address range bound here so it is effectively zero. The code
+> will try to allocate the highest possible physical address first and continue
+> searching down for a free block. Does that answer your question?
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/Kconfig                |  1 +
- sound/soc/amd/acp3x-rt5682-max9836.c | 46 +++++++++++++++++++++++++++++++++++-
- 2 files changed, 46 insertions(+), 1 deletion(-)
+Oh, sorry, the fist time I had a look I got it wrong - I thought (1UL << 
+MAX_PHYSMEM_BITS) would be the lower address limit. That looks indeed 
+problematic to me.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 256c192..ba5a85b 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -35,6 +35,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
- 	select SND_SOC_CROS_EC_CODEC
- 	select I2C_CROS_EC_TUNNEL
- 	select SND_SOC_RT1015
-+	select SND_SOC_RT1015P
- 	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
- 	help
- 	 This option enables machine driver for RT5682 and MAX9835.
-diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
-index cea320a..8e11bb8 100644
---- a/sound/soc/amd/acp3x-rt5682-max9836.c
-+++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-@@ -275,6 +275,8 @@ SND_SOC_DAILINK_DEF(rt5682,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00", "rt5682-aif1")));
- SND_SOC_DAILINK_DEF(max,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("MX98357A:00", "HiFi")));
-+SND_SOC_DAILINK_DEF(rt1015p,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("RTL1015:00", "HiFi")));
- SND_SOC_DAILINK_DEF(rt1015,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC1015:00", "rt1015-aif"),
- 			COMP_CODEC("i2c-10EC1015:01", "rt1015-aif")));
-@@ -419,6 +421,43 @@ static struct snd_soc_card acp3x_1015 = {
- 	.num_controls = ARRAY_SIZE(acp3x_mc_1015_controls),
- };
- 
-+static const struct snd_soc_dapm_widget acp3x_1015p_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0,
-+			 &acp3x_dmic_mux_control),
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route acp3x_1015p_route[] = {
-+	{"Headphone Jack", NULL, "HPOL"},
-+	{"Headphone Jack", NULL, "HPOR"},
-+	{"IN1P", NULL, "Headset Mic"},
-+	{"Dmic Mux", "Front Mic", "DMIC"},
-+	{"Dmic Mux", "Rear Mic", "DMIC"},
-+	/* speaker */
-+	{ "Speakers", NULL, "Speaker" },
-+};
-+
-+static const struct snd_kcontrol_new acp3x_mc_1015p_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speakers"),
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+static struct snd_soc_card acp3x_1015p = {
-+	.name = "acp3xalc56821015p",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp3x_dai,
-+	.num_links = ARRAY_SIZE(acp3x_dai),
-+	.dapm_widgets = acp3x_1015p_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(acp3x_1015p_widgets),
-+	.dapm_routes = acp3x_1015p_route,
-+	.num_dapm_routes = ARRAY_SIZE(acp3x_1015p_route),
-+	.controls = acp3x_mc_1015p_controls,
-+	.num_controls = ARRAY_SIZE(acp3x_mc_1015p_controls),
-+};
-+
- void *soc_is_rltk_max(struct device *dev)
- {
- 	const struct acpi_device_id *match;
-@@ -435,6 +474,9 @@ static void card_spk_dai_link_present(struct snd_soc_dai_link *links,
- 	if (!strcmp(card_name, "acp3xalc56821015")) {
- 		links[1].codecs = rt1015;
- 		links[1].num_codecs = ARRAY_SIZE(rt1015);
-+	} else if (!strcmp(card_name, "acp3xalc56821015p")) {
-+		links[1].codecs = rt1015p;
-+		links[1].num_codecs = ARRAY_SIZE(rt1015p);
- 	} else {
- 		links[1].codecs = max;
- 		links[1].num_codecs = ARRAY_SIZE(max);
-@@ -486,6 +528,7 @@ static int acp3x_probe(struct platform_device *pdev)
- static const struct acpi_device_id acp3x_audio_acpi_match[] = {
- 	{ "AMDI5682", (unsigned long)&acp3x_5682},
- 	{ "AMDI1015", (unsigned long)&acp3x_1015},
-+	{ "AMDP1015", (unsigned long)&acp3x_1015p},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
-@@ -503,5 +546,6 @@ module_platform_driver(acp3x_audio);
- 
- MODULE_AUTHOR("akshu.agrawal@amd.com");
- MODULE_AUTHOR("Vishnuvardhanrao.Ravulapati@amd.com");
--MODULE_DESCRIPTION("ALC5682 ALC1015 & MAX98357 audio support");
-+MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-+MODULE_DESCRIPTION("ALC5682 ALC1015, ALC1015P & MAX98357 audio support");
- MODULE_LICENSE("GPL v2");
+You might end up reserving an iomem region that could be used e.g., by 
+memory hotplug code later. If someone plugs a DIMM or adds memory via 
+different approaches (virtio-mem), memory hotplug (via add_memory()) 
+would fail.
+
+You never should be touching physical memory area reserved for memory 
+hotplug, i.e., via SRAT.
+
+What is the expectation here?
+
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
