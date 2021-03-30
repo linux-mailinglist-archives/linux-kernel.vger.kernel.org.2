@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB28A34E360
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0294334E361
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhC3Ilv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhC3Ilb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:41:31 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FB3C061762;
-        Tue, 30 Mar 2021 01:41:31 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lR9w8-0005Lf-Ss; Tue, 30 Mar 2021 10:41:20 +0200
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <c396c91f-27c2-de36-7b05-099e03c213f4@leemhuis.info>
- <6a220d2c-568e-2e41-53a4-0800e206d0a6@leemhuis.info>
- <14d9b8a3-94ce-00a6-a17b-934ffd999697@leemhuis.info>
- <87r1jxpol6.fsf@meer.lwn.net> <YGK+M66FWJOMC8ky@kroah.com>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [1/5] reporting-issues: header and TLDR
-Message-ID: <f32b5e5b-ed6b-cad5-08f6-b7923c621b74@leemhuis.info>
-Date:   Tue, 30 Mar 2021 10:41:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231672AbhC3Ilw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:41:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55554 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230224AbhC3Ilj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:41:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617093697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jiLzz+FDg8IDgOr7Ru1IW7IRXYaqlH8yrJkDxBSOd+M=;
+        b=SwyQOSqvaO5avOz2XsxkAeyYpWcAxuEpeTup5y2W/3hjoJIa9VL+ySLWFEDXOGMXYYzaNj
+        yfuPCkvCrHUDqDn4OiHjX+VW5qEwgFf/bjJtmVzQs0eem+tKxgSvbAVrRlz0EIt6ankmR8
+        9g4gU0a0vUOWreF+dSJDr1Ih1BW0A9I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F0DDEB1C1;
+        Tue, 30 Mar 2021 08:41:36 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 10:41:34 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Martin Sebor <msebor@gcc.gnu.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        Ning Sun <ning.sun@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
+Message-ID: <YGLkPjSBdgpriC0E@blackbook>
+References: <20210322160253.4032422-1-arnd@kernel.org>
+ <20210322160253.4032422-7-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YGK+M66FWJOMC8ky@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617093691;81938066;
-X-HE-SMSGID: 1lR9w8-0005Lf-Ss
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Gbn4BprmVLVWv2rO"
+Content-Disposition: inline
+In-Reply-To: <20210322160253.4032422-7-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.03.21 07:59, Greg KH wrote:
-> On Mon, Mar 29, 2021 at 04:44:21PM -0600, Jonathan Corbet wrote:
->> Thorsten Leemhuis <linux@leemhuis.info> writes:
->>
->>> FWIW, on another channel someone mentioned the process in the TLDR is
->>> quite complicated when it comes to regressions in stable and longterm
->>> kernels. I looked at the text and it seemed like a valid complaint, esp.
->>> as those regressions are something we really care about.
->>>
->>> To solve this properly I sadly had to shake up the text in this section
->>> completely and rewrite parts of it. Find the result below. I'm quite
->>> happy with it, as it afaics is more straight forward and easier to
->>> understand. And it matches the step-by-step guide better. And the best
->>> thing: it's a bit shorter than the old TLDR.
->>
->> I think this is much improved - concise is good! :)
 
-Yeah, I was kinda unhappy with the old version myself and glad that
-something made be revisit this...
+--Gbn4BprmVLVWv2rO
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>  I really just have one little comment...
+On Mon, Mar 22, 2021 at 05:02:44PM +0100, Arnd Bergmann <arnd@kernel.org> w=
+rote:
+> I'm not sure what is expected to happen for such a configuration,
+> presumably these functions are never calls in that case.
+Yes, the functions you patched would only be called from subsystems or
+there should be no way to obtain a struct cgroup_subsys reference
+anyway (hence it's ok to always branch as if ss=3D=3DNULL).
 
-Great!
+I'd prefer a variant that wouldn't compile the affected codepaths when
+there are no subsystems registered, however, I couldn't come up with a
+way how to do it without some preprocessor ugliness.
 
->>> I'll wait a day or two and then will send it through the regular review
->>> together with a few small other fixes that piled up for the text, just
->>> wanted to add it here for completeness.
->>>
->>> ---
->>> The short guide (aka TL;DR)
->>> ===========================
->>>
->>> Are you facing a regression with vanilla kernels from the same stable or
->>> longterm series? One still supported? Then search the `LKML
->>> <https://lore.kernel.org/lkml/>`_ and the `Linux stable mailing list
->>> <https://lore.kernel.org/stable/>_` archives for matching reports to
->>> join. If you don't find any, install `the latest release from that
->>> series <https://kernel.org/>`_. If it still shows the issue, report it
->>> to the stable mailing list and the stable maintainers.
->>
->> If we really want this to be a short guide that gets people to the
->> answer quickly, we might as well put the addresses to report to right
->> here rather than making people search for them.
-> 
-> "stable@vger.kernel.org" is good to use here, no need to also cc: any
-> individuals for this type of thing.
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-Ahh, good to know, will change this accordingly. Will also change other
-places in the text where this comes up.
+--Gbn4BprmVLVWv2rO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thx for the feedback! Ciao, Thorsten
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBi5DcACgkQia1+riC5
+qSjuqxAAkm/zoS+xvdcQUERzkcuVxIruGtTqOse/NCPQQR9aGuJl6iybyjQw7D+r
+63+BYz7+BdP8zDg+NSTO354Yt0vsWFtCvuZBBabO91wCheLRPaZhHnGByJa0fXyM
+SKC2VSvFHKKiFuCG7mG7/WfDQxTGSaUL2jiFXlA5HAV5dKfkia/Jpuf+KtIy5nBR
+g8g4f44M2wW/TCoBzd5Elt5Cpx6fU2aKuJRCRCE04ts4CQy06/lLcc9H0N7bvgHj
+0oxkHbAjXeEnylnni4pfpmJpInUT2kOZuCjSF/WPw2XeLs00AnBnNB3lDP9Pe2qo
+ippcDc3AFqYMqewKnnxDWoTI3lyMTm8r0yzrDdwpb9Zv28bOCAYiwyoIsFV7+kdN
+C7DnhiL6d+UgKIzCqRuTPXnluthvSmHGzeblqF1vOAaWOFif4CcRmUtsR7v3EyZN
+5aiUTGqVtoKr/pcBNnRU1e2w7ulYpq5sbL/8f9HtnKsZ8MZlLdhdcDoSLjOkuohK
+OlQgS6p+2otxwk3xft0CdFPPHAFb5/WM6IyKdewFGuY0fohxczWJCRI92x94cfe9
+p0JSNLl19JjdM8loYpmBRcmlkoBH+MtkdZiR68b5yX5wcXypubmZPZ9o8ZzQqx1j
+ZX1/nhuyDl6KHuGW7gJXx8FhCLd6nPyKYVu4wbay23oLzdL/1sk=
+=nVTO
+-----END PGP SIGNATURE-----
+
+--Gbn4BprmVLVWv2rO--
