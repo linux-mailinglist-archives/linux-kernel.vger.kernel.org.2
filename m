@@ -2,197 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8966C34E667
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D6334E66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhC3Lgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:36:31 -0400
-Received: from mga07.intel.com ([134.134.136.100]:49629 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229801AbhC3LgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:36:05 -0400
-IronPort-SDR: BhBM94rhTZeXZgwX2b+lk1cMtAzvtzVK3hrlvSsqndWZb6KeQJbSAJfMEdtTcUgSZvkZrdoyLp
- aNaE/b/9eP0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255738511"
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="255738511"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 04:36:02 -0700
-IronPort-SDR: Qn/n0r1XTS6bViYTWeiG2zJwPkO507jha4/bTE/H7oRc42hKUx2kg8iW3rMwfbPgsgS8xyEJAT
- cCKf1t6qSVEg==
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="411566797"
-Received: from ograu-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.175])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 04:36:00 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-In-Reply-To: <20210329185843.GK351017@casper.infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210325184615.08526aed@coco.lan> <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org> <87tuozyslu.fsf@meer.lwn.net> <20210325191435.GZ1719932@casper.infradead.org> <87a6qrx7wf.fsf@meer.lwn.net> <20210325221437.GA1719932@casper.infradead.org> <87wntux3w7.fsf@meer.lwn.net> <20210329144204.GF351017@casper.infradead.org> <874kgtq079.fsf@intel.com> <20210329185843.GK351017@casper.infradead.org>
-Date:   Tue, 30 Mar 2021 14:35:57 +0300
-Message-ID: <87tuosoov6.fsf@intel.com>
+        id S231602AbhC3Lkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:40:52 -0400
+Received: from mail-eopbgr140094.outbound.protection.outlook.com ([40.107.14.94]:49121
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231701AbhC3Lkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:40:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YBdSuJRYE2c3ZKqQk31GPmRQ8EzQvK1JK+UEECxilf4fgf4VhUB/zZBYvfASeifs4RSkBeFX4Lw6BKcBbnUyPXzf3XDDJ5MXIJfGJKNVwG17fkYpLIx1JN96Qjm7lyUNj2yNSs+7uaIKKZaQHyGYK6FGWTkdARMNrTBffBUpyI23w+Fle9i+Fx+JQIpXjZQHtJiRQIYQsx8t0YpEH4EBNDQdbYc7D/cZCzKX1sXYaE4llJa59SVr+jIyO7p/QAmQwuHhQbDoytJ78aWGGgIqku5F2K8pvdHzqNTcZlQ7qoD3Q6QXVrrFhBIMTZXYNFQf7aDWeiuBtwIvivCJnLc/BA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/vnNT0cAOKE99+naUJjBQLeti2+AkJQPIzA21oLGMCY=;
+ b=cKPm7JdHkuRqfgVqJtNWy4zXnrccRCG9PlSxQl91DpRiuygkb3Ou0SNwbQGpwpTQMpo6NO/x4BpqKqpANyJT4bTC/xS3f6qpZFb/v1m1NkweGFAvLSTeyXwlojbs9+xopTUurrfmqhpxDIyULx6dHkDRz6sdjbP78HDZ7is0YXEO6YChZmyA1KQ/Oi13dKhNpGeU/IcsQ+QiZTVFTsoEpRkFI+uKgabcrDhFIu3iBA/aMiRcdIA8Zw3Cz+5RGMNZGrerpeuiFMhYDOs5RikO+bCwsHt4GbdZVpsheZcMrbO5I2C6gWyaYNGCUpOxJpRC8hafNfzILX7zGgRMQ5Zr1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=arm.com smtp.mailfrom=nokia.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=nokia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/vnNT0cAOKE99+naUJjBQLeti2+AkJQPIzA21oLGMCY=;
+ b=mvwqe0Xr/8QdT5uo5Qwt0x+whDN0B7mxC4H0VrDIjdZgcm7FiHU1LP+1HUlmj93HFAL0S+fg5fVkI48o23mgZ+jDOsRqQtEC8Tyja0hl6UmUGhESa7ZxrdJIacJ+v2drscejJ9k5xa6sYljjY+E6Y3/NSgwTx2CEMzPjd5luunA=
+Received: from AM5P194CA0024.EURP194.PROD.OUTLOOK.COM (2603:10a6:203:8f::34)
+ by AS8PR07MB7077.eurprd07.prod.outlook.com (2603:10a6:20b:259::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.17; Tue, 30 Mar
+ 2021 11:40:44 +0000
+Received: from AM5EUR03FT019.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:203:8f:cafe::ce) by AM5P194CA0024.outlook.office365.com
+ (2603:10a6:203:8f::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend
+ Transport; Tue, 30 Mar 2021 11:40:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ AM5EUR03FT019.mail.protection.outlook.com (10.152.16.104) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 11:40:44 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 12UBeeul023631;
+        Tue, 30 Mar 2021 11:40:41 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH v8 0/3] ARM: Implement MODULE_PLT support in FTRACE
+Date:   Tue, 30 Mar 2021 13:40:32 +0200
+Message-Id: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
 Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: e9f50b00-6b2a-429d-8431-08d8f370a783
+X-MS-TrafficTypeDiagnostic: AS8PR07MB7077:
+X-Microsoft-Antispam-PRVS: <AS8PR07MB7077683DC41FA1DB6E38F3FE887D9@AS8PR07MB7077.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QL6npV9GFddFuLobM9wnt33yS7J4zDdM6Gupu4RBuGacEspvdCUtpfDwla/0aRDbpAdEgNewfJBoe4jvH3ztyl0k/PoogmN8cwWSSaWgGMHJbyBG1no6+5Jr1Sumr4N/Fp/DMZtz0or/DbTrIGogq2+RAM5K6lltDKlPbEa8YyTGMfIRixUmCPPQAdKF0FH6/sCYiK4ofbgfMKv1yYoQBSiu8UZdlw1QXg8fNQDD2KGfzO77D+jiacN2WugV4hbTKORa9W4ophqgi03mcJJf7m36y7qMPL+6cLTel0U6dV3r8bxN/j4FW1EpmItDnBFJ7c3zIMzcEA2goCZ1TonDIUGMDneW6HvjjAhJlDOp+T7eYcFF3BZu039+g7+783Qv6uuyx/LmUsojC4SJ+qfDUo77nr4XZSV99/5SAM1nWD5dvcHb4m0fY9y+LapMFeAzRkYKKLIT4XpNSPobazETsDpsWRtFaoec7oFtzfu+aHjjdOSXNpo8H+aqqSTCMXAL8t2PDXyRQX9vlhmppxd4ps/45DgWy29voNMvNMJC6SIct19hrmnre3gAGz3YNiCECyHEpAsdCsacuQDYkdGYnarMDhwFtlj2znftwwRyizsRFY2V/QGHiFiR8s4KwmAO1qdf4h6CzsJedlfSpKuvZxUAN3hlXwo3WazaD1QAuIZlmKSjXxmMj4vYonUbBf0g
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(46966006)(36840700001)(81166007)(70206006)(6916009)(36860700001)(2616005)(47076005)(478600001)(70586007)(54906003)(82740400003)(336012)(356005)(26005)(1076003)(316002)(186003)(86362001)(83380400001)(36756003)(6666004)(4326008)(82310400003)(2906002)(8936002)(5660300002)(8676002)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 11:40:44.4556
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9f50b00-6b2a-429d-8431-08d8f370a783
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT019.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021, Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Mar 29, 2021 at 09:33:30PM +0300, Jani Nikula wrote:
->> On Mon, 29 Mar 2021, Matthew Wilcox <willy@infradead.org> wrote:
->> > So here's my "modest proposal":
->> >
->> >  - Similar to our ".. kernel-doc::" invocation in .rst files, handle
->> >    ".. rustdoc::" (insert weeks of hacking here)
->> >  - Now add ".. rst-doc::" which parses .c files like [1] kernel-doc
->> >    does, but interprets a different style of comment and actually does
->> >    most of the repetitive boring bits for you.
->> 
->> As a hobby, I've written a Sphinx extension to use Clang to parse the
->> code and extract pure reStructuredText documentation comments with
->> minimal conversions [1]. No additional syntax. Just use reStructuredText
->> for everything instead of inventing your own.
->> 
->> I'm not proposing to use that in kernel, at all. It was more like a
->> diversion from the kernel documentation.
->
-> Actually, that looks like my proposal, except that it uses the same /**
-> as kernel-doc, so you can't tell whether a comment is intended to be
-> interpreted by kernel-doc or hawkmoth.
->
-> https://github.com/jnikula/hawkmoth/blob/master/test/example-70-function.c
->
-> If the introduction were "/*rST" instead of "/**", would we have
-> consensus?  It gives us a path to let people intermix kernel-doc and
-> hawkmoth comments in the same file, which would be amazing.
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-If you want to allow two syntaxes for documentation comments (current
-kernel-doc and pure reStructuredText with just the comment markers and
-indentation removed) I think the natural first step would be to modify
-kernel-doc the perl script to support that. It would probably even be
-trivial.
+FTRACE's function tracer currently doesn't always work on ARM with
+MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
+code modifier cannot cope with introduced veneers and turns the
+function tracer off globally.
 
-Hawkmoth uses Clang for parsing, with none of the kernel specific stuff
-that kernel-doc has, such as EXPORT_SYMBOL(). It makes sense for a pet
-project with a clean break. I don't know if anyone has the bandwidth or
-desire to re-implement the kernel specific stuff on top of Clang. (I
-know I don't, I started the project because I wanted that clean break to
-begin with!)
+ARM64 already has a solution for the problem, refer to the following
+patches:
 
-The real question is, is it a good idea to support multiple formats at
-all? (N.b. I'm not a fan of extending the kernel-doc syntax either.)
+arm64: ftrace: emit ftrace-mod.o contents through code
+arm64: module-plts: factor out PLT generation code for ftrace
+arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
+arm64: ftrace: fix building without CONFIG_MODULES
+arm64: ftrace: add support for far branches to dynamic ftrace
+arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
 
-BR,
-Jani.
+But the presented ARM variant has just a half of the footprint in terms of
+the changed LoCs. It also retains the code validation-before-modification
+instead of switching it off.
 
+Changelog:
+v8:
+* Add warn suppress parameter to arm_gen_branch_link()
+v7:
+* rebased
+v6:
+* rebased
+v5:
+* BUILD_BUG_ON() ensures fixed_plts[] always fits one PLT block
+* use "for" loop instead of "while"
+* scripts/recordmcount is filtering reloc types
+v4:
+* Fixed build without CONFIG_FUNCTION_TRACER
+* Reorganized pre-allocated PLTs handling in get_module_plt(),
+  now compiler eliminates the whole FTRACE-related handling code
+    if ARRAY_SIZE(fixed_plts) == 0
+    v3:
+    * Only extend struct dyn_arch_ftrace when ARM_MODULE_PLTS is enabled
+    v2:
+    * As suggested by Steven Rostedt, refrain from tree-wide API modification,
+      save module pointer in struct dyn_arch_ftrace instead (PowerPC way)
 
->
->> But based on my experience with the old and new kernel documentation
->> systems and the hobby one, the one takeaway is to not create new
->> syntaxes, grammars, parsers, or preprocessors to be maintained by the
->> kernel community. Just don't. Take what's working and supported by other
->> projects, and add the minimal glue using Sphinx extensions to put it
->> together, and no more.
->> 
->> Of course, we couldn't ditch kernel-doc the script, but we managed to
->> trim it down quite a bit. OTOH, there have been a number of additions
->> outside of Sphinx in Makefiles and custom tools in various languages
->> that I'm really not happy about. It's all too reminiscient of the old
->> DocBook toolchain, while Sphinx was supposed to be the one tool to tie
->> it all together, partially chosen because of the extension support.
->> 
->> 
->> BR,
->> Jani.
->> 
->> 
->> [1] https://github.com/jnikula/hawkmoth
->> 
->> 
->> >
->> > For example, xa_load:
->> >
->> > /**
->> >  * xa_load() - Load an entry from an XArray.
->> >  * @xa: XArray.
->> >  * @index: index into array.
->> >  *
->> >  * Context: Any context.  Takes and releases the RCU lock.
->> >  * Return: The entry at @index in @xa.
->> >  */
->> > void *xa_load(struct xarray *xa, unsigned long index)
->> >
->> > //rST
->> > // Load an entry from an XArray.
->> > //
->> > // :Context: Any context.  Takes and releases the RCU lock.
->> > // :Return: The entry in `xa` at `index`.
->> > void *xa_load(struct xarray *xa, unsigned long index)
->> >
->> > (more complex example below [2])
->> >
->> > Things I considered:
->> >
->> >  - Explicitly document that this is rST markup instead of Markdown or
->> >    whatever.
->> >  - Don't repeat the name of the function.  The tool can figure it out.
->> >  - Don't force documenting each parameter.  Often they are obvious
->> >    and there's really nothing interesting to say about the parameter.
->> >    Witness the number of '@foo: The foo' (of type struct foo) that we
->> >    have scattered throughout the tree.  It's not that the documenter is
->> >    lazy, it's that there's genuinely nothing to say here.
->> >  - Use `interpreted text` to refer to parameters instead of *emphasis* or
->> >    **strong emphasis**.  The tool can turn that into whatever markup
->> >    is appropriate.
->> >  - Use field lists for Context and Return instead of sections.  The markup
->> >    is simpler to use, and I think the rendered output is better.
->> >
->> > [1] by which i mean "in a completely different way from, but similar in
->> >     concept"
->> >
->> > [2] More complex example:
->> >
->> > /**
->> >  * xa_store() - Store this entry in the XArray.
->> >  * @xa: XArray.
->> >  * @index: Index into array.
->> >  * @entry: New entry.
->> >  * @gfp: Memory allocation flags.
->> >  *
->> >  * After this function returns, loads from this index will return @entry.
->> >  * Storing into an existing multi-index entry updates the entry of every index.
->> >  * The marks associated with @index are unaffected unless @entry is %NULL.
->> >  *
->> >  * Context: Any context.  Takes and releases the xa_lock.
->> >  * May sleep if the @gfp flags permit.
->> >  * Return: The old entry at this index on success, xa_err(-EINVAL) if @entry
->> >  * cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
->> >  * failed.
->> >  */
->> > void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
->> >
->> > //rST
->> > // Store an entry in the XArray.
->> > //
->> > // After this function returns, loads from `index` will return `entry`.
->> > // Storing into an existing multi-index entry updates the entry of every index.
->> > // The marks associated with `index` are unaffected unless `entry` is ``NULL``.
->> > //
->> > // :Context: Any context.  Takes and releases the xa_lock.
->> > //    May sleep if the `gfp` flags permit.
->> > // :Return: The old entry at this index on success, xa_err(-EINVAL) if `entry`
->> > //    cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
->> > //    failed.
->> > void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
->> >
->> 
->> -- 
->> Jani Nikula, Intel Open Source Graphics Center
+Alexander Sverdlin (3):
+  ARM: PLT: Move struct plt_entries definition to header
+  ARM: Add warn suppress parameter to arm_gen_branch_link()
+  ARM: ftrace: Add MODULE_PLTS support
+
+ arch/arm/include/asm/ftrace.h |  3 +++
+ arch/arm/include/asm/insn.h   |  8 +++----
+ arch/arm/include/asm/module.h | 10 +++++++++
+ arch/arm/kernel/ftrace.c      | 46 +++++++++++++++++++++++++++++++++-------
+ arch/arm/kernel/insn.c        | 19 +++++++++--------
+ arch/arm/kernel/module-plts.c | 49 +++++++++++++++++++++++++++++++++----------
+ 6 files changed, 103 insertions(+), 32 deletions(-)
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.10.2
+
