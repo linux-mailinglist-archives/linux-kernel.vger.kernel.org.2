@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00434F4E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7C734F4EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhC3XNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhC3XMq (ORCPT
+        id S233212AbhC3XQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:16:25 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:27087 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233026AbhC3XPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:12:46 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EFBC061574;
-        Tue, 30 Mar 2021 16:12:46 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id l12-20020a9d6a8c0000b0290238e0f9f0d8so17202675otq.8;
-        Tue, 30 Mar 2021 16:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qDX+ejIT41EUFfKn1nuqpiCeVTQFXcUBxJeHlcbY8F4=;
-        b=Af/h9+axkeg+vrgvkxeU047UkCgwbeSgJkJfdGCh4UKoWnXh7dg0bIC8OuQ/ZObeIq
-         Ujc9niOM9+OHd2IBJtm7djz6OlvQRLvmCvxI9jlh7ryWrJXQsoVGG/ggNm7S1s+stl4t
-         4xYYMoE7YS9ZudGXMXkBHUoaDOMoyetNYH/gm0E/MS7UTFEF59+SOdXFrVghiemausa1
-         DnoiXTmgBT2f+FU1v17g+GzBoYMQLAeAYBcBIe12Mi92yLOOjSTwMp5dI6SUY7908Cx4
-         oM95Bc5GLTEBfdwWcnUNpn5Zs0PSoP3STgZ7tzC7yK0GEZD0l5QXVXUdDSuLjUuhuCZ1
-         Z2gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qDX+ejIT41EUFfKn1nuqpiCeVTQFXcUBxJeHlcbY8F4=;
-        b=kc4yAa00MqjcBGPtg/cQoCcPBBzDPBVHG+Lv7MiTo6/jbk8EmwI0O7yQl2piArwzoK
-         2ergXG2XY8YpNgtznaUoVR0QUODmOt9WhnH/LYSqig633/H0BEXRUSKQOLgC6QqGSjll
-         I8SOFv/cwfDyrb1fe68AyhVQADm6JvTQGSgZL9FoOWyhur/0rr79w+6ehybAh8M3iEEt
-         d7Y7pfqlD/HZrgftK9LcZFYFfijQhXGHRdtKXhNNZO6HjXl97/bHcrBpEYmpAiIZEAnx
-         KWfLaJDGC7b1kE7S58REQCng6zBTrq+dGxZd6ppLeINWXWDVY+2uvO0rA6XzNk1zPFop
-         Ls8A==
-X-Gm-Message-State: AOAM533Zn3l7Qq0ybVUiunHrlwXIC96i2ZVcAfOmHEEvYq2EN8d8KSeR
-        /LGGS7qT0SvIt8UuXnqB2pw=
-X-Google-Smtp-Source: ABdhPJx1bqT6fqOTR4f0qXEIEkv1Nc998kCbj5y74Qz5gLtWIGrsUBM+w8TIOd1co2Hgh8fRrGc+5g==
-X-Received: by 2002:a9d:5911:: with SMTP id t17mr231853oth.148.1617145965706;
-        Tue, 30 Mar 2021 16:12:45 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y11sm80003oov.9.2021.03.30.16.12.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Mar 2021 16:12:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 30 Mar 2021 16:12:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jian Cai <jiancai@google.com>
-Cc:     cjdb@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jens Axboe <axboe@kernel.dk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: fix alignment mismatch.
-Message-ID: <20210330231239.GA18041@roeck-us.net>
-References: <20210330230249.709221-1-jiancai@google.com>
+        Tue, 30 Mar 2021 19:15:54 -0400
+Date:   Tue, 30 Mar 2021 23:15:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1617146152; bh=zG9SSUw4/Ao2wQS3FMFRGbEb1lFQgDiESXkJ9lxuSsU=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=fUFFSwYfp9SbO1ukq4EIU6vyXzV7ofNWUGi1ivJdCvgJaN8MTAKk9MMt6Kbm24WR2
+         BrL50oqRFGoJ4SI2YgefkLgrkrjVIebu1GJ/zmbIUa+YyOgkAQmb1qJbeBeAxt6PBM
+         vA7O3zDYWDKIjukMWmELfDWna4c32uffjNIzGFkGiL0cBnRqExcMQrbXxDxeg1Pi2h
+         VF0FF6FbFXrFdVnBsx7gKzvo3hDiQFYP5NeqEJ8G2IHhPr4JSUAjxF0cd+WZiak5B9
+         i5GBs3zu1vkLUB2uQF8RvTi3VVKo1WOPKUCZsMD5ZLiwv8sOYCj6u2lSVfe4U7DAyl
+         HXuRCocOfxmLw==
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
+Message-ID: <20210330231528.546284-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330230249.709221-1-jiancai@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:02:49PM -0700, Jian Cai wrote:
-> This fixes the mismatch of alignments between csd and its use as an
-> argument to smp_call_function_single_async, which causes build failure
-> when -Walign-mismatch in Clang is used.
-> 
-> Link:
-> http://crrev.com/c/1193732
+This series is based on the exceptional generic zerocopy xmit logics
+initially introduced by Xuan Zhuo. It extends it the way that it
+could cover all the sane drivers, not only the ones that are capable
+of xmitting skbs with no linear space.
 
-That link does not work. You probably meant
-	http://crbug.com/1193732
+The first patch is a random while-we-are-here improvement over
+full-copy path, and the second is the main course. See the individual
+commit messages for the details.
 
-You'll probably want drop the link and to copy the relevant information
-directly into the patch description. Generate the error with an upstream
-kernel and cut-and-paste the output here.
+The original (full-zerocopy) path is still here and still generally
+faster, but for now it seems like virtio_net will remain the only
+user of it, at least for a considerable period of time.
 
-For others, the observed error message is:
+Alexander Lobakin (2):
+  xsk: speed-up generic full-copy xmit
+  xsk: introduce generic almost-zerocopy xmit
 
-block/blk-mq.c:622:44: error: passing 8-byte aligned argument to 32-byte
-	aligned parameter 2 of 'smp_call_function_single_async' may result
-	in an unaligned pointer access [-Werror,-Walign-mismatch]
+ net/xdp/xsk.c | 33 +++++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
-Thanks,
-Guenter
+--
+Well, this is untested. I currently don't have an access to my setup
+and is bound by moving to another country, but as I don't know for
+sure at the moment when I'll get back to work on the kernel next time,
+I found it worthy to publish this now -- if any further changes will
+be required when I already will be out-of-sight, maybe someone could
+carry on to make a another revision and so on (I'm still here for any
+questions, comments, reviews and improvements till the end of this
+week).
+But this *should* work with all the sane drivers. If a particular
+one won't handle this, it's likely ill.
+--
+2.31.1
 
-> 
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
->  include/linux/blkdev.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index bc6bc8383b43..3b92330d95ad 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -231,7 +231,7 @@ struct request {
->  	unsigned long deadline;
->  
->  	union {
-> -		struct __call_single_data csd;
-> +		call_single_data_t csd;
->  		u64 fifo_time;
->  	};
->  
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
+
