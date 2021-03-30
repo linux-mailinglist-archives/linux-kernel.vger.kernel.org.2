@@ -2,193 +2,1122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3355A34EF90
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA1A34EFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhC3ReJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231952AbhC3Rdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C35F60235;
-        Tue, 30 Mar 2021 17:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617125624;
-        bh=J9qbq1RUGJLyUpexMIynoh+IIvLZbmv8QE66qM5xly4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=odhYaQrHV97g6VHETL4lGYSFvAB0kxYGoRao4iN1J/jYWrhnKW/Qb6ROMOs4z3q24
-         S50unZol1v96maLGAtp1rmTs3Rrh9fzJdPgmUqgKYnmSkWgMzKjtCgXIyF4m56EvHR
-         DpO8bK8+rsE1SSOFZPowoYxw4OPrL3J1gWHTjmSqaTjYBlg6eW4WcsI+pwqbLJ+vQl
-         mBCLVFVAnbUP3Bf82ZZoTI2pq9iaZ+2FUsbazbCsTlXs15Tsy9VHl5lEobB34MscjM
-         E+T7vpJCajG0+grRPU6K9Ph2C7Yis/ZNODctJl021HwksF3ljj3r3PZsMOdle6N1hU
-         c18TVhLim1+Tw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 39AA73522698; Tue, 30 Mar 2021 10:33:44 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 10:33:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
-Cc:     linux-kernel@vger.kernel.org, mhocko@suse.com, peterz@infradead.org
-Subject: Re: [PATCH v3 3/4] kernel/smp: add more data to CSD lock debugging
-Message-ID: <20210330173344.GX2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210302062838.14267-1-jgross@suse.com>
- <20210302062838.14267-4-jgross@suse.com>
- <7babbca6-1325-7a3a-d1f0-13a8dbf8043f@suse.com>
+        id S232733AbhC3RgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:36:03 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53452 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhC3Rfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:35:38 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12UHZIgo081085;
+        Tue, 30 Mar 2021 12:35:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617125718;
+        bh=oIv9R+LxNtz20ZcG1i2KvxY8PsASj4pmI2fbmotEAM0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=fKLUFLyJ+mMALFf5chMj0RC5vBQylbeqHtg+EjIV20daPQIDTZQcXwlmeAJrjljdW
+         ZpxBAT/yXeTXqmdTOXViCZB1bCjb0pZVaaFzRZvIaJ6HrFo59Mer9LZtee9FB6WQiA
+         8ZM+jFp2KB2osUrU+yqihHhmwp94eHD7m0T5dJnk=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12UHZIdF028001
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 30 Mar 2021 12:35:18 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 30
+ Mar 2021 12:35:17 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 30 Mar 2021 12:35:17 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12UHXmgu125244;
+        Tue, 30 Mar 2021 12:35:12 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 13/16] media: ti-vpe: csi2rx: Add CSI2RX support
+Date:   Tue, 30 Mar 2021 23:03:45 +0530
+Message-ID: <20210330173348.30135-14-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210330173348.30135-1-p.yadav@ti.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7babbca6-1325-7a3a-d1f0-13a8dbf8043f@suse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:18:03AM +0100, Jürgen Groß wrote:
-> On 02.03.21 07:28, Juergen Gross wrote:
-> > In order to help identifying problems with IPI handling and remote
-> > function execution add some more data to IPI debugging code.
-> > 
-> > There have been multiple reports of cpus looping long times (many
-> > seconds) in smp_call_function_many() waiting for another cpu executing
-> > a function like tlb flushing. Most of these reports have been for
-> > cases where the kernel was running as a guest on top of KVM or Xen
-> > (there are rumours of that happening under VMWare, too, and even on
-> > bare metal).
-> > 
-> > Finding the root cause hasn't been successful yet, even after more than
-> > 2 years of chasing this bug by different developers.
-> > 
-> > Commit 35feb60474bf4f7 ("kernel/smp: Provide CSD lock timeout
-> > diagnostics") tried to address this by adding some debug code and by
-> > issuing another IPI when a hang was detected. This helped mitigating
-> > the problem (the repeated IPI unlocks the hang), but the root cause is
-> > still unknown.
-> > 
-> > Current available data suggests that either an IPI wasn't sent when it
-> > should have been, or that the IPI didn't result in the target cpu
-> > executing the queued function (due to the IPI not reaching the cpu,
-> > the IPI handler not being called, or the handler not seeing the queued
-> > request).
-> > 
-> > Try to add more diagnostic data by introducing a global atomic counter
-> > which is being incremented when doing critical operations (before and
-> > after queueing a new request, when sending an IPI, and when dequeueing
-> > a request). The counter value is stored in percpu variables which can
-> > be printed out when a hang is detected.
-> > 
-> > The data of the last event (consisting of sequence counter, source
-> > cpu, target cpu, and event type) is stored in a global variable. When
-> > a new event is to be traced, the data of the last event is stored in
-> > the event related percpu location and the global data is updated with
-> > the new event's data. This allows to track two events in one data
-> > location: one by the value of the event data (the event before the
-> > current one), and one by the location itself (the current event).
-> > 
-> > A typical printout with a detected hang will look like this:
-> > 
-> > csd: Detected non-responsive CSD lock (#1) on CPU#1, waiting 5000000003 ns for CPU#06 scf_handler_1+0x0/0x50(0xffffa2a881bb1410).
-> > 	csd: CSD lock (#1) handling prior scf_handler_1+0x0/0x50(0xffffa2a8813823c0) request.
-> >          csd: cnt(00008cc): ffff->0000 dequeue (src cpu 0 == empty)
-> >          csd: cnt(00008cd): ffff->0006 idle
-> >          csd: cnt(0003668): 0001->0006 queue
-> >          csd: cnt(0003669): 0001->0006 ipi
-> >          csd: cnt(0003e0f): 0007->000a queue
-> >          csd: cnt(0003e10): 0001->ffff ping
-> >          csd: cnt(0003e71): 0003->0000 ping
-> >          csd: cnt(0003e72): ffff->0006 gotipi
-> >          csd: cnt(0003e73): ffff->0006 handle
-> >          csd: cnt(0003e74): ffff->0006 dequeue (src cpu 0 == empty)
-> >          csd: cnt(0003e7f): 0004->0006 ping
-> >          csd: cnt(0003e80): 0001->ffff pinged
-> >          csd: cnt(0003eb2): 0005->0001 noipi
-> >          csd: cnt(0003eb3): 0001->0006 queue
-> >          csd: cnt(0003eb4): 0001->0006 noipi
-> >          csd: cnt now: 0003f00
-> > 
-> > This example (being an artificial one, produced with a previous version
-> > of this patch without the "hdlend" event), shows that cpu#6 started to
-> > handle an IPI (cnt 3e72-3e74), bit didn't start to handle another IPI
-> > (sent by cpu#4, cnt 3e7f). The next request from cpu#1 for cpu#6 was
-> > queued (3eb3), but no IPI was needed (cnt 3eb4, there was the event
-> > from cpu#4 in the queue already).
-> > 
-> > The idea is to print only relevant entries. Those are all events which
-> > are associated with the hang (so sender side events for the source cpu
-> > of the hanging request, and receiver side events for the target cpu),
-> > and the related events just before those (for adding data needed to
-> > identify a possible race). Printing all available data would be
-> > possible, but this would add large amounts of data printed on larger
-> > configurations.
-> > 
-> > Signed-off-by: Juergen Gross <jgross@suse.com>
-> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Just an update regarding current status with debugging the underlying
-> issue:
-> 
-> On a customer's machine with a backport of this patch applied we've
-> seen another case of the hang. In the logs we've found:
-> 
-> smp: csd: Detected non-responsive CSD lock (#1) on CPU#18, waiting
-> 5000000046 ns for CPU#06 do_flush_tlb_all+0x0/0x30(          (null)).
-> smp: 	csd: CSD lock (#1) unresponsive.
-> smp: 	csd: cnt(0000000): 0000->0000 queue
-> smp: 	csd: cnt(0000001): ffff->0006 idle
-> smp: 	csd: cnt(0025dba): 0012->0006 queue
-> smp: 	csd: cnt(0025dbb): 0012->0006 noipi
-> smp: 	csd: cnt(01d1333): 001a->0006 pinged
-> smp: 	csd: cnt(01d1334): ffff->0006 gotipi
-> smp: 	csd: cnt(01d1335): ffff->0006 handle
-> smp: 	csd: cnt(01d1336): ffff->0006 dequeue (src cpu 0 == empty)
-> smp: 	csd: cnt(01d1337): ffff->0006 hdlend (src cpu 0 == early)
-> smp: 	csd: cnt(01d16cb): 0012->0005 ipi
-> smp: 	csd: cnt(01d16cc): 0012->0006 queue
-> smp: 	csd: cnt(01d16cd): 0012->0006 ipi
-> smp: 	csd: cnt(01d16f3): 0012->001a ipi
-> smp: 	csd: cnt(01d16f4): 0012->ffff ping
-> smp: 	csd: cnt(01d1750): ffff->0018 hdlend (src cpu 0 == early)
-> smp: 	csd: cnt(01d1751): 0012->ffff pinged
-> smp: 	csd: cnt now: 01d1769
-> 
-> So we see that cpu#18 (0012 hex) is waiting for cpu#06 (first line of the
-> data).
-> 
-> The next 4 lines of the csd actions are not really interesting, as they are
-> rather old.
-> 
-> Then we see that cpu 0006 did handle a request rather recently (cnt 01d1333
-> - 01d1337): cpu 001a pinged it via an IPI and it got the IPI, entered the
-> handler, dequeued a request, and handled it.
-> 
-> Nearly all of the rest shows the critical request: cpu 0012 did a loop over
-> probably all other cpus and queued the requests and marked them to be IPI-ed
-> (including cpu 0006, cnt 01d16cd). Then the cpus marked to receive an IPI
-> were pinged (cnt 01d16f4 and cnt 01d1751).
-> 
-> The entry cnt 01d1750 is not of interest here.
-> 
-> This data confirms that on sending side everything seems to be okay at the
-> level above the actual IPI sending. On receiver side there seems no IPI to
-> be seen, but there is no visible reason for a race either.
-> 
-> It seems as if we need more debugging in the deeper layers: is the IPI
-> really sent out, and is something being received on the destination cpu?
-> I'll have another try with even more debugging code, probably in private
-> on the customer machine first.
+TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+capture over a CSI-2 bus.
 
-Apologies for the late reply, was out last week.
+The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
+the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
+called the SHIM layer. It takes in data from stream 0, repacks it, and
+sends it to memory over PSI-L DMA.
 
-Excellent news, and thank you!
+This driver acts as the "front end" to V4L2 client applications. It
+implements the required ioctls and buffer operations, passes the
+necessary calls on to the bridge, programs the SHIM layer, and performs
+DMA via the dmaengine API to finally return the data to a buffer
+supplied by the application.
 
-For my part, I have put together a rough prototype script that allows
-me to run scftorture on larger groups of systems and started running it,
-though I am hoping that 1,000 is far more than will be required.
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ MAINTAINERS                               |   7 +
+ drivers/media/platform/Kconfig            |  11 +
+ drivers/media/platform/ti-vpe/Makefile    |   1 +
+ drivers/media/platform/ti-vpe/ti-csi2rx.c | 964 ++++++++++++++++++++++
+ 4 files changed, 983 insertions(+)
+ create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
 
-Your diagnosis of a lost IPI matches what we have been able to glean
-from the occasional occurrences in the wild on our systems, for whatever
-that might be worth.  The hope is to get something that reproduces more
-quickly, which would allow deeper debugging at this end as well.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8c44fd8fd85d..06fb8fdb874d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18006,6 +18006,13 @@ S:	Odd Fixes
+ F:	drivers/clk/ti/
+ F:	include/linux/clk/ti.h
+ 
++TI CSI2RX DRIVER
++M:	Pratyush Yadav <p.yadav@ti.com>
++L:	linux-media@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/media/ti,csi2rx.yaml
++F:	drivers/media/platform/ti-vpe/ti-csi2rx.c
++
+ TI DAVINCI MACHINE SUPPORT
+ M:	Sekhar Nori <nsekhar@ti.com>
+ R:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index b238a923d1b4..3b240d8e4cb8 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -200,6 +200,17 @@ config VIDEO_TI_CAL_MC
+ 
+ endif # VIDEO_TI_CAL
+ 
++config VIDEO_TI_CSI2RX
++	tristate "TI CSI2RX wrapper layer driver"
++	depends on VIDEO_DEV && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API && MEDIA_SUPPORT
++	depends on PHY_CADENCE_DPHY && VIDEO_CADENCE_CSI2RX
++	depends on ARCH_K3 || COMPILE_TEST
++	select VIDEOBUF2_DMA_CONTIG
++	select V4L2_FWNODE
++	help
++	  Support for TI CSI2RX wrapper layer. This just enables the wrapper driver.
++	  The Cadence CSI2RX bridge driver needs to be enabled separately.
++
+ endif # V4L_PLATFORM_DRIVERS
+ 
+ menuconfig V4L_MEM2MEM_DRIVERS
+diff --git a/drivers/media/platform/ti-vpe/Makefile b/drivers/media/platform/ti-vpe/Makefile
+index ad624056e039..c4ee49484b73 100644
+--- a/drivers/media/platform/ti-vpe/Makefile
++++ b/drivers/media/platform/ti-vpe/Makefile
+@@ -3,6 +3,7 @@ obj-$(CONFIG_VIDEO_TI_VPE) += ti-vpe.o
+ obj-$(CONFIG_VIDEO_TI_VPDMA) += ti-vpdma.o
+ obj-$(CONFIG_VIDEO_TI_SC) += ti-sc.o
+ obj-$(CONFIG_VIDEO_TI_CSC) += ti-csc.o
++obj-$(CONFIG_VIDEO_TI_CSI2RX) += ti-csi2rx.o
+ 
+ ti-vpe-y := vpe.o
+ ti-vpdma-y := vpdma.o
+diff --git a/drivers/media/platform/ti-vpe/ti-csi2rx.c b/drivers/media/platform/ti-vpe/ti-csi2rx.c
+new file mode 100644
+index 000000000000..355204ae473b
+--- /dev/null
++++ b/drivers/media/platform/ti-vpe/ti-csi2rx.c
+@@ -0,0 +1,964 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * TI CSI2 RX driver.
++ *
++ * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
++ *
++ * Author: Pratyush Yadav <p.yadav@ti.com>
++ */
++
++#include <linux/bitfield.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/dmaengine.h>
++#include <linux/of_platform.h>
++
++#include <media/v4l2-device.h>
++#include <media/v4l2-ioctl.h>
++#include <media/videobuf2-dma-contig.h>
++
++#define TI_CSI2RX_MODULE_NAME		"ti-csi2rx"
++
++#define SHIM_CNTL			0x10
++#define SHIM_CNTL_PIX_RST		BIT(0)
++
++#define SHIM_DMACNTX			0x20
++#define SHIM_DMACNTX_EN			BIT(31)
++#define SHIM_DMACNTX_YUV422		GENMASK(27, 26)
++#define SHIM_DMACNTX_FMT		GENMASK(5, 0)
++#define SHIM_DMACNTX_UYVY		0
++#define SHIM_DMACNTX_VYUY		1
++#define SHIM_DMACNTX_YUYV		2
++#define SHIM_DMACNTX_YVYU		3
++
++#define SHIM_PSI_CFG0			0x24
++#define SHIM_PSI_CFG0_SRC_TAG		GENMASK(15, 0)
++#define SHIM_PSI_CFG0_DST_TAG		GENMASK(31, 15)
++
++#define CSI_DF_YUV420			0x18
++#define CSI_DF_YUV422			0x1e
++#define CSI_DF_RGB444			0x20
++#define CSI_DF_RGB888			0x24
++
++struct ti_csi2rx_fmt {
++	u32				fourcc;	/* Four character code. */
++	u32				code;	/* Mbus code. */
++	u32				csi_df;	/* CSI Data format. */
++	u8				bpp;	/* Bits per pixel. */
++};
++
++struct ti_csi2rx_buffer {
++	/* Common v4l2 buffer. Must be first. */
++	struct vb2_v4l2_buffer		vb;
++	struct list_head		list;
++};
++
++struct ti_csi2rx_dmaq {
++	struct list_head		list;
++};
++
++struct ti_csi2rx_dev {
++	struct device			*dev;
++	void __iomem			*shim;
++	struct v4l2_device		v4l2_dev;
++	struct video_device		vdev;
++	struct media_device		mdev;
++	struct v4l2_async_notifier	notifier;
++	struct v4l2_subdev		*subdev;
++	struct vb2_queue		vidq;
++	struct mutex			mutex; /* To serialize ioctls. */
++	const struct ti_csi2rx_fmt	**supported_fmts;
++	unsigned int			num_supported_fmts;
++	struct v4l2_format		v_fmt;
++	struct dma_chan			*dma;
++	struct ti_csi2rx_dmaq		dmaq;
++	u32				sequence;
++};
++
++static const struct ti_csi2rx_fmt formats[] = {
++	{
++		.fourcc			= V4L2_PIX_FMT_YUYV,
++		.code			= MEDIA_BUS_FMT_YUYV8_2X8,
++		.csi_df			= CSI_DF_YUV422,
++		.bpp			= 16,
++	}, {
++		.fourcc			= V4L2_PIX_FMT_UYVY,
++		.code			= MEDIA_BUS_FMT_UYVY8_2X8,
++		.csi_df			= CSI_DF_YUV422,
++		.bpp			= 16,
++	}, {
++		.fourcc			= V4L2_PIX_FMT_YVYU,
++		.code			= MEDIA_BUS_FMT_YVYU8_2X8,
++		.csi_df			= CSI_DF_YUV422,
++		.bpp			= 16,
++	}, {
++		.fourcc			= V4L2_PIX_FMT_VYUY,
++		.code			= MEDIA_BUS_FMT_VYUY8_2X8,
++		.csi_df			= CSI_DF_YUV422,
++		.bpp			= 16,
++	},
++
++	/* More formats can be supported but they are not listed for now. */
++};
++
++/* Forward declaration needed by ti_csi2rx_dma_callback. */
++static int ti_csi2rx_start_dma(struct ti_csi2rx_dev *csi,
++			       struct ti_csi2rx_buffer *buf);
++
++static const struct ti_csi2rx_fmt *find_format_by_pix(struct ti_csi2rx_dev *csi,
++						      u32 pixelformat)
++{
++	const struct ti_csi2rx_fmt *fmt;
++	unsigned int i;
++
++	for (i = 0; i < csi->num_supported_fmts; i++) {
++		fmt = csi->supported_fmts[i];
++		if (fmt->fourcc == pixelformat)
++			return fmt;
++	}
++
++	return NULL;
++}
++
++static const struct ti_csi2rx_fmt *find_format_by_code(struct ti_csi2rx_dev *csi,
++						       u32 code)
++{
++	const struct ti_csi2rx_fmt *fmt;
++	unsigned int i;
++
++	for (i = 0; i < csi->num_supported_fmts; i++) {
++		fmt = csi->supported_fmts[i];
++		if (fmt->code == code)
++			return fmt;
++	}
++
++	return NULL;
++}
++
++static void ti_csi2rx_fill_fmt(struct v4l2_mbus_framefmt *mbus_fmt,
++			       const struct ti_csi2rx_fmt *csi_fmt,
++			       struct v4l2_format *v4l2_fmt)
++{
++	u32 bpl;
++
++	v4l2_fill_pix_format(&v4l2_fmt->fmt.pix, mbus_fmt);
++	v4l2_fmt->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++	v4l2_fmt->fmt.pix.pixelformat = csi_fmt->fourcc;
++	v4l2_fmt->fmt.pix.sizeimage = v4l2_fmt->fmt.pix.height *
++				       v4l2_fmt->fmt.pix.width *
++				       (csi_fmt->bpp / 8);
++
++	bpl = (v4l2_fmt->fmt.pix.width * ALIGN(csi_fmt->bpp, 8)) >> 3;
++	v4l2_fmt->fmt.pix.bytesperline = ALIGN(bpl, 16);
++}
++
++static int ti_csi2rx_init_formats(struct ti_csi2rx_dev *csi)
++{
++	struct v4l2_subdev_mbus_code_enum mbus_code;
++	struct v4l2_mbus_framefmt mbus_fmt;
++	struct v4l2_subdev_format sd_fmt;
++	const struct ti_csi2rx_fmt *fmt;
++	unsigned int i, j, k;
++	int ret = 0;
++
++	csi->supported_fmts = devm_kcalloc(csi->dev, ARRAY_SIZE(formats),
++					   sizeof(*csi->supported_fmts),
++					   GFP_KERNEL);
++	if (!csi->supported_fmts)
++		return -ENOMEM;
++
++	csi->num_supported_fmts = 0;
++
++	/* Find a set of formarts supported by both CSI2RX and camera. */
++	for (j = 0, i = 0; ret != -EINVAL; j++) {
++		memset(&mbus_code, 0, sizeof(mbus_code));
++		mbus_code.index = j;
++		mbus_code.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++		ret = v4l2_subdev_call(csi->subdev, pad, enum_mbus_code, NULL,
++				       &mbus_code);
++		if (ret)
++			continue;
++
++		for (k = 0; k < ARRAY_SIZE(formats); k++) {
++			const struct ti_csi2rx_fmt *fmt = &formats[k];
++
++			if (mbus_code.code == fmt->code) {
++				csi->supported_fmts[i] = fmt;
++				csi->num_supported_fmts = ++i;
++			}
++		}
++	}
++
++	if (i == 0)
++		return -EINVAL; /* No format mutually supported. */
++
++	/* Get the current format from the subdev. */
++	sd_fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++	sd_fmt.pad = 0;
++
++	ret = v4l2_subdev_call(csi->subdev, pad, get_fmt, NULL, &sd_fmt);
++	if (ret)
++		return ret;
++
++	mbus_fmt = sd_fmt.format;
++
++	fmt = find_format_by_code(csi, mbus_fmt.code);
++	if (!fmt)
++		return -EINVAL;
++
++	/*
++	 * YUV422 8-bit should always be sent by the camera in UYVY. Format
++	 * conversions to other YUV422 formats will be done later by SHIM.
++	 */
++	if (fmt->csi_df == CSI_DF_YUV422 &&
++	    fmt->code != MEDIA_BUS_FMT_UYVY8_2X8) {
++		sd_fmt.format.code = MEDIA_BUS_FMT_UYVY8_2X8;
++		ret = v4l2_subdev_call(csi->subdev, pad, set_fmt, NULL, &sd_fmt);
++		if (ret)
++			return ret;
++	}
++
++	ti_csi2rx_fill_fmt(&mbus_fmt, fmt, &csi->v_fmt);
++
++	return 0;
++}
++
++static int ti_csi2rx_querycap(struct file *file, void *priv,
++			      struct v4l2_capability *cap)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++
++	strscpy(cap->driver, TI_CSI2RX_MODULE_NAME, sizeof(cap->driver));
++	strscpy(cap->card, TI_CSI2RX_MODULE_NAME, sizeof(cap->card));
++
++	snprintf(cap->bus_info, sizeof(cap->bus_info), "platform:%s",
++		 dev_name(csi->dev));
++
++	return 0;
++}
++
++static int ti_csi2rx_enum_fmt_vid_cap(struct file *file, void *priv,
++				      struct v4l2_fmtdesc *f)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++	const struct ti_csi2rx_fmt *fmt;
++
++	if (f->index >= csi->num_supported_fmts)
++		return -EINVAL;
++
++	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;
++
++	fmt = csi->supported_fmts[f->index];
++
++	f->pixelformat = fmt->fourcc;
++
++	return 0;
++}
++
++static int ti_csi2rx_g_fmt_vid_cap(struct file *file, void *prov,
++				   struct v4l2_format *f)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++
++	*f = csi->v_fmt;
++
++	return 0;
++}
++
++static int ti_csi2rx_try_fmt_vid_cap(struct file *file, void *priv,
++				     struct v4l2_format *f)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++	const struct ti_csi2rx_fmt *fmt;
++	struct v4l2_subdev_frame_size_enum fse;
++	int ret, found;
++
++	fmt = find_format_by_pix(csi, f->fmt.pix.pixelformat);
++	if (!fmt) {
++		/* Just get the first one enumerated */
++		fmt = csi->supported_fmts[0];
++		f->fmt.pix.pixelformat = fmt->fourcc;
++	}
++
++	f->fmt.pix.field = csi->v_fmt.fmt.pix.field;
++
++	/* Check for/find a valid width/height. */
++	ret = 0;
++	found = false;
++	fse.pad = 0;
++	fse.code = fmt->code;
++	fse.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++	for (fse.index = 0; ; fse.index++) {
++		ret = v4l2_subdev_call(csi->subdev, pad, enum_frame_size, NULL,
++				       &fse);
++		if (ret)
++			break;
++
++		if (f->fmt.pix.width == fse.max_width &&
++		    f->fmt.pix.height == fse.max_height) {
++			found = true;
++			break;
++		} else if (f->fmt.pix.width >= fse.min_width &&
++			   f->fmt.pix.width <= fse.max_width &&
++			   f->fmt.pix.height >= fse.min_height &&
++			   f->fmt.pix.height <= fse.max_height) {
++			found = true;
++			break;
++		}
++	}
++
++	if (!found) {
++		/* use existing values as default */
++		f->fmt.pix.width = csi->v_fmt.fmt.pix.width;
++		f->fmt.pix.height =  csi->v_fmt.fmt.pix.height;
++	}
++
++	/*
++	 * Use current colorspace for now, it will get
++	 * updated properly during s_fmt
++	 */
++	f->fmt.pix.colorspace = csi->v_fmt.fmt.pix.colorspace;
++	f->fmt.pix.sizeimage = f->fmt.pix.width * f->fmt.pix.height *
++			       (fmt->bpp / 8);
++
++	return 0;
++}
++
++static int ti_csi2rx_s_fmt_vid_cap(struct file *file, void *priv,
++				   struct v4l2_format *f)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++	struct vb2_queue *q = &csi->vidq;
++	const struct ti_csi2rx_fmt *fmt;
++	struct v4l2_mbus_framefmt mbus_fmt;
++	struct v4l2_subdev_format sd_fmt;
++	int ret;
++
++	if (vb2_is_busy(q))
++		return -EBUSY;
++
++	ret = ti_csi2rx_try_fmt_vid_cap(file, priv, f);
++	if (ret < 0)
++		return ret;
++
++	fmt = find_format_by_pix(csi, f->fmt.pix.pixelformat);
++	if (!fmt)
++		return -EINVAL;
++
++	v4l2_fill_mbus_format(&mbus_fmt, &f->fmt.pix, fmt->code);
++
++	sd_fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++	sd_fmt.pad = 0;
++	sd_fmt.format = mbus_fmt;
++
++	/*
++	 * The MIPI CSI-2 spec says that YUV422 8-bit data transmission is
++	 * perfromed using UYVY sequence. So the hardware always expects UYVY
++	 * for YUV422 streams. Ask the subdev to send UYVY data and then we can
++	 * repack it later into the format requested by the application using
++	 * the SHIM layer.
++	 */
++	if (fmt->csi_df == CSI_DF_YUV422)
++		sd_fmt.format.code = MEDIA_BUS_FMT_UYVY8_2X8;
++	else
++		sd_fmt.format.code = fmt->code;
++
++	ret = v4l2_subdev_call(csi->subdev, pad, set_fmt, NULL, &sd_fmt);
++	if (ret)
++		return ret;
++
++	ti_csi2rx_fill_fmt(&mbus_fmt, fmt, &csi->v_fmt);
++	*f = csi->v_fmt;
++
++	return 0;
++}
++
++static int ti_csi2rx_enum_framesizes(struct file *file, void *fh,
++				     struct v4l2_frmsizeenum *fsize)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++	const struct ti_csi2rx_fmt *fmt;
++	struct v4l2_subdev_frame_size_enum fse;
++	int ret;
++
++	fmt = find_format_by_pix(csi, fsize->pixel_format);
++	if (!fmt)
++		return -EINVAL;
++
++	fse.index = fsize->index;
++	fse.code = fmt->code;
++	fse.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++	fse.pad = 0;
++
++	ret = v4l2_subdev_call(csi->subdev, pad, enum_frame_size, NULL, &fse);
++	if (ret)
++		return ret;
++
++	fsize->type = V4L2_FRMSIZE_TYPE_DISCRETE;
++	fsize->discrete.width = fse.max_width;
++	fsize->discrete.height = fse.max_height;
++
++	return 0;
++}
++
++static int ti_csi2rx_enum_input(struct file *file, void *priv,
++				struct v4l2_input *inp)
++{
++	if (inp->index > 0)
++		return -EINVAL;
++
++	inp->type = V4L2_INPUT_TYPE_CAMERA;
++	snprintf(inp->name, sizeof(inp->name), "Camera %u", inp->index);
++
++	return 0;
++}
++
++static int ti_csi2rx_g_input(struct file *file, void *priv, unsigned int *i)
++{
++	*i = 0;
++	return 0;
++}
++
++static int ti_csi2rx_s_input(struct file *file, void *priv, unsigned int i)
++{
++	return i > 0 ? -EINVAL : 0;
++}
++
++static int ti_csi2rx_enum_frameintervals(struct file *file, void *priv,
++					 struct v4l2_frmivalenum *fival)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++	const struct ti_csi2rx_fmt *fmt;
++	struct v4l2_subdev_frame_interval_enum fie = {
++		.index = fival->index,
++		.width = fival->width,
++		.height = fival->height,
++		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
++	};
++	int ret;
++
++	fmt = find_format_by_pix(csi, fival->pixel_format);
++	if (!fmt)
++		return -EINVAL;
++
++	fie.code = fmt->code;
++	ret = v4l2_subdev_call(csi->subdev, pad, enum_frame_interval,
++			       NULL, &fie);
++	if (ret)
++		return ret;
++	fival->type = V4L2_FRMIVAL_TYPE_DISCRETE;
++	fival->discrete = fie.interval;
++
++	return 0;
++}
++
++static int ti_csi2rx_g_parm(struct file *file, void *fh,
++			    struct v4l2_streamparm *a)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++
++	return v4l2_g_parm_cap(video_devdata(file), csi->subdev, a);
++}
++
++static int ti_csi2rx_s_parm(struct file *file, void *fh,
++			    struct v4l2_streamparm *a)
++{
++	struct ti_csi2rx_dev *csi = video_drvdata(file);
++
++	return v4l2_s_parm_cap(video_devdata(file), csi->subdev, a);
++}
++
++static const struct v4l2_ioctl_ops csi_ioctl_ops = {
++	.vidioc_querycap      = ti_csi2rx_querycap,
++	.vidioc_enum_fmt_vid_cap = ti_csi2rx_enum_fmt_vid_cap,
++	.vidioc_try_fmt_vid_cap = ti_csi2rx_try_fmt_vid_cap,
++	.vidioc_g_fmt_vid_cap = ti_csi2rx_g_fmt_vid_cap,
++	.vidioc_s_fmt_vid_cap = ti_csi2rx_s_fmt_vid_cap,
++	.vidioc_enum_framesizes = ti_csi2rx_enum_framesizes,
++	.vidioc_enum_input    = ti_csi2rx_enum_input,
++	.vidioc_g_input       = ti_csi2rx_g_input,
++	.vidioc_s_input       = ti_csi2rx_s_input,
++	.vidioc_enum_frameintervals = ti_csi2rx_enum_frameintervals,
++	.vidioc_g_parm        = ti_csi2rx_g_parm,
++	.vidioc_s_parm        = ti_csi2rx_s_parm,
++	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
++	.vidioc_create_bufs   = vb2_ioctl_create_bufs,
++	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
++	.vidioc_querybuf      = vb2_ioctl_querybuf,
++	.vidioc_qbuf          = vb2_ioctl_qbuf,
++	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
++	.vidioc_expbuf        = vb2_ioctl_expbuf,
++	.vidioc_streamon      = vb2_ioctl_streamon,
++	.vidioc_streamoff     = vb2_ioctl_streamoff,
++};
++
++static const struct v4l2_file_operations csi_fops = {
++	.owner = THIS_MODULE,
++	.open = v4l2_fh_open,
++	.release = vb2_fop_release,
++	.read = vb2_fop_read,
++	.poll = vb2_fop_poll,
++	.unlocked_ioctl = video_ioctl2,
++	.mmap = vb2_fop_mmap,
++};
++
++static int ti_csi2rx_init_video(struct ti_csi2rx_dev *csi)
++{
++	struct video_device *vdev = &csi->vdev;
++	int ret;
++
++	strscpy(vdev->name, TI_CSI2RX_MODULE_NAME, sizeof(vdev->name));
++	vdev->v4l2_dev = &csi->v4l2_dev;
++	vdev->vfl_dir = VFL_DIR_RX;
++	vdev->fops = &csi_fops;
++	vdev->ioctl_ops = &csi_ioctl_ops;
++	vdev->release = video_device_release_empty;
++	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
++			    V4L2_CAP_STREAMING;
++	vdev->lock = &csi->mutex;
++	video_set_drvdata(vdev, csi);
++
++	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int csi_async_notifier_bound(struct v4l2_async_notifier *notifier,
++				    struct v4l2_subdev *subdev,
++				    struct v4l2_async_subdev *asd)
++{
++	struct ti_csi2rx_dev *csi = dev_get_drvdata(notifier->v4l2_dev->dev);
++
++	csi->subdev = subdev;
++
++	return 0;
++}
++
++static int csi_async_notifier_complete(struct v4l2_async_notifier *notifier)
++{
++	struct ti_csi2rx_dev *csi = dev_get_drvdata(notifier->v4l2_dev->dev);
++	int ret;
++
++	ret = ti_csi2rx_init_formats(csi);
++	if (ret)
++		return ret;
++
++	ret = ti_csi2rx_init_video(csi);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static const struct v4l2_async_notifier_operations csi_async_notifier_ops = {
++	.bound = csi_async_notifier_bound,
++	.complete = csi_async_notifier_complete,
++};
++
++static int ti_csi2rx_init_subdev(struct ti_csi2rx_dev *csi)
++{
++	struct fwnode_handle *fwnode;
++	struct v4l2_async_subdev *asd;
++	struct device_node *node;
++	int ret;
++
++	node = of_get_child_by_name(csi->dev->of_node, "csi-bridge");
++	if (!node)
++		return -EINVAL;
++
++	v4l2_async_notifier_init(&csi->notifier);
++	csi->notifier.ops = &csi_async_notifier_ops;
++
++	fwnode = of_fwnode_handle(node);
++	if (!fwnode)
++		return -EINVAL;
++
++	asd = v4l2_async_notifier_add_fwnode_subdev(&csi->notifier, fwnode,
++						    struct v4l2_async_subdev);
++	if (IS_ERR(asd))
++		return PTR_ERR(asd);
++
++	ret = v4l2_async_notifier_register(&csi->v4l2_dev, &csi->notifier);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static void ti_csi2rx_setup_shim(struct ti_csi2rx_dev *csi)
++{
++	const struct ti_csi2rx_fmt *fmt;
++	unsigned int reg;
++
++	fmt = find_format_by_pix(csi, csi->v_fmt.fmt.pix.pixelformat);
++	if (!fmt) {
++		dev_err(csi->dev, "Unknown format\n");
++		return;
++	}
++
++	/* De-assert the pixel interface reset. */
++	reg = SHIM_CNTL_PIX_RST;
++	writel(reg, csi->shim + SHIM_CNTL);
++
++	reg = SHIM_DMACNTX_EN;
++	reg |= FIELD_PREP(SHIM_DMACNTX_FMT, fmt->csi_df);
++
++	/*
++	 * FIXME: Using the values from the documentation gives incorrect
++	 * ordering for the luma and chroma components. In practice, the
++	 * "reverse" format gives the correct image. So for example, if the
++	 * image is in UYVY, the reverse would be YVYU.
++	 */
++	switch (fmt->fourcc) {
++	case V4L2_PIX_FMT_UYVY:
++		reg |= FIELD_PREP(SHIM_DMACNTX_YUV422,
++					SHIM_DMACNTX_YVYU);
++		break;
++	case V4L2_PIX_FMT_VYUY:
++		reg |= FIELD_PREP(SHIM_DMACNTX_YUV422,
++					SHIM_DMACNTX_YUYV);
++		break;
++	case V4L2_PIX_FMT_YUYV:
++		reg |= FIELD_PREP(SHIM_DMACNTX_YUV422,
++					SHIM_DMACNTX_VYUY);
++		break;
++	case V4L2_PIX_FMT_YVYU:
++		reg |= FIELD_PREP(SHIM_DMACNTX_YUV422,
++					SHIM_DMACNTX_UYVY);
++		break;
++	default:
++		/* Ignore if not YUV 4:2:2 */
++		break;
++	}
++
++	writel(reg, csi->shim + SHIM_DMACNTX);
++
++	reg = FIELD_PREP(SHIM_PSI_CFG0_SRC_TAG, 0) |
++	      FIELD_PREP(SHIM_PSI_CFG0_DST_TAG, 1);
++	writel(reg, csi->shim + SHIM_PSI_CFG0);
++}
++
++static void ti_csi2rx_dma_callback(void *param)
++{
++	struct ti_csi2rx_dev *csi = param;
++	struct ti_csi2rx_buffer *buf;
++	struct ti_csi2rx_dmaq *dmaq = &csi->dmaq;
++
++	buf = list_entry(dmaq->list.next, struct ti_csi2rx_buffer, list);
++	list_del(&buf->list);
++
++	buf->vb.vb2_buf.timestamp = ktime_get_ns();
++	buf->vb.sequence = csi->sequence++;
++
++	vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
++
++	/* If there are more buffers to process then start their transfer. */
++	if (list_empty(&dmaq->list))
++		return;
++
++	buf = list_entry(dmaq->list.next, struct ti_csi2rx_buffer, list);
++
++	if (ti_csi2rx_start_dma(csi, buf))
++		dev_err(csi->dev, "Failed to queue the next buffer for DMA\n");
++}
++
++static int ti_csi2rx_start_dma(struct ti_csi2rx_dev *csi,
++			       struct ti_csi2rx_buffer *buf)
++{
++	unsigned long addr;
++	struct dma_async_tx_descriptor *desc;
++	size_t len = csi->v_fmt.fmt.pix.sizeimage;
++	dma_cookie_t cookie;
++	int ret = 0;
++
++	addr = vb2_dma_contig_plane_dma_addr(&buf->vb.vb2_buf, 0);
++	desc = dmaengine_prep_slave_single(csi->dma, addr, len, DMA_DEV_TO_MEM,
++					   DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++	if (!desc)
++		return -EIO;
++
++	desc->callback = ti_csi2rx_dma_callback;
++	desc->callback_param = csi;
++
++	cookie = dmaengine_submit(desc);
++	ret = dma_submit_error(cookie);
++	if (ret)
++		return ret;
++
++	dma_async_issue_pending(csi->dma);
++
++	return 0;
++}
++
++static int ti_csi2rx_queue_setup(struct vb2_queue *q, unsigned int *nbuffers,
++				 unsigned int *nplanes, unsigned int sizes[],
++				 struct device *alloc_devs[])
++{
++	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(q);
++	unsigned int size = csi->v_fmt.fmt.pix.sizeimage;
++
++	if (*nplanes) {
++		if (sizes[0] < size)
++			return -EINVAL;
++		size = sizes[0];
++	}
++
++	*nplanes = 1;
++	sizes[0] = size;
++
++	return 0;
++}
++
++static int ti_csi2rx_buffer_prepare(struct vb2_buffer *vb)
++{
++	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vb->vb2_queue);
++	unsigned long size = csi->v_fmt.fmt.pix.sizeimage;
++
++	if (vb2_plane_size(vb, 0) < size) {
++		dev_err(csi->dev, "Data will not fit into plane\n");
++		return -EINVAL;
++	}
++
++	vb2_set_plane_payload(vb, 0, size);
++	return 0;
++}
++
++static void ti_csi2rx_buffer_queue(struct vb2_buffer *vb)
++{
++	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vb->vb2_queue);
++	struct ti_csi2rx_buffer *buf;
++	struct ti_csi2rx_dmaq *dmaq = &csi->dmaq;
++
++	buf = container_of(vb, struct ti_csi2rx_buffer, vb.vb2_buf);
++
++	list_add_tail(&buf->list, &dmaq->list);
++}
++
++static int ti_csi2rx_start_streaming(struct vb2_queue *vq, unsigned int count)
++{
++	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vq);
++	struct ti_csi2rx_dmaq *dmaq = &csi->dmaq;
++	struct ti_csi2rx_buffer *buf, *tmp;
++	int ret;
++
++	if (list_empty(&dmaq->list))
++		return -EIO;
++
++	ti_csi2rx_setup_shim(csi);
++
++	ret = v4l2_subdev_call(csi->subdev, video, s_stream, 1);
++	if (ret)
++		goto err;
++
++	csi->sequence = 0;
++
++	buf = list_entry(dmaq->list.next, struct ti_csi2rx_buffer, list);
++	ret = ti_csi2rx_start_dma(csi, buf);
++	if (ret) {
++		dev_err(csi->dev, "Failed to start DMA: %d\n", ret);
++		goto err;
++	}
++
++	return 0;
++
++err:
++	v4l2_subdev_call(csi->subdev, video, s_stream, 0);
++	list_for_each_entry_safe(buf, tmp, &dmaq->list, list) {
++		list_del(&buf->list);
++		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_QUEUED);
++	}
++
++	return ret;
++}
++
++static void ti_csi2rx_stop_streaming(struct vb2_queue *vq)
++{
++	struct ti_csi2rx_dev *csi = vb2_get_drv_priv(vq);
++	struct ti_csi2rx_buffer *buf = NULL, *tmp;
++	int ret;
++
++	ret = v4l2_subdev_call(csi->subdev, video, s_stream, 0);
++	if (ret)
++		dev_err(csi->dev, "Failed to stop subdev stream\n");
++
++	writel(0, csi->shim + SHIM_CNTL);
++
++	ret = dmaengine_terminate_sync(csi->dma);
++	if (ret)
++		dev_err(csi->dev, "Failed to stop DMA\n");
++
++	writel(0, csi->shim + SHIM_DMACNTX);
++
++	list_for_each_entry_safe(buf, tmp, &csi->dmaq.list, list) {
++		list_del(&buf->list);
++		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
++	}
++}
++
++static const struct vb2_ops csi_vb2_qops = {
++	.queue_setup = ti_csi2rx_queue_setup,
++	.buf_prepare = ti_csi2rx_buffer_prepare,
++	.buf_queue = ti_csi2rx_buffer_queue,
++	.start_streaming = ti_csi2rx_start_streaming,
++	.stop_streaming = ti_csi2rx_stop_streaming,
++	.wait_prepare = vb2_ops_wait_prepare,
++	.wait_finish = vb2_ops_wait_finish,
++};
++
++static int ti_csi2rx_init_vb2q(struct ti_csi2rx_dev *csi)
++{
++	struct vb2_queue *q = &csi->vidq;
++	int ret;
++
++	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
++	q->drv_priv = csi;
++	q->buf_struct_size = sizeof(struct ti_csi2rx_buffer);
++	q->ops = &csi_vb2_qops;
++	q->mem_ops = &vb2_dma_contig_memops;
++	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
++	q->dev = csi->dma->device->dev;
++	q->lock = &csi->mutex;
++
++	ret = vb2_queue_init(q);
++	if (ret)
++		return ret;
++
++	csi->vdev.queue = q;
++
++	return 0;
++}
++
++static int ti_csi2rx_init_dma(struct ti_csi2rx_dev *csi)
++{
++	struct dma_slave_config cfg;
++	int ret;
++
++	INIT_LIST_HEAD(&csi->dmaq.list);
++
++	csi->dma = NULL;
++
++	csi->dma = dma_request_chan(csi->dev, "rx0");
++	if (IS_ERR(csi->dma))
++		return PTR_ERR(csi->dma);
++
++	memset(&cfg, 0, sizeof(cfg));
++
++	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_16_BYTES;
++	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_16_BYTES;
++
++	ret = dmaengine_slave_config(csi->dma, &cfg);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int ti_csi2rx_media_init(struct ti_csi2rx_dev *csi)
++{
++	struct media_device *mdev = &csi->mdev;
++
++	mdev->dev = csi->dev;
++	strscpy(mdev->model, "TI-CSI2RX", sizeof(mdev->model));
++	snprintf(mdev->bus_info, sizeof(mdev->bus_info), "platform:%s",
++		 dev_name(mdev->dev));
++
++	media_device_init(mdev);
++
++	return 0;
++}
++
++static int ti_csi2rx_probe(struct platform_device *pdev)
++{
++	struct ti_csi2rx_dev *csi;
++	struct resource *res;
++	int ret;
++
++	csi = devm_kzalloc(&pdev->dev, sizeof(*csi), GFP_KERNEL);
++	if (!csi)
++		return -ENOMEM;
++
++	csi->dev = &pdev->dev;
++	platform_set_drvdata(pdev, csi);
++
++	mutex_init(&csi->mutex);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	csi->shim = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(csi->shim))
++		return PTR_ERR(csi->shim);
++
++	ret = ti_csi2rx_media_init(csi);
++	if (ret)
++		return ret;
++
++	csi->v4l2_dev.mdev = &csi->mdev;
++
++	ret = v4l2_device_register(csi->dev, &csi->v4l2_dev);
++	if (ret)
++		return ret;
++
++	ret = ti_csi2rx_init_dma(csi);
++	if (ret)
++		return ret;
++
++	ret = ti_csi2rx_init_vb2q(csi);
++	if (ret)
++		return ret;
++
++	ret = ti_csi2rx_init_subdev(csi);
++	if (ret)
++		return ret;
++
++	ret = of_platform_populate(csi->dev->of_node, NULL, NULL, csi->dev);
++	if (ret) {
++		dev_err(csi->dev, "Failed to create children: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ti_csi2rx_remove(struct platform_device *pdev)
++{
++	struct ti_csi2rx_dev *csi = platform_get_drvdata(pdev);
++
++	if (vb2_is_busy(&csi->vidq))
++		return -EBUSY;
++
++	vb2_queue_release(&csi->vidq);
++	v4l2_async_notifier_unregister(&csi->notifier);
++	v4l2_async_notifier_cleanup(&csi->notifier);
++	v4l2_device_unregister(&csi->v4l2_dev);
++	video_unregister_device(&csi->vdev);
++	dma_release_channel(csi->dma);
++
++	return 0;
++}
++
++static const struct of_device_id ti_csi2rx_of_match[] = {
++	{
++		.compatible = "ti,csi2rx",
++	},
++	{},
++};
++MODULE_DEVICE_TABLE(of, ti_csi2rx_of_match);
++
++static struct platform_driver ti_csi2rx_pdrv = {
++	.probe = ti_csi2rx_probe,
++	.remove = ti_csi2rx_remove,
++	.driver = {
++		.name = TI_CSI2RX_MODULE_NAME,
++		.of_match_table = ti_csi2rx_of_match,
++	},
++};
++
++module_platform_driver(ti_csi2rx_pdrv);
++
++MODULE_DESCRIPTION("TI CSI2 RX Driver");
++MODULE_AUTHOR("Pratyush Yadav <p.yadav@ti.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_VERSION("1.0");
+-- 
+2.30.0
 
-							Thanx, Paul
