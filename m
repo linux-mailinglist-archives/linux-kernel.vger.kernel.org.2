@@ -2,98 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA4234E44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCDB34E472
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhC3J1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:27:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29497 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhC3J0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:26:39 -0400
-IronPort-SDR: DS+na1goAYLlBj/96DxtW4sLhU/3Sp2u5JboPgAb0IaWsuuj0S9gTXtjIEhXS1g7ndOXOVgo48
- RP5crxo1+YtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="178860870"
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="178860870"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 02:26:38 -0700
-IronPort-SDR: JFuYIEolFJdWz4Sv28R+nQxwOke/2rsulxP06Fia9r9cjpjPcXAywFTcgkq40Tk6+sELd+CG/0
- Ej8txvdJS3Pg==
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="516364791"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 02:26:35 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lRAds-00HHww-Nn; Tue, 30 Mar 2021 12:26:32 +0300
-Date:   Tue, 30 Mar 2021 12:26:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v2 5/6] software node: Introduce
- SOFTWARE_NODE_REFERENCE() helper macro
-Message-ID: <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
- <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
+        id S231787AbhC3Jb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhC3JbH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:31:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA4EC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EUmKC+YPtejvVccmAnyiDLoPlCvMPqkpWiSRatVK+w8=; b=a4UXMm4PtJM/MuF4repauTtOzc
+        5t40u0vMNA/dheaqLHcEj3p/m3z4UaKQlFR8x5mx/O3oO5KJpQk2c3Tp+rlOoQeiSnCZu93uiK3ia
+        CRYzHKo+DX1Dnyen8X2FUg9cvsjB6JfsC66u8Vo81KMcqllanUSFdAHLsDPNCaY+rZ5p/SSvQuScZ
+        KWaLWzL5dAoyab9ywPvqUScIsUy7m9EX0cID9eSYnds02J3x3Ym2cW/KorK25GFIr9TQgzmeJQtCd
+        JHZ3eCGbF36xAM5K/upDptOX8MiAdzwPfamRyuPBc4DCAAAXVMDHWk3ma8WavNZNGo20o7KtK5g1j
+        /BfHYMrQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRAeC-002mpR-D6; Tue, 30 Mar 2021 09:27:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 126B5304B90;
+        Tue, 30 Mar 2021 11:26:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ED98E200D0255; Tue, 30 Mar 2021 11:26:46 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 11:26:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        dhiatt@digitalocean.com, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH resend 5/8] sched: cgroup cookie API for core scheduling
+Message-ID: <YGLu1swpZPq4nhJk@hirez.programming.kicks-ass.net>
+References: <20210324214020.34142-1-joel@joelfernandes.org>
+ <20210324214020.34142-6-joel@joelfernandes.org>
+ <YGLt/ltwa92lfCDK@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YGLt/ltwa92lfCDK@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:45:29PM +0100, Daniel Scally wrote:
-> On 29/03/2021 16:12, Andy Shevchenko wrote:
-> > This is useful to assign software node reference with arguments
-> > in a common way. Moreover, we have already couple of users that
-> > may be converted. And by the fact, one of them is moved right here
-> > to use the helper.
 
-...
+*sigh*, +tj
 
-> > +		SOFTWARE_NODE_REFERENCE(&nodes[0]),
-> > +		SOFTWARE_NODE_REFERENCE(&nodes[1], 3, 4),
-
-...
-
-> > +#define SOFTWARE_NODE_REFERENCE(_ref_, ...)			\
-> > +(const struct software_node_ref_args) {				\
-> > +	.node = _ref_,						\
-> > +	.nargs = ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1,	\
-> > +	.args = { __VA_ARGS__ },				\
-> > +}
-
-...
-
-> > +	{ .pointer = &SOFTWARE_NODE_REFERENCE(_ref_, ##__VA_ARGS__), },	\
+On Tue, Mar 30, 2021 at 11:23:10AM +0200, Peter Zijlstra wrote:
+> On Wed, Mar 24, 2021 at 05:40:17PM -0400, Joel Fernandes (Google) wrote:
+> > From: Josh Don <joshdon@google.com>
+> > 
+> > This adds the API to set/get the cookie for a given cgroup. This
+> > interface lives at cgroup/cpu.core_tag.
+> > 
+> > The cgroup interface can be used to toggle a unique cookie value for all
+> > descendent tasks, preventing these tasks from sharing with any others.
+> > See Documentation/admin-guide/hw-vuln/core-scheduling.rst for a full
+> > rundown of both this and the per-task API.
 > 
-> What are the .args intended to be used for? I actually had it in mind to
-> replace this with a simple pointer to a struct software_node, because I
-> can't see any users of them and the fact that it's actually storing a
-> pointer to a new variable is something that confused me for a good long
-> time when I wrote the cio2-bridge (though that's mostly due to my
-> relative inexperience of course, but still)
-
-It's to be in align with DT phandle references that can take arguments. While
-for now, indeed, we have no users of this, it might be changed in the future
-(I hadn't checked DesignWare DMA where I would like to transform the code to
- use device properties eventually and there it might be the case).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> I refuse to read RST. Life's too short for that.
+> 
+> > +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
+> > +			  struct cftype *cft)
+> > +{
+> > +	return !!css_tg(css)->core_tagged;
+> > +}
+> > +
+> > +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+> > +			   u64 val)
+> > +{
+> > +	static DEFINE_MUTEX(sched_core_group_mutex);
+> > +	struct task_group *tg = css_tg(css);
+> > +	struct cgroup_subsys_state *css_tmp;
+> > +	struct task_struct *p;
+> > +	unsigned long group_cookie;
+> > +	int ret = 0;
+> > +
+> > +	if (val > 1)
+> > +		return -ERANGE;
+> > +
+> > +	if (!static_branch_likely(&sched_smt_present))
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&sched_core_group_mutex);
+> > +
+> > +	if (!tg->core_tagged && val) {
+> > +		/* Tag is being set. Check ancestors and descendants. */
+> > +		if (cpu_core_get_group_cookie(tg) ||
+> > +		    cpu_core_check_descendants(tg, true /* tag */)) {
+> > +			ret = -EBUSY;
+> > +			goto out_unlock;
+> > +		}
+> 
+> So the desired semantics is to only allow a single tag on any upwards
+> path? Isn't that in conflict with the cgroup requirements?
+> 
+> TJ?
+> 
+> > +	} else if (tg->core_tagged && !val) {
+> > +		/* Tag is being reset. Check descendants. */
+> > +		if (cpu_core_check_descendants(tg, true /* tag */)) {
+> 
+> I'm struggling to understand this. If, per the above, you cannot set
+> when either a parent is already set or a child is set, then how can a
+> child be set to refuse clearing?
+> 
+> > +			ret = -EBUSY;
+> > +			goto out_unlock;
+> > +		}
+> > +	} else {
+> > +		goto out_unlock;
+> > +	}
+> 
+> 
