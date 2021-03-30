@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE1234EAA6
+	by mail.lfdr.de (Postfix) with ESMTP id D8D2434EAA7
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhC3OkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:40:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51150 "EHLO mail.kernel.org"
+        id S232350AbhC3OkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231952AbhC3Ojj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231979AbhC3Ojj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 30 Mar 2021 10:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CFFE619DA;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92393619DC;
         Tue, 30 Mar 2021 14:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617115178;
-        bh=SNuX/9wu8y5danGG2o3qQzLfx1jCj65Q9JoqdTNSx9w=;
+        bh=xX6KJSyhMdx2dDHFxO00T003hL1XNNZTWnzaoHzUQqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Is95Vxyn67O07uTXXfO1KtQteX9ostr0HTUX1Np90KEj0OhFZ16hWduuoKclG0T0U
-         yNoIV4V33El3m4v0HgfinozsbX88dMpA7vgt20MTJW6qe0zIfGaU+A8ZvX6/tJeSbA
-         SdbH7ridnOl0Zn+7fmCQIYCsKXyRJxyyQhhmrOR29W6ws+BBSv2fSw3KpwRK3OeZ73
-         DDU3gkiuaei3aZ/ppP9e2ILeNgfC4bClqNQmxL+23cx+vtafTPP4h77ygsUzZbEauH
-         6mSX/jS0aOIV0qO1jNvpGXWhncdW5HNAcE5hWNtUOo3QYQ8Wgtd1qKz//lC7/kh7RD
-         4is9FcEa4lB9Q==
+        b=WmRTwpSuqn+GIdo65DyyoVhtsVOOXEs3xkSpVXpMoX4chkIr/4/CvGUO/zYo5+bgF
+         wP1aPrktOOVxUFD6xDuIf+GlVrLkpbhknsbKc/vV3go4nfCqwRaymQBLSbASPHp0/M
+         ffUjgMBXK+RymGzwTPnH2IUbqm6Mh/iTNxZr3gGRBenvlI9ozaBILWX+cZC7kEi7ZP
+         ZHeNyrE16agsLpAGxdyyHbYWTg0lEj/bi+iBoHgAJ/uAclZx+7qJ69KQE7HY3E4VmM
+         QZ7R+YB1IXAqvo3XwP6g7urmhzt5lmiz01keIiqLlT30ptitoByX9Q4B39NYJEGCnX
+         7YnZmymlKFRbQ==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lRFXE-0002PU-Dc; Tue, 30 Mar 2021 16:40:00 +0200
+        id 1lRFXE-0002PX-Hv; Tue, 30 Mar 2021 16:40:00 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/12] USB: serial: xr: add type abstraction
-Date:   Tue, 30 Mar 2021 16:39:31 +0200
-Message-Id: <20210330143934.9197-7-johan@kernel.org>
+Subject: [PATCH 07/12] USB: serial: xr: add support for XR21B1421, XR21B1422 and XR21B1424
+Date:   Tue, 30 Mar 2021 16:39:32 +0200
+Message-Id: <20210330143934.9197-8-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210330143934.9197-1-johan@kernel.org>
 References: <20210330143934.9197-1-johan@kernel.org>
@@ -42,338 +42,613 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are at least four types of Maxlinear/Exar USB UARTs which differ
-in various ways such as in their register layouts:
+The XR21B1421, XR21B1422 and XR21B1424 are the one-, two- and four-port
+models of a second XR21B142X type of the Maxlinear/Exar USB UARTs.
 
-	XR21V141X
-	XR21B142X
-	XR21B1411
-	XR22804
+The XR21B142X type differs from XR21V141X in several ways, including:
 
-It is not clear whether the device type can be inferred from the
-descriptors so encode it in the device-id table for now.
+	- register layout
+	- register width (16-bit instead of 8-bit)
+	- vendor register requests
+	- UART enable/disable sequence
+	- custom-driver mode flag
+	- three additional GPIOs (9 instead of 6)
 
-Add a type structure that can be used to abstract the register layout
-and other features, and use it when accessing the XR21V141X UART
-registers that are shared by all types.
+As for XR21V141X, the XR21B142X vendor requests encode the channel index
+in the MSB of wIndex, but it lacks the UART Manager registers which
+have been replaced by regular UART registers. The new type also uses the
+interface number of the control interface (0, 2, 4, 6) as channel index
+instead of the channel number (0, 1, 2, 3).
 
-Note that the currently supported XR21V141X type is the only type that
-has a set of UART Manager registers and that these will need to be
-handled specifically.
-
-Similarly, XR21V141X is the only type which has the divisor registers
-and that needs to use the format register when configuring the line
+The XR21B142X lacks the divisor and format registers used by XR21V141X
+and instead uses the CDC SET_LINE_CONTROL request to configure the line
 settings.
+
+Note that the currently supported XR21V141X type lacks the custom-driver
+mode flag that prevents the device from entering CDC-ACM mode when a CDC
+requests is received. This specifically means that the SET_LINE_CONTROL
+request cannot be used with XR21V141X even though it is otherwise
+supported.
+
+The UART enable sequence for XR21B142X does not involve explicitly
+enabling the FIFOs, but according to datasheet the UART must be disabled
+when writing any register but GPIO_SET, GPIO_CLEAR, TX_BREAK and
+ERROR_STATUS.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/xr_serial.c | 128 ++++++++++++++++++++++-----------
- 1 file changed, 85 insertions(+), 43 deletions(-)
+ drivers/usb/serial/xr_serial.c | 338 +++++++++++++++++++++++++--------
+ 1 file changed, 262 insertions(+), 76 deletions(-)
 
 diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index bbfe92fcabc0..003aa1e04c85 100644
+index 003aa1e04c85..32055c763147 100644
 --- a/drivers/usb/serial/xr_serial.c
 +++ b/drivers/usb/serial/xr_serial.c
-@@ -29,10 +29,16 @@ struct xr_txrx_clk_mask {
+@@ -29,10 +29,6 @@ struct xr_txrx_clk_mask {
  #define XR21V141X_MIN_SPEED		46U
  #define XR21V141X_MAX_SPEED		XR_INT_OSC_HZ
  
--/* USB Requests */
-+/* USB requests */
- #define XR21V141X_SET_REQ		0
- #define XR21V141X_GET_REQ		1
- 
-+/* XR21V141X register blocks */
-+#define XR21V141X_UART_REG_BLOCK	0
-+#define XR21V141X_UM_REG_BLOCK		4
-+#define XR21V141X_UART_CUSTOM_BLOCK	0x66
-+
-+/* XR21V141X UART registers */
- #define XR21V141X_CLOCK_DIVISOR_0	0x04
- #define XR21V141X_CLOCK_DIVISOR_1	0x05
- #define XR21V141X_CLOCK_DIVISOR_2	0x06
-@@ -40,13 +46,9 @@ struct xr_txrx_clk_mask {
- #define XR21V141X_TX_CLOCK_MASK_1	0x08
- #define XR21V141X_RX_CLOCK_MASK_0	0x09
- #define XR21V141X_RX_CLOCK_MASK_1	0x0a
-+#define XR21V141X_REG_FORMAT		0x0b
- 
--/* XR21V141X register blocks */
--#define XR21V141X_UART_REG_BLOCK	0
--#define XR21V141X_UM_REG_BLOCK		4
--#define XR21V141X_UART_CUSTOM_BLOCK	0x66
+-/* USB requests */
+-#define XR21V141X_SET_REQ		0
+-#define XR21V141X_GET_REQ		1
 -
--/* XR21V141X UART Manager Registers */
-+/* XR21V141X UART Manager registers */
- #define XR21V141X_UM_FIFO_ENABLE_REG	0x10
- #define XR21V141X_UM_ENABLE_TX_FIFO	0x01
- #define XR21V141X_UM_ENABLE_RX_FIFO	0x02
-@@ -94,23 +96,42 @@ struct xr_txrx_clk_mask {
- #define XR_GPIO_MODE_RS485		0x3
- #define XR_GPIO_MODE_RS485_ADDR		0x4
+ /* XR21V141X register blocks */
+ #define XR21V141X_UART_REG_BLOCK	0
+ #define XR21V141X_UM_REG_BLOCK		4
+@@ -65,9 +61,10 @@ struct xr_txrx_clk_mask {
+ #define XR_GPIO_DTR			BIT(3)
+ #define XR_GPIO_CTS			BIT(4)
+ #define XR_GPIO_RTS			BIT(5)
+-
+-#define XR21V141X_UART_BREAK_ON		0xff
+-#define XR21V141X_UART_BREAK_OFF	0
++#define XR_GPIO_CLK			BIT(6)
++#define XR_GPIO_XEN			BIT(7)
++#define XR_GPIO_TXT			BIT(8)
++#define XR_GPIO_RXT			BIT(9)
  
--#define XR21V141X_REG_ENABLE		0x03
--#define XR21V141X_REG_FORMAT		0x0b
--#define XR21V141X_REG_FLOW_CTRL		0x0c
--#define XR21V141X_REG_XON_CHAR		0x10
--#define XR21V141X_REG_XOFF_CHAR		0x11
--#define XR21V141X_REG_LOOPBACK		0x12
--#define XR21V141X_REG_TX_BREAK		0x14
--#define XR21V141X_REG_RS845_DELAY	0x15
--#define XR21V141X_REG_GPIO_MODE		0x1a
--#define XR21V141X_REG_GPIO_DIR		0x1b
--#define XR21V141X_REG_GPIO_INT_MASK	0x1c
--#define XR21V141X_REG_GPIO_SET		0x1d
--#define XR21V141X_REG_GPIO_CLR		0x1e
--#define XR21V141X_REG_GPIO_STATUS	0x1f
-+struct xr_type {
-+	u8 uart_enable;
-+	u8 flow_control;
-+	u8 xon_char;
-+	u8 xoff_char;
-+	u8 tx_break;
-+	u8 gpio_mode;
-+	u8 gpio_direction;
-+	u8 gpio_set;
-+	u8 gpio_clear;
-+	u8 gpio_status;
-+};
-+
-+enum xr_type_id {
-+	XR21V141X,
-+	XR_TYPE_COUNT,
-+};
-+
-+static const struct xr_type xr_types[] = {
-+	[XR21V141X] = {
-+		.uart_enable	= 0x03,
-+		.flow_control	= 0x0c,
-+		.xon_char	= 0x10,
-+		.xoff_char	= 0x11,
-+		.tx_break	= 0x14,
-+		.gpio_mode	= 0x1a,
-+		.gpio_direction	= 0x1b,
-+		.gpio_set	= 0x1d,
-+		.gpio_clear	= 0x1e,
-+		.gpio_status	= 0x1f,
-+	},
-+};
+ #define XR_UART_DATA_MASK		GENMASK(3, 0)
+ #define XR_UART_DATA_7			0x7
+@@ -90,13 +87,27 @@ struct xr_txrx_clk_mask {
+ #define XR_UART_FLOW_MODE_HW		0x1
+ #define XR_UART_FLOW_MODE_SW		0x2
  
- struct xr_data {
--	u8 channel;		/* zero-based index */
-+	const struct xr_type *type;
-+	u8 channel;			/* zero-based index */
+-#define XR_GPIO_MODE_MASK		GENMASK(2, 0)
+-#define XR_GPIO_MODE_RTS_CTS		0x1
+-#define XR_GPIO_MODE_DTR_DSR		0x2
+-#define XR_GPIO_MODE_RS485		0x3
+-#define XR_GPIO_MODE_RS485_ADDR		0x4
++#define XR_GPIO_MODE_SEL_MASK		GENMASK(2, 0)
++#define XR_GPIO_MODE_SEL_RTS_CTS	0x1
++#define XR_GPIO_MODE_SEL_DTR_DSR	0x2
++#define XR_GPIO_MODE_SEL_RS485		0x3
++#define XR_GPIO_MODE_SEL_RS485_ADDR	0x4
++#define XR_GPIO_MODE_TX_TOGGLE		0x100
++#define XR_GPIO_MODE_RX_TOGGLE		0x200
++
++#define XR_CUSTOM_DRIVER_ACTIVE		0x1
++
++static int xr21v141x_uart_enable(struct usb_serial_port *port);
++static int xr21v141x_uart_disable(struct usb_serial_port *port);
++static void xr21v141x_set_line_settings(struct tty_struct *tty,
++		struct usb_serial_port *port, struct ktermios *old_termios);
+ 
+ struct xr_type {
++	int reg_width;
++	u8 reg_recipient;
++	u8 set_reg;
++	u8 get_reg;
++
+ 	u8 uart_enable;
+ 	u8 flow_control;
+ 	u8 xon_char;
+@@ -107,15 +118,30 @@ struct xr_type {
+ 	u8 gpio_set;
+ 	u8 gpio_clear;
+ 	u8 gpio_status;
++	u8 custom_driver;
++
++	bool have_xmit_toggle;
++
++	int (*enable)(struct usb_serial_port *port);
++	int (*disable)(struct usb_serial_port *port);
++	void (*set_line_settings)(struct tty_struct *tty,
++			struct usb_serial_port *port,
++			struct ktermios *old_termios);
  };
  
- static int xr_set_reg(struct usb_serial_port *port, u8 block, u8 reg, u8 val)
-@@ -202,6 +223,7 @@ static int xr_set_reg_um(struct usb_serial_port *port, u8 reg_base, u8 val)
-  */
- static int xr_uart_enable(struct usb_serial_port *port)
+ enum xr_type_id {
+ 	XR21V141X,
++	XR21B142X,
+ 	XR_TYPE_COUNT,
+ };
+ 
+ static const struct xr_type xr_types[] = {
+ 	[XR21V141X] = {
++		.reg_width	= 8,
++		.reg_recipient	= USB_RECIP_DEVICE,
++		.set_reg	= 0x00,
++		.get_reg	= 0x01,
++
+ 		.uart_enable	= 0x03,
+ 		.flow_control	= 0x0c,
+ 		.xon_char	= 0x10,
+@@ -126,25 +152,50 @@ static const struct xr_type xr_types[] = {
+ 		.gpio_set	= 0x1d,
+ 		.gpio_clear	= 0x1e,
+ 		.gpio_status	= 0x1f,
++
++		.enable			= xr21v141x_uart_enable,
++		.disable		= xr21v141x_uart_disable,
++		.set_line_settings	= xr21v141x_set_line_settings,
++	},
++	[XR21B142X] = {
++		.reg_width	= 16,
++		.reg_recipient	= USB_RECIP_INTERFACE,
++		.set_reg	= 0x00,
++		.get_reg	= 0x00,
++
++		.uart_enable	= 0x00,
++		.flow_control	= 0x06,
++		.xon_char	= 0x07,
++		.xoff_char	= 0x08,
++		.tx_break	= 0x0a,
++		.gpio_mode	= 0x0c,
++		.gpio_direction	= 0x0d,
++		.gpio_set	= 0x0e,
++		.gpio_clear	= 0x0f,
++		.gpio_status	= 0x10,
++		.custom_driver	= 0x60,
++
++		.have_xmit_toggle	= true,
+ 	},
+ };
+ 
+ struct xr_data {
+ 	const struct xr_type *type;
+-	u8 channel;			/* zero-based index */
++	u8 channel;			/* zero-based index or interface number */
+ };
+ 
+-static int xr_set_reg(struct usb_serial_port *port, u8 block, u8 reg, u8 val)
++static int xr_set_reg(struct usb_serial_port *port, u8 channel, u8 reg, u16 val)
  {
 +	struct xr_data *data = usb_get_serial_port_data(port);
++	const struct xr_type *type = data->type;
+ 	struct usb_serial *serial = port->serial;
+ 	int ret;
+ 
+-	ret = usb_control_msg(serial->dev,
+-			      usb_sndctrlpipe(serial->dev, 0),
+-			      XR21V141X_SET_REQ,
+-			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			      val, reg | (block << 8), NULL, 0,
+-			      USB_CTRL_SET_TIMEOUT);
++	ret = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
++			type->set_reg,
++			USB_DIR_OUT | USB_TYPE_VENDOR | type->reg_recipient,
++			val, (channel << 8) | reg, NULL, 0,
++			USB_CTRL_SET_TIMEOUT);
+ 	if (ret < 0) {
+ 		dev_err(&port->dev, "Failed to set reg 0x%02x: %d\n", reg, ret);
+ 		return ret;
+@@ -153,24 +204,33 @@ static int xr_set_reg(struct usb_serial_port *port, u8 block, u8 reg, u8 val)
+ 	return 0;
+ }
+ 
+-static int xr_get_reg(struct usb_serial_port *port, u8 block, u8 reg, u8 *val)
++static int xr_get_reg(struct usb_serial_port *port, u8 channel, u8 reg, u16 *val)
+ {
++	struct xr_data *data = usb_get_serial_port_data(port);
++	const struct xr_type *type = data->type;
+ 	struct usb_serial *serial = port->serial;
+ 	u8 *dmabuf;
+-	int ret;
++	int ret, len;
+ 
+-	dmabuf = kmalloc(1, GFP_KERNEL);
++	if (type->reg_width == 8)
++		len = 1;
++	else
++		len = 2;
++
++	dmabuf = kmalloc(len, GFP_KERNEL);
+ 	if (!dmabuf)
+ 		return -ENOMEM;
+ 
+-	ret = usb_control_msg(serial->dev,
+-			      usb_rcvctrlpipe(serial->dev, 0),
+-			      XR21V141X_GET_REQ,
+-			      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			      0, reg | (block << 8), dmabuf, 1,
+-			      USB_CTRL_GET_TIMEOUT);
+-	if (ret == 1) {
+-		*val = *dmabuf;
++	ret = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++			type->get_reg,
++			USB_DIR_IN | USB_TYPE_VENDOR | type->reg_recipient,
++			0, (channel << 8) | reg, dmabuf, len,
++			USB_CTRL_GET_TIMEOUT);
++	if (ret == len) {
++		if (len == 2)
++			*val = le16_to_cpup((__le16 *)dmabuf);
++		else
++			*val = *dmabuf;
+ 		ret = 0;
+ 	} else {
+ 		dev_err(&port->dev, "Failed to get reg 0x%02x: %d\n", reg, ret);
+@@ -183,24 +243,18 @@ static int xr_get_reg(struct usb_serial_port *port, u8 block, u8 reg, u8 *val)
+ 	return ret;
+ }
+ 
+-static int xr_set_reg_uart(struct usb_serial_port *port, u8 reg, u8 val)
++static int xr_set_reg_uart(struct usb_serial_port *port, u8 reg, u16 val)
+ {
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+-	u8 block;
+-
+-	block = XR21V141X_UART_REG_BLOCK + data->channel;
+ 
+-	return xr_set_reg(port, block, reg, val);
++	return xr_set_reg(port, data->channel, reg, val);
+ }
+ 
+-static int xr_get_reg_uart(struct usb_serial_port *port, u8 reg, u8 *val)
++static int xr_get_reg_uart(struct usb_serial_port *port, u8 reg, u16 *val)
+ {
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+-	u8 block;
+ 
+-	block = XR21V141X_UART_REG_BLOCK + data->channel;
+-
+-	return xr_get_reg(port, block, reg, val);
++	return xr_get_reg(port, data->channel, reg, val);
+ }
+ 
+ static int xr_set_reg_um(struct usb_serial_port *port, u8 reg_base, u8 val)
+@@ -213,6 +267,21 @@ static int xr_set_reg_um(struct usb_serial_port *port, u8 reg_base, u8 val)
+ 	return xr_set_reg(port, XR21V141X_UM_REG_BLOCK, reg, val);
+ }
+ 
++static int __xr_uart_enable(struct usb_serial_port *port)
++{
++	struct xr_data *data = usb_get_serial_port_data(port);
++
++	return xr_set_reg_uart(port, data->type->uart_enable,
++			XR_UART_ENABLE_TX | XR_UART_ENABLE_RX);
++}
++
++static int __xr_uart_disable(struct usb_serial_port *port)
++{
++	struct xr_data *data = usb_get_serial_port_data(port);
++
++	return xr_set_reg_uart(port, data->type->uart_enable, 0);
++}
++
+ /*
+  * According to datasheet, below is the recommended sequence for enabling UART
+  * module in XR21V141X:
+@@ -221,9 +290,8 @@ static int xr_set_reg_um(struct usb_serial_port *port, u8 reg_base, u8 val)
+  * Enable Tx and Rx
+  * Enable Rx FIFO
+  */
+-static int xr_uart_enable(struct usb_serial_port *port)
++static int xr21v141x_uart_enable(struct usb_serial_port *port)
+ {
+-	struct xr_data *data = usb_get_serial_port_data(port);
  	int ret;
  
  	ret = xr_set_reg_um(port, XR21V141X_UM_FIFO_ENABLE_REG,
-@@ -209,25 +231,25 @@ static int xr_uart_enable(struct usb_serial_port *port)
+@@ -231,25 +299,23 @@ static int xr_uart_enable(struct usb_serial_port *port)
  	if (ret)
  		return ret;
  
--	ret = xr_set_reg_uart(port, XR21V141X_REG_ENABLE,
-+	ret = xr_set_reg_uart(port, data->type->uart_enable,
- 			      XR_UART_ENABLE_TX | XR_UART_ENABLE_RX);
+-	ret = xr_set_reg_uart(port, data->type->uart_enable,
+-			      XR_UART_ENABLE_TX | XR_UART_ENABLE_RX);
++	ret = __xr_uart_enable(port);
  	if (ret)
  		return ret;
  
  	ret = xr_set_reg_um(port, XR21V141X_UM_FIFO_ENABLE_REG,
  			    XR21V141X_UM_ENABLE_TX_FIFO | XR21V141X_UM_ENABLE_RX_FIFO);
--
  	if (ret)
--		xr_set_reg_uart(port, XR21V141X_REG_ENABLE, 0);
-+		xr_set_reg_uart(port, data->type->uart_enable, 0);
+-		xr_set_reg_uart(port, data->type->uart_enable, 0);
++		__xr_uart_disable(port);
  
  	return ret;
  }
  
- static int xr_uart_disable(struct usb_serial_port *port)
+-static int xr_uart_disable(struct usb_serial_port *port)
++static int xr21v141x_uart_disable(struct usb_serial_port *port)
  {
-+	struct xr_data *data = usb_get_serial_port_data(port);
+-	struct xr_data *data = usb_get_serial_port_data(port);
  	int ret;
  
--	ret = xr_set_reg_uart(port, XR21V141X_REG_ENABLE, 0);
-+	ret = xr_set_reg_uart(port, data->type->uart_enable, 0);
+-	ret = xr_set_reg_uart(port, data->type->uart_enable, 0);
++	ret = __xr_uart_disable(port);
  	if (ret)
  		return ret;
  
-@@ -239,10 +261,11 @@ static int xr_uart_disable(struct usb_serial_port *port)
+@@ -258,11 +324,31 @@ static int xr_uart_disable(struct usb_serial_port *port)
+ 	return ret;
+ }
+ 
++static int xr_uart_enable(struct usb_serial_port *port)
++{
++	struct xr_data *data = usb_get_serial_port_data(port);
++
++	if (data->type->enable)
++		return data->type->enable(port);
++
++	return __xr_uart_enable(port);
++}
++
++static int xr_uart_disable(struct usb_serial_port *port)
++{
++	struct xr_data *data = usb_get_serial_port_data(port);
++
++	if (data->type->disable)
++		return data->type->disable(port);
++
++	return __xr_uart_disable(port);
++}
++
  static int xr_tiocmget(struct tty_struct *tty)
  {
  	struct usb_serial_port *port = tty->driver_data;
-+	struct xr_data *data = usb_get_serial_port_data(port);
- 	u8 status;
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+-	u8 status;
++	u16 status;
  	int ret;
  
--	ret = xr_get_reg_uart(port, XR21V141X_REG_GPIO_STATUS, &status);
-+	ret = xr_get_reg_uart(port, data->type->gpio_status, &status);
- 	if (ret)
- 		return ret;
- 
-@@ -263,6 +286,8 @@ static int xr_tiocmget(struct tty_struct *tty)
- static int xr_tiocmset_port(struct usb_serial_port *port,
- 			    unsigned int set, unsigned int clear)
+ 	ret = xr_get_reg_uart(port, data->type->gpio_status, &status);
+@@ -288,8 +374,8 @@ static int xr_tiocmset_port(struct usb_serial_port *port,
  {
-+	struct xr_data *data = usb_get_serial_port_data(port);
-+	const struct xr_type *type = data->type;
- 	u8 gpio_set = 0;
- 	u8 gpio_clr = 0;
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+ 	const struct xr_type *type = data->type;
+-	u8 gpio_set = 0;
+-	u8 gpio_clr = 0;
++	u16 gpio_set = 0;
++	u16 gpio_clr = 0;
  	int ret = 0;
-@@ -279,10 +304,10 @@ static int xr_tiocmset_port(struct usb_serial_port *port,
  
- 	/* Writing '0' to gpio_{set/clr} bits has no effect, so no need to do */
- 	if (gpio_clr)
--		ret = xr_set_reg_uart(port, XR21V141X_REG_GPIO_CLR, gpio_clr);
-+		ret = xr_set_reg_uart(port, type->gpio_clear, gpio_clr);
- 
- 	if (gpio_set)
--		ret = xr_set_reg_uart(port, XR21V141X_REG_GPIO_SET, gpio_set);
-+		ret = xr_set_reg_uart(port, type->gpio_set, gpio_set);
- 
- 	return ret;
- }
-@@ -306,6 +331,8 @@ static void xr_dtr_rts(struct usb_serial_port *port, int on)
- static void xr_break_ctl(struct tty_struct *tty, int break_state)
- {
+ 	/* Modem control pins are active low, so set & clr are swapped */
+@@ -333,15 +419,15 @@ static void xr_break_ctl(struct tty_struct *tty, int break_state)
  	struct usb_serial_port *port = tty->driver_data;
-+	struct xr_data *data = usb_get_serial_port_data(port);
-+	const struct xr_type *type = data->type;
- 	u8 state;
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+ 	const struct xr_type *type = data->type;
+-	u8 state;
++	u16 state;
  
  	if (break_state == 0)
-@@ -315,7 +342,7 @@ static void xr_break_ctl(struct tty_struct *tty, int break_state)
+-		state = XR21V141X_UART_BREAK_OFF;
++		state = 0;
+ 	else
+-		state = XR21V141X_UART_BREAK_ON;
++		state = GENMASK(type->reg_width - 1, 0);
++
++	dev_dbg(&port->dev, "Turning break %s\n", state == 0 ? "off" : "on");
  
- 	dev_dbg(&port->dev, "Turning break %s\n",
- 		state == XR21V141X_UART_BREAK_OFF ? "off" : "on");
--	xr_set_reg_uart(port, XR21V141X_REG_TX_BREAK, state);
-+	xr_set_reg_uart(port, type->tx_break, state);
+-	dev_dbg(&port->dev, "Turning break %s\n",
+-		state == XR21V141X_UART_BREAK_OFF ? "off" : "on");
+ 	xr_set_reg_uart(port, type->tx_break, state);
  }
  
- /* Tx and Rx clock mask values obtained from section 3.3.4 of datasheet */
-@@ -425,10 +452,12 @@ static void xr_set_flow_mode(struct tty_struct *tty,
- 			     struct usb_serial_port *port,
- 			     struct ktermios *old_termios)
+@@ -381,8 +467,7 @@ static const struct xr_txrx_clk_mask xr21v141x_txrx_clk_masks[] = {
+ 	{ 0xfff, 0xffe, 0xffd },
+ };
+ 
+-static int xr_set_baudrate(struct tty_struct *tty,
+-			   struct usb_serial_port *port)
++static int xr21v141x_set_baudrate(struct tty_struct *tty, struct usb_serial_port *port)
  {
-+	struct xr_data *data = usb_get_serial_port_data(port);
-+	const struct xr_type *type = data->type;
- 	u8 flow, gpio_mode;
+ 	u32 divisor, baud, idx;
+ 	u16 tx_mask, rx_mask;
+@@ -454,19 +539,26 @@ static void xr_set_flow_mode(struct tty_struct *tty,
+ {
+ 	struct xr_data *data = usb_get_serial_port_data(port);
+ 	const struct xr_type *type = data->type;
+-	u8 flow, gpio_mode;
++	u16 flow, gpio_mode;
  	int ret;
  
--	ret = xr_get_reg_uart(port, XR21V141X_REG_GPIO_MODE, &gpio_mode);
-+	ret = xr_get_reg_uart(port, type->gpio_mode, &gpio_mode);
+ 	ret = xr_get_reg_uart(port, type->gpio_mode, &gpio_mode);
  	if (ret)
  		return;
  
-@@ -446,8 +475,8 @@ static void xr_set_flow_mode(struct tty_struct *tty,
- 		dev_dbg(&port->dev, "Enabling sw flow ctrl\n");
- 		flow = XR_UART_FLOW_MODE_SW;
++	/*
++	 * According to the datasheets, the UART needs to be disabled while
++	 * writing to the FLOW_CONTROL register (XR21V141X), or any register
++	 * but GPIO_SET, GPIO_CLEAR, TX_BREAK and ERROR_STATUS (XR21B142X).
++	 */
++	xr_uart_disable(port);
++
+ 	/* Set GPIO mode for controlling the pins manually by default. */
+-	gpio_mode &= ~XR_GPIO_MODE_MASK;
++	gpio_mode &= ~XR_GPIO_MODE_SEL_MASK;
  
--		xr_set_reg_uart(port, XR21V141X_REG_XON_CHAR, start_char);
--		xr_set_reg_uart(port, XR21V141X_REG_XOFF_CHAR, stop_char);
-+		xr_set_reg_uart(port, type->xon_char, start_char);
-+		xr_set_reg_uart(port, type->xoff_char, stop_char);
- 	} else {
- 		dev_dbg(&port->dev, "Disabling flow ctrl\n");
+ 	if (C_CRTSCTS(tty) && C_BAUD(tty) != B0) {
+ 		dev_dbg(&port->dev, "Enabling hardware flow ctrl\n");
+-		gpio_mode |= XR_GPIO_MODE_RTS_CTS;
++		gpio_mode |= XR_GPIO_MODE_SEL_RTS_CTS;
+ 		flow = XR_UART_FLOW_MODE_HW;
+ 	} else if (I_IXON(tty)) {
+ 		u8 start_char = START_CHAR(tty);
+@@ -482,32 +574,26 @@ static void xr_set_flow_mode(struct tty_struct *tty,
  		flow = XR_UART_FLOW_MODE_NONE;
-@@ -458,10 +487,10 @@ static void xr_set_flow_mode(struct tty_struct *tty,
- 	 * FLOW_CONTROL register.
- 	 */
- 	xr_uart_disable(port);
--	xr_set_reg_uart(port, XR21V141X_REG_FLOW_CTRL, flow);
-+	xr_set_reg_uart(port, type->flow_control, flow);
- 	xr_uart_enable(port);
+ 	}
  
--	xr_set_reg_uart(port, XR21V141X_REG_GPIO_MODE, gpio_mode);
-+	xr_set_reg_uart(port, type->gpio_mode, gpio_mode);
+-	/*
+-	 * As per the datasheet, UART needs to be disabled while writing to
+-	 * FLOW_CONTROL register.
+-	 */
+-	xr_uart_disable(port);
+ 	xr_set_reg_uart(port, type->flow_control, flow);
+-	xr_uart_enable(port);
+-
+ 	xr_set_reg_uart(port, type->gpio_mode, gpio_mode);
  
++	xr_uart_enable(port);
++
  	if (C_BAUD(tty) == B0)
  		xr_dtr_rts(port, 0);
-@@ -585,17 +614,19 @@ static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
- 	if (ret)
- 		return ret;
- 
-+	usb_set_serial_data(serial, (void *)id->driver_info);
-+
- 	return 0;
+ 	else if (old_termios && (old_termios->c_cflag & CBAUD) == B0)
+ 		xr_dtr_rts(port, 1);
  }
  
--static int xr_gpio_init(struct usb_serial_port *port)
-+static int xr_gpio_init(struct usb_serial_port *port, const struct xr_type *type)
+-static void xr_set_termios(struct tty_struct *tty,
+-			   struct usb_serial_port *port,
+-			   struct ktermios *old_termios)
++static void xr21v141x_set_line_settings(struct tty_struct *tty,
++		struct usb_serial_port *port, struct ktermios *old_termios)
  {
- 	u8 mask, mode;
+ 	struct ktermios *termios = &tty->termios;
+ 	u8 bits = 0;
  	int ret;
  
- 	/* Configure all pins as GPIO. */
+ 	if (!old_termios || (tty->termios.c_ospeed != old_termios->c_ospeed))
+-		xr_set_baudrate(tty, port);
++		xr21v141x_set_baudrate(tty, port);
+ 
+ 	switch (C_CSIZE(tty)) {
+ 	case CS5:
+@@ -555,6 +641,88 @@ static void xr_set_termios(struct tty_struct *tty,
+ 	ret = xr_set_reg_uart(port, XR21V141X_REG_FORMAT, bits);
+ 	if (ret)
+ 		return;
++}
++
++static void xr_cdc_set_line_coding(struct tty_struct *tty,
++		struct usb_serial_port *port, struct ktermios *old_termios)
++{
++	struct usb_host_interface *alt = port->serial->interface->cur_altsetting;
++	struct usb_device *udev = port->serial->dev;
++	struct usb_cdc_line_coding *lc;
++	int ret;
++
++	lc = kzalloc(sizeof(*lc), GFP_KERNEL);
++	if (!lc)
++		return;
++
++	if (tty->termios.c_ospeed)
++		lc->dwDTERate = cpu_to_le32(tty->termios.c_ospeed);
++	else if (old_termios)
++		lc->dwDTERate = cpu_to_le32(old_termios->c_ospeed);
++	else
++		lc->dwDTERate = cpu_to_le32(9600);
++
++	if (C_CSTOPB(tty))
++		lc->bCharFormat = USB_CDC_2_STOP_BITS;
++	else
++		lc->bCharFormat = USB_CDC_1_STOP_BITS;
++
++	if (C_PARENB(tty)) {
++		if (C_CMSPAR(tty)) {
++			if (C_PARODD(tty))
++				lc->bParityType = USB_CDC_MARK_PARITY;
++			else
++				lc->bParityType = USB_CDC_SPACE_PARITY;
++		} else {
++			if (C_PARODD(tty))
++				lc->bParityType = USB_CDC_ODD_PARITY;
++			else
++				lc->bParityType = USB_CDC_EVEN_PARITY;
++		}
++	} else {
++		lc->bParityType = USB_CDC_NO_PARITY;
++	}
++
++	switch (C_CSIZE(tty)) {
++	case CS5:
++		lc->bDataBits = 5;
++		break;
++	case CS6:
++		lc->bDataBits = 6;
++		break;
++	case CS7:
++		lc->bDataBits = 7;
++		break;
++	case CS8:
++	default:
++		lc->bDataBits = 8;
++		break;
++	}
++
++	ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
++			USB_CDC_REQ_SET_LINE_CODING,
++			USB_TYPE_CLASS | USB_RECIP_INTERFACE,
++			0, alt->desc.bInterfaceNumber,
++			lc, sizeof(*lc), USB_CTRL_SET_TIMEOUT);
++	if (ret < 0)
++		dev_err(&port->dev, "Failed to set line coding: %d\n", ret);
++
++	kfree(lc);
++}
++
++static void xr_set_termios(struct tty_struct *tty,
++		struct usb_serial_port *port, struct ktermios *old_termios)
++{
++	struct xr_data *data = usb_get_serial_port_data(port);
++
++	/*
++	 * XR21V141X does not have a CUSTOM_DRIVER flag and always enters CDC
++	 * mode upon receiving CDC requests.
++	 */
++	if (data->type->set_line_settings)
++		data->type->set_line_settings(tty, port, old_termios);
++	else
++		xr_cdc_set_line_coding(tty, port, old_termios);
+ 
+ 	xr_set_flow_mode(tty, port, old_termios);
+ }
+@@ -621,11 +789,16 @@ static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
+ 
+ static int xr_gpio_init(struct usb_serial_port *port, const struct xr_type *type)
+ {
+-	u8 mask, mode;
++	u16 mask, mode;
+ 	int ret;
+ 
+-	/* Configure all pins as GPIO. */
++	/*
++	 * Configure all pins as GPIO except for Receive and Transmit Toggle.
++	 */
  	mode = 0;
--	ret = xr_set_reg_uart(port, XR21V141X_REG_GPIO_MODE, mode);
-+	ret = xr_set_reg_uart(port, type->gpio_mode, mode);
- 	if (ret)
- 		return ret;
- 
-@@ -604,11 +635,11 @@ static int xr_gpio_init(struct usb_serial_port *port)
- 	 * (active low), and configure RI, CD, DSR and CTS as inputs.
- 	 */
- 	mask = XR_GPIO_DTR | XR_GPIO_RTS;
--	ret = xr_set_reg_uart(port, XR21V141X_REG_GPIO_DIR, mask);
-+	ret = xr_set_reg_uart(port, type->gpio_direction, mask);
- 	if (ret)
- 		return ret;
- 
--	ret = xr_set_reg_uart(port, XR21V141X_REG_GPIO_SET, mask);
-+	ret = xr_set_reg_uart(port, type->gpio_set, mask);
- 	if (ret)
- 		return ret;
- 
-@@ -618,19 +649,26 @@ static int xr_gpio_init(struct usb_serial_port *port)
- static int xr_port_probe(struct usb_serial_port *port)
- {
- 	struct usb_interface_descriptor *desc;
-+	const struct xr_type *type;
- 	struct xr_data *data;
-+	enum xr_type_id type_id;
- 	int ret;
- 
-+	type_id = (int)(unsigned long)usb_get_serial_data(port->serial);
-+	type = &xr_types[type_id];
++	if (type->have_xmit_toggle)
++		mode |= XR_GPIO_MODE_RX_TOGGLE | XR_GPIO_MODE_TX_TOGGLE;
 +
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
+ 	ret = xr_set_reg_uart(port, type->gpio_mode, mode);
+ 	if (ret)
+ 		return ret;
+@@ -664,10 +837,20 @@ static int xr_port_probe(struct usb_serial_port *port)
+ 	data->type = type;
  
-+	data->type = type;
-+
  	desc = &port->serial->interface->cur_altsetting->desc;
- 	data->channel = desc->bInterfaceNumber / 2;
+-	data->channel = desc->bInterfaceNumber / 2;
++	if (type_id == XR21V141X)
++		data->channel = desc->bInterfaceNumber / 2;
++	else
++		data->channel = desc->bInterfaceNumber;
  
  	usb_set_serial_port_data(port, data);
  
--	ret = xr_gpio_init(port);
-+	ret = xr_gpio_init(port, type);
++	if (type->custom_driver) {
++		ret = xr_set_reg_uart(port, type->custom_driver,
++				XR_CUSTOM_DRIVER_ACTIVE);
++		if (ret)
++			goto err_free;
++	}
++
+ 	ret = xr_gpio_init(port, type);
  	if (ret)
  		goto err_free;
- 
-@@ -649,10 +687,14 @@ static void xr_port_remove(struct usb_serial_port *port)
- 	kfree(data);
- }
- 
-+#define XR_DEVICE(vid, pid, type)					\
-+	USB_DEVICE_INTERFACE_CLASS((vid), (pid), USB_CLASS_COMM),	\
-+	.driver_info = (type)
-+
- static const struct usb_device_id id_table[] = {
--	{ USB_DEVICE_INTERFACE_CLASS(0x04e2, 0x1410, USB_CLASS_COMM) }, /* XR21V1410 */
--	{ USB_DEVICE_INTERFACE_CLASS(0x04e2, 0x1412, USB_CLASS_COMM) }, /* XR21V1412 */
--	{ USB_DEVICE_INTERFACE_CLASS(0x04e2, 0x1414, USB_CLASS_COMM) }, /* XR21V1414 */
-+	{ XR_DEVICE(0x04e2, 0x1410, XR21V141X) },
-+	{ XR_DEVICE(0x04e2, 0x1412, XR21V141X) },
-+	{ XR_DEVICE(0x04e2, 0x1414, XR21V141X) },
+@@ -695,6 +878,9 @@ static const struct usb_device_id id_table[] = {
+ 	{ XR_DEVICE(0x04e2, 0x1410, XR21V141X) },
+ 	{ XR_DEVICE(0x04e2, 0x1412, XR21V141X) },
+ 	{ XR_DEVICE(0x04e2, 0x1414, XR21V141X) },
++	{ XR_DEVICE(0x04e2, 0x1420, XR21B142X) },
++	{ XR_DEVICE(0x04e2, 0x1422, XR21B142X) },
++	{ XR_DEVICE(0x04e2, 0x1424, XR21B142X) },
  	{ }
  };
  MODULE_DEVICE_TABLE(usb, id_table);
