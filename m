@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62FF34E215
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9134E21D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhC3HXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:23:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhC3HWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:22:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 099C761935;
-        Tue, 30 Mar 2021 07:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617088972;
-        bh=IIjPXQtDXMWSpwjmyw4/gNUbmicl8QhCQWMmzGlavAI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=GSvnW6yn6nrsW5K/UFqF3U1v/oxgi1koczzlyqjSfY0tcmJ/CGAy7TPae7SUxlvHN
-         vafTaL7/EN5daUbx3kCv4M8nRFAu73A3aMul9AVgf75XoAc9JH6dBBNaNyCKOUqX8X
-         iSwt+c/ecRiGzeWdzUb/NHC4+D7ylCBM5E7SQKVU0Z5kiNVTvKTy7o2iVqIyOrFdjs
-         y/sjq2xjeZwiAy3XI73M/9vKq1DcxWKUQt8QR/+s/lsE97J7gn5FtTJ0DsSlOQxfWj
-         50hmDpFjmx9S/gE8pCZqMGMA+khp5Lw+vTKr8UMl2yFhJJG+7Dfw2I7XYY3Vo7VgL0
-         7Lmucj+h6tReg==
-Date:   Tue, 30 Mar 2021 09:22:48 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        =?ISO-8859-15?Q?Bla=B8_Hrastnik?= <blaz@mxxn.io>,
-        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] HID: Add support for Surface Aggregator Module HID
- transport
-In-Reply-To: <20210310225329.2393372-1-luzmaximilian@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2103300922320.12405@cbobk.fhfr.pm>
-References: <20210310225329.2393372-1-luzmaximilian@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231417AbhC3HXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:23:52 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:30064 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhC3HXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:23:34 -0400
+Date:   Tue, 30 Mar 2021 07:23:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1617089008;
+        bh=uyxiiNlmIpUqH5pV51j68OH6R9OIx2NMn7HBlqoxjWA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=rmdyZIi1rI9f6E7lkoqWOHQnEjeuf+fMw8xGgnB1pafJJytQTJHD08d6TnZpwCV1H
+         wn50aEcMlFQFsPnYEiQDxK6CeQLGIgJW6Qi8nTjEeVHD9tF33Gy87vur4wU7cEIPRQ
+         IdYxvkfa1ksytU6Lw2iGx/qHe60sKXHcaQIsJUKjjVh1LvKVeCiQOYzF++BXrLvqty
+         7XyzUWtBa1ijJ2T3m+BY32SwGVYvwjc47hrmQBMRYbUYt+fHRoB2bDouMO6Mh3zCcc
+         oE8jjvWgpnJsV+Chm84hVMT9LjE3vpqIQ9T7v30RoNto1nezDwANJEBqW7gffXtGaw
+         ylJdCpXAOvwZA==
+To:     Paul Cercueil <paul@crapouillou.net>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 1/2] drm/ingenic: Switch IPU plane to type OVERLAY
+Message-ID: <BH3N8QICMyp64pmUQyXLwYMnCNBvXxThwvKJIOmyMU0XIgTtorcGd7s7AjnIFXQrLGEoJMuvPcWTiv38syiYOTCDv-bSxswFBX6y3UYqTwE=@emersion.fr>
+In-Reply-To: <20210329175046.214629-2-paul@crapouillou.net>
+References: <20210329175046.214629-1-paul@crapouillou.net> <20210329175046.214629-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021, Maximilian Luz wrote:
+> It should have been an OVERLAY from the beginning. The documentation
+> stipulates that there should be an unique PRIMARY plane per CRTC.
 
-> This series adds support for the Surface System Aggregator Module (SSAM)
-> HID transport subsystem.
-> 
-> The SSAM is an embedded controller, found on 5th- and later generation
-> Microsoft Surface devices. On some of these devices (specifically
-> Surface Laptops 1, 2, and 3, as well as Surface Book 3), built-in input
-> devices are connected via the SSAM. These devices communicate (mostly)
-> via normal HID reports, so adding support for them is (mostly) just a
-> matter of implementing an HID transport driver.
-> 
-> SSAM actually has two different HID interfaces: One (legacy) interface
-> used on Surface Laptops 1 and 2, and a newer interface for the rest. The
-> newer interface allows for multiple HID devices to be addressed and is
-> implemented in the first patch. The older interface only allows a single
-> HID device to be connected and, furthermore, only allows a single output
-> report, specifically one for the caps lock LED. This is implemented in
-> the second patch.
-> 
-> See the commit messages of the respective patches for more details.
+Thanks for the quick patch! One comment below=E2=80=A6
 
-Now queued in hid.git#for-5.13/surface-system-aggregator-intergration
+> Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
+> Cc: <stable@vger.kernel.org> # 5.8+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++------
+>  drivers/gpu/drm/ingenic/ingenic-ipu.c     |  2 +-
+>  2 files changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/=
+ingenic/ingenic-drm-drv.c
+> index 29742ec5ab95..09225b770bb8 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -419,7 +419,7 @@ static void ingenic_drm_plane_enable(struct ingenic_d=
+rm *priv,
+>  =09unsigned int en_bit;
+>
+>  =09if (priv->soc_info->has_osd) {
+> -=09=09if (plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY)
+> +=09=09if (plane !=3D &priv->f0)
 
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
+I don't know about this driver but=E2=80=A6 is this really the same as the =
+previous
+condition? The previous condition would match two planes, this one seems to
+match only a single plane. What am I missing?
 
