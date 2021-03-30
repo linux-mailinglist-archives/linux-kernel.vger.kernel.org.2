@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0210134EAF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F99634EAF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhC3OsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbhC3Ork (ORCPT
+        id S232281AbhC3Osd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:48:33 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:42931 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232279AbhC3OsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:47:40 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97363C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 07:47:40 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id z1so18545732edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 07:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=44ifFplI0M1D1DckCDMMSyPyGzm+QYpn2WgKJJ6m1Dc=;
-        b=xLCLDpHM9R/bUfHs+E17waH6zoZ8VtDejQLi78o+qu4KVyZQ332UT2krsuSGNdexNt
-         +ly5XQBwsj77bQCy0TWWDlNTw4A9SAUKu4UNdwyKjLlRWCoCacskUHQpqibGDqy3KPCL
-         //OhpwpNB3m7XUr5i1lbSRKKnlyXb6juD3w1YhtFq/4u5XZSXG3aFR1nzbcwObGFhICp
-         vf2g2ifUvwA6LfMP8ZqLBR2NhhnKOp4UHson/zsj6OmeycRmU8goEpIzmc0ZoqPEAPJ7
-         2j6P2ci+4SfCa1MrSTKg/LOayyMw8DpI7WbbXtNOPkC4FgY8Lo2638XHPOVubTO116Pe
-         /iAQ==
+        Tue, 30 Mar 2021 10:48:07 -0400
+Received: by mail-oi1-f170.google.com with SMTP id n140so16711216oig.9;
+        Tue, 30 Mar 2021 07:48:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=44ifFplI0M1D1DckCDMMSyPyGzm+QYpn2WgKJJ6m1Dc=;
-        b=ds913Zi8efX+cHHoLSq0J9ccQ+r6RLLKlFCLNnnf9P6qxviugr71iCgBxyrcG5EtQK
-         e5tYthZPD6dAKGL++tmPCI1J+NuzmL9qo7k2JCQ06iUmO4BXsCSJi55EbIFw6OqF9SLI
-         gRxDmQZLiPgwDxVJmS8o3G1fEWpFgfEW56ZgxHYX3lInkygh1rDgcXNooQS/0j8PnbEz
-         kkEB8ZRwa+zSwINHNFrTnv4yue8gTY64bp1+zdSy0VoFoZWqRJkslY0kKtkRi0z1Eje8
-         7gRKy6AwgXb72TgoMwmX0HzW2fCrTAyNm8YqmgtkRdx9NDmQ1gWWtoIYVJoYOb0Zaw1D
-         dr2A==
-X-Gm-Message-State: AOAM530lLBudSnxzncQL46CnOu3izWCrL1ITygLiU9mHczaZgle0OzkW
-        YnojO+9rY41lqDstI5kb8wD7qw==
-X-Google-Smtp-Source: ABdhPJydYKTT0xNGpntDhEjCxVY2s37yLs5j3/HkPPrHJHQy4qZkzwKejpF7qzV2B3zYQK95kdtVLA==
-X-Received: by 2002:a05:6402:3486:: with SMTP id v6mr33926624edc.109.1617115659363;
-        Tue, 30 Mar 2021 07:47:39 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n16sm11520383edr.42.2021.03.30.07.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 07:47:38 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, devicetree@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v6 9/9] soundwire: qcom: wait for enumeration to be complete in probe
-Date:   Tue, 30 Mar 2021 15:47:19 +0100
-Message-Id: <20210330144719.13284-10-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210330144719.13284-1-srinivas.kandagatla@linaro.org>
-References: <20210330144719.13284-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQ/R6CX19Up1J/nwzUUDCWCDOqM+HhWlcKjpkwoy/dw=;
+        b=mtU6z3upXkBBcGeDOTZoFToB84dfqk5/SNFDioGQtaZuoW1jnbJHjIYaW/8LzHOHzL
+         DDK9RoPg5dOWix7D38RHvTh9DAhA7pCKSChsLOuR5h9af9Opq+3IWTHP8Vl5TSVKVgvf
+         Q4tpqI0hP1SaDruhmc3MBP1PotNsfavOLXpZBG32GwOXEtKLUMimlFIVZZepklK+hX+/
+         v8a0l5ZBAKYGhC36uo/TB3+L+Q06vDT1waZfjzrH1dBvkBIz/bcWI1vYC7xR3NE3R4GB
+         5ua1GMsD5E+wPWHYIy9suUhboATia3rAq0siVE47hCzUr0ahU5gr3iZARL9L9VbBLKZP
+         2ubQ==
+X-Gm-Message-State: AOAM530ou1oblJZuMA2njTLeh6EC5n1LjtBsN6D7Sl76gvz6Ct0mes4K
+        Job9TVQdMCBBa6jAj7dvsQcrezet34FBE1BLN5Q=
+X-Google-Smtp-Source: ABdhPJw75WK5bLCPQwIm+UDp3+5uDPOkoCrL/5DraFpHz6I7ZSACiuS3AlGcJfUEX9ZpsZysU1F8SRkITlmRM0MJyyg=
+X-Received: by 2002:a05:6808:24b:: with SMTP id m11mr3513854oie.157.1617115686845;
+ Tue, 30 Mar 2021 07:48:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2764850.e9J7NaK4W3@kreacher> <7927358.NyiUUSuA9g@kreacher> <YTBPR01MB3262DB49961DBCCE96C51AB8C47D9@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
+In-Reply-To: <YTBPR01MB3262DB49961DBCCE96C51AB8C47D9@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 30 Mar 2021 16:47:56 +0200
+Message-ID: <CAJZ5v0g75+AFyQ-SP=ckKR5M171i7RaR1Qj66rUpHZujCFMqbA@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] cpuidle: menu: Take negative "sleep length" values
+ into account
+To:     "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/soundwire/qcom.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On Tue, Mar 30, 2021 at 4:00 AM Zhou Ti (x2019cwm) <x2019cwm@stfx.ca> wrote:
+>
+> On Mon 2021-03-29 14:37 Rafael J. Wysocki wrote:
+> > Make the menu governor check the tick_nohz_get_next_hrtimer()
+> > return value so as to avoid dealing with negative "sleep length"
+> > values and make it use that value directly when the tick is stopped.
+> >
+> > While at it, rename local variable delta_next in menu_select() to
+> > delta_tick which better reflects its purpose.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/cpuidle/governors/menu.c |   17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> >
+> > Index: linux-pm/drivers/cpuidle/governors/menu.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpuidle/governors/menu.c
+> > +++ linux-pm/drivers/cpuidle/governors/menu.c
+> > @@ -271,7 +271,7 @@ static int menu_select(struct cpuidle_dr
+> >          u64 predicted_ns;
+> >          u64 interactivity_req;
+> >          unsigned long nr_iowaiters;
+> > -       ktime_t delta_next;
+> > +       ktime_t delta, delta_tick;
+> >          int i, idx;
+> >
+> >          if (data->needs_update) {
+> > @@ -280,7 +280,12 @@ static int menu_select(struct cpuidle_dr
+> >          }
+> >
+> >          /* determine the expected residency time, round up */
+> > -       data->next_timer_ns = tick_nohz_get_sleep_length(&delta_next);
+> > +       delta = tick_nohz_get_sleep_length(&delta_tick);
+> > +       if (unlikely(delta < 0)) {
+> > +               delta = 0;
+> > +               delta_tick = 0;
+> > +       }
+> > +       data->next_timer_ns = delta;
+> >
+> >          nr_iowaiters = nr_iowait_cpu(dev->cpu);
+> >          data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
+> > @@ -318,7 +323,7 @@ static int menu_select(struct cpuidle_dr
+> >                   * state selection.
+> >                   */
+> >                  if (predicted_ns < TICK_NSEC)
+> > -                       predicted_ns = delta_next;
+> > +                       predicted_ns = data->next_timer_ns;
+> >          } else {
+> >                  /*
+> >                   * Use the performance multiplier and the user-configurable
+> > @@ -377,7 +382,7 @@ static int menu_select(struct cpuidle_dr
+> >                           * stuck in the shallow one for too long.
+> >                           */
+> >                          if (drv->states[idx].target_residency_ns < TICK_NSEC &&
+> > -                           s->target_residency_ns <= delta_next)
+> > +                           s->target_residency_ns <= delta_tick)
+> >                                  idx = i;
+> >
+> >                          return idx;
+> > @@ -399,7 +404,7 @@ static int menu_select(struct cpuidle_dr
+> >               predicted_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
+> >                  *stop_tick = false;
+> >
+> > -               if (idx > 0 && drv->states[idx].target_residency_ns > delta_next) {
+> > +               if (idx > 0 && drv->states[idx].target_residency_ns > delta_tick) {
+> >                          /*
+> >                           * The tick is not going to be stopped and the target
+> >                           * residency of the state to be returned is not within
+> > @@ -411,7 +416,7 @@ static int menu_select(struct cpuidle_dr
+> >                                          continue;
+> >
+> >                                  idx = i;
+> > -                               if (drv->states[i].target_residency_ns <= delta_next)
+> > +                               if (drv->states[i].target_residency_ns <= delta_tick)
+> >                                          break;
+> >                          }
+> >                  }
+>
+> How about this.
+> I think it's possible to avoid the new variable delta.
+>
+> ---
+>
+> --- linux-pm/drivers/cpuidle/governors/menu.c.orig      2021-03-29 22:44:02.316971970 -0300
+> +++ linux-pm/drivers/cpuidle/governors/menu.c   2021-03-29 22:51:15.804377168 -0300
+> @@ -271,7 +271,7 @@ static int menu_select(struct cpuidle_dr
+>         u64 predicted_ns;
+>         u64 interactivity_req;
+>         unsigned long nr_iowaiters;
+> -       ktime_t delta_next;
+> +       ktime_t delta_tick;
+>         int i, idx;
+>
+>         if (data->needs_update) {
+> @@ -280,7 +280,12 @@ static int menu_select(struct cpuidle_dr
+>         }
+>
+>         /* determine the expected residency time, round up */
+> -       data->next_timer_ns = tick_nohz_get_sleep_length(&delta_next);
+> +       data->next_timer_ns = tick_nohz_get_sleep_length(&delta_tick);
+> +
+> +       if (unlikely(data->next_timer_ns >> 63)) {
+> +               data->next_timer_ns = 0;
+> +               delta_tick = 0;
+> +       }
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index b1dbaf8263e5..b08ecb9b418c 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -123,6 +123,7 @@ struct qcom_swrm_ctrl {
- 	struct regmap *regmap;
- 	void __iomem *mmio;
- 	struct completion broadcast;
-+	struct completion enumeration;
- 	struct work_struct slave_work;
- 	/* Port alloc/free lock */
- 	struct mutex port_lock;
-@@ -418,6 +419,7 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
- 		}
- 	}
- 
-+	complete(&ctrl->enumeration);
- 	return 0;
- }
- 
-@@ -1139,6 +1141,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, ctrl);
- 	mutex_init(&ctrl->port_lock);
- 	init_completion(&ctrl->broadcast);
-+	init_completion(&ctrl->enumeration);
- 
- 	ctrl->bus.ops = &qcom_swrm_ops;
- 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
-@@ -1185,6 +1188,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	}
- 
- 	qcom_swrm_init(ctrl);
-+	wait_for_completion_timeout(&ctrl->enumeration,
-+				    msecs_to_jiffies(TIMEOUT_MS));
- 	ret = qcom_swrm_register_dais(ctrl);
- 	if (ret)
- 		goto err_master_add;
--- 
-2.21.0
-
+Well, not really.  Using a new local var is cleaner IMO.
