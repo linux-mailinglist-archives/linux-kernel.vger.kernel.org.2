@@ -2,92 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE56F34E5FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8301134E601
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhC3LCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:02:38 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44574 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhC3LCT (ORCPT
+        id S231878AbhC3LCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:02:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19138 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231661AbhC3LCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:02:19 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12UB1xNs058344;
-        Tue, 30 Mar 2021 06:01:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617102119;
-        bh=dyOe3pqXIdf8j+8HvSMwBv/J0i5wdpG3jbV9aLdsIZ0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=dpclOnoD9zx3RN8v4H9CDxycMI+napWi9w1izugPIuLVBtcUcq0uOtc3oYgHpo4d+
-         H78oySkiebWh98uX060DO1yEVvGGwwqMNZIzslEwGfCWk8p9yUIHo2eFyxad9pQFjk
-         Pv1jfoiZSetmOzzACiHdgQaTu72J7AFvEDD/v2eQ=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12UB1xkL023018
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 30 Mar 2021 06:01:59 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 30
- Mar 2021 06:01:59 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 30 Mar 2021 06:01:59 -0500
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12UB1dcn094447;
-        Tue, 30 Mar 2021 06:01:56 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     Swapnil Jakhade <sjakhade@cadence.com>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v2 5/5] phy: cadence-torrent: Add delay for PIPE clock to be stable
-Date:   Tue, 30 Mar 2021 16:31:38 +0530
-Message-ID: <20210330110138.24356-6-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210330110138.24356-1-kishon@ti.com>
-References: <20210330110138.24356-1-kishon@ti.com>
+        Tue, 30 Mar 2021 07:02:22 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UAWox4077568;
+        Tue, 30 Mar 2021 07:02:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=om4kXnc6pLolT/LnZcgl5vqCg2/CTpifzvCZklyOw3g=;
+ b=GqOKa5c3QazKpLo+wJwVBdzBoLW2q+17G9fgrg/AKrXY2nGatyDmenB3C90GQogSiuQM
+ B9z3b1aQ/g02KJhvf1XIhG4Z3HVKUfObjp5OXQzNQzCvoPyLtkrR3nrmMebPdAf4W2QK
+ +xaqGFd6bqqJwWDZomD6nGTFCPO8nYXUbIip4ujPPr8meLoFKR5oN+T64osMvpTU/eKf
+ npSk0OM1fguPKbDhIAANCgmAWX1rVOtP0XTX5bGHtjcE1dx2gWruhlF9mg2U8rfWwLkk
+ K1ad8kRGoYXQCGSnPUcDl5hMQRa2muqPR/BEBxI3iRn9mOiVISagJqxntFIiALaJHuHu +g== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37jhrv5416-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 07:02:18 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12UAv7Cs005488;
+        Tue, 30 Mar 2021 11:02:17 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02dal.us.ibm.com with ESMTP id 37hvb9a5yt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Mar 2021 11:02:17 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12UB2GSN12321244
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 11:02:16 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0FCE46A04D;
+        Tue, 30 Mar 2021 11:02:16 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E8286A057;
+        Tue, 30 Mar 2021 11:02:13 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.199.52.226])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 30 Mar 2021 11:02:12 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libnvdimm/region: Allow setting align attribute on
+ regions without mappings
+In-Reply-To: <20210326152645.85225-1-tyhicks@linux.microsoft.com>
+References: <20210326152645.85225-1-tyhicks@linux.microsoft.com>
+Date:   Tue, 30 Mar 2021 16:32:10 +0530
+Message-ID: <87h7ks7vm5.fsf@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OxXYJEFgsgdkfzk5hXQMLRFhUREY3PS6
+X-Proofpoint-ORIG-GUID: OxXYJEFgsgdkfzk5hXQMLRFhUREY3PS6
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-30_03:2021-03-30,2021-03-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0 spamscore=0
+ suspectscore=0 malwarescore=0 clxscore=1011 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103300075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Torrent spec specifies delay of 660.5us after phy_reset is
-asserted by the controller. To be on the safe side provide a delay
-of 5ms to 10ms in ->phy_on() callback where the SERDES is already
-configured in bootloader.
+Tyler Hicks <tyhicks@linux.microsoft.com> writes:
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- drivers/phy/cadence/phy-cadence-torrent.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> The alignment constraint for namespace creation in a region was
+> increased, from 2M to 16M, for non-PowerPC architectures in v5.7 with
+> commit 2522afb86a8c ("libnvdimm/region: Introduce an 'align'
+> attribute"). The thought behind the change was that region alignment
+> should be uniform across all architectures and, since PowerPC had the
+> largest alignment constraint of 16M, all architectures should conform to
+> that alignment.
+>
+> The change regressed namespace creation in pre-defined regions that
+> relied on 2M alignment but a workaround was provided in the form of a
+> sysfs attribute, named 'align', that could be adjusted to a non-default
+> alignment value.
+>
+> However, the sysfs attribute's store function returned an error (-ENXIO)
+> when userspace attempted to change the alignment of a region that had no
+> mappings. This affected 2M aligned regions of volatile memory that were
+> defined in a device tree using "pmem-region" and created by the
+> of_pmem_region_driver, since those regions do not contain mappings
+> (ndr_mappings is 0).
+>
+> Allow userspace to set the align attribute on pre-existing regions that
+> do not have mappings so that namespaces can still be within those
+> regions, despite not being aligned to 16M.
+>
+> Fixes: 2522afb86a8c ("libnvdimm/region: Introduce an 'align' attribute")
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  drivers/nvdimm/region_devs.c | 33 ++++++++++++++++++---------------
+>  1 file changed, 18 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+> index ef23119db574..09cff8aa6b40 100644
+> --- a/drivers/nvdimm/region_devs.c
+> +++ b/drivers/nvdimm/region_devs.c
+> @@ -545,29 +545,32 @@ static ssize_t align_store(struct device *dev,
+>  		struct device_attribute *attr, const char *buf, size_t len)
+>  {
+>  	struct nd_region *nd_region = to_nd_region(dev);
+> -	unsigned long val, dpa;
+> -	u32 remainder;
+> +	unsigned long val;
+>  	int rc;
+>  
+>  	rc = kstrtoul(buf, 0, &val);
+>  	if (rc)
+>  		return rc;
+>  
+> -	if (!nd_region->ndr_mappings)
+> -		return -ENXIO;
+> -
+> -	/*
+> -	 * Ensure space-align is evenly divisible by the region
+> -	 * interleave-width because the kernel typically has no facility
+> -	 * to determine which DIMM(s), dimm-physical-addresses, would
+> -	 * contribute to the tail capacity in system-physical-address
+> -	 * space for the namespace.
+> -	 */
+> -	dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
+> -	if (!is_power_of_2(dpa) || dpa < PAGE_SIZE
+> -			|| val > region_size(nd_region) || remainder)
+> +	if (val > region_size(nd_region))
+>  		return -EINVAL;
+>  
+> +	if (nd_region->ndr_mappings) {
+> +		unsigned long dpa;
+> +		u32 remainder;
+> +
+> +		/*
+> +		 * Ensure space-align is evenly divisible by the region
+> +		 * interleave-width because the kernel typically has no facility
+> +		 * to determine which DIMM(s), dimm-physical-addresses, would
+> +		 * contribute to the tail capacity in system-physical-address
+> +		 * space for the namespace.
+> +		 */
+> +		dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
+> +		if (!is_power_of_2(dpa) || dpa < PAGE_SIZE || remainder)
+> +			return -EINVAL;
+> +	}
 
-diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index ff8bb4b724c0..0477e7beebbf 100644
---- a/drivers/phy/cadence/phy-cadence-torrent.c
-+++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -371,7 +371,16 @@ static const struct phy_ops cdns_torrent_phy_ops = {
- 	.owner		= THIS_MODULE,
- };
- 
-+static int cdns_torrent_noop_phy_on(struct phy *phy)
-+{
-+	/* Give 5ms to 10ms delay for the PIPE clock to be stable */
-+	usleep_range(5000, 10000);
-+
-+	return 0;
-+}
-+
- static const struct phy_ops noop_ops = {
-+	.power_on	= cdns_torrent_noop_phy_on,
- 	.owner		= THIS_MODULE,
- };
- 
--- 
-2.17.1
+We still want
 
+else {
+
+if (!is_power_of_2(val) || val < PAGE_SIZE)
+         return -EINVAL?
+
+}
+> +
+>  	/*
+>  	 * Given that space allocation consults this value multiple
+>  	 * times ensure it does not change for the duration of the
+> -- 
+> 2.25.1
+> _______________________________________________
+> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
+> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
