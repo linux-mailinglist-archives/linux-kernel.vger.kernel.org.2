@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747BA34EC50
+	by mail.lfdr.de (Postfix) with ESMTP id C4C6D34EC51
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbhC3P0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S231584AbhC3P00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbhC3PZy (ORCPT
+        with ESMTP id S232422AbhC3PZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:25:54 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211B5C061574;
-        Tue, 30 Mar 2021 08:25:54 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id g8so24383215lfv.12;
-        Tue, 30 Mar 2021 08:25:54 -0700 (PDT)
+        Tue, 30 Mar 2021 11:25:56 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA16CC061574;
+        Tue, 30 Mar 2021 08:25:55 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id o10so24355686lfb.9;
+        Tue, 30 Mar 2021 08:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K9oKxgqvv2xwBau1Hqc1C0nc0W0/3k1X3AJJxJXNHlw=;
-        b=riZgh56pSBWEI2KlhVFzOKqtIakRUv2TiK+4mA4ddeHBQWM17GSYZ8RcReJ267vN6V
-         UoaQUVVb4KjKKNazm1oCpcaFaEQ9ifXInEW6OYJrz8QRVhiNIB18hWTc91WauH4ug6kT
-         utS0lRG20DY4HgcQrqk9WYA8i6TIutOQMoXU167fROrUIzUtvN019aaNkSwbOnVFavsW
-         0AxbrZPUqYPQJYbxlKB1c/pdoKAmxkiMmbYmLNqpd4G06n/pvMfXLsLRO+fieNwBQwgK
-         a//sg2JYTPpE1+fZlcDRKF4twphtGhxru2sIQnpu4mIgzQ7mJHZdCBBGt9jJzBvWsUId
-         WZWA==
+        bh=L4t1gbf3yrUzChbUbDMY4euz8nlSLeeCu75nwbW2ips=;
+        b=tfZ6EUxRi07u5A8R3oT9CX8h/p2L39UX4es7Zvw5PiYTf3BJueQoSSOju1hHM3GD3Z
+         msm9Id5LdRCvSNEsQy2wk+3qTyuswDOJRBeeJsW6YdxdW7S+UP1hMQkF2RHI76i6ZCcd
+         /yJkCvtORfkqWcuVqhsL3iFUF0CdlUhLxKfgN0RZf/S+W9wGZDumtnhvlnmjvdMq92HF
+         PEvjZl8RjRPWNZsaXsJsudq8XiwHEFASgDqnPD77uO/o8vs+XZuKU4KJrCr1m4ZegfBt
+         HZnnzH28Glrvved+dx8HR0OJ7j95gVOgTAAuD1vn8At8GsX1ernXW1P8x563otvzshly
+         iw1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=K9oKxgqvv2xwBau1Hqc1C0nc0W0/3k1X3AJJxJXNHlw=;
-        b=LjNW4xBbnfKpi4giDkCVw+c9MO3kbiATpUbs7vaf0ksFhJLeojgWFROLYQ9oG7L2od
-         /+Fqos3RZV9GdiIFZig6lDeK0xc6FKEB/H7dzGP6zHLDFRbc/1CClPJz/9MOVFNyVils
-         o4wCH8SSMyGKGhB4rUDdwVVwWhHdoI6Lf4c6bQXVYC3Voe8egrKg1FNJyUAMXckfYGI2
-         PTon2h1O9YxEUkJUhJw3b5XvM7GHNOPiVCAizVTzdsW3I8+HvUiH1yzARYqBxCiq4zd0
-         BoJPdDPI3fzlBLUKQ9GJllSyxwk8OCvbfjA5ztnimTW4lNRllxg3qoNFyYhbuV5Xj4im
-         ZmXw==
-X-Gm-Message-State: AOAM533Yus32Fz43hJF3N45FYwgYf+un2qWOf+s5cZcaJ8B5hkOj3XR8
-        Y2TRis/HdM+vRO+Ctgwqz5lXWRsjL7w=
-X-Google-Smtp-Source: ABdhPJxCUFN6zd35wS+i0XgOlbBP3JG3hD1SrZ/qjhEk4br+UaZhUqcu0/+HyiFLlOP0eUATWhPtxQ==
-X-Received: by 2002:a19:c3ca:: with SMTP id t193mr20087984lff.331.1617117952541;
-        Tue, 30 Mar 2021 08:25:52 -0700 (PDT)
+        bh=L4t1gbf3yrUzChbUbDMY4euz8nlSLeeCu75nwbW2ips=;
+        b=YI66vuDXxi6bPjus/fuE1eqdFCp7tECGqVq0aPAumkKK0zy99YeL6Q7l+l4157c3zh
+         pEnzTNQAd0+/p7vR6SoJTgDUtMuaySrkoFMwhJ0yd0gSG83gWs8zcHKb3yYiOU27KzAG
+         RiFCsMSMov6DRP8Nh5m2q5hncPretZGYbTr5F3kX8dBRw49AsLUJ203cPWQAJLOqaP2U
+         kiYKJi1whPtPIEb9BAZsCyyPf9Co7Lrdq9cJVP5F+hA9SC9pmM2AVYszgA8CeFoJJnfN
+         ehfR0HNZvOCz0SZuR/CUkDAZn21vNvc4/lbomsiZdO6ECiBCcPuprl0xYHRCkbb7qY1y
+         jfDw==
+X-Gm-Message-State: AOAM531msAArqggZZUShESgcUVgL0/viHASFNwhzNkHpbbbOc4CwLw3S
+        oN5kR30aBtlMWhfkaTZokcw=
+X-Google-Smtp-Source: ABdhPJy4JGI3S1gXjgeGliqbIw052gNBnIlb1D/ryZgbSsk665Us6I0JVEZ6HazVHoSz8GuUhtz77Q==
+X-Received: by 2002:a05:6512:38aa:: with SMTP id o10mr53987lft.261.1617117954194;
+        Tue, 30 Mar 2021 08:25:54 -0700 (PDT)
 Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id c12sm2199353lfb.284.2021.03.30.08.25.51
+        by smtp.googlemail.com with ESMTPSA id q26sm2204815lfm.53.2021.03.30.08.25.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:25:52 -0700 (PDT)
+        Tue, 30 Mar 2021 08:25:53 -0700 (PDT)
 Subject: Re: [PATCH v1 4/6] dt-bindings: memory: tegra20: mc: Convert to
  schema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
 References: <20210329194602.17049-1-digetx@gmail.com>
  <20210329194602.17049-5-digetx@gmail.com>
- <01daabba-9023-8d78-9386-99b974d46faf@canonical.com>
+ <1617109723.704724.173732.nullmailer@robh.at.kernel.org>
+ <20210330134634.GA216433@robh.at.kernel.org>
 From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b638a15f-c824-0b00-bc9a-25759512b7db@gmail.com>
-Date:   Tue, 30 Mar 2021 18:25:51 +0300
+Message-ID: <a2575953-e10e-9f41-5a65-ab6512bba20d@gmail.com>
+Date:   Tue, 30 Mar 2021 18:25:53 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <01daabba-9023-8d78-9386-99b974d46faf@canonical.com>
+In-Reply-To: <20210330134634.GA216433@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -74,25 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 11:37, Krzysztof Kozlowski пишет:
->> +properties:
->> +  compatible:
->> +    const: nvidia,tegra20-mc-gart
->> +
->> +  reg:
->> +    minItems: 1
->> +    maxItems: 2
-> I think you always need two regs, don't you? If so, then better to use
-> "description" like in
-> Documentation/devicetree/bindings/example-schema.yaml to describe which
-> set is for which range/purpose.
+30.03.2021 16:46, Rob Herring пишет:
+> On Tue, Mar 30, 2021 at 08:08:43AM -0500, Rob Herring wrote:
+>> On Mon, 29 Mar 2021 22:46:00 +0300, Dmitry Osipenko wrote:
+>>> Convert Tegra20 Memory Controller binding to schema.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  .../memory-controllers/nvidia,tegra20-mc.txt  | 40 ----------
+>>>  .../memory-controllers/nvidia,tegra20-mc.yaml | 78 +++++++++++++++++++
+>>>  2 files changed, 78 insertions(+), 40 deletions(-)
+>>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
+>>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.yaml
+>>>
+>>
+>> My bot found errors running 'make dt_binding_check' on your patch:
+>>
+>> yamllint warnings/errors:
+>>
+>> dtschema/dtc warnings/errors:
+>> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.example.dt.yaml:0:0: /example-0/memory-controller@7000f000: failed to match any schema with compatible: ['nvidia,tegra20-mc']
+> 
+> Yes, this is a new warning. It's off by default for dt_binding_check 
+> until we fix the existing warnings, but you can enable by adding 
+> 'DT_CHECKER_FLAGS=-m'. Support for this is in the dt/next branch.
 
-I did this because the original example from the txt binding was failing
-with:
-
-Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.example.dt.yaml:
-memory-controller@7000f000: reg: [[1879109632, 1024, 1476395008,
-33554432]] is too short
-
-But then I just corrected the example and forgot to change the reg
-entry. I'll fix it in v2, thanks.
+Thanks!
