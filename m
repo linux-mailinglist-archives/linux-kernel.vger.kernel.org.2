@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D198F34EC9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA0834EC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhC3Pe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbhC3Peh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:34:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9A9C061574;
-        Tue, 30 Mar 2021 08:34:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id g8so24426838lfv.12;
-        Tue, 30 Mar 2021 08:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HFLwaiOgQLpK8rrr7G51VeVnB2pCW8jbr+A64UfDOYA=;
-        b=mdgVBGCIFrjFQ5b4sdMvDzz6NLUcivciUb5fCHUb0YjaYS4/UsbCQeGN0CJCPb574l
-         qK57SxGAjUHkzA3bn3VGMFvd5mcja8nYyamGoejZP0yGaPRWuO5WJpsbtpPhCrQhmobl
-         CgqW2GVMNLEkhA/40VTno/U+8K7SkmR851KQqeEZD+N4qrv8thd5r3lOBQO+e52zjS0c
-         xz8OPV8PNY/tYgnGFI7dcHUdmfWyoldieRGwg2VLJMwg3KKQ1SdrqRIJyXtjmNrAt2nO
-         nRU+ZY1C+DYaKvv0xyDkiUcUdulEU9r9bqI7s0R62kEgymmWvqx8Cb5darKN4oxWGr8+
-         uEBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HFLwaiOgQLpK8rrr7G51VeVnB2pCW8jbr+A64UfDOYA=;
-        b=TaPb6u7kx+qmbG3PKogE7QpTZp8A6YypP6TF8X2P9JRDABkCzvN2UTJMS1pqFPLDUj
-         8S6b7uvfHAFRyEb8KF/G6deit0LbMLwVn2eFPvHHqxnB9NFr4ygE8u7oluG1dp9DIJ2u
-         BOoh/dwCdi/N77s2ZN2dhmW9dqcfxjENvkJLuuOJx1zspgZWJbSoA+Wa1UqK0HeUeeNU
-         hx4zNPl6q9edjmAMzaLFaE/5szzNDUjQvc5BOAAc4sFE+cmWhkjV7C1VVFtvCXJFm2I5
-         xK+P9TjVqzo3V5p/nrFI4CzfBSXpHwU/95Pftv0HdYcHvTItsnfptGBuG026byQ1UDwM
-         QGOQ==
-X-Gm-Message-State: AOAM533w5NPIGAl/h08sY2AWFKchkYBSSb7yeJrGzSoHtw4NQkNJ6Pkf
-        eQqu9loIdKtO7wihHo5Wv8ABVEZxAQE=
-X-Google-Smtp-Source: ABdhPJzJZFASBY0/ZDb07qhZM4lUCtVB/fXKnZGx3SnTpI3DVGjRfjGD7OJph0cAT/L2sV4SLXYZ7Q==
-X-Received: by 2002:ac2:43d0:: with SMTP id u16mr19897999lfl.263.1617118474960;
-        Tue, 30 Mar 2021 08:34:34 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id z6sm2208762lfr.34.2021.03.30.08.34.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:34:34 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-6-digetx@gmail.com>
- <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <15e4566a-6e05-0ec4-6103-7b169c326699@gmail.com>
-Date:   Tue, 30 Mar 2021 18:34:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231829AbhC3Pe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232166AbhC3Pet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:34:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D6E2619A7;
+        Tue, 30 Mar 2021 15:34:49 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRGOE-004iZ4-7z; Tue, 30 Mar 2021 16:34:46 +0100
+Date:   Tue, 30 Mar 2021 16:34:45 +0100
+Message-ID: <87blb0r6y2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        anshuman.khandual@arm.com, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 07/19] arm64: kvm: Enable access to TRBE support for host
+In-Reply-To: <20210330152314.GA2329603@xps15>
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+        <20210323120647.454211-8-suzuki.poulose@arm.com>
+        <20210326165550.GC2009902@xps15>
+        <bc1adc62-55ce-303d-b029-0fa02958998e@arm.com>
+        <20210330152314.GA2329603@xps15>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: mathieu.poirier@linaro.org, suzuki.poulose@arm.com, catalin.marinas@arm.com, gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, coresight@lists.linaro.org, mike.leach@linaro.org, leo.yan@linaro.org, anshuman.khandual@arm.com, will@kernel.org, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 11:48, Krzysztof Kozlowski пишет:
->> +  "^emc-tables@[a-z0-9\\-]+$":
-> Why \ and - in the pattern?
+On Tue, 30 Mar 2021 16:23:14 +0100,
+Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+> 
+> On Tue, Mar 30, 2021 at 11:38:18AM +0100, Suzuki K Poulose wrote:
+> > On 26/03/2021 16:55, Mathieu Poirier wrote:
+> > > On Tue, Mar 23, 2021 at 12:06:35PM +0000, Suzuki K Poulose wrote:
+> > > > For a nvhe host, the EL2 must allow the EL1&0 translation
+> > > > regime for TraceBuffer (MDCR_EL2.E2TB == 0b11). This must
+> > > > be saved/restored over a trip to the guest. Also, before
+> > > > entering the guest, we must flush any trace data if the
+> > > > TRBE was enabled. And we must prohibit the generation
+> > > > of trace while we are in EL1 by clearing the TRFCR_EL1.
+> > > > 
+> > > > For vhe, the EL2 must prevent the EL1 access to the Trace
+> > > > Buffer.
+> > > > 
+> > > > Cc: Will Deacon <will@kernel.org>
+> > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > ---
+> > > >   arch/arm64/include/asm/el2_setup.h | 13 +++++++++
+> > > >   arch/arm64/include/asm/kvm_arm.h   |  2 ++
+> > > >   arch/arm64/include/asm/kvm_host.h  |  2 ++
+> > > >   arch/arm64/kernel/hyp-stub.S       |  3 ++-
+> > > >   arch/arm64/kvm/debug.c             |  6 ++---
+> > > >   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 42 ++++++++++++++++++++++++++++++
+> > > >   arch/arm64/kvm/hyp/nvhe/switch.c   |  1 +
+> > > >   7 files changed, 65 insertions(+), 4 deletions(-)
+> > > > 
+> > > 
+> > > Marc - do you want me to pick up this one?
+> > 
+> > I think the kvmarm tree is the best route for this patch, given the amount
+> > of changes the tree is going through, in the areas this patch
+> > touches. Or else there would be conflicts with merging. And this patch
+> > depends on the patches from this series that were queued.
+> > 
+> > Here is the depency tree :
+> > 
+> > a) kvm-arm fixes for debug (Patch 1, 2) & SPE save-restore fix (queued in
+> > v5.12-rc3)
+> > 
+> > b) TRBE defintions and Trace synchronization barrier (Patches 5 & 6)
+> > 
+> > c) kvm-arm TRBE host support (Patch 7)
+> > 
+> > d) TRBE driver support (and the ETE changes)
+> > 
+> > 
+> > (c) code merge depends on -> (a) + (b)
+> > (d) build (no conflicts) depends on -> (b)
+> > 
+> > 
+> > Now (d) has an indirect dependency on (c) for operational correctness at
+> > runtime.
+> > So, if :
+> > 
+> > kvmarm tree picks up : b + c
+> > coresight tree picksup : b + d
+> > 
+> > and if we could ensure the merge order of the trees are in
+> > kvmarm
+> > greg-kh (device-misc tree) (coresight goes via this tree)
+> >
+> 
+> Greg's char-misc tree is based on the rc releases rather than next.  As such it
+> is a while before other branches like kvmarm get merged, causing all sort of
+> compilation breakage.
+>  
+> > we should be fine.
+> > 
+> > Additionally, we could rip out the Kconfig changes from the TRBE patch
+> > and add it only at the rc1, once we verify both the trees are in to make
+> > sure the runtime operation dependency is not triggered.
+> >
+> 
+> We could also do that but Greg might frown at the tactic, and
+> rightly so.
 
-Good catch, I thought that '-' needs to be escaped, but then forgot to
-remove the unnecessary slashes.
+We do that all the times. Otherwise, it is hardly possible to build an
+infrastructure that spans across multiple subsystems *and* involves
+userspace. I really wouldn't worry about that.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
