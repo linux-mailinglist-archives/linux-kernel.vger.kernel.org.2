@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F73E34E0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858A334E101
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbhC3GII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:08:08 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40905 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhC3GHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:07:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F8fBB2Hx5z9sRf;
-        Tue, 30 Mar 2021 17:07:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617084466;
-        bh=wOcm43wvpKvB7lQeuFsYELjj5hgqyx5KgKhpZBrADPs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Y67jd6Q7NnJ6WZjoIEw0DQLcEPM8pJP9mqH1QJn5Di6/iRxS3zW+7DW6OJ8chq4DS
-         pLfpf5to1eO4vwzaE60kKFJ5QmZgLS87fS3F+PaqWZU5x092z1QfuQJV8Uxyu/R5nG
-         VmryE9vnNI+B5mVEyc62H9jWVcssD4hilIrj3AwXYGcwNr9NxTiuH5EV+G508TLxmG
-         6RSHJqwTYzmcsF1eR/YcEBfujT/z+Byc/Mymv2HnbvcK8uU/RWZSb5CeJu1cVaw69u
-         4uaWH8UDcTLFj+6pMfEUuXYFiqb8pB+uIIuLpiYT7nyAeR3cveITiNvjVCcmRsWC45
-         6768O/0BWAvtg==
-Date:   Tue, 30 Mar 2021 17:07:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        =?UTF-8?B?w4FsdmFybyBGZXJuw6Fu?= =?UTF-8?B?ZGV6?= Rojas 
-        <noltari@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the pinctrl tree
-Message-ID: <20210330170744.6a1519b0@canb.auug.org.au>
+        id S230306AbhC3GJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230224AbhC3GIs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 02:08:48 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7D7C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:08:48 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a7so22996516ejs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lNbJX303TKj0bY08nTN0li+FCpaX3fkQH86qG6Fy4cY=;
+        b=kCXfj4yojsaTUg2WjkiwZOb0nApyobIksGmDw2gUIj7sgOR1YC8VqnkPJrDYTzanUM
+         owmndn0GmxBRPp3RUghzkdOdAZa/hI1Rn7vMTc5Df3Rbm1g9bHS3/mXN0NoVhcPnie7z
+         sKysoVqz4CUGvQr2mUyVj041BzGXb5cQrV2gc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lNbJX303TKj0bY08nTN0li+FCpaX3fkQH86qG6Fy4cY=;
+        b=QRPfreFWnPSGL49WiSS+ojbVL2LEMzCihiWkWZFv3QsEJmxdiydFb85ASTIjwmG9wX
+         69tcYxYOBiCA36PGBlL2tgclQUBBq1LHKhAuo9UDA8UqITxpAyx+quAN+kl2hdw2dTrc
+         c/P3Az+t7wlZQz3EXuWPakg8s9Vci4t6lCmI/+xlvlafWhlJniiiIKGOyvY7/5wxQYNg
+         A0vK1XsTA/z8pdQ5QBYDgg0pBCDNxJ2COmQatLRW8CwQgKWLI9+ij9GOOyafFajtfZ2n
+         CAeMH3HE8BFhCAHYXOojgFxRzocxzxF9DcQxvm365yRFBn0EQQXkrRQ82uh6VVpeI+t8
+         i2sQ==
+X-Gm-Message-State: AOAM531Y5kl+L6FF1w7+S3HbLu6t1RsmmAbnyUO5Fzt8bNqxXnDcuck1
+        wLHInP5woCGn1RpaBKm87SWA048xTqX7qQ==
+X-Google-Smtp-Source: ABdhPJxPQkHvFGwfmywaOTjQGaqLP8ZMq7LqqNUAJw1ZOTUagdIh8c31YduWn7v0Ti0IzPcqoX9yzw==
+X-Received: by 2002:a17:906:4407:: with SMTP id x7mr31570991ejo.546.1617084526916;
+        Mon, 29 Mar 2021 23:08:46 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id d1sm9449679eje.26.2021.03.29.23.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 23:08:46 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trivial@kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH] IMA: Fix error in comment
+Date:   Tue, 30 Mar 2021 08:08:45 +0200
+Message-Id: <20210330060845.18422-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dStSQin2puGgtqbE9Ri5XwI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dStSQin2puGgtqbE9Ri5XwI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+ima_file_mprotect does not return EACCES but EPERM.
 
-Hi all,
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ security/integrity/ima/ima_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-After merging the pinctrl tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 9ef748ea829f..716ea29cf897 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -409,7 +409,7 @@ int ima_file_mmap(struct file *file, unsigned long prot)
+  * this point.  Eliminate this integrity gap by denying the mprotect
+  * PROT_EXECUTE change, if an mmap appraise policy rule exists.
+  *
+- * On mprotect change success, return 0.  On failure, return -EACESS.
++ * On mprotect change success, return 0.  On failure, return -EPERM.
+  */
+ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
+ {
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
-drivers/pinctrl/bcm/pinctrl-bcm6362.c: In function 'bcm6362_set_gpio':
-drivers/pinctrl/bcm/pinctrl-bcm6362.c:503:8: warning: cast from pointer to =
-integer of different size [-Wpointer-to-int-cast]
-  503 |        (uint32_t) desc->drv_data, 0);
-      |        ^
-
-Introduced by commit
-
-  705791e23ecd ("pinctrl: add a pincontrol driver for BCM6362")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dStSQin2puGgtqbE9Ri5XwI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBiwDAACgkQAVBC80lX
-0Gzehwf8CnM80DuJHoVeH8YrRMPhPU6T//nY4eio+AFdf+/G6yURpWPSZBQjca7K
-uFpVVMcEQwJau7FlNvNJOqQ+DtQFk1b6HmUyk88MjRCBcplcVD8C7u3kSKypILig
-7tWn4izGLM+HqcEsF2gf3z1mMxx98gpFffJEniEufDmCSMmEPvb6Fs+P20kEwkkb
-8NsDMZjyBizPdWvOHIRQvZm2jZ5fNej6qxykn/T22vpeKru+nAC91MUzVAfYdO4B
-sCy6xCUKTdCeMIQfqRkfWH21LaZldmXXiWnQC/Tz9QX37yqjIMcptX06m8n9VbCh
-Fyb0n1U97q2TCOYNFMD4XPavgY5HdQ==
-=Fx26
------END PGP SIGNATURE-----
-
---Sig_/dStSQin2puGgtqbE9Ri5XwI--
