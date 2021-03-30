@@ -2,148 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715AA34E19A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFFC34E19B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhC3G5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:57:24 -0400
-Received: from mail-bn8nam11on2107.outbound.protection.outlook.com ([40.107.236.107]:12961
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229483AbhC3G4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:56:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dVDe165QmXA7GmHoZP/Iukzk38DJxY11C3FB5c/9sQ1vX+RS15/e0PiiHpEBm5mhSIFi0n5PToPRevq0Ezeut1qgrE6vvWEl6xu9FLnd71mG0H0CPx6ZJkXkfhK9zS6SwnzTXDPZ7nC9tYeajxSOcExEw8XYgfNPrApb2DZhdxdMgbxMseAtfGy103cRDw2T6tMbBRAwGrfNoTkYWWwa4dyRqNDodoaEsl3bwbdZiTGrGQBfvdjjp1BRGEbNyrchsxGw+2koHJ8QSY86A3lk08ey+OeQUCXOxeCukBafhQnEQ4jYvNfH7ztDQ1VevCZP8eyZpNDijvP8q2mLEAtxkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7EKagDDWqoT4Q/Oy2Y/bXk/sG5M6dJJ3sGyCso1TOXo=;
- b=jigDC+UBK3oH8iHzijeoTXFui5ncfNYezDp7A+E0gDMz+QWcysndrB8St7zO9zpL9A7WdiwMjD9uu9wIdKrWdmQwFTNHQFl5NfsvsH8fT7FthVxhe3BuIi2JC9WJZ0mjN7JURkr7qbsYYmpZfNyQKgz58+UF0+rnw+7bOULIEjfM/UObvRL/RPTpjOa5pYIqGwjfAs2I23wvYw+XMBzP31UYQfO4Ua4M6qvA39hCHEDCXMhfvmmOx5nUnkdG6XjpiHRcl4jn8LoBToG9QlHFABZY3KXfi+JnZNSFXx7KwBmWKadUj1FT3ucz0cvQZtZlOyXNorUtqluIF8nR/Y9QgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7EKagDDWqoT4Q/Oy2Y/bXk/sG5M6dJJ3sGyCso1TOXo=;
- b=QiujVq03wKz2qJgNfKt5CLDUA1YHQ9g0MeQUwVFjRId+SYQtp8SDca3bI62GcO99243KJSiXoAb5XUWASjHowNF93TmMna4YSHJGmv47swqPbsxlzTIjD7zopKjCN6WFHX9WGIHglQ9SuMv2MfjujlVTiquTNyhzWz7BW6htDaE=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com (52.132.152.24) by
- MW2PR2101MB1051.namprd21.prod.outlook.com (52.132.149.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.1; Tue, 30 Mar 2021 06:56:50 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%5]) with mapi id 15.20.3999.019; Tue, 30 Mar 2021
- 06:56:50 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: v5.12.0-rc5: the kernel panics if FIPS mode is on
-Thread-Topic: v5.12.0-rc5: the kernel panics if FIPS mode is on
-Thread-Index: Adck5k/vM341SpSZQYayHia5DENU7QAHUl8AAAsnLtA=
-Date:   Tue, 30 Mar 2021 06:56:50 +0000
-Message-ID: <MW2PR2101MB08925B7CAAE1019D7809D460BF7D9@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <MW2PR2101MB0892C9A8BF670DEC3628CFAFBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <YGJ+FrwrSRyvMHoF@gmail.com>
-In-Reply-To: <YGJ+FrwrSRyvMHoF@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d27a9a7d-440f-4fe0-8999-3d51e90a7bb3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-30T06:45:02Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:e965:792d:4f45:db60]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 01aba343-0025-45e5-1d96-08d8f348fe9f
-x-ms-traffictypediagnostic: MW2PR2101MB1051:
-x-microsoft-antispam-prvs: <MW2PR2101MB10519D082E2DC402EEB34459BF7D9@MW2PR2101MB1051.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: twcxlrqb1SuTfV2PJUU4CemtLojoPtI1xMoDSlZaHydR9YHfqmDQ/Id4Eiek166L0tLCmGPY8AVb/Q8ByMwEND24RmqVDxYJtRMvVWqZ39HuwC6uuMR2VMHweKbHGQAU1WtsouxipkKZCvEb2WrtfUHygqmSOvHc0vNdISNR9SqNKXU+JF4NYBmgOKTn7ho/fQ2ZsqotKzYQZA2zTd8GRyc0RfTipF4Gm4K/LKl4GXLClG6+gfv5ZQyyM1gTNZpTdDmEo3mWJzfmlIaGWJMiWVXzz7mUkZ/t0luFBYJSNjO80aFAtbPBIJPQ2BFZvyg/hbsZ3A14GD+NW9MjHv9gg5Yi76axX/+1hNAtrs1sorysMgBASpB6R2LEQP92yN8wMAQu1sr6+wgHiKEEa9NyNnP0vAmsn5sYbhqsvFqMR0ZOYUMB2bpdzROworULXUbVDcuKAKo5xX7lnwbVV/FNKbQ4GIeI+NE5/qd9XrWtA49rB0xR7PSCXAJwk0/byjohK0Le5qqhVm1URGB8z6eRnF8jUSabcGq6z6NGAwX1aeQqahL4HxMbLtJtqcQ3BNnVVkTo6dTGYERWgXtae71KBn8S//+wMW8MirFfo6jnvKVMmFFlxsVUiuE6w2XSoD9B081+BX9izQZGsTDBYDhDjfaoee13ISHXDkbLYIXlb2Q=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(71200400001)(478600001)(66476007)(186003)(64756008)(54906003)(8936002)(6506007)(66556008)(55016002)(66446008)(66946007)(76116006)(52536014)(6916009)(83380400001)(7696005)(33656002)(316002)(38100700001)(8676002)(9686003)(10290500003)(82950400001)(5660300002)(8990500004)(82960400001)(4326008)(2906002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ZQfilEUasXChX5bWC1GnZoyz27h/O4bUJVHry5gkaIUn0M/YJwLQKvwbHA6j?=
- =?us-ascii?Q?2w9uCU8U7u+UzvJD9dVDux1kg0NT7qyjVDZrf2y4FK14gfVezuZOfzEP9UJb?=
- =?us-ascii?Q?hIgX3cqpfhBWAPqYdTSLkK4P/kFipCJrQI5V0CEKB5JLx7dO+UdUzKU+vAxI?=
- =?us-ascii?Q?fQtTJ80DiecvRR3cEgoYofuYkuMXfV8H3PK1kNoaiiOTLgVhxcGUC8uxqojV?=
- =?us-ascii?Q?W6KJ+wwZKd6QHoAbVgu77U1EIqspzmfygZlkJuOT6JuBU4BuQA71CeovIqvx?=
- =?us-ascii?Q?fZNfx+mnEEbFxtgFGSXmrgAww1DnDfN0GSgvnE+Wt74RSSUcCYKKS/EHCgsq?=
- =?us-ascii?Q?ctbPxmjHMb5c2AFnaC3Rjha3MNbpNL2vXa2TUNsp+QUR/Ks9e0oKke3zP8Np?=
- =?us-ascii?Q?+n0kuXOsX2Jof9JveG9z0L1UZnxy3VJPAQ8GtdEVMMJfO+MwuG4g3l2KYGsV?=
- =?us-ascii?Q?hkdDxepAm/e7CkbfrXrU5exaXIDjoGUWU19cuyUCXXvzgSfOgNXauMeh3qz0?=
- =?us-ascii?Q?5CUwOS/O+j6ECal0nqfkga+ai2e5CIhn22shuEdKsjoWLkCTOppZPcs0vwoH?=
- =?us-ascii?Q?BEuBThRKCg+7FNifJG5FFc+WlnRQjlKWpugcZoZ5VPPOwbmF+JMF6B19v7c2?=
- =?us-ascii?Q?5DP/JsyVOdOsZo949BXQTz3HNpnHSq+Zua4qW0Yow0tMT2djV/i6drs1OfyY?=
- =?us-ascii?Q?MKz2fpoUL1yrTu9lDsrKzuTGdq0WLNBTo5g8jNig46dddZsX7E8NvfD1s+lV?=
- =?us-ascii?Q?r+tCHjQkzpe1hFLywJsATeQoUq39YLCUhm3oPgyI11I21p/QTs6LpED6t+gk?=
- =?us-ascii?Q?rUVdsvdsgkQ5KCrWFwSbj8SgMdWmH99B90GxNdibDFAPUoV45Bl38R7tlIpR?=
- =?us-ascii?Q?4X6COzrC7hw8fUXhSoxwYDAsHmwQxYyebHaUCNsJxYSXoQebTH2HLocgM1oC?=
- =?us-ascii?Q?V/KrIeGkOWoOwURXjRZQaNLseXYHlKvAOJFKfOcYRWFJ430BmhACXGZOJK+L?=
- =?us-ascii?Q?ua9pD1POSFdBZnYAZm0tB1WO3UUULqb2EJxv68lJ0NdFEZSTKWZPKXomyfOj?=
- =?us-ascii?Q?Lem4ii2qp/4x4T2J6Ug7lACs/6rD9Whd/EuR4Czx2YOwnpu1YbEROxDwo6Zg?=
- =?us-ascii?Q?AaQvdk/Mm6eOwxhaeVmmkwhacy4LbHPFVLiVCP8vYj2/rGHvn7xISqXCP7Ta?=
- =?us-ascii?Q?RL+FZ+ie8ppWcD6q+1Fvfe2I56TiN8fwaydvn0hah1lJX9TtUMjGS0YEvDQ6?=
- =?us-ascii?Q?5rdLsH0j11UMpXet5UF040OnjP9azebjavKgZ/dEayame7AwJdMXoEb1E01r?=
- =?us-ascii?Q?kYeiDcWowHy5pa2BmYNafybgrW2lQtavfNtr8yM+MMFSWFPeEAB8FMZGKT5J?=
- =?us-ascii?Q?SwUGF6YonemEK7esN5EuIK2usivh?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230302AbhC3G55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:57:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:62027 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhC3G5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 02:57:30 -0400
+IronPort-SDR: 21JlJxFgZvlFTAgjRGnpt6vS9CmqnAkScjfbNrIbtUrOj99RR0gsRr/Z5WppdjEqbSh7HD9dzc
+ 1IEOTk3qsTzA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="276870973"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="276870973"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 23:57:30 -0700
+IronPort-SDR: gy5rLxyE+VTdz5yjwO4CTlRHYYm+I7MaU7Zy/4paQ8LQ0PVey5B42ysllW/0opTWEBZ16euc3V
+ SeuwAl1dHtKA==
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="418033616"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 23:57:27 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [Question] Is there a race window between swapoff vs
+ synchronous swap_readpage
+References: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
+        <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com>
+        <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <CAOUHufYMjhQagKfdjekxr62bsB83UJvArddUsuwTXoo-5jA45A@mail.gmail.com>
+Date:   Tue, 30 Mar 2021 14:57:25 +0800
+In-Reply-To: <CAOUHufYMjhQagKfdjekxr62bsB83UJvArddUsuwTXoo-5jA45A@mail.gmail.com>
+        (Yu Zhao's message of "Mon, 29 Mar 2021 23:47:13 -0600")
+Message-ID: <874kgt9lii.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01aba343-0025-45e5-1d96-08d8f348fe9f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2021 06:56:50.6971
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hwfWTU7ixHImRSn2agMuOmz9i+SNEe8fW4xPFB3ZKlZB/8YiP2chP9286+2ZXWB/X0GaZVN7HBQojCD1SmqJ4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1051
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Eric Biggers <ebiggers@kernel.org>
-> Sent: Monday, March 29, 2021 6:26 PM
-> ...
-> It looks like your userspace is using tcrypt.ko to request that the kerne=
-l test
-> "ofb(aes)", but your kernel doesn't have CONFIG_CRYPTO_OFB enabled so the
-> test fails as expected. =20
+Yu Zhao <yuzhao@google.com> writes:
 
-Hi Eric,
-Thanks for the explanation! Yes, that's it!=20
+> On Mon, Mar 29, 2021 at 9:44 PM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>
+>> > On 2021/3/30 9:57, Huang, Ying wrote:
+>> >> Hi, Miaohe,
+>> >>
+>> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >>
+>> >>> Hi all,
+>> >>> I am investigating the swap code, and I found the below possible race window:
+>> >>>
+>> >>> CPU 1                                                       CPU 2
+>> >>> -----                                                       -----
+>> >>> do_swap_page
+>> >>>   skip swapcache case (synchronous swap_readpage)
+>> >>>     alloc_page_vma
+>> >>>                                                     swapoff
+>> >>>                                                       release swap_file, bdev, or ...
+>> >>>       swap_readpage
+>> >>>     check sis->flags is ok
+>> >>>       access swap_file, bdev or ...[oops!]
+>> >>>                                                         si->flags = 0
+>> >>>
+>> >>> The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
+>> >>> Is this will really happen or Am I miss something ?
+>> >>> Any reply would be really grateful. Thanks! :)
+>> >>
+>> >> This appears possible.  Even for swapcache case, we can't guarantee the
+>> >
+>> > Many thanks for reply!
+>> >
+>> >> swap entry gotten from the page table is always valid too.  The
+>> >
+>> > The page table may change at any time. And we may thus do some useless work.
+>> > But the pte_same() check could handle these races correctly if these do not
+>> > result in oops.
+>> >
+>> >> underlying swap device can be swapped off at the same time.  So we use
+>> >> get/put_swap_device() for that.  Maybe we need similar stuff here.
+>> >
+>> > Using get/put_swap_device() to guard against swapoff for swap_readpage() sounds
+>> > really bad as swap_readpage() may take really long time. Also such race may not be
+>> > really hurtful because swapoff is usually done when system shutdown only.
+>> > I can not figure some simple and stable stuff out to fix this. Any suggestions or
+>> > could anyone help get rid of such race?
+>>
+>> Some reference counting on the swap device can prevent swap device from
+>> swapping-off.  To reduce the performance overhead on the hot-path as
+>> much as possible, it appears we can use the percpu_ref.
+>
+> Hi,
+>
+> I've been seeing crashes when testing the latest kernels with
+>   stress-ng --class vm -a 20 -t 600s --temp-path /tmp
+>
+> I haven't had time to look into them yet:
+>
+> DEBUG_VM:
+>   BUG: unable to handle page fault for address: ffff905c33c9a000
+>   Call Trace:
+>    get_swap_pages+0x278/0x590
+>    get_swap_page+0x1ab/0x280
+>    add_to_swap+0x7d/0x130
+>    shrink_page_list+0xf84/0x25f0
+>    reclaim_pages+0x313/0x430
+>    madvise_cold_or_pageout_pte_range+0x95c/0xaa0
 
-Sorry for the false alarm! Actually the kernel is faultless here.
+If my understanding were correct, two bugs are reported?  One above and
+one below?  If so, and the above one is reported firstly.  Can you share
+the full bug message reported in dmesg?
 
-> Are you sure that anything changed on the kernel side
-> besides the kconfig you are using? It looks like this was always the beha=
-vior
-> when tcrypt.ko is used to test a non-existing algorithm.
+Can you convert the call trace to source line?  And the commit of the
+kernel?  Or the full kconfig?  So I can build it by myself.
 
-After I rebuilt the kernel with the 3 options:
-CONFIG_CRYPTO_OFB=3Dy
-CONFIG_CRYPTO_DEV_PADLOCK_AES=3Dy
-CONFIG_CRYPTO_ANSI_CPRNG=3Dy
+Best Regards,
+Huang, Ying
 
-and generated the .hmac file:
-sha512hmac /boot/vmlinuz-5.12.0-rc5+  > /boot/.vmlinuz-5.12.0-rc5+.hmac
-=20
-now the kernel boots up successfully with fips=3D1. :-)
-
-> Is your userspace code intentionally trying to test "ofb(aes)", or is it
-> accidental?
->=20
-> - Eric
-
-I'm not sure. This is a CentOS 8.3 VM, and I use the default configuration.
-I have been trying to build & run a v5.12.0-rc5+ kernel with fips=3D1, and
-now this is working for me, thanks to your explanation. Thanks again!
-
-Thanks,
--- Dexuan
+> KASAN:
+>   ==================================================================
+>   BUG: KASAN: slab-out-of-bounds in __frontswap_store+0xc9/0x2e0
+>   Read of size 8 at addr ffff88901f646f18 by task stress-ng-mrema/31329
+>   CPU: 2 PID: 31329 Comm: stress-ng-mrema Tainted: G S        I  L
+> 5.12.0-smp-DEV #2
+>   Call Trace:
+>    dump_stack+0xff/0x165
+>    print_address_description+0x81/0x390
+>    __kasan_report+0x154/0x1b0
+>    ? __frontswap_store+0xc9/0x2e0
+>    ? __frontswap_store+0xc9/0x2e0
+>    kasan_report+0x47/0x60
+>    kasan_check_range+0x2f3/0x340
+>    __kasan_check_read+0x11/0x20
+>    __frontswap_store+0xc9/0x2e0
+>    swap_writepage+0x52/0x80
+>    pageout+0x489/0x7f0
+>    shrink_page_list+0x1b11/0x2c90
+>    reclaim_pages+0x6ca/0x930
+>    madvise_cold_or_pageout_pte_range+0x1260/0x13a0
+>
+>   Allocated by task 16813:
+>    ____kasan_kmalloc+0xb0/0xe0
+>    __kasan_kmalloc+0x9/0x10
+>    __kmalloc_node+0x52/0x70
+>    kvmalloc_node+0x50/0x90
+>    __se_sys_swapon+0x353a/0x4860
+>    __x64_sys_swapon+0x5b/0x70
+>
+>   The buggy address belongs to the object at ffff88901f640000
+>    which belongs to the cache kmalloc-32k of size 32768
+>   The buggy address is located 28440 bytes inside of
+>    32768-byte region [ffff88901f640000, ffff88901f648000)
+>   The buggy address belongs to the page:
+>   page:0000000032d23e33 refcount:1 mapcount:0 mapping:0000000000000000
+> index:0x0 pfn:0x101f640
+>   head:0000000032d23e33 order:4 compound_mapcount:0 compound_pincount:0
+>   flags: 0x400000000010200(slab|head)
+>   raw: 0400000000010200 ffffea00062b8408 ffffea000a6e9008 ffff888100040300
+>   raw: 0000000000000000 ffff88901f640000 0000000100000001 000000000000000
+>   page dumped because: kasan: bad access detected
+>
+> Memory state around the buggy address:
+>    ffff88901f646e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    ffff88901f646e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>   >ffff88901f646f00: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
+>                               ^
+>    ffff88901f646f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>    ffff88901f647000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>   ==================================================================
+>
+> Relevant config options I could think of:
+>
+> CONFIG_MEMCG_SWAP=y
+> CONFIG_THP_SWAP=y
+> CONFIG_ZSWAP=y
