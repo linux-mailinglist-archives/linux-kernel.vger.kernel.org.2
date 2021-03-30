@@ -2,109 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B283734E3C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5E634E3CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhC3I7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbhC3I65 (ORCPT
+        id S231795AbhC3I7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:59:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28729 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231696AbhC3I7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:58:57 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3220AC061762;
-        Tue, 30 Mar 2021 01:58:57 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id m11so11677556pfc.11;
-        Tue, 30 Mar 2021 01:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=F9tSrsqSDZKawmCDjVV+tzhmJdPbgKPqMa/CwWx5jps=;
-        b=C0EXNuAjqJ0RYeS2/x/rgzfMvYBNcw7W0kjMnzwTG3Uo4kuGO6m+vVr0bd09QrFmhO
-         /GI6tMuLAxdgtMJAn49vD7jxqQFbEjGZVf7WDLiJt7p43hqdXP03jErWYqDoBtUiezhN
-         /OmmOSIWHQTjljntLn7nveNxNhYaqd2c/hVfUbCREPF/j6LJ4Q6StVtS23DXrNKS6SzZ
-         vW0i8WLRZdbF7bqcVdZZz1CQ/GRLo4W7KI5dpfGcxnvK90paeAz42woR5uU5ai20PmWR
-         8+XQExdk2coXf1D+jE4e7Y864IaC9mdsvSGwrtTHCQZbPdzSuV8+JQvP8YS6N+OaefTy
-         PFfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=F9tSrsqSDZKawmCDjVV+tzhmJdPbgKPqMa/CwWx5jps=;
-        b=st5Kc7Yy1Yhxsy2yzF8uzV+2PQCNiaPcC8nG6yU2DBQGowErUd+E4xGtDOJksN17Ed
-         t04puVtemBg+Bp5dcrEUeeCVw0ybo//X3w6j7A7f5Uyp035glo9JUgCWlsKGnj330Pjd
-         yV3PSzzrpKOJbQRkzfO9I8oTFOqLEn17/edNbLYbg3TRcbbPdsX671DamuArr71zeXpU
-         kYBzDkGVDuC8INW+u/4FKvavWzc7I8YKKEIMnPSp22GIqUplHgUCVUPpyY5r1s0S2OBQ
-         pKpI23NDaHA6xRbSRy9xrIS+/Ls4WmluQU9//YPEdpqnm9cn0jTP/Flg+evh5KJeQokW
-         QpVA==
-X-Gm-Message-State: AOAM532LHml6EX8aOWczU8LldSNYQZHskwFPISK/Y8WhdLnNdA2cqU1L
-        xrZn7eKXJMGLls5Lj80wkIE=
-X-Google-Smtp-Source: ABdhPJz4JEITEdJIKes5VdRLdLAriYxA0JWe625kgdkuzO430nqFP/o7RLuxlnIZtT/OtWNqDsHohQ==
-X-Received: by 2002:a62:800c:0:b029:203:6990:78e2 with SMTP id j12-20020a62800c0000b0290203699078e2mr29079533pfd.3.1617094736831;
-        Tue, 30 Mar 2021 01:58:56 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id y8sm20952642pfp.140.2021.03.30.01.58.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Mar 2021 01:58:56 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     robh@kernel.org, valentin.caron@foss.st.com,
-        Alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
-        a.fatoum@pengutronix.de, mcoquelin.stm32@gmail.com,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com,
-        gregkh@linuxfoundation.org, erwan.leray@foss.st.com,
-        erwan.leray@st.com, linux-serial@vger.kernel.org, lkp@intel.com,
-        patrice.chotard@foss.st.com
-Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v8 6/6] dt-bindings: serial: stm32: Use 'type: object' instead of false for 'additionalProperties'
-Date:   Tue, 30 Mar 2021 16:58:24 +0800
-Message-Id: <1617094704-10040-7-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617094704-10040-1-git-send-email-dillon.minfei@gmail.com>
-References: <1617094704-10040-1-git-send-email-dillon.minfei@gmail.com>
+        Tue, 30 Mar 2021 04:59:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617094743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z7IpkPKNO0+WZGDPW7WcTQq39mnF+XSoroeOgb4x870=;
+        b=LEC6oJpU1QyY7IbTsWXo1DCZLAYbpWG34NwKKDaCKTLx3vANscyjxkQaESHypMDH/0jr1I
+        z7RSFK2rTaEAlxkk3shKRESWfnvnlb+jkVsRp5wjkIu93ruXyAxNn96I8cD6xZiKzCNKDg
+        9+uzSlvAhVVNtYvwGRiTKcWGIUrIBtQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-05lw0s0-PG6axPupkq6nyA-1; Tue, 30 Mar 2021 04:59:01 -0400
+X-MC-Unique: 05lw0s0-PG6axPupkq6nyA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0AC8180FCAA;
+        Tue, 30 Mar 2021 08:58:57 +0000 (UTC)
+Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F27E1001B2C;
+        Tue, 30 Mar 2021 08:58:44 +0000 (UTC)
+Subject: Re: [PATCH v1 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <20210317110644.25343-1-david@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <af5555cf-d112-44fd-e030-bfe8f89c8ddc@redhat.com>
+Date:   Tue, 30 Mar 2021 10:58:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210317110644.25343-1-david@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+On 17.03.21 12:06, David Hildenbrand wrote:
+> Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
+> 
+> Now accompanied by minor adjustments and selftests/vm tests.
+> 
+> RFCv2 -> v1
+> - "mm: fix variable name in declaration of populate_vma_page_range()"
+> -- Added
+> - "mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault ..."
+> -- Fix detection of memory holes when we have to re-lookup the VMA
+> -- Return -EHWPOISON to user space when we hit HW poisoned pages
+> -- Make variable names in definition and declaration consistent
+> - "MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT"
+> -- Added
+> - "selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore"
+> -- Added
+> - "selftests/vm: add test for MADV_POPULATE_(READ|WRITE)"
+> -- Added
+> 
+> RFC -> RFCv2:
+> - Fix re-locking (-> set "locked = 1;")
+> - Don't mimic MAP_POPULATE semantics:
+> --> Explicit READ/WRITE request instead of selecting it automatically,
+>      which makes it more generic and better suited for some use cases (e.g., we
+>      usually want to prefault shmem writable)
+> --> Require proper access permissions
+> - Introduce and use faultin_vma_page_range()
+> --> Properly handle HWPOISON pages (FOLL_HWPOISON)
+> --> Require proper access permissions (!FOLL_FORCE)
+> - Let faultin_vma_page_range() check for compatible mappings/permissions
+> - Extend patch description and add some performance numbers
+> 
+> David Hildenbrand (5):
+>    mm: make variable names for populate_vma_page_range() consistent
+>    mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault/prealloc
+>      memory
+>    MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT
+>    selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore
+>    selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
+> 
+>   MAINTAINERS                                |   1 +
+>   arch/alpha/include/uapi/asm/mman.h         |   3 +
+>   arch/mips/include/uapi/asm/mman.h          |   3 +
+>   arch/parisc/include/uapi/asm/mman.h        |   3 +
+>   arch/xtensa/include/uapi/asm/mman.h        |   3 +
+>   include/uapi/asm-generic/mman-common.h     |   3 +
+>   mm/gup.c                                   |  54 ++++
+>   mm/internal.h                              |   5 +-
+>   mm/madvise.c                               |  69 +++++
+>   tools/testing/selftests/vm/.gitignore      |   3 +
+>   tools/testing/selftests/vm/Makefile        |   1 +
+>   tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
+>   tools/testing/selftests/vm/run_vmtests.sh  |  16 +
+>   13 files changed, 505 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/testing/selftests/vm/madv_populate.c
+> 
 
-To use additional properties 'bluetooth' on serial, need replace false with
-'type: object' for 'additionalProperties' to make it as a node, else will
-run into dtbs_check warnings.
+Gentle ping.
 
-'arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
-'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
-
-Fixes: af1c2d81695b ("dt-bindings: serial: Convert STM32 UART to json-schema")
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: Valentin Caron <valentin.caron@foss.st.com>
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/1616757302-7889-8-git-send-email-dillon.minfei@gmail.com
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
-v8: no changes, this patch was merged to tty-next by Greg Kroah-Hartman
-
- Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 8631678283f9..865be05083c3 100644
---- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-@@ -80,7 +80,8 @@ required:
-   - interrupts
-   - clocks
- 
--additionalProperties: false
-+additionalProperties:
-+  type: object
- 
- examples:
-   - |
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
