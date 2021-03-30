@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2108D34F1A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65034F1A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233183AbhC3Tcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:32:52 -0400
-Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:61152
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233110AbhC3Tck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:32:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4mcptxhUrD5agO8aP1Ket9xR1Fb3XuYV76TCuyMEpx3x1XE0/w54Hht4mBhJQQNooAWmoAs4GFPMsqG2+Oqc1kX+vslCUWRFC3m+KU88VDFGTDCPeXWAZhkrO+r/rMsu3x7o0SckEpLEPCjMSvAz57ks1sMYplSPS4TEYSHe2uuGqTQfkwu5ph+q8k0ZO++53oMPtRXfovH1twIJXX3y1Kb/fjF8FCUE1fcr5CqpDsALfPz9zPhqwDgglGnIBbdox+gdV2o0xf5nY8JXevhGlywEgmECeF8d5Rroqg6/yDhq8ldBX5wfSgoY5OnNLIie2n1Zh4oJDCBAYVLZvgk3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7PhcGFNlYjLV9XW95SmKtHxN8eoffs4BbapQaYBQ1UA=;
- b=ROhwzOImRxDMu8iUUztUR80UIUnAZmwXKkxkNJmCgMWMM0MYaXKqIZ48PdAnGUONdrj12NuE6S5S71qoNpEO92ayq0K3vFPiOPYAWVhWY8qFS/U6/jXQPxTFUdhyUTgWPoXpm59WpSmn6bn+sQX0zLv07gWL4J+VFX7DZdY6HU3gSem9sDKkAZTZgMQRN7YsN80o9NwT943dFyM7VBwgMJFRimwmL4HGrBfX1HMa3ylGO6VB5XK5LzlCQ6feGhB61L/0r5LSVDhudOnJ7haD2KnyIP/Vbe7vSPHRYL/EyRF3SatxdsG5KmYvbjpgY9z9RZxL3xsAtGeFr8G5MqZLeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7PhcGFNlYjLV9XW95SmKtHxN8eoffs4BbapQaYBQ1UA=;
- b=c33WOS1+64r9W829u0ONKjgNrUnWqFQZGECxx8j47q6kqkSOf9rlmZcLVQGw/TJyNxkZS+3y7sMBCtNrpggCb6XNm8k3qqHxeE5s8uQSSQk8sJBeK8IeEgGAwx+Xw7v+QAONqXzMIuFpmxglwkS6FXyFTJleKSdIz0rnEufoCOD8lHj/iT3pFTDDB9YCxIwZTWKjHc48AhA0+QsSPH9LFQ57+bfu0cjCXfue0Ah2GKzKJLXmUCoOQaPNkOVikTSfR+5UkgI4bAJq2mol5E0b+AydzIX0eLtfLdvZaqwS6MITU1AbqtR6NfZFHDpZE4zL1qZbpwtDPc+uNTb9v5bAnw==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1146.namprd12.prod.outlook.com (2603:10b6:3:73::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 30 Mar
- 2021 19:32:36 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 19:32:36 +0000
-Date:   Tue, 30 Mar 2021 16:32:34 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 5/8] mm: Device exclusive memory access
-Message-ID: <20210330193234.GA2356281@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <20210326000805.2518-6-apopple@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326000805.2518-6-apopple@nvidia.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BLAPR03CA0141.namprd03.prod.outlook.com
- (2603:10b6:208:32e::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233197AbhC3Te3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:34:29 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52605 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233118AbhC3Td6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 15:33:58 -0400
+IronPort-SDR: 0Lz+cxIxPSCY3Oi1mxtWUC1HXqP2kr/WEnN1sJszmG8nVg9RTOTZJGFBWZn45Wh4OeotHUtzAP
+ zO9bUValMuuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="255833529"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="255833529"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 12:33:53 -0700
+IronPort-SDR: ipDdXhM0HYmcXzaf5Bf5Vbfu1j7BG0thITxWAWCWipi737+S+pQCLCZ67577xD6V8XEehnSbid
+ O2x0rQCw4wtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="455158028"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 30 Mar 2021 12:33:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EA1C7133; Tue, 30 Mar 2021 22:34:06 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Rosin <peda@axentia.se>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 1/3] mux: gpio: Use bitmap API instead of direct assignment
+Date:   Tue, 30 Mar 2021 22:33:23 +0300
+Message-Id: <20210330193325.68362-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0141.namprd03.prod.outlook.com (2603:10b6:208:32e::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29 via Frontend Transport; Tue, 30 Mar 2021 19:32:36 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRK6M-0060w4-Is; Tue, 30 Mar 2021 16:32:34 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37fe68d8-06b5-4a41-ad3c-08d8f3b29286
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1146:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB11460C0455FAD4792D2007F0C27D9@DM5PR12MB1146.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rw/XrX6AXfYloHbskeYOeLPsHyNYLcxZg9mqf7xSYK5QvP/2wB0rK1h9GRcaV4R83EbtXfuKzolT/Lh684mkIuexpNIGyZdwIJErVeb6cki6DpsKlwlVoZrNgZPh1xPS7Q99L9YIXl6qcaPxJHbgqFYFFvDBq7JCiWNUyvfw2CGtYSIRvOipeSlsyb0mHsSu4PkLdbDLPgBOJZ5UMt1R+CQ3Lo34FUH3OrraCBAJhiFRWNh9TUCNZuYaVV/5xJThKJeWJp8b/EEx8N6Y68/A+lomGLLXvaBN6Rgw0z1i6QWKDuzSOXkpuBI+HYf+u70I54VwfFnqkIclGW0W0MFWoZJHqGXx4A5CyNKm4sOG0HIRfglCCs2pIhIbzF47OnSLepaeU0buxBi2/y95+P+EVHNcH59HgYTJu8AKfhtCMcBxjNWEq17qTyU8xynJ4iLSDQH0IuU0yyaYbVO4LkxYvxwhpRKTiaF7UogRTIHdrmcqhxVfUuHAM66DZaV0X+ztYYolJPGmxGCvPMPyDTvzFaDPVRuQNxoq24TCJ2oQ+Wni4aCUquwML9BjJYSFQL0lPwq0v8GHnSDsQNI1uFA+QNOgv1XY2uKyh5OptlmCjNj2a2st6lwrJEILCJCrNBi7foqt8LoM3VyHHyU3kdAjU9dei/nXn662l6fnNNXlZqI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(366004)(346002)(396003)(4326008)(6636002)(8936002)(316002)(37006003)(26005)(38100700001)(7416002)(2906002)(2616005)(86362001)(33656002)(426003)(186003)(6862004)(8676002)(478600001)(5660300002)(9746002)(66476007)(1076003)(66946007)(66556008)(9786002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MDIS8/wu7soJaecqBUztEe5bkfyPOy1ItblRAEcrwsMe1HIcz85kqW3pkqZ9?=
- =?us-ascii?Q?sa4ANWUN879JGxX4Un77YY8CV9YrilOuGQ3wOtLNeMat9qMS1jJ99KTiPftJ?=
- =?us-ascii?Q?oe7A1jnUuuX5vaACnJx0OxokihEtyhYfpdb0HRO2JPgcAkcaxru4ZaAJLasW?=
- =?us-ascii?Q?gKPpKCmpQS1GmZVYY6pXe1Jj7y/aVaJ4o6WqvYRdGVfOODvFKG+a3/v9nmMx?=
- =?us-ascii?Q?fuzjpBQsKstz6bopnbiePCtiGV5BHseYI+ZX3kDPobW4tSK30px63QSWRt8j?=
- =?us-ascii?Q?VOnnzikj2xCtFFyVLjfWAsY70MUwjT0uFtgmrPKq6p6KIbUIiDEzVMMVLc0J?=
- =?us-ascii?Q?tvk+X2Gw2fJQu7Jht88k3FOPaf6NB4nK/fdOL24KMPLk2rI3Xzrb31h1+yDh?=
- =?us-ascii?Q?1rnHT1Gn8eiwYiBd5FUDHezsTjvvSbLaxyueOvM1Nif2KvTz76Fd6Vz7/URq?=
- =?us-ascii?Q?Keif9XVz8yAm4KpaZBUU+DJCMgkVaoudajJ/zThK/A4GdG5HpAMbaKD2ekb1?=
- =?us-ascii?Q?eE6HumMoOc8u5CJ3xprR6uhM7s/vhOk6fmLTiFoGThTJUWA6+5eMz8JSUwqs?=
- =?us-ascii?Q?YgAeX575yiq+FaobMPXdRMgGsyrBmOYczKWZELiNwz7eq3l+7IE9ssM1N5lv?=
- =?us-ascii?Q?ss7/vs/V1VVQY2VISzlpz8NYPQKOlkP75jB8Tod8q2nTXao7Gq2FnQCDIqtJ?=
- =?us-ascii?Q?/5plX6q5+MRHYeiESeBfmwgCa+/QpfmRTfiOjkfvJj7QNOUXGQlpiz0UFRr0?=
- =?us-ascii?Q?kdP3RhGiYMb55VU6Zv55aAOumBN773cznx8IoX6jNBx5I31Xy885kXK+8APL?=
- =?us-ascii?Q?nNxPSNiaz3+aykzxKbOURcKU+zBhWbHMACI1Dk285q9CJrZP8W4lFzPTD0B7?=
- =?us-ascii?Q?FjQWfYgb3ML0eKJJjFud5zpitkH7AYK6hsGL1FAQeMaIlSgIlTXw85z4nzn6?=
- =?us-ascii?Q?+zNxY/UNQPuo0h21r2kyaf8AWGTEGf/WSXNPROSf0iuuT7XRpJMI+89LzRAl?=
- =?us-ascii?Q?cn+kMqAhCPZEEj1iB8A0gsrSNrUrptJrAmwuDYav2NNzdd9avPFETYgUEV/a?=
- =?us-ascii?Q?0pRVJhaN6Z5Kf4wBxVYKmCH+Rlq1pe4wAgo1w+QS/UE6cTB2LL4PchsZJTbu?=
- =?us-ascii?Q?a4kET2LWL+wm2U0qo2qOKp2cr8eCxMD8Eh6AM+NKWkturGEwc7fFgjXMYbiz?=
- =?us-ascii?Q?ilYdCq8+rMsTpG4/Glm/MywO7NHmbCUxYTuZGz5GUa/vhzmTlRmdJEhLuuJU?=
- =?us-ascii?Q?rLi+3aTd9ErUBtmZ9ByqpiGAn0Nadrp2rL4nLNPA0xJzCyRuy0JdszxQqhZy?=
- =?us-ascii?Q?6fcsLtMVgtre0Gbku48lgZC1PMDBOtGV9cbT800G1oIpPg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37fe68d8-06b5-4a41-ad3c-08d8f3b29286
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 19:32:36.8209
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JImXeaAgtp/05FnYQTtLdXkback4yZpTgLANfcnB+9nF2JnHckQagdb/Xg1bpjaJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1146
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:08:02AM +1100, Alistair Popple wrote:
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 3a5705cfc891..33d11527ef77 100644
-> +++ b/mm/memory.c
-> @@ -781,6 +781,27 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
->  				pte = pte_swp_mkuffd_wp(pte);
->  			set_pte_at(src_mm, addr, src_pte, pte);
->  		}
-> +	} else if (is_device_exclusive_entry(entry)) {
-> +		page = pfn_swap_entry_to_page(entry);
-> +
-> +		get_page(page);
-> +		rss[mm_counter(page)]++;
-> +
-> +		if (is_writable_device_exclusive_entry(entry) &&
-> +		    is_cow_mapping(vm_flags)) {
-> +			/*
-> +			 * COW mappings require pages in both
-> +			 * parent and child to be set to read.
-> +			 */
-> +			entry = make_readable_device_exclusive_entry(
-> +							swp_offset(entry));
-> +			pte = swp_entry_to_pte(entry);
-> +			if (pte_swp_soft_dirty(*src_pte))
-> +				pte = pte_swp_mksoft_dirty(pte);
-> +			if (pte_swp_uffd_wp(*src_pte))
-> +				pte = pte_swp_mkuffd_wp(pte);
-> +			set_pte_at(src_mm, addr, src_pte, pte);
-> +		}
+Assigning bitmaps like it's done in the driver might be error prone.
+Fix this by using bitmap API.
 
-This needs to have the same logic as we now have in
-copy_present_page(). The page *is* present and we can't copy the PTE
-value hidden in a swap entry if we can't copy the PTE normally.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Peter Rosin <peda@axentia.se>
+---
+v2: left blank line untouched (Peter)
+ drivers/mux/gpio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-The code should be shared because nobody is going to remember about
-this corner case.
+diff --git a/drivers/mux/gpio.c b/drivers/mux/gpio.c
+index 02c1f2c014e8..d1b4aa923657 100644
+--- a/drivers/mux/gpio.c
++++ b/drivers/mux/gpio.c
+@@ -7,6 +7,7 @@
+  * Author: Peter Rosin <peda@axentia.se>
+  */
+ 
++#include <linux/bitmap.h>
+ #include <linux/err.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+@@ -23,8 +24,9 @@ static int mux_gpio_set(struct mux_control *mux, int state)
+ {
+ 	struct mux_gpio *mux_gpio = mux_chip_priv(mux->chip);
+ 	DECLARE_BITMAP(values, BITS_PER_TYPE(state));
++	u32 value = state;
+ 
+-	values[0] = state;
++	bitmap_from_arr32(values, &value, BITS_PER_TYPE(value));
+ 
+ 	gpiod_set_array_value_cansleep(mux_gpio->gpios->ndescs,
+ 				       mux_gpio->gpios->desc,
+@@ -71,7 +73,7 @@ static int mux_gpio_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 	WARN_ON(pins != mux_gpio->gpios->ndescs);
+-	mux_chip->mux->states = 1 << pins;
++	mux_chip->mux->states = BIT(pins);
+ 
+ 	ret = device_property_read_u32(dev, "idle-state", (u32 *)&idle_state);
+ 	if (ret >= 0 && idle_state != MUX_IDLE_AS_IS) {
+-- 
+2.30.2
 
-Jason
