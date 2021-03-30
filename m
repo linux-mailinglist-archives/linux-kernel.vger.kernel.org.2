@@ -2,305 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D134E4AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A7634E4AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhC3JoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:44:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38826 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbhC3JoQ (ORCPT
+        id S231589AbhC3Jpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231313AbhC3Jpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:44:16 -0400
-Received: from [IPv6:2a02:810a:880:f54:2d37:13aa:2f32:9c00] (unknown [IPv6:2a02:810a:880:f54:2d37:13aa:2f32:9c00])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DD1711F4545D;
-        Tue, 30 Mar 2021 10:44:14 +0100 (BST)
-Subject: Re: [PATCH v2 2/3] drm/mediatek: Don't support hdmi connector
- creation
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, dafna3@gmail.com, chunkuang.hu@kernel.org,
-        p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
-        enric.balletbo@collabora.com
-References: <20210329153632.17559-1-dafna.hirschfeld@collabora.com>
- <20210329153632.17559-3-dafna.hirschfeld@collabora.com>
- <YGJr+jopSvH4SdsL@pendragon.ideasonboard.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <3ced4fcf-5ebb-5e34-dfcd-84545237b584@collabora.com>
-Date:   Tue, 30 Mar 2021 11:44:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 30 Mar 2021 05:45:41 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3869C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:45:40 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v11so15547641wro.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jyeWZx63Re9KiS8wVurTuqgEPIkOl3yZwdtiNQUUJqU=;
+        b=SJBQdhgjAnJToTFR6CjeywJHipkWVO9KZF/bBePjDyUycoy2UQxldKZVEmj4R7aQvI
+         CqJ5qgAkQtljJxDdZ6VQ4HIEe9eJvAMSJ3XfxX1vQ7X2jfX5Ed42cjWvjfH9cOMgUbUp
+         rzyztCalDpOYiqtXXKQ9nFy4jpRUVXn2Mn2ct1VhPNajPtUOxEkNZpHdmJWTyXJ7UE8r
+         +OByxpv8uj5RmVmalEIvwCAZoU7BxNiHcmIN81ldYlKYaVmzjRoy1sPOx0WhRNlvusHn
+         kUtGoiCs2HvCT3+qy3Ryd4Hj/zgbJ12eCie1YIGqabAYW7Pu/jUVIgEmlA+zB7+m9MJP
+         t0ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jyeWZx63Re9KiS8wVurTuqgEPIkOl3yZwdtiNQUUJqU=;
+        b=FyGO5ACa8WxrI7A5Bk5hAxJQe5ADXn3gwpmzUc1mk5TNlXa7K4CzqRbgyWQKk+DPiu
+         wsM6VFw/RAob0XWv2Ztj2S5XpV8m3OUb1fnMjHiMcRtmYWPRBK3R6wXtxxiijG9sEWuw
+         DHw0tXV0FaOhrypm9si6ivyMf5I3gOK8RvYosRIni/d5CKPtkpbc4HQoPKC9lNxSLVc9
+         wE3wF0mlJNBY3JVSqCHdWsJgoxlMJa06D8Uc5iK8sN3XzAqQNI/cSRJxnctpgXAs04zc
+         GJJ3r0DQhCIht0wnCa1/SEZ5GCHX0U87PzXoCm0PVKX1K63lMRmyAPlPmJqZ1q0J/Hk6
+         ThQw==
+X-Gm-Message-State: AOAM5334E+iQ9NR1d9lQ1/NXD4xXzgFYmxQqEK4I/Q5TVniGUMLuXrQi
+        /XFiHQ3XM22VJ++/ovkglUROOQ==
+X-Google-Smtp-Source: ABdhPJwFjxIyu6CEz3kHMuVU8Y2DEF75HinlZIhpypO6l4DBg+rJmvRAs9Nt3a7KC2sXwad/9YrPVQ==
+X-Received: by 2002:adf:b355:: with SMTP id k21mr33614643wrd.156.1617097539344;
+        Tue, 30 Mar 2021 02:45:39 -0700 (PDT)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id a4sm34319167wrx.86.2021.03.30.02.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 02:45:39 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 09:45:36 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        quentin.perret@arm.com, zhang.lyra@gmail.com, xuewyan@foxmail.com
+Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in
+ eas
+Message-ID: <YGLzQAvVqlrKb8AB@google.com>
+References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YGJr+jopSvH4SdsL@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330052154.26861-1-xuewen.yan94@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 30.03.21 02:08, Laurent Pinchart wrote:
-> Hi Dafna,
+On Tuesday 30 Mar 2021 at 13:21:54 (+0800), Xuewen Yan wrote:
+> From: Xuewen Yan <xuewen.yan@unisoc.com>
 > 
-> Thank you for the patch.
+> now the energy delta compute as follow:
 > 
-> On Mon, Mar 29, 2021 at 05:36:31PM +0200, Dafna Hirschfeld wrote:
->> commit f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
->> broke the display support for elm device since mtk_dpi calls
->> drm_bridge_attach with the flag DRM_BRIDGE_ATTACH_NO_CONNECTOR
->> while mtk_hdmi does not yet support this flag.
->>
->> Fix this by accepting DRM_BRIDGE_ATTACH_NO_CONNECTOR in bridge attachment.
->> Implement the drm_bridge_funcs .detect() and .get_edid() operations, and
->> call drm_bridge_hpd_notify() to report HPD. This provides the
->> necessary API to support disabling connector creation.
->>
->> This patch is inspired by a similar patch for bridge/synopsys/dw-hdmi.c:
->> commit ec971aaa6775 ("drm: bridge: dw-hdmi: Make connector creation optional")
->> But with the difference that in mtk-hdmi only the option of not creating
->> a connector is supported.
->>
->> Fixes: f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
->> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_hdmi.c | 129 ++++++++++------------------
->>   1 file changed, 44 insertions(+), 85 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
->> index f2c810b767ef..1eeb211b1536 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
->> @@ -186,11 +186,6 @@ static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
->>   	return container_of(b, struct mtk_hdmi, bridge);
->>   }
->>   
->> -static inline struct mtk_hdmi *hdmi_ctx_from_conn(struct drm_connector *c)
->> -{
->> -	return container_of(c, struct mtk_hdmi, conn);
->> -}
->> -
->>   static u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset)
->>   {
->>   	return readl(hdmi->regs + offset);
->> @@ -1201,48 +1196,30 @@ mtk_hdmi_update_plugged_status(struct mtk_hdmi *hdmi)
->>   	       connector_status_connected : connector_status_disconnected;
->>   }
->>   
->> -static enum drm_connector_status hdmi_conn_detect(struct drm_connector *conn,
->> -						  bool force)
->> -{
->> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
->> -	return mtk_hdmi_update_plugged_status(hdmi);
->> -}
->> -
->> -static void hdmi_conn_destroy(struct drm_connector *conn)
->> +static struct edid *mtk_hdmi_get_edid(struct mtk_hdmi *hdmi,
->> +				      struct drm_connector *connector)
->>   {
->> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
->> -
->> -	mtk_cec_set_hpd_event(hdmi->cec_dev, NULL, NULL);
->> -
->> -	drm_connector_cleanup(conn);
->> -}
->> -
->> -static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
->> -{
->> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
->>   	struct edid *edid;
->> -	int ret;
->>   
->>   	if (!hdmi->ddc_adpt)
->> -		return -ENODEV;
->> -
->> -	edid = drm_get_edid(conn, hdmi->ddc_adpt);
->> +		return NULL;
->> +	edid = drm_get_edid(connector, hdmi->ddc_adpt);
->>   	if (!edid)
->> -		return -ENODEV;
->> -
->> +		return NULL;
->>   	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
->> +	return edid;
->> +}
->>   
->> -	drm_connector_update_edid_property(conn, edid);
->> -
->> -	ret = drm_add_edid_modes(conn, edid);
->> -	kfree(edid);
->> -	return ret;
->> +static enum drm_connector_status mtk_hdmi_detect(struct mtk_hdmi *hdmi)
->> +{
->> +	return mtk_hdmi_update_plugged_status(hdmi);
->>   }
->>   
->> -static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
->> -				    struct drm_display_mode *mode)
->> +static int mtk_hdmi_bridge_mode_valid(struct drm_bridge *bridge,
->> +				      const struct drm_display_info *info,
->> +				      const struct drm_display_mode *mode)
->>   {
->> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
->> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
->>   	struct drm_bridge *next_bridge;
->>   
->>   	dev_dbg(hdmi->dev, "xres=%d, yres=%d, refresh=%d, intl=%d clock=%d\n",
->> @@ -1267,74 +1244,50 @@ static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
->>   	return drm_mode_validate_size(mode, 0x1fff, 0x1fff);
->>   }
->>   
->> -static struct drm_encoder *mtk_hdmi_conn_best_enc(struct drm_connector *conn)
->> -{
->> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
->> -
->> -	return hdmi->bridge.encoder;
->> -}
->> -
->> -static const struct drm_connector_funcs mtk_hdmi_connector_funcs = {
->> -	.detect = hdmi_conn_detect,
->> -	.fill_modes = drm_helper_probe_single_connector_modes,
->> -	.destroy = hdmi_conn_destroy,
->> -	.reset = drm_atomic_helper_connector_reset,
->> -	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
->> -	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
->> -};
->> -
->> -static const struct drm_connector_helper_funcs
->> -		mtk_hdmi_connector_helper_funcs = {
->> -	.get_modes = mtk_hdmi_conn_get_modes,
->> -	.mode_valid = mtk_hdmi_conn_mode_valid,
->> -	.best_encoder = mtk_hdmi_conn_best_enc,
->> -};
->> -
->>   static void mtk_hdmi_hpd_event(bool hpd, struct device *dev)
->>   {
->>   	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
->>   
->> -	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev)
->> +	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev) {
->> +		static enum drm_connector_status status;
->> +
->> +		status = mtk_hdmi_detect(hdmi);
->>   		drm_helper_hpd_irq_event(hdmi->bridge.encoder->dev);
+> base_energy_pd = compute_energy(p, -1, pd);
+> 	--->Traverse all CPUs in pd
+> 	--->em_pd_energy()
+> ----------------------------------------------------- \
+> search for the max_sapre_cap_cpu                       \
+> ---------------------------------                       search time
+> cur_delta = compute_energy(p, max_spare_cap_cpu, pd);  /
+> 	--->Traverse all CPUs in pd                   /
+> ---------------------------------------------------- /
+> 	--->em_pd_energy()
+> cur_delta -= base_energy_pd;
 > 
-> I think you can drop this, as drm_bridge_connector_hpd_cb() calls
-> drm_kms_helper_hotplug_event().
+> During the search_time, or when calculate the cpu_util in
+> compute_energy(), there may occurred task dequeue or cpu_util change,
+> it may cause the cur_energy < base_energy_pd, so the cur_delta
+> would be negative. But the cur_delta is unsigned long, at this time,
+> the cur_delta would always bigger than best_delta of last pd.
+> 
+> Change the vars to signed long.
 
-I see that drm_kms_helper_hotplug_event is called from drm_bridge_connector_hpd_cb,
-which is set as a birdge's 'hpd_cb' when calling drm_bridge_connector_enable_hpd,
-but mkt_dpi does not call this funcion for the drm_bridge_connector.
+Is that really helping though?
 
-I also wonder why bridges have both 'hpd_cb' and a function 'hpd_notify'.
-It seems that both are called upon hot-plug event.
-It is also confusing that the function drm_bridge_hpd_notify calls the 'hpd_cb'
-and not the 'hpd_notfiy'. I can send a patch to change the name to 'drm_bridge_hpd_cb'
+Yes you will not overflow, but the decision is still 'wrong' if the util
+values are not stable for the entire wake-up. I think folks on the Arm
+side had patches to try and cache the util values upfront, and then use
+them throughout feec() and compute_energy(), which I think would be a
+better fix.
+
+Dietmar, wdyt?
 
 Thanks,
-Dafna
-
-> 
->> +		drm_bridge_hpd_notify(&hdmi->bridge, status);
->> +	}
->>   }
->>   
->>   /*
->>    * Bridge callbacks
->>    */
->>   
->> +static enum drm_connector_status mtk_hdmi_bridge_detect(struct drm_bridge *bridge)
->> +{
->> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
->> +
->> +	return mtk_hdmi_detect(hdmi);
->> +}
->> +
->> +static struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge,
->> +					     struct drm_connector *connector)
->> +{
->> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
->> +
->> +	return mtk_hdmi_get_edid(hdmi, connector);
-> 
-> As mtk_hdmi_get_edid() is only called here, you could inline it in this
-> function. Up to you.
-> 
->> +}
->> +
->>   static int mtk_hdmi_bridge_attach(struct drm_bridge *bridge,
->>   				  enum drm_bridge_attach_flags flags)
->>   {
->>   	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
->>   	int ret;
->>   
->> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
->> -		DRM_ERROR("Fix bridge driver to make connector optional!");
->> +	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
->> +		DRM_ERROR("%s: The flag DRM_BRIDGE_ATTACH_NO_CONNECTOR must be supplied\n",
->> +			  __func__);
->>   		return -EINVAL;
->>   	}
->>   
->> -	ret = drm_connector_init_with_ddc(bridge->encoder->dev, &hdmi->conn,
->> -					  &mtk_hdmi_connector_funcs,
->> -					  DRM_MODE_CONNECTOR_HDMIA,
->> -					  hdmi->ddc_adpt);
->> -	if (ret) {
->> -		dev_err(hdmi->dev, "Failed to initialize connector: %d\n", ret);
->> -		return ret;
->> -	}
->> -	drm_connector_helper_add(&hdmi->conn, &mtk_hdmi_connector_helper_funcs);
->> -
->> -	hdmi->conn.polled = DRM_CONNECTOR_POLL_HPD;
->> -	hdmi->conn.interlace_allowed = true;
->> -	hdmi->conn.doublescan_allowed = false;
->> -
->> -	ret = drm_connector_attach_encoder(&hdmi->conn,
->> -						bridge->encoder);
->> -	if (ret) {
->> -		dev_err(hdmi->dev,
->> -			"Failed to attach connector to encoder: %d\n", ret);
->> -		return ret;
->> -	}
->> -
->>   	if (hdmi->next_bridge) {
->>   		ret = drm_bridge_attach(bridge->encoder, hdmi->next_bridge,
->>   					bridge, flags);
->> @@ -1444,6 +1397,7 @@ static void mtk_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
->>   }
->>   
->>   static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
->> +	.mode_valid = mtk_hdmi_bridge_mode_valid,
->>   	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
->>   	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
->>   	.atomic_reset = drm_atomic_helper_bridge_reset,
->> @@ -1454,6 +1408,8 @@ static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
->>   	.mode_set = mtk_hdmi_bridge_mode_set,
->>   	.atomic_pre_enable = mtk_hdmi_bridge_atomic_pre_enable,
->>   	.atomic_enable = mtk_hdmi_bridge_atomic_enable,
->> +	.detect = mtk_hdmi_bridge_detect,
->> +	.get_edid = mtk_hdmi_bridge_get_edid,
->>   };
->>   
->>   static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
->> @@ -1762,6 +1718,9 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
->>   
->>   	hdmi->bridge.funcs = &mtk_hdmi_bridge_funcs;
->>   	hdmi->bridge.of_node = pdev->dev.of_node;
->> +	hdmi->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
->> +			   | DRM_BRIDGE_OP_HPD;
-> 
-> Nitpicking, I'd align the | to the =.
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
->> +	hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
->>   	drm_bridge_add(&hdmi->bridge);
->>   
->>   	ret = mtk_hdmi_clk_enable_audio(hdmi);
-> 
+Quentin
