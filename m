@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02A734DDAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B0634DDAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhC3BhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        id S230475AbhC3BhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhC3Bgz (ORCPT
+        with ESMTP id S230378AbhC3Bg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:36:55 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6817CC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:36:55 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id f19so14745838ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:36:55 -0700 (PDT)
+        Mon, 29 Mar 2021 21:36:56 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459D1C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:36:56 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z136so14716350iof.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tV/mEj+Wz4XIbwCNkB/GFkd/M8Q2H4CM2ibkXqRlrls=;
-        b=NtT7wCrRnSAGUWpVWKDKbK87e+lZ68sIxKoEKYx5eXkr5uEYVxvOjCIkhvJ4OCxPJY
-         CSuLHcvo0Rbopiyg+cjMgmc57WZkpouFLjROnkzowqYimckIUyBixLhQ+hfb+ipkRiaU
-         81DTjLGUAvlitj+31mL4GA01UAuPMIKeZ1Bds=
+        bh=3F9Ll0qnSxDDddAOx0jqTjf+DiNaHm+WnTfsee7Z5qE=;
+        b=STwWa5iIWBQnuXyByFcWblI5Yuw6ryaNi8aFcux+kT6rU8ycSq7bfx2bfmwAiUo3+T
+         cexk4q1oE5HuSARupJhYrPx/AtOLP1mJN6950ZRCMzw34JX/fcKoRiXMebdNK+OdVdqX
+         hkQq9E0x9ZwnkUfOjtAg+2yotMhjWoKEMoe+0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tV/mEj+Wz4XIbwCNkB/GFkd/M8Q2H4CM2ibkXqRlrls=;
-        b=P9FoAsFd6xUrP42CGxmG9ZJJnFB2IVvU8qUGZxJf3btKn12yi0RCe7OC9BrtarXQa9
-         UjLyk2okI7mDYjQGw4QFEC5VhFT87G7voE/Fa0dyO4AQT/GxNIW75Y2MLd5jp27nddnj
-         AKHaF8vS60sGd8YwnuOL+Wm97L38hIYEwgHwyhXZ5EtP+MCzielSD0ZdukJ+KMe9Xo8E
-         C0mf+ZTX2iQUiE904QQKARyQDl12ambNTLOH5YL3ihWU/AEVsdLiaLYNHNzFnohLVd3d
-         CkSKhUJWW2rsfF3U050bUfV5fHolIGN/f7aPAJDQuUAI9J3nUTVR7FFp5igDSoxOIez3
-         amWg==
-X-Gm-Message-State: AOAM5316LvvJRrHkWcRiXzmBlhlsZEGcCU6DyUc2vS6keP1xN9T/9Gkb
-        gCRV7rA8OQiXUT9Oe+eDfCThxg==
-X-Google-Smtp-Source: ABdhPJymWFQgtGt2nvRet++FbCKoktEKtDhEaZuC66r7VTdIM7c0tSZNfwldgR6bWs9qvYTEQLquSg==
-X-Received: by 2002:a6b:5905:: with SMTP id n5mr22385286iob.90.1617068214937;
-        Mon, 29 Mar 2021 18:36:54 -0700 (PDT)
+        bh=3F9Ll0qnSxDDddAOx0jqTjf+DiNaHm+WnTfsee7Z5qE=;
+        b=oiNidtReOR5XSgVnVDWsAekmORH40Y7tA/cAFog6ZmcNwM6ZrERPMDj1k0nXUEjh7m
+         f6y4LxNbmXxA/xJOic24yGqJIRKhDuRhAFpSxc1NATqk/fYmV97XOXTsI+VRLth1gu/C
+         /C+0nXqFkAODhS+qsDLtJEorOzD/FfufWmKOg234j+Oyi/tptyq9zWMXaUFulP7G2U90
+         6M6tYEomBXDpYdDTMw5ohCvMy3yH4Q8lEh1RV60GjDpb77pQsq15BHJZCm9Zqf+anUQO
+         7nanlLz8J/YnEeesKRM+0mqr2MbEaJOjUgQZvAohIGt8/Z3+vkQN4e/apsEEQ3515AxU
+         hmGw==
+X-Gm-Message-State: AOAM5334Op8JWKgUW0QTQ0eTcvzFs3XIKcBwG3VCUu4aie+S+Lh9lP6X
+        49EjlRmFyrKWcIeLMVSAkDxnCg==
+X-Google-Smtp-Source: ABdhPJxk7i3YAI4U7l+ZaD3kv7Ww8QwZ8r2xWDlq9TXLeehfGxAmiyDBUuENs49ZQjNY1w/c8/z1Cw==
+X-Received: by 2002:a5d:9250:: with SMTP id e16mr22642440iol.27.1617068215710;
+        Mon, 29 Mar 2021 18:36:55 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i13sm10551696ilm.86.2021.03.29.18.36.54
+        by smtp.gmail.com with ESMTPSA id i13sm10551696ilm.86.2021.03.29.18.36.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 18:36:54 -0700 (PDT)
+        Mon, 29 Mar 2021 18:36:55 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
 To:     valentina.manea.m@gmail.com, shuah@kernel.org,
         gregkh@linuxfoundation.org
@@ -52,9 +52,9 @@ Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com,
         stable@vger.kernel.org
-Subject: [PATCH 3/4] usbip: vudc synchronize sysfs code paths
-Date:   Mon, 29 Mar 2021 19:36:50 -0600
-Message-Id: <caabcf3fc87bdae970509b5ff32d05bb7ce2fb15.1616807117.git.skhan@linuxfoundation.org>
+Subject: [PATCH 4/4] usbip: synchronize event handler with sysfs code paths
+Date:   Mon, 29 Mar 2021 19:36:51 -0600
+Message-Id: <c5c8723d3f29dfe3d759cfaafa7dd16b0dfe2918.1616807117.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1616807117.git.skhan@linuxfoundation.org>
 References: <cover.1616807117.git.skhan@linuxfoundation.org>
@@ -69,65 +69,36 @@ drivers. Device connect/disconnect code paths initiated through
 sysfs interface are prone to races if disconnect happens during
 connect and vice versa.
 
-Use sysfs_lock to protect sysfs paths in vudc.
+Use sysfs_lock to synchronize event handler with sysfs paths
+in usbip drivers.
 
 Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
 Cc: stable@vger.kernel.org
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_dev.c   | 1 +
- drivers/usb/usbip/vudc_sysfs.c | 5 +++++
- 2 files changed, 6 insertions(+)
+ drivers/usb/usbip/usbip_event.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/usbip/vudc_dev.c b/drivers/usb/usbip/vudc_dev.c
-index c8eeabdd9b56..2bc428f2e261 100644
---- a/drivers/usb/usbip/vudc_dev.c
-+++ b/drivers/usb/usbip/vudc_dev.c
-@@ -572,6 +572,7 @@ static int init_vudc_hw(struct vudc *udc)
- 	init_waitqueue_head(&udc->tx_waitq);
+diff --git a/drivers/usb/usbip/usbip_event.c b/drivers/usb/usbip/usbip_event.c
+index 5d88917c9631..086ca76dd053 100644
+--- a/drivers/usb/usbip/usbip_event.c
++++ b/drivers/usb/usbip/usbip_event.c
+@@ -70,6 +70,7 @@ static void event_handler(struct work_struct *work)
+ 	while ((ud = get_event()) != NULL) {
+ 		usbip_dbg_eh("pending event %lx\n", ud->event);
  
- 	spin_lock_init(&ud->lock);
-+	mutex_init(&ud->sysfs_lock);
- 	ud->status = SDEV_ST_AVAILABLE;
- 	ud->side = USBIP_VUDC;
++		mutex_lock(&ud->sysfs_lock);
+ 		/*
+ 		 * NOTE: shutdown must come first.
+ 		 * Shutdown the device.
+@@ -90,6 +91,7 @@ static void event_handler(struct work_struct *work)
+ 			ud->eh_ops.unusable(ud);
+ 			unset_event(ud, USBIP_EH_UNUSABLE);
+ 		}
++		mutex_unlock(&ud->sysfs_lock);
  
-diff --git a/drivers/usb/usbip/vudc_sysfs.c b/drivers/usb/usbip/vudc_sysfs.c
-index 7383a543c6d1..f7633ee655a1 100644
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -112,6 +112,7 @@ static ssize_t usbip_sockfd_store(struct device *dev,
- 		dev_err(dev, "no device");
- 		return -ENODEV;
+ 		wake_up(&ud->eh_waitq);
  	}
-+	mutex_lock(&udc->ud.sysfs_lock);
- 	spin_lock_irqsave(&udc->lock, flags);
- 	/* Don't export what we don't have */
- 	if (!udc->driver || !udc->pullup) {
-@@ -187,6 +188,8 @@ static ssize_t usbip_sockfd_store(struct device *dev,
- 
- 		wake_up_process(udc->ud.tcp_rx);
- 		wake_up_process(udc->ud.tcp_tx);
-+
-+		mutex_unlock(&udc->ud.sysfs_lock);
- 		return count;
- 
- 	} else {
-@@ -207,6 +210,7 @@ static ssize_t usbip_sockfd_store(struct device *dev,
- 	}
- 
- 	spin_unlock_irqrestore(&udc->lock, flags);
-+	mutex_unlock(&udc->ud.sysfs_lock);
- 
- 	return count;
- 
-@@ -216,6 +220,7 @@ static ssize_t usbip_sockfd_store(struct device *dev,
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
- 	spin_unlock_irqrestore(&udc->lock, flags);
-+	mutex_unlock(&udc->ud.sysfs_lock);
- 
- 	return ret;
- }
 -- 
 2.27.0
 
