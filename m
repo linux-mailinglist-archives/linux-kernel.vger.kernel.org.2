@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963DF34E04F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85C434E054
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhC3Emq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 00:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S229568AbhC3EtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 00:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhC3EmT (ORCPT
+        with ESMTP id S229667AbhC3Es4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 00:42:19 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B49C061762;
-        Mon, 29 Mar 2021 21:42:19 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id c17so11306390pfn.6;
-        Mon, 29 Mar 2021 21:42:18 -0700 (PDT)
+        Tue, 30 Mar 2021 00:48:56 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E96C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:48:56 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id w3so22797055ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7XBGBCLGcd6jdeufkWyLn6OBYh592BOUVPsq+lu71i0=;
-        b=Vygq34wPb7+UzByt2369faApEohqd60E3RSFIUb1Z1QbIwiphEgUnWeAQ0BoPid3BT
-         VaxMEVqGwpsQ7lL5n5GtF5lGiigNnp/56e6TcIWEW3QDVAaU72z+OG/Vw9QFYn9MddPA
-         FfnyY3fbBg31/Ars6kL5kyWTi7D1HCi1VwlexHkLb7Zt9GqohfAPVGwIG8NZXFyR7/3K
-         mXWNABEekT6GN36In5EN5jyEl6PUIGgwpkeUNzTyM3HAwpjpVXJDIRb0l8b8W3r/6KcN
-         B2XORMzTy7L7pGIgoIbMZMHRHaRfNyv76T0K5m70QiOJGIa0c3vEbXTdLuB8RQhquIuO
-         mSYw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ra/Cywsf9MTC1TzREsEXMVfY44WVYc3NAp2y/G/b8Ls=;
+        b=ZlHhRG9zITr7DP+trbH7erLGSg6+vgRwy/G760pYuqdoVGidk5zQvzSMGJWxADROIJ
+         XSh210tE4NbhB06edSpok5yz3xUsVqBDm7mpIo1pDwB/8D0B84CS9IpEv7SeQBYuOhoj
+         QvmQEcFQOth9hpSzDW5aBFZDWUGFA5YGmEoCBrEhFJpSoZ1K6og8Dyh8mq2+wKuFnVun
+         a3bc1oQjOGYBMJ+6DvIC7sQr81k0LEVffYgIoJays92U4t42zhzJz0f2bQntH7x8lFwP
+         LB7ngZkmsiOpTcqlHgy2hjsRCiHJ2UgaPGegRsYMt8iSyT+RKp5ZT9G59e/PjM62NykS
+         NtbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7XBGBCLGcd6jdeufkWyLn6OBYh592BOUVPsq+lu71i0=;
-        b=tYDzOm387s/V+8xBLTOq1gQAHjiUMGWBSwhH6HBS73YhIX6XxX95ZCawzqKZZZRCXB
-         hGlcuLA5P+aMdoNj8ApVOcb5vmKeuH+AlKrpcczzkuScAM61GG9BNxtP6OGq2si9j+9e
-         +E0UGLK/1xPomIn8+VGY/5ra1RW++4fmtjJZKuLJHzha19a2AvEIKbQWts5ql/dQJ2bV
-         UlDA9QmK8RPNMb4BtCtD/jT+mAkQufUULBmm7mqrjNEdQJYUO0RsSII3zX6wML+1kWoO
-         yswPSGyb8TFsm8e3ahIGTboXHKyZpoTPGH7YdYK+1Y2lQuBVxn+Sd46Z+K/NmB+EMTLk
-         M1vw==
-X-Gm-Message-State: AOAM530b2zzX+nhwhu6I3jDFoL0JzIQTjUTiSSLt8bvgRhsOuzkhNoQs
-        YuCpPP9zaUjR/EZ6pGBjqCg=
-X-Google-Smtp-Source: ABdhPJxthKmowRyhe+SE73pWx+30k04VTBD0GqTw/G/pn/0+WVOHdTz0QV5DPzRHemxlRMII+089ZA==
-X-Received: by 2002:a63:5c07:: with SMTP id q7mr26924245pgb.52.1617079338546;
-        Mon, 29 Mar 2021 21:42:18 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id i4sm19627979pfo.14.2021.03.29.21.42.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 21:42:18 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, stable@vger.kernel.org
-Subject: [PATCH v3] mm: fix race by making init_zero_pfn() early_initcall
-Date:   Mon, 29 Mar 2021 21:42:08 -0700
-Message-Id: <20210330044208.8305-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210329052922.1130493-1-ilya.lipnitskiy@gmail.com>
-References: <20210329052922.1130493-1-ilya.lipnitskiy@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ra/Cywsf9MTC1TzREsEXMVfY44WVYc3NAp2y/G/b8Ls=;
+        b=rfMN6qHHzWnP6iV/9eVraz1ZarSnzVm6SfS4nYmo8x6vw9V91zXQ8T0hXoDhfvRjsC
+         fqymLd8OtNVBnNGbXF7wlVyYdB6m3zDmI6wm6VFAE9IIF7aSoqr2Dwi7oOWPckgjiZd4
+         OzQxvScWYVbvwcaM5FE3qQOgjqWpTiO2dGeCL6lqm3twYn2HZKPrcaoZmgtcCO8hoTjO
+         aiLsHbCLbRWD8e3aQJ2A/W6iOnVWIQffJmB5BkwZFGAyrE/mw0yCsmUaMn1GHobK45/5
+         F7rX9yr2Dil1UWI5p5VMPARWGq9SPfArX2yg2Co7ltSH2BIkwBp7XZay3VQDQb109cH+
+         GWdQ==
+X-Gm-Message-State: AOAM530e3rQ5t5qgYNad5qCHnxaZ4PW9npv3hm8dC9QDc+1zduys2q9V
+        i3a/nbNxUEUJV/AW7CSzOrfaT43vWQgpdyhhWNmv5w==
+X-Google-Smtp-Source: ABdhPJzzA/YU3+84uy/mkcICjvHV4CCKL49dEwtLGRAj+Yr7WGwa3Wd+xkqambZLgT3hHxoZ+3eu20ESlnn54qaSnLg=
+X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr32325114eji.323.1617079735058;
+ Mon, 29 Mar 2021 21:48:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161661971651.1721612.7457823773061754064.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210325171126.GD2356281@nvidia.com> <CAPcyv4hMHAK4=eGuvP5Bg_2YfQCLt5cd5ku0tUUNY3VCxkKmaQ@mail.gmail.com>
+ <20210329224439.GI2356281@nvidia.com>
+In-Reply-To: <20210329224439.GI2356281@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 29 Mar 2021 21:48:44 -0700
+Message-ID: <CAPcyv4htAdJwAyGjeo+nxZNCOz5-zosCXxp2rwttxjfgxMK8uw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] cxl/mem: Fix cdev_device_add() error handling
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-cxl@vger.kernel.org, "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are code paths that rely on zero_pfn to be fully initialized
-before core_initcall. For example, wq_sysfs_init() is a core_initcall
-function that eventually results in a call to kernel_execve, which
-causes a page fault with a subsequent mmput. If zero_pfn is not
-initialized by then it may not get cleaned up properly and result in an
-error:
-  BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
+On Mon, Mar 29, 2021 at 3:44 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Mon, Mar 29, 2021 at 02:03:37PM -0700, Dan Williams wrote:
+>
+> > Ugh, exactly why I was motivated to attempt to preclude this with new
+> > core infrastructure that attempted to fix this centrally [1]. Remove
+> > the  possibility of "others" getting this wrong. However after my
+> > initial idea bounced off Greg then I ended up shipping this bug in the
+> > local rewrite. I think the debugfs api gets this right in terms of
+> > centralizing the reference count management, and I want to see
+> > something similar for common driver ioctl patterns.
+>
+> There is a lot of variety here, I'm not sure how much valuable common
+> code there will be that could be lifted into the core.. srcu,
+> refcount, rwsem, percpu_ref, etc are all common implementations with
+> various properties.
+>
+> The easist implementation is to just block driver destruction with a
+> refcount & completion pattern
+>
+> The hardest is to allow the underlying HW driver to be removed from
+> the fops while the file remains open.
+>
+> Usually whatever scheme is used has to flow into some in-kernel API as
+> well, so isolating it in cdev may no be entirely helpful.
+>
+> The easisted helper API would be to add an 'unregistration lock' to
+> the struct device that blocks unregistration. A refcount & completion
+> for instance. I've seen that open coded enough times.
 
-Here is an analysis of the race as seen on a MIPS device. On this
-particular MT7621 device (Ubiquiti ER-X), zero_pfn is PFN 0 until
-initialized, at which point it becomes PFN 5120:
-  1. wq_sysfs_init calls into kobject_uevent_env at core_initcall:
-       [<80340dc8>] kobject_uevent_env+0x7e4/0x7ec
-       [<8033f8b8>] kset_register+0x68/0x88
-       [<803cf824>] bus_register+0xdc/0x34c
-       [<803cfac8>] subsys_virtual_register+0x34/0x78
-       [<8086afb0>] wq_sysfs_init+0x1c/0x4c
-       [<80001648>] do_one_initcall+0x50/0x1a8
-       [<8086503c>] kernel_init_freeable+0x230/0x2c8
-       [<8066bca0>] kernel_init+0x10/0x100
-       [<80003038>] ret_from_kernel_thread+0x14/0x1c
+I do agree there is too much variety to widely unify. At the same time
+it is a common enough pattern for devices that allow removal before
+final close, especially devices that support hot-removal disconnecting
+is a better pattern than blocking unregisteration.
 
-  2. kobject_uevent_env() calls call_usermodehelper_exec() which executes
-     kernel_execve asynchronously.
-
-  3. Memory allocations in kernel_execve cause a page fault, bumping the
-     MM reference counter:
-       [<8015adb4>] add_mm_counter_fast+0xb4/0xc0
-       [<80160d58>] handle_mm_fault+0x6e4/0xea0
-       [<80158aa4>] __get_user_pages.part.78+0x190/0x37c
-       [<8015992c>] __get_user_pages_remote+0x128/0x360
-       [<801a6d9c>] get_arg_page+0x34/0xa0
-       [<801a7394>] copy_string_kernel+0x194/0x2a4
-       [<801a880c>] kernel_execve+0x11c/0x298
-       [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
-
-  4. In case zero_pfn has not been initialized yet, zap_pte_range does
-     not decrement the MM_ANONPAGES RSS counter and the BUG message is
-     triggered shortly afterwards when __mmdrop checks the ref counters:
-       [<800285e8>] __mmdrop+0x98/0x1d0
-       [<801a6de8>] free_bprm+0x44/0x118
-       [<801a86a8>] kernel_execve+0x160/0x1d8
-       [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
-       [<80003198>] ret_from_kernel_thread+0x14/0x1c
-
-To avoid races such as described above, initialize init_zero_pfn at
-early_initcall level. Depending on the architecture, ZERO_PAGE is either
-constant or gets initialized even earlier, at paging_init, so there is
-no issue with initializing zero_pfn earlier.
-
-Discussion: https://lkml.kernel.org/r/CALCv0x2YqOXEAy2Q=hafjhHCtTHVodChv1qpM=niAXOpqEbt7w@mail.gmail.com
-
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: stable@vger.kernel.org
----
- mm/memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 5c3b29d3af66..e66b11ac1659 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -166,7 +166,7 @@ static int __init init_zero_pfn(void)
- 	zero_pfn = page_to_pfn(ZERO_PAGE(0));
- 	return 0;
- }
--core_initcall(init_zero_pfn);
-+early_initcall(init_zero_pfn);
- 
- void mm_trace_rss_stat(struct mm_struct *mm, int member, long count)
- {
--- 
-2.31.0
-
+Just the small matter of time to see this through...
