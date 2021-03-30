@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBE134DF8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EE434DF92
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhC3Dop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:44:45 -0400
-Received: from mga04.intel.com ([192.55.52.120]:19924 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230358AbhC3Dol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:44:41 -0400
-IronPort-SDR: IAL81lUGMvNXzYiZloyfY1djX49AgpliYRN40D6wIevSjK+iz6IphPezmJEf29rOwp1RIOfF6I
- WN5DejjCp44g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="189431173"
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="189431173"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 20:44:40 -0700
-IronPort-SDR: u8TygG76tgB2/BF8eHsxidPX/jPZXbGq7FdywqnQRECn/F92ZI599I8g9QGb5zptNpFuQbbskQ
- iUnn34uvPOPw==
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="417968992"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 20:44:37 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        "Minchan Kim" <minchan@kernel.org>
-Subject: Re: [Question] Is there a race window between swapoff vs
- synchronous swap_readpage
-References: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
-        <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com>
-Date:   Tue, 30 Mar 2021 11:44:35 +0800
-In-Reply-To: <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com> (Miaohe Lin's
-        message of "Tue, 30 Mar 2021 11:15:52 +0800")
-Message-ID: <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230292AbhC3DtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhC3Dsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 23:48:39 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E9FC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:48:39 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so14327635ota.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZaWpeqY25MeDhtAts3m3c7ZDqv8GKc5eM14JLBJ3UhM=;
+        b=aria6U2aOK6GNQcIMqfIxcq4rDTxMTjlMu8p5Gj0XcnZDv6UluWjUciozLsMrU6ilw
+         U0HikIaK3NQMBUMW2/fCPa22dSCeaj/KcZcvtJrrzr/wzbj/KLS6Y+EFEXuOgX4YdmRA
+         W/B9dGHzbRfo+bIYqx7XluDewImcQRnP44+uPb/sUcYm1+yhiLzRlS1a/SP/xFzBVgMV
+         OtWLSXViZyg6VOX4f2rxhInfbe8ohYLkH0W2NjJVcveY85UaUbf+Bp7ZaBvFpPRRD6DM
+         JwZFPCWY2XNXrET4EUcAt/5+faX6oJDyHe65d/wNbwkkGLuszr1ZRFVf0McjW3NSQpUu
+         jVdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZaWpeqY25MeDhtAts3m3c7ZDqv8GKc5eM14JLBJ3UhM=;
+        b=uFRH/x60hizPibQeOQycRu9S1wihBa0FbsCmO0eJqQEdrl49kGNb7bs6EaO/5zLFn2
+         lazmm8s/1K2dMUuGHBAOJwEx8dGTY3Eovd48qnvO2rU2Hj2DdqCmLVAjuFF1FWtGo1Ro
+         xHVc/z0GxPHGs3UboiueHLtXLfO+1BKQKpbCpSL+sDuGh1zgzqJP/spK6QcdNzRhqQjk
+         bFWQrjydcHEDooDwsKsQNQubJCrRVCmRPGgj+8XlTqu480IS1m0NOp7lCux+KqgyzdnG
+         sDohJumBN44FK64HYtoHNWrNQinfU5DiRPSm0ubliwO0Z6+AKAUcXj7MCRgoqOl+pQLg
+         0zIQ==
+X-Gm-Message-State: AOAM531RuqJKgCqLY/oXnWv6mdLwIC6e/8EcGpbx8boVj5vKDF0xgRdA
+        Zp81oj4HtGUH8AjY1EAaEI/XNw==
+X-Google-Smtp-Source: ABdhPJxSE5litT1P7lJr0s8y9tEBHQh2kQ64l0iMcjvplDaeF9Eb9bMTzeSINA+qu1qZDc4bknkFkg==
+X-Received: by 2002:a9d:6e09:: with SMTP id e9mr25522900otr.195.1617076118577;
+        Mon, 29 Mar 2021 20:48:38 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w10sm4791878oth.7.2021.03.29.20.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 20:48:37 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 22:48:36 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robert Foss <robert.foss@linaro.org>, daniel.lezcano@linaro.org
+Cc:     agross@kernel.org, amitk@kernel.org, rui.zhang@intel.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: thermal: qcom-tsens: Add compatible
+ for sm8350
+Message-ID: <YGKflK/Ey16UDYT7@builder.lan>
+References: <20210324124308.1265626-1-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324124308.1265626-1-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+On Wed 24 Mar 07:43 CDT 2021, Robert Foss wrote:
 
-> On 2021/3/30 9:57, Huang, Ying wrote:
->> Hi, Miaohe,
->> 
->> Miaohe Lin <linmiaohe@huawei.com> writes:
->> 
->>> Hi all,
->>> I am investigating the swap code, and I found the below possible race window:
->>>
->>> CPU 1							CPU 2
->>> -----							-----
->>> do_swap_page
->>>   skip swapcache case (synchronous swap_readpage)
->>>     alloc_page_vma
->>> 							swapoff
->>> 							  release swap_file, bdev, or ...
->>>       swap_readpage
->>> 	check sis->flags is ok
->>> 	  access swap_file, bdev or ...[oops!]
->>> 							    si->flags = 0
->>>
->>> The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
->>> Is this will really happen or Am I miss something ?
->>> Any reply would be really grateful. Thanks! :)
->> 
->> This appears possible.  Even for swapcache case, we can't guarantee the
->
-> Many thanks for reply!
->
->> swap entry gotten from the page table is always valid too.  The
->
-> The page table may change at any time. And we may thus do some useless work.
-> But the pte_same() check could handle these races correctly if these do not
-> result in oops.
->
->> underlying swap device can be swapped off at the same time.  So we use
->> get/put_swap_device() for that.  Maybe we need similar stuff here.
->
-> Using get/put_swap_device() to guard against swapoff for swap_readpage() sounds
-> really bad as swap_readpage() may take really long time. Also such race may not be
-> really hurtful because swapoff is usually done when system shutdown only.
-> I can not figure some simple and stable stuff out to fix this. Any suggestions or
-> could anyone help get rid of such race?
+> Add tsens bindings for sm8350.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
-Some reference counting on the swap device can prevent swap device from
-swapping-off.  To reduce the performance overhead on the hot-path as
-much as possible, it appears we can use the percpu_ref.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Best Regards,
-Huang, Ying
+@Daniel, I presume it's better that you take this patch (1/2) through
+your tree. I've picked patch 2.
+
+Regards,
+Bjorn
+
+> ---
+> 
+> Changes since v1:
+>  - Vinod: Remove comment
+> 
+>  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> index 95462e071ab4..e788378eff8d 100644
+> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> @@ -43,6 +43,7 @@ properties:
+>                - qcom,sdm845-tsens
+>                - qcom,sm8150-tsens
+>                - qcom,sm8250-tsens
+> +              - qcom,sm8350-tsens
+>            - const: qcom,tsens-v2
+>  
+>    reg:
+> -- 
+> 2.31.0.30.g398dba342d.dirty
+> 
