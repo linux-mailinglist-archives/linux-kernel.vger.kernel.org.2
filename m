@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB334F634
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684AD34E2FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhCaBZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhCaBZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:25:00 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 18:25:00 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h3so13359540pfr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 18:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0k9lXRJTS1Wy+xaZrJOGXgNw1l0SEWX+Tl4Aywnp+T4=;
-        b=jPaKtFx3zVY3hunovhRFR7mAKTjxioFYYJz8ouQey1m/QZHIbE8r0UmNMsV/8iGYfc
-         0/FuXL7+dB1kML92yA39BODXyPt2DfhzshN2EOrBODRpeCa/eaeaOA1MjIEK+DxkDfVZ
-         1xPMp0c9VTla0hrve04OkC0s7rFbkWfQ8AUeh3L1QfJg2EcG7xMs1/8ctsxoWJDQg46A
-         217zPVR2nZ3z3Hqn/iUWe4RELzzTuWBl/KK/wSrZNEddi+Gt+oGtLW/dPrbC/SuClDXn
-         dGPq+SwFU4SArs4y/+YB1eeFHMqFjTa51Hc/gOnQ82W6L8Lqn5900PJjV969wvSfmJDE
-         tqkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0k9lXRJTS1Wy+xaZrJOGXgNw1l0SEWX+Tl4Aywnp+T4=;
-        b=AhIgfVzbptkCK4L9Ou6LKbPXoqiuM8lZ7krzm6WmTi3Ih8j8xnGEfceti6RbDBQSAQ
-         PK7EPSJOwU/D6lP7cGiIdRJ5bjGeKtYnMXx8ucimXSU66jiWcrQzKRVX3o81cILim87O
-         L1u9CHBYEH6Gs3Ee/QPajSm5Tkn7o8cPiBgRMTH9C6WBFBKsKLVN2vo6MqSd8Fxuyy8f
-         S+awImsVStTX8Cgx2UTfB5ErmVrX0gC5Cyf6GKyhOXZOQUhC92jjfjQe+Bwks+09eyi4
-         MJX/N8mMB8r9jTVNB1zOZ+vQ6yKfvp1RFkCsH4kSaan8Wxpw/YDqG6UqShyzOd+Upd5F
-         yRuQ==
-X-Gm-Message-State: AOAM532zZua/3i6kEz7QULot7+L0CEre8/dwuTRKl2Eji2s+d73VJmrP
-        AIJGfWR4ostL37rAaJ5QGdo=
-X-Google-Smtp-Source: ABdhPJzJpXSDBGi7T4t0K1MYRPr9nB4Lvl1izl8/SJM3atEN25F66hzr5wrgQrrWu330B2dCQ9DbaQ==
-X-Received: by 2002:a63:175c:: with SMTP id 28mr826053pgx.376.1617153900123;
-        Tue, 30 Mar 2021 18:25:00 -0700 (PDT)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id 11sm236828pfn.146.2021.03.30.18.24.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 18:24:59 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 16:18:29 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, zhangxuezhi1@yulong.com,
-        sam@ravnborg.org, kraxel@redhat.com, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 0/1] drm/tiny: add support for Waveshare 2inch LCD
- module
-Message-ID: <20210330161829.00002263@gmail.com>
-In-Reply-To: <ee78a788-3a69-164d-95da-6482e05f8603@lechnology.com>
-References: <20210330080846.116223-1-zhangxuezhi3@gmail.com>
-        <ee78a788-3a69-164d-95da-6482e05f8603@lechnology.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S231504AbhC3ISz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:18:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42298 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231359AbhC3ISm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:18:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617092321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wNw4nGVKh6SriT/z86f2SGzgVHpW0NorEGH4COOxJUo=;
+        b=l8JS67PZkLeSBclyeYuVlbPnE6ocBl1TXDJ8G0G72ngoWy6FLGLhJWgfW8qEalAdsZ3RBN
+        7hXMQp9JY8kb+azQhsW14wJNiUxZo+CnhlCTEL5DPM3xGjSZOzbuRgDQ13XtZBC8fTxzmR
+        uny1PEiAX5U8jCXzvf3pkWrNedW59ks=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EAB04AEF5;
+        Tue, 30 Mar 2021 08:18:40 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 10:18:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [External] Re: [PATCH v2 1/8] mm/cma: change cma mutex to irq
+ safe spinlock
+Message-ID: <YGLe31q/4kAoLmmr@dhcp22.suse.cz>
+References: <20210329232402.575396-1-mike.kravetz@oracle.com>
+ <20210329232402.575396-2-mike.kravetz@oracle.com>
+ <YGLayMqYOrMMQ841@dhcp22.suse.cz>
+ <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 09:17:19 -0500
-David Lechner <david@lechnology.com> wrote:
-
-> On 3/30/21 3:08 AM, Carlis wrote:
-> > From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> > 
-> > This adds a new module for the ST7789V controller with parameters
-> > for the Waveshare 2inch LCD module.
-> > 
-> > Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> > ---
-> > v2:change compatible value.
-> > v3:change author name.
-> > ---
-> >   MAINTAINERS                    |   8 +
-> >   drivers/gpu/drm/tiny/Kconfig   |  14 ++
-> >   drivers/gpu/drm/tiny/Makefile  |   1 +
-> >   drivers/gpu/drm/tiny/st7789v.c | 269
-> > +++++++++++++++++++++++++++++++++ 4 files changed, 292 insertions(+)
-> >   create mode 100644 drivers/gpu/drm/tiny/st7789v.c
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index d92f85ca831d..df25e8e0deb1 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5769,6 +5769,14 @@ T:	git
-> > git://anongit.freedesktop.org/drm/drm-misc F:
-> > Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
-> > F:	drivers/gpu/drm/tiny/st7735r.c 
-> > +DRM DRIVER FOR SITRONIX ST7789V PANELS
-> > +M:	David Lechner <david@lechnology.com>  
+On Tue 30-03-21 16:08:36, Muchun Song wrote:
+> On Tue, Mar 30, 2021 at 4:01 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 29-03-21 16:23:55, Mike Kravetz wrote:
+> > > Ideally, cma_release could be called from any context.  However, that is
+> > > not possible because a mutex is used to protect the per-area bitmap.
+> > > Change the bitmap to an irq safe spinlock.
+> >
+> > I would phrase the changelog slightly differerent
+> > "
+> > cma_release is currently a sleepable operatation because the bitmap
+> > manipulation is protected by cma->lock mutex. Hugetlb code which relies
+> > on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
+> > irq safe.
+> >
+> > The lock doesn't protect any sleepable operation so it can be changed to
+> > a (irq aware) spin lock. The bitmap processing should be quite fast in
+> > typical case but if cma sizes grow to TB then we will likely need to
+> > replace the lock by a more optimized bitmap implementation.
+> > "
+> >
+> > it seems that you are overusing irqsave variants even from context which
+> > are never called from the IRQ context so they do not need storing flags.
+> >
+> > [...]
+> > > @@ -391,8 +391,9 @@ static void cma_debug_show_areas(struct cma *cma)
+> > >       unsigned long start = 0;
+> > >       unsigned long nr_part, nr_total = 0;
+> > >       unsigned long nbits = cma_bitmap_maxno(cma);
+> > > +     unsigned long flags;
+> > >
+> > > -     mutex_lock(&cma->lock);
+> > > +     spin_lock_irqsave(&cma->lock, flags);
+> >
+> > spin_lock_irq should be sufficient. This is only called from the
+> > allocation context and that is never called from IRQ context.
 > 
-OK, i will remove this in the next patch.
-> I should not be added here. I don't have one of these displays.
-> 
-> > +M:	Xuezhi Zhang <zhangxuezhi1@yulong.com>
-> > +S:	Maintained
-> > +T:	git git://anongit.freedesktop.org/drm/drm-misc
-> > +F:
-> > Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
-> > +F:	drivers/gpu/drm/tiny/st7789v.c +
-> >   DRM DRIVER FOR SONY ACX424AKP PANELS
-> >   M:	Linus Walleij <linus.walleij@linaro.org>
-> >   S:	Maintained  
-thanks,
-Xuezhi Zhang
+> This makes me think more. I think that spin_lock should be
+> sufficient. Right?
 
+Nope. Think of the following scenario
+	spin_lock(cma->lock);
+	<IRQ>
+	put_page
+	  __free_huge_page
+	    cma_release
+	      spin_lock_irqsave() DEADLOCK
+-- 
+Michal Hocko
+SUSE Labs
