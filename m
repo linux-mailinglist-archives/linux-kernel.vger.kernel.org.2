@@ -2,142 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018EB34E6E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1724134E669
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhC3Lui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:50:38 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:51662 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbhC3Lu2 (ORCPT
+        id S231768AbhC3Lhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:37:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15823 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231719AbhC3LhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:50:28 -0400
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id C253DA097EB;
-        Tue, 30 Mar 2021 13:50:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1617105023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2qLsWX1x+rTNov0mLCK2bfYYZ/19Z9kvWQ6aFEEfiuk=;
-        b=YlB63PuC7AhJe1TaGiPRB3Ogxf1xILpkhnnXiqsDMkHcW25lbskYWW/C3XVCAI5vBiWGYL
-        8YoPpUxZDgVwqsaAksG/vB6iNGCxzgaaamIrvlbvzNE7HD3amFmOCbW9Lz0LhzYuiFY9CV
-        HKhXCYnZYjUt6pEo8vQiLdH6ZEpDAiA=
-Date:   Tue, 30 Mar 2021 13:50:23 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Jan Alexander Steffens (heftig)" <jan.steffens@gmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH] init: add support for zstd compressed modules
-Message-ID: <20210330115023.qt742qsdekwiroey@spock.localdomain>
-References: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
+        Tue, 30 Mar 2021 07:37:24 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8nS304hpz9tNM;
+        Tue, 30 Mar 2021 19:35:15 +0800 (CST)
+Received: from ubuntu.huawei.com (10.67.174.117) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 30 Mar 2021 19:37:12 +0800
+From:   Ruiqi Gong <gongruiqi1@huawei.com>
+To:     Zaibo Xu <xuzaibo@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Wang Weiyang" <wangweiyang2@huawei.com>,
+        Ruiqi GONG <gongruiqi1@huawei.com>
+Subject: [PATCH -next] crypto: hisilicon/hpre - fix a typo in hpre_crypto.c
+Date:   Tue, 30 Mar 2021 07:51:24 -0400
+Message-ID: <20210330115124.15508-1-gongruiqi1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 01:32:35PM +0200, Piotr Gorski wrote:
-> kmod 28 supports modules compressed in zstd format so let's add this possibility to kernel.
-> 
-> Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
-> ---
->  Makefile     | 7 +++++--
->  init/Kconfig | 9 ++++++---
->  2 files changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 5160ff8903c1..82f4f4cc2955 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1156,8 +1156,8 @@ endif # INSTALL_MOD_STRIP
->  export mod_strip_cmd
->  
->  # CONFIG_MODULE_COMPRESS, if defined, will cause module to be compressed
-> -# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP
-> -# or CONFIG_MODULE_COMPRESS_XZ.
-> +# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP,
-> +# CONFIG_MODULE_COMPRESS_XZ, or CONFIG_MODULE_COMPRESS_ZSTD.
->  
->  mod_compress_cmd = true
->  ifdef CONFIG_MODULE_COMPRESS
-> @@ -1167,6 +1167,9 @@ ifdef CONFIG_MODULE_COMPRESS
->    ifdef CONFIG_MODULE_COMPRESS_XZ
->      mod_compress_cmd = $(XZ) --lzma2=dict=2MiB -f
->    endif # CONFIG_MODULE_COMPRESS_XZ
-> +  ifdef CONFIG_MODULE_COMPRESS_ZSTD
-> +    mod_compress_cmd = $(ZSTD) -T0 --rm -f -q
-> +  endif # CONFIG_MODULE_COMPRESS_ZSTD
->  endif # CONFIG_MODULE_COMPRESS
->  export mod_compress_cmd
->  
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 8c2cfd88f6ef..86a452bc2747 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -2250,8 +2250,8 @@ config MODULE_COMPRESS
->  	bool "Compress modules on installation"
->  	help
->  
-> -	  Compresses kernel modules when 'make modules_install' is run; gzip or
-> -	  xz depending on "Compression algorithm" below.
-> +	  Compresses kernel modules when 'make modules_install' is run; gzip,
-> +	  xz, or zstd depending on "Compression algorithm" below.
->  
->  	  module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
->  
-> @@ -2273,7 +2273,7 @@ choice
->  	  This determines which sort of compression will be used during
->  	  'make modules_install'.
->  
-> -	  GZIP (default) and XZ are supported.
-> +	  GZIP (default), XZ, and ZSTD are supported.
->  
->  config MODULE_COMPRESS_GZIP
->  	bool "GZIP"
-> @@ -2281,6 +2281,9 @@ config MODULE_COMPRESS_GZIP
->  config MODULE_COMPRESS_XZ
->  	bool "XZ"
->  
-> +config MODULE_COMPRESS_ZSTD
-> +	bool "ZSTD"
-> +
->  endchoice
->  
->  config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
-> -- 
-> 2.31.0.97.g1424303384
-> 
+Do a trivial typo fix.
+s/discribed/described
 
-Great!
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
+---
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-
-This works perfectly fine in Arch Linux if accompanied by the
-following mkinitcpio amendment: [1].
-
-I'm also Cc'ing other people from get_maintainers output just
-to make this submission more visible.
-
-Thanks.
-
-[1] https://github.com/archlinux/mkinitcpio/pull/43
-
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index d743c540d602..9fbb573fdb1e 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -1758,7 +1758,7 @@ static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
+ 
+ 	/*
+ 	 * Src_data(gx) is in little-endian order, MSB in the final byte should
+-	 * be masked as discribed in RFC7748, then transform it to big-endian
++	 * be masked as described in RFC7748, then transform it to big-endian
+ 	 * form, then hisi_hpre can use the data.
+ 	 */
+ 	ptr[31] &= 0x7f;
 -- 
-  Oleksandr Natalenko (post-factum)
+2.17.1
+
