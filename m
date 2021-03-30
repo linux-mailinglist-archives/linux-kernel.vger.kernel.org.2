@@ -2,96 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C03F34EFE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4573E34EFF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhC3Rj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhC3RjD (ORCPT
+        id S232410AbhC3RmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:42:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2749 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232236AbhC3Rlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:39:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD79C061762;
-        Tue, 30 Mar 2021 10:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Aj3BBiJGkMf9HQ1Ip4ML4I8G/ZaA3wduTiGOb+gCee4=; b=UWmFxra5Xj/fLJEA/MZltsl/vV
-        pQdMwQ9XpRSj4OLTmMYOJ4UoEyTBaUiyGKX1b7EUd5JyCWYinTlcQi+kvm4HgnWmRhO3xaJ8EfnL/
-        CyVKNTOUD8hWpm+rfFDvi/uq6l0L9UXyXwh/cUz6KSPWu1dsN4MCq8C++YpGWNs3ZKJp5A4mjBh+a
-        h5lwtxmjhXDbSlXcTetAoPC5uk8idmYCVMtbQr0aR0JAMvfQLeMbYj6c9w/53dES/WJobtqarNcGb
-        Q1kMV3QE2NcwiBY51Mt642yFXqh1jsI5GHh7AIpjNMZkyIAlkJW9SKLRhx1MiwYIUr7v9DgkXoJrd
-        vD9h8SfQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRIKN-003NRv-0M; Tue, 30 Mar 2021 17:38:55 +0000
-Date:   Tue, 30 Mar 2021 18:38:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Use readahead_batch_length
-Message-ID: <20210330173854.GP351017@casper.infradead.org>
-References: <20210321210311.1803954-1-willy@infradead.org>
+        Tue, 30 Mar 2021 13:41:50 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F8xNV6P39z6854T;
+        Wed, 31 Mar 2021 01:32:42 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 30 Mar 2021 19:41:48 +0200
+Received: from localhost (10.47.27.39) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
+ 2021 18:41:48 +0100
+Date:   Tue, 30 Mar 2021 18:40:28 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <sudeep.holla@arm.com>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v8 25/38] iio/scmi: Port driver to the new
+ scmi_sensor_proto_ops interface
+Message-ID: <20210330184028.00007a24@Huawei.com>
+In-Reply-To: <20210330134711.1962-1-cristian.marussi@arm.com>
+References: <20210330123325.00000456@Huawei.com>
+        <20210330134711.1962-1-cristian.marussi@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321210311.1803954-1-willy@infradead.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.39]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping?
+On Tue, 30 Mar 2021 14:47:11 +0100
+Cristian Marussi <cristian.marussi@arm.com> wrote:
 
-On Sun, Mar 21, 2021 at 09:03:11PM +0000, Matthew Wilcox (Oracle) wrote:
-> Implement readahead_batch_length() to determine the number of bytes in
-> the current batch of readahead pages and use it in btrfs.
+> Port the scmi iio driver to the new SCMI sensor interface based on
+> protocol handles and common devm_get_ops().
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Link: https://lore.kernel.org/r/20210316124903.35011-26-cristian.marussi@arm.com
+> Cc: Jyoti Bhayana <jbhayana@google.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: linux-iio@vger.kernel.org
+> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+
+Thanks for doing this, but beyond the more general question I put
+in the reply to v7 of why we have this abstraction in the first place,
+I'm fine with either version (v7 or v8).
+
+I 'slightly' prefer this one I guess, but it actually hides the
+more interesting question of whether the use of a protocol
+related function to get access to functions that could just have
+been exported from the original module actually makes sense?
+
+Ah well. Let's go with the perfect not being the enemy of good and
+all that.
+
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+for this one as well. Take your pick ;)
+
+Jonathan
+ 
+> ----
+> v7 --> v8
+> - make sensor_ops NON global
 > ---
->  fs/btrfs/extent_io.c    | 6 ++----
->  include/linux/pagemap.h | 9 +++++++++
->  2 files changed, 11 insertions(+), 4 deletions(-)
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 100 ++++++++++-----------
+>  1 file changed, 50 insertions(+), 50 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index e9837562f7d6..97ac4ddb2857 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4875,10 +4875,8 @@ void extent_readahead(struct readahead_control *rac)
->  	int nr;
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> index 872d87ca6256..8f4154d92c68 100644
+> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -22,7 +22,8 @@
+>  #define SCMI_IIO_NUM_OF_AXIS 3
 >  
->  	while ((nr = readahead_page_batch(rac, pagepool))) {
-> -		u64 contig_start = page_offset(pagepool[0]);
-> -		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
+>  struct scmi_iio_priv {
+> -	struct scmi_handle *handle;
+> +	const struct scmi_sensor_proto_ops *sensor_ops;
+> +	struct scmi_protocol_handle *ph;
+>  	const struct scmi_sensor_info *sensor_info;
+>  	struct iio_dev *indio_dev;
+>  	/* adding one additional channel for timestamp */
+> @@ -82,7 +83,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+>  static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+>  {
+>  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> -	u32 sensor_id = sensor->sensor_info->id;
+>  	u32 sensor_config = 0;
+>  	int err;
+>  
+> @@ -92,27 +92,12 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+>  
+>  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+>  				    SCMI_SENS_CFG_SENSOR_ENABLE);
 > -
-> -		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
-> +		u64 contig_start = readahead_pos(rac);
-> +		u64 contig_end = contig_start + readahead_batch_length(rac) - 1;
+> -	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+> -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> -			&sensor_id, &sensor->sensor_update_nb);
+> -	if (err) {
+> -		dev_err(&iio_dev->dev,
+> -			"Error in registering sensor update notifier for sensor %s err %d",
+> -			sensor->sensor_info->name, err);
+> -		return err;
+> -	}
+> -
+> -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> -			sensor->sensor_info->id, sensor_config);
+> -	if (err) {
+> -		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> -				SCMI_PROTOCOL_SENSOR,
+> -				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
+> -				&sensor->sensor_update_nb);
+> +	err = sensor->sensor_ops->config_set(sensor->ph,
+> +					     sensor->sensor_info->id,
+> +					     sensor_config);
+> +	if (err)
+>  		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+>  			sensor->sensor_info->name, err);
+> -	}
 >  
->  		contiguous_readpages(pagepool, nr, contig_start, contig_end,
->  				&em_cached, &bio, &bio_flags, &prev_em_start);
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 2cbfd4c36026..92939afd4944 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -1174,6 +1174,15 @@ static inline unsigned int readahead_count(struct readahead_control *rac)
->  	return rac->_nr_pages;
+>  	return err;
+>  }
+> @@ -120,25 +105,14 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+>  static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+>  {
+>  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> -	u32 sensor_id = sensor->sensor_info->id;
+>  	u32 sensor_config = 0;
+>  	int err;
+>  
+>  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+>  				    SCMI_SENS_CFG_SENSOR_DISABLE);
+> -
+> -	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> -			&sensor_id, &sensor->sensor_update_nb);
+> -	if (err) {
+> -		dev_err(&iio_dev->dev,
+> -			"Error in unregistering sensor update notifier for sensor %s err %d",
+> -			sensor->sensor_info->name, err);
+> -		return err;
+> -	}
+> -
+> -	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+> -						     sensor_config);
+> +	err = sensor->sensor_ops->config_set(sensor->ph,
+> +					     sensor->sensor_info->id,
+> +					     sensor_config);
+>  	if (err) {
+>  		dev_err(&iio_dev->dev,
+>  			"Error in disabling sensor %s with err %d",
+> @@ -161,8 +135,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+>  	u32 sensor_config;
+>  	char buf[32];
+>  
+> -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> -			sensor->sensor_info->id, &sensor_config);
+> +	int err = sensor->sensor_ops->config_get(sensor->ph,
+> +						 sensor->sensor_info->id,
+> +						 &sensor_config);
+>  	if (err) {
+>  		dev_err(&iio_dev->dev,
+>  			"Error in getting sensor config for sensor %s err %d",
+> @@ -208,8 +183,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+>  	sensor_config |=
+>  		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
+>  
+> -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> -			sensor->sensor_info->id, sensor_config);
+> +	err = sensor->sensor_ops->config_set(sensor->ph,
+> +					     sensor->sensor_info->id,
+> +					     sensor_config);
+>  	if (err)
+>  		dev_err(&iio_dev->dev,
+>  			"Error in setting sensor update interval for sensor %s value %u err %d",
+> @@ -274,8 +250,9 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+>  	u32 sensor_config;
+>  	int mult;
+>  
+> -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> -			sensor->sensor_info->id, &sensor_config);
+> +	int err = sensor->sensor_ops->config_get(sensor->ph,
+> +						 sensor->sensor_info->id,
+> +						 &sensor_config);
+>  	if (err) {
+>  		dev_err(&iio_dev->dev,
+>  			"Error in getting sensor config for sensor %s err %d",
+> @@ -542,15 +519,19 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+>  	return 0;
 >  }
 >  
-> +/**
-> + * readahead_batch_length - The number of bytes in the current batch.
-> + * @rac: The readahead request.
-> + */
-> +static inline loff_t readahead_batch_length(struct readahead_control *rac)
-> +{
-> +	return rac->_batch_count * PAGE_SIZE;
-> +}
-> +
->  static inline unsigned long dir_pages(struct inode *inode)
+> -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> -					 struct scmi_handle *handle,
+> -					 const struct scmi_sensor_info *sensor_info)
+> +static struct iio_dev *
+> +scmi_alloc_iiodev(struct scmi_device *sdev,
+> +		  const struct scmi_sensor_proto_ops *ops,
+> +		  struct scmi_protocol_handle *ph,
+> +		  const struct scmi_sensor_info *sensor_info)
 >  {
->  	return (unsigned long)(inode->i_size + PAGE_SIZE - 1) >>
-> -- 
-> 2.30.2
-> 
+>  	struct iio_chan_spec *iio_channels;
+>  	struct scmi_iio_priv *sensor;
+>  	enum iio_modifier modifier;
+>  	enum iio_chan_type type;
+>  	struct iio_dev *iiodev;
+> +	struct device *dev = &sdev->dev;
+> +	const struct scmi_handle *handle = sdev->handle;
+>  	int i, ret;
+>  
+>  	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> @@ -560,7 +541,8 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+>  	iiodev->modes = INDIO_DIRECT_MODE;
+>  	iiodev->dev.parent = dev;
+>  	sensor = iio_priv(iiodev);
+> -	sensor->handle = handle;
+> +	sensor->sensor_ops = ops;
+> +	sensor->ph = ph;
+>  	sensor->sensor_info = sensor_info;
+>  	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+>  	sensor->indio_dev = iiodev;
+> @@ -595,6 +577,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+>  					  sensor_info->axis[i].id);
+>  	}
+>  
+> +	ret = handle->notify_ops->devm_event_notifier_register(sdev,
+> +				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> +				&sensor->sensor_info->id,
+> +				&sensor->sensor_update_nb);
+> +	if (ret) {
+> +		dev_err(&iiodev->dev,
+> +			"Error in registering sensor update notifier for sensor %s err %d",
+> +			sensor->sensor_info->name, ret);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+>  	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+>  	iiodev->channels = iio_channels;
+>  	return iiodev;
+> @@ -604,24 +597,30 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+>  {
+>  	const struct scmi_sensor_info *sensor_info;
+>  	struct scmi_handle *handle = sdev->handle;
+> +	const struct scmi_sensor_proto_ops *sensor_ops;
+> +	struct scmi_protocol_handle *ph;
+>  	struct device *dev = &sdev->dev;
+>  	struct iio_dev *scmi_iio_dev;
+>  	u16 nr_sensors;
+>  	int err = -ENODEV, i;
+>  
+> -	if (!handle || !handle->sensor_ops) {
+> +	if (!handle)
+> +		return -ENODEV;
+> +
+> +	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
+> +	if (IS_ERR(sensor_ops)) {
+>  		dev_err(dev, "SCMI device has no sensor interface\n");
+> -		return -EINVAL;
+> +		return PTR_ERR(sensor_ops);
+>  	}
+>  
+> -	nr_sensors = handle->sensor_ops->count_get(handle);
+> +	nr_sensors = sensor_ops->count_get(ph);
+>  	if (!nr_sensors) {
+>  		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+>  		return -ENODEV;
+>  	}
+>  
+>  	for (i = 0; i < nr_sensors; i++) {
+> -		sensor_info = handle->sensor_ops->info_get(handle, i);
+> +		sensor_info = sensor_ops->info_get(ph, i);
+>  		if (!sensor_info) {
+>  			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+>  			return -EINVAL;
+> @@ -636,7 +635,8 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+>  		    sensor_info->axis[0].type != RADIANS_SEC)
+>  			continue;
+>  
+> -		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
+> +		scmi_iio_dev = scmi_alloc_iiodev(sdev, sensor_ops, ph,
+> +						 sensor_info);
+>  		if (IS_ERR(scmi_iio_dev)) {
+>  			dev_err(dev,
+>  				"failed to allocate IIO device for sensor %s: %ld\n",
+
