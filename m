@@ -2,93 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D030A34E5D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FBC34E5DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhC3Kyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        id S231732AbhC3K4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhC3Kyf (ORCPT
+        with ESMTP id S230303AbhC3KzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:54:35 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5EBC061574;
-        Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id h25so11461081pgm.3;
-        Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
+        Tue, 30 Mar 2021 06:55:24 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A77DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:55:24 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id k8so15785307wrc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:55:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GfTXsCc8VwOCrzz5IdVCXT4sti0I4o6ulUxkv8FeK7g=;
-        b=YJAH/noyJneTpA0X43ErEz/UFsFEgkwZ3ukM7fGy4VRntqNAUK46Ay8zaGC6HZFdFe
-         bLJjJwhtq6sieA9mutlfAU5p8c+v2REPkBDgqjFSSnIMsw8O4jf2P2BteogNq6PDB2nK
-         7DWMWUCZ7pKisRqqAOgh/TsEC2S28DuvUmdShd4rFGmFMvB83NfLa7iz41JKIHEI1aGN
-         LHky3qSLnQL2CS90SYvVtaHCEvgQZfvx9W//ENYy6aDEdYdP6Nv7jUuCd3hbm2WwrUlV
-         JzTMUkC6SCO5CPbF9d+yYRxRbtOPTtHUedrx2YLDT1EyJDr3SCWl+CBKfrvDTztU6gxO
-         GMcA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zdE5Fc8jLem2B9Qy48G9g0/1kUGnbcvZCpMV8AzrKEM=;
+        b=H9tk91yek2J1Y1tyh0XM2q3G/b+Nvp2kUxPqqRIoSggREMNckFAO0SNb1uTBTmuZSB
+         teUjQUnAsphpTEZkAT/H7zJNCRShXzU3+HYSpeTTbyjz+ctSKS276oBAUx8IRJ0Ko9e7
+         AETVZWZRPxoCW3CZf9JDpbAyrYd9rSXplwUrJEzPqniPsFqSwKxe5hyEYOd+v1fl2bDJ
+         g9amZYnjUXwC7+6i1+6rYtcRtuL1meArgxwNMil1RhLyJHKHn+DWqfecEg8Jzg9aqHv1
+         XoIi8jP6BNa2PQDwH307OI7cgTHVgMpLLWU4nHe4UjY9Kta31TsldDio8DHZupKpP/dn
+         TJew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GfTXsCc8VwOCrzz5IdVCXT4sti0I4o6ulUxkv8FeK7g=;
-        b=CzpyyWVbQja/1Pjps6/RmR7p066nkwhWgskii4gR8x03woeRLaNpzNl3aaPUCrYj4G
-         9Gz+wvukI55ar/9Hw7gofZiA3LKEGsdLT214MPe1wy60Hgf/B9QHmjY5PpawgdMpIMHe
-         +3TdX2AptJTdYhBEbCtaHvrIYKaoX+jZEK/vf/7uAY5ALakdXPthF1XKIgUDt7TB30wH
-         kT1+7x2JhSRfpTxPgCRS7K4zzB0eldgge9Q/i5Jx2XRBJ3/KxmyC/TpdQfE77zlUKLGP
-         bmU4DtnaBYDz9c69tbn/W8ACDQkiBGOn7nppSoli6o4jthLInKxNSYZazfqCSXMpFevs
-         AFGg==
-X-Gm-Message-State: AOAM5332FOp+x0+NmN7c3EWmsMAh+Ygrc7fSBkPSieD3Ko7NHEcW6kXF
-        gb63mv9MWt72deUd5acatCduo7Q09aKusmMKfLk=
-X-Google-Smtp-Source: ABdhPJyYjv0zrkk92HwCcZoSJd1Qt05pjq4R9mTJrwEJ6hv3FeLZ0+qIgtMm4U7QFaRNmO5DhyiNwMiZi7sLoxYeXGw=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr5797418pgm.74.1617101675189;
- Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zdE5Fc8jLem2B9Qy48G9g0/1kUGnbcvZCpMV8AzrKEM=;
+        b=J2UsqcEANvwu9mK2pcgaHnl61my5+J4BZvZjL/E28H4wvS6HzCcj7ec8bfPo8VseAe
+         RNGeFTG4zrW3l4CNqlfAeGRSKImkeDXNFZCo6Efl9fvKwRSq8u32SpfYHOerDuKPwbQ/
+         0uDge5yA3PXGt17W2uRzTE9a3nB98g4J/TSiY0kHhASTA5xkXs6BjLWjrn8mHhG5Kx+8
+         fw+6miHZc+2x9T/62aAnB3P+ReDjSlxk0o+N4qHJb2bBpSJoKImvuDklNTcjV9J0R6WR
+         EBoGxggWHdfeyMwrCxC9D8JJhKjzi4PVi21+HvSPHjStQex4pnpmvP4DWe9Wi/fnJoaq
+         djRw==
+X-Gm-Message-State: AOAM533plzY8W1hdLQv3yl15rvnwOae/FPhdM+IeUatugW29KL0eIriV
+        OgyM1kEn8OJm3pf0C+stTp4=
+X-Google-Smtp-Source: ABdhPJz81MZ4dAglYXBBgnyQTkAYA3/Xi5muiyQxbDAJWWnx3S/5t2YuFkHCrMeVqoIE7E4pnLGxWA==
+X-Received: by 2002:adf:f307:: with SMTP id i7mr33454467wro.142.1617101723156;
+        Tue, 30 Mar 2021 03:55:23 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id j123sm2970592wmb.1.2021.03.30.03.55.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 03:55:22 -0700 (PDT)
+Subject: Re: [PATCH v2] soc: mediatek: mmsys: Add mt8183 mmsys routing table
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     drinkcat@chromium.org, weiyi.lu@mediatek.com, ck.hu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
+References: <20210330104432.3432574-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <bb100c42-a295-1b94-ada2-069ab397dffd@gmail.com>
+Date:   Tue, 30 Mar 2021 12:55:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
- <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VdRobc6jpFzAkd3U65BhiiNPLrF4qsnCKmsQBKMYbG4sg@mail.gmail.com> <d4e78b93a62d2882492b46942a927293bad81d66.camel@fi.rohmeurope.com>
-In-Reply-To: <d4e78b93a62d2882492b46942a927293bad81d66.camel@fi.rohmeurope.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:54:19 +0300
-Message-ID: <CAHp75Vce8sUsVz0YgHLDFbVMEmbYzaUZ-nRwgOeEfDHowEnxrw@mail.gmail.com>
-Subject: Re: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210330104432.3432574-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 1:43 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
-> On Tue, 2021-03-30 at 13:11 +0300, Andy Shevchenko wrote:
 
-...
 
-> Andy, how fatal do you think these issues are? I did put these comments
-> on my 'things to clean-up' list.
->
-> If you don't see them as fatal, then I rather not resend whole series
-> of 19 patches just for these. I am anyway going to rework the ROHM PMIC
-> GPIO drivers which I have authored during the next couple of months for
-> regmap_gpio usage. This series has most of the acks except for the
-> regulator part - so I was about to suggest to Lee that perhaps he could
-> apply other but regulator stuff to MFD so I could squeeze the recipient
-> list and amount of patches in series.
+On 30/03/2021 12:44, Hsin-Yi Wang wrote:
+> mt8183 has different routing registers than mt8173.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> v1->v2:
+> Move mt8183 routing table to mt8183-mmsys.h
+> 
+> This patch is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git v5.12-next/soc
+> ---
+>  drivers/soc/mediatek/mt8183-mmsys.h | 56 +++++++++++++++++++++++++++++
+>  drivers/soc/mediatek/mtk-mmsys.c    |  3 ++
+>  2 files changed, 59 insertions(+)
+>  create mode 100644 drivers/soc/mediatek/mt8183-mmsys.h
+> 
+> diff --git a/drivers/soc/mediatek/mt8183-mmsys.h b/drivers/soc/mediatek/mt8183-mmsys.h
+> new file mode 100644
+> index 000000000000..38e9f683e5bd
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/mt8183-mmsys.h
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +#ifndef __SOC_MEDIATEK_MT8183_MMSYS_H
+> +#define __SOC_MEDIATEK_MT8183_MMSYS_H
+> +
+> +#include "mtk-mmsys.h"
 
-I understand that. I'm not a maintainer, but my personal view is that
-it can be fixed in follow ups.
-The problem as usual here is that people often forget to cook / send
-follow up. That's why lately I'm more insisting on changes to be done
-as soon as possible.
+We can drop this, see below.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +
+> +#define MT8183_DISP_OVL0_MOUT_EN		0xf00
+> +#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
+> +#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
+> +#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
+> +#define MT8183_DISP_PATH0_SEL_IN		0xf24
+> +#define MT8183_DISP_DSI0_SEL_IN			0xf2c
+> +#define MT8183_DISP_DPI0_SEL_IN			0xf30
+> +#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
+> +#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
+> +
+> +#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
+> +#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
+> +#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
+> +#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
+> +#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
+> +#define MT8183_DSI0_SEL_IN_RDMA0		0x1
+> +#define MT8183_DSI0_SEL_IN_RDMA1		0x3
+> +#define MT8183_DPI0_SEL_IN_RDMA0		0x1
+> +#define MT8183_DPI0_SEL_IN_RDMA1		0x2
+> +#define MT8183_RDMA0_SOUT_COLOR0		0x1
+> +#define MT8183_RDMA1_SOUT_DSI0			0x1
+> +
+> +static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
+> +	{
+> +		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
+> +		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
+> +	}, {
+> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
+> +		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
+> +	}, {
+> +		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
+> +		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
+> +	}, {
+> +		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
+> +		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
+> +	}, {
+> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
+> +		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
+> +	}, {
+> +		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+> +		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
+> +	}, {
+> +		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
+> +		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
+> +	}
+> +};
+> +
+> +#endif /* __SOC_MEDIATEK_MT8183_MMSYS_H */
+> +
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+> index c46d8ab8b0c2..ac68a989854e 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/soc/mediatek/mtk-mmsys.h>
+>  
+> +#include "mt8183-mmsys.h"
+
+Just add the SoC specific header after mtk-mmsys.h include.
+
+Other then that patch looks good.
+
+Matthias
+
+
+>  #include "mtk-mmsys.h"
+>  
+>  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
+> @@ -40,6 +41,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+>  
+>  static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+>  	.clk_driver = "clk-mt8183-mm",
+> +	.routes = mmsys_mt8183_routing_table,
+> +	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
+>  };
+>  
+>  struct mtk_mmsys {
+> 
