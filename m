@@ -2,119 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A34F34E4A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327D134E4AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhC3JnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:43:18 -0400
-Received: from smtp-190a.mail.infomaniak.ch ([185.125.25.10]:33303 "EHLO
-        smtp-190a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231481AbhC3JnB (ORCPT
+        id S231613AbhC3JoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:44:19 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38826 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231313AbhC3JoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:43:01 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F8kyW6mfzzMpvrk;
-        Tue, 30 Mar 2021 11:42:59 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F8kyV6y72zlh8TT;
-        Tue, 30 Mar 2021 11:42:58 +0200 (CEST)
-Subject: Re: [PATCH v1] ovl: Fix leaked dentry
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Vivek Goyal <vgoyal@redhat.com>, stable@vger.kernel.org,
-        syzbot <syzkaller@googlegroups.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210329164907.2133175-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <bfcd9935-f51d-a94e-2827-373ec0962e70@digikod.net>
-Date:   Tue, 30 Mar 2021 11:44:00 +0200
-User-Agent: 
+        Tue, 30 Mar 2021 05:44:16 -0400
+Received: from [IPv6:2a02:810a:880:f54:2d37:13aa:2f32:9c00] (unknown [IPv6:2a02:810a:880:f54:2d37:13aa:2f32:9c00])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DD1711F4545D;
+        Tue, 30 Mar 2021 10:44:14 +0100 (BST)
+Subject: Re: [PATCH v2 2/3] drm/mediatek: Don't support hdmi connector
+ creation
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, dafna3@gmail.com, chunkuang.hu@kernel.org,
+        p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        enric.balletbo@collabora.com
+References: <20210329153632.17559-1-dafna.hirschfeld@collabora.com>
+ <20210329153632.17559-3-dafna.hirschfeld@collabora.com>
+ <YGJr+jopSvH4SdsL@pendragon.ideasonboard.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <3ced4fcf-5ebb-5e34-dfcd-84545237b584@collabora.com>
+Date:   Tue, 30 Mar 2021 11:44:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210329164907.2133175-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YGJr+jopSvH4SdsL@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 29/03/2021 18:49, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
+On 30.03.21 02:08, Laurent Pinchart wrote:
+> Hi Dafna,
 > 
-> Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
-> ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
-> metacopy error, which leads to dentry leaks when shutting down the
-> related superblock:
+> Thank you for the patch.
 > 
->   overlayfs: refusing to follow metacopy origin for (/file0)
->   ...
->   BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
->   ...
->   WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
->   CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
->   ...
->   RIP: 0010:umount_check.cold+0x107/0x14d
->   ...
->   Call Trace:
->    d_walk+0x28c/0x950
->    ? dentry_lru_isolate+0x2b0/0x2b0
->    ? __kasan_slab_free+0x12/0x20
->    do_one_tree+0x33/0x60
->    shrink_dcache_for_umount+0x78/0x1d0
->    generic_shutdown_super+0x70/0x440
->    kill_anon_super+0x3e/0x70
->    deactivate_locked_super+0xc4/0x160
->    deactivate_super+0xfa/0x140
->    cleanup_mnt+0x22e/0x370
->    __cleanup_mnt+0x1a/0x30
->    task_work_run+0x139/0x210
->    do_exit+0xb0c/0x2820
->    ? __kasan_check_read+0x1d/0x30
->    ? find_held_lock+0x35/0x160
->    ? lock_release+0x1b6/0x660
->    ? mm_update_next_owner+0xa20/0xa20
->    ? reacquire_held_locks+0x3f0/0x3f0
->    ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
->    do_group_exit+0x135/0x380
->    __do_sys_exit_group.isra.0+0x20/0x20
->    __x64_sys_exit_group+0x3c/0x50
->    do_syscall_64+0x45/0x70
->    entry_SYSCALL_64_after_hwframe+0x44/0xae
->   ...
->   VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
+> On Mon, Mar 29, 2021 at 05:36:31PM +0200, Dafna Hirschfeld wrote:
+>> commit f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
+>> broke the display support for elm device since mtk_dpi calls
+>> drm_bridge_attach with the flag DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>> while mtk_hdmi does not yet support this flag.
+>>
+>> Fix this by accepting DRM_BRIDGE_ATTACH_NO_CONNECTOR in bridge attachment.
+>> Implement the drm_bridge_funcs .detect() and .get_edid() operations, and
+>> call drm_bridge_hpd_notify() to report HPD. This provides the
+>> necessary API to support disabling connector creation.
+>>
+>> This patch is inspired by a similar patch for bridge/synopsys/dw-hdmi.c:
+>> commit ec971aaa6775 ("drm: bridge: dw-hdmi: Make connector creation optional")
+>> But with the difference that in mtk-hdmi only the option of not creating
+>> a connector is supported.
+>>
+>> Fixes: f01195148967 ("drm/mediatek: mtk_dpi: Create connector for bridges")
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> ---
+>>   drivers/gpu/drm/mediatek/mtk_hdmi.c | 129 ++++++++++------------------
+>>   1 file changed, 44 insertions(+), 85 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+>> index f2c810b767ef..1eeb211b1536 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+>> @@ -186,11 +186,6 @@ static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
+>>   	return container_of(b, struct mtk_hdmi, bridge);
+>>   }
+>>   
+>> -static inline struct mtk_hdmi *hdmi_ctx_from_conn(struct drm_connector *c)
+>> -{
+>> -	return container_of(c, struct mtk_hdmi, conn);
+>> -}
+>> -
+>>   static u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset)
+>>   {
+>>   	return readl(hdmi->regs + offset);
+>> @@ -1201,48 +1196,30 @@ mtk_hdmi_update_plugged_status(struct mtk_hdmi *hdmi)
+>>   	       connector_status_connected : connector_status_disconnected;
+>>   }
+>>   
+>> -static enum drm_connector_status hdmi_conn_detect(struct drm_connector *conn,
+>> -						  bool force)
+>> -{
+>> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
+>> -	return mtk_hdmi_update_plugged_status(hdmi);
+>> -}
+>> -
+>> -static void hdmi_conn_destroy(struct drm_connector *conn)
+>> +static struct edid *mtk_hdmi_get_edid(struct mtk_hdmi *hdmi,
+>> +				      struct drm_connector *connector)
+>>   {
+>> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
+>> -
+>> -	mtk_cec_set_hpd_event(hdmi->cec_dev, NULL, NULL);
+>> -
+>> -	drm_connector_cleanup(conn);
+>> -}
+>> -
+>> -static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
+>> -{
+>> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
+>>   	struct edid *edid;
+>> -	int ret;
+>>   
+>>   	if (!hdmi->ddc_adpt)
+>> -		return -ENODEV;
+>> -
+>> -	edid = drm_get_edid(conn, hdmi->ddc_adpt);
+>> +		return NULL;
+>> +	edid = drm_get_edid(connector, hdmi->ddc_adpt);
+>>   	if (!edid)
+>> -		return -ENODEV;
+>> -
+>> +		return NULL;
+>>   	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
+>> +	return edid;
+>> +}
+>>   
+>> -	drm_connector_update_edid_property(conn, edid);
+>> -
+>> -	ret = drm_add_edid_modes(conn, edid);
+>> -	kfree(edid);
+>> -	return ret;
+>> +static enum drm_connector_status mtk_hdmi_detect(struct mtk_hdmi *hdmi)
+>> +{
+>> +	return mtk_hdmi_update_plugged_status(hdmi);
+>>   }
+>>   
+>> -static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
+>> -				    struct drm_display_mode *mode)
+>> +static int mtk_hdmi_bridge_mode_valid(struct drm_bridge *bridge,
+>> +				      const struct drm_display_info *info,
+>> +				      const struct drm_display_mode *mode)
+>>   {
+>> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
+>> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>>   	struct drm_bridge *next_bridge;
+>>   
+>>   	dev_dbg(hdmi->dev, "xres=%d, yres=%d, refresh=%d, intl=%d clock=%d\n",
+>> @@ -1267,74 +1244,50 @@ static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
+>>   	return drm_mode_validate_size(mode, 0x1fff, 0x1fff);
+>>   }
+>>   
+>> -static struct drm_encoder *mtk_hdmi_conn_best_enc(struct drm_connector *conn)
+>> -{
+>> -	struct mtk_hdmi *hdmi = hdmi_ctx_from_conn(conn);
+>> -
+>> -	return hdmi->bridge.encoder;
+>> -}
+>> -
+>> -static const struct drm_connector_funcs mtk_hdmi_connector_funcs = {
+>> -	.detect = hdmi_conn_detect,
+>> -	.fill_modes = drm_helper_probe_single_connector_modes,
+>> -	.destroy = hdmi_conn_destroy,
+>> -	.reset = drm_atomic_helper_connector_reset,
+>> -	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+>> -	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+>> -};
+>> -
+>> -static const struct drm_connector_helper_funcs
+>> -		mtk_hdmi_connector_helper_funcs = {
+>> -	.get_modes = mtk_hdmi_conn_get_modes,
+>> -	.mode_valid = mtk_hdmi_conn_mode_valid,
+>> -	.best_encoder = mtk_hdmi_conn_best_enc,
+>> -};
+>> -
+>>   static void mtk_hdmi_hpd_event(bool hpd, struct device *dev)
+>>   {
+>>   	struct mtk_hdmi *hdmi = dev_get_drvdata(dev);
+>>   
+>> -	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev)
+>> +	if (hdmi && hdmi->bridge.encoder && hdmi->bridge.encoder->dev) {
+>> +		static enum drm_connector_status status;
+>> +
+>> +		status = mtk_hdmi_detect(hdmi);
+>>   		drm_helper_hpd_irq_event(hdmi->bridge.encoder->dev);
 > 
-> This fix has been tested with a syzkaller reproducer.
-> 
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Miklos Szeredi <miklos@szeredi.hu>
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: <stable@vger.kernel.org> # v5.7+
+> I think you can drop this, as drm_bridge_connector_hpd_cb() calls
+> drm_kms_helper_hotplug_event().
 
-The bogus commit 6815f479ca90 was applied on v5.7-rc2 but it is only
-available since v5.8+ .
+I see that drm_kms_helper_hotplug_event is called from drm_bridge_connector_hpd_cb,
+which is set as a birdge's 'hpd_cb' when calling drm_bridge_connector_enable_hpd,
+but mkt_dpi does not call this funcion for the drm_bridge_connector.
 
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
-> ---
->  fs/overlayfs/namei.c | 1 +
->  1 file changed, 1 insertion(+)
+I also wonder why bridges have both 'hpd_cb' and a function 'hpd_notify'.
+It seems that both are called upon hot-plug event.
+It is also confusing that the function drm_bridge_hpd_notify calls the 'hpd_cb'
+and not the 'hpd_notfiy'. I can send a patch to change the name to 'drm_bridge_hpd_cb'
+
+Thanks,
+Dafna
+
 > 
-> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-> index 3fe05fb5d145..424c594afd79 100644
-> --- a/fs/overlayfs/namei.c
-> +++ b/fs/overlayfs/namei.c
-> @@ -921,6 +921,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
->  		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
->  			err = -EPERM;
->  			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
-> +			dput(this);
->  			goto out_put;
->  		}
->  
+>> +		drm_bridge_hpd_notify(&hdmi->bridge, status);
+>> +	}
+>>   }
+>>   
+>>   /*
+>>    * Bridge callbacks
+>>    */
+>>   
+>> +static enum drm_connector_status mtk_hdmi_bridge_detect(struct drm_bridge *bridge)
+>> +{
+>> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>> +
+>> +	return mtk_hdmi_detect(hdmi);
+>> +}
+>> +
+>> +static struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge,
+>> +					     struct drm_connector *connector)
+>> +{
+>> +	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>> +
+>> +	return mtk_hdmi_get_edid(hdmi, connector);
 > 
-> base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+> As mtk_hdmi_get_edid() is only called here, you could inline it in this
+> function. Up to you.
+> 
+>> +}
+>> +
+>>   static int mtk_hdmi_bridge_attach(struct drm_bridge *bridge,
+>>   				  enum drm_bridge_attach_flags flags)
+>>   {
+>>   	struct mtk_hdmi *hdmi = hdmi_ctx_from_bridge(bridge);
+>>   	int ret;
+>>   
+>> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+>> -		DRM_ERROR("Fix bridge driver to make connector optional!");
+>> +	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+>> +		DRM_ERROR("%s: The flag DRM_BRIDGE_ATTACH_NO_CONNECTOR must be supplied\n",
+>> +			  __func__);
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	ret = drm_connector_init_with_ddc(bridge->encoder->dev, &hdmi->conn,
+>> -					  &mtk_hdmi_connector_funcs,
+>> -					  DRM_MODE_CONNECTOR_HDMIA,
+>> -					  hdmi->ddc_adpt);
+>> -	if (ret) {
+>> -		dev_err(hdmi->dev, "Failed to initialize connector: %d\n", ret);
+>> -		return ret;
+>> -	}
+>> -	drm_connector_helper_add(&hdmi->conn, &mtk_hdmi_connector_helper_funcs);
+>> -
+>> -	hdmi->conn.polled = DRM_CONNECTOR_POLL_HPD;
+>> -	hdmi->conn.interlace_allowed = true;
+>> -	hdmi->conn.doublescan_allowed = false;
+>> -
+>> -	ret = drm_connector_attach_encoder(&hdmi->conn,
+>> -						bridge->encoder);
+>> -	if (ret) {
+>> -		dev_err(hdmi->dev,
+>> -			"Failed to attach connector to encoder: %d\n", ret);
+>> -		return ret;
+>> -	}
+>> -
+>>   	if (hdmi->next_bridge) {
+>>   		ret = drm_bridge_attach(bridge->encoder, hdmi->next_bridge,
+>>   					bridge, flags);
+>> @@ -1444,6 +1397,7 @@ static void mtk_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
+>>   }
+>>   
+>>   static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
+>> +	.mode_valid = mtk_hdmi_bridge_mode_valid,
+>>   	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
+>>   	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
+>>   	.atomic_reset = drm_atomic_helper_bridge_reset,
+>> @@ -1454,6 +1408,8 @@ static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs = {
+>>   	.mode_set = mtk_hdmi_bridge_mode_set,
+>>   	.atomic_pre_enable = mtk_hdmi_bridge_atomic_pre_enable,
+>>   	.atomic_enable = mtk_hdmi_bridge_atomic_enable,
+>> +	.detect = mtk_hdmi_bridge_detect,
+>> +	.get_edid = mtk_hdmi_bridge_get_edid,
+>>   };
+>>   
+>>   static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
+>> @@ -1762,6 +1718,9 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
+>>   
+>>   	hdmi->bridge.funcs = &mtk_hdmi_bridge_funcs;
+>>   	hdmi->bridge.of_node = pdev->dev.of_node;
+>> +	hdmi->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
+>> +			   | DRM_BRIDGE_OP_HPD;
+> 
+> Nitpicking, I'd align the | to the =.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+>> +	hdmi->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+>>   	drm_bridge_add(&hdmi->bridge);
+>>   
+>>   	ret = mtk_hdmi_clk_enable_audio(hdmi);
 > 
