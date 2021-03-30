@@ -2,165 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE1D34DF1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B80034DF1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhC3DRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:17:32 -0400
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:58593
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231241AbhC3DRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:17:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cGSqhqjSAmm8Mwc3dskniQl8cUn1N3ArJwRuZZl472wgpa7S4NVt5lF5tWf+qesBx8v2tYxoGXzaIxlc4WG/nYMIKID8zojIYmbChVKJ+OL7bkgQQw9Afn+CWXLcGQy/90mVIUINT3rHUlmpjBv1ay2mG2G1GRW1nLii+rL1/WXc1rHNdsG6r7rJor56jQl97qbvfUjwKSPITi2X5kWRvmcD+3PDo0Sg8MUv2bR/IviCTk836xJWfaJpgjMIGvTohInQb/F+k6rmPBs88p+VWyQGVqsN//1DXV1I7xc704p55C4RdieDJsGb13D9Q5MYfgErwoEBKEiUUk0t/QrtRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l8wYgVxOMsdKY/wUJSmQujdFb0Co4UskCx9LwUeZFFY=;
- b=YNg6HQmVsA9kcGI1qiBfx7scEeUoYdObG6+fC0kc/g5nbPP3TTeBBu2d8HcGLgKWgWynNAvui8Ro5WP0JpP/4Q+HizDKfZfk95yCUS/P0EdrppQ3WCDebmkWKZ2/zFm+bxNeHWc8M8qFWjQx8HHDcb20LXQulqIRsB4EjwHv5QJka844otvjij6ybFQR4iKOFrQDv4JHffki19XGwEX21FENyrPU7tgeJuxW+pPcJ/9xuENkisA9bWiD9KQZwyEhK9Jgrs/y/rGhElygKpEn2u/7y2HBhb+63hKAoAt8OlQI1DOZ5n75FUULjyXIc6pjIReQNgPvNR/QBHrJHDOkYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S230362AbhC3DR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231192AbhC3DRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 23:17:00 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BEEC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id l13so10948350qtu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l8wYgVxOMsdKY/wUJSmQujdFb0Co4UskCx9LwUeZFFY=;
- b=TluParY/Bj5MJWH/+UHeP1V6VdtTC7UHLyhvCI7m40HcOWw+UDdhXie6hg3NxMsAKXrcVUzIs16oQWgcWTDYOgcKGaYPPLIvS1Ni+u9hv4AY2Fc+joA0Sjg0BEXI63Hk1lmEaWr6Ciy6mRNZqcYyr/g85c9Z230WlH7R3jlbdJU=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by BYAPR03MB3989.namprd03.prod.outlook.com (2603:10b6:a03:7c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
- 2021 03:17:02 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%9]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 03:17:02 +0000
-Date:   Tue, 30 Mar 2021 11:16:51 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: mm: ptdump: Add __init section marker to three
- functions
-Message-ID: <20210330111651.5636eea2@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BY5PR16CA0029.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::42) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        d=protocubo.io; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KrQ9+vOA/VSPB4rvbiUZ1dmmGCXpZPt3Kvj7vnRoOHE=;
+        b=eQdyGWzUgymZCFmDoJWwE69QwNPg1UIA/oD8YrprJONhRAVaizUwYaGeHToGC0QUD+
+         M4a1elFp/SfS+7FRq05/8bS0mxbtvMJX9OXX9QpTVwBIZUkTwka90rcPD7VensUTISPA
+         di6mzq0HD0Uqi8wyGVYZSZ1IPcpfxU5nyaR37py56JaJ+VhBCjYtAlw3R5dFbY8fImBV
+         0nZWp/rL58bUGOCR0GLOXtd0UIq4hl+tPtrwufeBvNPoY5LYKhT+anheXrkCXjuIqJSj
+         byq0Fb2FKx4G7H3Yp03X/eSmeyE3ZGl5A53AksyM3LgYFh/aQQSGDRaFoT4ckTLFeSGI
+         o29A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KrQ9+vOA/VSPB4rvbiUZ1dmmGCXpZPt3Kvj7vnRoOHE=;
+        b=MJgr8P1u0GkT8oX+m7hmALxhWNKoOH+xeiuXTm56tMlCdQuA8RBG2OzXsLEfd6GD7k
+         vu6oogI39h2UMqpm83cmq7sHuXMni55lPjG2d5oodFJ+LY4xYrXt5FYMKnnzqxIP02uG
+         DMFa+LcvcLWe4wP9IAInSYH4d8Rk6Hi49rT0ufS9qGwde3n6Nh3CKeoacFXISMJJea0N
+         rTzhxNrUIJ1bM5QIZ6rFPqwHusjf78qh3CH5a9LBV7dsTUDGfeRmHsx3RVO4pIJcA7NI
+         Iv54MzkHndbWHFNiAx3DBVbPwj7h6w7HIz+5AU3QmT29BQGCjpfiO2EmOWfjikkCsjc/
+         VZTQ==
+X-Gm-Message-State: AOAM530xmqwsJweyGxensHyaECrifb6+h9KaszKzVuH0SKoX5Imwd73O
+        Z1ZNVeQV+HWdSPgzv/ZOSQW5xQ==
+X-Google-Smtp-Source: ABdhPJyiP9vmdxWOPjPZV2x/nat6M95/bdDPdzyGqKDkYT6ztj38NxqvoXmTS1klvwqyfKVeFpvzJw==
+X-Received: by 2002:ac8:6684:: with SMTP id d4mr23646804qtp.34.1617074217049;
+        Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
+Received: from calvin.localdomain ([2804:14d:5c5a:802e:bdc9:ded9:cc08:a4e9])
+        by smtp.gmail.com with ESMTPSA id y8sm4903820qtn.68.2021.03.29.20.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 20:16:56 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 00:16:52 -0300
+From:   Jonas Malaco <jonas@protocubo.io>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (nzxt-kraken2) mark and order concurrent accesses
+Message-ID: <20210330031652.zhhxft4trli6zqtw@calvin.localdomain>
+References: <20210329082211.86716-1-jonas@protocubo.io>
+ <20210329215339.GH220164@roeck-us.net>
+ <20210330002131.s2qz3dr6bwr6jz25@calvin.localdomain>
+ <56ebbf0f-cdcb-d5af-e1ad-c7604597566e@roeck-us.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BY5PR16CA0029.namprd16.prod.outlook.com (2603:10b6:a03:1a0::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Tue, 30 Mar 2021 03:17:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 872a68e6-d0b8-41ba-2726-08d8f32a49a1
-X-MS-TrafficTypeDiagnostic: BYAPR03MB3989:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB3989C2CDEF412B0093BE1C52ED7D9@BYAPR03MB3989.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:133;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PIRqpwNpn7tv0EG+Oe+H0FVf586YmkXg5ypZaV9D4jZv2aTwZSeJcAwMB5IFH7TDI5gTk/Y1gbx76wLqs02PpgIPRz0iOG3JOxqfch7EzmcThOEu5HrNk/T9UxuH5Z5l5ebP8SDc3+LB+RrxQj5DrMkkBSAD5QbdESbP7R/wuJtnoHbsZruJvFjA/6bBI6XyI1pV0Hqd6QlS5Bhr24FdxGSSeHk/ChTCVEuyz1tG5Qj5fC8H6o8mxdDqMoiBjEfFBP/6hBq8Rtix1dfzowAN8MoRA2urKp3u3OQ79BC5DYpaFvIQjk7lEbU0WvVMRellylPqkbwB5AJxzsLwZlYUwM3p+Gk3P56sdGVm6zQOYjifqeteqb24krb/HCX1HuODSy8xIkCYSzfgSNlgu1nLko6SsBZQuddDA7VMQCq+6RQ5Wa+U5tdIQKaBMezT9XyX8Y/iPIN8fuwlzA7jjK0k/rnccPOZP8T5CFLRAzIuv/sy2EeEcsbgfBe673cf9cERE4pYP6nthvgkHHMIIPckuAT03m2NNPvZ/PFMysX2uy8CYp1wTXoKq9JMPqxxkSEpFWNukL39v2Z1FhB0wIbamQdDoiBoYyp63hUOfmOdrr/CWvVXvMs47S+ORq/4WwFOGucaJMreVNtG75itiS+IvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(39860400002)(136003)(376002)(396003)(186003)(26005)(2906002)(4326008)(956004)(52116002)(16526019)(9686003)(55016002)(83380400001)(478600001)(66946007)(5660300002)(1076003)(6506007)(66556008)(66476007)(86362001)(6666004)(110136005)(7696005)(8936002)(8676002)(316002)(38100700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?t381HMqHR/hRS5IrAOYiUSyogsXypSMmYv5E4azZ7AAftmSe/JSJiFO8zh9L?=
- =?us-ascii?Q?kgdCE6BI17DLHAnCSv5vuNZUt/cW/yFWD6I95VuwS7RBGlusmkx7nB2rV5D2?=
- =?us-ascii?Q?UVuZREmNt7hRGgbUUYGyxpQrQ6rdb2Znf8ljOcGC77/UC5Uor9twNt9aY9B0?=
- =?us-ascii?Q?5r/2B1ovrDABqsyfut0roTyddDafJX8yRX2jnrAKvcWhR3+N061VVrHNLObH?=
- =?us-ascii?Q?3xIfUfFB4Xb9mP1oAoYDYSxHq3SX3ioSS1KQ1pprWfZzszcDIhiWDhOOERdW?=
- =?us-ascii?Q?yR+o+r4VYZ7xDqdcSRzoW2rjh/028H42S27nhYlJiylP4wstuI41s6uOPIzE?=
- =?us-ascii?Q?px8+9Ya+vGxSp912Z34OEqwyhmiksueklrRxzYciifuj5vXjNdLoCTcd0J9F?=
- =?us-ascii?Q?3/p2bR7EUob0lV3+SCky/ZJftGhty5eQZkwqNWs1wucf2o7YzrgpLfnXktqd?=
- =?us-ascii?Q?Mqtgv77LrgD44PwIoYj0BuW+UjvAH6PNXXWXl3z9bXMcbKvayVoNn9ZwDE/j?=
- =?us-ascii?Q?Kp9n3TdkoVCFHr4EB6ztOTVMhfW5qkG/Esc0KYzBgLnY/mY2VNhWks4soDCf?=
- =?us-ascii?Q?SobGpchxi0e5c7lU0QBRMpLASmQbZX7KQLPK2aL2GuXG7aWKDWsyCidMAYGm?=
- =?us-ascii?Q?4dPG1mcs9NDnZjqOwAmsOR/Bsjf86zb5A41d3ePImoSmbM3filkwpbVun635?=
- =?us-ascii?Q?JGYU4d3o1l91N9qaFNtmq5Mw65VxfTatx9ylowYGKANILLe6J/BNjV9S9k9T?=
- =?us-ascii?Q?V1XF++vB6YBEWFSELvDjoHYiEMkvNprK/l2Q8nkadqADXKOIPpoXRpl2z8w8?=
- =?us-ascii?Q?NKYKljMKFGUUdnWpKSHgzuus7qTPTIwXXfls9S0SDetUVTHCcMhC/D6Lk/nX?=
- =?us-ascii?Q?UA0jMXtRZas8G4ivKrYiTYf8rfamSwHHy9ZGY5MWWreNlTCo1nIljxC7yRVD?=
- =?us-ascii?Q?8zmNEG77ofXXT3zgAa0gvqqDyr0jdA5QAoBTajYUmJXQKJxq63bW9K5lArzC?=
- =?us-ascii?Q?tJ6bSWMCDfAnKz2S9+5O0qWgbFQ7HUksXPHSICeAOsBDCaED7nCoEvAya1gQ?=
- =?us-ascii?Q?7X6ViotzBFGCG9Jpcyu2wudJBtikoBOdug6bszG5w1gU0+0I/j+R8OZv9ZK6?=
- =?us-ascii?Q?NdMTLDS2tn4UU5qvW0ZFXqFwnVlmsnP+oqpNwP5we9gH0KikRslOnCs4TfaE?=
- =?us-ascii?Q?soePPoorj/UcXvbOkLrQnzuShcjA1bt2/qZU73/FJLFeazyXTrgHVCAnTbmt?=
- =?us-ascii?Q?Q8OUdn0t7rlIvZR5DpsU4RrwMEmKt9sNhe6Z0Z7WlsS7qqwULrLtTJnSkvl1?=
- =?us-ascii?Q?uPLF78sMiwx+fV8LvJgz/w1d?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 872a68e6-d0b8-41ba-2726-08d8f32a49a1
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 03:17:02.4305
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PwahYUjXSp0/LMd22W1e4BRLchT0TQv/35/v/Tp+ecYMYgljFAg0px7nFM0KLC1C8fXjJXVcAY8u2sAbB5tfvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3989
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <56ebbf0f-cdcb-d5af-e1ad-c7604597566e@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They are not needed after booting, so mark them as __init to move them
-to the .init section.
+On Mon, Mar 29, 2021 at 06:01:00PM -0700, Guenter Roeck wrote:
+> On 3/29/21 5:21 PM, Jonas Malaco wrote:
+> > On Mon, Mar 29, 2021 at 02:53:39PM -0700, Guenter Roeck wrote:
+> >> On Mon, Mar 29, 2021 at 05:22:01AM -0300, Jonas Malaco wrote:
+> >>> To avoid a spinlock, the driver explores concurrent memory accesses
+> >>> between _raw_event and _read, having the former updating fields on a
+> >>> data structure while the latter could be reading from them.  Because
+> >>> these are "plain" accesses, those are data races according to the Linux
+> >>> kernel memory model (LKMM).
+> >>>
+> >>> Data races are undefined behavior in both C11 and LKMM.  In practice,
+> >>> the compiler is free to make optimizations assuming there is no data
+> >>> race, including load tearing, load fusing and many others,[1] most of
+> >>> which could result in corruption of the values reported to user-space.
+> >>>
+> >>> Prevent undesirable optimizations to those concurrent accesses by
+> >>> marking them with READ_ONCE() and WRITE_ONCE().  This also removes the
+> >>> data races, according to the LKMM, because both loads and stores to each
+> >>> location are now "marked" accesses.
+> >>>
+> >>> As a special case, use smp_load_acquire() and smp_load_release() when
+> >>> loading and storing ->updated, as it is used to track the validity of
+> >>> the other values, and thus has to be stored after and loaded before
+> >>> them.  These imply READ_ONCE()/WRITE_ONCE() but also ensure the desired
+> >>> order of memory accesses.
+> >>>
+> >>> [1] https://lwn.net/Articles/793253/
+> >>>
+> >>
+> >> I think you lost me a bit there. What out-of-order accesses that would be
+> >> triggered by a compiler optimization are you concerned about here ?
+> >> The only "problem" I can think of is that priv->updated may have been
+> >> written before the actual values. The impact would be ... zero. An
+> >> attribute read would return "stale" data for a few microseconds.
+> >> Why is that a concern, and what difference does it make ?
+> > 
+> > The impact of out-of-order accesses to priv->updated is indeed minimal.
+> > 
+> > That said, smp_load_acquire() and smp_store_release() were meant to
+> > prevent reordering at runtime, and only affect architectures other than
+> > x86.  READ_ONCE() and WRITE_ONCE() would already prevent reordering from
+> > compiler optimizations, and x86 provides the load-acquire/store-release
+> > semantics by default.
+> > 
+> > But the reordering issue is not a concern to me, I got carried away when
+> > adding READ_ONCE()/WRITE_ONCE().  While smp_load_acquire() and
+> > smp_store_release() make the code work more like I intend it to, they
+> > are (small) costs we can spare.
+> > 
+> > I still think that READ_ONCE()/WRITE_ONCE() are necessary, including for
+> > priv->updated.  Do you agree?
+> > 
+> 
+> No. What is the point ? The order of writes doesn't matter, the writes won't
+> be randomly dropped, and it doesn't matter if the reader reports old values
+> for a couple of microseconds either. This would be different if the values
+> were used as synchronization primitives or similar, but that isn't the case
+> here. As for priv->updated, if you are concerned about lost reports and
+> the 4th report is received a few microseconds before the read, I'd suggest
+> to loosen the interval a bit instead.
+> 
+> Supposedly we are getting reports every 500ms. We have two situations:
+> - More than three reports are lost, making priv->updated somewhat relevant.
+>   In this case, it doesn't matter if outdated values are reported for
+>   a few uS since most/many/some reports are outdated more than a second
+>   anyway.
+> - A report is received but old values are reported for a few uS. That
+>   doesn't matter either because reports are always outdated anyway by
+>   much more than a few uS anyway, and the code already tolerates up to
+>   2 seconds of lost reports.
+> 
+> Sorry, I completely fail to see the problem you are trying to solve here.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- arch/arm64/include/asm/ptdump.h | 2 +-
- arch/arm64/mm/ptdump.c          | 4 ++--
- arch/arm64/mm/ptdump_debugfs.c  | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+Please disregard the out-of-order accesses, I agree that preventing them
+"are a (small) cost we can spare".
 
-diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-index 38187f74e089..b1dd7ecff7ef 100644
---- a/arch/arm64/include/asm/ptdump.h
-+++ b/arch/arm64/include/asm/ptdump.h
-@@ -23,7 +23,7 @@ struct ptdump_info {
- 
- void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
- #ifdef CONFIG_PTDUMP_DEBUGFS
--void ptdump_debugfs_register(struct ptdump_info *info, const char *name);
-+void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name);
- #else
- static inline void ptdump_debugfs_register(struct ptdump_info *info,
- 					   const char *name) { }
-diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index 0e050d76b83a..a50e92ea1878 100644
---- a/arch/arm64/mm/ptdump.c
-+++ b/arch/arm64/mm/ptdump.c
-@@ -337,7 +337,7 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
- 	ptdump_walk_pgd(&st.ptdump, info->mm, NULL);
- }
- 
--static void ptdump_initialize(void)
-+static void __init ptdump_initialize(void)
- {
- 	unsigned i, j;
- 
-@@ -381,7 +381,7 @@ void ptdump_check_wx(void)
- 		pr_info("Checked W+X mappings: passed, no W+X pages found\n");
- }
- 
--static int ptdump_init(void)
-+static int __init ptdump_init(void)
- {
- 	address_markers[PAGE_END_NR].start_address = PAGE_END;
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-diff --git a/arch/arm64/mm/ptdump_debugfs.c b/arch/arm64/mm/ptdump_debugfs.c
-index d29d722ec3ec..68bf1a125502 100644
---- a/arch/arm64/mm/ptdump_debugfs.c
-+++ b/arch/arm64/mm/ptdump_debugfs.c
-@@ -16,7 +16,7 @@ static int ptdump_show(struct seq_file *m, void *v)
- }
- DEFINE_SHOW_ATTRIBUTE(ptdump);
- 
--void ptdump_debugfs_register(struct ptdump_info *info, const char *name)
-+void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name)
- {
- 	debugfs_create_file(name, 0400, NULL, info, &ptdump_fops);
- }
--- 
-2.31.0
+The main problem I still would like to address are the data races.
+While the stores and loads cannot be dropped, and we can tolerate their
+reordering, they could still be teared, fused, perhaps invented...
+According to [1] these types of optimizations are not unheard.
 
+Load tearing alone could easily produce values that are not stale, but
+wrong.  Do we also tolerate wrong values, even if they are infrequent?
+
+Another detail I should have mentioned sooner is that READ_ONCE() and
+WRITE_ONCE() cause only minor (gcc) to no (clang) changes to the
+generated code for x86_64 and i386.[2]  While this seems contrary to the
+point I am trying to make, I want to show that, for the most part, these
+changes just lock in a reasonable compiler behavior.
+
+Specifically, on x86_64/gcc (the most relevant arch/compiler for this
+driver) the changes are restricted to kraken2_read:
+
+1.	Loading of priv->updated and jiffies are reordered, because
+	(with READ_ONCE()) both are volatile and time_after(a, b) is
+	defined as b - a.
+
+2.	When loading priv->fan_input[channel],
+		movzx  eax,WORD PTR [rdx+rcx*2+0x14]
+	is split into
+		add rcx,0x8
+		movzx  eax,WORD PTR [rdx+rcx*2+0x4]
+	for no reason I could find in the x86 manual.
+
+3.	Similarly, when loading priv->temp_input[channel]
+		movsxd rax,DWORD PTR [rdx+rcx*4+0x10]
+	turns into
+		add    rcx,0x4
+		movsxd rax,DWORD PTR [rdx+rcx*4]
+
+Both 2 and 3 admittedly get a bit worse with READ_ONCE()/WRITE_ONCE().
+But that is on gcc, and with the data race it could very well decide to
+produce much worse code than that at any moment.
+
+On Arm64 the code does get a lot more ordered, which we have already
+agreed is not really necessary.  But removing smp_load_acquire() and
+smp_store_release() should still allow the CPU to reorder those,
+mitigating some of the impact.
+
+I hope this email clarifies what I am concerned about.
+
+Thanks for the patience,
+Jonas
+
+P.S. Tested with gcc 10.2.0 and clang 11.1.0.
+
+[1] https://lwn.net/Articles/793253/
+[2] (outdated, still with smp_*()): https://github.com/jonasmalacofilho/patches/tree/master/linux/nzxt-kraken2-mark-and-order-concurrent-accesses/objdumps
