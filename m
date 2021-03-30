@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F8234EE57
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED00734EE52
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhC3Qqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        id S232559AbhC3Qq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbhC3QpY (ORCPT
+        with ESMTP id S232502AbhC3QpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:45:24 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ACBC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:24 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id x13so16872675wrs.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:24 -0700 (PDT)
+        Tue, 30 Mar 2021 12:45:25 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0C3C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:25 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id p19so8762047wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/4ggTZY5Mb2A++UxjsiJDknoDlbEazCL2TGQOUARVh0=;
-        b=sW/D+3KH1+2NZF5e1/wNrvvDYSt5MRCR1hc33zkg3/9Nd/s1Y/24i7+LpnP+X1iym8
-         B8jN+aLt+7X3e7nO0JA5/S30ze118bSWrme1DhEz6u/oePp77b7+XFHJ8zBS1TrDmvSY
-         bYDGvaRwOe5g10vyBr7yX7Y5LGS9fyJ2YUQdZSa2nnJ+dpRDcKYuvxeIk81I6W7ch/Z1
-         Gj8MTYEVaHVe/ZZ/kDCNgVDE2eLx1WYxlRx1tmv0+7etMuwSS+MIQb7BEITw1QAJXo38
-         Ck19pqhLIFcsIFq+a6mdx2t92oeX+CpXicQPp/p3yU0+4zC5zT1m2B4/2B5QWOaVbGXr
-         bw6g==
+        bh=/W5+TkNvfgUYvNj9KoLAcT+V+gYW+tMwitOO80W2Zqk=;
+        b=M7ctHdycwwzbcldWwAk4i25/4o5SCvAmv4EGrID+dezRjljGawdNTLz9HK1YoAMs1/
+         LsVVI7opOLx5NQMbxwYnjmUysc7sTnG1hCT627n1I1CxGWckwlghvEVkE3hUg1O9bq0G
+         5cVD21aavKEnfi2xqvB2HyRqCywJjBk+SWXGwKmiulk6ajstXNXWmDYhDJ0D47Ixt4lx
+         HETuxdcav7caWhwdSmM4NW61HnqK1i6bIRe35eZDRf8nvsTb+2xaQbIISBP3/XBj9OYQ
+         BE9vtVJ51mwhNCmHfcN6og1z3vCYwzyUi8RLpl8pnXyaxO7Ucyf4Fxyebr9ZlrTHmJ0L
+         613A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/4ggTZY5Mb2A++UxjsiJDknoDlbEazCL2TGQOUARVh0=;
-        b=VNl3ojfmSCKwcQ0AG9NK214+sLHHyfMH7zV6PgQa1kmOIRXuK0cBwXMB4vpItb2crN
-         Rlr2C+469dDCa0SjnCKZTsOyQHIetuGK0a/MWwtvnx0EHM+c1o+QPjwa7wTdmW16VuzJ
-         bV983BHnA62/36S50X8kSR/fen8kgUaCjODCtAtxGSe9B8AUEBgyAUomOwbI3t1PFcCe
-         OB0AnDXqohmaV9HLYkARj368OHT1qPe3r/gOwJ2QhaGauuDan6Nbz7P9EEN8rQHSDvOe
-         eqgBpxZtmbUtfHpPuZ8lm6wbh2k+tIL+KIUQwubASd3TtTIpR0ktIT+G7893kWLm+v80
-         dZzw==
-X-Gm-Message-State: AOAM533MGX96+IrViMhfGDEaz7j03TzufmNggI//PjGzsX8G+dPIwfll
-        B5jmElhonnb9oGAHjxTrWHhgVw==
-X-Google-Smtp-Source: ABdhPJwGHtvG6SwTcE6+U/TMsax0s13UFKaCdIO9mJcRKCNVdiMMjiwGTBr4H+JcJJEVghtMhskUag==
-X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr34238630wru.259.1617122723061;
-        Tue, 30 Mar 2021 09:45:23 -0700 (PDT)
+        bh=/W5+TkNvfgUYvNj9KoLAcT+V+gYW+tMwitOO80W2Zqk=;
+        b=UPpvp8csZVksn8XPA3azrQPp/UF5A9rvTSxax40sqZ3osV1Qm9dcMURHDbIn2T3jPo
+         fTcwX1LyYOuCV15PXs+Ub+O+Rsv5+YWeKtqeD2qQ7hgXJN3OlpCWr5577LJt9ciV9bdz
+         B5YaJLIOY8o64M8BV39KRGREKSRMY9D7Qmb64G/b/8+2ouoc1vu4I5BRIGnG6LpijYBM
+         ninm6T8axfC7aj5Bfi19jeA5IOAgrXjPDKA9H08MIpx5lrK6Ej6D56LJPjTsAYmFsnQi
+         fPqr8W3txpQ3zYmaKn23sofgpvlkmR1hTW20Ve+XCC8gBDgdDTaY5bVDeLpZCkeg6zrs
+         X34g==
+X-Gm-Message-State: AOAM530o35h92mdrknkcygfw392trnzQGJR4e/UEE6DZk0xhnZL8YAyB
+        +ce673nKlRXKKYgYZnp2xtjUI+ukJej94w==
+X-Google-Smtp-Source: ABdhPJzdhYHsxQgfkzwFzJGeGhzHFLn3jp+MPZhPB6Zd/ToCgxuSK35Dy0TEwpWEY22BTQmzP5dAww==
+X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr4954337wml.44.1617122724090;
+        Tue, 30 Mar 2021 09:45:24 -0700 (PDT)
 Received: from dell.default ([91.110.221.217])
-        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.22
+        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 09:45:22 -0700 (PDT)
+        Tue, 30 Mar 2021 09:45:23 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
-        "Michael A. Halcrow" <mahalcro@us.ibm.com>,
+        "Michael A. Halcrow" <mhalcrow@us.ibm.com>,
+        "Michael C. Thompson" <mcthomps@us.ibm.com>,
         ecryptfs@vger.kernel.org
-Subject: [PATCH 22/31] fs: ecryptfs: kthread: Demote file header and provide description for 'cred'
-Date:   Tue, 30 Mar 2021 17:44:49 +0100
-Message-Id: <20210330164458.1625478-23-lee.jones@linaro.org>
+Subject: [PATCH 23/31] fs: ecryptfs: file: Demote kernel-doc abuses
+Date:   Tue, 30 Mar 2021 17:44:50 +0100
+Message-Id: <20210330164458.1625478-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210330164458.1625478-1-lee.jones@linaro.org>
 References: <20210330164458.1625478-1-lee.jones@linaro.org>
@@ -67,36 +68,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- fs/ecryptfs/kthread.c:16: warning: cannot understand function prototype: 'struct ecryptfs_open_req '
- fs/ecryptfs/kthread.c:120: warning: Function parameter or member 'cred' not described in 'ecryptfs_privileged_open'
+ fs/ecryptfs/file.c:23: warning: Incorrect use of kernel-doc format:  * ecryptfs_read_update_atime
+ fs/ecryptfs/file.c:34: warning: Function parameter or member 'iocb' not described in 'ecryptfs_read_update_atime'
+ fs/ecryptfs/file.c:34: warning: Function parameter or member 'to' not described in 'ecryptfs_read_update_atime'
+ fs/ecryptfs/file.c:34: warning: expecting prototype for eCryptfs(). Prototype was for ecryptfs_read_update_atime() instead
 
 Cc: Tyler Hicks <code@tyhicks.com>
-Cc: "Michael A. Halcrow" <mahalcro@us.ibm.com>
+Cc: "Michael A. Halcrow" <mhalcrow@us.ibm.com>
+Cc: "Michael C. Thompson" <mcthomps@us.ibm.com>
 Cc: ecryptfs@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- fs/ecryptfs/kthread.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ecryptfs/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ecryptfs/kthread.c b/fs/ecryptfs/kthread.c
-index a7c903cb01a05..ae4cb4e2e1348 100644
---- a/fs/ecryptfs/kthread.c
-+++ b/fs/ecryptfs/kthread.c
+diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
+index 5fb45d865ce51..18d5b91cb573e 100644
+--- a/fs/ecryptfs/file.c
++++ b/fs/ecryptfs/file.c
 @@ -1,5 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0-or-later
 -/**
 +/*
   * eCryptfs: Linux filesystem encryption layer
   *
-  * Copyright (C) 2008 International Business Machines Corp.
-@@ -108,6 +108,7 @@ void ecryptfs_destroy_kthread(void)
-  * @lower_file: Result of dentry_open by root on lower dentry
-  * @lower_dentry: Lower dentry for file to open
-  * @lower_mnt: Lower vfsmount for file to open
-+ * @cred: credential to use for this call
+  * Copyright (C) 1997-2004 Erez Zadok
+@@ -19,7 +19,7 @@
+ #include <linux/fs_stack.h>
+ #include "ecryptfs_kernel.h"
+ 
+-/**
++/*
+  * ecryptfs_read_update_atime
   *
-  * This function gets a r/w file opened against the lower dentry.
-  *
+  * generic_file_read updates the atime of upper layer inode.  But, it
 -- 
 2.27.0
 
