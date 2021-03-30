@@ -2,119 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0A434F471
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347DC34F477
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhC3WoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232952AbhC3WoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:44:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADAEF6024A;
-        Tue, 30 Mar 2021 22:44:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617144244;
-        bh=RcuXmNfF81Rze1zkENzJlhvPm4Tsn8Z1PvkmCDDnInI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=so502Er6WQx5dCh7b8ocWIkm7HIfeROPeeOkAemjKFTGL7QjWofQpoYZfyOrIkb+X
-         LSMrj3W6sULmdY7pdtOE9+7Jifd6iLpIag2pFBOeSu1T4VBPX0A6LtMtd895QLGGYP
-         fUUwHAxlvLNjI40NULfBagz5wqtSniYQ8YBbGRKhzZqR/qVqZa/q48mWZJPiTojP9x
-         zMtAHM5w2yb/RRBDY2PhbgE/1EoYB3x9EmtdwdeRYwIsJQyAhIhY+7QNxnbWORq8qx
-         JvqEXgq3Mz6dvUtJ+j67qyx60M3jkwfBwDjXjIrrHe4ArBzyKjKvsfbjzGkeKIlBoF
-         flm5sLjLr4Wvg==
-Date:   Tue, 30 Mar 2021 15:44:02 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] Documentation: crypto: add info about "fips=" boot
- option
-Message-ID: <YGOpssfbqaGSlCl1@gmail.com>
-References: <20210330050651.13344-1-rdunlap@infradead.org>
- <YGK3OlT3+6WdXbux@sol.localdomain>
- <f86bb75f-e593-5b2f-943a-db2129256eab@infradead.org>
+        id S233079AbhC3Wor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232988AbhC3Wo1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 18:44:27 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9224C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:44:24 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id q9so9041539qvm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yB9UXx4euC3dVXDwExAh5VQzx8TVjtxe2UHS0AN58TQ=;
+        b=aQamFp1Zhjay23SpYkC7BS7c6FNQ6us330jhOYcr/0sFTHugimuYHz4PRTsH9VScit
+         yVQQrU5ilvT8kk/DUwXONR/SqfUZ3Km+QcgP7KFTxTlzH2jKxOW4NbzWJyyfIuRbjxNh
+         DsSOVQQLpwYHwrqwmB406grnXG13/rLzHLc9kirSpWVPNSMiUkkccjo+oB8w+M5BvCHF
+         rq+97GQg+yMoPUD9Tq+rUmdVf+O+IF4oKBNpULufz8Aspbad5vGNI4rHsWvEmYC56Ttn
+         f17CK3Q12VvkcbIg0wimMFqxEggg/TEcUTCoJgLs1V/TRdGv4lsxWtaYE/5XvzRiUtba
+         dsjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yB9UXx4euC3dVXDwExAh5VQzx8TVjtxe2UHS0AN58TQ=;
+        b=lKFmmDxJ3Fg/1r1ViQLeC6TRfnumIS/Ag1UGjRMQwra4jstmoWF7McHj46UtJ+0UK1
+         bn5lKNEsMubbVSJWZPxkg+eRdJeZvjrMSLkW2j8yEu8uj4YxnGvE7qSQ0nXqY0wyMTOo
+         ZW3iyhQXaCfYeGoKpY/tQnxH13TORx2a7NEwCZzVCWhI+0OJraNjUMTkaYB6vKz0OhCF
+         fKa+C84yBn+3ZjKTIQSWm5F4sT6jOvyhkLCkNmfa4vedHf7NSzYQvbos+6omh+79OTk4
+         ErGU+I/2l1c0cAXRdJy3BNl0YjcoISuVihOCTX7s0UNfuJacv8rw/dWGFcOjYNR/ZDCo
+         iAXQ==
+X-Gm-Message-State: AOAM533172iB3yjcjVpzLn1MwbsaVawhJX68jUFMvgQ5sLaw7poddff7
+        QXP7w5XN5bkmPUPRslS/serACho7E+H6HGZrCNxCSQ==
+X-Google-Smtp-Source: ABdhPJxrPKTkhsCw0bpzF/F2wqfMm9+pMnRnbscf7NowWDBijWWeyXFgsd+ZYWkwK/YF9kZ1bhXKRJ1Gcl4UkYv6so4=
+X-Received: by 2002:ad4:4ae6:: with SMTP id cp6mr196533qvb.43.1617144263775;
+ Tue, 30 Mar 2021 15:44:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f86bb75f-e593-5b2f-943a-db2129256eab@infradead.org>
+References: <20210323035706.572953-1-joshdon@google.com> <20210324112739.GO15768@suse.de>
+ <CABk29Nv7qwWcn4nUe_cxH-pJnppUVjHan+f-iHc8hEyPJ37jxA@mail.gmail.com>
+In-Reply-To: <CABk29Nv7qwWcn4nUe_cxH-pJnppUVjHan+f-iHc8hEyPJ37jxA@mail.gmail.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 30 Mar 2021 15:44:12 -0700
+Message-ID: <CABk29NsQ21F3A6EPmCf+pJG7ojDFog9zD-ri8LO8OVW6sXeusQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
+To:     Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
+        Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:38:55AM -0700, Randy Dunlap wrote:
-> On 3/29/21 10:29 PM, Eric Biggers wrote:
-> > On Mon, Mar 29, 2021 at 10:06:51PM -0700, Randy Dunlap wrote:
-> >> Having just seen a report of using "fips=1" on the kernel command line,
-> >> I could not find it documented anywhere, so add some help for it.
-> >>
-> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> >> Cc: Dexuan Cui <decui@microsoft.com>
-> >> Cc: linux-crypto@vger.kernel.org
-> >> Cc: Eric Biggers <ebiggers@kernel.org>
-> >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> >> Cc: "David S. Miller" <davem@davemloft.net>
-> >> Cc: Jonathan Corbet <corbet@lwn.net>
-> >> Cc: linux-doc@vger.kernel.org
-> >> ---
-> >> Updates/corrections welcome.
-> >>
-> >> v2: drop comment that "fips_enabled can cause some tests to be skipped".
-> >>
-> >>  Documentation/admin-guide/kernel-parameters.txt |   14 ++++++++++++++
-> >>  1 file changed, 14 insertions(+)
-> >>
-> >> --- linux-next-20210329.orig/Documentation/admin-guide/kernel-parameters.txt
-> >> +++ linux-next-20210329/Documentation/admin-guide/kernel-parameters.txt
-> >> @@ -1370,6 +1370,20 @@
-> >>  			See Documentation/admin-guide/sysctl/net.rst for
-> >>  			fb_tunnels_only_for_init_ns
-> >>  
-> >> +	fips=		Format: { 0 | 1}
-> >> +			Use to disable (0) or enable (1) FIPS mode.
-> >> +			If enabled, any process that is waiting on the
-> >> +			'fips_fail_notif_chain' will be notified of fips
-> >> +			failures.
-> >> +			This setting can also be modified via sysctl at
-> >> +			/proc/sysctl/crypto/fips_enabled, i.e.,
-> >> +			crypto.fips_enabled.
-> >> +			If fips_enabled = 1 and a test fails, it will cause a
-> >> +			kernel panic.
-> >> +			If fips_enabled = 1, RSA test requires a key size of
-> >> +			2K or larger.
-> >> +			It can also effect which ECC curve is used.
-> > 
-> > This doesn't really explain why anyone would want to give this option.
-> > What high-level thing is this option meant to be accomplishing?
-> > That's what the documentation should explain.
-> 
-> Yes, clearly, even to me.
-> 
-> But I could not find anything in the kernel source tree that would help me
-> explain that.  So to repeat:
-> 
-> >> Updates/corrections welcome.
-> 
-> thanks.
-> -- 
+Peter,
 
-I'm by no means an expert on this, but the main thing I have in mind is that
-(IIUC) the "fips" option is only useful if your whole kernel binary is certified
-as a "FIPS cryptographic module", *and* you actually need the FIPS compliance.
-And the upstream kernel doesn't have a FIPS certification out of the box; that's
-a task for specific Linux distributors like Red Hat, SUSE, Ubuntu, who get
-specific kernel binaries certified.
+Since you've already pulled the need_resched warning patch into your
+tree, I'm including just the diff based on that patch (in response to
+Mel's comments) below. This should be squashed into the original
+patch.
 
-So, compiling a kernel and using the "fips" option is useless by itself, as your
-kernel image won't actually have a FIPS certification in that case anyway.
+Thanks,
+Josh
 
-So, I would expect an explanation like that about under what circumstances the
-"fips" option is actually useful and intended for.
+---
+From 85796b4d299b1cf3f99bde154a356ce1061221b7 Mon Sep 17 00:00:00 2001
+From: Josh Don <joshdon@google.com>
+Date: Mon, 22 Mar 2021 20:57:06 -0700
+Subject: [PATCH] fixup: sched: Warn on long periods of pending need_resched
 
-The people who actually use this option should be able to explain it properly
-though; the above is just my understanding...
+---
+ kernel/sched/core.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-- Eric
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 6fdf15eebc0d..c07a4c17205f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -61,17 +61,13 @@ const_debug unsigned int sysctl_sched_features =
+
+ /*
+  * Print a warning if need_resched is set for the given duration (if
+- * resched_latency_warn_enabled is set).
++ * LATENCY_WARN is enabled).
+  *
+  * If sysctl_resched_latency_warn_once is set, only one warning will be shown
+  * per boot.
+- *
+- * Resched latency will be ignored for the first resched_boot_quiet_sec, to
+- * reduce false alarms.
+  */
+-int sysctl_resched_latency_warn_ms = 100;
+-int sysctl_resched_latency_warn_once = 1;
+-static const long resched_boot_quiet_sec = 600;
++__read_mostly int sysctl_resched_latency_warn_ms = 100;
++__read_mostly int sysctl_resched_latency_warn_once = 1;
+ #endif /* CONFIG_SCHED_DEBUG */
+
+ /*
+@@ -4542,20 +4538,19 @@ unsigned long long task_sched_runtime(struct
+task_struct *p)
+ }
+
+ #ifdef CONFIG_SCHED_DEBUG
+-static u64 resched_latency_check(struct rq *rq)
++static u64 cpu_resched_latency(struct rq *rq)
+ {
+  int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
+- u64 need_resched_latency, now = rq_clock(rq);
++ u64 resched_latency, now = rq_clock(rq);
+  static bool warned_once;
+
+  if (sysctl_resched_latency_warn_once && warned_once)
+  return 0;
+
+- if (!need_resched() || WARN_ON_ONCE(latency_warn_ms < 2))
++ if (!need_resched() || !latency_warn_ms)
+  return 0;
+
+- /* Disable this warning for the first few mins after boot */
+- if (now < resched_boot_quiet_sec * NSEC_PER_SEC)
++ if (system_state == SYSTEM_BOOTING)
+  return 0;
+
+  if (!rq->last_seen_need_resched_ns) {
+@@ -4565,13 +4560,13 @@ static u64 resched_latency_check(struct rq *rq)
+  }
+
+  rq->ticks_without_resched++;
+- need_resched_latency = now - rq->last_seen_need_resched_ns;
+- if (need_resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
++ resched_latency = now - rq->last_seen_need_resched_ns;
++ if (resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
+  return 0;
+
+  warned_once = true;
+
+- return need_resched_latency;
++ return resched_latency;
+ }
+
+ static int __init setup_resched_latency_warn_ms(char *str)
+@@ -4588,7 +4583,7 @@ static int __init setup_resched_latency_warn_ms(char *str)
+ }
+ __setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
+ #else
+-static inline u64 resched_latency_check(struct rq *rq) { return 0; }
++static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
+ #endif /* CONFIG_SCHED_DEBUG */
+
+ /*
+@@ -4614,7 +4609,7 @@ void scheduler_tick(void)
+  update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+  curr->sched_class->task_tick(rq, curr, 0);
+  if (sched_feat(LATENCY_WARN))
+- resched_latency = resched_latency_check(rq);
++ resched_latency = cpu_resched_latency(rq);
+  calc_global_load_tick(rq);
+
+  rq_unlock(rq, &rf);
+-- 
+2.31.0.291.g576ba9dcdaf-goog
