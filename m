@@ -2,141 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61E834EE81
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3381A34EE82
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbhC3QwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S232480AbhC3QwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhC3QwA (ORCPT
+        with ESMTP id S232656AbhC3QwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:52:00 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C074CC061574;
-        Tue, 30 Mar 2021 09:51:59 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l4so25838956ejc.10;
-        Tue, 30 Mar 2021 09:51:59 -0700 (PDT)
+        Tue, 30 Mar 2021 12:52:09 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87251C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:52:09 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id n198so17197387iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rHYeB0nnI6v6P0Q2VG5Mm28e6mrALqMkMyegkWOwiqk=;
-        b=kGJmMRBzcADUj4PBwV6ce2pTpWYreP0vdr0R/+o6Mk3bwh3JjUTnV1mwN+aBTDqACg
-         NjqoAQn6WyqUIAcWIbtJLQoPA4jxG/baST+8P6IplHfk3UNcnTEVamzs5uJNK+rWLAIj
-         04bNS9hxYXVaZQ1rOCdTC4OVWa5ZEAMYgy0yE2srmI9/GhDYtS8utBzwLA5oE3l0UGBy
-         Tu3ZDVizHWEgfsETi/mPfPDV93rpLDs8OjBQUi0sN2fsGAUOEQrtazjCY+ohgxPH42rI
-         2phdDmXtg81Akx9vv30xSdksoKpssSAyukxRlsNP5kV7ydTZwyQQKADSefZgI+Kzumrx
-         UfRQ==
+        bh=KkAtFBgJyVrb9iuHnJExd0NJVK4yAFyTjJdaicBUnRw=;
+        b=LAH4582+NwnCxqqe3+3sIP97xXc+BUkqqnvowuPgY9Iz4kONSGAQJUWEHtxLk+aI8l
+         GEEB/arsdC3uv34zdRSwjrsexcA5bfXhqmfsxQGVJQeA6ALu++oTk4uU9lGgjGhKvqvX
+         T6r31KQXcBbCdNMnnAMPdbQ0ORrLTkeCblpQ2yv0ZA4JA5eU8L6TFUmsLXYu6nKh9HAP
+         j1xW7br0Z5pA7Itr1SNaiNps+APovmRNWrqSEH6++81C0sbbLqKIeS04aa65iduy3kBi
+         O6HsENhq+/Bh3qW8PC2tbx7nUTCni0PPPdj2JryUft10R79qUTGiYRw94BGHCvn3JFvq
+         GKQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rHYeB0nnI6v6P0Q2VG5Mm28e6mrALqMkMyegkWOwiqk=;
-        b=US5DBgEZQCCqFX61Dz4R0dFPmONMsMfZjAN7vmVx2yAdzLW44kAaJYSJJon13HkuUK
-         4kKwPenP2NbPZZsXhLl5gbcAMCUigxG6V0hVbWw3iPhiT9liVMd+7LYj6O/hFTi09Xj8
-         qexiaZjgavh+CDwf3Q9OA9rZl+LLegvca8cdRJDj3nJuCy6rlK3CYfHw7KvIzQNBV/2v
-         W/vo+50ids5cIL7Fl9JxjCVzWWTcAbs6N+HT6HFUIdBCR7XmiDo9u6SP+0taAaZvQD4B
-         qyrcap8fDN/XjyyjESKVmd+jyt7BFU2bwEcPTWSCFtmzoqAYkiFz5sZXt26vRm9Y+OUY
-         poIQ==
-X-Gm-Message-State: AOAM531bk0rmB0KO5A6XcI8ZZQx5B1ojPxmL0jXB2qI83Me6YtYMEMpF
-        TuciHEkGgIqJK4WllJqgmnYJldcLKOifFbjAWhQ=
-X-Google-Smtp-Source: ABdhPJxEI1+v19DIodf61jZ+12dr7yL8rq3NEl9EcGbLLNAyqpcCMi7wpKL3zN7y1TecKLE/gx0b6U9qK0FSgMcZuGs=
-X-Received: by 2002:a17:906:4055:: with SMTP id y21mr33697021ejj.507.1617123118539;
- Tue, 30 Mar 2021 09:51:58 -0700 (PDT)
+        bh=KkAtFBgJyVrb9iuHnJExd0NJVK4yAFyTjJdaicBUnRw=;
+        b=X8k7T7euPw4spqoK6JlSB9mKB/X68+1UbRmEpPonnecinbIC5Bre7gz9UwEDMynecU
+         ncogpV0l7Qmk2tFpYmTYgu3lMY3Rvx3skuDRCzH8lWyNjhgLeEN0d1m2CRmAEWEDPcVc
+         /SAsK56hvYdGEY7aMnyRKYDBbt6Wcy0rR6Y/4mX29Sa8Xf2iCVayJjIUUy8bhiQ/MaMg
+         TOKnir+sjReDi0idkBMJ+wRDtq27zDcHBuJdNTcNwZonpWgVlPkK6DeJ1gHHErSlKQNC
+         kmnedMZUXu6wYbYiPWqQwdEOfYYXQfGJJRv1GzGymIH5VguE+NcGY87Vj3Wrn5UXBYs4
+         8z6A==
+X-Gm-Message-State: AOAM532fKDVt0P21WjWObLQmX4IOsNV5GEKzLXVwdashtWoeAsRKZ4hS
+        lF6poa5bY6yLfPU/sxVLu+P14kbXj7w6TTjuXhVOdw==
+X-Google-Smtp-Source: ABdhPJyhBSaSMSZBcI2tiOVk3QJARoK9ZRlec1tWbobBP699R0NB9KE3gmV5jf5UDq8fQYvwbUwftVm14LrVLEykqL4=
+X-Received: by 2002:a05:6638:1390:: with SMTP id w16mr30240526jad.83.1617123128593;
+ Tue, 30 Mar 2021 09:52:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329183312.178266-1-shy828301@gmail.com> <20210330164200.01a4b78f@thinkpad>
-In-Reply-To: <20210330164200.01a4b78f@thinkpad>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 30 Mar 2021 09:51:46 -0700
-Message-ID: <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
- hinting fault
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+ <20210323120647.454211-8-suzuki.poulose@arm.com> <20210326165550.GC2009902@xps15>
+ <bc1adc62-55ce-303d-b029-0fa02958998e@arm.com> <20210330152314.GA2329603@xps15>
+ <YGNFKlIkNzchBqDK@kroah.com> <CANLsYkwaiDDyQQWB2eEBHMi0NcOchAMwXnW71=ipVAXc9qvkLw@mail.gmail.com>
+ <YGNWOG8n527lYrp7@kroah.com>
+In-Reply-To: <YGNWOG8n527lYrp7@kroah.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 30 Mar 2021 10:51:57 -0600
+Message-ID: <CANLsYkwpGGbezF1UPLfCCfYK+U-1VP6wDWtQnhycZOZHbGnqnw@mail.gmail.com>
+Subject: Re: [PATCH v5 07/19] arm64: kvm: Enable access to TRBE support for host
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
+        Coresight ML <coresight@lists.linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 7:42 AM Gerald Schaefer
-<gerald.schaefer@linux.ibm.com> wrote:
+On Tue, 30 Mar 2021 at 10:47, Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> On Mon, 29 Mar 2021 11:33:06 -0700
-> Yang Shi <shy828301@gmail.com> wrote:
->
+> On Tue, Mar 30, 2021 at 10:33:51AM -0600, Mathieu Poirier wrote:
+> > On Tue, 30 Mar 2021 at 09:35, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Mar 30, 2021 at 09:23:14AM -0600, Mathieu Poirier wrote:
+> > > > On Tue, Mar 30, 2021 at 11:38:18AM +0100, Suzuki K Poulose wrote:
+> > > > > On 26/03/2021 16:55, Mathieu Poirier wrote:
+> > > > > > On Tue, Mar 23, 2021 at 12:06:35PM +0000, Suzuki K Poulose wrote:
+> > > > > > > For a nvhe host, the EL2 must allow the EL1&0 translation
+> > > > > > > regime for TraceBuffer (MDCR_EL2.E2TB == 0b11). This must
+> > > > > > > be saved/restored over a trip to the guest. Also, before
+> > > > > > > entering the guest, we must flush any trace data if the
+> > > > > > > TRBE was enabled. And we must prohibit the generation
+> > > > > > > of trace while we are in EL1 by clearing the TRFCR_EL1.
+> > > > > > >
+> > > > > > > For vhe, the EL2 must prevent the EL1 access to the Trace
+> > > > > > > Buffer.
+> > > > > > >
+> > > > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > > > > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > > > > > Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > > > > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > > > > > ---
+> > > > > > >   arch/arm64/include/asm/el2_setup.h | 13 +++++++++
+> > > > > > >   arch/arm64/include/asm/kvm_arm.h   |  2 ++
+> > > > > > >   arch/arm64/include/asm/kvm_host.h  |  2 ++
+> > > > > > >   arch/arm64/kernel/hyp-stub.S       |  3 ++-
+> > > > > > >   arch/arm64/kvm/debug.c             |  6 ++---
+> > > > > > >   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 42 ++++++++++++++++++++++++++++++
+> > > > > > >   arch/arm64/kvm/hyp/nvhe/switch.c   |  1 +
+> > > > > > >   7 files changed, 65 insertions(+), 4 deletions(-)
+> > > > > > >
+> > > > > >
+> > > > > > Marc - do you want me to pick up this one?
+> > > > >
+> > > > > I think the kvmarm tree is the best route for this patch, given the amount
+> > > > > of changes the tree is going through, in the areas this patch
+> > > > > touches. Or else there would be conflicts with merging. And this patch
+> > > > > depends on the patches from this series that were queued.
+> > > > >
+> > > > > Here is the depency tree :
+> > > > >
+> > > > > a) kvm-arm fixes for debug (Patch 1, 2) & SPE save-restore fix (queued in
+> > > > > v5.12-rc3)
+> > > > >
+> > > > > b) TRBE defintions and Trace synchronization barrier (Patches 5 & 6)
+> > > > >
+> > > > > c) kvm-arm TRBE host support (Patch 7)
+> > > > >
+> > > > > d) TRBE driver support (and the ETE changes)
+> > > > >
+> > > > >
+> > > > > (c) code merge depends on -> (a) + (b)
+> > > > > (d) build (no conflicts) depends on -> (b)
+> > > > >
+> > > > >
+> > > > > Now (d) has an indirect dependency on (c) for operational correctness at
+> > > > > runtime.
+> > > > > So, if :
+> > > > >
+> > > > > kvmarm tree picks up : b + c
+> > > > > coresight tree picksup : b + d
+> > > > >
+> > > > > and if we could ensure the merge order of the trees are in
+> > > > > kvmarm
+> > > > > greg-kh (device-misc tree) (coresight goes via this tree)
+> > > > >
+> > > >
+> > > > Greg's char-misc tree is based on the rc releases rather than next.  As such it
+> > > > is a while before other branches like kvmarm get merged, causing all sort of
+> > > > compilation breakage.
+> > >
+> > > My tree can not be based on -next, and neither can any other
+> > > maintainer's tree, as next is composed of maintainer trees :)
+> > >
 > >
-> > When the THP NUMA fault support was added THP migration was not supported yet.
-> > So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
-> > THP migration has been supported so it doesn't make too much sense to still keep
-> > another THP migration implementation rather than using the generic migration
-> > code.  It is definitely a maintenance burden to keep two THP migration
-> > implementation for different code paths and it is more error prone.  Using the
-> > generic THP migration implementation allows us remove the duplicate code and
-> > some hacks needed by the old ad hoc implementation.
+> > Exactly
 > >
-> > A quick grep shows x86_64, PowerPC (book3s), ARM64 ans S390 support both THP
-> > and NUMA balancing.  The most of them support THP migration except for S390.
-> > Zi Yan tried to add THP migration support for S390 before but it was not
-> > accepted due to the design of S390 PMD.  For the discussion, please see:
-> > https://lkml.org/lkml/2018/4/27/953.
+> > > > > we should be fine.
+> > > > >
+> > > > > Additionally, we could rip out the Kconfig changes from the TRBE patch
+> > > > > and add it only at the rc1, once we verify both the trees are in to make
+> > > > > sure the runtime operation dependency is not triggered.
+> > > > >
+> > > >
+> > > > We could also do that but Greg might frown at the tactic, and rightly so.  The
+> > > > usual way to work with complex merge dependencies is to proceed in steps, which
+> > > > would mean that all KVM related patches go in the v5.13 merge window.  When that
+> > > > is done we add the ETE/TRBE for the v5.14 merge window.  I agree that we waste
+> > > > an entire cycle but it guarantees to avoid breaking builds and follows the
+> > > > conventional way to do things.
+> > >
+> > > Or someone creates a single branch with a signed tag and it gets pulled
+> > > into multiple maintainer's trees and never rebased.  We've done that
+> > > lots of time, nothing new there.  Or everything goes through one tree,
+> > > or you wait a release cycle.
+> > >
+> > > You have 3 choices, pick one :)
 > >
-> > I'm not expert on S390 so not sure if it is feasible to support THP migration
-> > for S390 or not.  If it is not feasible then the patchset may make THP NUMA
-> > balancing not be functional on S390.  Not sure if this is a show stopper although
-> > the patchset does simplify the code a lot.  Anyway it seems worth posting the
-> > series to the mailing list to get some feedback.
+> > I'm perfectly happy with getting this entire set merged via Marc's
+> > kvmarm tree, as long as you are fine with it.
 >
-> The reason why THP migration cannot work on s390 is because the migration
-> code will establish swap ptes in a pmd. The pmd layout is very different from
-> the pte layout on s390, so you cannot simply write a swap pte into a pmd.
-> There are no separate swp primitives for swap/migration pmds, IIRC. And even
-> if there were, we'd still need to find some space for a present bit in the
-> s390 pmd, and/or possibly move around some other bits.
->
-> A lot of things can go wrong here, even if it could be possible in theory,
-> by introducing separate swp primitives in common code for pmd entries, along
-> with separate offset, type, shift, etc. I don't see that happening in the
-> near future.
+> No objection from me at all for this to go that way.
 
-Thanks a lot for elaboration. IIUC, implementing migration PMD entry
-is *not* prevented from by hardware, it may be very tricky to
-implement it, right?
+Swell - Marc, I'll send you a pull request.
 
 >
-> Not sure if this is a show stopper, but I am not familiar enough with
-> NUMA and migration code to judge. E.g., I do not see any swp entry action
-> in your patches, but I assume this is implicitly triggered by the switch
-> to generic THP migration code.
-
-Yes, exactly. The migrate_pages() called by migrate_misplaced_page()
-takes care of everything.
-
+> thanks,
 >
-> Could there be a work-around by splitting THP pages instead of marking them
-> as migrate pmds (via pte swap entries), at least when THP migration is not
-> supported? I guess it could also be acceptable if THP pages were simply not
-> migrated for NUMA balancing on s390, but then we might need some extra config
-> option to make that behavior explicit.
-
-Yes, it could be. The old behavior of migration was to return -ENOMEM
-if THP migration is not supported then split THP. That behavior was
-not very friendly to some usecases, for example, memory policy and
-migration lieu of reclaim (the upcoming). But I don't mean we restore
-the old behavior. We could split THP if it returns -ENOSYS and the
-page is THP.
-
->
-> See also my comment on patch #5 of this series.
->
-> Regards,
-> Gerald
+> greg k-h
