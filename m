@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFE434ECD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3C034ECD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhC3PnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:43:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231650AbhC3Pmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:42:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD02619C7;
-        Tue, 30 Mar 2021 15:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617118967;
-        bh=14UiL5GZC31SE+EOYu3chUF7P/wJNPq78udsHoMIXcM=;
+        id S232378AbhC3Pnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:43:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:34948 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232392AbhC3PnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:43:18 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3BCFB20B5680;
+        Tue, 30 Mar 2021 08:43:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3BCFB20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617118997;
+        bh=Ex/hhLMgEI8y3lLUNawbT4uibtJe9r185X98zTx9OpQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IU1POTgvXcETm/RFMiUXuYXp8u5L+mfgZDlJ+kA173cIPhe8Z8xoZ35d445es9alp
-         YguaHWwQAKxjoCkH6Av4l7CJjvK9dnbnpcyFi9woBO1++H++WEZ4eK0p1UWW9uHkiz
-         yS2/ToPSwn3V7wd3dMLvDi7YMa/lMlm9Mh3lLHHTn+JMDPU4LEmF8n6GAx8iTnNhWi
-         U1APK8NBUkI1euaE1bOGitBVQMY1CiUtL2Vm9FgSX8ZxrlRZVJdWXjbUKmc81kUdAi
-         xHuikVqQIk4v/8+87+wJNo/Fsx1gRYJ2cINmi/8CZgRNzboMEM7apATs71pGk0mTCm
-         dv8PuyTyX3ycQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id F058A40647; Tue, 30 Mar 2021 12:42:44 -0300 (-03)
-Date:   Tue, 30 Mar 2021 12:42:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf annotate: add --demangle and --demangle-kernel
-Message-ID: <YGNG9PLKEniErXwy@kernel.org>
-References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
- <YDVcZJscuKIgShsm@kernel.org>
- <a2349b3e-b3e2-f979-6bc5-a2cffbdd2d6a@suse.cz>
- <cad07055-620e-f0ce-9af2-a8a794bc47aa@suse.cz>
- <71d26f15-f0e8-adca-1e7c-46effcba913a@suse.cz>
+        b=Fbxuq7OjRALgIqrYnzNwxEn3DruP91PxGjvmVvQMXcFA5ZrGr/IQpPOPutFhR8y2z
+         DG17Q0Rg0FvbzATQeKVAy0s3sPXOhb2vlXCFT0SCBir2g3IrhJpFHsvLSjyz/mtpAc
+         2vXBQQ8SMF2LfFjxTjQv/8YZTcrPi2EOXBU+3Qf0=
+Date:   Tue, 30 Mar 2021 10:43:15 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libnvdimm/region: Allow setting align attribute on
+ regions without mappings
+Message-ID: <20210330154315.GD4749@sequoia>
+References: <20210326152645.85225-1-tyhicks@linux.microsoft.com>
+ <87h7ks7vm5.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <71d26f15-f0e8-adca-1e7c-46effcba913a@suse.cz>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <87h7ks7vm5.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Mar 30, 2021 at 09:41:33AM +0200, Martin Liška escreveu:
-> PING^2
+On 2021-03-30 16:32:10, Aneesh Kumar K.V wrote:
+> Tyler Hicks <tyhicks@linux.microsoft.com> writes:
 > 
-> On 3/7/21 8:23 PM, Martin Liška wrote:
-> > Hello.
-> > 
-> > May I please remind this patch. Apparently, you applied the perf-config
-> > counterpart of the patch as 804fd30c6bd9aec7859a0503581312834fb197f1
-> > (in tmp.perf/core branch), but we miss setting the same via options.
-> > 
-> > Thank you,
-> > Martin
-> > 
-> > On 2/26/21 11:01 AM, Martin Liška wrote:
-> > > On 2/23/21 8:49 PM, Arnaldo Carvalho de Melo wrote:
-> > > > Em Mon, Feb 22, 2021 at 09:29:22AM +0100, Martin Liška escreveu:
-> > > > > Perf annotate supports --symbol but it's impossible to filter
-> > > > > a C++ symbol. With --no-demangle one can filter easily by
-> > > > > mangled function name.
-> > > > > 
-> > > > > Signed-off-by: Martin Liška <mliska@suse.cz>
-> > > > > ---
-> > > > >   tools/perf/Documentation/perf-annotate.txt | 7 +++++++
-> > > > >   tools/perf/builtin-annotate.c              | 4 ++++
-> > > > >   2 files changed, 11 insertions(+)
-> > > > > 
-> > > > > diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
-> > > > > index 1b5042f134a8..80c1be5d566c 100644
-> > > > > --- a/tools/perf/Documentation/perf-annotate.txt
-> > > > > +++ b/tools/perf/Documentation/perf-annotate.txt
-> > > > > @@ -124,6 +124,13 @@ OPTIONS
-> > > > >   --group::
-> > > > >       Show event group information together
-> > > > > +--demangle::
-> > > > > +    Demangle symbol names to human readable form. It's enabled by default,
-> > > > > +    disable with --no-demangle.
-> > > > > +
-> > > > > +--demangle-kernel::
-> > > > > +    Demangle kernel symbol names to human readable form (for C++ kernels).
-> > > > > +
-> > > > >   --percent-type::
-> > > > >       Set annotation percent type from following choices:
-> > > > >         global-period, local-period, global-hits, local-hits
-> > > > > diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> > > > > index a23ba6bb99b6..ef70a17b9b5b 100644
-> > > > > --- a/tools/perf/builtin-annotate.c
-> > > > > +++ b/tools/perf/builtin-annotate.c
-> > > > > @@ -538,6 +538,10 @@ int cmd_annotate(int argc, const char **argv)
-> > > > >               "Strip first N entries of source file path name in programs (with --prefix)"),
-> > > > >       OPT_STRING(0, "objdump", &annotate.opts.objdump_path, "path",
-> > > > >              "objdump binary to use for disassembly and annotations"),
-> > > > > +    OPT_BOOLEAN(0, "demangle", &symbol_conf.demangle,
-> > > > > +            "Disable symbol demangling"),
-> > > > 
-> > > > Nope, this _enables_ demangling, i.e.:
-> > > > 
-> > > >     perf annotate --demangle
-> > > 
-> > > Oh, yeah, you are right.
-> > > 
-> > > > 
-> > > > Asks for symbol demangling, while:
-> > > > 
-> > > >     perf annotate --no-demangle
-> > > > 
-> > > > As you correctly wrote in your commit message and on the
-> > > > --demangle-kernel case, enables demangling.
-> > > 
-> > > Fixed that in V2.
+> > The alignment constraint for namespace creation in a region was
+> > increased, from 2M to 16M, for non-PowerPC architectures in v5.7 with
+> > commit 2522afb86a8c ("libnvdimm/region: Introduce an 'align'
+> > attribute"). The thought behind the change was that region alignment
+> > should be uniform across all architectures and, since PowerPC had the
+> > largest alignment constraint of 16M, all architectures should conform to
+> > that alignment.
+> >
+> > The change regressed namespace creation in pre-defined regions that
+> > relied on 2M alignment but a workaround was provided in the form of a
+> > sysfs attribute, named 'align', that could be adjusted to a non-default
+> > alignment value.
+> >
+> > However, the sysfs attribute's store function returned an error (-ENXIO)
+> > when userspace attempted to change the alignment of a region that had no
+> > mappings. This affected 2M aligned regions of volatile memory that were
+> > defined in a device tree using "pmem-region" and created by the
+> > of_pmem_region_driver, since those regions do not contain mappings
+> > (ndr_mappings is 0).
+> >
+> > Allow userspace to set the align attribute on pre-existing regions that
+> > do not have mappings so that namespaces can still be within those
+> > regions, despite not being aligned to 16M.
+> >
+> > Fixes: 2522afb86a8c ("libnvdimm/region: Introduce an 'align' attribute")
+> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> >  drivers/nvdimm/region_devs.c | 33 ++++++++++++++++++---------------
+> >  1 file changed, 18 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+> > index ef23119db574..09cff8aa6b40 100644
+> > --- a/drivers/nvdimm/region_devs.c
+> > +++ b/drivers/nvdimm/region_devs.c
+> > @@ -545,29 +545,32 @@ static ssize_t align_store(struct device *dev,
+> >  		struct device_attribute *attr, const char *buf, size_t len)
+> >  {
+> >  	struct nd_region *nd_region = to_nd_region(dev);
+> > -	unsigned long val, dpa;
+> > -	u32 remainder;
+> > +	unsigned long val;
+> >  	int rc;
+> >  
+> >  	rc = kstrtoul(buf, 0, &val);
+> >  	if (rc)
+> >  		return rc;
+> >  
+> > -	if (!nd_region->ndr_mappings)
+> > -		return -ENXIO;
+> > -
+> > -	/*
+> > -	 * Ensure space-align is evenly divisible by the region
+> > -	 * interleave-width because the kernel typically has no facility
+> > -	 * to determine which DIMM(s), dimm-physical-addresses, would
+> > -	 * contribute to the tail capacity in system-physical-address
+> > -	 * space for the namespace.
+> > -	 */
+> > -	dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
+> > -	if (!is_power_of_2(dpa) || dpa < PAGE_SIZE
+> > -			|| val > region_size(nd_region) || remainder)
+> > +	if (val > region_size(nd_region))
+> >  		return -EINVAL;
+> >  
+> > +	if (nd_region->ndr_mappings) {
+> > +		unsigned long dpa;
+> > +		u32 remainder;
+> > +
+> > +		/*
+> > +		 * Ensure space-align is evenly divisible by the region
+> > +		 * interleave-width because the kernel typically has no facility
+> > +		 * to determine which DIMM(s), dimm-physical-addresses, would
+> > +		 * contribute to the tail capacity in system-physical-address
+> > +		 * space for the namespace.
+> > +		 */
+> > +		dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
+> > +		if (!is_power_of_2(dpa) || dpa < PAGE_SIZE || remainder)
+> > +			return -EINVAL;
+> > +	}
+> 
+> We still want
+> 
+> else {
+> 
+> if (!is_power_of_2(val) || val < PAGE_SIZE)
+>          return -EINVAL?
 
-Trying to find V2
+Yes, very good point. I'll send out a v2 that ensures val is a power of
+2 and at least page size.
 
-- Arnaldo
+Tyler
+
+> 
+> }
+> > +
+> >  	/*
+> >  	 * Given that space allocation consults this value multiple
+> >  	 * times ensure it does not change for the duration of the
+> > -- 
+> > 2.25.1
+> > _______________________________________________
+> > Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
+> > To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
+> 
