@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F28934F461
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5745D34F463
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhC3WjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:39:11 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:36397 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbhC3WjF (ORCPT
+        id S232965AbhC3Wks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhC3Wk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:39:05 -0400
-Received: by mail-ot1-f54.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso17117643otq.3;
-        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
+        Tue, 30 Mar 2021 18:40:27 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03947C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:40:27 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id c17so15516011ilj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Gf5DdGQaLrtCkIF8R0njnqLSn7wVO3lU5G0spefPsVI=;
+        b=Ch7e8cEco659oFkPn//KikM61OFWxUxtuBcnp4CXTXzDirCsVfjqNFGvR6GU0KaTk2
+         AAm26EASVE1XSP4Cm3d/WyHyGk4HZ6xthBnV1Lda3PUPaTfbbBmfuWfvINQPoqYHgFtX
+         oW/fj2i5sR7rVigI0145fytmPo3H74mRpHIhRqmRup0BMs8HzT5hD4krtfeERyis1OzR
+         b1Z7H/ZkiX6MEkLkMYHnRRlmS29xfXQ8ewPBH6b82wtsxORBwhR7pb40mGGVyfWKUC9S
+         ktFBE05vbUnjYhKT1PHcojokL8mP0F3gBzaYy048011n8SUD1NUcDOC9oDBQzw/yYyxp
+         e5CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+kL3ZRB3j6i01duxPJ9vYcO9kwxP1k0mr9iO+0pJBac=;
-        b=sPk1q1o/9jK45SPwIb01HUbKm06q5Yx3WRvEtU1Z832dmkeWAYG7kpU9+2q/t9w89R
-         W9Tt2KL/Ia+qtgP/7mWZEcLrN4QB2St/IKCpSHhfdMbnBBlhL/DGg9VVFyBem1St9Ht2
-         6xpao5FaWjVkf4MGz9a1SffhSIceqUkqR18S7G0+JyUWJeOmqgZRRQv2fQEi7Y3waDZb
-         VRTnt08MIxws0iunR+/U7dccvOWzGhaiJcFWvOpRaPryCcIl64DB6Xvr7UI4GYsWCtLn
-         Wx5fCviKHQfPq/JLkgyyNYYQmkgbZwSQfPw6WFrKS7RkqtYx01N0DpBymCGO6L4VO8rv
-         g+0A==
-X-Gm-Message-State: AOAM531LRh0uGXVV3Jfo/OTRRmrph3ZxcP/auiVE9UxOvYpEe1svxdid
-        KfpHQk+gtF43JRvq5qQ8+jVhDWRKsQ==
-X-Google-Smtp-Source: ABdhPJz1lPUhXrNxrHWj4A+J8TggtXB6qqS9Os++Ci/kdeMEGSETxa/ogDjwDKvpjvbG+y2lHU8MwA==
-X-Received: by 2002:a05:6830:4110:: with SMTP id w16mr138691ott.348.1617143944665;
-        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v1sm42689otk.67.2021.03.30.15.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
-Received: (nullmailer pid 841804 invoked by uid 1000);
-        Tue, 30 Mar 2021 22:39:02 -0000
-Date:   Tue, 30 Mar 2021 17:39:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: serial: 8250: update for
- aspeed,sirq-active-high
-Message-ID: <20210330223902.GA837825@robh.at.kernel.org>
-References: <20210330002338.335-1-zev@bewilderbeest.net>
- <20210330002338.335-3-zev@bewilderbeest.net>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Gf5DdGQaLrtCkIF8R0njnqLSn7wVO3lU5G0spefPsVI=;
+        b=Q8FGoJkXyme/JRySOPpNcMiirYoHdbX5ecmA7SV4KWo1E1PItCn8AHkvj0NsF959PK
+         UE4QvnpTPyjdhASZIIBRnfEUkGwExJRF2onlgEVng0SG3oOOwIqxY5sXUoMkMeBzVV27
+         nTQ+YAfWdMLme3zslJXRB+vdqe9cGVf6akGgc54gxFBrS+FVE7vHq8uDg4tsZAovQVbm
+         gfNkAc6py0C0dtwY7hCR72s7j1xiuDbdvlphGc6ANhoexXBkII77yCCYW0ceY7fX1dVt
+         ZxB9LTmK7dLyEyje5NrNQrth1RbhmPCNgL7/RJwpojDyYXvC/I6ZUNkleg35onYmpW43
+         vRzA==
+X-Gm-Message-State: AOAM531vhUEGuefk2sSYkIAap/0AyInWxl7gLYYg7iHVzE/EG/W25QjY
+        4DshIPjZAlDmBW5WjtIGPpMhx1QCQTLIHVC78qk=
+X-Google-Smtp-Source: ABdhPJzL3dhuIFE2vcvhPtqEjfkF1glTbLu007EcqSN3kNt+wLWbAm0ooo6h9c5GDzSI9QyKKJYEG8NUgjWwyJOFZbk=
+X-Received: by 2002:a92:cd51:: with SMTP id v17mr422562ilq.146.1617144026436;
+ Tue, 30 Mar 2021 15:40:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330002338.335-3-zev@bewilderbeest.net>
+Received: by 2002:a4f:3a05:0:0:0:0:0 with HTTP; Tue, 30 Mar 2021 15:40:26
+ -0700 (PDT)
+Reply-To: nnoelie64@gmail.com
+From:   Noelie Nikiema <leowilliam917@gmail.com>
+Date:   Tue, 30 Mar 2021 15:40:26 -0700
+Message-ID: <CAEPrCc32OmgXGqCmj7eeW=e5AHbrdmiR24MdpKrMWpCnduxMtQ@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 07:23:37PM -0500, Zev Weiss wrote:
-> Update DT bindings documentation for the new incarnation of the
-> aspeed,sirq-polarity-sense property.
+2021 FUND RECOVERY / COMPENSATION PAYMENT DIRECTIVE OFFICE
 
-Why?
+ I am a foreign delegate from the United Nations fund recovery
+committee office/ compensation directive office , your name and
+address  are among the listed and approved people for this payments as
+one of the scammed victim, i wait your swift response for the
+immediate payments of your US$4,550.000.00 compensations funds.
 
-This isn't a compatible change.
+On this faith full recommendations, I want you to know that during the
+last UN meetings held at Africa ,it was alarmed so much by the rest of
+the world in the meetings on the lost of funds by various foreigners
+to the scams artists operating in syndicates all over the world today,
+in other to retain the good image of the country, the president UN is
+now paying 50 victims of this operators US$4,550.000.00 each, Due to
+the corrupt and inefficient banking systems in Africa, the payments
+are to be wired via direct transfer, online banking transfer or ATM
+visa card,
 
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  Documentation/devicetree/bindings/serial/8250.yaml | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
-> index f54cae9ff7b2..0bbb7121f720 100644
-> --- a/Documentation/devicetree/bindings/serial/8250.yaml
-> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
-> @@ -13,7 +13,7 @@ allOf:
->    - $ref: /schemas/serial.yaml#
->    - if:
->        required:
-> -        - aspeed,sirq-polarity-sense
-> +        - aspeed,sirq-active-high
->      then:
->        properties:
->          compatible:
-> @@ -181,13 +181,11 @@ properties:
->    rng-gpios: true
->    dcd-gpios: true
->  
-> -  aspeed,sirq-polarity-sense:
-> -    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +  aspeed,sirq-active-high:
-> +    type: boolean
->      description: |
-> -      Phandle to aspeed,ast2500-scu compatible syscon alongside register
-> -      offset and bit number to identify how the SIRQ polarity should be
-> -      configured. One possible data source is the LPC/eSPI mode bit. Only
-> -      applicable to aspeed,ast2500-vuart.
-> +      Set to indicate that the SIRQ polarity is active-high (default
-> +      is active-low).  Only applicable to aspeed,ast2500-vuart.
->  
->  required:
->    - reg
-> @@ -227,7 +225,7 @@ examples:
->          interrupts = <8>;
->          clocks = <&syscon ASPEED_CLK_APB>;
->          no-loopback-test;
-> -        aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
-> +        aspeed,sirq-active-high;
->      };
->  
->  ...
-> -- 
-> 2.31.1
-> 
+According to the number of applicants at hand,12 beneficiaries has
+been paid ,half of the victims are from the United States and Asia, we
+still have more  left to be paid
+Waiting for your swift response in other to advice you on the next
+step how to process your payment.
+
+Thanks
+Dr. Noelie Nikiema
