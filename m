@@ -2,250 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC9734DD66
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3703534DD6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhC3BUe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 29 Mar 2021 21:20:34 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3505 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhC3BUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:20:19 -0400
-Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F8WmF1HMFzRWX7;
-        Tue, 30 Mar 2021 09:18:21 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 30 Mar 2021 09:20:15 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
- Tue, 30 Mar 2021 09:20:15 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S230089AbhC3B0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:26:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhC3BZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 21:25:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA698619A9;
+        Tue, 30 Mar 2021 01:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617067544;
+        bh=w7ObvpJq/R4KO4NDJ46mZajafTPZzB7iT11D4SOoreY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=isj9eWZA0rzplJp8vDf8D9RqN6Ek217KBPdQjMSgnOHxVKlcR7/XeC+I6hE83lcNM
+         Dl8s7I/P9ajE0YfLnpcCBanZu06FMPHO60hKA6nmiL0ahm53fG308WFNVTAZsgpaWo
+         7pam3qTALqXNrxif7vJDz4FbBzD5WZ4SWgUXipDhtzZAEzmrUm4NVq2zwVaO/de7sn
+         AEtUJAVEgPjminveogdry0CXJ4Cd6Weg7lBJhYgkrx0G/KOIMi0LCdjh+30Vt734MT
+         ZOB3ZRFM2gfKhC2WEI+OtauTSG53vyRnrDdjfVO8sSEX17fnxDAmluDOAUSqd6cuJq
+         yGyKnrqAoQ0Qw==
+Date:   Mon, 29 Mar 2021 18:25:42 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        linmiaohe <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH v2 1/8] mm/cma: change cma mutex to irq safe spinlock
-Thread-Topic: [PATCH v2 1/8] mm/cma: change cma mutex to irq safe spinlock
-Thread-Index: AQHXJPKtsGY6CpxmIUeixSCzA9mWXKqbuTbg
-Date:   Tue, 30 Mar 2021 01:20:15 +0000
-Message-ID: <3de3a89983894cb79a0f25cf17e838f1@hisilicon.com>
-References: <20210329232402.575396-1-mike.kravetz@oracle.com>
- <20210329232402.575396-2-mike.kravetz@oracle.com>
-In-Reply-To: <20210329232402.575396-2-mike.kravetz@oracle.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.13]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Subject: Re: v5.12.0-rc5: the kernel panics if FIPS mode is on
+Message-ID: <YGJ+FrwrSRyvMHoF@gmail.com>
+References: <MW2PR2101MB0892C9A8BF670DEC3628CFAFBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB0892C9A8BF670DEC3628CFAFBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 09:56:18PM +0000, Dexuan Cui wrote:
+> Hi all,
+> The v5.12.0-rc5 kernel (1e43c377a79f) panics with fips=1.
+> 
+> Please refer to the below panic call-trace. The kernel config file and
+> the full kernel messages are also attached.
+> 
+> Is this a known issue?
+> 
+> Thanks,
+> -- Dexuan
+> 
+>          Starting dracut pre-udev hook...
+> [    7.260424] alg: self-tests for sha512-generic (sha512) passed
+> [    7.265917] alg: self-tests for sha384-generic (sha384) passed
+> [    7.272426] alg: self-tests for sha512-ssse3 (sha512) passed
+> [    7.276500] alg: self-tests for sha384-ssse3 (sha384) passed
+> [    7.281722] alg: self-tests for sha512-avx (sha512) passed
+> [    7.286579] alg: self-tests for sha384-avx (sha384) passed
+> [    7.291631] alg: self-tests for sha512-avx2 (sha512) passed
+> [    7.296950] alg: self-tests for sha384-avx2 (sha384) passed
+> [    7.321040] alg: self-tests for sha3-224-generic (sha3-224) passed
+> [    7.330291] alg: self-tests for sha3-256-generic (sha3-256) passed
+> [    7.335918] alg: self-tests for sha3-384-generic (sha3-384) passed
+> [    7.341508] alg: self-tests for sha3-512-generic (sha3-512) passed
+> [    7.381918] alg: self-tests for crc32c-intel (crc32c) passed
+> [    7.396694] alg: self-tests for crct10dif-pclmul (crct10dif) passed
+> [    7.453515] alg: self-tests for ghash-clmulni (ghash) passed
+> [    7.469558] alg: self-tests for des3_ede-asm (des3_ede) passed
+> [    7.475355] alg: self-tests for ecb-des3_ede-asm (ecb(des3_ede)) passed
+> [    7.481361] alg: self-tests for cbc-des3_ede-asm (cbc(des3_ede)) passed
+> [    7.488656] alg: self-tests for des3_ede-generic (des3_ede) passed
+> [    7.304930] dracut-pre-udev[502]: modprobe: ERROR: could not insert 'padlock_aes': No such device
+> [    7.579580] alg: No test for fips(ansi_cprng) (fips_ansi_cprng)
+> [    7.606547] alg: self-tests for sha1 (sha1) passed
+> [    7.610624] alg: self-tests for ecb(des3_ede) (ecb(des3_ede)) passed
+> [    7.615746] alg: self-tests for cbc(des3_ede) (cbc(des3_ede)) passed
+> [    7.638067] alg: self-tests for ctr(des3_ede-asm) (ctr(des3_ede)) passed
+> [    7.644781] alg: self-tests for ctr(des3_ede) (ctr(des3_ede)) passed
+> [    7.653810] alg: self-tests for sha256 (sha256) passed
+> [    7.658945] alg: self-tests for ecb(aes) (ecb(aes)) passed
+> [    7.663493] alg: self-tests for cbc(aes) (cbc(aes)) passed
+> [    7.668421] alg: self-tests for xts(aes) (xts(aes)) passed
+> [    7.672389] alg: self-tests for ctr(aes) (ctr(aes)) passed
+> [    7.692973] alg: self-tests for rfc3686(ctr-aes-aesni) (rfc3686(ctr(aes))) passed
+> [    7.699446] alg: self-tests for rfc3686(ctr(aes)) (rfc3686(ctr(aes))) passed
+> [    7.730149] alg: skcipher: failed to allocate transform for ofb(aes): -2
+> [    7.735959] Kernel panic - not syncing: alg: self-tests for ofb(aes) (ofb(aes)) failed in fips mode!
+> [    7.736952] CPU: 13 PID: 560 Comm: modprobe Tainted: G        W         5.12.0-rc5+ #3
+> [    7.736952] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
+> [    7.736952] Call Trace:
+> [    7.736952]  dump_stack+0x64/0x7c
+> [    7.736952]  panic+0xfb/0x2d7
+> [    7.736952]  alg_test+0x42d/0x460
+> [    7.736952]  ? __kernfs_new_node+0x175/0x1d0
+> [    7.736952]  do_test+0x3248/0x57ea [tcrypt]
+> [    7.736952]  do_test+0x1f2c/0x57ea [tcrypt]
+> [    7.736952]  ? 0xffffffffc031d000
+> [    7.736952]  tcrypt_mod_init+0x55/0x1000 [tcrypt]
 
+It looks like your userspace is using tcrypt.ko to request that the kernel test
+"ofb(aes)", but your kernel doesn't have CONFIG_CRYPTO_OFB enabled so the test
+fails as expected.  Are you sure that anything changed on the kernel side
+besides the kconfig you are using?  It looks like this was always the behavior
+when tcrypt.ko is used to test a non-existing algorithm.
 
-> -----Original Message-----
-> From: Mike Kravetz [mailto:mike.kravetz@oracle.com]
-> Sent: Tuesday, March 30, 2021 12:24 PM
-> To: linux-mm@kvack.org; linux-kernel@vger.kernel.org
-> Cc: Roman Gushchin <guro@fb.com>; Michal Hocko <mhocko@suse.com>; Shakeel Butt
-> <shakeelb@google.com>; Oscar Salvador <osalvador@suse.de>; David Hildenbrand
-> <david@redhat.com>; Muchun Song <songmuchun@bytedance.com>; David Rientjes
-> <rientjes@google.com>; linmiaohe <linmiaohe@huawei.com>; Peter Zijlstra
-> <peterz@infradead.org>; Matthew Wilcox <willy@infradead.org>; HORIGUCHI NAOYA
-> <naoya.horiguchi@nec.com>; Aneesh Kumar K . V <aneesh.kumar@linux.ibm.com>;
-> Waiman Long <longman@redhat.com>; Peter Xu <peterx@redhat.com>; Mina Almasry
-> <almasrymina@google.com>; Hillf Danton <hdanton@sina.com>; Joonsoo Kim
-> <iamjoonsoo.kim@lge.com>; Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com>; Will Deacon <will@kernel.org>; Andrew Morton
-> <akpm@linux-foundation.org>; Mike Kravetz <mike.kravetz@oracle.com>
-> Subject: [PATCH v2 1/8] mm/cma: change cma mutex to irq safe spinlock
-> 
-> Ideally, cma_release could be called from any context.  However, that is
-> not possible because a mutex is used to protect the per-area bitmap.
-> Change the bitmap to an irq safe spinlock.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Is your userspace code intentionally trying to test "ofb(aes)", or is it
+accidental?
 
-It seems mutex_lock is locking some areas with bitmap operations which
-should be safe to atomic context.
-
-Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-
-> ---
->  mm/cma.c       | 20 +++++++++++---------
->  mm/cma.h       |  2 +-
->  mm/cma_debug.c | 10 ++++++----
->  3 files changed, 18 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index b2393b892d3b..80875fd4487b 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -24,7 +24,6 @@
->  #include <linux/memblock.h>
->  #include <linux/err.h>
->  #include <linux/mm.h>
-> -#include <linux/mutex.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
->  #include <linux/log2.h>
-> @@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long
-> pfn,
->  			     unsigned int count)
->  {
->  	unsigned long bitmap_no, bitmap_count;
-> +	unsigned long flags;
-> 
->  	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
->  	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
-> 
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irqsave(&cma->lock, flags);
->  	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irqrestore(&cma->lock, flags);
->  }
-> 
->  static void __init cma_activate_area(struct cma *cma)
-> @@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
->  	     pfn += pageblock_nr_pages)
->  		init_cma_reserved_pageblock(pfn_to_page(pfn));
-> 
-> -	mutex_init(&cma->lock);
-> +	spin_lock_init(&cma->lock);
-> 
->  #ifdef CONFIG_CMA_DEBUGFS
->  	INIT_HLIST_HEAD(&cma->mem_head);
-> @@ -391,8 +391,9 @@ static void cma_debug_show_areas(struct cma *cma)
->  	unsigned long start = 0;
->  	unsigned long nr_part, nr_total = 0;
->  	unsigned long nbits = cma_bitmap_maxno(cma);
-> +	unsigned long flags;
-> 
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irqsave(&cma->lock, flags);
->  	pr_info("number of available pages: ");
->  	for (;;) {
->  		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
-> @@ -407,7 +408,7 @@ static void cma_debug_show_areas(struct cma *cma)
->  		start = next_zero_bit + nr_zero;
->  	}
->  	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irqrestore(&cma->lock, flags);
->  }
->  #else
->  static inline void cma_debug_show_areas(struct cma *cma) { }
-> @@ -430,6 +431,7 @@ struct page *cma_alloc(struct cma *cma, size_t count,
-> unsigned int align,
->  	unsigned long pfn = -1;
->  	unsigned long start = 0;
->  	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
-> +	unsigned long flags;
->  	size_t i;
->  	struct page *page = NULL;
->  	int ret = -ENOMEM;
-> @@ -454,12 +456,12 @@ struct page *cma_alloc(struct cma *cma, size_t count,
-> unsigned int align,
->  		goto out;
-> 
->  	for (;;) {
-> -		mutex_lock(&cma->lock);
-> +		spin_lock_irqsave(&cma->lock, flags);
->  		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
->  				bitmap_maxno, start, bitmap_count, mask,
->  				offset);
->  		if (bitmap_no >= bitmap_maxno) {
-> -			mutex_unlock(&cma->lock);
-> +			spin_unlock_irqrestore(&cma->lock, flags);
->  			break;
->  		}
->  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
-> @@ -468,7 +470,7 @@ struct page *cma_alloc(struct cma *cma, size_t count,
-> unsigned int align,
->  		 * our exclusive use. If the migration fails we will take the
->  		 * lock again and unmark it.
->  		 */
-> -		mutex_unlock(&cma->lock);
-> +		spin_unlock_irqrestore(&cma->lock, flags);
-> 
->  		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
->  		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-> diff --git a/mm/cma.h b/mm/cma.h
-> index 68ffad4e430d..2c775877eae2 100644
-> --- a/mm/cma.h
-> +++ b/mm/cma.h
-> @@ -15,7 +15,7 @@ struct cma {
->  	unsigned long   count;
->  	unsigned long   *bitmap;
->  	unsigned int order_per_bit; /* Order of pages represented by one bit */
-> -	struct mutex    lock;
-> +	spinlock_t	lock;
->  #ifdef CONFIG_CMA_DEBUGFS
->  	struct hlist_head mem_head;
->  	spinlock_t mem_head_lock;
-> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
-> index d5bf8aa34fdc..6379cfbfd568 100644
-> --- a/mm/cma_debug.c
-> +++ b/mm/cma_debug.c
-> @@ -35,11 +35,12 @@ static int cma_used_get(void *data, u64 *val)
->  {
->  	struct cma *cma = data;
->  	unsigned long used;
-> +	unsigned long flags;
-> 
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irqsave(&cma->lock, flags);
->  	/* pages counter is smaller than sizeof(int) */
->  	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irqrestore(&cma->lock, flags);
->  	*val = (u64)used << cma->order_per_bit;
-> 
->  	return 0;
-> @@ -52,8 +53,9 @@ static int cma_maxchunk_get(void *data, u64 *val)
->  	unsigned long maxchunk = 0;
->  	unsigned long start, end = 0;
->  	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
-> +	unsigned long flags;
-> 
-> -	mutex_lock(&cma->lock);
-> +	spin_lock_irqsave(&cma->lock, flags);
->  	for (;;) {
->  		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
->  		if (start >= bitmap_maxno)
-> @@ -61,7 +63,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
->  		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
->  		maxchunk = max(end - start, maxchunk);
->  	}
-> -	mutex_unlock(&cma->lock);
-> +	spin_unlock_irqrestore(&cma->lock, flags);
->  	*val = (u64)maxchunk << cma->order_per_bit;
-> 
->  	return 0;
-> --
-> 2.30.2
-
+- Eric
