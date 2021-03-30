@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0299C34E884
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342C334E89B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhC3NKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:10:04 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:60066 "EHLO mengyan1223.wang"
+        id S232228AbhC3NLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:11:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:37687 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhC3NJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:09:36 -0400
-Received: from [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e] (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 5D1C765C14;
-        Tue, 30 Mar 2021 09:09:23 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1617109776;
-        bh=3iP3rLSkq+VHRv9oXI55n1v+WgpcbUG9Pj6ypqndVyM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jlPQQcKuSJNeAKBfBqLWKzTAZ6N3flgBhFW3Ivu2XobvF0fkmyiHwYvb0HYY7nIZS
-         EBh7I34Aisb+H8iNJUk3xZs/BiLYHW++v/XmWX/jf4Cbx4JrIWmZjQl0MjILUeF/1K
-         xQdpbmBBBpAD+PN9Hay0/EduuiMHirfHM5ih+7WqO+HWmI17Md3WelMnUP8QFlI1hb
-         +gyjmh3U67Y5rwG1qJaBq/SfFhaaFz+ITR1uTpf6zaGyb7Elk0WXQdpSyHX6S/qiv6
-         87TdrlOY3uqwScMSVkaLwGfXUsy0fESYLEcLKt+Af+m4bbWtgROcHaKY5ESNYCHmmG
-         lTlQjar0XhL5w==
-Message-ID: <63f5f6b39d22d9833a4c1503a34840eb08050f75.camel@mengyan1223.wang>
-Subject: Re: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Dan =?ISO-8859-1?Q?Hor=E1k?= <dan@danny.cz>,
-        amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        stable@vger.kernel.org
-Date:   Tue, 30 Mar 2021 21:09:12 +0800
-In-Reply-To: <f3fb57055f0bd3f19bb6ac397dc92113e1555764.camel@mengyan1223.wang>
-References: <20210329175348.26859-1-xry111@mengyan1223.wang>
-         <d192e2a8-8baf-0a8c-93a9-9abbad992c7d@gmail.com>
-         <be9042b9294bda450659d3cd418c5e8759d57319.camel@mengyan1223.wang>
-         <9a11c873-a362-b5d1-6d9c-e937034e267d@gmail.com>
-         <bf9e05d4a6ece3e8bf1f732b011d3e54bbf8000e.camel@mengyan1223.wang>
-         <84b3911173ad6beb246ba0a77f93d888ee6b393e.camel@mengyan1223.wang>
-         <97c520ce107aa4d5fd96e2c380c8acdb63d45c37.camel@mengyan1223.wang>
-         <7701fb71-9243-2d90-e1e1-d347a53b7d77@gmail.com>
-         <368b9b1b7343e35b446bb1028ccf0ae75dc2adc4.camel@mengyan1223.wang>
-         <71e3905a5b72c5b97df837041b19175540ebb023.camel@mengyan1223.wang>
-         <c3caf16b-584a-3e4c-0104-15bb41613136@amd.com>
-         <f3fb57055f0bd3f19bb6ac397dc92113e1555764.camel@mengyan1223.wang>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 
+        id S231894AbhC3NLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:11:31 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lRE9V-000488-00; Tue, 30 Mar 2021 15:11:25 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 28385C1E48; Tue, 30 Mar 2021 15:09:44 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 15:09:44 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] mips: bmips: fix and improve reboot nodes
+Message-ID: <20210330130944.GB11217@alpha.franken.de>
+References: <20210314164351.24665-1-noltari@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210314164351.24665-1-noltari@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30 21:02 +0800, Xi Ruoyao wrote:
-> On 2021-03-30 14:55 +0200, Christian König wrote:
-> > 
-> > I rather see this as a kernel bug. Can you test if this code fragment 
-> > fixes your issue:
-> > 
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c 
-> > b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> > index 64beb3399604..e1260b517e1b 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> > @@ -780,7 +780,7 @@ int amdgpu_info_ioctl(struct drm_device *dev, void 
-> > *data, struct drm_file *filp)
-> >                  }
-> >                  dev_info->virtual_address_alignment = 
-> > max((int)PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
-> >                  dev_info->pte_fragment_size = (1 << 
-> > adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
-> > -               dev_info->gart_page_size = AMDGPU_GPU_PAGE_SIZE;
-> > +               dev_info->gart_page_size = 
-> > dev_info->virtual_address_alignment;
-> >                  dev_info->cu_active_number = adev->gfx.cu_info.number;
-> >                  dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
-> >                  dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+On Sun, Mar 14, 2021 at 05:43:45PM +0100, �lvaro Fern�ndez Rojas wrote:
+> These patches improve bmips bcm63xx device tree nodes.
 > 
-> It works.  I've seen it at
-> https://github.com/xen0n/linux/commit/84ada72983838bd7ce54bc32f5d34ac5b5aae191
-> before (with a common sub-expression, though :).
+> v2: add missing BCM63268 patch.
+> 
+> �lvaro Fern�ndez Rojas (6):
+>   mips: bmips: fix syscon-reboot nodes
+>   mips: bmips: bcm6328: populate device tree nodes
+>   mips: bmips: bcm6358: populate device tree nodes
+>   mips: bmips: bcm6362: populate device tree nodes
+>   mips: bmips: bcm6368: populate device tree nodes
+>   mips: bmips: bcm63268: populate device tree nodes
+> 
+>  arch/mips/boot/dts/brcm/bcm3368.dtsi  |   2 +-
+>  arch/mips/boot/dts/brcm/bcm63268.dtsi | 132 +++++++++++++++++++++++---
+>  arch/mips/boot/dts/brcm/bcm6328.dtsi  | 119 ++++++++++++++++++++---
+>  arch/mips/boot/dts/brcm/bcm6358.dtsi  |  85 ++++++++++++++---
+>  arch/mips/boot/dts/brcm/bcm6362.dtsi  | 129 ++++++++++++++++++++++---
+>  arch/mips/boot/dts/brcm/bcm6368.dtsi  | 129 ++++++++++++++++++++++---
+>  6 files changed, 530 insertions(+), 66 deletions(-)
 
-Some comment: on an old version of Fedora ported by Loongson, Xorg just hangs
-without this commit.  But on the system I built from source, I didn't see any
-issue before Linux 5.11.  So I misbelieved that it was something already fixed.
+Florian, are you ok with this changes ? If yes, I'm going to apply them
+to mips-next.
 
-Dan: you can try it on your PPC 64 with non-4K page as well.
+Thomas.
+
 -- 
-Xi Ruoyao <xry111@mengyan1223.wang>
-School of Aerospace Science and Technology, Xidian University
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
