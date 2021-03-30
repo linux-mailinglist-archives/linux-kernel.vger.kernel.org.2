@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4218E34DDC8
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5F534DDC9
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbhC3BtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:49:07 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:47899 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229483AbhC3Bsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:48:36 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 50D145C01DA;
-        Mon, 29 Mar 2021 21:48:35 -0400 (EDT)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Mon, 29 Mar 2021 21:48:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=uEYMZDyvC0yE4Nhl/H6s9q3zEdpO2lQ
-        ZO3jozv7n0RI=; b=d113Ny3T55ataz9j7NShvS1o7jivldE9VXOYS/vvvJJKeVr
-        eRjLiYLrGVejX8U8WliUNE8YMO855kIF97aQAwOHA9MPIaj4NrBtkRPasZKLpAPN
-        7woC36AjBwbX43hBQKUfoMCRf1W8ces3EeDOidTpD2pjNULmFtJ50KTzxpe831QV
-        GmFli1/jSlx0ZJRNS2NyYAYW2z1pZicTeagV0kOUQwxY9snibtywemqC/+l2g4a5
-        pJjWki2ETwWFNNH5iNHBk04ebj9SbU9FgncCIvs37+MXu7+MtucsYF0X/SVHKkUW
-        5LP71tYj4ErVhjY6qNPQYfMVSU0fB+eQFbNydjg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=uEYMZD
-        yvC0yE4Nhl/H6s9q3zEdpO2lQZO3jozv7n0RI=; b=SrbeZXBfDfaqdsC1gXYR7T
-        HS3AP150YVxC03rqzwO7M2/T+Iz00j3zQrDhqBXpePuVmiIaJwVaPaBP+rXG/nf0
-        0WLpTv5ZM90vZ32mwSCbgiXKftE25m795wFD9pO++HcBqKo+PbN+nVaeg+o7zZ2x
-        4WcjmRJRQDOVAYXOGcmanKUu08N0bYpxR7Z5LAABwLSjjbwV2mP8ZjQBR20tkIWj
-        pFM7VETqU0JfTzYmKqLDc1st44ycS5kZ7S6va2HynfCUYI+1ttTp5xzgZv6ZuDFw
-        Nez3N8wCaM6ko5yfgkY/7su17dUGE6RrnqCKhZ6o0c2YL5vEFgWINhZptKybJbYA
-        ==
-X-ME-Sender: <xms:cYNiYB5wrpE6ax3BHEs_xRx47Dy5SHbwTPCgOc1toiT4g0guqJiVjw>
-    <xme:cYNiYO7MnmcKu9538Agz2gfzegI_23efwKDd574F7ygvgxHWZB1LnFcboIs10xc7W
-    eKDyZG3LNmhuhZ9MV0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehledghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflihgr
-    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeekleehtefhhefftddtleeiveefieehueduieefueegueei
-    leeitdeujeehheehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:cYNiYIdtgxEnGjw9IXEd0jtt20iwlaalkqp9mv1weuS2B-iKJrhFAQ>
-    <xmx:cYNiYKJYtNjWtgWfSIS07fMebp5PvXup8MqRW-OYIi5Y-qsSJHKUfg>
-    <xmx:cYNiYFINB7pZenUyHbgwu1RqeW7W4LtjWev7c6jLTKNjz1uZYEszaQ>
-    <xmx:c4NiYMWy0_P0f_klRK6YtPSt6KK2pSYI1HvXGry9Z89mbwnEK9F0hw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0BCD5130005E; Mon, 29 Mar 2021 21:48:33 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <b48ce495-129b-4e07-8d74-d1231073235b@www.fastmail.com>
-In-Reply-To: <20210329071558.3492-1-zhangqing@loongson.cn>
-References: <20210329071558.3492-1-zhangqing@loongson.cn>
-Date:   Tue, 30 Mar 2021 09:48:10 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Qing Zhang" <zhangqing@loongson.cn>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "Huacai Chen" <chenhuacai@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Loongson64: enable CONFIG_USB_SERIAL_PL2303
-Content-Type: text/plain
+        id S230364AbhC3BtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229842AbhC3Bss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 21:48:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C49360C41;
+        Tue, 30 Mar 2021 01:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617068927;
+        bh=iIeIM/OuGtjaYTjydbbG0UkVMkzGNNchPxEVUAEmnkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nDxq7K9t7dlImUknG3pZavwpTDgqaPC7F9NdQLDcVbBczilmQZvhCW0eksYB8RuYt
+         WjNUkzadhFtYGdO6BMlWvTRw1NW2eir9qEheqsePkacJsCdS2n/WJYmFgsXweXbnHo
+         1PT+uC3kAf881vRVcH30ssY4QqHieFaZg+7iVRum4xbCXh6WBWyd4aP52uL34rkcvH
+         rTPtpyumwG13TKR9pY8RmdZsGh7As/NrnVe8LDGtHCGWBLPbo4ro2YhnSCs1MvmKHl
+         KaK/qtyaBcuqUh91ULqym24uAAtps7VmWan4KPhFTY2ueJ92c5xT/nlAI4snicxy2l
+         clT9SDt2FfZaA==
+Date:   Mon, 29 Mar 2021 18:48:46 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        kernel@collabora.com, Daniel Rosenberg <drosen@google.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        krisman@collabora.com
+Subject: Re: [PATCH 1/3] fs/dcache: Add d_clear_dir_neg_dentries()
+Message-ID: <YGKDfo1vZfFXwG/v@gmail.com>
+References: <20210328144356.12866-1-andrealmeid@collabora.com>
+ <20210328144356.12866-2-andrealmeid@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210328144356.12866-2-andrealmeid@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, Mar 29, 2021, at 3:15 PM, Qing Zhang wrote:
-> When using the Loongson-3A4000 machine for serial port debugging,
-> there is no /dev/ttyUSB* output, which makes the serial port unavailable,
-> For convenience, we open this configuration.
+On Sun, Mar 28, 2021 at 11:43:54AM -0300, André Almeida wrote:
+> For directories with negative dentries that are becoming case-insensitive
+> dirs, we need to remove all those negative dentries, otherwise they will
+> become dangling dentries. During the creation of a new file, if a d_hash
+> collision happens and the names match in a case-insensitive way, the name
+> of the file will be the name defined at the negative dentry, that may be
+> different from the specified by the user. To prevent this from
+> happening, we need to remove all dentries in a directory. Given that the
+> directory must be empty before we call this function we are sure that
+> all dentries there will be negative.
 > 
-> zhangqing@loongson-pc:~$ cat /sys/firmware/lefi/boardinfo
-> Board Info
-> Manufacturer		: THTF
-> Board Name		: THTF-LS3A4000-7A1000-ML4A
-> Family			: LOONGSON3
+> Create a function to remove all negative dentries from a directory, to
+> be used as explained above by filesystems that support case-insensitive
+> lookups.
 > 
-> BIOS Info
-> Vendor			: ZD tech
-> Version			: ZD tech-V2.1.1
-> ROM Size		: 4 KB
-> Release Date		: 2020-06-29
+> Signed-off-by: André Almeida <andrealmeid@collabora.com>
+> ---
+>  fs/dcache.c            | 27 +++++++++++++++++++++++++++
+>  include/linux/dcache.h |  1 +
+>  2 files changed, 28 insertions(+)
 > 
-> zhangqing@loongson-pc:~$ lsusb
-> Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> Bus 005 Device 003: ID 093a:2510 Pixart Imaging, Inc. Optical Mouse
-> Bus 005 Device 002: ID 0c45:760b Microdia USB Keyboard
-> Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 003 Device 003: ID 067b:2303 Prolific Technology, Inc. PL2303 Serial Port
-> Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-> 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index 7d24ff7eb206..fafb3016d6fd 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -1723,6 +1723,33 @@ void d_invalidate(struct dentry *dentry)
+>  }
+>  EXPORT_SYMBOL(d_invalidate);
+>  
+> +/**
+> + * d_clear_dir_neg_dentries - Remove negative dentries in an inode
+> + * @dir: Directory to clear negative dentries
+> + *
+> + * For directories with negative dentries that are becoming case-insensitive
+> + * dirs, we need to remove all those negative dentries, otherwise they will
+> + * become dangling dentries. During the creation of a new file, if a d_hash
+> + * collision happens and the names match in a case-insensitive, the name of
+> + * the file will be the name defined at the negative dentry, that can be
+> + * different from the specified by the user. To prevent this from happening, we
+> + * need to remove all dentries in a directory. Given that the directory must be
+> + * empty before we call this function we are sure that all dentries there will
+> + * be negative.
+> + */
+> +void d_clear_dir_neg_dentries(struct inode *dir)
+> +{
+> +	struct dentry *alias, *dentry;
+> +
+> +	hlist_for_each_entry(alias, &dir->i_dentry, d_u.d_alias) {
+> +		list_for_each_entry(dentry, &alias->d_subdirs, d_child) {
+> +			d_drop(dentry);
+> +			dput(dentry);
+> +		}
+> +	}
+> +}
+> +EXPORT_SYMBOL(d_clear_dir_neg_dentries);
 
-Please, don't add random stuff to defconfig.
-Carry it locally in your config as the device doesn't come with the borad, it's your accessory.
+As Al already pointed out, this doesn't work as intended, for a number of
+different reasons.
 
-Thanks.
+Did you consider just using shrink_dcache_parent()?  That already does what you
+are trying to do here, I think.
 
--- 
-- Jiaxun
+The harder part (which I don't think you've considered) is how to ensure that
+all negative dentries really get invalidated even if there are lookups of them
+happening concurrently.  Concurrent lookups can take temporary references to the
+negative dentries, preventing them from being invalidated.
+
+- Eric
