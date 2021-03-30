@@ -2,213 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6706D34DEEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4CF34DEEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhC3C5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
+        id S230482AbhC3C6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhC3C5U (ORCPT
+        with ESMTP id S230347AbhC3C6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:57:20 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D3AC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:19 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id f12so10957682qtq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:19 -0700 (PDT)
+        Mon, 29 Mar 2021 22:58:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA95C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:58:15 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g15so11187136pfq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cxay6FlHRSJBcHnRsAPE6LIZ5EwuFLA1D75XOP/1yw8=;
-        b=Rxyfz1b9FAnZKOn9WInbM1Q9jzMo0+uNBQs9kvY8UIXW/wmArOJB+2SssyFq+lD9Cl
-         OOgZezFD8udfExokzGwpTwuXrLEyI33lrZ+u0SU1gjYN4Npju1XSWspYQ+Gh8Zfl0Cjk
-         cC36+I7Hayxwa0DT+Qk8lZ0JrIQFOGxZ+kJQs=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=bYJtg6/aY9IB9WPNhczeftcGb9GFpdNakq3l+2zkNCY=;
+        b=2Mrdl9EjSV+y/ZlsTdFHADMkTyt9vclFKFAw8Vltf6rzuvEmm5ktkDTq7d+3Iis1Ow
+         P4K2eFqI3Zh/TSar69cqQZQxIjJJIrTy/N0lxD0yskxs5GervQIRHekYUKVjAFPoGJlH
+         pR7yDa0qiVRu72llRrO4tjcxfzh2HitFFDTCOzSmow+hvel3gF7K6bRfw2ubaJNPOTNl
+         mm0l0sercL64fefJWdEocPl5n3om6ECXXBXykMmBEthXHmgK3FqyKsffYDLaczeoItL1
+         nrN3xAeW3IkhLYRIGcWPnYrQVPx11TA08SKpQvGuQF/PXBUWMs6oSd0NKgRiM1SinvMI
+         GVCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cxay6FlHRSJBcHnRsAPE6LIZ5EwuFLA1D75XOP/1yw8=;
-        b=p5Yhf9ZzrTMBHP42EaYx2DiZ77w2OiLpgxwyIQ9MrNruQyqMhwbP7ILlp4wnC+aQj4
-         7d2YhzsBD2OWHl1wVpZJhZ2BBk7RyEbPklPyBwK3pmbhmr/M29MiUgQcw9UVYYbP6mMT
-         JFfe+DKfrqMn6HRpiJ/1vM2IE4aAAgU39a9M5MCvO2Bdr2BXJVq8Z2yekJmXNYwNeIoj
-         1yOLubmTk4vw6/Ac91Xg/gOJCeZXFTmp0unOjJfmTV9q2B+zGXg8jI+uGoPm52Nd9wpP
-         keNWehWgCJ0aygwjTgHB/hJxK8fcFzPuVRLtTNW9bezFklizDX7EnJ6mo96nVmrmAAGu
-         ZeCg==
-X-Gm-Message-State: AOAM531N+ghmOVbv2pn3l6lLmkgFUwSb+Zg+nNqArdTV9DNw1cE5MEkO
-        h98u2HUWr+nY/QTf4mckQM2leJlLsRV1FA==
-X-Google-Smtp-Source: ABdhPJwpptoIbNDBIxg7tGd96ejjiyoUh9dYmTQ6GhoVVNXEwi/cHr9PIQVV73NN8XFxK93S1yYTlw==
-X-Received: by 2002:aed:2a82:: with SMTP id t2mr25022350qtd.217.1617073038712;
-        Mon, 29 Mar 2021 19:57:18 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id e14sm5479860qte.78.2021.03.29.19.57.17
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=bYJtg6/aY9IB9WPNhczeftcGb9GFpdNakq3l+2zkNCY=;
+        b=V9sU+mLu0VJWHTJdIhq4imQG6WCChffu5AE01mG/zeH66pS7jGeAlfA6OsCROOtLk7
+         u9WN4toi2ysKRz9Rxr8auKRmqh7czNaMAMeC6859aAVaEA+w7UrY68jx/RFpAhTtv/4j
+         tYCG3gD9fkT59D1PraLrfFvnlJvTeQzeObyLTKp0lp//f0sFO9sEQ2KjJ4EH3dTR3/aL
+         FEgLV9Mr0fZoG7NFHXUCES+NHo3dx0eZlvrOpyhybH09hEh9wMtwc+YMAVKf217pbZgl
+         dj8JgVS0AI2dVX3xZDAdZhUjat9f9Se8TzX3iyM8xbvAN7mBw1g8/f8wZUoQ+oi8MsXn
+         vMXw==
+X-Gm-Message-State: AOAM531y74SqzbgcsHL4xh+xD0/3IkCswoDsSRVpA84Vg1omguhWlaor
+        CX0MciQ9XCrWggjkP7g9Wk5vzA==
+X-Google-Smtp-Source: ABdhPJyNea+qxvS0Q0JdAqlZWNovVE3NqMfm7ePhO9aMUwZsrLevBZSo8exGl//tVV5sSieB57Yb8g==
+X-Received: by 2002:aa7:9ae7:0:b029:20a:d94d:dd61 with SMTP id y7-20020aa79ae70000b029020ad94ddd61mr28919446pfp.0.1617073095027;
+        Mon, 29 Mar 2021 19:58:15 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:ec9d:4055:2e64:33f9? ([2601:646:c200:1ef2:ec9d:4055:2e64:33f9])
+        by smtp.gmail.com with ESMTPSA id u12sm18435997pfn.123.2021.03.29.19.58.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 19:57:17 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id i144so15883818ybg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:17 -0700 (PDT)
-X-Received: by 2002:a25:74ca:: with SMTP id p193mr20204173ybc.405.1617073036989;
- Mon, 29 Mar 2021 19:57:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
- <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
- <YE0ru4JpXfX/4Awe@pendragon.ideasonboard.com> <CAD=FV=UY_S8jPkXwK6AGs99XrE=pno2sCgLE7qcPWfmoyYVXiw@mail.gmail.com>
- <YFEnKgwEOWdeQBK6@pendragon.ideasonboard.com> <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 29 Mar 2021 19:57:05 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
-Message-ID: <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but
- only if refclk
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
+        Mon, 29 Mar 2021 19:58:14 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Date:   Mon, 29 Mar 2021 19:58:13 -0700
+Message-Id: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+References: <20210330020403.GA1285835@tassilo.jf.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210330020403.GA1285835@tassilo.jf.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
+X-Mailer: iPhone Mail (18D61)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Mar 16, 2021 at 5:44 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Tue, Mar 16, 2021 at 2:46 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> >
-> > Hi Doug,
-> >
-> > On Mon, Mar 15, 2021 at 09:25:37AM -0700, Doug Anderson wrote:
-> > > On Sat, Mar 13, 2021 at 1:17 PM Laurent Pinchart wrote:
-> > > > On Thu, Mar 04, 2021 at 03:52:01PM -0800, Douglas Anderson wrote:
-> > > > > In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
-> > > > > DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
-> > > > > EDID from the panel. That commit kinda worked but it had some serious
-> > > > > problems.
-> > > > >
-> > > > > The problems all stem from the fact that userspace wants to be able to
-> > > > > read the EDID before it explicitly enables the panel. For eDP panels,
-> > > > > though, we don't actually power the panel up until the pre-enable
-> > > > > stage and the pre-enable call happens right before the enable call
-> > > > > with no way to interject in-between. For eDP panels, you can't read
-> > > > > the EDID until you power the panel. The result was that
-> > > > > ti_sn_bridge_connector_get_modes() was always failing to read the EDID
-> > > > > (falling back to what drm_panel_get_modes() returned) until _after_
-> > > > > the EDID was needed.
-> > > > >
-> > > > > To make it concrete, on my system I saw this happen:
-> > > > > 1. We'd attach the bridge.
-> > > > > 2. Userspace would ask for the EDID (several times). We'd try but fail
-> > > > >    to read the EDID over and over again and fall back to the hardcoded
-> > > > >    modes.
-> > > > > 3. Userspace would decide on a mode based only on the hardcoded modes.
-> > > > > 4. Userspace would ask to turn the panel on.
-> > > > > 5. Userspace would (eventually) check the modes again (in Chrome OS
-> > > > >    this happens on the handoff from the boot splash screen to the
-> > > > >    browser). Now we'd read them properly and, if they were different,
-> > > > >    userspace would request to change the mode.
-> > > > >
-> > > > > The fact that userspace would always end up using the hardcoded modes
-> > > > > at first significantly decreases the benefit of the EDID
-> > > > > reading. Also: if the modes were even a tiny bit different we'd end up
-> > > > > doing a wasteful modeset and at boot.
-> > > >
-> > > > s/and at/at/ ?
-> > >
-> > > Sure, I can correct if/when I respin or it can be corrected when landed.
-> > >
-> > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > index 491c9c4f32d1..af3fb4657af6 100644
-> > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > @@ -16,6 +16,7 @@
-> > > > >  #include <linux/pm_runtime.h>
-> > > > >  #include <linux/regmap.h>
-> > > > >  #include <linux/regulator/consumer.h>
-> > > > > +#include <linux/workqueue.h>
-> > > > >
-> > > > >  #include <asm/unaligned.h>
-> > > > >
-> > > > > @@ -130,6 +131,12 @@
-> > > > >   * @ln_assign:    Value to program to the LN_ASSIGN register.
-> > > > >   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-> > > > >   *
-> > > > > + * @pre_enabled_early: If true we did an early pre_enable at attach.
-> > > > > + * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
-> > > > > + *                           if a normal pre_enable never came.
-> > > >
-> > > > Could we simplify this by using the runtime PM autosuspend feature ? The
-> > > > configuration of the bridge would be moved from pre_enable to the PM
-> > > > runtime resume handler, the clk_disable_unprepare() call moved from
-> > > > post_disable to the runtime suspend handler, and the work queue replaced
-> > > > by usage of pm_runtime_put_autosuspend().
-> > >
-> > > It's an interesting idea but I don't think I can make it work, at
-> > > least not in a generic enough way. Specifically we can also use this
-> > > bridge chip as a generic GPIO provider in Linux. When someone asks us
-> > > to read a GPIO then we have to power the bridge on
-> > > (pm_runtime_get_sync()) and when someone asks us to configure a GPIO
-> > > as an output then we actually leave the bridge powered until they stop
-> > > requesting it as an output. At the moment the only user of this
-> > > functionality (that I know of) is for the HPD pin on trogdor boards
-> > > (long story about why we don't use the dedicated HPD) but the API
-> > > supports using these GPIOs for anything and I've tested that it works.
-> > > It wouldn't be great to have to keep the panel on in order to access
-> > > the GPIOs.
-> >
-> > The issue you're trying to fix doesn't seem specific to this bridge, so
-> > handling it in the bridge driver bothers me :-S Is there any way we
-> > could handle this in the DRM core ? I don't want to see similar
-> > implementations duplicated in all HDMI/DP bridges.
->
-> Yes, it is true that this problem could affect other drivers.  ...and
-> in full disclosure I think there are other similar workarounds already
-> present. I haven't personally worked on those chips, but in
-> ps8640_bridge_get_edid() there is a somewhat similar workaround to
-> chain a pre-enable (though maybe it's not quite as optimized?). I'm
-> told that maybe something had to be handled for anx7625 (in
-> anx7625_get_edid()?) but that definitely doesn't look at all like it's
-> doing a pre-enable, so maybe things for that bridge just work
-> differently.
->
-> One thing that makes me hesitant about trying to moving this to the
-> core is that even in sn65dsi86 there is a case where it won't work. As
-> I mentioned in the patch I'm not aware of anyone using it in
-> production, but if someone was using the MIPI clock as input to the
-> bridge chip instead of a fixed "refclk" then trying to get the EDID
-> after just "pre-enable" falls over.  Said another way: I can say that
-> with this particular bridge chip, if you're using a fixed refclk, you
-> can read the EDID after the pre-enable. I don't know if that's always
-> true with all other bridge chips.
->
-> So I guess in summary: I think I could put my code in the core, but I
-> don't _think_ I can just make it automatically enabled.
->
-> * In sn65dsi I'd have to only enable it if we have a fixed refclk.
->
-> * Maybe in ps8640 I could just always enable it and replace the
-> existing code? I'd have to find someone to test.
->
-> * In anx7625 things look totally different.
->
-> Can you give me any advice on how you'd like me to proceed?
+> On Mar 29, 2021, at 7:04 PM, Andi Kleen <ak@linux.intel.com> wrote:
+>=20
+> =EF=BB=BF
+>>=20
+>>> No, if these instructions take a #VE then they were executed at CPL=3D0.=
+  MONITOR
+>>> and MWAIT will #UD without VM-Exit->#VE.  Same for WBINVD, s/#UD/#GP.
+>>=20
+>> Dare I ask about XSETBV?
+>=20
+> XGETBV does not cause a #VE, it just works normally. The guest has full
+> AVX capabilities.
+>=20
 
-OK, I've got something that maybe looks better. You can tell me what
-you think [1]. I did manage to use PM Runtime to avoid some of the
-complexity and I put that usage in simple-panel. We'll see if I get
-yelled at for adding more to simple-panel. ;-P
-
-[1] https://lore.kernel.org/dri-devel/20210330025345.3980086-1-dianders@chromium.org/
+X *SET* BV=
