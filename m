@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9FC34EEFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78B334EF04
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhC3RJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S232448AbhC3RJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbhC3RGb (ORCPT
+        with ESMTP id S232367AbhC3RIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:06:31 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FBFC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:06:02 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so1613496pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:06:02 -0700 (PDT)
+        Tue, 30 Mar 2021 13:08:40 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7CAC061574;
+        Tue, 30 Mar 2021 10:08:03 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id q10so983880pgj.2;
+        Tue, 30 Mar 2021 10:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=U4q+4X4ovNbgyNm+vnYZ55+5sJJ03R3eRaFFwvvHanQ=;
-        b=1erBt5yBguM3wu5x53SxPYcY+u0nb/gz/8dRWvk3RKVyKuuKPlloDIcIiBqKotYZCY
-         sStJJ0lBlWkWwVaDrw7WHNHg9t9R1rrEpYhSrYYLuP1epKnSWoYHANJEVMSTUXAi2wML
-         yk1+3mCKwARJa5NcHHC/g+J63eIL3aR818xSS4VpQ4czEfXr8kULsosM4jm4MIIdgnfM
-         FNyeqmJbKVErhig2aRM3bWdc8MIZAJ2JYM5W9NqgWVT//REhUi1GXwDwUZ9LqpyDkpZv
-         TIA0GrjSvfVfmmUh2Smsa1Ts1w2JiCvr8DMR6GURTunEuQZzak6C0WZOM9ZEBeK0dTkg
-         hKuw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zjYrAF4ZzvpKQ1l5vfNst6OJLZcB5yoAFqCigpxLEP0=;
+        b=lglQoa/2FLvuVXX570JvH4L8xT8TGJVZSdeKR3lhkGTGWal0tJBLqsaSIcKqaJvrWy
+         EEbbSOKSVy6Gtd+wpo9lLjGrnGZN4ZkzPlJAWWibYZCjg6u4LDmnRHo9FWL8SJA0XtAF
+         rZVb7hymXHkOc8WbDdumYn6F3MmtgrCpSVIGYM2IipmbeAglVNWGt84sH7bTwXQrQ68d
+         +bnsdh4QGMQZGwwe3/JX2zfNNFcbwknsGU+aFRC0d1kvz+DXIZQ4joTYR1YaTfRkGoB7
+         UYhBMSkuTFSx4s/NxhqKzXTlkhA8HMNNKmMIcRjHl9rtZSqzmxbRtyiScb29/IEzF3ob
+         ++VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=U4q+4X4ovNbgyNm+vnYZ55+5sJJ03R3eRaFFwvvHanQ=;
-        b=PIZL6aZVCFDk1lzGE2LB+nM9ouVfHqL+rOtRcWttwLgh4ZSanQ26Iu14GcP6AZCcgm
-         q4XpJfRQnoRkaV/zeRs7i1GukG/GmVb/ngya4rHcpx82cK8/xJKlSKptm3Zv99HHkn0h
-         /ZdWCCsmPS+Jk6BIUqDEHLWJOtyqTIJO2DyX4+4Gah4Ss4lGg64lLdmZmS5t+sogeFbj
-         P3DIUNfA/D90m6XG2KWvmBxAw3kUyCIrjYKi8n0xw899zKYje4cOC9QWj/44cbFDQ3SE
-         0ZUH6sA7ZKDKuoeBogUN/V4kUJoGZSBPRWHEiiSCe+z11vJuVOUQmWADCs2YzFjEwVSZ
-         EFdA==
-X-Gm-Message-State: AOAM532RYAk0Ju1QYYTzDZuPHJbIBnofOF6/e3eiTCDiAbepGI3lllYW
-        zWhx0SfS81BKbo/ZRIaW15ZRKg==
-X-Google-Smtp-Source: ABdhPJwiNtg82+2n7Ww23Sbgvk1m2HyIMfb69Sf2f7CaQTCRDT8JKO/LDuIn1LbMKoFYmV/hJdJ0pQ==
-X-Received: by 2002:a17:90a:68cf:: with SMTP id q15mr5261816pjj.231.1617123961665;
-        Tue, 30 Mar 2021 10:06:01 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:547a:17da:91e6:2591? ([2601:646:c200:1ef2:547a:17da:91e6:2591])
-        by smtp.gmail.com with ESMTPSA id a26sm16241008pff.149.2021.03.30.10.06.00
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zjYrAF4ZzvpKQ1l5vfNst6OJLZcB5yoAFqCigpxLEP0=;
+        b=jaJdz+TuAafZOwXs3C0SHJkB+5xp4gY4tJaqbB7pCBTUOcNBPBNJGWkTegaZq3CS1n
+         e8bWqL0a74LjyUI86OmVTD2Pjbf0uhR3uLeZ/4ihPJO4v7Pa8RP3JmwbLjsGsqu8CRO9
+         BHPKS4c09/h9rF5e/w5usROLXvUaiOBUwqQ72JYXj+levAvqkEkxmVBxqrdXC9QejSSd
+         zJIJHng8vxDd+DAGma2/4+gJ9++r4Ncp1tMDnio/UeKCFbTQ8XnQn3jSPLcN8NIJgQPQ
+         akFhdM+F6SS+VPxHAMUswHzJI1SZ2HAKvwD2TUHyH1zktIpsEpdhQwzvo4ssP6b5Ji44
+         Xr5g==
+X-Gm-Message-State: AOAM5333YO1+6tqb+WzKh/DIDfhlT5QEmW1kSjB5rgiVE72NMJ1Vq11Q
+        hMn0fCRO8hKkbxOGEHhJ/xVhj83c3kk=
+X-Google-Smtp-Source: ABdhPJzCefx57UoP0dIwbaDwdrLKEqTnjJy/7LgNcochkJg1DOW36jTnpkFq+CNjh8SuXiILGdUhmQ==
+X-Received: by 2002:a62:928f:0:b029:1ef:2370:2600 with SMTP id o137-20020a62928f0000b02901ef23702600mr31622202pfd.9.1617124082297;
+        Tue, 30 Mar 2021 10:08:02 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q184sm21064541pfc.78.2021.03.30.10.08.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 10:06:01 -0700 (PDT)
+        Tue, 30 Mar 2021 10:08:01 -0700 (PDT)
+Subject: Re: [PATCH v2 2/6] mips: bmips: bcm6328: populate device tree nodes
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210314164351.24665-1-noltari@gmail.com>
+ <20210314164351.24665-3-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <95e75721-ff59-1f75-e622-08a4fef2e460@gmail.com>
+Date:   Tue, 30 Mar 2021 10:07:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210314164351.24665-3-noltari@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-Date:   Tue, 30 Mar 2021 10:05:59 -0700
-Message-Id: <D652C16A-5CAC-48DF-B6B3-797DC61BBA30@amacapital.net>
-References: <CAJvTdKmQN7dXk7FifOqZRZRrOqOoB_6+VR9ORx_AfZWpVRePdA@mail.gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-In-Reply-To: <CAJvTdKmQN7dXk7FifOqZRZRrOqOoB_6+VR9ORx_AfZWpVRePdA@mail.gmail.com>
-To:     Len Brown <lenb@kernel.org>
-X-Mailer: iPhone Mail (18D70)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/14/21 9:43 AM, Álvaro Fernández Rojas wrote:
+> - Rename periph_clk to periph_osc.
+> - Rename clkctl to periph_clk.
+> - Move syscon-reboot to subnode.
+> - Add hsspi-osc clock.
+> - Add watchdog.
+> - Add HS SPI controller.
+> - Add NAND controller.
+> - Add USBH PHY.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-
-> On Mar 30, 2021, at 10:01 AM, Len Brown <lenb@kernel.org> wrote:
->=20
-> =EF=BB=BFAndy,
->=20
-> I agree, completely, with your description of the challenge,
-> thank you for focusing the discussion on that problem statement.
->=20
-> Question:
->=20
-> Is it required (by the "ABI") that a user program has everything
-> on the stack for user-space XSAVE/XRESTOR to get back
-> to the state of the program just before receiving the signal?
-
-The current Linux signal frame format has XSTATE in uncompacted format, so e=
-verything has to be there. Maybe we could have an opt in new signal frame fo=
-rmat, but the details would need to be worked out.
-
-It is certainly the case that a signal should be able to be delivered, run =E2=
-=80=9Casync-signal-safe=E2=80=9D code, and return, without corrupting regist=
-er contents.=
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
