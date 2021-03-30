@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684AD34E2FD
+	by mail.lfdr.de (Postfix) with ESMTP id B56D634E2FE
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhC3ISz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:18:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231359AbhC3ISm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:18:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617092321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wNw4nGVKh6SriT/z86f2SGzgVHpW0NorEGH4COOxJUo=;
-        b=l8JS67PZkLeSBclyeYuVlbPnE6ocBl1TXDJ8G0G72ngoWy6FLGLhJWgfW8qEalAdsZ3RBN
-        7hXMQp9JY8kb+azQhsW14wJNiUxZo+CnhlCTEL5DPM3xGjSZOzbuRgDQ13XtZBC8fTxzmR
-        uny1PEiAX5U8jCXzvf3pkWrNedW59ks=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EAB04AEF5;
-        Tue, 30 Mar 2021 08:18:40 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 10:18:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [External] Re: [PATCH v2 1/8] mm/cma: change cma mutex to irq
- safe spinlock
-Message-ID: <YGLe31q/4kAoLmmr@dhcp22.suse.cz>
-References: <20210329232402.575396-1-mike.kravetz@oracle.com>
- <20210329232402.575396-2-mike.kravetz@oracle.com>
- <YGLayMqYOrMMQ841@dhcp22.suse.cz>
- <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
+        id S231527AbhC3IS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:18:56 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:23463 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231430AbhC3ISs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:18:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617092328; x=1648628328;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+gyuP2o8c81Fb8w4sK4HiD0tTwx8CqW4Of6BFZ8CVpc=;
+  b=t3lD7ORaiAP00DXQRqkPI9L3sr63eH5EQ+Yu7fmR630sinq7Kko4AD3Z
+   4SXj8YwQ6fKqCEVjeGWHHntWeyEWTdWQ5mnX8u8jL3gaO65cUvHUrM9df
+   I8asi7FUnDiMZjNuUBZxqxkkHMFQ2JyXPIEe4Xw0AGiWojFPnch5Ar6KV
+   uFQoeTqQrwSr7n1hZprU2otAe0WUKVDEXFZVQviGpu6KL+8vPn8kog7vt
+   NOFsYtQk/QFJVYMhQqanohFrS8d/wQivERMod6FOdWqtrfVUoNQsdiT22
+   h1TZv1RxQYxC7PY4PrMZL17D+p07UKPlyQtRS0gp2CagNb5rtvLrwfojj
+   A==;
+IronPort-SDR: QOiXiy9v2yvWnu8splEZ7FCYjwOfZM9vsj+WkXS+Ez26JD7zAOsNo4nzyLB2nsJ/WVcL2p3uTd
+ O0uYjcYzeP/WhLEfyD/Lbmvc+voqrTSDy0qTo7Om24f2skespBOB74BjMZpChKCSacFt0W++Pk
+ jE+7GPbFvPCEFnbrIdeAb/v6OVaDpieiKwP3T+WBV6TwzB1t7uS2DRu6//8HbtBXpSBt2uWOz2
+ E4aytVlV2W/oowrvLX+GN+pxdmYRPj6Zams5vQCQ/342xeshie3Ug3HEZZ8oklUiV8JxboZuC2
+ H3U=
+X-IronPort-AV: E=Sophos;i="5.81,290,1610434800"; 
+   d="scan'208";a="49364921"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 01:18:47 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 30 Mar 2021 01:18:47 -0700
+Received: from den-her-m31857h.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 30 Mar 2021 01:18:45 -0700
+Message-ID: <2356027828f1fa424751e91e478ff4bc188e7f6d.camel@microchip.com>
+Subject: Re: [PATCH linux-next 1/1] phy: Sparx5 Eth SerDes: Use direct
+ register operations
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Date:   Tue, 30 Mar 2021 10:18:44 +0200
+In-Reply-To: <YGIimz9UnVYWfcXH@lunn.ch>
+References: <20210329081438.558885-1-steen.hegelund@microchip.com>
+         <20210329081438.558885-2-steen.hegelund@microchip.com>
+         <YGIimz9UnVYWfcXH@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 30-03-21 16:08:36, Muchun Song wrote:
-> On Tue, Mar 30, 2021 at 4:01 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 29-03-21 16:23:55, Mike Kravetz wrote:
-> > > Ideally, cma_release could be called from any context.  However, that is
-> > > not possible because a mutex is used to protect the per-area bitmap.
-> > > Change the bitmap to an irq safe spinlock.
-> >
-> > I would phrase the changelog slightly differerent
-> > "
-> > cma_release is currently a sleepable operatation because the bitmap
-> > manipulation is protected by cma->lock mutex. Hugetlb code which relies
-> > on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
-> > irq safe.
-> >
-> > The lock doesn't protect any sleepable operation so it can be changed to
-> > a (irq aware) spin lock. The bitmap processing should be quite fast in
-> > typical case but if cma sizes grow to TB then we will likely need to
-> > replace the lock by a more optimized bitmap implementation.
-> > "
-> >
-> > it seems that you are overusing irqsave variants even from context which
-> > are never called from the IRQ context so they do not need storing flags.
-> >
-> > [...]
-> > > @@ -391,8 +391,9 @@ static void cma_debug_show_areas(struct cma *cma)
-> > >       unsigned long start = 0;
-> > >       unsigned long nr_part, nr_total = 0;
-> > >       unsigned long nbits = cma_bitmap_maxno(cma);
-> > > +     unsigned long flags;
-> > >
-> > > -     mutex_lock(&cma->lock);
-> > > +     spin_lock_irqsave(&cma->lock, flags);
-> >
-> > spin_lock_irq should be sufficient. This is only called from the
-> > allocation context and that is never called from IRQ context.
-> 
-> This makes me think more. I think that spin_lock should be
-> sufficient. Right?
+Hi Andrew,
 
-Nope. Think of the following scenario
-	spin_lock(cma->lock);
-	<IRQ>
-	put_page
-	  __free_huge_page
-	    cma_release
-	      spin_lock_irqsave() DEADLOCK
--- 
-Michal Hocko
-SUSE Labs
+On Mon, 2021-03-29 at 20:55 +0200, Andrew Lunn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Mon, Mar 29, 2021 at 10:14:38AM +0200, Steen Hegelund wrote:
+> > Use direct register operations instead of a table of register
+> > information to lower the stack usage.
+> > 
+> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> >  drivers/phy/microchip/sparx5_serdes.c | 1869 +++++++++++++------------
+> >  1 file changed, 951 insertions(+), 918 deletions(-)
+> > 
+> > diff --git a/drivers/phy/microchip/sparx5_serdes.c b/drivers/phy/microchip/sparx5_serdes.c
+> > index 06bcf0c166cf..43de68a62c2f 100644
+> > --- a/drivers/phy/microchip/sparx5_serdes.c
+> > +++ b/drivers/phy/microchip/sparx5_serdes.c
+> > @@ -343,12 +343,6 @@ struct sparx5_sd10g28_params {
+> >       u8 fx_100;
+> >  };
+> > 
+> > -struct sparx5_serdes_regval {
+> > -     u32 value;
+> > -     u32 mask;
+> > -     void __iomem *addr;
+> > -};
+> > -
+> >  static struct sparx5_sd25g28_media_preset media_presets_25g[] = {
+> >       { /* ETH_MEDIA_DEFAULT */
+> >               .cfg_en_adv               = 0,
+> > @@ -945,431 +939,411 @@ static void sparx5_sd25g28_reset(void __iomem *regs[],
+> >       }
+> >  }
+> > 
+> > -static int sparx5_sd25g28_apply_params(struct device *dev,
+> > -                                    void __iomem *regs[],
+> > -                                    struct sparx5_sd25g28_params *params,
+> > -                                    u32 sd_index)
+> > +static int sparx5_sd25g28_apply_params(struct sparx5_serdes_macro *macro,
+> > +                                    struct sparx5_sd25g28_params *params)
+> >  {
+> > -     struct sparx5_serdes_regval item[] = {
+> 
+> Could you just add const here, and then it is no longer on the stack?
+> 
+>    Andrew
+
+No it still counts against the stack even as a const structure.
+
+BR
+Steen
+
+
