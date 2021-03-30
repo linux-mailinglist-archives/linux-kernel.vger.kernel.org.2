@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFF234EDAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F0434EDB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhC3QW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
+        id S232389AbhC3QYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhC3QWf (ORCPT
+        with ESMTP id S232357AbhC3QXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:22:35 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A758C061574;
-        Tue, 30 Mar 2021 09:22:35 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id F290822236;
-        Tue, 30 Mar 2021 18:22:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1617121352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oIwyUqAzhM7ee/BMrStN5FihbwtRnVcp/Mxe/o3tK2M=;
-        b=UwBRS535zGojtGnONljafly4b0WcMpThXNFFgKqbwZVtJvV+u6fXBZz2lTTwsOXsjCTDzc
-        iJDA5j/hcMmwHOqC2YElCQya1gqZbo7mHIbdmlg7HTdhPa6Qgktqt36+bdWhBR0DAw6EW0
-        9xyxktWlMkYoeBjTj1GXyBJpahQc5qo=
+        Tue, 30 Mar 2021 12:23:47 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F53C061574;
+        Tue, 30 Mar 2021 09:23:47 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso16081487ott.13;
+        Tue, 30 Mar 2021 09:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8k/R3Z1NvB0DXO6K99UF1wGAXsYisfDguT4FZRHCp1c=;
+        b=RJEpI15QZsXpm89FHqBATwZuAP+vcibkzS4tIbzICBo2ZMT3O03knPvcfV41vkqE8J
+         9sV1CP4KLKCd44GRPWr3Ftfy6+YmSTtnXIPIPPftUKpAGJxH+CMilF7utCn8ENBC/Exa
+         46GfqszzK9aG4SyoLzDjMlHkqoPxIcKaS0y2Tvyv3FJtN/ypakskg+5TUW7hFkIASYjr
+         b8WDtYNmTzpfpqboelnuQ+GsY/o/spXtF4u8WJYfJx9DrNyRhCr968qSThsp1xKZZfWx
+         d0J9sre6DnG3zG5fTTXXKAvoPWBfk/svvJEd+qn5vCWw7+x8Rkx0WKU135z2n3Zsks9s
+         jdpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8k/R3Z1NvB0DXO6K99UF1wGAXsYisfDguT4FZRHCp1c=;
+        b=KkS5h9MlAu7BeWxKEELLTLXtno2fcjPgqnOV+sv0lSX0gkWItrf9cMvkPU/1b04WJL
+         fxTTTxOAUpukGq4okY4hojcvndLGomCik0StaedjaMeuiuqZBx/U3TAqL35VzWS7nMSN
+         CSFpzZxJKLu9YWsMWsh9+lThSV9Ys/FUAXNajXSrki8Fte1c/db2L3oSFEZPBFfalKsd
+         nbP3lS7+7YoFt0G8Cfbo+/jLZRShc+wSYnbblesdqSKcj4oaNE0LwF3Mtgfd4/A0ibqo
+         0znEM2sCtkoO0kWPC/AZpO/FinEHylon3l/VTSbrT3W1FnTMLfwbuc5EoxnXTSZT8avv
+         ZTWw==
+X-Gm-Message-State: AOAM5316Og7SBhCvpfIdEy6u5a+Lc5h4cb4ZFZhlMFnupcIrD3f++8t9
+        0i5u/0y22jbjVSLAF92j5qucdG5cSLCeheiD9a4=
+X-Google-Smtp-Source: ABdhPJxxDLiLh8bABF8yNOzeiW0symW5513NoaUkwy5zJnItSU9Kwjrw867zd1DAqcnFUdeY0dHqzy7bq/Jq3XuSe90=
+X-Received: by 2002:a05:6830:14a:: with SMTP id j10mr28568308otp.143.1617121427121;
+ Tue, 30 Mar 2021 09:23:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 30 Mar 2021 18:22:31 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Sahil Malhotra <sahil.malhotra@nxp.com>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "Sahil Malhotra (OSS)" <sahil.malhotra@oss.nxp.com>,
-        kernelci-results@groups.io, linux-kernel@vger.kernel.org,
-        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: next/master bisection: baseline.login on kontron-kbox-a-230-ls
-In-Reply-To: <DB7PR04MB5322273BD92BE06417F0A46D827D9@DB7PR04MB5322.eurprd04.prod.outlook.com>
-References: <DB7PR04MB5322273BD92BE06417F0A46D827D9@DB7PR04MB5322.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <ceed3682b72b048ceaa72daf6fe629e4@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210326191906.43567-1-jim2101024@gmail.com> <20210326191906.43567-2-jim2101024@gmail.com>
+ <20210330150816.GA306420@robh.at.kernel.org> <20210330153023.GE4976@sirena.org.uk>
+In-Reply-To: <20210330153023.GE4976@sirena.org.uk>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Tue, 30 Mar 2021 12:23:35 -0400
+Message-ID: <CANCKTBvDdkLk0o4NboaOTZ26vfwJjPAfnXK3ay4v9E91G2gYOQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sahil,
+On Tue, Mar 30, 2021 at 11:30 AM Mark Brown <broonie@kernel.org> wrote:
+>10.22.8.121
+> On Tue, Mar 30, 2021 at 10:08:16AM -0500, Rob Herring wrote:
+> > On Fri, Mar 26, 2021 at 03:18:59PM -0400, Jim Quinlan wrote:
+>
+> > > +                    pcie-ep@0,0 {
+> > > +                            reg = <0x0 0x0 0x0 0x0 0x0>;
+> > > +                            compatible = "pci14e4,1688";
+> > > +                            vpcie12v-supply: <&vreg12>;
+>
+> > For other cases, these properties are in the host bridge node. If these
+> > are standard PCI rails, then I think that's where they belong unless we10.22.8.121
+> > define slot nodes.
+>
+> For a soldered down part I'd expect we'd want both (if the host even
+> cares) - for anything except a supply that I/O or something else shared
+> is referenced off there's no great reason why it has to be physically
+> the same supply going to every device on the bus so each device should
+> be able to specify separately.
+Our developer and reference boards frequently have Mini and half-mini
+PCIe sockets (a few exceptions), whereas production boards are mostly
+soldered down.
 
-Am 2021-03-30 16:42, schrieb Sahil Malhotra:
-> I tried the same on LS1028A-RDB board with 5.11 kernel and my
-> submitted patch applied.
-> Board booted up successfully:  https://pastebin.com/15D91K5k
-> 
-> I used OP-TEE from OP-TEE github repo:
-> https://github.com/OP-TEE/optee_os with commit
-> https://github.com/OP-TEE/optee_os/commit/d1447353d3f80ae49053b54f525a0a4cf5e4cde7
-> Which OP-TEE version you used for CI ?
+If I resubmit this pullreq  so that it  looks for "vpcie12v-supply"
+and "vpcie3v3-supply" in the host node, will that be acceptable for
+both of you?
 
-| Re: next/master bisection: baseline.login on kontron-kbox-a-230-ls
-
-That would be my board, which isn't a LS1028A-RDB and doesn't use optee 
-at all.
-Hope this helps, to understand why this board crashed ;)
-
--michael
+Thanks,
+Jim Quinlan
+Broadcom STB
