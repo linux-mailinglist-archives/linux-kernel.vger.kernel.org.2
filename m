@@ -2,158 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3989034F470
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97B434F476
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbhC3WoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:44:11 -0400
-Received: from mail-bn7nam10on2056.outbound.protection.outlook.com ([40.107.92.56]:63400
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232924AbhC3Wnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:43:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ktJgiPkMuYh75SbjMbqzJQDTZIwwYpADt8X2x1sgXfq3TTCrTnPIj92pv0zVqlOU6z86EK/z3DNoQY0tk5RMHcsFNP7BgfM0AG90Veg40tNYQldF2jeGjBw9kwd4LbgU5FQukWHVNU47HQiscxK1ai6IPlGjK5/EN/H5QvebkZY+pt2ovPljwDSUam8nDpOgjRHtNgKho8Q5/gpLFXBWZXGra3mXyPyo2h/25MHSxKr8W+ib8rDpExsmbdXmz0jFxpUrg0fCESP5/vGW9kzEnYrlImrE/Ytkc75YsRcfVIOsazOtYXB2ox70l/VeGJuytsD1DBlF54sRYUIqFSZHPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SNLphClAq7f+HN0c4BR9sHNfWb2MbBIS5R+KGKXClNQ=;
- b=IE1Zq7Z13WLSZJSCacjXjXg05mfPgwNdYiO9vjyZ+Ueyx0vXKf2J/43SYlRWyAmIqItFHJoo8rZLCY+w84JbzKhNLVE3MENS53EPPxW4Cub1EwzbYgQnzS99XCsd3xWuUHAMn/S3171WiHr6Z7S8ZH6lh3TMlf1Cdsz3W73ZLyah7E8JwCPJq8fOrRW+Rgb+ZlN4ZgsnhH6ZOjaXBQzICLwgfsKnczySEqFjhNyyKbjWoDbEmygJQZbHSneK2eYi9leRS/MoGd2fnPh2TBQQVXtKMmZflQjeStJEZPUYs78jDyRgs7mx5j8WJ3mY2HjfZoQaWIYabwQHhjeZtbjJ8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SNLphClAq7f+HN0c4BR9sHNfWb2MbBIS5R+KGKXClNQ=;
- b=OY0tuy2zncszr861bsNbSGLklMsXHIIyOWUEKKEqNLaPwsB5GYRW7ZdptuOxJj8f4RLoctXscvrd8WmbpWs78u3qMd64sF/dr40qDLGOamwtiDmzBt5a7eIaM3knz8UQvlmvz48ADgBqu8Fg7tRohtxm8Qi7z8dYaGdPkPTpyIgI2OAfS+nTkc7VKlFv5e8anuH2hzOs5sqq2Fd3cM8xcB/KVdGKdd54ShaFw81cszanHwHd9gL9yMkt6Rf4AsSCAFAFN8v4JwUxEnDPIs5dyKNx+w3c1lkgxXLlpqyKezgMOaZkcJktHZkW9k/7QlQ+cHc6ZaGYnAXlOegORNg7gA==
-Received: from DM5PR13CA0059.namprd13.prod.outlook.com (2603:10b6:3:117::21)
- by MN2PR12MB3439.namprd12.prod.outlook.com (2603:10b6:208:cf::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
- 2021 22:43:49 +0000
-Received: from DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:117:cafe::3c) by DM5PR13CA0059.outlook.office365.com
- (2603:10b6:3:117::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
- Transport; Tue, 30 Mar 2021 22:43:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
- signed) header.d=none;linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT004.mail.protection.outlook.com (10.13.172.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 22:43:49 +0000
-Received: from [10.2.63.109] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
- 2021 22:43:20 +0000
-Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>, <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <20210326000805.2518-4-apopple@nvidia.com>
- <20210330184903.GZ2356281@nvidia.com> <12442194.rtmf8Ope3M@nvdebian>
- <20210330222440.GC2356281@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <bce0605a-336f-99ba-5b65-a8e5a7e49e00@nvidia.com>
-Date:   Tue, 30 Mar 2021 15:43:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233060AbhC3Won (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232952AbhC3WoP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 18:44:15 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03417C061574;
+        Tue, 30 Mar 2021 15:44:15 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id h7so8384122ilj.8;
+        Tue, 30 Mar 2021 15:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aqZZEJInE7Xr+H1UuDRuL+8JzkU5vAw+mUXNCCHRBks=;
+        b=j7m5tmedSFYgoL/TsjL0Q+upO2u0I5pWRsIANJMiNUQ+dmo0t8l3jPXBO4NyjgkQqz
+         mmbgu42+pKpF6zhzYrpNIEdvNVWo1KD2aRGx49SoSlJFJxohtIT/2b7tppAi+qBp6c0G
+         hWDmoVwZ/VcdrUjuzX1RAA/Qhr2OSBgQoC64H1mphPxGDALpnfv0SF89+F5iEAB5ycEz
+         F7N9Vn5FWdHp/Ar3RenGT5KBwGkthLjnBYeT/GtCUqzexy+eurMEel7gTscC+cCoC3hi
+         ugdCWdVw/qjCx5zPZiAQyIvJkiMBUn3MKq9vuwZnsN+hakLrPA9117/b2ThF6eOl8lwG
+         w75g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aqZZEJInE7Xr+H1UuDRuL+8JzkU5vAw+mUXNCCHRBks=;
+        b=jX7JHL3LRBCLRybWDJwppx0lds4ie5R2Cqvfe14x8R0gDD50gZKnOSRSITbDw2K93/
+         d1nk/gCVKMZmTr9Td8IMvZkTvMM5BxXcdF45tKuUvD4bPlyx29kaOVu0JxNiJCGG8ZRf
+         UQZRDM9aY9XUOlqIwqYgOsbR5odduMApXI76XFzujF/yKbcB1FXXRhGYaxUP5PQT5XeG
+         SHba8CWV0Pr47mh7ANljxVwREggFzyYBH6pTgsCr41077ftazDqSxb1kpeZylxVe6GUA
+         H5aCZ8NF3ye5hSei5rzWCCORmouXVzwQE7vPfajIMbuxtuCtQwBajBA85KxMydmqI3oX
+         EXQA==
+X-Gm-Message-State: AOAM531FAYuCJYCDH8KtDF6P7gDNWIUmezw3fSovugErsr0nVD/Eo5K0
+        aiW6VH53ORCRWRM7JuHvjJszJAXmJ+9wR8YoLTU=
+X-Google-Smtp-Source: ABdhPJzKUoJxZE6IFMyqVHXefKwBQVZ8ZDfOiKKA94OGJTf75ptQib5WFwPg/GXv3H8rRfnpsWX3uAfKMtfI6Zj+AfY=
+X-Received: by 2002:a05:6e02:672:: with SMTP id l18mr358213ilt.271.1617144254377;
+ Tue, 30 Mar 2021 15:44:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210330222440.GC2356281@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0d0370a3-da74-4c03-9f36-08d8f3cd494a
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3439:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB34390BCA725A6B05EDAA4C50A87D9@MN2PR12MB3439.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yZoVVOIK+PbS8rTDmsqj9Nsrzi2ZWycM/4WXmljItK7pGeL9tNCF1Tw5rmY9zBSZqs5m12QV402mu10jNuLsm27HWtVTSUnQkOdJXl0O3f54gxnfU/2PSDpSB0vrv46uK1+RudQz0PqzyNRZzovoN626cfruycxGzyryhGcyZgJ8Y1+zrztMMLFtJayfRSJQVkGZ5xeOi4pcHy6hxFV6I35jrazjnOuJCyMPeye9tscuGNMXR6y8PqpBs0S4Rv3Sqf43Y+dAIBp4NFl7pePA18QpMykRU5YfhMHHU9nuEXCe2ezWRBc3Pq0CQVAL18+Nm3W2RzMgTVMpqxbSucHahiceG0KZNR7BCkDSTPhVF7IaiKfrHtwWqwGFzSeBHRlXRQKHyJJ9+6nMxp6bKHrJBITxgfGXS/9zoTKGBynOtxMK46IqwPjazPkFvKMupbXf0o8RRaEJO51nkUyIuNoqmGLgcQoWVLJ8z7+v+Zp6DnByyWIucTyN1Gm22q+pszcxYhF0lFns8sLwtb9yqj9iZslINaNVFAG5Tl8lZ922GzhYzEkQBzW6UqdTmxA7yNI/l5T5OZFFZ8lId0vbl7dLEShGa+LMikOYtirxK9t1zajIrvJ5XtQ+QmR7LGlmpQFU4cSZsaOQUlsn4YaGYD7NUfGWIxkxXRgGPnOu7KpFj0Xo1CgvdlPPILXnQrQNWMrS
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39860400002)(376002)(36840700001)(46966006)(2906002)(36756003)(70586007)(26005)(186003)(426003)(86362001)(336012)(16526019)(6636002)(478600001)(356005)(4326008)(83380400001)(36860700001)(7636003)(31696002)(82310400003)(2616005)(47076005)(53546011)(54906003)(31686004)(70206006)(16576012)(316002)(5660300002)(110136005)(8676002)(82740400003)(7416002)(36906005)(8936002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 22:43:49.5218
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d0370a3-da74-4c03-9f36-08d8f3cd494a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3439
+References: <1617094704-10040-1-git-send-email-dillon.minfei@gmail.com>
+ <1617094704-10040-5-git-send-email-dillon.minfei@gmail.com> <4df8e7b8-826c-b1d4-0431-4f777e26c383@foss.st.com>
+In-Reply-To: <4df8e7b8-826c-b1d4-0431-4f777e26c383@foss.st.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Wed, 31 Mar 2021 06:43:38 +0800
+Message-ID: <CAL9mu0LKpbraWPX-rgCJcxxX_JfaggTKc+o4P7Uq12Lqo2tMZw@mail.gmail.com>
+Subject: Re: [PATCH v8 4/6] ARM: dts: stm32: add support for art-pi board
+ based on stm32h750xbh6
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Valentin CARON - foss <valentin.caron@foss.st.com>,
+        rong.a.chen@intel.com, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com,
+        gregkh@linuxfoundation.org,
+        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
+        Erwan LE RAY <erwan.leray@st.com>,
+        linux-serial@vger.kernel.org, lkp@intel.com,
+        Patrice CHOTARD <patrice.chotard@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 3:24 PM, Jason Gunthorpe wrote:
-...
->> As far as I can tell this has always been called try_to_munlock() even though
->> it appears to do the opposite.
-> 
-> Maybe we should change it then?
-> 
->>> /**
->>>   * try_to_munlock - try to munlock a page
->>>   * @page: the page to be munlocked
->>>   *
->>>   * Called from munlock code.  Checks all of the VMAs mapping the page
->>>   * to make sure nobody else has this page mlocked. The page will be
->>>   * returned with PG_mlocked cleared if no other vmas have it mlocked.
->>>   */
->>
->> In other words it sets PG_mlocked if one or more vmas has it mlocked. So
->> try_to_mlock() might be a better name, except that seems to have the potential
->> for confusion as well because it's only called from the munlock code path and
->> never for mlock.
-> 
-> That explanation makes more sense.. This function looks like it is
-> 'set PG_mlocked of the page if any vm->flags has VM_LOCKED'
-> 
-> Maybe call it check_vm_locked or something then and reword the above
-> comment?
-> 
-> (and why is it OK to read vm->flags for this without any locking?)
-> 
->>> Something needs attention here..
->>
->> I think the code is correct, but perhaps the naming could be better. Would be
->> interested hearing any thoughts on renaming try_to_munlock() to try_to_mlock()
->> as the current name appears based on the context it is called from (munlock)
->> rather than what it does (mlock).
-> 
-> The point of this patch is to make it clearer, after all, so I'd
-> change something and maybe slightly clarify the comment.
-> 
+Hi Alexandre,
 
-I'd add that, after looking around the calling code, this is a really unhappy
-pre-existing situation. Anyone reading this has to remember at which point in the
-call stack the naming transitions from "do the opposite of what the name says",
-to "do what the name says".
+Thanks for the quick response.
 
-+1 for renaming "munlock*" items to "mlock*", where applicable. good grief.
+On Wed, Mar 31, 2021 at 12:50 AM Alexandre TORGUE
+<alexandre.torgue@foss.st.com> wrote:
+>
+>
+>
+> On 3/30/21 10:58 AM, dillon.minfei@gmail.com wrote:
+> > From: dillon min <dillon.minfei@gmail.com>
+> >
+> > This patchset has following changes:
+> >
+> > - introduce stm32h750.dtsi to support stm32h750 value line
+> > - add stm32h750i-art-pi.dtb (arch/arm/boot/dts/Makefile)
+> > - add stm32h750-art-pi.dts to support art-pi board
+> >
+> > art-pi board component:
+> > - 8MiB qspi flash
+> > - 16MiB spi flash
+> > - 32MiB sdram
+> > - ap6212 wifi&bt&fm
+> >
+> > the detail board information can be found at:
+> > https://art-pi.gitee.io/website/
+> >
+> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > ---
+> > v8:
+> > - move file stm32h743.dtsi submit position to [PATCH V8 3/6]
+> >
+> >   arch/arm/boot/dts/Makefile              |   1 +
+> >   arch/arm/boot/dts/stm32h750.dtsi        |   6 +
+> >   arch/arm/boot/dts/stm32h750i-art-pi.dts | 229 ++++++++++++++++++++++++++++++++
+> >   3 files changed, 236 insertions(+)
+> >   create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+> >   create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+> >
+> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> > index 8e5d4ab4e75e..a19c5ab9df84 100644
+> > --- a/arch/arm/boot/dts/Makefile
+> > +++ b/arch/arm/boot/dts/Makefile
+> > @@ -1071,6 +1071,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+> >       stm32746g-eval.dtb \
+> >       stm32h743i-eval.dtb \
+> >       stm32h743i-disco.dtb \
+> > +     stm32h750i-art-pi.dtb \
+> >       stm32mp153c-dhcom-drc02.dtb \
+> >       stm32mp157a-avenger96.dtb \
+> >       stm32mp157a-dhcor-avenger96.dtb \
+> > diff --git a/arch/arm/boot/dts/stm32h750.dtsi b/arch/arm/boot/dts/stm32h750.dtsi
+> > new file mode 100644
+> > index 000000000000..41e3b1e3a874
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/stm32h750.dtsi
+> > @@ -0,0 +1,6 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+> > +/* Copyright (C) STMicroelectronics 2021 - All Rights Reserved */
+> > +
+> > +#include "stm32h743.dtsi"
+> > +
+>
+> I know it's a bit odd, but you could directly include stm32h743.dtsi in
+> your board as there are no SoC differences.
 
-Although, it seems reasonable to tack such renaming patches onto the tail end
-of this series. But whatever works.
+There are some mirror difference between stm32h743 and stm32h750:
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Number of A/D Converters (typ):  stm32h743(none),   stm32h750(3)
+Crypto:      stm32h743(none),    stm32h750(HASH-AES, DES/TDES, HMAC, MD5, SHA)
+
+you can find detail diff at link:
+https://www.st.com/en/microcontrollers-microprocessors/stm32h7-series.html#products
+(select stm32h743xi, stm32h750xb to compare)
+
+I have two options for this changes.
+- rename stm32h743.dtsi to stm32h7.dtsi, add crypto part to
+stm32h7.dtsi in the future.
+- make the reference like this (just like stm32f429 <-- stm32f469,
+stm32mp151 <-- stm32mp153 <-- stm32mp157 did)
+  stm32h743.dtsi <-- stm32h75x.dtsi (stm32h750, stm32h753, stm32h757
+all with HW crypto/hash inside)
+  we can add crypto to stm32h75x.dtsi, i will just rename
+stm32h750.dtsi to stm32h75x.dtsi
+
+I'd like to use option-2, which one do you like?
+
+thanks.
+regards.
+
+
+
+Dillon,
+>
+>
+> > diff --git a/arch/arm/boot/dts/stm32h750i-art-pi.dts b/arch/arm/boot/dts/stm32h750i-art-pi.dts
+> > new file mode 100644
+> > index 000000000000..9bb73bb61901
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/stm32h750i-art-pi.dts
+> > @@ -0,0 +1,229 @@
+> > +/*
+> > + * Copyright 2021 - Dillon Min <dillon.minfei@gmail.com>
+> > + *
+> > + * This file is dual-licensed: you can use it either under the terms
+> > + * of the GPL or the X11 license, at your option. Note that this dual
+> > + * licensing only applies to this file, and not this project as a
+> > + * whole.
+> > + *
+> > + *  a) This file is free software; you can redistribute it and/or
+> > + *     modify it under the terms of the GNU General Public License as
+> > + *     published by the Free Software Foundation; either version 2 of the
+> > + *     License, or (at your option) any later version.
+> > + *
+> > + *     This file is distributed in the hope that it will be useful,
+> > + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + *     GNU General Public License for more details.
+> > + *
+> > + * Or, alternatively,
+> > + *
+> > + *  b) Permission is hereby granted, free of charge, to any person
+> > + *     obtaining a copy of this software and associated documentation
+> > + *     files (the "Software"), to deal in the Software without
+> > + *     restriction, including without limitation the rights to use,
+> > + *     copy, modify, merge, publish, distribute, sublicense, and/or
+> > + *     sell copies of the Software, and to permit persons to whom the
+> > + *     Software is furnished to do so, subject to the following
+> > + *     conditions:
+> > + *
+> > + *     The above copyright notice and this permission notice shall be
+> > + *     included in all copies or substantial portions of the Software.
+> > + *
+> > + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> > + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> > + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> > + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> > + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> > + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> > + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> > + *     OTHER DEALINGS IN THE SOFTWARE.
+> > + *
+> > + * For art-pi board resources, you can refer to link:
+> > + *   https://art-pi.gitee.io/website/
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "stm32h750.dtsi"
+> > +#include "stm32h7-pinctrl.dtsi"
+> > +#include <dt-bindings/interrupt-controller/irq.h>
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +
+> > +/ {
+> > +     model = "RT-Thread STM32H750i-ART-PI board";
+> > +     compatible = "st,stm32h750i-art-pi", "st,stm32h750";
+> > +
+> > +     chosen {
+> > +             bootargs = "root=/dev/ram";
+> > +             stdout-path = "serial0:2000000n8";
+> > +     };
+> > +
+> > +     memory@c0000000 {
+> > +             device_type = "memory";
+> > +             reg = <0xc0000000 0x2000000>;
+> > +     };
+> > +
+> > +     reserved-memory {
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             ranges;
+> > +
+> > +             linux,cma {
+> > +                     compatible = "shared-dma-pool";
+> > +                     no-map;
+> > +                     size = <0x100000>;
+> > +                     linux,dma-default;
+> > +             };
+> > +     };
+> > +
+> > +     aliases {
+> > +             serial0 = &uart4;
+> > +             serial1 = &usart3;
+> > +     };
+> > +
+> > +     leds {
+> > +             compatible = "gpio-leds";
+> > +             led-red {
+> > +                     gpios = <&gpioi 8 0>;
+> > +             };
+> > +             led-green {
+> > +                     gpios = <&gpioc 15 0>;
+> > +                     linux,default-trigger = "heartbeat";
+> > +             };
+> > +     };
+> > +
+> > +     v3v3: regulator-v3v3 {
+> > +             compatible = "regulator-fixed";
+> > +             regulator-name = "v3v3";
+> > +             regulator-min-microvolt = <3300000>;
+> > +             regulator-max-microvolt = <3300000>;
+> > +             regulator-always-on;
+> > +     };
+> > +
+> > +     wlan_pwr: regulator-wlan {
+> > +             compatible = "regulator-fixed";
+> > +
+> > +             regulator-name = "wl-reg";
+> > +             regulator-min-microvolt = <3300000>;
+> > +             regulator-max-microvolt = <3300000>;
+> > +
+> > +             gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+> > +             enable-active-high;
+> > +     };
+> > +};
+> > +
+> > +&clk_hse {
+> > +     clock-frequency = <25000000>;
+> > +};
+> > +
+> > +&dma1 {
+> > +     status = "okay";
+> > +};
+> > +
+> > +&dma2 {
+> > +     status = "okay";
+> > +};
+> > +
+> > +&mac {
+> > +     status = "disabled";
+> > +     pinctrl-0       = <&ethernet_rmii>;
+> > +     pinctrl-names   = "default";
+> > +     phy-mode        = "rmii";
+> > +     phy-handle      = <&phy0>;
+> > +
+> > +     mdio0 {
+> > +             #address-cells = <1>;
+> > +             #size-cells = <0>;
+> > +             compatible = "snps,dwmac-mdio";
+> > +             phy0: ethernet-phy@0 {
+> > +                     reg = <0>;
+> > +             };
+> > +     };
+> > +};
+> > +
+> > +&sdmmc1 {
+> > +     pinctrl-names = "default", "opendrain", "sleep";
+> > +     pinctrl-0 = <&sdmmc1_b4_pins_a>;
+> > +     pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
+> > +     pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+> > +     broken-cd;
+> > +     st,neg-edge;
+> > +     bus-width = <4>;
+> > +     vmmc-supply = <&v3v3>;
+> > +     status = "okay";
+> > +};
+> > +
+> > +&sdmmc2 {
+> > +     pinctrl-names = "default", "opendrain", "sleep";
+> > +     pinctrl-0 = <&sdmmc2_b4_pins_a>;
+> > +     pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
+> > +     pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
+> > +     broken-cd;
+> > +     non-removable;
+> > +     st,neg-edge;
+> > +     bus-width = <4>;
+> > +     vmmc-supply = <&wlan_pwr>;
+> > +     status = "okay";
+> > +
+> > +     #address-cells = <1>;
+> > +     #size-cells = <0>;
+> > +     brcmf: bcrmf@1 {
+> > +             reg = <1>;
+> > +             compatible = "brcm,bcm4329-fmac";
+> > +     };
+> > +};
+> > +
+> > +&spi1 {
+> > +     status = "okay";
+> > +     pinctrl-0 = <&spi1_pins>;
+> > +     pinctrl-names = "default";
+> > +     cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
+> > +     dmas = <&dmamux1 37 0x400 0x05>,
+> > +            <&dmamux1 38 0x400 0x05>;
+> > +     dma-names = "rx", "tx";
+> > +
+> > +     flash@0 {
+> > +             #address-cells = <1>;
+> > +             #size-cells = <1>;
+> > +             compatible = "winbond,w25q128", "jedec,spi-nor";
+> > +             reg = <0>;
+> > +             spi-max-frequency = <80000000>;
+> > +
+> > +             partition@0 {
+> > +                     label = "root filesystem";
+> > +                     reg = <0 0x1000000>;
+> > +             };
+> > +     };
+> > +};
+> > +
+> > +&usart2 {
+> > +     pinctrl-0 = <&usart2_pins>;
+> > +     pinctrl-names = "default";
+> > +     status = "disabled";
+> > +};
+> > +
+> > +&usart3 {
+> > +     pinctrl-names = "default";
+> > +     pinctrl-0 = <&usart3_pins>;
+> > +     dmas = <&dmamux1 45 0x400 0x05>,
+> > +            <&dmamux1 46 0x400 0x05>;
+> > +     dma-names = "rx", "tx";
+> > +     st,hw-flow-ctrl;
+> > +     status = "okay";
+> > +
+> > +     bluetooth {
+> > +             compatible = "brcm,bcm43438-bt";
+> > +             host-wakeup-gpios = <&gpioc 0 GPIO_ACTIVE_HIGH>;
+> > +             device-wakeup-gpios = <&gpioi 10 GPIO_ACTIVE_HIGH>;
+> > +             shutdown-gpios = <&gpioi 11 GPIO_ACTIVE_HIGH>;
+> > +             max-speed = <115200>;
+> > +     };
+> > +};
+> > +
+> > +&uart4 {
+> > +     pinctrl-0 = <&uart4_pins>;
+> > +     pinctrl-names = "default";
+> > +     status = "okay";
+> > +};
+> > +
+> > +
+> >
