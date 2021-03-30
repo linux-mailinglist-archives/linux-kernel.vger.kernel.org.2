@@ -2,139 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D589934E74E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB70634E760
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbhC3MQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbhC3MPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:15:33 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFC0C061574;
-        Tue, 30 Mar 2021 05:15:33 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id p12so6937684pgj.10;
-        Tue, 30 Mar 2021 05:15:33 -0700 (PDT)
+        id S231858AbhC3MSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:18:40 -0400
+Received: from mail-mw2nam10on2087.outbound.protection.outlook.com ([40.107.94.87]:55904
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232037AbhC3MSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:18:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a0dATeuIsEDaKw4kpOsa6QTCwR/mSxDUPPL2PfCBhZi8hcQB5lm2BBr3crpE6tNVpB7pEzLVGbx2ejoug7evO+dQVP8dUJ677q+aDVC9yTO3dDQ/rL2yO9ZTgE5JoRgILa1h77GpVMd8wNkyU53EnPhowxfC2/UmKfr4Rp3tGUQ44Xl5mFciS3MI2x17L+wrsPp/ez+V8acZwPnOa6ClOx6IqoJOowookeluT0BJfumBr+r5rN6QFeNfmRTHJBiT7mY2kG/y0zFYtFwyENsgE3nOz7dZ9W22/7p1y5cP3RqNXrDt+6c9B5VybjFAy8vRw+fRAWswkhIh2BDsbheasQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fK6DGXFvVtcUqFQ3U3o2te1UGJ5WCx728f/0asfrwKg=;
+ b=L31b5g5hgY3CFvjJYvEKDGmfKmWFLpxMOaiRejlUGaJinYHWMhXDXYB3yRFE0R7qSk2uyrEU29AoW7HLQfX1l9x+/o4CIqZL2aVm8JfLbv6wLx52SMVzGb8n5cA99HJoMCe99m3QsH0Ax3nm0sGO2Zj2g+L+28THH9hsoBvjLgR2On7OXLoNzRhsXddqP7VAfCqHw1msEVkrPkFRxXcgrpE6XDOjxerx+gIvpegYJSPxD5lngVQxRQaj8jJkFX2H7bR3Fd4uI0iofeSkvhHEg+43EeCa2ppGlXzYHEr2CXTEdnLLIzTgNerNBhs001lhVWj4bX/wMj737ZvGqyKEMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VQL2oYFkG5vd+itMq4+E4VOAEnKIdQPKP6y6SbyqzVU=;
-        b=TYBQIVu8VRUdehT+Bv32TVbEb1GzNKohXeDDCWikLat3CPfvcJjENxP3cMSoG9umxY
-         5bfqf4/jHihULOio899alfoClGf+3rvm16+5SPIaz3WPfbX/nTSZ21Us9DDT1v1SV8x/
-         s0cYXSfno8zyT4Q3D615EAoJRohr57ciLJ6EUV40kqpaPIAkNu/trNtGz5n4t61nvTzk
-         45g5+7uy4haJkBYypZuKq5lRfA60uwPXexOOb0sdK7v9nvpPg87bBGIt9DRM7O4hqyeW
-         1QfaHdUSDGDHeKNa9i8wKZTKzwVCycdayeDMPv9NTlTqZtb/CqoWW4KYHTzhp6Tr+XX7
-         I4HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VQL2oYFkG5vd+itMq4+E4VOAEnKIdQPKP6y6SbyqzVU=;
-        b=jsg0NpE5V8oAUDzpfJdsTphcTLY+DIzJzUSdS5KRsU4xrfNYqj6fWUSL9IGiVIIzFR
-         SFpdDG3KH3k6aZYB6xIGKqSpsSP0FDnWYTBAqlyG7HmT/ZqOM1tQzpXh9eqf9GsG66Pg
-         StnhyVlATLx305WAR/rGhzpy1TaNLHwNEx8CVpPw4AXOhqudXmJTuLPin47cT1rHMwS/
-         LRBl6pwX3cZc9r8OQOx7KKQAPaVV7LcaBiCK2EjMCD1kvnTKgEhLOX9wc4HE+LdLZUb3
-         JSgy8qEKs6Q6Y8BXsabUDuQaovck9hZRTeCtcGzARCFG401f6WbJUvrsOLNa+MygGpwj
-         mO5Q==
-X-Gm-Message-State: AOAM531XzHU6PjNsQKlozfGad2CEM3N26jSHsLPnpTBOOAX0sI26yJU5
-        TZRg1nAdXqg3MezFS0pZBSkqcllcfewVS6NhEmbXWQxms0CNmg==
-X-Google-Smtp-Source: ABdhPJz3dEMFP32aKfZjn59VWZyAyepiuQxSv9MTs4A3gDqQvVakpNjf5jW7q3Nnphy1cpFB1PW+fke5XcyG41FdhdU=
-X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
- n15-20020a62e50f0000b02902148e4aae46mr30125371pff.73.1617106532719; Tue, 30
- Mar 2021 05:15:32 -0700 (PDT)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fK6DGXFvVtcUqFQ3U3o2te1UGJ5WCx728f/0asfrwKg=;
+ b=IbqdME1PIIkBPe/5oB3bn4eUPr28uEbWRBt+ykzmhWXRqFaOIlLKWsr/iv9OUbi59a8UFCDFDwN5/7AkHZ2pCyo/ac/q6Uc4GY6sRAUeMNPuxmNAsrDOBXnAqr6AQaxb1jMSLZ8qFcfUoWGCQLR7Ho8UbLkaPqC8WC7nOpbvmPg=
+Authentication-Results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR1101MB2341.namprd11.prod.outlook.com (2603:10b6:903:b1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 30 Mar
+ 2021 12:18:21 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0%5]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 12:18:21 +0000
+From:   quanyang.wang@windriver.com
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [V2] [PATCH] clk: zynqmp: pll: add set_pll_mode to check condition in zynqmp_pll_enable
+Date:   Tue, 30 Mar 2021 20:17:01 +0800
+Message-Id: <20210330121701.3258948-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HKAPR03CA0034.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::21) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-References: <20210329174928.18816-1-henning.schild@siemens.com>
- <20210329174928.18816-3-henning.schild@siemens.com> <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
- <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 15:15:16 +0300
-Message-ID: <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HKAPR03CA0034.apcprd03.prod.outlook.com (2603:1096:203:c9::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Tue, 30 Mar 2021 12:18:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 32a4b574-00bd-4335-8abb-08d8f375e854
+X-MS-TrafficTypeDiagnostic: CY4PR1101MB2341:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1101MB2341417D69724A730ED04494F07D9@CY4PR1101MB2341.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:345;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lvCrkxDIDObkArh0PO51eY+mVVK34hjJRoAbHIOHT94ARk6JXlV/DV/zws3zA79/TGRK8Oz6GqSovgF7ev1s2U1+xIRuIXz7E5ijxd17zRsXKpfw/LTLSq2Wia3zWPHBIWbzMuwO3uDT8StXWzCaVmqomYJlbh6nHGVzwZQmvpTv4F3PIAu4B+wFWjdfpREzLugNDWdSrs+zWHEe3zduTMu0NB7tcDhGmqC77YO9L6imm/9Brjj3PRKesSUXQz7EAA3wpl/DOC6lTS/VQjurlXmY0zuZTYL8dc9OKf9t2VFKhBg/rLL6zm6yYdTHYsGgurLHTkPI7ikDGirGMJ4QazbgZp7p7mSb+5u49OF9Y8EM+GSeoX0q0Ha22ITBL/oBrJf+kLB76I4NEImUkv/AcK13tQmMQjALnOAf/OFdpo1++lnXcmEzYGdIK0/+Ymg7Qm5/1K07BGvn2MJ/QWlAPRbsFLjaW6SF/OHVSaEST0ya5oIjhVT1dGcuk8pJNu1lGvvBw+ePLG+x2FCcBKVKJNdWumQ65EP5XStNOfxnCWFGBqweO31JJma1RWj3RJom6bXmJAHC8fVJbBcU2r8WEKM72hOStqVwVmbxAkGcnJrNtY7HS4mJtlAcyVnF8q3bYMNSKYAnxuq7u56TBdUU6lG0HrKTITdPtxpVRXGZzHM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(346002)(136003)(376002)(396003)(2906002)(186003)(26005)(16526019)(1076003)(36756003)(66946007)(4326008)(66476007)(8676002)(956004)(6486002)(38100700001)(52116002)(8936002)(478600001)(6512007)(6506007)(86362001)(5660300002)(6666004)(2616005)(54906003)(316002)(83380400001)(110136005)(66556008)(7416002)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lzxe3/LTV86xvk2/0WlrUaYaoHJNfEQrEiyE98+RjdnLM/DJYZboxVugNpKz?=
+ =?us-ascii?Q?KLZA6qoQ6wXLVAIm6wmu24s4XaSnzfm8EWlfAhJn6/0zk3E9kgR1Oag72/aK?=
+ =?us-ascii?Q?YiGp3HXovlAmLs9su0WkPyChJiNKw53+itTxfaYoMbIqcsjfKSNQZPTbSn23?=
+ =?us-ascii?Q?AqL7aZ7kyuMK871Kj+UEZtyGZt1KWq9EdxC/d8XfdZmpVJVeN57Po1P+lm7i?=
+ =?us-ascii?Q?I1d0t1wTgDqCz+8d3YlE4eeDwAEGXFZ6lw9SP1Lgj+hY5g6CPeyLftuWqHZC?=
+ =?us-ascii?Q?VWSNyowgdVahDgKdOkWN/tUVrhPDh27Xb/sXa5fxfA6NmIW8dw9At25hzRe5?=
+ =?us-ascii?Q?x2abHnVISQvP/TmExCir4H4twkdiX/M3ljQRaIXX/iz9AKftX/zaNaOOckdo?=
+ =?us-ascii?Q?hHVShP5CcZIWnn+M/6WFNg/osP32ARIDUM5sXudA1Ywl11WWc7Cf7UmgJLqQ?=
+ =?us-ascii?Q?41JYy+U8r1ebXC1zmOmQtt8FFepImrf3cOGrVLpUs1x5G9QcLiE92U7OmYfD?=
+ =?us-ascii?Q?I1VbbmOonsBC5w7xSVbA4mGY/gbshgPr7Jvd6yJKfAi6mn6haYX1Vo6AUK6b?=
+ =?us-ascii?Q?YdnquxWlLjYkGAMN3eNxOo72mnHGdCaFuKqofkYRlwzeRXGpl1jvGb0p3MIf?=
+ =?us-ascii?Q?1+Mj9ieil2s4ZtFdMJtmhNufUOv6s3e3huJcIRNS6wFhsvsb4wTKCNy+Zmzh?=
+ =?us-ascii?Q?zd7HrS71Hl9C9GdgVUV1+c0sMlTFVMQmao/l8C/VEVQq4sy4eIK7XMotJ+sp?=
+ =?us-ascii?Q?kIgaQH0wqWVqoJiGRl/MEEgSYliVRjAtL9YOwmkVYH7+d3Bn16Tn7yL6TekT?=
+ =?us-ascii?Q?ZamncQAWyAMsd2g1tUiZeMwKzniRqEtC7lYl6yyRXfRPyXGFA/748nrnbwB7?=
+ =?us-ascii?Q?nXx6MPxFp7DNvf1/iTipUt+Dv9dg5mILHJbbhnmyu49ZQElnlAzFemuWccoU?=
+ =?us-ascii?Q?ktsYtaVpzu2/l87y/mK9pwkA10oDVwftovLdMoXbiLQnz0/GnjeCXqF6xbR+?=
+ =?us-ascii?Q?4+CQP/EDUPQUR4Bl69AxZN3dBv/iL92uR+Rx3qLEh9ESGhblSQCccPAbxuTE?=
+ =?us-ascii?Q?pciqz0P2ZqrBniQwjFt0HjgxqLPJeQysQGheKwZKXL5RJFaDfRh8amBKUvOe?=
+ =?us-ascii?Q?LiRaXxU0Q4TKyOTci1goFmfOi+04igFMKNqOPuErhg2nklDBvleU7Yl34XTG?=
+ =?us-ascii?Q?3mKxv9Fp1sbBSE6ywgZLf076VK+jfVhyv6HejYTnIuYFGu+hQRyKmLOTy3bP?=
+ =?us-ascii?Q?Xp9B0IoHvBSBtVwXE+G0Kd72Xs7UNPJIyBuWuOHuqI3x3zlDL829Hlq2Tyl2?=
+ =?us-ascii?Q?lq3YqusY9tdkeSXO9AHIO9t/?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32a4b574-00bd-4335-8abb-08d8f375e854
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 12:18:21.2740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZYqtE8FRGFDknmjlWFaMJQ7q6VkRkCLc9JS/Go7Z/7dnh6urpnyFMee6TuHim7kGMIjaqYYxAYJbdQTMs4Ii1XHQ2nc7pmktU4dZUZ9Oy3o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
-<henning.schild@siemens.com> wrote:
-> Am Tue, 30 Mar 2021 14:04:35 +0300
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > <henning.schild@siemens.com> wrote:
-> > >
-> > > This driver adds initial support for several devices from Siemens.
-> > > It is based on a platform driver introduced in an earlier commit.
-> >
-> > ...
-> >
-> > > +#define SIMATIC_IPC_LED_PORT_BASE      0x404E
-> >
-> > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > > +       {1 << 15, "green:" LED_FUNCTION_STATUS "-1" },
-> > > +       {1 << 7,  "yellow:" LED_FUNCTION_STATUS "-1" },
-> > > +       {1 << 14, "red:" LED_FUNCTION_STATUS "-2" },
-> > > +       {1 << 6,  "yellow:" LED_FUNCTION_STATUS "-2" },
-> > > +       {1 << 13, "red:" LED_FUNCTION_STATUS "-3" },
-> > > +       {1 << 5,  "yellow:" LED_FUNCTION_STATUS "-3" },
-> > > +       { }
-> > > +};
-> >
-> > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > +       { }
-> > > +};
-> >
-> > It seems to me like poking GPIO controller registers directly. This
-> > is not good. The question still remains: Can we simply register a
-> > GPIO (pin control) driver and use an LED GPIO driver with an
-> > additional board file that instantiates it?
->
-> I wrote about that in reply to the cover letter. My view is still that
-> it would be an abstraction with only one user, just causing work and
-> likely not ending up as generic as it might eventually have to be.
->
-> The region is reserved, not sure what the problem with the "poking" is.
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
+If there is a IOCTL_SET_PLL_FRAC_MODE request sent to ATF ever,
+we shouldn't skip invoking PM_CLOCK_ENABLE fn even though this
+pll has been enabled. In ATF implementation, it will only assign
+the mode to the variable (struct pm_pll *)pll->mode when handling
+IOCTL_SET_PLL_FRAC_MODE call. Invoking PM_CLOCK_ENABLE can force
+ATF send request to PWU to set the pll mode to PLL's register.
 
-> Maybe i do not understand all the benefits of such a split at this
-> point in time. At the moment i only see work with hardly any benefit,
-> not just work for me but also for maintainers. I sure do not mean to be
-> ignorant. Maybe you go into details and convince me or we wait for other
-> peoples opinions on how to proceed, maybe there is a second user that i
-> am not aware of?
-> Until i am convinced otherwise i will try to argue that a
-> single-user-abstraction is needless work/code, and should be done only
-> when actually needed.
+There is a scenario that happens in enabling VPLL_INT(clk_id:96):
+1) VPLL_INT has been enabled during booting.
+2) A driver calls clk_set_rate and according to the rate, the VPLL_INT
+   should be set to FRAC mode. Then zynqmp_pll_set_mode is called
+   to pass IOCTL_SET_PLL_FRAC_MODE to ATF. Note that at this point
+   ATF just stores the mode to a variable.
+3) This driver calls clk_prepare_enable and zynqmp_pll_enable is
+   called to try to enable VPLL_INT pll. Because of 1), the function
+   zynqmp_pll_enable just returns without doing anything after checking
+   that this pll has been enabled.
 
-I have just read your messages (there is a cover letter and additional
-email which was sent lately).
+In the scenario above, the pll mode of VPLL_INT will never be set
+successfully. So adding set_pll_mode to check condition to fix it.
 
-I would like to know what the CPU model number on that board is. Than
-we can continue to see what possibilities we have here.
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+V2:
+ - add Tested-by tag, thanks Laurent.
+ - fix typos in commit message and multiline code comments
+---
+ drivers/clk/zynqmp/pll.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
+index 92f449ed38e5..fa89ee722a6d 100644
+--- a/drivers/clk/zynqmp/pll.c
++++ b/drivers/clk/zynqmp/pll.c
+@@ -14,10 +14,12 @@
+  * struct zynqmp_pll - PLL clock
+  * @hw:		Handle between common and hardware-specific interfaces
+  * @clk_id:	PLL clock ID
++ * @set_pll_mode:	Whether an IOCTL_SET_PLL_FRAC_MODE request be sent to ATF
+  */
+ struct zynqmp_pll {
+ 	struct clk_hw hw;
+ 	u32 clk_id;
++	bool set_pll_mode;
+ };
+ 
+ #define to_zynqmp_pll(_hw)	container_of(_hw, struct zynqmp_pll, hw)
+@@ -81,6 +83,8 @@ static inline void zynqmp_pll_set_mode(struct clk_hw *hw, bool on)
+ 	if (ret)
+ 		pr_warn_once("%s() PLL set frac mode failed for %s, ret = %d\n",
+ 			     __func__, clk_name, ret);
++	else
++		clk->set_pll_mode = true;
+ }
+ 
+ /**
+@@ -240,9 +244,15 @@ static int zynqmp_pll_enable(struct clk_hw *hw)
+ 	u32 clk_id = clk->clk_id;
+ 	int ret;
+ 
+-	if (zynqmp_pll_is_enabled(hw))
++	/*
++	 * Don't skip enabling clock if there is an IOCTL_SET_PLL_FRAC_MODE request
++	 * that has been sent to ATF.
++	 */
++	if (zynqmp_pll_is_enabled(hw) && (!clk->set_pll_mode))
+ 		return 0;
+ 
++	clk->set_pll_mode = false;
++
+ 	ret = zynqmp_pm_clock_enable(clk_id);
+ 	if (ret)
+ 		pr_warn_once("%s() clock enable failed for %s, ret = %d\n",
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
