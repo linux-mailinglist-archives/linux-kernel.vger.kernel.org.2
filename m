@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBF734EBFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153D934EBFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhC3PSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:18:51 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:38653 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhC3PSX (ORCPT
+        id S232215AbhC3PTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232184AbhC3PTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:18:23 -0400
-Received: by mail-ot1-f49.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so15912641otk.5;
-        Tue, 30 Mar 2021 08:18:23 -0700 (PDT)
+        Tue, 30 Mar 2021 11:19:15 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6C9C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:19:15 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so1189702wma.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hCfGCExGZ032atZREFMuWQJ4hKJ6Pjl2rDpU87CxNjI=;
+        b=d0tnXFEBbBdt3KAHMvZjgIVuPuUhTN5DpIRb16zr9Wk5NxGjXgpPfg14g44/A2DAeX
+         0xH1xn8QdIWzGlu8Ghy6X5ovM6ayJD5ysiyMKXYOPHyLblqh1+i75rYM6w9+edrv+0ei
+         jWP8gNuHMEB6Atp2OLtz6mkl0vofFczh8/mP/H5WPiMNg728lZoiDJKH8usabY4Sth8u
+         7kgCg0JF0ybA0kgZvQ7ww95DwgsEXt+/XMHHgB2ANxE1zNrC8sssFlvNJvmCt6BS5+ed
+         70/r6Eyxo7jcpJglZI/KMfaaLFBQyepOVVmKurGUAFmC82jpSGDcy9EbVcRinorFzDET
+         0Apw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PlZUNayRrmgaKgXVXtAL3PXk2F0oj39eu7kyoW5Ud/k=;
-        b=r6rHI1zJ+r6SgfV0txfGJp9CJp6K2NSmEJBQox0vOMTSK6rlH2W/46SyUYpw1kzhso
-         vwDWYCaNkIE7H62J8Pivg6buIKM8GlkftOKWE2zQMfmVBesyPHT4/mxflKW1r52iQL7Z
-         xwqOk2hRFMKmTXnKNMnssJt0pun1Me21cpDzftsVlXraIigB3eX9R/FYewGZwvVtsQPt
-         C/184K8rYICDpSwYHAgKRy1lEQqS0VljNCte7mnNo191QAgomweNwy9yzcLXPAI/BEP3
-         XC1EhX9VSJR3xjqef2L7ImxzNVUhMVX/vbjW+2fPa3WcUADZhfSieWfsboi/DRoNORNo
-         yqKg==
-X-Gm-Message-State: AOAM533b2DTKP8p8A/rx/iF1VxdkSCa/wkynEzuL0mIm88LdyfiM/YWa
-        rIfsZvCPV6DhYs8mm14Etw==
-X-Google-Smtp-Source: ABdhPJw8DvKlnSSfnVW/ySoAGDIq18w0ithxPe/i7w68DXnVExjOMD2+U4R56xLkHWo3rb9lqExncQ==
-X-Received: by 2002:a05:6830:1bf5:: with SMTP id k21mr28157540otb.129.1617117503382;
-        Tue, 30 Mar 2021 08:18:23 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.136])
-        by smtp.gmail.com with ESMTPSA id h59sm5190376otb.29.2021.03.30.08.18.20
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hCfGCExGZ032atZREFMuWQJ4hKJ6Pjl2rDpU87CxNjI=;
+        b=tHCleO2LIh+l3iRmoFLqaA8YrmtV2wjfXinfHoAVHnmsCmtdtXX7s93nucnvN5xLAr
+         GvQVXT3KXoE5q1qsOUA01XzupnekRRNTUOKoFV/a4l5kp1vcJwarfDNBCpRmLZRR+C8H
+         nglD6Ag38bvxoO2AEXb1+4KCtB9mSwkWijlRevbv7p9IUxfVrQBXzDSp2YKOMlw2kt22
+         bxaYGgYa6C1CC+DQH1I5vXMjFoET5iz2OdCebmrlg+MsKyb/wGGzZsAy5wHVJRwCe7RK
+         ehw+s9mLRn3XioKDm/of0s6Mi0yy22Vc3c3EXZTyFtQEh06BX8N9uqXbrsrpWzkjfmqw
+         InhQ==
+X-Gm-Message-State: AOAM531C3vSvck2w84eGSSdyUbC9LipJkiFdUiuq9AcD0nkKVAI+22J5
+        GhL/OKS0r7bStjAQrZvEfGqfDEDiwRTkSw==
+X-Google-Smtp-Source: ABdhPJyYgKkqcDOow6JJ62djXw3iIsO/j+KvsfseIB+9/rwYszatw8KxsjLaOFanM+fL7Q88Q/+L0w==
+X-Received: by 2002:a1c:5f54:: with SMTP id t81mr4641496wmb.84.1617117553836;
+        Tue, 30 Mar 2021 08:19:13 -0700 (PDT)
+Received: from dell ([91.110.221.217])
+        by smtp.gmail.com with ESMTPSA id n1sm41945988wro.36.2021.03.30.08.19.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 08:18:21 -0700 (PDT)
-Received: (nullmailer pid 326348 invoked by uid 1000);
-        Tue, 30 Mar 2021 15:18:18 -0000
-Date:   Tue, 30 Mar 2021 10:18:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org, robh+dt@kernel.org,
-        linux@roeck-us.net, jdelvare@suse.com
-Subject: Re: [PATCH v2 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
-Message-ID: <20210330151818.GA321862@robh.at.kernel.org>
-References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
- <20210329015206.17437-3-chris.packham@alliedtelesis.co.nz>
+        Tue, 30 Mar 2021 08:19:13 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 16:19:11 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        nouveau@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [RESEND 00/19] Rid GPU from W=1 warnings
+Message-ID: <20210330151911.GL2916463@dell>
+References: <20210319082428.3294591-1-lee.jones@linaro.org>
+ <20210324103611.GJ2916463@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210329015206.17437-3-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210324103611.GJ2916463@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 14:52:02 +1300, Chris Packham wrote:
-> Convert i2c-mpc to YAML.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> 
-> Notes:
->     Changes in v2:
->     - Rework compatible validation
->     - Remove irrelevant i2ccontrol from example
-> 
->  .../devicetree/bindings/i2c/i2c-mpc.txt       | 62 -------------
->  .../devicetree/bindings/i2c/i2c-mpc.yaml      | 91 +++++++++++++++++++
->  2 files changed, 91 insertions(+), 62 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.txt
->  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> 
+On Wed, 24 Mar 2021, Lee Jones wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Daniel,
+> 
+> > MIME-Version: 1.0
+> > Content-Type: text/plain; charset=UTF-8
+> > Content-Transfer-Encoding: 8bit
+> > 
+> > This is a resend of the remaining patches.
+> > 
+> > All of these patches have been sent before.
+> 
+> Are you still keen to 'hoover these up'?
+> 
+> Just leave the one that requires work and take the rest perhaps?
+
+How would you like me to proceed with this?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
