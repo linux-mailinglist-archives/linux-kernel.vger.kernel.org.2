@@ -2,78 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A775D34E802
+	by mail.lfdr.de (Postfix) with ESMTP id F3A2C34E803
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhC3Myb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhC3Mx5 (ORCPT
+        id S232089AbhC3Mye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:54:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41120 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhC3MyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:53:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71E4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:53:56 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617108833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HovNnXOvf87YphAb7PaCuGrmHgtJNPK/NE/NvcrUXDU=;
-        b=KIZj2rlKNd53apa/ZP5xacUIkard0Mkfe8WaQI5bypzZwD22IE+HJFk+IFJuo3tWQYJKs/
-        J0LUSQt3mnFgYaAbN3Ul2bNY8yeaQlSk8xe9vfv3a+LKCWco2A+fYpXtdxXhl4GpcCphMd
-        5bZa3sswCBAroane+VlWZ7be2LQ/IBlN9P8G2iJJ6MkHTXT85r5IrLMyn0TlfBrRYCyHfM
-        6wx5ldkpdsSiii3nL2uUwUAJ61IC5tUX5HYYOscJX3jBvGeENAREg+ebhF0G10122QstRL
-        b/Mw4ro9NUxYZFsft1fnlbd9sVrLGv1GNBehCXelH+i0Br1cch1E7OL0VPLVHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617108833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HovNnXOvf87YphAb7PaCuGrmHgtJNPK/NE/NvcrUXDU=;
-        b=KI4JzJmghy3mC3rZcwjsM5uhEENWs1XYpnmxo5/WYG0B/8+MRLbWe3xfxdXmpu5WhloLzH
-        oGXQ+58XhvYUmTDg==
-To:     Petr Mladek <pmladek@suse.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] kernel/printk.c: Fixed mundane typos
-In-Reply-To: <YGMevQvltf/LnJP1@alley>
-References: <20210328043932.8310-1-unixbhaskar@gmail.com> <YGMevQvltf/LnJP1@alley>
-Date:   Tue, 30 Mar 2021 14:53:52 +0200
-Message-ID: <87mtuk4xb3.fsf@jogness.linutronix.de>
+        Tue, 30 Mar 2021 08:54:10 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 8DE8A1F44E69
+Subject: Re: [PATCH 1/3] fs/dcache: Add d_clear_dir_neg_dentries()
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        kernel@collabora.com, Daniel Rosenberg <drosen@google.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        krisman@collabora.com
+References: <20210328144356.12866-1-andrealmeid@collabora.com>
+ <20210328144356.12866-2-andrealmeid@collabora.com>
+ <YGKDfo1vZfFXwG/v@gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <8ea3ba8e-2699-8786-5ca3-33ee3c70961b@collabora.com>
+Date:   Tue, 30 Mar 2021 09:54:01 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YGKDfo1vZfFXwG/v@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30, Petr Mladek <pmladek@suse.com> wrote:
-> On Sun 2021-03-28 10:09:32, Bhaskar Chowdhury wrote:
->> 
->> s/sempahore/semaphore/
->> s/exacly/exactly/
->> s/unregistred/unregistered/
->> s/interation/iteration/
->> 
->> 
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
->
-> John,
->
-> it conflicts with the patchset removing printk safe buffers[1].
-> Would you prefer to queue this into the patchset?
-> Or should I push it into printk/linux.git, printk-rework and you would
-> base v2 on top of it?
+Hi Eric,
 
-Go ahead and push it to printk-rework. I'll base v2 on top of it.
+Às 22:48 de 29/03/21, Eric Biggers escreveu:
+> On Sun, Mar 28, 2021 at 11:43:54AM -0300, André Almeida wrote:
+>> For directories with negative dentries that are becoming case-insensitive
+>> dirs, we need to remove all those negative dentries, otherwise they will
+>> become dangling dentries. During the creation of a new file, if a d_hash
+>> collision happens and the names match in a case-insensitive way, the name
+>> of the file will be the name defined at the negative dentry, that may be
+>> different from the specified by the user. To prevent this from
+>> happening, we need to remove all dentries in a directory. Given that the
+>> directory must be empty before we call this function we are sure that
+>> all dentries there will be negative.
+>>
+>> Create a function to remove all negative dentries from a directory, to
+>> be used as explained above by filesystems that support case-insensitive
+>> lookups.
+>>
+>> Signed-off-by: André Almeida <andrealmeid@collabora.com>
+>> ---
+>>   fs/dcache.c            | 27 +++++++++++++++++++++++++++
+>>   include/linux/dcache.h |  1 +
+>>   2 files changed, 28 insertions(+)
+>>
+>> diff --git a/fs/dcache.c b/fs/dcache.c
+>> index 7d24ff7eb206..fafb3016d6fd 100644
+>> --- a/fs/dcache.c
+>> +++ b/fs/dcache.c
+>> @@ -1723,6 +1723,33 @@ void d_invalidate(struct dentry *dentry)
+>>   }
+>>   EXPORT_SYMBOL(d_invalidate);
+>>   
+>> +/**
+>> + * d_clear_dir_neg_dentries - Remove negative dentries in an inode
+>> + * @dir: Directory to clear negative dentries
+>> + *
+>> + * For directories with negative dentries that are becoming case-insensitive
+>> + * dirs, we need to remove all those negative dentries, otherwise they will
+>> + * become dangling dentries. During the creation of a new file, if a d_hash
+>> + * collision happens and the names match in a case-insensitive, the name of
+>> + * the file will be the name defined at the negative dentry, that can be
+>> + * different from the specified by the user. To prevent this from happening, we
+>> + * need to remove all dentries in a directory. Given that the directory must be
+>> + * empty before we call this function we are sure that all dentries there will
+>> + * be negative.
+>> + */
+>> +void d_clear_dir_neg_dentries(struct inode *dir)
+>> +{
+>> +	struct dentry *alias, *dentry;
+>> +
+>> +	hlist_for_each_entry(alias, &dir->i_dentry, d_u.d_alias) {
+>> +		list_for_each_entry(dentry, &alias->d_subdirs, d_child) {
+>> +			d_drop(dentry);
+>> +			dput(dentry);
+>> +		}
+>> +	}
+>> +}
+>> +EXPORT_SYMBOL(d_clear_dir_neg_dentries);
+> 
+> As Al already pointed out, this doesn't work as intended, for a number of
+> different reasons.
+> 
+> Did you consider just using shrink_dcache_parent()?  That already does what you
+> are trying to do here, I think.
 
-Thanks.
+When I wrote this patch, I didn't know it, but after Al Viro comments I 
+get back to the code and found it, and it seems do do what I intend 
+indeed, and my test is happy as well.
 
-John
+> 
+> The harder part (which I don't think you've considered) is how to ensure that
+> all negative dentries really get invalidated even if there are lookups of them
+> happening concurrently.  Concurrent lookups can take temporary references to the
+> negative dentries, preventing them from being invalidated.
+> 
+
+I didn't consider that, thanks for the feedback. So this means that 
+those lookups will increase the refcount of the dentry, and it will only 
+get really invalidated when refcount reaches 0? Or do would I need to 
+call d_invalidate() again, until I succeed?
+
+> - Eric
+> 
