@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6213034E60C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7CE34E60E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhC3LFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhC3LEw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:04:52 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67913C061574;
-        Tue, 30 Mar 2021 04:04:52 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id l76so11460058pga.6;
-        Tue, 30 Mar 2021 04:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MLBeoULdugcCnUPIfdbDs+A8k9dizPk/RhGEW8FH4qI=;
-        b=ZY2H8JjGdzPSlsPLMpktphd4H2J8L1GzUZCBlFCNBZFB3VLKxP0qGA4K1+sm+g/cN9
-         DyubWtZkl2gL+3UolES1JuoIYhCg7XUUpx5adse/HTlBfoiRDXFWit/MUqQ2ZNrtVx1Z
-         Tk4M7YxnU4SFpxLtn/7jH3IVurPR1ZrkdmPQH9hxEFEAZBR21NGyxiwIOoPkIG6ubroS
-         /ihOldBcfihI2sHottMzTg1v3O+0y2zDY6F62uCII8E5n9012CIIddIXy0x3vLZ5RuvN
-         n4WGK0+3QZtg8nfZ8HXmy110rUjX1gjnF+IFM1TOJqRZjr4y7xUetDMRMiH0EPHXR+7J
-         QOqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MLBeoULdugcCnUPIfdbDs+A8k9dizPk/RhGEW8FH4qI=;
-        b=kz/efTzcNnoaRaSJOybbwcPSZtO7dlN3YF+iYT2Z5MhGb0K1yCILPlaFCYTPTpTQbh
-         tUPNP4eX1/TmDimzeoTuJS/DtFAp+ESyP2kABDLToNzpkHUQy5UY8LjIoHqK5GnoTzoq
-         T/PK2gRNsTJoHA1VIUcZeOJWr17y7RBoPvQl7AJzsbEbBNkisEdo1XtC3gN0tC6to1l1
-         lFJjVej6yLbWGgm/VdgHnmD7MUd4wMKjxUD3q8dbAQAARwS3On8HgIQ/HXPXcloue2Ak
-         jTKn2RXC+CaTgYwaFSFpfZdceEGc9ktBk8htiZhvFSONmvd8jSESAq7C+PWP3w4HR5cZ
-         0IYA==
-X-Gm-Message-State: AOAM531G7g3BCnPuzn3Ax3fkdcbTCRylbQffG9TiYrrCmj0WdYWEwzRW
-        6nKNDip26W3AOjqUfdkXgq6Y+vaxYB/ZyEUxeNs=
-X-Google-Smtp-Source: ABdhPJysXjGeGbF/h718mXjMe4mIMc76BZcAiyOPzxbUiQ4n9tbSaDufcNFAgmiNwEupsnCIP6iHkEq7tgLlEoog8ZE=
-X-Received: by 2002:a63:cb44:: with SMTP id m4mr5367809pgi.4.1617102291959;
- Tue, 30 Mar 2021 04:04:51 -0700 (PDT)
+        id S231767AbhC3LGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:06:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:57604 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231812AbhC3LFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:05:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DD921FB;
+        Tue, 30 Mar 2021 04:05:52 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 817723F694;
+        Tue, 30 Mar 2021 04:05:51 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 12:05:46 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        tglx@linutronix.de, lecopzer@gmail.com, yj.chiang@mediatek.com,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+Subject: Re: [PATCH] irqchip/gic-v3: Fix IPRIORITYR can't perform byte
+ operations in GIC-600
+Message-ID: <20210330110546.GA24881@lpieralisi>
+References: <20210330100619.24747-1-lecopzer.chen@mediatek.com>
+ <87o8f1q6c6.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210329174928.18816-1-henning.schild@siemens.com> <20210329174928.18816-3-henning.schild@siemens.com>
-In-Reply-To: <20210329174928.18816-3-henning.schild@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 14:04:35 +0300
-Message-ID: <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8f1q6c6.wl-maz@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-<henning.schild@siemens.com> wrote:
->
-> This driver adds initial support for several devices from Siemens. It is
-> based on a platform driver introduced in an earlier commit.
+On Tue, Mar 30, 2021 at 11:33:13AM +0100, Marc Zyngier wrote:
+> [+Lorenzo, +Julien on an actual email address]
+> 
+> On Tue, 30 Mar 2021 11:06:19 +0100,
+> Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+> > 
+> > When pseudo-NMI enabled, register_nmi() set priority of specific IRQ
+> > by byte ops, and this doesn't work in GIC-600.
+> > 
+> > We have asked ARM Support [1]:
+> > > Please refer to following description in
+> > > "2.1.2 Distributor ACE-Lite slave interface" of GIC-600 TRM for
+> > > the GIC600 ACE-lite slave interface supported sizes:
+> > >   "The GIC-600 only accepts single beat accesses of the sizes for
+> > >   each register that are shown in the Programmers model,
+> > >   see Chapter 4 Programmer's model on page 4-102.
+> > >   All other accesses are rejected and given either an
+> > >   OKAY or SLVERR response that is based on the GICT_ERR0CTLR.UE bit.".
+> > 
+> > Thus the register needs to be written by double word operation and
+> > the step will be: read 32bit, set byte and write it back.
+> > 
+> > [1] https://services.arm.com/support/s/case/5003t00001L4Pba
+> 
+> You do realise that this link:
+> 
+> - is unusable for most people as it is behind a registration interface
+> - discloses confidential information to other people
+> 
+> I strongly suggest you stop posting such links.
+> 
+> > 
+> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > ---
+> >  drivers/irqchip/irq-gic-v3.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> > index eb0ee356a629..cfc5a6ad30dc 100644
+> > --- a/drivers/irqchip/irq-gic-v3.c
+> > +++ b/drivers/irqchip/irq-gic-v3.c
+> > @@ -440,10 +440,21 @@ static void gic_irq_set_prio(struct irq_data *d, u8 prio)
+> >  {
+> >  	void __iomem *base = gic_dist_base(d);
+> >  	u32 offset, index;
+> > +	u32 val, prio_offset_mask, prio_offset_shift;
+> >  
+> >  	offset = convert_offset_index(d, GICD_IPRIORITYR, &index);
+> >  
+> > -	writeb_relaxed(prio, base + offset + index);
+> > +	/*
+> > +	 * GIC-600 memory mapping register doesn't support byte opteration,
+> > +	 * thus read 32-bits from register, set bytes and wtire back to it.
+> > +	 */
+> > +	prio_offset_shift = (index & 0x3) * 8;
+> > +	prio_offset_mask = GENMASK(prio_offset_shift + 7, prio_offset_shift);
+> > +	index &= ~0x3;
+> > +	val = readl_relaxed(base + offset + index);
+> > +	val &= ~prio_offset_mask;
+> > +	val |= prio << prio_offset_shift;
+> > +	writel_relaxed(val, base + offset + index);
+> >  }
+> >  
+> >  static u32 gic_get_ppi_index(struct irq_data *d)
+> 
+> From the architecture spec:
+> 
+> <quote>
+> 11.1.3 GIC memory-mapped register access
+> 
+> In any system, access to the following registers must be supported:
+> 
+> [...]
+> * Byte accesses to:
+> 	- GICD_IPRIORITYR<n>.
+> 	- GICD_ITARGETSR<n>.
+> 	- GICD_SPENDSGIR<n>.
+> 	- GICD_CPENDSGIR<n>.
+> 	- GICR_IPRIORITYR<n>.
+> </quote>
+> 
+> So if GIC600 doesn't follow this architectural requirement, this is a
+> HW erratum, and I want an actual description of the HW issue together
+> with an erratum number.
+> 
+> Lorenzo, can you please investigate on your side?
 
-...
+Sure - I will look into it and report back.
 
-> +#define SIMATIC_IPC_LED_PORT_BASE      0x404E
-
-> +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> +       {1 << 15, "green:" LED_FUNCTION_STATUS "-1" },
-> +       {1 << 7,  "yellow:" LED_FUNCTION_STATUS "-1" },
-> +       {1 << 14, "red:" LED_FUNCTION_STATUS "-2" },
-> +       {1 << 6,  "yellow:" LED_FUNCTION_STATUS "-2" },
-> +       {1 << 13, "red:" LED_FUNCTION_STATUS "-3" },
-> +       {1 << 5,  "yellow:" LED_FUNCTION_STATUS "-3" },
-> +       { }
-> +};
-
-> +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> +       { }
-> +};
-
-It seems to me like poking GPIO controller registers directly. This is not good.
-The question still remains: Can we simply register a GPIO (pin
-control) driver and use an LED GPIO driver with an additional board
-file that instantiates it?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Lorenzo
