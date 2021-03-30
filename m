@@ -2,123 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F17F34DE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CE034DE43
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhC3CX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:23:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14189 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhC3CX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:23:26 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8Y8C1lbrzmc49;
-        Tue, 30 Mar 2021 10:20:43 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
- 10:23:16 +0800
-Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by
- __packed
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
- <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com>
- <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
-CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
-Date:   Tue, 30 Mar 2021 10:23:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S230214AbhC3CXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhC3CXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:23:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB8F61989;
+        Tue, 30 Mar 2021 02:23:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617070999;
+        bh=Cohu/2cxN+tEHFYMMs+yo/4uX8ZIfwZVuwWi3CEctjg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=IfCM2kN5SV3cPW8NVJ54qVpbJoOyswsjKsIhS7lPXUc/n5ey7mz7MoB5QnZMX1d3l
+         eAU0p3Dq9SfLssaHRwZVqkXGLdZs7JfFjJZP3XNXhnABbg+RHIjEdmkg8QrUyPhhN9
+         /KcBV1qFle2j1AhKLonOTkWjyPE6T2yZPpGHLSYWo9EBkxoQgwL7oOdAUzFts5G9Oi
+         dSSJ3KWYIblRtXZT/phK+Th9tN1NisJQGHQB6dbdvE61M8DDrobM+2Oi9p7o9c1Maz
+         un9w602H3kZZPHH2iRWL5Ygy59QJOEfZhWTNPjhfxxEhbWNJuBEdB+cJdskId9YbIJ
+         LH9ubvQ2ab6yA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210318172627.12173-2-dariobin@libero.it>
+References: <20210318172627.12173-1-dariobin@libero.it> <20210318172627.12173-2-dariobin@libero.it>
+Subject: Re: [PATCH v2 1/4] clk: ti: fix typo in routine description
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org
+To:     Dario Binacchi <dariobin@libero.it>, linux-kernel@vger.kernel.org
+Date:   Mon, 29 Mar 2021 19:23:17 -0700
+Message-ID: <161707099768.3012082.16934007943600501374@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Quoting Dario Binacchi (2021-03-18 10:26:23)
+> Replace _omap3_noncore_dpll_program with omap3_noncore_dpll_program.
+>=20
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> ---
 
-On 2021/3/29 18:09, David Laight wrote:
-> From: Xiaofei Tan
->> Sent: 27 March 2021 07:46
->>
->> Replace __attribute__((packed)) by __packed following the
->> advice of checkpatch.pl.
->>
->> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
->> ---
->>  drivers/acpi/acpi_fpdt.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
->> index a89a806..690a88a 100644
->> --- a/drivers/acpi/acpi_fpdt.c
->> +++ b/drivers/acpi/acpi_fpdt.c
->> @@ -53,7 +53,7 @@ struct resume_performance_record {
->>  	u32 resume_count;
->>  	u64 resume_prev;
->>  	u64 resume_avg;
->> -} __attribute__((packed));
->> +} __packed;
->>
->>  struct boot_performance_record {
->>  	struct fpdt_record_header header;
->> @@ -63,13 +63,13 @@ struct boot_performance_record {
->>  	u64 bootloader_launch;
->>  	u64 exitbootservice_start;
->>  	u64 exitbootservice_end;
->> -} __attribute__((packed));
->> +} __packed;
->>
->>  struct suspend_performance_record {
->>  	struct fpdt_record_header header;
->>  	u64 suspend_start;
->>  	u64 suspend_end;
->> -} __attribute__((packed));
->> +} __packed;
->
-> My standard question about 'packed' is whether it is actually needed.
-> It should only be used if the structures might be misaligned in memory.
-> If the only problem is that a 64bit item needs to be 32bit aligned
-> then a suitable type should be used for those specific fields.
->
-> Those all look very dubious - the standard header isn't packed
-> so everything must eb assumed to be at least 32bit aligned.
->
-> There are also other sub-structures that contain 64bit values.
-> These don't contain padding - but that requires 64bit alignement.
->
-> The only problematic structure is the last one - which would have
-> a 32bit pad after the header.
-> Is this even right given than there are explicit alignment pads
-> in some of the other structures.
->
-> If 64bit alignment isn't guaranteed then a '64bit aligned to 32bit'
-> type should be used for the u64 fields.
->
-
-Yes, some of them has been aligned already, then nothing changed when 
-add this "packed ". Maybe the purpose of the original author is for 
-extension, and can tell others that this struct need be packed.
-
-> 	David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
->
->
-> .
->
-
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
