@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5F934EAC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C371034EAD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhC3Ooo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:44:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52450 "EHLO mail.kernel.org"
+        id S232143AbhC3OpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:45:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36728 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232065AbhC3Oo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:44:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61658619C2;
-        Tue, 30 Mar 2021 14:44:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617115466;
-        bh=N1/Oupz12E3cK5fXtPXFfWQXRED0XsUmO3OmdJXvtYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i5dJnbrL1I5okQCaZEYln/fI7irWrqBLJ8I1anwFRv5rsdbNhcZzsMyFXqPTeMubz
-         74U03L9dLaGjQ7CECzx3225b2VF87EYFzGajlaQYldwmrqP8vFtrBsHP5HxtPPWdSy
-         bP/tZcdI6WUks7ACnFnLPwhKzpmSp2sSEaNONNeKHnZiLfFQgj17GX/qIeWwmflmEJ
-         o+b5IEC1s5WjDDuVuAgHq0Vlwjkv7f1auoSc2rgQK4zUNOOon+n/72N9rzxpVpJMZO
-         IQDJN9ZjYJtW2dAxaxDSV0zj++VZJNlCiUPWIO48IgtCOneIYc9EA2UDw92oWIQL3S
-         ZYSLT8f0QMHew==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lRFbs-0002Qi-22; Tue, 30 Mar 2021 16:44:48 +0200
-Date:   Tue, 30 Mar 2021 16:44:48 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] USB: serial: xr: use a table for device-specific
- settings
-Message-ID: <YGM5YMjusx214+pl@hovoldconsulting.com>
-References: <cover.1616571453.git.mchehab+huawei@kernel.org>
- <7b6ff07fbf88783950ab7155e3d4529731383c6b.1616571453.git.mchehab+huawei@kernel.org>
+        id S231803AbhC3Oo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:44:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617115495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=llTp9KMmNhLgpFrt/A/4gk0SgpNaUf1ZpYpNvho6oEk=;
+        b=iKbol1UC2cYC03I2rvUtoSu92j1pz2tv1L6/9iiw7cxLhRzh90EQvV5vkd5t59I4w79b5z
+        //6Ea77uYBp+fXZGWtXmCr26hrFxJVsTlICwAL4byi52zB9FKuPbHVzN1zqRgW2z3Slp3o
+        4tg7hayC693qItZd+Jni902Xu3F2GZQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EC1C6B315;
+        Tue, 30 Mar 2021 14:44:54 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 16:44:52 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Ning Sun <ning.sun@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        tboot-devel@lists.sourceforge.net,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
+Message-ID: <YGM5ZJlK1V7ex9xR@blackbook>
+References: <20210322160253.4032422-1-arnd@kernel.org>
+ <20210322160253.4032422-7-arnd@kernel.org>
+ <YGLkPjSBdgpriC0E@blackbook>
+ <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9pRQkLwCQMovNrXD"
 Content-Disposition: inline
-In-Reply-To: <7b6ff07fbf88783950ab7155e3d4529731383c6b.1616571453.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:41:06AM +0100, Mauro Carvalho Chehab wrote:
-> The same driver is used by a wide range of MaxLinear devices.
-> 
-> Other models are close enough to use the same driver, but they
-> use a different register set.
-> 
-> So, instead of having the registers hardcoded at the driver,
-> use a table. This will allow further patches to add support for
-> other devices.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/usb/serial/xr_serial.c | 151 ++++++++++++++++++++++++---------
->  1 file changed, 113 insertions(+), 38 deletions(-)
- 
->  static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
->  {
-> +	struct xr_port_private *port_priv;
-> +
->  	/* Don't bind to control interface */
->  	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
->  		return -ENODEV;
->  
-> +	port_priv = kzalloc(sizeof(*port_priv), GFP_KERNEL);
-> +	if (!port_priv)
-> +		return -ENOMEM;
 
-For historical reasons, you cannot allocate memory in probe() directly
-(unless using devres) or this can leak on later probe errors.
+--9pRQkLwCQMovNrXD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Instead interface-wide allocations are done in attach() and released in
-release(), while port-specific allocations are done in port_probe() and
-released in port_remove().
+On Tue, Mar 30, 2021 at 11:00:36AM +0200, Arnd Bergmann <arnd@kernel.org> wrote:
+> Would it be possible to enclose most or all of kernel/cgroup/cgroup.c
+> in an #ifdef CGROUP_SUBSYS_COUNT block?
+Even without any controllers, there can still be named hierarchies (v1)
+or the default hierarchy (v2) (for instance) for process tracking
+purposes. So only parts of kernel/cgroup/cgroup.c could be ifdef'd.
 
-Johan
+Beware that CGROUP_SUBSYS_COUNT is not known at preprocessing stage (you
+could have a macro alternative though).
+
+> I didn't try that myself, but this might be a way to guarantee that
+> there cannot be any callers (it would cause a link error).
+Such a guarantee would be nicer, I agree. I tried a bit but anandoned it
+when I saw macros proliferate (which I found less readable than your
+current variant). But YMMV.
+
+Michal
+
+--9pRQkLwCQMovNrXD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBjOV4ACgkQia1+riC5
+qSgZNQ/9FFBZs5QQqEUHmbWyF9O2R2bGF8WCBz56zh+F2OZf+/GK7z4OGhkKUlEa
+1lPOUoibt4aZZhWD30RcfB3i3qJ8VqY3wqwnS6W9uN9+sU22sgsx/elCqiua3EnM
+4tGDRcLBfSuktgPo1T0oNvGGbFnFJ0kUenLZ6mVkWlSTzx8kp/B8h4S5LkYmRIov
+fVmHURht22FPiA8wwlUb9LAp8ONF+68t6BtMWNmZbqmJ17qHSnLyQQUiHIHytASt
+xgaQCJU8/nrtv2xPfp66aCQLO12b6OxpjPoRxo1hj9IP5HZPukzNDat/VaWyh0iE
+t9GO85K0PVqcuvJpymes0yRT6RvEwlqEna0T+qbh+qih4S3+xRm/Js5IV5m8KfIc
+wWUve4llNT1jq6zzgn28FkXe9coH7ybpwBaWeAdwEM3Wl9GvXimKwIQqg+3ZDnm4
+CbDVh6scYVu3kFYHVy6ld5+fG2GWEKvNL+9AVH+wsXUb6OXtyOtxD3FWyiVVYBkl
+Q4N0KWETd67BNb2NklxTkeC4hYusuHeFvxa9Ki6K6zbdxDxVwdcTWpWFVkTDs45S
+sEVkmsPU9pLu5vm5o9kBCmr6q1lW6yzudcxBvcvcHXGQnkfcmDCo+C3OEwKzKUeh
+8+BhDV9zMpKBpJfuPiI8UNIt8sI7YeTpjdk14YjWYQTgZCHc7WU=
+=iFNx
+-----END PGP SIGNATURE-----
+
+--9pRQkLwCQMovNrXD--
