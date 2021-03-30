@@ -2,121 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134C434E5DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E699E34E5EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhC3K4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhC3Kzg (ORCPT
+        id S231856AbhC3K5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:57:40 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:20040 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhC3K5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:55:36 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DE3C061574;
-        Tue, 30 Mar 2021 03:55:36 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id f3so2237020pgv.0;
-        Tue, 30 Mar 2021 03:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=O0YD9xf83jFGgqYS1T0c6p91ad9dPXXOQ3N3xh5E1ak=;
-        b=mbFTEhvz+vHmmp4K3JDx1Xi7lifD4tZiIorBU2FpgGZ5OZbQpyefDCeQK8Z/Tx+3IF
-         b74t2vH7xeJfLvKTuiL/1BzcRdjLXxmmFzt2bDny1IUQLsRcv6hH0FCioICT67TeKrCf
-         /Wn6hzB5a7REUMntEko6Zn+K7rD+0Mcvm8PyWlDwS4pYxzjmlTqKnDSMLhibBFLI+S6v
-         vd/TUzCzMn0oYbBVj3mKTxp8Ic9+4lI0ah0qGN+FShMK+81XUtVskHU+TZ7NPzAxDKXv
-         2ZUv3eyWV/fyZwVV/lMqdfYyjnAtvhbQEFHleW0I3res5Zuv5rN1/b1BrqStJCnPLBGZ
-         z9OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O0YD9xf83jFGgqYS1T0c6p91ad9dPXXOQ3N3xh5E1ak=;
-        b=K52m5R3hdsYB78OZNzP8mZuxCpb4Uw55yZTmrNWHIRwPRmo1gO0jHBj9HmM7aqqHra
-         IfsXI2Vy2TpYoj1ukTpk0IGvNYIbXLVGJIkA04YbGDp/TcLkw9y+1BKjapn0Q9q7DTNQ
-         dUtYcXpD7BRDmT/c9CoDkmYz+wt4Tjkd7lnxSnZ4ofTTAx6nplWMxKxMq3lZsT6TznWY
-         bqzJuabIKyZVo06IbImh4so2/WvHrR8p63atEWJhme70d6hJqxLPpbwH21wKCylc4j6u
-         /6wpF4kYOycrPZ0oY4TfwTJt5d/7ZmgcqcgtDDp+2/9Er5nH7eWqA/oyGEkJpsSGw0Gv
-         FGpw==
-X-Gm-Message-State: AOAM532+oP7Q638FUj4CyGO2ZMejTcKc0TYknwvF/mYys7FfMbvqMWbV
-        q9FoR4iK6dcR0w/ij0B4II+tJr2P5BWUKyDtflg=
-X-Google-Smtp-Source: ABdhPJyYVOtJwGeqioL7Y0RCNhwClzK47F9hp/08LJ4eUXuTrXRump61CTb6aqcu3ECVHG26ujOfB3ylvoqBLHqEwvc=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr29793664pfc.40.1617101735610; Tue, 30
- Mar 2021 03:55:35 -0700 (PDT)
+        Tue, 30 Mar 2021 06:57:23 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id C5E9D9804A1;
+        Tue, 30 Mar 2021 18:57:19 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] arch: s390: Remove duplicate struct ccw1 declaration
+Date:   Tue, 30 Mar 2021 18:56:25 +0800
+Message-Id: <20210330105638.2742356-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210330103225.3949-1-noltari@gmail.com>
-In-Reply-To: <20210330103225.3949-1-noltari@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:55:18 +0300
-Message-ID: <CAHp75VdCLuS-0YL6+_vz5GqJC9N0AOiuYazkB1VNvbsPD78NAA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: bcm: bcm6362: fix warning
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTBhIQ0wfHk0eH01MVkpNSkxKS0pDT0tKQ05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MT46PSo4Cz8KMDc6TR8cOR48
+        LkgKCxJVSlVKTUpMSktKQ09LT01IVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSE5CNwY+
+X-HM-Tid: 0a7882c7def3d992kuwsc5e9d9804a1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 1:33 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
->
-> The current implementation of bcm6362_set_gpio() produces the following
-> warning on x86_64:
-> drivers/pinctrl/bcm/pinctrl-bcm6362.c: In function 'bcm6362_set_gpio':
-> drivers/pinctrl/bcm/pinctrl-bcm6362.c:503:8: warning: cast from pointer t=
-o integer of different size [-Wpointer-to-int-cast]
->   503 |        (uint32_t) desc->drv_data, 0);
->       |        ^
->
-> Modify the code to make it similar to bcm63268_set_gpio() in order to fix
-> the warning.
+struct ccw1 is declared twice. One has been declared
+at 21st line. Remove the duplicate.
 
-Seems good to me, thanks!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ arch/s390/include/asm/ccwdev.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> Fixes: 705791e23ecd ("pinctrl: add a pincontrol driver for BCM6362")
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> ---
+diff --git a/arch/s390/include/asm/ccwdev.h b/arch/s390/include/asm/ccwdev.h
+index 778247bb1d61..d4e90f2ba77e 100644
+--- a/arch/s390/include/asm/ccwdev.h
++++ b/arch/s390/include/asm/ccwdev.h
+@@ -152,9 +152,6 @@ extern struct ccw_device *get_ccwdev_by_busid(struct ccw_driver *cdrv,
+  * when new devices for its type pop up */
+ extern int  ccw_driver_register   (struct ccw_driver *driver);
+ extern void ccw_driver_unregister (struct ccw_driver *driver);
+-
+-struct ccw1;
+-
+ extern int ccw_device_set_options_mask(struct ccw_device *, unsigned long);
+ extern int ccw_device_set_options(struct ccw_device *, unsigned long);
+ extern void ccw_device_clear_options(struct ccw_device *, unsigned long);
+-- 
+2.25.1
 
-Missed changelog here.
-
->  drivers/pinctrl/bcm/pinctrl-bcm6362.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6362.c b/drivers/pinctrl/bcm/=
-pinctrl-bcm6362.c
-> index eb7ec80353e9..40ef495b6301 100644
-> --- a/drivers/pinctrl/bcm/pinctrl-bcm6362.c
-> +++ b/drivers/pinctrl/bcm/pinctrl-bcm6362.c
-> @@ -496,11 +496,11 @@ static int bcm6362_pinctrl_get_groups(struct pinctr=
-l_dev *pctldev,
->  static void bcm6362_set_gpio(struct bcm63xx_pinctrl *pc, unsigned pin)
->  {
->         const struct pinctrl_pin_desc *desc =3D &bcm6362_pins[pin];
-> +       unsigned int basemode =3D (uintptr_t)desc->drv_data;
->         unsigned int mask =3D bcm63xx_bank_pin(pin);
->
-> -       if (desc->drv_data)
-> -               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG,
-> -                                  (uint32_t) desc->drv_data, 0);
-> +       if (basemode)
-> +               regmap_update_bits(pc->regs, BCM6362_BASEMODE_REG, basemo=
-de, 0);
->
->         if (pin < BCM63XX_BANK_GPIOS) {
->                 /* base mode 0 =3D> gpio 1 =3D> mux function */
-> --
-> 2.20.1
->
-
-
---=20
-With Best Regards,
-Andy Shevchenko
