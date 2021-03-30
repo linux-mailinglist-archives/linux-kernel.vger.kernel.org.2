@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7A434DE7B
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B834DE7C
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhC3C3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        id S231388AbhC3C3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhC3C31 (ORCPT
+        with ESMTP id S230089AbhC3C3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:29:27 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E31AC061762;
-        Mon, 29 Mar 2021 19:29:27 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso8670425pji.3;
-        Mon, 29 Mar 2021 19:29:27 -0700 (PDT)
+        Mon, 29 Mar 2021 22:29:31 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA885C061762;
+        Mon, 29 Mar 2021 19:29:31 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id l76so10644989pga.6;
+        Mon, 29 Mar 2021 19:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ZC7OsJDitwURS7yQv21Tqa62xwQC02uZmH02f7XnvdM=;
-        b=ZMDEApQI7isg6vY98cwN7EKN0hFbkKliHzcvx4tJLy9YSb1vFLx3oKDaruXdXkQI9p
-         EEMt0K+Q8jhqbXTkngijL08KxUzIYpPG9tISDqG2GbDicw8k8H43IrVBdAw70y4txkj3
-         1vn3SBNsOmAql2S78jNx7X6Kh21zHfw1CBALq+szWBs+JK0es3Wpr2r0PtVWmxHQZnnB
-         ZJKJUGxZxm/7uUK328q+bd8KZmzn2XbCId1weMgckVrputIVNCuexxgjUb2EnuzYFasz
-         lLKw3CtlQWTnJEfkfylj2bGs7f/mQtYVBLRSim+BTZJeLzq93ItcDnBIv4RgwslexYZY
-         5deQ==
+        bh=JoG99J7INRpYRP07ioU0aX0n1p4zIOqkYI0fl0yVkzY=;
+        b=oTZQcyFMGGMpCxxl3ssVEU7AGA7xOw4Lr6snuy237SRb5Wax+sp0e6pcJhCZ3mWTUZ
+         LD/3t7z7HZ6vRsPTmCZb3nQ+ONQV8+JnYyRcjOr3ed0WqVMaSrtj9V2wed6pmJe8X0IJ
+         zqXX12pThrfNGTId2hYIkARj+5jVdcC3Z0aM0ISUWVGJTuyJBQzvuoog58p40bVJmoFc
+         WeoCy8tvoj2qJXdW/4LxeFtGnFqEj0cAAis8rbii23OMbQBExT7TjxRArz+SUfJiPTBp
+         7wO9WlnBQQzHWYAknZKc7VOC5agDPpDAG3G5avM78xJs2ve2XlQWjW7MVdq2A3oTG8wO
+         zSRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ZC7OsJDitwURS7yQv21Tqa62xwQC02uZmH02f7XnvdM=;
-        b=Z6dHETH6psRyZE57O7nkeFHjM7etal0ojPqEYwqJE8eC5glGwUpzB4zb7pIH5fsuUK
-         uEaIQ/qM1Pc24PGCbxKQZE5OLYkxSsEtLnv+ypwAi1qZjehUABTn230c3wwJul6D7GOA
-         uhRm2uLyBpeYGbf3utI64wOxHemo3wGEC7VteD6H8+NM240sYCAI0/zRs+wLOwbxNpx/
-         GQfp16gISOr79WX8fj8g7JuwFWAzGJBvw7rYslSSlOR0JHN1VVLCGPd4VZ00mEo1FHl2
-         ObMr13JQizbT4aUuCcRYrLlWCPBU3wKVOcbZoFRCP2EFaFRqMhc55iFjuxbgN0SfB1In
-         fTMw==
-X-Gm-Message-State: AOAM5314WK1bqQYu4lQhQg7p63cHHQG4U3nBH9JxUGuQGhWSob6QEcCd
-        Qi3SDR0QhRBuyDnf21soapA=
-X-Google-Smtp-Source: ABdhPJwetibVZU5KRDLAzy+ulEXTyr3gBVWCsEo78h4LF3Gg2xL2QGuIbH7u0kMZgnT99MafHPx9+Q==
-X-Received: by 2002:a17:902:a610:b029:e6:5eda:c39e with SMTP id u16-20020a170902a610b02900e65edac39emr31678090plq.11.1617071367006;
-        Mon, 29 Mar 2021 19:29:27 -0700 (PDT)
+        bh=JoG99J7INRpYRP07ioU0aX0n1p4zIOqkYI0fl0yVkzY=;
+        b=UJXe9egV08sk2rh/EwTX3QCC7lb+h6Ql4OaTxXbkvWu6bW+BwwrVApMlHvD8T1azDu
+         +gF8ClNuZHwvVCiIWr7i4ncwQfmo5kE3SQZAwrrqlHn3AFtgXnqqyRl15HElqCTmnY3l
+         NrrJoKylj9PL9U1gzHZ1D0XpPlQrt4j65Kr4oUX0JJinExsrpSkAL9CRv+7j7EGlnycK
+         kDvXAFFo2DhGmNoTYUsvpOjU1QV3vk5fyKM/4k4Pmg6B4o5Bg7m59ISj5xSdQHA+vCAG
+         r2dVbm7oHZ3BIxKozGbE2G6ndtf3Lj2dhTloUon5GhPu1VgFEVykc95c9XpWkdaZGAzi
+         iuVQ==
+X-Gm-Message-State: AOAM530fuiMvc9Z6U2fj409iuuwk/xzZpckO0r12pFNkXkZ4BTPZbhGz
+        iwabukwbAbL7r5RbxAs+4qg=
+X-Google-Smtp-Source: ABdhPJwilL2jw4bU/1idwK9Bl1VKCj2/sWv62/R+U/1Az6XtxNbOdTM6Hj0A0OtDWHH/exXmniX2aA==
+X-Received: by 2002:aa7:93af:0:b029:1ef:1bb9:b1a1 with SMTP id x15-20020aa793af0000b02901ef1bb9b1a1mr28475386pff.49.1617071371305;
+        Mon, 29 Mar 2021 19:29:31 -0700 (PDT)
 Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id i13sm17681385pgi.3.2021.03.29.19.29.23
+        by smtp.gmail.com with ESMTPSA id i13sm17681385pgi.3.2021.03.29.19.29.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Mar 2021 19:29:26 -0700 (PDT)
+        Mon, 29 Mar 2021 19:29:31 -0700 (PDT)
 From:   dillon.minfei@gmail.com
 To:     robh@kernel.org, valentin.caron@foss.st.com,
         Alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
@@ -59,9 +59,9 @@ To:     robh@kernel.org, valentin.caron@foss.st.com,
         erwan.leray@st.com, linux-serial@vger.kernel.org, lkp@intel.com,
         patrice.chotard@foss.st.com
 Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v7 5/6] ARM: stm32: Add a new SOC - STM32H750
-Date:   Tue, 30 Mar 2021 10:28:57 +0800
-Message-Id: <1617071338-9436-6-git-send-email-dillon.minfei@gmail.com>
+Subject: [PATCH v7 6/6] dt-bindings: serial: stm32: Use 'type: object' instead of false for 'additionalProperties'
+Date:   Tue, 30 Mar 2021 10:28:58 +0800
+Message-Id: <1617071338-9436-7-git-send-email-dillon.minfei@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1617071338-9436-1-git-send-email-dillon.minfei@gmail.com>
 References: <1617071338-9436-1-git-send-email-dillon.minfei@gmail.com>
@@ -71,28 +71,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: dillon min <dillon.minfei@gmail.com>
 
-The STM32H750 is a Cortex-M7 MCU running at 480MHz
-and containing 128KBytes internal flash, 1MiB SRAM.
+To use additional properties 'bluetooth' on serial, need replace false with
+'type: object' for 'additionalProperties' to make it as a node, else will
+run into dtbs_check warnings.
 
+'arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
+'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
+
+Fixes: af1c2d81695b ("dt-bindings: serial: Convert STM32 UART to json-schema")
+Reported-by: kernel test robot <lkp@intel.com>
+Tested-by: Valentin Caron <valentin.caron@foss.st.com>
 Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/1616757302-7889-8-git-send-email-dillon.minfei@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-v7: no changes
+v7: no changes, was merged to tty-next by Greg Kroah-Hartman
 
- arch/arm/mach-stm32/board-dt.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-stm32/board-dt.c b/arch/arm/mach-stm32/board-dt.c
-index 011d57b488c2..a766310d8dca 100644
---- a/arch/arm/mach-stm32/board-dt.c
-+++ b/arch/arm/mach-stm32/board-dt.c
-@@ -17,6 +17,7 @@ static const char *const stm32_compat[] __initconst = {
- 	"st,stm32f746",
- 	"st,stm32f769",
- 	"st,stm32h743",
-+	"st,stm32h750",
- 	"st,stm32mp157",
- 	NULL
- };
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 8631678283f9..865be05083c3 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -80,7 +80,8 @@ required:
+   - interrupts
+   - clocks
+ 
+-additionalProperties: false
++additionalProperties:
++  type: object
+ 
+ examples:
+   - |
 -- 
 2.7.4
 
