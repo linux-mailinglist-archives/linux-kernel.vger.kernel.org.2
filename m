@@ -2,133 +2,560 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818B034E579
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542D934E57C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhC3Kag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231430AbhC3KaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:30:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F15E76195C;
-        Tue, 30 Mar 2021 10:30:17 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 11:30:15 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210330103013.GD18075@arm.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-3-steven.price@arm.com>
- <20210327152324.GA28167@arm.com>
- <20210328122131.GB17535@arm.com>
- <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
+        id S231814AbhC3KbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231861AbhC3KbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 06:31:04 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A943BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:31:03 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id f19so3053352vsl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l2XeZgoNPCyz+1UaZKOjsWyOvFhH7CD9uL1jupesoUs=;
+        b=vklL55BaXAxTdtD4O3pJcufg2zLx3OOkfQ/7QpQ+cZLw0sPcVfjeczrZXqQg6rlXti
+         mVGpo/japh2I/xI7ekA4KerzsUeRyt8Yp3kU/LWGSnSCT+DYH87E37DtIcAa4vOwu83D
+         dHEBjLzDYtW8WNRadZtbu2fWCcwWeIvJInH0yOc8RDzWUzclBJCbO+sZ8NdRC9KsXOSM
+         GMvpii7u9ozFcUKDUvil4EBb5CruCeMEX9iN3hTkSsZItijgE4+uPbBEfYPrh6lJn9Vp
+         cpl5rrHXNVaVllrqagGc84D6zlzCXPzVz2QqEb2MeLK9pw7EzzUECZokvLZTDBAX/lQU
+         Ouog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l2XeZgoNPCyz+1UaZKOjsWyOvFhH7CD9uL1jupesoUs=;
+        b=AlRCPtJxEH4NjueDlBZcF/cbxBoGXw2ltGKosfqLrKqF3BRfZGYCkY9bnE5Z1iXRQ8
+         qmNKnMc/x9b1BZnyQHQHCB3HnWO4GwSspJEZj53AMsvAZevz9OcY/Kjn/8WNAfG8hIDT
+         iHAHitO9pdvKkj8X9iI3vpkC8tmaZ7mX9WjJPppXD6RVfL5QQd/FupREf5DWBrYcepl6
+         ZD2I6BiTR5MPeDumG/+v20NmTKPdm8nyKkYHLm9smT7C+NMy4eXu1ZLmNo+F7VY0Q/tM
+         b5Jb1b9ueC6f/7OYXvup5uU1BrAZcMBEpB4m1yv4GbM6HR45ZV2SCSGEXeJy8uFP0jbM
+         p1sw==
+X-Gm-Message-State: AOAM5314OPbCKNCGKZ5wONcCepWnz3zgsxKUmYccAzi3RRkHCALH4pGC
+        G6r8pY0QmSB3HqMxdvC9X35mSy65Bg0wmbHxwtmtjw==
+X-Google-Smtp-Source: ABdhPJw7NIG2mdKytK/0N67ey77He8inV4moqRGDAp2XFZOVUUi6pDO+26axKEbMPMgZwQnnbeiuhjsvj7yBzZ7zAzY=
+X-Received: by 2002:a67:8c89:: with SMTP id o131mr17267984vsd.42.1617100262591;
+ Tue, 30 Mar 2021 03:31:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-6-brad@pensando.io>
+In-Reply-To: <20210329015938.20316-6-brad@pensando.io>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 30 Mar 2021 12:30:26 +0200
+Message-ID: <CAPDyKFpg1qJD0r54sBC3hCoFey_+gwAL1n2o-aGwnAzAan5p7w@mail.gmail.com>
+Subject: Re: [PATCH v2 05/13] mmc: sdhci-cadence: Add Pensando Elba SoC support
+To:     Brad Larson <brad@pensando.io>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 05:06:51PM +0100, Steven Price wrote:
-> On 28/03/2021 13:21, Catalin Marinas wrote:
-> > On Sat, Mar 27, 2021 at 03:23:24PM +0000, Catalin Marinas wrote:
-> > > On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
-> > > > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > > > index 77cb2d28f2a4..b31b7a821f90 100644
-> > > > --- a/arch/arm64/kvm/mmu.c
-> > > > +++ b/arch/arm64/kvm/mmu.c
-> > > > @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
-> > > >   	if (vma_pagesize == PAGE_SIZE && !force_pte)
-> > > >   		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
-> > > >   							   &pfn, &fault_ipa);
-> > > > +
-> > > > +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
-> > > > +		/*
-> > > > +		 * VM will be able to see the page's tags, so we must ensure
-> > > > +		 * they have been initialised. if PG_mte_tagged is set, tags
-> > > > +		 * have already been initialised.
-> > > > +		 */
-> > > > +		struct page *page = pfn_to_page(pfn);
-> > > > +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
-> > > > +
-> > > > +		for (i = 0; i < nr_pages; i++, page++) {
-> > > > +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> > > > +				mte_clear_page_tags(page_address(page));
-> > > > +		}
-> > > > +	}
-> > > 
-> > > This pfn_valid() check may be problematic. Following commit eeb0753ba27b
-> > > ("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
-> > > true for ZONE_DEVICE memory but such memory is allowed not to support
-> > > MTE.
-> > 
-> > Some more thinking, this should be safe as any ZONE_DEVICE would be
-> > mapped as untagged memory in the kernel linear map. It could be slightly
-> > inefficient if it unnecessarily tries to clear tags in ZONE_DEVICE,
-> > untagged memory. Another overhead is pfn_valid() which will likely end
-> > up calling memblock_is_map_memory().
-> > 
-> > However, the bigger issue is that Stage 2 cannot disable tagging for
-> > Stage 1 unless the memory is Non-cacheable or Device at S2. Is there a
-> > way to detect what gets mapped in the guest as Normal Cacheable memory
-> > and make sure it's only early memory or hotplug but no ZONE_DEVICE (or
-> > something else like on-chip memory)?  If we can't guarantee that all
-> > Cacheable memory given to a guest supports tags, we should disable the
-> > feature altogether.
-> 
-> In stage 2 I believe we only have two types of mapping - 'normal' or
-> DEVICE_nGnRE (see stage2_map_set_prot_attr()). Filtering out the latter is a
-> case of checking the 'device' variable, and makes sense to avoid the
-> overhead you describe.
-> 
-> This should also guarantee that all stage-2 cacheable memory supports tags,
-> as kvm_is_device_pfn() is simply !pfn_valid(), and pfn_valid() should only
-> be true for memory that Linux considers "normal".
++ Masahiro Yamada (main author of the driver)
 
-That's the problem. With Anshuman's commit I mentioned above,
-pfn_valid() returns true for ZONE_DEVICE mappings (e.g. persistent
-memory, not talking about some I/O mapping that requires Device_nGnRE).
-So kvm_is_device_pfn() is false for such memory and it may be mapped as
-Normal but it is not guaranteed to support tagging.
+On Mon, 29 Mar 2021 at 03:59, Brad Larson <brad@pensando.io> wrote:
+>
+> Add support for Pensando Elba SoC which explicitly controls
+> byte-lane enables on writes.  Refactor to allow platform
+> specific write ops.
+>
+> Signed-off-by: Brad Larson <brad@pensando.io>
+> ---
+>  drivers/mmc/host/Kconfig              |  15 +++
+>  drivers/mmc/host/Makefile             |   1 +
+>  drivers/mmc/host/sdhci-cadence-elba.c | 137 ++++++++++++++++++++++++++
 
-For user MTE, we get away with this as the MAP_ANONYMOUS requirement
-would filter it out while arch_add_memory() will ensure it's mapped as
-untagged in the linear map. See another recent fix for hotplugged
-memory: d15dfd31384b ("arm64: mte: Map hotplugged memory as Normal
-Tagged"). We needed to ensure that ZONE_DEVICE doesn't end up as tagged,
-only hoplugged memory. Both handled via arch_add_memory() in the arch
-code with ZONE_DEVICE starting at devm_memremap_pages().
+By looking at the amount of code changes that seem to be needed to
+support the Pensando Elba variant, I don't think it's necessary to
+split this into a separate file.
 
-> > > I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
-> > > even without virtualisation.
-> > 
-> > I haven't checked all the code paths but I don't think we can get a
-> > MAP_ANONYMOUS mapping of ZONE_DEVICE memory as we normally need a file
-> > descriptor.
-> 
-> I certainly hope this is the case - it's the weird corner cases of device
-> drivers that worry me. E.g. I know i915 has a "hidden" mmap behind an ioctl
-> (see i915_gem_mmap_ioctl(), although this case is fine - it's MAP_SHARED).
-> Mali's kbase did something similar in the past.
+Unless Yamada-san has a different opinion, I would rather just stick
+with using sdhci-cadence.c.
 
-I think this should be fine since it's not a MAP_ANONYMOUS (we do allow
-MAP_SHARED to be tagged).
+>  drivers/mmc/host/sdhci-cadence.c      |  81 ++++++++-------
+>  drivers/mmc/host/sdhci-cadence.h      |  68 +++++++++++++
+>  5 files changed, 260 insertions(+), 42 deletions(-)
+>  create mode 100644 drivers/mmc/host/sdhci-cadence-elba.c
+>  create mode 100644 drivers/mmc/host/sdhci-cadence.h
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index b236dfe2e879..65ea323c06f2 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -250,6 +250,21 @@ config MMC_SDHCI_CADENCE
+>
+>           If unsure, say N.
+>
+> +config MMC_SDHCI_CADENCE_ELBA
+> +       tristate "SDHCI support for the Pensando/Cadence SD/SDIO/eMMC controller"
+> +       depends on ARCH_PENSANDO_ELBA_SOC
+> +       depends on MMC_SDHCI
+> +       depends on OF
+> +       depends on MMC_SDHCI_CADENCE
+> +       depends on MMC_SDHCI_PLTFM
+> +       select MMC_SDHCI_IO_ACCESSORS
 
--- 
-Catalin
+According to the comment above - then you should probably just extend
+the conditions for when building MMC_SDHCI_CADENCE, rather than having
+to add a new Kconfig for "*_ELBA".
+
+> +       help
+> +         This selects the Pensando/Cadence SD/SDIO/eMMC controller.
+> +
+> +         If you have a controller with this interface, say Y or M here.
+> +
+> +         If unsure, say N.
+> +
+>  config MMC_SDHCI_CNS3XXX
+>         tristate "SDHCI support on the Cavium Networks CNS3xxx SoC"
+>         depends on ARCH_CNS3XXX || COMPILE_TEST
+> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> index 6df5c4774260..f2a6d50e64de 100644
+> --- a/drivers/mmc/host/Makefile
+> +++ b/drivers/mmc/host/Makefile
+> @@ -80,6 +80,7 @@ obj-$(CONFIG_MMC_REALTEK_USB) += rtsx_usb_sdmmc.o
+>
+>  obj-$(CONFIG_MMC_SDHCI_PLTFM)          += sdhci-pltfm.o
+>  obj-$(CONFIG_MMC_SDHCI_CADENCE)                += sdhci-cadence.o
+> +obj-$(CONFIG_MMC_SDHCI_CADENCE_ELBA)   += sdhci-cadence-elba.o
+>  obj-$(CONFIG_MMC_SDHCI_CNS3XXX)                += sdhci-cns3xxx.o
+>  obj-$(CONFIG_MMC_SDHCI_ESDHC_MCF)       += sdhci-esdhc-mcf.o
+>  obj-$(CONFIG_MMC_SDHCI_ESDHC_IMX)      += sdhci-esdhc-imx.o
+> diff --git a/drivers/mmc/host/sdhci-cadence-elba.c b/drivers/mmc/host/sdhci-cadence-elba.c
+> new file mode 100644
+> index 000000000000..ec23f43de407
+> --- /dev/null
+> +++ b/drivers/mmc/host/sdhci-cadence-elba.c
+> @@ -0,0 +1,137 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2020 Pensando Systems, Inc.
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/bits.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/module.h>
+> +#include <linux/mmc/host.h>
+> +#include <linux/mmc/mmc.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +
+> +#include "sdhci-pltfm.h"
+> +#include "sdhci-cadence.h"
+> +
+> +// delay regs address
+
+Please don't use "//" when adding comments, but instead "/* ... */".
+This applies to several more places of the patch.
+
+> +#define SDIO_REG_HRS4          0x10
+> +#define REG_DELAY_HS           0x00
+> +#define REG_DELAY_DEFAULT      0x01
+> +#define REG_DELAY_UHSI_SDR50   0x04
+> +#define REG_DELAY_UHSI_DDR50   0x05
+> +
+> +static void elba_write_l(struct sdhci_host *host, u32 val, int reg)
+> +{
+> +       struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&priv->wrlock, flags);
+> +       writel(0x78, priv->ctl_addr);
+> +       writel(val, host->ioaddr + reg);
+> +       spin_unlock_irqrestore(&priv->wrlock, flags);
+> +}
+> +
+> +static void elba_write_w(struct sdhci_host *host, u16 val, int reg)
+> +{
+> +       struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+> +       unsigned long flags;
+> +       u32 m = (reg & 0x3);
+> +       u32 msk = (0x3 << (m));
+> +
+> +       spin_lock_irqsave(&priv->wrlock, flags);
+> +       writel(msk << 3, priv->ctl_addr);
+> +       writew(val, host->ioaddr + reg);
+> +       spin_unlock_irqrestore(&priv->wrlock, flags);
+> +}
+> +
+> +static void elba_write_b(struct sdhci_host *host, u8 val, int reg)
+> +{
+> +       struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+> +       unsigned long flags;
+> +       u32 m = (reg & 0x3);
+> +       u32 msk = (0x1 << (m));
+> +
+> +       spin_lock_irqsave(&priv->wrlock, flags);
+> +       writel(msk << 3, priv->ctl_addr);
+> +       writeb(val, host->ioaddr + reg);
+> +       spin_unlock_irqrestore(&priv->wrlock, flags);
+> +}
+> +
+> +static void elba_priv_write_l(struct sdhci_cdns_priv *priv,
+> +               u32 val, void __iomem *reg)
+> +{
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&priv->wrlock, flags);
+> +       writel(0x78, priv->ctl_addr);
+> +       writel(val, reg);
+> +       spin_unlock_irqrestore(&priv->wrlock, flags);
+> +}
+> +
+> +static const struct sdhci_ops sdhci_elba_ops = {
+> +       .write_l = elba_write_l,
+> +       .write_w = elba_write_w,
+> +       .write_b = elba_write_b,
+> +       .set_clock = sdhci_set_clock,
+> +       .get_timeout_clock = sdhci_cdns_get_timeout_clock,
+> +       .set_bus_width = sdhci_set_bus_width,
+> +       .reset = sdhci_reset,
+> +       .set_uhs_signaling = sdhci_cdns_set_uhs_signaling,
+> +};
+> +
+> +static void sd4_set_dlyvr(struct sdhci_host *host,
+> +                         unsigned char addr, unsigned char data)
+
+Please, try to think of a better function name that's more
+descriptive. Moreover, please use a common prefix for functions that
+is used on elba.
+
+> +{
+> +       unsigned long dlyrv_reg;
+> +
+> +       dlyrv_reg = ((unsigned long)data << 8);
+> +       dlyrv_reg |= addr;
+> +
+> +       // set data and address
+> +       writel(dlyrv_reg, host->ioaddr + SDIO_REG_HRS4);
+> +       dlyrv_reg |= (1uL << 24uL);
+> +       // send write request
+> +       writel(dlyrv_reg, host->ioaddr + SDIO_REG_HRS4);
+> +       dlyrv_reg &= ~(1uL << 24);
+> +       // clear write request
+> +       writel(dlyrv_reg, host->ioaddr + SDIO_REG_HRS4);
+> +}
+> +
+> +static void phy_config(struct sdhci_host *host)
+
+Ditto.
+
+> +{
+> +       sd4_set_dlyvr(host, REG_DELAY_DEFAULT, 0x04);
+> +       sd4_set_dlyvr(host, REG_DELAY_HS, 0x04);
+> +       sd4_set_dlyvr(host, REG_DELAY_UHSI_SDR50, 0x06);
+> +       sd4_set_dlyvr(host, REG_DELAY_UHSI_DDR50, 0x16);
+> +}
+> +
+> +static int elba_drv_init(struct platform_device *pdev)
+> +{
+> +       struct sdhci_host *host = platform_get_drvdata(pdev);
+> +       struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+> +       struct resource *iomem;
+> +       void __iomem *ioaddr;
+> +
+> +       host->mmc->caps |= (MMC_CAP_1_8V_DDR | MMC_CAP_8_BIT_DATA);
+> +       iomem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +       if (!iomem)
+> +               return -ENOMEM;
+> +       ioaddr = devm_ioremap_resource(&pdev->dev, iomem);
+> +       if (IS_ERR(ioaddr))
+> +               return PTR_ERR(ioaddr);
+> +       priv->ctl_addr = ioaddr;
+> +       priv->priv_write_l = elba_priv_write_l;
+> +       spin_lock_init(&priv->wrlock);
+> +       writel(0x78, priv->ctl_addr);
+> +       phy_config(host);
+> +       return 0;
+> +}
+> +
+> +const struct sdhci_cdns_drv_data sdhci_elba_drv_data = {
+> +       .init = elba_drv_init,
+> +       .pltfm_data = {
+> +               .ops = &sdhci_elba_ops,
+> +       },
+> +};
+> diff --git a/drivers/mmc/host/sdhci-cadence.c b/drivers/mmc/host/sdhci-cadence.c
+> index 6f2de54a5987..d1ae996c3824 100644
+> --- a/drivers/mmc/host/sdhci-cadence.c
+> +++ b/drivers/mmc/host/sdhci-cadence.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/of_device.h>
+>
+>  #include "sdhci-pltfm.h"
+> +#include "sdhci-cadence.h"
+>
+>  /* HRS - Host Register Set (specific to Cadence) */
+>  #define SDHCI_CDNS_HRS04               0x10            /* PHY access port */
+> @@ -59,23 +60,6 @@
+>   */
+>  #define SDHCI_CDNS_MAX_TUNING_LOOP     40
+>
+> -struct sdhci_cdns_phy_param {
+> -       u8 addr;
+> -       u8 data;
+> -};
+> -
+> -struct sdhci_cdns_priv {
+> -       void __iomem *hrs_addr;
+> -       bool enhanced_strobe;
+> -       unsigned int nr_phy_params;
+> -       struct sdhci_cdns_phy_param phy_params[];
+> -};
+> -
+> -struct sdhci_cdns_phy_cfg {
+> -       const char *property;
+> -       u8 addr;
+> -};
+> -
+>  static const struct sdhci_cdns_phy_cfg sdhci_cdns_phy_cfgs[] = {
+>         { "cdns,phy-input-delay-sd-highspeed", SDHCI_CDNS_PHY_DLY_SD_HS, },
+>         { "cdns,phy-input-delay-legacy", SDHCI_CDNS_PHY_DLY_SD_DEFAULT, },
+> @@ -104,17 +88,17 @@ static int sdhci_cdns_write_phy_reg(struct sdhci_cdns_priv *priv,
+>
+>         tmp = FIELD_PREP(SDHCI_CDNS_HRS04_WDATA, data) |
+>               FIELD_PREP(SDHCI_CDNS_HRS04_ADDR, addr);
+> -       writel(tmp, reg);
+> +       sdhci_cdns_priv_writel(priv, tmp, reg);
+>
+>         tmp |= SDHCI_CDNS_HRS04_WR;
+> -       writel(tmp, reg);
+> +       sdhci_cdns_priv_writel(priv, tmp, reg);
+>
+>         ret = readl_poll_timeout(reg, tmp, tmp & SDHCI_CDNS_HRS04_ACK, 0, 10);
+>         if (ret)
+>                 return ret;
+>
+>         tmp &= ~SDHCI_CDNS_HRS04_WR;
+> -       writel(tmp, reg);
+> +       sdhci_cdns_priv_writel(priv, tmp, reg);
+>
+>         ret = readl_poll_timeout(reg, tmp, !(tmp & SDHCI_CDNS_HRS04_ACK),
+>                                  0, 10);
+> @@ -167,14 +151,7 @@ static int sdhci_cdns_phy_init(struct sdhci_cdns_priv *priv)
+>         return 0;
+>  }
+>
+> -static void *sdhci_cdns_priv(struct sdhci_host *host)
+> -{
+> -       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> -
+> -       return sdhci_pltfm_priv(pltfm_host);
+> -}
+> -
+> -static unsigned int sdhci_cdns_get_timeout_clock(struct sdhci_host *host)
+> +unsigned int sdhci_cdns_get_timeout_clock(struct sdhci_host *host)
+>  {
+>         /*
+>          * Cadence's spec says the Timeout Clock Frequency is the same as the
+> @@ -191,7 +168,7 @@ static void sdhci_cdns_set_emmc_mode(struct sdhci_cdns_priv *priv, u32 mode)
+>         tmp = readl(priv->hrs_addr + SDHCI_CDNS_HRS06);
+>         tmp &= ~SDHCI_CDNS_HRS06_MODE;
+>         tmp |= FIELD_PREP(SDHCI_CDNS_HRS06_MODE, mode);
+> -       writel(tmp, priv->hrs_addr + SDHCI_CDNS_HRS06);
+> +       sdhci_cdns_priv_writel(priv, tmp, priv->hrs_addr + SDHCI_CDNS_HRS06);
+>  }
+>
+>  static u32 sdhci_cdns_get_emmc_mode(struct sdhci_cdns_priv *priv)
+> @@ -223,7 +200,7 @@ static int sdhci_cdns_set_tune_val(struct sdhci_host *host, unsigned int val)
+>          */
+>         for (i = 0; i < 2; i++) {
+>                 tmp |= SDHCI_CDNS_HRS06_TUNE_UP;
+> -               writel(tmp, reg);
+> +               sdhci_cdns_priv_writel(priv, tmp, reg);
+>
+>                 ret = readl_poll_timeout(reg, tmp,
+>                                          !(tmp & SDHCI_CDNS_HRS06_TUNE_UP),
+> @@ -272,10 +249,13 @@ static int sdhci_cdns_execute_tuning(struct sdhci_host *host, u32 opcode)
+>                 return -EIO;
+>         }
+>
+> +       dev_info(mmc_dev(host->mmc), "tuning val %d streak end %d max %d\n",
+> +                end_of_streak - max_streak / 2, end_of_streak, max_streak);
+> +
+>         return sdhci_cdns_set_tune_val(host, end_of_streak - max_streak / 2);
+>  }
+>
+> -static void sdhci_cdns_set_uhs_signaling(struct sdhci_host *host,
+> +void sdhci_cdns_set_uhs_signaling(struct sdhci_host *host,
+>                                          unsigned int timing)
+>  {
+>         struct sdhci_cdns_priv *priv = sdhci_cdns_priv(host);
+> @@ -318,13 +298,17 @@ static const struct sdhci_ops sdhci_cdns_ops = {
+>         .set_uhs_signaling = sdhci_cdns_set_uhs_signaling,
+>  };
+>
+> -static const struct sdhci_pltfm_data sdhci_cdns_uniphier_pltfm_data = {
+> -       .ops = &sdhci_cdns_ops,
+> -       .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+> +static const struct sdhci_cdns_drv_data sdhci_cdns_uniphier_drv_data = {
+> +       .pltfm_data = {
+> +               .ops = &sdhci_cdns_ops,
+> +               .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+> +       },
+>  };
+>
+> -static const struct sdhci_pltfm_data sdhci_cdns_pltfm_data = {
+> -       .ops = &sdhci_cdns_ops,
+> +static const struct sdhci_cdns_drv_data sdhci_cdns_drv_data = {
+> +       .pltfm_data = {
+> +               .ops = &sdhci_cdns_ops,
+> +       },
+>  };
+>
+>  static void sdhci_cdns_hs400_enhanced_strobe(struct mmc_host *mmc,
+> @@ -350,7 +334,7 @@ static void sdhci_cdns_hs400_enhanced_strobe(struct mmc_host *mmc,
+>  static int sdhci_cdns_probe(struct platform_device *pdev)
+>  {
+>         struct sdhci_host *host;
+> -       const struct sdhci_pltfm_data *data;
+> +       const struct sdhci_cdns_drv_data *data;
+>         struct sdhci_pltfm_host *pltfm_host;
+>         struct sdhci_cdns_priv *priv;
+>         struct clk *clk;
+> @@ -369,10 +353,10 @@ static int sdhci_cdns_probe(struct platform_device *pdev)
+>
+>         data = of_device_get_match_data(dev);
+>         if (!data)
+> -               data = &sdhci_cdns_pltfm_data;
+> +               data = &sdhci_cdns_drv_data;
+>
+>         nr_phy_params = sdhci_cdns_phy_param_count(dev->of_node);
+> -       host = sdhci_pltfm_init(pdev, data,
+> +       host = sdhci_pltfm_init(pdev, &data->pltfm_data,
+>                                 struct_size(priv, phy_params, nr_phy_params));
+>         if (IS_ERR(host)) {
+>                 ret = PTR_ERR(host);
+> @@ -389,11 +373,18 @@ static int sdhci_cdns_probe(struct platform_device *pdev)
+>         host->ioaddr += SDHCI_CDNS_SRS_BASE;
+>         host->mmc_host_ops.hs400_enhanced_strobe =
+>                                 sdhci_cdns_hs400_enhanced_strobe;
+> -       sdhci_enable_v4_mode(host);
+> -       __sdhci_read_caps(host, &version, NULL, NULL);
+>
+>         sdhci_get_of_property(pdev);
+>
+> +       if (data->init) {
+> +               ret = data->init(pdev);
+> +               if (ret)
+> +                       goto free;
+> +       }
+> +
+> +       sdhci_enable_v4_mode(host);
+> +       __sdhci_read_caps(host, &version, NULL, NULL);
+> +
+>         ret = mmc_of_parse(host->mmc);
+>         if (ret)
+>                 goto free;
+> @@ -453,8 +444,14 @@ static const struct dev_pm_ops sdhci_cdns_pm_ops = {
+>  static const struct of_device_id sdhci_cdns_match[] = {
+>         {
+>                 .compatible = "socionext,uniphier-sd4hc",
+> -               .data = &sdhci_cdns_uniphier_pltfm_data,
+> +               .data = &sdhci_cdns_uniphier_drv_data,
+>         },
+> +#ifdef CONFIG_MMC_SDHCI_CADENCE_ELBA
+
+No need to hide this minor piece of code behind ifdefs.
+
+> +       {
+> +               .compatible = "pensando,elba-emmc",
+> +               .data = &sdhci_elba_drv_data
+> +       },
+> +#endif
+>         { .compatible = "cdns,sd4hc" },
+>         { /* sentinel */ }
+>  };
+> diff --git a/drivers/mmc/host/sdhci-cadence.h b/drivers/mmc/host/sdhci-cadence.h
+> new file mode 100644
+> index 000000000000..bf48e8d13430
+> --- /dev/null
+> +++ b/drivers/mmc/host/sdhci-cadence.h
+
+This new header file can go away too, if you fold in all the code in
+the common c-file.
+
+> @@ -0,0 +1,68 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * Copyright (C) 2016 Socionext Inc.
+> + *   Author: Masahiro Yamada <yamada.masahiro@socionext.com>
+> + */
+> +
+> +#ifndef _SDHCI_CADENCE_H_
+> +#define _SDHCI_CADENCE_H_
+> +
+> +struct sdhci_cdns_phy_param {
+> +       u8 addr;
+> +       u8 data;
+> +};
+> +
+> +struct sdhci_cdns_priv {
+> +       void __iomem *hrs_addr;
+> +#ifdef CONFIG_MMC_SDHCI_CADENCE_ELBA
+> +       void __iomem *ctl_addr; /* write control */
+> +       spinlock_t wrlock;      /* write lock */
+> +#endif
+> +       bool enhanced_strobe;
+> +       void (*priv_write_l)(struct sdhci_cdns_priv *priv, u32 val,
+> +                            void __iomem *reg); /* for cadence-elba.c */
+> +       unsigned int nr_phy_params;
+> +       struct sdhci_cdns_phy_param phy_params[];
+> +};
+> +
+> +struct sdhci_cdns_phy_cfg {
+> +       const char *property;
+> +       u8 addr;
+> +};
+> +
+> +struct sdhci_cdns_drv_data {
+> +       int (*init)(struct platform_device *pdev);
+> +       const struct sdhci_pltfm_data pltfm_data;
+> +};
+> +
+> +static inline void *sdhci_cdns_priv(struct sdhci_host *host)
+> +{
+> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +
+> +       return sdhci_pltfm_priv(pltfm_host);
+> +}
+> +
+> +/*
+> + * The Pensando Elba SoC explicitly controls byte-lane enables on writes,
+> + * which includes writes to the HRS registers.
+> + * sdhci_cdns_priv_writel() is used in the common sdhci-cadence.c code
+> + * to write HRS registers, and this function dispatches to the specific
+> + * code.
+> + */
+> +static inline void sdhci_cdns_priv_writel(struct sdhci_cdns_priv *priv,
+> +               u32 val, void __iomem *reg)
+> +{
+> +       if (unlikely(priv->priv_write_l))
+> +               priv->priv_write_l(priv, val, reg);
+> +       else
+> +               writel(val, reg);
+> +}
+> +
+> +#ifdef CONFIG_MMC_SDHCI_CADENCE_ELBA
+> +extern const struct sdhci_cdns_drv_data sdhci_elba_drv_data;
+> +#endif
+> +
+> +unsigned int sdhci_cdns_get_timeout_clock(struct sdhci_host *host);
+> +void sdhci_cdns_set_uhs_signaling(struct sdhci_host *host, unsigned int timing);
+> +
+> +#endif
+
+Kind regards
+Uffe
