@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3E534EF05
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1AA34EF06
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbhC3RJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232401AbhC3RIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90716619AA;
-        Tue, 30 Mar 2021 17:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617124107;
-        bh=GcvjMxdvm38+3S+eyxHmpddHO2ySIKOAbjRmYlLyFfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kVOEzdXbOpgR3PHF8jHkzMeM+b0lV6nG43MkLJlIngWEPvT3SwivvEkRYH/ZpwWh6
-         KhUq44eMrGJ75Wwd8eVgTerU4cvp5Y9ocsuIPMe2c8zJcKwkhZF/xrrS4SSiuzLj5F
-         GZYBo8LOjpPPlCd4zXKfLtKbdmbHxbcqttjM/I9zpZA7phk7VUauyvNwRS7OY2jy4Z
-         TIYwHMft9kusPlh9dLzT+ZsrOETIcVDBbnPU5uBFYJBh+iUK76cHCy5yWuJeRLC4C6
-         QqnxHeBS79XCdBpyqZ93sPpGhGWGPb8dWT6qEmk5i2Fhnxgb7ZYAd8bx8W4rk1U7mb
-         SjpM/N+Om61Fw==
-Date:   Tue, 30 Mar 2021 13:08:26 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     tyhicks@linux.microsoft.com, jmorris@namei.org, will@kernel.org,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH] [Backport for stable 5.11] arm64: mm: correct the inside
- linear map boundaries during hotplug check
-Message-ID: <YGNbCjq92b73OBUR@sashalap>
-References: <20210329142847.402167-1-pasha.tatashin@soleen.com>
+        id S232505AbhC3RJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhC3RJW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:09:22 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E577C061574;
+        Tue, 30 Mar 2021 10:09:22 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f3so2971962pgv.0;
+        Tue, 30 Mar 2021 10:09:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=sL9bNDuKXHYmKoepsSJVXWaG2nXWGx8Q3zU239iY94o=;
+        b=t20Kj4BxJQaDZe9LmRWNVaEYEg/t0nIRhPUfhIRj+n8VPMNnbyLKd9S0RuOtOqsxyn
+         TlH8ivpiUJ2nw2KOpLlYW4X9otulGyCzsmovAWhjiYOgAkWl/WCf8mam9d4LZCAOGbvR
+         p0NWI2c3CdBq3j2SeJ/5MbgcVznBdaWD4OXZfXDnMuUOYB1A55dS3qqW7qyKsuzKBTBP
+         rmXQ8Ry51GSHVXz0aC/9Zd6EXWBybYbe+eB+oB0L2e55nbW6lgDZT5HKqaDkF98dAC/9
+         Fq5nx3q6ONDh9jiKDapbPiXe7JoY93un1R0WVjTXW83u1BKZxJx35ygsvtEEAOh3bt3p
+         7zQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sL9bNDuKXHYmKoepsSJVXWaG2nXWGx8Q3zU239iY94o=;
+        b=Rz5z15z0SnQ+2w/mn0OSJcnJjab0Lg5H59vVST6o4X00Q/km9SdPoGIx9prxpRsDXc
+         BzvQC4XTPO8QoHJaNex5IolenWtU9FCLzNTVT5h+tOsBKhhohnTzNLNqFvN8wQ6ZTBFq
+         K055stmX9UP9X+bhTnOf1XYUI41OxMzDMCArqt+RXovdoLaF/jQAJ7l1FpJE6PAUW21y
+         OgCdNTzmCERL/B61TnBVDRuxaj6Aj9jO9xVwioO+yarjooJ34psPgQD3DI87CvZ51OOy
+         YxKaNWmeBxFCTMX+lkF6U8PuNNZqPYUp2s+u7fcZjXdgWjejcoxtIGeX7gujTYd+9HhI
+         2W3g==
+X-Gm-Message-State: AOAM531Zj/2zJv61fH4bWdE3fm2VnrqLQaW2mSImCkiX2MprTsy3xec3
+        TzXk1u+X1z7+B08BXBRcc9pfZ/Q5Iio=
+X-Google-Smtp-Source: ABdhPJx838Rcu3KOX6ahsAB38SrhtZtrmoDngwV5tx+o/iUFEq2YWIq8rhole1MzjaIlms/KKT+MrQ==
+X-Received: by 2002:aa7:814e:0:b029:20e:f3fa:2900 with SMTP id d14-20020aa7814e0000b029020ef3fa2900mr30551526pfn.62.1617124161591;
+        Tue, 30 Mar 2021 10:09:21 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id k63sm21509382pfd.48.2021.03.30.10.09.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 10:09:21 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] mips: bmips: bcm6358: populate device tree nodes
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210314164351.24665-1-noltari@gmail.com>
+ <20210314164351.24665-4-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9b1da888-db09-53e7-6b7b-7265df0583d9@gmail.com>
+Date:   Tue, 30 Mar 2021 10:09:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210329142847.402167-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20210314164351.24665-4-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:28:47AM -0400, Pavel Tatashin wrote:
->commit ee7febce051945be28ad86d16a15886f878204de upstream.
->
->Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
->linear map range is not checked correctly.
->
->The start physical address that linear map covers can be actually at the
->end of the range because of randomization. Check that and if so reduce it
->to 0.
->
->This can be verified on QEMU with setting kaslr-seed to ~0ul:
->
->memstart_offset_seed = 0xffff
->START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
->END:   __pa(PAGE_END - 1) =  1000bfffffff
->
->Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
->Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
->Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On 3/14/21 9:43 AM, Álvaro Fernández Rojas wrote:
+> - Rename periph_clk to periph_osc.
+> - Rename clkctl to periph_clk.
+> - Move syscon-reboot to subnode.
+> - Add watchdog.
+> - Add SPI controller.
+> - Add USBH PHY.
+> - Add cfi-flash.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-Queued up, thanks!
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Thanks,
-Sasha
+Florian
