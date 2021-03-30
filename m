@@ -2,84 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B4434E98A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FC034E98C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 15:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhC3Nq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 09:46:56 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:45626 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbhC3Nqh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:46:37 -0400
-Received: by mail-ot1-f42.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so15588903oty.12;
-        Tue, 30 Mar 2021 06:46:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x7Y9OAKTjUXB4SxJIaML037GXNn8syZ6IN33bLdFQVs=;
-        b=aaHv3LXVDPCShrZKaQ3VmrXwv/o2758Hyv3gLXBGptjHXf7Eoq9iVEvI8Qokvfs7UQ
-         dG5hbuZ7t+jWD/Qwc2z1IpgA54cOLIeU18F4vV+tRvHFi4dpY5xqxAfaQvfKGa33XlsQ
-         IfPDzO8AVHMkxbzygpHEzF0Jgb+XfoUs7NBVxtrwBoBTdnB13JbbrQ1WiJ2bdW82yyz8
-         Otf6GNtesPL3h3DUnGimPS3vqabRzqxziQxUHUZ3Fv6wg29h/Ke1Wuke32j9ZWDKVfQ/
-         SxrR+Q1sm1U604nhTNUdq1Q99J7wPoPFhhnwEgbpSdSBN264In7DNpDwFx2QlQQ0Gnel
-         EV4w==
-X-Gm-Message-State: AOAM531+aOe//mGp1O1KD4zDEZXNxfGIWjbqjZCs9Z+ciYHqWdJYk9Nm
-        7J/IvnxkigYdJrVJfiNB6Q==
-X-Google-Smtp-Source: ABdhPJzbxEuCJ/O4ZwoCSryf3zJezsAN+RxFpIRw2gGKF/WY7304MAxLEfpNTRv3CQDKhIxMv2X4Zw==
-X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr26903645otq.260.1617111996970;
-        Tue, 30 Mar 2021 06:46:36 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v6sm4341899ook.40.2021.03.30.06.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 06:46:35 -0700 (PDT)
-Received: (nullmailer pid 223205 invoked by uid 1000);
-        Tue, 30 Mar 2021 13:46:34 -0000
-Date:   Tue, 30 Mar 2021 08:46:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH v1 4/6] dt-bindings: memory: tegra20: mc: Convert to
- schema
-Message-ID: <20210330134634.GA216433@robh.at.kernel.org>
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-5-digetx@gmail.com>
- <1617109723.704724.173732.nullmailer@robh.at.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617109723.704724.173732.nullmailer@robh.at.kernel.org>
+        id S231948AbhC3NsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 09:48:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:34596 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231622AbhC3Nrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:47:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5A0F31B;
+        Tue, 30 Mar 2021 06:47:47 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE5623F719;
+        Tue, 30 Mar 2021 06:47:46 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v8 25/38] iio/scmi: Port driver to the new scmi_sensor_proto_ops interface
+Date:   Tue, 30 Mar 2021 14:47:11 +0100
+Message-Id: <20210330134711.1962-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210330123325.00000456@Huawei.com>
+References: <20210330123325.00000456@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:08:43AM -0500, Rob Herring wrote:
-> On Mon, 29 Mar 2021 22:46:00 +0300, Dmitry Osipenko wrote:
-> > Convert Tegra20 Memory Controller binding to schema.
-> > 
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  .../memory-controllers/nvidia,tegra20-mc.txt  | 40 ----------
-> >  .../memory-controllers/nvidia,tegra20-mc.yaml | 78 +++++++++++++++++++
-> >  2 files changed, 78 insertions(+), 40 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
-> >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.yaml
-> > 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.example.dt.yaml:0:0: /example-0/memory-controller@7000f000: failed to match any schema with compatible: ['nvidia,tegra20-mc']
+Port the scmi iio driver to the new SCMI sensor interface based on
+protocol handles and common devm_get_ops().
 
-Yes, this is a new warning. It's off by default for dt_binding_check 
-until we fix the existing warnings, but you can enable by adding 
-'DT_CHECKER_FLAGS=-m'. Support for this is in the dt/next branch.
+Link: https://lore.kernel.org/r/20210316124903.35011-26-cristian.marussi@arm.com
+Cc: Jyoti Bhayana <jbhayana@google.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+----
+v7 --> v8
+- make sensor_ops NON global
+---
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 100 ++++++++++-----------
+ 1 file changed, 50 insertions(+), 50 deletions(-)
 
-Rob
+diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+index 872d87ca6256..8f4154d92c68 100644
+--- a/drivers/iio/common/scmi_sensors/scmi_iio.c
++++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+@@ -22,7 +22,8 @@
+ #define SCMI_IIO_NUM_OF_AXIS 3
+ 
+ struct scmi_iio_priv {
+-	struct scmi_handle *handle;
++	const struct scmi_sensor_proto_ops *sensor_ops;
++	struct scmi_protocol_handle *ph;
+ 	const struct scmi_sensor_info *sensor_info;
+ 	struct iio_dev *indio_dev;
+ 	/* adding one additional channel for timestamp */
+@@ -82,7 +83,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+ {
+ 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+-	u32 sensor_id = sensor->sensor_info->id;
+ 	u32 sensor_config = 0;
+ 	int err;
+ 
+@@ -92,27 +92,12 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+ 
+ 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+ 				    SCMI_SENS_CFG_SENSOR_ENABLE);
+-
+-	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+-			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+-			&sensor_id, &sensor->sensor_update_nb);
+-	if (err) {
+-		dev_err(&iio_dev->dev,
+-			"Error in registering sensor update notifier for sensor %s err %d",
+-			sensor->sensor_info->name, err);
+-		return err;
+-	}
+-
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+-			sensor->sensor_info->id, sensor_config);
+-	if (err) {
+-		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+-				SCMI_PROTOCOL_SENSOR,
+-				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
+-				&sensor->sensor_update_nb);
++	err = sensor->sensor_ops->config_set(sensor->ph,
++					     sensor->sensor_info->id,
++					     sensor_config);
++	if (err)
+ 		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+ 			sensor->sensor_info->name, err);
+-	}
+ 
+ 	return err;
+ }
+@@ -120,25 +105,14 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+ static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+ {
+ 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+-	u32 sensor_id = sensor->sensor_info->id;
+ 	u32 sensor_config = 0;
+ 	int err;
+ 
+ 	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+ 				    SCMI_SENS_CFG_SENSOR_DISABLE);
+-
+-	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+-			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+-			&sensor_id, &sensor->sensor_update_nb);
+-	if (err) {
+-		dev_err(&iio_dev->dev,
+-			"Error in unregistering sensor update notifier for sensor %s err %d",
+-			sensor->sensor_info->name, err);
+-		return err;
+-	}
+-
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+-						     sensor_config);
++	err = sensor->sensor_ops->config_set(sensor->ph,
++					     sensor->sensor_info->id,
++					     sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in disabling sensor %s with err %d",
+@@ -161,8 +135,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+ 	u32 sensor_config;
+ 	char buf[32];
+ 
+-	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+-			sensor->sensor_info->id, &sensor_config);
++	int err = sensor->sensor_ops->config_get(sensor->ph,
++						 sensor->sensor_info->id,
++						 &sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in getting sensor config for sensor %s err %d",
+@@ -208,8 +183,9 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+ 	sensor_config |=
+ 		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
+ 
+-	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+-			sensor->sensor_info->id, sensor_config);
++	err = sensor->sensor_ops->config_set(sensor->ph,
++					     sensor->sensor_info->id,
++					     sensor_config);
+ 	if (err)
+ 		dev_err(&iio_dev->dev,
+ 			"Error in setting sensor update interval for sensor %s value %u err %d",
+@@ -274,8 +250,9 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+ 	u32 sensor_config;
+ 	int mult;
+ 
+-	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+-			sensor->sensor_info->id, &sensor_config);
++	int err = sensor->sensor_ops->config_get(sensor->ph,
++						 sensor->sensor_info->id,
++						 &sensor_config);
+ 	if (err) {
+ 		dev_err(&iio_dev->dev,
+ 			"Error in getting sensor config for sensor %s err %d",
+@@ -542,15 +519,19 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+ 	return 0;
+ }
+ 
+-static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+-					 struct scmi_handle *handle,
+-					 const struct scmi_sensor_info *sensor_info)
++static struct iio_dev *
++scmi_alloc_iiodev(struct scmi_device *sdev,
++		  const struct scmi_sensor_proto_ops *ops,
++		  struct scmi_protocol_handle *ph,
++		  const struct scmi_sensor_info *sensor_info)
+ {
+ 	struct iio_chan_spec *iio_channels;
+ 	struct scmi_iio_priv *sensor;
+ 	enum iio_modifier modifier;
+ 	enum iio_chan_type type;
+ 	struct iio_dev *iiodev;
++	struct device *dev = &sdev->dev;
++	const struct scmi_handle *handle = sdev->handle;
+ 	int i, ret;
+ 
+ 	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+@@ -560,7 +541,8 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ 	iiodev->modes = INDIO_DIRECT_MODE;
+ 	iiodev->dev.parent = dev;
+ 	sensor = iio_priv(iiodev);
+-	sensor->handle = handle;
++	sensor->sensor_ops = ops;
++	sensor->ph = ph;
+ 	sensor->sensor_info = sensor_info;
+ 	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+ 	sensor->indio_dev = iiodev;
+@@ -595,6 +577,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ 					  sensor_info->axis[i].id);
+ 	}
+ 
++	ret = handle->notify_ops->devm_event_notifier_register(sdev,
++				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
++				&sensor->sensor_info->id,
++				&sensor->sensor_update_nb);
++	if (ret) {
++		dev_err(&iiodev->dev,
++			"Error in registering sensor update notifier for sensor %s err %d",
++			sensor->sensor_info->name, ret);
++		return ERR_PTR(ret);
++	}
++
+ 	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+ 	iiodev->channels = iio_channels;
+ 	return iiodev;
+@@ -604,24 +597,30 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+ {
+ 	const struct scmi_sensor_info *sensor_info;
+ 	struct scmi_handle *handle = sdev->handle;
++	const struct scmi_sensor_proto_ops *sensor_ops;
++	struct scmi_protocol_handle *ph;
+ 	struct device *dev = &sdev->dev;
+ 	struct iio_dev *scmi_iio_dev;
+ 	u16 nr_sensors;
+ 	int err = -ENODEV, i;
+ 
+-	if (!handle || !handle->sensor_ops) {
++	if (!handle)
++		return -ENODEV;
++
++	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
++	if (IS_ERR(sensor_ops)) {
+ 		dev_err(dev, "SCMI device has no sensor interface\n");
+-		return -EINVAL;
++		return PTR_ERR(sensor_ops);
+ 	}
+ 
+-	nr_sensors = handle->sensor_ops->count_get(handle);
++	nr_sensors = sensor_ops->count_get(ph);
+ 	if (!nr_sensors) {
+ 		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+ 		return -ENODEV;
+ 	}
+ 
+ 	for (i = 0; i < nr_sensors; i++) {
+-		sensor_info = handle->sensor_ops->info_get(handle, i);
++		sensor_info = sensor_ops->info_get(ph, i);
+ 		if (!sensor_info) {
+ 			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+ 			return -EINVAL;
+@@ -636,7 +635,8 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
+ 		    sensor_info->axis[0].type != RADIANS_SEC)
+ 			continue;
+ 
+-		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
++		scmi_iio_dev = scmi_alloc_iiodev(sdev, sensor_ops, ph,
++						 sensor_info);
+ 		if (IS_ERR(scmi_iio_dev)) {
+ 			dev_err(dev,
+ 				"failed to allocate IIO device for sensor %s: %ld\n",
+-- 
+2.17.1
+
