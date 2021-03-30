@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3315B34E08A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1053134E08E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhC3FGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
+        id S230378AbhC3FHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhC3FGc (ORCPT
+        with ESMTP id S229655AbhC3FHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:06:32 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FC8C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:06:32 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x126so11299366pfc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:06:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0fxf1pqArnRlwV/UXS2GCx4oBLa7c/szr4cwgrzePoI=;
-        b=jIuKZHa7oZIGY8lzBAj9I5ffuXlznNjKZjiIn9eEJjMGwSRXlQP8gDL+5W+8Z0tfvg
-         flmVGbIzjY+frOIEgJOdTYJ+rxyRcq/ESbrCfrPsj4QSvkEukLgadJBGL6QSrSbMCLqZ
-         LmEPM7PKe82E4FZffxN3ChnwER0El8dHHIyQbHzDukPLZKmTR5ZLmMhc5ZO7R/P4TOVZ
-         Ow9u+w5Hq929+JP02SREQpdsJakFcViOLRl2dQmvwxXhE3WO0nbew4kZJLgcazZ9VRYl
-         Vx/CLCMtf2tDVRsDQpI7ZwPhjyeCEvZHrzPkMGa5iAW9+R2VHd3QlsmDyZER+HG76ES1
-         /phQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=0fxf1pqArnRlwV/UXS2GCx4oBLa7c/szr4cwgrzePoI=;
-        b=cjPiI5G9WxQiN9M4cA+8Kr3LylkGBMq7jvUwJ0nKl7yaGJwFIKNpAhCDzG+qGM0xFd
-         Xq4Eu7KxogOxGiS2vBqmUAidPRhxwZjdFaarNkKziLSXgijnw8THbPB1FGIUgABHkO0c
-         so999yjVvPWCD891YXS+zgunfPb8x22BRxqEVz/Z0kPlJjGbXVWqpbojzAN+6V/zDoI0
-         Rd1Dgp5zT/Mvo7NTuZ7Iwt8Rlht44iCmd9cm/vaDO+MAgm8SbdCvR8E+p2O1KGrykgMw
-         AV/CYmoShS+xn/wlHhaQ4raJoncQlj0sAsknKzMdSDR2ZBK7U829AZUjvE8mdhAx1Ces
-         ztBw==
-X-Gm-Message-State: AOAM532bLg/WU5noIHlqAQAFRS5+8JJ7QyE11lhAyumcOzwCdbQKkI3/
-        ZrEQtsB3cpx4wNYD8pRGM7bzmQ==
-X-Google-Smtp-Source: ABdhPJzswVyCCiZPCQPJRXrQwpsQvzoUWDBpaMvczfG7dW1Gqx15K3sybIOlB5eg36GHmbejYHxJ/g==
-X-Received: by 2002:a63:4460:: with SMTP id t32mr26348816pgk.139.1617080791906;
-        Mon, 29 Mar 2021 22:06:31 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id fh19sm1390377pjb.33.2021.03.29.22.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 22:06:31 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 22:06:31 -0700 (PDT)
-X-Google-Original-Date: Mon, 29 Mar 2021 22:01:15 PDT (-0700)
-Subject:     Re: [PATCH] kbuild: buildtar: add riscv support
-In-Reply-To: <20210316160242.61712-1-me@carlosedp.com>
-CC:     david.abdurachmanov@sifive.com, me@carlosedp.com,
-        masahiroy@kernel.org, michal.lkml@markovi.net,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     me@carlosedp.com
-Message-ID: <mhng-6e97a94b-b3a1-4bdb-aa0b-30f44ec3d2fb@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 30 Mar 2021 01:07:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483AAC061762;
+        Mon, 29 Mar 2021 22:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QQzXfAlsDNFWrU7NG4I9qbfmrWvWg7YebVZEeDgtWM4=; b=OIGK3YbTBZ4Blj3s2AwlBrPV98
+        N1ucQJ3BSQwwuw0lTy99f06X3/dZRjzs7xzFRzB+TUjHdZvRifDlmYHzDeQsQye+sgkYBOWHmwCxt
+        d8jPyoYNyjXHHrJIsByXRDAJ7JfyAeEK12Q33XxWI34nlfJDafvIx8OyxAwwWwYhDaDWTwMIWsz3T
+        GcNVaM22yNSHUsxZofpZLXgbB9HRNrs6JGpQjU9vMnj5dfk06+5B86a5CjYP/7oonQgfeOEHJugNf
+        YmOTht8qzQ5NhURazGpGDoSLQQaRETQLq+UoWvtVkP2EAkvHZ7OmGti2TCCslZBGKsQgZ48VW1EcL
+        0o7GSTpg==;
+Received: from [2601:1c0:6280:3f0::4557] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lR6ae-002Xds-DJ; Tue, 30 Mar 2021 05:07:00 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Dexuan Cui <decui@microsoft.com>, linux-crypto@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH v2] Documentation: crypto: add info about "fips=" boot option
+Date:   Mon, 29 Mar 2021 22:06:51 -0700
+Message-Id: <20210330050651.13344-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 09:02:43 PDT (-0700), me@carlosedp.com wrote:
-> Make 'make tar-pkg' and 'tarbz2-pkg' work on riscv.
->
-> Signed-off-by: Carlos de Paula <me@carlosedp.com>
-> ---
->  scripts/package/buildtar | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/scripts/package/buildtar b/scripts/package/buildtar
-> index 936198a90477..221aa7df008d 100755
-> --- a/scripts/package/buildtar
-> +++ b/scripts/package/buildtar
-> @@ -123,10 +123,18 @@ case "${ARCH}" in
->  				cp -v -- "${objtree}/arch/arm64/boot/${i}" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
->  				break
->  			fi
->  		done
->  		;;
-> +	riscv)
-> +		for i in Image.bz2 Image.gz Image; do
-> +			if [ -f "${objtree}/arch/riscv/boot/${i}" ] ; then
-> +				cp -v -- "${objtree}/arch/riscv/boot/${i}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
-> +				break
-> +			fi
-> +		done
-> +		;;
->  	*)
->  		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
->  		echo "" >&2
->  		echo '** ** **  WARNING  ** ** **' >&2
->  		echo "" >&2
+Having just seen a report of using "fips=1" on the kernel command line,
+I could not find it documented anywhere, so add some help for it.
 
-Thanks, this is on for-next.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+Updates/corrections welcome.
+
+v2: drop comment that "fips_enabled can cause some tests to be skipped".
+
+ Documentation/admin-guide/kernel-parameters.txt |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+--- linux-next-20210329.orig/Documentation/admin-guide/kernel-parameters.txt
++++ linux-next-20210329/Documentation/admin-guide/kernel-parameters.txt
+@@ -1370,6 +1370,20 @@
+ 			See Documentation/admin-guide/sysctl/net.rst for
+ 			fb_tunnels_only_for_init_ns
+ 
++	fips=		Format: { 0 | 1}
++			Use to disable (0) or enable (1) FIPS mode.
++			If enabled, any process that is waiting on the
++			'fips_fail_notif_chain' will be notified of fips
++			failures.
++			This setting can also be modified via sysctl at
++			/proc/sysctl/crypto/fips_enabled, i.e.,
++			crypto.fips_enabled.
++			If fips_enabled = 1 and a test fails, it will cause a
++			kernel panic.
++			If fips_enabled = 1, RSA test requires a key size of
++			2K or larger.
++			It can also effect which ECC curve is used.
++
+ 	floppy=		[HW]
+ 			See Documentation/admin-guide/blockdev/floppy.rst.
+ 
