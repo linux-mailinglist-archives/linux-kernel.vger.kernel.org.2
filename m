@@ -2,314 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A514934E625
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AAD34E62C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhC3LNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:13:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:57746 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhC3LMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:12:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4E981FB;
-        Tue, 30 Mar 2021 04:12:52 -0700 (PDT)
-Received: from [10.57.22.222] (unknown [10.57.22.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AEA03F694;
-        Tue, 30 Mar 2021 04:12:50 -0700 (PDT)
-Subject: Re: [PATCH v5 07/19] arm64: kvm: Enable access to TRBE support for
- host
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>
-References: <20210323120647.454211-1-suzuki.poulose@arm.com>
- <20210323120647.454211-8-suzuki.poulose@arm.com>
- <87r1jxq7ax.wl-maz@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <c87d9dd9-72b2-6730-e3d4-9aaa0370a639@arm.com>
-Date:   Tue, 30 Mar 2021 12:12:49 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        id S231865AbhC3LNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:13:55 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46306 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231602AbhC3LNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:13:25 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12UBDA5S061546;
+        Tue, 30 Mar 2021 06:13:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617102790;
+        bh=uPvvfDy20lK56KbGP3G/CXExx2mMrLYUtNyTwjU5GQw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=hI/WjPY/SOVnWPEh7Yqj2tEONa2A/eqLnuExzIupUmYl3vow+KFkdG14m5lHLpc/o
+         d3p45OxKuCkNWE3OmzCBVUjRleZOL8z3uNio2eAKU/acncUrARYrLmoj2kHeFHbSTa
+         Evx2wQb2RvZ9rMDroeOJGD6DuzBCmsdd4AKuWG3w=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12UBDA7m025262
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 30 Mar 2021 06:13:10 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 30
+ Mar 2021 06:13:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 30 Mar 2021 06:13:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12UBD9sO022539;
+        Tue, 30 Mar 2021 06:13:09 -0500
+Date:   Tue, 30 Mar 2021 16:43:08 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Brad Larson <brad@pensando.io>
+CC:     <linux-arm-kernel@lists.infradead.org>, <arnd@arndb.de>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <broonie@kernel.org>, <fancer.lancer@gmail.com>,
+        <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <olof@lixom.net>, <linux-gpio@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 02/13] spi: cadence-quadspi: Add QSPI support for
+ Pensando Elba SoC
+Message-ID: <20210330111308.7jjyj7nir6gmjnsv@ti.com>
+References: <20210329015938.20316-1-brad@pensando.io>
+ <20210329015938.20316-3-brad@pensando.io>
 MIME-Version: 1.0
-In-Reply-To: <87r1jxq7ax.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210329015938.20316-3-brad@pensando.io>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc
-
-On 30/03/2021 11:12, Marc Zyngier wrote:
-> Hi Suzuki,
+On 28/03/21 06:59PM, Brad Larson wrote:
+> Add QSPI controller support for Pensando Elba SoC
 > 
-> [+ Alex]
+> Signed-off-by: Brad Larson <brad@pensando.io>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> On Tue, 23 Mar 2021 12:06:35 +0000,
-> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> For a nvhe host, the EL2 must allow the EL1&0 translation
->> regime for TraceBuffer (MDCR_EL2.E2TB == 0b11). This must
->> be saved/restored over a trip to the guest. Also, before
->> entering the guest, we must flush any trace data if the
->> TRBE was enabled. And we must prohibit the generation
->> of trace while we are in EL1 by clearing the TRFCR_EL1.
->>
->> For vhe, the EL2 must prevent the EL1 access to the Trace
->> Buffer.
->>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   arch/arm64/include/asm/el2_setup.h | 13 +++++++++
->>   arch/arm64/include/asm/kvm_arm.h   |  2 ++
->>   arch/arm64/include/asm/kvm_host.h  |  2 ++
->>   arch/arm64/kernel/hyp-stub.S       |  3 ++-
->>   arch/arm64/kvm/debug.c             |  6 ++---
->>   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 42 ++++++++++++++++++++++++++++++
->>   arch/arm64/kvm/hyp/nvhe/switch.c   |  1 +
->>   7 files changed, 65 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
->> index d77d358f9395..bda918948471 100644
->> --- a/arch/arm64/include/asm/el2_setup.h
->> +++ b/arch/arm64/include/asm/el2_setup.h
->> @@ -65,6 +65,19 @@
->>   						// use EL1&0 translation.
->>   
->>   .Lskip_spe_\@:
->> +	/* Trace buffer */
->> +	ubfx	x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
->> +	cbz	x0, .Lskip_trace_\@		// Skip if TraceBuffer is not present
->> +
->> +	mrs_s	x0, SYS_TRBIDR_EL1
->> +	and	x0, x0, TRBIDR_PROG
->> +	cbnz	x0, .Lskip_trace_\@		// If TRBE is available at EL2
->> +
->> +	mov	x0, #(MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT)
->> +	orr	x2, x2, x0			// allow the EL1&0 translation
->> +						// to own it.
->> +
->> +.Lskip_trace_\@:
->>   	msr	mdcr_el2, x2			// Configure debug traps
->>   .endm
->>   
->> diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
->> index 94d4025acc0b..692c9049befa 100644
->> --- a/arch/arm64/include/asm/kvm_arm.h
->> +++ b/arch/arm64/include/asm/kvm_arm.h
->> @@ -278,6 +278,8 @@
->>   #define CPTR_EL2_DEFAULT	CPTR_EL2_RES1
->>   
->>   /* Hyp Debug Configuration Register bits */
->> +#define MDCR_EL2_E2TB_MASK	(UL(0x3))
->> +#define MDCR_EL2_E2TB_SHIFT	(UL(24))
-> 
-> Where are these bits defined? DDI0487G_a has them as RES0.
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index 52ddb3255d88..4aacb0b2dbc7 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1353,6 +1353,7 @@ static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
+>  	cqspi->rx_chan = dma_request_chan_by_mask(&mask);
+>  	if (IS_ERR(cqspi->rx_chan)) {
+>  		int ret = PTR_ERR(cqspi->rx_chan);
+> +
 
-They are part of the Future architecture technology and a register 
-definition XML is available here :
+Unrelated whitespace change. Please move it into a separate cleanup 
+patch.
 
-https://developer.arm.com/documentation/ddi0601/2020-12/AArch64-Registers/MDCR-EL2--Monitor-Debug-Configuration-Register--EL2-?lang=en#fieldset_0-25_24-1
-
-> 
->>   #define MDCR_EL2_TTRF		(1 << 19)
->>   #define MDCR_EL2_TPMS		(1 << 14)
->>   #define MDCR_EL2_E2PB_MASK	(UL(0x3))
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 3d10e6527f7d..80d0a1a82a4c 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -315,6 +315,8 @@ struct kvm_vcpu_arch {
->>   		struct kvm_guest_debug_arch regs;
->>   		/* Statistical profiling extension */
->>   		u64 pmscr_el1;
->> +		/* Self-hosted trace */
->> +		u64 trfcr_el1;
->>   	} host_debug_state;
->>   
->>   	/* VGIC state */
->> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
->> index 5eccbd62fec8..05d25e645b46 100644
->> --- a/arch/arm64/kernel/hyp-stub.S
->> +++ b/arch/arm64/kernel/hyp-stub.S
->> @@ -115,9 +115,10 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
->>   	mrs_s	x0, SYS_VBAR_EL12
->>   	msr	vbar_el1, x0
->>   
->> -	// Use EL2 translations for SPE and disable access from EL1
->> +	// Use EL2 translations for SPE & TRBE and disable access from EL1
->>   	mrs	x0, mdcr_el2
->>   	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
->> +	bic	x0, x0, #(MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT)
->>   	msr	mdcr_el2, x0
->>   
->>   	// Transfer the MM state from EL1 to EL2
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index dbc890511631..7b16f42d39f4 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -89,7 +89,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
->>    *  - Debug ROM Address (MDCR_EL2_TDRA)
->>    *  - OS related registers (MDCR_EL2_TDOSA)
->>    *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
->> - *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
->> + *  - Self-hosted Trace (MDCR_EL2_TTRF/MDCR_EL2_E2TB)
-> 
-> For the record, this is likely to conflict with [1], although that
-> patch still has some issues.
-
-Thanks for the heads up. I think that patch will also conflict with my 
-fixes that is queued in kvmarm/fixes.
-
-
-> 
->>    *
->>    * Additionally, KVM only traps guest accesses to the debug registers if
->>    * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
->> @@ -107,8 +107,8 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
->>   	trace_kvm_arm_setup_debug(vcpu, vcpu->guest_debug);
->>   
->>   	/*
->> -	 * This also clears MDCR_EL2_E2PB_MASK to disable guest access
->> -	 * to the profiling buffer.
->> +	 * This also clears MDCR_EL2_E2PB_MASK and MDCR_EL2_E2TB_MASK
->> +	 * to disable guest access to the profiling and trace buffers
->>   	 */
->>   	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
->>   	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
->> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> index f401724f12ef..9499e18dd28f 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> @@ -58,10 +58,51 @@ static void __debug_restore_spe(u64 pmscr_el1)
->>   	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
->>   }
->>   
->> +static void __debug_save_trace(u64 *trfcr_el1)
->> +{
->> +
-> 
-> Spurious blank line?
+>  		cqspi->rx_chan = NULL;
+>  		return dev_err_probe(&cqspi->pdev->dev, ret, "No Rx DMA available\n");
+>  	}
+> @@ -1633,6 +1634,10 @@ static const struct cqspi_driver_platdata intel_lgm_qspi = {
+>  	.quirks = CQSPI_DISABLE_DAC_MODE,
+>  };
+>  
+> +static const struct cqspi_driver_platdata pen_cdns_qspi = {
+> +	.quirks = CQSPI_NEEDS_WR_DELAY | CQSPI_DISABLE_DAC_MODE,
+> +};
+> +
+>  static const struct of_device_id cqspi_dt_ids[] = {
+>  	{
+>  		.compatible = "cdns,qspi-nor",
+> @@ -1650,6 +1655,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
+>  		.compatible = "intel,lgm-qspi",
+>  		.data = &intel_lgm_qspi,
+>  	},
+> +	{
+> +		.compatible = "pensando,cdns-qspi",
+> +		.data = &pen_cdns_qspi,
+> +	},
+>  	{ /* end of table */ }
+>  };
+>  
+> -- 
+> 2.17.1
 > 
 
-Sure, will fix it
+Rest of the patch looks good to me.
 
->> +	*trfcr_el1 = 0;
->> +
->> +	/* Check if we have TRBE */
->> +	if (!cpuid_feature_extract_unsigned_field(read_sysreg(id_aa64dfr0_el1),
->> +						  ID_AA64DFR0_TRBE_SHIFT))
->> +		return;
-> 
-> Do we have a way to track this that doesn't involve reading an ID
-> register? This is on the hot path, and is going to really suck badly
-> with NV (which traps all ID regs for obvious reasons). I would have
-> hoped that one way or another, we'd have a static key for this.
-
-TRBE, like SPE can be optionally enabled on a subset of the CPUs. We
-could have a per-CPU static key in the worst case. I guess this would
-apply to SPE as well.
-
-May be we could do this check at kvm_arch_vcpu_load()/put() ?
-
-> 
->> +
->> +	/* Check we can access the TRBE */
->> +	if ((read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_PROG))
->> +		return;
->> +
->> +	/* Check if the TRBE is enabled */
->> +	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_ENABLE))
->> +		return;
->> +	/*
->> +	 * Prohibit trace generation while we are in guest.
->> +	 * Since access to TRFCR_EL1 is trapped, the guest can't
->> +	 * modify the filtering set by the host.
-> 
-> If TRFCR_EL1 is trapped, where is the trap handling? This series
-> doesn't touch sys_regs.c, so I assume you rely on the "inject an UNDEF
-> for anything unknown" default behaviour?
-
-Yes.
-
-> 
-> If that's the case, I'd rather you add an explicit handler.
-> 
-
-I could add one.
-
-Cheers
-Suzuki
-
-
->> +	 */
->> +	*trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
->> +	write_sysreg_s(0, SYS_TRFCR_EL1);
->> +	isb();
->> +	/* Drain the trace buffer to memory */
->> +	tsb_csync();
->> +	dsb(nsh);
->> +}
->> +
->> +static void __debug_restore_trace(u64 trfcr_el1)
->> +{
->> +	if (!trfcr_el1)
->> +		return;
->> +
->> +	/* Restore trace filter controls */
->> +	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
->> +}
->> +
->>   void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
->>   {
->>   	/* Disable and flush SPE data generation */
->>   	__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
->> +	/* Disable and flush Self-Hosted Trace generation */
->> +	__debug_save_trace(&vcpu->arch.host_debug_state.trfcr_el1);
->>   }
->>   
->>   void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->> @@ -72,6 +113,7 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->>   void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
->>   {
->>   	__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
->> +	__debug_restore_trace(vcpu->arch.host_debug_state.trfcr_el1);
->>   }
->>   
->>   void __debug_switch_to_host(struct kvm_vcpu *vcpu)
->> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
->> index 68ab6b4d5141..736805232521 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
->> @@ -95,6 +95,7 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
->>   
->>   	mdcr_el2 &= MDCR_EL2_HPMN_MASK;
->>   	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
->> +	mdcr_el2 |= MDCR_EL2_E2TB_MASK << MDCR_EL2_E2TB_SHIFT;
->>   
->>   	write_sysreg(mdcr_el2, mdcr_el2);
->>   	if (is_protected_kvm_enabled())
->> -- 
->> 2.24.1
->>
->>
-> 
-> Thanks,
-> 
-> 	M.
-> 
-> [1] https://lore.kernel.org/r/20210323180057.263356-1-alexandru.elisei@arm.com
-> 
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
