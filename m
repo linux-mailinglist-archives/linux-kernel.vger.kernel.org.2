@@ -2,117 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C74334DF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B3E34DF76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhC3Ddw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhC3Dd3 (ORCPT
+        id S229911AbhC3Dgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:36:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12685 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhC3DgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:33:29 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59874C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:33:29 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so14359309otn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ql+HmMVz0sH5JvqPIDDXRRneez0X7Lfo0B0gyoh7cLM=;
-        b=xNnTtYTScqIxt3EB9zSXP2rDikXQFXlNLrRtRx7KgGzF5eHkcpRCP6js5A8uHFOVar
-         F8sohG2dY7SxS95uWnuxZoDNGafqo+8YFtcf1pqwYrFJvNvIwGiLNGpCAhQ85673CXoW
-         /HsmgZQFB3OGZ3v5IfwiN/36cWxqR8L9cx/RA78hWVY0TWUB99dWREIIJ69t7jlH8A0v
-         f6XaTxIjNAlRTrv0PlKs2uP+jnoUOcAPH5lrH1/oImxRRO2FTMtDEntz9nlJlp56Roq4
-         KUORmj1PI5ZbzAZ8ghkRk7NJZrdPJHKZ2VtWLglYfzlSe+sNwIIHL5rVKsREx3rou4O4
-         Q/8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ql+HmMVz0sH5JvqPIDDXRRneez0X7Lfo0B0gyoh7cLM=;
-        b=JmIo+btnQIYtEL/ckm3q+BSN9syOOzwrGXGNDTRrUAlA5jmMyZ7M+xLAicRiavkSwG
-         c5cOQi69Y79KB1LKWPiWBR2PZtfr99Ec6N9/31zoaqKz2vNHAJF20Yc9EmtSs2o/93ny
-         PvijDasBiWr5ZX6s1kyCPeqsKJd9l1da/88uFC83kuu7+/3kOOOEVh9E80KveUF0PQ5/
-         tjw3pfnm4EKOKwlq02xeER0AwWOKD+AVNxYkVD4HZgAWa2EBHDgBUTStUpYsfIo4xevE
-         3F8Wv4+xyRSPHinxGTT2wR3csTkcSbwGxWajaX2qjJZewAoQHEJ+z47+PVDPsLwQ4UGt
-         hUnA==
-X-Gm-Message-State: AOAM530ttN7LP+bt2hS6WfHIllrm1CILeDtboWWH4dk+x6BDFst+bDHK
-        /D548LnMvrXgDklx6vZc/TvUDA==
-X-Google-Smtp-Source: ABdhPJyj67MR0So7sgsQ2b0tv1kudAjEpKQylBYgPjsDUahMPCBwQtkZHMmijKOUyL4r+Xcf2cd+/Q==
-X-Received: by 2002:a9d:6ad9:: with SMTP id m25mr25971757otq.267.1617075208795;
-        Mon, 29 Mar 2021 20:33:28 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c25sm4991615otk.35.2021.03.29.20.33.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 20:33:28 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 22:33:26 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 7/7] arm64: dts: qcom: use dp_phy to provide clocks to
- dispcc
-Message-ID: <YGKcBrWE6VLerK0I@builder.lan>
-References: <20210328205257.3348866-1-dmitry.baryshkov@linaro.org>
- <20210328205257.3348866-8-dmitry.baryshkov@linaro.org>
+        Mon, 29 Mar 2021 23:36:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617075373; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=HnegzL6kgP1wk+tB6MY3REkS8nPIox6nxJ1CKMh4WkE=; b=h14EsbVcblt911A8t6qn6QsHSFFcO21afVZKW5zmkDJNHsAJbIivbngrmKvT7tg2t/NcJReI
+ 4NpCoGIrTqLQOtlZZ7az4QyFctNFrfJ2fufiNVqiT25E84T2LPnjpi/xxmeBWwsntRjf7bY0
+ MCamO2kvqwtNU+VsDIzPQv3Spz8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60629cac0a4a07ffda96b197 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 03:36:12
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4034C43464; Tue, 30 Mar 2021 03:36:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.211.32.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EFF5C433CA;
+        Tue, 30 Mar 2021 03:36:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2EFF5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm/msm: Fix removal of valid error case when checking
+ speed_bin
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>
+References: <20210330013408.2532048-1-john.stultz@linaro.org>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <06292101-9233-83df-942d-d49a4e53fc3e@codeaurora.org>
+Date:   Tue, 30 Mar 2021 09:06:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210328205257.3348866-8-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210330013408.2532048-1-john.stultz@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 28 Mar 15:52 CDT 2021, Dmitry Baryshkov wrote:
-
-> Plug dp_phy-provided clocks to display clock controller.
+On 3/30/2021 7:04 AM, John Stultz wrote:
+> Commit 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to
+> access outside valid memory"), reworked the nvmem reading of
+> "speed_bin", but in doing so dropped handling of the -ENOENT
+> case which was previously documented as "fine".
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> That change resulted in the db845c board display to fail to
+> start, with the following error:
+> 
+> adreno 5000000.gpu: [drm:a6xx_gpu_init] *ERROR* failed to read speed-bin (-2). Some OPPs may not be supported by hardware
+> 
+> Thus, this patch simply re-adds the ENOENT handling so the lack
+> of the speed_bin entry isn't fatal for display, and gets things
+> working on db845c.
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: Jordan Crouse <jcrouse@codeaurora.org>
+> Cc: Eric Anholt <eric@anholt.net>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: freedreno@lists.freedesktop.org
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: YongQin Liu <yongqin.liu@linaro.org>
+> Reported-by: YongQin Liu <yongqin.liu@linaro.org>
+> Fixes: 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to access outside valid memory")
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 > ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 0f79e6885004..a2478bd3590a 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -2600,8 +2600,8 @@ dispcc: clock-controller@af00000 {
->  				 <&dsi0_phy 1>,
->  				 <&dsi1_phy 0>,
->  				 <&dsi1_phy 1>,
-> -				 <0>,
-> -				 <0>,
-> +				 <&dp_phy 0>,
-> +				 <&dp_phy 1>,
->  				 <0>,
->  				 <0>,
->  				 <0>,
-> @@ -2614,8 +2614,8 @@ dispcc: clock-controller@af00000 {
->  				      "dsi0_phy_pll_out_dsiclk",
->  				      "dsi1_phy_pll_out_byteclk",
->  				      "dsi1_phy_pll_out_dsiclk",
-> -				      "dp_link_clk_divsel_ten",
-> -				      "dp_vco_divided_clk_src_mux",
-> +				      "dp_phy_pll_link_clk",
-> +				      "dp_phy_pll_vco_div_clk",
->  				      "dptx1_phy_pll_link_clk",
->  				      "dptx1_phy_pll_vco_div_clk",
->  				      "dptx2_phy_pll_link_clk",
-> -- 
-> 2.30.2
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 690409ca8a186..cb2df8736ca85 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1406,7 +1406,13 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+>   	int ret;
+>   
+>   	ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
+> -	if (ret) {
+> +	/*
+> +	 * -ENOENT means that the platform doesn't support speedbin which is
+> +	 * fine
+> +	 */
+> +	if (ret == -ENOENT) {
+> +		return 0;
+> +	} else if (ret) {
+>   		DRM_DEV_ERROR(dev,
+>   			      "failed to read speed-bin (%d). Some OPPs may not be supported by hardware",
+>   			      ret);
 > 
+
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+
+This looks "fine" to me. ;)
+
+-Akhil.
