@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1724134E669
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6006534E6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhC3Lhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:37:36 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15823 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhC3LhY (ORCPT
+        id S231887AbhC3Lvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:51:44 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42032 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhC3Lv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:37:24 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8nS304hpz9tNM;
-        Tue, 30 Mar 2021 19:35:15 +0800 (CST)
-Received: from ubuntu.huawei.com (10.67.174.117) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 19:37:12 +0800
-From:   Ruiqi Gong <gongruiqi1@huawei.com>
-To:     Zaibo Xu <xuzaibo@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Wang Weiyang" <wangweiyang2@huawei.com>,
-        Ruiqi GONG <gongruiqi1@huawei.com>
-Subject: [PATCH -next] crypto: hisilicon/hpre - fix a typo in hpre_crypto.c
-Date:   Tue, 30 Mar 2021 07:51:24 -0400
-Message-ID: <20210330115124.15508-1-gongruiqi1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 30 Mar 2021 07:51:27 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lRCu5-0000CA-Sx; Tue, 30 Mar 2021 11:51:25 +0000
+Subject: Re: [PATCH] mm/page_alloc: Add a bulk page allocator -fix -fix
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20210330114847.GX3697@techsingularity.net>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <f02d1024-5201-a065-5815-4216b5d0fe1f@canonical.com>
+Date:   Tue, 30 Mar 2021 12:51:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.117]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210330114847.GX3697@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do a trivial typo fix.
-s/discribed/described
+On 30/03/2021 12:48, Mel Gorman wrote:
+> Colin Ian King reported the following problem (slightly edited)
+> 
+> 	Author: Mel Gorman <mgorman@techsingularity.net>
+> 	Date:   Mon Mar 29 11:12:24 2021 +1100
+> 
+> 	    mm/page_alloc: add a bulk page allocator
+> 
+> 	...
+> 
+> 	Static analysis on linux-next with Coverity has found a potential
+> 	uninitialized variable issue in function __alloc_pages_bulk with
+> 	the following commit:
+> 
+> 	...
+> 
+> 	    Uninitialized scalar variable (UNINIT)
+> 	    15. uninit_use_in_call: Using uninitialized value alloc_flags when
+> 	        calling prepare_alloc_pages.
+> 
+> 	5056        if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask,
+> 						&ac, &alloc_gfp, &alloc_flags))
+> 
+> The problem is that prepare_alloc_flags only updates alloc_flags
+> which must have a valid initial value. The appropriate initial value is
+> ALLOC_WMARK_LOW to avoid the bulk allocator pushing a zone below the low
+> watermark without waking kswapd assuming the GFP mask allows kswapd to
+> be woken.
+> 
+> This is a second fix to the mmotm patch
+> mm-page_alloc-add-a-bulk-page-allocator.patch . It will cause a mild conflict
+> with a later patch due to renaming of an adjacent variable that is trivially
+> resolved. I can post a full series with the fixes merged if that is preferred.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  mm/page_alloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 92d55f80c289..dabef0b910c9 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4990,7 +4990,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	struct list_head *pcp_list;
+>  	struct alloc_context ac;
+>  	gfp_t alloc_gfp;
+> -	unsigned int alloc_flags;
+> +	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>  	int allocated = 0;
+>  
+>  	if (WARN_ON_ONCE(nr_pages <= 0))
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Mel, that definitely fixes the issue.
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index d743c540d602..9fbb573fdb1e 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -1758,7 +1758,7 @@ static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
- 
- 	/*
- 	 * Src_data(gx) is in little-endian order, MSB in the final byte should
--	 * be masked as discribed in RFC7748, then transform it to big-endian
-+	 * be masked as described in RFC7748, then transform it to big-endian
- 	 * form, then hisi_hpre can use the data.
- 	 */
- 	ptr[31] &= 0x7f;
--- 
-2.17.1
-
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
