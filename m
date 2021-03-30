@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5E634E3CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3200834E3D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhC3I7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:59:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28729 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231696AbhC3I7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:59:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617094743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z7IpkPKNO0+WZGDPW7WcTQq39mnF+XSoroeOgb4x870=;
-        b=LEC6oJpU1QyY7IbTsWXo1DCZLAYbpWG34NwKKDaCKTLx3vANscyjxkQaESHypMDH/0jr1I
-        z7RSFK2rTaEAlxkk3shKRESWfnvnlb+jkVsRp5wjkIu93ruXyAxNn96I8cD6xZiKzCNKDg
-        9+uzSlvAhVVNtYvwGRiTKcWGIUrIBtQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-05lw0s0-PG6axPupkq6nyA-1; Tue, 30 Mar 2021 04:59:01 -0400
-X-MC-Unique: 05lw0s0-PG6axPupkq6nyA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0AC8180FCAA;
-        Tue, 30 Mar 2021 08:58:57 +0000 (UTC)
-Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F27E1001B2C;
-        Tue, 30 Mar 2021 08:58:44 +0000 (UTC)
-Subject: Re: [PATCH v1 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
- to prefault/prealloc memory
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Rik van Riel <riel@surriel.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20210317110644.25343-1-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <af5555cf-d112-44fd-e030-bfe8f89c8ddc@redhat.com>
-Date:   Tue, 30 Mar 2021 10:58:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231668AbhC3JBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231626AbhC3JAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:00:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DB5619AD;
+        Tue, 30 Mar 2021 09:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617094851;
+        bh=7BKJpJRJJea7jWMl80W5EN9UAj8omc2Cs2r3GAQepzo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wsuslf1aShoCKyVO6hEvzEdZFMLQDIu2sbrH3x69Zj3fzv+Ssz4//dpuMEbWngOUq
+         Zjq5v+sm416E8eDL5lOizTzEa7Erwc/f8fCuW75qsYfDXgJ3oE6b4i2kQYeYtPZd4I
+         FK+fITjA3iXC63XWANkkhj4NvYlqDfeUjJbbuVDoJnM3Z/9egQRLEp8Koxo3BlExlm
+         KJf0GkZPfII5XV5fPTrpbDnwtlOxinHOG65Ikgkmm49iP6nf4qHit/q0d/LnVY5qb5
+         qa+2M5n3XKCJv1Wm+mrJgHL5nAHA2YFzyo0MHv0A+yCW12hqtwqifDnY1PrNFQltR4
+         2Y+g7lZslykhg==
+Received: by mail-oo1-f53.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so3616658oor.1;
+        Tue, 30 Mar 2021 02:00:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531q1tUjYttWC1Plkfc9XuItgOGcA+fFv0WHfXrMBQvc7MswRNus
+        E9i6o0x2QMgnTmzWwbDN6fRjkSuusGeFcFzGuws=
+X-Google-Smtp-Source: ABdhPJzpNNBXFi0zlX+fSlV+iQuwxA7n7pfSwfoGiIinCD5YA1YpFSD4jDETbIF3gyjCIllkPcG9Qx+cRKe7U+THggk=
+X-Received: by 2002:a4a:304a:: with SMTP id z10mr25148861ooz.26.1617094850520;
+ Tue, 30 Mar 2021 02:00:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210317110644.25343-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-7-arnd@kernel.org>
+ <YGLkPjSBdgpriC0E@blackbook>
+In-Reply-To: <YGLkPjSBdgpriC0E@blackbook>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 30 Mar 2021 11:00:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+Message-ID: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Ning Sun <ning.sun@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        tboot-devel@lists.sourceforge.net,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.21 12:06, David Hildenbrand wrote:
-> Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
-> 
-> Now accompanied by minor adjustments and selftests/vm tests.
-> 
-> RFCv2 -> v1
-> - "mm: fix variable name in declaration of populate_vma_page_range()"
-> -- Added
-> - "mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault ..."
-> -- Fix detection of memory holes when we have to re-lookup the VMA
-> -- Return -EHWPOISON to user space when we hit HW poisoned pages
-> -- Make variable names in definition and declaration consistent
-> - "MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT"
-> -- Added
-> - "selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore"
-> -- Added
-> - "selftests/vm: add test for MADV_POPULATE_(READ|WRITE)"
-> -- Added
-> 
-> RFC -> RFCv2:
-> - Fix re-locking (-> set "locked = 1;")
-> - Don't mimic MAP_POPULATE semantics:
-> --> Explicit READ/WRITE request instead of selecting it automatically,
->      which makes it more generic and better suited for some use cases (e.g., we
->      usually want to prefault shmem writable)
-> --> Require proper access permissions
-> - Introduce and use faultin_vma_page_range()
-> --> Properly handle HWPOISON pages (FOLL_HWPOISON)
-> --> Require proper access permissions (!FOLL_FORCE)
-> - Let faultin_vma_page_range() check for compatible mappings/permissions
-> - Extend patch description and add some performance numbers
-> 
-> David Hildenbrand (5):
->    mm: make variable names for populate_vma_page_range() consistent
->    mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault/prealloc
->      memory
->    MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT
->    selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore
->    selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
-> 
->   MAINTAINERS                                |   1 +
->   arch/alpha/include/uapi/asm/mman.h         |   3 +
->   arch/mips/include/uapi/asm/mman.h          |   3 +
->   arch/parisc/include/uapi/asm/mman.h        |   3 +
->   arch/xtensa/include/uapi/asm/mman.h        |   3 +
->   include/uapi/asm-generic/mman-common.h     |   3 +
->   mm/gup.c                                   |  54 ++++
->   mm/internal.h                              |   5 +-
->   mm/madvise.c                               |  69 +++++
->   tools/testing/selftests/vm/.gitignore      |   3 +
->   tools/testing/selftests/vm/Makefile        |   1 +
->   tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
->   tools/testing/selftests/vm/run_vmtests.sh  |  16 +
->   13 files changed, 505 insertions(+), 1 deletion(-)
->   create mode 100644 tools/testing/selftests/vm/madv_populate.c
-> 
+On Tue, Mar 30, 2021 at 10:41 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
+>
+> On Mon, Mar 22, 2021 at 05:02:44PM +0100, Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+> > I'm not sure what is expected to happen for such a configuration,
+> > presumably these functions are never calls in that case.
+> Yes, the functions you patched would only be called from subsystems or
+> there should be no way to obtain a struct cgroup_subsys reference
+> anyway (hence it's ok to always branch as if ss=3D=3DNULL).
+>
+> I'd prefer a variant that wouldn't compile the affected codepaths when
+> there are no subsystems registered, however, I couldn't come up with a
+> way how to do it without some preprocessor ugliness.
 
-Gentle ping.
+Would it be possible to enclose most or all of kernel/cgroup/cgroup.c
+in an #ifdef CGROUP_SUBSYS_COUNT block? I didn't try that
+myself, but this might be a way to guarantee that there cannot
+be any callers (it would cause a link error).
 
--- 
-Thanks,
+> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-David / dhildenb
+Thanks
 
+        Arnd
