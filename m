@@ -2,314 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E607234E7EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9072934E7F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhC3Mvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:51:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:60050 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232049AbhC3MvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:51:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1506531B;
-        Tue, 30 Mar 2021 05:51:18 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D49753F694;
-        Tue, 30 Mar 2021 05:51:15 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 13:51:13 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        Jyoti Bhayana <jbhayana@google.com>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v7 25/38] iio/scmi: port driver to the new
- scmi_sensor_proto_ops interface
-Message-ID: <20210330125113.GD43717@e120937-lin>
-References: <20210316124903.35011-1-cristian.marussi@arm.com>
- <20210316124903.35011-26-cristian.marussi@arm.com>
- <20210330123325.00000456@Huawei.com>
+        id S232049AbhC3Mw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:52:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232082AbhC3Mwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:52:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617108765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9oSi5GGbNgg3M8lWW4k8B79yTQ6t68lBDupcdj/YAPo=;
+        b=LKanRNRZLwOpk7p/Prmk+t067fpEf8xF4p7YhlYBVS6OWneHYwXMN1cIl7f4dNA+Vi/x35
+        vi0qPmdlp/OH261dc/F6cGKvKw30kIBHkamfVC7vTHo+9FbibAsky9buk0j/YC6DbuF5xd
+        ylI7ayZccfJGeXVIX0q3rBKIl6/MxIw=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498--hYZW0jSMymSgcCTC_-oxg-1; Tue, 30 Mar 2021 08:52:43 -0400
+X-MC-Unique: -hYZW0jSMymSgcCTC_-oxg-1
+Received: by mail-qk1-f198.google.com with SMTP id y9so14351261qki.14
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:52:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=9oSi5GGbNgg3M8lWW4k8B79yTQ6t68lBDupcdj/YAPo=;
+        b=F/xTBHYlpr97v5SkfqyEWIqZHcVlNHye2SxiSbYfUea5y9Msp1AdUHxot54HjgF5e/
+         Lj3b7nkK5mR+sTKJgTifDRRgf/cfkKB+6CA9GQp9eLAjkLy5vOf28qrvxwfEBBQ0JisD
+         YtDGSI3sW5KYjbbfyz61P+1TjYidamHtCIkp4lN3QIDLt6YN5ieO6Tr2YG0sPi2LQ88M
+         Er0D9lqPpBg1CikgYvC2AUobssWsPDxX0rfu5cgXa7PJzoocXs6W7JLTGvz7W9YBgBWG
+         Cvu8hvxddoG98AaVDzdw0QkkjAVJhzO0uHVmrbCqj2OlMy7ue2LEzveIhNvzw9HW0Ewp
+         z7eQ==
+X-Gm-Message-State: AOAM533gKCB8c6jq9dt4rWNOX9xBvAIihkTSKgM1f8fquSG/SswNhpFy
+        epE15o/CHW1hKV5j13LFC8yrrK81xHR4MtTzXZGhrAMah5h5ZJSf04+yxCBxvaZyZBwzphPfOsQ
+        5ZasyZEFeefBSRKtoEjPimh+N
+X-Received: by 2002:a05:622a:205:: with SMTP id b5mr27040426qtx.186.1617108762559;
+        Tue, 30 Mar 2021 05:52:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynqNHTarV57tBqudl5ZzuOPufRHj6cm0jPX5JnCnQR3VGsjjwVPe7pzb5WqDow2URPRXRPww==
+X-Received: by 2002:a05:622a:205:: with SMTP id b5mr27040396qtx.186.1617108762231;
+        Tue, 30 Mar 2021 05:52:42 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v11sm12701178qtx.79.2021.03.30.05.52.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 05:52:41 -0700 (PDT)
+Subject: Re: [PATCH V4 XRT Alveo 05/20] fpga: xrt: group platform driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org,
+        Max Zhen <max.zhen@xilinx.com>
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org
+References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
+ <20210324052947.27889-6-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <692776f1-ed9f-5013-a0bf-d6c97d355369@redhat.com>
+Date:   Tue, 30 Mar 2021 05:52:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330123325.00000456@Huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210324052947.27889-6-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
 
-On Tue, Mar 30, 2021 at 12:33:25PM +0100, Jonathan Cameron wrote:
-> On Tue, 16 Mar 2021 12:48:50 +0000
-> Cristian Marussi <cristian.marussi@arm.com> wrote:
-> 
-> > Port driver to the new SCMI Sensor interface based on protocol handles
-> > and common devm_get_ops().
-> > 
-> > Cc: Jyoti Bhayana <jbhayana@google.com>
-> > Cc: Jonathan Cameron <jic23@kernel.org>
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> 
-> +CC linux-iio@vger.kernel.org
-> 
-> Rule of thumb if it doesn't go there it ends up in randomly location based
-> on other lists and I might not see it for a few weeks :(
-> 
+On 3/23/21 10:29 PM, Lizhi Hou wrote:
+> group driver that manages life cycle of a bunch of leaf driver instances
+> and bridges them with root.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+> ---
+>  drivers/fpga/xrt/include/group.h |  25 +++
+>  drivers/fpga/xrt/lib/group.c     | 286 +++++++++++++++++++++++++++++++
+>  2 files changed, 311 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/include/group.h
+>  create mode 100644 drivers/fpga/xrt/lib/group.c
+>
+> diff --git a/drivers/fpga/xrt/include/group.h b/drivers/fpga/xrt/include/group.h
+> new file mode 100644
+> index 000000000000..09e9d03f53fe
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/group.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+ok, removed generic boilerplate
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_GROUP_H_
+> +#define _XRT_GROUP_H_
+> +
+> +#include "xleaf.h"
+move header to another patch
+> +
+> +/*
+> + * Group driver leaf calls.
+ok
+> + */
+> +enum xrt_group_leaf_cmd {
+> +	XRT_GROUP_GET_LEAF = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+ok
+> +	XRT_GROUP_PUT_LEAF,
+> +	XRT_GROUP_INIT_CHILDREN,
+> +	XRT_GROUP_FINI_CHILDREN,
+> +	XRT_GROUP_TRIGGER_EVENT,
+> +};
+> +
+> +#endif	/* _XRT_GROUP_H_ */
+> diff --git a/drivers/fpga/xrt/lib/group.c b/drivers/fpga/xrt/lib/group.c
+> new file mode 100644
+> index 000000000000..7b8716569641
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/group.c
+> @@ -0,0 +1,286 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA Group Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+> +#include "xleaf.h"
+> +#include "subdev_pool.h"
+> +#include "group.h"
+> +#include "metadata.h"
+> +#include "lib-drv.h"
+> +
+> +#define XRT_GRP "xrt_group"
+> +
+> +struct xrt_group {
+> +	struct platform_device *pdev;
+> +	struct xrt_subdev_pool leaves;
+> +	bool leaves_created;
+> +	struct mutex lock; /* lock for group */
+> +};
+> +
+> +static int xrt_grp_root_cb(struct device *dev, void *parg,
+> +			   enum xrt_root_cmd cmd, void *arg)
+ok
+> +{
+> +	int rc;
+> +	struct platform_device *pdev =
+> +		container_of(dev, struct platform_device, dev);
+> +	struct xrt_group *xg = (struct xrt_group *)parg;
+> +
+> +	switch (cmd) {
+> +	case XRT_ROOT_GET_LEAF_HOLDERS: {
+> +		struct xrt_root_get_holders *holders =
+> +			(struct xrt_root_get_holders *)arg;
+> +		rc = xrt_subdev_pool_get_holders(&xg->leaves,
+> +						 holders->xpigh_pdev,
+> +						 holders->xpigh_holder_buf,
+> +						 holders->xpigh_holder_buf_len);
+> +		break;
+> +	}
+> +	default:
+> +		/* Forward parent call to root. */
+> +		rc = xrt_subdev_root_request(pdev, cmd, arg);
+> +		break;
+> +	}
+> +
+> +	return rc;
+> +}
+> +
+> +/*
+> + * Cut subdev's dtb from group's dtb based on passed-in endpoint descriptor.
+> + * Return the subdev's dtb through dtbp, if found.
+> + */
+> +static int xrt_grp_cut_subdev_dtb(struct xrt_group *xg, struct xrt_subdev_endpoints *eps,
+> +				  char *grp_dtb, char **dtbp)
+> +{
+> +	int ret, i, ep_count = 0;
+> +	char *dtb = NULL;
+> +
+> +	ret = xrt_md_create(DEV(xg->pdev), &dtb);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; eps->xse_names[i].ep_name || eps->xse_names[i].regmap_name; i++) {
+> +		const char *ep_name = eps->xse_names[i].ep_name;
+> +		const char *reg_name = eps->xse_names[i].regmap_name;
+> +
+> +		if (!ep_name)
+> +			xrt_md_get_compatible_endpoint(DEV(xg->pdev), grp_dtb, reg_name, &ep_name);
+> +		if (!ep_name)
+> +			continue;
+> +
+> +		ret = xrt_md_copy_endpoint(DEV(xg->pdev), dtb, grp_dtb, ep_name, reg_name, NULL);
+> +		if (ret)
+> +			continue;
+> +		xrt_md_del_endpoint(DEV(xg->pdev), grp_dtb, ep_name, reg_name);
+> +		ep_count++;
+> +	}
+> +	/* Found enough endpoints, return the subdev's dtb. */
+> +	if (ep_count >= eps->xse_min_ep) {
+> +		*dtbp = dtb;
+> +		return 0;
+> +	}
+> +
+> +	/* Cleanup - Restore all endpoints that has been deleted, if any. */
+> +	if (ep_count > 0) {
+> +		xrt_md_copy_endpoint(DEV(xg->pdev), grp_dtb, dtb,
+> +				     XRT_MD_NODE_ENDPOINTS, NULL, NULL);
+> +	}
+> +	vfree(dtb);
+> +	*dtbp = NULL;
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_create_leaves(struct xrt_group *xg)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xg->pdev);
+> +	struct xrt_subdev_endpoints *eps = NULL;
+> +	int ret = 0, failed = 0;
+> +	enum xrt_subdev_id did;
+> +	char *grp_dtb = NULL;
+> +	unsigned long mlen;
+> +
+> +	if (!pdata)
+> +		return -EINVAL;
+ok
+> +
+> +	mlen = xrt_md_size(DEV(xg->pdev), pdata->xsp_dtb);
+> +	if (mlen == XRT_MD_INVALID_LENGTH) {
+> +		xrt_err(xg->pdev, "invalid dtb, len %ld", mlen);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (xg->leaves_created) {
+> +		mutex_unlock(&xg->lock);
+add a comment that this is not an error and/or error is handled elsewhere
+> +		return -EEXIST;
+> +	}
+> +
+> +	grp_dtb = vmalloc(mlen);
+> +	if (!grp_dtb) {
+> +		mutex_unlock(&xg->lock);
+> +		return -ENOMEM;
+ok
+> +	}
+> +
+> +	/* Create all leaves based on dtb. */
+> +	xrt_info(xg->pdev, "bringing up leaves...");
+> +	memcpy(grp_dtb, pdata->xsp_dtb, mlen);
+> +	for (did = 0; did < XRT_SUBDEV_NUM; did++) {
+ok
+> +		eps = xrt_drv_get_endpoints(did);
+> +		while (eps && eps->xse_names) {
+> +			char *dtb = NULL;
+> +
+> +			ret = xrt_grp_cut_subdev_dtb(xg, eps, grp_dtb, &dtb);
+> +			if (ret) {
+> +				failed++;
+> +				xrt_err(xg->pdev, "failed to cut subdev dtb for drv %s: %d",
+> +					xrt_drv_name(did), ret);
+> +			}
+> +			if (!dtb) {
+> +				/*
+> +				 * No more dtb to cut or bad things happened for this instance,
+> +				 * switch to the next one.
+> +				 */
+> +				eps++;
+> +				continue;
+> +			}
+> +
+> +			/* Found a dtb for this instance, let's add it. */
+> +			ret = xrt_subdev_pool_add(&xg->leaves, did, xrt_grp_root_cb, xg, dtb);
+> +			if (ret < 0) {
+> +				failed++;
+> +				xrt_err(xg->pdev, "failed to add %s: %d", xrt_drv_name(did), ret);
 
-Ah sorry, I thought the direct CC was enough.
+add a comment that this is not a fatal error and cleanup happens elsewhere
 
-> > ---
-> >  drivers/iio/common/scmi_sensors/scmi_iio.c | 91 ++++++++++------------
-> >  1 file changed, 41 insertions(+), 50 deletions(-)
-> > 
-> > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > index 872d87ca6256..b4bdc3f3a946 100644
-> > --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > @@ -21,8 +21,10 @@
-> >  
-> >  #define SCMI_IIO_NUM_OF_AXIS 3
-> >  
-> > +static const struct scmi_sensor_proto_ops *sensor_ops;
-> 
-> Hmm.   I'm not keen on globals when they really should not be necessary.
-> They just result in lifetimes being out of sync.  Here you are fine because
-> you set it to an appropriate value as the first thing you do in probe, and
-> I assume the function only ever returns on answer on repeated calls.
-> 
-> Why not put a copy of that pointer inside the struct scmi_iio_priv structures?
-> 
+Tom
 
-The reason for this, as I said to Jyoyi who made the same comment indeed,
-from my point of view (maybe wrong..) was that while the protocol_handle,
-and previously the handle, are 'per-instance data' (so that you get a
-different one each time this driver is possibly probed against a different
-platform-handle) and as such are stored in scmi_iio_priv, the _ops are
-just plain code pointers and are returned always the same for the same
-protocol no matter how many times you probe this driver: you just end up
-calling them against the proper different saved protocol_handle; so it
-seemed to me an unneeded duplication to stick a copy of the same _ops
-inside each per-instance scmi_iio_priv, and at the same time it seemed
-also more straigthforward to access them without too many indirections
-from inside the scmi_iio_priv struct).
+> +			}
+> +			vfree(dtb);
+> +			/* Continue searching for the same instance from grp_dtb. */
+> +		}
+> +	}
+> +
+> +	xg->leaves_created = true;
+> +	vfree(grp_dtb);
+> +	mutex_unlock(&xg->lock);
+> +	return failed == 0 ? 0 : -ECHILD;
+> +}
+> +
+> +static void xrt_grp_remove_leaves(struct xrt_group *xg)
+> +{
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (!xg->leaves_created) {
+> +		mutex_unlock(&xg->lock);
+> +		return;
+> +	}
+> +
+> +	xrt_info(xg->pdev, "tearing down leaves...");
+> +	xrt_subdev_pool_fini(&xg->leaves);
+> +	xg->leaves_created = false;
+> +
+> +	mutex_unlock(&xg->lock);
+> +}
+> +
+> +static int xrt_grp_probe(struct platform_device *pdev)
+> +{
+> +	struct xrt_group *xg;
+> +
+> +	xrt_info(pdev, "probing...");
+> +
+> +	xg = devm_kzalloc(&pdev->dev, sizeof(*xg), GFP_KERNEL);
+> +	if (!xg)
+> +		return -ENOMEM;
+> +
+> +	xg->pdev = pdev;
+> +	mutex_init(&xg->lock);
+> +	xrt_subdev_pool_init(DEV(pdev), &xg->leaves);
+> +	platform_set_drvdata(pdev, xg);
+> +
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_remove(struct platform_device *pdev)
+> +{
+> +	struct xrt_group *xg = platform_get_drvdata(pdev);
+> +
+> +	xrt_info(pdev, "leaving...");
+> +	xrt_grp_remove_leaves(xg);
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_leaf_call(struct platform_device *pdev, u32 cmd, void *arg)
+> +{
+> +	int rc = 0;
+> +	struct xrt_group *xg = platform_get_drvdata(pdev);
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		/* Simply forward to every child. */
+> +		xrt_subdev_pool_handle_event(&xg->leaves,
+> +					     (struct xrt_event *)arg);
+> +		break;
+> +	case XRT_GROUP_GET_LEAF: {
+> +		struct xrt_root_get_leaf *get_leaf =
+> +			(struct xrt_root_get_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_get(&xg->leaves, get_leaf->xpigl_match_cb,
+> +					 get_leaf->xpigl_match_arg,
+> +					 DEV(get_leaf->xpigl_caller_pdev),
+> +					 &get_leaf->xpigl_tgt_pdev);
+> +		break;
+> +	}
+> +	case XRT_GROUP_PUT_LEAF: {
+> +		struct xrt_root_put_leaf *put_leaf =
+> +			(struct xrt_root_put_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_put(&xg->leaves, put_leaf->xpipl_tgt_pdev,
+> +					 DEV(put_leaf->xpipl_caller_pdev));
+> +		break;
+> +	}
+> +	case XRT_GROUP_INIT_CHILDREN:
+> +		rc = xrt_grp_create_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_FINI_CHILDREN:
+> +		xrt_grp_remove_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_TRIGGER_EVENT:
+> +		xrt_subdev_pool_trigger_event(&xg->leaves, (enum xrt_events)(uintptr_t)arg);
+> +		break;
+> +	default:
+> +		xrt_err(pdev, "unknown IOCTL cmd %d", cmd);
+> +		rc = -EINVAL;
+> +		break;
+> +	}
+> +	return rc;
+> +}
+> +
+> +static struct xrt_subdev_drvdata xrt_grp_data = {
+> +	.xsd_dev_ops = {
+> +		.xsd_leaf_call = xrt_grp_leaf_call,
+> +	},
+> +};
+> +
+> +static const struct platform_device_id xrt_grp_id_table[] = {
+> +	{ XRT_GRP, (kernel_ulong_t)&xrt_grp_data },
+> +	{ },
+> +};
+> +
+> +static struct platform_driver xrt_group_driver = {
+> +	.driver	= {
+> +		.name    = XRT_GRP,
+> +	},
+> +	.probe   = xrt_grp_probe,
+> +	.remove  = xrt_grp_remove,
+> +	.id_table = xrt_grp_id_table,
+> +};
+> +
+> +void group_leaf_init_fini(bool init)
+> +{
+> +	if (init)
+> +		xleaf_register_driver(XRT_SUBDEV_GRP, &xrt_group_driver, NULL);
+> +	else
+> +		xleaf_unregister_driver(XRT_SUBDEV_GRP);
+> +}
 
-But if these are not valid points I can change this in IIO now, and in
-the future also in all the other SCMI drivers that currently use this
-same API and pattern of usage with global ops. (..at least because I'd
-have to collect again all the other ACks agains and it's a bit later for
-that now)
-
-Thanks
-
-Cristian
-
-> Otherwise this all looks like straight forward refactoring so given the
-> above is more a 'bad smell' than a bug and I'm rather late to the game.
-> 
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> 
-> > +
-> >  struct scmi_iio_priv {
-> > -	struct scmi_handle *handle;
-> > +	struct scmi_protocol_handle *ph;
-> >  	const struct scmi_sensor_info *sensor_info;
-> >  	struct iio_dev *indio_dev;
-> >  	/* adding one additional channel for timestamp */
-> > @@ -82,7 +84,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
-> >  static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> >  {
-> >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > -	u32 sensor_id = sensor->sensor_info->id;
-> >  	u32 sensor_config = 0;
-> >  	int err;
-> >  
-> > @@ -92,27 +93,11 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> >  
-> >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> >  				    SCMI_SENS_CFG_SENSOR_ENABLE);
-> > -
-> > -	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
-> > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > -			&sensor_id, &sensor->sensor_update_nb);
-> > -	if (err) {
-> > -		dev_err(&iio_dev->dev,
-> > -			"Error in registering sensor update notifier for sensor %s err %d",
-> > -			sensor->sensor_info->name, err);
-> > -		return err;
-> > -	}
-> > -
-> > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
-> > -			sensor->sensor_info->id, sensor_config);
-> > -	if (err) {
-> > -		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
-> > -				SCMI_PROTOCOL_SENSOR,
-> > -				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
-> > -				&sensor->sensor_update_nb);
-> > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > +				     sensor_config);
-> > +	if (err)
-> >  		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
-> >  			sensor->sensor_info->name, err);
-> > -	}
-> >  
-> >  	return err;
-> >  }
-> > @@ -120,25 +105,13 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> >  static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
-> >  {
-> >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > -	u32 sensor_id = sensor->sensor_info->id;
-> >  	u32 sensor_config = 0;
-> >  	int err;
-> >  
-> >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> >  				    SCMI_SENS_CFG_SENSOR_DISABLE);
-> > -
-> > -	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
-> > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > -			&sensor_id, &sensor->sensor_update_nb);
-> > -	if (err) {
-> > -		dev_err(&iio_dev->dev,
-> > -			"Error in unregistering sensor update notifier for sensor %s err %d",
-> > -			sensor->sensor_info->name, err);
-> > -		return err;
-> > -	}
-> > -
-> > -	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
-> > -						     sensor_config);
-> > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > +				     sensor_config);
-> >  	if (err) {
-> >  		dev_err(&iio_dev->dev,
-> >  			"Error in disabling sensor %s with err %d",
-> > @@ -161,8 +134,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
-> >  	u32 sensor_config;
-> >  	char buf[32];
-> >  
-> > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
-> > -			sensor->sensor_info->id, &sensor_config);
-> > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
-> > +					 &sensor_config);
-> >  	if (err) {
-> >  		dev_err(&iio_dev->dev,
-> >  			"Error in getting sensor config for sensor %s err %d",
-> > @@ -208,8 +181,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
-> >  	sensor_config |=
-> >  		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
-> >  
-> > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
-> > -			sensor->sensor_info->id, sensor_config);
-> > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > +				     sensor_config);
-> >  	if (err)
-> >  		dev_err(&iio_dev->dev,
-> >  			"Error in setting sensor update interval for sensor %s value %u err %d",
-> > @@ -274,8 +247,8 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
-> >  	u32 sensor_config;
-> >  	int mult;
-> >  
-> > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
-> > -			sensor->sensor_info->id, &sensor_config);
-> > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
-> > +					 &sensor_config);
-> >  	if (err) {
-> >  		dev_err(&iio_dev->dev,
-> >  			"Error in getting sensor config for sensor %s err %d",
-> > @@ -542,15 +515,17 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
-> >  	return 0;
-> >  }
-> >  
-> > -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> > -					 struct scmi_handle *handle,
-> > -					 const struct scmi_sensor_info *sensor_info)
-> > +static struct iio_dev *
-> > +scmi_alloc_iiodev(struct scmi_device *sdev, struct scmi_protocol_handle *ph,
-> > +		  const struct scmi_sensor_info *sensor_info)
-> >  {
-> >  	struct iio_chan_spec *iio_channels;
-> >  	struct scmi_iio_priv *sensor;
-> >  	enum iio_modifier modifier;
-> >  	enum iio_chan_type type;
-> >  	struct iio_dev *iiodev;
-> > +	struct device *dev = &sdev->dev;
-> > +	const struct scmi_handle *handle = sdev->handle;
-> >  	int i, ret;
-> >  
-> >  	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
-> > @@ -560,7 +535,7 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> >  	iiodev->modes = INDIO_DIRECT_MODE;
-> >  	iiodev->dev.parent = dev;
-> >  	sensor = iio_priv(iiodev);
-> > -	sensor->handle = handle;
-> > +	sensor->ph = ph;
-> >  	sensor->sensor_info = sensor_info;
-> >  	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
-> >  	sensor->indio_dev = iiodev;
-> > @@ -595,6 +570,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> >  					  sensor_info->axis[i].id);
-> >  	}
-> >  
-> > +	ret = handle->notify_ops->devm_event_notifier_register(sdev,
-> > +				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > +				&sensor->sensor_info->id,
-> > +				&sensor->sensor_update_nb);
-> > +	if (ret) {
-> > +		dev_err(&iiodev->dev,
-> > +			"Error in registering sensor update notifier for sensor %s err %d",
-> > +			sensor->sensor_info->name, ret);
-> > +		return ERR_PTR(ret);
-> > +	}
-> > +
-> >  	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
-> >  	iiodev->channels = iio_channels;
-> >  	return iiodev;
-> > @@ -604,24 +590,29 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
-> >  {
-> >  	const struct scmi_sensor_info *sensor_info;
-> >  	struct scmi_handle *handle = sdev->handle;
-> > +	struct scmi_protocol_handle *ph;
-> >  	struct device *dev = &sdev->dev;
-> >  	struct iio_dev *scmi_iio_dev;
-> >  	u16 nr_sensors;
-> >  	int err = -ENODEV, i;
-> >  
-> > -	if (!handle || !handle->sensor_ops) {
-> > +	if (!handle)
-> > +		return -ENODEV;
-> > +
-> > +	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
-> > +	if (IS_ERR(sensor_ops)) {
-> >  		dev_err(dev, "SCMI device has no sensor interface\n");
-> > -		return -EINVAL;
-> > +		return PTR_ERR(sensor_ops);
-> >  	}
-> >  
-> > -	nr_sensors = handle->sensor_ops->count_get(handle);
-> > +	nr_sensors = sensor_ops->count_get(ph);
-> >  	if (!nr_sensors) {
-> >  		dev_dbg(dev, "0 sensors found via SCMI bus\n");
-> >  		return -ENODEV;
-> >  	}
-> >  
-> >  	for (i = 0; i < nr_sensors; i++) {
-> > -		sensor_info = handle->sensor_ops->info_get(handle, i);
-> > +		sensor_info = sensor_ops->info_get(ph, i);
-> >  		if (!sensor_info) {
-> >  			dev_err(dev, "SCMI sensor %d has missing info\n", i);
-> >  			return -EINVAL;
-> > @@ -636,7 +627,7 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
-> >  		    sensor_info->axis[0].type != RADIANS_SEC)
-> >  			continue;
-> >  
-> > -		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
-> > +		scmi_iio_dev = scmi_alloc_iiodev(sdev, ph, sensor_info);
-> >  		if (IS_ERR(scmi_iio_dev)) {
-> >  			dev_err(dev,
-> >  				"failed to allocate IIO device for sensor %s: %ld\n",
-> 
