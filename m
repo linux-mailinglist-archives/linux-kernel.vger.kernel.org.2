@@ -2,368 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5327634EE7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61E834EE81
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhC3QvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:51:05 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1514 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232048AbhC3Qu7 (ORCPT
+        id S232434AbhC3QwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232531AbhC3QwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:50:59 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UGgA3F007121;
-        Tue, 30 Mar 2021 18:50:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=0WVbvFJFkxqNn+aAOgONdxTifrUYipM9G5zeE9saWvw=;
- b=WqCpsP2DQhkNVgTxiCiJPavawSN4NnwvpVWNmdUIq15kYWtK3z+Q2cwwIEsrZzXlRoeE
- QaAjeEBAw6x+s6FloHAuHW1e9kyrSeOxcNENolQqbpjbLt6ppL0prUA7KvYNcjCXHPPG
- T+KtU+cuqzCHqcv4MkeJ0atYl61fF0T3KCVtreIArNteRK1ar7JCA0U2elsSjfE0L5cB
- IW4It8jD3XS8y1HySuE2gHGLKWGIYEwAmQjevosIiMISIoZ1dntobzQWV/hkNwswBSVo
- W5TNauVhr6gNO+oYPdU3cH+pMUJv75jfcpp/INQYGiTxXyU1MyCwMVQt5nJigG503pMd 4A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37ksfh55g8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Mar 2021 18:50:39 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4C4BC10002A;
-        Tue, 30 Mar 2021 18:50:39 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2D19425F41E;
-        Tue, 30 Mar 2021 18:50:39 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
- 2021 18:50:38 +0200
-Subject: Re: [PATCH v8 4/6] ARM: dts: stm32: add support for art-pi board
- based on stm32h750xbh6
-To:     <dillon.minfei@gmail.com>, <robh@kernel.org>,
-        <valentin.caron@foss.st.com>, <rong.a.chen@intel.com>,
-        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <afzal.mohd.ma@gmail.com>, <gregkh@linuxfoundation.org>,
-        <erwan.leray@foss.st.com>, <erwan.leray@st.com>,
-        <linux-serial@vger.kernel.org>, <lkp@intel.com>,
-        <patrice.chotard@foss.st.com>
-References: <1617094704-10040-1-git-send-email-dillon.minfei@gmail.com>
- <1617094704-10040-5-git-send-email-dillon.minfei@gmail.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <4df8e7b8-826c-b1d4-0431-4f777e26c383@foss.st.com>
-Date:   Tue, 30 Mar 2021 18:50:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 30 Mar 2021 12:52:00 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C074CC061574;
+        Tue, 30 Mar 2021 09:51:59 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id l4so25838956ejc.10;
+        Tue, 30 Mar 2021 09:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rHYeB0nnI6v6P0Q2VG5Mm28e6mrALqMkMyegkWOwiqk=;
+        b=kGJmMRBzcADUj4PBwV6ce2pTpWYreP0vdr0R/+o6Mk3bwh3JjUTnV1mwN+aBTDqACg
+         NjqoAQn6WyqUIAcWIbtJLQoPA4jxG/baST+8P6IplHfk3UNcnTEVamzs5uJNK+rWLAIj
+         04bNS9hxYXVaZQ1rOCdTC4OVWa5ZEAMYgy0yE2srmI9/GhDYtS8utBzwLA5oE3l0UGBy
+         Tu3ZDVizHWEgfsETi/mPfPDV93rpLDs8OjBQUi0sN2fsGAUOEQrtazjCY+ohgxPH42rI
+         2phdDmXtg81Akx9vv30xSdksoKpssSAyukxRlsNP5kV7ydTZwyQQKADSefZgI+Kzumrx
+         UfRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rHYeB0nnI6v6P0Q2VG5Mm28e6mrALqMkMyegkWOwiqk=;
+        b=US5DBgEZQCCqFX61Dz4R0dFPmONMsMfZjAN7vmVx2yAdzLW44kAaJYSJJon13HkuUK
+         4kKwPenP2NbPZZsXhLl5gbcAMCUigxG6V0hVbWw3iPhiT9liVMd+7LYj6O/hFTi09Xj8
+         qexiaZjgavh+CDwf3Q9OA9rZl+LLegvca8cdRJDj3nJuCy6rlK3CYfHw7KvIzQNBV/2v
+         W/vo+50ids5cIL7Fl9JxjCVzWWTcAbs6N+HT6HFUIdBCR7XmiDo9u6SP+0taAaZvQD4B
+         qyrcap8fDN/XjyyjESKVmd+jyt7BFU2bwEcPTWSCFtmzoqAYkiFz5sZXt26vRm9Y+OUY
+         poIQ==
+X-Gm-Message-State: AOAM531bk0rmB0KO5A6XcI8ZZQx5B1ojPxmL0jXB2qI83Me6YtYMEMpF
+        TuciHEkGgIqJK4WllJqgmnYJldcLKOifFbjAWhQ=
+X-Google-Smtp-Source: ABdhPJxEI1+v19DIodf61jZ+12dr7yL8rq3NEl9EcGbLLNAyqpcCMi7wpKL3zN7y1TecKLE/gx0b6U9qK0FSgMcZuGs=
+X-Received: by 2002:a17:906:4055:: with SMTP id y21mr33697021ejj.507.1617123118539;
+ Tue, 30 Mar 2021 09:51:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617094704-10040-5-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-30_08:2021-03-30,2021-03-30 signatures=0
+References: <20210329183312.178266-1-shy828301@gmail.com> <20210330164200.01a4b78f@thinkpad>
+In-Reply-To: <20210330164200.01a4b78f@thinkpad>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 30 Mar 2021 09:51:46 -0700
+Message-ID: <CAHbLzkrYd+5L8Ep+b83PkkFL_QGQe_vSAk=erQ+fvC6dEOsGsw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] mm: thp: use generic THP migration for NUMA
+ hinting fault
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 30, 2021 at 7:42 AM Gerald Schaefer
+<gerald.schaefer@linux.ibm.com> wrote:
+>
+> On Mon, 29 Mar 2021 11:33:06 -0700
+> Yang Shi <shy828301@gmail.com> wrote:
+>
+> >
+> > When the THP NUMA fault support was added THP migration was not supported yet.
+> > So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
+> > THP migration has been supported so it doesn't make too much sense to still keep
+> > another THP migration implementation rather than using the generic migration
+> > code.  It is definitely a maintenance burden to keep two THP migration
+> > implementation for different code paths and it is more error prone.  Using the
+> > generic THP migration implementation allows us remove the duplicate code and
+> > some hacks needed by the old ad hoc implementation.
+> >
+> > A quick grep shows x86_64, PowerPC (book3s), ARM64 ans S390 support both THP
+> > and NUMA balancing.  The most of them support THP migration except for S390.
+> > Zi Yan tried to add THP migration support for S390 before but it was not
+> > accepted due to the design of S390 PMD.  For the discussion, please see:
+> > https://lkml.org/lkml/2018/4/27/953.
+> >
+> > I'm not expert on S390 so not sure if it is feasible to support THP migration
+> > for S390 or not.  If it is not feasible then the patchset may make THP NUMA
+> > balancing not be functional on S390.  Not sure if this is a show stopper although
+> > the patchset does simplify the code a lot.  Anyway it seems worth posting the
+> > series to the mailing list to get some feedback.
+>
+> The reason why THP migration cannot work on s390 is because the migration
+> code will establish swap ptes in a pmd. The pmd layout is very different from
+> the pte layout on s390, so you cannot simply write a swap pte into a pmd.
+> There are no separate swp primitives for swap/migration pmds, IIRC. And even
+> if there were, we'd still need to find some space for a present bit in the
+> s390 pmd, and/or possibly move around some other bits.
+>
+> A lot of things can go wrong here, even if it could be possible in theory,
+> by introducing separate swp primitives in common code for pmd entries, along
+> with separate offset, type, shift, etc. I don't see that happening in the
+> near future.
 
+Thanks a lot for elaboration. IIUC, implementing migration PMD entry
+is *not* prevented from by hardware, it may be very tricky to
+implement it, right?
 
-On 3/30/21 10:58 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> This patchset has following changes:
-> 
-> - introduce stm32h750.dtsi to support stm32h750 value line
-> - add stm32h750i-art-pi.dtb (arch/arm/boot/dts/Makefile)
-> - add stm32h750-art-pi.dts to support art-pi board
-> 
-> art-pi board component:
-> - 8MiB qspi flash
-> - 16MiB spi flash
-> - 32MiB sdram
-> - ap6212 wifi&bt&fm
-> 
-> the detail board information can be found at:
-> https://art-pi.gitee.io/website/
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
-> v8:
-> - move file stm32h743.dtsi submit position to [PATCH V8 3/6]
-> 
->   arch/arm/boot/dts/Makefile              |   1 +
->   arch/arm/boot/dts/stm32h750.dtsi        |   6 +
->   arch/arm/boot/dts/stm32h750i-art-pi.dts | 229 ++++++++++++++++++++++++++++++++
->   3 files changed, 236 insertions(+)
->   create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
->   create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 8e5d4ab4e75e..a19c5ab9df84 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1071,6 +1071,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
->   	stm32746g-eval.dtb \
->   	stm32h743i-eval.dtb \
->   	stm32h743i-disco.dtb \
-> +	stm32h750i-art-pi.dtb \
->   	stm32mp153c-dhcom-drc02.dtb \
->   	stm32mp157a-avenger96.dtb \
->   	stm32mp157a-dhcor-avenger96.dtb \
-> diff --git a/arch/arm/boot/dts/stm32h750.dtsi b/arch/arm/boot/dts/stm32h750.dtsi
-> new file mode 100644
-> index 000000000000..41e3b1e3a874
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/stm32h750.dtsi
-> @@ -0,0 +1,6 @@
-> +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
-> +/* Copyright (C) STMicroelectronics 2021 - All Rights Reserved */
-> +
-> +#include "stm32h743.dtsi"
-> +
+>
+> Not sure if this is a show stopper, but I am not familiar enough with
+> NUMA and migration code to judge. E.g., I do not see any swp entry action
+> in your patches, but I assume this is implicitly triggered by the switch
+> to generic THP migration code.
 
-I know it's a bit odd, but you could directly include stm32h743.dtsi in 
-your board as there are no SoC differences.
+Yes, exactly. The migrate_pages() called by migrate_misplaced_page()
+takes care of everything.
 
+>
+> Could there be a work-around by splitting THP pages instead of marking them
+> as migrate pmds (via pte swap entries), at least when THP migration is not
+> supported? I guess it could also be acceptable if THP pages were simply not
+> migrated for NUMA balancing on s390, but then we might need some extra config
+> option to make that behavior explicit.
 
-> diff --git a/arch/arm/boot/dts/stm32h750i-art-pi.dts b/arch/arm/boot/dts/stm32h750i-art-pi.dts
-> new file mode 100644
-> index 000000000000..9bb73bb61901
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/stm32h750i-art-pi.dts
-> @@ -0,0 +1,229 @@
-> +/*
-> + * Copyright 2021 - Dillon Min <dillon.minfei@gmail.com>
-> + *
-> + * This file is dual-licensed: you can use it either under the terms
-> + * of the GPL or the X11 license, at your option. Note that this dual
-> + * licensing only applies to this file, and not this project as a
-> + * whole.
-> + *
-> + *  a) This file is free software; you can redistribute it and/or
-> + *     modify it under the terms of the GNU General Public License as
-> + *     published by the Free Software Foundation; either version 2 of the
-> + *     License, or (at your option) any later version.
-> + *
-> + *     This file is distributed in the hope that it will be useful,
-> + *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *     GNU General Public License for more details.
-> + *
-> + * Or, alternatively,
-> + *
-> + *  b) Permission is hereby granted, free of charge, to any person
-> + *     obtaining a copy of this software and associated documentation
-> + *     files (the "Software"), to deal in the Software without
-> + *     restriction, including without limitation the rights to use,
-> + *     copy, modify, merge, publish, distribute, sublicense, and/or
-> + *     sell copies of the Software, and to permit persons to whom the
-> + *     Software is furnished to do so, subject to the following
-> + *     conditions:
-> + *
-> + *     The above copyright notice and this permission notice shall be
-> + *     included in all copies or substantial portions of the Software.
-> + *
-> + *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-> + *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-> + *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-> + *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-> + *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-> + *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + *     OTHER DEALINGS IN THE SOFTWARE.
-> + *
-> + * For art-pi board resources, you can refer to link:
-> + * 	https://art-pi.gitee.io/website/
-> + */
-> +
-> +/dts-v1/;
-> +#include "stm32h750.dtsi"
-> +#include "stm32h7-pinctrl.dtsi"
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	model = "RT-Thread STM32H750i-ART-PI board";
-> +	compatible = "st,stm32h750i-art-pi", "st,stm32h750";
-> +
-> +	chosen {
-> +		bootargs = "root=/dev/ram";
-> +		stdout-path = "serial0:2000000n8";
-> +	};
-> +
-> +	memory@c0000000 {
-> +		device_type = "memory";
-> +		reg = <0xc0000000 0x2000000>;
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges;
-> +
-> +		linux,cma {
-> +			compatible = "shared-dma-pool";
-> +			no-map;
-> +			size = <0x100000>;
-> +			linux,dma-default;
-> +		};
-> +	};
-> +
-> +	aliases {
-> +		serial0 = &uart4;
-> +		serial1 = &usart3;
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		led-red {
-> +			gpios = <&gpioi 8 0>;
-> +		};
-> +		led-green {
-> +			gpios = <&gpioc 15 0>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	v3v3: regulator-v3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "v3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	wlan_pwr: regulator-wlan {
-> +		compatible = "regulator-fixed";
-> +
-> +		regulator-name = "wl-reg";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +
-> +		gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +};
-> +
-> +&clk_hse {
-> +	clock-frequency = <25000000>;
-> +};
-> +
-> +&dma1 {
-> +	status = "okay";
-> +};
-> +
-> +&dma2 {
-> +	status = "okay";
-> +};
-> +
-> +&mac {
-> +	status = "disabled";
-> +	pinctrl-0	= <&ethernet_rmii>;
-> +	pinctrl-names	= "default";
-> +	phy-mode	= "rmii";
-> +	phy-handle	= <&phy0>;
-> +
-> +	mdio0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "snps,dwmac-mdio";
-> +		phy0: ethernet-phy@0 {
-> +			reg = <0>;
-> +		};
-> +	};
-> +};
-> +
-> +&sdmmc1 {
-> +	pinctrl-names = "default", "opendrain", "sleep";
-> +	pinctrl-0 = <&sdmmc1_b4_pins_a>;
-> +	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
-> +	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
-> +	broken-cd;
-> +	st,neg-edge;
-> +	bus-width = <4>;
-> +	vmmc-supply = <&v3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&sdmmc2 {
-> +	pinctrl-names = "default", "opendrain", "sleep";
-> +	pinctrl-0 = <&sdmmc2_b4_pins_a>;
-> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
-> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
-> +	broken-cd;
-> +	non-removable;
-> +	st,neg-edge;
-> +	bus-width = <4>;
-> +	vmmc-supply = <&wlan_pwr>;
-> +	status = "okay";
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	brcmf: bcrmf@1 {
-> +		reg = <1>;
-> +		compatible = "brcm,bcm4329-fmac";
-> +	};
-> +};
-> +
-> +&spi1 {
-> +	status = "okay";
-> +	pinctrl-0 = <&spi1_pins>;
-> +	pinctrl-names = "default";
-> +	cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
-> +	dmas = <&dmamux1 37 0x400 0x05>,
-> +	       <&dmamux1 38 0x400 0x05>;
-> +	dma-names = "rx", "tx";
-> +
-> +	flash@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "winbond,w25q128", "jedec,spi-nor";
-> +		reg = <0>;
-> +		spi-max-frequency = <80000000>;
-> +
-> +		partition@0 {
-> +			label = "root filesystem";
-> +			reg = <0 0x1000000>;
-> +		};
-> +	};
-> +};
-> +
-> +&usart2 {
-> +	pinctrl-0 = <&usart2_pins>;
-> +	pinctrl-names = "default";
-> +	status = "disabled";
-> +};
-> +
-> +&usart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&usart3_pins>;
-> +	dmas = <&dmamux1 45 0x400 0x05>,
-> +	       <&dmamux1 46 0x400 0x05>;
-> +	dma-names = "rx", "tx";
-> +	st,hw-flow-ctrl;
-> +	status = "okay";
-> +
-> +	bluetooth {
-> +		compatible = "brcm,bcm43438-bt";
-> +		host-wakeup-gpios = <&gpioc 0 GPIO_ACTIVE_HIGH>;
-> +		device-wakeup-gpios = <&gpioi 10 GPIO_ACTIVE_HIGH>;
-> +		shutdown-gpios = <&gpioi 11 GPIO_ACTIVE_HIGH>;
-> +		max-speed = <115200>;
-> +	};
-> +};
-> +
-> +&uart4 {
-> +	pinctrl-0 = <&uart4_pins>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +};
-> +
-> +
-> 
+Yes, it could be. The old behavior of migration was to return -ENOMEM
+if THP migration is not supported then split THP. That behavior was
+not very friendly to some usecases, for example, memory policy and
+migration lieu of reclaim (the upcoming). But I don't mean we restore
+the old behavior. We could split THP if it returns -ENOSYS and the
+page is THP.
+
+>
+> See also my comment on patch #5 of this series.
+>
+> Regards,
+> Gerald
