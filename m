@@ -2,141 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB3834F527
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E4534F52B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbhC3Xo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhC3XoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:44:20 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1EFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 16:44:20 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id g20so17732133qkk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 16:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=tbt+Wr8D7RF2IDMuf+UsIa6Y7VNe6gu7kB9zX9lwwNE=;
-        b=UTLkqaoPxsFd4hVxfCdR4/TwI2Gqit6rdTdr54qg+p87gUukGjLYevnzXuEQYfzSW0
-         2AVylzrW6aV3dSiymbrpuA5XVQT/8TXwTXNOAPIUMmc92xmQ8cy9gR4oTEqx6XvsAK1N
-         ELjan+5IpdZCuNq0ef9fUSZy2O8Fa5PwNT6OP7RgAlcbFAZBTooMhKlJjXFyIEhpkUO4
-         jlYTsG0y1ELm0rUGFWPMXVV5KJeD9EO6j0eJ9cmJ431Zox287eN1Jja5hMQ27FGrI9za
-         3XXLiKEhQFylKIPT0L45eSSu+df+zc0gVd6NUIOFNXYdcPOyUP0Eo3e4p9QjId/Y1ZTL
-         lXDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=tbt+Wr8D7RF2IDMuf+UsIa6Y7VNe6gu7kB9zX9lwwNE=;
-        b=qFBGOLrMu0Po4+YBy/bitLZK4SubKydSJ4So0zZwa4DYKHROv/oPMoZWVRWVuDGwCF
-         LVO08SUcJz7uc9hFXi/wdGdmoKIGdhFrC73BZIdXBPWXScvjHJw7ZXpS/DlaDhzNqlAa
-         /Ne9GPVG+svKH81eIWhq34kx3VgUEd607LpLq+AsUn+1pLaVDdgQeutAR3IeSG2+O/1G
-         g5j0MHMisu1NmeeetPC/14gyG3Cg40DCbS0plFp/a+0Z0HKOnsFP8HAMQRNN42gIFNtu
-         hMXqpzXlTPxxfB8zXpN7aGj9eX8cZN3gaGyFo/VMNh0r0Okv7F1e24QK3K8hW94XbHGv
-         EGRw==
-X-Gm-Message-State: AOAM533l1gg7TaHuSdSrY3mta+izN4Y9+luo78kAN0A9aebOY26ZZNnX
-        MsVK/6EyGwVjrqV9RQ+fpwS9Yw==
-X-Google-Smtp-Source: ABdhPJxc2JvaxYgZNwYGkXF4tE1bYB17KkgQNOLk/2jDXZ1LJvy3WOa5yUT2vjyFydYzzJQ7A7mICA==
-X-Received: by 2002:a37:42cb:: with SMTP id p194mr690996qka.213.1617147859029;
-        Tue, 30 Mar 2021 16:44:19 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id j129sm228556qkf.110.2021.03.30.16.44.17
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 30 Mar 2021 16:44:18 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 16:44:05 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     kernel test robot <oliver.sang@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Roman Gushchin <guro@fb.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: [PATCH mmotm] mm: vmscan: fix shrinker_rwsem in
- free_shrinker_info()
-Message-ID: <alpine.LSU.2.11.2103301640240.2584@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S232307AbhC3Xvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:51:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:32854 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231650AbhC3XvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 19:51:23 -0400
+IronPort-SDR: IUulo97QG3Y8yuYvrTplaJ9FTgL6G0qqIWkIy2CArKgp5CIBmU7t8aTxjizWNmH9zhv2cfDCLK
+ vZiT1Gs1XTuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="179009612"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="179009612"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 16:51:23 -0700
+IronPort-SDR: GgJpxoGbYvo7rjLOJVUt0HXX+KMEoTLCUkHQ60cCyzn02gQiDYQcaI4CRSTISTp6DGek+A6c8s
+ AJ5he0hqIeLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="516637850"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Mar 2021 16:51:21 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRO8m-0005Wy-Fh; Tue, 30 Mar 2021 23:51:20 +0000
+Date:   Wed, 31 Mar 2021 07:51:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 883ccef355b910398b99dfaf96d40557479a7e9b
+Message-ID: <6063b973.+Mf83iFvHF4hMD+J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockdep warns mm/vmscan.c: suspicious rcu_dereference_protected() usage!
-when free_shrinker_info() is called from mem_cgroup_css_free(): there it
-is called with no locking, whereas alloc_shrinker_info() calls it with
-down_write of shrinker_rwsem - which seems appropriate.  Rearrange that
-so free_shrinker_info() can manage the shrinker_rwsem for itself.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 883ccef355b910398b99dfaf96d40557479a7e9b  genirq/irq_sim: Shrink devm_irq_domain_create_sim()
 
-Link: https://lkml.kernel.org/r/20210317140615.GB28839@xsang-OptiPlex-9020
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: Yang Shi <shy828301@gmail.com>
+elapsed time: 733m
+
+configs tested: 152
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                       imx_v4_v5_defconfig
+arm                       imx_v6_v7_defconfig
+sh                              ul2_defconfig
+microblaze                      mmu_defconfig
+mips                         db1xxx_defconfig
+arm                        cerfcube_defconfig
+arm                           tegra_defconfig
+arm                        neponset_defconfig
+sh                          urquell_defconfig
+arm                            mmp2_defconfig
+powerpc                      bamboo_defconfig
+i386                                defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                          lpd270_defconfig
+nios2                            alldefconfig
+arm                            qcom_defconfig
+arm                            pleb_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                        icon_defconfig
+powerpc                 mpc836x_rdk_defconfig
+xtensa                         virt_defconfig
+sh                            titan_defconfig
+arm                        mini2440_defconfig
+arm                       omap2plus_defconfig
+powerpc                     tqm8541_defconfig
+sparc64                             defconfig
+mips                        jmr3927_defconfig
+parisc                              defconfig
+powerpc                 linkstation_defconfig
+sh                         apsh4a3a_defconfig
+arm                         lubbock_defconfig
+arm                      footbridge_defconfig
+arm                       mainstone_defconfig
+sh                          landisk_defconfig
+arm                   milbeaut_m10v_defconfig
+m68k                           sun3_defconfig
+arm                     davinci_all_defconfig
+sh                                  defconfig
+powerpc                      ep88xc_defconfig
+sh                            hp6xx_defconfig
+powerpc                    sam440ep_defconfig
+mips                          rm200_defconfig
+arm                           u8500_defconfig
+arm                        multi_v7_defconfig
+sh                          rsk7201_defconfig
+powerpc                   motionpro_defconfig
+arm                         socfpga_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        keystone_defconfig
+arm                           h5000_defconfig
+arm                            zeus_defconfig
+m68k                       m5208evb_defconfig
+mips                            ar7_defconfig
+arm                       netwinder_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     ppa8548_defconfig
+sh                               alldefconfig
+sh                          r7780mp_defconfig
+arm                        spear6xx_defconfig
+arc                         haps_hs_defconfig
+mips                          malta_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                      obs600_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      ppc44x_defconfig
+mips                     cu1000-neo_defconfig
+sparc                       sparc64_defconfig
+sh                           se7619_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                      arches_defconfig
+mips                        qi_lb60_defconfig
+riscv                          rv32_defconfig
+mips                malta_kvm_guest_defconfig
+powerpc                       ebony_defconfig
+sh                            migor_defconfig
+mips                       lemote2f_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+
 ---
-Sorry, I've made no attempt to work out precisely where in the series
-the locking went missing, nor tried to fit this in as a fix on top of
-mm-vmscan-add-shrinker_info_protected-helper.patch
-which Oliver reported (and which you notated in mmotm's "series" file).
-This patch just adds the fix to the end of the series, after
-mm-vmscan-shrink-deferred-objects-proportional-to-priority.patch
-
- mm/vmscan.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
---- mmotm/mm/vmscan.c	2021-03-28 17:26:54.935553064 -0700
-+++ linux/mm/vmscan.c	2021-03-30 15:55:13.374459559 -0700
-@@ -249,18 +249,20 @@ void free_shrinker_info(struct mem_cgrou
- 	struct shrinker_info *info;
- 	int nid;
- 
-+	down_write(&shrinker_rwsem);
- 	for_each_node(nid) {
- 		pn = memcg->nodeinfo[nid];
- 		info = shrinker_info_protected(memcg, nid);
- 		kvfree(info);
- 		rcu_assign_pointer(pn->shrinker_info, NULL);
- 	}
-+	up_write(&shrinker_rwsem);
- }
- 
- int alloc_shrinker_info(struct mem_cgroup *memcg)
- {
- 	struct shrinker_info *info;
--	int nid, size, ret = 0;
-+	int nid, size;
- 	int map_size, defer_size = 0;
- 
- 	down_write(&shrinker_rwsem);
-@@ -270,9 +272,9 @@ int alloc_shrinker_info(struct mem_cgrou
- 	for_each_node(nid) {
- 		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
- 		if (!info) {
-+			up_write(&shrinker_rwsem);
- 			free_shrinker_info(memcg);
--			ret = -ENOMEM;
--			break;
-+			return -ENOMEM;
- 		}
- 		info->nr_deferred = (atomic_long_t *)(info + 1);
- 		info->map = (void *)info->nr_deferred + defer_size;
-@@ -280,7 +282,7 @@ int alloc_shrinker_info(struct mem_cgrou
- 	}
- 	up_write(&shrinker_rwsem);
- 
--	return ret;
-+	return 0;
- }
- 
- static inline bool need_expand(int nr_max)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
