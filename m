@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06E934DFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA6534DFCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhC3EAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 00:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        id S231150AbhC3D77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhC3EAM (ORCPT
+        with ESMTP id S230052AbhC3D7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 00:00:12 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B86C061762;
-        Mon, 29 Mar 2021 21:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=hYfRYTxBigBwTh0JILosDjKFMVzAvZhJg1P7LSziAz8=; b=JcidEuHCe0eqhcxA64WH3kGKF+
-        7ha0FGDncpQ+OVz94HAsQYvsX5yT4YvcJFdXNm0SXJ79H+ytLj7u6/ZE2n1gl9NjxVbPJG4BXbCMk
-        AvLEEOPunbWLaXo9vZ5NSEBnneXgaAy+4Pv+7xrZPMt3TvO3BQNpj3KOBYd14GmgUHZg+jThlsYQ2
-        KJdi8mWvly0A+pOgg4StUhV/xNL6euiY2xZFdqu1YzDcc8hVtLAo52tgBYkF7KE8ggLNzsS+LXotp
-        hPm4lfc+QWxEnIZoR2pU8lREHM+uD8kNZ/QVEhiefdIZgZkMoFT+4TsPvJ2jInPM5qz77GJwCeN4H
-        yIgLbTeg==;
-Received: from [2601:1c0:6280:3f0::4557] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lR5Xy-002dGI-Aj; Tue, 30 Mar 2021 04:00:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Dexuan Cui <decui@microsoft.com>, linux-crypto@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: crypto: add info about "fips=" boot option
-Date:   Mon, 29 Mar 2021 21:00:01 -0700
-Message-Id: <20210330040001.31524-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 29 Mar 2021 23:59:30 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20EAC061762;
+        Mon, 29 Mar 2021 20:59:28 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id e18so14783303wrt.6;
+        Mon, 29 Mar 2021 20:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rM9L+7Kw3lO7Pp/XFwkGX6YGb/YVHvAdXNzLLxwfl1w=;
+        b=d5r347TSpxGfn0IJ/N8JbKpxDmaafhKU5rNf58YqPHt5eTga6M8/CJYPn4c/3bO1e7
+         oLowg+kak8vfpk2OM8l5bkPysCGNpJv+xzUHKoWzsYEy0xAIHVgEP+VawDDV/fIWC0zD
+         CMaOLM00fzD5OdZyuBkurYektDz1zDDgrTubQCJBa1c/1ODt2sn+qbEqBAOa8scjFZ90
+         ZAX4A3O61vdNTaS+gQOaVFxKMfdnoyzPAPpeEfCbK/SkdedCiktnmLb/vJWLRqtgnbla
+         FyB7EDUDvngPW16tQCzd0aF3eRnJoo6QkGqpWoH3M5jWEcrOOpzS0E7S30b9pS7S2L5g
+         ibZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rM9L+7Kw3lO7Pp/XFwkGX6YGb/YVHvAdXNzLLxwfl1w=;
+        b=ju7TOUPiPpu8+Q9oA2xIHWY7aW0zPg3zmFGHJNnPHiLPOpMntKbyXV4+oHHq5DwwkS
+         54O5JA74xa56kx/D2qrzXT5/lakkXy4v04wHPFvN+vS5/wdFmlXZn3eu1f+mjlc7Q5U1
+         mNktIlCihYyEouHCT3QKCcTSS2rmo4m8nATxOPGicXkvuuBWMtDjhV36aih94Z7WpTmK
+         PDsEUu42XpRVhgVWahuFaYfrz+c+Hk7AZoRcdSt+ydD1FmwPQnR3GKJG+bLnTAAqg2DX
+         iDu8wlHGkEO3sicmr4XBzYR3nz9s4GCrksSNIf/NhVQk9VrpSE9XsKfa2H3P4NkYRQGg
+         Sx0w==
+X-Gm-Message-State: AOAM531pOHwvlzVXMlhuGuIXjX8U5ItMniuESX1Gblvp2BusVdDalUMR
+        +EyU6plEd1j7ZNHqf0N5D/ezRFU99PNXBYsogM9DKdJYkII=
+X-Google-Smtp-Source: ABdhPJxCVxJYlqnudbrjWfS6pU3itZKjPGMqS0eIaTBSDqgxUzehaH8vzOPEvZydqDKJr62fsSsdkBiIDOiSjiD/ZUQ=
+X-Received: by 2002:adf:d0c3:: with SMTP id z3mr32463334wrh.28.1617076767659;
+ Mon, 29 Mar 2021 20:59:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210326231303.3071950-1-eric@anholt.net> <20210329144729.GB4203@willie-the-truck>
+In-Reply-To: <20210329144729.GB4203@willie-the-truck>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 29 Mar 2021 21:02:50 -0700
+Message-ID: <CAF6AEGugpEk396DVtWX=W+uf3p-wcgBfCSpSLWGQJE1vKpJ4aw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+To:     Will Deacon <will@kernel.org>
+Cc:     Eric Anholt <eric@anholt.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having just seen a report of using "fips=1" on the kernel command line,
-I could not find it documented anywhere, so add some help for it.
+On Mon, Mar 29, 2021 at 7:47 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Mar 26, 2021 at 04:13:02PM -0700, Eric Anholt wrote:
+> > db820c wants to use the qcom smmu path to get HUPCF set (which keeps
+> > the GPU from wedging and then sometimes wedging the kernel after a
+> > page fault), but it doesn't have separate pagetables support yet in
+> > drm/msm so we can't go all the way to the TTBR1 path.
+>
+> What do you mean by "doesn't have separate pagetables support yet"? The
+> compatible string doesn't feel like the right way to determine this.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
-Updates/corrections welcome.
+the compatible string identifies what it is, not what the sw
+limitations are, so in that regard it seems right to me..
 
- Documentation/admin-guide/kernel-parameters.txt |   15 ++++++++++++++
- 1 file changed, 15 insertions(+)
-
---- linux-next-20210329.orig/Documentation/admin-guide/kernel-parameters.txt
-+++ linux-next-20210329/Documentation/admin-guide/kernel-parameters.txt
-@@ -1370,6 +1370,21 @@
- 			See Documentation/admin-guide/sysctl/net.rst for
- 			fb_tunnels_only_for_init_ns
- 
-+	fips=		Format: { 0 | 1}
-+			Use to disable (0) or enable (1) FIPS mode.
-+			If enabled, any process that is waiting on the
-+			'fips_fail_notif_chain' will be notified of fips
-+			failures.
-+			This setting can also be modified via sysctl at
-+			/proc/sysctl/crypto/fips_enabled, i.e.,
-+			crypto.fips_enabled.
-+			If fips_enabled = 1, some crypto tests are skipped.
-+			It can also effect which ECC curve is used.
-+			If fips_enabled = 1 and a test fails, it will cause a
-+			kernel panic.
-+			If fips_enabled = 1, RSA test requires a key size of
-+			2K or larger.
-+
- 	floppy=		[HW]
- 			See Documentation/admin-guide/blockdev/floppy.rst.
- 
+BR,
+-R
