@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C935534EB67
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF44C34EB6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhC3PAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhC3PAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:00:17 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5975EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:00:17 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id f10so11888958pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/qq9/gIIEeXADeexes6T1XgVO8U+5a7euiGrNKdM3Sg=;
-        b=bm/Eg6NESu4elfE4WuREbNTQh+xPdY09j3P9cbjk4TTNFOgL/jkCa7tV/Lljy4c3bW
-         Px6TiZpZ/QxtVpxrnRmwEePpwNYlNZLO68NpfDPtooB2P3ONyUY8sZHZH9mqBUoyGd31
-         uogFdNYOktS/c11AEHMM7Z31uiZQQS9EO/HrmSM5qghr4qIdiXFMriAoR7VDbkc8q9pi
-         s8XrP3cP4GdA0tRvWzR2wfU2YsL+P/qQrTL75k6GlFZuEHj9UoCSmx1cKDrPAvXZpLZK
-         bY5L8GHG12vsK2/njEz2Cs3c/KHVr5iJGGoSVSzZWtHVpgDQorvftY2Gdi+ed4513iDh
-         nOBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/qq9/gIIEeXADeexes6T1XgVO8U+5a7euiGrNKdM3Sg=;
-        b=AsoJJVmaWV/QFdiDjjVRBEpHgiYvGgYYM/oCxzJUn7stuCH2i10XDN/5hB+0pZOXrD
-         XDuI5kkvTw8FnaPTmxKQ1vL7fafU+e+GBjAc74dPfhdYBn4c1qR6aHJTeeS4QFwAdj6v
-         ScvjaI4WqGdCC07pl4zdngNoDtgcAdhrwCnwFYIN6UxVxnnTy593sk4ZlXvrc9nJXWMJ
-         zvQic5wPNVq6dFM1gX8RARfCr9dTRFBgCFixfDsFv0QSu2sXqKvew4lZoGP4jNcpOHku
-         KbVgmakfZ+zCyJWuOQ/o5WzDfDHlUfO7qu07uR12i5CbomBVlgtSPlsEdfn/SrO9YC8u
-         pWtg==
-X-Gm-Message-State: AOAM533h+wJc9WSTyShH/WcbjU5l1hHKEs+fmHxlARu7HJBjH6GlUcz9
-        Ky9wwmQUHqMfoMX+VRHPH34=
-X-Google-Smtp-Source: ABdhPJz0rb7f8RU62drqneEGfK2vP4mE/UKEqmlWC4Af1YhpCwvHdG9jTSIFDMfSpOkQbOBReZFKAA==
-X-Received: by 2002:a62:1ad0:0:b029:1f2:c7b3:3039 with SMTP id a199-20020a621ad00000b02901f2c7b33039mr31316429pfa.30.1617116416305;
-        Tue, 30 Mar 2021 08:00:16 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:e1ca:cef0:ac9e:7cda])
-        by smtp.gmail.com with ESMTPSA id g15sm6600625pfk.36.2021.03.30.08.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 08:00:15 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 30 Mar 2021 08:00:13 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: change size_t to unsigned int for cma_alloc
-Message-ID: <YGM8/V7iv3j6JWyx@google.com>
-References: <20210329182553.3129234-1-minchan@kernel.org>
- <20210329184431.GJ351017@casper.infradead.org>
- <YGI0sThJjsshpPIR@google.com>
- <6d305211-c956-ad80-5908-703d07fca441@redhat.com>
+        id S232111AbhC3PBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:01:35 -0400
+Received: from mga04.intel.com ([192.55.52.120]:59695 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230243AbhC3PBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:01:03 -0400
+IronPort-SDR: QfvX228gDcHShjlMj8FmfTKJVOqONtuZv8yNn2Rag7CM3x6KPjFmkulxLVLDDn3GQ3umU0SER7
+ Uy52zCVrdPxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="189541454"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="189541454"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:00:52 -0700
+IronPort-SDR: cwA5g1PrkPQK7LQY22+vw/ywGsL1WN+7sV8APB1hLtEPkDNLzyZdfgLU/NPvLpdhupjPcRecI2
+ YoGfVmAI6jNQ==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="418205840"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:00:51 -0700
+Date:   Tue, 30 Mar 2021 08:00:48 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <20210330150048.GB1285835@tassilo.jf.intel.com>
+References: <CALCETrUgEFy4shmh_pxOTzEVJZq8y23zK7cr51UhXba0KhQ8qg@mail.gmail.com>
+ <331b34e3d6153f0a7b0ab0a9a8cb5de71f0bfd93.1616803999.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d78f5f76-e04f-cab1-48f5-b6c1ba6a3811@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d305211-c956-ad80-5908-703d07fca441@redhat.com>
+In-Reply-To: <d78f5f76-e04f-cab1-48f5-b6c1ba6a3811@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 09:58:37AM +0200, David Hildenbrand wrote:
-> On 29.03.21 22:12, Minchan Kim wrote:
-> > On Mon, Mar 29, 2021 at 07:44:31PM +0100, Matthew Wilcox wrote:
-> > > On Mon, Mar 29, 2021 at 11:25:53AM -0700, Minchan Kim wrote:
-> > > > size_t in cma_alloc is confusing since it makes people think
-> > > > it's byte count, not pages. Fix it.
-> > > 
-> > > i think it has to be unsigned long.
-> > > 
-> > > 67a2e213e7e937c41c52ab5bc46bf3f4de469f6e
-> 
-> Right.
-> 
-> Fortunately, we don't have such large allocations yet via
-> CMA/alloc_contig_range
-> 
+On Tue, Mar 30, 2021 at 12:56:41PM +0800, Xiaoyao Li wrote:
+> On 3/27/2021 8:18 AM, Kuppuswamy Sathyanarayanan wrote:
+> > In non-root TDX guest mode, MWAIT, MONITOR and WBINVD instructions
+> > are not supported. So handle #VE due to these instructions as no ops.
 > > 
-> > Thanks for the pinter. I wanted to have the smallest change.
-> > The commit leads me to change cma_release, trace_cma_alloc,
-> > cma_clear_bitmap and front_contig_range as well.(Not sure
-> > we have more. Will check).
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> > ---
 > > 
-> > Ccing david@redhat.com for upcoming changing free_contig_range.
+> > Changes since previous series:
+> >   * Suppressed MWAIT feature as per Andi's comment.
+> >   * Added warning debug log for MWAIT #VE exception.
+> > 
+> >   arch/x86/kernel/tdx.c | 23 +++++++++++++++++++++++
+> >   1 file changed, 23 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> > index e936b2f88bf6..fb7d22b846fc 100644
+> > --- a/arch/x86/kernel/tdx.c
+> > +++ b/arch/x86/kernel/tdx.c
+> > @@ -308,6 +308,9 @@ void __init tdx_early_init(void)
+> >   	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> > +	/* MWAIT is not supported in TDX platform, so suppress it */
+> > +	setup_clear_cpu_cap(X86_FEATURE_MWAIT);
 > 
-> While at it, we might want to convert free_contig_range() to eat
-> "unsigned long start, unsigned long end" like alloc_contig_range(), instead
-> of "unsigned long pfn, unsigned int nr_pages" like alloc_contig_pages() ...
+> In fact, MWAIT bit returned by CPUID instruction is zero for TD guest. This
+> is enforced by SEAM module.
 
-Well, I personllay tempted to change alloc_contig_range, not
-free_contig_range because base_pfn with nr_pages was more
-straightforward than base_pfn and end_pfn in that we don't
-need to tell whether end_pfn is inclusive or exclusive.
+Good point.
+> 
+> Do we still need to safeguard it by setup_clear_cpu_cap() here?
 
-When I look at callers of [alloc|free]_contig_range, many of them
-already have used nr_pages based approach rather than start_pfn,
-end_pfn. If your suggestion come from that "it's *range* API",
-I'd like to rename it with "alloc_contig_pages|free_contig_pages".
+I guess it doesn't hurt to do it explicitly.
 
-Since it's beyond the goal of this patch and might be controversial, 
-I will not deal with it in this patch.
+
+-Andi
