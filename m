@@ -2,156 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B43334F17E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0143234F185
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbhC3TNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbhC3TMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:12:33 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9B6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:12:33 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e14so6663727plj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=pSBj0YaYaN0GbrJlNEC2b8pftXmc5dsioW7Jk9w3b0Q=;
-        b=kNYY6xY3yQWZigWtv6pzY98fYe8q2MVfB/FUD6Qtz/kvwR9jrpi8sDZV07WXnzg7+Y
-         JGpb+4U00fQhXmQZ33N0dRoEoJx6TkAJo2T1GtK3p7WOJkEkxHNJ1JCd6Wy4VWS+HIgL
-         DPfQK0dmqnDvTmnXGIylTcFh5YaSA+fpw0KYg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=pSBj0YaYaN0GbrJlNEC2b8pftXmc5dsioW7Jk9w3b0Q=;
-        b=Tq8f1UConoYPtv/j+Jv22yMwp3w7TBMZFdVavg2l2wWPhFFLOANuxG0d/mFAw43lmJ
-         M91jXycXTUARdXjAAYCp1fNsdZ7aiaA8sAquem23BpuIP58MbUVmJP5IIWt+rrNOwZfY
-         ut1yX+76e1I/sQz5GR42sqyH8LZf7nCtpw9sZTj9evIX8hixQ+s8j8LTLun/IG/noKR5
-         wGdBXnU9moW+mYvB/xmQmJyOolqcRschGET2pnkNeVEk/dScfq+5RkJuM+OZr28Y5Moh
-         yAB0NtRCreffXtfdKNZthQkRRtbtbhcstF8BuRxUMp/p4qJdGEC061HqFozJe2MWKuP5
-         KkAw==
-X-Gm-Message-State: AOAM531XA+gxatxbG8RbPX7pcwp5j+K/J3AB7srVhpYdS5dEGoBV00H3
-        4PZfMg/1Cz9ySNGf+UEJ9SPuKA==
-X-Google-Smtp-Source: ABdhPJzPloxjPL7P2kxXfUtG7olsGtlZdZfNGi1MCSQcNkhfcNYyLOfJY+tmHcpRqGrO4heVY1nWdA==
-X-Received: by 2002:a17:902:c104:b029:e7:3268:6eb9 with SMTP id 4-20020a170902c104b02900e732686eb9mr22685163pli.32.1617131552563;
-        Tue, 30 Mar 2021 12:12:32 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:c8c2:b814:df0f:253f])
-        by smtp.gmail.com with ESMTPSA id h14sm3341649pjc.37.2021.03.30.12.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 12:12:31 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S233094AbhC3TTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233006AbhC3TT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 15:19:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E6961998;
+        Tue, 30 Mar 2021 19:19:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617131968;
+        bh=XBxHhXmWgSj4QgRnO4vvOh88DUWa5B1fPdpOmU7Kao4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=nKR+gyj5umi3lc+byor8F0C6I4kPN3zODildT5lBj8ALRfxfkZTEcxQyEDCrxi1yU
+         mwykLsUedWBKSgaZ1oRIgfSnJqwDdPjO8vbz3kSPxGX5zXEMtVJn2OEakQ8/ZasiCt
+         RshA5pgyFBWItHnLDlJux9wgWYB6KdzeL7mxvS0069ccwcHZch3GVKZx6meFHnWe7j
+         tmXok+pQK4smKKH1O3DgmjY02h/4ZbnXASf35+nND4gSrnijbAdqpSgZ+/sqDtmGjF
+         uFQ9R1qKyrg9aRi0OfVRAlqg7bS/5hkUW57XF3JsUzTgKm/xlsg8rZGGktet6qE3aA
+         YOgtDMw74Ou2Q==
+Date:   Tue, 30 Mar 2021 14:19:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     toan@os.amperecomputing.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com,
+        gustavo.pimentel@synopsys.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dann.frazier@canonical.com
+Subject: Re: [PATCH] PCI: xgene: fix a mistake about cfg address
+Message-ID: <20210330191926.GA1297928@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YGL9hHFg9Pm4xaNM@alley>
-References: <20210324020443.1815557-1-swboyd@chromium.org> <20210324020443.1815557-5-swboyd@chromium.org> <YGL9hHFg9Pm4xaNM@alley>
-Subject: Re: [PATCH v2 04/12] module: Add printk format to add module build ID to stacktraces
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Date:   Tue, 30 Mar 2021 12:12:29 -0700
-Message-ID: <161713154989.2260335.1975274918938126463@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210328144118.305074-1-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Petr Mladek (2021-03-30 03:29:24)
-> On Tue 2021-03-23 19:04:35, Stephen Boyd wrote:
-> > Let's make kernel stacktraces easier to identify by including the build
-> > ID[1] of a module if the stacktrace is printing a symbol from a module.
-> >=20
-> > Example:
-> >=20
-> >  WARNING: CPU: 3 PID: 3373 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNIN=
-G+0x28/0x30 [lkdtm]
-> >  Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cg=
-roup uinput xt_MASQUERADE hci_uart <modules trimmed>
-> >  CPU: 3 PID: 3373 Comm: bash Not tainted 5.11 #12 a8c0d47f7051f3e6670ce=
-aea724af66a39c6cec8
->=20
-> I tested it with "echo l >/proc/sysrq-trigger" and I got the following
-> output:
->=20
-> [   71.905593] CPU: 0 PID: 1762 Comm: bash Kdump: loaded Not tainted 5.12=
-.0-rc5-default+ #167 00000080ffffffff0000000000000000
-> 00000000
->=20
-> It does not looks like an unique build-id.
-> Any idea what was going wrong?
+On Sun, Mar 28, 2021 at 10:41:18PM +0800, Dejin Zheng wrote:
+> It has a wrong modification to the xgene driver by the commit
+> e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
+> simplify codes and remove the res variable, But the following code
+> needs to use this res variable, So after this commit, the port->cfg_addr
+> will get a wrong address. Now, revert it.
+> 
+> Fixes: e2dcd20b1645a ("PCI: controller: Convert to devm_platform_ioremap_resource_byname()")
+> Reported-by: dann.frazier@canonical.com
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 
-Hmm not sure. What does 'hexdump /sys/kernel/notes' show or 'file
-vmlinux' parse out of the kernel image?
+This looks right to me, but since e2dcd20b1645a appeared in v5.9-rc1,
+I think it should have:
 
->=20
-> > --- a/include/linux/kallsyms.h
-> > +++ b/include/linux/kallsyms.h
-> > @@ -91,6 +93,7 @@ const char *kallsyms_lookup(unsigned long addr,
-> > =20
-> >  /* Look up a kernel symbol and return it in a text buffer. */
-> >  extern int sprint_symbol(char *buffer, unsigned long address);
-> > +extern int sprint_symbol_stacktrace(char *buffer, unsigned long addres=
-s);
-> >  extern int sprint_symbol_no_offset(char *buffer, unsigned long address=
-);
-> >  extern int sprint_backtrace(char *buffer, unsigned long address);
->=20
-> Could we use a more clear name? It is hard to guess what is
-> the difference between sprint_*_stacktrace() and sprint_backtrace().
->=20
-> What about sprint_symbol_build_id() ?
+  Cc: stable@vger.kernel.org	# v5.9+
 
-Sure.
-
->=20
->=20
-> > diff --git a/kernel/module.c b/kernel/module.c
-> > index 30479355ab85..9e9cb502fb33 100644
-> > --- a/kernel/module.c
-> > +++ b/kernel/module.c
-> > @@ -2770,6 +2771,20 @@ static void add_kallsyms(struct module *mod, con=
-st struct load_info *info)
-> >       }
-> >       mod->core_kallsyms.num_symtab =3D ndst;
-> >  }
-> > +
-> > +static void init_build_id(struct module *mod, const struct load_info *=
-info)
-> > +{
-> > +     const Elf_Shdr *sechdr;
-> > +     unsigned int i;
-> > +
-> > +     for (i =3D 0; i < info->hdr->e_shnum; i++) {
-> > +             sechdr =3D &info->sechdrs[i];
-> > +             if (!sect_empty(sechdr) && sechdr->sh_type =3D=3D SHT_NOT=
-E &&
-> > +                 !build_id_parse_buf((void *)sechdr->sh_addr, mod->bui=
-ld_id,
-> > +                                     sechdr->sh_size))
-> > +                     break;
-> > +     }
->=20
-> Just to be sure. Is this really reliable way how to find the build ID,
-> please?
->=20
-
-The build ID is always part of a note section, so if we parse the notes
-and find a build ID type of section (see nhdr->n_type =3D=3D BUILD_ID) with
-a GNU name then we know we have the right section and will be able to
-parse the ID out of the buffer.
+> ---
+>  drivers/pci/controller/pci-xgene.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
+> index 2afdc865253e..7f503dd4ff81 100644
+> --- a/drivers/pci/controller/pci-xgene.c
+> +++ b/drivers/pci/controller/pci-xgene.c
+> @@ -354,7 +354,8 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
+>  	if (IS_ERR(port->csr_base))
+>  		return PTR_ERR(port->csr_base);
+>  
+> -	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
+> +	port->cfg_base = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(port->cfg_base))
+>  		return PTR_ERR(port->cfg_base);
+>  	port->cfg_addr = res->start;
+> -- 
+> 2.30.1
+> 
