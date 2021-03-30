@@ -2,152 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BBE34F123
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA7F34F132
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhC3SmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        id S232860AbhC3SrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhC3Sli (ORCPT
+        with ESMTP id S232785AbhC3Sqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:41:38 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65254C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:34:24 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u10so21013948lju.7
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:34:24 -0700 (PDT)
+        Tue, 30 Mar 2021 14:46:38 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E67C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:35:02 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so16550796otn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TOotaZ1871auGHiNnmRkwYZ1nFjr3BIDsT8kbzaoaws=;
-        b=cfuA4VpJEcRZl5XvDIML2vmkn+UgzqbnbcbuAV6s5fg1aj8Q50DvUOwnVTpGszPmhY
-         NcAsNl/xB9LoKcxwGP92Q3MAuWERLsGuEDsaSU0nMT1dtV+XyBvoJi/6wDwNeBTZ932N
-         10orAzEaHmBSNLJRyv6b9PrbZYILSgRL/3V7gDXIh+yXhFEFICmsh/PZDcoGy5MM/0iQ
-         cDruOYJuxalqbLTL2Y4RbAT3OfU/gU6xYU/K0w+hXY5NcZszr5mV8nuRqQ1LDu2qwSG+
-         mRwYv0TLVWEa2OcnoebF0tia4/zOSK1gJhD2uwFbbgIraTwqIT+F/d536ech7U5ncDep
-         JezQ==
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=7htaQKxbftoYBoBRvo6Fw3o/xGPBC8mf4mLzA2dc/4o=;
+        b=Ft5K1BDKQVSaTIL9aJRJ/hHCgyhttM6MmqYsQMbiLPuOd2RI52tQyVuF0WSh1DgmT0
+         jQONm6nzuGp4Jg11PZc07nR1wdwndptUnGbXhDajnM9XKugPZ50Gz9PgR2cvm0eOer80
+         yO8N6RxphvKTM098kSf/P/lKulCSAzDjTGFVr9XbbOPGJsLnLamWtsfU5EEv71VZZ+vd
+         zWmVYbudtEgS5wW4IRzsUcFhP8mPcS3ODLRX/9hSNHY8f/UGlzbQTYYfAbcqLkrCYccP
+         It6xI8BpDhRk6cDXlAoHpf1epj6vcxco20xdEDUFbPM7AEu7jJeNLKVnbQNixtHR89O0
+         cTDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TOotaZ1871auGHiNnmRkwYZ1nFjr3BIDsT8kbzaoaws=;
-        b=OxxM5GTlVJcMojnGAAVuQmIk109tqwQGlZU6wlxk8bHjN/utC9ZRQlj4XupFcS0SsC
-         /uI5fynTmwlwccp9QZPNVTpnUoWqGJNjuVpAFcGpcaIxEQv1K1nnnBQ3S5K0iqG3XnOG
-         /wIP6YTgjue9z1e53elL4yKlXeX11KAq2uQk9Kz8m2HzZFLFM0h22VaQwB1ZrUCAvjm0
-         q0cor1B2P3Zzl2SdhUw+2kRN8yWMXUcllmJxAZiadr1/1fKbCGkm+7FW1kP9duBjEi11
-         kG4KDqVHRaq7NZLNTJUrKhRD1sL04RR8DqGaxdvvGlQcudDcWGQPwi+2sl4xnobC4MnP
-         AqqA==
-X-Gm-Message-State: AOAM53027p14Qk5XaFYC2FOnEu7T+hywjeKJISsXSXHFCh/H8cGk3vMO
-        ClU80KTzZOwBL1dZY0NWURZ+qi5f5CyIELJjpTayLA==
-X-Google-Smtp-Source: ABdhPJyILJdYB71C1rvE9h+GXTtg1sWhlEVeLTC2gns5HopDK4DsMmYlvG1efqjSlGrpuLZF80sX9p/A/wbcB8yGDSE=
-X-Received: by 2002:a2e:8084:: with SMTP id i4mr22524055ljg.122.1617129262630;
- Tue, 30 Mar 2021 11:34:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=7htaQKxbftoYBoBRvo6Fw3o/xGPBC8mf4mLzA2dc/4o=;
+        b=AHHmvbcGhu6Z9fkBUn1jvFgbVRCxuqjoto/fUQWbfJeNb8R5trqgDlaAkc8pMpVKr3
+         Nrj6SZo/lH5vWgw7we+TeAQT+oqvZd6wSiDEyLtiasGCAxN3E1VWl8px/IwHVt0DB9FS
+         75sVOmlvi3m1xH3yAk7pdxii+qQ5civYE0VldX8NEtT29aOvUKOU1BfT5IYINg122Mnh
+         yI78fpIOWBccodWwMAkgufGh1ubk0xi1F9eFH6RzVMfb/29MdVUEaq9gSxs0nP8j2VMy
+         YfUxL1saZYRp7Xdf+5YRO5vkFmTLg9XXGrXYizkK6MrTBQOCPPtxb3pFlcegqbrNoXcu
+         Mmxw==
+X-Gm-Message-State: AOAM5322qx+JSbJ2iSFIGUP1bt34zMQqnKwiFzC6QsNWzdP9SIdnRh+b
+        ADFDOcrIMYANdqhDld9MDIpyLg==
+X-Google-Smtp-Source: ABdhPJxm/HKy8G9IahnJtm9yGlmSCpqOeKz1dBEhVN8GGToPwn+I+VZJQQyGDe8lEGomZ9Kyg1y2uw==
+X-Received: by 2002:a9d:4811:: with SMTP id c17mr29460104otf.206.1617129302172;
+        Tue, 30 Mar 2021 11:35:02 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id g2sm5232437otn.32.2021.03.30.11.35.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 11:35:01 -0700 (PDT)
+Subject: Re: [v1] drm/msm/disp/dpu1: icc path needs to be set before dpu
+ runtime resume
+To:     Kalyan Thota <kalyan_t@codeaurora.org>, y@qualcomm.com,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyant@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org, hywu@google.com,
+        mka@google.com, midean@google.com
+References: <y> <1616404632-13693-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <823f7f00-444e-8e22-e8d0-2ced97e4c291@kali.org>
+Date:   Tue, 30 Mar 2021 13:34:59 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210330101531.82752-1-songmuchun@bytedance.com>
-In-Reply-To: <20210330101531.82752-1-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 30 Mar 2021 11:34:11 -0700
-Message-ID: <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge the LRU pages
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Greg Thelen <gthelen@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1616404632-13693-1-git-send-email-kalyan_t@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 3:20 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> Since the following patchsets applied. All the kernel memory are charged
-> with the new APIs of obj_cgroup.
->
->         [v17,00/19] The new cgroup slab memory controller
->         [v5,0/7] Use obj_cgroup APIs to charge kmem pages
->
-> But user memory allocations (LRU pages) pinning memcgs for a long time -
-> it exists at a larger scale and is causing recurring problems in the real
-> world: page cache doesn't get reclaimed for a long time, or is used by the
-> second, third, fourth, ... instance of the same job that was restarted into
-> a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
-> and make page reclaim very inefficient.
->
-> We can convert LRU pages and most other raw memcg pins to the objcg direction
-> to fix this problem, and then the LRU pages will not pin the memcgs.
->
-> This patchset aims to make the LRU pages to drop the reference to memory
-> cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
-> of the dying cgroups will not increase if we run the following test script.
->
-> ```bash
-> #!/bin/bash
->
-> cat /proc/cgroups | grep memory
->
-> cd /sys/fs/cgroup/memory
->
-> for i in range{1..500}
-> do
->         mkdir test
->         echo $$ > test/cgroup.procs
->         sleep 60 &
->         echo $$ > cgroup.procs
->         echo `cat test/cgroup.procs` > cgroup.procs
->         rmdir test
-> done
->
-> cat /proc/cgroups | grep memory
-> ```
->
-> Patch 1 aims to fix page charging in page replacement.
-> Patch 2-5 are code cleanup and simplification.
-> Patch 6-15 convert LRU pages pin to the objcg direction.
 
-The main concern I have with *just* reparenting LRU pages is that for
-the long running systems, the root memcg will become a dumping ground.
-In addition a job running multiple times on a machine will see
-inconsistent memory usage if it re-accesses the file pages which were
-reparented to the root memcg.
+On 3/22/21 4:17 AM, Kalyan Thota wrote:
+> From: Kalyan Thota <kalyant@codeaurora.org>
+>
+> DPU runtime resume will request for a min vote on the AXI bus as
+> it is a necessary step before turning ON the AXI clock.
+>
+> The change does below
+> 1) Move the icc path set before requesting runtime get_sync.
+> 2) remove the dependency of hw catalog for min ib vote
+> as it is initialized at a later point.
+>
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> index ed636f1..cab387f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> @@ -44,6 +44,8 @@
+>  #define DPU_DEBUGFS_DIR "msm_dpu"
+>  #define DPU_DEBUGFS_HWMASKNAME "hw_log_mask"
+>  
+> +#define MIN_IB_BW	400000000ULL /* Min ib vote 400MB */
+> +
+>  static int dpu_kms_hw_init(struct msm_kms *kms);
+>  static void _dpu_kms_mmu_destroy(struct dpu_kms *dpu_kms);
+>  
+> @@ -932,6 +934,9 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+>  		DPU_DEBUG("REG_DMA is not defined");
+>  	}
+>  
+> +	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
+> +		dpu_kms_parse_data_bus_icc_path(dpu_kms);
+> +
+>  	pm_runtime_get_sync(&dpu_kms->pdev->dev);
+>  
+>  	dpu_kms->core_rev = readl_relaxed(dpu_kms->mmio + 0x0);
+> @@ -1037,9 +1042,6 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+>  
+>  	dpu_vbif_init_memtypes(dpu_kms);
+>  
+> -	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
+> -		dpu_kms_parse_data_bus_icc_path(dpu_kms);
+> -
+>  	pm_runtime_put_sync(&dpu_kms->pdev->dev);
+>  
+>  	return 0;
+> @@ -1196,10 +1198,10 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+>  
+>  	ddev = dpu_kms->dev;
+>  
+> +	WARN_ON(!(dpu_kms->num_paths));
+>  	/* Min vote of BW is required before turning on AXI clk */
+>  	for (i = 0; i < dpu_kms->num_paths; i++)
+> -		icc_set_bw(dpu_kms->path[i], 0,
+> -			dpu_kms->catalog->perf.min_dram_ib);
+> +		icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
+>  
+>  	rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, true);
+>  	if (rc) {
 
-Please note that I do agree with the mentioned problem and we do see
-this issue in our fleet. Internally we have a "memcg mount option"
-feature which couples a file system with a memcg and all file pages
-allocated on that file system will be charged to that memcg. Multiple
-instances (concurrent or subsequent) of the job will use that file
-system (with a dedicated memcg) without leaving the zombies behind. I
-am not pushing for this solution as it comes with its own intricacies
-(e.g. if memcg coupled with a file system has a limit, the oom
-behavior would be awkward and therefore internally we don't put a
-limit on such memcgs). Though I want this to be part of discussion.
+With this patch now applied to 5.12-rc5, I am seeing the following when
+booting the Lenovo Yoga C630 -
 
-I think the underlying reasons behind this issue are:
+Mar 30 13:16:03 c630 kernel: [    2.038491] ------------[ cut here ]------------
+Mar 30 13:16:03 c630 kernel: [    2.038495] WARNING: CPU: 3 PID: 125 at drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c:1196 dpu_runtime_resume+0xc0/0xf0 [msm]
+Mar 30 13:16:03 c630 kernel: [    2.038551] Modules linked in: ti_sn65dsi86 i2c_hid_of crct10dif_ce msm rtc_pm8xxx llcc_qcom ocmem drm_kms_helper i2c_qcom_geni phy_qcom_qusb2 ipa(+) qcom_common qcom_glink_smem qmi_helpers mdt_loader panel_simple drm pwm_bl
+Mar 30 13:16:03 c630 kernel: [    2.038599] CPU: 3 PID: 125 Comm: kworker/3:1 Not tainted 5.12.0-rc5 #1
+Mar 30 13:16:03 c630 kernel: [    2.038605] Hardware name: LENOVO 81JL/LNVNB161216, BIOS 9UCN33WW(V2.06) 06/ 4/2019
+Mar 30 13:16:03 c630 kernel: [    2.038610] Workqueue: events deferred_probe_work_func
+Mar 30 13:16:03 c630 kernel: [    2.038621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+Mar 30 13:16:03 c630 kernel: [    2.038627] pc : dpu_runtime_resume+0xc0/0xf0 [msm]
+Mar 30 13:16:03 c630 kernel: [    2.038674] lr : pm_generic_runtime_resume+0x30/0x50
+Mar 30 13:16:03 c630 kernel: [    2.038683] sp : ffff800010b9b7e0
+Mar 30 13:16:03 c630 kernel: [    2.038685] x29: ffff800010b9b7e0 x28: 0000000000000000 
+Mar 30 13:16:03 c630 kernel: [    2.038692] x27: 0000000000000000 x26: ffff6b42c0c16cf4 
+Mar 30 13:16:03 c630 kernel: [    2.038698] x25: 000000007965f7df x24: 0000000000000001 
+Mar 30 13:16:03 c630 kernel: [    2.038705] x23: ffff6b42c0a34180 x22: ffffda2e0cc5b3d0 
+Mar 30 13:16:03 c630 kernel: [    2.038712] x21: ffffda2e0b3ed6a0 x20: ffff6b42c6845000 
+Mar 30 13:16:03 c630 kernel: [    2.038718] x19: ffff6b42c6851080 x18: ffffda2e0cce1220 
+Mar 30 13:16:03 c630 kernel: [    2.038725] x17: ffffda2e0cce1238 x16: ffffda2e0b23e5f0 
+Mar 30 13:16:03 c630 kernel: [    2.038731] x15: 0000000040000000 x14: 0000000000000000 
+Mar 30 13:16:03 c630 kernel: [    2.038738] x13: ffff6b42c5f0b5b0 x12: 0000000000000000 
+Mar 30 13:16:03 c630 kernel: [    2.038744] x11: 0000000000000001 x10: 0000000000003fff 
+Mar 30 13:16:03 c630 kernel: [    2.038750] x9 : 0000000000000000 x8 : 0000000000000000 
+Mar 30 13:16:03 c630 kernel: [    2.038755] x7 : 0000000000000000 x6 : 000000000c473b7e 
+Mar 30 13:16:03 c630 kernel: [    2.038761] x5 : 00ffffffffffffff x4 : 00221806fff8f800 
+Mar 30 13:16:03 c630 kernel: [    2.038768] x3 : 0000000000000018 x2 : ffffda2dc3d34320 
+Mar 30 13:16:03 c630 kernel: [    2.038774] x1 : 0000000000000000 x0 : 0000000000000000 
+Mar 30 13:16:03 c630 kernel: [    2.038781] Call trace:
+Mar 30 13:16:03 c630 kernel: [    2.038784]  dpu_runtime_resume+0xc0/0xf0 [msm]
+Mar 30 13:16:03 c630 kernel: [    2.038831]  pm_generic_runtime_resume+0x30/0x50
+Mar 30 13:16:03 c630 kernel: [    2.038836]  __genpd_runtime_resume+0x30/0xb0
+Mar 30 13:16:03 c630 kernel: [    2.038842]  genpd_runtime_resume+0x90/0x250
+Mar 30 13:16:03 c630 kernel: [    2.038848]  __rpm_callback+0x90/0x160
+Mar 30 13:16:03 c630 kernel: [    2.038854]  rpm_callback+0x24/0x84
+Mar 30 13:16:03 c630 kernel: [    2.038859]  rpm_resume+0x450/0x6ec
+Mar 30 13:16:03 c630 kernel: [    2.038865]  __pm_runtime_resume+0x3c/0x90
+Mar 30 13:16:03 c630 kernel: [    2.038870]  dpu_kms_hw_init+0x124/0x5dc [msm]
+Mar 30 13:16:03 c630 kernel: [    2.038918]  msm_drm_bind+0x468/0x594 [msm]
+Mar 30 13:16:03 c630 kernel: [    2.038965]  try_to_bring_up_master+0x164/0x1d0
+Mar 30 13:16:03 c630 kernel: [    2.038973]  component_master_add_with_match+0xb8/0x100
+Mar 30 13:16:03 c630 kernel: [    2.038979]  msm_pdev_probe+0x260/0x300 [msm]
+Mar 30 13:16:03 c630 kernel: [    2.039026]  platform_probe+0x68/0xe0
+Mar 30 13:16:03 c630 kernel: [    2.039032]  really_probe+0xe4/0x4c0
+Mar 30 13:16:03 c630 kernel: [    2.039036]  driver_probe_device+0x58/0xc0
+Mar 30 13:16:03 c630 kernel: [    2.039040]  __device_attach_driver+0xa8/0x104
+Mar 30 13:16:03 c630 kernel: [    2.039045]  bus_for_each_drv+0x78/0xd0
+Mar 30 13:16:03 c630 kernel: [    2.039051]  __device_attach+0xd8/0x17c
+Mar 30 13:16:03 c630 kernel: [    2.039055]  device_initial_probe+0x14/0x20
+Mar 30 13:16:03 c630 kernel: [    2.039059]  bus_probe_device+0x9c/0xa4
+Mar 30 13:16:03 c630 kernel: [    2.039065]  deferred_probe_work_func+0x74/0xb0
+Mar 30 13:16:03 c630 kernel: [    2.039069]  process_one_work+0x1d0/0x494
+Mar 30 13:16:03 c630 kernel: [    2.039076]  worker_thread+0x13c/0x470
+Mar 30 13:16:03 c630 kernel: [    2.039080]  kthread+0x158/0x160
+Mar 30 13:16:03 c630 kernel: [    2.039085]  ret_from_fork+0x10/0x34
+Mar 30 13:16:03 c630 kernel: [    2.039093] ---[ end trace 65a4c9cc3f59c59a ]---
+Mar 30 13:16:03 c630 kernel: [    2.039124] [drm:dpu_kms_hw_init:943] dpu hardware revision:0x40000000
 
-1) Filesystem shared by disjoint jobs.
-2) For job dedicated filesystems, the lifetime of the filesystem is
-different from the lifetime of the job.
-
-For now, we have two potential solutions to the
-zombies-due-to-offlined-LRU-pages i.e. (1) reparent and (2) pairing
-memcg and filesystem. For reparenting, the cons are inconsistent
-memory usage and root memcg potentially becoming dumping ground. For
-pairing, the oom behavior is awkward which is the same for any type of
-remote charging.
-
-I am wondering how we can resolve the cons for each. To resolve the
-root-memcg-dump issue in the reparenting, maybe we uncharge the page
-when it reaches root and the next accesser will be charged. For
-inconsistent memory usage, either users accept the inconsistency or
-force reclaim before offline which will reduce the benefit of sharing
-filesystem with subsequent instances of the job. For the pairing,
-maybe we can punt to the user/admin to not set a limit on such memcg
-to avoid awkward oom situations.
-
-Thoughts?
