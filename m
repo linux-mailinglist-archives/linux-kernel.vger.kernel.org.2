@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207BD34ECA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1917334ECAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhC3Pfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhC3PfY (ORCPT
+        id S232418AbhC3PgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:36:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44856 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232443AbhC3Pf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:35:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77783C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:35:18 -0700 (PDT)
+        Tue, 30 Mar 2021 11:35:27 -0400
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1617118516;
@@ -22,53 +19,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OwQDSIFoC6niL2q+iQikUcrCHMhBQ+TPKnmxalLmhps=;
-        b=3MZdTxc07gPLoLG1Y05bTp4za31m59TfFkDh03a4fN2YeHv6KYFwCoPPs035TtzGOR2IVM
-        6ZHxhCxmSBgHFUPEWbVgOmREvQ4Fb5KYKwgId2vrUEvU+i0Is7KO7bSr9kgVff6fu/fLka
-        z+9hQu7WZKQFZSw+UtbRYEo0whw5QBI9rjJznLcJiYdHl8HyGoUMz1OU59He8JCflnh2/R
-        WF76aAQ7lsotxltgUhAD5Z/SIR4TQ/abukl8s5JpOWfN+MA5KscM/XERr3okF+iQ9Xg3U7
-        cgsitmN17S8YmOwptvbOSnSyujmtO4vDgnAczznO4M3W260HLsekSu/YFqvO0A==
+        bh=bPl+s+JpKl89Q4u3IDJDwNQFwzL5H5hBnoVBUHnRpbA=;
+        b=1jb1cXqxbsBUQOZHYPAbpVa75YIMSO4/kd3m3n84w/GO91vOu8rMrdkEMy8yam+JMbn6av
+        ZIgeG2grXn47RAJGkeDxVXbfclotdmooLWmT+q5aWcTFHPNxNNV01n/f9cktehDcLJmwN1
+        GVPzNY+cOrIO+pBPSSuMRXdnGFJUzrn7N8JwAIUpvkKlLKOGFdEQ+odkPD0KHdJyW1qN6m
+        y6D9uyOpEkOvpKQHfe+g7RBw22nFs0N/ejHGi0PqH7/GCb60yM39yPQIYm5p2nztateO0l
+        qpozV7taIgubMj5QnISOkhPyi4sAi3DOhD2J57hTTut7XPPWLjrHkAE0H0yWUQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1617118516;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OwQDSIFoC6niL2q+iQikUcrCHMhBQ+TPKnmxalLmhps=;
-        b=mJrR1Dwat/8IblWUcdzjdoqaqEWo3jNv5KZO79ZDrEMeJ/RbsBBGQ+jDQzL1WiliL8QtHC
-        4b15j6gy2C83BXCg==
+        bh=bPl+s+JpKl89Q4u3IDJDwNQFwzL5H5hBnoVBUHnRpbA=;
+        b=829kVO9RYfHlI7YMVeF02yY2iFoG8AO0WU6BSher+temKlOCNH0/evh9LIpxUegODsyKtG
+        akqjfEKPlJtBrgAQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Terrell <terrelln@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH printk v2 3/5] printk: remove NMI tracking
-Date:   Tue, 30 Mar 2021 17:35:10 +0200
-Message-Id: <20210330153512.1182-4-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v2 4/5] printk: convert @syslog_lock to mutex
+Date:   Tue, 30 Mar 2021 17:35:11 +0200
+Message-Id: <20210330153512.1182-5-john.ogness@linutronix.de>
 In-Reply-To: <20210330153512.1182-1-john.ogness@linutronix.de>
 References: <20210330153512.1182-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -77,211 +51,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All NMI contexts are handled the same as the safe context: store the
-message and defer printing. There is no need to have special NMI
-context tracking for this. Using in_nmi() is enough.
+@syslog_lock was a raw_spin_lock to simplify the transition of
+removing @logbuf_lock and the safe buffers. With that transition
+complete, and since all uses of @syslog_lock are within sleepable
+contexts, @syslog_lock can become a mutex.
+
+Note that until now register_console() would disable interrupts
+using irqsave, which implies that it may be called with interrupts
+disabled. And indeed, there is one possible call chain on parisc
+where this happens:
+
+handle_interruption(code=1) /* High-priority machine check (HPMC) */
+  pdc_console_restart()
+    pdc_console_init_force()
+      register_console()
+
+However, register_console() calls console_lock(), which might sleep.
+So it has never been allowed to call register_console() from an
+atomic context and the above call chain is a bug.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- arch/arm/kernel/smp.c       |  2 --
- arch/powerpc/kexec/crash.c  |  3 ---
- include/linux/hardirq.h     |  2 --
- include/linux/printk.h      | 12 ------------
- init/Kconfig                |  5 -----
- kernel/printk/internal.h    |  6 ------
- kernel/printk/printk_safe.c | 37 +------------------------------------
- kernel/trace/trace.c        |  2 --
- 8 files changed, 1 insertion(+), 68 deletions(-)
+ Note: The removal of read_syslog_seq_irq() is technically a small
+       step backwards. But the follow-up patch moves forward again
+       and closes a window that existed with read_syslog_seq_irq()
+       and @syslog_lock as a spin_lock.
 
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index 5c48eb4fd0e5..77a720c1f402 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -671,9 +671,7 @@ static void do_handle_IPI(int ipinr)
- 		break;
+ kernel/printk/printk.c | 49 +++++++++++++++++-------------------------
+ 1 file changed, 20 insertions(+), 29 deletions(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index f090d6a1b39e..b771aae46445 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -356,7 +356,7 @@ enum log_flags {
+ };
  
- 	case IPI_CPU_BACKTRACE:
--		printk_nmi_enter();
- 		nmi_cpu_backtrace(get_irq_regs());
--		printk_nmi_exit();
- 		break;
- 
- 	default:
-diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
-index c9a889880214..d488311efab1 100644
---- a/arch/powerpc/kexec/crash.c
-+++ b/arch/powerpc/kexec/crash.c
-@@ -311,9 +311,6 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
- 	unsigned int i;
- 	int (*old_handler)(struct pt_regs *regs);
- 
--	/* Avoid hardlocking with irresponsive CPU holding logbuf_lock */
--	printk_nmi_enter();
--
- 	/*
- 	 * This function is only called after the system
- 	 * has panicked or is otherwise in a critical state.
-diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-index 7c9d6a2d7e90..0926e9ca4d85 100644
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -115,7 +115,6 @@ extern void rcu_nmi_exit(void);
- 	do {							\
- 		lockdep_off();					\
- 		arch_nmi_enter();				\
--		printk_nmi_enter();				\
- 		BUG_ON(in_nmi() == NMI_MASK);			\
- 		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
- 	} while (0)
-@@ -134,7 +133,6 @@ extern void rcu_nmi_exit(void);
- 	do {							\
- 		BUG_ON(!in_nmi());				\
- 		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
--		printk_nmi_exit();				\
- 		arch_nmi_exit();				\
- 		lockdep_on();					\
- 	} while (0)
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 2476796c1150..77f66625706e 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -149,18 +149,6 @@ static inline __printf(1, 2) __cold
- void early_printk(const char *s, ...) { }
- #endif
- 
--#ifdef CONFIG_PRINTK_NMI
--extern void printk_nmi_enter(void);
--extern void printk_nmi_exit(void);
--extern void printk_nmi_direct_enter(void);
--extern void printk_nmi_direct_exit(void);
--#else
--static inline void printk_nmi_enter(void) { }
--static inline void printk_nmi_exit(void) { }
--static inline void printk_nmi_direct_enter(void) { }
--static inline void printk_nmi_direct_exit(void) { }
--#endif /* PRINTK_NMI */
--
- struct dev_printk_info;
+ /* syslog_lock protects syslog_* variables and write access to clear_seq. */
+-static DEFINE_RAW_SPINLOCK(syslog_lock);
++static DEFINE_MUTEX(syslog_lock);
  
  #ifdef CONFIG_PRINTK
-diff --git a/init/Kconfig b/init/Kconfig
-index 096e1af5c586..ea58c0d30a97 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1482,11 +1482,6 @@ config PRINTK
- 	  very difficult to diagnose system problems, saying N here is
- 	  strongly discouraged.
+ DECLARE_WAIT_QUEUE_HEAD(log_wait);
+@@ -1497,9 +1497,9 @@ static int syslog_print(char __user *buf, int size)
+ 		size_t n;
+ 		size_t skip;
  
--config PRINTK_NMI
--	def_bool y
--	depends on PRINTK
--	depends on HAVE_NMI
--
- config BUG
- 	bool "BUG() support" if EXPERT
- 	default y
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 6cc35c5de890..ff890ae3ee6a 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -6,12 +6,6 @@
+-		raw_spin_lock_irq(&syslog_lock);
++		mutex_lock(&syslog_lock);
+ 		if (!prb_read_valid(prb, syslog_seq, &r)) {
+-			raw_spin_unlock_irq(&syslog_lock);
++			mutex_unlock(&syslog_lock);
+ 			break;
+ 		}
+ 		if (r.info->seq != syslog_seq) {
+@@ -1528,7 +1528,7 @@ static int syslog_print(char __user *buf, int size)
+ 			syslog_partial += n;
+ 		} else
+ 			n = 0;
+-		raw_spin_unlock_irq(&syslog_lock);
++		mutex_unlock(&syslog_lock);
  
- #ifdef CONFIG_PRINTK
- 
--#define PRINTK_SAFE_CONTEXT_MASK	0x007ffffff
--#define PRINTK_NMI_DIRECT_CONTEXT_MASK	0x008000000
--#define PRINTK_NMI_CONTEXT_MASK		0xff0000000
--
--#define PRINTK_NMI_CONTEXT_OFFSET	0x010000000
--
- __printf(4, 0)
- int vprintk_store(int facility, int level,
- 		  const struct dev_printk_info *dev_info,
-diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-index 4b5df5c27334..4da1ab3332d6 100644
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -4,12 +4,9 @@
-  */
- 
- #include <linux/preempt.h>
--#include <linux/spinlock.h>
--#include <linux/debug_locks.h>
- #include <linux/kdb.h>
- #include <linux/smp.h>
- #include <linux/cpumask.h>
--#include <linux/irq_work.h>
- #include <linux/printk.h>
- #include <linux/kprobes.h>
- 
-@@ -17,35 +14,6 @@
- 
- static DEFINE_PER_CPU(int, printk_context);
- 
--#ifdef CONFIG_PRINTK_NMI
--void noinstr printk_nmi_enter(void)
--{
--	this_cpu_add(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
--}
--
--void noinstr printk_nmi_exit(void)
--{
--	this_cpu_sub(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
--}
--
--/*
-- * Marks a code that might produce many messages in NMI context
-- * and the risk of losing them is more critical than eventual
-- * reordering.
-- */
--void printk_nmi_direct_enter(void)
--{
--	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
--		this_cpu_or(printk_context, PRINTK_NMI_DIRECT_CONTEXT_MASK);
--}
--
--void printk_nmi_direct_exit(void)
--{
--	this_cpu_and(printk_context, ~PRINTK_NMI_DIRECT_CONTEXT_MASK);
--}
--
--#endif /* CONFIG_PRINTK_NMI */
--
- /* Can be preempted by NMI. */
- void __printk_safe_enter(void)
- {
-@@ -70,10 +38,7 @@ asmlinkage int vprintk(const char *fmt, va_list args)
- 	 * Use the main logbuf even in NMI. But avoid calling console
- 	 * drivers that might have their own locks.
- 	 */
--	if (this_cpu_read(printk_context) &
--	    (PRINTK_NMI_DIRECT_CONTEXT_MASK |
--	     PRINTK_NMI_CONTEXT_MASK |
--	     PRINTK_SAFE_CONTEXT_MASK)) {
-+	if (this_cpu_read(printk_context) || in_nmi()) {
- 		unsigned long flags;
- 		int len;
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index b5815a022ecc..83a3663d1dc0 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9344,7 +9344,6 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
- 	tracing_off();
- 
- 	local_irq_save(flags);
--	printk_nmi_direct_enter();
- 
- 	/* Simulate the iterator */
- 	trace_init_global_iter(&iter);
-@@ -9424,7 +9423,6 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
- 		atomic_dec(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+ 		if (!n)
+ 			break;
+@@ -1592,9 +1592,9 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
  	}
- 	atomic_dec(&dump_running);
--	printk_nmi_direct_exit();
- 	local_irq_restore(flags);
+ 
+ 	if (clear) {
+-		raw_spin_lock_irq(&syslog_lock);
++		mutex_lock(&syslog_lock);
+ 		latched_seq_write(&clear_seq, seq);
+-		raw_spin_unlock_irq(&syslog_lock);
++		mutex_unlock(&syslog_lock);
+ 	}
+ 
+ 	kfree(text);
+@@ -1603,21 +1603,9 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
+ 
+ static void syslog_clear(void)
+ {
+-	raw_spin_lock_irq(&syslog_lock);
++	mutex_lock(&syslog_lock);
+ 	latched_seq_write(&clear_seq, prb_next_seq(prb));
+-	raw_spin_unlock_irq(&syslog_lock);
+-}
+-
+-/* Return a consistent copy of @syslog_seq. */
+-static u64 read_syslog_seq_irq(void)
+-{
+-	u64 seq;
+-
+-	raw_spin_lock_irq(&syslog_lock);
+-	seq = syslog_seq;
+-	raw_spin_unlock_irq(&syslog_lock);
+-
+-	return seq;
++	mutex_unlock(&syslog_lock);
  }
- EXPORT_SYMBOL_GPL(ftrace_dump);
+ 
+ int do_syslog(int type, char __user *buf, int len, int source)
+@@ -1626,6 +1614,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 	bool clear = false;
+ 	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
+ 	int error;
++	u64 seq;
+ 
+ 	error = check_syslog_permissions(type, source);
+ 	if (error)
+@@ -1644,8 +1633,12 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 		if (!access_ok(buf, len))
+ 			return -EFAULT;
+ 
+-		error = wait_event_interruptible(log_wait,
+-				prb_read_valid(prb, read_syslog_seq_irq(), NULL));
++		/* Get a consistent copy of @syslog_seq. */
++		mutex_lock(&syslog_lock);
++		seq = syslog_seq;
++		mutex_unlock(&syslog_lock);
++
++		error = wait_event_interruptible(log_wait, prb_read_valid(prb, seq, NULL));
+ 		if (error)
+ 			return error;
+ 		error = syslog_print(buf, len);
+@@ -1693,10 +1686,10 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 		break;
+ 	/* Number of chars in the log buffer */
+ 	case SYSLOG_ACTION_SIZE_UNREAD:
+-		raw_spin_lock_irq(&syslog_lock);
++		mutex_lock(&syslog_lock);
+ 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+ 			/* No unread messages. */
+-			raw_spin_unlock_irq(&syslog_lock);
++			mutex_unlock(&syslog_lock);
+ 			return 0;
+ 		}
+ 		if (info.seq != syslog_seq) {
+@@ -1714,7 +1707,6 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 		} else {
+ 			bool time = syslog_partial ? syslog_time : printk_time;
+ 			unsigned int line_count;
+-			u64 seq;
+ 
+ 			prb_for_each_info(syslog_seq, prb, seq, &info,
+ 					  &line_count) {
+@@ -1724,7 +1716,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 			}
+ 			error -= syslog_partial;
+ 		}
+-		raw_spin_unlock_irq(&syslog_lock);
++		mutex_unlock(&syslog_lock);
+ 		break;
+ 	/* Size of the log buffer */
+ 	case SYSLOG_ACTION_SIZE_BUFFER:
+@@ -2925,7 +2917,6 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
+  */
+ void register_console(struct console *newcon)
+ {
+-	unsigned long flags;
+ 	struct console *bcon = NULL;
+ 	int err;
+ 
+@@ -3030,9 +3021,9 @@ void register_console(struct console *newcon)
+ 		exclusive_console_stop_seq = console_seq;
+ 
+ 		/* Get a consistent copy of @syslog_seq. */
+-		raw_spin_lock_irqsave(&syslog_lock, flags);
++		mutex_lock(&syslog_lock);
+ 		console_seq = syslog_seq;
+-		raw_spin_unlock_irqrestore(&syslog_lock, flags);
++		mutex_unlock(&syslog_lock);
+ 	}
+ 	console_unlock();
+ 	console_sysfs_notify();
 -- 
 2.20.1
 
