@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCFA34EC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E4634EC80
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhC3PbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
+        id S232369AbhC3Pbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231782AbhC3Pan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:30:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D125F619AB;
-        Tue, 30 Mar 2021 15:30:40 +0000 (UTC)
+        id S232224AbhC3PbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:31:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB2E619A7;
+        Tue, 30 Mar 2021 15:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617118243;
-        bh=T6HRF4MkN1JTbhxzKjNpUF0eJ6YQtW5OY/mJQ6Hzggk=;
+        s=k20201202; t=1617118269;
+        bh=NtE7aeYpAIhUn0tc24UAQobx/yYBi5xZmalsJsMH4Dc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aT2+FlGS4DuweSJh1LWKX/MUyeNmqYPP2kBRyQLhJhsPW8G9N8oZXqZZQ9XFM7RUN
-         TdyTmMqBmeWebPP8h4rf+DALR21UR/yYWdzGhHTFANOqOSfD5Wx0hZOOEOndMp/HWU
-         JC1PtkEH1xH/RDPALGDmsWib68La5wQY/66BSwJQYeLFfa70+mVetLDl/cI6bLZ6DD
-         6NP5gjFvRLWaqqf7lGnGKB9MobOzR7Jr08SsNesjZ3C7RzOrynS3yuNMzxF+qZhn1c
-         qh7lxEWiggOMUt5cUtaaJg29q8gAVGcg56foCgO4UIVA7WRgsuzRn2/Nd+XTDJxyVR
-         gkmxmHqnL1f7g==
-Date:   Tue, 30 Mar 2021 16:30:37 +0100
+        b=tTGTaCTHJ0XrdCjLcfU+o9chdyDWqDnmVlnbEuGom32oGmV+JhqPd5dBGP5P9D/xl
+         n6Wq8R7xqtbCBrNMqvPoMo9IG6TEEHqT61YZKzKwF1+6MEyUDdJGNkKS1ftc+nI0pL
+         J4uvSPGmDXKBnoL1g56r/KnrGhpmQ5E7BhjOqoenInO8qoDzOu12ORu8+AKO68bxVm
+         VTJ1LzC7TLZxkGMz8OGkX+61n2sVx2C5+jeUn2y89faPLQbsi0fWIUdkgodRq7uCT7
+         cNK3ZrMZ0GGpDlLTcV291cpIXmdb8SK+AGQnedN5C5QOuJGt1nqC4pxbLkbWXhv6C1
+         iD8kdbSWDthLA==
+Date:   Tue, 30 Mar 2021 16:31:04 +0100
 From:   Will Deacon <will@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/10] arm64: pmu: Add function implementation to
- update event index in userpage
-Message-ID: <20210330153036.GA6567@willie-the-truck>
-References: <20210311000837.3630499-1-robh@kernel.org>
- <20210311000837.3630499-2-robh@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Eric Anholt <eric@anholt.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+Message-ID: <20210330153050.GB6567@willie-the-truck>
+References: <20210326231303.3071950-1-eric@anholt.net>
+ <20210329144729.GB4203@willie-the-truck>
+ <CAF6AEGugpEk396DVtWX=W+uf3p-wcgBfCSpSLWGQJE1vKpJ4aw@mail.gmail.com>
+ <20210330093432.GB5281@willie-the-truck>
+ <CAF6AEGvCCWvmRBhzY4MsdzgwfJ+GF2AUOS-_NTyhM8wtnDzY2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311000837.3630499-2-robh@kernel.org>
+In-Reply-To: <CAF6AEGvCCWvmRBhzY4MsdzgwfJ+GF2AUOS-_NTyhM8wtnDzY2Q@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 05:08:28PM -0700, Rob Herring wrote:
-> From: Raphael Gault <raphael.gault@arm.com>
+On Tue, Mar 30, 2021 at 08:03:36AM -0700, Rob Clark wrote:
+> On Tue, Mar 30, 2021 at 2:34 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Mon, Mar 29, 2021 at 09:02:50PM -0700, Rob Clark wrote:
+> > > On Mon, Mar 29, 2021 at 7:47 AM Will Deacon <will@kernel.org> wrote:
+> > > >
+> > > > On Fri, Mar 26, 2021 at 04:13:02PM -0700, Eric Anholt wrote:
+> > > > > db820c wants to use the qcom smmu path to get HUPCF set (which keeps
+> > > > > the GPU from wedging and then sometimes wedging the kernel after a
+> > > > > page fault), but it doesn't have separate pagetables support yet in
+> > > > > drm/msm so we can't go all the way to the TTBR1 path.
+> > > >
+> > > > What do you mean by "doesn't have separate pagetables support yet"? The
+> > > > compatible string doesn't feel like the right way to determine this.
+> > >
+> > > the compatible string identifies what it is, not what the sw
+> > > limitations are, so in that regard it seems right to me..
+> >
+> > Well it depends on what "doesn't have separate pagetables support yet"
+> > means. I can't tell if it's a hardware issue, a firmware issue or a driver
+> > issue.
 > 
-> In order to be able to access the counter directly for userspace,
-> we need to provide the index of the counter using the userpage.
-> We thus need to override the event_idx function to retrieve and
-> convert the perf_event index to armv8 hardware index.
-> 
-> Since the arm_pmu driver can be used by any implementation, even
-> if not armv8, two components play a role into making sure the
-> behaviour is correct and consistent with the PMU capabilities:
-> 
-> * the ARMPMU_EL0_RD_CNTR flag which denotes the capability to access
-> counter from userspace.
-> * the event_idx call back, which is implemented and initialized by
-> the PMU implementation: if no callback is provided, the default
-> behaviour applies, returning 0 as index value.
-> 
-> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  arch/arm64/kernel/perf_event.c | 18 ++++++++++++++++++
->  include/linux/perf/arm_pmu.h   |  2 ++
->  2 files changed, 20 insertions(+)
+> Just a driver issue (and the fact that currently we don't have
+> physical access to a device... debugging a5xx per-process-pgtables by
+> pushing untested things to the CI farm is kind of a difficult way to
+> work)
 
-Acked-by: Will Deacon <will@kernel.org>
+But then in that case, this is using the compatible string to identify a
+driver issue, no?
 
 Will
