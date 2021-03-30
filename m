@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A88434F436
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6A134F437
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhC3WZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:25:01 -0400
-Received: from mail-dm6nam11on2085.outbound.protection.outlook.com ([40.107.223.85]:36864
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232607AbhC3WYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:24:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eMn3VUBk4B4lJfTRC8LRx2nXCvK5xkillR4G5BfUTX710Dcs3spJniWHl8bjvc8Ozc8om7xY8vjmwq1I0wE0kH1iwM1P/rozauX5We9SHDfhOpnHizb/mLZCmBjp31cR1Hh4Y8KeYUkPJYLH48Hf7gHnuEVAZrT5d8N2ZHiTKUtaR0BOwklU16QeLNl/XJLX+dlDjFXHUz4ombNwrmh2NGu/1c2y8xKyznlWopx/sV5JztDicSYM9cc+j6YCFTQzGOoyfkzAK7q/l+OhZcFo6UvsDrvqAvLU1eaPSze0+7F0XOnDO+VdUu3uIpabvSbrLUK98sJXkXZE40gHvI3dog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w9ukJXfq2a6VQdE00YdgAIqNmhLcocMcEz1uqfCRjW0=;
- b=imYjZSaNiKUkDuKtiFlddejNVHiTudwBj75AvtZ/rmlEDRyfg3WUTJnWCizuKHxV0LgRgsjKEKcGcdiRFUK9ZZOGfGa+abiE0cyc4a5UXBk99cn2H9N+lANNqJAoGtf3nx2iLTlG0hBvWfGcXwH/X+MHIiEbQWbhl6s6jFRODR3cRAYDwg1bafiNXeHr7xnxCziwTd+fFKHAqMy7e+zbxB1F2ziFNEdg6I2dAGUVK96H9X9GC9BPL3jRKmAGe2Bidk1YPe0KZ1T9UEdvvIWkRGizrzH+HKakjUfOiyk9YTTpyltxguQG5DIhuomOZ3VPCGMFYcFc15XD1Xp1ILEjCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w9ukJXfq2a6VQdE00YdgAIqNmhLcocMcEz1uqfCRjW0=;
- b=hv8olSRsCv30ceK1wFEhlmtFkP/Dt2hPvC90xfsvikiRE8jdn9V/3ve/GhD6W6jgReykPENgDV9Xt4O8DTvyGF33Zeh9K7mEGmqVsVQFbZVWDqQBlDqzekMAfT8a2o0Qsl0fxP2l9GofO/BmErD/En51FM7kISYSlCmCwYYhRKBEAtfAJi+5ubm5+b4aAHaO4lgfG5gjmjnEvbZSpxOvshqIuaWnD6aOF47srsJZFdhndXFNta6sH74QHPK2okwA4TMpoffg/OrxYdhfhNTRKAZLCZv9m/szO1Wl810nwGFpA+ioQe/eZyBZ1NbnRCR6X703axR1RTJGiNnW85SW5w==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
- 2021 22:24:42 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 22:24:42 +0000
-Date:   Tue, 30 Mar 2021 19:24:40 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        jhubbard@nvidia.com, rcampbell@nvidia.com, jglisse@redhat.com,
-        hch@infradead.org, daniel@ffwll.ch, willy@infradead.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-Message-ID: <20210330222440.GC2356281@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com>
- <20210326000805.2518-4-apopple@nvidia.com>
- <20210330184903.GZ2356281@nvidia.com>
- <12442194.rtmf8Ope3M@nvdebian>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12442194.rtmf8Ope3M@nvdebian>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0413.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::28) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232910AbhC3W0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:26:38 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:47303 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhC3W0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 18:26:16 -0400
+Received: by mail-il1-f197.google.com with SMTP id h21so223246ila.14
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:26:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1u93kqYdtAiLCX1gVbvoAizOOKaaxSinv27S/a6wWSA=;
+        b=B7+5cKg9qSuaDE5GQAN3SEWT0PXExa/twwUSa8qwbEtawbHg481kc5qY9V0avrznka
+         OI4arzoJ5iDFZGiC0x584r3KO81w61flYxfrstkF194N2/aWIoZPh13gtpz3zvxaarjm
+         sYH451Mtxv/2VB9UcWIS7qKLmVSMDjiZZkEA8TgA0P07mXmI4tSk4F+J7PoacocdD4Dy
+         dnf5q5GiewanwJABgNo1iX4mVKuD3AlpSkimGnWkLI9DSzVZXIVhVBxgQ9yxE6g0dnL/
+         dWj45jUKiRTzwP30xZmWKQrHIM0LfBekMIh+w5o6e7TU3S4BfAVzVjr85Gqxt9Pp/5Sa
+         V4vA==
+X-Gm-Message-State: AOAM531yiyB3v4BRJxtL92Px0jccNYAlOnoQtKPcyaFkUqoAjYeaL5+q
+        ylETPZwreZ/vGI0UjVHbzuf//Z2RNfgw9IVC9jZZDtAMZEpf
+X-Google-Smtp-Source: ABdhPJzxqbFv/0SefYItE0ZpkwRGGzKfvBf+v0+HqR7xCyOZYQEmAi1ayjT6R2QAFlekf1bvAyAMmHFTZHeit2+pYHs32G5tB03c
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0413.namprd13.prod.outlook.com (2603:10b6:208:2c2::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Tue, 30 Mar 2021 22:24:42 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRMmu-0066QV-Rf; Tue, 30 Mar 2021 19:24:40 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f2b1a49e-95aa-4fbd-8134-08d8f3ca9d80
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1754:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB17543B4EE56A089205BCBA93C27D9@DM5PR12MB1754.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I6nNehQMKpEpR3jHWxwH+b2aWivTRHhOEGcB5lnTB3HHIGErY4xSy5yy5FcZ7Oh7ui3zEf6r3X0dm0yXAqsKH5zZQVuz8A17xKsvSFWc3Nw/OeyR0YBJLw6aQmogSISnX1yAMQVMWs9zS5W9qrpPHIzZy7NwPRU2lcI8xLlfeiYLhE75oEEXK50Kggs0gXhunXaS5nGvo0Ke1nyg/93zTaNIi4TwV+sUcDcFEF42B4p/MUyvmoRvUp/lYkwia9GESvkcGLfDw9Y9R8DrVRlTDkB9/g/8sIlygbpn2AI/JWla4S1+MhUDzu7kmnnhnN5VKhbXwcKJupWWOYGqsUwi9m5DxNKlon6ktSaeOK+ZpDrjC3gwrEJksqH+DSUM9qd4HRV9ZUn3OGKl8prWbR6GABzfozeA8LE4AwTtigXuUrWKBEqdCpA0p08HIxSa+ysOfSeh476jgC/f3KGuaraDlzTGSOQKmjUx4SEC6Bf+oD4PC+mofpG1aUnhaeyaO+R1z1REhXBQpTvCLpQuAnKPbzVBOfXqRFjF3nPztTQBU4WGUhjLQPAWNbasCfOWVnse4qrYdTgpBnZIWJ+jtZNYGT2TgTQPEepgJHUBTt1Bbn60xjB697Cd1OBa0eY9BgQDE13Z2/7Fbxbiw5L3JB+HRs6i2Ql+4eq8DXV+zQq6r3k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(396003)(39860400002)(376002)(6636002)(6862004)(478600001)(66476007)(7416002)(1076003)(37006003)(38100700001)(2906002)(86362001)(316002)(9746002)(8676002)(4326008)(9786002)(66946007)(8936002)(186003)(33656002)(83380400001)(426003)(26005)(36756003)(66556008)(2616005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?fVV59dARpSdv2KxCT3izOPfwZRgAEWGURqY+te/YBVuRMmt1efCxeEnbyMD/?=
- =?us-ascii?Q?aw4SmbiEL1w+qnhPB6So/Jwa8ymMxlRYIH/4+/hSKi1hXQCZgp0jeI20QUSv?=
- =?us-ascii?Q?Jzcyi/1xsb5iS5t+YEZlso12CGO9vVVW7Xefl66E2LoIi38vh/nQr0yPoGwI?=
- =?us-ascii?Q?L8M5j4gPDPooa9RVV8u/Suara5ChyTZHRjBQodRAWK0ruSP1PRcu8b6NwiGH?=
- =?us-ascii?Q?YTgaZzjF18SenIYavDOHKFNP5Cd0jf4YRTgScnGbuZDzDWA7NfmXimjGWXJg?=
- =?us-ascii?Q?F/PtSnQ8d1znZdGSQXB1B/xIAqrFRZaX9gDWukMRUCJ5Y25Dp7mCOnKCPyM4?=
- =?us-ascii?Q?407F/NqugA6weFlixAU5TYj75J1QXX6ZWF4urzYjvNdYPfzWuskuVpuSYzFB?=
- =?us-ascii?Q?5tBI97k5z2jNQxd+DxFZaA8frEbLYXQqTBF53iutLDfGfTRvLd4cfUq46WiY?=
- =?us-ascii?Q?jEezvCMow6Un6z8OidDAijZEbqJyZRAiiBNlS09HMhN96dqOh97ecVtKnfpq?=
- =?us-ascii?Q?gpjJldEnfJN8rQLfdhyCwYO3Sc5CyS0DaeRWkHWHzbvHOs4bd/ZqC/Mm/+Uf?=
- =?us-ascii?Q?cMO+58xKHBbTls0aN/k0iiUrN0V5DDxwjVIXt2OSt1+/2Ff3ujZjqGeV1csO?=
- =?us-ascii?Q?hnDLrNjU64we0RgAond85feWbsakufarHqwnEHFi6HNTjOWJgghHuid7fUEG?=
- =?us-ascii?Q?iCKrUFwjeAcV0OGoq2eZojyJTprbrK1VT06U6kpkGLzmHRzURuJEBrSw+K2M?=
- =?us-ascii?Q?a0pCDzkaIpmKnkCu5PvVlkxWrlPKgUyCMvwT0+dAyCFsQfLtKAcyut5kmkD+?=
- =?us-ascii?Q?+docQp5qhnA5tfpB6dHRclDgCJHVjXVN9jOADZbrKfanA14/yt9HSx63+oux?=
- =?us-ascii?Q?Z7i+MYsAgl/Na9A1SCncTV+Uv6FDeFYjs2/nDZeg+2MLjlmtbKoXS8CviTdo?=
- =?us-ascii?Q?J0pB15lct1eEI+uaMpD9flnCwvH8IgLbK0ecuO37Wvtgu7WATNSK+0EcbUtR?=
- =?us-ascii?Q?57XOa35uihJUNcPo0nICm1QCF9O1+7g7UoDcjdwLIshHK5V/agc2FTMUcjCD?=
- =?us-ascii?Q?As5JsCsGKTCyEUkwzgHHBgDgqFQ+j2Y7qM7v6BYNVXdkT6zwnBnoFlSdyAJG?=
- =?us-ascii?Q?AHYXCgJpQU+e1Fu5qyM+c6WhqttjisrzW/bRqOQ/QBpYvLTK2nk1z7cCq/rQ?=
- =?us-ascii?Q?KJpdMVzW/GpJcFqmDrtBW1UU7N6Gawta341Q7qpBQ590oVRP1vFsWKWse/8N?=
- =?us-ascii?Q?Je82TJyO0PamJZ7BbLinL9uBf76AJccfLWvBpNH9gmcSobqo7lVTrbAR4sVr?=
- =?us-ascii?Q?NsqFD+ow47xq7YX7BBCvtUm5aUuJyXN/5PHSew2DoGvZ9g=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2b1a49e-95aa-4fbd-8134-08d8f3ca9d80
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 22:24:42.6591
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cSGcLMR/MmgSJsDLj2FHsePQyW4mfJUtLDSpS9XZjwyDvZZHFJRzHfWMGzZlIJir
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1754
+X-Received: by 2002:a05:6638:1614:: with SMTP id x20mr408084jas.19.1617143175472;
+ Tue, 30 Mar 2021 15:26:15 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 15:26:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000086695705bec87c9f@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in copy_page_range
+From:   syzbot <syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, axboe@kernel.dk, christian@brauner.io,
+        linux-kernel@vger.kernel.org, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:09:30AM +1100, Alistair Popple wrote:
+Hello,
 
-> > > @@ -1796,8 +1821,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags 
-> flags)
-> > >  void try_to_munlock(struct page *page)
-> > >  {
-> > 
-> > But this is also called try_to_munlock ??
-> 
-> As far as I can tell this has always been called try_to_munlock() even though 
-> it appears to do the opposite.
+syzbot found the following issue on:
 
-Maybe we should change it then?
+HEAD commit:    db24726b Merge tag 'integrity-v5.12-fix' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c16b7cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a33233ccd8201ec2322
 
-> > /**
-> >  * try_to_munlock - try to munlock a page
-> >  * @page: the page to be munlocked
-> >  *
-> >  * Called from munlock code.  Checks all of the VMAs mapping the page
-> >  * to make sure nobody else has this page mlocked. The page will be
-> >  * returned with PG_mlocked cleared if no other vmas have it mlocked.
-> >  */
-> 
-> In other words it sets PG_mlocked if one or more vmas has it mlocked. So
-> try_to_mlock() might be a better name, except that seems to have the potential 
-> for confusion as well because it's only called from the munlock code path and 
-> never for mlock.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-That explanation makes more sense.. This function looks like it is
-'set PG_mlocked of the page if any vm->flags has VM_LOCKED'
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com
 
-Maybe call it check_vm_locked or something then and reword the above
-comment?
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc4-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
 
-(and why is it OK to read vm->flags for this without any locking?)
+other info that might help us debug this:
 
-> > Something needs attention here..
-> 
-> I think the code is correct, but perhaps the naming could be better. Would be 
-> interested hearing any thoughts on renaming try_to_munlock() to try_to_mlock() 
-> as the current name appears based on the context it is called from (munlock) 
-> rather than what it does (mlock).
 
-The point of this patch is to make it clearer, after all, so I'd
-change something and maybe slightly clarify the comment.
+rcu_scheduler_active = 2, debug_locks = 0
+3 locks held by syz-executor.0/8401:
+ #0: ffffffff8c03e5b0 (dup_mmap_sem){++++}-{0:0}, at: dup_mmap kernel/fork.c:479 [inline]
+ #0: ffffffff8c03e5b0 (dup_mmap_sem){++++}-{0:0}, at: dup_mm+0x108/0x1380 kernel/fork.c:1368
+ #1: ffff888018d08858 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
+ #1: ffff888018d08858 (&mm->mmap_lock#2){++++}-{3:3}, at: dup_mmap kernel/fork.c:480 [inline]
+ #1: ffff888018d08858 (&mm->mmap_lock#2){++++}-{3:3}, at: dup_mm+0x12e/0x1380 kernel/fork.c:1368
+ #2: ffff88801888c058 (&mm->mmap_lock/1){+.+.}-{3:3}, at: mmap_write_lock_nested include/linux/mmap_lock.h:78 [inline]
+ #2: ffff88801888c058 (&mm->mmap_lock/1){+.+.}-{3:3}, at: dup_mmap kernel/fork.c:489 [inline]
+ #2: ffff88801888c058 (&mm->mmap_lock/1){+.+.}-{3:3}, at: dup_mm+0x18a/0x1380 kernel/fork.c:1368
 
-Jason
+stack backtrace:
+CPU: 0 PID: 8401 Comm: syz-executor.0 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+ copy_pte_range mm/memory.c:1010 [inline]
+ copy_pmd_range mm/memory.c:1064 [inline]
+ copy_pud_range mm/memory.c:1101 [inline]
+ copy_p4d_range mm/memory.c:1125 [inline]
+ copy_page_range+0x1270/0x3fd0 mm/memory.c:1198
+ dup_mmap kernel/fork.c:594 [inline]
+ dup_mm+0x9ed/0x1380 kernel/fork.c:1368
+ copy_mm kernel/fork.c:1424 [inline]
+ copy_process+0x2b99/0x7150 kernel/fork.c:2107
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2500
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2617
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x464a4b
+Code: ed 0f 85 60 01 00 00 64 4c 8b 0c 25 10 00 00 00 45 31 c0 4d 8d 91 d0 02 00 00 31 d2 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 89 00 00 00 41 89 c5 85 c0 0f 85 90 00 00
+RSP: 002b:00007ffd44303270 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000464a4b
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000002e94400
+R10: 0000000002e946d0 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffd44303360
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
