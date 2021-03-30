@@ -2,92 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C01834E2A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC54434E2A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhC3H6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:58:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231246AbhC3H6r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:58:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617091124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AHycToD1Mf7hFAxeW6WBmmMHgJcTRe0/4cO3FJSif84=;
-        b=e/0Rc2mCBZSLyTEK8uOWGpcbl/9fa9vDYJh78Ly4DEu75ET6IM5X96euvGkVqMqx5bQsGG
-        6bbBsDG0jgDzFCmjJA36U+Q7phbSoB/DBpkkjYUny8HxdSUnYd8toBvuqd14ajXXlS4BO6
-        IIDK7uH8W+KOAFsSD1luPQtdxajPc/U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-mJQ-MeRpML6rufcRb-jMoQ-1; Tue, 30 Mar 2021 03:58:41 -0400
-X-MC-Unique: mJQ-MeRpML6rufcRb-jMoQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDD53801814;
-        Tue, 30 Mar 2021 07:58:39 +0000 (UTC)
-Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E3815C239;
-        Tue, 30 Mar 2021 07:58:38 +0000 (UTC)
-Subject: Re: [PATCH] mm: change size_t to unsigned int for cma_alloc
-To:     Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210329182553.3129234-1-minchan@kernel.org>
- <20210329184431.GJ351017@casper.infradead.org> <YGI0sThJjsshpPIR@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6d305211-c956-ad80-5908-703d07fca441@redhat.com>
-Date:   Tue, 30 Mar 2021 09:58:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <YGI0sThJjsshpPIR@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S231225AbhC3IAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:00:35 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63727 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229633AbhC3IAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:00:09 -0400
+IronPort-SDR: Hhz+pJXyfSonDKrWybs2tJxz0cbAyRT4CxCUJZTeeMiY83+XSs/GAgKA3wmoOXyRVy00fycyX5
+ 4yNTEUOpDqyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="191186166"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="191186166"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 01:00:09 -0700
+IronPort-SDR: hAI+hccW6eajwy0ED0AcGHCDv3nqb+dmjF4ZPAZgxdSu1175Zw9yWndHUxKOf/wVbzq4pIIhFE
+ OPpkkOVilC2w==
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="scan'208";a="418058827"
+Received: from xguo30-mobl.ccr.corp.intel.com ([10.249.174.220])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 01:00:04 -0700
+Message-ID: <af3fd5adb62dcac93f2ff4ea7b6aff74d0106ac5.camel@intel.com>
+Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed))
+ by __packed
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Date:   Tue, 30 Mar 2021 15:59:58 +0800
+In-Reply-To: <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+         <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com>
+         <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
+         <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
+         <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.03.21 22:12, Minchan Kim wrote:
-> On Mon, Mar 29, 2021 at 07:44:31PM +0100, Matthew Wilcox wrote:
->> On Mon, Mar 29, 2021 at 11:25:53AM -0700, Minchan Kim wrote:
->>> size_t in cma_alloc is confusing since it makes people think
->>> it's byte count, not pages. Fix it.
->>
->> i think it has to be unsigned long.
->>
->> 67a2e213e7e937c41c52ab5bc46bf3f4de469f6e
-
-Right.
-
-Fortunately, we don't have such large allocations yet via 
-CMA/alloc_contig_range
-
+On Tue, 2021-03-30 at 15:31 +0800, Zhang Rui wrote:
+> On Tue, 2021-03-30 at 10:23 +0800, Xiaofei Tan wrote:
+> > Hi David,
+> > 
+> > On 2021/3/29 18:09, David Laight wrote:
+> > > From: Xiaofei Tan
+> > > > Sent: 27 March 2021 07:46
+> > > > 
+> > > > Replace __attribute__((packed)) by __packed following the
+> > > > advice of checkpatch.pl.
+> > > > 
+> > > > Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> > > > ---
+> > > >  drivers/acpi/acpi_fpdt.c | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/acpi/acpi_fpdt.c
+> > > > b/drivers/acpi/acpi_fpdt.c
+> > > > index a89a806..690a88a 100644
+> > > > --- a/drivers/acpi/acpi_fpdt.c
+> > > > +++ b/drivers/acpi/acpi_fpdt.c
+> > > > @@ -53,7 +53,7 @@ struct resume_performance_record {
+> > > >  	u32 resume_count;
+> > > >  	u64 resume_prev;
+> > > >  	u64 resume_avg;
+> > > > -} __attribute__((packed));
+> > > > +} __packed;
+> > > > 
+> > > >  struct boot_performance_record {
+> > > >  	struct fpdt_record_header header;
+> > > > @@ -63,13 +63,13 @@ struct boot_performance_record {
+> > > >  	u64 bootloader_launch;
+> > > >  	u64 exitbootservice_start;
+> > > >  	u64 exitbootservice_end;
+> > > > -} __attribute__((packed));
+> > > > +} __packed;
+> > > > 
+> > > >  struct suspend_performance_record {
+> > > >  	struct fpdt_record_header header;
+> > > >  	u64 suspend_start;
+> > > >  	u64 suspend_end;
+> > > > -} __attribute__((packed));
+> > > > +} __packed;
+> > > 
+> > > My standard question about 'packed' is whether it is actually
+> > > needed.
+> > > It should only be used if the structures might be misaligned in
+> > > memory.
+> > > If the only problem is that a 64bit item needs to be 32bit
+> > > aligned
+> > > then a suitable type should be used for those specific fields.
+> > > 
+> > > Those all look very dubious - the standard header isn't packed
+> > > so everything must eb assumed to be at least 32bit aligned.
+> > > 
+> > > There are also other sub-structures that contain 64bit values.
+> > > These don't contain padding - but that requires 64bit alignement.
+> > > 
+> > > The only problematic structure is the last one - which would have
+> > > a 32bit pad after the header.
+> > > Is this even right given than there are explicit alignment pads
+> > > in some of the other structures.
+> > > 
+> > > If 64bit alignment isn't guaranteed then a '64bit aligned to
+> > > 32bit'
+> > > type should be used for the u64 fields.
+> > > 
+> > 
+> > Yes, some of them has been aligned already, then nothing changed
+> > when 
+> > add this "packed ". Maybe the purpose of the original author is
+> > for 
+> > extension, and can tell others that this struct need be packed.
+> > 
 > 
-> Thanks for the pinter. I wanted to have the smallest change.
-> The commit leads me to change cma_release, trace_cma_alloc,
-> cma_clear_bitmap and front_contig_range as well.(Not sure
-> we have more. Will check).
+> The patch is upstreamed recently but it was made long time ago.
+> I think the original problem is that one of the address, probably the
+> suspend_performance record, is not 64bit aligned, thus we can not
+> read
+> the proper content of suspend_start and suspend_end, mapped from
+> physical memory.
 > 
-> Ccing david@redhat.com for upcoming changing free_contig_range.
+> I will try to find a machine to reproduce the problem with all
+> __attribute__((packed)) removed to double confirm this.
+> 
 
-While at it, we might want to convert free_contig_range() to eat
-"unsigned long start, unsigned long end" like alloc_contig_range(), 
-instead of "unsigned long pfn, unsigned int nr_pages" like 
-alloc_contig_pages() ...
+So here is the problem, without __attribute__((packed))
 
--- 
-Thanks,
+[    0.858442] suspend_record: 0xffffaad500175020
+/sys/firmware/acpi/fpdt/suspend/suspend_end_ns:addr:
+0xffffaad500175030, 15998179292659843072
+/sys/firmware/acpi/fpdt/suspend/suspend_start_ns:addr:
+0xffffaad500175028, 0
 
-David / dhildenb
+suspend_record is mapped to 0xffffaad500175020, and it is combined with
+one 32bit header and two 64bit fields (suspend_start and suspend_end),
+this is how it is located in physical memory.
+So the addresses of the two 64bit fields are actually not 64bit
+aligned.
+
+David,
+Is this the "a 64bit item needs to be 32bit aligned" problem you
+referred?
+If yes, what is the proper fix? should I used two 32bits for each of
+the field instead?
+
+thanks,
+rui
+
+> thanks,
+> rui
+> > > 	David
+> > > 
+> > > -
+> > > Registered Address Lakeside, Bramley Road, Mount Farm, Milton
+> > > Keynes, MK1 1PT, UK
+> > > Registration No: 1397386 (Wales)
+> > > 
+> > > 
+> > > .
+> > > 
+> > 
+> > 
+> 
+> 
 
