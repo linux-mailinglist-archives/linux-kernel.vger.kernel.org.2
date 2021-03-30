@@ -2,139 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E21034F29C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9E134F2A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhC3Uz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S232457AbhC3U6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhC3Uzg (ORCPT
+        with ESMTP id S232503AbhC3U5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:55:36 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844A2C061574;
-        Tue, 30 Mar 2021 13:55:35 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id m13so17800033oiw.13;
-        Tue, 30 Mar 2021 13:55:35 -0700 (PDT)
+        Tue, 30 Mar 2021 16:57:54 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66728C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:57:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c17so12983280pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=c3/2YeCmtkYECJCwBAUdO5JKD5i1PmJFWMw+VAnCEHs=;
-        b=tg6zVPbmcDlVRJ574RAoH+hiRCfqVSVbk/YzvtZfXG1EStM5nPll6THeMkTr2CdHoE
-         HvnbpRQXkaEbHzyWAEwf/q9L74WtDVSudBz2xNvoSkZyQN4+kfaEH2QEy49mkD4GyXoB
-         /iUkehJGithxSPhq0AXVXz8Yx7R3B0M/wTVzOEP2Uaw39QDMLVS5u7Sj4ydglXI70V2c
-         mlSvARq5SJDZgrVe6y1dWBzcd5LEG4TCrpLhOflpma+WFMGI5fPWkk7fhfA80Xhhmp9q
-         xK1OSlH68JGF8NUO7R+S2YDhIxsUSMMXCPjHsWngwmLpshof3zyWckR0Xnk6O4EH84cZ
-         R1tQ==
+        bh=D7CDuN0kcTG5E4rLGLoBOZMdEpNX3hnRAZy+axf+Z2Y=;
+        b=EpxdDbKBd+kExY3AERQ4rSbWmke5d1dCIniTON3YHk0ZMTIFDZ1vR8v0LqOzMXp+ip
+         TdsvXQ1R/Izppj9SR1d9FJ7E3AUWsZBfmXYOPMRqpaLVRbXnLINoXPZNi+B+5K7QCc9k
+         F56KDBOdVK30V1mKz6jtKX3d5PFiZYcFrth+k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=c3/2YeCmtkYECJCwBAUdO5JKD5i1PmJFWMw+VAnCEHs=;
-        b=IxEY3I7qItZC3k/W8wY+g+CkJaVOJiS3eJdiUPzoxuK53FvCP1ECcqaWAc/2BL+2YR
-         i64CrYP5vrSgmaW/MoE24u1XFEqwusSXv/mpy2r9T9Fu63Q1QoAlMmuSaLRkXA/7jyl/
-         5S4/k5n7NWYoLjv+ySlVe9aFUtEB7aNvBFi8VO/RnYKWdycGo0xXIFZf6ItrXH01SRBy
-         1JoexzPHtqAP8QND+0sV8p806a/lqAAQoN8Y7sWW79VqL3gf8ZScUm0peuerRXzJrvfc
-         rs+6t8EgJ0WLb5G3ic4O+jnDsbpcV8muQZJoBOWDWfvqduhFwfwIS22zABZzbV6dFjY0
-         ACsg==
-X-Gm-Message-State: AOAM530rmOTPI8uAa/pfIKQn9C/fdjRTS4GbsX61IhSUUzZXupau6yLq
-        cPlYC9f3ywRw1862ydGB6Hl72NcIeXY=
-X-Google-Smtp-Source: ABdhPJxBM2g55VZ5tzFe7eSE1+itdLB8AJ63suoBbUTdEKaMakrskEkcrX+7vw5DsZbrAVJ1T8IyKg==
-X-Received: by 2002:aca:5fc2:: with SMTP id t185mr4845821oib.64.1617137734632;
-        Tue, 30 Mar 2021 13:55:34 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e34sm5368109ote.70.2021.03.30.13.55.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 13:55:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: linux-next: build warning after merge of the hwmon-staging tree
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210330182758.3a28068f@canb.auug.org.au>
- <b11339e2-cfc4-2f23-7161-3fae7750f4d3@alliedtelesis.co.nz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6292da50-8ded-1127-2a64-136f2d61ce5a@roeck-us.net>
-Date:   Tue, 30 Mar 2021 13:55:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D7CDuN0kcTG5E4rLGLoBOZMdEpNX3hnRAZy+axf+Z2Y=;
+        b=Jo7jWDAFU3z7kOELLxmzm85qkeGMA0NZFhH72f49xxAGLkKbZJpxPFXp04t3Ez/Ymm
+         ubwm9LrO/k6SKemh/Z7GSJCL3/SpJlCDNYNoouFepD5i6J7Hb5VMMlSDFb8kOLpvMX+/
+         72JYHDCjNrrOLmhtpzX73EYauVLYk5ck48uRCo0xjjaDHBfWItkP8YhvmEDmhzcBKmYT
+         1Utc3GLzEU7BLDOhEK8vqlkhqxz4YPqE61b+za8KDO1k4KlQcFt+dPSzdcadjcBnvNBX
+         jiy8eiQPD4BhdqQ83Q70pIkWYkhWYBp1MkJaNuWFOYAVfVRkbZWEM8wY2vtSkEKIjXuS
+         5WzQ==
+X-Gm-Message-State: AOAM530EvqzPP+qLJ4OgtVHZWq5z6WuhnhatBwAAjartc9iJaKsaLcdN
+        aA2uk0Rs2sRYikyBGPoPrBLxgg==
+X-Google-Smtp-Source: ABdhPJysGbXLhUI2OgRSxc4W5Ox+SEoMSRBLI61WnQnGp2mzR8IKvbq9d8ziJEjFtVvsv6YNKgNa3g==
+X-Received: by 2002:a63:2bc4:: with SMTP id r187mr29953pgr.131.1617137873803;
+        Tue, 30 Mar 2021 13:57:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f21sm34839pjj.52.2021.03.30.13.57.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 13:57:53 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/6] Optionally randomize kernel stack offset each syscall
+Date:   Tue, 30 Mar 2021 13:57:44 -0700
+Message-Id: <20210330205750.428816-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <b11339e2-cfc4-2f23-7161-3fae7750f4d3@alliedtelesis.co.nz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 1:25 PM, Chris Packham wrote:
-> My bad. I'll send a patch shortly
-> 
 
-No need. I patched it up already.
+v8:
+- switch to __this_cpu_*() (tglx)
+- improve commit log details, comments, and masking (ingo, tglx)
+v7: https://lore.kernel.org/lkml/20210319212835.3928492-1-keescook@chromium.org/
+v6: https://lore.kernel.org/lkml/20210315180229.1224655-1-keescook@chromium.org/
+v5: https://lore.kernel.org/lkml/20210309214301.678739-1-keescook@chromium.org/
+v4: https://lore.kernel.org/lkml/20200622193146.2985288-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/20200406231606.37619-1-keescook@chromium.org/
+v2: https://lore.kernel.org/lkml/20200324203231.64324-1-keescook@chromium.org/
+rfc: https://lore.kernel.org/kernel-hardening/20190329081358.30497-1-elena.reshetova@intel.com/
 
-Thanks,
-Guenter
+Hi,
 
-> On 30/03/21 8:27 pm, Stephen Rothwell wrote:
->> Hi all,
->>
->> After merging the hwmon-staging tree, today's linux-next build (htmldocs)
->> produced this warning:
->>
->> Documentation/hwmon/bpa-rs600.rst: WARNING: document isn't included in any toctree
->>
->> Introduced by commit
->>
->>    9a8210575cde ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
->>
-> 
+This is a continuation and refactoring of Elena's earlier effort to add
+kernel stack base offset randomization. In the time since the earlier
+discussions, two attacks[1][2] were made public that depended on stack
+determinism, so we're no longer in the position of "this is a good idea
+but we have no examples of attacks". :)
+
+Earlier discussions also devolved into debates on entropy sources, which
+is mostly a red herring, given the already low entropy available due
+to stack size. Regardless, entropy can be changed/improved separately
+from this series as needed.
+
+Earlier discussions also got stuck debating how much syscall overhead
+was too much, but this is also a red herring since the feature itself
+needs to be selectable at boot with no cost for those that don't want it:
+this is solved here with static branches.
+
+So, here is the latest improved version, made as arch-agnostic as
+possible, with usage added for x86 and arm64. It also includes some small
+static branch clean ups, and addresses some surprise performance issues
+due to the stack canary[3].
+
+At the very least, the first two patches can land separately (already
+Acked and Reviewed), since they're kind of "separate", but introduce
+macros that are used in the core stack changes.
+
+If I can get an Ack from an arm64 maintainer, I think this could all
+land via -tip to make merging easiest.
+
+Thanks!
+
+-Kees
+
+[1] https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+[2] https://repositorio-aberto.up.pt/bitstream/10216/125357/2/374717.pdf
+[3] https://lore.kernel.org/lkml/202003281520.A9BFF461@keescook/
+
+
+Kees Cook (6):
+  jump_label: Provide CONFIG-driven build state defaults
+  init_on_alloc: Optimize static branches
+  stack: Optionally randomize kernel stack offset each syscall
+  x86/entry: Enable random_kstack_offset support
+  arm64: entry: Enable random_kstack_offset support
+  lkdtm: Add REPORT_STACK for checking stack offsets
+
+ .../admin-guide/kernel-parameters.txt         | 11 ++++
+ Makefile                                      |  4 ++
+ arch/Kconfig                                  | 23 ++++++++
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/kernel/Makefile                    |  5 ++
+ arch/arm64/kernel/syscall.c                   | 16 ++++++
+ arch/x86/Kconfig                              |  1 +
+ arch/x86/entry/common.c                       |  3 +
+ arch/x86/include/asm/entry-common.h           | 16 ++++++
+ drivers/misc/lkdtm/bugs.c                     | 17 ++++++
+ drivers/misc/lkdtm/core.c                     |  1 +
+ drivers/misc/lkdtm/lkdtm.h                    |  1 +
+ include/linux/jump_label.h                    | 19 +++++++
+ include/linux/mm.h                            | 10 ++--
+ include/linux/randomize_kstack.h              | 55 +++++++++++++++++++
+ init/main.c                                   | 23 ++++++++
+ mm/page_alloc.c                               |  4 +-
+ mm/slab.h                                     |  6 +-
+ 18 files changed, 208 insertions(+), 8 deletions(-)
+ create mode 100644 include/linux/randomize_kstack.h
+
+-- 
+2.25.1
 
