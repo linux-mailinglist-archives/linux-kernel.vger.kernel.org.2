@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F2234EA85
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526BF34EAA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhC3OiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50562 "EHLO mail.kernel.org"
+        id S232316AbhC3OkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhC3OiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:38:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1431619C8;
-        Tue, 30 Mar 2021 14:38:05 +0000 (UTC)
+        id S231859AbhC3Oji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:39:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2578A619C8;
+        Tue, 30 Mar 2021 14:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617115086;
-        bh=+6W/Yl//h0yVqmxmy3+UJygrHKmPkBC8VX4z4yi1Wl0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRfESmEcCc7LtpOzIpOWSNP/JolMBZ/QgPUeZnKc7FLJYJ+qQUzEplQjYc89FNDaw
-         rQyJsAB+3SlhiXawCdvwgKbheu0ac/hj95UCnKEEd2ndjfLKY0OnQsdiaSGeeWpnhZ
-         mkL4kZ4rOT7A3pzl3ksKwCcRvw9+fo9hYKoL4QrLEshZn+dwmazz23Z7TvGeCoLSxD
-         OhFqLwHxOxFQ8TRW5jdhXyKWH/FExBSofJTTMC+VFhCdZtuMkCXbVUxElqYpnPbrua
-         VioJwEhNBRmMTdsawUurWRmR/DaV7jPfohl1iA5ADFEFNpwDo7SwlgYMoQFC5Du7Ap
-         91Z3aD9AGn2vQ==
+        s=k20201202; t=1617115178;
+        bh=vDIpePSNo+XqtVznFzgze6DPaKKSmI8fQ1aqspWp1U0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TMfN4ZKrFb8F/SkFj4QUSUJ7WpqoXrlYCdOAwPjX02/6eWO8G0vqD4wfp95yu2HvQ
+         oSpnxQGABTrNC2kgpIHsfcp8p7Wsa1rYFoaHQ7xYZkcd82/zha/SZo463+cNebhkOd
+         T1kJwRqkJBR/wpxS6D1izdeMURF/bD7eg/3GkP5arS2ZkQK95zsk5vHh/pSwYUUfjc
+         JIb234w70F6yf2BifRZf6lY3eeBAjzCN+aEcMUKTwn0qVR5toFToWN44d6EvkVR0jb
+         BcVk56GSF0VRmzAC+35rgbVxTPvOTa4UaTx6div++WGsbKwfhACDsyzTRRqfiCZzcd
+         XAe02v5zJzEnA==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lRFVj-0002Nt-LB; Tue, 30 Mar 2021 16:38:27 +0200
+        id 1lRFXD-0002PD-Nc; Tue, 30 Mar 2021 16:39:59 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] USB: serial: xr: claim both interfaces
-Date:   Tue, 30 Mar 2021 16:38:20 +0200
-Message-Id: <20210330143820.9103-5-johan@kernel.org>
+Subject: [PATCH 00/12] USB: serial: xr: add support for more device types
+Date:   Tue, 30 Mar 2021 16:39:25 +0200
+Message-Id: <20210330143934.9197-1-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210330143820.9103-1-johan@kernel.org>
-References: <20210330143820.9103-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new multi-interface support in USB serial core to properly claim
-also the control interface during probe. This prevents having another
-driver claim the control interface and makes core allocate resources
-also for the interrupt endpoint (currently unused).
+This series adds support for another nine models of Maxlinerar/Exar USB
+UARTs to the xr driver. The various models can be divided into four
+types:
+	
+	XR21V141X
+        XR21B142X
+        XR21B1411
+        XR22804
 
-Switch to probing only Communication Class interfaces and use the Union
-functional descriptor to determine the corresponding data interface.
+with different register layouts and features.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/xr_serial.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+All types can be used in CDC-ACM mode but further features such as
+hardware and software flow control and in-band line status are available
+in a second "custom driver" mode.
 
-diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index c59c8b47a120..88c73f88cb26 100644
---- a/drivers/usb/serial/xr_serial.c
-+++ b/drivers/usb/serial/xr_serial.c
-@@ -16,6 +16,7 @@
- #include <linux/slab.h>
- #include <linux/tty.h>
- #include <linux/usb.h>
-+#include <linux/usb/cdc.h>
- #include <linux/usb/serial.h>
- 
- struct xr_txrx_clk_mask {
-@@ -550,15 +551,34 @@ static void xr_close(struct usb_serial_port *port)
- 
- static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
- {
--	/* Don't bind to control interface */
--	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
-+	struct usb_interface *control = serial->interface;
-+	struct usb_host_interface *alt = control->cur_altsetting;
-+	struct usb_cdc_parsed_header hdrs;
-+	struct usb_cdc_union_desc *desc;
-+	struct usb_interface *data;
-+	int ret;
-+
-+	ret = cdc_parse_cdc_header(&hdrs, control, alt->extra, alt->extralen);
-+	if (ret < 0)
- 		return -ENODEV;
- 
-+	desc = hdrs.usb_cdc_union_desc;
-+	if (!desc)
-+		return -ENODEV;
-+
-+	data = usb_ifnum_to_if(serial->dev, desc->bSlaveInterface0);
-+	if (!data)
-+		return -ENODEV;
-+
-+	ret = usb_serial_claim_interface(serial, data);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
- static const struct usb_device_id id_table[] = {
--	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x04e2, 0x1410, USB_CLASS_COMM) }, /* XR21V141X */
- 	{ }
- };
- MODULE_DEVICE_TABLE(usb, id_table);
+The fact that hardware flow control is enabled by default in CDC-ACM
+mode also prevents using the standard CDC-ACM driver in cases where the
+hardware engineers have failed to properly connect the CTS input.
+
+The currently supported XR21V141X type stands out from the other three
+by not being able to accept CDC requests without always entering CDC-ACM
+mode, requiring a different enable/disable sequence and by using a
+distinct register layout for certain functionality.
+
+Expect for the above, most differences can be handled by simply using
+different set of register addresses.
+
+Note that this series depends on the recently posted
+multi-interface-function series.
+
+Johan
+
+
+
+Johan Hovold (11):
+  USB: serial: xr: add support for XR21V1412 and XR21V1414
+  USB: serial: xr: rename GPIO-mode defines
+  USB: serial: xr: rename GPIO-pin defines
+  USB: serial: xr: move pin configuration to probe
+  USB: serial: xr: drop type prefix from shared defines
+  USB: serial: xr: add type abstraction
+  USB: serial: xr: add support for XR21B1421, XR21B1422 and XR21B1424
+  USB: serial: xr: add support for XR21B1411
+  USB: serial: xr: add support for XR22801, XR22802, XR22804
+  USB: serial: xr: reset FIFOs on open
+  USB: serial: xr: add copyright notice
+
+Mauro Carvalho Chehab (1):
+  USB: cdc-acm: add more Maxlinear/Exar models to ignore list
+
+ drivers/usb/class/cdc-acm.c    |  14 +-
+ drivers/usb/serial/xr_serial.c | 727 ++++++++++++++++++++++++++-------
+ 2 files changed, 580 insertions(+), 161 deletions(-)
+
 -- 
 2.26.3
 
