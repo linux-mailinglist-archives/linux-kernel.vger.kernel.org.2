@@ -2,169 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD2434EDEC
+	by mail.lfdr.de (Postfix) with ESMTP id CF84A34EDED
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhC3QcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:32:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40350 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232183AbhC3QcG (ORCPT
+        id S232168AbhC3QcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232224AbhC3QcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:32:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617121926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5DxGbfaWBQohyHUg4T2hAugoPQ+5ugb6cQ8DhRFqjyc=;
-        b=Qk0asC3LG6zgnKEmQtkAH1xFva/ZxNB7u7F2Llgg9rcqbKey8nqtnlNC4T8KmlGXTwHkyM
-        /hi15jXxSIOq048ry1PaaejxpViSKshutbNnu9WXE4YOYoDwKtW5NkMqxH5SgS2odtZgWG
-        BFqMO2wVPSsSBvJVSclboBT1Q+0TiBA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-4doft93uOSKqpQWwdKTZlg-1; Tue, 30 Mar 2021 12:32:02 -0400
-X-MC-Unique: 4doft93uOSKqpQWwdKTZlg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F06F184BA40;
-        Tue, 30 Mar 2021 16:31:58 +0000 (UTC)
-Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12B9B10016DB;
-        Tue, 30 Mar 2021 16:31:42 +0000 (UTC)
-Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
- to prefault/prealloc memory
-From:   David Hildenbrand <david@redhat.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <20210317110644.25343-1-david@redhat.com>
- <20210317110644.25343-3-david@redhat.com>
- <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
- <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
- <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
- <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <54165ffe-dbf7-377a-a710-d15be4701f20@redhat.com>
-Date:   Tue, 30 Mar 2021 18:31:41 +0200
+        Tue, 30 Mar 2021 12:32:07 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205FDC061574;
+        Tue, 30 Mar 2021 09:32:07 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id u9so20557884ljd.11;
+        Tue, 30 Mar 2021 09:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GPAcV11R/L+P1u9b3RSmVrWfaWEqoVvG9J5nxbf+QEo=;
+        b=XM9NK3722R7qywh4wVdtcG8OqORAz6OscdXHBm7UUi9jr9HW0vZuqEllp+kirld5mo
+         lfbr+wePX5lj/IWLqNRUPkbWc/YeOAhrWYhxvOBJulZL39OE4d3sTQuDScaKEIPOFubL
+         rHx9RIeiKgeN4JmTKzu33Z/UtmPRq6Bao+LOYRNb3UjQnrO57k0BtJjOoGGrHefeRPVo
+         wIoNn6E8CeUGgFHaRT28NW3eOXwpasjFRm1ppOOWV6FWPzyZXZklG2iEeYqzbXD/Yn4N
+         pnmHW1ZW/iCavkoU9cIblmr3aYHf9quhLZ51Sw9RaZS5fU+wkcpdmSCUXEzSQlK0FQxn
+         5htw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GPAcV11R/L+P1u9b3RSmVrWfaWEqoVvG9J5nxbf+QEo=;
+        b=adt6BiTD9Qh/YcFA31/GQK/8HhyO5NhEOgrQUnyTZwtpR1aNvX8KndyEMpvsYj/aON
+         FU7DlBmOxc3DCC/Iu6v8zN9rvG9YNl7RE9Xj1FIZeowA+CBZuAnXxmH5Kg4xMzuSeFoE
+         XZ4v0YBhJlYxwXVUFhtXi+RYlhcAS2pVKdCv58doeixKpU8c8n0/nd7CqO8BKSAih96G
+         dE3Ah5d05+cm1XyjNRcpoeo+tvQ7M4b/ubBxRbv17ZBIX4CVRIYoPJ2XRQyjIi7mQhBq
+         9DdMoNo3N/GfsKiEy9ZsSrUNV9yuAcxga5C4FTR143GSIi7BGZ+kjBU1z01jpmemP30i
+         boMg==
+X-Gm-Message-State: AOAM531rjpIT6L6zn36BUl6U5CisWHZX3gOOj4PXQmR3XEXOYee5R4WY
+        puWnPjHME73GWDuv8v7GTII=
+X-Google-Smtp-Source: ABdhPJyTksEHvYP2eK7/ntlIbgSJQKHIuIIIyn81/lVP4fpIKYG2V2yUtOhA9SPfdGO78vOYkMvFDw==
+X-Received: by 2002:a2e:9f45:: with SMTP id v5mr21265637ljk.183.1617121925711;
+        Tue, 30 Mar 2021 09:32:05 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-98.dynamic.spd-mgts.ru. [109.252.193.98])
+        by smtp.googlemail.com with ESMTPSA id u9sm2949917ljj.0.2021.03.30.09.32.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 09:32:05 -0700 (PDT)
+Subject: Re: [PATCH v5 3/5] i2c: add support for HiSilicon I2C controller
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Yicong Yang <yangyicong@hisilicon.com>, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org
+Cc:     treding@nvidia.com, jarkko.nikula@linux.intel.com,
+        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
+        john.garry@huawei.com, mika.westerberg@linux.intel.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com
+References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
+ <1617113966-40498-4-git-send-email-yangyicong@hisilicon.com>
+ <b761fa05-1bf9-ce4c-e2b5-f39b418f0da9@gmail.com>
+Message-ID: <7efac5e2-aa1c-0575-0e9e-ca4eb659ed3f@gmail.com>
+Date:   Tue, 30 Mar 2021 19:32:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b761fa05-1bf9-ce4c-e2b5-f39b418f0da9@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.03.21 18:30, David Hildenbrand wrote:
-> On 30.03.21 18:21, Jann Horn wrote:
->> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
->>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
->>>>> +                           unsigned long end, bool write, int *locked)
->>>>> +{
->>>>> +       struct mm_struct *mm = vma->vm_mm;
->>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
->>>>> +       int gup_flags;
->>>>> +
->>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
->>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
->>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
->>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
->>>>> +       mmap_assert_locked(mm);
->>>>> +
->>>>> +       /*
->>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
->>>>> +        *                a poisoned page.
->>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
->>>>> +        * !FOLL_FORCE: Require proper access permissions.
->>>>> +        */
->>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
->>>>> +       if (write)
->>>>> +               gup_flags |= FOLL_WRITE;
->>>>> +
->>>>> +       /*
->>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
->>>>> +        * or with insufficient permissions.
->>>>> +        */
->>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
->>>>> +                               NULL, NULL, locked);
->>>>
->>>> You mentioned in the commit message that you don't want to actually
->>>> dirty all the file pages and force writeback; but doesn't
->>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
->>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
->>>
->>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
->>> primarily set it because populate_vma_page_range() also sets it.
->>>
->>> Is it safe to *not* set it? IOW, fault something writable into a page
->>> table (where the CPU could dirty it without additional page faults)
->>> without marking it accessed? For me, this made logically sense. Thus I
->>> also understood why populate_vma_page_range() set it.
->>
->> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
->> essentially means "the caller of get_user_pages wants to read/write
->> the contents of the returned page, so please do the same things you
->> would do if userspace was accessing the page". So in particular, if
->> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
->> that tells the MM subsystem "I will be writing into this page directly
->> from the kernel, bypassing the userspace page tables, so please mark
->> it as dirty now so that it will be properly written back later". Part
->> of that is that it marks the page as recently used, which has an
->> effect on LRU pageout behavior, I think - as far as I understand, that
->> is why populate_vma_page_range() uses FOLL_TOUCH.
->>
->> If you look at __get_user_pages(), you can see that it is split up
->> into two major parts: faultin_page() for creating PTEs, and
->> follow_page_mask() for grabbing pages from PTEs. faultin_page()
->> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
->>
->> In a way I guess maybe you do want the "mark as recently accessed"
->> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
->> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
->> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
->> only want to mark as recently used, I don't want to dirty". Or maybe
->> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
-> 
-> Any thoughts why populate_vma_page_range() does it?
+30.03.2021 19:24, Dmitry Osipenko пишет:
+>> +struct hisi_i2c_controller {
+>> +	struct i2c_adapter adapter;
+>> +	void __iomem *iobase;
+>> +	struct device *dev;
+>> +	int irq;
+>> +
+>> +	/* Intermediates for recording the transfer process */
+>> +	struct completion *completion;
+>> +	struct i2c_msg *msgs;
+>> +	int msg_num;
+>> +	int msg_tx_idx;
+>> +	int buf_tx_idx;
+>> +	int msg_rx_idx;
+>> +	int buf_rx_idx;
+>> +	u16 tar_addr;
+>> +	u32 xfer_err;
+>> +
+>> +	/* I2C bus configuration */
+>> +	struct i2c_timings t;
+>> +	u64 clk_rate_khz;
+> Looks like the u64 is overkill here and it doesn't allow you to use
+> COMPILE_TEST because 32bit arches can divide u64 only using the
+> do_div(), please fix this.
 
-Sorry, I missed the explanation above - thanks!
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+I see now that the value isn't divided anywhere directly in the code, my
+bad. Looks good then.
