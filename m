@@ -2,130 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4759534E24A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE1A34E26A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhC3Hha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:37:30 -0400
-Received: from mail-vk1-f175.google.com ([209.85.221.175]:36372 "EHLO
-        mail-vk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhC3HhJ (ORCPT
+        id S231133AbhC3Hkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:40:51 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49594 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhC3Hk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:37:09 -0400
-Received: by mail-vk1-f175.google.com with SMTP id d82so3356958vkd.3;
-        Tue, 30 Mar 2021 00:37:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvQNG7MoGzFYXtjqbLKR5ZoQOrdPV7hI4S5BKtxl8bw=;
-        b=rGYGgYTih5Uo2/LE2JLJ/wAZYzopMtFL3ebMQRerah9g+915+i8/iu/WZwjFW2p2jM
-         nQhYpkVr16nmWOCR0OooSaZ0qppkdkh5wTeL7acTbuXBZkilP/IRgwbCDFzpzt5to+e9
-         1nlXJ2WnfdB33vWzFl8X1v5sMLVM2OwO431wyHU6i81p6cN2us01rwVJmgSCzEASr325
-         y0X9cC4mgpKrwV+PWrZizNBHBEwpYog1u6NX27EzR9pZ2SZ4h/jaMiPdnyxKZ8vyTWJg
-         oqm6Q8ry9OtE/2j21QtwatXy2CeWGwZGziHvhq1t420UhN+Jce87OwJAvscOtYN1rG4P
-         BifA==
-X-Gm-Message-State: AOAM533akIS5osjrMxlsFAwRO7I2rDOcFC5YY0dDXoHwUHGmUud0+vRM
-        YhsjajBHBkIQbtNFZzJerrVSZj14A5K0bzQYYBiTtYRA9do=
-X-Google-Smtp-Source: ABdhPJxPLly45TgC6QKXizIcqd1cjiPQH0CtyhWUI5AhbVx3eCiOGrlDOEM2Bzut8wOVPvzfiO4RoVF21DSV2kwPAw0=
-X-Received: by 2002:a1f:e543:: with SMTP id c64mr16591580vkh.2.1617089828934;
- Tue, 30 Mar 2021 00:37:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329131401.15724766@canb.auug.org.au>
-In-Reply-To: <20210329131401.15724766@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 30 Mar 2021 09:36:57 +0200
-Message-ID: <CAMuHMdXtjy4HDzK2y2+3Fb788=OQAv_OQJaw31FRL0pkjLXb4g@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the drm tree with Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        shaoyunl <shaoyun.liu@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 30 Mar 2021 03:40:26 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 09CC02A099; Tue, 30 Mar 2021 03:40:22 -0400 (EDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Michael Pavone" <pavone@retrodev.com>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <4fdaa113db089b8fb607f7dd818479f8cdcc4547.1617089871.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k: mvme147, mvme16x: Don't wipe PCC timer config bits
+Date:   Tue, 30 Mar 2021 18:37:51 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Don't clear the timer 1 configuration bits when clearing the interrupt flag
+and counter overflow. As Michael reported, "This results in no timer
+interrupts being delivered after the first. Initialization then hangs
+in calibrate_delay as the jiffies counter is not updated."
 
-On Mon, Mar 29, 2021 at 4:16 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Today's linux-next merge of the drm tree got a conflict in:
->
->   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->
-> between commits:
->
->   9adb125dde69 ("drm/amdgpu: re-enable suspend phase 2 for S0ix")
->   4021229e32bd ("drm/amdgpu/swsmu: skip gfx cgpg on s0ix suspend")
->   9bb735abcbd8 ("drm/amdgpu: update comments about s0ix suspend/resume")
->
-> from Linus' tree and commit:
->
->   e3c1b0712fdb ("drm/amdgpu: Reset the devices in the XGMI hive duirng probe")
->
-> from the drm tree.
->
-> I fixed it up (I think - see below) and can carry the fix as necessary.
-> This is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> index 8a5a8ff5d362,0f82c5d21237..000000000000
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@@ -2743,16 -2712,15 +2720,25 @@@ static int amdgpu_device_ip_suspend_pha
->                         continue;
->                 }
->
->  +              /* skip suspend of gfx and psp for S0ix
->  +               * gfx is in gfxoff state, so on resume it will exit gfxoff just
->  +               * like at runtime. PSP is also part of the always on hardware
->  +               * so no need to suspend it.
->  +               */
->  +              if (adev->in_s0ix &&
->  +                  (adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_PSP ||
->  +                   adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_GFX))
->  +                      continue;
->  +
-> +               /* skip unnecessary suspend if we do not initialize them yet */
-> +               if (adev->gmc.xgmi.pending_reset &&
-> +                   !(adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_GMC ||
-> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_SMC ||
-> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_COMMON ||
-> +                     adev->ip_blocks[i].version->type == AMD_IP_BLOCK_TYPE_IH)) {
-> +                       adev->ip_blocks[i].status.hw = false;
-> +                       continue;
-> +               }
->                 /* XXX handle errors */
->                 r = adev->ip_blocks[i].version->funcs->suspend(adev);
->                 /* XXX handle errors */
+On mvme16x, enable the timer after requesting the irq, consistent with
+mvme147.
 
-The above is not what you have in next-20210329?
-Your tree has a second copy of the first conflict block after the second:
+Cc: Michael Pavone <pavone@retrodev.com>
+Fixes: 7529b90d051e ("m68k: mvme147: Handle timer counter overflow")
+Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
+Reported-and-tested-by: Michael Pavone <pavone@retrodev.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ arch/m68k/include/asm/mvme147hw.h |  3 +++
+ arch/m68k/mvme147/config.c        | 14 ++++++++------
+ arch/m68k/mvme16x/config.c        | 14 ++++++++------
+ 3 files changed, 19 insertions(+), 12 deletions(-)
 
-                /* skip suspend of gfx and psp for S0ix
-                [...]
-                /* skip unnecessary suspend if we do not initialize them yet */
-                [...]
-                /* skip suspend of gfx and psp for S0ix
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/m68k/include/asm/mvme147hw.h b/arch/m68k/include/asm/mvme147hw.h
+index 257b29184af9..e28eb1c0e0bf 100644
+--- a/arch/m68k/include/asm/mvme147hw.h
++++ b/arch/m68k/include/asm/mvme147hw.h
+@@ -66,6 +66,9 @@ struct pcc_regs {
+ #define PCC_INT_ENAB		0x08
+ 
+ #define PCC_TIMER_INT_CLR	0x80
++
++#define PCC_TIMER_TIC_EN	0x01
++#define PCC_TIMER_COC_EN	0x02
+ #define PCC_TIMER_CLR_OVF	0x04
+ 
+ #define PCC_LEVEL_ABORT		0x07
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index cfdc7f912e14..e1e90c49a496 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -114,8 +114,10 @@ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+-	m147_pcc->t1_int_cntrl = PCC_TIMER_INT_CLR;
+-	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF;
++	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF | PCC_TIMER_COC_EN |
++			     PCC_TIMER_TIC_EN;
++	m147_pcc->t1_int_cntrl = PCC_INT_ENAB | PCC_TIMER_INT_CLR |
++				 PCC_LEVEL_TIMER1;
+ 	clk_total += PCC_TIMER_CYCLES;
+ 	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
+@@ -133,10 +135,10 @@ void mvme147_sched_init (void)
+ 	/* Init the clock with a value */
+ 	/* The clock counter increments until 0xFFFF then reloads */
+ 	m147_pcc->t1_preload = PCC_TIMER_PRELOAD;
+-	m147_pcc->t1_cntrl = 0x0;	/* clear timer */
+-	m147_pcc->t1_cntrl = 0x3;	/* start timer */
+-	m147_pcc->t1_int_cntrl = PCC_TIMER_INT_CLR;  /* clear pending ints */
+-	m147_pcc->t1_int_cntrl = PCC_INT_ENAB|PCC_LEVEL_TIMER1;
++	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF | PCC_TIMER_COC_EN |
++			     PCC_TIMER_TIC_EN;
++	m147_pcc->t1_int_cntrl = PCC_INT_ENAB | PCC_TIMER_INT_CLR |
++				 PCC_LEVEL_TIMER1;
+ 
+ 	clocksource_register_hz(&mvme147_clk, PCC_TIMER_CLOCK_FREQ);
+ }
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index 30357fe4ba6c..b59593c7cfb9 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -366,6 +366,7 @@ static u32 clk_total;
+ #define PCCTOVR1_COC_EN      0x02
+ #define PCCTOVR1_OVR_CLR     0x04
+ 
++#define PCCTIC1_INT_LEVEL    6
+ #define PCCTIC1_INT_CLR      0x08
+ #define PCCTIC1_INT_EN       0x10
+ 
+@@ -374,8 +375,8 @@ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+-	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
+-	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
++	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
++	out_8(PCCTIC1, PCCTIC1_INT_EN | PCCTIC1_INT_CLR | PCCTIC1_INT_LEVEL);
+ 	clk_total += PCC_TIMER_CYCLES;
+ 	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
+@@ -389,14 +390,15 @@ void mvme16x_sched_init(void)
+     int irq;
+ 
+     /* Using PCCchip2 or MC2 chip tick timer 1 */
+-    out_be32(PCCTCNT1, 0);
+-    out_be32(PCCTCMP1, PCC_TIMER_CYCLES);
+-    out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
+-    out_8(PCCTIC1, PCCTIC1_INT_EN | 6);
+     if (request_irq(MVME16x_IRQ_TIMER, mvme16x_timer_int, IRQF_TIMER, "timer",
+                     NULL))
+ 	panic ("Couldn't register timer int");
+ 
++    out_be32(PCCTCNT1, 0);
++    out_be32(PCCTCMP1, PCC_TIMER_CYCLES);
++    out_8(PCCTOVR1, PCCTOVR1_OVR_CLR | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
++    out_8(PCCTIC1, PCCTIC1_INT_EN | PCCTIC1_INT_CLR | PCCTIC1_INT_LEVEL);
++
+     clocksource_register_hz(&mvme16x_clk, PCC_TIMER_CLOCK_FREQ);
+ 
+     if (brdno == 0x0162 || brdno == 0x172)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
