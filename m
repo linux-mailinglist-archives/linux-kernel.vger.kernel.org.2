@@ -2,153 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DFB34DEB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A8034DE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhC3Cqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:46:55 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46796 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbhC3Cqo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:46:44 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12U2jVfQ192653;
-        Tue, 30 Mar 2021 02:46:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
- b=dfQdKtaO41cvf0/7BN1r2eWr77zzE1cqyO06wwFfPdvJ5L6SQ+TxL2rFbptRZpnWtluK
- n9O+qhHRp5Os24OlsQeJ79Do3P7riIVdXHxLo1Bb47ezJrOKLiNwxgZ4znZTePQAegBE
- 1Dv40cD+DiImNzDV+RLoGTgTcdnl46bvky+cSqJ7LrQODb7aSdJTTqklmq8E6nGTgVoh
- rjKwAf0RZY8luoG8Fg/lXO29UO0OS7Nr+Ym2mjVkf8Cuz2/ooDMxf1bkQujNSezt+T6Z
- eGp/kLzH2KYlvC5b+vDAVvS/J4s/LO46F8Hb+4lXq3EApWEY5/AUqw1GWB/jJwgFlZSq yg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 37hv4r5g0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Mar 2021 02:46:40 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12U2ikwL036715;
-        Tue, 30 Mar 2021 02:46:39 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2041.outbound.protection.outlook.com [104.47.74.41])
-        by aserp3020.oracle.com with ESMTP id 37jekxxep1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Mar 2021 02:46:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b67wtT3v6ibiLIx8DAAwJS8hDleXRShureGAw5RLyKhXoX0/2huWurtqXAnofOBaIp0nhYy25w6ECP0pgkLcYtKMaK6P7NeafdOztdhyNkh48UMOwKpQmQWwfpPKeQk+U041aCvOuVip6fDUuvxqdpa6fPJE6LhNMpc9ibctXZT15esbokT6H8SUXXmr2AVL+uJALY74ZV4WJzw55OhHs7pmiADyxN6ZxA1zgD6TYNIDtvO0wGba9+iD46PzgWMGh6s0gc2X/uFdCT8rEcNP/NMp0h4QyZk9SkFiYlSF7mHeCOY/UJim15GJA7icfd0mEo32SwUQgVZ90rvKK8smeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
- b=C9DR/X9agVzxLQjEQsNWOW9zw67BteqA1iXVPbAqhRNmhPZ3HQ0Mc5MUlm5ASBYxFYNFRlzZcty9l775H+BgjfbHi27wJK4fAOOt82Pq22qntgFYfMkLFRC66s+PUIQCmNN5NMJCNN3SBnIeLAv661fVyOIsrfU/t3dpptoGCk9TknkiLxYX9SXyKdrp8RpR9POWb03zp2OuCMeOaemIxbYT+fZ1pTt+mDbKnTib+77YX8P8reJmYvEdVDhD/MxOOdB//LPLuCvV7DtZR9vqxZ3HJve/v/BeBl9CuC9srPKQS5VZjMiI8fOPuOE7TkObTLRi+vbQTMklOMRI3Wg1wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JpyTVesCzTciG5rtIF9R6o1HrWGbtD9EyUrGzmJnkl4=;
- b=yDmJNOmZzPUq0HHFFeXKuY5cHxOnMT6kcUSXKR+EhONdt7S/VL5Qs1AISyUm6ugkJw2AtcDPKyXT2XUwS4WBotY2SDyCKR2395n1ug0O+Dw/YZ5xit0cMfdUS0A2FjWdN900anftGVSCKUXHXrtdmoSSA/IC2tTf4xEEhmAzhrw=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4439.namprd10.prod.outlook.com (2603:10b6:510:41::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.32; Tue, 30 Mar
- 2021 02:46:37 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 02:46:37 +0000
-To:     <lduncan@suse.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fix fnic driver to remove bogus ratelimit messages.
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq135wdicjr.fsf@ca-mkp.ca.oracle.com>
-References: <20210323172756.5743-1-lduncan@suse.com>
-Date:   Mon, 29 Mar 2021 22:46:34 -0400
-In-Reply-To: <20210323172756.5743-1-lduncan@suse.com> (lduncan@suse.com's
-        message of "Tue, 23 Mar 2021 10:27:56 -0700")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SA9PR10CA0006.namprd10.prod.outlook.com
- (2603:10b6:806:a7::11) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S230525AbhC3Cm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:42:56 -0400
+Received: from mga06.intel.com ([134.134.136.31]:49176 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230452AbhC3Cmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:42:37 -0400
+IronPort-SDR: 9uKjxtndS8OlFtPIuIeprh32fF+2mJAzGypdm91XKuOFZzJ+79mpq3r+y9OP9IjJLBcHtSU15g
+ YH/3NyxXmI7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="253014600"
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="253014600"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 19:42:36 -0700
+IronPort-SDR: eGZ6m/VnjlLq0taG0cRQupmf/7F8XQbJMoC2rb86YhmvgTjd1mKyPC0Ri+hgvVE5o7D3hpVTmN
+ gbQRjViZJu4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="595296946"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 29 Mar 2021 19:42:36 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
+        by linux.intel.com (Postfix) with ESMTP id 18C905805F0;
+        Mon, 29 Mar 2021 19:42:33 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vee.khee.wong@intel.com
+Subject: [PATCH net-next 1/1] stmmac: intel: add cross time-stamping freq difference adjustment
+Date:   Tue, 30 Mar 2021 10:46:53 +0800
+Message-Id: <20210330024653.11062-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR10CA0006.namprd10.prod.outlook.com (2603:10b6:806:a7::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Tue, 30 Mar 2021 02:46:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 706ec46b-e8f4-4975-21d3-08d8f32609e7
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4439:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4439513866BB4D13A930E66D8E7D9@PH0PR10MB4439.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aRatw1zzBJ6+lV4Dp4MNFNF6fuv8iW37Er2vsfXN0wsYCEh2h0LM4gLxjxG+X1LGxhLcebf44JQmSCuJK+bag3seMx36dYDLTaSdXNWhQKE4FVqj/Kib5kEoUMNlvdFGVo3PBJpPHIJzDJOVSsSwnV3ztBK77sbAWP+O+D1fV5MzTbgprhW/C5R0vJ1dTJuMgE4k2OCl7fFiFcMwfOjWmKx/S682wJ/E3CB7wjGN3rE+JlQU+hGKti6wkZmyGGhhcKYKYfsUPuKSuAjl0Mc5EQV1ruyURst+1nqB+Bn4h7rJaZ1xaY90Uo9C8AnZfn+z/VxvBxTKFWkDwps4X+XHvrEUJbnwDVqCfsv+XlI2ymz7zcngJqreCW6nxImbXPUrkNw3BqZozdw6lAtFHBV1SIj1DK2tuH1DjS9xQBn36tJAUguAqUMKcKQpc25+8zW+JFqAIIzvdCIP/DL9NlDKQiKspP/2K7VbaVf4/jHZ115y1VpOHZotC/j92Bd9jmLTXknDEPQQunG52zvwU9BNF3GSy9QqGGzIW5xpm1mn3B4J0SQHEfNZfiCwX/kptNTSpfa+Avw0WN4mkM6mb9+8gRMK1OajUsVjd3RYxxCuTemIASWOBGqUKi0B4jICxHYlnCrB/4YODmxVCziFo2pxZDiEji+6BaurlYSN5v4XZdg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(366004)(39860400002)(6916009)(4326008)(5660300002)(8676002)(478600001)(956004)(4744005)(8936002)(55016002)(36916002)(26005)(52116002)(2906002)(316002)(83380400001)(186003)(86362001)(16526019)(7696005)(66556008)(38100700001)(15650500001)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4hdHve2lZmgwJYMMo3nvP9Y2HRsZgd/jkm3sysyVnvtWESd3vwOVECI1Ad5J?=
- =?us-ascii?Q?exhzfiXYW01c5gFaRMvT8fGsoQEPDjTeGvRQYSICINtK01TerceaZxMHRunZ?=
- =?us-ascii?Q?qzfcfP/elb3uQFZ7762B4p2g3H0M8Hktn3kfADF53Rkd1sxebg3H7gJi4lVC?=
- =?us-ascii?Q?C4CdVXQJUYjhYA0AkLZBPkBU5wvaT6JOtQPuLmCcOyGiaZf7ALp1POmSzDDG?=
- =?us-ascii?Q?g8iO/EVPAyON0Dkgt63lwQYV6YHdN7GBKQkE0S5sd5EdaWRsROJjJNXID/5g?=
- =?us-ascii?Q?d0KJe8OjNzXXMgmVMv/aDFCVN6nAJrQNyHRZtNwGaJQz/vrPf/mLdgw+v00x?=
- =?us-ascii?Q?zbwcWms7bh3/qlLfCe65qyHaSiq9E42foxDyMNMlpN/lDYWUECnkE9QySUtg?=
- =?us-ascii?Q?gluLYCBA1zta9r7q/7dlEvFYGqbfzXsiQEWLpsWbantmiENdkdQ0kapKsdXw?=
- =?us-ascii?Q?CuCObGuhxUuEvorhtA00xTyfyBmYM0Eg3JcCZlBnuvcUiD6kgQT1mdxHKw/s?=
- =?us-ascii?Q?qtcZAPMhEqYbFJXVGr3kTG+xA6pWORHOz93cSx0nYkkpfMJ+zn3sB+quuGDp?=
- =?us-ascii?Q?J4lRb785Coz9MthpKtSNMDfLl7wAIb1wHUqvqq66K2LjXA4CN53jrk7P/tiN?=
- =?us-ascii?Q?B44miQnBMCtxBOWCfI0J5Ai0EMtXCgUQXsyyu61RocTQZfscXErPADGKXPeT?=
- =?us-ascii?Q?xLMjJv4WdeywOv0t0CAwxXc5T1SZz3AHZzwO93LruPSU7Z7dvQaumw8P8WyW?=
- =?us-ascii?Q?2rnCUiaz4TYjH9Z7ZFydhYOObDOv1ydEkCedH3YRh1+FMYgkeN+BNs1W5LEC?=
- =?us-ascii?Q?jNcuNEXFZQQxUUeD40u/hELn2rKEFxPwrRS4Dz0nYh3i6ieKiEvrO7At1ECl?=
- =?us-ascii?Q?tnNZ9QGQD5AhUvzkKH4vrvn3CGVRd3rv4s5clD5jYQWYh6hP3QFngcRWxGsO?=
- =?us-ascii?Q?tKcTEQXDUQx49fYnTuZzqWna9FvV/C5tBt63huyIpv9KaRyOL9ih60HspxDR?=
- =?us-ascii?Q?mndIUa/cKM026UkqM3ZaEpzbRQRcqnZ9sGF5gGWis1Djsd3PzyPrdspyeT7E?=
- =?us-ascii?Q?kWXOaNHdYLKTgznbt5GOMQT/aDAtBcfjfj0/sUlUP8LtGG/UMxOZb4aJx8uV?=
- =?us-ascii?Q?i7/lRYb1zO1Xolkxge1S2fFzGcgIdsks8lOLBIjPDLP/Bh9pgufnA6TfLP0v?=
- =?us-ascii?Q?siLw8bc6NBvwASu12IsJLoG92GjpVef4/2FIqpah8fQ0iyNcwqtF5MUmQ1Cv?=
- =?us-ascii?Q?xnxkKZFABZsnAe7QMtxZSPCmZPJMCrs9NaChZ22pXl9UR6AuqAJB4TUgMABK?=
- =?us-ascii?Q?AsRkjahUpJvGty5+dJlKqLXU?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 706ec46b-e8f4-4975-21d3-08d8f32609e7
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 02:46:37.5236
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Nk84R6KLrKUl97ZmCc8WQAt1zfboh3Y3xjrTeipC4m1EtLt+br4Y2iCdfWqc46AyKR7GKyqkcXarPQa7zSg1I/vS8jYwyMRu5Eswb9K9r3c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4439
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103300017
-X-Proofpoint-ORIG-GUID: Y_fXlm7S9UG4Vg86dWXupWioCRcY9DAZ
-X-Proofpoint-GUID: Y_fXlm7S9UG4Vg86dWXupWioCRcY9DAZ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103300017
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cross time-stamping mechanism used in certain instance of Intel mGbE
+may run at different clock frequency in comparison to the clock
+frequency used by processor, so we introduce cross T/S frequency
+adjustment to ensure TSC calculation is correct when processor got the
+cross time-stamps.
 
-Lee,
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-> Commit b43abcbbd5b1 ("scsi: fnic: Ratelimit printks to avoid looding
-> when vlan is not set by the switch.i") added printk_ratelimit() in
-> front of a couple of debug-mode messages, to reduce logging overrun
-> when debugging the driver.
-
-Applied to 5.13/scsi-staging, thanks!
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 08b4852eed4c..3d9a57043af2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -22,8 +22,13 @@
+ #define PCH_PTP_CLK_FREQ_19_2MHZ	(GMAC_GPO0)
+ #define PCH_PTP_CLK_FREQ_200MHZ		(0)
+ 
++/* Cross-timestamping defines */
++#define ART_CPUID_LEAF		0x15
++#define EHL_PSE_ART_MHZ		19200000
++
+ struct intel_priv_data {
+ 	int mdio_adhoc_addr;	/* mdio address for serdes & etc */
++	unsigned long crossts_adj;
+ 	bool is_pse;
+ };
+ 
+@@ -340,9 +345,26 @@ static int intel_crosststamp(ktime_t *device,
+ 		*system = convert_art_to_tsc(art_time);
+ 	}
+ 
++	system->cycles *= intel_priv->crossts_adj;
++
+ 	return 0;
+ }
+ 
++static void intel_mgbe_pse_crossts_adj(struct intel_priv_data *intel_priv,
++				       int base)
++{
++	if (boot_cpu_has(X86_FEATURE_ART)) {
++		unsigned int art_freq;
++
++		/* On systems that support ART, ART frequency can be obtained
++		 * from ECX register of CPUID leaf (0x15).
++		 */
++		art_freq = cpuid_ecx(ART_CPUID_LEAF);
++		do_div(art_freq, base);
++		intel_priv->crossts_adj = art_freq;
++	}
++}
++
+ static void common_default_data(struct plat_stmmacenet_data *plat)
+ {
+ 	plat->clk_csr = 2;	/* clk_csr_i = 20-35MHz & MDC = clk_csr_i/16 */
+@@ -551,6 +573,8 @@ static int ehl_pse0_common_data(struct pci_dev *pdev,
+ 	plat->bus_id = 2;
+ 	plat->addr64 = 32;
+ 
++	intel_mgbe_pse_crossts_adj(intel_priv, EHL_PSE_ART_MHZ);
++
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+@@ -587,6 +611,8 @@ static int ehl_pse1_common_data(struct pci_dev *pdev,
+ 	plat->bus_id = 3;
+ 	plat->addr64 = 32;
+ 
++	intel_mgbe_pse_crossts_adj(intel_priv, EHL_PSE_ART_MHZ);
++
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+@@ -913,6 +939,7 @@ static int intel_eth_pci_probe(struct pci_dev *pdev,
+ 
+ 	plat->bsp_priv = intel_priv;
+ 	intel_priv->mdio_adhoc_addr = INTEL_MGBE_ADHOC_ADDR;
++	intel_priv->crossts_adj = 1;
+ 
+ 	/* Initialize all MSI vectors to invalid so that it can be set
+ 	 * according to platform data settings below.
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.25.1
+
