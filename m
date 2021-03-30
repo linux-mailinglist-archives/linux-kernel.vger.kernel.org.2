@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661E434F2ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8134F2F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhC3VPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhC3VPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4CA9619C7;
-        Tue, 30 Mar 2021 21:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617138911;
-        bh=CxxRJoq3whxYbBkHOiov7iUfokoLNhhoidpJLU7R/2I=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=D0cwlW5cpzXEHoyBAhF3+z+PQxjiOB8xAls8gm5gx38D1b5vUrhjJXInBAl754cUE
-         A7KfJTSBgvuMyZUf69cFfjAav07+yJO83JEhGaAbfdEKuGNAim1T+Wjr/wDXHrjyhV
-         qYr1ezKY3Dw7BLrqx1X0XLqc7M4WqXIpnQ9dJrzg8n5dNj/o2Trwts7SC3XK7z36VV
-         60tKEFEx+RgXc7Uo4RIjthUh9hRZqAQ+ddnhwzth+XCLGZtspirbTw1mjKOO6uivLK
-         0WA8B3Blke7DtmUwDBEqtYke7PB5IEChr0l2W2mzCZ7N6kmX5cOyxooD2MF4oiQsSB
-         yAmuTcuFhyzlA==
-Date:   Tue, 30 Mar 2021 17:15:10 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 26/44] btrfs: track qgroup released data in
- own variable in insert_prealloc_file_extent
-Message-ID: <YGOU3rct+jbzVi8R@sashalap>
-References: <20210325112459.1926846-1-sashal@kernel.org>
- <20210325112459.1926846-26-sashal@kernel.org>
- <20210325120802.GK7604@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210325120802.GK7604@twin.jikos.cz>
+        id S232560AbhC3VSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhC3VS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 17:18:26 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57731C061574;
+        Tue, 30 Mar 2021 14:18:26 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id g10so6818836plt.8;
+        Tue, 30 Mar 2021 14:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0hCCH2XK2WKc3/NMTfTJuxcj4iYhKKtGeh0w+rMsGRA=;
+        b=dIAmtZX6QLMB6nyPGjJOJvsE0+5UFuoN2sjoVsv84n6468OtA/tdw2KijUZ/IuIgPm
+         l8Qvshf7gdeQBaDvsrjK+D5EMpl7BcT18eByXcNhhrS7ADByI5DWF8fXTZBszvH0zz23
+         mBZqV/W6MWQ7MnbzC5gCyTVwzYpab58DywaB+Ni4Y+Jp7bZWDFG8tvHVbmE3C5UH9+z+
+         W0fL6h0VaQZXclsmYZvbg6T8e3MHup2uIeExe0yuKVFYC0WR88zTeFi6nXiDD6ef9lO7
+         PsnX/R/skQww7x1yHN562BAOrCvNwaRq59MgZoRBhut9F87V5dhq4+w9ZPD3bWxI7ifv
+         FbdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0hCCH2XK2WKc3/NMTfTJuxcj4iYhKKtGeh0w+rMsGRA=;
+        b=gufZkEaaWziGAjmdMPwLj1o1/L5ASjwd+s1j03qVrCA8rHMKq8FSV3pYNjbr15nibn
+         q0om9LBGP/Dwpk5GiRXYTTR4N6I/GMJ0i4GqFEZXSTGCROZ/p3JZxdg4INDy1S8rgA+7
+         wfHxpwY0Sd/uqZpHtRkCQwvwsRMYmKAvcpE7XbMmTlCjBwaQ/6Dh5YoNh1en9lbtLhix
+         TraxdcHTarmFpuoJmXLN6WxgNqs7fbMXFhLMlg8kmegxAIb8xasMZ9C7Yanm2/IEkPGv
+         3PIWOV/1r0douwwpbyvK+TVRSOvcbK9cMhI3DVYiDWxvFidCiPJWjoDaLUBu/qOxcsTW
+         40LA==
+X-Gm-Message-State: AOAM531WeMzawxeunG9MIMfGH1GHlu+813o3nOTyZNZCp4dYv6HE9VZi
+        RDU0QqYupa78OwhiH/ebbykE3tQgyx0XVPzG
+X-Google-Smtp-Source: ABdhPJwOetdP5TPzQGombkkWqjSdYSU7TMN0l0/R8PKVcYlRfiqQzkdzhuZrDqQYrOGFa/wLX/KP8g==
+X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr193920plf.44.1617139105273;
+        Tue, 30 Mar 2021 14:18:25 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:d1c0:d79d:e260:a650])
+        by smtp.googlemail.com with ESMTPSA id e9sm120387pgk.69.2021.03.30.14.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 14:18:24 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-sgx@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] x86/sgx: fix incorrect kernel-doc comment syntax in files
+Date:   Wed, 31 Mar 2021 02:48:13 +0530
+Message-Id: <20210330211813.28030-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 01:08:02PM +0100, David Sterba wrote:
->On Thu, Mar 25, 2021 at 07:24:41AM -0400, Sasha Levin wrote:
->> From: Qu Wenruo <wqu@suse.com>
->>
->> [ Upstream commit fbf48bb0b197e6894a04c714728c952af7153bf3 ]
->>
->> There is a piece of weird code in insert_prealloc_file_extent(), which
->> looks like:
->>
->> 	ret = btrfs_qgroup_release_data(inode, file_offset, len);
->> 	if (ret < 0)
->> 		return ERR_PTR(ret);
->> 	if (trans) {
->> 		ret = insert_reserved_file_extent(trans, inode,
->> 						  file_offset, &stack_fi,
->> 						  true, ret);
->> 	...
->> 	}
->> 	extent_info.is_new_extent = true;
->> 	extent_info.qgroup_reserved = ret;
->> 	...
->>
->> Note how the variable @ret is abused here, and if anyone is adding code
->> just after btrfs_qgroup_release_data() call, it's super easy to
->> overwrite the @ret and cause tons of qgroup related bugs.
->>
->> Fix such abuse by introducing new variable @qgroup_released, so that we
->> won't reuse the existing variable @ret.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> Reviewed-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->This patch is a preparatory work and does not make sense for backport
->standalone. Either this one plus
->https://lore.kernel.org/linux-btrfs/20210303104152.105877-2-wqu@suse.com/
->or neither. And IIRC it does not apply directly and needs some
->additional review before it can be backported to older code base, so it
->has no CC: stable tags.
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are certain files in arch/x86/kernel/cpu/sgx, which follow this
+syntax, but the content inside does not comply with kernel-doc.
+Such lines were probably not meant for kernel-doc parsing, but are parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warnings from kernel-doc.
 
-I'll drop it, thanks!
+E.g., presence of kernel-doc like comment in the header lines for
+arch/x86/kernel/cpu/sgx/encl.h causes this warning:
+"warning: expecting prototype for 2016(). Prototype was for _X86_ENCL_H() instead"
 
+Similarly for arch/x86/kernel/cpu/sgx/arch.h too.
+
+Provide a simple fix by replacing these occurrences with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210326
+
+ arch/x86/kernel/cpu/sgx/arch.h | 2 +-
+ arch/x86/kernel/cpu/sgx/encl.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/kernel/cpu/sgx/arch.h
+index 26315bea1cb4..70b84bbdaa1d 100644
+--- a/arch/x86/kernel/cpu/sgx/arch.h
++++ b/arch/x86/kernel/cpu/sgx/arch.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
++/*
+  * Copyright(c) 2016-20 Intel Corporation.
+  *
+  * Contains data structures defined by the SGX architecture.  Data structures
+diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
+index d8d30ccbef4c..76b9bc1c5c30 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.h
++++ b/arch/x86/kernel/cpu/sgx/encl.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
++/*
+  * Copyright(c) 2016-20 Intel Corporation.
+  *
+  * Contains the software defined data structures for enclaves.
 -- 
-Thanks,
-Sasha
+2.17.1
+
