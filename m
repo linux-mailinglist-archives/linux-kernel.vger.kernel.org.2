@@ -2,195 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F2334F4A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F28934F461
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhC3WzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhC3Wyf (ORCPT
+        id S232960AbhC3WjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:39:11 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:36397 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232883AbhC3WjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:54:35 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259E8C061574;
-        Tue, 30 Mar 2021 15:54:32 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id q12so9041926qvc.8;
-        Tue, 30 Mar 2021 15:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eFmHihTpoem5adT81kUPrW+58bPc31rODVCKQkE0csg=;
-        b=Qw+scW22tFeCE65Wr0PhTMAUOS9zhNSx1efkAlrVbwzJ0cyXIZgxJv3uCoyMfMmwBg
-         /IlitQ7KluxvcE7dtcrL9Ome1FOwXvAmQKx/O/cxVbGx8sp8R+LjP4JxC384Ea0JN5nU
-         +X1Tnpcq4y3tsJmK+ZMpknYjkOXe90ntqukd9+Udq/irSqV2B6X0+3SYnuTrrITqiNf6
-         vQW5kUtvxzjCjPemjML286i5sVGy18yUsBpHrmj2TfobkGlmEKjXYjFSzJ0vGnR7DVtZ
-         2Yb/4j6q36gC8N30t4i4MU35x+4iv+ayjF5Aq031Eg+ahzg024nXOqsXsPuXupBG4JUs
-         kUWg==
+        Tue, 30 Mar 2021 18:39:05 -0400
+Received: by mail-ot1-f54.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso17117643otq.3;
+        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eFmHihTpoem5adT81kUPrW+58bPc31rODVCKQkE0csg=;
-        b=bhMwZZ+W3yc1PoAKIVhwHUqro0QD2d9cseqEVzL2NCVFJhYTB4V5+8rw36JrVRoD3m
-         S3Bqd7BvFjq3EFazLcidnjOSWlGWy2kCWTQhVmozueYy0b04och75VagTA9z+1kh3ZTs
-         kDezeUKpguMs2X5Gi6ff3yH9JmvI2AgEuNplqHHjKF+Wtti6b4OW1dRJpju1BmTvMT+/
-         2iNNUUxMjmMvzbXChfkC9UYDbDXvQEdunsq39g9MiW8xUMBGXvI5C+g5QiQmIpf/j04z
-         HUtGKfCwBFhKdlEsfU2Achpcv+JgG/KB3CDbNPIF5FGCu/ZXfY/uAdDQmNayYch7MJSC
-         t48g==
-X-Gm-Message-State: AOAM5337MMLm7HrSHoXjkC/wWa5d5b+FLS7fR9KU4WRQwOVQIQamOhI+
-        epqjuJqmih/b+pOfSJ+Z/lo=
-X-Google-Smtp-Source: ABdhPJw7ulZ1m9vkjJFExetYhO1Zrab6HWWmNT64RuT1//039HoXsWBmOkcwfUKNntM0BYzXUOA/aQ==
-X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr518033qvo.20.1617144871216;
-        Tue, 30 Mar 2021 15:54:31 -0700 (PDT)
-Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id b1sm129058qkk.117.2021.03.30.15.54.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+kL3ZRB3j6i01duxPJ9vYcO9kwxP1k0mr9iO+0pJBac=;
+        b=sPk1q1o/9jK45SPwIb01HUbKm06q5Yx3WRvEtU1Z832dmkeWAYG7kpU9+2q/t9w89R
+         W9Tt2KL/Ia+qtgP/7mWZEcLrN4QB2St/IKCpSHhfdMbnBBlhL/DGg9VVFyBem1St9Ht2
+         6xpao5FaWjVkf4MGz9a1SffhSIceqUkqR18S7G0+JyUWJeOmqgZRRQv2fQEi7Y3waDZb
+         VRTnt08MIxws0iunR+/U7dccvOWzGhaiJcFWvOpRaPryCcIl64DB6Xvr7UI4GYsWCtLn
+         Wx5fCviKHQfPq/JLkgyyNYYQmkgbZwSQfPw6WFrKS7RkqtYx01N0DpBymCGO6L4VO8rv
+         g+0A==
+X-Gm-Message-State: AOAM531LRh0uGXVV3Jfo/OTRRmrph3ZxcP/auiVE9UxOvYpEe1svxdid
+        KfpHQk+gtF43JRvq5qQ8+jVhDWRKsQ==
+X-Google-Smtp-Source: ABdhPJz1lPUhXrNxrHWj4A+J8TggtXB6qqS9Os++Ci/kdeMEGSETxa/ogDjwDKvpjvbG+y2lHU8MwA==
+X-Received: by 2002:a05:6830:4110:: with SMTP id w16mr138691ott.348.1617143944665;
+        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v1sm42689otk.67.2021.03.30.15.39.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:54:30 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH bpf-next v2] bpf: check flags in 'bpf_ringbuf_discard()' and 'bpf_ringbuf_submit()'
-Date:   Tue, 30 Mar 2021 19:37:46 -0300
-Message-Id: <20210330223748.399563-1-pctammela@mojatatu.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Mar 2021 15:39:04 -0700 (PDT)
+Received: (nullmailer pid 841804 invoked by uid 1000);
+        Tue, 30 Mar 2021 22:39:02 -0000
+Date:   Tue, 30 Mar 2021 17:39:02 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: serial: 8250: update for
+ aspeed,sirq-active-high
+Message-ID: <20210330223902.GA837825@robh.at.kernel.org>
+References: <20210330002338.335-1-zev@bewilderbeest.net>
+ <20210330002338.335-3-zev@bewilderbeest.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330002338.335-3-zev@bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code only checks flags in 'bpf_ringbuf_output()'.
+On Mon, Mar 29, 2021 at 07:23:37PM -0500, Zev Weiss wrote:
+> Update DT bindings documentation for the new incarnation of the
+> aspeed,sirq-polarity-sense property.
 
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
----
- include/uapi/linux/bpf.h       |  8 ++++----
- kernel/bpf/ringbuf.c           | 13 +++++++++++--
- tools/include/uapi/linux/bpf.h |  8 ++++----
- 3 files changed, 19 insertions(+), 10 deletions(-)
+Why?
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 100cb2e4c104..38b0b15f99f0 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4073,7 +4073,7 @@ union bpf_attr {
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-  *
-- * void bpf_ringbuf_submit(void *data, u64 flags)
-+ * long bpf_ringbuf_submit(void *data, u64 flags)
-  * 	Description
-  * 		Submit reserved ring buffer sample, pointed to by *data*.
-  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
-@@ -4083,9 +4083,9 @@ union bpf_attr {
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-  * 	Return
-- * 		Nothing. Always succeeds.
-+ * 		0 on success, or a negative error in case of failure.
-  *
-- * void bpf_ringbuf_discard(void *data, u64 flags)
-+ * long bpf_ringbuf_discard(void *data, u64 flags)
-  * 	Description
-  * 		Discard reserved ring buffer sample, pointed to by *data*.
-  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
-@@ -4095,7 +4095,7 @@ union bpf_attr {
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-  * 	Return
-- * 		Nothing. Always succeeds.
-+ * 		0 on success, or a negative error in case of failure.
-  *
-  * u64 bpf_ringbuf_query(void *ringbuf, u64 flags)
-  *	Description
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index f25b719ac786..f76dafe2427e 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -397,26 +397,35 @@ static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
- 
- BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
- {
-+	if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
-+		return -EINVAL;
-+
- 	bpf_ringbuf_commit(sample, flags, false /* discard */);
-+
- 	return 0;
- }
- 
- const struct bpf_func_proto bpf_ringbuf_submit_proto = {
- 	.func		= bpf_ringbuf_submit,
--	.ret_type	= RET_VOID,
-+	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
- BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
- {
-+
-+	if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
-+		return -EINVAL;
-+
- 	bpf_ringbuf_commit(sample, flags, true /* discard */);
-+
- 	return 0;
- }
- 
- const struct bpf_func_proto bpf_ringbuf_discard_proto = {
- 	.func		= bpf_ringbuf_discard,
--	.ret_type	= RET_VOID,
-+	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
- 	.arg2_type	= ARG_ANYTHING,
- };
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3d6d324184c0..a32eefb786f9 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4073,7 +4073,7 @@ union bpf_attr {
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-  *
-- * void bpf_ringbuf_submit(void *data, u64 flags)
-+ * long bpf_ringbuf_submit(void *data, u64 flags)
-  * 	Description
-  * 		Submit reserved ring buffer sample, pointed to by *data*.
-  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
-@@ -4083,9 +4083,9 @@ union bpf_attr {
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-  * 	Return
-- * 		Nothing. Always succeeds.
-+ * 		0 on success, or a negative error in case of failure.
-  *
-- * void bpf_ringbuf_discard(void *data, u64 flags)
-+ * long bpf_ringbuf_discard(void *data, u64 flags)
-  * 	Description
-  * 		Discard reserved ring buffer sample, pointed to by *data*.
-  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
-@@ -4095,7 +4095,7 @@ union bpf_attr {
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-  * 	Return
-- * 		Nothing. Always succeeds.
-+ * 		0 on success, or a negative error in case of failure.
-  *
-  * u64 bpf_ringbuf_query(void *ringbuf, u64 flags)
-  *	Description
--- 
-2.25.1
+This isn't a compatible change.
 
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> ---
+>  Documentation/devicetree/bindings/serial/8250.yaml | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
+> index f54cae9ff7b2..0bbb7121f720 100644
+> --- a/Documentation/devicetree/bindings/serial/8250.yaml
+> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
+> @@ -13,7 +13,7 @@ allOf:
+>    - $ref: /schemas/serial.yaml#
+>    - if:
+>        required:
+> -        - aspeed,sirq-polarity-sense
+> +        - aspeed,sirq-active-high
+>      then:
+>        properties:
+>          compatible:
+> @@ -181,13 +181,11 @@ properties:
+>    rng-gpios: true
+>    dcd-gpios: true
+>  
+> -  aspeed,sirq-polarity-sense:
+> -    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +  aspeed,sirq-active-high:
+> +    type: boolean
+>      description: |
+> -      Phandle to aspeed,ast2500-scu compatible syscon alongside register
+> -      offset and bit number to identify how the SIRQ polarity should be
+> -      configured. One possible data source is the LPC/eSPI mode bit. Only
+> -      applicable to aspeed,ast2500-vuart.
+> +      Set to indicate that the SIRQ polarity is active-high (default
+> +      is active-low).  Only applicable to aspeed,ast2500-vuart.
+>  
+>  required:
+>    - reg
+> @@ -227,7 +225,7 @@ examples:
+>          interrupts = <8>;
+>          clocks = <&syscon ASPEED_CLK_APB>;
+>          no-loopback-test;
+> -        aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
+> +        aspeed,sirq-active-high;
+>      };
+>  
+>  ...
+> -- 
+> 2.31.1
+> 
