@@ -2,144 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C832734E301
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4334E305
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhC3IT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:19:28 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15821 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhC3ITC (ORCPT
+        id S231336AbhC3IUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:20:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231138AbhC3IU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:19:02 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8j3D04HCz9sKj;
-        Tue, 30 Mar 2021 16:16:56 +0800 (CST)
-Received: from huawei.com (10.67.174.53) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
- 16:18:49 +0800
-From:   Liao Chang <liaochang1@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <guoren@linux.alibaba.com>,
-        <mhiramat@kernel.org>, <penberg@kernel.org>, <lkp@intel.com>,
-        <me@packi.ch>
-CC:     <liaochang1@huawei.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] riscv/kprobe: fix kernel panic when invoking sys_read traced by kprobe
-Date:   Tue, 30 Mar 2021 16:18:48 +0800
-Message-ID: <20210330081848.14043-1-liaochang1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 30 Mar 2021 04:20:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617092426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+M6rfEdqHD/iwsrMrrsO1PDAZO7gUFfGaQ3zN/fzu0=;
+        b=HrJQ8cpmxB+HT10sQNw6VssnZAdKNgovCppsW07ygQ80LyL8lQ+8RijCybe6C2SzofJRoa
+        ahFUs7mc5u8reYaXKejLrDqH7nr7bPFvObuLFN+JnpK1SitU/rtWMtQNQko4MSttMcWLpN
+        tHzn5mhnkSAQvgQE7bLZbDX2hR2f+Yk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-nhF-8qLtPLOUEb8NiS38NQ-1; Tue, 30 Mar 2021 04:20:24 -0400
+X-MC-Unique: nhF-8qLtPLOUEb8NiS38NQ-1
+Received: by mail-ed1-f70.google.com with SMTP id w16so9847327edc.22
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:20:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I+M6rfEdqHD/iwsrMrrsO1PDAZO7gUFfGaQ3zN/fzu0=;
+        b=JfNWN1w7GzXssA4rjV6qis4LNXwZeiHDsIym/tIB0noIqVID09RV9k9JMNCSthd71K
+         1jDXGUe3pojnn4pQdAkZs/SBUZo30QpeiDyz9Ll4oKdeLYwZTKvsqHUM4Hb0QlyxB/VD
+         YUx9V8KW8ovbGPryGrUQkavyeFSRn83Jep5QTxOOS0hZrbhqTWLiPH+XSi2cyL/Fwht5
+         I+eo4UyA2PfBL4Xo6WpTvzO80kLCDJbK+NVOIYnyTWq7dW/96q/X43Z8/7+YiNR7q6RD
+         NLVeI8jZxWN65XWQJSClfaivkK/OsLK7gf5qHfgiuL9LbFuIWTFt+pFcbbHnEsu7S0iO
+         dL1A==
+X-Gm-Message-State: AOAM532fmvyuM5ROUp/ZPuuv2GnjSNty1WXS9s0XpuLBEptJAnh2Q917
+        CQC1zD8tFsMo3LqrvuCVLdwVJZOKnpn2RgK+fPVeK9IGeXqY3DlSRgO4KKz73mySaDBT9IWyr59
+        R/s4mLda7+3PtiQufdQKZ0MEH
+X-Received: by 2002:a17:906:7150:: with SMTP id z16mr31682361ejj.103.1617092422979;
+        Tue, 30 Mar 2021 01:20:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKf3fHrqwpzXoidrs/h/BZIhTMF9RUogZRxWBboRnMWrpamIzZqE1BSxlWvk/85UBYKf62Rg==
+X-Received: by 2002:a17:906:7150:: with SMTP id z16mr31682347ejj.103.1617092422808;
+        Tue, 30 Mar 2021 01:20:22 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id y2sm9545381ejf.30.2021.03.30.01.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 01:20:22 -0700 (PDT)
+Subject: Re: [PATCH 00/10] platform/x86: toshiba_acpi: move acpi add/remove to
+ device-managed routines
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Cc:     coproscefalo@gmail.com, mgross@linux.intel.com, jic23@kernel.org,
+        linux@deviqon.com
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <0fba6355-aaec-b214-cf12-1add08cfca38@redhat.com>
+Date:   Tue, 30 Mar 2021 10:20:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.53]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210324125548.45983-1-aardelean@deviqon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The execution of sys_read end up hitting a BUG_ON() in __find_get_block
-after installing kprobe at sys_read, the BUG message like the following:
+Hi Alexadru, Jonathan,
 
-[   65.708663] ------------[ cut here ]------------
-[   65.709987] kernel BUG at fs/buffer.c:1251!
-[   65.711283] Kernel BUG [#1]
-[   65.712032] Modules linked in:
-[   65.712925] CPU: 0 PID: 51 Comm: sh Not tainted 5.12.0-rc4 #1
-[   65.714407] Hardware name: riscv-virtio,qemu (DT)
-[   65.715696] epc : __find_get_block+0x218/0x2c8
-[   65.716835]  ra : __getblk_gfp+0x1c/0x4a
-[   65.717831] epc : ffffffe00019f11e ra : ffffffe00019f56a sp : ffffffe002437930
-[   65.719553]  gp : ffffffe000f06030 tp : ffffffe0015abc00 t0 : ffffffe00191e038
-[   65.721290]  t1 : ffffffe00191e038 t2 : 000000000000000a s0 : ffffffe002437960
-[   65.723051]  s1 : ffffffe00160ad00 a0 : ffffffe00160ad00 a1 : 000000000000012a
-[   65.724772]  a2 : 0000000000000400 a3 : 0000000000000008 a4 : 0000000000000040
-[   65.726545]  a5 : 0000000000000000 a6 : ffffffe00191e000 a7 : 0000000000000000
-[   65.728308]  s2 : 000000000000012a s3 : 0000000000000400 s4 : 0000000000000008
-[   65.730049]  s5 : 000000000000006c s6 : ffffffe00240f800 s7 : ffffffe000f080a8
-[   65.731802]  s8 : 0000000000000001 s9 : 000000000000012a s10: 0000000000000008
-[   65.733516]  s11: 0000000000000008 t3 : 00000000000003ff t4 : 000000000000000f
-[   65.734434]  t5 : 00000000000003ff t6 : 0000000000040000
-[   65.734613] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-[   65.734901] Call Trace:
-[   65.735076] [<ffffffe00019f11e>] __find_get_block+0x218/0x2c8
-[   65.735417] [<ffffffe00020017a>] __ext4_get_inode_loc+0xb2/0x2f6
-[   65.735618] [<ffffffe000201b6c>] ext4_get_inode_loc+0x3a/0x8a
-[   65.735802] [<ffffffe000203380>] ext4_reserve_inode_write+0x2e/0x8c
-[   65.735999] [<ffffffe00020357a>] __ext4_mark_inode_dirty+0x4c/0x18e
-[   65.736208] [<ffffffe000206bb0>] ext4_dirty_inode+0x46/0x66
-[   65.736387] [<ffffffe000192914>] __mark_inode_dirty+0x12c/0x3da
-[   65.736576] [<ffffffe000180dd2>] touch_atime+0x146/0x150
-[   65.736748] [<ffffffe00010d762>] filemap_read+0x234/0x246
-[   65.736920] [<ffffffe00010d834>] generic_file_read_iter+0xc0/0x114
-[   65.737114] [<ffffffe0001f5d7a>] ext4_file_read_iter+0x42/0xea
-[   65.737310] [<ffffffe000163f2c>] new_sync_read+0xe2/0x15a
-[   65.737483] [<ffffffe000165814>] vfs_read+0xca/0xf2
-[   65.737641] [<ffffffe000165bae>] ksys_read+0x5e/0xc8
-[   65.737816] [<ffffffe000165c26>] sys_read+0xe/0x16
-[   65.737973] [<ffffffe000003972>] ret_from_syscall+0x0/0x2
-[   65.738858] ---[ end trace fe93f985456c935d ]---
+On 3/24/21 1:55 PM, Alexandru Ardelean wrote:
+> This changeset tries to do a conversion of the toshiba_acpi driver to use
+> only device-managed routines. The driver registers as a singleton, so no
+> more than one device can be registered at a time.
+> 
+> My main intent here is to try to convert the iio_device_alloc() and
+> iio_device_register() to their devm_ variants.
+> 
+> Usually, when converting a registration call to device-managed variant, the
+> init order must be preserved. And the deregistration order must be a mirror
+> of the registration (in reverse order).
+> 
+> This change tries to do that, by using devm_ variants where available and
+> devm_add_action_or_reset() where this isn't possible.
+> Some deregistration ordering is changed, because it wasn't exactly
+> mirroring (in reverse) the init order.
+> 
+> For the IIO subsystem, the toshiba_acpi driver is the only user of
+> iio_device_alloc(). If this changeset is accepted (after discussion), I
+> will propose to remove the iio_device_alloc() function.
+> 
+> While I admit this may look like an overzealous effort to use devm_
+> everywhere (in IIO at least), for me it's a fun/interesting excercise.
 
-A simple reproducer looks like:
-	echo 'p:myprobe sys_read fd=%a0 buf=%a1 count=%a2' > /sys/kernel/debug/tracing/kprobe_events
-	echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
-	cat /sys/kernel/debug/tracing/trace
+Alexadru, thank you for the patches.
 
-Here's what happens to hit that BUG_ON():
+Jonathan, thank you for the reviews.
 
-1) After installing kprobe at entry of sys_read, the first instruction
-   is replaced by 'ebreak' instruction on riscv64 platform.
+To be honest I'm currently inclined to not accept / merge these patches,
+this is based on 2 assumptions from me, which might be wrong. let me explain.
 
-2) Once kernel reach the 'ebreak' instruction at the entry of sys_read,
-   it trap into the riscv breakpoint handler, where it do something to
-   setup for coming single-step of origin instruction, including backup
-   the 'sstatus' in pt_regs, followed by disable interrupt during single
-   stepping via clear 'SIE' bit of 'sstatus' in pt_regs.
+If I understand things correctly, the main reason for this rework of
+the toshiba_acpi code is to move iio_device_alloc() and iio_device_register()
+to their devm_ variants, converting the last users in the tree ?
 
-3) Then kernel restore to the instruction slot contains two instructions,
-   one is original instruction at entry of sys_read, the other is 'ebreak'.
-   Here it trigger a 'Instruction page fault' exception (value at 'scause'
-   is '0xc'), if PF is not filled into PageTabe for that slot yet.
+This would allow these 2 iio functions to then be e.g. marked as static /
+private helpers inside the iio core, so that all new users can only use
+the devm_ versions. But if I'm reading Jonathan's reaction correctly then
+Jonathan is not planning to do that because they might still be useful
+in some cases.
 
-4) Again kernel trap into page fault exception handler, where it choose
-   different policy according to the state of running kprobe. Because
-   afte 2) the state is KPROBE_HIT_SS, so kernel reset the current kprobe
-   and 'pc' points back to the probe address.
+Jonathan have I correctly understood that you don't plan to make any
+changes to the iio_device_alloc() and iio_device_register() functions
+even if this gets merged ?
 
-5) Because 'epc' point back to 'ebreak' instrution at sys_read probe,
-   kernel trap into breakpoint handler again, and repeat the operations
-   at 2), however 'sstatus' without 'SIE' is keep at 4), it cause the
-   real 'sstatus' saved at 2) is overwritten by the one withou 'SIE'.
+Which brings me to my next assumption, Alexandru, I don't read anything
+about testing anywhere. So I'm currently under the assumption that
+you don't have any hardware using the toshiba_acpi driver and that this
+is thus untested ?
 
-6) When kernel cross the probe the 'sstatus' CSR restore with value
-   without 'SIE', and reach __find_get_block where it requires the
-   interrupt must be enabled.
+The not being tested state is my main reason for not wanting to merge
+this. The toshiba_acpi driver likely does not have a whole lot of users,
+so the chances of someone running release candidates or even just the
+latest kernels on hardware which uses it are small.  This means that if
+we accidentally introduce a bug with this series it might not get caught
+until say lots of people start upgrading to Ubuntu 22.04 which is
+the first Ubuntu kernel with your changes; and then at least one of the
+hit users needs to have the skills to find us and get in contact about that.
 
-Fix this is very trivial, just restore the value of 'sstatus' in pt_regs
-with backup one at 2) when the instruction being single stepped cause a
-page fault.
+TL;DR: we might break stuff and if we do it might be a long time until we
+find out we did and then we have been shipping broken code for ages...
 
-Fixes: c22b0bcb1dd02 ("riscv: Add kprobes supported")
-Signed-off-by: Liao Chang <liaochang1@huawei.com>
----
- arch/riscv/kernel/probes/kprobes.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Regards,
 
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 7e2c78e2ca6b..d71f7c49a721 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -260,8 +260,10 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int trapnr)
- 
- 		if (kcb->kprobe_status == KPROBE_REENTER)
- 			restore_previous_kprobe(kcb);
--		else
-+		else {
-+			kprobes_restore_local_irqflag(kcb, regs);
- 			reset_current_kprobe();
-+		}
- 
- 		break;
- 	case KPROBE_HIT_ACTIVE:
--- 
-2.17.1
+Hans
+
+
+
+
+
+> 
+> Alexandru Ardelean (10):
+>   platform/x86: toshiba_acpi: bind life-time of toshiba_acpi_dev to
+>     parent
+>   platform/x86: toshiba_acpi: use devm_add_action_or_reset() for
+>     singleton clear
+>   platform/x86: toshiba_acpi: bind registration of miscdev object to
+>     parent
+>   platform/x86: toshiba_acpi: use device-managed functions for input
+>     device
+>   platform/x86: toshiba_acpi: register backlight with device-managed
+>     variant
+>   platform/x86: toshiba_acpi: use devm_led_classdev_register() for LEDs
+>   platform/x86: toshiba_acpi: use device-managed functions for
+>     accelerometer
+>   platform/x86: toshiba_acpi: use device-managed for wwan_rfkill
+>     management
+>   platform/x86: toshiba_acpi: use device-managed for sysfs removal
+>   platform/x86: toshiba_acpi: bind proc entries creation to parent
+> 
+>  drivers/platform/x86/toshiba_acpi.c | 249 +++++++++++++++++-----------
+>  1 file changed, 150 insertions(+), 99 deletions(-)
+> 
 
