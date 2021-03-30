@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4B834DF10
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D5334DF13
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhC3DOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhC3DO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:14:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC07D61864;
-        Tue, 30 Mar 2021 03:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617074049;
-        bh=6eSMLRiak11IODOB+CePI7a65DX9N8EkAy9ZzrCIP+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KdMi5KiMduBWy6xItpcEY9isb6e1nAEdmm9B7NVKTZqjF7+XWdljKvaUejdZRj94U
-         qX67Y1c/XOgi9ZKIGLXXCN4VvmqEwFf8du1gXCAXZD3bTU4HmKJ0MLlEWg/JIAwinH
-         WXgA5tPnnDNdUb2WG2acEptutFjaiM2ZY08Tl7DYFPvkKg2VJ1N4OCgFtiCsoGXX7k
-         WEF9v+hEtplZ766rLquAVZYq5UOENcf9DfrgULGkGDm8uLzhLQkFGtDGkJjmlALSGK
-         aMMzRqLK9GmKpYm5j27NOW0PIxO+ssEnNA45LMd+ldPrTaoq7fPTZATXycZfHSAbc6
-         UkH9hUYA93fGQ==
-Received: by mail-lj1-f178.google.com with SMTP id u9so18196746ljd.11;
-        Mon, 29 Mar 2021 20:14:08 -0700 (PDT)
-X-Gm-Message-State: AOAM533xojLaMbVQuvvFH3mkmvGx3B2EVx5uSVuhMeA4INfHaQmx6mS5
-        4sPhQIQFMgvUYOKnrNO7zXlqEbDThzhjTcj0ePU=
-X-Google-Smtp-Source: ABdhPJybBWMS4ER6LoDJh0lOBZ6phOaqhlXDyrhTcDXbHrJqobU5QYkYxbC743xlAK9DNTW0TUKWXN1k7NjP7snB74o=
-X-Received: by 2002:a05:651c:211e:: with SMTP id a30mr13812844ljq.18.1617074047272;
- Mon, 29 Mar 2021 20:14:07 -0700 (PDT)
+        id S230526AbhC3DQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:16:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15034 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhC3DPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 23:15:55 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8ZJr117bzPmZW;
+        Tue, 30 Mar 2021 11:13:16 +0800 (CST)
+Received: from [10.174.179.86] (10.174.179.86) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 30 Mar 2021 11:15:52 +0800
+Subject: Re: [Question] Is there a race window between swapoff vs synchronous
+ swap_readpage
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        "Shakeel Butt" <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        "Minchan Kim" <minchan@kernel.org>
+References: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
+ <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com>
+Date:   Tue, 30 Mar 2021 11:15:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
-In-Reply-To: <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 30 Mar 2021 11:13:55 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
-Message-ID: <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.86]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
-> > u32 a = 0x55aa66bb;
-> > u16 *ptr = &a;
-> >
-> > CPU0                       CPU1
-> > =========             =========
-> > xchg16(ptr, new)     while(1)
-> >                                     WRITE_ONCE(*(ptr + 1), x);
-> >
-> > When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
->
-> Then I think your LL/SC is broken.
->
-> That also means you really don't want to build super complex locking
-> primitives on top, because that live-lock will percolate through.
-Do you mean the below implementation has live-lock risk?
-+static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-+{
-+       u32 old, new, val = atomic_read(&lock->val);
-+
-+       for (;;) {
-+               new = (val & _Q_LOCKED_PENDING_MASK) | tail;
-+               old = atomic_cmpxchg(&lock->val, val, new);
-+               if (old == val)
-+                       break;
-+
-+               val = old;
-+       }
-+       return old;
-+}
+On 2021/3/30 9:57, Huang, Ying wrote:
+> Hi, Miaohe,
+> 
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> Hi all,
+>> I am investigating the swap code, and I found the below possible race window:
+>>
+>> CPU 1							CPU 2
+>> -----							-----
+>> do_swap_page
+>>   skip swapcache case (synchronous swap_readpage)
+>>     alloc_page_vma
+>> 							swapoff
+>> 							  release swap_file, bdev, or ...
+>>       swap_readpage
+>> 	check sis->flags is ok
+>> 	  access swap_file, bdev or ...[oops!]
+>> 							    si->flags = 0
+>>
+>> The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
+>> Is this will really happen or Am I miss something ?
+>> Any reply would be really grateful. Thanks! :)
+> 
+> This appears possible.  Even for swapcache case, we can't guarantee the
 
+Many thanks for reply!
 
->
-> Step 1 would be to get your architecute fixed such that it can provide
-> fwd progress guarantees for LL/SC. Otherwise there's absolutely no point
-> in building complex systems with it.
+> swap entry gotten from the page table is always valid too.  The
 
-Quote Waiman's comment [1] on xchg16 optimization:
+The page table may change at any time. And we may thus do some useless work.
+But the pte_same() check could handle these races correctly if these do not
+result in oops.
 
-"This optimization is needed to make the qspinlock achieve performance
-parity with ticket spinlock at light load."
+> underlying swap device can be swapped off at the same time.  So we use
+> get/put_swap_device() for that.  Maybe we need similar stuff here.
 
-[1] https://lore.kernel.org/kvm/1429901803-29771-6-git-send-email-Waiman.Long@hp.com/
+Using get/put_swap_device() to guard against swapoff for swap_readpage() sounds
+really bad as swap_readpage() may take really long time. Also such race may not be
+really hurtful because swapoff is usually done when system shutdown only.
+I can not figure some simple and stable stuff out to fix this. Any suggestions or
+could anyone help get rid of such race?
 
-So for a non-xhg16 machine:
- - ticket-lock for small numbers of CPUs
- - qspinlock for large numbers of CPUs
+Anyway, thanks again!
 
-Okay, I'll put all of them into the next patch :P
+> 
+> Best Regards,
+> Huang, Ying
+> .
+> 
 
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
