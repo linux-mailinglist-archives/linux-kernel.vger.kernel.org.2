@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1D734F1F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1C034F201
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhC3UE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:04:56 -0400
-Received: from ozlabs.org ([203.11.71.1]:37513 "EHLO ozlabs.org"
+        id S232311AbhC3UN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:13:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhC3UEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:04:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F90lr4F22z9sWP;
-        Wed, 31 Mar 2021 07:04:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617134680;
-        bh=Zs4RzorDdvSMKoXYwLp/KSSXvogaK3fB+iwRJUwCcjs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gsBpTMh6l0RTOnSLHDfIpwJWm6ndE7M6FD092e7ckwXOwY/36yTU1nisy/ZmeUbUZ
-         jgfn8YH8Ln0KtQ4I2t1waPVoEM30NooHaqff8re3oPEhq7+BLsFO4BpXGUhxz2pgNz
-         MS4NianJjersqMGfVPYbUOPifEij+fe95PSeZbChX2pB5Y/F4aeUw3MF2/22T47RrM
-         Hb1zXl6TqVba3mHDweFq8Cb2rzrGV7FITdkukwAhr4iwautbYJze9pNmj5SzOgh4VS
-         gA5jKDnynlkOuadEhGTcJwVVxsWgYetzCjZ8+auW5IDXLd4wrLCpBL5yGapnT0o+TO
-         1XIys3ljC2nIw==
-Date:   Wed, 31 Mar 2021 07:04:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20210331070437.3af43553@canb.auug.org.au>
+        id S230125AbhC3UNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 16:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E85D6196C;
+        Tue, 30 Mar 2021 20:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617135196;
+        bh=a0u6btj9eABWcxyPcMcImxEQD72LmDexfcRuz0Fotaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oxcTEFt8SZA7Bx7749WETP1GMcz8oii+pSej4jE7fgG7WS52nFSAy0fAei47dgGTT
+         q+Qb1Vck6k9rwb/VKFbpxYLCRwW8Zmp1NygRTYvTbkrtN8tcJTYHnYqP37zGDxtl3E
+         fLVdYj+EF8UqAvR0aWxEGFZxJkFSDv4Byhn8kleGogmKDj7PTae42Z1E5/o+jWQsb1
+         HYw1Fo55Tqy0SK39VzMpcr/2Pwo8JaJitq/88PjP/eTbN9nL6pj+wOZyP2ryfIX68I
+         bA376/UXRBuXIyfqtJFeQh4VhT/oB3BGehfnYkXzNHHRLkOJra/md8EVxl2jTS73e4
+         GEFqd0oC0lteg==
+Received: by mail-qv1-f54.google.com with SMTP id 30so8813831qva.9;
+        Tue, 30 Mar 2021 13:13:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531pTxjlDjbOgwQ6qfgV4UuikDTpmHki1hsHSEmWgzy9kDF6NECc
+        z8ifOsWSZ5FZoMn8wQa3fU7YzrhmoS9s36B+xg==
+X-Google-Smtp-Source: ABdhPJw55amAUhZyFZAQITDAaWCWvjRQ4s0B/xEdY/mzymYT1/HSrfDlYWJbEwEmGzlU1vhNgrIIF8xwK9tMaYRV82Y=
+X-Received: by 2002:a05:6214:12a1:: with SMTP id w1mr32724714qvu.57.1617135195251;
+ Tue, 30 Mar 2021 13:13:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LjXLsYtyRd/5TQshfa1gVS9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210309000247.2989531-4-danielwa@cisco.com> <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
+ <20210309212944.GR109100@zorba> <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
+ <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
+ <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu> <20210325195956.GM109100@zorba>
+ <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com> <20210330173254.GS109100@zorba>
+In-Reply-To: <20210330173254.GS109100@zorba>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 30 Mar 2021 15:13:04 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJKBeAgaHQJwOL9G2qLbQSh32L5LtN+cSUgn5sV_P8How@mail.gmail.com>
+Message-ID: <CAL_JsqJKBeAgaHQJwOL9G2qLbQSh32L5LtN+cSUgn5sV_P8How@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Will Deacon <will@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LjXLsYtyRd/5TQshfa1gVS9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 30, 2021 at 12:33 PM Daniel Walker <danielwa@cisco.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 05:29:44PM -0600, Rob Herring wrote:
+> > On Thu, Mar 25, 2021 at 2:00 PM Daniel Walker <danielwa@cisco.com> wrote:
+> > >
+> > > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
+> > > >
+> > > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
+> > > >
+> > > > Let's only provide once CMDLINE as of today, and ask the user to select
+> > > > whether he wants it appended or prepended or replacee. Then no need to
+> > > > change all existing config to rename CONFIG_CMDLINE into either of the new
+> > > > ones.
+> > > >
+> > > > That's the main difference between my series and Daniel's series. So I'll
+> > > > finish taking Will's comment into account and we'll send out a v3 soon.
+> > >
+> > > It doesn't solve the needs of Cisco, I've stated many times your changes have
+> > > little value. Please stop submitting them.
+> >
+> > Can you please outline what those needs are which aren't met?
+>
+> append AND prepend at the same time on all architectures. Christophe doesn't
+> understand the need, and hence tries to minimize the feature set which is
+> incompatible with Cisco needs and all the other out of tree users.
 
-Hi all,
+Okay, but that's never been a feature in upstream. For upstream, we
+refactor first and add features 2nd. In this case, the difference is
+largely the kconfig and it would be better to not change the options
+twice, but that's not a blocker for taking the refactoring. You won't
+find a maintainer that's going to take adding a feature over cleanups
+and unification.
 
-After merging the akpm-current tree, yesterday's linux-next build
-(htmldocs) produced this warning:
-
-mm/vmalloc.c:425: warning: expecting prototype for vunmap_range_noflush(). =
-Prototype was for vunmap_range() instead
-
-Introduced by commit
-
-  cde193f42509 ("mm/vmalloc: remove unmap_kernel_range")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LjXLsYtyRd/5TQshfa1gVS9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBjhFUACgkQAVBC80lX
-0Gx2EAgAkASL3MqDYoM9G17ftzBJfE1m1skh//Pn9U602LvhaUfPhRw77e2L56ia
-tLeH/OCYB2bGeQ8lYE/bk1hOcu44m5+qpFd3rpumUf/ppf+VInci72wJH76/qGkt
-wYsV2XBQEY54lJE8gybtVNvm6zhsEDahFUDMmaJ4RLxoA28W6rC4eG5491XzJFQo
-Wnpzj46pai/XzHhLwPtX9z3BIkzVaGUjmJRC4Gsxqk3Nobdlibp68TEAmdtfHIMH
-xch5ThYFc5EFLk8a3UkgOMvPWMvOA1fblLEykiyMviP+ynczRb8srvy9me2IavdO
-3HFRG61tOou2sRC8p/Vh3fmXKm5iiw==
-=B3lc
------END PGP SIGNATURE-----
-
---Sig_/LjXLsYtyRd/5TQshfa1gVS9--
+Rob
