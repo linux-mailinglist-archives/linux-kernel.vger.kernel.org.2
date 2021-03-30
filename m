@@ -2,96 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3666434ECD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E28F34EC43
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhC3Pmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:42:33 -0400
-Received: from sonic315-26.consmr.mail.ne1.yahoo.com ([66.163.190.152]:39136
-        "EHLO sonic315-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232422AbhC3PmR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:42:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617118930; bh=oSDHq47SAtgk1fwx35vh2D9jNNKisET2ZpTrWW0uy4w=; h=To:Cc:From:Subject:Date:References:From:Subject:Reply-To; b=fnI92niXg+vVdkyFwlGFtHVkf3Db6xGEzFUMIMEB9aPkpRpZcATz8vesR60S9FBmNbYzHF/fPnD0kQ3o1uSR9ZE/IbNugF2XZ1Fj+E75mDSweAisFAPR/1grVk6MGWUFeRS5TSVhHn+qho7oHskQ6aYbixO3sFjpgF6uMJUS+H/VIxlK+xkjnisf0tE7ehsVP4xKa2LdrpcQ5geoOf4fBCCAL124hMPSywKX0HGzHSdNPOaiONaAJxmqQAuIOMSkqDEj+z8MRRlMlzBhyfdXQoxg3zLSBSXY6xGcMNZg2YrTZTrXWghkDtDIRrYI7/KO1B4cKcuNT8mM1OWIMhOAEg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617118930; bh=8/m0t9nR7MSNk5J8vhPb/aqBkdD6PNxZxIsiXz2jehf=; h=X-Sonic-MF:To:From:Subject:Date:From:Subject; b=md05Uo5pffu2EviRdYoX+aloow/5qupDv9lqJhToSzF33taVn+t/Nf0+YPTtMNFZyLgFrb1Z1kumM2A46odqo9aK2NTIxoWOcMfdYzzs13NT0jwRyofZr8C3h1tMRLSR3IIwLbGqjEtWH7bPAR+G6zJF1Neiknx28pt1e94gJUrxEDRbrhe5BETXVk7qG44v/u+6j5B8JSO0IowfKYfyY0Tra2aRTMuhVR8lQQfv3iW/N8Ooih1pu7T+60O6JmzkkCG6kfOudFM6DAJU7pZtZ7449pv2nJJreOaY8dhfxmU+chq9Y47OIXwrole/Umq/fCMak+6+oA8veSwHfh1dKw==
-X-YMail-OSG: Xdp_AEgVM1mM7orcWB9azAahpKg9kpGitLOIdmhUzB4pyK8wPjYniIXaISQ7Prl
- 9CdD8ETyhiB8BjRqcRAYuP_5hocUvuSFEk.NbOqAtymEkMWR3eISgtJCbxLoVkAoEn5YcvPucnXS
- lSvtq2mU5hhJigReTaazifVHmOHBCsa5aM.SjV1ho.ZMZkHt3ahCJ3JWMCV3otXEo5PzJDsQClov
- uFqXhHvhkgIBW09k0rL5myciIffKBbZVZzBhlnnLpbdbztGi8CWNb6Pl1GIZvGoazMxrJaIEUoe_
- 0hA.t0GV6Lm2PyEktdgsSV1.YnWaA11djnwJJwNmbgv.zNraqsN7_785umdOg9sTbkKgT2226m6j
- bxH124tS0cImpv9QDSb_IfPkbONlU0slyLdGUTVmOFsgNGbGVhKWvTDuGkTBC4tm1J9wysJfqM1I
- Dbf7PXlbBmaTUovBeq3HUQ9VII3uAUPWnE8hqRmYvRJR0fwcuFJhyg5_peAXWPEk48_iGNNMf0Iw
- fPOFRD4VvvEzAI7b8OAhKiGrs6pBxKwhf6.B5.XSJDOt3Dm1gSQD.N6FAnCuyPjf92NVkBvsxfIG
- KWA1WnxoG_wmKbKE6uSOAtDQVnQjFUuizc_7XQVMURCaQCJ_g.4LzytqMauYQQkc77R.2NkHp.eb
- EvxSV0xLyAqAZmf0hP0a1nG5p5bosXKTLJC0RfibISyimDfKJv3AaKVlhokmWll1GbtLFrjszDUe
- AbDo9ZbUfS7JY6ARlqskJw1vos8JSysvyLnCZhWfKx9aX8K1Igwuc64RBLK0BHdMNgoBtaSJjryx
- ge4.eOJDe_x6BuLM5gcPbjQzzp8r3hbvFZVUmAJi00kIg1MENQ0gjdVdz6VZHc41k_Hdzy9xhdRT
- MTy6VNqrlzrkHOnSruiT93ViP6_gEjYp.WZFwcQa9uN0GUTYIZaR8I1zEerqom5KlbuYb_BCOZfR
- zWz8Kc8_L0s2ZEKeRpLSrxzItnmK53TJ547FNw6Vd6s9FM9FkyP1e3NP5FGiq_HRKnq9oy7X3bp6
- OZ39_bdTS0wD9VNkr3FCTbV..Lnyoy1dMTT4_4E4e2V8t9Qf2GQtqnr.I5i5YanmFFOjpfBGd8bu
- iKqwI4nj_mJTrOa9.Qlekqb04jLaHWNdXb_c1GMC0h9f1PHnGU5mwjUl41rHRxUUhlWxUbChy3ak
- hjMu2g728jvQmLuMVdGuB3RL3qRb.Sxss6u6u_ZN5QgQGctY8fa7w6Cr1ylZAheXHytMZw5jK.PU
- 0kzJikTqMkE16Y352mM2OA7AWhxOTzCXNYYsTJmxGxWkOrLpXMr0xUfxf15kGomj5j6ZMOHbGsNk
- 7cYvN1hWaGXsijJu.Gk9gkp9BMqvd_b5BCYjlBsoBCd_bFavuwsZSjgY1a5xfy9LlG6EQsMDXBq8
- p5ivUFQOu6E8Fa1kR3IRN7ehhMptCsrODbisvxOnSrtUP1vxgt6wiw4I7l.CkbL_CtKsXT3QnZgr
- 74Cqx5YzvwSkjDhsWgOo91ZSKfeGPfkRN.EWoSTgwdnAlgHqJt1AJpYbqgI.9NqYjHHPjQpWMUxl
- PTm3pbK1Zi4BemH5iwwRgUepNJs6M12UcIjn1Zee1mL9wjoNrJh3fF1ROAibkM5GDTu4YATMXj.G
- sf3O5nU3H2d94XJefxXVY4XcmU_7_J87a69JqhFYLDwz_xKFylxEEBASvbAUupCfuDVCf8nkigTZ
- ukHJLyg_9PBP2SDZRYD8IQP0UCbAIwyDlChECZxxCcY29juc1BNMB9x0uu3h1VpvdYI83GP0BQ0o
- .8LyW7kttBghJ0qV8JJjpohI36HydmrQsGs79HGykW2Pwht7qlpZnxtV0hOajqJXdpAnao7Fuw0i
- SMeZQrG.n6Uh7ssQPBFkz4UHgMCqD_fSIODR3v7Ydzh7LWpnblnB7dY._IJOuQprucPxDnPMYHKZ
- PqOZbtpybKWHkfakRNi8wkkyne4rMNYmJ_cvAlZOmynyGIR3CuNAV2B1QrDVbBQoCWub7W9udjeF
- enYjgDcC0.95ud6KzSaIRtGC_n5G6jNSqqY9Kw0dQSb_Z9_SLRVI0Et2rb2JG2lDgY_9qbSalzRm
- OSiKBiLys1nf_a59SzEc9zBDEOFOA9Foi1pbp8QQX9Czn54M3Duf_FNDJ4M4vB0xDVPQTre732dy
- mT5zeyhGSLd1NI_Tap6SW5o5IZ2HZcxWoEwhKceA9xhmDuXVVnXcDLA7Ek0kzF.mxIPVib27JIqg
- TZQ5fJFl0mZCaAzPKjosvNCFADTl5P6KECSyhZg0P7BQPNNLvyRABb3G26N3H4HRI33XWzIgUGg7
- IqsXDYXjsqy.QxB3VCo3vaLuLsHGUsfYQrhx42WZYEsDnbPQ0rvhz9JgLVgnXxlYVdAwxplDnEES
- oQO01Yqr2SCTs7H5cc9aECVqkKqe_RqehQEMLXXiahoHwPwJFDnjNUiVXxzN.hHaNoOB4Vl_tUgZ
- UlkP6sjBiFA9pI6He9FBH8hv7YTuZaTWrT0KCFchaRhB6ulNfTCSXu6kBi3qRA1Jd1qDtVbGa3y3
- R4.YnlsP0M0f.xnamhBcnc5Fhu2W4qLwCBtFDrI7PCGmDVmGE2SeQx3J94y4dLxigUvnVm8NKgfv
- moqUs3hpAlbUEiihKSFcFMC4PzK.pPqgfH9deBYxu8G67DWiG1kBUZgofZMf0bKNbJk4G8spVU91
- J7rw_kCvxaWTt6lepJlYNHNzJwPDNBNlHbBqPfMUPIGXTSfqKKWF8KbZIsyapBzjKPKDs_QiAW6P
- oz31g94pV7wCQ
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Tue, 30 Mar 2021 15:42:10 +0000
-Received: by kubenode528.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 49bec641fca7f66cff32208d4e1c0a3b;
-          Tue, 30 Mar 2021 15:42:05 +0000 (UTC)
-To:     liuyacan <yacanliu@163.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        smack-announce@lists.01.org
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab breaks Smack TCP
- connections
-Message-ID: <3f8328fe-e648-9d0e-729d-eb6787f11bf9@schaufler-ca.com>
-Date:   Tue, 30 Mar 2021 08:42:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S232354AbhC3PZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:25:19 -0400
+Received: from mail-dm6nam10on2081.outbound.protection.outlook.com ([40.107.93.81]:14553
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232483AbhC3PZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:25:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mzalUoy6jZ2vLlZ5RrXKkpvyabDMrNWARxn9QFta9AksUCKmttZvov50jbjf7G/H4y2FiNZ+eWZZwKDnafc//jv4l1Dqe56ibDqmhM4afU3+6I5gpIePtfChxuwBiZlADQ6TcrjKrDGbJrxz28k3lRfWZHG0ke4EwDvwNIKNi/8w+TFmkLPIyi7tLpWUrGnpDjq01NT3GgjJD5eqJMkstEDPibq3FnpfvjXO6a8wfFLE6IlDifGxwERUfvYIsXJeVIj+/KmWrb0rnaDU8gCW3UUXxUB423Fj3khfebBizKM6Kdh5L2WOaue7UjGZMZKudHAxKUU1VG/G83idd6S4Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NiVrmNKC7Zhb3UBQQWID/g8gJjKzHGpS90YvUYH7/M=;
+ b=bCfn3ynC3rBEalPi6/Qk2cj96itMluSXSbCpgb7jgRzskpDRsM3BIfKPxEhN51+gz/3/lVaYToYUSEpGaP1AGk5Km6znayD2NIsfiC0F3HzCaKn5lizpGdXAjxsX+Eq5tm4Sx+9DQ7YaOVzW9KeQRpYT5c1piLAGtqsxyjJVj7oV8sI780zifzkIIqXcnjVAM/qEfupr8gJ0azYDQ6YW71z704PVEovMPl0MtWh/Nuk54Kk7Bd463d5ltJiGEGKKuTF+pZXobLmf8DT2EsQGpx0IazKeTCAkWMzaR3EF5bN++ZWFHXWSmt1aMPE8sHgBRjgl6+gQkVhST9RwuIYmNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NiVrmNKC7Zhb3UBQQWID/g8gJjKzHGpS90YvUYH7/M=;
+ b=USZWi6OjvxlB+wewkZmz7Aup665w8WWPXOruk6ONEXuo7LM01CGHWHXDUq4AW5Uichzsatg9LDtpYysCTebuhy8iznpgT5ENwH7l7hNLD7ksix5E8MfR9awHn3El7E7dbrJM2dDPyAO4j+i48OQQihCOOPRhTZ5hE2RGGZ6/1dk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW2PR12MB2569.namprd12.prod.outlook.com
+ (2603:10b6:907:11::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Tue, 30 Mar
+ 2021 15:25:03 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 15:25:03 +0000
+Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
+ machine driver
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     shumingf@realtek.com, flove@realtek.com, kent_chen@realtek.com,
+        jack.yu@realtek.com, Alexander.Deucher@amd.com,
+        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
+Date:   Tue, 30 Mar 2021 21:12:11 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-References: <3f8328fe-e648-9d0e-729d-eb6787f11bf9.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.17936 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.159.242]
+X-ClientProxiedBy: BMXPR01CA0058.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::22) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by BMXPR01CA0058.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:2c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 15:24:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1b28ccf8-f1ff-4f24-42ef-08d8f38ffd5c
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2569:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR12MB2569CC11BC11581A75C8E002977D9@MW2PR12MB2569.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EYlu9YdBoPmVF29o7UkPCaVYu2db23z1w1xH+unZ0yBRqW5DkLzgivkvcWOjGcmZISbJMSYRuylvyMr3NFUyJ4CKBSkkiKygTY2qvuJeXUAFfhvzVnhWj//+ue292muBEuuxlxWtFBL2EJgOEhnC+ZNYJxbfCmdQ5nHcxPHzygianP3hog0SEmqr2dDn9XhHCH1USHABiI/DN3kQD2sABpv9wiHzlGRcMOXUJfkWfszis/CqggLNPlLFKeE/gDs1wvmnDSXzfuEKLSnmTULydzYogvGKrQzlQsU5gnZasmBQ+SB2VnrE0bmLwkrYYPe9JSOFj706TmZKvbnb+c5BlkleDS6HsPV6rCIygmwTfx/rTHNFVKiXk2Q0kXbmJwPb6LB3oPm7bO21T/6+Zx2uz6UV+/uUOiV7XojkzIYTQeadwnpy++b/OkMwyeTCy1QCV1jaK4ozm3MZYGDUqKZlKEfKwbZa6HZbAmcU1PLW0gHhZFjs7DLuLQJffY2toirIAn2h+7MITuoi9ekJsaPpyA5UmLzo1Ov3IQaZ0B/DRhqYpRpgpBc+FmDTxWFcTtiFUOxNahLHAF+GeBzsOobZCc6bnDB2suQ+X+lDqM25AC5gtB5cb1gAbg+KOq4VAZy8xwgUpf2ixc18QUL6Y+jFnvoV4cH0puUfOMlUuNDqHaixdVvFmfOWLJvC7avrxb6OS+K3CE9BnoIEM9fYyjJkyMVOaN2kTnkSyyGRWDUurGRgZBk+5Fi/lVPxn3X5KfGPdXHJTZRm5y2hDnvBPP9c3M9iXPwUhqLTfgj6v1N3PFatC9K/t34lzl7weoc+drMuvUGYXyXiV95yqvsmpxhwpw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(136003)(366004)(396003)(956004)(66476007)(16526019)(186003)(2906002)(316002)(2616005)(66946007)(4326008)(966005)(54906003)(16576012)(45080400002)(66556008)(4744005)(31696002)(38100700001)(52116002)(7416002)(31686004)(36756003)(478600001)(8676002)(6666004)(26005)(5660300002)(8936002)(86362001)(6486002)(53546011)(42413003)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d2Y5V1NnOWNKN21WeWZlNW5BdHoxMG53RFI3Lzk5eEVBTUpzLzcrRXhLMXFO?=
+ =?utf-8?B?SldLbHhiZTBSR0F3Z3VVVDJRV2Fid1h0SGZnZEYvaFlBM1VuOXE0TmNPdTBH?=
+ =?utf-8?B?NXRlbUExYmpkOStaUExvZHdlNW1ickVaTXNDa2tvU2lSanUzaUx6d3JpeGY4?=
+ =?utf-8?B?ZEVQN1JyRWU5NWlOdGNFdXI1RGwzaG9JOUI3anhrWXl3VytCNVlvanpBaHAx?=
+ =?utf-8?B?UkpHQ3RXQVdjVUpaVnJSTHU3UWROWmoxTEp4bThGY2pPblJHNy9PazlUMURU?=
+ =?utf-8?B?R1BjbC93YTBucmpyQld5cEFGZHMvMjgxaWZzVFZTRmdZRDBNWjdBYnoxZGoy?=
+ =?utf-8?B?UXZrMEUzYjlybDJ0V0E5TUdQZzJrMWNocEFxc05zVDhpNldZU1pTNG40RXV3?=
+ =?utf-8?B?dWljUDVibHFPQXpqdHZGNG9kYlNkYy9OOStiNkk3b0V2Szlic0Q4MnlvTmcz?=
+ =?utf-8?B?dmZGR254dFphMDNZeXhRZUg4RW1VOVMyaVVGTEhxWmJ4M2ZTNHlFcktmcFUy?=
+ =?utf-8?B?ZzlhY043ek9JNUIwNnB3bFFaTzUxYVZyUFU0U3Z5b1EzM2RPN1l4Zkg5cldM?=
+ =?utf-8?B?ZTdGaFgvdWZ1YkZpR3BkallpRFlPVXBZMXNXUCtqQnErbTRlNUZCRjVwT3dk?=
+ =?utf-8?B?blZuQ2lNKzg0bG5KNW1oVmNQY2JpeEIrU2FEbzRmbFlhSWFhYVVEY01xcHRY?=
+ =?utf-8?B?MUVwVVVtVnZja2dDd1U0bTdybzM2R3pseUd6L3VpVEJxcVJ0QzVqbDlmV25s?=
+ =?utf-8?B?YzBCUURiSC9ycWFORVFBSE9MRDFRQ1pvUnFyZmxjaUMvTlQvNDYxYjNWNExU?=
+ =?utf-8?B?ZDdqVVBCWW44OVgrUFl2UlZzRVFrMXBjbE5CdUVDTGdCdGlHM0hjVnZLWXdB?=
+ =?utf-8?B?WXJJTkR3OGx1bk5Hb2Q0dVkrcmxyTDQ4ZjVTZW8wRGt1U3hBUC8yZVBINjVj?=
+ =?utf-8?B?NjVDcmNucThrcmxySW9LSWRVK2lDTVAweEpLS0dlUTJ5LzArNTBJLytHeGd3?=
+ =?utf-8?B?RFh5MEFWNk9LVU9kUnhFOTZFc2dkdDFKSGZFSDVrc21CSTVmSklDRXVHMGM5?=
+ =?utf-8?B?UHJ2a1Z3bXVrWmg2cDF1OUxRNHE3NHFXQ3ZLakgrWVVqZ3d3UDkvdTNHcXBk?=
+ =?utf-8?B?OE9iMXBHbFFoa2I3MmVNaE1sNG9lNnQ0dFJZZ1lKNVhqbGQ4eWQ4SkFpdmM3?=
+ =?utf-8?B?QkVaZlhnVnhRK1YxTElhMEkzOUJhVC82b1ZPWmtDdlgraExoNkU4anhCbG0x?=
+ =?utf-8?B?Y3FmRlVGd0pHMkt2ZC9uNURJeGZNTHhjK3ZHRVdBcEVqQjhCTVNzOEpqK0pY?=
+ =?utf-8?B?c3c3Z2dCQjZ5dWE4ZVB2N0tHa1RSa3NoSFNZUmk2Y0h5ZVEvbHhKNGlLT2pC?=
+ =?utf-8?B?RVVrVzZzZDhuQzdKMGozZlgwbHkxRk5sdU1FZk9LbzdjdFd5TytDakRJeWVW?=
+ =?utf-8?B?eUxtOWNOSkVoNlhUUFpYQWkvbzhSUWJvb3owU2J5T2tlMzNGVU5zR2todmZW?=
+ =?utf-8?B?MU10OVNEbFVYaDl5WG5FbGkyOUlSL2NIME9PbUk2djFzZXlpZUUyTUhCdVVP?=
+ =?utf-8?B?VHBpcGdqaEVtbFdkMXVCbzFNTG5VTVQ1N0JDckh5RmRscGRoNmRWa0Zva3Vu?=
+ =?utf-8?B?V2JwalZOa25GR2MzS1czcWROazlmMFJUdUt4VzV1TzZWdC9ySVZyR3pPRURk?=
+ =?utf-8?B?b0NXcFQyRXFUUWtsQml0U1NnUExOcXVhZmQ5R2pIYmFLK2RLbFVCTnFGTDky?=
+ =?utf-8?Q?dFm6Eme1c+wXn5zyAH+JcmS6M9TajwaaCoKFKbs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b28ccf8-f1ff-4f24-42ef-08d8f38ffd5c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 15:25:03.6507
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1kUNMbHaGc/cctybAtN6pO+7RWz/VGetnIEh2xQD0oK42oII44CtmvM9/UKUrCJffaa3vNp2NYyreWnBRlCp5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2569
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab 'net: correct
-sk_acceptq_is_full()' breaks a system with the Smack LSM.
-Reverting this change results in a return to correct behavior.
-
-The Smack testsuite can be found at:
-	https://github.com/smack-team/smack-testsuite.git
-
-The failing test is ipv4-tcp-local-peersec.sh, but it seems
-that most TCP connections hang with SYN_SENT. Oddly, ssh
-to 127.0.0.1 works, but other TCP connections timeout.
 
 
-
-
-
+On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
+> 
+>>   static const struct acpi_device_id acp3x_audio_acpi_match[] = {
+>>       { "AMDI5682", (unsigned long)&acp3x_5682},
+>>       { "AMDI1015", (unsigned long)&acp3x_1015},
+>> +    { "AMDP1015", (unsigned long)&acp3x_1015p},
+> 
+> This isn't a valid ACPI ID. AMDP does not exist in
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fuefi.org%2Facpi_id_list&amp;data=04%7C01%7CVijendar.Mukunda%40amd.com%7C7406bd8053104c021c6c08d8f3875396%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637527109839548809%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=WXNykTVcn4tgxIHPsJVXaDf9J5a63c29IMUOhJ3X8LU%3D&amp;reserved=0 
+> 
+> 
+> There was a similar issue with Intel platforms using this part, we had 
+> to use a different HID.
+> 
+> 
+Is it okay if i use "AMDI1016" for ALC1015P?
