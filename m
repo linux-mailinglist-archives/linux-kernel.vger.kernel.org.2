@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D04634E74F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EDA34E78E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhC3MQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:16:02 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15398 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhC3MPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:15:44 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8pJm4lgGznTlt;
-        Tue, 30 Mar 2021 20:14:00 +0800 (CST)
-Received: from ubuntu.huawei.com (10.67.174.117) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 20:15:34 +0800
-From:   Ruiqi Gong <gongruiqi1@huawei.com>
-To:     Lijun Ou <oulijun@huawei.com>, Wei Hu <huwei87@hisilicon.com>,
-        Weihang Li <liweihang@huawei.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Wang Weiyang <wangweiyang2@huawei.com>
-Subject: [PATCH -next] RDMA/hns: Fix a spelling mistake in hns_roce_hw_v1.c
-Date:   Tue, 30 Mar 2021 08:29:12 -0400
-Message-ID: <20210330122912.19989-1-gongruiqi1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231925AbhC3MgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:36:09 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:51469 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231574AbhC3Mfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:35:37 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12UCZDt4014325
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 14:35:13 +0200
+Received: from md1za8fc.ad001.siemens.net ([167.87.2.166])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12UCUC4i018161;
+        Tue, 30 Mar 2021 14:30:12 +0200
+Date:   Tue, 30 Mar 2021 14:30:11 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
+ Siemens Industial PCs
+Message-ID: <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-3-henning.schild@siemens.com>
+        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+        <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
+        <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.117]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/caculating/calculating
+Am Tue, 30 Mar 2021 15:15:16 +0300
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> > Am Tue, 30 Mar 2021 14:04:35 +0300
+> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
+> > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
+> > > <henning.schild@siemens.com> wrote:  
+> > > >
+> > > > This driver adds initial support for several devices from
+> > > > Siemens. It is based on a platform driver introduced in an
+> > > > earlier commit.  
+> > >
+> > > ...
+> > >  
+> > > > +#define SIMATIC_IPC_LED_PORT_BASE      0x404E  
+> > >  
+> > > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
+> > > > +       {1 << 15, "green:" LED_FUNCTION_STATUS "-1" },
+> > > > +       {1 << 7,  "yellow:" LED_FUNCTION_STATUS "-1" },
+> > > > +       {1 << 14, "red:" LED_FUNCTION_STATUS "-2" },
+> > > > +       {1 << 6,  "yellow:" LED_FUNCTION_STATUS "-2" },
+> > > > +       {1 << 13, "red:" LED_FUNCTION_STATUS "-3" },
+> > > > +       {1 << 5,  "yellow:" LED_FUNCTION_STATUS "-3" },
+> > > > +       { }
+> > > > +};  
+> > >  
+> > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
+> > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
+> > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
+> > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
+> > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
+> > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
+> > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
+> > > > +       { }
+> > > > +};  
+> > >
+> > > It seems to me like poking GPIO controller registers directly.
+> > > This is not good. The question still remains: Can we simply
+> > > register a GPIO (pin control) driver and use an LED GPIO driver
+> > > with an additional board file that instantiates it?  
+> >
+> > I wrote about that in reply to the cover letter. My view is still
+> > that it would be an abstraction with only one user, just causing
+> > work and likely not ending up as generic as it might eventually
+> > have to be.
+> >
+> > The region is reserved, not sure what the problem with the "poking"
+> > is.  
+> 
+> 
+> > Maybe i do not understand all the benefits of such a split at this
+> > point in time. At the moment i only see work with hardly any
+> > benefit, not just work for me but also for maintainers. I sure do
+> > not mean to be ignorant. Maybe you go into details and convince me
+> > or we wait for other peoples opinions on how to proceed, maybe
+> > there is a second user that i am not aware of?
+> > Until i am convinced otherwise i will try to argue that a
+> > single-user-abstraction is needless work/code, and should be done
+> > only when actually needed.  
+> 
+> I have just read your messages (there is a cover letter and additional
+> email which was sent lately).
+> 
+> I would like to know what the CPU model number on that board is. Than
+> we can continue to see what possibilities we have here.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index 759ffe52567a..414e9f33ba49 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -538,7 +538,7 @@ static void hns_roce_set_sdb_ext(struct hns_roce_dev *hr_dev, u32 ext_sdb_alept,
- 	/*
- 	 * 44 = 32 + 12, When evaluating addr to hardware, shift 12 because of
- 	 * using 4K page, and shift more 32 because of
--	 * caculating the high 32 bit value evaluated to hardware.
-+	 * calculating the high 32 bit value evaluated to hardware.
- 	 */
- 	roce_set_field(tmp, ROCEE_EXT_DB_SQ_H_EXT_DB_SQ_BA_H_M,
- 		       ROCEE_EXT_DB_SQ_H_EXT_DB_SQ_BA_H_S, sdb_dma_addr >> 44);
-@@ -1189,7 +1189,7 @@ static int hns_roce_raq_init(struct hns_roce_dev *hr_dev)
- 	/*
- 	 * 44 = 32 + 12, When evaluating addr to hardware, shift 12 because of
- 	 * using 4K page, and shift more 32 because of
--	 * caculating the high 32 bit value evaluated to hardware.
-+	 * calculating the high 32 bit value evaluated to hardware.
- 	 */
- 	roce_set_field(tmp, ROCEE_EXT_RAQ_H_EXT_RAQ_BA_H_M,
- 		       ROCEE_EXT_RAQ_H_EXT_RAQ_BA_H_S,
-@@ -2041,7 +2041,7 @@ static void hns_roce_v1_write_cqc(struct hns_roce_dev *hr_dev,
- 	/**
- 	 * 44 = 32 + 12, When evaluating addr to hardware, shift 12 because of
- 	 * using 4K page, and shift more 32 because of
--	 * caculating the high 32 bit value evaluated to hardware.
-+	 * calculating the high 32 bit value evaluated to hardware.
- 	 */
- 	roce_set_field(cq_context->cqc_byte_20,
- 		       CQ_CONTEXT_CQC_BYTE_20_CQE_TPTR_ADDR_H_M,
-@@ -4170,7 +4170,7 @@ static int hns_roce_v1_create_eq(struct hns_roce_dev *hr_dev,
- 	 * Configure eq extended address 45~49 bit.
- 	 * 44 = 32 + 12, When evaluating addr to hardware, shift 12 because of
- 	 * using 4K page, and shift more 32 because of
--	 * caculating the high 32 bit value evaluated to hardware.
-+	 * calculating the high 32 bit value evaluated to hardware.
- 	 */
- 	roce_set_field(tmp1, ROCEE_CAEP_AEQE_CUR_IDX_CAEP_AEQ_BT_H_M,
- 		       ROCEE_CAEP_AEQE_CUR_IDX_CAEP_AEQ_BT_H_S,
--- 
-2.17.1
+I guess we are talking about the one that uses memory mapped, that is
+called an "IPC127E" and seems to have either Intel Atom E3940 or E3930
+which seems to be Apollo Lake.
 
+Henning
