@@ -2,183 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCF234E0E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEFE34E0E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhC3Fve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
+        id S229569AbhC3Fyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhC3FvZ (ORCPT
+        with ESMTP id S229633AbhC3FyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:51:25 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FC6C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:51:25 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id u10so18549852lju.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:51:24 -0700 (PDT)
+        Tue, 30 Mar 2021 01:54:19 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E91C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:54:19 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id l76so10923297pga.6
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:54:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=q6lEE2mLxUSxwFUa7GfL5LXw+GX8ZqMED2HXvAcd790=;
-        b=QWDQj/k//08OQqkLgKt3T0BFbwXuqS+LZt6L6iSTc0BsCjEFYh0/VLD9npTeuxxWsQ
-         97fkc+OgI/HFewPYFVTQjqec9xguXnT4goiwh7cv91Uvzs+fQgLuBy3pfDnHx537JOv+
-         pBulm1ChNlHQ6wlKqEXZndfqsxQ94GixOKN5sePQBcRIfXZ7lDgwolWcdjeDr2xUtHXI
-         2a1bUSdW6O31D8XCrS66t7QBaOjTf/YCYiaVLIf2VPF3dI0v34NGPxnf1K6KB45Ftkgr
-         GyBjG9C9MLS1CBL0YWsXov3mtTF1kpCQcG7HMQAUjcL6Wcvqv0it5T+c6D2/A565YeEK
-         Rsxw==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ULHvWovowCzcgsVAcye9+8nDN8kG4FPChtXUvkrF8dc=;
+        b=C2vTCndtRJJ005jcly56OIHJ8oEzYdRlpJdwbQ4kxqm17peFNaZngpOQSCTMDpD5UY
+         bysGhULBk8YeYqoectTdu5H56G7GUcbwqziTjd49M0hNoTTEH49TuIF8rTWTdc9ZlOvY
+         Io4krfeRAfJAYHsYyMd5N7ceIThABEyEbq6AGD9dMUErLsZrYNAdSq7XUoLuoEtsdvg1
+         2JMUAbQpBeh3CQBHkVC4de/sk1teysE5bpVbXTG4DPCdmVe8dTh/lG5N9avEnlKdEwTK
+         GonUgf1uv5y7QVBsf+8qLYzT/AVdlDvgOARI9OFxc9g2Fp4p4gTcMsb0AN5650fBevSL
+         tz2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q6lEE2mLxUSxwFUa7GfL5LXw+GX8ZqMED2HXvAcd790=;
-        b=E6qfNoG2BQmy/68O+cZdReUV1NQo3VhkzBBCTbaOfuOCmu/jKCqau//8mr3uDNI08W
-         qG0gmYjW2Ngh0cp96F4snU0j3geuroG+MOzQPvFS6i0IsfAwgkthgV/C/5EWjc569T8o
-         UPtQtxSqn8f8AlfIYvrmIRVAutFtbMkkdD45ydFIz6FQ2CEFq1siXb6OR1hI6bY7mJdd
-         qm2Kscg0XTcq8v4xVc+iuIpfNkm/7Z+0OUtomUuDUUNhixxbY264aQJmoHoZFRHWBkcS
-         IqFYrQQJ2b2/WfRAHeT+fbKoYeckmPLIxtI63/uGaJDDYs6D5YgGCEbNGc3sg8CfaEix
-         OGyg==
-X-Gm-Message-State: AOAM531AfuBeBKTEfdl/aElNIm94NWp2C1ar1NzvRxbzlhyldfDCgiiQ
-        lBH/V4MQvqgEzhsM7f/L+8liotTc/hW9mGpaTrM/ww==
-X-Google-Smtp-Source: ABdhPJwiUwnbbZmlObvrahOjCJ6o2HFElpU0UGc8nhlBKt2fEzygnVd4qkLRnIKdDWUW9FsXtGj8y7/NGKgsZ/G7KGM=
-X-Received: by 2002:a2e:8114:: with SMTP id d20mr20111828ljg.83.1617083483493;
- Mon, 29 Mar 2021 22:51:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
- <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
- <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
- <CAK8P3a3jpQ7dDiVG0s_DQiL6n_MdnhYHMjqFfJ92JJBJFPQZPQ@mail.gmail.com> <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com>
-In-Reply-To: <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 30 Mar 2021 11:21:12 +0530
-Message-ID: <CAAhSdy3UWZuiFKxMPiQD+QTXuwk7LuvxkHJNE1zs2EtErHdt5Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ULHvWovowCzcgsVAcye9+8nDN8kG4FPChtXUvkrF8dc=;
+        b=GWrGyoBZhc0jK7oyjx6B7JiHVXsO711hmHPRzVS3BvNTRsChOE8HEKT7wKHQCuH9PX
+         7MmcNZqb7JmBZ+UZKABFST4ObUZOCxnagnID3Gqx/Mcw20XcwmUZwfNLcG5UcAlvwMZB
+         HtFWPeLJlBYo9th6Q1zQyI1Pvy2pNI6FDLr6n1POUomRQpqO8qw9x6AQzPMJxxG2YqSs
+         MA+HrNQ6lqscWV6I7NvsnMARbytNQ/xdjwhqAEhVJlIKU5Ir0p7GLKwYGQ4kE1n9Im6a
+         w1mbQS4yeGmX3gXOcDv2giQ5yZLqNc6qPsmIKb0Or1CWC+wuHNL0Jh98AHf3EL/jv5N8
+         AImg==
+X-Gm-Message-State: AOAM530MhAp8RZQPvNoHBPL4lJ2tIYkCnQMjoZCeHI9aPfaTcLZeQ0z9
+        R8IUjEcvcHksFqqA3fErqGeI6Q==
+X-Google-Smtp-Source: ABdhPJxratnlnJNCe1ARb2oeJGfz/Zx7jg6R2XcRyILqncEt8HCAT/cf3O8AK2BT4GdXdpoaSeubpA==
+X-Received: by 2002:aa7:824e:0:b029:20a:3a1:eeda with SMTP id e14-20020aa7824e0000b029020a03a1eedamr27872954pfn.71.1617083658670;
+        Mon, 29 Mar 2021 22:54:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v14sm1505969pju.19.2021.03.29.22.54.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 22:54:18 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 22:54:18 -0700 (PDT)
+X-Google-Original-Date: Mon, 29 Mar 2021 22:50:14 PDT (-0700)
+Subject:     Re: [PATCH] riscv,entry: fix misaligned base for excp_vect_table
+In-Reply-To: <20210317081725.28412-1-yuzihao@ict.ac.cn>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        yuzihao@ict.ac.cn, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     yuzihao@ict.ac.cn
+Message-ID: <mhng-400b7987-97a8-4f74-8fbd-a11057c46d0d@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 7:56 AM Guo Ren <guoren@kernel.org> wrote:
+On Wed, 17 Mar 2021 01:17:25 PDT (-0700), yuzihao@ict.ac.cn wrote:
+> * In RV64, the size of each entry in excp_vect_table is 8 bytes. If the
+>   base of the table is not 8-byte aligned, loading an entry in the table
+>   will raise a misaligned exception. Although such exception will be
+>   handled by opensbi/bbl, this still causes performance degradation.
 >
-> On Mon, Mar 29, 2021 at 9:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Mon, Mar 29, 2021 at 2:52 PM Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org>=
- wrote:
-> > > >
-> > > > On Mon, Mar 29, 2021 at 01:16:53PM +0200, Peter Zijlstra wrote:
-> > > > > Anyway, an additional 'funny' is that I suspect you cannot prove =
-fwd
-> > > > > progress of the entire primitive with any of this on. But who car=
-es
-> > > > > about details anyway.. :/
-> > > >
-> > > > What's the architectural guarantee on LL/SC progress for RISC-V ?
-> > >
-> > > funct5    | aq | rl   | rs2 |  rs1  | funct3 | rd | opcode
-> > >      5          1    1      5       5         3        5          7
-> > > LR.W/D  ordering  0     addr    width   dest    AMO
-> > > SC.W/D  ordering  src  addr    width   dest    AMO
-> > >
-> > > LR.W loads a word from the address in rs1, places the sign-extended
-> > > value in rd, and registers a reservation set=E2=80=94a set of bytes t=
-hat
-> > > subsumes the bytes in the addressed word. SC.W conditionally writes a
-> > > word in rs2 to the address in rs1: the SC.W succeeds only if the
-> > > reservation is still valid and the reservation set contains the bytes
-> > > being written. If the SC.W succeeds, the instruction writes the word
-> > > in rs2 to memory, and it writes zero to rd. If the SC.W fails, the
-> > > instruction does not write to memory, and it writes a nonzero value t=
-o
-> > > rd. Regardless of success or failure, executing an SC.W instruction
-> > > *invalidates any reservation held by this hart*.
-> > >
-> > > More details, ref:
-> > > https://github.com/riscv/riscv-isa-manual
-> >
-> > I think section "3.5.3.2 Reservability PMA" [1] would be a more relevan=
-t
-> > link, as this defines memory areas that either do or do not have
-> > forward progress guarantees, including this part:
-> >
-> >    "When LR/SC is used for memory locations marked RsrvNonEventual,
-> >      software should provide alternative fall-back mechanisms used when
-> >      lack of progress is detected."
-> >
-> > My reading of this is that if the example you tried stalls, then either
-> > the PMA is not RsrvEventual, and it is wrong to rely on ll/sc on this,
-> > or that the PMA is marked RsrvEventual but the implementation is
-> > buggy.
-> Yes, PMA just defines physical memory region attributes, But in our
-> processor, when MMU is enabled (satp's value register > 2) in s-mode,
-> it will look at our custom PTE's attributes BIT(63) ref [1]:
+> Signed-off-by: Zihao Yu <yuzihao@ict.ac.cn>
+> ---
+>  arch/riscv/kernel/entry.S | 1 +
+>  1 file changed, 1 insertion(+)
 >
->    PTE format:
->    | 63 | 62 | 61 | 60 | 59 | 58-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
->      SO   C    B    SH   SE    RSW   D   A   G   U   X   W   R   V
->      ^    ^    ^    ^    ^
->    BIT(63): SO - Strong Order
->    BIT(62): C  - Cacheable
->    BIT(61): B  - Bufferable
->    BIT(60): SH - Shareable
->    BIT(59): SE - Security
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 744f3209c..76274a4a1 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -447,6 +447,7 @@ ENDPROC(__switch_to)
+>  #endif
 >
-> So the memory also could be RsrvNone/RsrvEventual.
->
-> [1] https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2f=
-cc52afd0fcbf88
+>  	.section ".rodata"
+> +	.align LGREG
+>  	/* Exception vector table */
+>  ENTRY(excp_vect_table)
+>  	RISCV_PTR do_trap_insn_misaligned
 
-Is this about your C-sky architecture or your RISC-V implementation.
-
-If these PTE bits are in your RISC-V implementation then clearly your
-RISC-V implementation is not compliant with the RISC-V privilege spec
-because these bits are not defined in RISC-V privilege spec.
-
-Regards,
-Anup
->
-> >
-> > It also seems that the current "amoswap" based implementation
-> > would be reliable independent of RsrvEventual/RsrvNonEventual.
-> Yes, the hardware implementation of AMO could be different from LR/SC.
-> AMO could use ACE snoop holding to lock the bus in hw coherency
-> design, but LR/SC uses an exclusive monitor without locking the bus.
->
-> > arm64 is already in the situation of having to choose between
-> > two cmpxchg() implementation at runtime to allow falling back to
-> > a slower but more general version, but it's best to avoid that if you
-> > can.
-> Current RISC-V needn't multiple versions to select, and all AMO &
-> LR/SC has been defined in the spec.
->
-> RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
-> think LR/SC would be slower than CAS, and CAS is just good for code
-> size.
->
-> >
-> >          Arnd
-> >
-> > [1] http://www.five-embeddev.com/riscv-isa-manual/latest/machine.html#a=
-tomicity-pmas
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+Thanks, this is on fixes.
