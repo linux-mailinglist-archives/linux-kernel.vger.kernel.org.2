@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F4434F0A3
+	by mail.lfdr.de (Postfix) with ESMTP id A512734F0A4
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhC3SNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:13:14 -0400
-Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:36168 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232714AbhC3SMr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:12:47 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 3AC15180355C1;
-        Tue, 30 Mar 2021 18:12:46 +0000 (UTC)
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA id AF43D18A614;
-        Tue, 30 Mar 2021 18:12:44 +0000 (UTC)
-Message-ID: <703d46e209b0e7163e46b807aba761c93b4a90c9.camel@perches.com>
-Subject: Re: [PATCH] mtd: intel-spi: add is_protected and is_bios_locked
- knobs
-From:   Joe Perches <joe@perches.com>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tamar Mashiah <tamar.mashiah@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Date:   Tue, 30 Mar 2021 11:12:43 -0700
-In-Reply-To: <20210330155414.58343-1-tomas.winkler@intel.com>
-References: <20210330155414.58343-1-tomas.winkler@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S232760AbhC3SNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:13:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232691AbhC3SMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:12:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D4B619BD;
+        Tue, 30 Mar 2021 18:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617127970;
+        bh=8cd65BTZtf101g5mY/B2N2CWYMXY6mJvb6XeSEgiiw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pg2Q4AK75NrfrWXZT3PUBFl9K54f3b8hbTOYWjniYC6bhvA9NGRLfPqG8ha/zdqjR
+         P1B6v0jCfCXn+83Val1IPREf5G2/GFb4FbUTph0Q49JGv7VqDefQ836CJPxOt9JYTN
+         gd1AUU7FTBiLYOfMKTT6oeWDJgSgbGM36CTfo5kvx/m8Vx1pBYQgK9uWGWerJmnm0M
+         HSjZl+lbwMNA66qGlX+p65+UpgKtkuj4SPtHTzWY6337EpvQXh6BdUKIWe9D0KlF0G
+         q/9P8JYsThsKElJvRlJLlsqMwsNOHYRlfaxKbSWsDBP9iMl+u6KfNmRUWUYRups/SJ
+         pcNE7ZmrHPf9w==
+Date:   Tue, 30 Mar 2021 23:42:45 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: xr: fix CSIZE handling
+Message-ID: <20210330181245.GC27256@work>
+References: <20210330143716.9042-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: gpcomsfuenzpb86i8o6mfuisqwfphgw8
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: AF43D18A614
-X-HE-Tag: 1617127964-882415
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330143716.9042-1-johan@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-30 at 18:54 +0300, Tomas Winkler wrote:
-> From: Tamar Mashiah <tamar.mashiah@intel.com>
-[]
-> the region protection status is exposed via sysfs file
-> as the manufacturing will need the both files in order to validate
-> that the device is properly sealed.
-[]
-> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-[]
-> +static ssize_t intel_spi_is_protected_show(struct device *dev,
-> +					   struct device_attribute *attr, char *buf)
-> +{
-> +	struct intel_spi *ispi = dev_get_drvdata(dev);
+On Tue, Mar 30, 2021 at 04:37:16PM +0200, Johan Hovold wrote:
+> The XR21V141X does not have a 5- or 6-bit mode, but the current
+> implementation failed to properly restore the old setting when CS5 or
+> CS6 was requested. Instead an invalid request would be sent to the
+> device.
+> 
+> Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/usb/serial/xr_serial.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
+> index 0ca04906da4b..c59c8b47a120 100644
+> --- a/drivers/usb/serial/xr_serial.c
+> +++ b/drivers/usb/serial/xr_serial.c
+> @@ -467,6 +467,11 @@ static void xr_set_termios(struct tty_struct *tty,
+>  		termios->c_cflag &= ~CSIZE;
+>  		if (old_termios)
+>  			termios->c_cflag |= old_termios->c_cflag & CSIZE;
+> +		else
+> +			termios->c_cflag |= CS8;
 > +
-> +	return sysfs_emit(buf, "%d", ispi->is_protected);
-
-These should also include a newline in the format.  i.e.:
-
-	return sysfs_emit(buf, "%d\n", ispi->is_protected);
-
-
-> +static ssize_t intel_spi_bios_lock_show(struct device *dev,
-> +					struct device_attribute *attr, char *buf)
-> +{
-> +	struct intel_spi *ispi = dev_get_drvdata(dev);
-> +
-> +	return sysfs_emit(buf, "%d", ispi->is_bios_locked);
-
-etc...
-
-
+> +		if (C_CSIZE(tty) == CS7)
+> +			bits |= XR21V141X_UART_DATA_7;
+>  		else
+>  			bits |= XR21V141X_UART_DATA_8;
+>  		break;
+> -- 
+> 2.26.3
+> 
