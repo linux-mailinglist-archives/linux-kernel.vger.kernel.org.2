@@ -2,129 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB5C34F506
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E55434F509
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhC3X15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhC3X1e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:27:34 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AE1C061574;
-        Tue, 30 Mar 2021 16:27:33 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b14so26316732lfv.8;
-        Tue, 30 Mar 2021 16:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7P9evhC2fefpJxi9njQ79qnjbEyr4RKoQ+V/DRcy07E=;
-        b=gRjJO0F4OMhIooibcLON9pujbXZ59O41HRnUtt0/UijBRPCbr4+6oJ29xjGXXAdUj9
-         L2f7Xsd8LRe47nEdTnNPDyigfE7dlaHQSSAmNySQLb1hM2kSZETM18mtX+Hp86o2/AfP
-         QaNYPvg4VS6ySLEH5mGsvB3ljo+yoVdxMFSCaAJ8jNMxhO80vY0J0IsAhgoe2nzDVyvt
-         v6Hk3bfXZwU3G/g+bflxpRrAvFUq51dRvDq1HmzrTNgmO1k8QXpQz7Blwkv7f86fjQFY
-         bTLqkOz8KupSCvqdGHkpb/ELoZCbHrkgazfEmo9WC51hmOksLS5clZ1JYnwPgRT67QTc
-         IwvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7P9evhC2fefpJxi9njQ79qnjbEyr4RKoQ+V/DRcy07E=;
-        b=LZQ6zEDHRpaLAR498ZdIvd0rhPEqwxoEwd1Mqws6//vMkl+TmL05eTDFobszPBpOug
-         48E9p5cr2q4JJDwlBpbd5JIr2GWpHQy6Rwqp+B9uhk7E+FHCaKEnbNvTCWL95i/zyPRW
-         WjZKJ5BPBjRkxgkDLuQLoU0DvdmznkXey3Npc225rH6BXlA0Vu6JsQzFFj2GRV28QrPH
-         Xvz3ZyzjaXjSWeuEcn43T6pWFW+Hs9yzwsYOhM8xZ5mGZ08bBo36cxEyxiX3+bijEZf+
-         9ttUWdlY0joIAIDvubcak9FqUXGmvaofaDJz+XsxlY6aLLStQs3NnQzzSMVlqSH3S3Sz
-         pB4Q==
-X-Gm-Message-State: AOAM533bz+4qoBGlvsG1QpwgQnxbokVW+skZaQ3zslOpWYAGCy0/Pp6I
-        2MZ9qW/EQRqB+BaUqIaAZgUB2ggzgmI0R81AbDw=
-X-Google-Smtp-Source: ABdhPJy7WI6mOofSguzFXSqwA0HRRFR73oG+oJjIPMxPOjrVtnCfKqIVxMO+NYABkepI1iaQ7u6kJncWSGGwnFwpfbk=
-X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr375043lfq.214.1617146852070;
- Tue, 30 Mar 2021 16:27:32 -0700 (PDT)
+        id S233161AbhC3X2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232661AbhC3X2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 19:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 320D1619C5;
+        Tue, 30 Mar 2021 23:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617146895;
+        bh=JKd1VbmOyIxeYYnhoR9PcFkCGIARvQmU3qkgyQeXv8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oVnxqmExzEUKexrN+MwPe7c5hHq04spz3fIULCOflsuql5m/Ri/Egsjj28bhJo9yI
+         No5R3/f3rMxkMIPWhPaavTIAAXUCnEOq10zJQfmc09jexwwNzPYtQEing32+03PiDW
+         CtxmKCkALSsLn0/3ERWxqFWRjhNcayjSjOul0kApt7odjU7YbyzSyJ96Ok1dr4smxM
+         zk3miGcMU+Q2KwtgEC7QinlIEOHRrsThNf6m72kvZ7DCoZDJ2ts4ypib73/P3I6dAs
+         oZ6yDTxzJEfVyt9e92cYbRWKPV7fZ0WW7+ABr1b1OFbX8wE+0q4zqaK0V74Xp89hBb
+         Y6KCvZx+O26Xw==
+Date:   Tue, 30 Mar 2021 16:28:13 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     "Ewan D. Milne" <emilne@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+Message-ID: <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+ <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
 MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-6-memxor@gmail.com>
- <20210327021534.pjfjctcdczj7facs@ast-mbp> <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
- <20210329014044.fkmusoeaqs2hjiek@ast-mbp> <CAEf4BzZaWjVhfkr7vizir7PfbcsaN99yEwOoqKi32V4X17f0Ng@mail.gmail.com>
- <20210330032846.rg455fe2danojuus@ast-mbp> <CAEf4Bzb-YjQq=P2w3S1Np_jfqepUH2_t4MmomLg8PhA0=P6zZg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb-YjQq=P2w3S1Np_jfqepUH2_t4MmomLg8PhA0=P6zZg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 30 Mar 2021 16:27:20 -0700
-Message-ID: <CAADnVQKMBgFV7rYHWYQZW=i5fYkDYspgVOvhSWyNjAzY9CLD9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 1:28 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> >
-> > In the other thread you've proposed to copy paste hash implemenation
-> > into pahole. That's not ideal. If we had libbpfutil other projects
-> > could have used that without copy-paste.
->
-> I know it's not ideal. But I don't think libbpf should be in the
-> business of providing generic data structures with stable APIs either.
+On Tue, Mar 30, 2021 at 10:34:25AM -0700, Sagi Grimberg wrote:
+> 
+> > > It is, but in this situation, the controller is sending a second
+> > > completion that results in a use-after-free, which makes the
+> > > transport irrelevant. Unless there is some other flow (which is
+> > > unclear
+> > > to me) that causes this which is a bug that needs to be fixed rather
+> > > than hidden with a safeguard.
+> > > 
+> > 
+> > The kernel should not crash regardless of any network traffic that is
+> > sent to the system.  It should not be possible to either intentionally
+> > of mistakenly contruct packets that will deny service in this way.
+> 
+> This is not specific to nvme-tcp. I can build an rdma or pci controller
+> that can trigger the same crash... I saw a similar patch from Hannes
+> implemented in the scsi level, and not the individual scsi transports..
 
-There is a need for hash in pahole and it's already using libbpf.
-Would be good to reuse the code.
+If scsi wants this too, this could be made generic at the blk-mq level.
+We just need to make something like blk_mq_tag_to_rq(), but return NULL
+if the request isn't started.
+ 
+> I would also mention, that a crash is not even the scariest issue that
+> we can see here, because if the request happened to be reused we are
+> in the silent data corruption realm...
 
-> > that's today. Plus mandatory libelf and libz.
-> > I would like to have libsysbpf that doesn't depend on libelf/libz
-> > for folks that don't need it.
->
-> TBH, bpf.c is such a minimal shim on top of bpf() syscall, that
-> providing all of its implementation as a single .h wouldn't be too
-> horrible. Then whatever applications want those syscall wrappers would
-> just include bpf/bpf.h and have no need for the library at all.
-
-1k line bpf.h. hmm. That's not going to be a conventional C header,
-but it could work I guess.
-
-> > Also I'd like to see symbolizer to be included in "libbpf package".
-> > Currently it's the main component that libbcc offers, but libbpf doesn't.
-> > Say we don't split libbpf. Then symbolizer will bring some dwarf library
-> > (say libdwarves ~ 1Mbyte) and libiberty ~ 500k (for c++ demangle).
-> > Now we're looking at multi megabyte libbpf package.
->
-> Right, which is one of the reasons why it probably doesn't belong in
-> libbpf at all. Another is that it's not BPF-specific functionality at
-> all.
-
-symbolizer, usdt, python and lua bindings is what made libbcc successful.
-I think "libbpf package" should include everything that bpf tracing folks
-might need.
-Getting -l flags correct from a single package isn't a big deal
-compared with the need to deal with different packages that
-depend on each other.
-
-> I'm against pro-active splitting just in case. I'd rather discuss
-> specific problems when we get to them. I think it's premature right
-> now to split libbpf.
-
-Fine.
-I'm mainly advocating to change the mental model to see
-libbpf as a collection of tools and libraries and not just single libbpf.a
+If this does happen, I think we have to come up with some way to
+mitigate it. We're not utilizing the full 16 bits of the command_id, so
+maybe we can append something like a generation sequence number that can
+be checked for validity.
