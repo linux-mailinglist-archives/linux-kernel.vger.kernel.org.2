@@ -2,112 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D4234F38C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9865F34F391
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhC3VaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        id S232693AbhC3VbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhC3V3T (ORCPT
+        with ESMTP id S233484AbhC3VaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:29:19 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36865C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:29:18 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id y5so17372673qkl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:29:18 -0700 (PDT)
+        Tue, 30 Mar 2021 17:30:13 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9500DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:30:12 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id i9so17394406qka.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:30:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LI2U3XlYQmzLnJLb640nhhbnbRdqs9Tedy+pDurchGU=;
-        b=jPcNZwZMQDCUvHmnkfOS36Hw/CeWh29H6PrRn4dNxkDi5YFXbdp/iVfLQkO8oT3GGu
-         mCQZW+eIwAiRsUvZnjbEy8ym3cyy6ba8dShj+Tx8ZQkexpChUJbeTwpQcAkvlxPneCUv
-         9nDStaa0URCW8/PvnwN5QkpFp0jaN2cXgEkgUFB2uDNA+6m+7nfCRelqBg/YL/cPO0Ac
-         Mf2RZJwW2SFjkyj4dafwIjKFkr0Sp5yW9HNjEDsOFuqcGcqRBvkKbBIwdIIQN4xTusoa
-         yB0aIZE/vAVECzs9aey4EZW/sdxKJNZJav1w8rUoycMr6pQH/uiQRKFU3WCWXQVpsWUX
-         n2PA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f6+kdF3w84398U9boaR1oDCvtDMpQlwaLI1pe9v7LEU=;
+        b=l4wWAasd+fQ1CoQ244XlM39j95UJauD9/rzsA5OhzjMVjWodjd67VeWaVybPdWBQDM
+         0x5rAfgDO7mA8Nih5wKFuYmQlebRfxqLpZTIHhITT47hwPEET6NhO+KX/ut4K/Y5Zc9p
+         31v7HTic6qWUXBZ8fxel02TpEX4brjp4d4sdR/zpHxf1RHsiIZFRS5HcMVXi8u2JtK/r
+         xcW6vjanW2eV035wTQ8ZlZuMqn3KhWsOTtrWWvnD6+k2u32a9Uk5dGCirzA3xadZy1x9
+         VS7eI2iudpLhZEh7M5n+fIrvuH/FYYfCYXGpZr6iD55KSD1ONmGI6TPTXAsT9464JOzx
+         G3mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LI2U3XlYQmzLnJLb640nhhbnbRdqs9Tedy+pDurchGU=;
-        b=lBS6UUakwu2DKrMicpNlML0lA4XScmML0aqrc4lgdA7kKxY/3Pq9czvCtKXUb6Kf9d
-         uXQGxQvXc5sDxS7EZVZZv68WgaXIKXMV1khAt8208VR0NiajI/3st0JRHj1VL7i5Y5WZ
-         x2w8aJDM0cjfqIzZJEwxDEl0xW6MVNjTVz4kwmWYt3ddV8TObunPtwST6zbCBkBnFT1T
-         8XDaMePIcDnkUGR/URtOOF0Iw9D5EA5oKJ911JtzclI1si8HoiS9GefIEmSujSJ1p6bZ
-         ZB3sGFx5tpqq+7MdpD0V/x4C3EjWQYhimSyvG0GPK3aw9fk2hoVAkqbvD0gAfbEqccKY
-         KsaA==
-X-Gm-Message-State: AOAM531CK/tOpEC9dhQsRtXpHGr56PqrBzjUN6TZF8iDwpSDR/2hOl0g
-        Q/UxnDl9k0M6mvj+lDZO/eyGceCLXWugXb5BxFktGQ==
-X-Google-Smtp-Source: ABdhPJzcfEjzjzs84yRfPExY+c3sa40G1zzoSg/KirfcnNCMDrFmGPaCDbydTxA9aJ7A+qM3L0zHpsaQKEKxpSJUors=
-X-Received: by 2002:a05:620a:126d:: with SMTP id b13mr303030qkl.122.1617139757061;
- Tue, 30 Mar 2021 14:29:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f6+kdF3w84398U9boaR1oDCvtDMpQlwaLI1pe9v7LEU=;
+        b=jgZiYqy/+XXJMl1PlH3U9yeFMSY8i0qMv3AFF6ROvp7VhgDPmRaJ0CFTQva5gjJ7mI
+         x6g9TcnGtP5gkUSWwgmuLC+VEaAYNi6BkcXj0riFERfvOqOiPfCAKBBotJyi07XdSaLA
+         sVpwNxjj54ABZCI9jBv79Vage++SXRXsM/VWfCqnl8ah1eB3FjicQT6/nsAAuRYHccyt
+         Et7EzHLDPl1d10YyWs9Y33ovrgUmgR7wZx+TZvSJ7zKuvnDf96kVHZ1ZFPmbd0zJwhzx
+         +/SbRrYI77bH7FFW7JTqiXwn7SQYqgVxDzYcMuYe38aGVnwky3tEgJ4OVR6IMoT1MyAc
+         mH3A==
+X-Gm-Message-State: AOAM5319+m8FpUjfjnfxblfm+d4958mJjm5FhvAcy2QprLJwoaxSSekf
+        uaJkPZ3jwTenWQCmcwNfINy4ew==
+X-Google-Smtp-Source: ABdhPJwaIYqbEC+s/0vdTMgrMXWBSmGbRDU+ifItr1s/7q4wx1LdTHYZEmRHKIqq+QKb5MEnKXlUSw==
+X-Received: by 2002:a05:620a:b02:: with SMTP id t2mr310169qkg.128.1617139811787;
+        Tue, 30 Mar 2021 14:30:11 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 131sm17707274qkl.74.2021.03.30.14.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 14:30:11 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 17:30:10 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Greg Thelen <gthelen@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Subject: Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge the LRU pages
+Message-ID: <YGOYYgWbwiYlKmzV@cmpxchg.org>
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com>
+ <YGN0141iu5HTGiNJ@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20210324214020.34142-1-joel@joelfernandes.org>
- <20210324214020.34142-3-joel@joelfernandes.org> <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
- <CABk29NthG_W_GyBknf1rZ35xbkppdPwosR+6ka=kCs70teoEqA@mail.gmail.com> <YGGkDHWQkYLyrVJW@hirez.programming.kicks-ass.net>
-In-Reply-To: <YGGkDHWQkYLyrVJW@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 30 Mar 2021 14:29:06 -0700
-Message-ID: <CABk29NuHgtZdMb8usEk+ZELe8PaVejpJuhuR4DHaN-VmjJ=7eQ@mail.gmail.com>
-Subject: Re: [PATCH resend 2/8] sched: core scheduling tagging infrastructure
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGN0141iu5HTGiNJ@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> OK, fixed the fails. My tired head made it unconditionally return the
-> cookie-id of 'current' instead of task. Pushed out an update.
+On Tue, Mar 30, 2021 at 11:58:31AM -0700, Roman Gushchin wrote:
+> On Tue, Mar 30, 2021 at 11:34:11AM -0700, Shakeel Butt wrote:
+> > On Tue, Mar 30, 2021 at 3:20 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > Since the following patchsets applied. All the kernel memory are charged
+> > > with the new APIs of obj_cgroup.
+> > >
+> > >         [v17,00/19] The new cgroup slab memory controller
+> > >         [v5,0/7] Use obj_cgroup APIs to charge kmem pages
+> > >
+> > > But user memory allocations (LRU pages) pinning memcgs for a long time -
+> > > it exists at a larger scale and is causing recurring problems in the real
+> > > world: page cache doesn't get reclaimed for a long time, or is used by the
+> > > second, third, fourth, ... instance of the same job that was restarted into
+> > > a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
+> > > and make page reclaim very inefficient.
+> > >
+> > > We can convert LRU pages and most other raw memcg pins to the objcg direction
+> > > to fix this problem, and then the LRU pages will not pin the memcgs.
+> > >
+> > > This patchset aims to make the LRU pages to drop the reference to memory
+> > > cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+> > > of the dying cgroups will not increase if we run the following test script.
+> > >
+> > > ```bash
+> > > #!/bin/bash
+> > >
+> > > cat /proc/cgroups | grep memory
+> > >
+> > > cd /sys/fs/cgroup/memory
+> > >
+> > > for i in range{1..500}
+> > > do
+> > >         mkdir test
+> > >         echo $$ > test/cgroup.procs
+> > >         sleep 60 &
+> > >         echo $$ > cgroup.procs
+> > >         echo `cat test/cgroup.procs` > cgroup.procs
+> > >         rmdir test
+> > > done
+> > >
+> > > cat /proc/cgroups | grep memory
+> > > ```
+> > >
+> > > Patch 1 aims to fix page charging in page replacement.
+> > > Patch 2-5 are code cleanup and simplification.
+> > > Patch 6-15 convert LRU pages pin to the objcg direction.
+> > 
+> > The main concern I have with *just* reparenting LRU pages is that for
+> > the long running systems, the root memcg will become a dumping ground.
+> > In addition a job running multiple times on a machine will see
+> > inconsistent memory usage if it re-accesses the file pages which were
+> > reparented to the root memcg.
+> 
+> I agree, but also the reparenting is not the perfect thing in a combination
+> with any memory protections (e.g. memory.low).
+> 
+> Imagine the following configuration:
+> workload.slice
+> - workload_gen_1.service   memory.min = 30G
+> - workload_gen_2.service   memory.min = 30G
+> - workload_gen_3.service   memory.min = 30G
+>   ...
+> 
+> Parent cgroup and several generations of the child cgroup, protected by a memory.low.
+> Once the memory is getting reparented, it's not protected anymore.
 
-I see you have the per-task and prctl stuff pulled into your tree. I
-can rebase the compound cookie and cgroup api patches on top if you'd
-like; not sure if you've already re-ordered it locally. Any other
-comments on the former?
+That doesn't sound right.
 
-> > > Also, we really need a better name than coretag.c.
-> >
-> > Yea, we don't really otherwise use the phrase "tagging". core_sched.c
-> > is probably too confusing given we have sched/core.c.
->
-> Right, so I tried core_sched and my fingers already hate it as much as
-> kernel/scftorture.c (which I'd assumed my fingers would get used to
-> eventually, but noooo).
->
-> Looking at kernel/sched/ C is very overrepresented, so we really don't
-> want another I think. B, E, G, H, J, K, N, seem to still be available in
-> the first half of the alphabet. Maybe, bonghits.c, gabbleduck.c ?
+A deleted cgroup today exerts no control over its abandoned
+pages. css_reset() will blow out any control settings.
 
-hardware_vuln.c? Tricky to avoid a C with cpu, core, and cookie :)
+If you're talking about protection previously inherited by
+workload.slice, that continues to apply as it always has.
+
+None of this is really accidental. Per definition the workload.slice
+control domain includes workload_gen_1.service. And per definition,
+the workload_gen_1.service domain ceases to exist when you delete it.
+
+There are no (or shouldn't be any!) semantic changes from the physical
+unlinking from a dead control domain.
+
+> Also, I'm somewhat concerned about the interaction of the reparenting
+> with the writeback and dirty throttling. How does it work together?
+
+What interaction specifically?
+
+When you delete a cgroup that had both the block and the memory
+controller enabled, the control domain of both goes away and it
+becomes subject to whatever control domain is above it (if any).
+
+A higher control domain in turn takes a recursive view of the subtree,
+see mem_cgroup_wb_stats(), so when control is exerted, it applies
+regardless of how and where pages are physically linked in children.
+
+It's also already possible to enable e.g. block control only at a very
+high level and memory control down to a lower level. Per design this
+code can live with different domain sizes for memory and block.
