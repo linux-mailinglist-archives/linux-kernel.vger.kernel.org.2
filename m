@@ -2,418 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C775D34E606
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B9D34E607
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhC3LEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        id S231888AbhC3LEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhC3LEO (ORCPT
+        with ESMTP id S231742AbhC3LE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:04:14 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13115C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so1126662pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:14 -0700 (PDT)
+        Tue, 30 Mar 2021 07:04:29 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so7499130pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1uOmRf70nwjPexMU7vu5zsRvN84Lc19GFdHvTFC/5Ac=;
-        b=wb/6nFjbwZZKWqXtIQeqnvJbv2elv4rmhOe3RJmSmcwVKfdOBYKJGVBe/1ihCB1krw
-         Vz3vg4jLAWpxnkoJYSt20pjyLCTWeCNtGJeJZeSepe93LDHKyfFoDka3IiFgx8W5ZDHQ
-         c9TX4UWOhK1qAnmz9BT+gpizZF2vVJ/5Jch9+bgjh4GJ3rt9B4vY8TSRAbnj9D0aly4/
-         zGMkoCHambpr6oxx8dlQbD6p6cMnCAJqH2LjOKf90ymE/Ucl9bDxeAKEidgQY7zV3Y0U
-         ovgK0ekRsRnYUnZWGs4ApsPGUxRV8Bjb20KB4F/916hzGVUJHUPYfVI7sDQU33jiRACX
-         zdQA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FMhBXNDUu18Nx4oVs0q4h6SRvqYZuwc7QpYMrUAt5VE=;
+        b=k8yMndEAD//moVQlp2k9f3Get8rceORt9KZJTpoka6uTGzUcPWO011MOHMLEjjBXiV
+         HEyecO5hmwIUF3bW3gY5sZaUIgDgxOnX5pmFIi/sANLnmBizGQeKoktTeN/NoGMF2aXl
+         jDzHk/oVO+LqeSV3hyAuszZXSdS0X9DHgXEeE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1uOmRf70nwjPexMU7vu5zsRvN84Lc19GFdHvTFC/5Ac=;
-        b=ByT7iqMQsK2OWassbhPKMWijcdfwie6sIynDWmSooPyepiJmMNx4x7vJo3wxlot3ji
-         aU0sspV/T8V6wKsFpyyH2WnbgRo/FWjAIlCdkzoGCt9XgE9eDLRJTsIi7b6//GxOVoBP
-         +c/l7R9L7JJ3Ubs2AzZq9g9QOmQgNGB+65bFLIjHu+5rbK65gAMJUphzqOe51DlF3Aqj
-         cWUFhD60o7XlqrqYVcjixRaLR/l/bIs789K55kqXgoU7ujuLVgg0GDVsllaYBNdkaJjl
-         wKZw2BtncCjEZQIn6KKwIaZ7cMn2Uld3ip7lcMpi9Gq0QINjgsLgw4aZaekH9SMl/NYe
-         N5kg==
-X-Gm-Message-State: AOAM531UGSC79LYnNCjBtYNgI3sWEbdd/Ew1SQ58c/hUdU5cBZqeEWpm
-        rnl29EYqXh4A+lXHL3CvmdcGESk6zjftPvc3clKGIA==
-X-Google-Smtp-Source: ABdhPJzd1lV2/gI6lGRtjYkJzDp1FXJTAWEHbCywc2cUqrl7tYNY20xMbFRHs/LvMsMygjL2PUHDy9z1lxjZWmLwTDc=
-X-Received: by 2002:a17:902:7d8d:b029:e6:4061:b767 with SMTP id
- a13-20020a1709027d8db02900e64061b767mr32920843plm.32.1617102253430; Tue, 30
- Mar 2021 04:04:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FMhBXNDUu18Nx4oVs0q4h6SRvqYZuwc7QpYMrUAt5VE=;
+        b=bV1xHStnZyX/OOSVegymaMglLUkk71s10w0Tl/sEIRUPKcxgBBxPi26PgT+GAhvHGi
+         pAKPcV0MkGjIfnVA+xWxEQNBXl/hhTu6EJW0tWH9NIPBJUq8xLIIS/j06x5NRz9yMHWQ
+         DcVqMhlzVFF6B/UztPt4eaxSuVpaXezFThKNkNtaY86rRzeujGacCyEV326ACEKdWXAg
+         dhbZcMU59OuKM8tp0roKVuLjeG7RFCrc1tY3HizggFBsO44QMBLTFj9wtl4Wl1vsQHD4
+         96JX9TwOQEAZbv6IgMD9XGARAt05S6bS2Hxw/qdzpmXd/SKOZLefozvEHj8VbZXIk59S
+         QZiw==
+X-Gm-Message-State: AOAM531Du7EhRA9ShqtgyfpDd6mU/u0wScbetLIvrA4KQQ/ABVGzXLnl
+        nHjW8vBu0DbCNmZ1cJuNaziU2VyWfhZLcUuC
+X-Google-Smtp-Source: ABdhPJzqgbpfnNkYAMfYaqM0w634uSngO51qCSynBowzU1lQ41SopXqbKtWvKyh0yr2GrbeS0X5hdw==
+X-Received: by 2002:a17:902:ea0e:b029:e4:81d4:ddae with SMTP id s14-20020a170902ea0eb02900e481d4ddaemr33970302plg.12.1617102267979;
+        Tue, 30 Mar 2021 04:04:27 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:71d0:f547:14ae:a717])
+        by smtp.gmail.com with ESMTPSA id m1sm2613873pjf.8.2021.03.30.04.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 04:04:27 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org,
+        weiyi.lu@mediatek.com, ck.hu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
+Subject: [PATCH v3] soc: mediatek: mmsys: Add mt8183 mmsys routing table
+Date:   Tue, 30 Mar 2021 19:04:23 +0800
+Message-Id: <20210330110423.3542163-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-References: <20210326203807.105754-1-lyude@redhat.com> <20210326203807.105754-18-lyude@redhat.com>
-In-Reply-To: <20210326203807.105754-18-lyude@redhat.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 30 Mar 2021 13:04:02 +0200
-Message-ID: <CAG3jFysKfeCtZbojD1bSUimnbeRa7yyq7OKH=0JWfXTSUsgc9A@mail.gmail.com>
-Subject: Re: [PATCH v2 17/20] drm/dp: Convert drm_dp_helper.c to using drm_err/drm_dbg_*()
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Lyude,
+mt8183 has different routing registers than mt8173.
 
-Looks good to me.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+v2->v3:
+Fix comments.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+v1->v2:
+Move mt8183 routing table to mt8183-mmsys.h
 
+This patch is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git v5.12-next/soc
+---
+ drivers/soc/mediatek/mt8183-mmsys.h | 54 +++++++++++++++++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.c    |  3 ++
+ 2 files changed, 57 insertions(+)
+ create mode 100644 drivers/soc/mediatek/mt8183-mmsys.h
 
-On Fri, 26 Mar 2021 at 21:40, Lyude Paul <lyude@redhat.com> wrote:
->
-> Now that we've added a back-pointer to drm_device to drm_dp_aux, made
-> drm_dp_aux available to any functions in drm_dp_helper.c which need to
-> print to the kernel log, and ensured all of our logging uses a consistent
-> format, let's do the final step of the conversion and actually move
-> everything over to using drm_err() and drm_dbg_*().
->
-> This was done by using the following cocci script:
->
->   @@
->   expression list expr;
->   @@
->
->   (
->   - DRM_DEBUG_KMS(expr);
->   + drm_dbg_kms(aux->drm_dev, expr);
->   |
->   - DRM_DEBUG_DP(expr);
->   + drm_dbg_dp(aux->drm_dev, expr);
->   |
->   - DRM_DEBUG_ATOMIC(expr);
->   + drm_dbg_atomic(aux->drm_dev, expr);
->   |
->   - DRM_DEBUG_KMS_RATELIMITED(expr);
->   + drm_dbg_kms_ratelimited(aux->drm_dev, expr);
->   |
->   - DRM_ERROR(expr);
->   + drm_err(aux->drm_dev, expr);
->   )
->
-> Followed by correcting the resulting line-wrapping in the results by hand.
->
-> v2:
-> * Fix indenting in drm_dp_dump_access
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> ---
->  drivers/gpu/drm/drm_dp_helper.c | 121 ++++++++++++++++----------------
->  1 file changed, 59 insertions(+), 62 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index 54e19d7b9c51..4940db0bcaae 100644
-> --- a/drivers/gpu/drm/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -139,8 +139,8 @@ void drm_dp_link_train_clock_recovery_delay(const struct drm_dp_aux *aux,
->                                          DP_TRAINING_AUX_RD_MASK;
->
->         if (rd_interval > 4)
-> -               DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
-> -                             aux->name, rd_interval);
-> +               drm_dbg_kms(aux->drm_dev, "%s: AUX interval %lu, out of range (max 4)\n",
-> +                           aux->name, rd_interval);
->
->         if (rd_interval == 0 || dpcd[DP_DPCD_REV] >= DP_DPCD_REV_14)
->                 rd_interval = 100;
-> @@ -155,8 +155,8 @@ static void __drm_dp_link_train_channel_eq_delay(const struct drm_dp_aux *aux,
->                                                  unsigned long rd_interval)
->  {
->         if (rd_interval > 4)
-> -               DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
-> -                             aux->name, rd_interval);
-> +               drm_dbg_kms(aux->drm_dev, "%s: AUX interval %lu, out of range (max 4)\n",
-> +                           aux->name, rd_interval);
->
->         if (rd_interval == 0)
->                 rd_interval = 400;
-> @@ -220,11 +220,11 @@ drm_dp_dump_access(const struct drm_dp_aux *aux,
->         const char *arrow = request == DP_AUX_NATIVE_READ ? "->" : "<-";
->
->         if (ret > 0)
-> -               DRM_DEBUG_DP("%s: 0x%05x AUX %s (ret=%3d) %*ph\n",
-> -                            aux->name, offset, arrow, ret, min(ret, 20), buffer);
-> +               drm_dbg_dp(aux->drm_dev, "%s: 0x%05x AUX %s (ret=%3d) %*ph\n",
-> +                          aux->name, offset, arrow, ret, min(ret, 20), buffer);
->         else
-> -               DRM_DEBUG_DP("%s: 0x%05x AUX %s (ret=%3d)\n",
-> -                            aux->name, offset, arrow, ret);
-> +               drm_dbg_dp(aux->drm_dev, "%s: 0x%05x AUX %s (ret=%3d)\n",
-> +                          aux->name, offset, arrow, ret);
->  }
->
->  /**
-> @@ -287,8 +287,8 @@ static int drm_dp_dpcd_access(struct drm_dp_aux *aux, u8 request,
->                         err = ret;
->         }
->
-> -       DRM_DEBUG_KMS("%s: Too many retries, giving up. First error: %d\n",
-> -                     aux->name, err);
-> +       drm_dbg_kms(aux->drm_dev, "%s: Too many retries, giving up. First error: %d\n",
-> +                   aux->name, err);
->         ret = err;
->
->  unlock:
-> @@ -524,44 +524,44 @@ bool drm_dp_send_real_edid_checksum(struct drm_dp_aux *aux,
->
->         if (drm_dp_dpcd_read(aux, DP_DEVICE_SERVICE_IRQ_VECTOR,
->                              &auto_test_req, 1) < 1) {
-> -               DRM_ERROR("%s: DPCD failed read at register 0x%x\n",
-> -                         aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
-> +               drm_err(aux->drm_dev, "%s: DPCD failed read at register 0x%x\n",
-> +                       aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
->                 return false;
->         }
->         auto_test_req &= DP_AUTOMATED_TEST_REQUEST;
->
->         if (drm_dp_dpcd_read(aux, DP_TEST_REQUEST, &link_edid_read, 1) < 1) {
-> -               DRM_ERROR("%s: DPCD failed read at register 0x%x\n",
-> -                         aux->name, DP_TEST_REQUEST);
-> +               drm_err(aux->drm_dev, "%s: DPCD failed read at register 0x%x\n",
-> +                       aux->name, DP_TEST_REQUEST);
->                 return false;
->         }
->         link_edid_read &= DP_TEST_LINK_EDID_READ;
->
->         if (!auto_test_req || !link_edid_read) {
-> -               DRM_DEBUG_KMS("%s: Source DUT does not support TEST_EDID_READ\n",
-> -                             aux->name);
-> +               drm_dbg_kms(aux->drm_dev, "%s: Source DUT does not support TEST_EDID_READ\n",
-> +                           aux->name);
->                 return false;
->         }
->
->         if (drm_dp_dpcd_write(aux, DP_DEVICE_SERVICE_IRQ_VECTOR,
->                               &auto_test_req, 1) < 1) {
-> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
-> -                         aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
-> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
-> +                       aux->name, DP_DEVICE_SERVICE_IRQ_VECTOR);
->                 return false;
->         }
->
->         /* send back checksum for the last edid extension block data */
->         if (drm_dp_dpcd_write(aux, DP_TEST_EDID_CHECKSUM,
->                               &real_edid_checksum, 1) < 1) {
-> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
-> -                         aux->name, DP_TEST_EDID_CHECKSUM);
-> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
-> +                       aux->name, DP_TEST_EDID_CHECKSUM);
->                 return false;
->         }
->
->         test_resp |= DP_TEST_EDID_CHECKSUM_WRITE;
->         if (drm_dp_dpcd_write(aux, DP_TEST_RESPONSE, &test_resp, 1) < 1) {
-> -               DRM_ERROR("%s: DPCD failed write at register 0x%x\n",
-> -                         aux->name, DP_TEST_RESPONSE);
-> +               drm_err(aux->drm_dev, "%s: DPCD failed write at register 0x%x\n",
-> +                       aux->name, DP_TEST_RESPONSE);
->                 return false;
->         }
->
-> @@ -604,17 +604,16 @@ static int drm_dp_read_extended_dpcd_caps(struct drm_dp_aux *aux,
->                 return -EIO;
->
->         if (dpcd[DP_DPCD_REV] > dpcd_ext[DP_DPCD_REV]) {
-> -               DRM_DEBUG_KMS("%s: Extended DPCD rev less than base DPCD rev (%d > %d)\n",
-> -                             aux->name, dpcd[DP_DPCD_REV],
-> -                             dpcd_ext[DP_DPCD_REV]);
-> +               drm_dbg_kms(aux->drm_dev,
-> +                           "%s: Extended DPCD rev less than base DPCD rev (%d > %d)\n",
-> +                           aux->name, dpcd[DP_DPCD_REV], dpcd_ext[DP_DPCD_REV]);
->                 return 0;
->         }
->
->         if (!memcmp(dpcd, dpcd_ext, sizeof(dpcd_ext)))
->                 return 0;
->
-> -       DRM_DEBUG_KMS("%s: Base DPCD: %*ph\n",
-> -                     aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
-> +       drm_dbg_kms(aux->drm_dev, "%s: Base DPCD: %*ph\n", aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
->
->         memcpy(dpcd, dpcd_ext, sizeof(dpcd_ext));
->
-> @@ -649,8 +648,7 @@ int drm_dp_read_dpcd_caps(struct drm_dp_aux *aux,
->         if (ret < 0)
->                 return ret;
->
-> -       DRM_DEBUG_KMS("%s: DPCD: %*ph\n",
-> -                     aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
-> +       drm_dbg_kms(aux->drm_dev, "%s: DPCD: %*ph\n", aux->name, DP_RECEIVER_CAP_SIZE, dpcd);
->
->         return ret;
->  }
-> @@ -694,8 +692,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
->         if (ret != len)
->                 return -EIO;
->
-> -       DRM_DEBUG_KMS("%s: DPCD DFP: %*ph\n",
-> -                     aux->name, len, downstream_ports);
-> +       drm_dbg_kms(aux->drm_dev, "%s: DPCD DFP: %*ph\n", aux->name, len, downstream_ports);
->
->         return 0;
->  }
-> @@ -1412,11 +1409,11 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->                          * Avoid spamming the kernel log with timeout errors.
->                          */
->                         if (ret == -ETIMEDOUT)
-> -                               DRM_DEBUG_KMS_RATELIMITED("%s: transaction timed out\n",
-> -                                                         aux->name);
-> +                               drm_dbg_kms_ratelimited(aux->drm_dev, "%s: transaction timed out\n",
-> +                                                       aux->name);
->                         else
-> -                               DRM_DEBUG_KMS("%s: transaction failed: %d\n",
-> -                                             aux->name, ret);
-> +                               drm_dbg_kms(aux->drm_dev, "%s: transaction failed: %d\n",
-> +                                           aux->name, ret);
->                         return ret;
->                 }
->
-> @@ -1430,12 +1427,12 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->                         break;
->
->                 case DP_AUX_NATIVE_REPLY_NACK:
-> -                       DRM_DEBUG_KMS("%s: native nack (result=%d, size=%zu)\n",
-> -                                     aux->name, ret, msg->size);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: native nack (result=%d, size=%zu)\n",
-> +                                   aux->name, ret, msg->size);
->                         return -EREMOTEIO;
->
->                 case DP_AUX_NATIVE_REPLY_DEFER:
-> -                       DRM_DEBUG_KMS("%s: native defer\n", aux->name);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: native defer\n", aux->name);
->                         /*
->                          * We could check for I2C bit rate capabilities and if
->                          * available adjust this interval. We could also be
-> @@ -1449,8 +1446,8 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->                         continue;
->
->                 default:
-> -                       DRM_ERROR("%s: invalid native reply %#04x\n",
-> -                                 aux->name, msg->reply);
-> +                       drm_err(aux->drm_dev, "%s: invalid native reply %#04x\n",
-> +                               aux->name, msg->reply);
->                         return -EREMOTEIO;
->                 }
->
-> @@ -1465,13 +1462,13 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->                         return ret;
->
->                 case DP_AUX_I2C_REPLY_NACK:
-> -                       DRM_DEBUG_KMS("%s: I2C nack (result=%d, size=%zu)\n",
-> -                                     aux->name, ret, msg->size);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: I2C nack (result=%d, size=%zu)\n",
-> +                                   aux->name, ret, msg->size);
->                         aux->i2c_nack_count++;
->                         return -EREMOTEIO;
->
->                 case DP_AUX_I2C_REPLY_DEFER:
-> -                       DRM_DEBUG_KMS("%s: I2C defer\n", aux->name);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: I2C defer\n", aux->name);
->                         /* DP Compliance Test 4.2.2.5 Requirement:
->                          * Must have at least 7 retries for I2C defers on the
->                          * transaction to pass this test
-> @@ -1485,13 +1482,13 @@ static int drm_dp_i2c_do_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->                         continue;
->
->                 default:
-> -                       DRM_ERROR("%s: invalid I2C reply %#04x\n",
-> -                                 aux->name, msg->reply);
-> +                       drm_err(aux->drm_dev, "%s: invalid I2C reply %#04x\n",
-> +                               aux->name, msg->reply);
->                         return -EREMOTEIO;
->                 }
->         }
->
-> -       DRM_DEBUG_KMS("%s: Too many retries, giving up\n", aux->name);
-> +       drm_dbg_kms(aux->drm_dev, "%s: Too many retries, giving up\n", aux->name);
->         return -EREMOTEIO;
->  }
->
-> @@ -1520,8 +1517,9 @@ static int drm_dp_i2c_drain_msg(struct drm_dp_aux *aux, struct drm_dp_aux_msg *o
->                         return err == 0 ? -EPROTO : err;
->
->                 if (err < msg.size && err < ret) {
-> -                       DRM_DEBUG_KMS("%s: Partial I2C reply: requested %zu bytes got %d bytes\n",
-> -                                     aux->name, msg.size, err);
-> +                       drm_dbg_kms(aux->drm_dev,
-> +                                   "%s: Partial I2C reply: requested %zu bytes got %d bytes\n",
-> +                                   aux->name, msg.size, err);
->                         ret = err;
->                 }
->
-> @@ -1700,12 +1698,11 @@ static void drm_dp_aux_crc_work(struct work_struct *work)
->                 }
->
->                 if (ret == -EAGAIN) {
-> -                       DRM_DEBUG_KMS("%s: Get CRC failed after retrying: %d\n",
-> -                                     aux->name, ret);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: Get CRC failed after retrying: %d\n",
-> +                                   aux->name, ret);
->                         continue;
->                 } else if (ret) {
-> -                       DRM_DEBUG_KMS("%s: Failed to get a CRC: %d\n",
-> -                                     aux->name, ret);
-> +                       drm_dbg_kms(aux->drm_dev, "%s: Failed to get a CRC: %d\n", aux->name, ret);
->                         continue;
->                 }
->
-> @@ -2006,13 +2003,12 @@ int drm_dp_read_desc(struct drm_dp_aux *aux, struct drm_dp_desc *desc,
->
->         dev_id_len = strnlen(ident->device_id, sizeof(ident->device_id));
->
-> -       DRM_DEBUG_KMS("%s: DP %s: OUI %*phD dev-ID %*pE HW-rev %d.%d SW-rev %d.%d quirks 0x%04x\n",
-> -                     aux->name, is_branch ? "branch" : "sink",
-> -                     (int)sizeof(ident->oui), ident->oui,
-> -                     dev_id_len, ident->device_id,
-> -                     ident->hw_rev >> 4, ident->hw_rev & 0xf,
-> -                     ident->sw_major_rev, ident->sw_minor_rev,
-> -                     desc->quirks);
-> +       drm_dbg_kms(aux->drm_dev,
-> +                   "%s: DP %s: OUI %*phD dev-ID %*pE HW-rev %d.%d SW-rev %d.%d quirks 0x%04x\n",
-> +                   aux->name, is_branch ? "branch" : "sink",
-> +                   (int)sizeof(ident->oui), ident->oui, dev_id_len,
-> +                   ident->device_id, ident->hw_rev >> 4, ident->hw_rev & 0xf,
-> +                   ident->sw_major_rev, ident->sw_minor_rev, desc->quirks);
->
->         return 0;
->  }
-> @@ -2774,7 +2770,8 @@ int drm_dp_pcon_frl_enable(struct drm_dp_aux *aux)
->         if (ret < 0)
->                 return ret;
->         if (!(buf & DP_PCON_ENABLE_SOURCE_CTL_MODE)) {
-> -               DRM_DEBUG_KMS("%s: PCON in Autonomous mode, can't enable FRL\n", aux->name);
-> +               drm_dbg_kms(aux->drm_dev, "%s: PCON in Autonomous mode, can't enable FRL\n",
-> +                           aux->name);
->                 return -EINVAL;
->         }
->         buf |= DP_PCON_ENABLE_HDMI_LINK;
-> @@ -2869,8 +2866,8 @@ void drm_dp_pcon_hdmi_frl_link_error_count(struct drm_dp_aux *aux,
->                         num_error = 0;
->                 }
->
-> -               DRM_ERROR("%s: More than %d errors since the last read for lane %d",
-> -                         aux->name, num_error, i);
-> +               drm_err(aux->drm_dev, "%s: More than %d errors since the last read for lane %d",
-> +                       aux->name, num_error, i);
->         }
->  }
->  EXPORT_SYMBOL(drm_dp_pcon_hdmi_frl_link_error_count);
-> --
-> 2.30.2
->
+diff --git a/drivers/soc/mediatek/mt8183-mmsys.h b/drivers/soc/mediatek/mt8183-mmsys.h
+new file mode 100644
+index 000000000000..579dfc8dc8fc
+--- /dev/null
++++ b/drivers/soc/mediatek/mt8183-mmsys.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __SOC_MEDIATEK_MT8183_MMSYS_H
++#define __SOC_MEDIATEK_MT8183_MMSYS_H
++
++#define MT8183_DISP_OVL0_MOUT_EN		0xf00
++#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
++#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
++#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
++#define MT8183_DISP_PATH0_SEL_IN		0xf24
++#define MT8183_DISP_DSI0_SEL_IN			0xf2c
++#define MT8183_DISP_DPI0_SEL_IN			0xf30
++#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
++#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
++
++#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
++#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
++#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
++#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
++#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
++#define MT8183_DSI0_SEL_IN_RDMA0		0x1
++#define MT8183_DSI0_SEL_IN_RDMA1		0x3
++#define MT8183_DPI0_SEL_IN_RDMA0		0x1
++#define MT8183_DPI0_SEL_IN_RDMA1		0x2
++#define MT8183_RDMA0_SOUT_COLOR0		0x1
++#define MT8183_RDMA1_SOUT_DSI0			0x1
++
++static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
++	{
++		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
++		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
++	}, {
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
++	}, {
++		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
++		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
++	}, {
++		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
++		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
++	}, {
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
++	}, {
++		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
++		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
++	}, {
++		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
++		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
++	}
++};
++
++#endif /* __SOC_MEDIATEK_MT8183_MMSYS_H */
++
+diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+index c46d8ab8b0c2..79e55150210e 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.c
++++ b/drivers/soc/mediatek/mtk-mmsys.c
+@@ -11,6 +11,7 @@
+ #include <linux/soc/mediatek/mtk-mmsys.h>
+ 
+ #include "mtk-mmsys.h"
++#include "mt8183-mmsys.h"
+ 
+ static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
+ 	.clk_driver = "clk-mt2701-mm",
+@@ -40,6 +41,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+ 
+ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+ 	.clk_driver = "clk-mt8183-mm",
++	.routes = mmsys_mt8183_routing_table,
++	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
+ };
+ 
+ struct mtk_mmsys {
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
