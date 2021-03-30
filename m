@@ -2,143 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083BC34DEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6706D34DEEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhC3DAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:00:48 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:58600 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC3DAV (ORCPT
+        id S230089AbhC3C5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhC3C5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:00:21 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 19AEA6C0174C;
-        Tue, 30 Mar 2021 06:00:18 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1617073218; bh=TnXIbCBSN+HC1OG8+CsGEcBQ5zNKgqtLlrc9DB8j5FE=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=eZxWwkTmjox5VLw5WSkG7U2Jje8/1SVRJh20EAoA5bF3GfD3mK8+jZ5Q3o10434mD
-         MV7mP9yuxvPPUdYiSvjABchkZv69rVtQLzjTapnnrnaIcjJFXtHYHkBZB/BiyBF+Tb
-         EI7RpvDFJwWOdMhk4iM3bGBs5CYNITn//6O3O4TE=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 0AAFE6C0170A;
-        Tue, 30 Mar 2021 06:00:18 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id Lvnhz8UdmVtE; Tue, 30 Mar 2021 06:00:17 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 9631D6C00C15;
-        Tue, 30 Mar 2021 06:00:17 +0300 (EEST)
-Received: from nas (unknown [45.87.95.48])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 71A771BE0038;
-        Tue, 30 Mar 2021 06:00:14 +0300 (EEST)
-References: <20210323081440.81343-1-ming.lei@redhat.com>
- <20210323081440.81343-3-ming.lei@redhat.com>
-User-agent: mu4e 1.5.8; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] blktrace: limit allowed total trace buffer size
-Date:   Tue, 30 Mar 2021 10:57:04 +0800
-In-reply-to: <20210323081440.81343-3-ming.lei@redhat.com>
-Message-ID: <mtul73da.fsf@damenly.su>
+        Mon, 29 Mar 2021 22:57:20 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D3AC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:19 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f12so10957682qtq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cxay6FlHRSJBcHnRsAPE6LIZ5EwuFLA1D75XOP/1yw8=;
+        b=Rxyfz1b9FAnZKOn9WInbM1Q9jzMo0+uNBQs9kvY8UIXW/wmArOJB+2SssyFq+lD9Cl
+         OOgZezFD8udfExokzGwpTwuXrLEyI33lrZ+u0SU1gjYN4Npju1XSWspYQ+Gh8Zfl0Cjk
+         cC36+I7Hayxwa0DT+Qk8lZ0JrIQFOGxZ+kJQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cxay6FlHRSJBcHnRsAPE6LIZ5EwuFLA1D75XOP/1yw8=;
+        b=p5Yhf9ZzrTMBHP42EaYx2DiZ77w2OiLpgxwyIQ9MrNruQyqMhwbP7ILlp4wnC+aQj4
+         7d2YhzsBD2OWHl1wVpZJhZ2BBk7RyEbPklPyBwK3pmbhmr/M29MiUgQcw9UVYYbP6mMT
+         JFfe+DKfrqMn6HRpiJ/1vM2IE4aAAgU39a9M5MCvO2Bdr2BXJVq8Z2yekJmXNYwNeIoj
+         1yOLubmTk4vw6/Ac91Xg/gOJCeZXFTmp0unOjJfmTV9q2B+zGXg8jI+uGoPm52Nd9wpP
+         keNWehWgCJ0aygwjTgHB/hJxK8fcFzPuVRLtTNW9bezFklizDX7EnJ6mo96nVmrmAAGu
+         ZeCg==
+X-Gm-Message-State: AOAM531N+ghmOVbv2pn3l6lLmkgFUwSb+Zg+nNqArdTV9DNw1cE5MEkO
+        h98u2HUWr+nY/QTf4mckQM2leJlLsRV1FA==
+X-Google-Smtp-Source: ABdhPJwpptoIbNDBIxg7tGd96ejjiyoUh9dYmTQ6GhoVVNXEwi/cHr9PIQVV73NN8XFxK93S1yYTlw==
+X-Received: by 2002:aed:2a82:: with SMTP id t2mr25022350qtd.217.1617073038712;
+        Mon, 29 Mar 2021 19:57:18 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id e14sm5479860qte.78.2021.03.29.19.57.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 19:57:17 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id i144so15883818ybg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:57:17 -0700 (PDT)
+X-Received: by 2002:a25:74ca:: with SMTP id p193mr20204173ybc.405.1617073036989;
+ Mon, 29 Mar 2021 19:57:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6NpmlYxOGzysiV+lRWenZQszqjRBW/Ps/vm+2AEq4na6bm6YDTsAKnCr/x97SGA=
+References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+ <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
+ <YE0ru4JpXfX/4Awe@pendragon.ideasonboard.com> <CAD=FV=UY_S8jPkXwK6AGs99XrE=pno2sCgLE7qcPWfmoyYVXiw@mail.gmail.com>
+ <YFEnKgwEOWdeQBK6@pendragon.ideasonboard.com> <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 29 Mar 2021 19:57:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
+Message-ID: <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but
+ only if refclk
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On Tue 23 Mar 2021 at 16:14, Ming Lei <ming.lei@redhat.com> wrote:
+On Tue, Mar 16, 2021 at 5:44 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Tue, Mar 16, 2021 at 2:46 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > Hi Doug,
+> >
+> > On Mon, Mar 15, 2021 at 09:25:37AM -0700, Doug Anderson wrote:
+> > > On Sat, Mar 13, 2021 at 1:17 PM Laurent Pinchart wrote:
+> > > > On Thu, Mar 04, 2021 at 03:52:01PM -0800, Douglas Anderson wrote:
+> > > > > In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
+> > > > > DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
+> > > > > EDID from the panel. That commit kinda worked but it had some serious
+> > > > > problems.
+> > > > >
+> > > > > The problems all stem from the fact that userspace wants to be able to
+> > > > > read the EDID before it explicitly enables the panel. For eDP panels,
+> > > > > though, we don't actually power the panel up until the pre-enable
+> > > > > stage and the pre-enable call happens right before the enable call
+> > > > > with no way to interject in-between. For eDP panels, you can't read
+> > > > > the EDID until you power the panel. The result was that
+> > > > > ti_sn_bridge_connector_get_modes() was always failing to read the EDID
+> > > > > (falling back to what drm_panel_get_modes() returned) until _after_
+> > > > > the EDID was needed.
+> > > > >
+> > > > > To make it concrete, on my system I saw this happen:
+> > > > > 1. We'd attach the bridge.
+> > > > > 2. Userspace would ask for the EDID (several times). We'd try but fail
+> > > > >    to read the EDID over and over again and fall back to the hardcoded
+> > > > >    modes.
+> > > > > 3. Userspace would decide on a mode based only on the hardcoded modes.
+> > > > > 4. Userspace would ask to turn the panel on.
+> > > > > 5. Userspace would (eventually) check the modes again (in Chrome OS
+> > > > >    this happens on the handoff from the boot splash screen to the
+> > > > >    browser). Now we'd read them properly and, if they were different,
+> > > > >    userspace would request to change the mode.
+> > > > >
+> > > > > The fact that userspace would always end up using the hardcoded modes
+> > > > > at first significantly decreases the benefit of the EDID
+> > > > > reading. Also: if the modes were even a tiny bit different we'd end up
+> > > > > doing a wasteful modeset and at boot.
+> > > >
+> > > > s/and at/at/ ?
+> > >
+> > > Sure, I can correct if/when I respin or it can be corrected when landed.
+> > >
+> > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > > index 491c9c4f32d1..af3fb4657af6 100644
+> > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> > > > > @@ -16,6 +16,7 @@
+> > > > >  #include <linux/pm_runtime.h>
+> > > > >  #include <linux/regmap.h>
+> > > > >  #include <linux/regulator/consumer.h>
+> > > > > +#include <linux/workqueue.h>
+> > > > >
+> > > > >  #include <asm/unaligned.h>
+> > > > >
+> > > > > @@ -130,6 +131,12 @@
+> > > > >   * @ln_assign:    Value to program to the LN_ASSIGN register.
+> > > > >   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
+> > > > >   *
+> > > > > + * @pre_enabled_early: If true we did an early pre_enable at attach.
+> > > > > + * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
+> > > > > + *                           if a normal pre_enable never came.
+> > > >
+> > > > Could we simplify this by using the runtime PM autosuspend feature ? The
+> > > > configuration of the bridge would be moved from pre_enable to the PM
+> > > > runtime resume handler, the clk_disable_unprepare() call moved from
+> > > > post_disable to the runtime suspend handler, and the work queue replaced
+> > > > by usage of pm_runtime_put_autosuspend().
+> > >
+> > > It's an interesting idea but I don't think I can make it work, at
+> > > least not in a generic enough way. Specifically we can also use this
+> > > bridge chip as a generic GPIO provider in Linux. When someone asks us
+> > > to read a GPIO then we have to power the bridge on
+> > > (pm_runtime_get_sync()) and when someone asks us to configure a GPIO
+> > > as an output then we actually leave the bridge powered until they stop
+> > > requesting it as an output. At the moment the only user of this
+> > > functionality (that I know of) is for the HPD pin on trogdor boards
+> > > (long story about why we don't use the dedicated HPD) but the API
+> > > supports using these GPIOs for anything and I've tested that it works.
+> > > It wouldn't be great to have to keep the panel on in order to access
+> > > the GPIOs.
+> >
+> > The issue you're trying to fix doesn't seem specific to this bridge, so
+> > handling it in the bridge driver bothers me :-S Is there any way we
+> > could handle this in the DRM core ? I don't want to see similar
+> > implementations duplicated in all HDMI/DP bridges.
+>
+> Yes, it is true that this problem could affect other drivers.  ...and
+> in full disclosure I think there are other similar workarounds already
+> present. I haven't personally worked on those chips, but in
+> ps8640_bridge_get_edid() there is a somewhat similar workaround to
+> chain a pre-enable (though maybe it's not quite as optimized?). I'm
+> told that maybe something had to be handled for anx7625 (in
+> anx7625_get_edid()?) but that definitely doesn't look at all like it's
+> doing a pre-enable, so maybe things for that bridge just work
+> differently.
+>
+> One thing that makes me hesitant about trying to moving this to the
+> core is that even in sn65dsi86 there is a case where it won't work. As
+> I mentioned in the patch I'm not aware of anyone using it in
+> production, but if someone was using the MIPI clock as input to the
+> bridge chip instead of a fixed "refclk" then trying to get the EDID
+> after just "pre-enable" falls over.  Said another way: I can say that
+> with this particular bridge chip, if you're using a fixed refclk, you
+> can read the EDID after the pre-enable. I don't know if that's always
+> true with all other bridge chips.
+>
+> So I guess in summary: I think I could put my code in the core, but I
+> don't _think_ I can just make it automatically enabled.
+>
+> * In sn65dsi I'd have to only enable it if we have a fixed refclk.
+>
+> * Maybe in ps8640 I could just always enable it and replace the
+> existing code? I'd have to find someone to test.
+>
+> * In anx7625 things look totally different.
+>
+> Can you give me any advice on how you'd like me to proceed?
 
-> On some ARCHs, such as aarch64, page size may be 64K, meantime 
-> there may
-> be lots of CPU cores. relay_open() needs to allocate pages on 
-> each CPU
-> blktrace, so easily too many pages are taken by blktrace. For 
-> example,
-> on one ARM64 server: 224 CPU cores, 16G RAM, blktrace finally 
-> got
-> allocated 7GB in case of 'blktrace -b 8192' which is used by 
-> device-mapper
-> test suite[1]. This way could cause OOM easily.
->
-> Fix the issue by limiting max allowed pages to be 1/8 of 
-> totalram_pages().
->
-> [1] https://github.com/jthornber/device-mapper-test-suite.git
->
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  kernel/trace/blktrace.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index c221e4c3f625..8403ff19d533 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -466,6 +466,35 @@ static void blk_trace_setup_lba(struct 
-> blk_trace *bt,
->  	}
->  }
->
-> +/* limit total allocated buffer size is <= 1/8 of total pages 
-> */
-> +static void validate_and_adjust_buf(struct blk_user_trace_setup 
-> *buts)
-> +{
-> +	unsigned buf_size = buts->buf_size;
-> +	unsigned buf_nr = buts->buf_nr;
-> +	unsigned long max_allowed_pages = totalram_pages() >> 3;
-> +	unsigned long req_pages = PAGE_ALIGN(buf_size * buf_nr) >> 
-> PAGE_SHIFT;
-> +
-> +	if (req_pages * num_online_cpus() <= max_allowed_pages)
-> +		return;
-> +
-> +	req_pages = DIV_ROUND_UP(max_allowed_pages, 
-> num_online_cpus());
-> +
-> +	if (req_pages == 0) {
-> +		buf_size = PAGE_SIZE;
-> +		buf_nr = 1;
-> +	} else {
-> +		buf_size = req_pages << PAGE_SHIFT / buf_nr;
->
-Should it be:
-buf_size = (req_pages << PAGE_SHIFT) / buf_nr;
-?
-The priority of '<<' is lower than '/', right? :)
+OK, I've got something that maybe looks better. You can tell me what
+you think [1]. I did manage to use PM Runtime to avoid some of the
+complexity and I put that usage in simple-panel. We'll see if I get
+yelled at for adding more to simple-panel. ;-P
 
---
-Su
-> +		if (buf_size < PAGE_SIZE)
-> +			buf_size = PAGE_SIZE;
-> +		buf_nr = req_pages << PAGE_SHIFT / buf_size;
-> +		if (buf_nr == 0)
-> +			buf_nr = 1;
-> +	}
-> +
-> +	buts->buf_size = min_t(unsigned, buf_size, buts->buf_size);
-> +	buts->buf_nr = min_t(unsigned, buf_nr, buts->buf_nr);
-> +}
-> +
->  /*
->   * Setup everything required to start tracing
->   */
-> @@ -482,6 +511,9 @@ static int do_blk_trace_setup(struct 
-> request_queue *q, char *name, dev_t dev,
->  	if (!buts->buf_size || !buts->buf_nr)
->  		return -EINVAL;
->
-> +	/* make sure not allocate too much for userspace */
-> +	validate_and_adjust_buf(buts);
-> +
->  	strncpy(buts->name, name, BLKTRACE_BDEV_SIZE);
->  	buts->name[BLKTRACE_BDEV_SIZE - 1] = '\0';
-
+[1] https://lore.kernel.org/dri-devel/20210330025345.3980086-1-dianders@chromium.org/
