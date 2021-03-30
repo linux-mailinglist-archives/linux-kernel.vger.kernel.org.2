@@ -2,154 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F76634E4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C230734E4C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhC3Jtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S231591AbhC3JuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhC3JtY (ORCPT
+        with ESMTP id S231549AbhC3Jts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:49:24 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C23C061574;
-        Tue, 30 Mar 2021 02:49:24 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1CEA02222E;
-        Tue, 30 Mar 2021 11:49:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1617097759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nm5DXEo0jkIlCPceI4kZgChSiL9E0F8HDcjVbx5UvYY=;
-        b=Ra+2dv0u2o5h2cqYRwv6VLqxp430olUEJyjPjzHPuGNstjQcuBt8/d7v0wAxC0OHuum+nV
-        V/pqGCbzDbS5KHPNacWlp77/hsY5cLWpviDJym3h+/th8HzUdnZBT61LrXH3TACQRlYI1t
-        zuxb6kYN8752fIdk0ZiapELTTbaQnd8=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 30 Mar 2021 11:49:16 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Tue, 30 Mar 2021 05:49:48 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CCCC061574;
+        Tue, 30 Mar 2021 02:49:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id B13D91F452F3
+Subject: Re: [PATCH v5 2/4] fs: unicode: Rename function names from utf8 to
+ unicode
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: Re: [RFC PATCH 0/4] mtd: core: OTP nvmem provider support
-In-Reply-To: <ace5b308-d6ea-b301-0d2e-29f95b91fe8b@linaro.org>
-References: <20210322181949.2805-1-michael@walle.cc>
- <ace5b308-d6ea-b301-0d2e-29f95b91fe8b@linaro.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e4d6721e8500c85883b0af7ccc96fce6@walle.cc>
-X-Sender: michael@walle.cc
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+References: <20210329204240.359184-1-shreeya.patel@collabora.com>
+ <20210329204240.359184-3-shreeya.patel@collabora.com>
+ <YGKEitULkZmMwk3f@gmail.com>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+Message-ID: <b5e09aaf-ed9a-c363-d188-96ca5bb4932c@collabora.com>
+Date:   Tue, 30 Mar 2021 15:19:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YGKEitULkZmMwk3f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
 
-Am 2021-03-30 11:42, schrieb Srinivas Kandagatla:
-> On 22/03/2021 18:19, Michael Walle wrote:
->> The goal is to fetch a (base) MAC address from the OTP region of a SPI 
->> NOR
->> flash.
->> 
->> This is the first part, where I try to add the nvmem provider support 
->> to
->> the MTD core.
->> 
->> I'm not sure about the device tree bindings. Consider the following 
->> two
->> variants:
->> 
->> (1)
->>      flash@0 {
->>          ..
->> 
->>          otp {
->>              compatible = "mtd-user-otp";
->>              #address-cells = <1>;
->>              #size-cells = <1>;
->> 
->>              serial-number@0 {
->>                  reg = <0x0 0x8>;
->>              };
->>          };
->>      };
->> 
->> (2)
->>      flash@0 {
->>          ..
->> 
->>          otp {
->>              compatible = "mtd-user-otp";
->>              #address-cells = <1>;
->>              #size-cells = <1>;
->> 
->> 			some-useful-name {
->>                  compatible = "nvmem-cells";
->> 
->>                  serial-number@0 {
->>                      reg = <0x0 0x8>;
->>                  };
->> 			};
->>          };
->>      };
->> 
->> Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells 
->> as
->> children to the flash node because of the legacy partition binding.
->> 
->> (1) seems to be the form which is used almost everywhere in the 
->> kernel.
->> That is, the nvmem cells are just children of the parent node.
->> 
->> (2) seem to be more natural, because there might also be other 
->> properties
->> inside the otp subnode and might be more future-proof.
->> 
->> At the moment this patch implements (1).
->> 
-> 
-> 
-> Have you looked at this series[1], are you both trying to do the same 
-> thing?
+On 30/03/21 7:23 am, Eric Biggers wrote:
+> On Tue, Mar 30, 2021 at 02:12:38AM +0530, Shreeya Patel wrote:
+>> utf8data.h_shipped has a large database table which is an auto-generated
+>> decodification trie for the unicode normalization functions and it is not
+>> necessary to carry this large table in the kernel.
+>> Goal is to make UTF-8 encoding loadable by converting it into a module
+>> and adding a unicode subsystem layer between the filesystems and the
+>> utf8 module.
+>> This layer will load the module whenever any filesystem that
+>> needs unicode is mounted.
+>> utf8-core will be converted into this layer file in the future patches,
+>> hence rename the function names from utf8 to unicode which will denote the
+>> functions as the unicode subsystem layer functions and this will also be
+>> the first step towards the transformation of utf8-core file into the
+>> unicode subsystem layer file.
+>>
+>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+>> ---
+>> Changes in v5
+>>    - Improve the commit message.
+> This didn't really answer my questions about the reason for this renaming.
+> Aren't the functions like unicode_casefold() still tied to UTF-8 (as opposed to
+> e.g. supporting both UTF-8 and UTF-16)?  Is that something you're trying to
+> change?
 
-Yes, I've seen these, but they are for MTD partitions. OTP regions are 
-not
-MTD partitions (and cannot be mapped to them).
 
--michael
+Currently, layer's functions are still tied to UTF-8 encoding only. But 
+in future if we will have UTF-16 support then layer file would have to 
+be changed accordingly to support both.
+Unicode subsystem layer is a generic layer which connects the 
+filesystems and UTF8 module ( and/or UTF16 in future )
 
-> 
-> [1] 
-> https://lore.kernel.org/linux-mtd/20210312062830.20548-2-ansuelsmth@gmail.com/T/
-> 
-> --srini
-> 
-> 
->> Michael Walle (4):
->>    nvmem: core: allow specifying of_node
->>    dt-bindings: mtd: add YAML schema for the generic MTD bindings
->>    dt-bindings: mtd: add OTP bindings
->>    mtd: core: add OTP nvmem provider support
->> 
->>   .../devicetree/bindings/mtd/common.txt        |  16 +-
->>   .../devicetree/bindings/mtd/mtd.yaml          | 110 +++++++++++++
->>   drivers/mtd/mtdcore.c                         | 149 
->> ++++++++++++++++++
->>   drivers/nvmem/core.c                          |   4 +-
->>   include/linux/mtd/mtd.h                       |   2 +
->>   include/linux/nvmem-provider.h                |   2 +
->>   6 files changed, 267 insertions(+), 16 deletions(-)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/mtd.yaml
->> 
+
+>
+> - Eric
+>
