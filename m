@@ -2,183 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D7434F054
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6F434F061
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhC3R5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:57:46 -0400
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:49033 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbhC3R5Y (ORCPT
+        id S232481AbhC3SAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232539AbhC3SA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3559; q=dns/txt; s=iport;
-  t=1617127044; x=1618336644;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qd9oUIm458Aa8NrbzxxHcRM50MFT4YpUd/nN6uaHB5Q=;
-  b=GgjxOOgB8qlwWHS9j5Hiw8e40WhxT58C8EeN26k90JOk5k1XylNGJcDF
-   Vygm06NJfF0nIjOPo7w2Bj1MOeAr2IT/tX5ed24Q+iLpdcsBiAMYobFuJ
-   dg/lcEdNG052i2yb7+h+KhQJ+VOiM1qkC2tIAUyZn2pJzqeZdQ1yxlXgi
-   0=;
-X-IPAS-Result: =?us-ascii?q?A0AEAACmZWNg/5ldJa1aGgEBAQEBAQEBAQEDAQEBARIBA?=
- =?us-ascii?q?QEBAgIBAQEBgXwFAQEBAQsBgiqBTAE5MYxlpBKBfAsBAQEPNAQBAYRQAoF6A?=
- =?us-ascii?q?iU0CQ4CAwEBAQMCAwEBAQEBBQEBAQIBBgRxhW6GRQYyAUYQUVcGARKFeKsyg?=
- =?us-ascii?q?imJC4FEFIElAYhjdINyJhyBSUKBEjODJ4o2BIJGAYEPggSRYgSNPpwigxGBI?=
- =?us-ascii?q?5tFIqRSlQeeLYUHgVQ6gVkzGggbFYMkUBkNjisWjWoBWyEDLzgCBgoBAQMJi?=
- =?us-ascii?q?R8BAQ?=
-IronPort-HdrOrdr: A9a23:zZeFBaHz0wV689mgpLqFtZHXdLJzesId70hD6mlaQ3VuHvCwvc
- aogfgdyFvIkz4XQn4tgpStP6OHTHPa+/dOkO0sFJqrQQWOggWVBa5464+K+VfdMg34stVQzK
- JxN5V5YeeAbmRSqebfzE2GH807wN+BmZrY4Nv263t2VwllZ+VB4m5CazqzKUF9SAlYCZdRLv
- P1jfZvnDaudW8aac62HBA+Lor+jufWn5HrawNuPXEawTSJ5AnE1JfKVzCFwxFbaD9U2LEk62
- SAqRDh/76uqevT8G6660bjq7BfmN7s0bJ4ZPCku4wyNijmjBquacBHXbCP1QpF2d2H2RINjM
- TGpQsmMoBIz07pOkuxoRfrxmDboVAT10M=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="671912618"
-Received: from rcdn-core-2.cisco.com ([173.37.93.153])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:57:24 +0000
-Received: from zorba.cisco.com ([10.24.8.123])
-        by rcdn-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12UHv6CL024502;
-        Tue, 30 Mar 2021 17:57:22 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     xe-linux-external@cisco.com, linux-arm-kernel@lists.infradead.org,
+        Tue, 30 Mar 2021 14:00:26 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEF7C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:00:25 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id x16so17077101wrn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VUV5pK/QuRU2ZR99eXxkAP9hIr+VztkZsf8oLI/qjbc=;
+        b=TSaWl2q5amHTKrdskGiMaZYwPK2tjwCd2jQwS0afuforfjqhH+Zb+jDkCvIpD7uf6E
+         9qwyugtWHISrTF44ZoCnlM9i7nZr1Ro6e/XVd8CCUj0Zng2y55N+P0B+TbVEVZ9IQ4Gn
+         xlrbVjRklwEHSUJWC5qhAdszWI+gt2UGh0q5nyHglwQqi3Sa97mOCdoWicwB57MivsZu
+         2HrlEVTRUwayi196Ij6DZVrOlruSC4VaxnrHM5OSojd/rAhXhK7RSP++22KOXxB7XQz2
+         Z12RWSpTsm6S0kImg1AstfF9jvFnuOWm9FRRELOQAjSXdm0RpraMMHiIVhmz1YhlvIf2
+         RQDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VUV5pK/QuRU2ZR99eXxkAP9hIr+VztkZsf8oLI/qjbc=;
+        b=X24vp6//NV07fn18HaST4zBufMk+o3VqXCgDNVSCn7qaU6HfDk4YesHEUSOHOCyCPS
+         J1xqOVBw521J6veK9XHFRlof8Y/an7bGZiz/9I7YlgONVpq50uRu6cGJmnI4Yd1GZttv
+         X/TUhGmWEDk0PvEvTw4ubzGeNx43zHFJlRs99K0RTl94BNPqcmsI0iLIF50/8R3CXjlh
+         4T2pIjCZ26diTEbL7EV4bjnLQ7nlA8p7Zt1PAWsWA0c8GgCScZ5B/1fZUfYy+RcjaG+C
+         fL8X45ErnoIyZBLGykxa2zUvnBZIlVL84+iO099Fwa/9mfdjSCYCdvFlKfJ9eZiXgRet
+         HSng==
+X-Gm-Message-State: AOAM531y62kjsfSUEgmJZDtCic6WT26jQHJ4jZT7WYFYOXA6fjSWxcg7
+        WX64KbfIDnBZz5U3Vm0HDL0jeLDtkq9QsA==
+X-Google-Smtp-Source: ABdhPJzkSVAIwBrOZjm9dD4pe4f5NBkShS9L4cQLFl/zd12YEgo4YwNXfzRymLRPhCkR22MkLTpKSg==
+X-Received: by 2002:a05:6000:5:: with SMTP id h5mr36054541wrx.97.1617127224233;
+        Tue, 30 Mar 2021 11:00:24 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:cc47:54a6:8827:9be5? ([2a01:e34:ed2f:f020:cc47:54a6:8827:9be5])
+        by smtp.googlemail.com with ESMTPSA id g15sm4725218wmq.31.2021.03.30.11.00.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 11:00:23 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] thermal: qcom-spmi-temp-alarm: add support for
+ GEN2 rev 1 PMIC peripherals
+To:     Guru Das Srinagesh <gurus@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] CMDLINE: arm64: convert to generic builtin command line
-Date:   Tue, 30 Mar 2021 10:57:03 -0700
-Message-Id: <be8847438abbfa4972dd792eb616973816af9290.1617126961.git.danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
-References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
+References: <944856eb819081268fab783236a916257de120e4.1596040416.git.gurus@codeaurora.org>
+ <69c90a004b3f5b7ae282f5ec5ca2920a48f23e02.1596040416.git.gurus@codeaurora.org>
+ <159661011044.1360974.2399567989389491381@swboyd.mtv.corp.google.com>
+ <20210330174914.GA28865@codeaurora.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <4b5ee914-5947-aee9-94ce-9cdc8a73952f@linaro.org>
+Date:   Tue, 30 Mar 2021 20:00:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210330174914.GA28865@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
-X-Outbound-Node: rcdn-core-2.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This updates the arm64 code to use the CONFIG_GENERIC_CMDLINE
-option.
+On 30/03/2021 19:49, Guru Das Srinagesh wrote:
+> On Tue, Aug 04, 2020 at 11:48:30PM -0700, Stephen Boyd wrote:
+>> Quoting Guru Das Srinagesh (2020-07-29 09:52:52)
+>>> From: David Collins <collinsd@codeaurora.org>
+>>>
+>>> Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
+>>> major revision 1.  This revision utilizes a different temperature
+>>> threshold mapping than earlier revisions.
+>>>
+>>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>>> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+>>> ---
+>>
+>> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> 
+> + Daniel Lezcano
+> 
+> Hi Daniel,
+> 
+> I just checked Linus' tree and discovered that this patch has not been
+> applied - only the other patch in this series. Since this patch has been
+> reviewed already, could you please check if it's good to be applied as
+> well?
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- arch/arm64/Kconfig                 | 33 +-----------------------------
- arch/arm64/kernel/idreg-override.c |  8 +++++---
- arch/arm64/kernel/setup.c          |  4 ++++
- 3 files changed, 10 insertions(+), 35 deletions(-)
+Applied, thanks
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..9781ba3758b1 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -105,6 +105,7 @@ config ARM64
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY
- 	select GENERIC_CLOCKEVENTS_BROADCAST
-+	select GENERIC_CMDLINE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_EARLY_IOREMAP
-@@ -1841,38 +1842,6 @@ config ARM64_ACPI_PARKING_PROTOCOL
- 	  protocol even if the corresponding data is present in the ACPI
- 	  MADT table.
- 
--config CMDLINE
--	string "Default kernel command string"
--	default ""
--	help
--	  Provide a set of default command-line options at build time by
--	  entering them here. As a minimum, you should specify the the
--	  root device (e.g. root=/dev/nfs).
--
--choice
--	prompt "Kernel command line type" if CMDLINE != ""
--	default CMDLINE_FROM_BOOTLOADER
--	help
--	  Choose how the kernel will handle the provided default kernel
--	  command line string.
--
--config CMDLINE_FROM_BOOTLOADER
--	bool "Use bootloader kernel arguments if available"
--	help
--	  Uses the command-line options passed by the boot loader. If
--	  the boot loader doesn't provide any, the default kernel command
--	  string provided in CMDLINE will be used.
--
--config CMDLINE_FORCE
--	bool "Always use the default kernel command string"
--	help
--	  Always use the default kernel command string, even if the boot
--	  loader passes other arguments to the kernel.
--	  This is useful if you cannot or don't want to change the
--	  command-line options your boot loader passes to the kernel.
--
--endchoice
--
- config EFI_STUB
- 	bool
- 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 83f1c4b92095..fb10cd860a26 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -9,6 +9,7 @@
- #include <linux/ctype.h>
- #include <linux/kernel.h>
- #include <linux/libfdt.h>
-+#include <linux/cmdline.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
-@@ -188,11 +189,12 @@ static __init void parse_cmdline(void)
- {
- 	const u8 *prop = get_bootargs_cmdline();
- 
--	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !prop)
--		__parse_cmdline(CONFIG_CMDLINE, true);
-+	__parse_cmdline(CMDLINE_PREPEND, true);
- 
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
-+	if (IS_ENABLED(CMDLINE_OVERRIDE) && prop)
- 		__parse_cmdline(prop, true);
-+
-+	__parse_cmdline(CMDLINE_APPEND, true);
- }
- 
- /* Keep checkers quiet */
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 61845c0821d9..01791ce5244c 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -30,6 +30,7 @@
- #include <linux/psci.h>
- #include <linux/sched/task.h>
- #include <linux/mm.h>
-+#include <linux/cmdline.h>
- 
- #include <asm/acpi.h>
- #include <asm/fixmap.h>
-@@ -322,6 +323,9 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 * cpufeature code and early parameters.
- 	 */
- 	jump_label_init();
-+
-+	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
-+
- 	parse_early_param();
- 
- 	/*
+
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
