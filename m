@@ -2,62 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D0834EC1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2370C34EC8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhC3PXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:23:09 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:38218 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhC3PWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:22:53 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id D62EC92009C; Tue, 30 Mar 2021 17:22:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id CEC7892009B;
-        Tue, 30 Mar 2021 17:22:51 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 17:22:51 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-cc:     David Laight <David.Laight@ACULAB.COM>,
-        'Amey Narkhede' <ameynarkhede03@gmail.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "kabel@kernel.org" <kabel@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "raphael.norwitz@nutanix.com" <raphael.norwitz@nutanix.com>
-Subject: Re: How long should be PCIe card in Warm Reset state?
-In-Reply-To: <20210330150458.gzz44gczhraxc6bc@pali>
-Message-ID: <alpine.DEB.2.21.2103301714450.18977@angie.orcam.me.uk>
-References: <20210310110535.zh4pnn4vpmvzwl5q@pali> <20210323161941.gim6msj3ruu3flnf@archlinux> <20210323162747.tscfovntsy7uk5bk@pali> <20210323165749.retjprjgdj7seoan@archlinux> <a8e256ece0334734b1ef568820b95a15@AcuMS.aculab.com>
- <alpine.DEB.2.21.2103301428030.18977@angie.orcam.me.uk> <20210330131018.gby4ze3u6mii23ls@pali> <alpine.DEB.2.21.2103301628180.18977@angie.orcam.me.uk> <20210330150458.gzz44gczhraxc6bc@pali>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S232249AbhC3Pdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:33:53 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:57575 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232335AbhC3Pde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:33:34 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12UFX7GU024983
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Mar 2021 17:33:07 +0200
+Received: from md1za8fc.ad001.siemens.net ([167.87.2.166])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12UFN6KW024700;
+        Tue, 30 Mar 2021 17:23:06 +0200
+Date:   Tue, 30 Mar 2021 17:23:05 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
+ Siemens Industial PCs
+Message-ID: <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-3-henning.schild@siemens.com>
+        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+        <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
+        <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+        <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net>
+        <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021, Pali Rohár wrote:
+Am Tue, 30 Mar 2021 15:41:53 +0300
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-> >  The spec does not give any exceptions AFAICT as to the timeouts required 
-> > between the three kinds of a Conventional Reset (Hot, Warm, or Cold) and 
-> > refers to them collectively as a Conventional Reset across the relevant 
-> > parts of the document, so clearly the same rules apply.
+> On Tue, Mar 30, 2021 at 3:35 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> > Am Tue, 30 Mar 2021 15:15:16 +0300
+> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
+> > > On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
+> > > <henning.schild@siemens.com> wrote:  
+> > > > Am Tue, 30 Mar 2021 14:04:35 +0300
+> > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
+> > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
+> > > > > <henning.schild@siemens.com> wrote:  
 > 
-> There are specified more timeouts related to Warm reset and PERST#
-> signal. Just they are not in Base spec, but in CEM spec. See previous
-> Amey's email where are described some timeouts and also links in my
-> first email where I put other timeouts defined in specs relevant for
-> PERST# signal and therefore also for Warm Reset.
+> > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
+> > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
+> > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
+> > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
+> > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
+> > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
+> > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
+> > > > > > +       { }
+> > > > > > +};  
+> > > > >
+> > > > > It seems to me like poking GPIO controller registers directly.
+> > > > > This is not good. The question still remains: Can we simply
+> > > > > register a GPIO (pin control) driver and use an LED GPIO
+> > > > > driver with an additional board file that instantiates it?  
+> > > >
+> > > > I wrote about that in reply to the cover letter. My view is
+> > > > still that it would be an abstraction with only one user, just
+> > > > causing work and likely not ending up as generic as it might
+> > > > eventually have to be.
+> > > >
+> > > > The region is reserved, not sure what the problem with the
+> > > > "poking" is.  
+> > >
+> > >  
+> > > > Maybe i do not understand all the benefits of such a split at
+> > > > this point in time. At the moment i only see work with hardly
+> > > > any benefit, not just work for me but also for maintainers. I
+> > > > sure do not mean to be ignorant. Maybe you go into details and
+> > > > convince me or we wait for other peoples opinions on how to
+> > > > proceed, maybe there is a second user that i am not aware of?
+> > > > Until i am convinced otherwise i will try to argue that a
+> > > > single-user-abstraction is needless work/code, and should be
+> > > > done only when actually needed.  
+> > >
+> > > I have just read your messages (there is a cover letter and
+> > > additional email which was sent lately).
+> > >
+> > > I would like to know what the CPU model number on that board is.
+> > > Than we can continue to see what possibilities we have here.  
+> >
+> > I guess we are talking about the one that uses memory mapped, that
+> > is called an "IPC127E" and seems to have either Intel Atom E3940 or
+> > E3930 which seems to be Apollo Lake.  
+> 
+> Yep. And now the question, in my patch series you should have got the
+> apollolake-pinctrl driver loaded (if not, we have to investigate why
+> it's not being instantiated). This will give you a read GPIO driver.
 
- I specifically referred to the time allowed for devices to take between a 
-reset and the first successful configuration cycle David wondered about.  
-I don't think I can comment on the timeouts given in the CEM spec as I 
-don't have a copy.  Sorry.
+Ok, so there is the existing driver i asked about several times. Thanks
+for pointing it out.
 
-  Maciej
+> So, you may use regular LED GPIO on top of it
+> (https://elixir.bootlin.com/linux/latest/source/drivers/leds/leds-gpio.c).
+> I would like to understand why it can't be achieved.
+
+Will have a look. Unfortunately this one box is missing in my personal
+collection, but let us assume that one can be converted to that
+existing driver.
+I guess that will still mean the PIO-based part of the LED driver will
+have to stay as is.
+
+regards,
+Henning
