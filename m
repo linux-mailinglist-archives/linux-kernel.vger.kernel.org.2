@@ -2,226 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F420534ECE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F1134EB35
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhC3Pwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:52:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
+        id S232151AbhC3OzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:55:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231752AbhC3Pw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:52:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A654619C0;
-        Tue, 30 Mar 2021 15:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617119545;
-        bh=ZMEkBm8vB1lsE3KyqReVRJtHNT43kqFsrOF2nrVUUQs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LI1IcAsQZpe3oe5fzDC/q551qNbP6cUOTJ20sE7pGru3HKjWk6gE7EmNPETkliZ6Y
-         51jaVG2eYPCL7WcDBJFJsED+48tdMIotUj2Ilgs5E/13EpVw5+XHSdniqMXWLrfbv2
-         6TpvmVkdrsj4HHCC6tRJcJwCCC78jZLtpWlM2JhXNXymqloZGIewwpe4vCsjQLmvB/
-         cZoVejpPh1TtYqt6kDiq4slJZh76pAH0qtJq2t7CSZz3O9mScRGso55t0Z1PZ7RvRY
-         +dKWrjO43qgrldS3V7jl3uxjHfNZ0Ei3wpZHpxBKK5Oqgss4EizHR2JkzAur25EvUx
-         FmfgctxOYfuFg==
-Date:   Tue, 30 Mar 2021 09:52:26 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] hfsplus: Fix out-of-bounds warnings in
- __hfsplus_setxattr
-Message-ID: <20210330145226.GA207011@embeddedor>
+        id S231812AbhC3Oyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:54:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5B6961921;
+        Tue, 30 Mar 2021 14:54:45 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRFlT-004hoo-ML; Tue, 30 Mar 2021 15:54:43 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com,
+        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
+        suzuki.poulose@arm.com, Andre.Przywara@arm.com,
+        steven.price@arm.com, lorenzo.pieralisi@arm.com,
+        sudeep.holla@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
+        kernel-team@android.com
+Subject: [PATCH v19 0/7] KVM: arm64: Add host/guest KVM-PTP support
+Date:   Tue, 30 Mar 2021 15:54:23 +0100
+Message-Id: <20210330145430.996981-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warnings by enclosing
-structure members file and finder into new struct info:
+Given that this series[0] has languished in my Inbox for the best of the
+past two years, and in an effort to eventually get it merged, I've
+taken the liberty to pick it up and do the changes I wanted to see
+instead of waiting to go through yet another round.
 
-fs/hfsplus/xattr.c:300:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
-fs/hfsplus/xattr.c:313:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
+All the patches have a link to their original counterpart (though I
+have squashed a couple of them where it made sense). Tested both 64
+and 32bit guests for a good measure. Of course, I claim full
+responsibility for any bug introduced here.
 
-Refactor the code by making it more "structured."
+Unless someone screams now, this is going in 5.13, because I'm frankly
+fed up with it! ;-)
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-makes the code clearer and avoid confusing the compiler.
+* From v18 [2]
+  - Fix kvm_hypercall2() return type
+  - Rebased on top of 5.12-rc3
+  - Added RBs
 
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/hfsplus/catalog.c     | 16 ++++++++--------
- fs/hfsplus/dir.c         |  4 ++--
- fs/hfsplus/hfsplus_raw.h | 12 ++++++++----
- fs/hfsplus/xattr.c       | 18 ++++++++----------
- 4 files changed, 26 insertions(+), 24 deletions(-)
+* From v17 [1]:
+  - Fixed compilation issue on 32bit systems not selecting
+    CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+  - Fixed KVM service discovery not properly parsing the reply
+    from the hypervisor
 
-diff --git a/fs/hfsplus/catalog.c b/fs/hfsplus/catalog.c
-index 35472cba750e..9cdc6550b468 100644
---- a/fs/hfsplus/catalog.c
-+++ b/fs/hfsplus/catalog.c
-@@ -124,7 +124,7 @@ static int hfsplus_cat_build_record(hfsplus_cat_entry *entry,
- 		hfsplus_cat_set_perms(inode, &folder->permissions);
- 		if (inode == sbi->hidden_dir)
- 			/* invisible and namelocked */
--			folder->user_info.frFlags = cpu_to_be16(0x5000);
-+			folder->info.user.frFlags = cpu_to_be16(0x5000);
- 		return sizeof(*folder);
- 	} else {
- 		struct hfsplus_cat_file *file;
-@@ -142,14 +142,14 @@ static int hfsplus_cat_build_record(hfsplus_cat_entry *entry,
- 		if (cnid == inode->i_ino) {
- 			hfsplus_cat_set_perms(inode, &file->permissions);
- 			if (S_ISLNK(inode->i_mode)) {
--				file->user_info.fdType =
-+				file->info.user.fdType =
- 					cpu_to_be32(HFSP_SYMLINK_TYPE);
--				file->user_info.fdCreator =
-+				file->info.user.fdCreator =
- 					cpu_to_be32(HFSP_SYMLINK_CREATOR);
- 			} else {
--				file->user_info.fdType =
-+				file->info.user.fdType =
- 					cpu_to_be32(sbi->type);
--				file->user_info.fdCreator =
-+				file->info.user.fdCreator =
- 					cpu_to_be32(sbi->creator);
- 			}
- 			if (HFSPLUS_FLG_IMMUTABLE &
-@@ -158,11 +158,11 @@ static int hfsplus_cat_build_record(hfsplus_cat_entry *entry,
- 				file->flags |=
- 					cpu_to_be16(HFSPLUS_FILE_LOCKED);
- 		} else {
--			file->user_info.fdType =
-+			file->info.user.fdType =
- 				cpu_to_be32(HFSP_HARDLINK_TYPE);
--			file->user_info.fdCreator =
-+			file->info.user.fdCreator =
- 				cpu_to_be32(HFSP_HFSPLUS_CREATOR);
--			file->user_info.fdFlags =
-+			file->info.user.fdFlags =
- 				cpu_to_be16(0x100);
- 			file->create_date =
- 				HFSPLUS_I(sbi->hidden_dir)->create_date;
-diff --git a/fs/hfsplus/dir.c b/fs/hfsplus/dir.c
-index 03e6c046faf4..0ae8f797d7f3 100644
---- a/fs/hfsplus/dir.c
-+++ b/fs/hfsplus/dir.c
-@@ -73,9 +73,9 @@ static struct dentry *hfsplus_lookup(struct inode *dir, struct dentry *dentry,
- 			goto fail;
- 		}
- 		cnid = be32_to_cpu(entry.file.id);
--		if (entry.file.user_info.fdType ==
-+		if (entry.file.info.user.fdType ==
- 				cpu_to_be32(HFSP_HARDLINK_TYPE) &&
--				entry.file.user_info.fdCreator ==
-+				entry.file.info.user.fdCreator ==
- 				cpu_to_be32(HFSP_HFSPLUS_CREATOR) &&
- 				HFSPLUS_SB(sb)->hidden_dir &&
- 				(entry.file.create_date ==
-diff --git a/fs/hfsplus/hfsplus_raw.h b/fs/hfsplus/hfsplus_raw.h
-index 456e87aec7fd..005a043bc7ee 100644
---- a/fs/hfsplus/hfsplus_raw.h
-+++ b/fs/hfsplus/hfsplus_raw.h
-@@ -260,8 +260,10 @@ struct hfsplus_cat_folder {
- 	__be32 access_date;
- 	__be32 backup_date;
- 	struct hfsplus_perm permissions;
--	struct DInfo user_info;
--	struct DXInfo finder_info;
-+	struct {
-+		struct DInfo user;
-+		struct DXInfo finder;
-+	} info;
- 	__be32 text_encoding;
- 	__be32 subfolders;	/* Subfolder count in HFSX. Reserved in HFS+. */
- } __packed;
-@@ -294,8 +296,10 @@ struct hfsplus_cat_file {
- 	__be32 access_date;
- 	__be32 backup_date;
- 	struct hfsplus_perm permissions;
--	struct FInfo user_info;
--	struct FXInfo finder_info;
-+	struct {
-+		struct FInfo user;
-+		struct FXInfo finder;
-+	} info;
- 	__be32 text_encoding;
- 	u32 reserved2;
- 
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 4d169c5a2673..e18a472ac937 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -262,10 +262,8 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 	struct hfs_find_data cat_fd;
- 	hfsplus_cat_entry entry;
- 	u16 cat_entry_flags, cat_entry_type;
--	u16 folder_finderinfo_len = sizeof(struct DInfo) +
--					sizeof(struct DXInfo);
--	u16 file_finderinfo_len = sizeof(struct FInfo) +
--					sizeof(struct FXInfo);
-+	u16 folder_finderinfo_len = sizeof(entry.folder.info);
-+	u16 file_finderinfo_len = sizeof(entry.file.info);
- 
- 	if ((!S_ISREG(inode->i_mode) &&
- 			!S_ISDIR(inode->i_mode)) ||
-@@ -297,7 +295,7 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 					sizeof(hfsplus_cat_entry));
- 		if (be16_to_cpu(entry.type) == HFSPLUS_FOLDER) {
- 			if (size == folder_finderinfo_len) {
--				memcpy(&entry.folder.user_info, value,
-+				memcpy(&entry.folder.info, value,
- 						folder_finderinfo_len);
- 				hfs_bnode_write(cat_fd.bnode, &entry,
- 					cat_fd.entryoffset,
-@@ -310,7 +308,7 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 			}
- 		} else if (be16_to_cpu(entry.type) == HFSPLUS_FILE) {
- 			if (size == file_finderinfo_len) {
--				memcpy(&entry.file.user_info, value,
-+				memcpy(&entry.file.info, value,
- 						file_finderinfo_len);
- 				hfs_bnode_write(cat_fd.bnode, &entry,
- 					cat_fd.entryoffset,
-@@ -463,14 +461,14 @@ static ssize_t hfsplus_getxattr_finder_info(struct inode *inode,
- 		if (entry_type == HFSPLUS_FOLDER) {
- 			hfs_bnode_read(fd.bnode, folder_finder_info,
- 				fd.entryoffset +
--				offsetof(struct hfsplus_cat_folder, user_info),
-+				offsetof(struct hfsplus_cat_folder, info.user),
- 				folder_rec_len);
- 			memcpy(value, folder_finder_info, folder_rec_len);
- 			res = folder_rec_len;
- 		} else if (entry_type == HFSPLUS_FILE) {
- 			hfs_bnode_read(fd.bnode, file_finder_info,
- 				fd.entryoffset +
--				offsetof(struct hfsplus_cat_file, user_info),
-+				offsetof(struct hfsplus_cat_file, info.user),
- 				file_rec_len);
- 			memcpy(value, file_finder_info, file_rec_len);
- 			res = file_rec_len;
-@@ -631,14 +629,14 @@ static ssize_t hfsplus_listxattr_finder_info(struct dentry *dentry,
- 		len = sizeof(struct DInfo) + sizeof(struct DXInfo);
- 		hfs_bnode_read(fd.bnode, folder_finder_info,
- 				fd.entryoffset +
--				offsetof(struct hfsplus_cat_folder, user_info),
-+				offsetof(struct hfsplus_cat_folder, info.user),
- 				len);
- 		found_bit = find_first_bit((void *)folder_finder_info, len*8);
- 	} else if (entry_type == HFSPLUS_FILE) {
- 		len = sizeof(struct FInfo) + sizeof(struct FXInfo);
- 		hfs_bnode_read(fd.bnode, file_finder_info,
- 				fd.entryoffset +
--				offsetof(struct hfsplus_cat_file, user_info),
-+				offsetof(struct hfsplus_cat_file, info.user),
- 				len);
- 		found_bit = find_first_bit((void *)file_finder_info, len*8);
- 	} else {
+* From v16 [0]:
+  - Moved the KVM service discovery to its own file, plugged it into
+    PSCI instead of the arch code, dropped the inlining, made use of
+    asm/hypervisor.h.
+  - Tidied-up the namespacing
+  - Cleanup the hypercall handler
+  - De-duplicate the guest code
+  - Tidied-up arm64-specific documentation
+  - Dropped the generic PTP documentation as it needs a new location,
+    and some cleanup
+  - Squashed hypercall documentation and capability into the
+    main KVM patch
+  - Rebased on top of 5.11-rc4
+
+[0] https://lore.kernel.org/r/20201209060932.212364-1-jianyong.wu@arm.com
+[1] https://lore.kernel.org/r/20210202141204.3134855-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210208134029.3269384-1-maz@kernel.org
+
+Jianyong Wu (4):
+  ptp: Reorganize ptp_kvm.c to make it arch-independent
+  clocksource: Add clocksource id for arm arch counter
+  KVM: arm64: Add support for the KVM PTP service
+  ptp: arm/arm64: Enable ptp_kvm for arm/arm64
+
+Thomas Gleixner (1):
+  time: Add mechanism to recognize clocksource in time_get_snapshot
+
+Will Deacon (2):
+  arm/arm64: Probe for the presence of KVM hypervisor
+  KVM: arm64: Advertise KVM UID to guests via SMCCC
+
+ Documentation/virt/kvm/api.rst              | 10 +++
+ Documentation/virt/kvm/arm/index.rst        |  1 +
+ Documentation/virt/kvm/arm/ptp_kvm.rst      | 25 ++++++
+ arch/arm/include/asm/hypervisor.h           |  3 +
+ arch/arm64/include/asm/hypervisor.h         |  3 +
+ arch/arm64/kvm/arm.c                        |  1 +
+ arch/arm64/kvm/hypercalls.c                 | 80 +++++++++++++++--
+ drivers/clocksource/arm_arch_timer.c        | 36 ++++++++
+ drivers/firmware/psci/psci.c                |  2 +
+ drivers/firmware/smccc/Makefile             |  2 +-
+ drivers/firmware/smccc/kvm_guest.c          | 50 +++++++++++
+ drivers/firmware/smccc/smccc.c              |  1 +
+ drivers/ptp/Kconfig                         |  2 +-
+ drivers/ptp/Makefile                        |  2 +
+ drivers/ptp/ptp_kvm_arm.c                   | 28 ++++++
+ drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} | 84 +++++-------------
+ drivers/ptp/ptp_kvm_x86.c                   | 97 +++++++++++++++++++++
+ include/linux/arm-smccc.h                   | 41 +++++++++
+ include/linux/clocksource.h                 |  6 ++
+ include/linux/clocksource_ids.h             | 12 +++
+ include/linux/ptp_kvm.h                     | 19 ++++
+ include/linux/timekeeping.h                 | 12 +--
+ include/uapi/linux/kvm.h                    |  1 +
+ kernel/time/clocksource.c                   |  2 +
+ kernel/time/timekeeping.c                   |  1 +
+ 25 files changed, 443 insertions(+), 78 deletions(-)
+ create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
+ create mode 100644 drivers/firmware/smccc/kvm_guest.c
+ create mode 100644 drivers/ptp/ptp_kvm_arm.c
+ rename drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} (60%)
+ create mode 100644 drivers/ptp/ptp_kvm_x86.c
+ create mode 100644 include/linux/clocksource_ids.h
+ create mode 100644 include/linux/ptp_kvm.h
+
 -- 
-2.27.0
+2.29.2
 
