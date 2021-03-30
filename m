@@ -2,921 +2,608 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309FE34E11F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7932434E129
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhC3GXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC3GXF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:23:05 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA837C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:23:05 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id w8so7199448pjf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PluYtzvPrnJXyagpPqSciY7e9/FXTtarvfOiOU+a1tE=;
-        b=GePeGONjqIg8j2uwkXJzV55hSb4RDZ64tBEVI6dCbyHn88+8QDa9mtjlH4sz4pLD8T
-         aXWm6pMyRMsmk4Hy3daTzyytl8jB4W/bxnomA7fyXXQqY01nBrI9Kcdk1UUF5NNmXrzl
-         d22GnVG4ubdD6BgalOmz1IJWngLd7vyjcPU9ANlQegXoqZwysofr5GQqALKCfXzwOfGG
-         j+sc3JEgvc66mSEPJmPVry/Jm5388mmLOQWJ0FWGIZTIpfMyvdRxSxdjLYlDcnODn5NC
-         VIZD8T9noKqVQ/OuQWg3gbo6Qbj5RbwK/iqrkI4Hz9WBcY+43/n0ipOfO1NWH57M5Y/E
-         QuWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=PluYtzvPrnJXyagpPqSciY7e9/FXTtarvfOiOU+a1tE=;
-        b=lhFiJi1vRZqjD6lefmWnwkI/ZoF5doBptFqHClQ+lFylCnjGuYZE3SqhaAj8kFf7E9
-         APqmuJDwxqrz/KVRqZPU09cA1z6G7q0fuPxGeo2mMY7p7ry/xe0qfD4b/b0sq9kV9OCn
-         gzbo21LvGDoTUtMPK5VaAnSvzXAa0wZiNYvHTBcsen8m3M8jhJlBa70ywsEDFy2I1fMN
-         WbrxJrM+qUrKPvoKcuo3Zl2OsjXlUvxjCcq4E6j28maVMcpZ25o9eucjDTH1vYhiP4h+
-         FR0t2E0c8KP5GQxkszz3VytkxZaAgXp+jO6ZMRf1bUD+kHW+rBuGr2hjLxE1pWsEqr1a
-         orjA==
-X-Gm-Message-State: AOAM532Yv2PU6H4kKF0CGtq/nazcPvKP0AmOSL865t6hVoyPSchWXo5l
-        2g25B/O2mLvZZPydY4cDeRy+1A==
-X-Google-Smtp-Source: ABdhPJwZDMvXSLe7vPw3o15wPuIsU9xo00c/8Mq5vovGdS8abBanBch1YgShE0UDgD4ru/Pqtr3ZWA==
-X-Received: by 2002:a17:90b:1950:: with SMTP id nk16mr2799094pjb.140.1617085384680;
-        Mon, 29 Mar 2021 23:23:04 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id p17sm19072339pfn.62.2021.03.29.23.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 23:23:04 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 23:23:04 -0700 (PDT)
-X-Google-Original-Date: Mon, 29 Mar 2021 23:23:02 PDT (-0700)
-Subject:     Re: [PATCH v6] RISC-V: enable XIP
-In-Reply-To: <20210322001214.29985-1-vitaly.wool@konsulko.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bin.meng@windriver.com, anup@brainfault.org,
-        Alistair Francis <Alistair.Francis@wdc.com>, nico@fluxnic.net,
-        alex@ghiti.fr, vitaly.wool@konsulko.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     vitaly.wool@konsulko.com
-Message-ID: <mhng-5c1edc6a-c0fc-4556-9aef-b2b330856f99@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S231166AbhC3GZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:25:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38675 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230202AbhC3GZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 02:25:27 -0400
+IronPort-SDR: a4i2tRsBoVBxtj2PE9e4VlR7cubhZ5ncxOmTG0QvmkfD50RvArOEK1E8hp8RQZoDtBV4uJg42N
+ GZbUlZ+YKrYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="191798587"
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="gz'50?scan'50,208,50";a="191798587"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 23:25:25 -0700
+IronPort-SDR: CeNg4Ahu+ISTQl0ndb5JpKHk/H6a09fugmift6eW9h3WCMG5HdHkdOKcuqgsNgtS479+6aJreB
+ 50/cRToZiHcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
+   d="gz'50?scan'50,208,50";a="418019576"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 29 Mar 2021 23:25:22 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lR7oX-00056i-Jy; Tue, 30 Mar 2021 06:25:21 +0000
+Date:   Tue, 30 Mar 2021 14:24:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yang Shi <shy828301@gmail.com>, akpm@linux-foundation.org
+Cc:     kbuild-all@lists.01.org, shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: gup: remove FOLL_SPLIT
+Message-ID: <202103301403.u00aVRF6-lkp@intel.com>
+References: <20210329193828.179993-1-shy828301@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="opJtzjQTFsWo+cga"
+Content-Disposition: inline
+In-Reply-To: <20210329193828.179993-1-shy828301@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Mar 2021 17:12:15 PDT (-0700), vitaly.wool@konsulko.com wrote:
-> Introduce XIP (eXecute In Place) support for RISC-V platforms.
-> It allows code to be executed directly from non-volatile storage
-> directly addressable by the CPU, such as QSPI NOR flash which can
-> be found on many RISC-V platforms. This makes way for significant
-> optimization of RAM footprint. The XIP kernel is not compressed
-> since it has to run directly from flash, so it will occupy more
-> space on the non-volatile storage. The physical flash address used
-> to link the kernel object files and for storing it has to be known
-> at compile time and is represented by a Kconfig option.
->
-> XIP on RISC-V will for the time being only work on MMU-enabled
-> kernels.
->
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
->
-> ---
->
-> Changes in v2:
-> - dedicated macro for XIP address fixup when MMU is not enabled yet
->   o both for 32-bit and 64-bit RISC-V
-> - SP is explicitly set to a safe place in RAM before __copy_data call
-> - removed redundant alignment requirements in vmlinux-xip.lds.S
-> - changed long -> uintptr_t typecast in __XIP_FIXUP macro.
-> Changes in v3:
-> - rebased against latest for-next
-> - XIP address fixup macro now takes an argument
-> - SMP related fixes
-> Changes in v4:
-> - rebased against the current for-next
-> - less #ifdef's in C/ASM code
-> - dedicated XIP_FIXUP_OFFSET assembler macro in head.S
-> - C-specific definitions moved into #ifndef __ASSEMBLY__
-> - Fixed multi-core boot
-> Changes in v5:
-> - fixed build error for non-XIP kernels
-> Changes in v6:
-> - XIP_PHYS_RAM_BASE config option renamed to PHYS_RAM_BASE
-> - added PHYS_RAM_BASE_FIXED config flag to allow usage of
->   PHYS_RAM_BASE in non-XIP configurations if needed
-> - XIP_FIXUP macro rewritten with a tempoarary variable to avoid side
->   effects
-> - fixed crash for non-XIP kernels that don't use built-in DTB
 
-So v5 landed on for-next, which generally means it's best to avoid 
-re-spinning the patch and instead send along fixups.  That said, the v5 
-is causing some testing failures for me.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'm going to drop the v5 for now as I don't have time to test this 
-tonight.  I'll try and take a look soon, as it will conflict with Alex's 
-patches.
+Hi Yang,
 
->  arch/riscv/Kconfig                  |  49 ++++++++++-
->  arch/riscv/Makefile                 |   8 +-
->  arch/riscv/boot/Makefile            |  13 +++
->  arch/riscv/include/asm/pgtable.h    |  65 ++++++++++++--
->  arch/riscv/kernel/cpu_ops_sbi.c     |  11 ++-
->  arch/riscv/kernel/head.S            |  49 ++++++++++-
->  arch/riscv/kernel/head.h            |   3 +
->  arch/riscv/kernel/setup.c           |   8 +-
->  arch/riscv/kernel/vmlinux-xip.lds.S | 132 ++++++++++++++++++++++++++++
->  arch/riscv/kernel/vmlinux.lds.S     |   6 ++
->  arch/riscv/mm/init.c                | 100 +++++++++++++++++++--
->  11 files changed, 426 insertions(+), 18 deletions(-)
->  create mode 100644 arch/riscv/kernel/vmlinux-xip.lds.S
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 8ea60a0a19ae..bd6f82240c34 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -441,7 +441,7 @@ config EFI_STUB
->
->  config EFI
->  	bool "UEFI runtime support"
-> -	depends on OF
-> +	depends on OF && !XIP_KERNEL
->  	select LIBFDT
->  	select UCS2_STRING
->  	select EFI_PARAMS_FROM_FDT
-> @@ -465,11 +465,56 @@ config STACKPROTECTOR_PER_TASK
->  	def_bool y
->  	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
->
-> +config PHYS_RAM_BASE_FIXED
-> +	bool "Explicitly specified physical RAM address"
-> +	default n
-> +
-> +config PHYS_RAM_BASE
-> +	hex "Platform Physical RAM address"
-> +	depends on PHYS_RAM_BASE_FIXED
-> +	default "0x80000000"
-> +	help
-> +	  This is the physical address of RAM in the system. It has to be
-> +	  explicitly specified to run early relocations of read-write data
-> +	  from flash to RAM.
-> +
-> +config XIP_KERNEL
-> +	bool "Kernel Execute-In-Place from ROM"
-> +	depends on MMU
-> +	select PHYS_RAM_BASE_FIXED
-> +	help
-> +	  Execute-In-Place allows the kernel to run from non-volatile storage
-> +	  directly addressable by the CPU, such as NOR flash. This saves RAM
-> +	  space since the text section of the kernel is not loaded from flash
-> +	  to RAM.  Read-write sections, such as the data section and stack,
-> +	  are still copied to RAM.  The XIP kernel is not compressed since
-> +	  it has to run directly from flash, so it will take more space to
-> +	  store it.  The flash address used to link the kernel object files,
-> +	  and for storing it, is configuration dependent. Therefore, if you
-> +	  say Y here, you must know the proper physical address where to
-> +	  store the kernel image depending on your own flash memory usage.
-> +
-> +	  Also note that the make target becomes "make xipImage" rather than
-> +	  "make zImage" or "make Image".  The final kernel binary to put in
-> +	  ROM memory will be arch/riscv/boot/xipImage.
-> +
-> +	  If unsure, say N.
-> +
-> +config XIP_PHYS_ADDR
-> +	hex "XIP Kernel Physical Location"
-> +	depends on XIP_KERNEL
-> +	default "0x21000000"
-> +	help
-> +	  This is the physical address in your flash memory the kernel will
-> +	  be linked for and stored to.  This address is dependent on your
-> +	  own flash usage.
-> +
->  endmenu
->
->  config BUILTIN_DTB
-> -	def_bool n
-> +	bool
->  	depends on OF
-> +	default y if XIP_KERNEL
->
->  menu "Power management options"
->
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index 1368d943f1f3..8fcbec03974d 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -82,7 +82,11 @@ CHECKFLAGS += -D__riscv -D__riscv_xlen=$(BITS)
->
->  # Default target when executing plain make
->  boot		:= arch/riscv/boot
-> +ifeq ($(CONFIG_XIP_KERNEL),y)
-> +KBUILD_IMAGE := $(boot)/xipImage
-> +else
->  KBUILD_IMAGE	:= $(boot)/Image.gz
-> +endif
->
->  head-y := arch/riscv/kernel/head.o
->
-> @@ -95,12 +99,14 @@ PHONY += vdso_install
->  vdso_install:
->  	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
->
-> +ifneq ($(CONFIG_XIP_KERNEL),y)
->  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
->  KBUILD_IMAGE := $(boot)/loader.bin
->  else
->  KBUILD_IMAGE := $(boot)/Image.gz
->  endif
-> -BOOT_TARGETS := Image Image.gz loader loader.bin
-> +endif
-> +BOOT_TARGETS := Image Image.gz loader loader.bin xipImage
->
->  all:	$(notdir $(KBUILD_IMAGE))
->
-> diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-> index 03404c84f971..6bf299f70c27 100644
-> --- a/arch/riscv/boot/Makefile
-> +++ b/arch/riscv/boot/Makefile
-> @@ -17,8 +17,21 @@
->  KCOV_INSTRUMENT := n
->
->  OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
-> +OBJCOPYFLAGS_xipImage :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
->
->  targets := Image Image.* loader loader.o loader.lds loader.bin
-> +targets := Image Image.* loader loader.o loader.lds loader.bin xipImage
-> +
-> +ifeq ($(CONFIG_XIP_KERNEL),y)
-> +
-> +quiet_cmd_mkxip = $(quiet_cmd_objcopy)
-> +cmd_mkxip = $(cmd_objcopy)
-> +
-> +$(obj)/xipImage: vmlinux FORCE
-> +	$(call if_changed,mkxip)
-> +	@$(kecho) '  Physical Address of xipImage: $(CONFIG_XIP_PHYS_ADDR)'
-> +
-> +endif
->
->  $(obj)/Image: vmlinux FORCE
->  	$(call if_changed,objcopy)
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index ebf817c1bdf4..21a9b2f8d1c7 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -11,6 +11,33 @@
->
->  #include <asm/pgtable-bits.h>
->
-> +#ifdef CONFIG_MMU
-> +
-> +#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
-> +
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define VMALLOC_SIZE     ((KERN_VIRT_SIZE >> 1) - SZ_16M)
-> +#define VMALLOC_END      (PAGE_OFFSET - SZ_16M - 1)
-> +
-> +#define XIP_OFFSET		SZ_8M
-> +#define XIP_MASK		(SZ_8M - 1)
-> +#define XIP_VIRT_ADDR(physaddr)	\
-> +	(PAGE_OFFSET - XIP_OFFSET + ((physaddr) & XIP_MASK))
-> +
-> +#else
-> +
-> +#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
-> +#define VMALLOC_END      (PAGE_OFFSET - 1)
-> +
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
-> +#else
-> +
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define XIP_VIRT_ADDR(physaddr) (physaddr)
-> +#endif /* CONFIG_XIP_KERNEL */
-> +#endif /* CONFIG_MMU */
-> +
->  #ifndef __ASSEMBLY__
->
->  /* Page Upper Directory not used in RISC-V */
-> @@ -21,9 +48,25 @@
->
->  #ifdef CONFIG_MMU
->
-> -#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
-> -#define VMALLOC_END      (PAGE_OFFSET - 1)
-> -#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
-> +#ifdef CONFIG_XIP_KERNEL
-> +/*
-> + * Since we use sections to map it, this macro replaces the physical address
-> + * with its virtual address while keeping offset from the base section.
-> + */
-> +#define XIP_PHYS_ADDR(va)	 \
-> +	((uintptr_t)(va) - PAGE_OFFSET + XIP_OFFSET + CONFIG_XIP_PHYS_ADDR)
-> +
-> +#define XIP_VIRT_ADDR_START	XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
-> +
-> +#define XIP_FIXUP(addr)		({ \
-> +	uintptr_t __a = (uintptr_t)(addr); \
-> +	(__a >= CONFIG_XIP_PHYS_ADDR && \
-> +	 __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ? \
-> +	__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET : __a; \
-> +})
-> +#else
-> +#define XIP_FIXUP(addr)		(addr)
-> +#endif /* CONFIG_XIP_KERNEL */
->
->  #define BPF_JIT_REGION_SIZE	(SZ_128M)
->  #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
-> @@ -484,8 +527,20 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->
->  #define kern_addr_valid(addr)   (1) /* FIXME */
->
-> -extern void *dtb_early_va;
-> -extern uintptr_t dtb_early_pa;
-> +extern void *_dtb_early_va;
-> +extern uintptr_t _dtb_early_pa;
-> +#if defined(CONFIG_XIP_KERNEL) && defined(CONFIG_MMU)
-> +
-> +#define dtb_early_va	(*(void **)XIP_FIXUP(&_dtb_early_va))
-> +#define dtb_early_pa	(*(uintptr_t *)XIP_FIXUP(&_dtb_early_pa))
-> +
-> +#else
-> +
-> +#define dtb_early_va	_dtb_early_va
-> +#define dtb_early_pa	_dtb_early_pa
-> +
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
->  void setup_bootmem(void);
->  void paging_init(void);
->  void misc_mem_init(void);
-> diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
-> index 685fae72b7f5..2413c2997350 100644
-> --- a/arch/riscv/kernel/cpu_ops_sbi.c
-> +++ b/arch/riscv/kernel/cpu_ops_sbi.c
-> @@ -53,10 +53,19 @@ static int sbi_hsm_hart_get_status(unsigned long hartid)
->  }
->  #endif
->
-> +static inline unsigned long get_secondary_start_phys(void)
-> +{
-> +#ifdef CONFIG_XIP_KERNEL
-> +	return XIP_PHYS_ADDR(secondary_start_sbi);
-> +#else
-> +	return __pa_symbol(secondary_start_sbi);
-> +#endif
-> +}
-> +
->  static int sbi_cpu_start(unsigned int cpuid, struct task_struct *tidle)
->  {
->  	int rc;
-> -	unsigned long boot_addr = __pa_symbol(secondary_start_sbi);
-> +	unsigned long boot_addr = get_secondary_start_phys();
->  	int hartid = cpuid_to_hartid_map(cpuid);
->
->  	cpu_update_secondary_bootdata(cpuid, tidle);
-> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-> index f5a9bad86e58..bbe74e37914f 100644
-> --- a/arch/riscv/kernel/head.S
-> +++ b/arch/riscv/kernel/head.S
-> @@ -9,11 +9,23 @@
->  #include <linux/linkage.h>
->  #include <asm/thread_info.h>
->  #include <asm/page.h>
-> +#include <asm/pgtable.h>
->  #include <asm/csr.h>
->  #include <asm/hwcap.h>
->  #include <asm/image.h>
->  #include "efi-header.S"
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +.macro XIP_FIXUP_OFFSET reg
-> +	REG_L t0, _xip_fixup
-> +	add \reg, \reg, t0
-> +.endm
-> +_xip_fixup: .dword CONFIG_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_OFFSET
-> +#else
-> +.macro XIP_FIXUP_OFFSET reg
-> +.endm
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
->  __HEAD
->  ENTRY(_start)
->  	/*
-> @@ -69,7 +81,11 @@ pe_head_start:
->  #ifdef CONFIG_MMU
->  relocate:
->  	/* Relocate return address */
-> +#ifdef CONFIG_XIP_KERNEL
-> +	li a1, XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
-> +#else
->  	li a1, PAGE_OFFSET
-> +#endif
->  	la a2, _start
->  	sub a1, a1, a2
->  	add ra, ra, a1
-> @@ -91,6 +107,7 @@ relocate:
->  	 * to ensure the new translations are in use.
->  	 */
->  	la a0, trampoline_pg_dir
-> +	XIP_FIXUP_OFFSET a0
->  	srl a0, a0, PAGE_SHIFT
->  	or a0, a0, a1
->  	sfence.vma
-> @@ -144,7 +161,9 @@ secondary_start_sbi:
->
->  	slli a3, a0, LGREG
->  	la a4, __cpu_up_stack_pointer
-> +	XIP_FIXUP_OFFSET a4
->  	la a5, __cpu_up_task_pointer
-> +	XIP_FIXUP_OFFSET a5
->  	add a4, a3, a4
->  	add a5, a3, a5
->  	REG_L sp, (a4)
-> @@ -156,6 +175,7 @@ secondary_start_common:
->  #ifdef CONFIG_MMU
->  	/* Enable virtual memory and relocate to virtual address */
->  	la a0, swapper_pg_dir
-> +	XIP_FIXUP_OFFSET a0
->  	call relocate
->  #endif
->  	call setup_trap_vector
-> @@ -236,12 +256,33 @@ pmp_done:
->  .Lgood_cores:
->  #endif
->
-> +#ifndef CONFIG_XIP_KERNEL
->  	/* Pick one hart to run the main boot sequence */
->  	la a3, hart_lottery
->  	li a2, 1
->  	amoadd.w a3, a2, (a3)
->  	bnez a3, .Lsecondary_start
->
-> +#else
-> +	/* hart_lottery in flash contains a magic number */
-> +	la a3, hart_lottery
-> +	mv a2, a3
-> +	XIP_FIXUP_OFFSET a2
-> +	lw t1, (a3)
-> +	amoswap.w t0, t1, (a2)
-> +	/* first time here if hart_lottery in RAM is not set */
-> +	beq t0, t1, .Lsecondary_start
-> +
-> +	la sp, _end + THREAD_SIZE
-> +	XIP_FIXUP_OFFSET sp
-> +	mv s0, a0
-> +	call __copy_data
-> +
-> +	/* Restore a0 copy */
-> +	mv a0, s0
-> +#endif
-> +
-> +#ifndef CONFIG_XIP_KERNEL
->  	/* Clear BSS for flat non-ELF images */
->  	la a3, __bss_start
->  	la a4, __bss_stop
-> @@ -251,15 +292,18 @@ clear_bss:
->  	add a3, a3, RISCV_SZPTR
->  	blt a3, a4, clear_bss
->  clear_bss_done:
-> -
-> +#endif
->  	/* Save hart ID and DTB physical address */
->  	mv s0, a0
->  	mv s1, a1
-> +
->  	la a2, boot_cpu_hartid
-> +	XIP_FIXUP_OFFSET a2
->  	REG_S a0, (a2)
->
->  	/* Initialize page tables and relocate to virtual addresses */
->  	la sp, init_thread_union + THREAD_SIZE
-> +	XIP_FIXUP_OFFSET sp
->  #ifdef CONFIG_BUILTIN_DTB
->  	la a0, __dtb_start
->  #else
-> @@ -268,6 +312,7 @@ clear_bss_done:
->  	call setup_vm
->  #ifdef CONFIG_MMU
->  	la a0, early_pg_dir
-> +	XIP_FIXUP_OFFSET a0
->  	call relocate
->  #endif /* CONFIG_MMU */
->
-> @@ -292,7 +337,9 @@ clear_bss_done:
->
->  	slli a3, a0, LGREG
->  	la a1, __cpu_up_stack_pointer
-> +	XIP_FIXUP_OFFSET a1
->  	la a2, __cpu_up_task_pointer
-> +	XIP_FIXUP_OFFSET a2
->  	add a1, a3, a1
->  	add a2, a3, a2
->
-> diff --git a/arch/riscv/kernel/head.h b/arch/riscv/kernel/head.h
-> index b48dda3d04f6..aabbc3ac3e48 100644
-> --- a/arch/riscv/kernel/head.h
-> +++ b/arch/riscv/kernel/head.h
-> @@ -12,6 +12,9 @@ extern atomic_t hart_lottery;
->
->  asmlinkage void do_page_fault(struct pt_regs *regs);
->  asmlinkage void __init setup_vm(uintptr_t dtb_pa);
-> +#ifdef CONFIG_XIP_KERNEL
-> +asmlinkage void __init __copy_data(void);
-> +#endif
->
->  extern void *__cpu_up_stack_pointer[];
->  extern void *__cpu_up_task_pointer[];
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index e85bacff1b50..a0384c72c272 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -50,7 +50,11 @@ struct screen_info screen_info __section(".data") = {
->   * This is used before the kernel initializes the BSS so it can't be in the
->   * BSS.
->   */
-> -atomic_t hart_lottery __section(".sdata");
-> +atomic_t hart_lottery __section(".sdata")
-> +#ifdef CONFIG_XIP_KERNEL
-> += ATOMIC_INIT(0xC001BEEF)
-> +#endif
-> +;
->  unsigned long boot_cpu_hartid;
->  static DEFINE_PER_CPU(struct cpu, cpu_devices);
->
-> @@ -254,7 +258,7 @@ void __init setup_arch(char **cmdline_p)
->  #if IS_ENABLED(CONFIG_BUILTIN_DTB)
->  	unflatten_and_copy_device_tree();
->  #else
-> -	if (early_init_dt_verify(__va(dtb_early_pa)))
-> +	if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
->  		unflatten_device_tree();
->  	else
->  		pr_err("No DTB found in kernel mappings\n");
-> diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-> new file mode 100644
-> index 000000000000..9f0f08c34cd3
-> --- /dev/null
-> +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-> @@ -0,0 +1,132 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2012 Regents of the University of California
-> + * Copyright (C) 2017 SiFive
-> + * Copyright (C) 2020 Vitaly Wool, Konsulko AB
-> + */
-> +
-> +#define LOAD_OFFSET XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
-> +/* No __ro_after_init data in the .rodata section - which will always be ro */
-> +#define RO_AFTER_INIT_DATA
-> +
-> +#include <asm/vmlinux.lds.h>
-> +#include <asm/page.h>
-> +#include <asm/pgtable.h>
-> +#include <asm/cache.h>
-> +#include <asm/thread_info.h>
-> +
-> +OUTPUT_ARCH(riscv)
-> +ENTRY(_start)
-> +
-> +jiffies = jiffies_64;
-> +
-> +SECTIONS
-> +{
-> +	/* Beginning of code and text segment */
-> +	. = XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR);
-> +	_xiprom = .;
-> +	_start = .;
-> +	HEAD_TEXT_SECTION
-> +	INIT_TEXT_SECTION(PAGE_SIZE)
-> +	/* we have to discard exit text and such at runtime, not link time */
-> +	.exit.text :
-> +	{
-> +		EXIT_TEXT
-> +	}
-> +
-> +	.text : {
-> +		_text = .;
-> +		_stext = .;
-> +		TEXT_TEXT
-> +		SCHED_TEXT
-> +		CPUIDLE_TEXT
-> +		LOCK_TEXT
-> +		KPROBES_TEXT
-> +		ENTRY_TEXT
-> +		IRQENTRY_TEXT
-> +		SOFTIRQENTRY_TEXT
-> +		*(.fixup)
-> +		_etext = .;
-> +	}
-> +	RO_DATA(L1_CACHE_BYTES)
-> +	.srodata : {
-> +		*(.srodata*)
-> +	}
-> +	.init.rodata : {
-> +		INIT_SETUP(16)
-> +		INIT_CALLS
-> +		CON_INITCALL
-> +		INIT_RAM_FS
-> +	}
-> +	_exiprom = .;			/* End of XIP ROM area */
-> +
-> +
-> +/*
-> + * From this point, stuff is considered writable and will be copied to RAM
-> + */
-> +	__data_loc = ALIGN(16);		/* location in file */
-> +	. = PAGE_OFFSET;		/* location in memory */
-> +
-> +	_sdata = .;			/* Start of data section */
-> +	_data = .;
-> +	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
-> +	_edata = .;
-> +	__start_ro_after_init = .;
-> +	.data.ro_after_init : AT(ADDR(.data.ro_after_init) - LOAD_OFFSET) {
-> +		*(.data..ro_after_init)
-> +	}
-> +	__end_ro_after_init = .;
-> +
-> +	. = ALIGN(PAGE_SIZE);
-> +	__init_begin = .;
-> +	.init.data : {
-> +		INIT_DATA
-> +	}
-> +	.exit.data : {
-> +		EXIT_DATA
-> +	}
-> +	. = ALIGN(8);
-> +	__soc_early_init_table : {
-> +		__soc_early_init_table_start = .;
-> +		KEEP(*(__soc_early_init_table))
-> +		__soc_early_init_table_end = .;
-> +	}
-> +	__soc_builtin_dtb_table : {
-> +		__soc_builtin_dtb_table_start = .;
-> +		KEEP(*(__soc_builtin_dtb_table))
-> +		__soc_builtin_dtb_table_end = .;
-> +	}
-> +	PERCPU_SECTION(L1_CACHE_BYTES)
-> +
-> +	. = ALIGN(PAGE_SIZE);
-> +	__init_end = .;
-> +
-> +	.sdata : {
-> +		__global_pointer$ = . + 0x800;
-> +		*(.sdata*)
-> +		*(.sbss*)
-> +	}
-> +
-> +	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
-> +	EXCEPTION_TABLE(0x10)
-> +
-> +	.rel.dyn : AT(ADDR(.rel.dyn) - LOAD_OFFSET) {
-> +		*(.rel.dyn*)
-> +	}
-> +
-> +	/*
-> +	 * End of copied data. We need a dummy section to get its LMA.
-> +	 * Also located before final ALIGN() as trailing padding is not stored
-> +	 * in the resulting binary file and useless to copy.
-> +	 */
-> +	.data.endmark : AT(ADDR(.data.endmark) - LOAD_OFFSET) { }
-> +	_edata_loc = LOADADDR(.data.endmark);
-> +
-> +	. = ALIGN(PAGE_SIZE);
-> +	_end = .;
-> +
-> +	STABS_DEBUG
-> +	DWARF_DEBUG
-> +
-> +	DISCARDS
-> +}
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index de03cb22d0e9..6745ec325930 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -4,7 +4,12 @@
->   * Copyright (C) 2017 SiFive
->   */
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +#include "vmlinux-xip.lds.S"
-> +#else
-> +
->  #define LOAD_OFFSET PAGE_OFFSET
-> +
->  #include <asm/vmlinux.lds.h>
->  #include <asm/page.h>
->  #include <asm/cache.h>
-> @@ -132,3 +137,4 @@ SECTIONS
->
->  	DISCARDS
->  }
-> +#endif /* CONFIG_XIP_KERNEL */
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 7f5036fbee8c..efe649d41f95 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -31,8 +31,8 @@ EXPORT_SYMBOL(empty_zero_page);
->
->  extern char _start[];
->  #define DTB_EARLY_BASE_VA      PGDIR_SIZE
-> -void *dtb_early_va __initdata;
-> -uintptr_t dtb_early_pa __initdata;
-> +void *_dtb_early_va __initdata;
-> +uintptr_t _dtb_early_pa __initdata;
->
->  struct pt_alloc_ops {
->  	pte_t *(*get_pte_virt)(phys_addr_t pa);
-> @@ -88,6 +88,10 @@ static void print_vm_layout(void)
->  		  (unsigned long)VMALLOC_END);
->  	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
->  		  (unsigned long)high_memory);
-> +#ifdef CONFIG_XIP_KERNEL
-> +	print_mlm("xip", (unsigned long)XIP_VIRT_ADDR_START,
-> +		  (unsigned long)XIP_VIRT_ADDR_START + SZ_16M);
-> +#endif /* CONFIG_XIP_KERNEL */
->  }
->  #else
->  static void print_vm_layout(void) { }
-> @@ -113,6 +117,10 @@ void __init setup_bootmem(void)
->  	phys_addr_t dram_end = memblock_end_of_DRAM();
->  	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +	vmlinux_start = __pa_symbol(&_sdata);
-> +#endif
-> +
->  	/* The maximal physical memory size is -PAGE_OFFSET. */
->  	memblock_enforce_memory_limit(-PAGE_OFFSET);
->
-> @@ -149,11 +157,27 @@ void __init setup_bootmem(void)
->  	memblock_allow_resize();
->  }
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +
-> +extern char _xiprom[], _exiprom[];
-> +extern char _sdata[], _edata[];
-> +
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
->  #ifdef CONFIG_MMU
-> -static struct pt_alloc_ops pt_ops;
-> +static struct pt_alloc_ops _pt_ops;
-> +
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
-> +#else
-> +#define pt_ops	_pt_ops
-> +#endif
->
->  unsigned long va_pa_offset;
->  EXPORT_SYMBOL(va_pa_offset);
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define va_pa_offset	(*((unsigned long *)XIP_FIXUP(&va_pa_offset)))
-> +#endif
->  unsigned long pfn_base;
->  EXPORT_SYMBOL(pfn_base);
->
-> @@ -163,6 +187,12 @@ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->
->  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define trampoline_pg_dir	((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
-> +#define fixmap_pte		((pte_t *)XIP_FIXUP(fixmap_pte))
-> +#define early_pg_dir		((pgd_t *)XIP_FIXUP(early_pg_dir))
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
->  void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
->  {
->  	unsigned long addr = __fix_to_virt(idx);
-> @@ -238,6 +268,15 @@ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
->  pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->  pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +pmd_t xip_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> +
-> +#define trampoline_pmd	((pmd_t *)XIP_FIXUP(trampoline_pmd))
-> +#define fixmap_pmd	((pmd_t *)XIP_FIXUP(fixmap_pmd))
-> +#define xip_pmd		((pmd_t *)XIP_FIXUP(xip_pmd))
-> +#define early_pmd	((pmd_t *)XIP_FIXUP(early_pmd))
-> +#endif /* CONFIG_XIP_KERNEL */
-> +
->  static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
->  {
->  	/* Before MMU is enabled */
-> @@ -354,6 +393,19 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
->  	return PMD_SIZE;
->  }
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +/* called from head.S with MMU off */
-> +asmlinkage void __init __copy_data(void)
-> +{
-> +	void *from = (void *)(&_sdata);
-> +	void *end = (void *)(&_end);
-> +	void *to = (void *)CONFIG_PHYS_RAM_BASE;
-> +	size_t sz = (size_t)(end - from);
-> +
-> +	memcpy(to, from, sz);
-> +}
-> +#endif
-> +
->  /*
->   * setup_vm() is called from head.S with MMU-off.
->   *
-> @@ -374,7 +426,8 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
->
->  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  {
-> -	uintptr_t va, pa, end_va;
-> +	uintptr_t va, end_va;
-> +	uintptr_t __maybe_unused pa;
->  	uintptr_t load_pa = (uintptr_t)(&_start);
->  	uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
->  	uintptr_t map_size;
-> @@ -382,6 +435,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	pmd_t fix_bmap_spmd, fix_bmap_epmd;
->  #endif
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +	uintptr_t xiprom = (uintptr_t)CONFIG_XIP_PHYS_ADDR;
-> +	uintptr_t xiprom_sz = (uintptr_t)(&_exiprom) - (uintptr_t)(&_xiprom);
-> +
-> +	load_pa = (uintptr_t)CONFIG_PHYS_RAM_BASE;
-> +	load_sz = (uintptr_t)(&_end) - (uintptr_t)(&_sdata);
-> +#endif
->  	va_pa_offset = PAGE_OFFSET - load_pa;
->  	pfn_base = PFN_DOWN(load_pa);
->
-> @@ -420,6 +480,21 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  			   load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
->  #endif
->
-> +#ifdef CONFIG_XIP_KERNEL
-> +	create_pgd_mapping(trampoline_pg_dir, XIP_VIRT_ADDR_START,
-> +			   (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
-> +	for (va = XIP_VIRT_ADDR_START;
-> +	     va < XIP_VIRT_ADDR_START + xiprom_sz;
-> +	     va += PMD_SIZE) {
-> +		create_pmd_mapping(xip_pmd, va,
-> +				   xiprom + (va - XIP_VIRT_ADDR_START),
-> +				   PMD_SIZE, PAGE_KERNEL_EXEC);
-> +	}
-> +
-> +	create_pgd_mapping(early_pg_dir, XIP_VIRT_ADDR_START,
-> +			   (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
-> +#endif
-> +
->  	/*
->  	 * Setup early PGD covering entire kernel which will allows
->  	 * us to reach paging_init(). We map all memory banks later
-> @@ -444,7 +519,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  			   pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
->  	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
->  #else /* CONFIG_BUILTIN_DTB */
-> -	dtb_early_va = __va(dtb_pa);
-> +	dtb_early_va = __va(XIP_FIXUP(dtb_pa));
->  #endif /* CONFIG_BUILTIN_DTB */
->  #else
->  #ifndef CONFIG_BUILTIN_DTB
-> @@ -456,7 +531,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  			   pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
->  	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
->  #else /* CONFIG_BUILTIN_DTB */
-> -	dtb_early_va = __va(dtb_pa);
-> +	dtb_early_va = __va(XIP_FIXUP(dtb_pa));
->  #endif /* CONFIG_BUILTIN_DTB */
->  #endif
->  	dtb_early_pa = dtb_pa;
-> @@ -497,6 +572,9 @@ static void __init setup_vm_final(void)
->  	uintptr_t va, map_size;
->  	phys_addr_t pa, start, end;
->  	u64 i;
-> +#ifdef CONFIG_XIP_KERNEL
-> +	uintptr_t xiprom_sz = (uintptr_t)(&_exiprom) - (uintptr_t)(&_xiprom);
-> +#endif
->
->  	/**
->  	 * MMU is enabled at this point. But page table setup is not complete yet.
-> @@ -528,6 +606,16 @@ static void __init setup_vm_final(void)
->  					   map_size, PAGE_KERNEL_EXEC);
->  		}
->  	}
-> +#ifdef CONFIG_XIP_KERNEL
-> +	map_size = best_map_size(CONFIG_XIP_PHYS_ADDR, xiprom_sz);
-> +	for (va = XIP_VIRT_ADDR_START;
-> +	     va < XIP_VIRT_ADDR_START + xiprom_sz;
-> +	     va += map_size)
-> +		create_pgd_mapping(swapper_pg_dir, va,
-> +				   CONFIG_XIP_PHYS_ADDR + (va - XIP_VIRT_ADDR_START),
-> +				   map_size, PAGE_KERNEL_EXEC);
-> +
-> +#endif
->
->  	/* Clear fixmap PTE and PMD mappings */
->  	clear_fixmap(FIX_PTE);
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on hnaz-linux-mm/master]
+
+url:    https://github.com/0day-ci/linux/commits/Yang-Shi/mm-gup-remove-FOLL_SPLIT/20210330-034042
+base:   https://github.com/hnaz/linux-mm master
+config: s390-randconfig-r032-20210330 (attached as .config)
+compiler: s390-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/c8563a636718f98af86a3965d94e25b8f2cf2354
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Yang-Shi/mm-gup-remove-FOLL_SPLIT/20210330-034042
+        git checkout c8563a636718f98af86a3965d94e25b8f2cf2354
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   arch/s390/mm/gmap.c: In function 'thp_split_mm':
+>> arch/s390/mm/gmap.c:2498:27: error: 'FOLL_SPLIT' undeclared (first use in this function); did you mean 'FOLL_PIN'?
+    2498 |    follow_page(vma, addr, FOLL_SPLIT);
+         |                           ^~~~~~~~~~
+         |                           FOLL_PIN
+   arch/s390/mm/gmap.c:2498:27: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +2498 arch/s390/mm/gmap.c
+
+0959e168678d2d Janosch Frank      2018-07-17  2487  
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2488  static inline void thp_split_mm(struct mm_struct *mm)
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2489  {
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2490  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2491  	struct vm_area_struct *vma;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2492  	unsigned long addr;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2493  
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2494  	for (vma = mm->mmap; vma != NULL; vma = vma->vm_next) {
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2495  		for (addr = vma->vm_start;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2496  		     addr < vma->vm_end;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2497  		     addr += PAGE_SIZE)
+1e133ab296f3ff Martin Schwidefsky 2016-03-08 @2498  			follow_page(vma, addr, FOLL_SPLIT);
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2499  		vma->vm_flags &= ~VM_HUGEPAGE;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2500  		vma->vm_flags |= VM_NOHUGEPAGE;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2501  	}
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2502  	mm->def_flags |= VM_NOHUGEPAGE;
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2503  #endif
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2504  }
+1e133ab296f3ff Martin Schwidefsky 2016-03-08  2505  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--opJtzjQTFsWo+cga
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+enVdGoObpVDzDi/BUJ78B1r9aD08lAEA
+
+--opJtzjQTFsWo+cga--
