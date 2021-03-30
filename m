@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A512734F0A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5575D34F0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbhC3SNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232691AbhC3SMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:12:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D4B619BD;
-        Tue, 30 Mar 2021 18:12:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617127970;
-        bh=8cd65BTZtf101g5mY/B2N2CWYMXY6mJvb6XeSEgiiw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pg2Q4AK75NrfrWXZT3PUBFl9K54f3b8hbTOYWjniYC6bhvA9NGRLfPqG8ha/zdqjR
-         P1B6v0jCfCXn+83Val1IPREf5G2/GFb4FbUTph0Q49JGv7VqDefQ836CJPxOt9JYTN
-         gd1AUU7FTBiLYOfMKTT6oeWDJgSgbGM36CTfo5kvx/m8Vx1pBYQgK9uWGWerJmnm0M
-         HSjZl+lbwMNA66qGlX+p65+UpgKtkuj4SPtHTzWY6337EpvQXh6BdUKIWe9D0KlF0G
-         q/9P8JYsThsKElJvRlJLlsqMwsNOHYRlfaxKbSWsDBP9iMl+u6KfNmRUWUYRups/SJ
-         pcNE7ZmrHPf9w==
-Date:   Tue, 30 Mar 2021 23:42:45 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: xr: fix CSIZE handling
-Message-ID: <20210330181245.GC27256@work>
-References: <20210330143716.9042-1-johan@kernel.org>
+        id S232586AbhC3SPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232298AbhC3SOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:14:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC61DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EmF3w0hVBC+ZHp4W/qPPZe6sZHzkhbeBfjQ3MKRFYro=; b=EDlR7dilO/eQopvezzwA0Q1ZSO
+        k6zRfW5EHL+XY4O3DIZJLbIw+0cOGxCL4xjdCug1AP7C/FfC1RGqRrZzp6Y+Z+6qRN/QvI3EAks9o
+        GCR4FdtUhTB7HFfoBSiRdTijILL1hSSkZohmFXlZrOTSh5F3XQoTjXPrKP2iJ0qMp7l+uG0oSmsH9
+        Hw3SeDTRSXzH1cekN49tXNAe8p6ksHxH6pa25wyc/DhzN4WlFFCFnN6Wgf+Khj8+9XGfx9WMMuoub
+        DDxXTamO/qb++ckAHrRmjvp/RMEkfE3l9n86dhsAdTu9aAD2MDW802leWhcAHHpYsdayrNzCTow1Z
+        j2is8msQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRIs7-003Px1-Aq; Tue, 30 Mar 2021 18:13:51 +0000
+Date:   Tue, 30 Mar 2021 19:13:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] nds32: flush_dcache_page: use page_mapping_file to avoid
+ races with swapoff
+Message-ID: <20210330181347.GQ351017@casper.infradead.org>
+References: <20210330175126.26500-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330143716.9042-1-johan@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210330175126.26500-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:37:16PM +0200, Johan Hovold wrote:
-> The XR21V141X does not have a 5- or 6-bit mode, but the current
-> implementation failed to properly restore the old setting when CS5 or
-> CS6 was requested. Instead an invalid request would be sent to the
-> device.
+On Tue, Mar 30, 2021 at 08:51:26PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/usb/serial/xr_serial.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> Commit cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
+> updated flush_dcache_page implementations on several architectures to use
+> page_mapping_file() in order to avoid races between page_mapping() and
+> swapoff().
 > 
-> diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-> index 0ca04906da4b..c59c8b47a120 100644
-> --- a/drivers/usb/serial/xr_serial.c
-> +++ b/drivers/usb/serial/xr_serial.c
-> @@ -467,6 +467,11 @@ static void xr_set_termios(struct tty_struct *tty,
->  		termios->c_cflag &= ~CSIZE;
->  		if (old_termios)
->  			termios->c_cflag |= old_termios->c_cflag & CSIZE;
-> +		else
-> +			termios->c_cflag |= CS8;
-> +
-> +		if (C_CSIZE(tty) == CS7)
-> +			bits |= XR21V141X_UART_DATA_7;
->  		else
->  			bits |= XR21V141X_UART_DATA_8;
->  		break;
-> -- 
-> 2.26.3
+> This update missed arch/nds32 and there is a possibility of a race there.
 > 
+> Replace page_mapping() with page_mapping_file() in nds32 implementation of
+> flush_dcache_page().
+> 
+> Fixes: cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
