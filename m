@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7CE34E60E
+	by mail.lfdr.de (Postfix) with ESMTP id 5D73334E60F
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbhC3LGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:06:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:57604 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231812AbhC3LFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:05:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DD921FB;
-        Tue, 30 Mar 2021 04:05:52 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 817723F694;
-        Tue, 30 Mar 2021 04:05:51 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 12:05:46 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        tglx@linutronix.de, lecopzer@gmail.com, yj.chiang@mediatek.com,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH] irqchip/gic-v3: Fix IPRIORITYR can't perform byte
- operations in GIC-600
-Message-ID: <20210330110546.GA24881@lpieralisi>
-References: <20210330100619.24747-1-lecopzer.chen@mediatek.com>
- <87o8f1q6c6.wl-maz@kernel.org>
+        id S231843AbhC3LGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhC3LGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 07:06:13 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE86AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:06:12 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ha17so7570847pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 04:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DskNrmJoVlSyLul5rgVfAIyNWef+AlzHHvEOelMyti0=;
+        b=slVa6+xoi3BdoEmDA0VoVWkO8tuL/lXxZmvTYGJg7wGz1ScYaIRXrCfzU8ZDfT3ZM0
+         ggp/ygaQGKJGhFRA5QW7f9U3EfpbXSMsXTYWx7p1nwBA8Ekc49nwzUS6jMME7z7gTQer
+         pMAXay4GGKQ56ztl5Jx1BBEy9AL93xGYlIGeODixUv/aqu+Qb+EPVu6yig6as9K82Ctm
+         Pc3Lb0tpzXuQ5QcHBiBeRUxF6g9QB2ZdsgL/8/oYQe2iFwggUqNONxGYgSPBasb/yQF+
+         y9q6PFdQulOmXT/wl+s9SdMhbJRohu5/5mZE85W2ZPZCmG6ZrLW1OBmlPFp3zsxQu37T
+         whJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DskNrmJoVlSyLul5rgVfAIyNWef+AlzHHvEOelMyti0=;
+        b=GQjf9clBBDoz7paem3oyEiVz1SzL9fpX3iOMO4u0asCDEz88aSJFdbMg06glIYOVae
+         Qs5C+E/oCgO8Yc6lChtgY+RgFu3jfp2jej6biSaL+BjQz7CDxj2CVy8iym38Whj82Q2B
+         4fLH6SQWUjVMRSypEjJ2HAs5WDuYaR5FYlWnG8BLAqhoCyb9dN8Dk6/iGejXugrGEAHm
+         gcmDbwhyfuupAdwHsWUNh5rG4XXiCes3huGHkhC/Cyss/0/yCex9hCvOLQ26MLqfhd+1
+         Ri5z0cBhsE2gYFJaCMx+e0mraTVv5xfJFoYEvZy1koRpqFqmDkZcv1usiNg+jNHJ9vLz
+         hlKA==
+X-Gm-Message-State: AOAM5336vOlTF9GurosI4NBrpMlDBfMJlWI3fZwDHX4GFJdfxWagelYu
+        247vd9ucvJ/KbUq/w9zzuNmySZ8Qhfnoj9nYw+JLCQ==
+X-Google-Smtp-Source: ABdhPJxfOmfQB9fzlhBcQ+PyXZQEzxSloSUbr4UVE6rrRVfcHfZyWFno3tNgnDlI6rBdjWZE6AMTaSFq8fb0+pHpeFc=
+X-Received: by 2002:a17:902:f68a:b029:e5:b17f:9154 with SMTP id
+ l10-20020a170902f68ab02900e5b17f9154mr32285479plg.28.1617102372210; Tue, 30
+ Mar 2021 04:06:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8f1q6c6.wl-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210326203807.105754-1-lyude@redhat.com> <20210326203807.105754-20-lyude@redhat.com>
+In-Reply-To: <20210326203807.105754-20-lyude@redhat.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 30 Mar 2021 13:06:01 +0200
+Message-ID: <CAG3jFytEUCqh6U6oG8hKqk-2bmr+qtcwg1gbWRQp_KxXTxfVsw@mail.gmail.com>
+Subject: Re: [PATCH v2 19/20] drm/dp_mst: Drop DRM_ERROR() on kzalloc() fail
+ in drm_dp_mst_handle_up_req()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 11:33:13AM +0100, Marc Zyngier wrote:
-> [+Lorenzo, +Julien on an actual email address]
-> 
-> On Tue, 30 Mar 2021 11:06:19 +0100,
-> Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
-> > 
-> > When pseudo-NMI enabled, register_nmi() set priority of specific IRQ
-> > by byte ops, and this doesn't work in GIC-600.
-> > 
-> > We have asked ARM Support [1]:
-> > > Please refer to following description in
-> > > "2.1.2 Distributor ACE-Lite slave interface" of GIC-600 TRM for
-> > > the GIC600 ACE-lite slave interface supported sizes:
-> > >   "The GIC-600 only accepts single beat accesses of the sizes for
-> > >   each register that are shown in the Programmers model,
-> > >   see Chapter 4 Programmer's model on page 4-102.
-> > >   All other accesses are rejected and given either an
-> > >   OKAY or SLVERR response that is based on the GICT_ERR0CTLR.UE bit.".
-> > 
-> > Thus the register needs to be written by double word operation and
-> > the step will be: read 32bit, set byte and write it back.
-> > 
-> > [1] https://services.arm.com/support/s/case/5003t00001L4Pba
-> 
-> You do realise that this link:
-> 
-> - is unusable for most people as it is behind a registration interface
-> - discloses confidential information to other people
-> 
-> I strongly suggest you stop posting such links.
-> 
-> > 
-> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > ---
-> >  drivers/irqchip/irq-gic-v3.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > index eb0ee356a629..cfc5a6ad30dc 100644
-> > --- a/drivers/irqchip/irq-gic-v3.c
-> > +++ b/drivers/irqchip/irq-gic-v3.c
-> > @@ -440,10 +440,21 @@ static void gic_irq_set_prio(struct irq_data *d, u8 prio)
-> >  {
-> >  	void __iomem *base = gic_dist_base(d);
-> >  	u32 offset, index;
-> > +	u32 val, prio_offset_mask, prio_offset_shift;
-> >  
-> >  	offset = convert_offset_index(d, GICD_IPRIORITYR, &index);
-> >  
-> > -	writeb_relaxed(prio, base + offset + index);
-> > +	/*
-> > +	 * GIC-600 memory mapping register doesn't support byte opteration,
-> > +	 * thus read 32-bits from register, set bytes and wtire back to it.
-> > +	 */
-> > +	prio_offset_shift = (index & 0x3) * 8;
-> > +	prio_offset_mask = GENMASK(prio_offset_shift + 7, prio_offset_shift);
-> > +	index &= ~0x3;
-> > +	val = readl_relaxed(base + offset + index);
-> > +	val &= ~prio_offset_mask;
-> > +	val |= prio << prio_offset_shift;
-> > +	writel_relaxed(val, base + offset + index);
-> >  }
-> >  
-> >  static u32 gic_get_ppi_index(struct irq_data *d)
-> 
-> From the architecture spec:
-> 
-> <quote>
-> 11.1.3 GIC memory-mapped register access
-> 
-> In any system, access to the following registers must be supported:
-> 
-> [...]
-> * Byte accesses to:
-> 	- GICD_IPRIORITYR<n>.
-> 	- GICD_ITARGETSR<n>.
-> 	- GICD_SPENDSGIR<n>.
-> 	- GICD_CPENDSGIR<n>.
-> 	- GICR_IPRIORITYR<n>.
-> </quote>
-> 
-> So if GIC600 doesn't follow this architectural requirement, this is a
-> HW erratum, and I want an actual description of the HW issue together
-> with an erratum number.
-> 
-> Lorenzo, can you please investigate on your side?
+Hey Lyude,
 
-Sure - I will look into it and report back.
+This patch looks good to me.
 
-Thanks,
-Lorenzo
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+
+On Fri, 26 Mar 2021 at 21:40, Lyude Paul <lyude@redhat.com> wrote:
+>
+> Checkpatch was complaining about this - there's no need for us to print
+> errors when kzalloc() fails, as kzalloc() will already WARN for us. So,
+> let's fix that before converting things to make checkpatch happy.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: Robert Foss <robert.foss@linaro.org>
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index ec2285595c33..74c420f5f204 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -4113,10 +4113,9 @@ static int drm_dp_mst_handle_up_req(struct drm_dp_mst_topology_mgr *mgr)
+>                 return 0;
+>
+>         up_req = kzalloc(sizeof(*up_req), GFP_KERNEL);
+> -       if (!up_req) {
+> -               DRM_ERROR("Not enough memory to process MST up req\n");
+> +       if (!up_req)
+>                 return -ENOMEM;
+> -       }
+> +
+>         INIT_LIST_HEAD(&up_req->next);
+>
+>         drm_dp_sideband_parse_req(&mgr->up_req_recv, &up_req->msg);
+> --
+> 2.30.2
+>
