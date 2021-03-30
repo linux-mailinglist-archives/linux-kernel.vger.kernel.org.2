@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EDA34E78E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759B534E781
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhC3MgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:36:09 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:51469 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231574AbhC3Mfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:35:37 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12UCZDt4014325
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Mar 2021 14:35:13 +0200
-Received: from md1za8fc.ad001.siemens.net ([167.87.2.166])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12UCUC4i018161;
-        Tue, 30 Mar 2021 14:30:12 +0200
-Date:   Tue, 30 Mar 2021 14:30:11 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-3-henning.schild@siemens.com>
-        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
-        <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
-        <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231912AbhC3MbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231794AbhC3Max (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:30:53 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6215C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:30:52 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g8so23499958lfv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0zXyI1yetwTGYJFePdX3pdL1jxNBabDK2g4CkJzJcq8=;
+        b=Ar+ZnS44CybblOQvAYvNqov7Oy7ZltCpQE5htgBQ0PS4qrgt6bC/iJeE/rFYp45kSz
+         Du4dzYK8zzUh/fmk3H567+9gJhVRjw1JhnrD/E0mCcEynzbDauBN7teBzwjqHboIbEP5
+         0ZQYtMYM0zeD89RQjkr48X+NLhWDF6dzuyQF9FYFLismPpfXw3RTKmQl8RtphFCS7GRO
+         GUWywvmExjrhrgZmDsrr3kk7W60t3mKOYpW3eCvJtKD39p5x1ShWdF3hWL5VsCF7uwMu
+         xISeketgQ174JSYOTeaEH8jZso5PsmAuV8GBdUd6JpmhxihuQc0e9knhvJ/vbdzzKTbW
+         fq+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0zXyI1yetwTGYJFePdX3pdL1jxNBabDK2g4CkJzJcq8=;
+        b=B6Q5FYp1JCoJW1utc+uuDB5Pm3CCXrMuK3055yhc8JKP9H4udWuXjnkZ+Hm9QXes/R
+         8n0lIgI1ZWMydKL8oRUvhkKP64QsAKipQVjqOcFe1hE3hlSQZbYy0atmR1FxEihH+1GN
+         CAJmGxZ22VzVrrHN6LP90VYaAxKo9R7Xmw4AGUGYqi6BT17kpgJ67FiPmBIlqxD0EEaE
+         qPE4rNtJ/STQZBmOPqrXKapWuCHGWt3jJbeQ3pySJ84D+Mz8Cih4ddS0RT2RLljFJ02x
+         MOMP17BvUF/CppHnsBGQmyZnJB/mjjiqNmM4axqdj1Dae0cWAuNO+bg8A6fDx0MPnCUz
+         0Jgw==
+X-Gm-Message-State: AOAM532Ng+T30Z0NnvuFgn42uXKpHH8Qp3Rz84rCwKKUImM/Gw4sTrT5
+        2m/RK9dhJPmhJEtLqfLPiy1+E3uI3sGBMi4ZUFzUGw==
+X-Google-Smtp-Source: ABdhPJyGSbW2h5yCweQVPa1tQb6SlDPUcQA1ps0F1YPmOe2dM1okKohocJfCFT0KxDcxjCRvNvx6fg5o5HZmS8y4/SY=
+X-Received: by 2002:ac2:5509:: with SMTP id j9mr19391729lfk.302.1617107451100;
+ Tue, 30 Mar 2021 05:30:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210330080615.21938-1-lecopzer.chen@mediatek.com> <20210330083218.22285-1-lecopzer.chen@mediatek.com>
+In-Reply-To: <20210330083218.22285-1-lecopzer.chen@mediatek.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 30 Mar 2021 18:00:39 +0530
+Message-ID: <CAFA6WYMqLMEG2s7OdNweQKkP0K2LZ575B1BVw-zfsg7_KBSM5Q@mail.gmail.com>
+Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Lecopzer Chen <lecopzer@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Will Deacon <will@kernel.org>, yj.chiang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Tue, 30 Mar 2021 15:15:16 +0300
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-
-> On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> > Am Tue, 30 Mar 2021 14:04:35 +0300
-> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > > <henning.schild@siemens.com> wrote:  
+On Tue, 30 Mar 2021 at 14:07, Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+>
+> > > Hi Will, Mark,
+> > >
+> > > On Fri, 15 Jan 2021 at 17:32, Sumit Garg <sumit.garg@linaro.org> wrote:
 > > > >
-> > > > This driver adds initial support for several devices from
-> > > > Siemens. It is based on a platform driver introduced in an
-> > > > earlier commit.  
+> > > > With the recent feature added to enable perf events to use pseudo NMIs
+> > > > as interrupts on platforms which support GICv3 or later, its now been
+> > > > possible to enable hard lockup detector (or NMI watchdog) on arm64
+> > > > platforms. So enable corresponding support.
+> > > >
+> > > > One thing to note here is that normally lockup detector is initialized
+> > > > just after the early initcalls but PMU on arm64 comes up much later as
+> > > > device_initcall(). So we need to re-initialize lockup detection once
+> > > > PMU has been initialized.
+> > > >
+> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > ---
+> > > >
+> > > > Changes in v5:
+> > > > - Fix lockup_detector_init() invocation to be rather invoked from CPU
+> > > >   binded context as it makes heavy use of per-cpu variables and shouldn't
+> > > >   be invoked from preemptible context.
+> > > >
 > > >
-> > > ...
-> > >  
-> > > > +#define SIMATIC_IPC_LED_PORT_BASE      0x404E  
-> > >  
-> > > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > > > +       {1 << 15, "green:" LED_FUNCTION_STATUS "-1" },
-> > > > +       {1 << 7,  "yellow:" LED_FUNCTION_STATUS "-1" },
-> > > > +       {1 << 14, "red:" LED_FUNCTION_STATUS "-2" },
-> > > > +       {1 << 6,  "yellow:" LED_FUNCTION_STATUS "-2" },
-> > > > +       {1 << 13, "red:" LED_FUNCTION_STATUS "-3" },
-> > > > +       {1 << 5,  "yellow:" LED_FUNCTION_STATUS "-3" },
-> > > > +       { }
-> > > > +};  
-> > >  
-> > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > > +       { }
-> > > > +};  
+> > > Do you have any further comments on this?
 > > >
-> > > It seems to me like poking GPIO controller registers directly.
-> > > This is not good. The question still remains: Can we simply
-> > > register a GPIO (pin control) driver and use an LED GPIO driver
-> > > with an additional board file that instantiates it?  
+> > > Lecopzer,
+> > >
+> > > Does this feature work fine for you now?
 > >
-> > I wrote about that in reply to the cover letter. My view is still
-> > that it would be an abstraction with only one user, just causing
-> > work and likely not ending up as generic as it might eventually
-> > have to be.
+> > This really fixes the warning, I have a real hardware for testing this now.
+
+Thanks for the testing. I assume it as an implicit Tested-by.
+
+> > but do we need to call lockup_detector_init() for each cpu?
 > >
-> > The region is reserved, not sure what the problem with the "poking"
-> > is.  
-> 
-> 
-> > Maybe i do not understand all the benefits of such a split at this
-> > point in time. At the moment i only see work with hardly any
-> > benefit, not just work for me but also for maintainers. I sure do
-> > not mean to be ignorant. Maybe you go into details and convince me
-> > or we wait for other peoples opinions on how to proceed, maybe
-> > there is a second user that i am not aware of?
-> > Until i am convinced otherwise i will try to argue that a
-> > single-user-abstraction is needless work/code, and should be done
-> > only when actually needed.  
-> 
-> I have just read your messages (there is a cover letter and additional
-> email which was sent lately).
-> 
-> I would like to know what the CPU model number on that board is. Than
-> we can continue to see what possibilities we have here.
+> > In init/main.c, it's only called by cpu 0 for once.
+>
+> Oh sorry, I just misread the code, please ignore previous mail.
+>
 
-I guess we are talking about the one that uses memory mapped, that is
-called an "IPC127E" and seems to have either Intel Atom E3940 or E3930
-which seems to be Apollo Lake.
+No worries.
 
-Henning
+-Sumit
+
+>
+> BRs,
+> Lecopzer
