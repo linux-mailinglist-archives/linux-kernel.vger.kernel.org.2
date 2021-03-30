@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9584E34DDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5551434DDF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhC3CDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:03:55 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:53750 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC3CDb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:03:31 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 914E09803A8;
-        Tue, 30 Mar 2021 10:03:28 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] linux/memcontrol.h: Remove duplicate struct declaration
-Date:   Tue, 30 Mar 2021 10:02:36 +0800
-Message-Id: <20210330020246.2265371-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S230487AbhC3CEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:04:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38808 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhC3CEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:04:08 -0400
+IronPort-SDR: OBUcBiJnfnNScAAnNS3sPCv91E4r7nzNdKY7E07RNI9KPokzIl4eSF/ArsX43M1QcyNdDEEGDu
+ 64owa4qZWy6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="191764287"
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="191764287"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 19:04:08 -0700
+IronPort-SDR: STOyxYvmQZKD8zSewJFsmefO6zTHcWJQyS4oLP4oVCt27zjYr8gtww/1YKD1okWY88AyEmxOFx
+ QBje56trmUHQ==
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="595287916"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 19:04:08 -0700
+Date:   Mon, 29 Mar 2021 19:04:03 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <20210330020403.GA1285835@tassilo.jf.intel.com>
+References: <837afe840f5826bf7fcba07a5e483d7e2283db34.1617059703.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <377A7B0B-9959-4AFC-A575-7AC20FEE6077@amacapital.net>
+ <10834a17-cae4-d0e3-c82b-f69da7f9141a@linux.intel.com>
+ <YGJl93hlKngWLGwz@google.com>
+ <CALCETrVzdq7eQu6RfJd0+yuJ+Q9Q6NykVb+x_jiNwLW2-mrh0w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU5CHksaHxhDSU4aVkpNSkxLTUJDS0JLTkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ok06PAw*Fz8LAjALMDcoAiwa
-        LT1PCjRVSlVKTUpMS01CQ0tCTkJOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJSUlNNwY+
-X-HM-Tid: 0a7880df1d3ad992kuws914e09803a8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVzdq7eQu6RfJd0+yuJ+Q9Q6NykVb+x_jiNwLW2-mrh0w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mem_cgroup is declared twice. One has been declared
-at forward struct declaration. Remove the duplicate.
+> > No, if these instructions take a #VE then they were executed at CPL=0.  MONITOR
+> > and MWAIT will #UD without VM-Exit->#VE.  Same for WBINVD, s/#UD/#GP.
+> 
+> Dare I ask about XSETBV?
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- include/linux/memcontrol.h | 2 --
- 1 file changed, 2 deletions(-)
+XGETBV does not cause a #VE, it just works normally. The guest has full
+AVX capabilities.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0c04d39a7967..f0ae33a0f175 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1068,8 +1068,6 @@ void split_page_memcg(struct page *head, unsigned int nr);
- #define MEM_CGROUP_ID_SHIFT	0
- #define MEM_CGROUP_ID_MAX	0
- 
--struct mem_cgroup;
--
- static inline struct mem_cgroup *page_memcg(struct page *page)
- {
- 	return NULL;
--- 
-2.25.1
+-Andi
 
