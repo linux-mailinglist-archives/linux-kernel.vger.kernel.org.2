@@ -2,142 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDA234EDD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA2F34EDE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhC3Q2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhC3Q2M (ORCPT
+        id S231797AbhC3Qbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:31:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231874AbhC3QbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:28:12 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC977C061574;
-        Tue, 30 Mar 2021 09:28:10 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i26so24631718lfl.1;
-        Tue, 30 Mar 2021 09:28:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5S9vYD+Y1macvYqVLIckE0dRGgUHR6sshoajCP4oJTg=;
-        b=YEMFen9XPQcc24ENlo4f9OqAr7PAgDIdGHXznIZu7OrwthEc3R3uSs1RtJaQJemc2B
-         zKUzYF0KGIkuAQcEhTbeUYRTYGwn1MFGCQQoGH+jDAymqZ0TXNzNFW+c2ny/a/zodk4r
-         ZyaxJT7A60byhsl6XLfWTVIoAQBbUsK75l5VF9gb4YBeHxWzo/14GKVa9c4FOse9fja1
-         d6o2FNCCYVRdaMfIPEREies3HUfJhw/SrIooWEOn+P3Fm6BPSCWKizSJ3YokLsjzXLzi
-         Owo4zLV3ffEWd2RDcV9nTfVUH64CWlr+JKTseUuNTSArJWoX+OVdNUsfMtIPjqa6Azyb
-         EhUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5S9vYD+Y1macvYqVLIckE0dRGgUHR6sshoajCP4oJTg=;
-        b=fvSH9t9hTGP1SPBatqczCtiM0m/p4eJ5Y7zjK5IQbagNo/tx94FNeI9DBFy5akGO05
-         u1vbqYCood9fiXnLnNiWhPjfFyrlE0uJB6RDqaGaRjGA+Vb161wUVknifenbjnb7pBg0
-         DBiXfH8pDx2mgq6aVA3N/bY80QZTqiZatvwGUed3hRPyqagFZJD0Fvhhn5gKcMBNwRxx
-         ouqPkR5aNZX+0tTGtJyTuJTYytSiQ/kFYQBnjNkg5Ks7xNHW96CkgxWg4wTArWIcoYrk
-         wVT0IJK9tcXnF6RVGmT00tcbYlpEiBJ3g+h+i6AQkRbEjtMloJx6TCvRdMSlk64jiQiY
-         FH8A==
-X-Gm-Message-State: AOAM5328+dfB759xCNtuQt1P7U/NeYY6kX9nlmJTH8M6RU34l6y2J40L
-        Y7oKI9uGmIFTAvVn5xpULPY=
-X-Google-Smtp-Source: ABdhPJwv0NhEcbxAuDoHp8aGllGq1nPQws85PKtVvjKabjjuOjs4zYwjMZpaOsmj5LLWEdRlicqomA==
-X-Received: by 2002:ac2:414c:: with SMTP id c12mr20048018lfi.538.1617121689231;
-        Tue, 30 Mar 2021 09:28:09 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-98.dynamic.spd-mgts.ru. [109.252.193.98])
-        by smtp.googlemail.com with ESMTPSA id u14sm2324973lfl.40.2021.03.30.09.28.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 09:28:09 -0700 (PDT)
-Subject: Re: [PATCH v5 1/5] i2c: core: add managed function for adding i2c
- adapters
-To:     Yicong Yang <yangyicong@hisilicon.com>, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org
-Cc:     treding@nvidia.com, jarkko.nikula@linux.intel.com,
-        rmk+kernel@armlinux.org.uk, song.bao.hua@hisilicon.com,
-        john.garry@huawei.com, mika.westerberg@linux.intel.com,
-        prime.zeng@huawei.com, linuxarm@huawei.com
-References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
- <1617113966-40498-2-git-send-email-yangyicong@hisilicon.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <511f7da1-1a65-884b-cce8-55ffeba76c7c@gmail.com>
-Date:   Tue, 30 Mar 2021 19:28:08 +0300
+        Tue, 30 Mar 2021 12:31:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617121876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ohkgyyxTZN8asq9XvjHpqzqG5vkxDUnIvcSn+C26Z30=;
+        b=aBbAg8Ymq9gXSzGLDZQgso/WXc2ly0xoTAvCSet/8F8RhHEXIMQjdg3zReseKpH/U/4T3h
+        ndVAAsf/0zrA55PFxnDJsZMh8li5O2KnBWOGks/0orre8uMcGyN/EFOo96giYnBpdVPxeU
+        gjvTbiRyDp3qr0bEDjoCg8OlAYcAbuk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-0uvCyz42NpC1Gxo_46jo1w-1; Tue, 30 Mar 2021 12:31:12 -0400
+X-MC-Unique: 0uvCyz42NpC1Gxo_46jo1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 026CD18C89CF;
+        Tue, 30 Mar 2021 16:31:09 +0000 (UTC)
+Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A87E610016DB;
+        Tue, 30 Mar 2021 16:30:49 +0000 (UTC)
+Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+To:     Jann Horn <jannh@google.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210317110644.25343-1-david@redhat.com>
+ <20210317110644.25343-3-david@redhat.com>
+ <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
+ <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
+ <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
+Date:   Tue, 30 Mar 2021 18:30:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <1617113966-40498-2-git-send-email-yangyicong@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 17:19, Yicong Yang пишет:
-> Some I2C controller drivers will only unregister the I2C
-> adapter in their .remove() callback, which can be done
-> by simply using a managed variant to add the I2C adapter.
+On 30.03.21 18:21, Jann Horn wrote:
+> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
+>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
+>>>> +                           unsigned long end, bool write, int *locked)
+>>>> +{
+>>>> +       struct mm_struct *mm = vma->vm_mm;
+>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
+>>>> +       int gup_flags;
+>>>> +
+>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
+>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
+>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
+>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
+>>>> +       mmap_assert_locked(mm);
+>>>> +
+>>>> +       /*
+>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
+>>>> +        *                a poisoned page.
+>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
+>>>> +        * !FOLL_FORCE: Require proper access permissions.
+>>>> +        */
+>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
+>>>> +       if (write)
+>>>> +               gup_flags |= FOLL_WRITE;
+>>>> +
+>>>> +       /*
+>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
+>>>> +        * or with insufficient permissions.
+>>>> +        */
+>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
+>>>> +                               NULL, NULL, locked);
+>>>
+>>> You mentioned in the commit message that you don't want to actually
+>>> dirty all the file pages and force writeback; but doesn't
+>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
+>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
+>>
+>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
+>> primarily set it because populate_vma_page_range() also sets it.
+>>
+>> Is it safe to *not* set it? IOW, fault something writable into a page
+>> table (where the CPU could dirty it without additional page faults)
+>> without marking it accessed? For me, this made logically sense. Thus I
+>> also understood why populate_vma_page_range() set it.
 > 
-> So add the managed functions for adding the I2C adapter.
+> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
+> essentially means "the caller of get_user_pages wants to read/write
+> the contents of the returned page, so please do the same things you
+> would do if userspace was accessing the page". So in particular, if
+> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
+> that tells the MM subsystem "I will be writing into this page directly
+> from the kernel, bypassing the userspace page tables, so please mark
+> it as dirty now so that it will be properly written back later". Part
+> of that is that it marks the page as recently used, which has an
+> effect on LRU pageout behavior, I think - as far as I understand, that
+> is why populate_vma_page_range() uses FOLL_TOUCH.
 > 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> ---
->  drivers/i2c/i2c-core-base.c | 26 ++++++++++++++++++++++++++
->  include/linux/i2c.h         |  1 +
->  2 files changed, 27 insertions(+)
+> If you look at __get_user_pages(), you can see that it is split up
+> into two major parts: faultin_page() for creating PTEs, and
+> follow_page_mask() for grabbing pages from PTEs. faultin_page()
+> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
 > 
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 63ebf72..de9402c 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -1703,6 +1703,32 @@ void i2c_del_adapter(struct i2c_adapter *adap)
->  }
->  EXPORT_SYMBOL(i2c_del_adapter);
->  
-> +static void devm_i2c_del_adapter(void *adapter)
-> +{
-> +	i2c_del_adapter(adapter);
-> +}
-> +
-> +/**
-> + * devm_i2c_add_adapter - device-managed variant of i2c_add_adapter()
-> + * @dev: managing device for adding this I2C adapter
-> + * @adapter: the adapter to add
-> + * Context: can sleep
-> + *
-> + * Add adapter with dynamic bus number, same with i2c_add_adapter()
-> + * but the adapter will be auto deleted on driver detach.
-> + */
-> +int devm_i2c_add_adapter(struct device *dev, struct i2c_adapter *adapter)
-> +{
-> +	int ret;
-> +
-> +	ret = i2c_add_adapter(adapter);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, devm_i2c_del_adapter, adapter);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_i2c_add_adapter);
-> +
->  static void i2c_parse_timing(struct device *dev, char *prop_name, u32 *cur_val_p,
->  			    u32 def_val, bool use_def)
->  {
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 5662265..10bd0b0 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -844,6 +844,7 @@ static inline void i2c_mark_adapter_resumed(struct i2c_adapter *adap)
->   */
->  #if IS_ENABLED(CONFIG_I2C)
->  int i2c_add_adapter(struct i2c_adapter *adap);
-> +int devm_i2c_add_adapter(struct device *dev, struct i2c_adapter *adapter);
->  void i2c_del_adapter(struct i2c_adapter *adap);
->  int i2c_add_numbered_adapter(struct i2c_adapter *adap);
->  
-> 
+> In a way I guess maybe you do want the "mark as recently accessed"
+> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
+> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
+> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
+> only want to mark as recently used, I don't want to dirty". Or maybe
+> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Any thoughts why populate_vma_page_range() does it?
+
+-- 
+Thanks,
+
+David / dhildenb
 
