@@ -2,146 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0306934E23F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC92834E244
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhC3Hba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:31:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:24226 "EHLO mga07.intel.com"
+        id S230506AbhC3Her (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhC3HbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:31:25 -0400
-IronPort-SDR: KWqsCyN/90bAP5BNkm4Jmscn4o3JGQsraffZ6MYHlxxwPAjzxD3lJcZnE0lGlflqWj3BiOojeb
- TtY17eMkB/Hg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="255703138"
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="255703138"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 00:31:24 -0700
-IronPort-SDR: c7x/pcWzvq34dYDlYvECbGrDbjnhbf9hSYAEqk3fSTk7qhunnERbK/71WLnzFAGkwgTmXbiO6x
- 8Smkuo2gSr7g==
-X-IronPort-AV: E=Sophos;i="5.81,290,1610438400"; 
-   d="scan'208";a="418045968"
-Received: from xguo30-mobl.ccr.corp.intel.com ([10.249.174.220])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 00:31:22 -0700
-Message-ID: <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
-Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed))
- by __packed
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Date:   Tue, 30 Mar 2021 15:31:19 +0800
-In-Reply-To: <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
-         <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com>
-         <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
-         <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com>
+        id S229468AbhC3HeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:34:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D1761957;
+        Tue, 30 Mar 2021 07:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617089655;
+        bh=YtguDODw8Uj/hE0IRHyy+onzpCZQS84rIgWYYMtsB8E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Rt3OaYykxMqzqMwR/09kXKocomqoYkBD7dGW2fk8T6GGtr3z3fIlZ76/GaLVGn6U4
+         a/J/5ce9TayAuAfr7Hn/l9YINP5jaaMcJbdsV0LNg3CuSw7axu1G+sI2MsoTXf6fus
+         8gaWOHLi5KD+Req07Wjb7blmGp67SLvEwmybP5v3Rqf1twp1icUzg20dYnh6fkbSgX
+         CS1Vz5UbQUibD3vECLRdceMe8W4yH/h9h8s3lq5NZF0meT/K1cr7SmzD2i6CJq79ku
+         99lVpHilpQnuDC4ZDjW2P1GIJqEUz9Q3GAHnX7Cq5JuzvVe4iAixsdg8+zLl7AC7cI
+         HAyAUrpaLBIZg==
+Received: by mail-oi1-f179.google.com with SMTP id x207so15630905oif.1;
+        Tue, 30 Mar 2021 00:34:15 -0700 (PDT)
+X-Gm-Message-State: AOAM532DpQsj2IdKANAO00X6A4MBWwpwiuDpy0RZjnx8gF8Y3hGpvqkx
+        H/BZPVgIp+9G0K5hZe1RyNp3xLwqa0MxrHFSrws=
+X-Google-Smtp-Source: ABdhPJw0JQhzHmFxsYjMFHKlfwtjreUcv9Xt8M6EVj8RxkFv3RdkCCY+IC2JvTqgveJWXVah6ctFL0OE0khmM55zXSc=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr2303636oie.4.1617089654371;
+ Tue, 30 Mar 2021 00:34:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <yq1wntpgxxr.fsf@ca-mkp.ca.oracle.com> <20210330071958.3788214-1-slyfox@gentoo.org>
+ <20210330071958.3788214-3-slyfox@gentoo.org>
+In-Reply-To: <20210330071958.3788214-3-slyfox@gentoo.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 30 Mar 2021 09:34:00 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2CmQpKynwGbtdWH+1L4=SkX2y4XKggT=8DrnsjxU4hSw@mail.gmail.com>
+Message-ID: <CAK8P3a2CmQpKynwGbtdWH+1L4=SkX2y4XKggT=8DrnsjxU4hSw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] hpsa: add an assert to prevent from __packed reintroduction
+To:     Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Don Brace <don.brace@microchip.com>,
+        linux-ia64@vger.kernel.org, storagedev@microchip.com,
+        linux-scsi <linux-scsi@vger.kernel.org>, jszczype@redhat.com,
+        Scott Benesh <scott.benesh@microchip.com>,
+        Scott Teel <scott.teel@microchip.com>, thenzl@redhat.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-30 at 10:23 +0800, Xiaofei Tan wrote:
-> Hi David,
-> 
-> On 2021/3/29 18:09, David Laight wrote:
-> > From: Xiaofei Tan
-> > > Sent: 27 March 2021 07:46
-> > > 
-> > > Replace __attribute__((packed)) by __packed following the
-> > > advice of checkpatch.pl.
-> > > 
-> > > Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> > > ---
-> > >  drivers/acpi/acpi_fpdt.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-> > > index a89a806..690a88a 100644
-> > > --- a/drivers/acpi/acpi_fpdt.c
-> > > +++ b/drivers/acpi/acpi_fpdt.c
-> > > @@ -53,7 +53,7 @@ struct resume_performance_record {
-> > >  	u32 resume_count;
-> > >  	u64 resume_prev;
-> > >  	u64 resume_avg;
-> > > -} __attribute__((packed));
-> > > +} __packed;
-> > > 
-> > >  struct boot_performance_record {
-> > >  	struct fpdt_record_header header;
-> > > @@ -63,13 +63,13 @@ struct boot_performance_record {
-> > >  	u64 bootloader_launch;
-> > >  	u64 exitbootservice_start;
-> > >  	u64 exitbootservice_end;
-> > > -} __attribute__((packed));
-> > > +} __packed;
-> > > 
-> > >  struct suspend_performance_record {
-> > >  	struct fpdt_record_header header;
-> > >  	u64 suspend_start;
-> > >  	u64 suspend_end;
-> > > -} __attribute__((packed));
-> > > +} __packed;
-> > 
-> > My standard question about 'packed' is whether it is actually
-> > needed.
-> > It should only be used if the structures might be misaligned in
-> > memory.
-> > If the only problem is that a 64bit item needs to be 32bit aligned
-> > then a suitable type should be used for those specific fields.
-> > 
-> > Those all look very dubious - the standard header isn't packed
-> > so everything must eb assumed to be at least 32bit aligned.
-> > 
-> > There are also other sub-structures that contain 64bit values.
-> > These don't contain padding - but that requires 64bit alignement.
-> > 
-> > The only problematic structure is the last one - which would have
-> > a 32bit pad after the header.
-> > Is this even right given than there are explicit alignment pads
-> > in some of the other structures.
-> > 
-> > If 64bit alignment isn't guaranteed then a '64bit aligned to 32bit'
-> > type should be used for the u64 fields.
-> > 
-> 
-> Yes, some of them has been aligned already, then nothing changed
-> when 
-> add this "packed ". Maybe the purpose of the original author is for 
-> extension, and can tell others that this struct need be packed.
-> 
+On Tue, Mar 30, 2021 at 9:23 AM Sergei Trofimovich <slyfox@gentoo.org> wrote:
 
-The patch is upstreamed recently but it was made long time ago.
-I think the original problem is that one of the address, probably the
-suspend_performance record, is not 64bit aligned, thus we can not read
-the proper content of suspend_start and suspend_end, mapped from
-physical memory.
+> +/*
+> + * Make sure our embedded atomic variable is aligned. Otherwise we break atomic
+> + * operations on architectures that don't support unaligned atomics like IA64.
+> + *
+> + * The assert guards against reintroductin against unwanted __packed to
+> + * the struct CommandList.
+> + */
+> +static_assert(offsetof(struct CommandList, refcount) % __alignof__(atomic_t) == 0);
+> +
 
-I will try to find a machine to reproduce the problem with all
-__attribute__((packed)) removed to double confirm this.
+There are a few other members that need to be aligned: the work_struct
+has another
+atomic_t inside it, and there are a few pointers that might rely on
+being written to
+atomically.
 
-thanks,
-rui
-> > 	David
-> > 
-> > -
-> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton
-> > Keynes, MK1 1PT, UK
-> > Registration No: 1397386 (Wales)
-> > 
-> > 
-> > .
-> > 
-> 
-> 
+While you could add a static_assert for each member, the easier solution is to
+just not ask for the members to be misaligned in the first place.
 
+       Arnd
