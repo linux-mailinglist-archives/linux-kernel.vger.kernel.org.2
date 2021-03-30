@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EC334F504
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB5C34F506
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhC3X1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S233095AbhC3X15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 19:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhC3X1J (ORCPT
+        with ESMTP id S232667AbhC3X1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:27:09 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7526BC061574;
-        Tue, 30 Mar 2021 16:27:09 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id 1so12574143qtb.0;
-        Tue, 30 Mar 2021 16:27:09 -0700 (PDT)
+        Tue, 30 Mar 2021 19:27:34 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AE1C061574;
+        Tue, 30 Mar 2021 16:27:33 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b14so26316732lfv.8;
+        Tue, 30 Mar 2021 16:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=v3/mQcvUwNsY/UJc2jxu3Abaa2D2bXGCJS30gIHPjEs=;
-        b=Q8okifF2x7Cis24xXyTCsqdK6HSPnuU+16cgfbDheWc8gugJ8X+B/ISr+bIh+Jo4GJ
-         Ft5oK8XVv+9fMVUiuGcSdRLYEpDj1o5+MvtnoxIxsauXhAGJwhviS9YUW6ZgMidlx1UW
-         GGxnpmetsT/F4eGykAZdpSBR/TkVjXqfxF7Rg=
+        bh=7P9evhC2fefpJxi9njQ79qnjbEyr4RKoQ+V/DRcy07E=;
+        b=gRjJO0F4OMhIooibcLON9pujbXZ59O41HRnUtt0/UijBRPCbr4+6oJ29xjGXXAdUj9
+         L2f7Xsd8LRe47nEdTnNPDyigfE7dlaHQSSAmNySQLb1hM2kSZETM18mtX+Hp86o2/AfP
+         QaNYPvg4VS6ySLEH5mGsvB3ljo+yoVdxMFSCaAJ8jNMxhO80vY0J0IsAhgoe2nzDVyvt
+         v6Hk3bfXZwU3G/g+bflxpRrAvFUq51dRvDq1HmzrTNgmO1k8QXpQz7Blwkv7f86fjQFY
+         bTLqkOz8KupSCvqdGHkpb/ELoZCbHrkgazfEmo9WC51hmOksLS5clZ1JYnwPgRT67QTc
+         IwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v3/mQcvUwNsY/UJc2jxu3Abaa2D2bXGCJS30gIHPjEs=;
-        b=LZF9HvZR6TzT/AKxrNHNslic1XNUrnY9plaCw3b/0jtl7RY+FbQbze8BU2grMIJhg/
-         /SjhZ7qGj3BSIVfXiKq0nJAuy1PcHgRrf8bb8tfT+SsSv8nH6ndHJwaLMFFVutDDigCP
-         PvqtV+KrKaz9As7j0p2sCPnEdINJUxM8/3eZQJAOPODQ5qTS4T0gv4BhHgxGVd2ZeZ4z
-         aUyFYIfKGIaVqW68Z5D7Z1V8q2BQESx2ut5HeaJoOHW+8D/raASu1YvLc+uFbp/cTov8
-         sG+tkmw7FaV9adwzKUWp3rQB4mCZgWdrKt8IkTp06qV7e5Dd4nMlIY0LCFZwJZocrGBp
-         nD8A==
-X-Gm-Message-State: AOAM533JRmffKMhdtqDKgzhccezQnTzP3nIqppAuiQvtbvKlAujePUwM
-        UMe7w3Et6LC6cDSOhdMBVUyCZBy2kISqsGv2RI8=
-X-Google-Smtp-Source: ABdhPJzEEpS2qBWaoDRJ4nevrrO4IATNTcu8uGU7/niHD9Gdp4fHrFKbwgSR99OPio8OGSwp13rYrGb8mGgTwFaYaCE=
-X-Received: by 2002:ac8:7547:: with SMTP id b7mr235856qtr.176.1617146828454;
- Tue, 30 Mar 2021 16:27:08 -0700 (PDT)
+        bh=7P9evhC2fefpJxi9njQ79qnjbEyr4RKoQ+V/DRcy07E=;
+        b=LZQ6zEDHRpaLAR498ZdIvd0rhPEqwxoEwd1Mqws6//vMkl+TmL05eTDFobszPBpOug
+         48E9p5cr2q4JJDwlBpbd5JIr2GWpHQy6Rwqp+B9uhk7E+FHCaKEnbNvTCWL95i/zyPRW
+         WjZKJ5BPBjRkxgkDLuQLoU0DvdmznkXey3Npc225rH6BXlA0Vu6JsQzFFj2GRV28QrPH
+         Xvz3ZyzjaXjSWeuEcn43T6pWFW+Hs9yzwsYOhM8xZ5mGZ08bBo36cxEyxiX3+bijEZf+
+         9ttUWdlY0joIAIDvubcak9FqUXGmvaofaDJz+XsxlY6aLLStQs3NnQzzSMVlqSH3S3Sz
+         pB4Q==
+X-Gm-Message-State: AOAM533bz+4qoBGlvsG1QpwgQnxbokVW+skZaQ3zslOpWYAGCy0/Pp6I
+        2MZ9qW/EQRqB+BaUqIaAZgUB2ggzgmI0R81AbDw=
+X-Google-Smtp-Source: ABdhPJy7WI6mOofSguzFXSqwA0HRRFR73oG+oJjIPMxPOjrVtnCfKqIVxMO+NYABkepI1iaQ7u6kJncWSGGwnFwpfbk=
+X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr375043lfq.214.1617146852070;
+ Tue, 30 Mar 2021 16:27:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210330002338.335-1-zev@bewilderbeest.net> <20210330002338.335-3-zev@bewilderbeest.net>
- <20210330223902.GA837825@robh.at.kernel.org>
-In-Reply-To: <20210330223902.GA837825@robh.at.kernel.org>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 30 Mar 2021 23:26:56 +0000
-Message-ID: <CACPK8Xcfcsz7KCdfLuweGGbaxVKczhMb7+nxA9TMbsAbAbhi3g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: serial: 8250: update for aspeed,sirq-active-high
-To:     Rob Herring <robh@kernel.org>
-Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        - <devicetree@vger.kernel.org>, linux-serial@vger.kernel.org
+References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-6-memxor@gmail.com>
+ <20210327021534.pjfjctcdczj7facs@ast-mbp> <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
+ <20210329014044.fkmusoeaqs2hjiek@ast-mbp> <CAEf4BzZaWjVhfkr7vizir7PfbcsaN99yEwOoqKi32V4X17f0Ng@mail.gmail.com>
+ <20210330032846.rg455fe2danojuus@ast-mbp> <CAEf4Bzb-YjQq=P2w3S1Np_jfqepUH2_t4MmomLg8PhA0=P6zZg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb-YjQq=P2w3S1Np_jfqepUH2_t4MmomLg8PhA0=P6zZg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Mar 2021 16:27:20 -0700
+Message-ID: <CAADnVQKMBgFV7rYHWYQZW=i5fYkDYspgVOvhSWyNjAzY9CLD9A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 at 22:39, Rob Herring <robh@kernel.org> wrote:
+On Tue, Mar 30, 2021 at 1:28 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> >
+> > In the other thread you've proposed to copy paste hash implemenation
+> > into pahole. That's not ideal. If we had libbpfutil other projects
+> > could have used that without copy-paste.
 >
-> On Mon, Mar 29, 2021 at 07:23:37PM -0500, Zev Weiss wrote:
-> > Update DT bindings documentation for the new incarnation of the
-> > aspeed,sirq-polarity-sense property.
+> I know it's not ideal. But I don't think libbpf should be in the
+> business of providing generic data structures with stable APIs either.
+
+There is a need for hash in pahole and it's already using libbpf.
+Would be good to reuse the code.
+
+> > that's today. Plus mandatory libelf and libz.
+> > I would like to have libsysbpf that doesn't depend on libelf/libz
+> > for folks that don't need it.
 >
-> Why?
+> TBH, bpf.c is such a minimal shim on top of bpf() syscall, that
+> providing all of its implementation as a single .h wouldn't be too
+> horrible. Then whatever applications want those syscall wrappers would
+> just include bpf/bpf.h and have no need for the library at all.
+
+1k line bpf.h. hmm. That's not going to be a conventional C header,
+but it could work I guess.
+
+> > Also I'd like to see symbolizer to be included in "libbpf package".
+> > Currently it's the main component that libbcc offers, but libbpf doesn't.
+> > Say we don't split libbpf. Then symbolizer will bring some dwarf library
+> > (say libdwarves ~ 1Mbyte) and libiberty ~ 500k (for c++ demangle).
+> > Now we're looking at multi megabyte libbpf package.
 >
-> This isn't a compatible change.
+> Right, which is one of the reasons why it probably doesn't belong in
+> libbpf at all. Another is that it's not BPF-specific functionality at
+> all.
 
-We want to depreciate support for this property. It should have never
-been added to the bindings; in it's current form it describes a
-relationship that afaict doesn't exist ("This unrelated register over
-here dictates the polarity of your virtual serial port IRQ"). See
-https://lore.kernel.org/lkml/20200812112400.2406734-1-joel@jms.id.au/
+symbolizer, usdt, python and lua bindings is what made libbcc successful.
+I think "libbpf package" should include everything that bpf tracing folks
+might need.
+Getting -l flags correct from a single package isn't a big deal
+compared with the need to deal with different packages that
+depend on each other.
 
-The intent is to remove it from both the bindings and the code.
-There's already no users of it in any device tree.
+> I'm against pro-active splitting just in case. I'd rather discuss
+> specific problems when we get to them. I think it's premature right
+> now to split libbpf.
 
-How would you like Zev to go about doing this?
-
-Cheers,
-
-Joel
-
->
-> >
-> > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> > ---
-> >  Documentation/devicetree/bindings/serial/8250.yaml | 14 ++++++--------
-> >  1 file changed, 6 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documentation/devicetree/bindings/serial/8250.yaml
-> > index f54cae9ff7b2..0bbb7121f720 100644
-> > --- a/Documentation/devicetree/bindings/serial/8250.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/8250.yaml
-> > @@ -13,7 +13,7 @@ allOf:
-> >    - $ref: /schemas/serial.yaml#
-> >    - if:
-> >        required:
-> > -        - aspeed,sirq-polarity-sense
-> > +        - aspeed,sirq-active-high
-> >      then:
-> >        properties:
-> >          compatible:
-> > @@ -181,13 +181,11 @@ properties:
-> >    rng-gpios: true
-> >    dcd-gpios: true
-> >
-> > -  aspeed,sirq-polarity-sense:
-> > -    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +  aspeed,sirq-active-high:
-> > +    type: boolean
-> >      description: |
-> > -      Phandle to aspeed,ast2500-scu compatible syscon alongside register
-> > -      offset and bit number to identify how the SIRQ polarity should be
-> > -      configured. One possible data source is the LPC/eSPI mode bit. Only
-> > -      applicable to aspeed,ast2500-vuart.
-> > +      Set to indicate that the SIRQ polarity is active-high (default
-> > +      is active-low).  Only applicable to aspeed,ast2500-vuart.
-> >
-> >  required:
-> >    - reg
-> > @@ -227,7 +225,7 @@ examples:
-> >          interrupts = <8>;
-> >          clocks = <&syscon ASPEED_CLK_APB>;
-> >          no-loopback-test;
-> > -        aspeed,sirq-polarity-sense = <&syscon 0x70 25>;
-> > +        aspeed,sirq-active-high;
-> >      };
-> >
-> >  ...
-> > --
-> > 2.31.1
-> >
+Fine.
+I'm mainly advocating to change the mental model to see
+libbpf as a collection of tools and libraries and not just single libbpf.a
