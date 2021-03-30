@@ -2,260 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966C234E0C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C434E0D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhC3FoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        id S229630AbhC3Frn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhC3Fn7 (ORCPT
+        with ESMTP id S230202AbhC3Fr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:43:59 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8088C061762;
-        Mon, 29 Mar 2021 22:43:58 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id z15so15378516oic.8;
-        Mon, 29 Mar 2021 22:43:58 -0700 (PDT)
+        Tue, 30 Mar 2021 01:47:27 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F75C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:47:26 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j18so14960963wra.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 22:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bBFUbYzXzH/NZ4jETwzWJsenctGemEquh7+JYhbATJ8=;
-        b=MEXvFRNQ1trMCKOS69ycBt04ECBiUgRYo/woYILhU3trokV3mR7zOf0XMGEpBzgb5p
-         4hcvtMhlJhKbCTH76QceeA2ttBvkJi5qkIC6JUXVws+K9sKgkU4gn6QcitTaXqgdS3rg
-         GmA9/b0PKqxiqx02nmG5iMdr+Q2Qwrwp6mH376BkSGSRAzCnPMV0C82NiCeyZc14Vlr1
-         C/VYuExJeh7H8InbbNTYoeoGNFvE8Tl85eNcpYpgI7uELH4dkJ6JAT3LyvOyZ3lwP6Fr
-         rN3F03YAy0o7jyQsXU0eompfcFZzGSMv1VmN5MKo+kOqrYoMIY7hfDlj8YmcAWsMCclV
-         AyTg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IlLL4fvHksCUIpTZMtr7ANhRamajd04EVg5QFhFYyZE=;
+        b=pKnFLgoaj6O6ETjDMMxJbU4V7xil35gLDNmD/qX7/CtarhM57gyNt53XcrLb+ang6u
+         y02MuaQ5Ndqkd8NzfzW7GFIZoVxGE1wM5zWKQDjiZ8+Vfzz5otVEJKx/YA+J2JXa+Z2n
+         2rXaX/mh1lTILI27VvPtZa3WyCMSSkHq/773rs08vfHkZFGp19rBxo5aGSy54bzjn8LU
+         o15gALpM46tf/EA+EQUXG7+kCw9svTo4RwWdz+gN9qsvbyKqhDVrz0ARedTOJ6i1/yAD
+         RgolWQ8jjhPxC/9uUmOuV+zE1JuhcyVz5AkWk0C7M0/1gYy7bUznQP+kPcQrS4ElXxaW
+         csaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=bBFUbYzXzH/NZ4jETwzWJsenctGemEquh7+JYhbATJ8=;
-        b=Pt2WKEg4CwCxX7xFqnQdOg1ANzj9FS3bdKRTEDAVj2prYewlxvUHLERCbVoQjDzlmw
-         ABUVVsgJFkS+8r1yjwXMvyeOZHbaLt1SkdP5q2tjTuxR7LagpeVbSpnuuoOTEoI0Za9h
-         /zPY+cEMrXtneMQWwtXfPmS0Wx6T9imWFMjIgOAo63P1RFmHTPVW/FbU3cU4oWsht7cG
-         5yrBJDWGhg8CsKbcleASWZmIruVAfmZNb7fG0HNwypvlHRbiOMxCRjBDjIp9GYB3ABE0
-         PyFY/QHLezenmCN/TzVe8Yw4A8/R0P8OLfvSdH5pUqI9Z32kVri2HF2xaUDY/mUyoFHE
-         CAKQ==
-X-Gm-Message-State: AOAM5314pF0JxVw5WDrzSNIh6o1+N7sDsQxxp4InAzbX69SuZz7QtY/N
-        iWug8tFj6T+JZguKOtrhJFzs28yzQqw=
-X-Google-Smtp-Source: ABdhPJwOuRkhyWPONTSokS71WEarvpcMKMkTd4zDxUFHUCjJtjvp3fDxQTli8hcBpbAJnFlOIr/t4w==
-X-Received: by 2002:aca:4785:: with SMTP id u127mr1867028oia.163.1617083037876;
-        Mon, 29 Mar 2021 22:43:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j20sm492558ooc.29.2021.03.29.22.43.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 22:43:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] hwmon: (nzxt-kraken2) mark and order concurrent accesses
-To:     Jonas Malaco <jonas@protocubo.io>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210329082211.86716-1-jonas@protocubo.io>
- <20210329215339.GH220164@roeck-us.net>
- <20210330002131.s2qz3dr6bwr6jz25@calvin.localdomain>
- <56ebbf0f-cdcb-d5af-e1ad-c7604597566e@roeck-us.net>
- <20210330031652.zhhxft4trli6zqtw@calvin.localdomain>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <37e5b3d3-8868-c70e-4c01-2d3d777df4de@roeck-us.net>
-Date:   Mon, 29 Mar 2021 22:43:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IlLL4fvHksCUIpTZMtr7ANhRamajd04EVg5QFhFYyZE=;
+        b=cVANTAkG5ds8R+b+PGg4I6DM80TcDPRRX7esNDuZbvJx3UNEPqaY0NWLxy/FKP73QI
+         X0LRWh6xXqbEpgW7coHs2I6gvJdPGyy5eO6y7O9BGA5W3IE0GvzMnZcwd8YSyrSLJiKg
+         smDRIrlG/z/cyJHweQYX4J84rYRNCBFbSGcoru5vRu5xcyigmxSaclxB2akbI5OX/1Jd
+         Jd5gsCFv8DdHDxofkyKFMmks9WssLmSrzmzWLEgJ/KAT9omrF1McoGkUAxkDQU6W8+93
+         rSy1m+bbUsQ3fYeufeakNqwTSUt/trWEfT+n3ug/uI04Px+taPGThpOewEJLOtzQkwPO
+         utpg==
+X-Gm-Message-State: AOAM531/r+EiLHy31QBFtqF8TojTNlFi3d31NdhJsPW9LnXYr6TabmpL
+        tmObst9NjGa68M5nBLILI8RCl8l7gL0RKFDra1BiyQ==
+X-Google-Smtp-Source: ABdhPJxzx5s7EayhUieTVgjM6x/ZvlThDc3E5x6FtchI1twpqHbTsVCBiRugkoKrA+Qa0cy9pshYvvuvzjjvxM08ZC4=
+X-Received: by 2002:a5d:53c8:: with SMTP id a8mr31292925wrw.323.1617083245060;
+ Mon, 29 Mar 2021 22:47:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210330031652.zhhxft4trli6zqtw@calvin.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
+ <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com> <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com>
+ <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 29 Mar 2021 23:47:13 -0600
+Message-ID: <CAOUHufYMjhQagKfdjekxr62bsB83UJvArddUsuwTXoo-5jA45A@mail.gmail.com>
+Subject: Re: [Question] Is there a race window between swapoff vs synchronous swap_readpage
+To:     "Huang, Ying" <ying.huang@intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 8:16 PM, Jonas Malaco wrote:
-> On Mon, Mar 29, 2021 at 06:01:00PM -0700, Guenter Roeck wrote:
->> On 3/29/21 5:21 PM, Jonas Malaco wrote:
->>> On Mon, Mar 29, 2021 at 02:53:39PM -0700, Guenter Roeck wrote:
->>>> On Mon, Mar 29, 2021 at 05:22:01AM -0300, Jonas Malaco wrote:
->>>>> To avoid a spinlock, the driver explores concurrent memory accesses
->>>>> between _raw_event and _read, having the former updating fields on a
->>>>> data structure while the latter could be reading from them.  Because
->>>>> these are "plain" accesses, those are data races according to the Linux
->>>>> kernel memory model (LKMM).
->>>>>
->>>>> Data races are undefined behavior in both C11 and LKMM.  In practice,
->>>>> the compiler is free to make optimizations assuming there is no data
->>>>> race, including load tearing, load fusing and many others,[1] most of
->>>>> which could result in corruption of the values reported to user-space.
->>>>>
->>>>> Prevent undesirable optimizations to those concurrent accesses by
->>>>> marking them with READ_ONCE() and WRITE_ONCE().  This also removes the
->>>>> data races, according to the LKMM, because both loads and stores to each
->>>>> location are now "marked" accesses.
->>>>>
->>>>> As a special case, use smp_load_acquire() and smp_load_release() when
->>>>> loading and storing ->updated, as it is used to track the validity of
->>>>> the other values, and thus has to be stored after and loaded before
->>>>> them.  These imply READ_ONCE()/WRITE_ONCE() but also ensure the desired
->>>>> order of memory accesses.
->>>>>
->>>>> [1] https://lwn.net/Articles/793253/
->>>>>
->>>>
->>>> I think you lost me a bit there. What out-of-order accesses that would be
->>>> triggered by a compiler optimization are you concerned about here ?
->>>> The only "problem" I can think of is that priv->updated may have been
->>>> written before the actual values. The impact would be ... zero. An
->>>> attribute read would return "stale" data for a few microseconds.
->>>> Why is that a concern, and what difference does it make ?
->>>
->>> The impact of out-of-order accesses to priv->updated is indeed minimal.
->>>
->>> That said, smp_load_acquire() and smp_store_release() were meant to
->>> prevent reordering at runtime, and only affect architectures other than
->>> x86.  READ_ONCE() and WRITE_ONCE() would already prevent reordering from
->>> compiler optimizations, and x86 provides the load-acquire/store-release
->>> semantics by default.
->>>
->>> But the reordering issue is not a concern to me, I got carried away when
->>> adding READ_ONCE()/WRITE_ONCE().  While smp_load_acquire() and
->>> smp_store_release() make the code work more like I intend it to, they
->>> are (small) costs we can spare.
->>>
->>> I still think that READ_ONCE()/WRITE_ONCE() are necessary, including for
->>> priv->updated.  Do you agree?
->>>
->>
->> No. What is the point ? The order of writes doesn't matter, the writes won't
->> be randomly dropped, and it doesn't matter if the reader reports old values
->> for a couple of microseconds either. This would be different if the values
->> were used as synchronization primitives or similar, but that isn't the case
->> here. As for priv->updated, if you are concerned about lost reports and
->> the 4th report is received a few microseconds before the read, I'd suggest
->> to loosen the interval a bit instead.
->>
->> Supposedly we are getting reports every 500ms. We have two situations:
->> - More than three reports are lost, making priv->updated somewhat relevant.
->>   In this case, it doesn't matter if outdated values are reported for
->>   a few uS since most/many/some reports are outdated more than a second
->>   anyway.
->> - A report is received but old values are reported for a few uS. That
->>   doesn't matter either because reports are always outdated anyway by
->>   much more than a few uS anyway, and the code already tolerates up to
->>   2 seconds of lost reports.
->>
->> Sorry, I completely fail to see the problem you are trying to solve here.
-> 
-> Please disregard the out-of-order accesses, I agree that preventing them
-> "are a (small) cost we can spare".
-> 
-> The main problem I still would like to address are the data races.
-> While the stores and loads cannot be dropped, and we can tolerate their
-> reordering, they could still be teared, fused, perhaps invented...
-> According to [1] these types of optimizations are not unheard.
-> 
-> Load tearing alone could easily produce values that are not stale, but
-> wrong.  Do we also tolerate wrong values, even if they are infrequent?
-> 
-> Another detail I should have mentioned sooner is that READ_ONCE() and
-> WRITE_ONCE() cause only minor (gcc) to no (clang) changes to the
-> generated code for x86_64 and i386.[2]  While this seems contrary to the
-> point I am trying to make, I want to show that, for the most part, these
-> changes just lock in a reasonable compiler behavior.
-> 
-> Specifically, on x86_64/gcc (the most relevant arch/compiler for this
-> driver) the changes are restricted to kraken2_read:
-> 
-> 1.	Loading of priv->updated and jiffies are reordered, because
-> 	(with READ_ONCE()) both are volatile and time_after(a, b) is
-> 	defined as b - a.
-> 
+On Mon, Mar 29, 2021 at 9:44 PM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+>
+> > On 2021/3/30 9:57, Huang, Ying wrote:
+> >> Hi, Miaohe,
+> >>
+> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+> >>
+> >>> Hi all,
+> >>> I am investigating the swap code, and I found the below possible race window:
+> >>>
+> >>> CPU 1                                                       CPU 2
+> >>> -----                                                       -----
+> >>> do_swap_page
+> >>>   skip swapcache case (synchronous swap_readpage)
+> >>>     alloc_page_vma
+> >>>                                                     swapoff
+> >>>                                                       release swap_file, bdev, or ...
+> >>>       swap_readpage
+> >>>     check sis->flags is ok
+> >>>       access swap_file, bdev or ...[oops!]
+> >>>                                                         si->flags = 0
+> >>>
+> >>> The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
+> >>> Is this will really happen or Am I miss something ?
+> >>> Any reply would be really grateful. Thanks! :)
+> >>
+> >> This appears possible.  Even for swapcache case, we can't guarantee the
+> >
+> > Many thanks for reply!
+> >
+> >> swap entry gotten from the page table is always valid too.  The
+> >
+> > The page table may change at any time. And we may thus do some useless work.
+> > But the pte_same() check could handle these races correctly if these do not
+> > result in oops.
+> >
+> >> underlying swap device can be swapped off at the same time.  So we use
+> >> get/put_swap_device() for that.  Maybe we need similar stuff here.
+> >
+> > Using get/put_swap_device() to guard against swapoff for swap_readpage() sounds
+> > really bad as swap_readpage() may take really long time. Also such race may not be
+> > really hurtful because swapoff is usually done when system shutdown only.
+> > I can not figure some simple and stable stuff out to fix this. Any suggestions or
+> > could anyone help get rid of such race?
+>
+> Some reference counting on the swap device can prevent swap device from
+> swapping-off.  To reduce the performance overhead on the hot-path as
+> much as possible, it appears we can use the percpu_ref.
 
-Are you really trying to claim that much of the time_after() code
-in the Linux kernel is wrong ?
+Hi,
 
-> 2.	When loading priv->fan_input[channel],
-> 		movzx  eax,WORD PTR [rdx+rcx*2+0x14]
-> 	is split into
-> 		add rcx,0x8
-> 		movzx  eax,WORD PTR [rdx+rcx*2+0x4]
-> 	for no reason I could find in the x86 manual.
-> 
-> 3.	Similarly, when loading priv->temp_input[channel]
-> 		movsxd rax,DWORD PTR [rdx+rcx*4+0x10]
-> 	turns into
-> 		add    rcx,0x4
-> 		movsxd rax,DWORD PTR [rdx+rcx*4]
-> 
-I hardly see how this matters. In both cases, rax enda up with the same value.
-Maybe rcx is reused later on. If not, maybe the compiler had a bad day.
-But that is not an argument for using READ_ONCE/WRITE_ONCE; after all, the
-same will happen with all other indexed accesses.
+I've been seeing crashes when testing the latest kernels with
+  stress-ng --class vm -a 20 -t 600s --temp-path /tmp
 
-Guenter
+I haven't had time to look into them yet:
 
-> Both 2 and 3 admittedly get a bit worse with READ_ONCE()/WRITE_ONCE().
-> But that is on gcc, and with the data race it could very well decide to
-> produce much worse code than that at any moment.
-> 
-> On Arm64 the code does get a lot more ordered, which we have already
-> agreed is not really necessary.  But removing smp_load_acquire() and
-> smp_store_release() should still allow the CPU to reorder those,
-> mitigating some of the impact.
-> 
-> I hope this email clarifies what I am concerned about.
-> 
-> Thanks for the patience,
-> Jonas
-> 
-> P.S. Tested with gcc 10.2.0 and clang 11.1.0.
-> 
-> [1] https://lwn.net/Articles/793253/
-> [2] (outdated, still with smp_*()): https://github.com/jonasmalacofilho/patches/tree/master/linux/nzxt-kraken2-mark-and-order-concurrent-accesses/objdumps
-> 
+DEBUG_VM:
+  BUG: unable to handle page fault for address: ffff905c33c9a000
+  Call Trace:
+   get_swap_pages+0x278/0x590
+   get_swap_page+0x1ab/0x280
+   add_to_swap+0x7d/0x130
+   shrink_page_list+0xf84/0x25f0
+   reclaim_pages+0x313/0x430
+   madvise_cold_or_pageout_pte_range+0x95c/0xaa0
 
+KASAN:
+  ==================================================================
+  BUG: KASAN: slab-out-of-bounds in __frontswap_store+0xc9/0x2e0
+  Read of size 8 at addr ffff88901f646f18 by task stress-ng-mrema/31329
+  CPU: 2 PID: 31329 Comm: stress-ng-mrema Tainted: G S        I  L
+5.12.0-smp-DEV #2
+  Call Trace:
+   dump_stack+0xff/0x165
+   print_address_description+0x81/0x390
+   __kasan_report+0x154/0x1b0
+   ? __frontswap_store+0xc9/0x2e0
+   ? __frontswap_store+0xc9/0x2e0
+   kasan_report+0x47/0x60
+   kasan_check_range+0x2f3/0x340
+   __kasan_check_read+0x11/0x20
+   __frontswap_store+0xc9/0x2e0
+   swap_writepage+0x52/0x80
+   pageout+0x489/0x7f0
+   shrink_page_list+0x1b11/0x2c90
+   reclaim_pages+0x6ca/0x930
+   madvise_cold_or_pageout_pte_range+0x1260/0x13a0
+
+  Allocated by task 16813:
+   ____kasan_kmalloc+0xb0/0xe0
+   __kasan_kmalloc+0x9/0x10
+   __kmalloc_node+0x52/0x70
+   kvmalloc_node+0x50/0x90
+   __se_sys_swapon+0x353a/0x4860
+   __x64_sys_swapon+0x5b/0x70
+
+  The buggy address belongs to the object at ffff88901f640000
+   which belongs to the cache kmalloc-32k of size 32768
+  The buggy address is located 28440 bytes inside of
+   32768-byte region [ffff88901f640000, ffff88901f648000)
+  The buggy address belongs to the page:
+  page:0000000032d23e33 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x101f640
+  head:0000000032d23e33 order:4 compound_mapcount:0 compound_pincount:0
+  flags: 0x400000000010200(slab|head)
+  raw: 0400000000010200 ffffea00062b8408 ffffea000a6e9008 ffff888100040300
+  raw: 0000000000000000 ffff88901f640000 0000000100000001 000000000000000
+  page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+   ffff88901f646e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   ffff88901f646e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  >ffff88901f646f00: 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc
+                              ^
+   ffff88901f646f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+   ffff88901f647000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ==================================================================
+
+Relevant config options I could think of:
+
+CONFIG_MEMCG_SWAP=y
+CONFIG_THP_SWAP=y
+CONFIG_ZSWAP=y
