@@ -2,64 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AE434F084
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7604D34F087
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhC3SHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbhC3SHF (ORCPT
+        id S232613AbhC3SIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:08:21 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:14571 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhC3SIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:07:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EF6C061574;
-        Tue, 30 Mar 2021 11:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ikqdyaQPieS1igk4+QfbwgRhqOQlOvMU3Hk6slv/dvs=; b=ef2wi2xvLt0TG4RIghAyy9jVoc
-        0sUS3+iLBFCGTy0jwTN/+ZeLRLcVlOYM+bCLA0oviPLb/SoortrsGw94ooWezevAiGEWeSj70N4SO
-        znDAxVDkv8t+oUx7p+OoArsKeU4sEyu8KCfiWnZtVpaM0RxhXzjiZvF1Y6P3WylQ4voL0pXA37ah0
-        MdWqZQH6Y2nlxbMaXpE9C4LIkwlOHgVi8nRcRdP2BiiTtZhIwLpqnfUsf0ONm9xKzv4abufX5btDl
-        nTRWzeYnguqcPDNfIOcbZ/cEpEF7PBxe37HoMsBO4R08L/j/PMHGKPkCN14u/wP4moZxfflooo0iR
-        72Ieh34Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRIlR-003PTG-8Z; Tue, 30 Mar 2021 18:06:56 +0000
-Date:   Tue, 30 Mar 2021 19:06:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2 4/8] block: introduce bio_required_sector_alignment()
-Message-ID: <20210330180653.GB811594@infradead.org>
-References: <20210325212609.492188-1-satyat@google.com>
- <20210325212609.492188-5-satyat@google.com>
-MIME-Version: 1.0
+        Tue, 30 Mar 2021 14:08:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1617127652; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Eyq7UqYoQqaEh0TMUnq5UzdsBNGHStBafdmSxV9W2kisa22bG7lmyAywbGT1XJNba7
+    eioohjWH90m+ApCCaLfIJxxrR0fQOvTVZ+fpgqmhqIMk/mcG5vvv755Km5wHzjfz85eD
+    AIodf4KHXJpzky4K9Aqs3tShThestACt/nWf04t592qQQCRQl6j3BZfA4sQbOP2xon7H
+    CO2OSrUFpfKhmJRWkNPpKptwmAM6sMygUV0eEVrdYDzhUtLa+wHtAn+mOZEsc3EVuVuK
+    I1WEqmTMsSz6bLFh8xF0oI/lJJm26GPzvsu8uvlw+eAR9YXciV1S+X5IXCmUg1qJUIug
+    fnig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617127652;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=TBtxdLUkTjgMvDEB4mRh0JBbXrVFmzYUj0lLVMFFsdA=;
+    b=iDxuBxBtN4zGXwH2FsNDucbzs44++UuByW9OubNfPa+SgIUVYehN+9wajhoPfWf8ne
+    AJBeDpLzfO9gvPi1AhT0jxBhUc3mkrU3McdEHDV+b0zDo5wFvykL3ipqabsAzZU6O7uz
+    is7TqCigWd9ZbgrEsfGbT107MDunzyDPutsq+PzsCSPNZocW9LxvOzLbkyCPLhoBlc7/
+    oipum/qvWNjCcVAwprWos80uz+EPG1wDUnbl2HlPeD0LPZubEv85OlwKgkt04b/wC3ze
+    Q/YiSR5IF99tHUC2aAp+hTj0JNzGcOYR8WbAB/c0XCz3bibgnOfYzQ2C5UX/ZGASRCMW
+    /9Eg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617127652;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=TBtxdLUkTjgMvDEB4mRh0JBbXrVFmzYUj0lLVMFFsdA=;
+    b=mbDZevjFp2b5R5VUle8FDC8MwkfYJzBYGCwkaBTe2ybLg6GWxZEJsH5woKenUz96DZ
+    HLCOwfabBd5h1GPxw3d1/qdKw063SU3JfrMvJjSZc4etXqVgZ2OuBchcRp0XGZjLqw0Q
+    XI9sVLA8HjveKwrt594YK3I6FiUVUxeNeTlYhNwAe6WYcF1jzcOR6pVtqoJP9uP/xZ/D
+    Syv6uzaw6Ma5RlMrYSJzO01MZ2ln4j1+WzqLWaT+SnK0MZvUpV72FVIyBP3MJRqqvVES
+    dGUeryXh/+ZW1PiQ4IEXCAuRPM4Xx3PnN8Xk5C5+DltqN18M43BTURpT9dF2flHnmD8l
+    liYA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmAjw47t884="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.178.35]
+    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
+    with ESMTPSA id h03350x2UI7VJS3
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 30 Mar 2021 20:07:31 +0200 (CEST)
+Subject: Re: [PATCH v3 01/17] cmdline: Add generic function to build command line.
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325212609.492188-5-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20210330172714.GR109100@zorba>
+Date:   Tue, 30 Mar 2021 20:07:30 +0200
+Cc:     will@kernel.org, Rob Herring <robh@kernel.org>,
+        daniel@gimpelevich.san-francisco.ca.us, linux-arch@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        microblaze <monstr@monstr.eu>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D8C1FBF6-E5C0-4233-BCB8-694274EA28F9@goldelico.com>
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu> <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu> <20210330172714.GR109100@zorba>
+To:     Daniel Walker <danielwa@cisco.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:26:05PM +0000, Satya Tangirala wrote:
-> +/*
-> + * The required sector alignment for a bio. The number of sectors in any bio
-> + * that's constructed/split must be aligned to this value.
-> + */
-> +static inline unsigned int bio_required_sector_alignment(struct bio *bio)
-> +{
-> +	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-> +
-> +	return max(queue_logical_block_size(q) >> SECTOR_SHIFT,
-> +		   blk_crypto_bio_sectors_alignment(bio));
-> +}
 
-It might make more sense to just have a field in the request queue
-for the max alignment so that the fast path just looks at one field.
-Then the various setup time functions would update it to the maximum
-required.
+> Am 30.03.2021 um 19:27 schrieb Daniel Walker <danielwa@cisco.com>:
+>=20
+> On Fri, Mar 26, 2021 at 01:44:48PM +0000, Christophe Leroy wrote:
+>> This code provides architectures with a way to build command line
+>> based on what is built in the kernel and what is handed over by the
+>> bootloader, based on selected compile-time options.
+>>=20
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> v3:
+>> - Addressed comments from Will
+>> - Added capability to have src =3D=3D dst
+>> ---
+>> include/linux/cmdline.h | 57 =
++++++++++++++++++++++++++++++++++++++++++
+>> 1 file changed, 57 insertions(+)
+>> create mode 100644 include/linux/cmdline.h
+>>=20
+>> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+>> new file mode 100644
+>> index 000000000000..dea87edd41be
+>> --- /dev/null
+>> +++ b/include/linux/cmdline.h
+>> @@ -0,0 +1,57 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _LINUX_CMDLINE_H
+>> +#define _LINUX_CMDLINE_H
+>> +
+>> +#include <linux/string.h>
+>> +
+>> +/* Allow architectures to override strlcat, powerpc can't use =
+strings so early */
+>> +#ifndef cmdline_strlcat
+>> +#define cmdline_strlcat strlcat
+>> +#endif
+>> +
+>> +/*
+>> + * This function will append or prepend a builtin command line to =
+the command
+>> + * line provided by the bootloader. Kconfig options can be used to =
+alter
+>> + * the behavior of this builtin command line.
+>> + * @dst: The destination of the final appended/prepended string.
+>> + * @src: The starting string or NULL if there isn't one.
+>> + * @len: the length of dest buffer.
+>> + */
+>=20
+> Append or prepend ? Cisco requires both at the same time. This is why =
+my
+> implementation provides both. I can't use this with both at once.
+
+Just an idea: what about defining CMDLINE as a pattern where e.g. "$$" =
+or "%%"
+is replaced by the boot loader command line?
+
+Then you can formulate replace, prepend, append, prepend+append with a =
+single
+CONFIG setting.
+
+It may be a little more complex in code (scanning for the pattern and =
+replacing
+it and take care to temporary memory) but IMHO it could be worth to =
+consider.
+
+BR,
+Nikolaus Schaller
+
