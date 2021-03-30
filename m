@@ -2,206 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16ED34F142
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3327834F144
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbhC3Sv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhC3SvB (ORCPT
+        id S232963AbhC3Sw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:52:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232901AbhC3SwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:51:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044D2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:51:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id c17so5433225ybs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=4NHP43juSFcuS58x/2UJlpN5oUfnrImFRp3vOEH4PN8=;
-        b=S6AFP5Qy+AU/01vWzoL9JaSqyN7AfGb8GGMRngnLpimCg385C9xGE6DKo5e794jQb9
-         sWLgKOq5Lp2RfbGAy3+d/r2L7LyQhPjAE9DyEwz9NwC3DZv9HtIStbZuXmu60BxB7XSd
-         oGyp9AZo5Rl/uQvCFxwT7n09qqKF1ViF7zcQSOtZjbuuS+5BST4MGaRFnMh3Se1nC5fz
-         EPLUrtALBebPCL+H8K65zogbJHDXpyp114HBWaGTsv6Uflsiu2Yt+AlZ6ZbkfBWXtNdq
-         4rZcELRqhdhXwqzgxz9tihwHh3g3+2PennOZYzQZmJLA5XntelV0RNh7jO8X0EAkNXoV
-         cBgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=4NHP43juSFcuS58x/2UJlpN5oUfnrImFRp3vOEH4PN8=;
-        b=UQQ+ObrDcVPCYNZjRxOS342oqc/tPQLcjNHGM8ik/2cXVAiJUmIrO/2AAP1NHk/Vjp
-         bmE/mIcykqvLFZciNKejVH9TadTMQ/9NH8QiPdce7Xl00jMm1WYucYri/tTOYqAEMguF
-         jAwl7qcgGXieeC8NvV9dwVdeOQ8/xc4Yme+1WZsjuB3dg5ziEbdn0jvGfwyTCxnevxxq
-         Pn6Rw0IMYavkyS6QeChOD3IU3rwVNESI3d9WWtF+X9IL3ALfmXzqGT8GdAA1o0ep81R2
-         S8ucVwB7Ajxigc3Ry2UJQkHrkrws9P1piMo6fLnxPlqQP93g3mFQWM9FjyBKNoLKt/ZO
-         4yKw==
-X-Gm-Message-State: AOAM532EaqUCqCBerDF8IsFfgq6PYDahqYH7cjMIUqo9K0q78dqBpklt
-        e8/prynmmTwtZemLCXjAyNv7jKkUYHLcl8Y=
-X-Google-Smtp-Source: ABdhPJwwoy56RNAduffEGyvuYBBdd7wuC969T2A6ZUYV5Z46JKKLZEtku9FnCTzE0ejEMfF/FzefVJU2IrM+62M=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:2107:7fd6:da76:59c1])
- (user=saravanak job=sendgmr) by 2002:a25:105:: with SMTP id
- 5mr47986347ybb.296.1617130260209; Tue, 30 Mar 2021 11:51:00 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 11:50:55 -0700
-Message-Id: <20210330185056.1022008-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v1] of: property: fw_devlink: Add support for remote-endpoint
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Stephen Boyd <swboyd@chromium.org>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 30 Mar 2021 14:52:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617130325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yMCpVlMlRD7NcZCE9ewfx3xVfYn50wJwXreF4M6Z7f4=;
+        b=XMD3Ii9OiclANAcMhuISxUB0U2BBtQ3Q3gpK5BdlewpX3LIoSIfj8WJTamsxASKY6fUXFI
+        OZ2eCemD20Yohw+VV6UQHatAPqF+MiQSvwAbRa/RiKc9SF0WOF+sLME1SsYN4x4xTMDqFC
+        BWm9XcH7D8zNz2xiSkBjY0yHiHHrwL0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-YkBKwRlwOwmf23SkhoZNIw-1; Tue, 30 Mar 2021 14:52:02 -0400
+X-MC-Unique: YkBKwRlwOwmf23SkhoZNIw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0751190B2A1;
+        Tue, 30 Mar 2021 18:52:00 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81C1260861;
+        Tue, 30 Mar 2021 18:51:55 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 20:51:54 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>, brouer@redhat.com
+Subject: Re: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce
+ stat overhead
+Message-ID: <20210330205154.1fe1e479@carbon>
+In-Reply-To: <20210329120648.19040-1-mgorman@techsingularity.net>
+References: <20210329120648.19040-1-mgorman@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remote-endpoint property seems to always come in pairs where two devices
-point to each other. So, we can't really tell from DT if there is a
-functional probe order dependency between these two devices.
+On Mon, 29 Mar 2021 13:06:42 +0100
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-However, there can be other dependencies between two devices that point
-to each other with remote-endpoint. This non-remote-endpoint dependency
-combined with one of the remote-endpoint dependency can lead to a cyclic
-dependency[1].
+> This series requires patches in Andrew's tree so the series is also
+> available at
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
+> 
+> tldr: Jesper and Chuck, it would be nice to verify if this series helps
+> 	the allocation rate of the bulk page allocator. RT people, this
+> 	*partially* addresses some problems PREEMPT_RT has with the page
+> 	allocator but it needs review.
 
-To avoid this cyclic dependency from incorrectly blocking probes,
-fw_devlink needs to be made aware of remote-endpoint dependencies even
-though remote-endpoint dependencies by themselves won't affect probe
-ordering (because fw_devlink will see the cyclic dependency between
-remote-endpoint devices and ignore the dependencies that cause the
-cycle).
+I've run a new micro-benchmark[1] which shows:
+(CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
 
-Also, if a device ever needs to know if a non-probe-blocking
-remote-endpoint has finished probing, it can now use the sync_state() to
-figure it out.
+BASELINE
+ single_page alloc+put: 194 cycles(tsc) 54.106 ns
 
-[1] - https://lore.kernel.org/lkml/CAGETcx9Snf23wrXqjDhJiTok9M3GcoVYDSyNYSMj9QnSRrA=cA@mail.gmail.com/#t
-Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-Rob/Greg,
+LIST variant: time_bulk_page_alloc_free_list: step=bulk size
 
-This needs to go into driver-core due to the Fixes.
+ Per elem: 200 cycles(tsc) 55.667 ns (step:1)
+ Per elem: 143 cycles(tsc) 39.755 ns (step:2)
+ Per elem: 132 cycles(tsc) 36.758 ns (step:3)
+ Per elem: 128 cycles(tsc) 35.795 ns (step:4)
+ Per elem: 123 cycles(tsc) 34.339 ns (step:8)
+ Per elem: 120 cycles(tsc) 33.396 ns (step:16)
+ Per elem: 118 cycles(tsc) 32.806 ns (step:32)
+ Per elem: 115 cycles(tsc) 32.169 ns (step:64)
+ Per elem: 116 cycles(tsc) 32.258 ns (step:128)
 
--Saravana
+ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
 
- drivers/of/property.c | 48 ++++++++++++++++++++++++++++---------------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+ Per elem: 195 cycles(tsc) 54.225 ns (step:1)
+ Per elem: 127 cycles(tsc) 35.492 ns (step:2)
+ Per elem: 117 cycles(tsc) 32.643 ns (step:3)
+ Per elem: 111 cycles(tsc) 30.992 ns (step:4)
+ Per elem: 106 cycles(tsc) 29.606 ns (step:8)
+ Per elem: 102 cycles(tsc) 28.532 ns (step:16)
+ Per elem: 99 cycles(tsc) 27.728 ns (step:32)
+ Per elem: 98 cycles(tsc) 27.252 ns (step:64)
+ Per elem: 97 cycles(tsc) 27.090 ns (step:128)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 5036a362f52e..2bb3158c9e43 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1038,6 +1038,25 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
- 	return false;
- }
- 
-+static struct device_node *of_get_compat_node(struct device_node *np)
-+{
-+	of_node_get(np);
-+
-+	while (np) {
-+		if (!of_device_is_available(np)) {
-+			of_node_put(np);
-+			np = NULL;
-+		}
-+
-+		if (of_find_property(np, "compatible", NULL))
-+			break;
-+
-+		np = of_get_next_parent(np);
-+	}
-+
-+	return np;
-+}
-+
- /**
-  * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
-  * @con_np: consumer device tree node
-@@ -1061,25 +1080,11 @@ static int of_link_to_phandle(struct device_node *con_np,
- 	struct device *sup_dev;
- 	struct device_node *tmp_np = sup_np;
- 
--	of_node_get(sup_np);
- 	/*
- 	 * Find the device node that contains the supplier phandle.  It may be
- 	 * @sup_np or it may be an ancestor of @sup_np.
- 	 */
--	while (sup_np) {
--
--		/* Don't allow linking to a disabled supplier */
--		if (!of_device_is_available(sup_np)) {
--			of_node_put(sup_np);
--			sup_np = NULL;
--		}
--
--		if (of_find_property(sup_np, "compatible", NULL))
--			break;
--
--		sup_np = of_get_next_parent(sup_np);
--	}
--
-+	sup_np = of_get_compat_node(sup_np);
- 	if (!sup_np) {
- 		pr_debug("Not linking %pOFP to %pOFP - No device\n",
- 			 con_np, tmp_np);
-@@ -1225,6 +1230,8 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
-  * @parse_prop.prop_name: Name of property holding a phandle value
-  * @parse_prop.index: For properties holding a list of phandles, this is the
-  *		      index into the list
-+ * @optional: The property can be an optional dependency.
-+ * @node_not_dev: The consumer node containing the property is never a device.
-  *
-  * Returns:
-  * parse_prop() return values are
-@@ -1236,6 +1243,7 @@ struct supplier_bindings {
- 	struct device_node *(*parse_prop)(struct device_node *np,
- 					  const char *prop_name, int index);
- 	bool optional;
-+	bool node_not_dev;
- };
- 
- DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
-@@ -1260,6 +1268,7 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-+DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
- DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-@@ -1334,6 +1343,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_pinctrl6, },
- 	{ .parse_prop = parse_pinctrl7, },
- 	{ .parse_prop = parse_pinctrl8, },
-+	{ .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
- 	{ .parse_prop = parse_gpio_compat, },
- 	{ .parse_prop = parse_interrupts, },
- 	{ .parse_prop = parse_regulators, },
-@@ -1378,10 +1388,16 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
- 		}
- 
- 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
-+			struct device_node *con_dev_np;
-+
-+			con_dev_np = s->node_not_dev
-+					? of_get_compat_node(con_np)
-+					: of_node_get(con_np);
- 			matched = true;
- 			i++;
--			of_link_to_phandle(con_np, phandle);
-+			of_link_to_phandle(con_dev_np, phandle);
- 			of_node_put(phandle);
-+			of_node_put(con_dev_np);
- 		}
- 		s++;
- 	}
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org#micro-benchmark-page_bench04_bulk-local_lock-v1r15
+
+This should be seen in comparison with the older micro-benchmark[2]
+done on branch mm-bulk-rebase-v5r9.
+
+BASELINE
+ single_page alloc+put: Per elem: 199 cycles(tsc) 55.472 ns
+
+LIST variant: time_bulk_page_alloc_free_list: step=bulk size
+
+ Per elem: 206 cycles(tsc) 57.478 ns (step:1)
+ Per elem: 154 cycles(tsc) 42.861 ns (step:2)
+ Per elem: 145 cycles(tsc) 40.536 ns (step:3)
+ Per elem: 142 cycles(tsc) 39.477 ns (step:4)
+ Per elem: 142 cycles(tsc) 39.610 ns (step:8)
+ Per elem: 137 cycles(tsc) 38.155 ns (step:16)
+ Per elem: 135 cycles(tsc) 37.739 ns (step:32)
+ Per elem: 134 cycles(tsc) 37.282 ns (step:64)
+ Per elem: 133 cycles(tsc) 36.993 ns (step:128)
+
+ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+
+ Per elem: 202 cycles(tsc) 56.383 ns (step:1)
+ Per elem: 144 cycles(tsc) 40.047 ns (step:2)
+ Per elem: 134 cycles(tsc) 37.339 ns (step:3)
+ Per elem: 128 cycles(tsc) 35.578 ns (step:4)
+ Per elem: 120 cycles(tsc) 33.592 ns (step:8)
+ Per elem: 116 cycles(tsc) 32.362 ns (step:16)
+ Per elem: 113 cycles(tsc) 31.476 ns (step:32)
+ Per elem: 110 cycles(tsc) 30.633 ns (step:64)
+ Per elem: 110 cycles(tsc) 30.596 ns (step:128)
+
+[2] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org#micro-benchmark-page_bench04_bulk
+
+This new patchset does show some improvements in the micro-benchmark.
+
+
+> The PCP (per-cpu page allocator in page_alloc.c) share locking requirements
+> with vmstat which is inconvenient and causes some issues. Possibly because
+> of that, the PCP list and vmstat share the same per-cpu space meaning that
+> it's possible that vmstat updates dirty cache lines holding per-cpu lists
+> across CPUs unless padding is used. The series splits that structure and
+> separates the locking.
+> 
+> Second, PREEMPT_RT considers the following sequence to be unsafe
+> as documented in Documentation/locking/locktypes.rst
+> 
+>    local_irq_disable();
+>    spin_lock(&lock);
+> 
+> The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
+> -> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). This series explicitly  
+> separates the locking requirements for the PCP list (local_lock) and stat
+> updates (irqs disabled). Once that is done, the length of time IRQs are
+> disabled can be reduced and in some cases, IRQ disabling can be replaced
+> with preempt_disable.
+> 
+> After that, it was very obvious that zone_statistics in particular has way
+> too much overhead and leaves IRQs disabled for longer than necessary. It
+> has perfectly accurate counters requiring IRQs be disabled for parallel
+> RMW sequences when inaccurate ones like vm_events would do. The series
+> makes the NUMA statistics (NUMA_HIT and friends) inaccurate counters that
+> only require preempt be disabled.
+> 
+> Finally the bulk page allocator can then do all the stat updates in bulk
+> with IRQs enabled which should improve the efficiency of the bulk page
+> allocator. Technically, this could have been done without the local_lock
+> and vmstat conversion work and the order simply reflects the timing of
+> when different series were implemented.
+> 
+> No performance data is included because despite the overhead of the
+> stats, it's within the noise for most workloads but Jesper and Chuck may
+> observe a significant different with the same tests used for the bulk
+> page allocator. The series is more likely to be interesting to the RT
+> folk in terms of slowing getting the PREEMPT tree into mainline.
+
+I've try to run some longer packet benchmarks later.  A quick test
+showed performance was within same range, and slightly better.  The
+perf report and objdump, did reveal that code layout prefers the label
+"failed:" as the primary code path, which should only be used for
+single page allocs, which is kind of weird. (But as performance is the
+same or slightly better, I will not complain).
+
+
+>  drivers/base/node.c    |  18 +--
+>  include/linux/mmzone.h |  29 +++--
+>  include/linux/vmstat.h |  65 ++++++-----
+>  mm/mempolicy.c         |   2 +-
+>  mm/page_alloc.c        | 173 ++++++++++++++++------------
+>  mm/vmstat.c            | 254 +++++++++++++++--------------------------
+>  6 files changed, 254 insertions(+), 287 deletions(-)
+
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
