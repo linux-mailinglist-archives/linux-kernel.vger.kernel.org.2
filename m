@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCFA34EA54
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8B534EA5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhC3OXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:23:19 -0400
-Received: from mga09.intel.com ([134.134.136.24]:15630 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232141AbhC3OXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:23:04 -0400
-IronPort-SDR: nR9NUb2xROaGigpRtLMVCWocP4gFQkAs+ZJa/oOMWceOvnUrLLST15azimzX1uJsSGg8+b8l8k
- g3lOOSZei8rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191874655"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="191874655"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 07:23:00 -0700
-IronPort-SDR: ghwn0ifiJw8J7fxvJoWtadsdpQs8QxU/11b4VnX/XZukEvV1bDWcHn9gPakWimqSBwy6MTEMIl
- 2J8X0rYuD8Cw==
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="393626944"
-Received: from feifeich-mobl1.amr.corp.intel.com (HELO [10.212.41.240]) ([10.212.41.240])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 07:22:58 -0700
-Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
- machine driver
-To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     shumingf@realtek.com, flove@realtek.com, kent_chen@realtek.com,
-        jack.yu@realtek.com, Alexander.Deucher@amd.com,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
-Date:   Tue, 30 Mar 2021 09:22:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231950AbhC3OZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:25:17 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54790 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231882AbhC3OYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:24:49 -0400
+X-UUID: 36093d43e0884872946b8d49f557ef4a-20210330
+X-UUID: 36093d43e0884872946b8d49f557ef4a-20210330
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 275825953; Tue, 30 Mar 2021 22:24:47 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 30 Mar 2021 22:24:39 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 30 Mar 2021 22:24:40 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <maz@kernel.org>
+CC:     <julien.thierry.kdev@gmail.com>, <lecopzer.chen@mediatek.com>,
+        <lecopzer@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <lorenzo.pieralisi@arm.com>,
+        <tglx@linutronix.de>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] irqchip/gic-v3: Fix IPRIORITYR can't perform byte operations in GIC-600
+Date:   Tue, 30 Mar 2021 22:24:40 +0800
+Message-ID: <20210330142440.30119-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <87eefwrash.wl-maz@kernel.org>
+References: <87eefwrash.wl-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[...]
+> > > > 
+> > > > From the architecture spec:
+> > > > 
+> > > > <quote>
+> > > > 11.1.3 GIC memory-mapped register access
+> > > > 
+> > > > In any system, access to the following registers must be supported:
+> > > > 
+> > > > [...]
+> > > > * Byte accesses to:
+> > > > 	- GICD_IPRIORITYR<n>.
+> > > > 	- GICD_ITARGETSR<n>.
+> > > > 	- GICD_SPENDSGIR<n>.
+> > > > 	- GICD_CPENDSGIR<n>.
+> > > > 	- GICR_IPRIORITYR<n>.
+> > > > </quote>
+> > > > 
+> > > > So if GIC600 doesn't follow this architectural requirement, this is a
+> > > > HW erratum, and I want an actual description of the HW issue together
+> > > > with an erratum number.
+> > > > 
+> > > > Lorenzo, can you please investigate on your side?
+> > > 
+> > > Sure - I will look into it and report back.
+> > 
+> > Checked - I don't think this patch is needed so it should be dropped and
+> > a follow-up discussion can continue in the relevant/appropriate forum -
+> > if there is anything left to discuss.
+> 
+> Thanks for having had a look. This really smells like an integration
+> issue rather than an actual GIC bug.
+> 
+> Lecopzer, please check with your HW people and potentially ARM, as I
+> think you are looking at the wrong problem.
 
->   static const struct acpi_device_id acp3x_audio_acpi_match[] = {
->   	{ "AMDI5682", (unsigned long)&acp3x_5682},
->   	{ "AMDI1015", (unsigned long)&acp3x_1015},
-> +	{ "AMDP1015", (unsigned long)&acp3x_1015p},
+Thanks a lot for the suggestion and checking,
 
-This isn't a valid ACPI ID. AMDP does not exist in
-https://uefi.org/acpi_id_list
+I think I'll back to disscuss with ARM and our HW team to figure out
+the previous answer from ARM Support in detail.
 
-There was a similar issue with Intel platforms using this part, we had 
-to use a different HID.
+Thanks again!
 
 
+Lecopzer
