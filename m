@@ -2,135 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC8534E7E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A01434E7DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhC3Mtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:49:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52766 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232009AbhC3MtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:49:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617108549; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=96qHzHGoEEUmPTxHIx4FwcAj71je9EFrRv4IZ94Y4BU=;
- b=CqyiyVK8g9Kg9ElNsOG5mhpui7p1j0/ztxQfMcU3L39/7duTm4UwTQd9qsM+FCWAAZqgx5RX
- /wG0uGLohz9XLhatQDdYx8jg8VoudK1Pu0V7Byc8MSKwx1L10mlh/kw6Ctpmy225ZFyFmjOt
- 7EKR2INK2/K4hHQctll25UNmn9E=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60631e2c0a4a07ffdade47ff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 12:48:44
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4C1F7C43461; Tue, 30 Mar 2021 12:48:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E52CDC433C6;
-        Tue, 30 Mar 2021 12:48:43 +0000 (UTC)
+        id S232097AbhC3MtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:49:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3507 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231960AbhC3Msy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:48:54 -0400
+Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F8q2m65f1zRQnW;
+        Tue, 30 Mar 2021 20:46:56 +0800 (CST)
+Received: from [10.174.61.99] (10.174.61.99) by dggeme706-chm.china.huawei.com
+ (10.1.199.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Tue, 30
+ Mar 2021 20:48:51 +0800
+Subject: Re: [v5] PCI: Add reset quirk for Huawei Intelligent NIC virtual
+ function
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <zengweiliang.zengweiliang@huawei.com>, <chenlizhong@huawei.com>
+References: <20210318205455.GA160826@bjorn-Precision-5520>
+From:   Chiqijun <chiqijun@huawei.com>
+Message-ID: <8f77bedb-4905-f1e7-a05a-04bc6ffa60c0@huawei.com>
+Date:   Tue, 30 Mar 2021 20:48:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 30 Mar 2021 18:18:43 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-In-Reply-To: <YGMIoM3xIZzRvU3i@kroah.com>
-References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
- <YF3jfshT3OSolcws@kroah.com>
- <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
- <YGLqXI8HOaOrMq1B@kroah.com>
- <d2348b758fa57acf53885b67f066e0a1@codeaurora.org>
- <YGMIoM3xIZzRvU3i@kroah.com>
-Message-ID: <c984ff015109ed606d2933125d385015@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210318205455.GA160826@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.61.99]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggeme706-chm.china.huawei.com (10.1.199.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30 16:46, Greg Kroah-Hartman wrote:
-> On Tue, Mar 30, 2021 at 03:25:58PM +0530, Sai Prakash Ranjan wrote:
->> On 2021-03-30 14:37, Greg Kroah-Hartman wrote:
->> > On Tue, Mar 30, 2021 at 02:12:04PM +0530, Sandeep Maheswaram wrote:
->> > >
->> > > On 3/26/2021 7:07 PM, Greg Kroah-Hartman wrote:
->> > > > On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
->> > > > > This patch adds a shutdown callback to USB DWC core driver to ensure that
->> > > > > it is properly shutdown in reboot/shutdown path. This is required
->> > > > > where SMMU address translation is enabled like on SC7180
->> > > > > SoC and few others. If the hardware is still accessing memory after
->> > > > > SMMU translation is disabled as part of SMMU shutdown callback in
->> > > > > system reboot or shutdown path, then IOVAs(I/O virtual address)
->> > > > > which it was using will go on the bus as the physical addresses which
->> > > > > might result in unknown crashes (NoC/interconnect errors).
->> > > > >
->> > > > > Previously this was added in dwc3 qcom glue driver.
->> > > > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
->> > > > > But observed kernel panic as glue driver shutdown getting called after
->> > > > > iommu shutdown. As we are adding iommu nodes in dwc core node
->> > > > > in device tree adding shutdown callback in core driver seems correct.
->> > > > So shouldn't you also remove this from the qcom glue driver at the same
->> > > > time?  Please submit both as a patch series.
->> > > >
->> > > > thanks,
->> > > >
->> > > > greg k-h
->> > >
->> > > Hi Greg,
->> > >
->> > > The qcom glue driver patch is not merged yet. I have just mentioned
->> > > for it for reference.
->> >
->> > You know that we can not add callbacks for no in-kernel user, so what
->> > good is this patch for now?
->> >
->> 
->> What in-kernel user? Since when does shutdown callback need an 
->> in-kernel
->> user? When you reboot or shutdown a system, it gets called. The reason
->> why the shutdown callback is needed is provided in the commit text.
+
+
+On 2021/3/19 4:54, Bjorn Helgaas wrote:
+> On Tue, Mar 16, 2021 at 10:08:47PM +0800, Chiqijun wrote:
+>> When multiple VFs do FLR at the same time, the firmware is
+>> processed serially, resulting in some VF FLRs being delayed more
+>> than 100ms, when the virtual machine restarts and the device
+>> driver is loaded, the firmware is doing the corresponding VF
+>> FLR, causing the driver to fail to load.
 > 
-> As I can't see the patch here, I have no idea...
+> Nit: VFs do not do FLR; *software* does FLR on a VF.  And I think this
+> is a spec compliance issue specific to the Huawei NIC.  I would say
+> something like "When we do an FLR on several VFs at the same time, the
+> Huawei Intelligent NIC processes them serially, ..."
+> 
 
-You are replying now to the same patch which adds this shutdown callback 
-:)
-Anyways the qcom dwc3 driver patch which is abandoned which is also 
-mentioned
-in the commit text is here [1] and the new shutdown callback patch which 
-we
-are both replying to is in here [2]
+OK，will update it at next patch.
 
-[1] 
-https://lore.kernel.org/lkml/1605162619-10064-1-git-send-email-sanm@codeaurora.org/
+> "VF FLRs being delayed more than 100ms" does not by itself explain
+> what the problem is.  I'm guessing the problem is that it exceeds the
+> "msleep(100)" in pcie_flr(), which is based on PCIe r5.0, sec 6.6.2,
+> which requires:
+> 
+>    After an FLR has been initiated by writing a 1b to the Initiate
+>    Function Level Reset bit, the Function must complete the FLR within
+>    100 ms.
+> 
+> So this device is apparently out of spec.  Is there an erratum for
+> this?  Please cite it and quote the relevant part here.  I want to
+> avoid having to update this quirk with future device IDs.
+> 
 
-[2] 
-https://lore.kernel.org/lkml/1616527652-7937-1-git-send-email-sanm@codeaurora.org/
+We added a description of this problem to the document on the Huawei 
+support website:
+https://support.huawei.com/enterprise/en/doc/EDOC1100063073/87950645/vm-oss-occasionally-fail-to-load-the-in200-driver-when-the-vf-performs-flr
 
-Thanks,
-Sai
+> IIUC, VFIO is initiating the FLR, probably as part of assigning the VF
+> to a VM?
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Yes, any process that can trigger multiple VF parallel FLRs has this 
+problem.
+
+> 
+>> To solve this problem, add host and firmware status synchronization
+>> during FLR.
+>>
+>> Signed-off-by: Chiqijun <chiqijun@huawei.com>
+>> ---
+>> v5:
+>>   - Fix build warning reported by kernel test robot
+>>
+>> v4:
+>>   - Addressed Bjorn's review comments
+>>
+>> v3:
+>>   - The MSE bit in the VF configuration space is hardwired to zero,
+>>     remove the setting of PCI_COMMAND_MEMORY bit. Add comment for
+>>     set PCI_COMMAND register.
+>>
+>> v2:
+>>   - Update comments
+>>   - Use the HINIC_VF_FLR_CAP_BIT_SHIFT and HINIC_VF_FLR_PROC_BIT_SHIFT
+>>     macro instead of the magic number
+>> ---
+>>   drivers/pci/quirks.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 69 insertions(+)
+>>
+>> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+>> index 653660e3ba9e..343890432ba8 100644
+>> --- a/drivers/pci/quirks.c
+>> +++ b/drivers/pci/quirks.c
+>> @@ -3913,6 +3913,73 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
+>>   	return 0;
+>>   }
+>>   
+>> +#define PCI_DEVICE_ID_HINIC_VF      0x375E
+>> +#define HINIC_VF_FLR_TYPE           0x1000
+>> +#define HINIC_VF_FLR_CAP_BIT_SHIFT  30
+>> +#define HINIC_VF_OP                 0xE80
+>> +#define HINIC_VF_FLR_PROC_BIT_SHIFT 18
+>> +#define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
+> 
+> If you did this:
+> 
+>    #define HINIC_VF_FLR_CAP_BIT   (1UL << 30)
+>    #define HINIC_VF_FLR_PROC_BIT  (1UL << 18)
+> 
+> the code below could be a little more readable, e.g,:
+> 
+>    if (!(val & HINIC_VF_FLR_CAP_BIT))
+>      ...
+>    val |= HINIC_VF_FLR_PROC_BIT;
+> 
+
+Will fix.
+
+>> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
+>> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
+>> +{
+>> +	unsigned long timeout;
+>> +	void __iomem *bar;
+>> +	u32 val;
+>> +
+>> +	if (probe)
+>> +		return 0;
+>> +
+>> +	bar = pci_iomap(pdev, 0, 0);
+>> +	if (!bar)
+>> +		return -ENOTTY;
+>> +
+>> +	/* Get and check firmware capabilities. */
+>> +	val = ioread32be(bar + HINIC_VF_FLR_TYPE);
+>> +	if (!(val & (1UL << HINIC_VF_FLR_CAP_BIT_SHIFT))) {
+>> +		pci_iounmap(pdev, bar);
+>> +		return -ENOTTY;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Set the processing bit for the start of FLR, which will be cleared
+>> +	 * by the firmware after FLR is completed.
+>> +	 */
+>> +	val = ioread32be(bar + HINIC_VF_OP);
+>> +	val = val | (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT);
+> 
+>> +	iowrite32be(val, bar + HINIC_VF_OP);
+>> +
+>> +	/* Perform the actual device function reset */
+>> +	pcie_flr(pdev);
+>> +
+>> +	/*
+>> +	 * The device must learn BDF after FLR in order to respond to BAR's
+>> +	 * read request, therefore, we issue a configure write request to let
+>> +	 * the device capture BDF.
+> 
+> Will this device capture the bus/device here even though it hasn't
+> completed the reset?  Or does this write need to happen below, after
+> the device has cleared HINIC_VF_FLR_PROC_BIT?
+> 
+
+The FLR processing of Huawei NIC is completed by the cooperation of 
+hardware and firmware. The hardware can be executed in parallel and 
+ensured within 100ms, but the firmware processing can only be executed 
+serially; bus/device clearing and capturing are all completed by 
+hardware, so it can be directly complete the config write operation here.
+
+>> +	 */
+>> +	pci_write_config_word(pdev, PCI_VENDOR_ID, 0);
+>> +
+>> +	/* Waiting for device reset complete */
+>> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
+>> +	do {
+>> +		val = ioread32be(bar + HINIC_VF_OP);
+>> +		if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
+>> +			goto reset_complete;
+>> +		msleep(20);
+>> +	} while (time_before(jiffies, timeout));
+>> +
+>> +	val = ioread32be(bar + HINIC_VF_OP);
+>> +	if (!(val & (1UL << HINIC_VF_FLR_PROC_BIT_SHIFT)))
+>> +		goto reset_complete;
+>> +
+>> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %#010x\n", val);
+> 
+> s/flr/FLR/
+> 
+
+Will fix.
+
+>> +reset_complete:
+>> +	pci_iounmap(pdev, bar);
+>> +
+>> +	return 0;
+> 
+> You return 0 (success) even if the reset timed out.  Is that what you
+> want?
+> 
+> I'd consider adding an "int err" local variable, then doing this so
+> there's a single cleanup place that does the pci_iounmap() and the
+> straight-line main path is the non-error one:
+> 
+>      int err = 0;
+> 
+>      if (!(val & HINIC_VF_FLR_CAP_BIT)) {
+>        err = -ENOTTY;
+>        goto reset_complete;
+>      }
+> 
+>      do {
+>        ...
+>      } while (time_before(jiffies, timeout));
+> 
+>      val = ioread32be(bar + HINIC_VF_OP);
+>      if (val & HINIC_VF_FLR_PROC_BIT) {
+>        pci_warn(pdev, "Reset dev timeout, FLR ack reg: %#010x\n", val);
+>        err = -EBUSY;            /* if you want error here; I dunno */
+>        goto reset_complete;
+>      }
+> 
+>      /* Let device capture bus/device, per PCIe r5.0, sec 2.2.9 */
+>      pci_write_config_word(pdev, PCI_VENDOR_ID, 0);  /* if it goes here? */
+> 
+>    reset_complete:
+>      pci_iounmap(pdev, bar);
+>      return err;
+> 
+
+Waiting for FLR timeout here means that the firmware has not executed 
+FLR for a period of time, but eventually FLR will be executed. We expect 
+PCIE to be initialized after the timeout to ensure that PCIE is normal; 
+even if VF initialization fails at the beginning, we do not restart the 
+virtual machine, But after the remove/insmod driver, it can still be 
+used normally.
+
+Thanks.
+
+>> +}
+>> +
+>>   static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>>   	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
+>>   		 reset_intel_82599_sfp_virtfn },
+>> @@ -3924,6 +3991,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>>   	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+>>   	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+>>   		reset_chelsio_generic_dev },
+>> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
+>> +		reset_hinic_vf_dev },
+>>   	{ 0 }
+>>   };
+>>   
+>> -- 
+>> 2.17.1
+>>
+> .
+> 
