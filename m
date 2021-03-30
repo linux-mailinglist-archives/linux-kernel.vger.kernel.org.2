@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08FA34F3C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DF234F3C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 23:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhC3VvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 17:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56610 "EHLO
+        id S232554AbhC3Vxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 17:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhC3VvE (ORCPT
+        with ESMTP id S232533AbhC3Vwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 17:51:04 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67095C061574;
-        Tue, 30 Mar 2021 14:51:04 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id cx5so8961070qvb.10;
-        Tue, 30 Mar 2021 14:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+K4nfDlNqS+buaOaVq0AwqLIJ0qhfMJqcEYS+OVTapc=;
-        b=NDqsZVY+29ySsRg/3HK1AA9ORV4ajVk3u617yrGmsZWxFWcoaAYGq23GczTy0umqTH
-         zbXaf9OVWiu4k1LhyQJVkrAiM/MoA0COtEgwl/dMRGUTGnDkmq6gwsdcB771g4tFCljH
-         kQ3GH6/35vFXENrtuus3SAZ08usNE50+792tG7PfsyK7dvTRmdQeq9MXS0tcx9T0WgYy
-         Zsv1nC2/iKlh50dieaiECdA/DZTmSORJRjmK8233DGdyXd7o4kiI9iiTfuxcf38Rpxtt
-         Q9Txi/rmBlh5W9mSla1tJWDeLLfKG0USMfQlMXWS74O2US11V9sk26jcukF5Q7gPj5kD
-         1IfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+K4nfDlNqS+buaOaVq0AwqLIJ0qhfMJqcEYS+OVTapc=;
-        b=KSTZi/AMVFLr18G1q7C23TRYLo3xSiucZ7YkjnaK7etCb4N+R68cWroTmr6LEKUBki
-         10YY4A5ov7927g35oPJK+oUP17yMV74y647l52jZJCPWkiQpx7x9jKEAdzrw6JpsduOP
-         weSVxTXOBWLR8/ivgCXtbBjrjZY2aOhQrbskWrac3OhGS1lS6g4lNjwAyt4Ad+8se5EW
-         P5hsAv2meKfkyRn4RlcmhHUwAiDI/U+qzT2zbg2Y6oNrmr+VUV9B6y4fCEk/3ic/9dji
-         AkUCg2KfBwMCYXmZztnh1flpY6fHZXWvwR9MDbBPkkGd7jsWFkwUcmLELAfqJWGerDq7
-         33Qw==
-X-Gm-Message-State: AOAM5304/aDWEgAG4NKcTpgHTzfusD5x7erYtevhwRcd2WIy/xm5OQYW
-        F79lg9EOhly25ZkXcfIN3bX8FAkP6xX0uVSseME=
-X-Google-Smtp-Source: ABdhPJyslbdbjpfFB3Lq8Z40X1hr6APZEGUsaFpYs3kEAQ437pGTOonhltLSjPHd1MsDmKhxXgHtxg3plK2vT4EC3XE=
-X-Received: by 2002:ad4:57a5:: with SMTP id g5mr215200qvx.60.1617141063684;
- Tue, 30 Mar 2021 14:51:03 -0700 (PDT)
+        Tue, 30 Mar 2021 17:52:54 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3BBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 14:52:54 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 0513CC01D; Tue, 30 Mar 2021 23:52:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1617141173; bh=6VmtjFhYhwPr5OyiXU90y4E8e677PMijp5uhdzB0pWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ueF4T32DmiEbJrb1St6Hyv/1ZYpWjbY74k2rI9CVRJIQX2WrwqbLrJMqGydwHQsV9
+         bxTy5eFy/k7N+cEPbEtxAvorVa89Gel6dDYt01XKNKx5nMhbFNGoIkAIp5h5ep8fx8
+         rdyhUe6xqTemLwxaa9GDQ5gKasl5ZK6VnmmIdaVqEUrUWDN+a82Dm44PL9a1ZLtG1U
+         bSzwRx5bDkfPCG3yL/XD1i+Oz0jdj0v3Q5WRXjEPHJbQzowoSEkfarWgWQAhy2YCTU
+         4usTDC8rI9q2Qfx3mKnttflj+FVHF8UIxqArjvYUnsCdV+EkI/4ldSLxFiK7DBsa13
+         MBSXyVuH1Gd5w==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 98886C01A;
+        Tue, 30 Mar 2021 23:52:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1617141172; bh=6VmtjFhYhwPr5OyiXU90y4E8e677PMijp5uhdzB0pWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r2xtYcmClS86PCDnYJVvmrwr8Jy68IqK35UM+mpQC8fMeet4JA8EtSlu4QjAquSV6
+         VQ27moR3cDbdrdbCb1ooZfpL+6MAT7Vu1Q9LKo7UIuW8Xr6zsvrIOyQ/3v+rOog2GR
+         t33QCnJ47jg52pFG5QhId2CBjMPr7R5TFbUxw3g0zTwq4c3i6CXxwHi8sypAyh+t/6
+         zREcizgreMGvE49K9MvadwYkar91inQMbnmUjzfqHr4TH86Xe0YsDKdbnELBgn5DuF
+         pmRWy5zz2s31C1ysKg6KE+RhNKNc1Upc445HndKwlu4S2UibEj60AfjP77UF0xMUV6
+         IoHMNwieZ3CPw==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 44fde785;
+        Tue, 30 Mar 2021 21:52:48 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 06:52:33 +0900
+From:   asmadeus@codewreck.org
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH -next] fs: 9p: fix wrong pointer passed to IS_ERR() and
+ PTR_ERR()
+Message-ID: <YGOdoWkd3t0pVyfR@codewreck.org>
+References: <20210330130632.1054357-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <CAFLxGvzWLje+_HFeb+hKNch4U1f5uypVUOuP=QrEPn_JNM+scg@mail.gmail.com> <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
-In-Reply-To: <ca2a7c17-3ed0-e52f-2e2f-c0f8bbe10323@pengutronix.de>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Tue, 30 Mar 2021 23:50:52 +0200
-Message-ID: <CAFLxGvyj1aZ_3MuxJC6onejchV_6A8WbNR1vTLpSBF5QTxvLyQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>, kernel@pengutronix.de,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210330130632.1054357-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahmad,
+Yang Yingliang wrote on Tue, Mar 30, 2021 at 09:06:32PM +0800:
+> IS_ERR() and PTR_ERR() use wrong pointer, it should be
+> writeback_fid, fix it.
 
-On Wed, Mar 17, 2021 at 3:08 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+Right.
 
->     TABLE="0 $BLOCKS crypt $ALGO :32:trusted:$KEYNAME 0 $DEV 0 1 allow_discards"
->     echo $TABLE | dmsetup create mydev
->     echo $TABLE | dmsetup load mydev
-
-Do you also plan to add support for this to cryptsetup?
-
-David and I have added (rough) support for our CAAM/DCP based keyrings
-to cryptsetup:
-https://github.com/sigma-star/cryptsetup/tree/rw/plain
-
-I'm pretty sure with minimal changes it will work with your recent approach too.
-
+Good catch, thanks
 -- 
-Thanks,
-//richard
+Dominique
