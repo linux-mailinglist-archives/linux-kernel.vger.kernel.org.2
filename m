@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A0B34E051
+	by mail.lfdr.de (Postfix) with ESMTP id A8EA834E052
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 06:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhC3Emt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 00:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
+        id S231167AbhC3Emv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 00:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhC3EmT (ORCPT
+        with ESMTP id S229737AbhC3EmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 00:42:19 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BF4C0613D9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:42:19 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id p18so953313pjo.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:42:19 -0700 (PDT)
+        Tue, 30 Mar 2021 00:42:23 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9081C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 83so11524785pgh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZG5QUoyChvalUArlsvwS9b7o5aZFFyWCCkEpBVXhtkU=;
-        b=T1kmeXfP5qGSZ6kep4Ip7I39cg7FJgeB41AxNkyrCF1cJOe35DF0q4XjnSJgpguGuy
-         MIoPDeLDnLnIJW92Cs5ZAcj34Gq5hVBp9CMY0asY9O9KXi8o7g1giMP0E+N45eZbeAcI
-         r/cVavsl8GOUfUmhABHZ72n+l3pqapmOQyqs7EL31QmWDr0rbfxsXUBlbg/DmsKC/Fg6
-         OmTWkIykKglteesDu67g4eIeqmQaVa+LnyNv27knRfRh97w7A4Oa43EUO/IyQESpep+m
-         aHhc9lCqpU01mrSoMpZPtkljauQYWkiFbo1Zb29x3QJyFgN3T40x0t2dxtlR0+s3dlK0
-         xrUw==
+        bh=CIy5ACCF0ofpwh9zYe0S73BRRk0v0OISzt23gHBSsNA=;
+        b=tx1gG07Ck0mnE68/XTiNe7DMvwTmOjF63Ee6rvYBpVtmUo1jx0zb+lJOqCOsnt1hXe
+         bELVj5fbj0lz7PS2TONyKBpXYIg+feIwlb2VQCl1bb726ea+kHs6yTAp4a/TBF1k5cNh
+         WQ7JT51oLru86QmE3Bug1CsPCNupA0AQxQOQpqcQ70fD/3FS6gFl8U/KXywKfbykWixr
+         FLW0fgOQNvjlRhnIMpfTgmDUmGu+0C64hBYrbb0iuGPxZ/r0bhCzaVMdH0iuouV3fY5z
+         CRrv0gWHJDdl+0FnWRe3z8iJedXnrjVHTw6g8/yhbA4D/qPiBYGRKtuMsiyj56DxIK4s
+         rCWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZG5QUoyChvalUArlsvwS9b7o5aZFFyWCCkEpBVXhtkU=;
-        b=KhocZRKAXsG3n82nIVZ+Dx3PcVyzEOsKhKs8OrcXQ/lz542Fw0au0SIgedLKPEDPjm
-         boztqYiNJHwojnOlDABIcEAhujHLounf8EQrl9T5ch0UmBu2Cn13qdtLXQgEML384CJh
-         AUpf7m+wiuMV5Jsp9pIxmcN2mBdoEYsT6OkWgA08YU3t9UOopTss7OR4+cvU2fWF8bkX
-         LDnlfRIqUGZTVCuf8szE02AFCzdfmmNb22KZDh/Vb2BN0mWqfUdgCtYAo4GADXa6e720
-         WGlx11F2ic4kQ62Uyph6t+Erbh9ZifIfGpZF11oGwLo3+/yh2IFlIN21OYmdI59WEeCw
-         N1Xg==
-X-Gm-Message-State: AOAM531S5rAgMxLktWN9Xytsq00uwMI+Aufd4IP3XtcjaE45Q0nJheQe
-        u+99Jr27coJqHpVsdTYmVvfdsJgwdbbK
-X-Google-Smtp-Source: ABdhPJyekf3wulIGw97YjVoI8Z+G8BnfjhcUpxO8+ab5IRYZYFOwbJfdnKTZ083dq+vAlt+uvRkuF7UUfTy7
+        bh=CIy5ACCF0ofpwh9zYe0S73BRRk0v0OISzt23gHBSsNA=;
+        b=O4lnqTBO/80EUCh3nbAOs2xG5p9mmMA+XKJ+cixRGvSzS2Yhy3U5A5irvzEOdUz3gC
+         n1M01GolS6f92RqcqAM26OY9LcMEjt5Hw+q2+YuMGTZGncSGjeccSjwT6AGge51azlYe
+         TRgLjny299Xgoz0DjkgSvNT/fcog7sAQVXgtjVffAfdbWbRDW2QP3N/gOfSdowQx7ehi
+         /itv3CzldGkGroolRCInOyxHzQqw9k1b8+ZjgSl0VhTKGKVYSNqF3YF9x8HgcRMRER56
+         poUpnlg4toGBRii6GfcIZsqIgxmcL0bSrjVkvNnXa7EuJr8/K//lzoU5J3ffUOJmPsRT
+         AjqA==
+X-Gm-Message-State: AOAM533nKjGr3nZvm4tuv5eNFJQZwS9bDHryXi8DVdoyGxQ++4mqHPAu
+        zEai7H9iN2ojs0dNJZcXh9Zx1I7tkAwQ
+X-Google-Smtp-Source: ABdhPJwanaoy2S9Ezkf/flm++wEraYEBntfDjzkoZHgSRvzrtsWUrXoc50qrb0BGZ58rkL39rEm7UGOWdahi
 X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:8048:6a12:bd4f:a453])
- (user=vipinsh job=sendgmr) by 2002:a17:90b:2304:: with SMTP id
- mt4mr2545123pjb.179.1617079338730; Mon, 29 Mar 2021 21:42:18 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 21:42:05 -0700
+ (user=vipinsh job=sendgmr) by 2002:a17:90a:6708:: with SMTP id
+ n8mr2606697pjj.174.1617079342367; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 21:42:06 -0700
 In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
-Message-Id: <20210330044206.2864329-3-vipinsh@google.com>
+Message-Id: <20210330044206.2864329-4-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20210330044206.2864329-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v4 2/3] cgroup: Miscellaneous cgroup documentation.
+Subject: [PATCH v4 3/3] svm/sev: Register SEV and SEV-ES ASIDs to the misc controller
 From:   Vipin Sharma <vipinsh@google.com>
 To:     tj@kernel.org, mkoutny@suse.com, jacob.jun.pan@intel.com,
         rdunlap@infradead.org, thomas.lendacky@amd.com,
@@ -69,131 +69,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation of miscellaneous cgroup controller. This new controller is
-used to track and limit the usage of scalar resources.
+Secure Encrypted Virtualization (SEV) and Secure Encrypted
+Virtualization - Encrypted State (SEV-ES) ASIDs are used to encrypt KVMs
+on AMD platform. These ASIDs are available in the limited quantities on
+a host.
+
+Register their capacity and usage to the misc controller for tracking
+via cgroups.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 Reviewed-by: David Rientjes <rientjes@google.com>
 ---
- Documentation/admin-guide/cgroup-v1/index.rst |  1 +
- Documentation/admin-guide/cgroup-v1/misc.rst  |  4 +
- Documentation/admin-guide/cgroup-v2.rst       | 73 ++++++++++++++++++-
- 3 files changed, 76 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+ arch/x86/kvm/svm/sev.c      | 70 +++++++++++++++++++++++++++++++------
+ arch/x86/kvm/svm/svm.h      |  1 +
+ include/linux/misc_cgroup.h |  6 ++++
+ kernel/cgroup/misc.c        |  6 ++++
+ 4 files changed, 73 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/index.rst b/Documentation/admin-guide/cgroup-v1/index.rst
-index 226f64473e8e..99fbc8a64ba9 100644
---- a/Documentation/admin-guide/cgroup-v1/index.rst
-+++ b/Documentation/admin-guide/cgroup-v1/index.rst
-@@ -17,6 +17,7 @@ Control Groups version 1
-     hugetlb
-     memcg_test
-     memory
-+    misc
-     net_cls
-     net_prio
-     pids
-diff --git a/Documentation/admin-guide/cgroup-v1/misc.rst b/Documentation/admin-guide/cgroup-v1/misc.rst
-new file mode 100644
-index 000000000000..661614c24df3
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/misc.rst
-@@ -0,0 +1,4 @@
-+===============
-+Misc controller
-+===============
-+Please refer "Misc" documentation in Documentation/admin-guide/cgroup-v2.rst
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 64c62b979f2f..b1e81aa8598a 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -65,8 +65,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9. Misc
-+       5.9-1 Miscellaneous cgroup Interface Files
-+       5.9-2 Migration and Ownership
-+     5-10. Others
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2171,6 +2174,72 @@ HugeTLB Interface Files
- Misc
- ----
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 874ea309279f..214eefb20414 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -14,6 +14,7 @@
+ #include <linux/psp-sev.h>
+ #include <linux/pagemap.h>
+ #include <linux/swap.h>
++#include <linux/misc_cgroup.h>
+ #include <linux/processor.h>
+ #include <linux/trace_events.h>
+ #include <asm/fpu/internal.h>
+@@ -28,6 +29,21 @@
  
-+The Miscellaneous cgroup provides the resource limiting and tracking
-+mechanism for the scalar resources which cannot be abstracted like the other
-+cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC config
-+option.
-+
-+A resource can be added to the controller via enum misc_res_type{} in the
-+include/linux/misc_cgroup.h file and the corresponding name via misc_res_name[]
-+in the kernel/cgroup/misc.c file. Provider of the resource must set its
-+capacity prior to using the resource by calling misc_cg_set_capacity().
-+
-+Once a capacity is set then the resource usage can be updated using charge and
-+uncharge APIs. All of the APIs to interact with misc controller are in
-+include/linux/misc_cgroup.h.
-+
-+Misc Interface Files
-+~~~~~~~~~~~~~~~~~~~~
-+
-+Miscellaneous controller provides 3 interface files. If two misc resources (res_a and res_b) are registered then:
-+
-+  misc.capacity
-+        A read-only flat-keyed file shown only in the root cgroup.  It shows
-+        miscellaneous scalar resources available on the platform along with
-+        their quantities::
-+
-+	  $ cat misc.capacity
-+	  res_a 50
-+	  res_b 10
-+
-+  misc.current
-+        A read-only flat-keyed file shown in the non-root cgroups.  It shows
-+        the current usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.current
-+	  res_a 3
-+	  res_b 0
-+
-+  misc.max
-+        A read-write flat-keyed file shown in the non root cgroups. Allowed
-+        maximum usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.max
-+	  res_a max
-+	  res_b 4
-+
-+	Limit can be set by::
-+
-+	  # echo res_a 1 > misc.max
-+
-+	Limit can be set to max by::
-+
-+	  # echo res_a max > misc.max
-+
-+        Limits can be set higher than the capacity value in the misc.capacity
-+        file.
-+
-+Migration and Ownership
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+A miscellaneous scalar resource is charged to the cgroup in which it is used
-+first, and stays charged to that cgroup until that resource is freed. Migrating
-+a process to a different cgroup does not move the charge to the destination
-+cgroup where the process has moved.
-+
-+Others
-+------
-+
- perf_event
- ~~~~~~~~~~
+ #define __ex(x) __kvm_handle_fault_on_reboot(x)
  
++#ifndef CONFIG_KVM_AMD_SEV
++/*
++ * When this config is not defined, SEV feature is not supported and APIs in
++ * this file are not used but this file still gets compiled into the KVM AMD
++ * module.
++ *
++ * We will not have MISC_CG_RES_SEV and MISC_CG_RES_SEV_ES entries in the enum
++ * misc_res_type {} defined in linux/misc_cgroup.h.
++ *
++ * Below macros allow compilation to succeed.
++ */
++#define MISC_CG_RES_SEV MISC_CG_RES_TYPES
++#define MISC_CG_RES_SEV_ES MISC_CG_RES_TYPES
++#endif
++
+ static u8 sev_enc_bit;
+ static int sev_flush_asids(void);
+ static DECLARE_RWSEM(sev_deactivate_lock);
+@@ -89,8 +105,19 @@ static bool __sev_recycle_asids(int min_asid, int max_asid)
+ 
+ static int sev_asid_new(struct kvm_sev_info *sev)
+ {
+-	int pos, min_asid, max_asid;
++	int pos, min_asid, max_asid, ret;
+ 	bool retry = true;
++	enum misc_res_type type;
++
++	type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
++	WARN_ON(sev->misc_cg);
++	sev->misc_cg = get_current_misc_cg();
++	ret = misc_cg_try_charge(type, sev->misc_cg, 1);
++	if (ret) {
++		put_misc_cg(sev->misc_cg);
++		sev->misc_cg = NULL;
++		return ret;
++	}
+ 
+ 	mutex_lock(&sev_bitmap_lock);
+ 
+@@ -108,7 +135,8 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+ 			goto again;
+ 		}
+ 		mutex_unlock(&sev_bitmap_lock);
+-		return -EBUSY;
++		ret = -EBUSY;
++		goto e_uncharge;
+ 	}
+ 
+ 	__set_bit(pos, sev_asid_bitmap);
+@@ -116,6 +144,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+ 	mutex_unlock(&sev_bitmap_lock);
+ 
+ 	return pos + 1;
++e_uncharge:
++	misc_cg_uncharge(type, sev->misc_cg, 1);
++	put_misc_cg(sev->misc_cg);
++	sev->misc_cg = NULL;
++	return ret;
+ }
+ 
+ static int sev_get_asid(struct kvm *kvm)
+@@ -125,14 +158,15 @@ static int sev_get_asid(struct kvm *kvm)
+ 	return sev->asid;
+ }
+ 
+-static void sev_asid_free(int asid)
++static void sev_asid_free(struct kvm_sev_info *sev)
+ {
+ 	struct svm_cpu_data *sd;
+ 	int cpu, pos;
++	enum misc_res_type type;
+ 
+ 	mutex_lock(&sev_bitmap_lock);
+ 
+-	pos = asid - 1;
++	pos = sev->asid - 1;
+ 	__set_bit(pos, sev_reclaim_asid_bitmap);
+ 
+ 	for_each_possible_cpu(cpu) {
+@@ -141,6 +175,11 @@ static void sev_asid_free(int asid)
+ 	}
+ 
+ 	mutex_unlock(&sev_bitmap_lock);
++
++	type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
++	misc_cg_uncharge(type, sev->misc_cg, 1);
++	put_misc_cg(sev->misc_cg);
++	sev->misc_cg = NULL;
+ }
+ 
+ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+@@ -188,19 +227,20 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	asid = sev_asid_new(sev);
+ 	if (asid < 0)
+ 		return ret;
++	sev->asid = asid;
+ 
+ 	ret = sev_platform_init(&argp->error);
+ 	if (ret)
+ 		goto e_free;
+ 
+ 	sev->active = true;
+-	sev->asid = asid;
+ 	INIT_LIST_HEAD(&sev->regions_list);
+ 
+ 	return 0;
+ 
+ e_free:
+-	sev_asid_free(asid);
++	sev_asid_free(sev);
++	sev->asid = 0;
+ 	return ret;
+ }
+ 
+@@ -1315,12 +1355,12 @@ void sev_vm_destroy(struct kvm *kvm)
+ 	mutex_unlock(&kvm->lock);
+ 
+ 	sev_unbind_asid(kvm, sev->handle);
+-	sev_asid_free(sev->asid);
++	sev_asid_free(sev);
+ }
+ 
+ void __init sev_hardware_setup(void)
+ {
+-	unsigned int eax, ebx, ecx, edx;
++	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
+ 	bool sev_es_supported = false;
+ 	bool sev_supported = false;
+ 
+@@ -1352,7 +1392,11 @@ void __init sev_hardware_setup(void)
+ 	if (!sev_reclaim_asid_bitmap)
+ 		goto out;
+ 
+-	pr_info("SEV supported: %u ASIDs\n", max_sev_asid - min_sev_asid + 1);
++	sev_asid_count = max_sev_asid - min_sev_asid + 1;
++	if (misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count))
++		goto out;
++
++	pr_info("SEV supported: %u ASIDs\n", sev_asid_count);
+ 	sev_supported = true;
+ 
+ 	/* SEV-ES support requested? */
+@@ -1367,7 +1411,11 @@ void __init sev_hardware_setup(void)
+ 	if (min_sev_asid == 1)
+ 		goto out;
+ 
+-	pr_info("SEV-ES supported: %u ASIDs\n", min_sev_asid - 1);
++	sev_es_asid_count = min_sev_asid - 1;
++	if (misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count))
++		goto out;
++
++	pr_info("SEV-ES supported: %u ASIDs\n", sev_es_asid_count);
+ 	sev_es_supported = true;
+ 
+ out:
+@@ -1382,6 +1430,8 @@ void sev_hardware_teardown(void)
+ 
+ 	bitmap_free(sev_asid_bitmap);
+ 	bitmap_free(sev_reclaim_asid_bitmap);
++	misc_cg_set_capacity(MISC_CG_RES_SEV, 0);
++	misc_cg_set_capacity(MISC_CG_RES_SEV_ES, 0);
+ 
+ 	sev_flush_asids();
+ }
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 39e071fdab0c..9806aaebc37f 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -65,6 +65,7 @@ struct kvm_sev_info {
+ 	unsigned long pages_locked; /* Number of pages locked */
+ 	struct list_head regions_list;  /* List of registered regions */
+ 	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
++	struct misc_cg *misc_cg; /* For misc cgroup accounting */
+ };
+ 
+ struct kvm_svm {
+diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+index 1195d36558b4..c5af592481c0 100644
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -12,6 +12,12 @@
+  * Types of misc cgroup entries supported by the host.
+  */
+ enum misc_res_type {
++#ifdef CONFIG_KVM_AMD_SEV
++	/* AMD SEV ASIDs resource */
++	MISC_CG_RES_SEV,
++	/* AMD SEV-ES ASIDs resource */
++	MISC_CG_RES_SEV_ES,
++#endif
+ 	MISC_CG_RES_TYPES
+ };
+ 
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index 4352bc4a3bd5..ec02d963cad1 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -18,6 +18,12 @@
+ 
+ /* Miscellaneous res name, keep it in sync with enum misc_res_type */
+ static const char *const misc_res_name[] = {
++#ifdef CONFIG_KVM_AMD_SEV
++	/* AMD SEV ASIDs resource */
++	"sev",
++	/* AMD SEV-ES ASIDs resource */
++	"sev_es",
++#endif
+ };
+ 
+ /* Root misc cgroup */
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
