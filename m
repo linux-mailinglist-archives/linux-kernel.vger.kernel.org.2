@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3703534DD6E
+	by mail.lfdr.de (Postfix) with ESMTP id 88FCC34DD6F
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhC3B0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhC3BZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:25:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA698619A9;
-        Tue, 30 Mar 2021 01:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617067544;
-        bh=w7ObvpJq/R4KO4NDJ46mZajafTPZzB7iT11D4SOoreY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=isj9eWZA0rzplJp8vDf8D9RqN6Ek217KBPdQjMSgnOHxVKlcR7/XeC+I6hE83lcNM
-         Dl8s7I/P9ajE0YfLnpcCBanZu06FMPHO60hKA6nmiL0ahm53fG308WFNVTAZsgpaWo
-         7pam3qTALqXNrxif7vJDz4FbBzD5WZ4SWgUXipDhtzZAEzmrUm4NVq2zwVaO/de7sn
-         AEtUJAVEgPjminveogdry0CXJ4Cd6Weg7lBJhYgkrx0G/KOIMi0LCdjh+30Vt734MT
-         ZOB3ZRFM2gfKhC2WEI+OtauTSG53vyRnrDdjfVO8sSEX17fnxDAmluDOAUSqd6cuJq
-         yGyKnrqAoQ0Qw==
-Date:   Mon, 29 Mar 2021 18:25:42 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: v5.12.0-rc5: the kernel panics if FIPS mode is on
-Message-ID: <YGJ+FrwrSRyvMHoF@gmail.com>
-References: <MW2PR2101MB0892C9A8BF670DEC3628CFAFBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+        id S230226AbhC3B0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhC3BZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 21:25:52 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ADAC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:25:46 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id 19so12849319ilj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GkIjNDQSnVX2oXTUlrAlT+4P6pRDsPQgKbnz0z7FXoY=;
+        b=OzG8y73xy1Ccrs0BA9Ve63fo6sqraBJh4L0X6hPl7pUnG28esdc2mfJCgboyzcg1jn
+         F3qA+zRG4T21ag3ESSMpS9jtLHil28tlx6CN31LPraJU6mg/bQm1fvn05PkjsxC7lArz
+         D+RdGGzKE4etBdOJez99FFYJikaGKL1a8zcBU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GkIjNDQSnVX2oXTUlrAlT+4P6pRDsPQgKbnz0z7FXoY=;
+        b=IqcFTFbXLPfK/BD9oKw6HjzTvDntTmiLKQZsjAN6CiaOqBwApn90LWQ2RiQ1hlS7D4
+         8umY1F8hvZSSILV8kjfysLo1+rapN8HKpHN25jUT1g/bKu7oKO4l1g2sdaifGajRb1Nb
+         n2VTUsUOy6BeWi7cZy3HoL/WNC13zI+pUVALLFncIH8y82cP5n6RJWr4TQbT5RnW9iRH
+         wcpShWAq2JRk+wHX8DsISWXaT5ZXRA0qsXX+KZkGFanpvM3sgrOaxS4BvqrhhqOeNp4d
+         fgE+kC/e1U0Vvq8nmajv4GPHPKVNfT6YXhE6WF4Im+De5+67kMsWcKu6V4M26v2x2HJe
+         DnOg==
+X-Gm-Message-State: AOAM530WxKIf2nsC38vNGohir1s+7hrufBwnMUXNTtasmGz6gOS6Mz/c
+        Qj+GJaPTb6RBvYQPooW6g61dPw==
+X-Google-Smtp-Source: ABdhPJwRtZgxKWec0GDzxXrZYxwzhbuLEo7wNv2MoDiC9H8mpAhcI/MqUDdnVnMLl9QatqmRZQQgGQ==
+X-Received: by 2002:a92:dc83:: with SMTP id c3mr24122962iln.167.1617067545853;
+        Mon, 29 Mar 2021 18:25:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id q8sm10253199ilv.55.2021.03.29.18.25.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 18:25:45 -0700 (PDT)
+Subject: Re: [PATCH 5.11 000/252] 5.11.11-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210329101343.082590961@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <06aeb8ee-135f-620c-05e2-d00899fe6dcc@linuxfoundation.org>
+Date:   Mon, 29 Mar 2021 19:25:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB0892C9A8BF670DEC3628CFAFBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+In-Reply-To: <20210329101343.082590961@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 09:56:18PM +0000, Dexuan Cui wrote:
-> Hi all,
-> The v5.12.0-rc5 kernel (1e43c377a79f) panics with fips=1.
+On 3/29/21 4:14 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.11 release.
+> There are 252 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Please refer to the below panic call-trace. The kernel config file and
-> the full kernel messages are also attached.
+> Responses should be made by Wed, 31 Mar 2021 10:13:07 +0000.
+> Anything received after that time might be too late.
 > 
-> Is this a known issue?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.11-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
 > 
-> Thanks,
-> -- Dexuan
+> thanks,
 > 
->          Starting dracut pre-udev hook...
-> [    7.260424] alg: self-tests for sha512-generic (sha512) passed
-> [    7.265917] alg: self-tests for sha384-generic (sha384) passed
-> [    7.272426] alg: self-tests for sha512-ssse3 (sha512) passed
-> [    7.276500] alg: self-tests for sha384-ssse3 (sha384) passed
-> [    7.281722] alg: self-tests for sha512-avx (sha512) passed
-> [    7.286579] alg: self-tests for sha384-avx (sha384) passed
-> [    7.291631] alg: self-tests for sha512-avx2 (sha512) passed
-> [    7.296950] alg: self-tests for sha384-avx2 (sha384) passed
-> [    7.321040] alg: self-tests for sha3-224-generic (sha3-224) passed
-> [    7.330291] alg: self-tests for sha3-256-generic (sha3-256) passed
-> [    7.335918] alg: self-tests for sha3-384-generic (sha3-384) passed
-> [    7.341508] alg: self-tests for sha3-512-generic (sha3-512) passed
-> [    7.381918] alg: self-tests for crc32c-intel (crc32c) passed
-> [    7.396694] alg: self-tests for crct10dif-pclmul (crct10dif) passed
-> [    7.453515] alg: self-tests for ghash-clmulni (ghash) passed
-> [    7.469558] alg: self-tests for des3_ede-asm (des3_ede) passed
-> [    7.475355] alg: self-tests for ecb-des3_ede-asm (ecb(des3_ede)) passed
-> [    7.481361] alg: self-tests for cbc-des3_ede-asm (cbc(des3_ede)) passed
-> [    7.488656] alg: self-tests for des3_ede-generic (des3_ede) passed
-> [    7.304930] dracut-pre-udev[502]: modprobe: ERROR: could not insert 'padlock_aes': No such device
-> [    7.579580] alg: No test for fips(ansi_cprng) (fips_ansi_cprng)
-> [    7.606547] alg: self-tests for sha1 (sha1) passed
-> [    7.610624] alg: self-tests for ecb(des3_ede) (ecb(des3_ede)) passed
-> [    7.615746] alg: self-tests for cbc(des3_ede) (cbc(des3_ede)) passed
-> [    7.638067] alg: self-tests for ctr(des3_ede-asm) (ctr(des3_ede)) passed
-> [    7.644781] alg: self-tests for ctr(des3_ede) (ctr(des3_ede)) passed
-> [    7.653810] alg: self-tests for sha256 (sha256) passed
-> [    7.658945] alg: self-tests for ecb(aes) (ecb(aes)) passed
-> [    7.663493] alg: self-tests for cbc(aes) (cbc(aes)) passed
-> [    7.668421] alg: self-tests for xts(aes) (xts(aes)) passed
-> [    7.672389] alg: self-tests for ctr(aes) (ctr(aes)) passed
-> [    7.692973] alg: self-tests for rfc3686(ctr-aes-aesni) (rfc3686(ctr(aes))) passed
-> [    7.699446] alg: self-tests for rfc3686(ctr(aes)) (rfc3686(ctr(aes))) passed
-> [    7.730149] alg: skcipher: failed to allocate transform for ofb(aes): -2
-> [    7.735959] Kernel panic - not syncing: alg: self-tests for ofb(aes) (ofb(aes)) failed in fips mode!
-> [    7.736952] CPU: 13 PID: 560 Comm: modprobe Tainted: G        W         5.12.0-rc5+ #3
-> [    7.736952] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
-> [    7.736952] Call Trace:
-> [    7.736952]  dump_stack+0x64/0x7c
-> [    7.736952]  panic+0xfb/0x2d7
-> [    7.736952]  alg_test+0x42d/0x460
-> [    7.736952]  ? __kernfs_new_node+0x175/0x1d0
-> [    7.736952]  do_test+0x3248/0x57ea [tcrypt]
-> [    7.736952]  do_test+0x1f2c/0x57ea [tcrypt]
-> [    7.736952]  ? 0xffffffffc031d000
-> [    7.736952]  tcrypt_mod_init+0x55/0x1000 [tcrypt]
+> greg k-h
+> 
 
-It looks like your userspace is using tcrypt.ko to request that the kernel test
-"ofb(aes)", but your kernel doesn't have CONFIG_CRYPTO_OFB enabled so the test
-fails as expected.  Are you sure that anything changed on the kernel side
-besides the kconfig you are using?  It looks like this was always the behavior
-when tcrypt.ko is used to test a non-existing algorithm.
+Compiled and booted on my test system. No dmesg regressions.
 
-Is your userspace code intentionally trying to test "ofb(aes)", or is it
-accidental?
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-- Eric
+thanks,
+-- Shuah
