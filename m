@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B3F34F44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1183334F452
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhC3Wcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:32:45 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:60920 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhC3Wce (ORCPT
+        id S232803AbhC3WeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:34:17 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:45942 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232825AbhC3WeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:32:34 -0400
-IronPort-SDR: 51h/WrMVBm+ogYX/Nh8F50kYArqcAQHY0EbtK8yeuK8XsJRkKm83evbvBiO1tgilaHAk7i7kLw
- fLDafm4kt5QiWp+9wgpo4z0ON2TxGiCfjGXGKuxakYaQUHVRsh6hjKf9iUOvqkSkTtE0FEXfDc
- WCeck4uPhUZzH3cun6wbcsALw7BRvvDss2nB6taXyDbGPHP543j1BaYbOCdxQGWKFSXSJ5RPNH
- sImMlK+EvJa4h6JxvWOELXnOEqh2DoA0bozbvXnp6vMYsGWmORZKUDg5j+B5fEBaU5tAKPVapc
- rAk=
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="29735344"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 30 Mar 2021 15:32:33 -0700
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 30 Mar 2021 15:32:31 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
-        id A8A76210A6; Tue, 30 Mar 2021 15:32:31 -0700 (PDT)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        adrian.hunter@intel.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bao D. Nguyen" <nguyenb@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v14 2/2] ufs: sysfs: Resume the proper scsi device
-Date:   Tue, 30 Mar 2021 15:31:53 -0700
-Message-Id: <60840dd32330391354b41fbbe4d76f047d8ef665.1617143113.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1617143113.git.asutoshd@codeaurora.org>
-References: <cover.1617143113.git.asutoshd@codeaurora.org>
-In-Reply-To: <cover.1617143113.git.asutoshd@codeaurora.org>
-References: <cover.1617143113.git.asutoshd@codeaurora.org>
+        Tue, 30 Mar 2021 18:34:00 -0400
+Received: by mail-oi1-f177.google.com with SMTP id d12so18037117oiw.12;
+        Tue, 30 Mar 2021 15:34:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=B34gJi7ZC6hGf/Zl/UZa/ffIBrU37Enr4nRfOk1Ng+8=;
+        b=FO60hRzVh3Dfqet1l66vkHWJSJfLny97X7GUMeE7SRvHtkfpHKo1183tIS25mTkHMz
+         +OEFu2CCYKzPXpHqijgjOp/xQWK6TUs6CizCtfp2HSWWPtqgWD2f14r8x1bTRIu5+Mhl
+         4Gmf/XGcgwZ2I0GBEyQyo4/1+QZ+kRnoINWGNSIzZLx4DNdWP9Hj7QWvBjfxbV3auHk1
+         L+EsAQ4gdKKVeMBcvIAp1VyW9hfrRkan7KPyHu7OfAp3w6jZ46qzrKCNwfk3+BJThJ63
+         +xKUxAaULzfP9frquraGdLAG2CzvmMav8gLItLEZH/iJgoPqMgl1wOvO+ebxzVabwAv0
+         yUNw==
+X-Gm-Message-State: AOAM530Plpk8KwgZ+tyajI3pwZ3Eh6wdv4Fdmg2cTTk0cyfSXwffalNd
+        eHaKjyTEeNPGsGTGhqWxlQ==
+X-Google-Smtp-Source: ABdhPJxtngukcqvTMEWwD3NhMFZ8M6NEZPfp7rdCTZX3uu4d1pYJZVbJargwoKCS8RncTr8S8rWGlg==
+X-Received: by 2002:aca:484:: with SMTP id 126mr111933oie.81.1617143640395;
+        Tue, 30 Mar 2021 15:34:00 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r15sm51173ote.27.2021.03.30.15.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 15:33:59 -0700 (PDT)
+Received: (nullmailer pid 835085 invoked by uid 1000);
+        Tue, 30 Mar 2021 22:33:58 -0000
+Date:   Tue, 30 Mar 2021 17:33:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+Message-ID: <20210330223358.GA821638@robh.at.kernel.org>
+References: <20210329194602.17049-1-digetx@gmail.com>
+ <20210329194602.17049-6-digetx@gmail.com>
+ <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+ <989c3c70-3f0c-abff-ed07-c2dea3b66a2d@gmail.com>
+ <eb29dd93-214d-ba15-7825-888467bd782b@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eb29dd93-214d-ba15-7825-888467bd782b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resumes the actual scsi device the unit descriptor of which
-is being accessed instead of the hba alone.
+On Tue, Mar 30, 2021 at 06:56:44PM +0300, Dmitry Osipenko wrote:
+> 30.03.2021 18:29, Dmitry Osipenko пишет:
+> > 30.03.2021 11:48, Krzysztof Kozlowski пишет:
+> >>> +  power-domains:
+> >>> +    $ref: /schemas/types.yaml#/definitions/phandle
+> >>> +    description:
+> >>> +      Phandle of the SoC "core" power domain.
+> >> I think the core checks the type, so you only need to limit max items.
+> >>
+> > 
+> > It's a bit confusing that both variants work and it's not apparent what
+> > variant is better.
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+Soon '$ref' won't work. I have a pending meta-schema change to catch 
+this. It takes some time because I have to fix all the existing cases in 
+tree and wait a cycle so I'm not breaking everyone. 
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index d7c3cff..fa57bac 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -245,9 +245,9 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	res = ufshcd_wb_toggle(hba, wb_enable);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- out:
- 	up(&hba->host_sem);
- 	return res < 0 ? res : count;
-@@ -297,10 +297,10 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -678,7 +678,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		up(&hba->host_sem);					\
- 		return -ENOMEM;						\
- 	}								\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
- 		0, 0, desc_buf, &desc_len);				\
-@@ -695,7 +695,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		goto out;						\
- 	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
- out:									\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	kfree(desc_buf);						\
- 	up(&hba->host_sem);						\
- 	return ret;							\
-@@ -744,10 +744,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -813,10 +813,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -899,11 +899,15 @@ static ssize_t _pname##_show(struct device *dev,			\
- 	struct scsi_device *sdev = to_scsi_device(dev);			\
- 	struct ufs_hba *hba = shost_priv(sdev->host);			\
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
-+	int ret;							\
- 	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
- 				_duname##_DESC_PARAM##_puname))		\
- 		return -EINVAL;						\
--	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
-+	scsi_autopm_get_device(sdev);					\
-+	ret = ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
- 		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
-+	scsi_autopm_put_device(sdev);					\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_pname)
- 
-@@ -964,10 +968,10 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> > 
+> > I actually used the max items limit initially and then changed it to
+> > $ref phandle because it appeared to me that it's a better choice. I'll
+> > switch back to the limit in v2, thanks.
+> > 
+> 
+> Although, I'm still not sure what is the best variant. Could you please
+> clarify why maxItems is better?
+> 
+> Seems the $ref phandle already limits domain items to 1. So I don't
+> understand what's the difference.
+
+It would not work with '<&domain 1>' as 'phandle' doesn't accept any 
+arg cells. While you may know you don't have any cells, technically 
+that's provider dependent and outside the scope of this binding.
+
+Rob
+
+
 
