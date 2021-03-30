@@ -2,235 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DDB34E191
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58BB34E193
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 08:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhC3Gxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 02:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        id S230394AbhC3GyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 02:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhC3Gxe (ORCPT
+        with ESMTP id S231225AbhC3GyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 02:53:34 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0ECC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:53:34 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id w18so16980948edc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:53:34 -0700 (PDT)
+        Tue, 30 Mar 2021 02:54:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EE0C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:54:02 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o16so15142363wrn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 23:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Yl6Jy7MuWjHimvar2yIAZHCUQGma25nEMpVmobdsF1s=;
-        b=DjZPsg8EuhGUIJtQjsPhnbpTsSeTHzlq2g6PoQ9yxShFewdaaG3ag019yCt2GeIdCk
-         A6BjzxyrCGCHRuGZmzDAPsc6D1C51g3KEfLV18YzKDnZF5oGoS6HKs15VKuGgNqaIExi
-         WJlRwk/RTxzOCOISypnZXjUYvTCbqak95m5tZgiJfAWBUbVYo5bwLttjhRZhs6loyGum
-         170wooWgRq3ewKYTx03TtLlmKX/KpQYT0S+Vw8MByFXPB+CTvQIBQexYZFCIBKBFBM8d
-         QVUf5V2xg6Tbw01E8x919Iu+QaDRBBk4jjIcm2ASr0D7/9mC9kMdEXrr9Q6t3jOKfUXS
-         SLvg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/5eEEdExB/WrcymVKXu9WY7O+JW+rGDAlHjMnzkWSN0=;
+        b=usJ/DzjF7T3vYoDSsVKlv8V4nwI9Obf1PPZm3sH78ecUqNEOM7cT5sqxrx7DsCfkFJ
+         Bv4azBoeYlPKKHMs5q3jwX0u3DpovuZA5IU2cyOsO6vhrD5R6dR3UN3HM9JOLY/n5z1v
+         LbqZfYzhmZ5dlGSHb/PFEoBtDJSOWsxt/5EQfdvSAUqqJyQ5s0oZTTxxxZj7n3mcrYoW
+         wzMBzFmrU5BCOCX0pB9ekUVAABhYVuTHFhyT6iWTqP2WDzgjlfS/x0NKchJiY3mSXs11
+         kk9BSqTD14b0kZMRl0IWJJZk/R4aPzOaoy3z5wUtrLO2MYxLzeci2AcTtWrc1qHX3shA
+         XaRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Yl6Jy7MuWjHimvar2yIAZHCUQGma25nEMpVmobdsF1s=;
-        b=eqPT/qGDeyoUPew7D4d0sGaHsrFxA9WDpAHIK9TzoGnAAqVtIhHt6RTBnwA5hSHBqd
-         OdcqAy0xzlVYY5caU4huWAwIXAxsI+Zlcbr47JC+xiX+F9YL4vzNadRF4TTi7pa0T0g2
-         IeUklo9XvSwHt6w2k20nlKYir74PsGkxGBMnTTwuHEpDIfUVuhtnvG/SmUCKRqAOybNT
-         /LbIn3JWNiXmSfAnHwmboftjxqG2Vox7Txo2EKjAqHu6/zBi+kkBxwtiB7jyR+FEf8PI
-         +Hqvq3R2AC/gRNJrVUNNfQmESx6V2CTUfMxBycPd+WvhXPa7XE1BoNCf6nneU+Nnwm5A
-         /IZQ==
-X-Gm-Message-State: AOAM530XXP26qjS05sy5tuMM+wuQHpfqVz1abB24PNQRKpElsjHtFlT3
-        ETBs9fyuMrxz6rvMZUOGSBxwd8F6q+3VsM5hO8WaDw==
-X-Google-Smtp-Source: ABdhPJxnLjTWUyelEY1C2zvLk514sIRLuwQuy1QlZZoyh8pYtGC9qrfUjJ0QqQPgneLLa0K+oITHCTxZvRLrB5G6meE=
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr32641986edd.78.1617087212964;
- Mon, 29 Mar 2021 23:53:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/5eEEdExB/WrcymVKXu9WY7O+JW+rGDAlHjMnzkWSN0=;
+        b=cjB9HdUK3+KVIppzXUCQyS1CxC2wC1LNBluMSFZQ0KS8HbpYVDdCebvPdA0Om162qQ
+         t1UJgclBuRonc0QBGuUCyU+5hi1LJl9IadbExoGtFD7/anyayJhfxMJh6FAgssZ0j9Wf
+         U1IOP1a6v7PRLGHck1mKBBg7Md6M4YkBVlrumh/M7Fiy1jeGuWuvBX/qEDdCNpyUB/XC
+         c57CgkW1g5uT47JuBa+AUt8Y5FXQyy9cqOi4Hz63skHUE/RY4Flog6W74KTGoONSLqpH
+         J8/yXffk3PnD0wto+Yxl4gVgKRcAhxzABrD5e9+jTBvuaLA59sQYox23j0R6eAW/3Gqy
+         ETSw==
+X-Gm-Message-State: AOAM532r24kiTNuA8OQq9HAAO8+QEvQjszcb0WWospl26fpwkO+eSfVt
+        egNejaToN+YObx9dw3jMMpw=
+X-Google-Smtp-Source: ABdhPJxZ9hubhygriBWKASELSanfG5z122prep0Y/PX+NLg5L8FMObK0M7djFJL42aVkU1p18iCXZw==
+X-Received: by 2002:adf:d20b:: with SMTP id j11mr31799984wrh.397.1617087241210;
+        Mon, 29 Mar 2021 23:54:01 -0700 (PDT)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id a6sm2872514wmm.0.2021.03.29.23.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 23:54:00 -0700 (PDT)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     jisheng.zhang@synaptics.com
+Cc:     jens.wiklander@linaro.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, op-tee@lists.trustedfirmware.org,
+        rostedt@goodmis.org, Heiko Thiery <heiko.thiery@gmail.com>
+Subject: Re: [PATCH] tee: optee: fix build error caused by recent optee tracepoints feature
+Date:   Tue, 30 Mar 2021 08:53:42 +0200
+Message-Id: <20210330065341.18074-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210325120601.71584253@xhacker.debian>
+References: <20210325120601.71584253@xhacker.debian>
 MIME-Version: 1.0
-References: <20210329075608.898173317@linuxfoundation.org>
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 30 Mar 2021 12:23:21 +0530
-Message-ID: <CA+G9fYvStCWDgpuwB3M8ZYBLfyQYMcJjbphTSg_UTSaWUESJrQ@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/59] 4.14.228-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 13:37, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.228 release.
-> There are 59 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.228-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> If build kernel without "O=dir", below error will be seen:
+> 
+> In file included from drivers/tee/optee/optee_trace.h:67,
+>                  from drivers/tee/optee/call.c:18:
+> ./include/trace/define_trace.h:95:42: fatal error: ./optee_trace.h: No such file or directory
+>    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>       |                                          ^
+> compilation terminated.
+> 
+> Fix it by adding below line to Makefile:
+> CFLAGS_call.o := -I$(src)
+> 
+> Tested with and without "O=dir", both can build successfully.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
+Fixes: 0101947dbcc3 ("tee: optee: add invoke_fn tracepoints")
+Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> ---
+>  drivers/tee/optee/Makefile | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/tee/optee/Makefile b/drivers/tee/optee/Makefile
+> index 56263ae3b1d7..3aa33ea9e6a6 100644
+> --- a/drivers/tee/optee/Makefile
+> +++ b/drivers/tee/optee/Makefile
+> @@ -6,3 +6,6 @@ optee-objs += rpc.o
+>  optee-objs += supp.o
+>  optee-objs += shm_pool.o
+>  optee-objs += device.o
+> +
+> +# for tracing framework to find optee_trace.h
+> +CFLAGS_call.o := -I$(src)
+> -- 
+> 2.31.0
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thank you.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.228-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 4cee23773c6e6701bbedeed75e7d4dd2fe5bb8c0
-git describe: v4.14.227-60-g4cee23773c6e
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.227-60-g4cee23773c6e
-
-No regressions (compared to build v4.14.227)
-
-No fixes (compared to build v4.14.227)
-
-Ran 50616 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm-debug
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-debug
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* fwts
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* network-basic-tests
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-vm
-* kselftest-x86
-* ltp-commands-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-* v4l2-compliance
-* kvm-unit-tests
-* rcutorture
-* kselftest-kexec
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Heiko
