@@ -2,135 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800B934F0E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A9034F0E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhC3STH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbhC3SSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:18:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C918C061574;
-        Tue, 30 Mar 2021 11:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=KxGoy1weYbtqCANsJUAKQtRWb25OeKHfyfClNVXIBaM=; b=gbPTeAjgahdLzSFS7IrPEdFOWG
-        +5DgazEYkC/GgEruOlW/Hbb6e82wb0caoCT3AxFssyjF98qFWKiaqxManyYPM2dKrDpGWwNxXO/Qk
-        hUjY20ZPidsEh1h3xJL5VsWkBeAgdcJoLnUusm3Q+FPeBbgkxbhnJ5ZFeFzZk3F9VbCA9qEsXUIo8
-        R+dYBRK3ldbTMRybAOrQoddsWb16bNbRBLbS9oVSc/rrL0Sq50GzzFjCT1HoN7lozeociZMGq5RrK
-        BiP/fYKQm0k6Hysxd/+KyJ6TavmJD53Iu+Xo41pytJEKdM4C+DvlknOTYKP8iMrskljP3gDJibM1L
-        e/fz6THQ==;
-Received: from [2601:1c0:6280:3f0::4557]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRIwc-003QJf-5Y; Tue, 30 Mar 2021 18:18:35 +0000
-Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com>
- <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
-Date:   Tue, 30 Mar 2021 11:18:23 -0700
+        id S232841AbhC3STp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:19:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232844AbhC3STN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:19:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E9F1FAFCC;
+        Tue, 30 Mar 2021 18:19:11 +0000 (UTC)
+Subject: Re: [PATCH] perf annotate: add --demangle and --demangle-kernel
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
+ <YDVcZJscuKIgShsm@kernel.org> <a2349b3e-b3e2-f979-6bc5-a2cffbdd2d6a@suse.cz>
+ <cad07055-620e-f0ce-9af2-a8a794bc47aa@suse.cz>
+ <71d26f15-f0e8-adca-1e7c-46effcba913a@suse.cz> <YGNG9PLKEniErXwy@kernel.org>
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+Message-ID: <2327ca98-f2ee-3a9a-0e24-d52fc90bcf9b@suse.cz>
+Date:   Tue, 30 Mar 2021 20:19:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YGNG9PLKEniErXwy@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On 3/30/21 5:42 PM, Arnaldo Carvalho de Melo wrote:
+> Trying to find V2
 
-On 3/30/21 1:56 AM, Wolfram Sang wrote:
-> diff --git a/Documentation/dev-tools/gpio-logic-analyzer.rst b/Documentation/dev-tools/gpio-logic-analyzer.rst
-> new file mode 100644
-> index 000000000000..2847260736d4
-> --- /dev/null
-> +++ b/Documentation/dev-tools/gpio-logic-analyzer.rst
-> @@ -0,0 +1,63 @@
-> +Linux Kernel GPIO based logic analyzer
-> +======================================
-> +
-> +:Author: Wolfram Sang
-> +
-> +Introduction
-> +------------
-> +
-> +This document briefly describes how to run the software based in-kernel logic
-> +analyzer.
-> +
-> +Note that this is still a last resort analyzer which can be affected by
-> +latencies and non-determinant code paths. However, for e.g. remote development,
-> +it may be useful to get a first view and aid further debugging.
-> +
-> +Setup
-> +-----
-> +
-> +Tell the kernel which GPIOs are used as probes. For a DT based system:
-> +
-> +    i2c-analyzer {
-> +            compatible = "gpio-logic-analyzer";
-> +            probe-gpios = <&gpio6 21 GPIO_OPEN_DRAIN>, <&gpio6 4 GPIO_OPEN_DRAIN>;
-> +            probe-names = "SCL", "SDA";
-> +    };
-> +
-> +The binding documentation is in the ``misc`` folder of the Kernel binding
-> +documentation.
-> +
-> +Usage
-> +-----
-> +
-> +The logic analyzer is configurable via files in debugfs. However, it is
-> +strongly recommended to not use them directly, but to to use the
-> +``gpio-logic-analyzer`` script in the ``tools/debugging`` directory. Besides
-> +checking parameters more extensively, it will isolate a CPU core for you, so
-> +you will have least disturbance while measuring.
-> +
-> +The script has a help option explaining the parameters. For the above DT
-> +snipplet which analyzes an I2C bus at 400KHz on a Renesas Salvator-XS board,
+It's this email:
+https://lore.kernel.org/lkml/deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz/
 
-   snippet
-
-> +the following settings are used: The isolated CPU shall be CPU1 because it is a
-> +big core in a big.LITTLE setup. Because CPU1 is the default, we don't need a
-> +parameter. The bus speed is 400kHz. So, the sampling theorem says we need to
-> +sample at least at 800kHz. However, falling of both, SDA and SCL, in a start
-
-Is "falling" like a falling edge of a signal?
-If not, then I think "failing" would make more sense.
-Even "failing both".
-
-> +condition is faster, so we need a higher sampling frequency, e.g. ``-s
-> +1500000`` for 1.5MHz. Also, we don't want to sample right away but wait for a
-> +start condition on an idle bus. So, we need to set a trigger to a falling edge
-> +on SDA, i.e. ``-t "2F"``. Last is the duration, let us assume 15ms here which
-> +results in the parameter ``-d 15000``. So, altogether:
-> +
-> +    gpio-logic-analyzer -s 1500000 -t "2F" -d 15000
-> +
-> +Note that the process will return you back to the prompt but a sub-process is
-> +still sampling in the background. Unless this finished, you will not find a
-> +result file in the current or specified directory. Please also note that
-> +currently this sub-process is not killable! For the above example, we will then
-> +need to trigger I2C communication:
-> +
-> +    i2cdetect -y -r <your bus number>
-> +
-> +Result is a .sr file to be consumed with PulseView from the free Sigrok project. It is
-> +a zip file which also contains the binary sample data which may be consumed by others.
-> +The filename is the logic analyzer instance name plus a since-epoch timestamp.
+Subject: Re: [PATCH] perf config: add annotate.demangle{,_kernel}
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
+  <YDVcZJscuKIgShsm@kernel.org> <a4e687b9-f611-1b24-ae7c-2ecd93c42ea8@suse.cz>
+Message-ID: <c96aabe7-791f-9503-295f-3147a9d19b60@suse.cz>
+Date:   Fri, 26 Feb 2021 11:08:12 +0100
 
 
-thanks.
--- 
-~Randy
-
+Cheers,
+Martin
