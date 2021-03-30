@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCE734EF7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8390E34EF7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhC3R1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:27:46 -0400
-Received: from rcdn-iport-6.cisco.com ([173.37.86.77]:12754 "EHLO
-        rcdn-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhC3R1U (ORCPT
+        id S232287AbhC3R2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:28:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:23311 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231794AbhC3R2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:27:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1640; q=dns/txt; s=iport;
-  t=1617125240; x=1618334840;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DLlq6Eg2HUUvE9Fdg0Ebob6Tw5pX5R4uRXQoNV4sDwc=;
-  b=S3AM+TL3QruYfqeMp+6vgY8hAlMuc26v6MTPbQoBaVTtuaYcQUDMTLtv
-   YMIx4slyUxrVeNQY1bYf3KcYQpt5MAzNiBdGmrhqo2w3IxuaehFXbZdkp
-   RLSQAvV0NrNp3mH+o+VcmM/VXEAvjt8lzHELqAzH8H/BMLD98MoPApiLd
-   w=;
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AoTmckqE8NgKcaaN3pLqEVceALOonbusQ8z?=
- =?us-ascii?q?AX/mp6ICY7TuWzkceykPMHkTL1ki8WQnE8mdaGUZPwJE/035hz/IUXIPOeTB?=
- =?us-ascii?q?Dr0VHYTr1KwIP+z1TbcRHW2fVa0c5bHpRWKNq1NlRiiNa/3Q/QKadF/PCi0I?=
- =?us-ascii?q?SFwdjT1G1sSwYCUdAC0y5cBhyAGkN7AClqbKBZKLOm6sBKpyWtdB0sB6zROl?=
- =?us-ascii?q?A/U+fOvNHNnp79CCRnOzcc9AKMgTm0gYSVLzGk2H4lPw9n8PMF7XXPlRD/6+?=
- =?us-ascii?q?GFtfy2oyWssVP73tBxhMbrzMdFCYi3rvUtbh/oigquee1aKtq/gAw=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BhAABKXmNg/4UNJK1aHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgTwHAQELAYIqgUwBOTGMZYkukAgWikWBfAsBAQENAQE0BAE?=
- =?us-ascii?q?BhFACgXoCJTQJDgIDAQEMAQEFAQEBAgEGBHGFboZFAQU6PxALGC48GwYThXi?=
- =?us-ascii?q?rInWBNIkLgUQigRcBjUkmHIFJQoESgm4uPoo2BIJHgQ6CMCyeTZwigxGBI5s?=
- =?us-ascii?q?2MRCkQrgSAgQGBQIWgVQ6gVkzGggbFYMkUBkNnQchAy84AgYKAQEDCYkfAQE?=
-X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="880406225"
-Received: from alln-core-11.cisco.com ([173.36.13.133])
-  by rcdn-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:27:19 +0000
-Received: from zorba ([10.24.8.123])
-        by alln-core-11.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UHREPN013894
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 30 Mar 2021 17:27:16 GMT
-Date:   Tue, 30 Mar 2021 10:27:14 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     will@kernel.org, robh@kernel.org,
-        daniel@gimpelevich.san-francisco.ca.us, linux-arch@vger.kernel.org,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
-        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 01/17] cmdline: Add generic function to build command
- line.
-Message-ID: <20210330172714.GR109100@zorba>
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
- <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu>
+        Tue, 30 Mar 2021 13:28:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617125282; x=1648661282;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=lTJn86OD1hQJIzSFLyNL9szvAzap292csL/L55RBcgo=;
+  b=hTlK6wNNdcvY0z6P+Fc8+pyhMf4GnvQCDLk4sSE4hwZhN0vVVZDmI/E7
+   Z3Wp9wR7WlqVmed6ojuPcLe2X04vngoUTJcVW3188EauQCWSktL10cLN3
+   IcvGJSWE/GwvxF8yZNzXckKJY6bJewq1RAtWmbAtJtJaIGkNVYuzDSrwK
+   xQGGgucUn7w7nnuqyGOVyq6s2j9vIXCp+rIrBsRDjwm1KX0L7vPMJ1szV
+   P3A/4t0Y0xmS9jW53AGBMU8woH88Y8NyaCeBzv9EQrRn5f2sYmOs+Q0Ha
+   DUc2Dd02iuRFtxQvwqGmnNM0YSDcepfy5IkC9nalFQurjDUWCM+VboQVb
+   w==;
+IronPort-SDR: SxIjD3E65azuDW8W1+wuDHt2+bDUPl0IFSPZehGFNDOfZ4iVicCDBv66UtwtixGJSZH2JR8OMV
+ r4Qc4afy/o1A0BvtQQUna8n74nNEI02GT8ebfLKctMf5tFVFgCjGlwqLHnNNlaAIGB6AN3D/zN
+ 7DBp2y7ewwm4o5IVs2h5GpKEga4fpuYg8A+KkqGvlyhvwJGzONa4F98ciATDNq8sNjr+zHmsUn
+ UikxRfbdc2IzzmdsafQ4wEBaAQd+ilnvLVBAmNcyw5pqJiLn/Ws02MXJPGGTCot5OFSsjGdGc4
+ Vsg=
+X-IronPort-AV: E=Sophos;i="5.81,291,1610434800"; 
+   d="scan'208";a="111907435"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Mar 2021 10:28:02 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 30 Mar 2021 10:28:01 -0700
+Received: from [10.171.246.97] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 30 Mar 2021 10:27:59 -0700
+Subject: Re: [RESEND PATCH 3/5] clk: at91: sama7g5: add securam's peripheral
+ clock
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210324094353.1710114-1-claudiu.beznea@microchip.com>
+ <20210324094353.1710114-4-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <20739a40-57f4-f100-d86a-c802c638ff78@microchip.com>
+Date:   Tue, 30 Mar 2021 19:27:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu>
-X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
-X-Outbound-Node: alln-core-11.cisco.com
+In-Reply-To: <20210324094353.1710114-4-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:44:48PM +0000, Christophe Leroy wrote:
-> This code provides architectures with a way to build command line
-> based on what is built in the kernel and what is handed over by the
-> bootloader, based on selected compile-time options.
+On 24/03/2021 at 10:43, Claudiu Beznea wrote:
+> Add SECURAM's peripheral clock.
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
 > ---
-> v3:
-> - Addressed comments from Will
-> - Added capability to have src == dst
-> ---
->  include/linux/cmdline.h | 57 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 include/linux/cmdline.h
+>   drivers/clk/at91/sama7g5.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-> new file mode 100644
-> index 000000000000..dea87edd41be
-> --- /dev/null
-> +++ b/include/linux/cmdline.h
-> @@ -0,0 +1,57 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_CMDLINE_H
-> +#define _LINUX_CMDLINE_H
-> +
-> +#include <linux/string.h>
-> +
-> +/* Allow architectures to override strlcat, powerpc can't use strings so early */
-> +#ifndef cmdline_strlcat
-> +#define cmdline_strlcat strlcat
-> +#endif
-> +
-> +/*
-> + * This function will append or prepend a builtin command line to the command
-> + * line provided by the bootloader. Kconfig options can be used to alter
-> + * the behavior of this builtin command line.
-> + * @dst: The destination of the final appended/prepended string.
-> + * @src: The starting string or NULL if there isn't one.
-> + * @len: the length of dest buffer.
-> + */
+> diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+> index a6e20b35960e..28e26fb90417 100644
+> --- a/drivers/clk/at91/sama7g5.c
+> +++ b/drivers/clk/at91/sama7g5.c
+> @@ -377,6 +377,7 @@ static const struct {
+>   	u8 id;
+>   } sama7g5_periphck[] = {
+>   	{ .n = "pioA_clk",	.p = "mck0", .id = 11, },
+> +	{ .n = "securam_clk",	.p = "mck0", .id = 18, },
+>   	{ .n = "sfr_clk",	.p = "mck1", .id = 19, },
+>   	{ .n = "hsmc_clk",	.p = "mck1", .id = 21, },
+>   	{ .n = "xdmac0_clk",	.p = "mck1", .id = 22, },
+> 
 
-Append or prepend ? Cisco requires both at the same time. This is why my
-implementation provides both. I can't use this with both at once.
+Thanks,
+   Nicolas
 
-Daniel
+-- 
+Nicolas Ferre
