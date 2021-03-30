@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538BF34E418
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5855934E41C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhC3JOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:14:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40212 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229816AbhC3JNn (ORCPT
+        id S231629AbhC3JOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhC3JOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:13:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617095622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wb1xwTXO+Z1eRBnmRJEtGYdnn0qi6F4dPoEkpoQRveo=;
-        b=VFqJRJItgHdLxQEoYaagKJ4+dtSKq8JE9OH+A6WEIZofNh7xwmpeM5pCK9FSPwJbAqX3KY
-        iwPLm7IMNDpdHoyZWcJcp2j8/uN7VtHjl9Jn3npo9jStbx7zG5AWcOH4HRnqIWK5U5jOJk
-        je/Nva0BWAFV7M2+8dsCX75ix55/qXo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-JcCj9s0CM46WVe9KeVsZuQ-1; Tue, 30 Mar 2021 05:13:38 -0400
-X-MC-Unique: JcCj9s0CM46WVe9KeVsZuQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42BFF1009458;
-        Tue, 30 Mar 2021 09:13:36 +0000 (UTC)
-Received: from [10.36.114.210] (ovpn-114-210.ams2.redhat.com [10.36.114.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 953E66F978;
-        Tue, 30 Mar 2021 09:13:33 +0000 (UTC)
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
-        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
-        jglisse@redhat.com, linux-mm@kvack.org
-References: <20210326012035.3853-1-apopple@nvidia.com>
- <9eef1283-28a3-845e-0e3e-80b763c9ec59@redhat.com>
- <3158185.bARUjMUeyn@nvdebian>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v2] kernel/resource: Fix locking in
- request_free_mem_region
-Message-ID: <e910441c-73a7-b57e-1330-ead65c4ff412@redhat.com>
-Date:   Tue, 30 Mar 2021 11:13:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 30 Mar 2021 05:14:31 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D05C061762;
+        Tue, 30 Mar 2021 02:14:30 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id k8so15489080wrc.3;
+        Tue, 30 Mar 2021 02:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZQC3ZslEGYXOQvKi6+Tazqn0geOYcSLsLHXS38HHwkE=;
+        b=AroCag/Ciss9pHcAP9t2HsmhjINHjcpvBIGuHddQrNV6ANKwQkCi04163200iQjDcO
+         yM9hDlUFzIpSUyizNoPiqUnSAyof32wfWu24XJ9NPKtgerqvGVo20s5CvZEb3ZpXrH2V
+         vBSfCAYXax85T8uUEakz+TAgfDrh6B8YH67dny7OG8GjXqevECvnDC4Dv5QcflGKr06/
+         QhhycfziBX80TxxU1caf6uYEarp+qwDZkF0wUB2mpr0AISsq0uj1k4RAZMWGAY9h3pFg
+         sfc/btG3AiuEjRS03zCEXx54DzKjTIEW6H45LLlcJ+JB1VGEXXQtQ4FOubht60mtN4Me
+         vPXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZQC3ZslEGYXOQvKi6+Tazqn0geOYcSLsLHXS38HHwkE=;
+        b=VMNsPQos9BIFAgK21Pn4sDhgwIvSGdvXviWdydgAYQyTkY44v4rY/jLo25jFeoy/S/
+         8PCHQreHmG0NA6jEo/mnGOXrpDs5XGb5H8Rx2EMsDDxy6CyDZrUCfwvNiSRJaoBBRtTI
+         6WtP4tjUjeMzSRO8w0cM4KXjjqAdTIkoW5tSaXoRGrUWVVuFTbCeBssEk8G6+V0t6CqM
+         HDb8mzgCyYLIl/a3IMAjd9lgSg3FPyIdqsx31c4bq/hSjKKc1ddjU5P01zrk0Z4x2XD5
+         uMdCy5RXu2Z4/R2nP6gd/NFej/0nfU/jDCGgv7ybLXPHd/uzrbYLfoDDAEPvLbh1e3L8
+         NiBA==
+X-Gm-Message-State: AOAM531wE7wQFmNlX1FvYOzlWbKW3WfwoTQNlw1H01S/bh13slpMOn5v
+        KEGZOifV7pjOak9bUZKIqtU=
+X-Google-Smtp-Source: ABdhPJxia7HxP9PbstWN2r0vyfvB896H+IDH3YGpqjweL9bTNH7pHentndoQ9TWa6GTeAqh9zK1w5w==
+X-Received: by 2002:adf:c70b:: with SMTP id k11mr33573910wrg.165.1617095669469;
+        Tue, 30 Mar 2021 02:14:29 -0700 (PDT)
+Received: from localhost.localdomain (2a01cb0008bd2700a086f61fd085ac55.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:a086:f61f:d085:ac55])
+        by smtp.gmail.com with ESMTPSA id l8sm33305840wrx.83.2021.03.30.02.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 02:14:29 -0700 (PDT)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        bjorn.andersson@linaro.org, krzk@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v2 0/4] Add peripheral support to imx8mq-nitrogen board
+Date:   Tue, 30 Mar 2021 11:14:22 +0200
+Message-Id: <20210330091426.95030-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3158185.bARUjMUeyn@nvdebian>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.03.21 03:37, Alistair Popple wrote:
-> On Friday, 26 March 2021 7:57:51 PM AEDT David Hildenbrand wrote:
->> On 26.03.21 02:20, Alistair Popple wrote:
->>> request_free_mem_region() is used to find an empty range of physical
->>> addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
->>> over the range of possible addresses using region_intersects() to see if
->>> the range is free.
->>
->> Just a high-level question: how does this iteract with memory
->> hot(un)plug? IOW, how defines and manages the "range of possible
->> addresses" ?
-> 
-> Both the driver and the maximum physical address bits available define the
-> range of possible addresses for device private memory. From
-> __request_free_mem_region():
-> 
-> end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
-> addr = end - size + 1UL;
-> 
-> There is no lower address range bound here so it is effectively zero. The code
-> will try to allocate the highest possible physical address first and continue
-> searching down for a free block. Does that answer your question?
+Hi,
 
-Oh, sorry, the fist time I had a look I got it wrong - I thought (1UL << 
-MAX_PHYSMEM_BITS) would be the lower address limit. That looks indeed 
-problematic to me.
+this patch set aims is to add support of multiple peripheral of the
+Boundary8M board:
+  - USB Host;
+  - USB device;
+  - DB_DSIHD sub board for MIPI-DSI to HDMI output (via lt8912b chip).
 
-You might end up reserving an iomem region that could be used e.g., by 
-memory hotplug code later. If someone plugs a DIMM or adds memory via 
-different approaches (virtio-mem), memory hotplug (via add_memory()) 
-would fail.
 
-You never should be touching physical memory area reserved for memory 
-hotplug, i.e., via SRAT.
+Updates in v2:
+  - Use a GPIO hog to handle the USB HOST reset line;
+  - Remove useless GPIO hog for lt8912b.
 
-What is the expectation here?
 
--- 
 Thanks,
 
-David / dhildenb
+Adrien Grassein (4):
+  arm64: dts: imx8mq-nitrogen: add USB OTG support
+  arm64: dts: imx8mq-nitrogen: add USB HOST support
+  arm64: dts: imx8mq-nitrogen: add lt8912 MIPI-DSI to HDMI
+  arm64: defconfig: Enable LT8912B DRM bridge driver
+
+ .../boot/dts/freescale/imx8mq-nitrogen.dts    | 185 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 2 files changed, 186 insertions(+)
+
+-- 
+2.25.1
 
