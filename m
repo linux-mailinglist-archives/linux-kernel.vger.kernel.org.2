@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FF134F1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F4634F1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhC3Thr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S233232AbhC3Tir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbhC3ThO (ORCPT
+        with ESMTP id S233227AbhC3TiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:37:14 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D65C061574;
-        Tue, 30 Mar 2021 12:37:11 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id o126so25567484lfa.0;
-        Tue, 30 Mar 2021 12:37:10 -0700 (PDT)
+        Tue, 30 Mar 2021 15:38:13 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F9AC061574;
+        Tue, 30 Mar 2021 12:38:13 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id d12so17584166oiw.12;
+        Tue, 30 Mar 2021 12:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PN0ITuLODcXOPSsvYDbIM9ZgkLNmjUqrMgzEkKmqNA8=;
-        b=I0hqyVhDr2W/Cq0rmUE+jk/bVDpm13OVD80OiiII00BO6s4TyYtSHltc4eYtGQJo5I
-         XUeCCpJJ1AKPDXh9lUJhdONebDnP7AnYG+FlNS0TkHEyV332/Bqe56ASpLinWnkpt9D2
-         bZW7BVrGWDE5W2tV2x+Xa+ha884BImdN/+jyy7LH5m8KfYW77WKpXsFc89bEIVvFrKUM
-         f7QymocxB4GN7+OgsvCdnPO9DJ4lyRM6qaPfX3EmJQ+YZadmVLfJzOH6k2OeW5kJ2dTL
-         f20/w5lRmWSMWQQbHkJ0fjyWZCI5HEAWZlzE40o267MOqZ1MkNdfhPtu/6bqQFJG7XHI
-         lV4w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xI3kli3hS2fPyhDQvDMlAZ1DPbV3ke0jXU3XxGK6Iv0=;
+        b=RxSEomzzNVufOedcbWjk9wGu6u/ZW28ITrTPqkZjm5KifOBlzu8GaTsCv+jhx2CLwl
+         FlChfR7smLmVMwMr+wEqKHZkNTWcmieN0k4M+QEKlw6CvglIU9q7wD1TS8Rgt3VSP25+
+         FSnTMKpxoZnEIYnDDyGyLWQ3ARtcIvtZztgQv6TAMMJ1FuC+IL5hWei1w0K27HBz8Xpw
+         C7YTxIyHAF3d/wXikFXJ+RawHCITkwX9nquErtqIenu8EKM2vs8ibmsPMQaloICQTuAK
+         JR2CI5DeaBI1YD2B+tWc1uqKwQcFrO3/TrkkiTjT4Kt7WvMOjpUwjtJZ2ygFrXCha29w
+         qulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PN0ITuLODcXOPSsvYDbIM9ZgkLNmjUqrMgzEkKmqNA8=;
-        b=sC6wnafoCiZVaaQ48mJ1E4YS+v5/ab4xVfEg4EHavQkIxzbnmtI/HTUPf2f/LAYJp5
-         jZuBQmxwsJ/MsIBEMhuBic3Pnrw7FK3oG1tsblR/QPk+oZCdmw5jJ7H8UdnX5uMd8Ms0
-         Pg7+1H+YHO2ugvfCtIZTu/RQ53h6VWAhhyrqAj1Ux2kWt4ZsR470pgDKOXjGFpqMkZsO
-         0vfPRLsWd1MVParc2uSYGYxk3dWNXKlMYokaWx1u7+Q/kpv8RzaqY6/RQkimNSHbZRly
-         vdQZLIY5LGQ6a5BTr5apzZUNYXQgWAIv2y2bFMpF4D7XLBs5/zKzK6I2leXRPnJ8dd3i
-         CSnw==
-X-Gm-Message-State: AOAM531LiEcnjYIuhK3oOaJKxXHvV+9OE16gqdbn1nGe7vCpLN/zVGBl
-        yrrrIMr+fiC9u1PEGK0V8o0=
-X-Google-Smtp-Source: ABdhPJzlfKQMRYBdDzeA9TViH3CRCWgl19d2bVnUryIG9g1eerIdUBPcordYYE2ws6wCPCi8xxb6iw==
-X-Received: by 2002:ac2:58fc:: with SMTP id v28mr19680340lfo.201.1617133029525;
-        Tue, 30 Mar 2021 12:37:09 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.149])
-        by smtp.gmail.com with ESMTPSA id p22sm2270457lfh.113.2021.03.30.12.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 12:37:09 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     brookebasile@gmail.com
-Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
-        gregkh@linuxfoundation.org, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Memory leak in ath9k_hif_usb_dealloc_tx_urbs()
-Date:   Tue, 30 Mar 2021 22:36:52 +0300
-Message-Id: <20210330193652.10642-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20200911071427.32354-1-brookebasile@gmail.com>
-References: <20200911071427.32354-1-brookebasile@gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xI3kli3hS2fPyhDQvDMlAZ1DPbV3ke0jXU3XxGK6Iv0=;
+        b=DtyclUieLGpDuboRXMnSNzBwW9H9NiNMFF7eGg6LOXeqceKPYSm1Py+FPatu3G6T1W
+         +ODi70sOSBOa/dtCJKnthiEae+gd7mfg0ypI7TkGRIJsnFNsruMB85fxNuGWI4GZXIZa
+         PTMYFWzGW4mzrXlpbkL/Y1JF+sZFYyHLwDexLJObZt/b9qwJ33GQbI3n/ELhEs1FbNja
+         I7oFwjOjrtbDmVvrQP8GaH+zD7BpXvd4NR4IRgaZQ0+d0x9SOU2Z9TooMa5lkMODte2f
+         3IoAnWceNA4WGTCUQbc43kZRKuIxBv61Pg5ZTBctmsuNhNKsrtgkYICtKnps42e1MRZ2
+         s/rg==
+X-Gm-Message-State: AOAM530VU7AvLg+wkNpCHs/n58aBxRznIjode6IXlBngGhQuhlOg1vP1
+        67sqSHaqb/gY1qFtf+9cyKM=
+X-Google-Smtp-Source: ABdhPJyAf0AtIWDRIdBNifFO42dpVXVRAIUztA0dKGsmOxAz3+0OVv43Me3QLKjxHEYgkLXKqk+F7w==
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr4540965oie.4.1617133092545;
+        Tue, 30 Mar 2021 12:38:12 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v195sm4331370oia.38.2021.03.30.12.38.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 30 Mar 2021 12:38:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 30 Mar 2021 12:38:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Zev Weiss <zev@bewilderbeest.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <20210330193810.GA235990@roeck-us.net>
+References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+ <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+ <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
+ <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+ <20210330180200.GK4976@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330180200.GK4976@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, Mar 30, 2021 at 07:02:00PM +0100, Mark Brown wrote:
+> On Tue, Mar 30, 2021 at 12:56:56PM -0500, Zev Weiss wrote:
+> 
+> > Okay, to expand a bit on the description in my initial message -- we've
+> > got a single chassis with multiple server boards and a single manager board
+> > that handles, among other things, power control for the servers.
+> > The manager board has one LM25066 for each attached server, which acts as
+> > the "power switch" for that server.  There thus really isn't any driver to
+> > speak of for the downstream device.
+> 
+> This sounds like you need a driver representing those server boards (or
+> the slots they plug into perhaps) that represents everything about those
+> boards to userspace, including power switching.  I don't see why you
+> wouldn't have a driver for that - it's a thing that physically exists
+> and clearly has some software control, and you'd presumably also expect
+> to represent some labelling about the slot as well.
 
-I did some debugging on this
-https://syzkaller.appspot.com/bug?id=3ea507fb3c47426497b52bd82b8ef0dd5b6cc7ee
-and, I believe, I recognized the problem. The problem appears in case of
-ath9k_htc_hw_init() fail. In case of this fail all tx_buf->urb krefs will be
-initialized to 1, but in free function:
+Absolutely agree.
 
-static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
-
-....
-
-static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
-{
-    ...
-	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
-				 &hif_dev->tx.tx_buf, list) {
-		usb_get_urb(tx_buf->urb);
-		...
-		usb_free_urb(tx_buf->urb);
-		...
-		}
-
-Krefs are incremented and then decremented, that means urbs won't be freed.
-I found your patch and I can't properly understand why You added usb_get_urb(tx_buf->urb).
-Can You explain please, I believe this will help me or somebody to fix this ussue :)
-
-With regards,
-Pavel Skripkin
+Thanks,
+Guenter
