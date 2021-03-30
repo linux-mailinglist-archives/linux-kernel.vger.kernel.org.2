@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3604D34E768
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309BF34E76E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhC3MVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:21:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2747 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhC3MVt (ORCPT
+        id S231970AbhC3MWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231984AbhC3MWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:21:49 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F8pHF2yQQz6827G;
-        Tue, 30 Mar 2021 20:12:41 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 30 Mar 2021 14:21:46 +0200
-Received: from localhost (10.47.27.39) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
- 2021 13:21:45 +0100
-Date:   Tue, 30 Mar 2021 13:20:26 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] PCI: Allow drivers to claim exclusive access to config
- regions
-Message-ID: <20210330132026.00006346@Huawei.com>
-In-Reply-To: <CAPcyv4h_c46tBpemKksciHL4DWu356h7T8A-0eHKUW9H3CZkKw@mail.gmail.com>
-References: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <20210326161247.GA819704@bjorn-Precision-5520>
-        <CAPcyv4h_c46tBpemKksciHL4DWu356h7T8A-0eHKUW9H3CZkKw@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 30 Mar 2021 08:22:14 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34173C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:22:14 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f16so19683829ljm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 05:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pJNbEb32RRFyVDLPn81JyD/bPBWZa/kNrAZr1BiSP1w=;
+        b=jJXra8JyRr28Ri9Kh50Maf13vL8FqoOYMzvk4p27Ttgv5b7uNNe75UrU4iT0RBkfNm
+         GUUyKhT1YMemKc0IuRfF2qPmA7IxyciKvNHD30bE9X8xGjZOwbqSBwypqrUQpqlB38zI
+         kw5Y0xJI82YmGjMSuC+tevxrBrNBimLDeZG13Zf2BMJ0ktI6kNjcbBRAWszMEobrrz5e
+         tpxx7uJAVkHvCI9ISzkaazvrGX/snyKDClOzQMLZRDkSAlplQBmQpiiWOMITSwBQpnSs
+         xEcVWPOlbk4sK79Ux8EhDa4Ew6JR4MlSuWapxq7VaXXC6quyypuR6T43gxi69V4yiLPx
+         i1sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pJNbEb32RRFyVDLPn81JyD/bPBWZa/kNrAZr1BiSP1w=;
+        b=R+y0fqdugGbjs+Tu/4AcFvwJUHaqBLutuvBXjlowfMtxUVhGKX9SOyQiMiDlYDoo4p
+         VUhi4z2Zklskw7B9SupYo27NrQQ7z+HgzJWD2zG1t5FigEIXykkACmNyNLvP01PSPWFR
+         sqSOw/XYuCD/B8z1klkuVpKkdcmArYlNTE2S2hPUhnbaxj06VN5cbtKpWBlpqnWBR/TN
+         HpsUoNEyjWGDD2T3Rjd369ge3twr83262+v0ih/TU3QRMmMRTaGf7+S91djWYOWbOWf+
+         QQhZTIEaggfXFoVnY/FDo4TN0HQaKE6k3fR23cZwj2oJJkp6dFoy6q2YZlVUpPz/6Afq
+         5WDg==
+X-Gm-Message-State: AOAM530urFmRW3tyS8yW413K5rhiH5FTyqEbwGGLbR9DPc0uf4LBoReR
+        dBZarh9n4U5QbiPwfBeMi7GpjFYh5qNCFx5PgeV4wg==
+X-Google-Smtp-Source: ABdhPJwZCAdho/WBGi1nNYG0210SXgvGhNSwcDGCpqmZOA+NrWob4mXZndnEaF4yCuqPvMATbL4X1/KB+t4UUkIU2Vo=
+X-Received: by 2002:a2e:96c3:: with SMTP id d3mr21678300ljj.284.1617106932675;
+ Tue, 30 Mar 2021 05:22:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.27.39]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210330120657.54173-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210330120657.54173-1-wangkefeng.wang@huawei.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 30 Mar 2021 14:22:01 +0200
+Message-ID: <CAKfTPtB54L4Eq+Fh2bfJfc24T603O5QRwZNH3_AVmFumMx6Uxw@mail.gmail.com>
+Subject: Re: [PATCH -next] sched/fair: Move update_nohz_stats() under CONFIG_NO_HZ_COMMON
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 09:46:15 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+On Tue, 30 Mar 2021 at 14:06, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+> update_nohz_stats() only call _nohz_idle_balance() under CONFIG_NO_HZ_COMMON.
 
-> On Fri, Mar 26, 2021 at 9:12 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > [+cc Christoph]
-> >
-> > On Wed, Mar 24, 2021 at 06:23:54PM -0700, Dan Williams wrote:  
-> > > The PCIE Data Object Exchange (DOE) mailbox is a protocol run over
-> > > configuration cycles. It assumes one initiator at a time is
-> > > reading/writing the data registers. If userspace reads from the response
-> > > data payload it may steal data that a kernel driver was expecting to
-> > > read. If userspace writes to the request payload it may corrupt the
-> > > request a driver was trying to send.  
-> >
-> > IIUC the problem we're talking about is that userspace config access,
-> > e.g., via "lspci" or "setpci" may interfere with kernel usage of DOE.
-> > I attached what I think are the relevant bits from the spec.
-> >
-> > It looks to me like config *reads* should not be a problem: A read of
-> > Write Data Mailbox always returns 0 and looks innocuous.  A userspace
-> > read of Read Data Mailbox may return a DW of the data object, but it
-> > doesn't advance the cursor, so it shouldn't interfere with a kernel
-> > read.
-> >
-> > A write to Write Data Mailbox could obviously corrupt an object being
-> > written to the device.  A config write to Read Data Mailbox *does*
-> > advance the cursor, so that would definitely interfere with a kernel
-> > user.
-> >
-> > So I think we're really talking about an issue with "setpci" and I
-> > don't expect "lspci" to be a problem.  "setpci" is a valuable tool,
-> > and the fact that it can hose your system is not really news.  I don't
-> > know how hard we should work to protect against that.  
-> 
-> True, the threat is smaller than I was reading, I apologize for that
-> noise. Temporary blocking over kernel DOE cycles seems sufficient for
-> now.
+a similar patch has already been sent and reviewed :
+20210329144029.29200-1-yuehaibing@huawei.com
 
-Was on vacation. Glad I read the whole thread before replying.  The
-key point as Bjorn identified is that reads don't hurt and as noted
-setpci can break many things anyway so I think we are safe on this.
-
-There are more 'exciting' questions to be addressed about firmware
-vs OS ownership of particular DOE mailboxes but that's a whole
-separate bit of fun for the future.
-
-Jonathan
+>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  kernel/sched/fair.c | 40 ++++++++++++++++++----------------------
+>  1 file changed, 18 insertions(+), 22 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6d73bdbb2d40..2a20ada83cbb 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8395,28 +8395,6 @@ group_type group_classify(unsigned int imbalance_pct,
+>         return group_has_spare;
+>  }
+>
+> -static bool update_nohz_stats(struct rq *rq)
+> -{
+> -#ifdef CONFIG_NO_HZ_COMMON
+> -       unsigned int cpu = rq->cpu;
+> -
+> -       if (!rq->has_blocked_load)
+> -               return false;
+> -
+> -       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+> -               return false;
+> -
+> -       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+> -               return true;
+> -
+> -       update_blocked_averages(cpu);
+> -
+> -       return rq->has_blocked_load;
+> -#else
+> -       return false;
+> -#endif
+> -}
+> -
+>  /**
+>   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
+>   * @env: The load balancing environment.
+> @@ -10380,6 +10358,24 @@ void nohz_balance_enter_idle(int cpu)
+>         WRITE_ONCE(nohz.has_blocked, 1);
+>  }
+>
+> +static bool update_nohz_stats(struct rq *rq)
+> +{
+> +       unsigned int cpu = rq->cpu;
+> +
+> +       if (!rq->has_blocked_load)
+> +               return false;
+> +
+> +       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+> +               return false;
+> +
+> +       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+> +               return true;
+> +
+> +       update_blocked_averages(cpu);
+> +
+> +       return rq->has_blocked_load;
+> +}
+> +
+>  /*
+>   * Internal function that runs load balance for all idle cpus. The load balance
+>   * can be a simple update of blocked load or a complete load balance with
+> --
+> 2.26.2
+>
