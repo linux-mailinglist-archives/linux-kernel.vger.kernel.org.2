@@ -2,348 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EC234EFD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C579D34EFA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhC3Rfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:35:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2748 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbhC3Rf1 (ORCPT
+        id S232501AbhC3Req (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:34:46 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:39527 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhC3Re3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:35:27 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F8xHt5CB8z684Ks;
-        Wed, 31 Mar 2021 01:28:42 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 30 Mar 2021 19:35:25 +0200
-Received: from localhost (10.47.27.39) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
- 2021 18:35:24 +0100
-Date:   Tue, 30 Mar 2021 18:34:04 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <sudeep.holla@arm.com>,
-        <lukasz.luba@arm.com>, <james.quinlan@broadcom.com>,
-        <f.fainelli@gmail.com>, <etienne.carriere@linaro.org>,
-        <thara.gopinath@linaro.org>, <vincent.guittot@linaro.org>,
-        <souvik.chakravarty@arm.com>, Jyoti Bhayana <jbhayana@google.com>,
-        "Jonathan Cameron" <jic23@kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v7 25/38] iio/scmi: port driver to the new
- scmi_sensor_proto_ops interface
-Message-ID: <20210330183404.00001909@Huawei.com>
-In-Reply-To: <20210330125113.GD43717@e120937-lin>
-References: <20210316124903.35011-1-cristian.marussi@arm.com>
-        <20210316124903.35011-26-cristian.marussi@arm.com>
-        <20210330123325.00000456@Huawei.com>
-        <20210330125113.GD43717@e120937-lin>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 30 Mar 2021 13:34:29 -0400
+Received: by mail-ot1-f51.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so16342790ote.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:34:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XrptEghcxdTQZaRjcdwhLqUukJxpuPSRHJqpw6RjUr8=;
+        b=GDl9JTd/gz4fwa1bajFAfIkGbDkxbG+knX59gbA7vFslgM36BJyNYJyA8k5uBC8qii
+         em5OqVCaSNZVeXE6T9hK3N2WUmGq7bn0GOhQx4DLL6zUDLEn4YWjdtJkSYkWH1LKOecN
+         XeQ2aq2QAXNXSRVukAngsmlNvPAujhIe5Ibt3ZZFUSGPvP5g+tiVtE0dVrWN/p+4If+m
+         IAn8adtr4HGkgAbuc9ZArub2sYRD5cQ3uExOVyIAb3vxKPezjGw4VRGakZwYxwrEgkaX
+         baMJNNm0RNVXQ8y0AJwgCE0573FbB+Rzf0C9USaxmLH/WyaqXnhQQLNXksu+8TD9p/wY
+         7p8w==
+X-Gm-Message-State: AOAM533TNM0ONnyemwU41tmho5aJt8NdIK0K1MCvahSxG1H17RNOAD8Y
+        p4lXP+q2oJYOeJH9fXoZIAuvasWl4/0=
+X-Google-Smtp-Source: ABdhPJzoD7nzNnMZFuWsajtjOZufvncEn1PPO7i9ZOw45Ndyjy+l4lecZmqXg25ZTHBMlwk/qyOQrQ==
+X-Received: by 2002:a9d:62d8:: with SMTP id z24mr28019748otk.258.1617125668624;
+        Tue, 30 Mar 2021 10:34:28 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:b4f0:c745:2568:3257? ([2600:1700:65a0:78e0:b4f0:c745:2568:3257])
+        by smtp.gmail.com with ESMTPSA id d24sm5132266otf.12.2021.03.30.10.34.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 10:34:28 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     "Ewan D. Milne" <emilne@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+Date:   Tue, 30 Mar 2021 10:34:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.27.39]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 13:51:13 +0100
-Cristian Marussi <cristian.marussi@arm.com> wrote:
 
-> Hi Jonathan,
+>> It is, but in this situation, the controller is sending a second
+>> completion that results in a use-after-free, which makes the
+>> transport irrelevant. Unless there is some other flow (which is
+>> unclear
+>> to me) that causes this which is a bug that needs to be fixed rather
+>> than hidden with a safeguard.
+>>
 > 
-> On Tue, Mar 30, 2021 at 12:33:25PM +0100, Jonathan Cameron wrote:
-> > On Tue, 16 Mar 2021 12:48:50 +0000
-> > Cristian Marussi <cristian.marussi@arm.com> wrote:
-> >   
-> > > Port driver to the new SCMI Sensor interface based on protocol handles
-> > > and common devm_get_ops().
-> > > 
-> > > Cc: Jyoti Bhayana <jbhayana@google.com>
-> > > Cc: Jonathan Cameron <jic23@kernel.org>
-> > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>  
-> > 
-> > +CC linux-iio@vger.kernel.org
-> > 
-> > Rule of thumb if it doesn't go there it ends up in randomly location based
-> > on other lists and I might not see it for a few weeks :(
-> >   
-> 
-> Ah sorry, I thought the direct CC was enough.
+> The kernel should not crash regardless of any network traffic that is
+> sent to the system.  It should not be possible to either intentionally
+> of mistakenly contruct packets that will deny service in this way.
 
-No problem. Too much email :)
+This is not specific to nvme-tcp. I can build an rdma or pci controller
+that can trigger the same crash... I saw a similar patch from Hannes
+implemented in the scsi level, and not the individual scsi transports..
 
-> 
-> > > ---
-> > >  drivers/iio/common/scmi_sensors/scmi_iio.c | 91 ++++++++++------------
-> > >  1 file changed, 41 insertions(+), 50 deletions(-)
-> > > 
-> > > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > index 872d87ca6256..b4bdc3f3a946 100644
-> > > --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > @@ -21,8 +21,10 @@
-> > >  
-> > >  #define SCMI_IIO_NUM_OF_AXIS 3
-> > >  
-> > > +static const struct scmi_sensor_proto_ops *sensor_ops;  
-> > 
-> > Hmm.   I'm not keen on globals when they really should not be necessary.
-> > They just result in lifetimes being out of sync.  Here you are fine because
-> > you set it to an appropriate value as the first thing you do in probe, and
-> > I assume the function only ever returns on answer on repeated calls.
-> > 
-> > Why not put a copy of that pointer inside the struct scmi_iio_priv structures?
-> >   
-> 
-> The reason for this, as I said to Jyoyi who made the same comment indeed,
-> from my point of view (maybe wrong..) was that while the protocol_handle,
-> and previously the handle, are 'per-instance data' (so that you get a
-> different one each time this driver is possibly probed against a different
-> platform-handle) and as such are stored in scmi_iio_priv, the _ops are
-> just plain code pointers and are returned always the same for the same
-> protocol no matter how many times you probe this driver:
-
-As that's the case, I'm a little confused to why you have added the complexity
-of a query interface in the first place?  Why not just export the ops and
-have the various drivers access them directly?  If there is only
-one set of scmi_sensor_ops etc, then let drivers at it directly, or
-indeed export the functions that make up the ops structure directly.
-
-This sounds like a bit of abstraction that only serves to make the
-code harder to read.
-
-> you just end up
-> calling them against the proper different saved protocol_handle; so it
-> seemed to me an unneeded duplication to stick a copy of the same _ops
-> inside each per-instance scmi_iio_priv, and at the same time it seemed
-> also more straigthforward to access them without too many indirections
-> from inside the scmi_iio_priv struct).
-> 
-> But if these are not valid points I can change this in IIO now, and in
-> the future also in all the other SCMI drivers that currently use this
-> same API and pattern of usage with global ops. (..at least because I'd
-> have to collect again all the other ACks agains and it's a bit later for
-> that now)
-
-I'm fine with leaving it as is.  There's no fundamental issue, it's just
-a little bit ugly and I'm fussy :)
-
-> 
-> Thanks
-> 
-> Cristian
-> 
-> > Otherwise this all looks like straight forward refactoring so given the
-> > above is more a 'bad smell' than a bug and I'm rather late to the game.
-> > 
-> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > 
-> >   
-> > > +
-> > >  struct scmi_iio_priv {
-> > > -	struct scmi_handle *handle;
-> > > +	struct scmi_protocol_handle *ph;
-> > >  	const struct scmi_sensor_info *sensor_info;
-> > >  	struct iio_dev *indio_dev;
-> > >  	/* adding one additional channel for timestamp */
-> > > @@ -82,7 +84,6 @@ static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
-> > >  static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> > >  {
-> > >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > > -	u32 sensor_id = sensor->sensor_info->id;
-> > >  	u32 sensor_config = 0;
-> > >  	int err;
-> > >  
-> > > @@ -92,27 +93,11 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> > >  
-> > >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> > >  				    SCMI_SENS_CFG_SENSOR_ENABLE);
-> > > -
-> > > -	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
-> > > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > > -			&sensor_id, &sensor->sensor_update_nb);
-> > > -	if (err) {
-> > > -		dev_err(&iio_dev->dev,
-> > > -			"Error in registering sensor update notifier for sensor %s err %d",
-> > > -			sensor->sensor_info->name, err);
-> > > -		return err;
-> > > -	}
-> > > -
-> > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
-> > > -			sensor->sensor_info->id, sensor_config);
-> > > -	if (err) {
-> > > -		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
-> > > -				SCMI_PROTOCOL_SENSOR,
-> > > -				SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
-> > > -				&sensor->sensor_update_nb);
-> > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > > +				     sensor_config);
-> > > +	if (err)
-> > >  		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
-> > >  			sensor->sensor_info->name, err);
-> > > -	}
-> > >  
-> > >  	return err;
-> > >  }
-> > > @@ -120,25 +105,13 @@ static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> > >  static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
-> > >  {
-> > >  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > > -	u32 sensor_id = sensor->sensor_info->id;
-> > >  	u32 sensor_config = 0;
-> > >  	int err;
-> > >  
-> > >  	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> > >  				    SCMI_SENS_CFG_SENSOR_DISABLE);
-> > > -
-> > > -	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
-> > > -			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > > -			&sensor_id, &sensor->sensor_update_nb);
-> > > -	if (err) {
-> > > -		dev_err(&iio_dev->dev,
-> > > -			"Error in unregistering sensor update notifier for sensor %s err %d",
-> > > -			sensor->sensor_info->name, err);
-> > > -		return err;
-> > > -	}
-> > > -
-> > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
-> > > -						     sensor_config);
-> > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > > +				     sensor_config);
-> > >  	if (err) {
-> > >  		dev_err(&iio_dev->dev,
-> > >  			"Error in disabling sensor %s with err %d",
-> > > @@ -161,8 +134,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
-> > >  	u32 sensor_config;
-> > >  	char buf[32];
-> > >  
-> > > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
-> > > -			sensor->sensor_info->id, &sensor_config);
-> > > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
-> > > +					 &sensor_config);
-> > >  	if (err) {
-> > >  		dev_err(&iio_dev->dev,
-> > >  			"Error in getting sensor config for sensor %s err %d",
-> > > @@ -208,8 +181,8 @@ static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
-> > >  	sensor_config |=
-> > >  		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
-> > >  
-> > > -	err = sensor->handle->sensor_ops->config_set(sensor->handle,
-> > > -			sensor->sensor_info->id, sensor_config);
-> > > +	err = sensor_ops->config_set(sensor->ph, sensor->sensor_info->id,
-> > > +				     sensor_config);
-> > >  	if (err)
-> > >  		dev_err(&iio_dev->dev,
-> > >  			"Error in setting sensor update interval for sensor %s value %u err %d",
-> > > @@ -274,8 +247,8 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
-> > >  	u32 sensor_config;
-> > >  	int mult;
-> > >  
-> > > -	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
-> > > -			sensor->sensor_info->id, &sensor_config);
-> > > +	int err = sensor_ops->config_get(sensor->ph, sensor->sensor_info->id,
-> > > +					 &sensor_config);
-> > >  	if (err) {
-> > >  		dev_err(&iio_dev->dev,
-> > >  			"Error in getting sensor config for sensor %s err %d",
-> > > @@ -542,15 +515,17 @@ static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> > > -					 struct scmi_handle *handle,
-> > > -					 const struct scmi_sensor_info *sensor_info)
-> > > +static struct iio_dev *
-> > > +scmi_alloc_iiodev(struct scmi_device *sdev, struct scmi_protocol_handle *ph,
-> > > +		  const struct scmi_sensor_info *sensor_info)
-> > >  {
-> > >  	struct iio_chan_spec *iio_channels;
-> > >  	struct scmi_iio_priv *sensor;
-> > >  	enum iio_modifier modifier;
-> > >  	enum iio_chan_type type;
-> > >  	struct iio_dev *iiodev;
-> > > +	struct device *dev = &sdev->dev;
-> > > +	const struct scmi_handle *handle = sdev->handle;
-> > >  	int i, ret;
-> > >  
-> > >  	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
-> > > @@ -560,7 +535,7 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> > >  	iiodev->modes = INDIO_DIRECT_MODE;
-> > >  	iiodev->dev.parent = dev;
-> > >  	sensor = iio_priv(iiodev);
-> > > -	sensor->handle = handle;
-> > > +	sensor->ph = ph;
-> > >  	sensor->sensor_info = sensor_info;
-> > >  	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
-> > >  	sensor->indio_dev = iiodev;
-> > > @@ -595,6 +570,17 @@ static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> > >  					  sensor_info->axis[i].id);
-> > >  	}
-> > >  
-> > > +	ret = handle->notify_ops->devm_event_notifier_register(sdev,
-> > > +				SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > > +				&sensor->sensor_info->id,
-> > > +				&sensor->sensor_update_nb);
-> > > +	if (ret) {
-> > > +		dev_err(&iiodev->dev,
-> > > +			"Error in registering sensor update notifier for sensor %s err %d",
-> > > +			sensor->sensor_info->name, ret);
-> > > +		return ERR_PTR(ret);
-> > > +	}
-> > > +
-> > >  	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
-> > >  	iiodev->channels = iio_channels;
-> > >  	return iiodev;
-> > > @@ -604,24 +590,29 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
-> > >  {
-> > >  	const struct scmi_sensor_info *sensor_info;
-> > >  	struct scmi_handle *handle = sdev->handle;
-> > > +	struct scmi_protocol_handle *ph;
-> > >  	struct device *dev = &sdev->dev;
-> > >  	struct iio_dev *scmi_iio_dev;
-> > >  	u16 nr_sensors;
-> > >  	int err = -ENODEV, i;
-> > >  
-> > > -	if (!handle || !handle->sensor_ops) {
-> > > +	if (!handle)
-> > > +		return -ENODEV;
-> > > +
-> > > +	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
-> > > +	if (IS_ERR(sensor_ops)) {
-> > >  		dev_err(dev, "SCMI device has no sensor interface\n");
-> > > -		return -EINVAL;
-> > > +		return PTR_ERR(sensor_ops);
-> > >  	}
-> > >  
-> > > -	nr_sensors = handle->sensor_ops->count_get(handle);
-> > > +	nr_sensors = sensor_ops->count_get(ph);
-> > >  	if (!nr_sensors) {
-> > >  		dev_dbg(dev, "0 sensors found via SCMI bus\n");
-> > >  		return -ENODEV;
-> > >  	}
-> > >  
-> > >  	for (i = 0; i < nr_sensors; i++) {
-> > > -		sensor_info = handle->sensor_ops->info_get(handle, i);
-> > > +		sensor_info = sensor_ops->info_get(ph, i);
-> > >  		if (!sensor_info) {
-> > >  			dev_err(dev, "SCMI sensor %d has missing info\n", i);
-> > >  			return -EINVAL;
-> > > @@ -636,7 +627,7 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
-> > >  		    sensor_info->axis[0].type != RADIANS_SEC)
-> > >  			continue;
-> > >  
-> > > -		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
-> > > +		scmi_iio_dev = scmi_alloc_iiodev(sdev, ph, sensor_info);
-> > >  		if (IS_ERR(scmi_iio_dev)) {
-> > >  			dev_err(dev,
-> > >  				"failed to allocate IIO device for sensor %s: %ld\n",  
-> >   
-
+I would also mention, that a crash is not even the scariest issue that
+we can see here, because if the request happened to be reused we are
+in the silent data corruption realm...
