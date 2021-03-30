@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2A134E64A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E9A34E650
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 13:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhC3LWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 07:22:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14635 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhC3LV5 (ORCPT
+        id S231835AbhC3LXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 07:23:43 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2745 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231772AbhC3LXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 07:21:57 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8n5f2Lr3zmbHR;
-        Tue, 30 Mar 2021 19:19:18 +0800 (CST)
-Received: from [10.174.179.86] (10.174.179.86) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 19:21:54 +0800
-Subject: Re: [Question] Is there a race window between swapoff vs synchronous
- swap_readpage
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        "Minchan Kim" <minchan@kernel.org>
-References: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
- <8735wdbdy4.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <0cb765aa-1783-cd62-c4a4-b3fbc620532d@huawei.com>
- <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <7d2126a2-e67e-cadb-d732-77f8d54a2f0c@huawei.com>
-Date:   Tue, 30 Mar 2021 19:21:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 30 Mar 2021 07:23:35 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F8n4v0dXXz684Tv;
+        Tue, 30 Mar 2021 19:18:39 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 30 Mar 2021 13:23:33 +0200
+Received: from localhost (10.47.27.39) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 30 Mar
+ 2021 12:23:32 +0100
+Date:   Tue, 30 Mar 2021 12:22:13 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lukasz.luba@arm.com>,
+        <james.quinlan@broadcom.com>, <f.fainelli@gmail.com>,
+        <etienne.carriere@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>,
+        Guru Nagarajan <gurunagarajan@google.com>,
+        Enrico Granata <egranata@google.com>
+Subject: Re: [PATCH v7 25/38] iio/scmi: port driver to the new
+ scmi_sensor_proto_ops interface
+Message-ID: <20210330122213.000075d3@Huawei.com>
+In-Reply-To: <20210323094828.ldtlzkgd3zc7rlml@bogus>
+References: <20210316124903.35011-1-cristian.marussi@arm.com>
+        <20210316124903.35011-26-cristian.marussi@arm.com>
+        <CA+=V6c08cVmsCV_sDn5CogzbyN5KyNKL=u+WkAE0cPz2fqPhjQ@mail.gmail.com>
+        <20210316222132.GA6875@e120937-lin>
+        <CA+=V6c1=hWbF1_5wL7nMDK_CXqDVmgDXWvJjUC-XqZRGGewafA@mail.gmail.com>
+        <20210318121202.6xf2lqm7udqvla24@bogus>
+        <20210323094828.ldtlzkgd3zc7rlml@bogus>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <87h7kt9ufw.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.86]
+X-Originating-IP: [10.47.27.39]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/30 11:44, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
-> 
->> On 2021/3/30 9:57, Huang, Ying wrote:
->>> Hi, Miaohe,
->>>
->>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>
->>>> Hi all,
->>>> I am investigating the swap code, and I found the below possible race window:
->>>>
->>>> CPU 1							CPU 2
->>>> -----							-----
->>>> do_swap_page
->>>>   skip swapcache case (synchronous swap_readpage)
->>>>     alloc_page_vma
->>>> 							swapoff
->>>> 							  release swap_file, bdev, or ...
->>>>       swap_readpage
->>>> 	check sis->flags is ok
->>>> 	  access swap_file, bdev or ...[oops!]
->>>> 							    si->flags = 0
->>>>
->>>> The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
->>>> Is this will really happen or Am I miss something ?
->>>> Any reply would be really grateful. Thanks! :)
->>>
->>> This appears possible.  Even for swapcache case, we can't guarantee the
->>
->> Many thanks for reply!
->>
->>> swap entry gotten from the page table is always valid too.  The
->>
->> The page table may change at any time. And we may thus do some useless work.
->> But the pte_same() check could handle these races correctly if these do not
->> result in oops.
->>
->>> underlying swap device can be swapped off at the same time.  So we use
->>> get/put_swap_device() for that.  Maybe we need similar stuff here.
->>
->> Using get/put_swap_device() to guard against swapoff for swap_readpage() sounds
->> really bad as swap_readpage() may take really long time. Also such race may not be
->> really hurtful because swapoff is usually done when system shutdown only.
->> I can not figure some simple and stable stuff out to fix this. Any suggestions or
->> could anyone help get rid of such race?
-> 
-> Some reference counting on the swap device can prevent swap device from
-> swapping-off.  To reduce the performance overhead on the hot-path as
-> much as possible, it appears we can use the percpu_ref.
-> 
+On Tue, 23 Mar 2021 09:48:28 +0000
+Sudeep Holla <sudeep.holla@arm.com> wrote:
 
-Sounds a good idea. Many thanks for your suggestion. :)
-
-> Best Regards,
-> Huang, Ying
-> .
+> Hi Jonathan,
 > 
+> On Thu, Mar 18, 2021 at 12:12:02PM +0000, Sudeep Holla wrote:
+> > On Tue, Mar 16, 2021 at 10:38:43PM -0700, Jyoti Bhayana wrote:  
+> > > Hi Christian,
+> > > 
+> > > Thanks for the detailed explanation. Sounds good to me.
+> > >   
+> > 
+> > Can I get official Reviewed-by or Acked-by please if you are fine with the
+> > change ?
+> >   
+> 
+> I need your ack to this via arm-soc.
+> 
+Sorry, missed it until now as wasn't cc'd to linux-iio@vger.kernel.org so
+my filters didn't sweep it to the right place and it got lost in the flood.
+
+Will take a look now.
+
+Jonathan
 
