@@ -2,167 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B70F34E2C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39E634E2C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhC3IJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:09:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14958 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhC3IJI (ORCPT
+        id S231394AbhC3IJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhC3IJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:09:08 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8hqm4qfxzyNHw;
-        Tue, 30 Mar 2021 16:07:00 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 16:08:58 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Jones <drjones@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, "Ingo Molnar" <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        Yanan Wang <wangyanan55@huawei.com>
-Subject: [PATCH v6 00/10] KVM: selftests: some improvement and a new test for kvm page table
-Date:   Tue, 30 Mar 2021 16:08:46 +0800
-Message-ID: <20210330080856.14940-1-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
+        Tue, 30 Mar 2021 04:09:00 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2521C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:08:59 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so7256384pjg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 01:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RrodrWHSc1H9ORhygWJIRZZyd+kSKdF1s9j2iJVlRN8=;
+        b=OspkOVA0svf1VuxW0dtNXFc2zK+KzzGeJwzg+ZJ1t5Jvis1vnAs7VuElhRhEcgYgGb
+         XczQD8M703t06Je/sxz7VEk1yZVwtOWaX8MHczfw+ALwho68yzj66LJTnqE3OnP6B+Gw
+         JShBGMhX66PsvvBqb/Fh9Kmneu0WzqommlSo2lY2PX0k3oR1uoY1oyiuNeOQQff9Bx0F
+         +VgMs5wCRgORqBqOL8oom8PWt9mFC3NU9+824fbnkbfIlFe+8TDVBSQCbuQxPBGvp6H2
+         DUIKHuesPGOfPJB8VNFvwXA5uiUSkCTZjtzhuOs/oWstqWrK8LVfiWkDoLuykjum9/Ho
+         KXaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RrodrWHSc1H9ORhygWJIRZZyd+kSKdF1s9j2iJVlRN8=;
+        b=Y1TK2r7GhG/97uthPQOQoqgLcELMvUbqatYcu0VetzLuvjahi14W9HlnbpJ0/+y9jU
+         84OcOlTHD0IF3w0d95Ljh3s+iLXzbTxNvm6vRtMQ4XRZflRlasgFvXqJYnEIe4mGI7sZ
+         q61QxAl7tz/Nn5vuL6sna74yFBoisetrcdeJvzirYYlTnwMRLLp5LGabi5BnOF5nF8Ua
+         y4g1ztZ0ZhLHx76TCL5Lr6X5K0bozFhrhIL43vDzvpgJkZVuUGitNbMPluC23fiXi1ZJ
+         lJIxvKQ2bXmXExaeOr/z4QUxIffpoPFf9TUz1t5Ry+kr/NMntls5MTHEAeqwkHMiqma9
+         ck5Q==
+X-Gm-Message-State: AOAM5319rutq80y4hdEcFTfAUtHZ2lzP5ZewsrjF5VaGH/zy/yHaSGZD
+        6OPU7oZiE9Vv9ZNNATOq6Us=
+X-Google-Smtp-Source: ABdhPJz/676XsfYogXtFAwYVW30IjrhNk5ihGoegYXntmuMxaWFPpXZlM/FCaP4w6lILrSxfqYgKeQ==
+X-Received: by 2002:a17:90a:e7cc:: with SMTP id kb12mr3078462pjb.31.1617091739351;
+        Tue, 30 Mar 2021 01:08:59 -0700 (PDT)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id e9sm18085115pgk.69.2021.03.30.01.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 01:08:58 -0700 (PDT)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     airlied@linux.ie, daniel@ffwll.ch, david@lechnology.com,
+        zhangxuezhi1@yulong.com
+Cc:     sam@ravnborg.org, kraxel@redhat.com, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v3 0/1] drm/tiny: add support for Waveshare 2inch LCD module
+Date:   Tue, 30 Mar 2021 08:08:46 +0000
+Message-Id: <20210330080846.116223-1-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-This v6 series can mainly include two parts.
-Rebased on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
+From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 
-In the first part, all the known hugetlb backing src types specified
-with different hugepage sizes are listed, so that we can specify use
-of hugetlb source of the exact granularity that we want, instead of
-the system default ones. And as all the known hugetlb page sizes are
-listed, it's appropriate for all architectures. Besides, a helper that
-can get granularity of different backing src types(anonumous/thp/hugetlb)
-is added, so that we can use the accurate backing src granularity for
-kinds of alignment or guest memory accessing of vcpus.
+This adds a new module for the ST7789V controller with parameters for
+the Waveshare 2inch LCD module.
 
-In the second part, a new test is added:
-This test is added to serve as a performance tester and a bug reproducer
-for kvm page table code (GPA->HPA mappings), it gives guidance for the
-people trying to make some improvement for kvm. And the following explains
-what we can exactly do through this test.
-
-The function guest_code() can cover the conditions where a single vcpu or
-multiple vcpus access guest pages within the same memory region, in three
-VM stages(before dirty logging, during dirty logging, after dirty logging).
-Besides, the backing src memory type(ANONYMOUS/THP/HUGETLB) of the tested
-memory region can be specified by users, which means normal page mappings
-or block mappings can be chosen by users to be created in the test.
-
-If ANONYMOUS memory is specified, kvm will create normal page mappings
-for the tested memory region before dirty logging, and update attributes
-of the page mappings from RO to RW during dirty logging. If THP/HUGETLB
-memory is specified, kvm will create block mappings for the tested memory
-region before dirty logging, and split the blcok mappings into normal page
-mappings during dirty logging, and coalesce the page mappings back into
-block mappings after dirty logging is stopped.
-
-So in summary, as a performance tester, this test can present the
-performance of kvm creating/updating normal page mappings, or the
-performance of kvm creating/splitting/recovering block mappings,
-through execution time.
-
-When we need to coalesce the page mappings back to block mappings after
-dirty logging is stopped, we have to firstly invalidate *all* the TLB
-entries for the page mappings right before installation of the block entry,
-because a TLB conflict abort error could occur if we can't invalidate the
-TLB entries fully. We have hit this TLB conflict twice on aarch64 software
-implementation and fixed it. As this test can imulate process from dirty
-logging enabled to dirty logging stopped of a VM with block mappings,
-so it can also reproduce this TLB conflict abort due to inadequate TLB
-invalidation when coalescing tables.
-
-Links about the TLB conflict abort:
-https://lore.kernel.org/lkml/20201201201034.116760-3-wangyanan55@huawei.com/
-
+Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 ---
-
-Change logs:
-
-v5->v6:
-- Address Andrew Jones's comments for v5 series
-- Add Andrew Jones's R-b tags in some patches
-- Rebased on newest kvm/queue tree
-- v5: https://lore.kernel.org/lkml/20210323135231.24948-1-wangyanan55@huawei.com/
-
-v4->v5:
-- Use synchronization(sem_wait) for time measurement
-- Add a new patch about TEST_ASSERT(patch 4)
-- Address Andrew Jones's comments for v4 series
-- Add Andrew Jones's R-b tags in some patches
-- v4: https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
-
-v3->v4:
-- Add a helper to get system default hugetlb page size
-- Add tags of Reviewed-by of Ben in the patches
-- v3: https://lore.kernel.org/lkml/20210301065916.11484-1-wangyanan55@huawei.com/
-
-v2->v3:
-- Add tags of Suggested-by, Reviewed-by in the patches
-- Add a generic micro to get hugetlb page sizes
-- Some changes for suggestions about v2 series
-- v2: https://lore.kernel.org/lkml/20210225055940.18748-1-wangyanan55@huawei.com/
-
-v1->v2:
-- Add a patch to sync header files
-- Add helpers to get granularity of different backing src types
-- Some changes for suggestions about v1 series
-- v1: https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
-
+v2:change compatible value.
+v3:change author name.
 ---
+ MAINTAINERS                    |   8 +
+ drivers/gpu/drm/tiny/Kconfig   |  14 ++
+ drivers/gpu/drm/tiny/Makefile  |   1 +
+ drivers/gpu/drm/tiny/st7789v.c | 269 +++++++++++++++++++++++++++++++++
+ 4 files changed, 292 insertions(+)
+ create mode 100644 drivers/gpu/drm/tiny/st7789v.c
 
-Yanan Wang (10):
-  tools headers: sync headers of asm-generic/hugetlb_encode.h
-  mm/hugetlb: Add a macro to get HUGETLB page sizes for mmap
-  KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for timing
-  KVM: selftests: Print the errno besides error-string in TEST_ASSERT
-  KVM: selftests: Make a generic helper to get vm guest mode strings
-  KVM: selftests: Add a helper to get system configured THP page size
-  KVM: selftests: Add a helper to get system default hugetlb page size
-  KVM: selftests: List all hugetlb src types specified with page sizes
-  KVM: selftests: Adapt vm_userspace_mem_region_add to new helpers
-  KVM: selftests: Add a test for kvm page table code
-
- include/uapi/linux/mman.h                     |   2 +
- tools/include/asm-generic/hugetlb_encode.h    |   3 +
- tools/include/uapi/linux/mman.h               |   2 +
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   3 +
- .../selftests/kvm/demand_paging_test.c        |   8 +-
- .../selftests/kvm/dirty_log_perf_test.c       |  14 +-
- .../testing/selftests/kvm/include/kvm_util.h  |   4 +-
- .../testing/selftests/kvm/include/test_util.h |  21 +-
- .../selftests/kvm/kvm_page_table_test.c       | 506 ++++++++++++++++++
- tools/testing/selftests/kvm/lib/assert.c      |   4 +-
- tools/testing/selftests/kvm/lib/kvm_util.c    |  59 +-
- tools/testing/selftests/kvm/lib/test_util.c   | 163 +++++-
- tools/testing/selftests/kvm/steal_time.c      |   4 +-
- 14 files changed, 733 insertions(+), 61 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d92f85ca831d..df25e8e0deb1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5769,6 +5769,14 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
+ F:	drivers/gpu/drm/tiny/st7735r.c
+ 
++DRM DRIVER FOR SITRONIX ST7789V PANELS
++M:	David Lechner <david@lechnology.com>
++M:	Xuezhi Zhang <zhangxuezhi1@yulong.com>
++S:	Maintained
++T:	git git://anongit.freedesktop.org/drm/drm-misc
++F:	Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
++F:	drivers/gpu/drm/tiny/st7789v.c
++
+ DRM DRIVER FOR SONY ACX424AKP PANELS
+ M:	Linus Walleij <linus.walleij@linaro.org>
+ S:	Maintained
+diff --git a/drivers/gpu/drm/tiny/Kconfig b/drivers/gpu/drm/tiny/Kconfig
+index 2b6414f0fa75..ac2c7fb702f0 100644
+--- a/drivers/gpu/drm/tiny/Kconfig
++++ b/drivers/gpu/drm/tiny/Kconfig
+@@ -131,3 +131,17 @@ config TINYDRM_ST7735R
+ 	  * Okaya RH128128T 1.44" 128x128 TFT
+ 
+ 	  If M is selected the module will be called st7735r.
++
++config TINYDRM_ST7789V
++	tristate "DRM support for Sitronix ST7789V display panels"
++	depends on DRM && SPI
++	select DRM_KMS_HELPER
++	select DRM_KMS_CMA_HELPER
++	select DRM_MIPI_DBI
++	select BACKLIGHT_CLASS_DEVICE
++	help
++	  DRM driver for Sitronix ST7789V with one of the following
++	  LCDs:
++	  * Waveshare 2inch lcd module 240x320 TFT
++
++	  If M is selected the module will be called st7789v.
+diff --git a/drivers/gpu/drm/tiny/Makefile b/drivers/gpu/drm/tiny/Makefile
+index 6ae4e9e5a35f..aa0caa2b6c16 100644
+--- a/drivers/gpu/drm/tiny/Makefile
++++ b/drivers/gpu/drm/tiny/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_TINYDRM_MI0283QT)		+= mi0283qt.o
+ obj-$(CONFIG_TINYDRM_REPAPER)		+= repaper.o
+ obj-$(CONFIG_TINYDRM_ST7586)		+= st7586.o
+ obj-$(CONFIG_TINYDRM_ST7735R)		+= st7735r.o
++obj-$(CONFIG_TINYDRM_ST7789V)		+= st7789v.o
+diff --git a/drivers/gpu/drm/tiny/st7789v.c b/drivers/gpu/drm/tiny/st7789v.c
+new file mode 100644
+index 000000000000..9b4bb9edba40
+--- /dev/null
++++ b/drivers/gpu/drm/tiny/st7789v.c
+@@ -0,0 +1,269 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * DRM driver for display panels connected to a Sitronix ST7789V
++ * display controller in SPI mode.
++ *
++ * Copyright 2017 David Lechner <david@lechnology.com>
++ * Copyright (C) 2019 Glider bvba
++ */
++
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/dma-buf.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/property.h>
++#include <linux/spi/spi.h>
++#include <video/mipi_display.h>
++
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_drv.h>
++#include <drm/drm_fb_helper.h>
++#include <drm/drm_gem_cma_helper.h>
++#include <drm/drm_gem_framebuffer_helper.h>
++#include <drm/drm_managed.h>
++#include <drm/drm_mipi_dbi.h>
++
++#define ST7789V_PORCTRL     0xb2
++#define ST7789V_GCTRL       0xb7
++#define ST7789V_VCOMS       0xbb
++#define ST7789V_LCMCTRL     0xc0
++#define ST7789V_VDVVRHEN    0xc2
++#define ST7789V_VRHS        0xc3
++#define ST7789V_VDVS        0xc4
++#define ST7789V_FRCTRL2     0xc6
++#define ST7789V_PWCTRL1     0xd0
++#define ST7789V_PVGAMCTRL   0xe0
++#define ST7789V_NVGAMCTRL   0xe1
++
++#define ST7789V_MY	BIT(7)
++#define ST7789V_MX	BIT(6)
++#define ST7789V_MV	BIT(5)
++#define ST7789V_RGB	BIT(3)
++
++struct st7789v_cfg {
++	const struct drm_display_mode mode;
++	unsigned int left_offset;
++	unsigned int top_offset;
++	unsigned int write_only:1;
++	unsigned int rgb:1;		/* RGB (vs. BGR) */
++};
++
++struct st7789v_priv {
++	struct mipi_dbi_dev dbidev;	/* Must be first for .release() */
++	const struct st7789v_cfg *cfg;
++};
++
++static void st7789v_pipe_enable(struct drm_simple_display_pipe *pipe,
++				struct drm_crtc_state *crtc_state,
++				struct drm_plane_state *plane_state)
++{
++	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(pipe->crtc.dev);
++	struct st7789v_priv *priv = container_of(dbidev, struct st7789v_priv,
++						 dbidev);
++	struct mipi_dbi *dbi = &dbidev->dbi;
++	int ret, idx;
++	u8 addr_mode;
++
++	if (!drm_dev_enter(pipe->crtc.dev, &idx))
++		return;
++
++	DRM_DEBUG_KMS("\n");
++
++	ret = mipi_dbi_poweron_reset(dbidev);
++	if (ret)
++		goto out_exit;
++
++	msleep(150);
++
++	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
++	msleep(100);
++
++
++	switch (dbidev->rotation) {
++	default:
++		addr_mode = 0;
++		break;
++	case 90:
++		addr_mode = ST7789V_MY | ST7789V_MV;
++		break;
++	case 180:
++		addr_mode = ST7789V_MX | ST7789V_MY;
++		break;
++	case 270:
++		addr_mode = ST7789V_MX | ST7789V_MV;
++		break;
++	}
++
++	if (priv->cfg->rgb)
++		addr_mode |= ST7789V_RGB;
++
++	mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
++			 MIPI_DCS_PIXEL_FMT_16BIT);
++	mipi_dbi_command(dbi, MIPI_DCS_ENTER_INVERT_MODE);
++	mipi_dbi_command(dbi, ST7789V_PORCTRL, 0x0c, 0x0c, 0x00, 0x33, 0x33);
++	mipi_dbi_command(dbi, ST7789V_GCTRL, 0x35);
++	mipi_dbi_command(dbi, ST7789V_VCOMS, 0x1f);
++	mipi_dbi_command(dbi, ST7789V_LCMCTRL, 0x2c);
++	mipi_dbi_command(dbi, ST7789V_VDVVRHEN, 0x01);
++	mipi_dbi_command(dbi, ST7789V_VRHS, 0x12);
++	mipi_dbi_command(dbi, ST7789V_VDVS, 0x20);
++	mipi_dbi_command(dbi, ST7789V_FRCTRL2, 0x0f);
++	mipi_dbi_command(dbi, ST7789V_PWCTRL1, 0xa4, 0xa1);
++	mipi_dbi_command(dbi, ST7789V_PVGAMCTRL, 0xd0, 0x08, 0x11, 0x08, 0x0c,
++				0x15, 0x39, 0x33, 0x50, 0x36, 0x13, 0x14, 0x29, 0x2d);
++	mipi_dbi_command(dbi, ST7789V_NVGAMCTRL, 0xd0, 0x08, 0x10, 0x08, 0x06,
++				0x06, 0x39, 0x44, 0x51, 0x0b, 0x16, 0x14, 0x2f, 0x31);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
++	msleep(100);
++	mipi_dbi_enable_flush(dbidev, crtc_state, plane_state);
++
++out_exit:
++	drm_dev_exit(idx);
++}
++
++static const struct drm_simple_display_pipe_funcs st7789v_pipe_funcs = {
++	.enable		= st7789v_pipe_enable,
++	.disable	= mipi_dbi_pipe_disable,
++	.update		= mipi_dbi_pipe_update,
++	.prepare_fb	= drm_gem_fb_simple_display_pipe_prepare_fb,
++};
++
++static const struct st7789v_cfg ws_2inch_lcd_cfg = {
++	.mode		= { DRM_SIMPLE_MODE(240, 320, 34, 43) },
++	/* Cannot read from Waveshare 2inch lcd module" display via SPI */
++	.write_only	= true,
++	.rgb		= false,
++};
++
++
++DEFINE_DRM_GEM_CMA_FOPS(st7789v_fops);
++
++static const struct drm_driver st7789v_driver = {
++	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
++	.fops			= &st7789v_fops,
++	DRM_GEM_CMA_DRIVER_OPS_VMAP,
++	.debugfs_init		= mipi_dbi_debugfs_init,
++	.name			= "st7789v",
++	.desc			= "Sitronix ST7789R",
++	.date			= "20210310",
++	.major			= 1,
++	.minor			= 0,
++};
++
++static const struct of_device_id st7789v_of_match[] = {
++	{ .compatible = "waveshare,ws2inch", .data = &ws_2inch_lcd_cfg },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, st7789v_of_match);
++
++static const struct spi_device_id st7789v_id[] = {
++	{ "ws2inch", (uintptr_t)&ws_2inch_lcd_cfg },
++	{ },
++};
++MODULE_DEVICE_TABLE(spi, st7789v_id);
++
++static int st7789v_probe(struct spi_device *spi)
++{
++	struct device *dev = &spi->dev;
++	const struct st7789v_cfg *cfg;
++	struct mipi_dbi_dev *dbidev;
++	struct st7789v_priv *priv;
++	struct drm_device *drm;
++	struct mipi_dbi *dbi;
++	struct gpio_desc *dc;
++	u32 rotation = 0;
++	int ret;
++
++	cfg = device_get_match_data(&spi->dev);
++	if (!cfg)
++		cfg = (void *)spi_get_device_id(spi)->driver_data;
++
++	priv = devm_drm_dev_alloc(dev, &st7789v_driver,
++				  struct st7789v_priv, dbidev.drm);
++	if (IS_ERR(priv))
++		return PTR_ERR(priv);
++
++	dbidev = &priv->dbidev;
++	priv->cfg = cfg;
++
++	dbi = &dbidev->dbi;
++	drm = &dbidev->drm;
++
++	dbi->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(dbi->reset)) {
++		DRM_DEV_ERROR(dev, "Failed to get gpio 'reset'\n");
++		return PTR_ERR(dbi->reset);
++	}
++
++	dc = devm_gpiod_get(dev, "dc", GPIOD_OUT_LOW);
++	if (IS_ERR(dc)) {
++		DRM_DEV_ERROR(dev, "Failed to get gpio 'dc'\n");
++		return PTR_ERR(dc);
++	}
++
++	dbidev->backlight = devm_of_find_backlight(dev);
++	if (IS_ERR(dbidev->backlight))
++		return PTR_ERR(dbidev->backlight);
++
++	device_property_read_u32(dev, "rotation", &rotation);
++
++	ret = mipi_dbi_spi_init(spi, dbi, dc);
++	if (ret)
++		return ret;
++
++	if (cfg->write_only)
++		dbi->read_commands = NULL;
++
++	dbidev->left_offset = cfg->left_offset;
++	dbidev->top_offset = cfg->top_offset;
++
++	ret = mipi_dbi_dev_init(dbidev, &st7789v_pipe_funcs, &cfg->mode,
++				rotation);
++	if (ret)
++		return ret;
++
++	drm_mode_config_reset(drm);
++
++	ret = drm_dev_register(drm, 0);
++	if (ret)
++		return ret;
++
++	spi_set_drvdata(spi, drm);
++
++	drm_fbdev_generic_setup(drm, 0);
++
++	return 0;
++}
++
++static int st7789v_remove(struct spi_device *spi)
++{
++	struct drm_device *drm = spi_get_drvdata(spi);
++
++	drm_dev_unplug(drm);
++	drm_atomic_helper_shutdown(drm);
++
++	return 0;
++}
++
++static void st7789v_shutdown(struct spi_device *spi)
++{
++	drm_atomic_helper_shutdown(spi_get_drvdata(spi));
++}
++
++static struct spi_driver st7789v_spi_driver = {
++	.driver = {
++		.name = "st7789v-dbi",
++		.of_match_table = st7789v_of_match,
++	},
++	.id_table = st7789v_id,
++	.probe = st7789v_probe,
++	.remove = st7789v_remove,
++	.shutdown = st7789v_shutdown,
++};
++module_spi_driver(st7789v_spi_driver);
++
++MODULE_DESCRIPTION("Sitronix ST7789V DRM driver");
++MODULE_AUTHOR("Carlis <zhangxuezhi1@yulong.com>");
++MODULE_LICENSE("GPL");
 -- 
-2.23.0
+2.25.1
 
