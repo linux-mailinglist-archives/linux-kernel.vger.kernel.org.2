@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798C034ECB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D198F34EC9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbhC3PgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:36:21 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:33078 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232245AbhC3Pfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:35:46 -0400
-Received: from xry111-X57S1.. (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 7A01465C16;
-        Tue, 30 Mar 2021 11:35:30 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1617118546;
-        bh=6hwekqUNLmFAHbwCnBsnIYIhL6K9vbJddnyV52qZ7VU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IBlcto603Rok3cEFYhm+DEkFAOXJLWxwbTWKUvDacKdmmlPPi99UjPLQpwNY9uELa
-         rQoqFqjkzJQNlD8EHsHyT1kLO64kI6myoGEWZ9K/ukUGdUKFnXPXxoPpWO9cCKD/W2
-         PcTT5e87isMm+fGzRrdVUmRUoIUa8pOpYrNFSn6DGvCqPjgGl5eog21zKpi0qDk/u/
-         d92bwRKT9QiO/Tw+MotqRjLAoJcXj7BNM4ZYHjZBx8fyYGeDS7p2PWkHDUT572wT8I
-         0IqM09myjwXWy4fz4pUxmdjIb5vwDbRRuCaarJXDD68/Ys599aePbmJ6ezPEwU6y+j
-         rgXaZ19r+Syzg==
-From:   =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        =?UTF-8?q?Dan=20Hor=C3=A1k?= <dan@danny.cz>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>
-Subject: [PATCH 2/2] drm/amdgpu: check alignment on CPU page for bo map
-Date:   Tue, 30 Mar 2021 23:33:34 +0800
-Message-Id: <20210330153334.44570-3-xry111@mengyan1223.wang>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210330153334.44570-1-xry111@mengyan1223.wang>
-References: <20210330153334.44570-1-xry111@mengyan1223.wang>
+        id S232390AbhC3Pe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232389AbhC3Peh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:34:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9A9C061574;
+        Tue, 30 Mar 2021 08:34:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id g8so24426838lfv.12;
+        Tue, 30 Mar 2021 08:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HFLwaiOgQLpK8rrr7G51VeVnB2pCW8jbr+A64UfDOYA=;
+        b=mdgVBGCIFrjFQ5b4sdMvDzz6NLUcivciUb5fCHUb0YjaYS4/UsbCQeGN0CJCPb574l
+         qK57SxGAjUHkzA3bn3VGMFvd5mcja8nYyamGoejZP0yGaPRWuO5WJpsbtpPhCrQhmobl
+         CgqW2GVMNLEkhA/40VTno/U+8K7SkmR851KQqeEZD+N4qrv8thd5r3lOBQO+e52zjS0c
+         xz8OPV8PNY/tYgnGFI7dcHUdmfWyoldieRGwg2VLJMwg3KKQ1SdrqRIJyXtjmNrAt2nO
+         nRU+ZY1C+DYaKvv0xyDkiUcUdulEU9r9bqI7s0R62kEgymmWvqx8Cb5darKN4oxWGr8+
+         uEBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HFLwaiOgQLpK8rrr7G51VeVnB2pCW8jbr+A64UfDOYA=;
+        b=TaPb6u7kx+qmbG3PKogE7QpTZp8A6YypP6TF8X2P9JRDABkCzvN2UTJMS1pqFPLDUj
+         8S6b7uvfHAFRyEb8KF/G6deit0LbMLwVn2eFPvHHqxnB9NFr4ygE8u7oluG1dp9DIJ2u
+         BOoh/dwCdi/N77s2ZN2dhmW9dqcfxjENvkJLuuOJx1zspgZWJbSoA+Wa1UqK0HeUeeNU
+         hx4zNPl6q9edjmAMzaLFaE/5szzNDUjQvc5BOAAc4sFE+cmWhkjV7C1VVFtvCXJFm2I5
+         xK+P9TjVqzo3V5p/nrFI4CzfBSXpHwU/95Pftv0HdYcHvTItsnfptGBuG026byQ1UDwM
+         QGOQ==
+X-Gm-Message-State: AOAM533w5NPIGAl/h08sY2AWFKchkYBSSb7yeJrGzSoHtw4NQkNJ6Pkf
+        eQqu9loIdKtO7wihHo5Wv8ABVEZxAQE=
+X-Google-Smtp-Source: ABdhPJzJZFASBY0/ZDb07qhZM4lUCtVB/fXKnZGx3SnTpI3DVGjRfjGD7OJph0cAT/L2sV4SLXYZ7Q==
+X-Received: by 2002:ac2:43d0:: with SMTP id u16mr19897999lfl.263.1617118474960;
+        Tue, 30 Mar 2021 08:34:34 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id z6sm2208762lfr.34.2021.03.30.08.34.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 08:34:34 -0700 (PDT)
+Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210329194602.17049-1-digetx@gmail.com>
+ <20210329194602.17049-6-digetx@gmail.com>
+ <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <15e4566a-6e05-0ec4-6103-7b169c326699@gmail.com>
+Date:   Tue, 30 Mar 2021 18:34:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page table of AMDGPU requires an alignment to CPU page so we should
-check ioctl parameters for it.  Return -EINVAL if some parameter is
-unaligned to CPU page, instead of corrupt the page table sliently.
+30.03.2021 11:48, Krzysztof Kozlowski пишет:
+>> +  "^emc-tables@[a-z0-9\\-]+$":
+> Why \ and - in the pattern?
 
-Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index dc4d6ae71476..a01c158bc29f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2198,8 +2198,8 @@ int amdgpu_vm_bo_map(struct amdgpu_device *adev,
- 	uint64_t eaddr;
- 
- 	/* validate the parameters */
--	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
--	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
-+	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
-+	    size == 0 || size & ~PAGE_MASK)
- 		return -EINVAL;
- 
- 	/* make sure object fit at this offset */
-@@ -2264,8 +2264,8 @@ int amdgpu_vm_bo_replace_map(struct amdgpu_device *adev,
- 	int r;
- 
- 	/* validate the parameters */
--	if (saddr & AMDGPU_GPU_PAGE_MASK || offset & AMDGPU_GPU_PAGE_MASK ||
--	    size == 0 || size & AMDGPU_GPU_PAGE_MASK)
-+	if (saddr & ~PAGE_MASK || offset & ~PAGE_MASK ||
-+	    size == 0 || size & ~PAGE_MASK)
- 		return -EINVAL;
- 
- 	/* make sure object fit at this offset */
--- 
-2.31.1
-
+Good catch, I thought that '-' needs to be escaped, but then forgot to
+remove the unnecessary slashes.
