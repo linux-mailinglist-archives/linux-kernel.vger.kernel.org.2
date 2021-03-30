@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B3334EA69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B59B34EA6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhC3O10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:27:26 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14646 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbhC3O1S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:27:18 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8sCT2bm6znVl6;
-        Tue, 30 Mar 2021 22:24:37 +0800 (CST)
-Received: from [127.0.0.1] (10.40.188.252) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
- 22:27:06 +0800
-Subject: Re: [PATCH] mmc: dw_mmc-k3: use the correct HiSilicon copyright
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-References: <1617086448-51054-1-git-send-email-fanghao11@huawei.com>
- <CAPDyKFoUUu=Rb0pHMZb+gKXPsKESBnXG=4U=n_XFMZJLHyY7kA@mail.gmail.com>
-CC:     Jaehoon Chung <jh80.chung@samsung.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <prime.zeng@hisilicon.com>
-From:   "fanghao (A)" <fanghao11@huawei.com>
-Message-ID: <c5284747-95dd-a4d5-0027-4da09bb56117@huawei.com>
-Date:   Tue, 30 Mar 2021 22:27:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S231882AbhC3Oam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:30:42 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54922 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhC3Oac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:30:32 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lRFNw-00E25C-WF; Tue, 30 Mar 2021 16:30:25 +0200
+Date:   Tue, 30 Mar 2021 16:30:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: Re: [PATCH v2 0/7] remove different PHY fixups
+Message-ID: <YGM2AGfawEFTKOtE@lunn.ch>
+References: <20210309112615.625-1-o.rempel@pengutronix.de>
+ <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFoUUu=Rb0pHMZb+gKXPsKESBnXG=4U=n_XFMZJLHyY7kA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.188.252]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 30, 2021 at 11:00:52AM -0300, Fabio Estevam wrote:
+> Hi Oleksij,
+> 
+> On Tue, Mar 9, 2021 at 8:26 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> >
+> > changes v2:
+> > - rebase against latest kernel
+> > - fix networking on RIoTBoard
+> >
+> > This patch series tries to remove most of the imx6 and imx7 board
+> > specific PHY configuration via fixup, as this breaks the PHYs when
+> > connected to switch chips or USB Ethernet MACs.
+> >
+> > Each patch has the possibility to break boards, but contains a
+> > recommendation to fix the problem in a more portable and future-proof
+> > way.
+> 
+> I think this series moves us in the right direction, even with the
+> possibility to break old dtb's.
+> 
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> 
+> Andrew, what do you think?
 
+Hi Fabio
 
-On 2021/3/30 18:38, Ulf Hansson wrote:
-> On Tue, 30 Mar 2021 at 08:43, Hao Fang <fanghao11@huawei.com> wrote:
->>
->> s/Hisilicon/HiSilicon/g.
->> It should use capital S, according to
->> https://www.hisilicon.com/en/terms-of-use.
->>
->> Signed-off-by: Hao Fang <fanghao11@huawei.com>
->> ---
->>  drivers/mmc/host/dw_mmc-k3.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/host/dw_mmc-k3.c b/drivers/mmc/host/dw_mmc-k3.c
->> index 29d2494..0311a37 100644
->> --- a/drivers/mmc/host/dw_mmc-k3.c
->> +++ b/drivers/mmc/host/dw_mmc-k3.c
->> @@ -1,7 +1,7 @@
->>  // SPDX-License-Identifier: GPL-2.0-or-later
->>  /*
->>   * Copyright (c) 2013 Linaro Ltd.
->> - * Copyright (c) 2013 Hisilicon Limited.
->> + * Copyright (c) 2013 HiSilicon Limited.
->
-> This change looks really silly to me, but I am not a lawyer - so I
-> can't tell if this makes sense or not.
->
-> In any case, "Hisilicon" is being used all over the kernel - do you
-> intend to patch all places with similar changes like this one? Perhaps
-> just send a big tree-wide-patch instead and see what people think?
->
+I think it should be merged, and we fixup anything which does break.
+We are probably at the point where more is broken by not merging it
+than merging it.
 
-Although HiSilicon has applied for two trademarks Hisilicon/HiSilicon,
-there is only one English name for the company. We have consulted with
-company's lawyer who suggested that should use a copyright statement
-consistent with the official website.
-
-Though the kernel has tons of "Hisilicon", I just fix the copyright,
-and plan to send a commit to each subsystem where is uncorrect. Fortunately,
-there are not many modules that have the problem, this is one of them.
-
-Thanks.
-
-Hao
-
->>   */
->>
->>  #include <linux/bitops.h>
->
-> Kind regards
-> Uffe
->
-> .
->
-
+  Andrew
