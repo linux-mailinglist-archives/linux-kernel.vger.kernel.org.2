@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3529A34DDD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C340C34DDD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229441AbhC3Bx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:53:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229709AbhC3BxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E37260C41;
-        Tue, 30 Mar 2021 01:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617069196;
-        bh=GevyNR3XBe9JE7jNR+C8DY51gkGc4pzFml1BcSA406Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5qJ0nFahBP6GKD/dJ8ZoylIMmracSMkrLJT/lMIaVQsirQQDmobUKooTFBmZAnPu
-         aUwiEKocTK2IblXOwGicPfx1kesw3uK2nQsdYUsHfnxUiMUPKbo3T/H8G9t/0CdZIt
-         hFZkDNzfyTkzmR4LWgY49O/sziwlogOrSFqsLze3HfXi4hNB0yzSGYSQ2jsYTxs7hp
-         /B0Vpj7pfQxQT5cB07v69yDt1Ui/WQ+RkhTrCJoCMpyICo6Kz6yPnS1tqWwvU1mWqT
-         bl7OzwZIWaIDZ8IkHPfltNPTxBNaXYgCfcTI8WxfMjcLG/G51Nr4zM9r0Z7oGC7+Aq
-         gKk3hrBJYGQCg==
-Date:   Mon, 29 Mar 2021 18:53:14 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v5 2/4] fs: unicode: Rename function names from utf8 to
- unicode
-Message-ID: <YGKEitULkZmMwk3f@gmail.com>
-References: <20210329204240.359184-1-shreeya.patel@collabora.com>
- <20210329204240.359184-3-shreeya.patel@collabora.com>
+        id S230308AbhC3Bzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:55:48 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:14780 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC3Bzc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 21:55:32 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id A55F4980138;
+        Tue, 30 Mar 2021 09:55:27 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] linux/trace_events.h: Remove duplicate struct declaration
+Date:   Tue, 30 Mar 2021 09:55:17 +0800
+Message-Id: <20210330015517.2264721-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329204240.359184-3-shreeya.patel@collabora.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHUNLSU1DS0oYHUlJVkpNSkxLTUJISUxDTU1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6Ejo*Fz8IMDAIC1YRSjk8
+        SE8wCkJVSlVKTUpMS01CSElDSk1KVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0JKNwY+
+X-HM-Tid: 0a7880d7c5aed992kuwsa55f4980138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 02:12:38AM +0530, Shreeya Patel wrote:
-> utf8data.h_shipped has a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions and it is not
-> necessary to carry this large table in the kernel.
-> Goal is to make UTF-8 encoding loadable by converting it into a module
-> and adding a unicode subsystem layer between the filesystems and the
-> utf8 module.
-> This layer will load the module whenever any filesystem that
-> needs unicode is mounted.
-> utf8-core will be converted into this layer file in the future patches,
-> hence rename the function names from utf8 to unicode which will denote the
-> functions as the unicode subsystem layer functions and this will also be
-> the first step towards the transformation of utf8-core file into the
-> unicode subsystem layer file.
-> 
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
-> Changes in v5
->   - Improve the commit message.
+struct trace_array is declared twice. One has been declared
+at forward struct declaration. Remove the duplicate.
+And sort these forward declarations alphabetically.
 
-This didn't really answer my questions about the reason for this renaming.
-Aren't the functions like unicode_casefold() still tied to UTF-8 (as opposed to
-e.g. supporting both UTF-8 and UTF-16)?  Is that something you're trying to
-change?
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ include/linux/trace_events.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-- Eric
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 28e7af1406f2..29ae3ec5cab9 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -10,11 +10,11 @@
+ #include <linux/perf_event.h>
+ #include <linux/tracepoint.h>
+ 
+-struct trace_array;
+ struct array_buffer;
+-struct tracer;
+-struct dentry;
+ struct bpf_prog;
++struct dentry;
++struct tracer;
++struct trace_array;
+ 
+ const char *trace_print_flags_seq(struct trace_seq *p, const char *delim,
+ 				  unsigned long flags,
+@@ -404,7 +404,6 @@ trace_get_fields(struct trace_event_call *event_call)
+ 	return event_call->class->get_fields(event_call);
+ }
+ 
+-struct trace_array;
+ struct trace_subsystem_dir;
+ 
+ enum {
+-- 
+2.25.1
+
