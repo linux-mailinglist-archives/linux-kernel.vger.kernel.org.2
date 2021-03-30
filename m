@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9655434EBE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871FA34EBEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhC3PPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
+        id S232036AbhC3PQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:16:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42512 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231794AbhC3POi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:14:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CF0861957;
-        Tue, 30 Mar 2021 15:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617117278;
-        bh=SBGYztar3ZQgp7YKPFAjZyq0aWSb5ADN6p6bSuCJ6Zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Txr05xLZeb+g5xt2SkyIvuWpiQ7FXVXwg6Yfg9/gPegfu9SoOmlqroesrn0WdOfhm
-         xrPUmxtqzr4gN9cS7coRScOUhVxySxa9FCwfvvSPfLFCOXdjNm3KeMpF6yog5VZdPd
-         BWeNYwd+Efgutx2XvYhclG9zq3doqzXr1rHeJqUahDkKv8caavBqGEUjvkn4B2K1v8
-         e+Z3s6liKrgsaxh0knlvjz4C+yQiz7wVRMfI4d0Avv5AuUl/j95CvROGC/+rcD5VI7
-         hEwcpJUfFG71aeqqWSQHRaxfsw/Xthj0ZdnsLWeCMK3fDzXfxDF18oEW6Iu7uApQWs
-         YEk3VoqNmDc2Q==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lRG55-0002Wn-32; Tue, 30 Mar 2021 17:14:59 +0200
-Date:   Tue, 30 Mar 2021 17:14:59 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] USB: cdc-acm: add other non-standard xr_serial
- models to ignore list
-Message-ID: <YGNAc/FhUefX7yTZ@hovoldconsulting.com>
-References: <cover.1616571453.git.mchehab+huawei@kernel.org>
- <5155887a764cbc11f8da0217fe08a24a77d120b4.1616571453.git.mchehab+huawei@kernel.org>
+        id S232366AbhC3PPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:15:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 16EE9AC1A;
+        Tue, 30 Mar 2021 15:15:34 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3A5361E4353; Tue, 30 Mar 2021 17:15:33 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 17:15:33 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Mauricio Faria de Oliveira <mfo@canonical.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>,
+        Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
+        Hui Su <sh_def@163.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jbd2: avoid -Wempty-body warnings
+Message-ID: <20210330151533.GA10067@quack2.suse.cz>
+References: <20210322102152.95684-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5155887a764cbc11f8da0217fe08a24a77d120b4.1616571453.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210322102152.95684-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:41:11AM +0100, Mauro Carvalho Chehab wrote:
-> Now that the xr_serial got support for other models, add their
-> USB IDs as well, as those devices won't work with the standard
-> CDC driver.
-
-As far as I understand these devices should work also with the standard
-class driver, but the problem is that your development board is broken
-in that CTS isn't wired up properly so that TX is stalled (I even
-verified that in the schematics).
-
-Sure, there are other features available in custom-driver mode, but
-still funny (sad?) if all that would really have been needed was a tiny
-bit of led. :)
-
-I kept this commit but updated the commit message and cleaned up the
-entries below somewhat.
-
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/usb/class/cdc-acm.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+On Mon 22-03-21 11:21:38, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-> index 39ddb5585ded..839b80093478 100644
-> --- a/drivers/usb/class/cdc-acm.c
-> +++ b/drivers/usb/class/cdc-acm.c
-> @@ -1902,9 +1902,20 @@ static const struct usb_device_id acm_ids[] = {
->  #endif
->  
->  #if IS_ENABLED(CONFIG_USB_SERIAL_XR)
-> -	{ USB_DEVICE(0x04e2, 0x1410),   /* Ignore XR21V141X USB to Serial converter */
-> -	.driver_info = IGNORE_DEVICE,
-> -	},
-> +	/* Ignore MaxLinear/Exar USB UARTs and USB UART bridges */
-> +	{ USB_DEVICE(0x04e2, 0x1400), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1401), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1402), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1403), .driver_info = IGNORE_DEVICE,},
-> +
-> +	{ USB_DEVICE(0x04e2, 0x1410), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1411), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1412), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1414), .driver_info = IGNORE_DEVICE,},
-> +
-> +	{ USB_DEVICE(0x04e2, 0x1420), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1422), .driver_info = IGNORE_DEVICE,},
-> +	{ USB_DEVICE(0x04e2, 0x1424), .driver_info = IGNORE_DEVICE,},
->  #endif
->  
->  	/*Samsung phone in firmware update mode */
+> Building with 'make W=1' shows a harmless -Wempty-body warning:
+> 
+> fs/jbd2/recovery.c: In function 'fc_do_one_pass':
+> fs/jbd2/recovery.c:267:75: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   267 |                 jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
+>       |                                                                           ^
+> 
+> Change the empty dprintk() macros to no_printk(), which avoids this
+> warning and adds format string checking.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Johan
+Sure. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  include/linux/jbd2.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 99d3cd051ac3..232e6285536a 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -61,7 +61,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
+>  #define jbd_debug(n, fmt, a...) \
+>  	__jbd2_debug((n), __FILE__, __func__, __LINE__, (fmt), ##a)
+>  #else
+> -#define jbd_debug(n, fmt, a...)    /**/
+> +#define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
+>  #endif
+>  
+>  extern void *jbd2_alloc(size_t size, gfp_t flags);
+> -- 
+> 2.29.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
