@@ -2,317 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6D034E234
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26A034E23D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhC3H3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbhC3H25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:28:57 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40580C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:28:57 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u9so23261402ejj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Cl6L2IBQ3wgEzOG94OkV8F+rjBjAhv9soo/p9TB1rpg=;
-        b=LuO0WMj9epMk1yY5qnZlYVbpSsSuWXlIoCIakVSURZSACuZCoqWZjAihTR23NpQ4l4
-         tOIdxVg5AlSyfeg0GNuLEGgA0uGqKAsKcX+REBqQ/00YO5jWOaF/776YwFMlv4JY4/Uo
-         hlje/p7y6sjkaW1AneqQjcaD1rmU8VmGza+e4ukrhdPonMEjsfmF+//9/SBPNvrNAwUo
-         IjKYgYjoNdtPjBhZ1KjzxGxatdA12ebrUpXnQWV1DpNepu5O59y+ZfGNzhNFEHyplf8m
-         yYt1o8DVY6iYLGB89QqaecOzJGtZncsVCPtoqxyT0JTBOeVJiruk9rhYmZS6hDWPozqw
-         r0Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Cl6L2IBQ3wgEzOG94OkV8F+rjBjAhv9soo/p9TB1rpg=;
-        b=ZBk4Gz8whQbh1koA3TcarctgQZqaCSlF2QWekYMZEeLWej/WPHbxQRuqZEAHqB7Zv9
-         gMOJjYE2W3pqjtlH2OpMQKw6iWR2duGG25nanchCrXPOElOX6R+hkOcrpUhxZLXlt1wj
-         lQEOztvMQ4KFIvysnmMynpPeGHRhQVAuSK09hvx9h35iifHmRwxQtY7vdp5HFl0zxYnU
-         0AqxdgyW/6AwZmr3ssjhsE+B+VFz63kj/ibMyeRXiRkg94u1cXS4MSLylWJs0vfiG+ma
-         PfLT+itqeO3i3rsg5uNx71MxZJsrPXGkT8AbDYlj2/F2eJob/EonMr+1c/4fOddaD+ou
-         HVTw==
-X-Gm-Message-State: AOAM531MQoBmZwtnyvI6Htp6BdfJ6255xK2wyduvS3+Bp49uCCQtqlWL
-        hhIX8O1WhnmSh5721njtKxMiF+MKO3c4Tl+tDal82gOYhoFahA0y
-X-Google-Smtp-Source: ABdhPJxNO4z6HM8JuRrJJg/yspxvpVbZd14LofFRTMNsYCxVeA8pJNuj0xV0AC6sVFTiJ0PxX3KvGA3JZv0JG7sSrm0=
-X-Received: by 2002:a17:906:70d:: with SMTP id y13mr31193079ejb.170.1617089335880;
- Tue, 30 Mar 2021 00:28:55 -0700 (PDT)
+        id S229567AbhC3Hb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:31:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhC3Ha7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:30:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C77E61953;
+        Tue, 30 Mar 2021 07:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617089459;
+        bh=89DgxQC8PTyukm1mDqpIejFWerzPhaf6+PaOBTtGORk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ugJCV1z8a13ckwEFFHho9/CI3tgJfQQoIpMtiiRRsMgxlj5IznPzdRTzXSB4/NXv3
+         4hln6kdANarsJhcWaWmR7DFSKrMP12h6YI06empfG+U5dVuCzX/xt+sQDmXucJkxZk
+         cYSQneGIMMAe4yg2sW6XpD9iXLvIGKlx2pGO18/R6IKzUPyRAU7zJ2+6ZMZt5eS4n9
+         u3isJL/kTza4kV2GQhIFJwtqssdzRf8m8zh7KXKagda8eMPu4br1WCDZ0TkJ88FgQU
+         LxOtqzZr5bvLj4yapYhVWSGd17sdgtwRND+0DUi2jMogQ5jU4/VkJJ4NGwiRKGowMW
+         RLvOt+Iw3d/NA==
+Received: by mail-ot1-f43.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso14793319otp.0;
+        Tue, 30 Mar 2021 00:30:59 -0700 (PDT)
+X-Gm-Message-State: AOAM532XDgmRf/u1m4JVxQH+NUW5P8dHGI5l+TgGpFdu4cYCuZhTnfEp
+        UV7ME+j1TwgfCYLUf2AE5rHO1drox+FiWfKbxLQ=
+X-Google-Smtp-Source: ABdhPJzB47EpuCrG2DPxUtcQLUjtwGSd7CDmaA1KZ8sXWWUdsAzjcJih0N/gxHCPpyQDUvPO55djW23VdIEwumFBnsk=
+X-Received: by 2002:a9d:316:: with SMTP id 22mr26071919otv.210.1617089458397;
+ Tue, 30 Mar 2021 00:30:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329075605.290845195@linuxfoundation.org>
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 30 Mar 2021 12:58:44 +0530
-Message-ID: <CA+G9fYs7rAQYhj1mq59C=qn_6dX6JkG1pZ0LqCKmazdW4NHk2Q@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/33] 4.4.264-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <yq1wntpgxxr.fsf@ca-mkp.ca.oracle.com> <20210330071958.3788214-1-slyfox@gentoo.org>
+In-Reply-To: <20210330071958.3788214-1-slyfox@gentoo.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 30 Mar 2021 09:30:44 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a32frskYgoXi2ncOcLfhqcMDssSBp79p7WSRg3VPhmSdA@mail.gmail.com>
+Message-ID: <CAK8P3a32frskYgoXi2ncOcLfhqcMDssSBp79p7WSRg3VPhmSdA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] hpsa: use __packed on individual structs, not header-wide
+To:     Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Don Brace <don.brace@microchip.com>,
+        linux-ia64@vger.kernel.org, storagedev@microchip.com,
+        linux-scsi <linux-scsi@vger.kernel.org>, jszczype@redhat.com,
+        Scott Benesh <scott.benesh@microchip.com>,
+        Scott Teel <scott.teel@microchip.com>, thenzl@redhat.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 13:32, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Mar 30, 2021 at 9:22 AM Sergei Trofimovich <slyfox@gentoo.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.264 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Some of the structs contain `atomic_t` values and are not intended to be
+> sent to IO controller as is.
 >
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
+> The change adds __packed to every struct and union in the file.
+> Follow-up commits will fix `atomic_t` problems.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.264-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> The commit is a no-op at least on ia64:
+>     $ diff -u <(objdump -d -r old.o) <(objdump -d -r new.o)
 
+This looks better to me, but I think it still has the same potential bug in
+the CommandList definition. Moving from #pragma to annotating the
+misaligned structures as __packed is more of a cleanup that could
+be done separately from the bugfix, but it does make it a little more
+robust.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+>  #define HPSA_INQUIRY 0x12
+>  struct InquiryData {
+>         u8 data_byte[36];
+> -};
+> +} __packed;
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Marking this one and a few others as __packed is a bit silly, but
+also obviously harmless, and closer to the original version, so that's
+ok.
 
-Summary
-------------------------------------------------------------------------
+> @@ -451,7 +452,7 @@ struct CommandList {
+>         bool retry_pending;
+>         struct hpsa_scsi_dev_t *device;
+>         atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
+> -} __aligned(COMMANDLIST_ALIGNMENT);
+> +} __packed __aligned(COMMANDLIST_ALIGNMENT);
 
-kernel: 4.4.264-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 5fccbcb46b8844500db24690cef618c294ac0ca5
-git describe: v4.4.263-34-g5fccbcb46b88
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.263-34-g5fccbcb46b88
+You are still marking CommandList as __packed here, which is
+what caused the original problem. Please don't mark this one
+as __packed at all. If there are individual members that you want
+to be misaligned inside of the structure, you could mark those
+explicitly.
 
-No regressions (compared to build v4.4.263)
-
-No fixes (compared to build v4.4.263)
-
-
-Ran 34815 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm-debug
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-debug
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-cve-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* install-android-platform-tools-r2600
-* kselftest-sync
-* fwts
-* kselftest-lib
-* kselftest-membarrier
-* ssuite
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.264-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.264-rc1-hikey-20210329-975
-git commit: 094469e4d2aa566c4760fef99d768edd36eeac85
-git describe: 4.4.264-rc1-hikey-20210329-975
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.264-rc1-hikey-20210329-975
-
-
-No regressions (compared to build 4.4.264-rc1-hikey-20210327-972)
-
-No fixes (compared to build 4.4.264-rc1-hikey-20210327-972)
-
-
-Ran 810 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+      Arnd
