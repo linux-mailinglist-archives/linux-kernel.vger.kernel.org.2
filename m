@@ -2,74 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E2434EB72
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCF934EB65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhC3PCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:02:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57544 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhC3PCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:02:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617116533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHJFXXCQfPF0s5VK69HhwHUUUg6FuGiZ78eVYwe8crc=;
-        b=J34ZoPKbSbm1/AhxTH2LgxBRLlmDlSX3NnD4VYpbP+TW2XwBXS4wJ+sTcsIVY2J3PPqJwC
-        sPKZFang50+H8/SnyGTq/XyaQHaSqn19VhuAzUym3jw/vPh0pcD2B0yAv8xTpACCSJwUzh
-        hs4pdG4u1pETcV3taqk9ZN6DNFmUkws=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 552FBB30E;
-        Tue, 30 Mar 2021 15:02:13 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 17:02:13 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.com>
-X-X-Sender: mbenes@pobox.suse.cz
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/16] x86,objtool: Optimize !RETPOLINE
-In-Reply-To: <20210326151159.128534163@infradead.org>
-Message-ID: <alpine.LSU.2.21.2103301644250.11007@pobox.suse.cz>
-References: <20210326151159.128534163@infradead.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232026AbhC3PA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhC3PAP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:00:15 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C98C061574;
+        Tue, 30 Mar 2021 08:00:14 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k8so16555441wrc.3;
+        Tue, 30 Mar 2021 08:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eyleulbhx+njoqqH6BwP+l7pCWQF8y0aALwi12vfKYM=;
+        b=fCSzzlhwIZRxnh8WlrLMYbm5+Njdfj6dEm0bHf8r+xDzYIMacTSD3i3NQycSovzuSj
+         EVXrsaeA+8Q6clda2Fzt4qondyXdQQukQijU645yfl1pKwDdMg7e0hWT+6yAAVSUFuAI
+         +Wy1BnSqMiT25Xv8Eh/rM+OWoPrHHNKMd1huKxUhZX3A1kI+9r4cSt2vualljOOYrzRq
+         mNNZkNSVQQuKhfEkIKegbY/PcTiIj000vuo7Lx+eJ97k/smtTH32v+AczD0ypz4/NGG5
+         TXj0QNsAfH8tw3UI0GxZAqJ4Z4+5VzZoZJMbwM+UPAScRykVfUXfpx69lKfy1ADRVNE5
+         lX5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eyleulbhx+njoqqH6BwP+l7pCWQF8y0aALwi12vfKYM=;
+        b=HhN9E8BWcwMjgDojQ7xjkbppha6Ys6GadZ7evYve8m69CSiMGNFvEgu8dqESS/xz7X
+         5oeTJHOg2/2+Ry6aHEatHpvuTnLYHvQGSHjCUW8mNYXOWYw1JdWff54pjzI3hEhv+QYZ
+         wr6RF0jEWeN3Lm7zrBCreUtHoveamGPdo1JUuwpXwJlfAWOgD4AObl5vQfpXx+f8G0zj
+         2aOBCMD/xN1xO8FECueTSmooTOrrEjJn5eJy+CrzoZuy0qXhA9VefIkdG4ZBVHvdTwog
+         Q7UvVcjOg3zMzTeuSxvoj2rW8WGuZLtboSujjkQXARFdFIax8llUxB49NhmvWb25bAae
+         I1ZQ==
+X-Gm-Message-State: AOAM5303qZiXvtLVoPkHxB/1e4kwsB63uzeoEUISLP2SuYCDW0zomfsB
+        WiEI//bqk1qPCPCfJyogoeF+dLsio7EdEMpX5YhkWsqxEE8=
+X-Google-Smtp-Source: ABdhPJwtCDJtqvJEY4d1K+b5/Nk9wM8y2m8HXX6bF4f+S6YTvz+OX7rJ6BNzGHpGdn+v7GZmGIK8aRudda7rzHLsgwk=
+X-Received: by 2002:adf:d0c3:: with SMTP id z3mr35449048wrh.28.1617116413088;
+ Tue, 30 Mar 2021 08:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210326231303.3071950-1-eric@anholt.net> <20210329144729.GB4203@willie-the-truck>
+ <CAF6AEGugpEk396DVtWX=W+uf3p-wcgBfCSpSLWGQJE1vKpJ4aw@mail.gmail.com> <20210330093432.GB5281@willie-the-truck>
+In-Reply-To: <20210330093432.GB5281@willie-the-truck>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 30 Mar 2021 08:03:36 -0700
+Message-ID: <CAF6AEGvCCWvmRBhzY4MsdzgwfJ+GF2AUOS-_NTyhM8wtnDzY2Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+To:     Will Deacon <will@kernel.org>
+Cc:     Eric Anholt <eric@anholt.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021, Peter Zijlstra wrote:
+On Tue, Mar 30, 2021 at 2:34 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Mar 29, 2021 at 09:02:50PM -0700, Rob Clark wrote:
+> > On Mon, Mar 29, 2021 at 7:47 AM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Fri, Mar 26, 2021 at 04:13:02PM -0700, Eric Anholt wrote:
+> > > > db820c wants to use the qcom smmu path to get HUPCF set (which keeps
+> > > > the GPU from wedging and then sometimes wedging the kernel after a
+> > > > page fault), but it doesn't have separate pagetables support yet in
+> > > > drm/msm so we can't go all the way to the TTBR1 path.
+> > >
+> > > What do you mean by "doesn't have separate pagetables support yet"? The
+> > > compatible string doesn't feel like the right way to determine this.
+> >
+> > the compatible string identifies what it is, not what the sw
+> > limitations are, so in that regard it seems right to me..
+>
+> Well it depends on what "doesn't have separate pagetables support yet"
+> means. I can't tell if it's a hardware issue, a firmware issue or a driver
+> issue.
 
-> Hi, another week, another update :-)
-> 
-> Respin of the !RETPOLINE optimization patches.
-> 
-> Boris, the first 3 should probably go into tip/x86/core, it's an ungodly tangle
-> since it relies on the insn decoder patches in tip/x86/core, the NOP patches in
-> tip/x86/cpu and the alternative patches in tip/x86/alternatives.
-> 
-> Just to make life easy I'd suggest merging everything in x86/core and
-> forgetting about the other topic branches (that's what I ended up doing locally).
-> 
-> The remaining 13 patches depend on the first 3 as well as on the work in
-> tip/objtool/core, just to make life more interesting still ;-)
-> 
-> All except the last 4 patches should be fairly uncontroversial (I hope...).
-> 
-> There's a fair number of new patches and another few have been completely
-> rewritten, but it all seems to work nicely.
+Just a driver issue (and the fact that currently we don't have
+physical access to a device... debugging a5xx per-process-pgtables by
+pushing untested things to the CI farm is kind of a difficult way to
+work)
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-
-for the objtool changes. All looks much better in this version.
-
-I have only one minor thing. There are only two call sites of 
-elf_add_string(). The one in elf_create_section() passes shstrtab, the 
-other one in elf_create_undef_symbol() NULL. elf_add_string() then 
-retrieves it itself. I think it would be nicer to just call 
-find_section_by_name() in elf_create_undef_symbol(), pass it down and make 
-it consistent. Might be a matter of taste.
-
-Miroslav
+BR,
+-R
