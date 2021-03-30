@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539EE34F12C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE88C34F134
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhC3So5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:44:57 -0400
-Received: from www.zeus03.de ([194.117.254.33]:57770 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232860AbhC3SoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:44:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=O4VbJF+YDNgsNTzgNn0mfyiakjki
-        ADsY05pkHFzVjsU=; b=kUI/6wuYWPvLhp7/WmUzjQsFjPaeCxmR6xbgQclkZhYV
-        vKJO0w4YmNXdQb0/fk22a2yiv4e7M15XXg1LtaRaXwrI3CEsRTNPzC+FZAlVMA3w
-        6gAvw3SyqffiUnNgRkNSBWySVaGxF3oKAArFtO1qIkHkIABZZ0LYPbkuqe4ZzBo=
-Received: (qmail 301911 invoked from network); 30 Mar 2021 20:44:17 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Mar 2021 20:44:17 +0200
-X-UD-Smtp-Session: l3s3148p1@soqxYsW+eJEgAwDPXw7aAOihkzMkaJHc
-Date:   Tue, 30 Mar 2021 20:44:17 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
-Message-ID: <20210330184417.GA1001@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com>
- <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
- <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
+        id S232904AbhC3SsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232905AbhC3SsI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:48:08 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8E6C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:48:08 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id h25so12388558pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=gQv+qhWyDiGQ4aKUdmaPDgqWYgAAJjhI8HocoFj4bqo=;
+        b=S11m6QHTC/aio7B+MfwwDQG84R6BRhhnl9BYrP03LsgmZoWsoMMW9XuhGUlEFnCxBb
+         VhudJjhukFjIhfUpxfA4I2eMWfm7WLTdnNrwXT6FkVqD0EE1/xJFEZXNIa3nPs6m4ytB
+         S3VRWbueiSsQPwQqhzX4aO2Rom5tAvjdoxwXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=gQv+qhWyDiGQ4aKUdmaPDgqWYgAAJjhI8HocoFj4bqo=;
+        b=Rq+9npQzIrK7U2ixwSDJ0tikgsVu2s7hbtVVkNjtkMVhYSdAzN+B1s39Wjr4DDst+V
+         1hu/11kBcqb8VvYxtBDpQXCE9ruR1nJnCXh47sqVaQDaIHK5N7Vc0zwnjzcxW+h3Bwwv
+         xHKHMojHjqM1O6iFBJo725NS9UHCif6Pee/YcgJpbLaEiv7ii0x8NNCWG1aDxRP5vJR7
+         gfJWGg+ZDMoU5anuXoQPFW+1zCLfmGA/+VwZSEH1f4eVqz6Qw7OI2ipfH43i51zk3wAK
+         eXlPg1N4F7BK3+mO/9m7ffySX1tOaepH6Ir4caeusu7l5EyDN5uXAdocVJMWtdUazOTy
+         2QJQ==
+X-Gm-Message-State: AOAM532PJdPaz9qvFVPDWbWzT3/1q5+OHCFc7e9U0Y7PFmuKw8RoFT2W
+        Z+9TIzILk56p1TpqQzsAVsZSow==
+X-Google-Smtp-Source: ABdhPJzlQeCU1MF8DgfHgJprGNQmgXN4UBojNdIJS4uWo4FXc+EOOQ/cQ+it+mvFGFzfe8p5uyEgkQ==
+X-Received: by 2002:a62:17ce:0:b029:1fc:9b43:dbc5 with SMTP id 197-20020a6217ce0000b02901fc9b43dbc5mr32009554pfx.75.1617130087802;
+        Tue, 30 Mar 2021 11:48:07 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:c8c2:b814:df0f:253f])
+        by smtp.gmail.com with ESMTPSA id o13sm21830955pgv.40.2021.03.30.11.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 11:48:07 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
-Content-Disposition: inline
-In-Reply-To: <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210330014610.1451198-1-sujitka@chromium.org>
+References: <20210330014610.1451198-1-sujitka@chromium.org>
+Subject: Re: [PATCH] arm64: dts: qcom: Move rmtfs memory region
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Sujit Kautkar <sujitka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sujit Kautkar <sujitka@chromium.org>
+Date:   Tue, 30 Mar 2021 11:48:05 -0700
+Message-ID: <161713008557.2260335.10529327995893415907@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> > +snipplet which analyzes an I2C bus at 400KHz on a Renesas Salvator-XS =
-board,
+Quoting Sujit Kautkar (2021-03-29 18:46:10)
+> Move rmtfs memory region so that it does not overlap with system
+> RAM (kernel data) when KAsan is enabled. This puts rmtfs right
+> after mba_mem which is not supposed to increase beyond 0x94600000
 >=20
->    snippet
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> ---
 
-Thanks!
-
->=20
-> > +the following settings are used: The isolated CPU shall be CPU1 becaus=
-e it is a
-> > +big core in a big.LITTLE setup. Because CPU1 is the default, we don't =
-need a
-> > +parameter. The bus speed is 400kHz. So, the sampling theorem says we n=
-eed to
-> > +sample at least at 800kHz. However, falling of both, SDA and SCL, in a=
- start
->=20
-> Is "falling" like a falling edge of a signal?
-
-Yes. It seems I should make it more clear, then.
-
-Thanks for the review, Randy!
-
-
---YiEDa0DAkWCtVeE4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBjcX0ACgkQFA3kzBSg
-Kbad6w//X72lK6IZh0vnjMP39emDS43pbDRSr2sNWgNjt+Hfd9TF3VBu8grY79ob
-7ywAAgQ7iBwCuiQbwGZNV+leIxIt7ENioZZBsMCV4OiiWHfn9LC5gCUWW2OWCqtO
-H5dLB+sSE5huaYqbzWO7AB0vgH1PhPdMLzJEIvkzkGpV1XcaYJMRyfLcNnUkdjFy
-bUI2OZZVqeWlYxmyL3ngVk7SvMO79le/2KQYQ65ZI7qaQOprvcg6AODxgqzTQdbi
-B54K8coC1DhaKH7XWrpZNP7nkDIVC8TmE1otTmt33WvzExdT9rlO7R3WJ2VvKbOp
-HCD2o4lYYGyXvN1cWAD5CcohuFS/NZRMdOjr0vvZSWOD7bqNqQ3yL0tLhCo2jB4W
-kUAZKozrpEZfgxFZcEnB6m94ZqcQgSoVsH3ZpIpXkTTUAU7uI4B+3unzTguAve5T
-jQ66PoEaLnFc+e/wjg1WK0mjL94dVFAC7noeGIwQDvXpTss/LRtAbtkVtMciU+Dq
-k+RdjCWmdoCVlPIDZKcXxhr3U4HbCodh7g5LITE2QZdDUteY9cZjMP1y1xRV78zd
-XqcjokDceNaRvStJz6s3WBGCxSj8AHeI5xuHC8LA7QfnSm/wGyH7dHQrRD6aomb/
-IzPW7QPR+6tzDdVXPpP65sHJ/Ge/5v5GP2sMMsL7QDMnTwrmXKA=
-=wZ8q
------END PGP SIGNATURE-----
-
---YiEDa0DAkWCtVeE4--
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
