@@ -2,245 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2531534EA0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC63334EA25
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhC3ON4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbhC3ONW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:13:22 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E9CC061765;
-        Tue, 30 Mar 2021 07:13:21 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lRF7I-0000jw-DA; Tue, 30 Mar 2021 16:13:12 +0200
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/4] docs: reporting-issues: reduce quoting and assorted fixes
-Date:   Tue, 30 Mar 2021 16:13:07 +0200
-Message-Id: <07bca15d8465b8e234537feb8841dd2ff20243bc.1617113469.git.linux@leemhuis.info>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1617113469.git.linux@leemhuis.info>
-References: <cover.1617113469.git.linux@leemhuis.info>
+        id S231764AbhC3ORf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:17:35 -0400
+Received: from vern.gendns.com ([98.142.107.122]:49104 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231301AbhC3ORa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:17:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BGekwmLjbpJ6llGafJ1MR1U01x6za5TZhvCUhXNQRb8=; b=nUqOk/2T7FeVnpuqEnmymnf9VQ
+        51QPbC2KbOJdgErze6bDp63f3vDVzcXz0kGuE2ivxcBoLaqN+VwWafE1v1182KSXOPnEKW6HRb+j6
+        MxeD8LcqH7XIoBXfoG1AUugOghiAdTbwfyuapFvr3CmvPc/jmwJKhWevcxQCuw+geFzIY++sPzA/g
+        BsvQiU1918+f6By7Z0kpdrDfq3LtIri1U2yfUTgEwMA3hIyUVfpJvizbZGzRVFJLRPCjRkSWyVCEq
+        QeWbU0su1un0hkrowQ+mBfLP+tAlO+onvmZM4N1ph6HrhnEprp+Nst8Fa/IApOAn4mWRFb0jgNCeu
+        5dhMhFAw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:60752 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <david@lechnology.com>)
+        id 1lRFBJ-00068A-Lq; Tue, 30 Mar 2021 10:17:21 -0400
+Subject: Re: [PATCH v3 0/1] drm/tiny: add support for Waveshare 2inch LCD
+ module
+To:     Carlis <zhangxuezhi3@gmail.com>, airlied@linux.ie, daniel@ffwll.ch,
+        zhangxuezhi1@yulong.com
+Cc:     sam@ravnborg.org, kraxel@redhat.com, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210330080846.116223-1-zhangxuezhi3@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <ee78a788-3a69-164d-95da-6482e05f8603@lechnology.com>
+Date:   Tue, 30 Mar 2021 09:17:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=yes
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617113602;38c5c4bd;
-X-HE-SMSGID: 1lRF7I-0000jw-DA
+In-Reply-To: <20210330080846.116223-1-zhangxuezhi3@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A pile of small fixes:
+On 3/30/21 3:08 AM, Carlis wrote:
+> From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> 
+> This adds a new module for the ST7789V controller with parameters for
+> the Waveshare 2inch LCD module.
+> 
+> Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> ---
+> v2:change compatible value.
+> v3:change author name.
+> ---
+>   MAINTAINERS                    |   8 +
+>   drivers/gpu/drm/tiny/Kconfig   |  14 ++
+>   drivers/gpu/drm/tiny/Makefile  |   1 +
+>   drivers/gpu/drm/tiny/st7789v.c | 269 +++++++++++++++++++++++++++++++++
+>   4 files changed, 292 insertions(+)
+>   create mode 100644 drivers/gpu/drm/tiny/st7789v.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d92f85ca831d..df25e8e0deb1 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5769,6 +5769,14 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
+>   F:	drivers/gpu/drm/tiny/st7735r.c
+>   
+> +DRM DRIVER FOR SITRONIX ST7789V PANELS
+> +M:	David Lechner <david@lechnology.com>
 
-- don't quote terms like vanilla, mainline, and stable, unless in they
-  occur in places where readers new to the kernel might see them for the
-  first time
+I should not be added here. I don't have one of these displays.
 
-- make people rule out that vendor patches are interfering if they face
-  a regression in a stable or longterm kernel they saw in a vendor
-  kernel for the first time
-
-- s/bugs/issues/ in a selected spots
-
-- exchange two headlines that got mixed up somehow
-
-- add a few links to some of the steps in the guide
-
-- Greg mentioned sending reports to the stable mailing list is
-  sufficient, so remove the "CC stable maintainers" bits
-
-- fix a few typos and mistakes in the text, with a few very small
-  improvements along the way
-
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
- .../admin-guide/reporting-issues.rst          | 79 +++++++++++--------
- 1 file changed, 45 insertions(+), 34 deletions(-)
-
-diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-index 77d38acca282..e6137c971007 100644
---- a/Documentation/admin-guide/reporting-issues.rst
-+++ b/Documentation/admin-guide/reporting-issues.rst
-@@ -77,9 +77,9 @@ process won't feel wasted in the end:
-    will often be needed anyway to hunt down and fix issues.
- 
-  * Perform a rough search for existing reports with your favorite internet
--   search engine; additionally, check the archives of the Linux Kernel Mailing
--   List (LKML). If you find matching reports, join the discussion instead of
--   sending a new one.
-+   search engine; additionally, check the archives of the `Linux Kernel Mailing
-+   List (LKML) <https://lore.kernel.org/lkml/>`_. If you find matching reports,
-+   join the discussion instead of sending a new one.
- 
-  * See if the issue you are dealing with qualifies as regression, security
-    issue, or a really severe problem: those are 'issues of high priority' that
-@@ -181,21 +181,23 @@ regressions as quickly as possible, hence there is a streamlined process to
- report them:
- 
-  * Check if the kernel developers still maintain the Linux kernel version
--   line you care about: go to the front page of kernel.org and make sure it
--   mentions the latest release of the particular version line without an
--   '[EOL]' tag.
-+   line you care about: go to the  `front page of kernel.org
-+   <https://kernel.org/>`_ and make sure it mentions
-+   the latest release of the particular version line without an '[EOL]' tag.
- 
-- * Check the archives of the Linux stable mailing list for existing reports.
-+ * Check the archives of the `Linux stable mailing list
-+   <https://lore.kernel.org/stable/>`_ for existing reports.
- 
-  * Install the latest release from the particular version line as a vanilla
-    kernel. Ensure this kernel is not tainted and still shows the problem, as
--   the issue might have already been fixed there.
-+   the issue might have already been fixed there. If you first noticed the
-+   problem with a vendor kernel, check a vanilla build of the last version
-+   known to work performs fine as well.*
- 
-- * Send a short problem report by mail to the people and mailing lists the
--   :ref:`MAINTAINERS <maintainers>` file specifies in the section 'STABLE
--   BRANCH'. Roughly describe the issue and ideally explain how to reproduce
--   it. Mention the first version that shows the problem and the last version
--   that's working fine. Then wait for further instructions.
-+ * Send a short problem report to the Linux stable mailing list
-+   (stable@vger.kernel.org). Roughly describe the issue and ideally explain
-+   how to reproduce it. Mention the first version that shows the problem and
-+   the last version that's working fine. Then wait for further instructions.*
- 
- The reference section below explains each of these steps in more detail.
- 
-@@ -205,8 +207,8 @@ Reporting issues only occurring in older kernel version lines
- 
- This subsection is for you, if you tried the latest mainline kernel as outlined
- above, but failed to reproduce your issue there; at the same time you want to
--see the issue fixed in older version lines or a vendor kernel that's regularly
--rebased on new stable or longterm releases. If that case follow these steps:
-+see the issue fixed in a still supported stable or longterm series or vendor
-+kernels regularly rebased on those. If that the case, follow these steps:
- 
-  * Prepare yourself for the possibility that going through the next few steps
-    might not get the issue solved in older releases: the fix might be too big
-@@ -291,7 +293,7 @@ distributors are quite distant from the official Linux kernel as distributed by
- kernel.org: these kernels from these vendors are often ancient from the point of
- Linux development or heavily modified, often both.
- 
--Most of these vendor kernels are quite unsuitable for reporting bugs to the
-+Most of these vendor kernels are quite unsuitable for reporting issues to the
- Linux kernel developers: an issue you face with one of them might have been
- fixed by the Linux kernel developers months or years ago already; additionally,
- the modifications and enhancements by the vendor might be causing the issue you
-@@ -816,7 +818,7 @@ kernel for testing, as that where all fixes have to be applied first. Do not let
- that 'rc' scare you, these 'development kernels' are pretty reliable — and you
- made a backup, as you were instructed above, didn't you?
- 
--In about two out of every nine to ten weeks, 'mainline' might point you to a
-+In about two out of every nine to ten weeks, mainline might point you to a
- proper release with a version number like '5.7'. If that happens, consider
- suspending the reporting process until the first pre-release of the next
- version (5.8-rc1) shows up on kernel.org. That's because the Linux development
-@@ -1231,7 +1233,7 @@ Special handling for high priority issues
- 
- Reports for high priority issues need special handling.
- 
--**Severe bugs**: make sure the subject or ticket title as well as the first
-+**Severe issues**: make sure the subject or ticket title as well as the first
- paragraph makes the severeness obvious.
- 
- **Regressions**: If the issue is a regression add [REGRESSION] to the mail's
-@@ -1455,11 +1457,11 @@ easier. And with a bit of luck there might be someone in the team that knows a
- bit about programming and might be able to write a fix.
- 
- 
--Reference for "Reporting issues only occurring in older kernel version lines"
-------------------------------------------------------------------------------
-+Reference for "Reporting regressions within a stable and longterm kernel line"
-+------------------------------------------------------------------------------
- 
--This subsection provides details for step you need to perform if you face a
--regression within a stable and longterm kernel line.
-+This subsection provides details for the steps you need to perform if you face
-+a regression within a stable and longterm kernel line.
- 
- Make sure the particular version line still gets support
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -1475,7 +1477,7 @@ chosen and gets supported for at least two years (often six). That's why you
- need to check if the kernel developers still support the version line you care
- for.
- 
--Note, if kernel.org lists two 'stable' version lines on the front page, you
-+Note, if kernel.org lists two stable version lines on the front page, you
- should consider switching to the newer one and forget about the older one:
- support for it is likely to be abandoned soon. Then it will get a "end-of-life"
- (EOL) stamp. Version lines that reached that point still get mentioned on the
-@@ -1498,7 +1500,9 @@ Reproduce issue with the newest release
- 
-     *Install the latest release from the particular version line as a vanilla
-     kernel. Ensure this kernel is not tainted and still shows the problem, as
--    the issue might have already been fixed there.*
-+    the issue might have already been fixed there. If you first noticed the
-+    problem with a vendor kernel, check a vanilla build of the last version
-+    known to work performs fine as well.*
- 
- Before investing any more time in this process you want to check if the issue
- was already fixed in the latest release of version line you're interested in.
-@@ -1506,14 +1510,22 @@ This kernel needs to be vanilla and shouldn't be tainted before the issue
- happens, as detailed outlined already above in the section "Install a fresh
- kernel for testing".
- 
-+Did you first notice the regression with a vendor kernel? Then changes the
-+vendor applied might be interfering. You need to rule that out by performing
-+a recheck. Say something broke when you updated from 5.10.4-vendor.42 to
-+5.10.5-vendor.43. Then after testing the latest 5.10 release as outlined in
-+the previous paragraph check if a vanilla build of Linux 5.10.4 works fine as
-+well. If things are broken there, the issue does not qualify as upstream
-+regression and you need switch back to the main step-by-step guide to report
-+the issue.
-+
- Report the regression
- ~~~~~~~~~~~~~~~~~~~~~
- 
--    *Send a short problem report by mail to the people and mailing lists the
--    :ref:`MAINTAINERS <maintainers>` file specifies in the section 'STABLE
--    BRANCH'. Roughly describe the issue and ideally explain how to reproduce
--    it. Mention the first version that shows the problem and the last version
--    that's working fine. Then wait for further instructions.*
-+    *Send a short problem report to the Linux stable mailing list
-+    (stable@vger.kernel.org). Roughly describe the issue and ideally explain
-+    how to reproduce it. Mention the first version that shows the problem and
-+    the last version that's working fine. Then wait for further instructions.*
- 
- When reporting a regression that happens within a stable or longterm kernel
- line (say when updating from 5.10.4 to 5.10.5) a brief report is enough for
-@@ -1540,10 +1552,10 @@ the document 'Documentation/admin-guide/bug-bisect.rst' for details how to
- perform one.
- 
- 
--Reference for "Reporting regressions within a stable and longterm kernel line"
--------------------------------------------------------------------------------
-+Reference for "Reporting issues only occurring in older kernel version lines"
-+-----------------------------------------------------------------------------
- 
--This section provides details for steps you need to take if you could not
-+This section provides details for the steps you need to take if you could not
- reproduce your issue with a mainline kernel, but want to see it fixed in older
- version lines (aka stable and longterm kernels).
- 
-@@ -1648,8 +1660,7 @@ Ask for advice
- If the previous three steps didn't get you closer to a solution there is only
- one option left: ask for advice. Do that in a mail you sent to the maintainers
- for the subsystem where the issue seems to have its roots; CC the mailing list
--for the subsystem as well as the stable mailing list the :ref:`MAINTAINERS
--<maintainers>` file mention in the section "STABLE BRANCH".
-+for the subsystem as well as the stable mailing list (stable@vger.kernel.org).
- 
- 
- Why some issues won't get any reaction or remain unfixed after being reported
--- 
-2.30.2
-
+> +M:	Xuezhi Zhang <zhangxuezhi1@yulong.com>
+> +S:	Maintained
+> +T:	git git://anongit.freedesktop.org/drm/drm-misc
+> +F:	Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+> +F:	drivers/gpu/drm/tiny/st7789v.c
+> +
+>   DRM DRIVER FOR SONY ACX424AKP PANELS
+>   M:	Linus Walleij <linus.walleij@linaro.org>
+>   S:	Maintained
