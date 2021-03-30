@@ -2,86 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C483C34F45B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F2334F4A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhC3Wg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:36:27 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:46837 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhC3Wf7 (ORCPT
+        id S233054AbhC3WzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232825AbhC3Wyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:35:59 -0400
-Received: by mail-oi1-f172.google.com with SMTP id m13so18043734oiw.13;
-        Tue, 30 Mar 2021 15:35:58 -0700 (PDT)
+        Tue, 30 Mar 2021 18:54:35 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259E8C061574;
+        Tue, 30 Mar 2021 15:54:32 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id q12so9041926qvc.8;
+        Tue, 30 Mar 2021 15:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eFmHihTpoem5adT81kUPrW+58bPc31rODVCKQkE0csg=;
+        b=Qw+scW22tFeCE65Wr0PhTMAUOS9zhNSx1efkAlrVbwzJ0cyXIZgxJv3uCoyMfMmwBg
+         /IlitQ7KluxvcE7dtcrL9Ome1FOwXvAmQKx/O/cxVbGx8sp8R+LjP4JxC384Ea0JN5nU
+         +X1Tnpcq4y3tsJmK+ZMpknYjkOXe90ntqukd9+Udq/irSqV2B6X0+3SYnuTrrITqiNf6
+         vQW5kUtvxzjCjPemjML286i5sVGy18yUsBpHrmj2TfobkGlmEKjXYjFSzJ0vGnR7DVtZ
+         2Yb/4j6q36gC8N30t4i4MU35x+4iv+ayjF5Aq031Eg+ahzg024nXOqsXsPuXupBG4JUs
+         kUWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mIW2TN59yaf7zZvWo0eZuc3U3VKeCIk16a9IMwj2jH4=;
-        b=Jex/x1gCI/NUzl7+GOx0DoYROYgkJjbyw+H76iTdXxX3bUo4v3bXLNH3lfXgMf8d9x
-         rhxLWU0PhO2um1aeHU7NvgOZid9+p8fzZS3vHYtfHD/ZfKjVYx95f5pEV1rI5HgM049/
-         Dsff8SA17ZXrrMAKbzHFdXfjdqSF6BYEYuwf+dXo034MGrXeh511/f+NtjwIF5Ip/bvp
-         5999EoEUtiiMaHVzVTDVl91RI65YTqqbe7X31ZfODJ6tAqkB9mkSvwO00wr6GvjcH9v/
-         0ydHL2UI6mXw42WkKmk91kpwUVw4PjoDLXMOsdI8CTyOdszSJZpTwICl5ITYGbIBJfXV
-         fuwg==
-X-Gm-Message-State: AOAM5333PyK27Xc6zmRUP0hggd6EOTEsJkXjW6WPxIGB31/VNJlAlAJ1
-        ASFnqYxuym3r9zEgNgNJqg==
-X-Google-Smtp-Source: ABdhPJxdmGtnDEkcmeCwnDV30W9Zan2ZxgrLPrYWWYAT9Jbea/xyf4fodvHERtWQUKxb5eMS8C8WDg==
-X-Received: by 2002:aca:1c14:: with SMTP id c20mr129285oic.146.1617143758403;
-        Tue, 30 Mar 2021 15:35:58 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j35sm46218ota.54.2021.03.30.15.35.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eFmHihTpoem5adT81kUPrW+58bPc31rODVCKQkE0csg=;
+        b=bhMwZZ+W3yc1PoAKIVhwHUqro0QD2d9cseqEVzL2NCVFJhYTB4V5+8rw36JrVRoD3m
+         S3Bqd7BvFjq3EFazLcidnjOSWlGWy2kCWTQhVmozueYy0b04och75VagTA9z+1kh3ZTs
+         kDezeUKpguMs2X5Gi6ff3yH9JmvI2AgEuNplqHHjKF+Wtti6b4OW1dRJpju1BmTvMT+/
+         2iNNUUxMjmMvzbXChfkC9UYDbDXvQEdunsq39g9MiW8xUMBGXvI5C+g5QiQmIpf/j04z
+         HUtGKfCwBFhKdlEsfU2Achpcv+JgG/KB3CDbNPIF5FGCu/ZXfY/uAdDQmNayYch7MJSC
+         t48g==
+X-Gm-Message-State: AOAM5337MMLm7HrSHoXjkC/wWa5d5b+FLS7fR9KU4WRQwOVQIQamOhI+
+        epqjuJqmih/b+pOfSJ+Z/lo=
+X-Google-Smtp-Source: ABdhPJw7ulZ1m9vkjJFExetYhO1Zrab6HWWmNT64RuT1//039HoXsWBmOkcwfUKNntM0BYzXUOA/aQ==
+X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr518033qvo.20.1617144871216;
+        Tue, 30 Mar 2021 15:54:31 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id b1sm129058qkk.117.2021.03.30.15.54.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 15:35:57 -0700 (PDT)
-Received: (nullmailer pid 837656 invoked by uid 1000);
-        Tue, 30 Mar 2021 22:35:56 -0000
-Date:   Tue, 30 Mar 2021 17:35:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-Message-ID: <20210330223556.GA835644@robh.at.kernel.org>
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-6-digetx@gmail.com>
- <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
- <2ded3a2d-6487-6e6d-d211-0cae45f4f948@gmail.com>
+        Tue, 30 Mar 2021 15:54:30 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Pedro Tammela <pctammela@mojatatu.com>
+Subject: [PATCH bpf-next v2] bpf: check flags in 'bpf_ringbuf_discard()' and 'bpf_ringbuf_submit()'
+Date:   Tue, 30 Mar 2021 19:37:46 -0300
+Message-Id: <20210330223748.399563-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2ded3a2d-6487-6e6d-d211-0cae45f4f948@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 06:32:20PM +0300, Dmitry Osipenko wrote:
-> 30.03.2021 11:48, Krzysztof Kozlowski пишет:
-> >> +  nvidia,use-ram-code:
-> >> +    type: boolean
-> >> +    description:
-> >> +      If present, the emc-tables@ sub-nodes will be addressed.
-> >> +
-> >> +patternProperties:
-> >> +  "^emc-table@[0-9]+$":
-> > This might not be easy but you should add constraints when emc-table and
-> > emc-tables are expected. The schema should check if proper node is used
-> > depending on "nvidia,use-ram-code".
-> > 
-> 
-> I'm afraid this is not doable. If you have an example how to do this,
-> please share it with me.
-> 
-> I see that there is a "dependencies:", but it doesn't work with the
-> patterns, IIUC.
+The current code only checks flags in 'bpf_ringbuf_output()'.
 
-That's correct.
+Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+---
+ include/uapi/linux/bpf.h       |  8 ++++----
+ kernel/bpf/ringbuf.c           | 13 +++++++++++--
+ tools/include/uapi/linux/bpf.h |  8 ++++----
+ 3 files changed, 19 insertions(+), 10 deletions(-)
 
-Rob
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 100cb2e4c104..38b0b15f99f0 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4073,7 +4073,7 @@ union bpf_attr {
+  * 		Valid pointer with *size* bytes of memory available; NULL,
+  * 		otherwise.
+  *
+- * void bpf_ringbuf_submit(void *data, u64 flags)
++ * long bpf_ringbuf_submit(void *data, u64 flags)
+  * 	Description
+  * 		Submit reserved ring buffer sample, pointed to by *data*.
+  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
+@@ -4083,9 +4083,9 @@ union bpf_attr {
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
+  * 	Return
+- * 		Nothing. Always succeeds.
++ * 		0 on success, or a negative error in case of failure.
+  *
+- * void bpf_ringbuf_discard(void *data, u64 flags)
++ * long bpf_ringbuf_discard(void *data, u64 flags)
+  * 	Description
+  * 		Discard reserved ring buffer sample, pointed to by *data*.
+  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
+@@ -4095,7 +4095,7 @@ union bpf_attr {
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
+  * 	Return
+- * 		Nothing. Always succeeds.
++ * 		0 on success, or a negative error in case of failure.
+  *
+  * u64 bpf_ringbuf_query(void *ringbuf, u64 flags)
+  *	Description
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index f25b719ac786..f76dafe2427e 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -397,26 +397,35 @@ static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
+ 
+ BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
+ {
++	if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
++		return -EINVAL;
++
+ 	bpf_ringbuf_commit(sample, flags, false /* discard */);
++
+ 	return 0;
+ }
+ 
+ const struct bpf_func_proto bpf_ringbuf_submit_proto = {
+ 	.func		= bpf_ringbuf_submit,
+-	.ret_type	= RET_VOID,
++	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+ 	.arg2_type	= ARG_ANYTHING,
+ };
+ 
+ BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
+ {
++
++	if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
++		return -EINVAL;
++
+ 	bpf_ringbuf_commit(sample, flags, true /* discard */);
++
+ 	return 0;
+ }
+ 
+ const struct bpf_func_proto bpf_ringbuf_discard_proto = {
+ 	.func		= bpf_ringbuf_discard,
+-	.ret_type	= RET_VOID,
++	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+ 	.arg2_type	= ARG_ANYTHING,
+ };
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 3d6d324184c0..a32eefb786f9 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4073,7 +4073,7 @@ union bpf_attr {
+  * 		Valid pointer with *size* bytes of memory available; NULL,
+  * 		otherwise.
+  *
+- * void bpf_ringbuf_submit(void *data, u64 flags)
++ * long bpf_ringbuf_submit(void *data, u64 flags)
+  * 	Description
+  * 		Submit reserved ring buffer sample, pointed to by *data*.
+  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
+@@ -4083,9 +4083,9 @@ union bpf_attr {
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
+  * 	Return
+- * 		Nothing. Always succeeds.
++ * 		0 on success, or a negative error in case of failure.
+  *
+- * void bpf_ringbuf_discard(void *data, u64 flags)
++ * long bpf_ringbuf_discard(void *data, u64 flags)
+  * 	Description
+  * 		Discard reserved ring buffer sample, pointed to by *data*.
+  * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
+@@ -4095,7 +4095,7 @@ union bpf_attr {
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
+  * 	Return
+- * 		Nothing. Always succeeds.
++ * 		0 on success, or a negative error in case of failure.
+  *
+  * u64 bpf_ringbuf_query(void *ringbuf, u64 flags)
+  *	Description
+-- 
+2.25.1
 
