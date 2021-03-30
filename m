@@ -2,80 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5641134E22E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6D034E234
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhC3H2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:28:14 -0400
-Received: from ozlabs.org ([203.11.71.1]:34379 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231359AbhC3H2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:28:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F8gyl6CmWz9sRf;
-        Tue, 30 Mar 2021 18:27:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617089281;
-        bh=/G7ZzEGKsPGLDyrdy2yxhE32CVnbJacKmgPMeJP30Tw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pSlvvp7j5zp+40ltL17ceFMnFEKgdjgHI9H/EAN3nTPyoy7St2o0ecPF809w1Fo5r
-         0nSbgJHoChC5eZ6tEhpsADnpcysDhsIkf7LY3zGNGDgBmIrqeCmR53cVv0q+x9Edg8
-         UKD/PIYXON4UxPZtXVRFXN+50GfjJHLw+UEeOqov9Xp7A/mc/MWwWOBxm4Zva9/FYs
-         T+vpa8pZgGg19ZPfNxsepyJ6X5AnoN3CGVHDmw6JerY5Jg8wW2GHx55uIt7SgGIixO
-         cYK9x609R+oWY9RNdhqpqzRjHGT1DnSf14DJkQRGZKtdeA/7xw/mAliSFrBaynf5S8
-         FenYLeGFE9Jsg==
-Date:   Tue, 30 Mar 2021 18:27:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hwmon-staging tree
-Message-ID: <20210330182758.3a28068f@canb.auug.org.au>
+        id S231184AbhC3H3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231509AbhC3H25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 03:28:57 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40580C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:28:57 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id u9so23261402ejj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 00:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Cl6L2IBQ3wgEzOG94OkV8F+rjBjAhv9soo/p9TB1rpg=;
+        b=LuO0WMj9epMk1yY5qnZlYVbpSsSuWXlIoCIakVSURZSACuZCoqWZjAihTR23NpQ4l4
+         tOIdxVg5AlSyfeg0GNuLEGgA0uGqKAsKcX+REBqQ/00YO5jWOaF/776YwFMlv4JY4/Uo
+         hlje/p7y6sjkaW1AneqQjcaD1rmU8VmGza+e4ukrhdPonMEjsfmF+//9/SBPNvrNAwUo
+         IjKYgYjoNdtPjBhZ1KjzxGxatdA12ebrUpXnQWV1DpNepu5O59y+ZfGNzhNFEHyplf8m
+         yYt1o8DVY6iYLGB89QqaecOzJGtZncsVCPtoqxyT0JTBOeVJiruk9rhYmZS6hDWPozqw
+         r0Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cl6L2IBQ3wgEzOG94OkV8F+rjBjAhv9soo/p9TB1rpg=;
+        b=ZBk4Gz8whQbh1koA3TcarctgQZqaCSlF2QWekYMZEeLWej/WPHbxQRuqZEAHqB7Zv9
+         gMOJjYE2W3pqjtlH2OpMQKw6iWR2duGG25nanchCrXPOElOX6R+hkOcrpUhxZLXlt1wj
+         lQEOztvMQ4KFIvysnmMynpPeGHRhQVAuSK09hvx9h35iifHmRwxQtY7vdp5HFl0zxYnU
+         0AqxdgyW/6AwZmr3ssjhsE+B+VFz63kj/ibMyeRXiRkg94u1cXS4MSLylWJs0vfiG+ma
+         PfLT+itqeO3i3rsg5uNx71MxZJsrPXGkT8AbDYlj2/F2eJob/EonMr+1c/4fOddaD+ou
+         HVTw==
+X-Gm-Message-State: AOAM531MQoBmZwtnyvI6Htp6BdfJ6255xK2wyduvS3+Bp49uCCQtqlWL
+        hhIX8O1WhnmSh5721njtKxMiF+MKO3c4Tl+tDal82gOYhoFahA0y
+X-Google-Smtp-Source: ABdhPJxNO4z6HM8JuRrJJg/yspxvpVbZd14LofFRTMNsYCxVeA8pJNuj0xV0AC6sVFTiJ0PxX3KvGA3JZv0JG7sSrm0=
+X-Received: by 2002:a17:906:70d:: with SMTP id y13mr31193079ejb.170.1617089335880;
+ Tue, 30 Mar 2021 00:28:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/26ocgYej/4A8Ri24jtMfEDv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 30 Mar 2021 12:58:44 +0530
+Message-ID: <CA+G9fYs7rAQYhj1mq59C=qn_6dX6JkG1pZ0LqCKmazdW4NHk2Q@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/33] 4.4.264-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/26ocgYej/4A8Ri24jtMfEDv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 29 Mar 2021 at 13:32, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.264 release.
+> There are 33 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.264-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi all,
 
-After merging the hwmon-staging tree, today's linux-next build (htmldocs)
-produced this warning:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Documentation/hwmon/bpa-rs600.rst: WARNING: document isn't included in any =
-toctree
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Introduced by commit
+Summary
+------------------------------------------------------------------------
 
-  9a8210575cde ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
+kernel: 4.4.264-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 5fccbcb46b8844500db24690cef618c294ac0ca5
+git describe: v4.4.263-34-g5fccbcb46b88
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.263-34-g5fccbcb46b88
+
+No regressions (compared to build v4.4.263)
+
+No fixes (compared to build v4.4.263)
+
+
+Ran 34815 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm-debug
+- qemu-arm64-debug
+- qemu-arm64-kasan
+- qemu-i386-debug
+- qemu-x86_64-debug
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* install-android-platform-tools-r2600
+* kselftest-sync
+* fwts
+* kselftest-lib
+* kselftest-membarrier
+* ssuite
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.264-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.264-rc1-hikey-20210329-975
+git commit: 094469e4d2aa566c4760fef99d768edd36eeac85
+git describe: 4.4.264-rc1-hikey-20210329-975
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.264-rc1-hikey-20210329-975
+
+
+No regressions (compared to build 4.4.264-rc1-hikey-20210327-972)
+
+No fixes (compared to build 4.4.264-rc1-hikey-20210327-972)
+
+
+Ran 810 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* perf
+* v4l2-compliance
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/26ocgYej/4A8Ri24jtMfEDv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBi0v4ACgkQAVBC80lX
-0Gwvwgf/Z4HRTwmP/BG0a5H8RHqPWprsTR3L09u8EuyRNTR/VJ8FsqVcwgGf2ex+
-JfBWuqYx64ikqPoH63KkW5GfrJfmDGBthCh23LyhbHEXuPls2mIdAWdNUZfgO8lb
-mNbvldSAWSKLHEPomjSfqiNB66B46aqVD1OvdEyGXrFOypll4giS9bwAXhxP2Klk
-J/oE6GT26KmytHZ1ZJc32yrKnTkqNdLgJkcTRg3lqejgEyhwKp+ZQ19RL9lP53eR
-In+Wuh0TmMxRqdSML1dZsU1cZ/prsFlE4GFnr63fzYGXJpNA8dtULYwz9jl4H4oq
-blk2UHsvXsKbSFwILGoIpz7K0VldXw==
-=Sc2r
------END PGP SIGNATURE-----
-
---Sig_/26ocgYej/4A8Ri24jtMfEDv--
+Linaro LKFT
+https://lkft.linaro.org
