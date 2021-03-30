@@ -2,70 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D600734EF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9492934EF39
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhC3RP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:15:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232457AbhC3RPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:15:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DF36196C;
-        Tue, 30 Mar 2021 17:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617124500;
-        bh=zFd4Zy9omtYczkx8Q+u+p99RL4k+y2CVgywzbgmq3CQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NH4+8ibub3gj+9Z9u3GOr74NH3ciLFEQ4gjcAdTfLKmWdFW02zspzXUHkjbs7qDqR
-         ANVhxneXAfVr0lFmFDJhm1GAGYNvyG2BmNzFNNLht+IxJXbIhDYE1MAeUtCgEoBs5w
-         6jF6XyZszHMoW70Gs5CPNs/6MNlh06x8a896fBAA=
-Date:   Tue, 30 Mar 2021 19:14:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alaa Emad <alaaemadhossney.ae@gmail.com>
-Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
-        syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] wireless/nl80211.c: fix uninitialized variable
-Message-ID: <YGNckfKCPuS5g5UX@kroah.com>
-References: <20210330163705.8061-1-alaaemadhossney.ae@gmail.com>
+        id S232265AbhC3RTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:19:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231579AbhC3RSi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:18:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617124717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v01LT6NR53cw5ltbY90YAxlkn9C/Al8ezBEHKqiEtxk=;
+        b=hjnhhvXIFxmbn1WP4ORQutZN1aPmi2o6Sd0laT7QHIKBTAH0GKmSB3ZtCcVDxZfZ9GGBMA
+        /WtSwsZL7BrLEP1Gj8LFULP+uiZg17iVRqKogxUqBUTEf9EldjZgQFebWo4TTjm2wjMesR
+        juCFNC/wDCVlzle8L62wiBNf9PKOuls=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-DVbmgUCBNTidDarfRNMtjQ-1; Tue, 30 Mar 2021 13:18:35 -0400
+X-MC-Unique: DVbmgUCBNTidDarfRNMtjQ-1
+Received: by mail-wr1-f69.google.com with SMTP id b6so10611110wrq.22
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 10:18:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v01LT6NR53cw5ltbY90YAxlkn9C/Al8ezBEHKqiEtxk=;
+        b=QkquYb4eHwX5ulGI2txwIt5l163e4HSh6ejM+GJhA2scZf4v7AnvEJkMViwPcEniq9
+         urN6p/4syz087f7c0SrqkCTwYzCiQ0rOJGPGrkFie1ciEbVfOdVHBynAVF3KOQo7VgcQ
+         uP3E6PNXxvNlDr8Bj4CVYk04oxAaLbhbk913xL/V4NsjSIN/FPryr4toTLVOmmZFyPCC
+         WTAqGNiZovAlcFcL37ICTM7gFw6WWmcNNfHMdqlHmR4OM/X02rjlOyjnqzIzrfydsrLP
+         IExsPjQu+omYErHwDgOu5pcLZdHvOgern6o9R55+VhHpTyWperFB5xyb3d/MgOjmHgNm
+         7BOw==
+X-Gm-Message-State: AOAM532dcm1vd5LPyfX++ztYgshXNiD4CKTv7VE69Cee2lxHjM2tmVV0
+        hKcf3/nC9an1SFns+wwxxMsSjlcBUWZwt+boDdUJjoNJfvhl+Lxe4bYbrJhYAaI+s/QPRSJy6zZ
+        F2+/aCPhLbqClMbEtk75WX/LjKqQDoJlg3D7Fzy5bxNZvkFIFunSzC+iwH2XFB07MN2Lh+ugew0
+        Xv
+X-Received: by 2002:a1c:bb0b:: with SMTP id l11mr5270253wmf.150.1617124714300;
+        Tue, 30 Mar 2021 10:18:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCgrqFHCV65hZmQBKReOEhWl2TarHaFUoCpyJfa8RmI3uvG2gKmdlGvSuGviKXh2hJCKSgnA==
+X-Received: by 2002:a1c:bb0b:: with SMTP id l11mr5270230wmf.150.1617124714070;
+        Tue, 30 Mar 2021 10:18:34 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t1sm42307238wry.90.2021.03.30.10.18.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 10:18:33 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Don't allow TDP MMU to yield when
+ recovering NX pages
+To:     Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210325200119.1359384-1-seanjc@google.com>
+ <20210325200119.1359384-4-seanjc@google.com>
+ <CANgfPd8N1+oxPWyO+Ob=hSs4nkdedusde6RQ5TXTX8hi48mvOw@mail.gmail.com>
+ <YF0N5/qsmsNHQeVy@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <addaedc2-2050-06a1-e241-047c6e4c94c3@redhat.com>
+Date:   Tue, 30 Mar 2021 19:18:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330163705.8061-1-alaaemadhossney.ae@gmail.com>
+In-Reply-To: <YF0N5/qsmsNHQeVy@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 06:37:05PM +0200, Alaa Emad wrote:
-> This change fix  KMSAN uninit-value in net/wireless/nl80211.c:225 , That
-> because of `fixedlen` variable uninitialized,So I initialized it by zero.
+On 25/03/21 23:25, Sean Christopherson wrote:
+> On Thu, Mar 25, 2021, Ben Gardon wrote:
+>> On Thu, Mar 25, 2021 at 1:01 PM Sean Christopherson <seanjc@google.com> wrote:
+>>> +static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
+>>> +                                            gfn_t end)
+>>> +{
+>>> +       return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
+>>> +}
+>>> +static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>>
+>> I'm a little leary of adding an interface which takes a non-root
+>> struct kvm_mmu_page as an argument to the TDP MMU.
+>> In the TDP MMU, the struct kvm_mmu_pages are protected rather subtly.
+>> I agree this is safe because we hold the MMU lock in write mode here,
+>> but if we ever wanted to convert to holding it in read mode things
+>> could get complicated fast.
+>> Maybe this is more of a concern if the function started to be used
+>> elsewhere since NX recovery is already so dependent on the write lock.
 > 
-> Reported-by: syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
-> Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> ---
-> Changes in v2:
->   - Make the commit message more clearer.
-> ---
->  net/wireless/nl80211.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Agreed.  Even writing the comment below felt a bit awkward when thinking about
+> additional users holding mmu_lock for read.  Actually, I should remove that
+> specific blurb since zapping currently requires holding mmu_lock for write.
 > 
-> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-> index 775d0c4d86c3..b87ab67ad33d 100644
-> --- a/net/wireless/nl80211.c
-> +++ b/net/wireless/nl80211.c
-> @@ -210,7 +210,7 @@ static int validate_beacon_head(const struct nlattr *attr,
->  	const struct element *elem;
->  	const struct ieee80211_mgmt *mgmt = (void *)data;
->  	bool s1g_bcn = ieee80211_is_s1g_beacon(mgmt->frame_control);
-> -	unsigned int fixedlen, hdrlen;
-> +	unsigned int fixedlen = 0 , hdrlen;
+>> Ideally though, NX reclaim could use MMU read lock +
+>> tdp_mmu_pages_lock to protect the list and do reclaim in parallel with
+>> everything else.
+> 
+> Yar, processing all legacy MMU pages, and then all TDP MMU pages to avoid some
+> of these dependencies crossed my mind.  But, it's hard to justify effectively
+> walking the list twice.  And maintaining two lists might lead to balancing
+> issues, e.g. the legacy MMU and thus nested VMs get zapped more often than the
+> TDP MMU, or vice versa.
+> 
+>> The nice thing about drawing the TDP MMU interface in terms of GFNs
+>> and address space IDs instead of SPs is that it doesn't put
+>> constraints on the implementation of the TDP MMU because those GFNs
+>> are always going to be valid / don't require any shared memory.
+>> This is kind of innocuous because it's immediately converted into that
+>> gfn interface, so I don't know how much it really matters.
+>>
+>> In any case this change looks correct and I don't want to hold up
+>> progress with bikeshedding.
+>> WDYT?
+> 
+> I think we're kind of hosed either way.  Either we add a helper in the TDP MMU
+> that takes a SP, or we bleed a lot of information about the details of TDP MMU
+> into the common MMU.  E.g. the function could be open-coded verbatim, but the
+> whole comment below, and the motivation for not feeding in flush is very
+> dependent on the internal details of TDP MMU.
+> 
+> I don't have a super strong preference.  One thought would be to assert that
+> mmu_lock is held for write, and then it largely come future person's problem :-)
 
-Please always use scripts/checkpatch.pl before sending out patches.  It
-would have pointed out that this line is incorrect and needs to be fixed
-up  :(
+Queued all three, with lockdep_assert_held_write here.
 
-thanks,
+Paolo
 
-greg k-h
