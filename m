@@ -2,197 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3327834F144
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D3E34F14B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhC3Sw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:52:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232901AbhC3SwG (ORCPT
+        id S232942AbhC3S57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhC3S5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:52:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617130325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yMCpVlMlRD7NcZCE9ewfx3xVfYn50wJwXreF4M6Z7f4=;
-        b=XMD3Ii9OiclANAcMhuISxUB0U2BBtQ3Q3gpK5BdlewpX3LIoSIfj8WJTamsxASKY6fUXFI
-        OZ2eCemD20Yohw+VV6UQHatAPqF+MiQSvwAbRa/RiKc9SF0WOF+sLME1SsYN4x4xTMDqFC
-        BWm9XcH7D8zNz2xiSkBjY0yHiHHrwL0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-YkBKwRlwOwmf23SkhoZNIw-1; Tue, 30 Mar 2021 14:52:02 -0400
-X-MC-Unique: YkBKwRlwOwmf23SkhoZNIw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0751190B2A1;
-        Tue, 30 Mar 2021 18:52:00 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81C1260861;
-        Tue, 30 Mar 2021 18:51:55 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 20:51:54 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>, brouer@redhat.com
-Subject: Re: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce
- stat overhead
-Message-ID: <20210330205154.1fe1e479@carbon>
-In-Reply-To: <20210329120648.19040-1-mgorman@techsingularity.net>
-References: <20210329120648.19040-1-mgorman@techsingularity.net>
+        Tue, 30 Mar 2021 14:57:19 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DE6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:57:19 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id p12so7738259pgj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 11:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Im8HC/95If4NF2ZyRBUTtbjnh4iyHk5nc6Niu3yE2kI=;
+        b=YsWI6d8pVBmK2DRUAL5G8nV9RK6/pwZizWuNl2Cnnc8b4vVFKwhu3+FxQ6eCd7/L6U
+         19afu5ezM0U55CeLbw1D5UotMJt8PpcyNoCniEPtTO55LGgd3ozVlWl0UDAwL00pq44N
+         Ja9ZoPhWtRXulEvjDlwza8WtMwZeuvPeHQtXMgAUONcM+/D4jLFd9su0N6CT8fehVPdl
+         MqiJdegD/412zf9atKd5+I+6p/MidACqsSsn9Vn8D+EFWs6T5v0+9j1SG1WmjLOQx9UI
+         +gES3Mdiib2XCkFNNtcRpqDRvhwkD7Mx104iW9gB9TBecfKtRfCjTNFPDKtI1iYlqlEH
+         VIZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Im8HC/95If4NF2ZyRBUTtbjnh4iyHk5nc6Niu3yE2kI=;
+        b=HDVWqa941aQZKpvsPdAssv2i3jXEwE5fAoR4BD9L2snD661Wptd0cu/obpCQRAckxR
+         ctJ6I8eu+XLUOMfmXRY2zLbOQgB+UZxnz/DbtLpCsVe41Cab7As5pg8LPBJzxGhltkO+
+         cGW26CLYL0PxHyuUdBalrvT/ikKGGsyBsu+NnmhuqKZHDcTM/69RC2y7zyeErq3ht/D9
+         98XDaLHiTI/lL8KasQRvmVTYQSUqBv5yA7rIuXQ3TuyX2dwwSYd1A+z5eUTTqoLME7oW
+         j7araV6T2AaiuYH9XFl6IvaN8whMvOI4/hgmZwwM5BU0Rtb95f7GEj+XiCZI59iLdSVI
+         afwA==
+X-Gm-Message-State: AOAM530Gyq3IbZx0eqNaI7TvFM3lkLtRtwRMb6S40TuxxJd6FuDiZrMN
+        IHV6B18M4+x39VZ6uzDs1v8+r08oztk=
+X-Google-Smtp-Source: ABdhPJzDsnHRJPC0VL0EvMfo8p++K+IryJt+5Vns0bWCn0Pjibss8aTUDVXbOIbi7JKF5BgTYYjVQg==
+X-Received: by 2002:aa7:9e43:0:b029:1f3:a2b3:d9fd with SMTP id z3-20020aa79e430000b02901f3a2b3d9fdmr31780722pfq.74.1617130638779;
+        Tue, 30 Mar 2021 11:57:18 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w5sm21593939pge.55.2021.03.30.11.57.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 11:57:18 -0700 (PDT)
+Subject: Re: [PATCH v8 0/3] ARM: Implement MODULE_PLT support in FTRACE
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>
+References: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9bce83d4-a493-eb26-3fa0-344e863826c7@gmail.com>
+Date:   Tue, 30 Mar 2021 11:57:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 13:06:42 +0100
-Mel Gorman <mgorman@techsingularity.net> wrote:
-
-> This series requires patches in Andrew's tree so the series is also
-> available at
+On 3/30/21 4:40 AM, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
+> FTRACE's function tracer currently doesn't always work on ARM with
+> MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
+> code modifier cannot cope with introduced veneers and turns the
+> function tracer off globally.
 > 
-> tldr: Jesper and Chuck, it would be nice to verify if this series helps
-> 	the allocation rate of the bulk page allocator. RT people, this
-> 	*partially* addresses some problems PREEMPT_RT has with the page
-> 	allocator but it needs review.
-
-I've run a new micro-benchmark[1] which shows:
-(CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
-
-BASELINE
- single_page alloc+put: 194 cycles(tsc) 54.106 ns
-
-LIST variant: time_bulk_page_alloc_free_list: step=bulk size
-
- Per elem: 200 cycles(tsc) 55.667 ns (step:1)
- Per elem: 143 cycles(tsc) 39.755 ns (step:2)
- Per elem: 132 cycles(tsc) 36.758 ns (step:3)
- Per elem: 128 cycles(tsc) 35.795 ns (step:4)
- Per elem: 123 cycles(tsc) 34.339 ns (step:8)
- Per elem: 120 cycles(tsc) 33.396 ns (step:16)
- Per elem: 118 cycles(tsc) 32.806 ns (step:32)
- Per elem: 115 cycles(tsc) 32.169 ns (step:64)
- Per elem: 116 cycles(tsc) 32.258 ns (step:128)
-
-ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
-
- Per elem: 195 cycles(tsc) 54.225 ns (step:1)
- Per elem: 127 cycles(tsc) 35.492 ns (step:2)
- Per elem: 117 cycles(tsc) 32.643 ns (step:3)
- Per elem: 111 cycles(tsc) 30.992 ns (step:4)
- Per elem: 106 cycles(tsc) 29.606 ns (step:8)
- Per elem: 102 cycles(tsc) 28.532 ns (step:16)
- Per elem: 99 cycles(tsc) 27.728 ns (step:32)
- Per elem: 98 cycles(tsc) 27.252 ns (step:64)
- Per elem: 97 cycles(tsc) 27.090 ns (step:128)
-
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org#micro-benchmark-page_bench04_bulk-local_lock-v1r15
-
-This should be seen in comparison with the older micro-benchmark[2]
-done on branch mm-bulk-rebase-v5r9.
-
-BASELINE
- single_page alloc+put: Per elem: 199 cycles(tsc) 55.472 ns
-
-LIST variant: time_bulk_page_alloc_free_list: step=bulk size
-
- Per elem: 206 cycles(tsc) 57.478 ns (step:1)
- Per elem: 154 cycles(tsc) 42.861 ns (step:2)
- Per elem: 145 cycles(tsc) 40.536 ns (step:3)
- Per elem: 142 cycles(tsc) 39.477 ns (step:4)
- Per elem: 142 cycles(tsc) 39.610 ns (step:8)
- Per elem: 137 cycles(tsc) 38.155 ns (step:16)
- Per elem: 135 cycles(tsc) 37.739 ns (step:32)
- Per elem: 134 cycles(tsc) 37.282 ns (step:64)
- Per elem: 133 cycles(tsc) 36.993 ns (step:128)
-
-ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
-
- Per elem: 202 cycles(tsc) 56.383 ns (step:1)
- Per elem: 144 cycles(tsc) 40.047 ns (step:2)
- Per elem: 134 cycles(tsc) 37.339 ns (step:3)
- Per elem: 128 cycles(tsc) 35.578 ns (step:4)
- Per elem: 120 cycles(tsc) 33.592 ns (step:8)
- Per elem: 116 cycles(tsc) 32.362 ns (step:16)
- Per elem: 113 cycles(tsc) 31.476 ns (step:32)
- Per elem: 110 cycles(tsc) 30.633 ns (step:64)
- Per elem: 110 cycles(tsc) 30.596 ns (step:128)
-
-[2] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org#micro-benchmark-page_bench04_bulk
-
-This new patchset does show some improvements in the micro-benchmark.
-
-
-> The PCP (per-cpu page allocator in page_alloc.c) share locking requirements
-> with vmstat which is inconvenient and causes some issues. Possibly because
-> of that, the PCP list and vmstat share the same per-cpu space meaning that
-> it's possible that vmstat updates dirty cache lines holding per-cpu lists
-> across CPUs unless padding is used. The series splits that structure and
-> separates the locking.
+> ARM64 already has a solution for the problem, refer to the following
+> patches:
 > 
-> Second, PREEMPT_RT considers the following sequence to be unsafe
-> as documented in Documentation/locking/locktypes.rst
+> arm64: ftrace: emit ftrace-mod.o contents through code
+> arm64: module-plts: factor out PLT generation code for ftrace
+> arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
+> arm64: ftrace: fix building without CONFIG_MODULES
+> arm64: ftrace: add support for far branches to dynamic ftrace
+> arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
 > 
->    local_irq_disable();
->    spin_lock(&lock);
+> But the presented ARM variant has just a half of the footprint in terms of
+> the changed LoCs. It also retains the code validation-before-modification
+> instead of switching it off.
 > 
-> The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
-> -> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). This series explicitly  
-> separates the locking requirements for the PCP list (local_lock) and stat
-> updates (irqs disabled). Once that is done, the length of time IRQs are
-> disabled can be reduced and in some cases, IRQ disabling can be replaced
-> with preempt_disable.
+> Changelog:
+> v8:
+> * Add warn suppress parameter to arm_gen_branch_link()
+> v7:
+> * rebased
+> v6:
+> * rebased
+> v5:
+> * BUILD_BUG_ON() ensures fixed_plts[] always fits one PLT block
+> * use "for" loop instead of "while"
+> * scripts/recordmcount is filtering reloc types
+> v4:
+> * Fixed build without CONFIG_FUNCTION_TRACER
+> * Reorganized pre-allocated PLTs handling in get_module_plt(),
+>   now compiler eliminates the whole FTRACE-related handling code
+>     if ARRAY_SIZE(fixed_plts) == 0
+>     v3:
+>     * Only extend struct dyn_arch_ftrace when ARM_MODULE_PLTS is enabled
+>     v2:
+>     * As suggested by Steven Rostedt, refrain from tree-wide API modification,
+>       save module pointer in struct dyn_arch_ftrace instead (PowerPC way)
 > 
-> After that, it was very obvious that zone_statistics in particular has way
-> too much overhead and leaves IRQs disabled for longer than necessary. It
-> has perfectly accurate counters requiring IRQs be disabled for parallel
-> RMW sequences when inaccurate ones like vm_events would do. The series
-> makes the NUMA statistics (NUMA_HIT and friends) inaccurate counters that
-> only require preempt be disabled.
-> 
-> Finally the bulk page allocator can then do all the stat updates in bulk
-> with IRQs enabled which should improve the efficiency of the bulk page
-> allocator. Technically, this could have been done without the local_lock
-> and vmstat conversion work and the order simply reflects the timing of
-> when different series were implemented.
-> 
-> No performance data is included because despite the overhead of the
-> stats, it's within the noise for most workloads but Jesper and Chuck may
-> observe a significant different with the same tests used for the bulk
-> page allocator. The series is more likely to be interesting to the RT
-> folk in terms of slowing getting the PREEMPT tree into mainline.
+> Alexander Sverdlin (3):
+>   ARM: PLT: Move struct plt_entries definition to header
+>   ARM: Add warn suppress parameter to arm_gen_branch_link()
+>   ARM: ftrace: Add MODULE_PLTS support
 
-I've try to run some longer packet benchmarks later.  A quick test
-showed performance was within same range, and slightly better.  The
-perf report and objdump, did reveal that code layout prefers the label
-"failed:" as the primary code path, which should only be used for
-single page allocs, which is kind of weird. (But as performance is the
-same or slightly better, I will not complain).
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-
->  drivers/base/node.c    |  18 +--
->  include/linux/mmzone.h |  29 +++--
->  include/linux/vmstat.h |  65 ++++++-----
->  mm/mempolicy.c         |   2 +-
->  mm/page_alloc.c        | 173 ++++++++++++++++------------
->  mm/vmstat.c            | 254 +++++++++++++++--------------------------
->  6 files changed, 254 insertions(+), 287 deletions(-)
-
+Thanks a lot!
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Florian
