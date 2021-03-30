@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CC934DE19
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E058034DE23
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhC3COL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S231199AbhC3CSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhC3COI (ORCPT
+        with ESMTP id S230416AbhC3CRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:14:08 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AD7C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:14:07 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m7so10617642pgj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:14:07 -0700 (PDT)
+        Mon, 29 Mar 2021 22:17:47 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA93EC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:17:47 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id o5so14551217qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A+W3TeeQ+CFLjInxB7jJ8DoAPGAMGkk/5XTsXaeHgbU=;
-        b=O+1pcnhivoUaF3JAzcPjuitpd6X9JWxq86Dvyl8iJO871PDQhIgqszOCTcxNAfJs27
-         hCsHvywAXt/RWNMEzNrvBmD1Repsn1xQnys5hgLdCM7ekhIxdUJAm6qj+ReE3X5lQn/R
-         i8ddQ2IJMydxE+1VWz3U1w+XipRjFIo7RazrGtv0sN12Vh3FBWNiPyYhJaW/2/zXu2A/
-         metPowlj1rxCaVL7Y389sVWWDZHIIP3H0ORPK7O1Y30opA1BxVWG4igUGMDe1EWDdkBb
-         bx/7mJkzk9pxTpA0a1ZkKQFMBn/tpVfEIV0tdNdeSQhAO/6/nTqzFqkqckspdR+dSdgo
-         6yPQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYpyY1TOa+Yl8BrX8XRiUJe9gV2CoaxgtkA+KYhmVKE=;
+        b=Y/s/ORXJWshz61UqGJHDlwixtxdCFhgDqAhS9r79QpUW+lSnB4019HqWR7HPrMDhqr
+         QB7F4l9287vlJ8+dRCT5XYDA37sqqVc+qANTimeoGpN6T/Zx/GIYlOEUhAeKcgXX+Ww9
+         XrAoHU2FFL2i0Shz5uF1lOGAUU9+SBTvXoG60=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A+W3TeeQ+CFLjInxB7jJ8DoAPGAMGkk/5XTsXaeHgbU=;
-        b=rgbLD+0Ad9qGe3qfZoB4KHU5I7WCjS4xwGsABWJRyUmXAlrgRw7y8y4/CbQuKibuN4
-         FlDTAFTzXG8QUPlT+P3jAN4mKvf0LnwLDxfs62towDSyKjqzLddFi3QFdKQazXUtsaK/
-         uo0g2jaJGawYR4umGHXGQhh2NGO6DsBh+mkDIh7do8XhCh+rUIVnPkjlXQcbSajo52Ot
-         vT80ZPy7JZmBVCoVq3+Sdy+Mek006MSPNUr7mN8k4tHEIgZ+K2C/tTDGvs586icUMdtC
-         /v0ZyHYyJ62UOwS9v2m49tBq4rlkLsFOQLNStbZMzGP6VHZcKziVnSo11GtWZ4EMFthJ
-         7ntg==
-X-Gm-Message-State: AOAM531q8xbJiy0KZQ5T/Ov6nxCpuad3u9oIGieK7MBHmqpCNclWwyHk
-        vx5IK5cRgHQV+41IY1Q+8fNBsURp9yVq7OqNYVCNXw==
-X-Google-Smtp-Source: ABdhPJx4AfNhP8brz6xPci92lQLbahnnyxILHNy7smBTzxjm1IZ3U8nQTw+QwnNGdstRE2X+LMa1qqKHz+cw23mVa2Y=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr26923738pgl.31.1617070447404;
- Mon, 29 Mar 2021 19:14:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYpyY1TOa+Yl8BrX8XRiUJe9gV2CoaxgtkA+KYhmVKE=;
+        b=EKiVq+k0qmH714PK3LhWNgaksAMUyEbrGUNEyqyUIeN3CkalD5Q77pVSphsyOiC3La
+         B+s9Jyzex5sPMz+uN0tAwRDyAQhxoD2ZlkGEkLJOHBN967EjYVdy7TwH0GmpjrTqvVJg
+         dTGT7IILBYHc/+FpahD07yDKmH8areNVLxdpuXpDnTlTqolM6l6x+wZ/nXX9+sjEDUd5
+         2b+8Ih8sZiAVLFvdEE6aGppRrECl7y1xWIJkEz/xtxhMSOJ+VrF/wV2/Lr67wonbeFg6
+         bMHAZaETnYlSTmRFR1sl6A6OG/rPqMigFnvT1+niOX4jYxo5CyR4opC7UuPCwtH2uw7B
+         Jc6g==
+X-Gm-Message-State: AOAM530LOgxb+JOBZ+H+tURduy3X/j0Cnq7EhfNB6/dXwlbIXrkte54o
+        4HATDLtEDOChU0xw0hnzVtNoZw==
+X-Google-Smtp-Source: ABdhPJwAWKLv9lBuLdhP4/ZS1OiI52qq100NGYn+M6dBf86Me1mmwLYSBhLAFmwV+rhvDmbxq045mA==
+X-Received: by 2002:a37:a643:: with SMTP id p64mr26959945qke.276.1617070666774;
+        Mon, 29 Mar 2021 19:17:46 -0700 (PDT)
+Received: from grundler-glapstation.lan ([70.134.62.80])
+        by smtp.gmail.com with ESMTPSA id j30sm12433067qtv.90.2021.03.29.19.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 19:17:45 -0700 (PDT)
+From:   Grant Grundler <grundler@chromium.org>
+To:     Oliver Neukum <oneukum@suse.com>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Roland Dreier <roland@kernel.org>, nic_swsd <nic_swsd@realtek.com>,
+        netdev <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Grant Grundler <grundler@chromium.org>
+Subject: [PATCHv4 0/4] usbnet: speed reporting for devices without MDIO
+Date:   Mon, 29 Mar 2021 19:16:47 -0700
+Message-Id: <20210330021651.30906-1-grundler@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-References: <20210330020246.2265371-1-wanjiabing@vivo.com>
-In-Reply-To: <20210330020246.2265371-1-wanjiabing@vivo.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 30 Mar 2021 10:13:30 +0800
-Message-ID: <CAMZfGtVSNVC2zapQPxN-G=Pk6vk2VWa0jf235-Vz8F-zjSTKDQ@mail.gmail.com>
-Subject: Re: [External] [PATCH] linux/memcontrol.h: Remove duplicate struct declaration
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:03 AM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> struct mem_cgroup is declared twice. One has been declared
-> at forward struct declaration. Remove the duplicate.
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+This series introduces support for USB network devices that report
+speed as a part of their protocol, not emulating an MII to be accessed
+over MDIO.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+v2: rebased on recent upstream changes
+v3: incorporated hints on naming and comments
+v4: fix misplaced hunks; reword some commit messages;
+    add same change for cdc_ether
 
-Thanks.
+I'm reposting Oliver Neukum's <oneukum@suse.com> patch series with
+fix ups for "misplaced hunks" (landed in the wrong patches).
+Please fixup the "author" if "git am" fails to attribute the
+patches 1-3 (of 4) to Oliver.
 
-> ---
->  include/linux/memcontrol.h | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 0c04d39a7967..f0ae33a0f175 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1068,8 +1068,6 @@ void split_page_memcg(struct page *head, unsigned int nr);
->  #define MEM_CGROUP_ID_SHIFT    0
->  #define MEM_CGROUP_ID_MAX      0
->
-> -struct mem_cgroup;
-> -
->  static inline struct mem_cgroup *page_memcg(struct page *page)
->  {
->         return NULL;
-> --
-> 2.25.1
->
+I've tested v4 series with "5.12-rc3+" kernel on Intel NUC6i5SYB
+and + Sabrent NT-S25G. Google Pixelbook Go (chromeos-4.4 kernel)
++ Alpha Network AUE2500C were connected directly to the NT-S25G
+to get 2.5Gbps link rate:
+# ethtool enx002427880815
+Settings for enx002427880815:
+        Supported ports: [  ]
+        Supported link modes:   Not reported
+        Supported pause frame use: No
+        Supports auto-negotiation: No
+        Supported FEC modes: Not reported
+        Advertised link modes:  Not reported
+        Advertised pause frame use: No
+        Advertised auto-negotiation: No
+        Advertised FEC modes: Not reported
+        Speed: 2500Mb/s
+        Duplex: Half
+        Auto-negotiation: off
+        Port: Twisted Pair
+        PHYAD: 0
+        Transceiver: internal
+        MDI-X: Unknown
+        Current message level: 0x00000007 (7)
+                               drv probe link
+        Link detected: yes
+
+
+"Duplex" is a lie since we get no information about it.
+
+I expect "Auto-Negotiation" is always true for cdc_ncm and
+cdc_ether devices and perhaps someone knows offhand how
+to have ethtool report "true" instead.
+
+But this is good step in the right direction.
+
+base-commit: 1c273e10bc0cc7efb933e0ca10e260cdfc9f0b8c
