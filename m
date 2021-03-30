@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F6334F127
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539EE34F12C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 20:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhC3Smr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 14:42:47 -0400
-Received: from mailoutvs2.siol.net ([185.57.226.193]:53484 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232825AbhC3Smc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:42:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id DBF0A525379;
-        Tue, 30 Mar 2021 20:42:24 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id qijVTcZ6ewZj; Tue, 30 Mar 2021 20:42:24 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 9C9FE5253A4;
-        Tue, 30 Mar 2021 20:42:24 +0200 (CEST)
-Received: from kista.localdomain (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 0A5E5525379;
-        Tue, 30 Mar 2021 20:42:24 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     robh+dt@kernel.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: [PATCH] arm64: dts: allwinner: h6: beelink-gs1: Remove ext. 32 kHz osc reference
-Date:   Tue, 30 Mar 2021 20:42:18 +0200
-Message-Id: <20210330184218.279738-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.31.0
+        id S232895AbhC3So5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 14:44:57 -0400
+Received: from www.zeus03.de ([194.117.254.33]:57770 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232860AbhC3SoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:44:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=O4VbJF+YDNgsNTzgNn0mfyiakjki
+        ADsY05pkHFzVjsU=; b=kUI/6wuYWPvLhp7/WmUzjQsFjPaeCxmR6xbgQclkZhYV
+        vKJO0w4YmNXdQb0/fk22a2yiv4e7M15XXg1LtaRaXwrI3CEsRTNPzC+FZAlVMA3w
+        6gAvw3SyqffiUnNgRkNSBWySVaGxF3oKAArFtO1qIkHkIABZZ0LYPbkuqe4ZzBo=
+Received: (qmail 301911 invoked from network); 30 Mar 2021 20:44:17 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Mar 2021 20:44:17 +0200
+X-UD-Smtp-Session: l3s3148p1@soqxYsW+eJEgAwDPXw7aAOihkzMkaJHc
+Date:   Tue, 30 Mar 2021 20:44:17 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH RFC/RFT 1/1] misc: add simple logic analyzer using polling
+Message-ID: <20210330184417.GA1001@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org
+References: <20210330085655.12615-1-wsa+renesas@sang-engineering.com>
+ <20210330085655.12615-2-wsa+renesas@sang-engineering.com>
+ <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <c74ddbd9-900a-0817-4c16-86f7cf9d96cc@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although every Beelink GS1 seems to have external 32768 Hz oscillator,
-it works only on one from four tested. There are more reports of RTC
-issues elsewhere, like Armbian forum.
 
-One Beelink GS1 owner read RTC osc status register on Android which
-shipped with the box. Reported value indicated problems with external
-oscillator.
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In order to fix RTC and related issues (HDMI-CEC and suspend/resume with
-Crust) on all boards, switch to internal oscillator.
 
-Fixes: 32507b868119 ("arm64: dts: allwinner: h6: Move ext. oscillator to =
-board DTs")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 4 ----
- 1 file changed, 4 deletions(-)
+> > +snipplet which analyzes an I2C bus at 400KHz on a Renesas Salvator-XS =
+board,
+>=20
+>    snippet
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/ar=
-ch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 669d39fc716a..6249e9e02928 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -289,10 +289,6 @@ sw {
- 	};
- };
-=20
--&rtc {
--	clocks =3D <&ext_osc32k>;
--};
--
- &spdif {
- 	status =3D "okay";
- };
---=20
-2.31.0
+Thanks!
 
+>=20
+> > +the following settings are used: The isolated CPU shall be CPU1 becaus=
+e it is a
+> > +big core in a big.LITTLE setup. Because CPU1 is the default, we don't =
+need a
+> > +parameter. The bus speed is 400kHz. So, the sampling theorem says we n=
+eed to
+> > +sample at least at 800kHz. However, falling of both, SDA and SCL, in a=
+ start
+>=20
+> Is "falling" like a falling edge of a signal?
+
+Yes. It seems I should make it more clear, then.
+
+Thanks for the review, Randy!
+
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBjcX0ACgkQFA3kzBSg
+Kbad6w//X72lK6IZh0vnjMP39emDS43pbDRSr2sNWgNjt+Hfd9TF3VBu8grY79ob
+7ywAAgQ7iBwCuiQbwGZNV+leIxIt7ENioZZBsMCV4OiiWHfn9LC5gCUWW2OWCqtO
+H5dLB+sSE5huaYqbzWO7AB0vgH1PhPdMLzJEIvkzkGpV1XcaYJMRyfLcNnUkdjFy
+bUI2OZZVqeWlYxmyL3ngVk7SvMO79le/2KQYQ65ZI7qaQOprvcg6AODxgqzTQdbi
+B54K8coC1DhaKH7XWrpZNP7nkDIVC8TmE1otTmt33WvzExdT9rlO7R3WJ2VvKbOp
+HCD2o4lYYGyXvN1cWAD5CcohuFS/NZRMdOjr0vvZSWOD7bqNqQ3yL0tLhCo2jB4W
+kUAZKozrpEZfgxFZcEnB6m94ZqcQgSoVsH3ZpIpXkTTUAU7uI4B+3unzTguAve5T
+jQ66PoEaLnFc+e/wjg1WK0mjL94dVFAC7noeGIwQDvXpTss/LRtAbtkVtMciU+Dq
+k+RdjCWmdoCVlPIDZKcXxhr3U4HbCodh7g5LITE2QZdDUteY9cZjMP1y1xRV78zd
+XqcjokDceNaRvStJz6s3WBGCxSj8AHeI5xuHC8LA7QfnSm/wGyH7dHQrRD6aomb/
+IzPW7QPR+6tzDdVXPpP65sHJ/Ge/5v5GP2sMMsL7QDMnTwrmXKA=
+=wZ8q
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
