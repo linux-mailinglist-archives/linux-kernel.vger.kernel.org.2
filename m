@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EF934E0AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A45E34E0CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhC3F3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:29:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhC3F3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:29:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81EE461921;
-        Tue, 30 Mar 2021 05:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617082171;
-        bh=8I7DqHNKkHoQuqnMHUExWNfnew54U0aGIlJ/JSc4DuQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gNsS5Hq1zZvyXLoIKggM0Laqwgx9GQDCRSubWKvHBkg68by1ByQgXrhO1EH6VqwAt
-         c78FnjAquP16SnS+YSKL5QBAyiEHUuerQYmXDAyU2LGlWbTt/+t4IqaZ+qYXm2sHgR
-         fQWa/iSoc5AAmbZgSMKQmU9JspMq+U9HytOZl5zgZCgBvrROzhz7S2DWmJIUzgRMUg
-         OvU754rBTvWwmVvjzHG076rh/Bjdfl9pbb1kFvQc8k3GdSO17R66il3OT0zHQ0j8qD
-         obkz2HwOrnFWBuO7vf05Pji0CpA8rinGGxQu8sf6hZfGcEQ5OmhjZt4zdXg8Pe/p07
-         raaeW+F2bErmw==
-Date:   Mon, 29 Mar 2021 22:29:30 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] Documentation: crypto: add info about "fips=" boot
- option
-Message-ID: <YGK3OlT3+6WdXbux@sol.localdomain>
-References: <20210330050651.13344-1-rdunlap@infradead.org>
+        id S230331AbhC3Fp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:45:28 -0400
+Received: from mail-eopbgr20057.outbound.protection.outlook.com ([40.107.2.57]:12167
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229530AbhC3Fot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 01:44:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UU3q87xvZqIpzxupOJCrRQ35aKJDAWala4i8mSUVtXLH03ucbr4PG+g8Qndi/5Zvu0OxcE1XCILM2gzxE6wrsxy67QSPcIYx2BC1VS17cW9EhSdes/w427lhl3XmOsa6LJ3lE7NFbvuIvADMAwwhKUGbNWl4bKubIvVzbAPVKNfORTWhRkINLffqHRI65Vzcx8pMqVr1CZhcNCZnt1kgb+z4tsR0r2+E7+Wqg0S0Ah94RFQxlAk2KVm/zD21TpPYFM8jaA/ZD8HAErQ0Phu64RgNrDbTZgumrsB0ZmTEUVOC4dbh5YXEDknNfgYYmZQv4qDfrC0bqi3Y+ahvg43OIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HJ5WgiRHBliXEz99LRRO5Np+OE/buy94E0E3rP3XdAo=;
+ b=VSg+fRZ5WBXW1DliyuBsu7dbRVzfcNINRb/37H9j1QQMqPn9rIegj5SdwmoIMaaPls0O3gJP5FPRCwNdcMLfnTZlpK/mM28RclqTrlxgqwf+FZvhzFzCnv8IhlUrcevuw/Jmz6akJguCeFqzeYq6pnZ/59H3p5+dq8L9V5SP8FYBq2XQqPn/Bzgl/5YH4T/K4IaK1aF2OlVSHBsc2p/Lh6KLmiBdWxuZ5u/sFLjEvHoOmpdB2LMnmH+pcOhbpmn2xaHIOO8O852VUQZ8ccI6zZar52PPq04SlzKgvVdesl9A/oQsRwi0k5UNGGs16LOpd77fyWtOL7imjtmL4V/ZYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HJ5WgiRHBliXEz99LRRO5Np+OE/buy94E0E3rP3XdAo=;
+ b=HDOdt0VFM+GZAJDj5xL1gp2WVCitksp6JvRvDjI/T4tDwwAr2Z+dOAG9+ytk80sVwkUVQACJXUzqLlPpbgZVKrDIhANDL1F3fWv1n1fr4Kedfzxj5IheZeMHMhIDn+Kj/lrqZd2QDi2yaooGKjOZtlIp8NRSSA+5Nd8AQggrtKE=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4489.eurprd04.prod.outlook.com (2603:10a6:5:35::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Tue, 30 Mar
+ 2021 05:44:45 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c57a:6964:f72c:21cf]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c57a:6964:f72c:21cf%11]) with mapi id 15.20.3977.033; Tue, 30 Mar
+ 2021 05:44:45 +0000
+From:   peng.fan@oss.nxp.com
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2 0/4] remoteproc: imx: support remote cores booted early
+Date:   Tue, 30 Mar 2021 13:30:31 +0800
+Message-Id: <1617082235-15923-1-git-send-email-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR04CA0055.apcprd04.prod.outlook.com
+ (2603:1096:202:14::23) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330050651.13344-1-rdunlap@infradead.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2PR04CA0055.apcprd04.prod.outlook.com (2603:1096:202:14::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 05:44:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8da2baf0-567f-4b67-f6c2-08d8f33eec43
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4489:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB448938B7328E0E40C072F219C97D9@DB7PR04MB4489.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:431;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vyi184EgRYlbpHKaolQTqZCdF/O+vAiy9ebzJMIucCllHCTZwqhy8WnlV3gbKAeafWIxFomL7EPDmYF0VxGF0orbIL0ErTOZEAYBtRBIkXOJQBg7coLij+hXi9FtrBYTk3NANVMWZCr2g9iq606C4fnhfoYYRgxcjXuoK8Wy+R49FB1TPEoBT+rWhDQQCZJa8jCoFfuNlhSkKJeTOdrzckvxGFn/wPvQ4RohiV92q6m4XfJGIlvF7rVHXNmvXXtUIPPnXapfP4DTdnnFZ7bWiOlb0gbYEBiGJF1WEei269BWkCbwEyKveUqphapS8O2kDw3VKNabSpNnNWgu/ub/D3Td/jc7jqNpgzQ92TxIL6Eto/XnM9H3Lhn7RbVboQUj/7bHkcamIHrJKfc5I18U8OBxYBzQCRFuD10xg1Ap4v+tNxDz25i9siTamo+ONn29I7n4T8/B3HY1+1ZYJJ4RoVeV1LA5AUZwBnRNREhZco9NtoaA5o1HFl9xJAqpEyFAcWbBGE+hlmmPy1zu4S1Mx9oOgRgkJ4RzuFet46q1qdyADRDmnps/LQg90MLQM2cfdzJ/cbknvYr7kUNKq7SkuqGErKgDvprpod+0sOdxB0sYU4R4iG55azWWgUIduFNc6wvObDd39ilEwEt2zSgsYKxEjl7X+mVNNeTrJRdIs0M1pIyTVhaZeb7fSE0cdOkJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(956004)(2616005)(86362001)(66556008)(2906002)(6666004)(9686003)(6512007)(6486002)(26005)(66476007)(66946007)(8676002)(186003)(69590400012)(478600001)(4326008)(6506007)(5660300002)(38100700001)(316002)(52116002)(4744005)(8936002)(83380400001)(16526019)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rPdohA/RXB62MMjQrwUzrr5BRD+ooSCSIx8ALXEvSGTLGGeGhw3Wu7gvYK7J?=
+ =?us-ascii?Q?LhFxy8iVtXSsCNwYs9Jh089Y78puRuK6IJv+v06zKZ5VdGxRi4p8+t4oRXrb?=
+ =?us-ascii?Q?nJbCNMxJEOo0hO7Fhp/QyhzPuzL8i+D3r7FGGF3AM0DV7d2NO3Lm5mZ/WjyM?=
+ =?us-ascii?Q?ZtmglZ3ovj2ss13NVuPJDQnldAc7qhIZsfPI+ikTEFqcsmRY4pK2tEnojfKs?=
+ =?us-ascii?Q?ko6+WwrRAvSne13ldYdzT0niF1HxMRfE0cuT0IjEn7pOysb3KW0GQsJ9tbkb?=
+ =?us-ascii?Q?UVZBfq7jzFPzSQBBXgj+IHs29GjK/ok4QDq04XxlWdZbdJ69voYDSttRK7J0?=
+ =?us-ascii?Q?3hxdLx/0Fd8ZIJhhMuf3zDo2dc3pE7D42rkA3ck5dGD+n7fZBpct5uJkxqbs?=
+ =?us-ascii?Q?ObC+TuJ5qFVux/iQ2FV1sYaFSLVranreXgtnluenea+Nmz56FVMT9tYfesEx?=
+ =?us-ascii?Q?jjhJ5DTQDnDt+zTzN0wKNqErLd1b9N2nApjPli9J2R/YEBiQbfUdgHu9EmxQ?=
+ =?us-ascii?Q?fNCrQm0m3GIsc+ogbgBvImpANNRmnLB7jJIcjjO+1bJw32brJUID50OQQnuI?=
+ =?us-ascii?Q?BXpJyduMXF5WkLCvpwEBp+NPK7Sp5T8uK5v674qDVyqc32TQiCtKhLJbfust?=
+ =?us-ascii?Q?Z3kQbir/59XEzxAIVtMeJdaQWBwCZUe9YYMd/oB6TBYLjRxLTujSQTe3Jfom?=
+ =?us-ascii?Q?8eDNsZoXnlO5e3/AZSIGdsXoDJbuMJIe2n+uSInPZYAc/ijFO+KlnLEwVYSu?=
+ =?us-ascii?Q?+tuzUqkxVnVAS6EHdWgbKLoJrQqehTwGWDT532/kdK9kVswiBecHXPizS6QG?=
+ =?us-ascii?Q?xk73iVPVVl5Ak0+OjH2mthG80VECPh3H+wZQC5VdL8BIhEvu8TBjrcnROqTv?=
+ =?us-ascii?Q?FPNRftv+AytPolBIJPo1cMOPBMICqQtKirB2uphGX3Qxn7MwDUxAK9n2dPde?=
+ =?us-ascii?Q?tg6TN1Me22YVawOr2gtOu9fmJADWtz0tllxwmOiXwC82nSTo81GmJTp7o/TJ?=
+ =?us-ascii?Q?Mf2Sv/c78BQ2x2gaD3M3Z1mtLL1raeIpLYFJUBzZTn1eqa1ixpQzAb3zSQY1?=
+ =?us-ascii?Q?kPYI7H/zOkTXcjE1kMQpfh9oAo/Zu2UBLl7DcPuXLDsLu+9J9QuG7nL0gIuG?=
+ =?us-ascii?Q?EPng7Lp0N4pePku6iKC5yGGR1rmZ4Ts/swt8hPz5SSSFdFhnZTQxxjxGoD1e?=
+ =?us-ascii?Q?oFm5ezFNRRKhrSn0oixfCOlSOkZB4hebSx8Y+yh2StLGW1U/yxsvnTsOTR6J?=
+ =?us-ascii?Q?/pAdmUo1U0jXATdTV7WbAzq8IuiLP7N56k63JQfGF38kZqFeTrc5VIWUGiAs?=
+ =?us-ascii?Q?w0eeXpxKtasJtYJJKBVZCaU+?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8da2baf0-567f-4b67-f6c2-08d8f33eec43
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 05:44:45.4522
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CTMR96XPz72UyQjqsjHw02+CjwoeKwC1KS+B71RmlZWWXmBp9XlT1Y3k4Jy7FJuxTGvKo9uZlA6fB2mUyFuPVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4489
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:06:51PM -0700, Randy Dunlap wrote:
-> Having just seen a report of using "fips=1" on the kernel command line,
-> I could not find it documented anywhere, so add some help for it.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> ---
-> Updates/corrections welcome.
-> 
-> v2: drop comment that "fips_enabled can cause some tests to be skipped".
-> 
->  Documentation/admin-guide/kernel-parameters.txt |   14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> --- linux-next-20210329.orig/Documentation/admin-guide/kernel-parameters.txt
-> +++ linux-next-20210329/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1370,6 +1370,20 @@
->  			See Documentation/admin-guide/sysctl/net.rst for
->  			fb_tunnels_only_for_init_ns
->  
-> +	fips=		Format: { 0 | 1}
-> +			Use to disable (0) or enable (1) FIPS mode.
-> +			If enabled, any process that is waiting on the
-> +			'fips_fail_notif_chain' will be notified of fips
-> +			failures.
-> +			This setting can also be modified via sysctl at
-> +			/proc/sysctl/crypto/fips_enabled, i.e.,
-> +			crypto.fips_enabled.
-> +			If fips_enabled = 1 and a test fails, it will cause a
-> +			kernel panic.
-> +			If fips_enabled = 1, RSA test requires a key size of
-> +			2K or larger.
-> +			It can also effect which ECC curve is used.
+From: Peng Fan <peng.fan@nxp.com>
 
-This doesn't really explain why anyone would want to give this option.
-What high-level thing is this option meant to be accomplishing?
-That's what the documentation should explain.
+V2:
+ Patch [1,3]/4 is new
+ Patch 4/4: Update commit message, drop unneeded code that already implemented by core
 
-- Eric
+This patchset is to support booted remote cores could be attached to linux.
+- Add missing of_node_put to decrease device node refcount
+- Enlarge IMX7D_RPROC_MEM_MAX because need more imx_rproc_mem, such as resource table.
+- Following stm32 remoteproc practice, move memory parsing to rproc_ops
+- Support attaching booted cores, by adding attach, get loaded resource table and etc.
+
+Peng Fan (4):
+  remoteproc: imx: add missing of_node_put
+  remoteproc: imx_rproc: enlarge IMX7D_RPROC_MEM_MAX
+  remoteproc: imx: move memory parsing to rproc_ops
+  remoteproc: imx_rproc: support remote cores booted before Linux Kernel
+
+ drivers/remoteproc/imx_rproc.c | 65 ++++++++++++++++++++++++++++------
+ 1 file changed, 55 insertions(+), 10 deletions(-)
+
+-- 
+2.30.0
+
