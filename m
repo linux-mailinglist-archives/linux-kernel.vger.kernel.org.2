@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAEF34F1C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA9C34F1CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhC3Tqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbhC3Tq3 (ORCPT
+        id S233253AbhC3Tt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:49:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233204AbhC3Ts4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:46:29 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7492CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:46:29 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id o66so18614309ybg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6DYqoHmA+zYKq7nKYyDZpLfhv3PQpbvtdseyGxtr+2w=;
-        b=J7o+HmrVDPnqlk05er+9iEO0yix6U99sBC6tcMNMjDGJDn20EJaxiybf8++QhkNApK
-         N3sQSpSxQf520/WDjOcKHqJHvWVfxEHrLTBZgz0gZFdwjsnJAloM4TmFtV39RE33JdF6
-         fmb5XMZabYNyAXQpiGJykMiKifky7e7xaBknmrOL4LJbWmFl5vXiiIozqGKboPlDyhf4
-         astdReaFgb+7tDbMbH3p3JIEbGGlOn6wNCC1wKGIc+sgPOom1O4KERLknIiG/CYf7AY3
-         98oonNrjp/VgxRtvAO58eXssMmnZZX+WjvUF5UP1UnFr+w4tvX23xUT5+sGJhPoegw6Q
-         /dvw==
+        Tue, 30 Mar 2021 15:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617133735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OzWHBGLRQSImyi4e0nOZKdQoWKxewGVgAE+CFb4wwPc=;
+        b=iSlCGRs6VCjQoCeBwC0vXZ0lDdqTqqW3cQT5ZJy9e9xTJ2Hp9tMYBi+gH4uaHVycwz2wQC
+        0SgkHVHjJFNnhaWQLAgOU++Cdhi5uNX/riq3rBL00yFO37amxwAzIu5uEiDhZPEtebPK0U
+        7KAq4R3SdvXRzm85kUAmme1vH0pLPyM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-1htU5wx-N1SSKQxQ-_uhag-1; Tue, 30 Mar 2021 15:48:54 -0400
+X-MC-Unique: 1htU5wx-N1SSKQxQ-_uhag-1
+Received: by mail-wr1-f69.google.com with SMTP id r12so10851096wro.15
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 12:48:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6DYqoHmA+zYKq7nKYyDZpLfhv3PQpbvtdseyGxtr+2w=;
-        b=YaTFYdRm6hoCsBhsYStxSlNH6Tn5/s7r3/dNc9CXBemoMN7GKqHlsQbOxMWfQhOQsQ
-         eWYTyQgU6f4MUySfBRdjFhhZXq97kMj5ofdtISu1Fg1Hk7jyD1Ofsvd3YOacQag7SKtf
-         qTThbd70MjKnWX7tiN5By2tPxAz8uDhLDSn1x9SeMEGp3g2FmisSsLounKeZ2hOesCTR
-         OZS8Ws4SwyLx2395VxyoUPW7bgM71wgVu+3QYiTLbHS8/2wmIG4FZqSCWphR2k+tONj8
-         tauKrDKkql3Fk0J+rNcYS3pvOToVgeDA122ZzGcZw3RMpiU32Sm7D7evfsO/BYWtCcjw
-         WuAQ==
-X-Gm-Message-State: AOAM530mwNIk41UBC+7ewsWuWIqEVdDxZmZ+g97VcXdsnEl1+D3SNEZJ
-        w2M/X+3W7g3DYKgvUlMEywrOhBDgbrt+NU9kJSxvhQ==
-X-Google-Smtp-Source: ABdhPJwi/ZbH0+s08CVaWjRfNYgE500YFCldoEQ2eRbid+iECt0ft7NXVGlGrXJ+JpwTn7UASmw/L6E8AOoaUlrbgyw=
-X-Received: by 2002:a25:698a:: with SMTP id e132mr36525292ybc.412.1617133588489;
- Tue, 30 Mar 2021 12:46:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OzWHBGLRQSImyi4e0nOZKdQoWKxewGVgAE+CFb4wwPc=;
+        b=H+yKtlzaAFgRVR4XTDe8RjsHBLHQhzZtPrQujnmJG1aI4FMxK3rKgKre/G2aruZH5z
+         vvTf1YUtg7S+JyGqbMvINWADdcPlhgUxM2QjGzaAtSv/9ceveB4UbURmM/UPv8koCfuw
+         fFfSg8eRw1lP4lz3HMbRpE6tN/vx11YCcI+MVJ0sjr9d3c96G9wCx3scoW9+08gaZcoW
+         ZIdb6w++naaTCxsZ3Q/y+JudAV+N9rVkfPMrk2pV41+PNqoZ6yaU5PMLz3vyl8ByE8gN
+         g6d2n+sbQ4QECjYIiSXAgtxhrIByNo8ZXDYFLXxRnVaEKtJ87CXPPlsxC/aqz1D0h5hh
+         oFoA==
+X-Gm-Message-State: AOAM530SLXHH2Efbcc0ZMQ1wz5o2Voofhu79biwPQb1vKatt9+L4mVsF
+        kKJtqP1HVvJfWWTW6z9mTrd4ZPdDr/+QMzbzrLQ/ZrwZ65Exx8PUOqlF42AK1iCE4Md3ccTojDA
+        rF2LQPq71LnH0n/OR6HEcxF+gDfc02KWhEgD9IQDmuhFounRCv7xnwvA8aUTHUNxyF19vM5+qLE
+        lK
+X-Received: by 2002:a7b:c0c3:: with SMTP id s3mr5514408wmh.11.1617133732385;
+        Tue, 30 Mar 2021 12:48:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrWDuYw2HfRbOt7weQUpuJCXUwrbqFmeFadK3gLejd+/RrcU8+0Fo4iU0Fj3iEAf2A+hbNXA==
+X-Received: by 2002:a7b:c0c3:: with SMTP id s3mr5514373wmh.11.1617133732072;
+        Tue, 30 Mar 2021 12:48:52 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w11sm37459472wrv.88.2021.03.30.12.48.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 12:48:50 -0700 (PDT)
+Subject: Re: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
+To:     Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3a1dd877-7421-7628-4214-30483c4de10f@redhat.com>
+Date:   Tue, 30 Mar 2021 21:48:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210330185056.1022008-1-saravanak@google.com> <161713296600.2260335.7459463781834702722@swboyd.mtv.corp.google.com>
-In-Reply-To: <161713296600.2260335.7459463781834702722@swboyd.mtv.corp.google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 30 Mar 2021 12:45:52 -0700
-Message-ID: <CAGETcx9W+J2aSKBV-qH0Fe5yoDebcf2+kH8wL061YG7LS_KavA@mail.gmail.com>
-Subject: Re: [PATCH v1] of: property: fw_devlink: Add support for remote-endpoint
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 12:36 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Saravana Kannan (2021-03-30 11:50:55)
-> > remote-endpoint property seems to always come in pairs where two devices
-> > point to each other. So, we can't really tell from DT if there is a
-> > functional probe order dependency between these two devices.
-> >
-> > However, there can be other dependencies between two devices that point
-> > to each other with remote-endpoint. This non-remote-endpoint dependency
-> > combined with one of the remote-endpoint dependency can lead to a cyclic
-> > dependency[1].
-> >
-> > To avoid this cyclic dependency from incorrectly blocking probes,
-> > fw_devlink needs to be made aware of remote-endpoint dependencies even
-> > though remote-endpoint dependencies by themselves won't affect probe
-> > ordering (because fw_devlink will see the cyclic dependency between
-> > remote-endpoint devices and ignore the dependencies that cause the
-> > cycle).
-> >
-> > Also, if a device ever needs to know if a non-probe-blocking
-> > remote-endpoint has finished probing, it can now use the sync_state() to
-> > figure it out.
-> >
-> > [1] - https://lore.kernel.org/lkml/CAGETcx9Snf23wrXqjDhJiTok9M3GcoVYDSyNYSMj9QnSRrA=cA@mail.gmail.com/#t
-> > Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
-> > Reported-by: Stephen Boyd <swboyd@chromium.org>
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
->
-> Tested-by: Stephen Boyd <swboyd@chromium.org>
+On 30/03/21 20:32, Ben Gardon wrote:
+>> Patches 1-7 are x86 specific prep patches to play nice with moving
+>> the hva->gfn memslot lookups into common code.  There ended up being waaay
+>> more of these than I expected/wanted, but I had a hell of a time getting
+>> the flushing logic right when shuffling the memslot and address space
+>> loops.  In the end, I was more confident I got things correct by batching
+>> the flushes.
+>>
+>> Patch 8 moves the existing API prototypes into common code.  It could
+>> technically be dropped since the old APIs are gone in the end, but I
+>> thought the switch to the new APIs would suck a bit less this way.
+> Patches 1-8 look good to me. Feel free to add my Reviewed-by tag to those.
+> I appreciate the care you took to make all those changes tiny and reviewable.
+> 
 
-Thanks!
+Just finished reviewing that part too, they were very nice and I've 
+queued them.  I'll continue tomorrow with the rest.
 
->
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 5036a362f52e..2bb3158c9e43 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1225,6 +1230,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
-> >   * @parse_prop.prop_name: Name of property holding a phandle value
-> >   * @parse_prop.index: For properties holding a list of phandles, this is the
-> >   *                   index into the list
-> > + * @optional: The property can be an optional dependency.
->
-> This bit conflicted for me on linux-next today so I dropped it in favor
-> of 3915fed92365 ("of: property: Provide missing member description and
-> remove excess param").
+Paolo
 
-Ah looks like a change went into DT git repo but not in driver-core
-yet. Yeah, dropping this bit is fine.
-
-Rob/Greg,
-
-I'll leave it to you to deal with the conflict?  I can't send to DT
-because the fix needs to land in driver-core because of boot issues
-and I can't resolve the conflict in driver-core because the
-conflicting change isn't in driver-core yet.
-
-Thanks,
-Saravana
