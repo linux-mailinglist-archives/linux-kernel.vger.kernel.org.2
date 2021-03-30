@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEBB34EE31
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E506834EE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhC3QpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        id S232500AbhC3QpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbhC3QpJ (ORCPT
+        with ESMTP id S232343AbhC3QpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:45:09 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AC7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:09 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo8756763wmq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:09 -0700 (PDT)
+        Tue, 30 Mar 2021 12:45:10 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C22C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:10 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id x13so16871959wrs.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dDw5EBc2NIDbfXjwrfN0J0Ba7xy8ebZtYdNOOedaL18=;
-        b=tB64OyfkremmQN5Lxk4mZ1ZV5XTwHIqVCy8P3EjOfHK3GW1+WRl4uzQqO4sBlRBcwe
-         tZ11xEsnwaTH3n1lzXp6Jgp9eB/NVSt6dLKIwzdAznOI7O1bNJ91h+bMlkP3V+e59IxT
-         Ngz1bbeXGKnV73umvPJCLx9+hZo7VME2rfM/9HlbUqhG0DsWC0R3JJOcgSEMs3t0wBLW
-         zcU0pZKNZQPUF5Pzz7GKGmrHlc5RgAR5P7nR1BK2xhXneqf6jFBBkkhr8BvTO73M/cfq
-         27PJvtmvrORM9pOSZfcAzNeuhvVYAIMBms6xxprokLIaRK8KC92vVUa7ICO2JKLsfb7t
-         ouOA==
+        bh=G+FYFjvrmmmlFKosOJsmCEZQd+qs37SblTzL1IxaAKE=;
+        b=ew9BD7v9FEuHLK4DXVu6jasubMa9lxRBANiwewC971ATUhmfFA1lQSJVIjVA97akON
+         eksbaTXBKYxz2E8ELGc3c1OWQr/wu1d0CFp+FyFKPOW4Jzy3VKVdQmIgdZp0RP+EY/Of
+         CivdqEIfZS7ZmFwnZTPHJtSfuYIvs0cl3jrryuMWzaUVZ4bsB8MG2szkesG3lbHRg5Rr
+         2F7ECPZbCjrQj5oILWcDSqd+WlhdzXL/vT5HERFcSquh6HICyWtWgqrw9uk86aQsDolU
+         whurVb+6ctblrZo5pAws2YXX4JE4+b/tOUCRLFkWjG9FjYYlCTVdAzLljUrvA9g6ZV3C
+         /hqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dDw5EBc2NIDbfXjwrfN0J0Ba7xy8ebZtYdNOOedaL18=;
-        b=o6vaiKqFshSaV6tEcjK2qD9tYuONVbm+eXK6fGotvmoLAkGqdQ9+GDjZ2YCWNACvuk
-         /nUhMjmGDL48EQ93n9seJqgrdleSz/0udhQq9QsWXBAKZIjJnHzSxeavzAdjExW3Nh+b
-         uOMDHGjuNBXInWmSytG59LW4v5f0KTAodUzdftDNNe9H/Uu54Eib6CTK9R9y6IB5D8Tw
-         ZTD5klTtS9GYZq+p3zL48sSTZZDAJqpcXY8VeFRI146QJ8VQljcZwC0RlQaFRgrNMk4n
-         lTwZqxtsinHMrvXAnXsS0Nn5VwZsKJMZi+ceSlntL2JaqTsWDrbyPB49R04Yrnm2Bysd
-         SSXA==
-X-Gm-Message-State: AOAM531G2MlOROeoKvPE6SICnOnKMu34rSqGaNvYs7kAY8Kb7oPFcFun
-        qvPRNrgZh6BLnKqJfoEhZeOuOCX/kjygnw==
-X-Google-Smtp-Source: ABdhPJweOxPa1+8eE5m33CxyD6v1omczvxeDd+pXvbLfgAow70mN+MDiVOpC3dh3UQ3iyMrn/U0glQ==
-X-Received: by 2002:a1c:4382:: with SMTP id q124mr5078916wma.16.1617122708085;
+        bh=G+FYFjvrmmmlFKosOJsmCEZQd+qs37SblTzL1IxaAKE=;
+        b=FR/f4OhBePAZeBUbquHi5YO/8xA7LQQJc6S+z7WbX8HiaQfeXj9shSfOcZZ3SyorYO
+         gq6+j0eH/YWK3onXgulJEJkNz24gNdSxH9L7bgHrCT9hhWnG2JfaK3zNqbJkkjPUZXpN
+         vlcH0MvPQiJ5jSwn9lYF2yqO0LTAtcYlPpcm7HysD25Jyj7uwrC71lsLnYlF/vIv8eNt
+         ZX1pO1nudRZB7j6IQxeUFCin5rdzTqqdwzxUVX/OA80LqbubFFWy0nWIdDWYO5SFPNwZ
+         cgPYA2p5UyTgbZBDcgpNq4VbkI7AnI8TvIdioNnsNA0FqnYhT/krsQxJ4vpFThprSIas
+         uwew==
+X-Gm-Message-State: AOAM53285Q6UoIhXOKboRIr89XHNrdtsakASm7aloEIXj8r4zqhd+/eG
+        syuHRlz4Z/2pcSsPEIaBawfSqg==
+X-Google-Smtp-Source: ABdhPJwpE1SAXcHUx7I2lrtlx79K3iEngww10pKSJ2/1Ipp9H4x80nViQo/dXA6EcjEAzg8bZ2bWLA==
+X-Received: by 2002:a5d:4203:: with SMTP id n3mr34548264wrq.116.1617122708907;
         Tue, 30 Mar 2021 09:45:08 -0700 (PDT)
 Received: from dell.default ([91.110.221.217])
-        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.07
+        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 09:45:07 -0700 (PDT)
+        Tue, 30 Mar 2021 09:45:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com
-Subject: [PATCH 07/31] fs: gfs2: glock: Fix some deficient kernel-doc headers and demote non-conformant ones
-Date:   Tue, 30 Mar 2021 17:44:34 +0100
-Message-Id: <20210330164458.1625478-8-lee.jones@linaro.org>
+Subject: [PATCH 08/31] fs: gfs2: aops: Fix a little potential doc-rot
+Date:   Tue, 30 Mar 2021 17:44:35 +0100
+Message-Id: <20210330164458.1625478-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210330164458.1625478-1-lee.jones@linaro.org>
 References: <20210330164458.1625478-1-lee.jones@linaro.org>
@@ -67,70 +67,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- fs/gfs2/glock.c:365: warning: Function parameter or member 'gl' not described in 'do_error'
- fs/gfs2/glock.c:365: warning: Function parameter or member 'ret' not described in 'do_error'
- fs/gfs2/glock.c:461: warning: Function parameter or member 'new_state' not described in 'state_change'
- fs/gfs2/glock.c:1277: warning: Function parameter or member 'delay' not described in 'handle_callback'
- fs/gfs2/glock.c:1277: warning: Function parameter or member 'remote' not described in 'handle_callback'
- fs/gfs2/glock.c:1578: warning: Function parameter or member 'p' not described in 'nq_m_sync'
- fs/gfs2/glock.c:1993: warning: Excess function parameter 'wait' description in 'gfs2_gl_hash_clear'
+ fs/gfs2/aops.c:560: warning: Function parameter or member 'rac' not described in 'gfs2_readahead'
+ fs/gfs2/aops.c:560: warning: Excess function parameter 'file' description in 'gfs2_readahead'
+ fs/gfs2/aops.c:560: warning: Excess function parameter 'mapping' description in 'gfs2_readahead'
+ fs/gfs2/aops.c:560: warning: Excess function parameter 'pages' description in 'gfs2_readahead'
+ fs/gfs2/aops.c:560: warning: Excess function parameter 'nr_pages' description in 'gfs2_readahead'
 
 Cc: Bob Peterson <rpeterso@redhat.com>
 Cc: Andreas Gruenbacher <agruenba@redhat.com>
 Cc: cluster-devel@redhat.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- fs/gfs2/glock.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ fs/gfs2/aops.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 7cccc5e863a8a..c590e27aaf097 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -356,7 +356,7 @@ static void gfs2_holder_wake(struct gfs2_holder *gh)
- 	}
- }
+diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+index cc4f987687f3c..23b5be3db044c 100644
+--- a/fs/gfs2/aops.c
++++ b/fs/gfs2/aops.c
+@@ -540,10 +540,7 @@ int gfs2_internal_read(struct gfs2_inode *ip, char *buf, loff_t *pos,
  
--/**
-+/*
-  * do_error - Something unexpected has happened during a lock request
-  *
-  */
-@@ -453,8 +453,7 @@ static inline struct gfs2_holder *find_first_waiter(const struct gfs2_glock *gl)
  /**
-  * state_change - record that the glock is now in a different state
-  * @gl: the glock
-- * @new_state the new state
-- *
-+ * @new_state: the new state
-  */
- 
- static void state_change(struct gfs2_glock *gl, unsigned int new_state)
-@@ -1263,7 +1262,7 @@ int gfs2_glock_async_wait(unsigned int num_gh, struct gfs2_holder *ghs)
- 	return ret;
- }
- 
--/**
-+/*
-  * handle_callback - process a demote request
-  * @gl: the glock
-  * @state: the state the caller wants us to change to
-@@ -1568,6 +1567,7 @@ static int glock_compare(const void *arg_a, const void *arg_b)
-  * nq_m_sync - synchonously acquire more than one glock in deadlock free order
-  * @num_gh: the number of structures
-  * @ghs: an array of struct gfs2_holder structures
-+ * @p: placeholder for the holder structure to pass back
+  * gfs2_readahead - Read a bunch of pages at once
+- * @file: The file to read from
+- * @mapping: Address space info
+- * @pages: List of pages to read
+- * @nr_pages: Number of pages to read
++ * @rac: Read-ahead control structure
   *
-  * Returns: 0 on success (all glocks acquired),
-  *          errno on failure (no glocks acquired)
-@@ -1984,7 +1984,6 @@ static void dump_glock_func(struct gfs2_glock *gl)
- /**
-  * gfs2_gl_hash_clear - Empty out the glock hash table
-  * @sdp: the filesystem
-- * @wait: wait until it's all gone
-  *
-  * Called when unmounting the filesystem.
-  */
+  * Some notes:
+  * 1. This is only for readahead, so we can simply ignore any things
 -- 
 2.27.0
 
