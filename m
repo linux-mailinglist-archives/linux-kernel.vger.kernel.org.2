@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FBC34E5D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D030A34E5D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhC3KxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S231723AbhC3Kyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhC3Kws (ORCPT
+        with ESMTP id S231154AbhC3Kyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:52:48 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB9FC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:52:47 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id jy13so24166730ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 03:52:47 -0700 (PDT)
+        Tue, 30 Mar 2021 06:54:35 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5EBC061574;
+        Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id h25so11461081pgm.3;
+        Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oBnG2TakhmLmvRYGUb/04MxUlScMZhhVFfbZVw+gUk8=;
-        b=QO/iA9QDZIu8GXp0AL3Lvs2JqtFzX0YqsG/jYvAPbv2DLBCb+2nmO1jCXW4SpJK8Xs
-         dru4QYZR55PU74HwrxjxYBr8IQNqeAWKs89bRLOB5o3ein4RnIfG+6bak94mPZoCZPBV
-         /9lzXQxl0teYtKvl94ZtT4dYUEarYNWmXIEaOA6vYc63f0rgSYQG30A6R1alsiFej/Uk
-         RZqQGn+EcuaWdlIhPv1QYwB+dUYOIKhCwFSPjlk8wAhieAXzOzU6bbJuWogsYJs4LIFQ
-         A6kiFP5cy2oLuqbXHrPXDMYVULH/e/Q3d6yIfsYR7e0pD6eGxpS9rnBxnGkOJKCOabzL
-         m4Gw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GfTXsCc8VwOCrzz5IdVCXT4sti0I4o6ulUxkv8FeK7g=;
+        b=YJAH/noyJneTpA0X43ErEz/UFsFEgkwZ3ukM7fGy4VRntqNAUK46Ay8zaGC6HZFdFe
+         bLJjJwhtq6sieA9mutlfAU5p8c+v2REPkBDgqjFSSnIMsw8O4jf2P2BteogNq6PDB2nK
+         7DWMWUCZ7pKisRqqAOgh/TsEC2S28DuvUmdShd4rFGmFMvB83NfLa7iz41JKIHEI1aGN
+         LHky3qSLnQL2CS90SYvVtaHCEvgQZfvx9W//ENYy6aDEdYdP6Nv7jUuCd3hbm2WwrUlV
+         JzTMUkC6SCO5CPbF9d+yYRxRbtOPTtHUedrx2YLDT1EyJDr3SCWl+CBKfrvDTztU6gxO
+         GMcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oBnG2TakhmLmvRYGUb/04MxUlScMZhhVFfbZVw+gUk8=;
-        b=DO0iiN/qHYAq9tnP0aD4PI7NKPQSAuj2YK/1Tfu7oSsG8MBJIgK9GyVhbW/nGwBLKk
-         iuuDN5swzSuMIjuWq/1S6jXYGH/poNsfZB00uFB8vHerJRFVwLbANqhs6GfzzZXJUzF4
-         xdiuV4Dc3e4/c5Ix50DwuxDm3VbaI7i1tlg4k5Y7PYiviHGyXm1uSCdD/20URprqLdGr
-         J7lz4uSTwNdRS0QFWcqNgTCNt2MfR7xE2ijeV9UhmYhxAzKMLauJOO+ImFf8UUFer3Gb
-         voASWmzd5goCMD4yFZciDE+JSGev4mPtBpKqvOMhM4QjSK0Cvh7abt2FM2O1Q1QfJuhE
-         sn1w==
-X-Gm-Message-State: AOAM533vz8VtrqXBntYnRDJTT4dHsfDONwoae9kpWqZz/RhlbGadddUE
-        4Jylrp8jpks1HGu8ErPoZ3Igwg==
-X-Google-Smtp-Source: ABdhPJwiSti2LSfBiErK0gC7qLs349y9VjSzb3XhCSCrYwvv2JKnlUDY6yBTiGdZb1mp86wjJtscMA==
-X-Received: by 2002:a17:906:26d4:: with SMTP id u20mr28662103ejc.114.1617101566583;
-        Tue, 30 Mar 2021 03:52:46 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l1sm10879470edt.59.2021.03.30.03.52.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Mar 2021 03:52:46 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Add SoC compatible for sc7280
-To:     Rajendra Nayak <rnayak@codeaurora.org>, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org
-References: <1616651056-11844-1-git-send-email-rnayak@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b8b1c34e-8faa-857d-4508-8a24cc31c3a0@linaro.org>
-Date:   Tue, 30 Mar 2021 11:52:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfTXsCc8VwOCrzz5IdVCXT4sti0I4o6ulUxkv8FeK7g=;
+        b=CzpyyWVbQja/1Pjps6/RmR7p066nkwhWgskii4gR8x03woeRLaNpzNl3aaPUCrYj4G
+         9Gz+wvukI55ar/9Hw7gofZiA3LKEGsdLT214MPe1wy60Hgf/B9QHmjY5PpawgdMpIMHe
+         +3TdX2AptJTdYhBEbCtaHvrIYKaoX+jZEK/vf/7uAY5ALakdXPthF1XKIgUDt7TB30wH
+         kT1+7x2JhSRfpTxPgCRS7K4zzB0eldgge9Q/i5Jx2XRBJ3/KxmyC/TpdQfE77zlUKLGP
+         bmU4DtnaBYDz9c69tbn/W8ACDQkiBGOn7nppSoli6o4jthLInKxNSYZazfqCSXMpFevs
+         AFGg==
+X-Gm-Message-State: AOAM5332FOp+x0+NmN7c3EWmsMAh+Ygrc7fSBkPSieD3Ko7NHEcW6kXF
+        gb63mv9MWt72deUd5acatCduo7Q09aKusmMKfLk=
+X-Google-Smtp-Source: ABdhPJyYjv0zrkk92HwCcZoSJd1Qt05pjq4R9mTJrwEJ6hv3FeLZ0+qIgtMm4U7QFaRNmO5DhyiNwMiZi7sLoxYeXGw=
+X-Received: by 2002:a63:c48:: with SMTP id 8mr5797418pgm.74.1617101675189;
+ Tue, 30 Mar 2021 03:54:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1616651056-11844-1-git-send-email-rnayak@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+ <118a6160880a212d20d0251f763cad295c741b4d.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VdRobc6jpFzAkd3U65BhiiNPLrF4qsnCKmsQBKMYbG4sg@mail.gmail.com> <d4e78b93a62d2882492b46942a927293bad81d66.camel@fi.rohmeurope.com>
+In-Reply-To: <d4e78b93a62d2882492b46942a927293bad81d66.camel@fi.rohmeurope.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 30 Mar 2021 13:54:19 +0300
+Message-ID: <CAHp75Vce8sUsVz0YgHLDFbVMEmbYzaUZ-nRwgOeEfDHowEnxrw@mail.gmail.com>
+Subject: Re: [PATCH v5 09/19] gpio: support ROHM BD71815 GPOs
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 30, 2021 at 1:43 PM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
+> On Tue, 2021-03-30 at 13:11 +0300, Andy Shevchenko wrote:
 
+...
 
-On 25/03/2021 05:44, Rajendra Nayak wrote:
-> Document SoC compatible for sc7280
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->   Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> index 992777c..861b205 100644
-> --- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> @@ -24,6 +24,7 @@ properties:
->             - qcom,msm8998-qfprom
->             - qcom,qcs404-qfprom
->             - qcom,sc7180-qfprom
-> +          - qcom,sc7280-qfprom
->             - qcom,sdm845-qfprom
->         - const: qcom,qfprom
->   
-> 
+> Andy, how fatal do you think these issues are? I did put these comments
+> on my 'things to clean-up' list.
+>
+> If you don't see them as fatal, then I rather not resend whole series
+> of 19 patches just for these. I am anyway going to rework the ROHM PMIC
+> GPIO drivers which I have authored during the next couple of months for
+> regmap_gpio usage. This series has most of the acks except for the
+> regulator part - so I was about to suggest to Lee that perhaps he could
+> apply other but regulator stuff to MFD so I could squeeze the recipient
+> list and amount of patches in series.
 
-Applied both,
-thanks,
-srini
+I understand that. I'm not a maintainer, but my personal view is that
+it can be fixed in follow ups.
+The problem as usual here is that people often forget to cook / send
+follow up. That's why lately I'm more insisting on changes to be done
+as soon as possible.
+
+-- 
+With Best Regards,
+Andy Shevchenko
