@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4689934DDF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9584E34DDF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhC3CBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230446AbhC3CBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:01:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A996157F;
-        Tue, 30 Mar 2021 02:01:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617069705;
-        bh=9R+QyMjKEwKKtQwvA/oXHySXD4bXuroEwo7uAjahgbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uGm3qzUSpGBgpDBne8SUTLqeo9w/L39zbcZq1cIzhnpyIuWGMVPFoLhzNOv8l8zKV
-         F97kqRVueRXH+y8qvDFMtCPyFRvUnRzkSl1naP+m33TZTsUlnQJa+fTAurk1nwMnYk
-         H7VlZL0KP8RQE1Par6p+q2oCq7I/jEpATcYF14YyqWFYbB3WCHRpGmVTGfp1qNbodv
-         hr/dXO6B2pQoGAdMeMp7AH0Wk1PUXL/WnN+HQmi/8KEAK3p3p3ZJ5u7zzDPFVlwJGB
-         /A/SVdMFh8yfzD5WzkrfHZHnErrTZV2Pgg2V9LbnGHVUwLlDOHGrKw5fm5lPzIO9tf
-         ag9ypsLxYXTOg==
-Date:   Mon, 29 Mar 2021 19:01:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
-Message-ID: <YGKGhxaozX3ND6iB@gmail.com>
-References: <20210329204240.359184-1-shreeya.patel@collabora.com>
- <20210329204240.359184-5-shreeya.patel@collabora.com>
+        id S230271AbhC3CDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:03:55 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:53750 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhC3CDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:03:31 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 914E09803A8;
+        Tue, 30 Mar 2021 10:03:28 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] linux/memcontrol.h: Remove duplicate struct declaration
+Date:   Tue, 30 Mar 2021 10:02:36 +0800
+Message-Id: <20210330020246.2265371-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329204240.359184-5-shreeya.patel@collabora.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGU5CHksaHxhDSU4aVkpNSkxLTUJDS0JLTkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ok06PAw*Fz8LAjALMDcoAiwa
+        LT1PCjRVSlVKTUpMS01CQ0tCTkJOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSUlNNwY+
+X-HM-Tid: 0a7880df1d3ad992kuws914e09803a8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 02:12:40AM +0530, Shreeya Patel wrote:
-> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> index 2c27b9a5cd6c..ad4b837f2eb2 100644
-> --- a/fs/unicode/Kconfig
-> +++ b/fs/unicode/Kconfig
-> @@ -2,13 +2,26 @@
->  #
->  # UTF-8 normalization
->  #
-> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
-> +# is enabled. This config option adds the unicode subsystem layer which loads
-> +# the UTF-8 module whenever any filesystem needs it.
->  config UNICODE
-> -	bool "UTF-8 normalization and casefolding support"
-> +	bool
-> +
-> +# utf8data.h_shipped has a large database table which is an auto-generated
-> +# decodification trie for the unicode normalization functions and it is not
-> +# necessary to carry this large table in the kernel.
-> +# Enabling UNICODE_UTF8 option will allow UTF-8 encoding to be built as a
-> +# module and this module will be loaded by the unicode subsystem layer only
-> +# when any filesystem needs it.
-> +config UNICODE_UTF8
-> +	tristate "UTF-8 module"
->  	help
->  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->  	  support.
-> +	select UNICODE
+struct mem_cgroup is declared twice. One has been declared
+at forward struct declaration. Remove the duplicate.
 
-This seems problematic; it allows users to set CONFIG_EXT4_FS=y (or
-CONFIG_F2FS_FS=y) but then CONFIG_UNICODE_UTF8=m.  Then the filesystem won't
-work if the modules are located on the filesystem itself.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ include/linux/memcontrol.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-I think it should work analogously to CONFIG_FS_ENCRYPTION and
-CONFIG_FS_ENCRYPTION_ALGS.  That is, CONFIG_UNICODE should be a user-selectable
-bool, and then the tristate symbols CONFIG_EXT4_FS and CONFIG_F2FS_FS should
-select the tristate symbol CONFIG_UNICODE_UTF8 if CONFIG_UNICODE.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0c04d39a7967..f0ae33a0f175 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1068,8 +1068,6 @@ void split_page_memcg(struct page *head, unsigned int nr);
+ #define MEM_CGROUP_ID_SHIFT	0
+ #define MEM_CGROUP_ID_MAX	0
+ 
+-struct mem_cgroup;
+-
+ static inline struct mem_cgroup *page_memcg(struct page *page)
+ {
+ 	return NULL;
+-- 
+2.25.1
 
-- Eric
