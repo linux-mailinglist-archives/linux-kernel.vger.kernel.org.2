@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072FC34EE0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840ED34EE10
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhC3QiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
+        id S232279AbhC3Qig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhC3Qhd (ORCPT
+        with ESMTP id S231743AbhC3QiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:37:33 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CA7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:37:33 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v23so6451083ple.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:37:33 -0700 (PDT)
+        Tue, 30 Mar 2021 12:38:03 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22291C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:38:02 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id a65so703381wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=QqMvnDkY+P2M1ndUgFwujTYEkrHMP1XLAkCwI/GJn4E=;
-        b=okF4h/MTVVI6fn5eNJjFFtMC+5ifL9D5Q2H8BUmShzn9coWylF5LZIDeUNBlZlrb9t
-         H7cWmud6LEabZmG6ZjFMkK+SpCNnYGvbT0j3CGIg4+qi6zY0dsTdWhNodVrBlQ2mC1Xd
-         alwD2tXlqmCQeeL52Dl/uRiHYczDisE3D2zVKKriOXZKvREMWe3AYWyMF4WMquaIsBCz
-         glNYiVrGLGn5Nau9ltQP4/+2at67KygcU1b56Wa5ZwnjHj9jMgx/fpZOBDNk5f45Tmdl
-         zv8nVomaXdn3h0YnevU+WbWbEicnSCABRLB2SYjZ5I8sZtyruo6ByV3XbUTYCfx//Fi4
-         StEA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=SNuqqyD1tP1LYYPE4x3JSrsZ8EwStb88MAUaMmFkoIk=;
+        b=THEbeG6qdl3QydVONL/rXH5xUys8SIgs+UvdH2PXVDfddWMvAEBD2x5vBMOWd6Bqnm
+         RjfJ+oYMixbdPBEqra1jLDaZp2YPaJ0eOh3eUmXnAN568jGyzsrT55L0/Z9do/Ec3z8J
+         PnXHcNm6ejCaqXAckgEcwv0iQgYRGpZiscydfXvEic7YmUcbQfybYjKK0pGsw9f4pSQP
+         Dg8I/jHDePk0Im2VBiJ0wodJPyOaJi5Z7TmbEClgoCB+y4zSWJ8HuiCkc4C84TYe26pk
+         ndCD4suL+LYX/sh8dmZC5nkIY5eu9vunB91LSMdOCD+gNcvuDVTznP8vmz7vo9lxgF5D
+         Nt2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=QqMvnDkY+P2M1ndUgFwujTYEkrHMP1XLAkCwI/GJn4E=;
-        b=paVvkNo+S6FolfXd7sDobILj4+FBiYUSBsPxFKtFKOo6SX/DccWnMdDDd2hwfLWmt0
-         jUF1kF8CEOuy6W6vziwzB3BzgVh04Y5u4tXAWoBK2Cmi7tDmUxIuY4hKExVdWbsVWd/j
-         8PjgQ/GKC2vUwbmAe8V4eFO0Zux74OfcYRrtuQhta2KWGoLsF+RIotjtWkkx/zw1IN17
-         GDFWczqVcirlXSc7uoGbdNrgeCqibGYUUceme9YtswSPUDRE0eiRqZZe8jBflEBHDNiJ
-         0dBUddFoEIrWdPq9GXa6PNOPJUX4mEnhbvhKQIE3FWYxpu8w3gaA+RfiUI3ZHajknzfy
-         IeEg==
-X-Gm-Message-State: AOAM530a8o4JazGvskNmoLc3b9+ZUKfbImnqDXas2ZTW4lC7RR7eCpS9
-        5gCDeWaUbww5haaXlG/JJMZ41Q==
-X-Google-Smtp-Source: ABdhPJyDbgxbQqhcVXTEcjTXmm17ukCPIxTEQ/NM8N5+gHILNFZlx/PTpdGIhjPYRlIhfadCcYgmgg==
-X-Received: by 2002:a17:90b:20c:: with SMTP id fy12mr5047192pjb.41.1617122252707;
-        Tue, 30 Mar 2021 09:37:32 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:49d9:5468:c384:1417? ([2601:646:c200:1ef2:49d9:5468:c384:1417])
-        by smtp.gmail.com with ESMTPSA id k15sm21508881pfi.0.2021.03.30.09.37.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 09:37:31 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-Date:   Tue, 30 Mar 2021 09:37:30 -0700
-Message-Id: <4DD05B91-13B3-4842-A215-C8DC6F34F219@amacapital.net>
-References: <YGNAQrWMl3AZQ3HG@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <YGNAQrWMl3AZQ3HG@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-X-Mailer: iPhone Mail (18D70)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=SNuqqyD1tP1LYYPE4x3JSrsZ8EwStb88MAUaMmFkoIk=;
+        b=EC6L8IQcVWf2khIXVvBtEMtPKmWAAJ1KzcMZ/bu6LYqPtGYH3pVSU/aWhH6FIIUM9R
+         TZfujWKLN/hySbdIWbsnZrbE0bKqSpi7f4vva6GcYWstHkdqWoiKl1n+gkO7NRO/ktRF
+         nyoEBL/F8w+Iw+g2QqttIohCL5gAry/wLPkhLVUxXCC1JaYoU7Aw4JoGiy8nMhPGlA1m
+         S89GNIHUhMZDdb/1hrrxmMZBVDEKXhOpJWKxWySYBXpEiK7MqEsbK1KJUQ1fHYNLZiUp
+         J3EjNL/A7Qzz8cLhynH4I9s44EcP53hbd2Deh7uxGyCGHf8XSGps/v/bKeLSJz+wGxyE
+         Uscg==
+X-Gm-Message-State: AOAM5330Qh8oHI4IaQ6BJgYzkzznifz72sGEmFgvpWJJj6/kZZXw8cmd
+        /i7Vzy9i1UjOpmCUQ9ZDv3RiR+ZAOQNNl33c
+X-Google-Smtp-Source: ABdhPJzSw0mO64h44KApJp+BDWP571t6gBuceBI8pSQDIyJx1vO3lgBzlHb5UwsYOy9HH2XMf0nxyNoQtiAw05H6
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:f567:b52b:fb1e:b54e])
+ (user=andreyknvl job=sendgmr) by 2002:a1c:1f4a:: with SMTP id
+ f71mr4905469wmf.101.1617122280880; Tue, 30 Mar 2021 09:38:00 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 18:37:36 +0200
+Message-Id: <65b6028dea2e9a6e8e2cb779b5115c09457363fc.1617122211.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH mm v2] mm, kasan: fix for "integrate page_alloc init with HW_TAGS"
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My commit "integrate page_alloc init with HW_TAGS" changed the order of
+kernel_unpoison_pages() and kernel_init_free_pages() calls. This leads
+to complaints from the page unpoisoning code, as the poison pattern gets
+overwritten for __GFP_ZERO allocations.
 
-> On Mar 30, 2021, at 8:14 AM, Sean Christopherson <seanjc@google.com> wrote=
-:
->=20
-> =EF=BB=BFOn Mon, Mar 29, 2021, Andy Lutomirski wrote:
->>=20
->>>> On Mar 29, 2021, at 7:04 PM, Andi Kleen <ak@linux.intel.com> wrote:
->>>=20
->>> =EF=BB=BF
->>>>=20
->>>>> No, if these instructions take a #VE then they were executed at CPL=3D=
-0.  MONITOR
->>>>> and MWAIT will #UD without VM-Exit->#VE.  Same for WBINVD, s/#UD/#GP.
->>>>=20
->>>> Dare I ask about XSETBV?
->>>=20
->>> XGETBV does not cause a #VE, it just works normally. The guest has full
->>> AVX capabilities.
->>>=20
->>=20
->> X *SET* BV
->=20
-> Heh, XSETBV also works normally, relative to the features enumerated in CP=
-UID.
-> XSAVES/XRSTORS support is fixed to '1' in the virtual CPU model.  A subset=
- of
-> the features managed by XSAVE can be hidden by the VMM, but attempting to e=
-nable
-> unsupported features will #GP (either from hardware or injected by TDX Mod=
-ule),
-> not #VE.
+Fix by restoring the initial order. Also add a warning comment.
 
-Normally in non-root mode means that every XSETBV results in a VM exit and, I=
-IUC, there=E2=80=99s a buglet in that this happens even if CPL=3D=3D3.  Does=
- something special happen in TDX or does the exit get reflected back to the g=
-uest as a #VE?=
+Reported-by: Vlastimil Babka <vbabka@suse.cz>
+Reported-by: Sergei Trofimovich <slyfox@gentoo.org>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ mm/page_alloc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 033bd92e8398..d2c020563c0b 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2328,6 +2328,13 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+ 	arch_alloc_page(page, order);
+ 	debug_pagealloc_map_pages(page, 1 << order);
+ 
++	/*
++	 * Page unpoisoning must happen before memory initialization.
++	 * Otherwise, the poison pattern will be overwritten for __GFP_ZERO
++	 * allocations and the page unpoisoning code will complain.
++	 */
++	kernel_unpoison_pages(page, 1 << order);
++
+ 	/*
+ 	 * As memory initialization might be integrated into KASAN,
+ 	 * kasan_alloc_pages and kernel_init_free_pages must be
+@@ -2338,7 +2345,6 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+ 	if (init && !kasan_has_integrated_init())
+ 		kernel_init_free_pages(page, 1 << order);
+ 
+-	kernel_unpoison_pages(page, 1 << order);
+ 	set_page_owner(page, order, gfp_flags);
+ }
+ 
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
