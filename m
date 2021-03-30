@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC0E34EB80
+	by mail.lfdr.de (Postfix) with ESMTP id 232CD34EB7F
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhC3PF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhC3PFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:05:03 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4BCC0613D8;
-        Tue, 30 Mar 2021 08:05:02 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id b14so24273323lfv.8;
-        Tue, 30 Mar 2021 08:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NDU6A12u+rXHnnt7HiYDLSDihuLFvN8sM+MRBrDc1yo=;
-        b=lJIsJ8oGCQKJ7cHmaQdct5bgnRwxC3WIZMAv6EBTMgb40XepxaVahCS76qmRBzv9Xg
-         1OoWSMYiP0FwJlOOzIn8y7XNIGZ9/4mSVrRcfOS2nxo0E78Z8b5PQOXR0U6b4Q075bP6
-         nxCsOIeLZ2pv29B9iIHDi0qdMh5aXUXQ8rg9gWpLmEWsU6+GQCuWqLHLb+8apVhnSKpL
-         UyxxGLiZg9G34XIHRiKWJVAFxFNEDtb5bQadjvEKOqxQBhGfvwAVRC+Mso1rY45B1lSs
-         6VDmTtiGmfTHlmycwtixXzuVFK3q09P8/4oGFQRxq3fXY+2ZXgqkV8T4mNcusFM8YcCf
-         aOuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NDU6A12u+rXHnnt7HiYDLSDihuLFvN8sM+MRBrDc1yo=;
-        b=X1i1g2GqayI6rDZi6u8QX2y5vc6NTTAmjTTymWOK+2UIFSTvDo9i3RzIxHjtJG79fb
-         FZDp52eO2I3V4CqR4QvXX9PGAJIZ3vba1psuL2yARAdQrRNeuweGAcob3Sbvqc31+uX3
-         /5O6/aek+YqXpGjqsS4L81WZTdz2kPqF6sBNjxiVidpsc2u/Zhixa0Ri10Vk/+Vaf4nY
-         SSseVN3mNHXwBLLiWGDkaHECo9o/TOOeI5wgaYJAa5XWGDvlbA5gyDTpkaRQVMnVK4nE
-         cOGyUnHODOZwfIaVvl0EKs63BYYnKuC9nix1+whCumNVChkFHqYzMMGfrxP5jJlGR8vv
-         vwyw==
-X-Gm-Message-State: AOAM533loBHiLHA+snDfJyPFu4hblLiPUiplt3nunVWs0/7QuHY3jllE
-        YtWyBVAlxauLXuOD+JGGEw2sOUXbgQnwD7V2Rcc=
-X-Google-Smtp-Source: ABdhPJyr6zuKHLNxnmbk4GFqVBqzCFlj5dBZXx+4vfI5QhMUtKkNSrerXfwuJWK7f+3e+HSAU5t31WOmhtLMFkfryoE=
-X-Received: by 2002:ac2:5974:: with SMTP id h20mr16611591lfp.500.1617116701026;
- Tue, 30 Mar 2021 08:05:01 -0700 (PDT)
+        id S232375AbhC3PF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231782AbhC3PFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:05:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2004B61957;
+        Tue, 30 Mar 2021 15:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617116701;
+        bh=Uz3WI/FYY/TSpvPtpW5nBqc9OPXzLv/VYZ9gQpSx94g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n+bvMQicFuv2CM1+lsqoT0kZZSHQXh+vIOtWPQwfmbNJgdPL+CFlSUCcaAkXY1uZ6
+         rC6iVChQ7OlR0wuskwyUvHGi5YIxlkoV3q90gpZQZU2PmBXj/qGinsWJDHzw5r2hJV
+         MGkjjiVeRyMcvmkvPx2bFtUKwHgJChckhylj6PbFGQ6NsHN5yD6pURXjAIDYqC4ur/
+         hUKCpSpxOJXjdCPX7seipcU22Mo8QXzdt0EqswB3evGNyxXuZizmp0iZp0o8+ERPrt
+         wiRI2c+ov3H0qJ8o8kYD16ctpspC2hDrF7WEKfEoLkehmZmDUrpMnEYdTK2r8kzigI
+         GnmUeo1mlnPtQ==
+Received: by pali.im (Postfix)
+        id DD995EAA; Tue, 30 Mar 2021 17:04:58 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 17:04:58 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        'Amey Narkhede' <ameynarkhede03@gmail.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "kabel@kernel.org" <kabel@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "raphael.norwitz@nutanix.com" <raphael.norwitz@nutanix.com>
+Subject: Re: How long should be PCIe card in Warm Reset state?
+Message-ID: <20210330150458.gzz44gczhraxc6bc@pali>
+References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
+ <20210323161941.gim6msj3ruu3flnf@archlinux>
+ <20210323162747.tscfovntsy7uk5bk@pali>
+ <20210323165749.retjprjgdj7seoan@archlinux>
+ <a8e256ece0334734b1ef568820b95a15@AcuMS.aculab.com>
+ <alpine.DEB.2.21.2103301428030.18977@angie.orcam.me.uk>
+ <20210330131018.gby4ze3u6mii23ls@pali>
+ <alpine.DEB.2.21.2103301628180.18977@angie.orcam.me.uk>
 MIME-Version: 1.0
-References: <20210309112615.625-1-o.rempel@pengutronix.de> <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
- <YGM2AGfawEFTKOtE@lunn.ch>
-In-Reply-To: <YGM2AGfawEFTKOtE@lunn.ch>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 30 Mar 2021 12:04:50 -0300
-Message-ID: <CAOMZO5CRFHh5vv3vQqaatDnq55ZMmO5DfJH1VtZ1n0DBgf5Whg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2103301628180.18977@angie.orcam.me.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Tuesday 30 March 2021 16:34:47 Maciej W. Rozycki wrote:
+> On Tue, 30 Mar 2021, Pali Rohár wrote:
+> 
+> > >  If I were to implement this stuff, for good measure I'd give it a safety 
+> > > margin beyond what the spec requires and use a timeout of say 2-4s while 
+> > > actively querying the status of the device.  The values given in the spec 
+> > > are only the minimum requirements.
+> > 
+> > Are you able to also figure out what is the minimal timeout value for 
+> > PCIe Warm Reset?
+> > 
+> > Because we are having troubles to "decode" correct minimal timeout value
+> > for this PCIe Warm Reset (not Function-level reset).
+> 
+>  The spec does not give any exceptions AFAICT as to the timeouts required 
+> between the three kinds of a Conventional Reset (Hot, Warm, or Cold) and 
+> refers to them collectively as a Conventional Reset across the relevant 
+> parts of the document, so clearly the same rules apply.
+> 
+>   Maciej
 
-On Tue, Mar 30, 2021 at 11:30 AM Andrew Lunn <andrew@lunn.ch> wrote:
-
-> Hi Fabio
->
-> I think it should be merged, and we fixup anything which does break.
-> We are probably at the point where more is broken by not merging it
-> than merging it.
-
-Thanks for your feedback. I agree.
-
-Shawn wants to collect some Acked-by for this series.
-
-Could you please give your Acked-by for this series?
-
-Thanks
+There are specified more timeouts related to Warm reset and PERST#
+signal. Just they are not in Base spec, but in CEM spec. See previous
+Amey's email where are described some timeouts and also links in my
+first email where I put other timeouts defined in specs relevant for
+PERST# signal and therefore also for Warm Reset.
