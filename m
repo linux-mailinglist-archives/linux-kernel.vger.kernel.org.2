@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F3F34DE3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06C634DE0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhC3CVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:21:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:15998 "EHLO mga04.intel.com"
+        id S231190AbhC3CMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:12:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53954 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhC3CVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:21:15 -0400
-IronPort-SDR: D3WEz1tBrQ9kcqxpGiorTWhMhT/nz8wft6oxetq2s8U+avAvMpe2QATRA/Iho1XM4J6rUGbJr4
- OJ3MnXLI/Tkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="189419677"
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="189419677"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 19:21:15 -0700
-IronPort-SDR: thY1xfMfCudyvHP/ptJA+h7xWnv+Pj6Sc/+E9k1g0KfRjBNmUTJC6nd5d0D8fbHgozlg0ZW1i9
- WziO4JM2DcYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="444879565"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Mar 2021 19:21:13 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     ashok.raj@intel.com, kevin.tian@intel.com,
-        rajesh.sankaran@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Report right snoop capability when using FL for IOVA
-Date:   Tue, 30 Mar 2021 10:11:45 +0800
-Message-Id: <20210330021145.13824-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230233AbhC3CMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:12:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617070341; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=b6qsjsNfH/+16URA4QiLU3cpAB5vQHObi8gUnOt0brU=; b=tZ1OdFcECQQewXsldpCOp3uIu0cVIfJMhxWOmxfO8yzS+yA3gKI7IMcUjBqzV8NNSjeVyRkj
+ 0Cv7EQ8QCswUMKSxn5XNp7zufVGFLE1sg9qF17GDMJHVh+8G28CNVJtt6YTf7KMZccAPR9ck
+ nw13x7yjvbjjVpMCZ/CjYEhKMH4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 606288fca2ab6642db26dff8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 02:12:12
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7C76FC43465; Tue, 30 Mar 2021 02:12:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94761C433CA;
+        Tue, 30 Mar 2021 02:12:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94761C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v7 6/7] bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+Date:   Mon, 29 Mar 2021 19:11:46 -0700
+Message-Id: <1617070307-5775-7-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1617070307-5775-1-git-send-email-bbhatt@codeaurora.org>
+References: <1617070307-5775-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel VT-d driver checks wrong register to report snoop capablility
-when using first level page table for GPA to HPA translation. This might
-lead the IOMMU driver to say that it supports snooping control, but in
-reality, it does not. Fix this by always setting PASID-table-entry.PGSNP
-whenever a pasid entry is setting up for GPA to HPA translation so that
-the IOMMU driver could report snoop capability as long as it runs in the
-scalable mode.
+The __mhi_unprepare_channel() API does not require the __ prefix.
+Get rid of it and make the internal function consistent with the
+other function names.
 
-Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
-Suggested-by: Rajesh Sankaran <rajesh.sankaran@intel.com>
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Suggested-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 ---
- drivers/iommu/intel/pasid.h |  1 +
- drivers/iommu/intel/iommu.c | 11 ++++++++++-
- drivers/iommu/intel/pasid.c | 16 ++++++++++++++++
- 3 files changed, 27 insertions(+), 1 deletion(-)
+ drivers/bus/mhi/core/main.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index 079534fcf55d..5ff61c3d401f 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -48,6 +48,7 @@
-  */
- #define PASID_FLAG_SUPERVISOR_MODE	BIT(0)
- #define PASID_FLAG_NESTED		BIT(1)
-+#define PASID_FLAG_PAGE_SNOOP		BIT(2)
- 
- /*
-  * The PASID_FLAG_FL5LP flag Indicates using 5-level paging for first-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 7354f9ce47d8..deaa87ad4e5f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -657,7 +657,14 @@ static int domain_update_iommu_snooping(struct intel_iommu *skip)
- 	rcu_read_lock();
- 	for_each_active_iommu(iommu, drhd) {
- 		if (iommu != skip) {
--			if (!ecap_sc_support(iommu->ecap)) {
-+			/*
-+			 * If the hardware is operating in the scalable mode,
-+			 * the snooping control is always supported since we
-+			 * always set PASID-table-entry.PGSNP bit if the domain
-+			 * is managed outside (UNMANAGED).
-+			 */
-+			if (!sm_supported(iommu) &&
-+			    !ecap_sc_support(iommu->ecap)) {
- 				ret = 0;
- 				break;
- 			}
-@@ -2516,6 +2523,8 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
- 		flags |= PASID_FLAG_SUPERVISOR_MODE;
- 	if (level == 5)
- 		flags |= PASID_FLAG_FL5LP;
-+	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
-+		flags |= PASID_FLAG_PAGE_SNOOP;
- 
- 	return intel_pasid_setup_first_level(iommu, dev, (pgd_t *)pgd, pasid,
- 					     domain->iommu_did[iommu->seq_id],
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index c896aef7db40..b901909da79e 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -425,6 +425,16 @@ static inline void pasid_set_page_snoop(struct pasid_entry *pe, bool value)
- 	pasid_set_bits(&pe->val[1], 1 << 23, value << 23);
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index f34f8f6..5bb1785 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1295,8 +1295,8 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 	return ret;
  }
  
-+/*
-+ * Setup the Page Snoop (PGSNP) field (Bit 88) of a scalable mode
-+ * PASID entry.
-+ */
-+static inline void
-+pasid_set_pgsnp(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[1], 1ULL << 24, 1ULL << 24);
-+}
-+
- /*
-  * Setup the First Level Page table Pointer field (Bit 140~191)
-  * of a scalable mode PASID entry.
-@@ -599,6 +609,9 @@ int intel_pasid_setup_first_level(struct intel_iommu *iommu,
- 		}
+-static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+-				    struct mhi_chan *mhi_chan)
++static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
++				  struct mhi_chan *mhi_chan)
+ {
+ 	int ret;
+ 	struct device *dev = &mhi_chan->mhi_dev->dev;
+@@ -1406,7 +1406,7 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+ 
+ error_pre_alloc:
+ 	mutex_unlock(&mhi_chan->mutex);
+-	__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++	mhi_unprepare_channel(mhi_cntrl, mhi_chan);
+ 
+ 	return ret;
+ }
+@@ -1523,7 +1523,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
+ 
+-		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
  	}
  
-+	if (flags & PASID_FLAG_PAGE_SNOOP)
-+		pasid_set_pgsnp(pte);
-+
- 	pasid_set_domain_id(pte, did);
- 	pasid_set_address_width(pte, iommu->agaw);
- 	pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
-@@ -677,6 +690,9 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
- 	pasid_set_fault_enable(pte);
- 	pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
+ 	return ret;
+@@ -1541,7 +1541,7 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
  
-+	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
-+		pasid_set_pgsnp(pte);
-+
- 	/*
- 	 * Since it is a second level only translation setup, we should
- 	 * set SRE bit as well (addresses are expected to be GPAs).
+-		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
++		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
