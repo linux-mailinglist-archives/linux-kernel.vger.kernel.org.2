@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0143234F185
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B43134F18B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 21:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhC3TTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 15:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
+        id S233115AbhC3T0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 15:26:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14266 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233006AbhC3TT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 15:19:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E6961998;
-        Tue, 30 Mar 2021 19:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617131968;
-        bh=XBxHhXmWgSj4QgRnO4vvOh88DUWa5B1fPdpOmU7Kao4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nKR+gyj5umi3lc+byor8F0C6I4kPN3zODildT5lBj8ALRfxfkZTEcxQyEDCrxi1yU
-         mwykLsUedWBKSgaZ1oRIgfSnJqwDdPjO8vbz3kSPxGX5zXEMtVJn2OEakQ8/ZasiCt
-         RshA5pgyFBWItHnLDlJux9wgWYB6KdzeL7mxvS0069ccwcHZch3GVKZx6meFHnWe7j
-         tmXok+pQK4smKKH1O3DgmjY02h/4ZbnXASf35+nND4gSrnijbAdqpSgZ+/sqDtmGjF
-         uFQ9R1qKyrg9aRi0OfVRAlqg7bS/5hkUW57XF3JsUzTgKm/xlsg8rZGGktet6qE3aA
-         YOgtDMw74Ou2Q==
-Date:   Tue, 30 Mar 2021 14:19:26 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     toan@os.amperecomputing.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dann.frazier@canonical.com
-Subject: Re: [PATCH] PCI: xgene: fix a mistake about cfg address
-Message-ID: <20210330191926.GA1297928@bjorn-Precision-5520>
+        id S233084AbhC3T0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 15:26:01 -0400
+IronPort-SDR: L9sJ7igl1phoiIEXAuQ9xJl3YrFkr5VLBPwSCegmCvDwewQjFDw4MBYaP7f9zeWRHhi9PKl6Gi
+ leJ92X76RCfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171863215"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="171863215"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 12:25:59 -0700
+IronPort-SDR: s4znUWJU2XXel6e0JhbKBdQEeigoyLFbRp7i1UPfMAnK5HT36ADEossmBe48hJB8pmJGbEO6H8
+ JDsDlUuZuNdA==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="418305275"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 12:25:58 -0700
+Date:   Tue, 30 Mar 2021 12:25:58 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V4 07/10] x86/pks: Preserve the PKRS MSR on context switch
+Message-ID: <20210330192558.GD3014244@iweiny-DESK2.sc.intel.com>
+References: <20210322053020.2287058-1-ira.weiny@intel.com>
+ <20210322053020.2287058-8-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210328144118.305074-1-zhengdejin5@gmail.com>
+In-Reply-To: <20210322053020.2287058-8-ira.weiny@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 10:41:18PM +0800, Dejin Zheng wrote:
-> It has a wrong modification to the xgene driver by the commit
-> e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
-> simplify codes and remove the res variable, But the following code
-> needs to use this res variable, So after this commit, the port->cfg_addr
-> will get a wrong address. Now, revert it.
-> 
-> Fixes: e2dcd20b1645a ("PCI: controller: Convert to devm_platform_ioremap_resource_byname()")
-> Reported-by: dann.frazier@canonical.com
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+[snip]
 
-This looks right to me, but since e2dcd20b1645a appeared in v5.9-rc1,
-I think it should have:
+<self review>
 
-  Cc: stable@vger.kernel.org	# v5.9+
+The test bot reported build errors on i386 yesterday.  Not sure why they were
+not caught before...
 
-> ---
->  drivers/pci/controller/pci-xgene.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-> index 2afdc865253e..7f503dd4ff81 100644
-> --- a/drivers/pci/controller/pci-xgene.c
-> +++ b/drivers/pci/controller/pci-xgene.c
-> @@ -354,7 +354,8 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
->  	if (IS_ERR(port->csr_base))
->  		return PTR_ERR(port->csr_base);
+Anyway that caused me to look at this patch again and I've found a couple of
+issues noted below.  Combined with Sean's review I'll be re-spinning a new v5.
+
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 546d6ecf0a35..c15a049bf6ac 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -765,6 +765,7 @@
 >  
-> -	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
-> +	port->cfg_base = devm_ioremap_resource(dev, res);
->  	if (IS_ERR(port->cfg_base))
->  		return PTR_ERR(port->cfg_base);
->  	port->cfg_addr = res->start;
-> -- 
-> 2.30.1
-> 
+>  #define MSR_IA32_TSC_DEADLINE		0x000006E0
+>  
+> +#define MSR_IA32_PKRS			0x000006E1
+
+This belongs in patch 5 where it is 'used'.  Note that nothing is really used
+until the final test patch...  But in review this define does not make any
+sense here...
+
+>  
+>  #define MSR_TSX_FORCE_ABORT		0x0000010F
+>  
+> diff --git a/arch/x86/include/asm/pkeys_common.h b/arch/x86/include/asm/pkeys_common.h
+> index 0681522974ba..6917f1a27479 100644
+> --- a/arch/x86/include/asm/pkeys_common.h
+> +++ b/arch/x86/include/asm/pkeys_common.h
+> @@ -17,4 +17,18 @@
+>  #define PKR_AD_KEY(pkey)     (PKR_AD_BIT << PKR_PKEY_SHIFT(pkey))
+>  #define PKR_WD_KEY(pkey)     (PKR_WD_BIT << PKR_PKEY_SHIFT(pkey))
+>  
+> +/*
+> + * Define a default PKRS value for each task.
+> + *
+> + * Key 0 has no restriction.  All other keys are set to the most restrictive
+> + * value which is access disabled (AD=1).
+> + *
+> + * NOTE: This needs to be a macro to be used as part of the INIT_THREAD macro.
+> + */
+> +#define INIT_PKRS_VALUE (PKR_AD_KEY(1) | PKR_AD_KEY(2) | PKR_AD_KEY(3) | \
+> +			 PKR_AD_KEY(4) | PKR_AD_KEY(5) | PKR_AD_KEY(6) | \
+> +			 PKR_AD_KEY(7) | PKR_AD_KEY(8) | PKR_AD_KEY(9) | \
+> +			 PKR_AD_KEY(10) | PKR_AD_KEY(11) | PKR_AD_KEY(12) | \
+> +			 PKR_AD_KEY(13) | PKR_AD_KEY(14) | PKR_AD_KEY(15))
+
+The same is true for this macro.  While it is used in this patch it is used
+first in patch 5.  So it should be there.
+
+I'm letting 0-day crank on these changes but there should be a v5 out very
+soon.
+
+Sorry for the noise,
+Ira
+
