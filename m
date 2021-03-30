@@ -2,115 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A0634DE33
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABCC34DE40
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC3CUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
+        id S231204AbhC3CWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhC3CUW (ORCPT
+        with ESMTP id S230224AbhC3CVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:20:22 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA3CC0613D9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:20:21 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id w18so16443263edc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:20:21 -0700 (PDT)
+        Mon, 29 Mar 2021 22:21:46 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131FCC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:21:46 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id i6so3469926pgs.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BNHTcB7T4m2UhGaP6tF0hE5xsssyn7CBJeCl2o2y96c=;
-        b=3Jk70Zk4F5jowxsYWm3lTWYYlFYvVtweN2HMGEERNCWJJoFJScnelnvTOGhHoGtEHF
-         bjWgFDtn1L6n3yORUefyad+0vjG24U9GJNwJRGuyz6k8ScIp9qXoNqdkiEeHH/JFHPVC
-         KUG8Fa7VA/iCSp2eXPHM42dNLXgO1ZCzVk7aZcKwKUE0V4e43WySAFGTmyQ4OibO7zZQ
-         np1ngO5SCpzrNuQhxfTy1UE16zRzBoLG+LrAieW8c4tE9+JhJuQqW8tTRGa6jOt9aM0M
-         raa/SHExfWUvx5PesBNPEjW1Li7Y/pw2lpWu5Xs5UckyIttjnuxifL61PIMKgNj0c1x0
-         qccA==
+        bh=caQmmigyxXXISWWwsGxMmB0flUc52vEzXTkZIC8p6T4=;
+        b=SOzQb7ET7uixttuKAA9BYVio52twLatgpJgijM7tPgYkMDxwSD71wRGrGoU6P6rNyA
+         kwXVjWkqbnRneC4x5qiFr9qCxs3gHi0r5HWo6KfX4ZPnrGJIctCLdCV0Ym+m14ZK52Yq
+         BW5ChN0AE7+amA7MwtW1NsqSAL6P3vz7HDfwbZuqxnOko0rE+rlU7uy1ceffz8HgTS48
+         opgUwmHxM7AQELe8aOMirMWMs+lGtEzc7hoh9aRv2btFxzuz43pZMThogb1lcG7c8dhK
+         F2ubVN3gMIf6GjNVhScN63by4UiUYsCiQqDS55owx6s3y+UQUwcmRSih3dXCepSe7zwv
+         rzBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BNHTcB7T4m2UhGaP6tF0hE5xsssyn7CBJeCl2o2y96c=;
-        b=dzYyKfVEGrEvbAg0FBlSWS8zbL3gqOnyuzonOygYluteJ0Yg1KS/Mw+YmbVvmzlPIL
-         xy3FDwXeQcnIHsT4tbNueL7S0dQO86AOhkZMkuuX2VhrRK0C36k8iYwYDqlIYJOyAk0q
-         OxwTZYYJn48AerFY0TU/7vH/J5B9CPBNzfyxxE/2+WX+QOdzMGOnqNaXKuLgJ9rCGMEv
-         HeCE5YHQAQWm/C9/kCMl7+MUnwUjrACh0hDCJTateypfdi6+bfWGJATQKBL5znpgKVhl
-         nPXxTzZTs7TM4uS02E4DNLKmUMEPmtpYNpjnD4okShMDk4iqnJRSdQVTJ/ZPiJCaVmZp
-         xF1w==
-X-Gm-Message-State: AOAM531yYFaMIhZ5/OV6qN/BPIFaD39n0xboKSh8CxvGqKewgGxWn9Yf
-        3cj412N09SfcL9auI56W3we3Pn9Wp0hr9LSXTXXqEg==
-X-Google-Smtp-Source: ABdhPJxH6gMBXO9lUMvfVnMPvFOCVPVBGxmo2plP7nneNga21Eq/glfl39TCieWaga31tJtldBkoruBR43eR0xdv6v4=
-X-Received: by 2002:a05:6402:b48:: with SMTP id bx8mr32418567edb.162.1617070820221;
- Mon, 29 Mar 2021 19:20:20 -0700 (PDT)
+        bh=caQmmigyxXXISWWwsGxMmB0flUc52vEzXTkZIC8p6T4=;
+        b=r3eHQ0sg5WPqEWfkWvO/u5RyCWwnqX58Tlyu3X0kBUlDJIBO+Ha/p76zQ/IYSubE88
+         omuXozygXVvdGIH0cNsYP5v/ZYtxqXcJK0m2+PBt9vmPEvCtOjLzA6BVkNolNYpxhxIP
+         gHp5DAiO1XlTx0Zl17wV4cLJTbpGhvIqj6uRc9gTd6I04v/batOPupXFs2c2M5WFsP0/
+         vT6LwXhaj3A3NhHkjUmepaFpTp8HAQ9pM5RYszh1k2nSZusBxYGKSEhhr/B4Fq2+mHl9
+         QsdDn40MjHIaCOj91cuUCJWznTi+EB1Ja325bwrI8CYHwEtWpbTlnc7xuCKMhw7wmP/P
+         pBvw==
+X-Gm-Message-State: AOAM533rnCkyD8fyqxtX4fGMUZ7Wfpzlqy77zPC1UjFyKjYBtMmHM2JP
+        bi/JAsu9foZdIacM0jpVOmyYH1ZQS8h2qJizzPatO4DtntF0XiGW
+X-Google-Smtp-Source: ABdhPJzek3HXSsP8L2qWkSKOzj4RowMhyO9Ltw1QAzb0LZ6XX+X9Xd8JGJOOM8PzqEBy1VHPqJWmvv3wIq6kT8NS4Fc=
+X-Received: by 2002:a63:161c:: with SMTP id w28mr26789330pgl.341.1617070905572;
+ Mon, 29 Mar 2021 19:21:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-14-brad@pensando.io>
- <YGF4Ns8+S9I9Za33@kroah.com>
-In-Reply-To: <YGF4Ns8+S9I9Za33@kroah.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 29 Mar 2021 19:20:09 -0700
-Message-ID: <CAK9rFnxOVShmWFJYKyKgGX9FzqXFbNrPgNwZWqn4bspCpa5=KQ@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] gpio: Use linux/gpio/driver.h
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210329232402.575396-1-mike.kravetz@oracle.com> <20210329232402.575396-6-mike.kravetz@oracle.com>
+In-Reply-To: <20210329232402.575396-6-mike.kravetz@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 30 Mar 2021 10:21:08 +0800
+Message-ID: <CAMZfGtUPgurtQt5u5gw-XsUWdv9bwPQdsZd=c5uNpbi80+-zDw@mail.gmail.com>
+Subject: Re: [External] [PATCH v2 5/8] hugetlb: call update_and_free_page
+ without hugetlb_lock
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 11:48 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Tue, Mar 30, 2021 at 7:24 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> On Sun, Mar 28, 2021 at 06:59:38PM -0700, Brad Larson wrote:
-> > New drivers should include <linux/gpio/driver.h> instead
-> > of legacy <linux/gpio.h>.
-> >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> > ---
-> >  drivers/gpio/gpio-elba-spics.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-elba-spics.c b/drivers/gpio/gpio-elba-spics.c
-> > index 351bbaeea033..c0dce5333f35 100644
-> > --- a/drivers/gpio/gpio-elba-spics.c
-> > +++ b/drivers/gpio/gpio-elba-spics.c
-> > @@ -6,11 +6,10 @@
-> >   */
-> >
-> >  #include <linux/err.h>
-> > -#include <linux/gpio.h>
-> > +#include <linux/gpio/driver.h>
-> >  #include <linux/module.h>
-> >  #include <linux/io.h>
-> >  #include <linux/init.h>
-> > -//#include <linux/of.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/spinlock.h>
-> >  #include <linux/types.h>
-> > --
-> > 2.17.1
-> >
+> With the introduction of remove_hugetlb_page(), there is no need for
+> update_and_free_page to hold the hugetlb lock.  Change all callers to
+> drop the lock before calling.
 >
-> This should be part of patch 1/13, do not add a problem and then fix it
-> up in the same patch series.
+> With additional code modifications, this will allow loops which decrease
+> the huge page pool to drop the hugetlb_lock with each page to reduce
+> long hold times.
 >
-> thanks,
+> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
+> a subsequent patch which restructures free_pool_huge_page.
 >
-> greg k-h
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/hugetlb.c | 32 +++++++++++++++++++++++++++-----
+>  1 file changed, 27 insertions(+), 5 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 16beabbbbe49..dec7bd0dc63d 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1451,16 +1451,18 @@ static void __free_huge_page(struct page *page)
+>
+>         if (HPageTemporary(page)) {
+>                 remove_hugetlb_page(h, page, false);
+> +               spin_unlock(&hugetlb_lock);
+>                 update_and_free_page(h, page);
+>         } else if (h->surplus_huge_pages_node[nid]) {
+>                 /* remove the page from active list */
+>                 remove_hugetlb_page(h, page, true);
+> +               spin_unlock(&hugetlb_lock);
+>                 update_and_free_page(h, page);
+>         } else {
+>                 arch_clear_hugepage_flags(page);
+>                 enqueue_huge_page(h, page);
+> +               spin_unlock(&hugetlb_lock);
+>         }
+> -       spin_unlock(&hugetlb_lock);
+>  }
+>
+>  /*
+> @@ -1741,7 +1743,13 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>                                 list_entry(h->hugepage_freelists[node].next,
+>                                           struct page, lru);
+>                         remove_hugetlb_page(h, page, acct_surplus);
+> +                       /*
+> +                        * unlock/lock around update_and_free_page is temporary
+> +                        * and will be removed with subsequent patch.
+> +                        */
+> +                       spin_unlock(&hugetlb_lock);
+>                         update_and_free_page(h, page);
+> +                       spin_lock(&hugetlb_lock);
+>                         ret = 1;
+>                         break;
+>                 }
+> @@ -1810,8 +1818,9 @@ int dissolve_free_huge_page(struct page *page)
+>                 }
+>                 remove_hugetlb_page(h, page, false);
+>                 h->max_huge_pages--;
+> +               spin_unlock(&hugetlb_lock);
+>                 update_and_free_page(h, head);
+> -               rc = 0;
+> +               return 0;
+>         }
+>  out:
+>         spin_unlock(&hugetlb_lock);
+> @@ -2674,22 +2683,35 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+>                                                 nodemask_t *nodes_allowed)
+>  {
+>         int i;
+> +       struct page *page, *next;
+> +       LIST_HEAD(page_list);
+>
+>         if (hstate_is_gigantic(h))
+>                 return;
+>
+> +       /*
+> +        * Collect pages to be freed on a list, and free after dropping lock
+> +        */
+> +       INIT_LIST_HEAD(&page_list);
 
-Yes, thanks.  I'm laughing at myself today looking at that patch
-tagged at the end.
+INIT_LIST_HEAD is unnecessary. Because the macro of
+LIST_HEAD already initializes the list_head structure.
+
+>         for_each_node_mask(i, *nodes_allowed) {
+> -               struct page *page, *next;
+>                 struct list_head *freel = &h->hugepage_freelists[i];
+>                 list_for_each_entry_safe(page, next, freel, lru) {
+>                         if (count >= h->nr_huge_pages)
+> -                               return;
+> +                               goto out;
+>                         if (PageHighMem(page))
+>                                 continue;
+>                         remove_hugetlb_page(h, page, false);
+> -                       update_and_free_page(h, page);
+> +                       list_add(&page->lru, &page_list);
+>                 }
+>         }
+> +
+> +out:
+> +       spin_unlock(&hugetlb_lock);
+> +       list_for_each_entry_safe(page, next, &page_list, lru) {
+> +               update_and_free_page(h, page);
+> +               cond_resched();
+> +       }
+> +       spin_lock(&hugetlb_lock);
+>  }
+>  #else
+>  static inline void try_to_free_low(struct hstate *h, unsigned long count,
+> --
+> 2.30.2
+>
