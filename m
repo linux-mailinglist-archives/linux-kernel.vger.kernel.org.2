@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7552C34ECAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD6F34ECB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhC3PgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbhC3Pf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:35:27 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CD2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:35:27 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id k188so14745582qkb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=q7MsrOk2npJtSNdwNIXd9WmInrGYWhEX/by2Gk6QS24=;
-        b=TMlZyMKLF6+u73+vvDs10ucDaUCG/DH7NE0rd/9/9/C0wXaIUSqOSu0YqNP3qDF3ua
-         gs80vXCGa+Q3MBcCQzUrspjRaJ8ZsXbXAoX3Bk03Wyvta6OcI86hcUYy7l6lIbI1zNK5
-         IXuhVvS7QRTZeNiOzsWIBqamgVGdNEAj1pcVP+wDbk0UlAI6q5zb1htWm0kW/9Sr4lfN
-         vrJY4Q3zbffDzrZ0ik4myEBrn4vsQkU9ZwAI5AufdkqKL38pSbci7UI3Xhr8eQPp073O
-         vXqwOu1u/RQAVFPjX3ylAhJ2T4oaZvReSjlDw3Hj3N9QxPxm/ctYliZjDrZD/v6WXsdI
-         zVzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=q7MsrOk2npJtSNdwNIXd9WmInrGYWhEX/by2Gk6QS24=;
-        b=QKx6Md0E8klCRWPGXeLOhQilgn4cwOE3QEAEQ1XEtZFQvea5LajjUbm7lkL+FlE7UL
-         FQQFncdQoVIb4Ir9lzlVOkP3OqUT7FLSzvDSBlgOYED74XxbQdcbD/1Wp7kBdUth/+r9
-         7vAFluVTfjV4xGacCbftK8cBUUdMjn2x/I/Smkkb6gWSVZVlOeaMu5jrvvJIzGoag/cT
-         ByalaQpCp8iCkamoRLGMdS/4zJxAy3L3Hb6dHFisxHRlNsy1JTkbkvtkcLXyZW1psb2b
-         C2dj/Lz+Rmmap97XdD+L5z+4e85reQOfe9/pCRDreBerV2SS5U4AkoYtw1fX7Xrq09T1
-         PGIQ==
-X-Gm-Message-State: AOAM531Q2WQLK4VajGRLVi9FoNxNLhdgowozyKtHUFGuokGbYVFMwt54
-        OyqLnvuWCf0+aIt+/9iHlDXL+ibauyDzBbMr
-X-Google-Smtp-Source: ABdhPJxZie0Pgr6yuUoIaRSVo3tk5+dKFfBmuFnR4wJcoDADwMUFyZHcXz/XLlpiWT+/jEP2GAaownmByR8COW6h
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:f567:b52b:fb1e:b54e])
- (user=andreyknvl job=sendgmr) by 2002:a0c:ed2c:: with SMTP id
- u12mr31246924qvq.30.1617118526298; Tue, 30 Mar 2021 08:35:26 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 17:35:23 +0200
-Message-Id: <2dc799014d31ac13fd97bd906bad33e16376fc67.1617118501.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] kasan: fix conflict with page poisoning
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232563AbhC3PgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232064AbhC3Pfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7738619A7;
+        Tue, 30 Mar 2021 15:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617118545;
+        bh=nMNslYbP7bsoxUxRERQoAOXe4dowyalkqJZsnQN81Uk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m+KJceb+4H44bWJcmqmsx8kpjhc0T+EFlJeJuTwyk2s+ML8d8mWeJt+GpP1agJZL+
+         54k8PHVJlw6HVPBNX61mb+yHGQlQVWwGcdmrWa5iT09GRbvJOc4TRGHRgj1q4kEkQc
+         GvZP7xqE3SULPPZNK+DTG6mb4tjre8Y7H/T9C/4QKoYygZZfnS2aMeBfJYa6pk2g0s
+         xHyfPzWyRgFFRQ1ILIVTVxVy8PXDlBTMECNrKLqtz7s/zSSLxvnJ7pkaDmqmblrGaT
+         9y2g3BfhOM/vBG3ano+5tVksJ6JOh1uHxJR9G5SpmbA9Mc5bGRBM2PgFQwH6qKDWLr
+         1bcYGwdtds7zg==
+Date:   Tue, 30 Mar 2021 16:35:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, shumingf@realtek.com,
+        flove@realtek.com, kent_chen@realtek.com, jack.yu@realtek.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
+ machine driver
+Message-ID: <20210330153534.GF4976@sirena.org.uk>
+References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
+ <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MZf7D3rAEoQgPanC"
+Content-Disposition: inline
+In-Reply-To: <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
+X-Cookie: Memory fault - where am I?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When page poisoning is enabled, it accesses memory that is marked as
-poisoned by KASAN, which leas to false-positive KASAN reports.
 
-Suppress the reports by adding KASAN annotations to unpoison_page()
-(poison_page() already has them).
+--MZf7D3rAEoQgPanC
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- mm/page_poison.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, Mar 30, 2021 at 09:12:11PM +0530, Mukunda,Vijendar wrote:
+> On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
 
-diff --git a/mm/page_poison.c b/mm/page_poison.c
-index 65cdf844c8ad..655dc5895604 100644
---- a/mm/page_poison.c
-+++ b/mm/page_poison.c
-@@ -77,12 +77,14 @@ static void unpoison_page(struct page *page)
- 	void *addr;
- 
- 	addr = kmap_atomic(page);
-+	kasan_disable_current();
- 	/*
- 	 * Page poisoning when enabled poisons each and every page
- 	 * that is freed to buddy. Thus no extra check is done to
- 	 * see if a page was poisoned.
- 	 */
--	check_poison_mem(addr, PAGE_SIZE);
-+	check_poison_mem(kasan_reset_tag(addr), PAGE_SIZE);
-+	kasan_enable_current();
- 	kunmap_atomic(addr);
- }
- 
--- 
-2.31.0.291.g576ba9dcdaf-goog
+> > > =A0 static const struct acpi_device_id acp3x_audio_acpi_match[] =3D {
+> > > =A0=A0=A0=A0=A0 { "AMDI5682", (unsigned long)&acp3x_5682},
+> > > =A0=A0=A0=A0=A0 { "AMDI1015", (unsigned long)&acp3x_1015},
+> > > +=A0=A0=A0 { "AMDP1015", (unsigned long)&acp3x_1015p},
 
+> > This isn't a valid ACPI ID. AMDP does not exist in
+
+=2E..
+
+> > There was a similar issue with Intel platforms using this part, we had
+> > to use a different HID.
+
+> Is it okay if i use "AMDI1016" for ALC1015P?
+
+That's valid, though obviously you might regret that later on if someone
+releases a CODEC with a 1016 name (equally well ACPI being what it is
+there's no good options for naming).
+
+--MZf7D3rAEoQgPanC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjRUUACgkQJNaLcl1U
+h9BCzQf/StVuObimo3H3q9bs6c5tTcFh1Iy8jt/jk6W6jV3j7f5XUhNvmMHqCFWy
+e7siS5UjGpCDRbZDIC+QnNZvt3t5krLRijboULo8jAreEkMisQLv6X3nNKoXMSmY
+wnSrnJpzwIFKcqUrCeLejk8KAgtvHwxKFQc5u7MEXrDQCCzgIU809WbtgmpPd+VV
+mwpyT59KIHjzrSJPZ+29Oco3XFm7YM22pLs0RBNki3OnG4jWy9wJu6Ppk/47RQIo
+iilrSirO96NhP2w6T/dDxf1x0fo9aa7Exbd7kYvV05PZBPXJq2cVUR+LIqc26o/y
++wCtkJBgWlnyqlLNavuKel4pWEgeZw==
+=LM1I
+-----END PGP SIGNATURE-----
+
+--MZf7D3rAEoQgPanC--
