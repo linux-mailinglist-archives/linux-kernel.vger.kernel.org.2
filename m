@@ -2,102 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C6D34EC51
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBEE34EC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhC3P00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhC3PZ4 (ORCPT
+        id S232262AbhC3P0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:26:55 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38588 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232201AbhC3P0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:25:56 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA16CC061574;
-        Tue, 30 Mar 2021 08:25:55 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id o10so24355686lfb.9;
-        Tue, 30 Mar 2021 08:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L4t1gbf3yrUzChbUbDMY4euz8nlSLeeCu75nwbW2ips=;
-        b=tfZ6EUxRi07u5A8R3oT9CX8h/p2L39UX4es7Zvw5PiYTf3BJueQoSSOju1hHM3GD3Z
-         msm9Id5LdRCvSNEsQy2wk+3qTyuswDOJRBeeJsW6YdxdW7S+UP1hMQkF2RHI76i6ZCcd
-         /yJkCvtORfkqWcuVqhsL3iFUF0CdlUhLxKfgN0RZf/S+W9wGZDumtnhvlnmjvdMq92HF
-         PEvjZl8RjRPWNZsaXsJsudq8XiwHEFASgDqnPD77uO/o8vs+XZuKU4KJrCr1m4ZegfBt
-         HZnnzH28Glrvved+dx8HR0OJ7j95gVOgTAAuD1vn8At8GsX1ernXW1P8x563otvzshly
-         iw1g==
+        Tue, 30 Mar 2021 11:26:21 -0400
+Received: by mail-io1-f70.google.com with SMTP id x9so13629058iob.5
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:26:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L4t1gbf3yrUzChbUbDMY4euz8nlSLeeCu75nwbW2ips=;
-        b=YI66vuDXxi6bPjus/fuE1eqdFCp7tECGqVq0aPAumkKK0zy99YeL6Q7l+l4157c3zh
-         pEnzTNQAd0+/p7vR6SoJTgDUtMuaySrkoFMwhJ0yd0gSG83gWs8zcHKb3yYiOU27KzAG
-         RiFCsMSMov6DRP8Nh5m2q5hncPretZGYbTr5F3kX8dBRw49AsLUJ203cPWQAJLOqaP2U
-         kiYKJi1whPtPIEb9BAZsCyyPf9Co7Lrdq9cJVP5F+hA9SC9pmM2AVYszgA8CeFoJJnfN
-         ehfR0HNZvOCz0SZuR/CUkDAZn21vNvc4/lbomsiZdO6ECiBCcPuprl0xYHRCkbb7qY1y
-         jfDw==
-X-Gm-Message-State: AOAM531msAArqggZZUShESgcUVgL0/viHASFNwhzNkHpbbbOc4CwLw3S
-        oN5kR30aBtlMWhfkaTZokcw=
-X-Google-Smtp-Source: ABdhPJy4JGI3S1gXjgeGliqbIw052gNBnIlb1D/ryZgbSsk665Us6I0JVEZ6HazVHoSz8GuUhtz77Q==
-X-Received: by 2002:a05:6512:38aa:: with SMTP id o10mr53987lft.261.1617117954194;
-        Tue, 30 Mar 2021 08:25:54 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id q26sm2204815lfm.53.2021.03.30.08.25.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:25:53 -0700 (PDT)
-Subject: Re: [PATCH v1 4/6] dt-bindings: memory: tegra20: mc: Convert to
- schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>
-References: <20210329194602.17049-1-digetx@gmail.com>
- <20210329194602.17049-5-digetx@gmail.com>
- <1617109723.704724.173732.nullmailer@robh.at.kernel.org>
- <20210330134634.GA216433@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a2575953-e10e-9f41-5a65-ab6512bba20d@gmail.com>
-Date:   Tue, 30 Mar 2021 18:25:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fCp4KYxji0+0j8ZYy/0qgF4qCzIC1ZnpH0/jKqXPGjI=;
+        b=hii0nuAxPuEUhBfOIZahJ8VlyC8Utx76heLOnxXXFj5cHAS84D1HIuKDFizIVJ32cQ
+         m9/cjyupQ4DUUUzyDbV2OZYiljuHM9TDKH82wJ1KHJ7NK8heLhrtYARvMuZbgZi9Rw/i
+         x+qm+EPtX1wX0W5473bry67fCMWq0ktF07Uo62yuqUw+jJxls5Ag6ws/nx3/0yug5hlg
+         GCb/JefOBxTu8Z4AwM2hiNqPOVuocgDmN0Hve2HA7H23N6JSf3VBQoa7Ig1P4i+/DB+O
+         ofMkK+NngOlO+zTZpNUNy/+qDPvXABv3e20yO6rydHw+CziwWaw5RDfrhJvixKjBaQ6A
+         AWeg==
+X-Gm-Message-State: AOAM533Wrxy4MXJV095lppqGCMdyOYTA1SB4urSVrwSnVhiCkB0pLxcw
+        3rTebesC82Rl3+ykx1W78aQypz2tzWkn64BB9bBR24AjXmn4
+X-Google-Smtp-Source: ABdhPJxHPgNEMqG7IieXHkAl/dlSLEJglxbo9HdtGSF31T5HbiUR0Dk82x2nwF5ECa0/SYnQvRxn4+eW3DppeXYAq5K63Yubx1yK
 MIME-Version: 1.0
-In-Reply-To: <20210330134634.GA216433@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:b05:: with SMTP id b5mr26351098ilf.240.1617117980562;
+ Tue, 30 Mar 2021 08:26:20 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 08:26:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca9a6005bec29ebe@google.com>
+Subject: [syzbot] WARNING in unsafe_follow_pfn
+From:   syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, hpa@zytor.com, jmattson@google.com,
+        jmorris@namei.org, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        m.szyprowski@samsung.com, mchehab@kernel.org, mingo@redhat.com,
+        pbonzini@redhat.com, seanjc@google.com, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, tfiga@chromium.org,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.03.2021 16:46, Rob Herring пишет:
-> On Tue, Mar 30, 2021 at 08:08:43AM -0500, Rob Herring wrote:
->> On Mon, 29 Mar 2021 22:46:00 +0300, Dmitry Osipenko wrote:
->>> Convert Tegra20 Memory Controller binding to schema.
->>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  .../memory-controllers/nvidia,tegra20-mc.txt  | 40 ----------
->>>  .../memory-controllers/nvidia,tegra20-mc.yaml | 78 +++++++++++++++++++
->>>  2 files changed, 78 insertions(+), 40 deletions(-)
->>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
->>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.yaml
->>>
->>
->> My bot found errors running 'make dt_binding_check' on your patch:
->>
->> yamllint warnings/errors:
->>
->> dtschema/dtc warnings/errors:
->> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.example.dt.yaml:0:0: /example-0/memory-controller@7000f000: failed to match any schema with compatible: ['nvidia,tegra20-mc']
-> 
-> Yes, this is a new warning. It's off by default for dt_binding_check 
-> until we fix the existing warnings, but you can enable by adding 
-> 'DT_CHECKER_FLAGS=-m'. Support for this is in the dt/next branch.
+Hello,
 
-Thanks!
+syzbot found the following issue on:
+
+HEAD commit:    93129492 Add linux-next specific files for 20210326
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
+dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
+
+The issue was bisected to:
+
+commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue Mar 16 15:33:01 2021 +0000
+
+    mm: Add unsafe_follow_pfn
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
+Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
+
+------------[ cut here ]------------
+unsafe follow_pfn usage
+WARNING: CPU: 1 PID: 8426 at mm/memory.c:4807 unsafe_follow_pfn+0x20f/0x260 mm/memory.c:4807
+Modules linked in:
+CPU: 0 PID: 8426 Comm: syz-executor677 Not tainted 5.12.0-rc4-next-20210326-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:unsafe_follow_pfn+0x20f/0x260 mm/memory.c:4807
+Code: 8b 7c 24 20 49 89 6d 00 e8 6e 84 64 07 e9 30 ff ff ff e8 f4 19 cb ff 48 c7 c7 40 1f 76 89 c6 05 56 eb 09 0c 01 e8 34 1a 21 07 <0f> 0b e9 71 fe ff ff 41 bc ea ff ff ff e9 06 ff ff ff e8 1a 65 0f
+RSP: 0018:ffffc9000161f660 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 1ffff920002c3ecc RCX: 0000000000000000
+RDX: ffff88801954d580 RSI: ffffffff815c3fd5 RDI: fffff520002c3ebe
+RBP: ffff888023d56948 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bd77e R11: 0000000000000000 R12: 0000000021000000
+R13: ffff8880143a4010 R14: 0000000000000000 R15: 0000000000000110
+FS:  00000000005d1300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f172c4cd6c0 CR3: 0000000011f70000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ get_vaddr_frames+0x337/0x600 drivers/media/common/videobuf2/frame_vector.c:72
+ vb2_create_framevec+0x55/0xc0 drivers/media/common/videobuf2/videobuf2-memops.c:50
+ vb2_vmalloc_get_userptr+0xce/0x4c0 drivers/media/common/videobuf2/videobuf2-vmalloc.c:90
+ __prepare_userptr+0x342/0x15f0 drivers/media/common/videobuf2/videobuf2-core.c:1128
+ __buf_prepare+0x635/0x7d0 drivers/media/common/videobuf2/videobuf2-core.c:1367
+ vb2_core_qbuf+0xa9d/0x11c0 drivers/media/common/videobuf2/videobuf2-core.c:1658
+ vb2_qbuf+0x135/0x1a0 drivers/media/common/videobuf2/videobuf2-v4l2.c:820
+ vb2_ioctl_qbuf+0xfb/0x140 drivers/media/common/videobuf2/videobuf2-v4l2.c:1050
+ v4l_qbuf drivers/media/v4l2-core/v4l2-ioctl.c:2027 [inline]
+ v4l_qbuf+0x92/0xc0 drivers/media/v4l2-core/v4l2-ioctl.c:2021
+ __video_do_ioctl+0xb94/0xe20 drivers/media/v4l2-core/v4l2-ioctl.c:2951
+ video_usercopy+0x253/0x1300 drivers/media/v4l2-core/v4l2-ioctl.c:3297
+ v4l2_ioctl+0x1b3/0x250 drivers/media/v4l2-core/v4l2-dev.c:366
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x443639
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffee3065668 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443639
+RDX: 0000000020000140 RSI: 00000000c058560f RDI: 0000000000000004
+RBP: 00000000004031e0 R08: 00000000004004a0 R09: 00000000004004a0
+R10: 00236962762f7665 R11: 0000000000000246 R12: 0000000000403270
+R13: 0000000000000000 R14: 00000000004b1018 R15: 00000000004004a0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
