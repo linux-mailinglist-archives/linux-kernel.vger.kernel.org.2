@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E6A34EF65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE3934EF70
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhC3R0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54610 "EHLO mail.kernel.org"
+        id S232250AbhC3R1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:27:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38402 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhC3RZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:25:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4607619CD;
-        Tue, 30 Mar 2021 17:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617125137;
-        bh=ePSuJ8ma3WpYWbEYHTIMeW/KYbq45titohW1Q7tiVr0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KwuUtHZbz2yvKjdswt8BJBz5YKVW90Dd9TM+Qru9XS+lpxpq9ycmk90bgvwRpgpDS
-         lk+Tf6NXTZz6naWbv2IrWmnWHgOcwDKR+iiS0gtp94UwVRX4ryiiVRqA1v9uSUJNNG
-         P2FLglHf/TyN1L1pnJt5GUCSVQHLTgePMFrtYMN7CFTPn61tDCtd8QiDfp61+hCpYl
-         lT9WdmLgzL6nXRusfag2jJ6sk+oyRgMXqTIqLCCS5ZP/UywrUHs3ofVLtnpxxEPy2+
-         +R/hS+cbsN0uNDQbxZrZNlU5BpuybIskgafPQdzT58HUGUz9EGCf6SU66AAUi86vAo
-         G99zYmJOY3GiQ==
-Date:   Tue, 30 Mar 2021 22:55:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 0/9] soundwire: qcom: various improvements
-Message-ID: <YGNfDUV5GO/kYQ2R@vkoul-mobl.Dlink>
-References: <20210330144719.13284-1-srinivas.kandagatla@linaro.org>
+        id S232160AbhC3R1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:27:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9731BB329;
+        Tue, 30 Mar 2021 17:27:04 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     hch@lst.de
+Subject: [PATCH 0/3] MIPS: Remove get_fs/set_fs
+Date:   Tue, 30 Mar 2021 19:26:57 +0200
+Message-Id: <20210330172702.146909-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330144719.13284-1-srinivas.kandagatla@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-03-21, 15:47, Srinivas Kandagatla wrote:
-> Thanks for reviewing v5 of this patchset!
-> 
-> During testing SoundWire controller on SM8250 MTP, we found
-> few issues like all the interrupts are not handled,
-> all transport parameters are not read from device tree.
-> Patch to add Auto Enumeration supported by the controller
-> is also part of this series.
-> 
-> Other major issue was register read/writes which was interrupt based
-> was an overhead and puts lot of limitation on context it can be used from.
-> 
-> With previous approach number of interrupts generated
-> after enumeration are around 130:
-> $ cat /proc/interrupts  | grep soundwire
-> 21: 130 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
->     
-> after this patch they are just 3 interrupts
-> $ cat /proc/interrupts  | grep soundwire
-> 21: 3 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
-> 
-> So this patchset add various improvements to the existing driver
-> to address above issues.
-> 
-> Tested it on SM8250 MTP with 2x WSA881x speakers, HeadPhones on
-> WCD938x via lpass-rx-macro and Analog MICs via lpass-tx-macro.
-> Also tested on DragonBoard DB845c with 2xWSA881x speakers.
+This series replaces get_fs/set_fs and removes it from MIPS arch code.
 
-Applied, thanks
+Thomas Bogendoerfer (3):
+  MIPS: uaccess: Added __get/__put_kernel_nofault
+  MIPS: uaccess: Remove get_fs/set_fs call sites
+  MIPS: Remove get_fs/set_fs
+
+ arch/mips/Kconfig                   |   1 -
+ arch/mips/include/asm/processor.h   |   4 -
+ arch/mips/include/asm/thread_info.h |   6 -
+ arch/mips/include/asm/uaccess.h     | 244 +++++++++++-----------------
+ arch/mips/kernel/asm-offsets.c      |   1 -
+ arch/mips/kernel/process.c          |   2 -
+ arch/mips/kernel/scall32-o32.S      |   4 +-
+ arch/mips/kernel/traps.c            |  72 +++-----
+ arch/mips/kernel/unaligned.c        | 197 ++++++++--------------
+ arch/mips/lib/memset.S              |   3 -
+ arch/mips/lib/strncpy_user.S        |  48 ++----
+ arch/mips/lib/strnlen_user.S        |  44 ++---
+ 12 files changed, 215 insertions(+), 411 deletions(-)
 
 -- 
-~Vinod
+2.29.2
+
