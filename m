@@ -2,174 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F5A34E430
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A920A34E431
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 11:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhC3JTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 05:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbhC3JTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 05:19:30 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9323EC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:19:29 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id e18so15499269wrt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 02:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QvSPBsb1lX0xL/5H9a1UCrWMqQfmW3P/W0ClVOEXkcY=;
-        b=FLYPoItdLnPVnobh+XNzuyR4z9WMc8WPFKBfEMEPW6x1zFwBTOD3iC/9NMNBpJ8vIm
-         kKk7ol4ou1Q3qooRlctN9Lv0u5Bwb24w5OcAdWuFFB/Q2pwO0jFANizAyuP5S0fonAG0
-         QSoMdSaqnvf5FZ9ezoDj+cSGcAVhVHbG5A2MI/pBfsoWYqz/uBso5uAZtGHHB+1Z06EZ
-         SoGpZRgEJXBZGX3nrCm4dr2o0BLWG8xngQltHLTR1q6Foxb1Ln/wwLBIyIWY745qjXf2
-         TuKtZ2TQ5rAko21AayJ24x5cZ5h4YS/9nZeab10y7F9sLlmSRC5NJxOkSmkxbnFYMzUh
-         IXOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QvSPBsb1lX0xL/5H9a1UCrWMqQfmW3P/W0ClVOEXkcY=;
-        b=RXNBCbq/tXU9nuu6g+qEb8i+nfNRsVHe9uiQ4oK+VCQXpisvW9+jy7cu74BPm5KnrF
-         Qz/N/Qr/aIEesrHDRDGAwWBr6RReOENfV1dxePUYp5pcCV4ItDAZXQyiM501fSsElaej
-         aI+Y/a1HG3uuet/enXhhqZPP7SV8RWfpbzHR02rR18EXDKAXAgvoCUigVO1V3K05zdd/
-         BWtSr4AAJ1sP/aueyvXJQpx0siIaX4XP4afcaMBMyDkIlw7q+8aTwL1/4V6FXob51v+z
-         BNyR9vScxrPMhp0R122r3aENgOVoyU6GiqLqcDkU54IGcCdBuJGfH92DDLl+el+cE3cY
-         lYJQ==
-X-Gm-Message-State: AOAM5336TKZ8bCXzohAblfYH5SH8seiORZ2/lhXkL+bPy1x8fDXOBbWE
-        lQBGAPquOokFa4t4v38nXQ8=
-X-Google-Smtp-Source: ABdhPJxeyzFtZrKGc2ZRNCcxz2PDVWkgayeNybrCwmfKzdHqD0LTm2JSuBNUIXsehLethKQ1oW/cqQ==
-X-Received: by 2002:a5d:65cd:: with SMTP id e13mr33573108wrw.334.1617095968330;
-        Tue, 30 Mar 2021 02:19:28 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id a6sm3600749wmm.0.2021.03.30.02.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 02:19:27 -0700 (PDT)
-Subject: Re: [PATCH] soc: mediatek: mmsys: Add mt8183 mmsys routing table
-To:     Hsin-Yi Wang <hsinyi@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     drinkcat@chromium.org, weiyi.lu@mediatek.com, ck.hu@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
-References: <20210323055143.607529-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d816e7c7-5bf8-4b4c-f807-1337db4a4241@gmail.com>
-Date:   Tue, 30 Mar 2021 11:19:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210323055143.607529-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S231593AbhC3JVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 05:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231624AbhC3JVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:21:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 451A36024A;
+        Tue, 30 Mar 2021 09:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617096070;
+        bh=4R/2RqA5Y/KuA/x2pUUPA6JHkojRGW/5pd8HtMfeQY4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Cy2uNLDJC2WSJyN5Jhbvad2rPcKnpg0I9jfbw3PLlljdmZpPLSILGPwooa2EXBj03
+         WjRWby+w3gfdlmyTBktRFaetLTiIVYiLPHBJNAPsUbGYQUUDksWyzIJSCKKOfA+f99
+         9D4Y66szN9uxWbtgnVlabzIPI8gUvJn2h8/nC5Z5fiHRvsuYtaq3GbfZVWJWsvwOHK
+         HcaLhHA4c7LojzqaOHBAPBdd5fy9U/6d1o00/zSb7dMlii9SA70oytfZQQcbWUY2Ft
+         8wPZu/UzuVGTIhOlT04n60C7ewEzzsHUyGatHRedppAAzldHVdEFXzBEblVS0pS5wd
+         uEoOlxcERpuQQ==
+Date:   Tue, 30 Mar 2021 18:21:05 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: add do_page_fault and do_trap_break into the
+ kprobes blacklist
+Message-Id: <20210330182105.47a24038fc014ba0dcd917a4@kernel.org>
+In-Reply-To: <20210330021226.2fc7b2ec@xhacker>
+References: <20210330021226.2fc7b2ec@xhacker>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+On Tue, 30 Mar 2021 02:12:26 +0800
+Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
 
-Patch looks good but please use the new, just merged format, see [1]
-Please put the defines and the routing table in a new header file mt8183-mmsys.h
-
-Thanks
-Matthias
-
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/log/?h=v5.12-next/soc
-
-On 23/03/2021 06:51, Hsin-Yi Wang wrote:
-> mt8183 has different routing registers than mt8173.
+> From: Jisheng Zhang <jszhang@kernel.org>
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> These two functions are used to implement the kprobes feature so they
+> can't be kprobed.
+> 
+
+Looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks,
+
+> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
-> This patch is based on series ("soc: mediatek: Prepare MMSYS for DDP routing using tables")[1]
-> and tested with mt8183 krand and mt8183 juniper device.
-> The register value is referenced from [2].
+>  arch/riscv/kernel/traps.c | 1 +
+>  arch/riscv/mm/fault.c     | 1 +
+>  2 files changed, 2 insertions(+)
 > 
-> [1] https://patchwork.kernel.org/project/linux-mediatek/cover/20210317181711.795245-1-enric.balletbo@collabora.com/
-> [2] https://patchwork.kernel.org/project/linux-mediatek/patch/1609815993-22744-6-git-send-email-yongqiang.niu@mediatek.com/
-> ---
->  drivers/soc/mediatek/mtk-mmsys.c |  2 ++
->  drivers/soc/mediatek/mtk-mmsys.h | 47 ++++++++++++++++++++++++++++++++
->  2 files changed, 49 insertions(+)
-> 
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index c46d8ab8b0c2..16bb55b0463a 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -40,6 +40,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 0879b5df11b9..1357abf79570 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -178,6 +178,7 @@ asmlinkage __visible void do_trap_break(struct pt_regs *regs)
+>  	else
+>  		die(regs, "Kernel BUG");
+>  }
+> +NOKPROBE_SYMBOL(do_trap_break);
 >  
->  static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
->  	.clk_driver = "clk-mt8183-mm",
-> +	.routes = mmsys_mt8183_routing_table,
-> +	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
->  };
->  
->  struct mtk_mmsys {
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-mmsys.h
-> index a760a34e6eca..c55baf5932b8 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.h
-> +++ b/drivers/soc/mediatek/mtk-mmsys.h
-> @@ -66,6 +66,28 @@
->  #define DPI_SEL_IN_BLS				0x0
->  #define DSI_SEL_IN_RDMA				0x1
->  
-> +#define MT8183_DISP_OVL0_MOUT_EN		0xf00
-> +#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
-> +#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
-> +#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
-> +#define MT8183_DISP_PATH0_SEL_IN		0xf24
-> +#define MT8183_DISP_DSI0_SEL_IN			0xf2c
-> +#define MT8183_DISP_DPI0_SEL_IN			0xf30
-> +#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
-> +#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
-> +
-> +#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
-> +#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
-> +#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
-> +#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
-> +#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
-> +#define MT8183_DSI0_SEL_IN_RDMA0		0x1
-> +#define MT8183_DSI0_SEL_IN_RDMA1		0x3
-> +#define MT8183_DPI0_SEL_IN_RDMA0		0x1
-> +#define MT8183_DPI0_SEL_IN_RDMA1		0x2
-> +#define MT8183_RDMA0_SOUT_COLOR0		0x1
-> +#define MT8183_RDMA1_SOUT_DSI0			0x1
-> +
->  struct mtk_mmsys_routes {
->  	u32 from_comp;
->  	u32 to_comp;
-> @@ -212,4 +234,29 @@ static const struct mtk_mmsys_routes mmsys_default_routing_table[] = {
+>  #ifdef CONFIG_GENERIC_BUG
+>  int is_valid_bugaddr(unsigned long pc)
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 8f17519208c7..c5dbd55cbf7c 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -328,3 +328,4 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
 >  	}
->  };
->  
-> +static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
-> +	{
-> +		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-> +		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
-> +	}, {
-> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
-> +	}, {
-> +		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
-> +		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
-> +	}, {
-> +		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-> +		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
-> +	}, {
-> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
-> +	}, {
-> +		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-> +		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
-> +	}, {
-> +		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-> +		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
-> +	}
-> +};
-> +
->  #endif /* __SOC_MEDIATEK_MTK_MMSYS_H */
+>  	return;
+>  }
+> +NOKPROBE_SYMBOL(do_page_fault);
+> -- 
+> 2.31.0
 > 
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
