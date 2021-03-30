@@ -2,137 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE1A34E26A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14E134E273
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 09:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhC3Hkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 03:40:51 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49594 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhC3Hk0 (ORCPT
+        id S231448AbhC3Hl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 03:41:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15394 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231163AbhC3Hlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:40:26 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 09CC02A099; Tue, 30 Mar 2021 03:40:22 -0400 (EDT)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Michael Pavone" <pavone@retrodev.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <4fdaa113db089b8fb607f7dd818479f8cdcc4547.1617089871.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k: mvme147, mvme16x: Don't wipe PCC timer config bits
-Date:   Tue, 30 Mar 2021 18:37:51 +1100
+        Tue, 30 Mar 2021 03:41:45 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8hDc1ZmDzqSKD;
+        Tue, 30 Mar 2021 15:40:00 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Tue, 30 Mar 2021
+ 15:41:35 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH v2 0/5] bug fix and clear coding style
+Date:   Tue, 30 Mar 2021 15:39:01 +0800
+Message-ID: <1617089946-48078-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't clear the timer 1 configuration bits when clearing the interrupt flag
-and counter overflow. As Michael reported, "This results in no timer
-interrupts being delivered after the first. Initialization then hangs
-in calibrate_delay as the jiffies counter is not updated."
+fixup coding style such as magic number and unneeded variable
+initialization. Clear data operation in sg buf unmap, and other
+misc fix.
 
-On mvme16x, enable the timer after requesting the irq, consistent with
-mvme147.
+Kai Ye (5):
+  crypto: hisilicon/sgl - fixup coding style
+  crypto: hisilicon/sgl - delete unneeded variable initialization
+  crypto: hisilicon/sgl - add some dfx logs
+  crypto: hisilicon/sgl - fix the soft sg map to hardware sg
+  crypto: hisilicon/sgl - fix the sg buf unmap
 
-Cc: Michael Pavone <pavone@retrodev.com>
-Fixes: 7529b90d051e ("m68k: mvme147: Handle timer counter overflow")
-Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
-Reported-and-tested-by: Michael Pavone <pavone@retrodev.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- arch/m68k/include/asm/mvme147hw.h |  3 +++
- arch/m68k/mvme147/config.c        | 14 ++++++++------
- arch/m68k/mvme16x/config.c        | 14 ++++++++------
- 3 files changed, 19 insertions(+), 12 deletions(-)
+ drivers/crypto/hisilicon/sgl.c | 36 +++++++++++++++++++++++++++++-------
+ 1 file changed, 29 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/mvme147hw.h b/arch/m68k/include/asm/mvme147hw.h
-index 257b29184af9..e28eb1c0e0bf 100644
---- a/arch/m68k/include/asm/mvme147hw.h
-+++ b/arch/m68k/include/asm/mvme147hw.h
-@@ -66,6 +66,9 @@ struct pcc_regs {
- #define PCC_INT_ENAB		0x08
- 
- #define PCC_TIMER_INT_CLR	0x80
-+
-+#define PCC_TIMER_TIC_EN	0x01
-+#define PCC_TIMER_COC_EN	0x02
- #define PCC_TIMER_CLR_OVF	0x04
- 
- #define PCC_LEVEL_ABORT		0x07
-diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
-index cfdc7f912e14..e1e90c49a496 100644
---- a/arch/m68k/mvme147/config.c
-+++ b/arch/m68k/mvme147/config.c
-@@ -114,8 +114,10 @@ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
--	m147_pcc->t1_int_cntrl = PCC_TIMER_INT_CLR;
--	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF;
-+	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF | PCC_TIMER_COC_EN |
-+			     PCC_TIMER_TIC_EN;
-+	m147_pcc->t1_int_cntrl = PCC_INT_ENAB | PCC_TIMER_INT_CLR |
-+				 PCC_LEVEL_TIMER1;
- 	clk_total += PCC_TIMER_CYCLES;
- 	legacy_timer_tick(1);
- 	local_irq_restore(flags);
-@@ -133,10 +135,10 @@ void mvme147_sched_init (void)
- 	/* Init the clock with a value */
- 	/* The clock counter increments until 0xFFFF then reloads */
- 	m147_pcc->t1_preload = PCC_TIMER_PRELOAD;
--	m147_pcc->t1_cntrl = 0x0;	/* clear timer */
--	m147_pcc->t1_cntrl = 0x3;	/* start timer */
--	m147_pcc->t1_int_cntrl = PCC_TIMER_INT_CLR;  /* clear pending ints */
--	m147_pcc->t1_int_cntrl = PCC_INT_ENAB|PCC_LEVEL_TIMER1;
-+	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF | PCC_TIMER_COC_EN |
-+			     PCC_TIMER_TIC_EN;
-+	m147_pcc->t1_int_cntrl = PCC_INT_ENAB | PCC_TIMER_INT_CLR |
-+				 PCC_LEVEL_TIMER1;
- 
- 	clocksource_register_hz(&mvme147_clk, PCC_TIMER_CLOCK_FREQ);
- }
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 30357fe4ba6c..b59593c7cfb9 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -366,6 +366,7 @@ static u32 clk_total;
- #define PCCTOVR1_COC_EN      0x02
- #define PCCTOVR1_OVR_CLR     0x04
- 
-+#define PCCTIC1_INT_LEVEL    6
- #define PCCTIC1_INT_CLR      0x08
- #define PCCTIC1_INT_EN       0x10
- 
-@@ -374,8 +375,8 @@ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
--	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
--	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
-+	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
-+	out_8(PCCTIC1, PCCTIC1_INT_EN | PCCTIC1_INT_CLR | PCCTIC1_INT_LEVEL);
- 	clk_total += PCC_TIMER_CYCLES;
- 	legacy_timer_tick(1);
- 	local_irq_restore(flags);
-@@ -389,14 +390,15 @@ void mvme16x_sched_init(void)
-     int irq;
- 
-     /* Using PCCchip2 or MC2 chip tick timer 1 */
--    out_be32(PCCTCNT1, 0);
--    out_be32(PCCTCMP1, PCC_TIMER_CYCLES);
--    out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
--    out_8(PCCTIC1, PCCTIC1_INT_EN | 6);
-     if (request_irq(MVME16x_IRQ_TIMER, mvme16x_timer_int, IRQF_TIMER, "timer",
-                     NULL))
- 	panic ("Couldn't register timer int");
- 
-+    out_be32(PCCTCNT1, 0);
-+    out_be32(PCCTCMP1, PCC_TIMER_CYCLES);
-+    out_8(PCCTOVR1, PCCTOVR1_OVR_CLR | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
-+    out_8(PCCTIC1, PCCTIC1_INT_EN | PCCTIC1_INT_CLR | PCCTIC1_INT_LEVEL);
-+
-     clocksource_register_hz(&mvme16x_clk, PCC_TIMER_CLOCK_FREQ);
- 
-     if (brdno == 0x0162 || brdno == 0x172)
 -- 
-2.26.2
+2.8.1
 
