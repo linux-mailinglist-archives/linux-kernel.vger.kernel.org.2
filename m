@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EA134E725
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9EE34E72F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 14:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhC3MIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 08:08:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231749AbhC3MIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:08:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 593AF6195B;
-        Tue, 30 Mar 2021 12:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617106086;
-        bh=7LMZ9F7lPaHwi9le/h++7n7vRCgfrM5V67L1bhRCi+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jXuYOvZJehXicC4lBBemhDOlN4/mbLo0CTtFE8Gq0yUORmuXpoM53CuJM0UJK9TMF
-         EAm4Qg+Ay4P25jM0UIE6J7Cb0B2VYK/P+ykOuJoKlTDhYcMgJqgu5BQT5kLLRQL9xS
-         qRTaGb5glQmunn9rVso+aSiU+0SrpvgNS20oI/aZcaGvrM23kRJnSrGhkl+677m9Wk
-         Hk/zDiM6oPLWRWGJgW+sn7+MM1Y8x5UIA9oVrDTaQ6umZtStYdgJM4YjM6LbzyCtZ1
-         HkjI/GAXoHnjetRIWZjG0I7LWW9Vn8Q/poNBeOsqRluXSgC1jLwhrWhW1Q6DOljGlr
-         Upqk/hFHtbQGw==
-Date:   Tue, 30 Mar 2021 13:08:02 +0100
-From:   Will Deacon <will@kernel.org>
-To:     zhouchuangao <zhouchuangao@vivo.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/kernel/probes: Use BUG_ON instead of if condition
- followed by BUG.
-Message-ID: <20210330120801.GA5908@willie-the-truck>
-References: <1617105472-6081-1-git-send-email-zhouchuangao@vivo.com>
+        id S231842AbhC3MKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 08:10:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15396 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231848AbhC3MJ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 08:09:59 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8pB75xvFznTm9;
+        Tue, 30 Mar 2021 20:08:15 +0800 (CST)
+Received: from [10.67.101.248] (10.67.101.248) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 30 Mar 2021 20:09:46 +0800
+Subject: Re: [PATCH] crypto: hisilicon - check if debugfs opened
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <1616833980-11006-1-git-send-email-tanghui20@huawei.com>
+ <YGCcQnFHXEMW9Jz/@kroah.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+From:   tanghui20 <tanghui20@huawei.com>
+Message-ID: <17d627e8-b89a-bbb8-f5d7-11210b859ac7@huawei.com>
+Date:   Tue, 30 Mar 2021 20:09:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617105472-6081-1-git-send-email-zhouchuangao@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YGCcQnFHXEMW9Jz/@kroah.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.101.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:57:50AM -0700, zhouchuangao wrote:
-> It can be optimized at compile time.
 
-Hmm, I don't see it (and I also don't understand why we care). Do you have
-numbers showing that this is worthwhile?
 
-Will
+On 2021/3/28 23:09, Greg KH wrote:
+> On Sat, Mar 27, 2021 at 04:33:00PM +0800, Hui Tang wrote:
+>> 'xx_debugfs_init' check if debugfs opened.
+>>
+>> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+>> ---
+>>  drivers/crypto/hisilicon/hpre/hpre_main.c | 5 ++++-
+>>  drivers/crypto/hisilicon/qm.c             | 3 +++
+>>  drivers/crypto/hisilicon/sec2/sec_main.c  | 5 ++++-
+>>  drivers/crypto/hisilicon/zip/zip_main.c   | 3 +++
+>>  4 files changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> index c7ab06d..f2605c4 100644
+>> --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+>> @@ -779,6 +779,9 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
+>>  	struct device *dev = &qm->pdev->dev;
+>>  	int ret;
+>>
+>> +	if (!debugfs_initialized())
+>> +		return -ENOENT;
+>
+> Why?  What does this help with?  Why does the code care if debugfs is
+> running or not?
+>
+When !CONFIG_DEBUG_FS, there is no problem if debugfs is not checked,
+but if checking debugfs, a series of stub functions of debugfs can be
+skipped and 'xx_debugfs_init' will be return immediately.
+
+Thanks.
