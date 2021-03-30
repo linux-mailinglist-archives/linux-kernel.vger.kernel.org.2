@@ -2,184 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D3A34F414
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1369934F424
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 00:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhC3WPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 18:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhC3WPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 18:15:14 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A33C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id t18so8474768pjs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CEJVo99ddrzFsx+Y7vim0XaXbjg0vh0wW249qitilJc=;
-        b=meUgQ8XuuGX2w/BSIG4Hz4EF7XC9+2efqf9gHbw/McANGT1S0Z0TwooXm0EwVoeeC9
-         VE8+hDP4ClO6laZGUWRq3SVtNUY/kdGhkrNvjHfnz4qTguvnPvdB9sio+aLJYHTz63na
-         0F//yTUTwk/POk31IhOjDpQm/II1tGnLMgLPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CEJVo99ddrzFsx+Y7vim0XaXbjg0vh0wW249qitilJc=;
-        b=cxn/Irm8EqX8UJ9s6toEUruFrIf6B1aSFyW4YYjWf4pSdcDeqPFmDQ3DcbGgSvRppj
-         pYtIBN/Rm0ABylagetFdP7qphp4RMAPRgoZYWl5/k11tZ16tx62+c6ySL5dSEkVSkbg7
-         LF6Sq4l/iLQAxy5F/q4eROYuxnzUVIiiUN0y5gs1H1cgVnOVy3DLJVZXSiycWVXSUnDo
-         YVa9/A5E+nPgH/8F2aE9QIOiCc62yMXjN2yznWB0fgs0cX3LkueNW72bHD87yZaXFHCJ
-         kwYQ0x7nt2j9XLYJibhVv3yhlEKPgI43jmiP4/QIKstqZqDCUmMfkxwUEWuDy1PiN3iT
-         VInA==
-X-Gm-Message-State: AOAM533l9sUXS+F5E+iYALUZsshhjziC5LdsFpcaDqThg8nK9kMQ7SsB
-        Dlp7nprr/P1X4tB4F9Qd/s+uTg==
-X-Google-Smtp-Source: ABdhPJwNoj3YqVLpIvr86EesTfK7j0NfYhZD74Zo1vS33U/TjjIPnrqrAU2LRkP5QexaxBFNGQ6mcQ==
-X-Received: by 2002:a17:90a:8b07:: with SMTP id y7mr439343pjn.78.1617142514280;
-        Tue, 30 Mar 2021 15:15:14 -0700 (PDT)
-Received: from localhost (201.59.83.34.bc.googleusercontent.com. [34.83.59.201])
-        by smtp.gmail.com with UTF8SMTPSA id q66sm124518pja.27.2021.03.30.15.15.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 15:15:13 -0700 (PDT)
-From:   Fritz Koenig <frkoenig@chromium.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, tiffany.lin@mediatek.com,
-        acourbot@chromium.org
-Cc:     Fritz Koenig <frkoenig@chromium.org>
-Subject: [PATCH] media: mtk-vcodec: vdec: Reduce padding in VIDIOC_TRY_FMT
-Date:   Tue, 30 Mar 2021 22:15:06 +0000
-Message-Id: <20210330221506.2278606-1-frkoenig@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        id S232879AbhC3WRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 18:17:21 -0400
+Received: from mail-dm6nam11on2041.outbound.protection.outlook.com ([40.107.223.41]:7745
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232429AbhC3WQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 18:16:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mUFEBc36EtD7ikrkIolbQ5iTFDWVh0tTQuN291PCYc1Z42wMQ4GgIKD3wARDw4AtOd7am0/pKoVMTfBv9HW8AxkUEuNBOehUNMj0fWivEniKdgc+3tIMbEuGytU8NDgtmwGL4t7D3p5BTeSdaOKkPI2WtZINvT8lmCK7obh6DngCHWsIS7hBfedXTriSZtNyucbYuNbhGjdooJhnhhdVG9S+8zZWcvTEAQVWpH1/0yyQLb7K6HPG0aHk+MT54Av6SNd7hzuJ8PBH5qXVRnPMjncAGZqv1miYsa+yKTJnC/5thCj72BrW2bV8DUYbF384Qtas+Tiig+/C9F9rHb4Frg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1V944gmzVtD/owcMbKJQPd+bzIabd4ZGL/Zbm1mhLQw=;
+ b=dDllQNBXuL5nkeVs0HoUz0ysIi5oOhWO0DnG9LjU/QqEduPLbN9b2BzV0PTl51ZKPsKRL8e2zv9z38qvcuoXj4DNRxW+aVn/7lp4TXSGGANw16yW7w9JhCf+sDXP7wfax4kWMi/xNli1xIalf15GsA4ctHD6tsDlq54Azc+a6AQPXgVJkpcpxYy23ytRVQGpUwxRE2nAP9AKBu0cc4Nj1me1mULyDt8wVna9tNOadk0ZAKzUHljUit8H36mBgQMosi92mB9pkvktuU5A8pVaD2iyUvSAYE7MzGtTpg6C7d4WLuoy1QqpWHNBUjYGJhb/vBwbWzB8WEHPMzXXSWSUGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1V944gmzVtD/owcMbKJQPd+bzIabd4ZGL/Zbm1mhLQw=;
+ b=pQF7/GO9niWmzLt42Lx67ScTwNPmMC7L5YD7qIcPQiRrLZmKUBkOmzpRT6eItGA3FKBtj5WXysF5HivTlUc+3VWu1ItbcT8nzaj4Nz1STty+U2P0Nm7iE/Di+AHMk+rX+ko9ZQu4fdCA3g/6t0kRwz5+EqCPsMICOlntJ31y9Vxoql5TalWo14fLRL+QHY47QLm83wwipvjFD1MJ+q6Dti0JL8xxdcti6YzPcblLoEkMy+uvMr9KKZv4NORBY5+JBmbX+332ntFttJx+Gv6fm4vt4bV9avA5QAEIBGfAVSEojntElDT/U4FxR61VG7Kk7u8aQq/gqFaYY1l3DZcgXA==
+Received: from BN0PR04CA0160.namprd04.prod.outlook.com (2603:10b6:408:eb::15)
+ by BY5PR12MB4917.namprd12.prod.outlook.com (2603:10b6:a03:1d1::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
+ 2021 22:16:47 +0000
+Received: from BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:eb:cafe::b5) by BN0PR04CA0160.outlook.office365.com
+ (2603:10b6:408:eb::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend
+ Transport; Tue, 30 Mar 2021 22:16:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT007.mail.protection.outlook.com (10.13.177.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 22:16:46 +0000
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
+ 2021 22:16:43 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <dri-devel@lists.freedesktop.org>
+CC:     Jason Gunthorpe <jgg@nvidia.com>, <rcampbell@nvidia.com>,
+        <willy@infradead.org>, <linux-doc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <hch@infradead.org>,
+        <linux-mm@kvack.org>, <jglisse@redhat.com>, <bskeggs@redhat.com>,
+        <jhubbard@nvidia.com>, <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
+Date:   Wed, 31 Mar 2021 09:16:41 +1100
+Message-ID: <1636116.HIPWbOE89B@nvdebian>
+In-Reply-To: <12442194.rtmf8Ope3M@nvdebian>
+References: <20210326000805.2518-1-apopple@nvidia.com> <20210330184903.GZ2356281@nvidia.com> <12442194.rtmf8Ope3M@nvdebian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 24ef6f3a-4dbc-44c4-91e3-08d8f3c98222
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4917:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB4917D1F58C38E60D7384941ADF7D9@BY5PR12MB4917.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k94x7HdsFN4Nl3HsK5alCJgrIEvED+WSxKucYmCQg8B0y80/fWCSWbwakClfJZVKnlgmsGIKKMY1JHizP4uQMRUxvs4hVKorMzJp0LfL2Tqahppuq7KAbwKeAcPc8x8oOcd+q8hnadK9W/tPF2negjIHm8LsE/YN9+NzY6fJXQOkNisYVMo7nJgrZMn+2Kza3ALlpRxSsYgpN7XK9zLjPiaPuWyB2zKzHCJRrpMZhaqVCJlFp3AoSOwSfj3zpK5W/H1zAPxaNAuu7pwLy2HLpM6pXodMTPkvi4hU3jMx5f/V2Itv5VchKS4x1d6AJys5ecAtkyr4ykRMI0GXHzzYNmWAEtdl6/yluOlhUFKPWPy03e2i8n3Z5knrZsTxFt5IXfSnnkTSYlGC7RE+XcTyMaeHl+LBKrMxjhwN8C3415TEPmmBAGSXFcwcFCV7lgx1rpIgXOId6+1ECs38EUz6De5oVmCuIqRVnOiDzrB2FpEPqC6J1QCLg8i3oPYVMexovsu7KSYUXvGj08nkuRT6BdyvzptNIaJpPhrD1OIIl4SnWHLdbcxdiQoWj7Cr41S9ZQWqLKxhP29aSsnqCFLnTF6ykZX1Cn/psVdRgSNa+V9Ucb78xZq+0DsPA72PkIUYrNwvM3PUdZH2oEZvlC+cxQx25e9lnXaG+fDbJJdlOXqxfKcdqVeZ8x6Y/FB55p88
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(36840700001)(46966006)(8936002)(966005)(7636003)(36860700001)(33716001)(5660300002)(36906005)(47076005)(54906003)(186003)(82310400003)(2906002)(478600001)(82740400003)(9686003)(86362001)(6916009)(4326008)(70586007)(336012)(426003)(316002)(83380400001)(8676002)(26005)(16526019)(70206006)(7416002)(356005)(9576002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 22:16:46.8705
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24ef6f3a-4dbc-44c4-91e3-08d8f3c98222
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4917
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the header has been parsed or the codec is stateless
-reduce the padding of the decoded frame.
-In stateless codecs width and height are specified by
-the application.
+On Wednesday, 31 March 2021 9:09:30 AM AEDT Alistair Popple wrote:
+> On Wednesday, 31 March 2021 5:49:03 AM AEDT Jason Gunthorpe wrote:
+> > On Fri, Mar 26, 2021 at 11:08:00AM +1100, Alistair Popple wrote:
 
-Signed-off-by: Fritz Koenig <frkoenig@chromium.org>
----
- .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 59 ++++++++++++-------
- 1 file changed, 39 insertions(+), 20 deletions(-)
+<snip>
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-index 56d86e59421e..9c88454dc10c 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-@@ -653,7 +653,7 @@ static int vidioc_vdec_subscribe_evt(struct v4l2_fh *fh,
- 	}
- }
- 
--static int vidioc_try_fmt(struct v4l2_format *f,
-+static int vidioc_try_fmt(struct v4l2_format *f, void *priv,
- 			  const struct mtk_video_fmt *fmt)
- {
- 	struct v4l2_pix_format_mplane *pix_fmt_mp = &f->fmt.pix_mp;
-@@ -665,6 +665,7 @@ static int vidioc_try_fmt(struct v4l2_format *f,
- 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
- 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
- 		int tmp_w, tmp_h;
-+		struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
- 
- 		pix_fmt_mp->height = clamp(pix_fmt_mp->height,
- 					MTK_VDEC_MIN_H,
-@@ -673,27 +674,45 @@ static int vidioc_try_fmt(struct v4l2_format *f,
- 					MTK_VDEC_MIN_W,
- 					MTK_VDEC_MAX_W);
- 
-+		tmp_w = pix_fmt_mp->width;
-+		tmp_h = pix_fmt_mp->height;
-+
-+		if (ctx->dev->vdec_pdata->uses_stateless_api ||
-+			ctx->state >= MTK_STATE_HEADER) {
-+			v4l_bound_align_image(&pix_fmt_mp->width,
-+						MTK_VDEC_MIN_W,
-+						MTK_VDEC_MAX_W, 4,
-+						&pix_fmt_mp->height,
-+						MTK_VDEC_MIN_H,
-+						MTK_VDEC_MAX_H, 5, 6);
-+
-+			if (pix_fmt_mp->width < tmp_w &&
-+				(pix_fmt_mp->width + 16) <= MTK_VDEC_MAX_W)
-+				pix_fmt_mp->width += 16;
-+			if (pix_fmt_mp->height < tmp_h &&
-+				(pix_fmt_mp->height + 32) <= MTK_VDEC_MAX_H)
-+				pix_fmt_mp->height += 32;
-+		} else {
- 		/*
--		 * Find next closer width align 64, heign align 64, size align
-+		 * Find next closer width align 64, height align 64, size align
- 		 * 64 rectangle
- 		 * Note: This only get default value, the real HW needed value
- 		 *       only available when ctx in MTK_STATE_HEADER state
- 		 */
--		tmp_w = pix_fmt_mp->width;
--		tmp_h = pix_fmt_mp->height;
--		v4l_bound_align_image(&pix_fmt_mp->width,
--					MTK_VDEC_MIN_W,
--					MTK_VDEC_MAX_W, 6,
--					&pix_fmt_mp->height,
--					MTK_VDEC_MIN_H,
--					MTK_VDEC_MAX_H, 6, 9);
--
--		if (pix_fmt_mp->width < tmp_w &&
--			(pix_fmt_mp->width + 64) <= MTK_VDEC_MAX_W)
--			pix_fmt_mp->width += 64;
--		if (pix_fmt_mp->height < tmp_h &&
--			(pix_fmt_mp->height + 64) <= MTK_VDEC_MAX_H)
--			pix_fmt_mp->height += 64;
-+			v4l_bound_align_image(&pix_fmt_mp->width,
-+						MTK_VDEC_MIN_W,
-+						MTK_VDEC_MAX_W, 6,
-+						&pix_fmt_mp->height,
-+						MTK_VDEC_MIN_H,
-+						MTK_VDEC_MAX_H, 6, 9);
-+
-+			if (pix_fmt_mp->width < tmp_w &&
-+				(pix_fmt_mp->width + 64) <= MTK_VDEC_MAX_W)
-+				pix_fmt_mp->width += 64;
-+			if (pix_fmt_mp->height < tmp_h &&
-+				(pix_fmt_mp->height + 64) <= MTK_VDEC_MAX_H)
-+				pix_fmt_mp->height += 64;
-+		}
- 
- 		mtk_v4l2_debug(0,
- 			"before resize width=%d, height=%d, after resize width=%d, height=%d, sizeimage=%d",
-@@ -729,7 +748,7 @@ static int vidioc_try_fmt_vid_cap_mplane(struct file *file, void *priv,
- 		fmt = mtk_vdec_find_format(f);
- 	}
- 
--	return vidioc_try_fmt(f, fmt);
-+	return vidioc_try_fmt(f, priv, fmt);
- }
- 
- static int vidioc_try_fmt_vid_out_mplane(struct file *file, void *priv,
-@@ -749,7 +768,7 @@ static int vidioc_try_fmt_vid_out_mplane(struct file *file, void *priv,
- 		return -EINVAL;
- 	}
- 
--	return vidioc_try_fmt(f, fmt);
-+	return vidioc_try_fmt(f, priv, fmt);
- }
- 
- static int vidioc_vdec_g_selection(struct file *file, void *priv,
-@@ -875,7 +894,7 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
- 		return -EINVAL;
- 
- 	q_data->fmt = fmt;
--	vidioc_try_fmt(f, q_data->fmt);
-+	vidioc_try_fmt(f, priv, q_data->fmt);
- 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
- 		q_data->sizeimage[0] = pix_mp->plane_fmt[0].sizeimage;
- 		q_data->coded_width = pix_mp->width;
--- 
-2.31.0.291.g576ba9dcdaf-goog
+> > So what clears PG_mlocked on this call path?
+> 
+> See munlock_vma_page(). munlock works by clearing PG_mlocked, then calling 
+> try_to_munlock to check if any VMAs still need it locked in which case 
+> PG_mlocked gets set again. There are no other callers of try_to_munlock().
+> 
+> > Something needs attention here..
+> 
+> I think the code is correct, but perhaps the naming could be better. Would be 
+> interested hearing any thoughts on renaming try_to_munlock() to try_to_mlock() 
+> as the current name appears based on the context it is called from (munlock) 
+> rather than what it does (mlock).
+
+Actually Documentation/vm/unevictable-lru.rst contains a better suggestion:
+
+try_to_munlock() Reverse Map Scan
+---------------------------------
+
+.. warning::
+   [!] TODO/FIXME: a better name might be page_mlocked() - analogous to the
+   page_referenced() reverse map walker.
+
+Thoughts on renaming try_to_unlock() -> page_mlocked() and try_to_munlock_one() -> page_mlock_one()?
+
+>  - Alistair
+> 
+> > Jason
+> > 
+> 
+> 
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> 
+
+
+
 
