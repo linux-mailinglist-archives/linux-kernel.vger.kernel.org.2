@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6A034DD9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91C634DDBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhC3Ber (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhC3BeP (ORCPT
+        id S230210AbhC3Bpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:45:54 -0400
+Received: from m176151.mail.qiye.163.com ([59.111.176.151]:41856 "EHLO
+        m176151.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhC3Bps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:34:15 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DD2C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:34:15 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id g10so5306103plt.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8A8If7oybmQFoEyCFbbgw0aizc2xKMTrL9mIp4UPDLA=;
-        b=jitl4f2XQUctjdUPCCbZajr3dY4HcAUyftf12BZnk9gT+ExyOyrfn1aeoQJ97WZv0F
-         OziPeisSf7nfUL7Vir9BOCH2pJ0XxVwB1H8xsIXQFZDnO6OkQaoxXASHwwKGvO2wAjMm
-         FPgUiUBYn8zXhTWWhrZ1y2FlZIk7LUO6kXJ4vzAp+pxcg48qeGgblFHxoorxNK5OTqDa
-         Ar76TxInftkgSBm46CJTsBm13wEPwKxMK42wjPYLc84bsm3TsVTGaSD88tANdPWVNzT/
-         34zNyPZ5NkE8fqvKkZ/LalogOaGJB456iDWehYkIyhzq495DhRaEeJd5KxIRH928s9LT
-         Cyrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8A8If7oybmQFoEyCFbbgw0aizc2xKMTrL9mIp4UPDLA=;
-        b=g3RQ5l4TOs9o35rZl0cfZENHbGA6qUhOHZ6G/QwVMBXhs7XAANrumgj1t1DGJUzfks
-         SHSPkUYPWVzNfH0aBKTl0exF5gekzZ1j5KNl71755ETtBX452OdRbaEbZu+PMplAzcr8
-         hHZuOhugrpRYTmBUIQ2fDyXclgWznmpeFq2mjsXXr6pwFuFlrTVl7igHDI53axvD7qNK
-         jznlDG01El4TgH54tZc1v/kMHzI+Ace8VYVNWmIxfYh3HZLU0ZMvbYSLCgmY9KMBLePb
-         LIGDgR/Vum+zh+m9yiWBul8cTaY9LwWHhiD+H8024slsDPeCh4gO0xOnS5Mk7KpfO6/w
-         Ku1A==
-X-Gm-Message-State: AOAM532uILNqOnORlPZnjLNXwcbu/aFYFhHx2O+4MchXY+xjoTcI1ANV
-        eS0NaYPoAvtGT1jF3JIwQ3HBEV2RB5Duvg==
-X-Google-Smtp-Source: ABdhPJzYWn5sEsuZHqydzJcwoR+ebQ0R+EoGQlVFKwWjvoaLyMtIay73TxhsG1977KSK5uO/wF6Mig==
-X-Received: by 2002:a17:90a:a603:: with SMTP id c3mr1821365pjq.107.1617068054533;
-        Mon, 29 Mar 2021 18:34:14 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id k27sm16752258pfg.95.2021.03.29.18.34.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 18:34:13 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>
-Subject: [PATCH] drm/msm: Fix removal of valid error case when checking speed_bin
-Date:   Tue, 30 Mar 2021 01:34:08 +0000
-Message-Id: <20210330013408.2532048-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 29 Mar 2021 21:45:48 -0400
+X-Greylist: delayed 683 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 21:45:47 EDT
+Received: from vivo.com (wm-11.qy.internal [127.0.0.1])
+        by m176151.mail.qiye.163.com (Hmail) with ESMTP id A2C0C481FE3;
+        Tue, 30 Mar 2021 09:34:22 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ADoALwDyDqqKqolXZoBMHqqQ.3.1617068062644.Hmail.wanjiabing@vivo.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <aric.cyr@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gYW1kOiBkaXNwbGF5OiBkYzogc3RydWN0IGRjX3N0YXRlIGlzIGRlY2xhcmVkIHR3aWNl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <CADnq5_PSnvFAcUt7T9q=L8v6sFGnLM72cot=Lq_+cs8cNHK5sg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from wanjiabing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 30 Mar 2021 09:34:22 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5LiH5a625YW1?= <wanjiabing@vivo.com>
+Date:   Tue, 30 Mar 2021 09:34:22 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTU9LSUtNHkhLT0oeVkpNSkxLTUNLTUlNQkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JT09DTUlKS01PN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6PxQ6Nww*Aj8KCjAKFBcjIRQ5NjMKCipVSFVKTUpMS01DS01IS01JVTMWGhIXVQwaFRESGhkS
+        FRw7DRINFFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSVlXWQgBWUFDTklCNwY+
+X-HM-Tid: 0a7880c477d393b5kuwsa2c0c481fe3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to
-access outside valid memory"), reworked the nvmem reading of
-"speed_bin", but in doing so dropped handling of the -ENOENT
-case which was previously documented as "fine".
-
-That change resulted in the db845c board display to fail to
-start, with the following error:
-
-adreno 5000000.gpu: [drm:a6xx_gpu_init] *ERROR* failed to read speed-bin (-2). Some OPPs may not be supported by hardware
-
-Thus, this patch simply re-adds the ENOENT handling so the lack
-of the speed_bin entry isn't fatal for display, and gets things
-working on db845c.
-
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
-Cc: Jordan Crouse <jcrouse@codeaurora.org>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: freedreno@lists.freedesktop.org
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: YongQin Liu <yongqin.liu@linaro.org>
-Reported-by: YongQin Liu <yongqin.liu@linaro.org>
-Fixes: 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to access outside valid memory")
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 690409ca8a186..cb2df8736ca85 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1406,7 +1406,13 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
- 	int ret;
- 
- 	ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
--	if (ret) {
-+	/*
-+	 * -ENOENT means that the platform doesn't support speedbin which is
-+	 * fine
-+	 */
-+	if (ret == -ENOENT) {
-+		return 0;
-+	} else if (ret) {
- 		DRM_DEV_ERROR(dev,
- 			      "failed to read speed-bin (%d). Some OPPs may not be supported by hardware",
- 			      ret);
--- 
-2.25.1
-
+IAo+T24gU2F0LCBNYXIgMjcsIDIwMjEgYXQgMzoyOCBBTSBXYW4gSmlhYmluZyA8d2FuamlhYmlu
+Z0B2aXZvLmNvbT4gd3JvdGU6Cj4+Cj4+IHN0cnVjdCBkY19zdGF0ZSBoYXMgYmVlbiBkZWNsYXJl
+ZCBhdCAyNzNyZCBsaW5lLgo+PiBSZW1vdmUgdGhlIGR1cGxpY2F0ZS4KPj4gRGVsZXRlIGR1cGxp
+Y2F0ZSBibGFuayBsaW5lcy4KPgo+Q2FuIHlvdSBzcGxpdCB0aGVzZSBpbnRvIHNlcGFyYXRlIHBh
+dGNoZXM/Cj4KPkFsZXgKCk9LLiBCdXQgaW4gZmFjdCwgd2hhdCBJIGRpZCAgaXMgc2ltcGxlLgpU
+aGUgbW9zdCBpbXBvcnRhbnQgdGhpbmcgaXMgcmVtb3ZpbmcgdGhlIGR1cGxpY2F0ZQpzdHJ1Y3Qg
+ZGNfc3RhdGUgZGVjbGFyYXRpb24gYXQgNTg1dGggbGluZS4KT3RoZXJzIGFyZSBhbGwgZGVsZXRp
+bmcgZHVwbGljYXRlIGJsYW5rIGxpbmVzLgoKU28gbWF5YmUgSSBzaG91bGQgc2VuZCB0d28gcGF0
+Y2hzLCBvbmUgaXMgcmVtb3ZpbmcKZHVwbGljYXRlIGRlY2xhcmF0aW9uLCB0aGUgb3RoZXIgaXMg
+ZGVsZXRpbmcgYmxhbmsgbGluZXM/Cgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBXYW4gSmlhYmluZyA8
+d2FuamlhYmluZ0B2aXZvLmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Rpc3Bs
+YXkvZGMvZGMuaCB8IDEwIC0tLS0tLS0tLS0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAxMCBkZWxldGlv
+bnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvZGlzcGxheS9kYy9k
+Yy5oIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9kaXNwbGF5L2RjL2RjLmgKPj4gaW5kZXggMThlZDBk
+M2YyNDdlLi5kYzY2NzI5OGFiNWIgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQv
+ZGlzcGxheS9kYy9kYy5oCj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvZGlzcGxheS9kYy9k
+Yy5oCj4+IEBAIC0yMzQsNyArMjM0LDYgQEAgc3RydWN0IGRjX3N0YXRpY19zY3JlZW5fcGFyYW1z
+IHsKPj4gICAgICAgICB1bnNpZ25lZCBpbnQgbnVtX2ZyYW1lczsKPj4gIH07Cj4+Cj4+IC0KPj4g
+IC8qIFN1cmZhY2UgdXBkYXRlIHR5cGUgaXMgdXNlZCBieSBkY191cGRhdGVfc3VyZmFjZXNfYW5k
+X3N0cmVhbQo+PiAgICogVGhlIHVwZGF0ZSB0eXBlIGlzIGRldGVybWluZWQgYXQgdGhlIHZlcnkg
+YmVnaW5uaW5nIG9mIHRoZSBmdW5jdGlvbiBiYXNlZAo+PiAgICogb24gcGFyYW1ldGVycyBwYXNz
+ZWQgaW4gYW5kIGRlY2lkZXMgaG93IG11Y2ggcHJvZ3JhbW1pbmcgKG9yIHVwZGF0aW5nKSBpcwo+
+PiBAQCAtMjcyLDcgKzI3MSw2IEBAIHN0cnVjdCBkYzsKPj4gIHN0cnVjdCBkY19wbGFuZV9zdGF0
+ZTsKPj4gIHN0cnVjdCBkY19zdGF0ZTsKPj4KPj4gLQo+PiAgc3RydWN0IGRjX2NhcF9mdW5jcyB7
+Cj4+ICAgICAgICAgYm9vbCAoKmdldF9kY2NfY29tcHJlc3Npb25fY2FwKShjb25zdCBzdHJ1Y3Qg
+ZGMgKmRjLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgZGNfZGNjX3N1
+cmZhY2VfcGFyYW0gKmlucHV0LAo+PiBAQCAtMjgxLDcgKzI3OSw2IEBAIHN0cnVjdCBkY19jYXBf
+ZnVuY3Mgewo+Pgo+PiAgc3RydWN0IGxpbmtfdHJhaW5pbmdfc2V0dGluZ3M7Cj4+Cj4+IC0KPj4g
+IC8qIFN0cnVjdHVyZSB0byBob2xkIGNvbmZpZ3VyYXRpb24gZmxhZ3Mgc2V0IGJ5IGRtIGF0IGRj
+IGNyZWF0aW9uLiAqLwo+PiAgc3RydWN0IGRjX2NvbmZpZyB7Cj4+ICAgICAgICAgYm9vbCBncHVf
+dm1fc3VwcG9ydDsKPj4gQEAgLTU4MSw3ICs1NzgsNiBAQCBzdHJ1Y3QgZGNfYm91bmRpbmdfYm94
+X292ZXJyaWRlcyB7Cj4+ICAgICAgICAgaW50IG1pbl9kY2ZjbGtfbWh6Owo+PiAgfTsKPj4KPj4g
+LXN0cnVjdCBkY19zdGF0ZTsKClJlbW92aW5nIHRoZSBkdXBsaWNhdGUgaXMgaGVyZS4KQW5kIG90
+aGVycyBhcmUgYWxsIGRlbGV0aW5nIGR1cGxpY2F0ZSBibGFuayBsaW5lLgoKSSB0aGluayB0aGV5
+IGFyZSBpbiB0aGUgc2FtZSBmaWxlLiBJIHdhbnQgdG8gcmVtb3ZlIHRoZSBkZWNsYXJhdGlvbiBm
+aXJzdC4KQnkgdGhlIHdheSwgSSBkZWxldGVkIHRoZSBibGFuayBsaW5lLgoKWW91cnMsCldhbiBK
+aWFiaW5nCgo+PiAgc3RydWN0IHJlc291cmNlX3Bvb2w7Cj4+ICBzdHJ1Y3QgZGNlX2h3c2VxOwo+
+PiAgc3RydWN0IGdwdV9pbmZvX3NvY19ib3VuZGluZ19ib3hfdjFfMDsKPj4gQEAgLTc1Nyw3ICs3
+NTMsNiBAQCBlbnVtIGRjX3RyYW5zZmVyX2Z1bmNfcHJlZGVmaW5lZCB7Cj4+ICAgICAgICAgVFJB
+TlNGRVJfRlVOQ1RJT05fR0FNTUEyNgo+PiAgfTsKPj4KPj4gLQo+PiAgc3RydWN0IGRjX3RyYW5z
+ZmVyX2Z1bmMgewo+PiAgICAgICAgIHN0cnVjdCBrcmVmIHJlZmNvdW50Owo+PiAgICAgICAgIGVu
+dW0gZGNfdHJhbnNmZXJfZnVuY190eXBlIHR5cGU7Cj4+IEBAIC03NzAsNyArNzY1LDYgQEAgc3Ry
+dWN0IGRjX3RyYW5zZmVyX2Z1bmMgewo+PiAgICAgICAgIH07Cj4+ICB9Owo+Pgo+PiAtCj4+ICB1
+bmlvbiBkY18zZGx1dF9zdGF0ZSB7Cj4+ICAgICAgICAgc3RydWN0IHsKPj4gICAgICAgICAgICAg
+ICAgIHVpbnQzMl90IGluaXRpYWxpemVkOjE7ICAgICAgICAgLyppZiAzZGx1dCBpcyB3ZW50IHRo
+cm91Z2ggY29sb3IgbW9kdWxlIGZvciBpbml0aWFsaXphdGlvbiAqLwo+PiBAQCAtNzg0LDcgKzc3
+OCw2IEBAIHVuaW9uIGRjXzNkbHV0X3N0YXRlIHsKPj4gICAgICAgICB1aW50MzJfdCByYXc7Cj4+
+ICB9Owo+Pgo+PiAtCj4+ICBzdHJ1Y3QgZGNfM2RsdXQgewo+PiAgICAgICAgIHN0cnVjdCBrcmVm
+IHJlZmNvdW50Owo+PiAgICAgICAgIHN0cnVjdCB0ZXRyYWhlZHJhbF9wYXJhbXMgbHV0XzNkOwo+
+PiBAQCAtMTAxNCw3ICsxMDA3LDYgQEAgZW51bSBkY19zdGF0dXMgZGNfdmFsaWRhdGVfZ2xvYmFs
+X3N0YXRlKAo+PiAgICAgICAgICAgICAgICAgc3RydWN0IGRjX3N0YXRlICpuZXdfY3R4LAo+PiAg
+ICAgICAgICAgICAgICAgYm9vbCBmYXN0X3ZhbGlkYXRlKTsKPj4KPj4gLQo+PiAgdm9pZCBkY19y
+ZXNvdXJjZV9zdGF0ZV9jb25zdHJ1Y3QoCj4+ICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qg
+ZGMgKmRjLAo+PiAgICAgICAgICAgICAgICAgc3RydWN0IGRjX3N0YXRlICpkc3RfY3R4KTsKPj4g
+QEAgLTExNjcsNyArMTE1OSw2IEBAIHN0cnVjdCBkY19jb250YWluZXJfaWQgewo+PiAgICAgICAg
+IHVuc2lnbmVkIHNob3J0IHByb2R1Y3RDb2RlOwo+PiAgfTsKPj4KPj4gLQo+PiAgc3RydWN0IGRj
+X3NpbmtfZHNjX2NhcHMgewo+PiAgICAgICAgIC8vICd0cnVlJyBpZiB0aGVzZSBhcmUgdmlydHVh
+bCBEUENEJ3MgRFNDIGNhcHMgKGltbWVkaWF0ZWx5IHVwc3RyZWFtIG9mIHNpbmsgaW4gTVNUIHRv
+cG9sb2d5KSwKPj4gICAgICAgICAvLyAnZmFsc2UnIGlmIHRoZXkgYXJlIHNpbmsncyBEU0MgY2Fw
+cwo+PiBAQCAtMTIyOSw3ICsxMjIwLDYgQEAgc3RydWN0IGRjX2N1cnNvciB7Cj4+ICAgICAgICAg
+c3RydWN0IGRjX2N1cnNvcl9hdHRyaWJ1dGVzIGF0dHJpYnV0ZXM7Cj4+ICB9Owo+Pgo+PiAtCj4+
+ICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKgo+PiAgICogSW50ZXJydXB0IGludGVyZmFjZXMKPj4g
+ICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKiovCj4+IC0tCj4+IDIuMjUuMQo+Pgo+PiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBkcmktZGV2ZWwgbWFpbGlu
+ZyBsaXN0Cj4+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPj4gaHR0cHM6Ly9saXN0
+cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwKDQoNCg==
