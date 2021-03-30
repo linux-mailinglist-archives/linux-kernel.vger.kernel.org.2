@@ -2,176 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A734EEAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5EA34EEC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhC3RAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:00:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232057AbhC3RAE (ORCPT
+        id S232638AbhC3RA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:00:59 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46728 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhC3RAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:00:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617123604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B0vVMg9k0YjpgfgyL9kNDxIlNvROcSIN75h8ppPeHB4=;
-        b=iYf2CfoExEUdGVpgYq5g5Oa7wi9paFyWs9OtjDZe0AbIvFFatFvT0FZdl10MIbucNuVEq9
-        s+fjo/yYzc+4umN7KxSTY12fwHfLR/Ri5nK/9xrgjrp2RWOcIsA7EKKPFIl9ujcG2vt9su
-        cKVqenhVtPLZA/FWOLr0A5Ca5nS8f8c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-THHn_JaANhmvpe1Nb5-TXg-1; Tue, 30 Mar 2021 13:00:02 -0400
-X-MC-Unique: THHn_JaANhmvpe1Nb5-TXg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9E67190A7A3;
-        Tue, 30 Mar 2021 17:00:00 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FEC963B8C;
-        Tue, 30 Mar 2021 17:00:00 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     mtosatti@redhat.com, vkuznets@redhat.com, dwmw@amazon.co.uk,
-        syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com
-Subject: [PATCH 2/2] KVM: x86: disable interrupts while pvclock_gtod_sync_lock is taken
-Date:   Tue, 30 Mar 2021 12:59:58 -0400
-Message-Id: <20210330165958.3094759-3-pbonzini@redhat.com>
-In-Reply-To: <20210330165958.3094759-1-pbonzini@redhat.com>
-References: <20210330165958.3094759-1-pbonzini@redhat.com>
+        Tue, 30 Mar 2021 13:00:47 -0400
+Received: by mail-ot1-f47.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso16193092ott.13;
+        Tue, 30 Mar 2021 10:00:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GrRt3u7iqTFYKYQM2kMqnl4TPPvQxpiAG7TTBqlqQcY=;
+        b=SUvdubfcuobp6viiZFjLvFggNNsSllcy6DzV0ka1Ep+I000Q52ZOKzBEGpUXd5RH5C
+         wXsCCXDc9Esu40/RaTBhpC0BvK5Cc2KtETE6ows1X6LntO4wsqN8oey4ff1+TeX4e1ef
+         RsRxGgkOrjO551hPt+Qfu8SkJcHFF37z6BGzwXHvXc6wLC8dGPSfIimfwrT++O9lLQ71
+         HJno3G6zns7h+YhHRPbUjCw+OX523ZoHgESpfgvnKs0Z2Q4ipV4hWLdUUSQZmbGC36B8
+         KGT/XFWYPKr6qdKoudHHnGLbqDSkONI+Zm2T7Wongyn+4A9RWyO0t1niiArQIipGDZDM
+         1lhw==
+X-Gm-Message-State: AOAM5319S6u/OwUz0vTPPcatNsf7P3PRS2AmsBwdNc8n4UcK2z8GOuov
+        iO0M9eMr1Xc1KNMkxHmPIFYkqPhFNeovnvC055c=
+X-Google-Smtp-Source: ABdhPJz+lW82gZmQ0GMHD4FdEDFEY51f8BcLrLAWfgu86kEPKK44Q3AH1fe7Dl5zN+oDsSjCsVO2M430UPrtd5vx+BA=
+X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr27637560otq.260.1617123646616;
+ Tue, 30 Mar 2021 10:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+ <1616831193-17920-5-git-send-email-tanxiaofei@huawei.com> <6df04be78e544e17b3b57f159312541f@AcuMS.aculab.com>
+ <34dd3de8-644d-6e44-965a-0991b7027cae@huawei.com> <b5ad5909f3fb14b46d6ff0f81c10e42507a60c74.camel@intel.com>
+ <af3fd5adb62dcac93f2ff4ea7b6aff74d0106ac5.camel@intel.com> <6df8e01e2e9e4906be5ceaea72c61c0f@AcuMS.aculab.com>
+In-Reply-To: <6df8e01e2e9e4906be5ceaea72c61c0f@AcuMS.aculab.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 30 Mar 2021 19:00:31 +0200
+Message-ID: <CAJZ5v0hz8dadumTTDbe6+xyNBMhkTLq6C60U+=Ec44WxL2Jdxw@mail.gmail.com>
+Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by __packed
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pvclock_gtod_sync_lock can be taken with interrupts disabled if the
-preempt notifier calls get_kvmclock_ns to update the Xen
-runstate information:
+On Tue, Mar 30, 2021 at 10:15 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Zhang Rui
+> > Sent: 30 March 2021 09:00
+> > To: Xiaofei Tan <tanxiaofei@huawei.com>; David Laight <David.Laight@ACULAB.COM>; rjw@rjwysocki.net;
+> > lenb@kernel.org; bhelgaas@google.com
+> > Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
+> > linuxarm@openeuler.org
+> > Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by __packed
+> >
+> > On Tue, 2021-03-30 at 15:31 +0800, Zhang Rui wrote:
+> > > On Tue, 2021-03-30 at 10:23 +0800, Xiaofei Tan wrote:
+> > > > Hi David,
+> > > >
+> > > > On 2021/3/29 18:09, David Laight wrote:
+> > > > > From: Xiaofei Tan
+> > > > > > Sent: 27 March 2021 07:46
+> > > > > >
+> > > > > > Replace __attribute__((packed)) by __packed following the
+> > > > > > advice of checkpatch.pl.
+> > > > > >
+> > > > > > Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> > > > > > ---
+> > > > > >  drivers/acpi/acpi_fpdt.c | 6 +++---
+> > > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/acpi/acpi_fpdt.c
+> > > > > > b/drivers/acpi/acpi_fpdt.c
+> > > > > > index a89a806..690a88a 100644
+> > > > > > --- a/drivers/acpi/acpi_fpdt.c
+> > > > > > +++ b/drivers/acpi/acpi_fpdt.c
+> > > > > > @@ -53,7 +53,7 @@ struct resume_performance_record {
+> > > > > >       u32 resume_count;
+> > > > > >       u64 resume_prev;
+> > > > > >       u64 resume_avg;
+> > > > > > -} __attribute__((packed));
+> > > > > > +} __packed;
+> > > > > >
+> > > > > >  struct boot_performance_record {
+> > > > > >       struct fpdt_record_header header;
+> > > > > > @@ -63,13 +63,13 @@ struct boot_performance_record {
+> > > > > >       u64 bootloader_launch;
+> > > > > >       u64 exitbootservice_start;
+> > > > > >       u64 exitbootservice_end;
+> > > > > > -} __attribute__((packed));
+> > > > > > +} __packed;
+> > > > > >
+> > > > > >  struct suspend_performance_record {
+> > > > > >       struct fpdt_record_header header;
+> > > > > >       u64 suspend_start;
+> > > > > >       u64 suspend_end;
+> > > > > > -} __attribute__((packed));
+> > > > > > +} __packed;
+> > > > >
+> > > > > My standard question about 'packed' is whether it is actually
+> > > > > needed.
+> > > > > It should only be used if the structures might be misaligned in
+> > > > > memory.
+> > > > > If the only problem is that a 64bit item needs to be 32bit
+> > > > > aligned
+> > > > > then a suitable type should be used for those specific fields.
+> > > > >
+> > > > > Those all look very dubious - the standard header isn't packed
+> > > > > so everything must eb assumed to be at least 32bit aligned.
+> > > > >
+> > > > > There are also other sub-structures that contain 64bit values.
+> > > > > These don't contain padding - but that requires 64bit alignement.
+> > > > >
+> > > > > The only problematic structure is the last one - which would have
+> > > > > a 32bit pad after the header.
+> > > > > Is this even right given than there are explicit alignment pads
+> > > > > in some of the other structures.
+> > > > >
+> > > > > If 64bit alignment isn't guaranteed then a '64bit aligned to
+> > > > > 32bit'
+> > > > > type should be used for the u64 fields.
+> > > > >
+> > > >
+> > > > Yes, some of them has been aligned already, then nothing changed
+> > > > when
+> > > > add this "packed ". Maybe the purpose of the original author is
+> > > > for
+> > > > extension, and can tell others that this struct need be packed.
+> > > >
+> > >
+> > > The patch is upstreamed recently but it was made long time ago.
+> > > I think the original problem is that one of the address, probably the
+> > > suspend_performance record, is not 64bit aligned, thus we can not
+> > > read
+> > > the proper content of suspend_start and suspend_end, mapped from
+> > > physical memory.
+> > >
+> > > I will try to find a machine to reproduce the problem with all
+> > > __attribute__((packed)) removed to double confirm this.
+> > >
+> >
+> > So here is the problem, without __attribute__((packed))
+> >
+> > [    0.858442] suspend_record: 0xffffaad500175020
+> > /sys/firmware/acpi/fpdt/suspend/suspend_end_ns:addr:
+> > 0xffffaad500175030, 15998179292659843072
+> > /sys/firmware/acpi/fpdt/suspend/suspend_start_ns:addr:
+> > 0xffffaad500175028, 0
+> >
+> > suspend_record is mapped to 0xffffaad500175020, and it is combined with
+> > one 32bit header and two 64bit fields (suspend_start and suspend_end),
+> > this is how it is located in physical memory.
+> > So the addresses of the two 64bit fields are actually not 64bit
+> > aligned.
+> >
+> > David,
+> > Is this the "a 64bit item needs to be 32bit aligned" problem you
+> > referred?
+> > If yes, what is the proper fix? should I used two 32bits for each of
+> > the field instead?
+>
+> Define something like:
+> typedef u64 __attribute__((aligned(4))) u64_align32;
+> and then use it for the 64bit structure members.
+>
+> There doesn't seem to be a standard type name for it - although
+> it is used in several places.
+>
+> I'm not entirely sure but is ACPI always LE?
 
-   spin_lock include/linux/spinlock.h:354 [inline]
-   get_kvmclock_ns+0x25/0x390 arch/x86/kvm/x86.c:2587
-   kvm_xen_update_runstate+0x3d/0x2c0 arch/x86/kvm/xen.c:69
-   kvm_xen_update_runstate_guest+0x74/0x320 arch/x86/kvm/xen.c:100
-   kvm_xen_runstate_set_preempted arch/x86/kvm/xen.h:96 [inline]
-   kvm_arch_vcpu_put+0x2d8/0x5a0 arch/x86/kvm/x86.c:4062
+Yes.
 
-So change the users of the spinlock to spin_lock_irqsave and
-spin_unlock_irqrestore.
+> (is it even x86 only??)
 
-Reported-by: syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com
-Fixes: 30b5c851af79 ("KVM: x86/xen: Add support for vCPU runstate information")
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0a83eff40b43..2bfd00da465f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2329,7 +2329,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 	kvm_vcpu_write_tsc_offset(vcpu, offset);
- 	raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
- 
--	spin_lock(&kvm->arch.pvclock_gtod_sync_lock);
-+	spin_lock_irqsave(&kvm->arch.pvclock_gtod_sync_lock, flags);
- 	if (!matched) {
- 		kvm->arch.nr_vcpus_matched_tsc = 0;
- 	} else if (!already_matched) {
-@@ -2337,7 +2337,7 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 	}
- 
- 	kvm_track_tsc_matching(vcpu);
--	spin_unlock(&kvm->arch.pvclock_gtod_sync_lock);
-+	spin_unlock_irqrestore(&kvm->arch.pvclock_gtod_sync_lock, flags);
- }
- 
- static inline void adjust_tsc_offset_guest(struct kvm_vcpu *vcpu,
-@@ -2559,15 +2559,16 @@ static void kvm_gen_update_masterclock(struct kvm *kvm)
- 	int i;
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_arch *ka = &kvm->arch;
-+	unsigned long flags;
- 
- 	kvm_hv_invalidate_tsc_page(kvm);
- 
- 	kvm_make_mclock_inprogress_request(kvm);
- 
- 	/* no guest entries from this point */
--	spin_lock(&ka->pvclock_gtod_sync_lock);
-+	spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
- 	pvclock_update_vm_gtod_copy(kvm);
--	spin_unlock(&ka->pvclock_gtod_sync_lock);
-+	spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm)
- 		kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
-@@ -2582,17 +2583,18 @@ u64 get_kvmclock_ns(struct kvm *kvm)
- {
- 	struct kvm_arch *ka = &kvm->arch;
- 	struct pvclock_vcpu_time_info hv_clock;
-+	unsigned long flags;
- 	u64 ret;
- 
--	spin_lock(&ka->pvclock_gtod_sync_lock);
-+	spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
- 	if (!ka->use_master_clock) {
--		spin_unlock(&ka->pvclock_gtod_sync_lock);
-+		spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
- 		return get_kvmclock_base_ns() + ka->kvmclock_offset;
- 	}
- 
- 	hv_clock.tsc_timestamp = ka->master_cycle_now;
- 	hv_clock.system_time = ka->master_kernel_ns + ka->kvmclock_offset;
--	spin_unlock(&ka->pvclock_gtod_sync_lock);
-+	spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
- 
- 	/* both __this_cpu_read() and rdtsc() should be on the same cpu */
- 	get_cpu();
-@@ -2686,13 +2688,13 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
- 	 * If the host uses TSC clock, then passthrough TSC as stable
- 	 * to the guest.
- 	 */
--	spin_lock(&ka->pvclock_gtod_sync_lock);
-+	spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
- 	use_master_clock = ka->use_master_clock;
- 	if (use_master_clock) {
- 		host_tsc = ka->master_cycle_now;
- 		kernel_ns = ka->master_kernel_ns;
- 	}
--	spin_unlock(&ka->pvclock_gtod_sync_lock);
-+	spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
- 
- 	/* Keep irq disabled to prevent changes to the clock */
- 	local_irq_save(flags);
-@@ -7724,6 +7726,7 @@ static void kvm_hyperv_tsc_notifier(void)
- 	struct kvm *kvm;
- 	struct kvm_vcpu *vcpu;
- 	int cpu;
-+	unsigned long flags;
- 
- 	mutex_lock(&kvm_lock);
- 	list_for_each_entry(kvm, &vm_list, vm_list)
-@@ -7739,9 +7742,9 @@ static void kvm_hyperv_tsc_notifier(void)
- 	list_for_each_entry(kvm, &vm_list, vm_list) {
- 		struct kvm_arch *ka = &kvm->arch;
- 
--		spin_lock(&ka->pvclock_gtod_sync_lock);
-+		spin_lock_irqsave(&ka->pvclock_gtod_sync_lock, flags);
- 		pvclock_update_vm_gtod_copy(kvm);
--		spin_unlock(&ka->pvclock_gtod_sync_lock);
-+		spin_unlock_irqrestore(&ka->pvclock_gtod_sync_lock, flags);
- 
- 		kvm_for_each_vcpu(cpu, vcpu, kvm)
- 			kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
--- 
-2.26.2
-
+No.
