@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B3E34DF76
+	by mail.lfdr.de (Postfix) with ESMTP id 812E234DF77
 	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhC3Dgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:36:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12685 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhC3DgN (ORCPT
+        id S231197AbhC3Dgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhC3Dg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:36:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617075373; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=HnegzL6kgP1wk+tB6MY3REkS8nPIox6nxJ1CKMh4WkE=; b=h14EsbVcblt911A8t6qn6QsHSFFcO21afVZKW5zmkDJNHsAJbIivbngrmKvT7tg2t/NcJReI
- 4NpCoGIrTqLQOtlZZ7az4QyFctNFrfJ2fufiNVqiT25E84T2LPnjpi/xxmeBWwsntRjf7bY0
- MCamO2kvqwtNU+VsDIzPQv3Spz8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60629cac0a4a07ffda96b197 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 03:36:12
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A4034C43464; Tue, 30 Mar 2021 03:36:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.211.32.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EFF5C433CA;
-        Tue, 30 Mar 2021 03:36:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2EFF5C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH] drm/msm: Fix removal of valid error case when checking
- speed_bin
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>
-References: <20210330013408.2532048-1-john.stultz@linaro.org>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <06292101-9233-83df-942d-d49a4e53fc3e@codeaurora.org>
-Date:   Tue, 30 Mar 2021 09:06:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 29 Mar 2021 23:36:26 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850B4C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:36:25 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id x16so7545679qvk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5oFbwfLQwyYfYwndfNuhqzfmnicAmT4eTuezCa87hZ8=;
+        b=Ig+y6Y+c1gyTxgnPBQWPhpOyXg4OoXKv2BE4qr6DHkGfLyEyHrKOUH7MGn1otpkWcN
+         kyE/XgUxXw2odCG9cs8Z01SbUYyCaZ5Lu35u7upzKgWerIlCX9tcG+ej8dGbF4oft59o
+         Jz45nZZMBILlzNrBpaIkRVJbA0/irRVXLZ8M5ZS6fbuk1zvqLF+xmgeATsd8G2M9wchi
+         ZqQaXZAQqhmisluHGosx2pBeGVINB4/GAWUybfaWEiIDOJmmYrmqzWrCWg05rXXqsEwA
+         DRvVz8/su4/18C7RTUF8HDL18/u0ZvAZd8OvyXlYSmkfecn/kES13pwqea31yuVPL438
+         0pHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5oFbwfLQwyYfYwndfNuhqzfmnicAmT4eTuezCa87hZ8=;
+        b=PCmz0vg5+fr1HyAa5Qpf/jBadtiRd85psa6V+sqnyy5xtW9AbsE7nSyPcNC61Icxz1
+         QEOWYZk+2dhQiS98op0Tb9N8UV8IQjNQSRe9y3qmvnqInocoAY1VOERudevz6E7+vKd8
+         UuuN1m7GL3xL38auzS00zj+WG4kYm8f2dUaObDHLCfXrDyc9/Zrjj3J1IlxIOLT5fd0U
+         B/ptjArjforeKVx3cwFop6UbkvUKnNmBx+9oQTR/v1FMCMWoCQ37k3DlqsqoBftTgRdI
+         pnsAgzU9ha8TCeg0r0G3MzSn0afOMrvrFmCxNiqggy+QjDDkMzxkAmMSqrfXk+1TdeCL
+         n8bg==
+X-Gm-Message-State: AOAM532Q4bie2OFvcaV9t7MVVpxNVwchd7J5muwxcdfRNBBkcYVx2z0k
+        8In0WIW/VWfSnbXGhoeOsJ2Lpm3WZk5jdEJEGyh+/w==
+X-Google-Smtp-Source: ABdhPJycQJX/y0PAtsFp+YXjKCTZ+dLVuREDX7kiJ+wyKRjUQUcZEbZpXPSdS3GtQqa6UBU6KpvoUU+fWG5o791GvQ0=
+X-Received: by 2002:a0c:e9c7:: with SMTP id q7mr28188265qvo.7.1617075384531;
+ Mon, 29 Mar 2021 20:36:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210330013408.2532048-1-john.stultz@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1615954045.git.greentime.hu@sifive.com> <91d016e59bab9d9175168a63e7bcd81fdb69b549.1615954046.git.greentime.hu@sifive.com>
+ <161704524201.3012082.13807741329367593907@swboyd.mtv.corp.google.com>
+In-Reply-To: <161704524201.3012082.13807741329367593907@swboyd.mtv.corp.google.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Tue, 30 Mar 2021 11:36:12 +0800
+Message-ID: <CAHCEehL63aJQPA3DdRCa3pZHWX3DH9ktgKbo1+nD=KWxADsogA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] clk: sifive: Use reset-simple in prci driver for
+ PCIe driver
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     alex.dewar90@gmail.com, Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        devicetree@vger.kernel.org, Erik Danie <erik.danie@sifive.com>,
+        hayashi.kunihiko@socionext.com, Bjorn Helgaas <helgaas@kernel.org>,
+        hes@sifive.com, jh80.chung@samsung.com, khilman@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        lorenzo.pieralisi@arm.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        vidyas@nvidia.com, Zong Li <zong.li@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/2021 7:04 AM, John Stultz wrote:
-> Commit 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to
-> access outside valid memory"), reworked the nvmem reading of
-> "speed_bin", but in doing so dropped handling of the -ENOENT
-> case which was previously documented as "fine".
-> 
-> That change resulted in the db845c board display to fail to
-> start, with the following error:
-> 
-> adreno 5000000.gpu: [drm:a6xx_gpu_init] *ERROR* failed to read speed-bin (-2). Some OPPs may not be supported by hardware
-> 
-> Thus, this patch simply re-adds the ENOENT handling so the lack
-> of the speed_bin entry isn't fatal for display, and gets things
-> working on db845c.
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: Jordan Crouse <jcrouse@codeaurora.org>
-> Cc: Eric Anholt <eric@anholt.net>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: freedreno@lists.freedesktop.org
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: YongQin Liu <yongqin.liu@linaro.org>
-> Reported-by: YongQin Liu <yongqin.liu@linaro.org>
-> Fixes: 7bf168c8fe8c  ("drm/msm: Fix speed-bin support not to access outside valid memory")
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 690409ca8a186..cb2df8736ca85 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1406,7 +1406,13 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
->   	int ret;
->   
->   	ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
-> -	if (ret) {
-> +	/*
-> +	 * -ENOENT means that the platform doesn't support speedbin which is
-> +	 * fine
-> +	 */
-> +	if (ret == -ENOENT) {
-> +		return 0;
-> +	} else if (ret) {
->   		DRM_DEV_ERROR(dev,
->   			      "failed to read speed-bin (%d). Some OPPs may not be supported by hardware",
->   			      ret);
-> 
+Stephen Boyd <sboyd@kernel.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8830=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=883:14=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Quoting Greentime Hu (2021-03-17 23:08:09)
+> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> > index 71ab75a46491..f094df93d911 100644
+> > --- a/drivers/reset/Kconfig
+> > +++ b/drivers/reset/Kconfig
+> > @@ -173,7 +173,7 @@ config RESET_SCMI
+> >
+> >  config RESET_SIMPLE
+> >         bool "Simple Reset Controller Driver" if COMPILE_TEST
+> > -       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REAL=
+TEK || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC
+> > +       default ARCH_AGILEX || ARCH_ASPEED || ARCH_BITMAIN || ARCH_REAL=
+TEK || ARCH_STM32 || ARCH_STRATIX10 || ARCH_SUNXI || ARCH_ZX || ARC || RISC=
+V
+>
+> This conflicts. Can this default be part of the riscv defconfig instead?
+>
 
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Maybe I should remove this since it has been selected by CLK_SIFIVE_PRCI?
 
-This looks "fine" to me. ;)
+ config CLK_SIFIVE_PRCI
+        bool "PRCI driver for SiFive SoCs"
++       select RESET_CONTROLLER
++       select RESET_SIMPLE
 
--Akhil.
+> >         help
+> >           This enables a simple reset controller driver for reset lines=
+ that
+> >           that can be asserted and deasserted by toggling bits in a con=
+tiguous,
+> > @@ -187,6 +187,7 @@ config RESET_SIMPLE
+> >            - RCC reset controller in STM32 MCUs
+> >            - Allwinner SoCs
+> >            - ZTE's zx2967 family
+> > +          - SiFive FU740 SoCs
+> >
+> >  config RESET_STM32MP157
+> >         bool "STM32MP157 Reset Driver" if COMPILE_TEST
