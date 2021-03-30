@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CC334F287
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C04634F28D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhC3Uwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:52:49 -0400
-Received: from st43p00im-ztbu10063701.me.com ([17.58.63.178]:56490 "EHLO
-        st43p00im-ztbu10063701.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232658AbhC3Uwa (ORCPT
+        id S232507AbhC3UyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhC3Uxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:52:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1617137549; bh=D4dih7IDfleZeM1jkz2mIoV9uzt0mlpafIv8IABeh0E=;
-        h=From:To:Subject:Date:Message-Id;
-        b=ovzsUzFw534t7A4Noz29IwkdjyUQTn2qpX36nXkA3UlTZBAqYfcBQXpUb16qj802A
-         BuY62HOe0s5UkhIgfaeB+jGzN6l8dsi91CnaNF6zdJ6BLTkDASA0TGu3fj1C7CkJ8I
-         O8BaQNBsSrv4fwZ+J3nRIUtYtd4FxQn2HuAdeN9pFfIU1rqlSa7CcbFX5wZaOypsLr
-         psnRoWdyZ+32jYbPHjMHH1fsODvebL9YF06jKN39Im1EbvC4PCh6C2b32ckh0KrRPS
-         fmrzFJuE1BzulHbHmnKiPP4AmRYC0xykG+QBZRE/S3szohx3/0nupMbNdJRjOmGnOe
-         iNaPCHK7mp0LA==
-Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-ztbu10063701.me.com (Postfix) with ESMTPSA id 2C2D99A0182;
-        Tue, 30 Mar 2021 20:52:27 +0000 (UTC)
-From:   Alain Volmat <avolmat@me.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
-Subject: [PATCH v3 7/7] dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
-Date:   Tue, 30 Mar 2021 22:51:25 +0200
-Message-Id: <20210330205125.25708-8-avolmat@me.com>
+        Tue, 30 Mar 2021 16:53:43 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC98BC061574;
+        Tue, 30 Mar 2021 13:53:41 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id s21so8396794pjq.1;
+        Tue, 30 Mar 2021 13:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=76Ftwc6j0K5A0mdhCxE35QoW2mVgwaH1Lt+VHIxvLcE=;
+        b=Xs33hE/uq+i7i05sdlY1p4nl+mEWK9rmNggt1oqffM7UMa+sAHYsFw3w9v6ReFViOK
+         PILw0yc/9qUNvp4sBCOFa9ITYvIkaAG0d2s1XrYNMhvw1djyn3hQVzq1DQQSgzg5hygY
+         HLintNu+m5cfEFGQlWFsFKpz5gNSz/fGKDlCGy+MchU71F2vpofB/34lvqUz0iIwZI4p
+         3flbBilRjtTyW3jC5V6TIpE1CxGSXIXJ5s1zSLdhR3qRKul4Zl6UiPqcEiZxnZgVgDJb
+         ji8r6U1hlxQWIbcuXXQ8fJxae/52xYDUCAaY/igmC5I9DI9RMFORgukd7ccp9fkG9oLb
+         UqIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=76Ftwc6j0K5A0mdhCxE35QoW2mVgwaH1Lt+VHIxvLcE=;
+        b=INS4+B/Saz2FCx7shpIgIgZA0DcYC4BZzQ7DCNmI7vajkJrW9wySQdqL6Zys7UacNM
+         uZrD//2dlAU1zSY3YF/sMkjbQAWpFGEO0pU5PpSmTnbSlF1Cqh3p14ecLQV8e7WjFl59
+         kTMHGuD1SvVfBGOrJZyMLvuvyC/9rDRWFCavO1C4w3eeM1/kflDy8X3JGZhFecS9SP9T
+         VmlgF2TiPSraDUWCev9DPZxTGcirOIsqzKd0B/LnBzWRHOs1KlI5uV8Q7ryR0q5spcgA
+         zL6DT/JR0sqT+QRNqyAeCMnNHFHJ7c8Qyzm4m/yRUnggrHwSxBTw7WYuq9vkRHWs9cBF
+         F4YQ==
+X-Gm-Message-State: AOAM531tGhYWegdFCm/aHR7+DHMbfoYIdnmWjhw8ZWVCpQx+4E3j+W7b
+        mnUcbH7fbI1JMe7TAfUl9u8LqO67cWHnCA==
+X-Google-Smtp-Source: ABdhPJwUjuJTIOCOPZKJifMZmhD87LnB9We54yGCEzll7ZIcimiVPqhJskN/NOLFeEebbRsY3yaCUA==
+X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr181610pjd.212.1617137620933;
+        Tue, 30 Mar 2021 13:53:40 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:d1c0:d79d:e260:a650])
+        by smtp.googlemail.com with ESMTPSA id fh19sm35622pjb.33.2021.03.30.13.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 13:53:40 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org, aaro.koskinen@iki.fi, tony@atomide.com,
+        linux@armlinux.org.uk,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH] ARM: OMAP1: fix incorrect kernel-doc comment syntax in file
+Date:   Wed, 31 Mar 2021 02:23:30 +0530
+Message-Id: <20210330205330.26345-1-yashsri421@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210330205125.25708-1-avolmat@me.com>
-References: <20210330205125.25708-1-avolmat@me.com>
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
- =?UTF-8?Q?=3D2021-03-30=5F12:2021-03-30=5F01,2021-03-30=5F12,2020-04-07?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 spamscore=0
- clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103300152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New compatible are added, supporting various kind of clkgen-fsyn
-used for STiH407, STiH410 and STiH418
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+The header for arch/arm/mach-omap1/timer.c follows this syntax, but the
+content inside does not comply with kernel-doc.
 
-Signed-off-by: Alain Volmat <avolmat@me.com>
+This line was probably not meant for kernel-doc parsing, but is parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warning from kernel-doc:
+"warning: expecting prototype for OMAP1 Dual(). Prototype was for OMAP1610_GPTIMER1_BASE() instead"
+
+Provide a simple fix by replacing this occurrence with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 ---
- Documentation/devicetree/bindings/clock/st/st,quadfs.txt | 3 +++
- 1 file changed, 3 insertions(+)
+* Applies perfectly on next-20210326
 
-diff --git a/Documentation/devicetree/bindings/clock/st/st,quadfs.txt b/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-index d93d49342e60..c4ba2adb0b4f 100644
---- a/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-+++ b/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-@@ -12,6 +12,9 @@ This binding uses the common clock binding[1].
- Required properties:
- - compatible : shall be:
-   "st,quadfs"
-+  "st,quadfs-d0"
-+  "st,quadfs-d2"
-+  "st,quadfs-d3"
-   "st,quadfs-pll"
- 
- 
+ arch/arm/mach-omap1/timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-omap1/timer.c b/arch/arm/mach-omap1/timer.c
+index 97fc2096b970..0411d5508d63 100644
+--- a/arch/arm/mach-omap1/timer.c
++++ b/arch/arm/mach-omap1/timer.c
+@@ -1,4 +1,4 @@
+-/**
++/*
+  * OMAP1 Dual-Mode Timers - platform device registration
+  *
+  * Contains first level initialization routines which internally
 -- 
 2.17.1
 
