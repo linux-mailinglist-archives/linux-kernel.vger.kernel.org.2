@@ -2,146 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D87D34F1EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6693734F263
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhC3UBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbhC3UBM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:01:12 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E72C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:01:11 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 15so21335219ljj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:01:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iUQpi+sJY96M0oTRItdYRMKHG3+VxUz+t6vY8dGmO+U=;
-        b=oeUZ5mND0ZbBb92my2vpif9MOmzQpXmPHa6ESdE9DoEgmJ+f4n7aaHY2hH2cLOqBU5
-         lVvw3oI5Hub03dWw0BPaeUYp7WteB8Z+ilsGDG0uvhCNa0btjGOj4iqHeXlIKIh2AqM3
-         HMOgo3bj2JQddAe6BV9FPcySj7NAFx4dwvGTQHf3a30b44vc8Vpc/9QkLiUDRuMchM0k
-         zrxWJ4f6fkYlf0ube1r+3OFxfH05Nf0v9t/1zeHq26DG7zOuAjK/m1t0GVOiC3DM5hjt
-         iSsfM4b2LKDhF+tTotxIuu8AzYxnN/Tv5JkVaPgMIgPArL+cQSbK9IzJQvEkhuszTrYy
-         FdpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iUQpi+sJY96M0oTRItdYRMKHG3+VxUz+t6vY8dGmO+U=;
-        b=jsD0QJfAEgITXpR/CgqCOMBZKh6iLHcT5PVWXguhITtGoYLF7Oy6GkUsPV5orqhls3
-         Jpfn+rrbbEhVNs0PpMVLXjGX20HXUClAPZhaMkjG5RqVKGra+Yf0cgJHRmDqE8+F3lRM
-         EbaxCmTl9oudEATKQlPXg294/PMfVsvtnSXK7jIWJWNpJ7CQksKb6h+yd4DarAihJkhK
-         lg7XujjlXVX9BDZmeauDv7ExR7rjtWWFq/nBCJZeiqBQqqhkmyDqlPD1HzXBzz3Olgk0
-         Md8634/pKj2j3ARlpzeBxwq/jtjxUpIrIyV0EYmsK7sPm25hYP0iJxhxJdSaIyVzrgeO
-         /RTQ==
-X-Gm-Message-State: AOAM531q3UZOxDgcrQeZpdkmKjolEQz3KzaLfKqAXO4Uf8fOtDPbxxuF
-        LSzHavdmUvSmnUtgGmc21gl4wyRgsplLAluBRGExNQ==
-X-Google-Smtp-Source: ABdhPJz3sX1eTQm5fKKV5RmJJoxAuSmvn4gDPlEJ/96820aGiIae+uwCS6EeIvCfqacZ4jbrc/sDWj9KXHXzdKtgdwI=
-X-Received: by 2002:a2e:8196:: with SMTP id e22mr22326561ljg.398.1617134470053;
- Tue, 30 Mar 2021 13:01:10 -0700 (PDT)
+        id S232466AbhC3Uqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:46:38 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38591 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232286AbhC3UqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 16:46:02 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lRLFQ-0007z3-00; Tue, 30 Mar 2021 22:46:00 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 32656C1E48; Tue, 30 Mar 2021 22:02:08 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 22:02:08 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] MIPS: uaccess: Added __get/__put_kernel_nofault
+Message-ID: <20210330200208.GA18146@alpha.franken.de>
+References: <20210330172702.146909-1-tsbogend@alpha.franken.de>
+ <20210330172702.146909-2-tsbogend@alpha.franken.de>
+ <20210330174835.GA15145@lst.de>
 MIME-Version: 1.0
-References: <20210322215823.962758-1-cfijalkovich@google.com>
- <CAPhsuW4RK9-yWrFmoUzi09bquxr_K16LqeZBYWoJXM0t=qo+Gw@mail.gmail.com>
- <CAL+PeoGfCmbMSEYgaJNPHWfLvmmXJGaEM5G6rFstKzhTeY=2yw@mail.gmail.com> <2E59E29C-E04D-417C-9B2B-7F0F7D5E43EA@fb.com>
-In-Reply-To: <2E59E29C-E04D-417C-9B2B-7F0F7D5E43EA@fb.com>
-From:   Collin Fijalkovich <cfijalkovich@google.com>
-Date:   Tue, 30 Mar 2021 13:00:59 -0700
-Message-ID: <CAL+PeoHXNjcgR=te+WnkGGMiGyqqdparX+HH8K2KCK0CV9sUKg@mail.gmail.com>
-Subject: Re: [PATCH] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330174835.GA15145@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There will be an immediate performance hit when the file is opened for
-write, as its associated pages are removed from the page cache. While
-the writer is present there will be the usual overhead of using 4kB
-pages instead of THPs, but there should not be an additional penalty.
-It is problematic if a file is repeatedly opened for write, as it will
-need to refault each time.
+On Tue, Mar 30, 2021 at 07:48:35PM +0200, Christoph Hellwig wrote:
+> On Tue, Mar 30, 2021 at 07:26:58PM +0200, Thomas Bogendoerfer wrote:
+> > Added __get/__put_kernel_nofault as preparation for removing
+> > get/set_fs.
+> 
+> For !CONFIG_EVA __get_user_common is simply defined to
+> __get_kernel_common, which probably does the wrong thing here
+> as it would allow access to user space addresses, won't it?
 
-- Collin
+it does, so I'm missing a copy_from_kernel_nofault_allowed() function,
+which only allows kernel access, right ?
 
+Thomas.
 
-On Sun, Mar 28, 2021 at 9:45 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Mar 23, 2021, at 10:13 AM, Collin Fijalkovich <cfijalkovich@google.c=
-om> wrote:
-> >
-> > Question: when we use this on shared library, the library is still
-> > writable. When the
-> > shared library is opened for write, these pages will refault in as 4kB
-> > pages, right?
-> >
-> > That's correct, while a file is opened for write it will refault into 4=
-kB pages and block use of THPs. Once all writers complete (i_writecount <=
-=3D0), the file can fault into THPs again and khugepaged can collapse exist=
-ing page ranges provided that it can successfully allocate new huge pages.
->
-> Will it be a problem if a slow writer (say a slow scp) writes to the
-> shared library while the shared library is in use?
->
-> Thanks,
-> Song
->
-> >
-> > From,
-> > Collin
-> >
-> > On Mon, Mar 22, 2021 at 4:55 PM Song Liu <song@kernel.org> wrote:
-> > On Mon, Mar 22, 2021 at 3:00 PM Collin Fijalkovich
-> > <cfijalkovich@google.com> wrote:
-> > >
-> > > Transparent huge pages are supported for read-only non-shmem filesyst=
-ems,
-> > > but are only used for vmas with VM_DENYWRITE. This condition ensures =
-that
-> > > file THPs are protected from writes while an application is running
-> > > (ETXTBSY).  Any existing file THPs are then dropped from the page cac=
-he
-> > > when a file is opened for write in do_dentry_open(). Since sys_mmap
-> > > ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
-> > > produced by execve().
-> > >
-> > > Systems that make heavy use of shared libraries (e.g. Android) are un=
-able
-> > > to apply VM_DENYWRITE through the dynamic linker, preventing them fro=
-m
-> > > benefiting from the resultant reduced contention on the TLB.
-> > >
-> > > This patch reduces the constraint on file THPs allowing use with any
-> > > executable mapping from a file not opened for write (see
-> > > inode_is_open_for_write()). It also introduces additional conditions =
-to
-> > > ensure that files opened for write will never be backed by file THPs.
-> >
-> > Thanks for working on this. We could also use this in many data center
-> > workloads.
-> >
-> > Question: when we use this on shared library, the library is still
-> > writable. When the
-> > shared library is opened for write, these pages will refault in as 4kB
-> > pages, right?
-> >
-> > Thanks,
-> > Song
->
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
