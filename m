@@ -2,156 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53C534EE4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF94934EE4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 18:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhC3QqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 12:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbhC3Qpf (ORCPT
+        id S232527AbhC3Qq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 12:46:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25377 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhC3Qpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:45:35 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9208FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id o16so16947391wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 09:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uz14qCHZq/y+AEQD2BFCO5D/bv58/eQYEWwciVDmJV0=;
-        b=f5gkaYxVEOCiEvwK6U8ED+UTYbM2Ba3BGGvrV3BckVAhqlrmRnVV7hoqEyNT+DLzAo
-         4zXGREeAaaEF5X7Lj/cOHHgpl81hPCUqRYsY1+Kaiwb7nPAopPvo50GlJXi2ed+LXODW
-         33b8Dkt1xocOuU220zpdLaSNYbtijq872BON/KVFNXwMvzJajXZN5T0WDlQNweZjSeUQ
-         f9pJ+90htMsE1L1pAX8Cfn8cCyDMjvrFVvFIDWUewI1s/u+3tK1DYsBgkVHlcKimjIl7
-         KMIpLhm/jYaczyPT9H9oelr9OkSpxc4oJkC8DgJYwooZhvqw/Cuz/szZFtVXr8tlz70s
-         DKHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uz14qCHZq/y+AEQD2BFCO5D/bv58/eQYEWwciVDmJV0=;
-        b=b37rrnz680dIK8LQeiI/ewmy97NhvZ50LrB16kEV4Coq8T3Sc9a9JciQJyjY3/++rR
-         K9jx3F3SldGdmnrJYv0i3X+F9/vxj4vNK/01M7cC4671dfgXbzDNUyb/6caGVFHPbmkn
-         tOo+nYbxRaZuT0LVsrUH+wB0Uu2dBrfGls+DPFkYlIvEuFZLJ+OjQX46FfzWXWz8H813
-         1AKmWssS2auoNhjt09NazaNny3rxwZyl+bGf6jHTetNyQp6u6PaBvry1lu1OJ69mOt1+
-         taBOsN717pUsm5cZBsXdqDLoUwkP7KUaGIDEH/j6rkvkMCzwABImYA2nGvOUDj3uTzNv
-         aTxA==
-X-Gm-Message-State: AOAM530e0XRUSo+hFapipbuXgsRSB19oUdaIrUzC8eSTG5FP+89SinDY
-        cGUHiGqf48m1zzt7gKSgnT9uqA==
-X-Google-Smtp-Source: ABdhPJyGrZfBIzzakXqKtJE1THh6cIxN+OYeF2/SGeyVZIiD616dKTd6ftSdxsaiQB5iQlAuDkfrsg==
-X-Received: by 2002:a5d:5411:: with SMTP id g17mr35042074wrv.194.1617122732308;
-        Tue, 30 Mar 2021 09:45:32 -0700 (PDT)
-Received: from dell.default ([91.110.221.217])
-        by smtp.gmail.com with ESMTPSA id a15sm25660805wrr.53.2021.03.30.09.45.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 09:45:31 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
-        "Michael A. Halcrow" <mhalcrow@us.ibm.com>,
-        "Michael C. Thompson" <mcthomps@us.ibm.com>,
-        "Trevor S. Highland" <trevor.highland@gmail.com>,
-        ecryptfs@vger.kernel.org
-Subject: [PATCH 31/31] fs: ecryptfs: keystore: Fix some kernel-doc issues and demote non-conformant headers
-Date:   Tue, 30 Mar 2021 17:44:58 +0100
-Message-Id: <20210330164458.1625478-32-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210330164458.1625478-1-lee.jones@linaro.org>
-References: <20210330164458.1625478-1-lee.jones@linaro.org>
+        Tue, 30 Mar 2021 12:45:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617122738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zzc2KTIEFsB3osEymwowtqBBc0fZZdXcHQvsko2yUzo=;
+        b=T/JBsC2ImjM4bYtOMs7VZnTt0UmqPSmm6JMCWjj9ZdXKzbN/k/pn8/2fwxG5fk/ovJSdx6
+        MvEUw4Br6hqJfm9NlrJLGtjfapcoiSe84KcopZrauixshlDOPVe0R0Nfr4b07ziqPqTTP4
+        0FcANRFYEAt5t0NlvrHMliRRgm30YgM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-ljLN9JOIOR-Zyrx8eNaKZg-1; Tue, 30 Mar 2021 12:45:36 -0400
+X-MC-Unique: ljLN9JOIOR-Zyrx8eNaKZg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 944E71005D64;
+        Tue, 30 Mar 2021 16:45:34 +0000 (UTC)
+Received: from omen (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36EB75C1D1;
+        Tue, 30 Mar 2021 16:45:34 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 10:45:33 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>, jgg@nvidia.com,
+        daniel.m.jordan@oracle.com
+Subject: [GIT PULL] VFIO fixes for v5.12-rc6
+Message-ID: <20210330104533.4ab8d840@omen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi Linus,
 
- fs/ecryptfs/keystore.c:25: warning: Incorrect use of kernel-doc format:  * request_key returned an error instead of a valid key address;
- fs/ecryptfs/keystore.c:30: warning: Function parameter or member 'err_code' not described in 'process_request_key_err'
- fs/ecryptfs/keystore.c:30: warning: expecting prototype for eCryptfs(). Prototype was for process_request_key_err() instead
- fs/ecryptfs/keystore.c:558: warning: Function parameter or member 'auth_tok_key' not described in 'ecryptfs_find_auth_tok_for_sig'
- fs/ecryptfs/keystore.c:558: warning: Function parameter or member 'mount_crypt_stat' not described in 'ecryptfs_find_auth_tok_for_sig'
- fs/ecryptfs/keystore.c:558: warning: Excess function parameter 'crypt_stat' description in 'ecryptfs_find_auth_tok_for_sig'
- fs/ecryptfs/keystore.c:584: warning: cannot understand function prototype: 'struct ecryptfs_write_tag_70_packet_silly_stack '
- fs/ecryptfs/keystore.c:622: warning: Function parameter or member 'dest' not described in 'ecryptfs_write_tag_70_packet'
- fs/ecryptfs/keystore.c:622: warning: Function parameter or member 'remaining_bytes' not described in 'ecryptfs_write_tag_70_packet'
- fs/ecryptfs/keystore.c:622: warning: Function parameter or member 'packet_size' not described in 'ecryptfs_write_tag_70_packet'
- fs/ecryptfs/keystore.c:622: warning: Function parameter or member 'mount_crypt_stat' not described in 'ecryptfs_write_tag_70_packet'
- fs/ecryptfs/keystore.c:622: warning: Function parameter or member 'filename_size' not described in 'ecryptfs_write_tag_70_packet'
- fs/ecryptfs/keystore.c:622: warning: expecting prototype for write_tag_70_packet(). Prototype was for ecryptfs_write_tag_70_packet() instead
- fs/ecryptfs/keystore.c:895: warning: expecting prototype for parse_tag_70_packet(). Prototype was for ecryptfs_parse_tag_70_packet() instead
+The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
 
-Cc: Tyler Hicks <code@tyhicks.com>
-Cc: "Michael A. Halcrow" <mhalcrow@us.ibm.com>
-Cc: "Michael C. Thompson" <mcthomps@us.ibm.com>
-Cc: "Trevor S. Highland" <trevor.highland@gmail.com>
-Cc: ecryptfs@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- fs/ecryptfs/keystore.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
 
-diff --git a/fs/ecryptfs/keystore.c b/fs/ecryptfs/keystore.c
-index 2abd219cfeec6..3fe41964c0d8d 100644
---- a/fs/ecryptfs/keystore.c
-+++ b/fs/ecryptfs/keystore.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  * In-kernel key management code.  Includes functions to parse and
-  * write authentication token-related packets with the underlying
-@@ -21,7 +21,7 @@
- #include <linux/slab.h>
- #include "ecryptfs_kernel.h"
- 
--/**
-+/*
-  * request_key returned an error instead of a valid key address;
-  * determine the type of error, make appropriate log entries, and
-  * return an error code.
-@@ -536,8 +536,9 @@ ecryptfs_find_global_auth_tok_for_sig(
- 
- /**
-  * ecryptfs_find_auth_tok_for_sig
-+ * @auth_tok_key: key containing the authentication token
-  * @auth_tok: Set to the matching auth_tok; NULL if not found
-- * @crypt_stat: inode crypt_stat crypto context
-+ * @mount_crypt_stat: inode crypt_stat crypto context
-  * @sig: Sig of auth_tok to find
-  *
-  * For now, this function simply looks at the registered auth_tok's
-@@ -576,7 +577,7 @@ ecryptfs_find_auth_tok_for_sig(
- 	return rc;
- }
- 
--/**
-+/*
-  * write_tag_70_packet can gobble a lot of stack space. We stuff most
-  * of the function's parameters in a kmalloc'd struct to help reduce
-  * eCryptfs' overall stack usage.
-@@ -604,7 +605,7 @@ struct ecryptfs_write_tag_70_packet_silly_stack {
- 	struct shash_desc *hash_desc;
- };
- 
--/**
-+/*
-  * write_tag_70_packet - Write encrypted filename (EFN) packet against FNEK
-  * @filename: NULL-terminated filename string
-  *
-@@ -873,7 +874,7 @@ struct ecryptfs_parse_tag_70_packet_silly_stack {
- };
- 
- /**
-- * parse_tag_70_packet - Parse and process FNEK-encrypted passphrase packet
-+ * ecryptfs_parse_tag_70_packet - Parse and process FNEK-encrypted passphrase packet
-  * @filename: This function kmalloc's the memory for the filename
-  * @filename_size: This function sets this to the amount of memory
-  *                 kmalloc'd for the filename
--- 
-2.27.0
+are available in the Git repository at:
+
+  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.12-rc6
+
+for you to fetch changes up to e0146a108ce4d2c22b9510fd12268e3ee72a0161:
+
+  vfio/nvlink: Add missing SPAPR_TCE_IOMMU depends (2021-03-29 14:48:00 -0600)
+
+----------------------------------------------------------------
+VFIO fixes for v5.12-rc6
+
+ - Fix pfnmap batch carryover (Daniel Jordan)
+
+ - Fix nvlink Kconfig dependency (Jason Gunthorpe)
+
+----------------------------------------------------------------
+Daniel Jordan (1):
+      vfio/type1: Empty batch for pfnmap pages
+
+Jason Gunthorpe (1):
+      vfio/nvlink: Add missing SPAPR_TCE_IOMMU depends
+
+ drivers/vfio/pci/Kconfig        | 2 +-
+ drivers/vfio/vfio_iommu_type1.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
