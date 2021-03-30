@@ -2,195 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D40F34DF2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1E834DF2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhC3DUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhC3DUP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:20:15 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96721C061762;
-        Mon, 29 Mar 2021 20:20:15 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 61137292;
-        Tue, 30 Mar 2021 05:20:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617074412;
-        bh=0NCp+oS2yKHTWjY6V/e8YEJ2x/cpePCidqcLVOSx/Ug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X1cIigPh06lUcidHJUmLtkjbiPA3sgVfOJIsKTGjPeVnum59B5AGGaHhOEKGZ1hjX
-         2r0IwKTffjqKZv695+SZwMqd4a/1lAzurdBWno5ODxg1DOUhIIpcoBf5hovxv1y6gG
-         nApwpOspq0zFAYQkJLdymwm+g1WqxUGUJnK4u/Z8=
-Date:   Tue, 30 Mar 2021 06:19:28 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but
- only if refclk
-Message-ID: <YGKYwJf/7kWlaoDD@pendragon.ideasonboard.com>
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
- <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
- <YE0ru4JpXfX/4Awe@pendragon.ideasonboard.com>
- <CAD=FV=UY_S8jPkXwK6AGs99XrE=pno2sCgLE7qcPWfmoyYVXiw@mail.gmail.com>
- <YFEnKgwEOWdeQBK6@pendragon.ideasonboard.com>
- <CAD=FV=W5fpyEf4AqJ+dZ7i_rD_PE40MyNsYNydhPi4BHkEfQcQ@mail.gmail.com>
- <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
+        id S230495AbhC3DU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:20:57 -0400
+Received: from mail-eopbgr760073.outbound.protection.outlook.com ([40.107.76.73]:17839
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229483AbhC3DUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 23:20:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TC3eh1ApKy7qPdMPrJBs/69s4b7T35K7o6TTGtZ02y92uoaky6de6rApmMeRIAUxYxBpDUOmCfY/xqOSfVQ/H2fqLPqDfpimLnRXz+w28czUDir1DlhQIoPqWiM2XMDur/Crhs4HfVfk40XN93Bx3gUHGpFep34ArERUtjmTagNDLEDf2+Qv1ZrvX8lJbAqH0rCFohxfjM+bA9jPT1vPCUAHvALAs4i7eH3qtETstCDj5GczESjEjez1OyygKcvZLfc55eZSSJ3HM9qHjZEdlqWGEpJTB2eFGG1TpYWZ9FNyEzDkWXy0WvHzmTw1B92IDfGw9hf96AzLj7zL353WeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oCxrKQA0/2AtF2r0V2I14Clr9EaHc4xtm/hMf7FLdgs=;
+ b=jDFGcVuMHXIew5As+vpefS55tJVzBjI9DQDq2TPv30IXZYYSeunbqG9O3lANsoZ+BNkibUkcNlKwrZJDnSqmhaMQFEcsVm4v/GYbt2IxgR14wHClhwwK4Rq2z6GeD2nwcQTx9AC5IScAjkZ6OkgAQLxwvd34x81bBTvmTfUvjdkt/+WZ5TPFFA0wZPTolepWc0UwkVBmomGycQ//IRgMMoOuBu1bSrLxLemNPEwPqyhu8d49HtEmL7ankKm/zSZONmt7Rd24d+I19T1GBU78EuFWPuAG1Fmftd7HE7s4gnrsmaGyagFsMmzzPSkRAQ7h2YE1dS4NxTXTQpwx6ni/EA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oCxrKQA0/2AtF2r0V2I14Clr9EaHc4xtm/hMf7FLdgs=;
+ b=Cvs7YiRCq6Rnyby17v69M7FJb4I+OwTYE2HWrI59o12pD9h++lPak90TtaCSo24Mf3ndfJzVeBkPdEA2xeZ+O+sNAImHCPq0bzoxcv6JU/PM4JzH5sRLkmlOdTyHVXRJK5PyvsPT04llMhAX+MI31Y4CmtUD7B8ZUFnlyKJbfMs=
+Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BYAPR03MB4616.namprd03.prod.outlook.com (2603:10b6:a03:13c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Tue, 30 Mar
+ 2021 03:20:21 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%9]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 03:20:21 +0000
+Date:   Tue, 30 Mar 2021 11:20:15 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: ptdump: convert to DEFINE_SHOW_ATTRIBUTE
+Message-ID: <20210330112015.738f4365@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR13CA0200.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::25) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UOk-PUREc-UOPqUDuhPAEUsBfx0LOAQHd9KkLAhpr7Tg@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR13CA0200.namprd13.prod.outlook.com (2603:10b6:a03:2c3::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.14 via Frontend Transport; Tue, 30 Mar 2021 03:20:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ab9174c2-30ca-47ce-a0b2-08d8f32ac03f
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4616:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB46166C0B352B65C2C0D7E00BED7D9@BYAPR03MB4616.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:549;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GRLzgPUkTZOPAfi+cSuUrLra3e16innlPPxuTVO4skZZQddKRastx2NWP4MsIeiBSCx6tpsMnW5WV7RfLcEAsyyFphMrObafh1S3z+aLd4gSmFZn8TSsWloz0ZCqWsBobOw17sX6i4z3MkUYvhXk7yY1Wg4V5kqh2/uM5sLZ0gY+Bsc5quSr5KDEXz60oaukLSq/Pzi514WcE8hSSL+G8D1+AYsFZau48mvIJvwRewpVIoohbIi3h0bNrbFguBDmXRor2Vav+gVfZ0zlGT9BwgXqzZQriCaQd6FlsyoyBKhKNELVoygU16imJbe6U2CqDAFR8daSAS4ccSZy1r7iZbL9C3haDFyB9ZN2gv7TyCWwJwW27N77Uv5lAfu7bU1dd0UxgHgO/LYwPxVSpmzxQdChpMHLaErwsN8R23g1kd5gzFdAPIIszm4iswRjGoLiR4dzUreNmvSsp4XKIp6h84M3uJVt1dubEUzz5JrdaH3mnEYOa0D+lTNde9Qmb9Rq86YPyH8bokSo6GyRogeuIC7OHGZbFPY4HTq5ErMd0tjSIhM+hb2VqR30VcxsX8Fihr151AdRcTCSdgIxh7HRihXv1MdGkgk/PKeiZPWigmvOW8CA5vx7iedfHWM7xKNYgFwjs6O4QoHJjkVqdwSAUk/3JI5sD0d+SVprV0L+AZQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(86362001)(4326008)(2906002)(8676002)(83380400001)(478600001)(186003)(26005)(16526019)(6506007)(316002)(5660300002)(1076003)(7696005)(9686003)(956004)(66556008)(66476007)(66946007)(8936002)(55016002)(6666004)(52116002)(4744005)(38100700001)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9Bhwpom99nlM5uPLgGRHvCKT1skGA9fIP0n/X4KSLtQtRZLLrNzUmBeBDeyP?=
+ =?us-ascii?Q?FKYFJKKAQ8kXFuRC+sY5ecnv4u5JWjohOixRiPJgnwLMug0UTVnSUe0bB2Dn?=
+ =?us-ascii?Q?HkNR8EFHmDrbFJlFhT68r2fKHc+jRokhiPyRI+rWrqLpc1ajFur9LS1lOWbI?=
+ =?us-ascii?Q?UNHac+3npAkHQyAA91vBiBGQ4CcN0Xu1yWwUTmBLoTpJB6TdD+7Te9djYt4O?=
+ =?us-ascii?Q?8JP71mnW5/wLbI8UN1gqpBDt2iiWc+1a8n1CmRlNGvdWt4AP3dJbWnN5IfQm?=
+ =?us-ascii?Q?9jyt/5yIQ3YS9IRq+tPwSsree/6750uRcCmkodDtQKPYc2klwdftrI1d28OH?=
+ =?us-ascii?Q?zfBHwUuTuUokNE6+1JDNOaQ4JZUpZm7+BfGZqtl3kD+AUFx+pQT6UN4dUMQ9?=
+ =?us-ascii?Q?ydTS5B71G83/USdB6mtvh+lUAIKGQvjYMJ9V9CDJGXQeCza3MZDxmoQlQ8Mu?=
+ =?us-ascii?Q?u8XcCMK4d8pqUJk7thXuqRCzN67cN0PL+ENFSzqMGe5iKVCz6B03R5wH02Rc?=
+ =?us-ascii?Q?6lnnrXkc99drmJr4Gf6Yg9pxh27OPS3vWYTh8HmUi/P6Z73OCNlPjMFPPMJP?=
+ =?us-ascii?Q?LKFRyQwDYZBB1s4AiGFWKUQkb3tx/jI3brdfSFfhi/x7TsSGDrJA6ga4xNDT?=
+ =?us-ascii?Q?bVjTdu7aWCYEhrY5ciKhCgWvknQEklFXm8pZ55R+GQtW9NEbCw5C5xcl5WcD?=
+ =?us-ascii?Q?2S9cbYoTRLhJAsWqaWF4UB1g6j5iYj6PycwOe4KzKmFMi4fOmnxCaoOQXvTo?=
+ =?us-ascii?Q?tcEZFJ1VKE7jr72FJ7WiWH3dY4VBhi6p24X1zpiwQWjruaMigN9Il7+wUslL?=
+ =?us-ascii?Q?OaQZFiC8iwLzy3ADvsF8hxX4SyKZtv7BmbmQSKTE02rUm8v80w2Btav5Rtjz?=
+ =?us-ascii?Q?x8o1nO3pZ5h4XosNaWl1ntktimInf/e1sEbDqqKkU7HB2YdE6+BQec+PZhA+?=
+ =?us-ascii?Q?jBzjA1IhP9UnoiDrg0Yn7eV+VzRGlWZOkmAC5zUQHaTzCaSToZFi5NSJQlbX?=
+ =?us-ascii?Q?Ctwn7SGEZH3pMcwv2iyVF8Fzij7dLqR1BcAVgkxvKhWPsNL9lB8QA7Q2vfkm?=
+ =?us-ascii?Q?gjxm1VQ3DjM4lhRoe1iFYeuy8MRRYDiB1FeRJaDHzbyjGa1H7yep0dWBVVFJ?=
+ =?us-ascii?Q?i6yg6C0JpbNX9D416SvXptlot4nJYEMlSpLvTNwa5lKq+Isda7WQEv9cTiJI?=
+ =?us-ascii?Q?4XUvyCZPzechKjMNPCClQzY/X/6GZVSz3LDSTuYqOPqAreJKMU2GxJwu2R5M?=
+ =?us-ascii?Q?NtQ6uBwZnWyKnylBlBShlc5AOoTRBz1PF+HPoAxa/ykfjHOLXsUQCvJuKm/z?=
+ =?us-ascii?Q?1ExrPMrWR1if14fIAOiQojeX?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab9174c2-30ca-47ce-a0b2-08d8f32ac03f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 03:20:21.3666
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H9SMiYJwR+ywFm826gko5DlWA0mNkw9gluuFaNRBZNw/G4b28a+FK6izgZPupktM2LQSaChcejuxPEOwvQ5PNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4616
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-On Mon, Mar 29, 2021 at 07:57:05PM -0700, Doug Anderson wrote:
-> On Tue, Mar 16, 2021 at 5:44 PM Doug Anderson wrote:
-> > On Tue, Mar 16, 2021 at 2:46 PM Laurent Pinchart wrote:
-> > > On Mon, Mar 15, 2021 at 09:25:37AM -0700, Doug Anderson wrote:
-> > > > On Sat, Mar 13, 2021 at 1:17 PM Laurent Pinchart wrote:
-> > > > > On Thu, Mar 04, 2021 at 03:52:01PM -0800, Douglas Anderson wrote:
-> > > > > > In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
-> > > > > > DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
-> > > > > > EDID from the panel. That commit kinda worked but it had some serious
-> > > > > > problems.
-> > > > > >
-> > > > > > The problems all stem from the fact that userspace wants to be able to
-> > > > > > read the EDID before it explicitly enables the panel. For eDP panels,
-> > > > > > though, we don't actually power the panel up until the pre-enable
-> > > > > > stage and the pre-enable call happens right before the enable call
-> > > > > > with no way to interject in-between. For eDP panels, you can't read
-> > > > > > the EDID until you power the panel. The result was that
-> > > > > > ti_sn_bridge_connector_get_modes() was always failing to read the EDID
-> > > > > > (falling back to what drm_panel_get_modes() returned) until _after_
-> > > > > > the EDID was needed.
-> > > > > >
-> > > > > > To make it concrete, on my system I saw this happen:
-> > > > > > 1. We'd attach the bridge.
-> > > > > > 2. Userspace would ask for the EDID (several times). We'd try but fail
-> > > > > >    to read the EDID over and over again and fall back to the hardcoded
-> > > > > >    modes.
-> > > > > > 3. Userspace would decide on a mode based only on the hardcoded modes.
-> > > > > > 4. Userspace would ask to turn the panel on.
-> > > > > > 5. Userspace would (eventually) check the modes again (in Chrome OS
-> > > > > >    this happens on the handoff from the boot splash screen to the
-> > > > > >    browser). Now we'd read them properly and, if they were different,
-> > > > > >    userspace would request to change the mode.
-> > > > > >
-> > > > > > The fact that userspace would always end up using the hardcoded modes
-> > > > > > at first significantly decreases the benefit of the EDID
-> > > > > > reading. Also: if the modes were even a tiny bit different we'd end up
-> > > > > > doing a wasteful modeset and at boot.
-> > > > >
-> > > > > s/and at/at/ ?
-> > > >
-> > > > Sure, I can correct if/when I respin or it can be corrected when landed.
-> > > >
-> > > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > > index 491c9c4f32d1..af3fb4657af6 100644
-> > > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > > > > > @@ -16,6 +16,7 @@
-> > > > > >  #include <linux/pm_runtime.h>
-> > > > > >  #include <linux/regmap.h>
-> > > > > >  #include <linux/regulator/consumer.h>
-> > > > > > +#include <linux/workqueue.h>
-> > > > > >
-> > > > > >  #include <asm/unaligned.h>
-> > > > > >
-> > > > > > @@ -130,6 +131,12 @@
-> > > > > >   * @ln_assign:    Value to program to the LN_ASSIGN register.
-> > > > > >   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-> > > > > >   *
-> > > > > > + * @pre_enabled_early: If true we did an early pre_enable at attach.
-> > > > > > + * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
-> > > > > > + *                           if a normal pre_enable never came.
-> > > > >
-> > > > > Could we simplify this by using the runtime PM autosuspend feature ? The
-> > > > > configuration of the bridge would be moved from pre_enable to the PM
-> > > > > runtime resume handler, the clk_disable_unprepare() call moved from
-> > > > > post_disable to the runtime suspend handler, and the work queue replaced
-> > > > > by usage of pm_runtime_put_autosuspend().
-> > > >
-> > > > It's an interesting idea but I don't think I can make it work, at
-> > > > least not in a generic enough way. Specifically we can also use this
-> > > > bridge chip as a generic GPIO provider in Linux. When someone asks us
-> > > > to read a GPIO then we have to power the bridge on
-> > > > (pm_runtime_get_sync()) and when someone asks us to configure a GPIO
-> > > > as an output then we actually leave the bridge powered until they stop
-> > > > requesting it as an output. At the moment the only user of this
-> > > > functionality (that I know of) is for the HPD pin on trogdor boards
-> > > > (long story about why we don't use the dedicated HPD) but the API
-> > > > supports using these GPIOs for anything and I've tested that it works.
-> > > > It wouldn't be great to have to keep the panel on in order to access
-> > > > the GPIOs.
-> > >
-> > > The issue you're trying to fix doesn't seem specific to this bridge, so
-> > > handling it in the bridge driver bothers me :-S Is there any way we
-> > > could handle this in the DRM core ? I don't want to see similar
-> > > implementations duplicated in all HDMI/DP bridges.
-> >
-> > Yes, it is true that this problem could affect other drivers.  ...and
-> > in full disclosure I think there are other similar workarounds already
-> > present. I haven't personally worked on those chips, but in
-> > ps8640_bridge_get_edid() there is a somewhat similar workaround to
-> > chain a pre-enable (though maybe it's not quite as optimized?). I'm
-> > told that maybe something had to be handled for anx7625 (in
-> > anx7625_get_edid()?) but that definitely doesn't look at all like it's
-> > doing a pre-enable, so maybe things for that bridge just work
-> > differently.
-> >
-> > One thing that makes me hesitant about trying to moving this to the
-> > core is that even in sn65dsi86 there is a case where it won't work. As
-> > I mentioned in the patch I'm not aware of anyone using it in
-> > production, but if someone was using the MIPI clock as input to the
-> > bridge chip instead of a fixed "refclk" then trying to get the EDID
-> > after just "pre-enable" falls over.  Said another way: I can say that
-> > with this particular bridge chip, if you're using a fixed refclk, you
-> > can read the EDID after the pre-enable. I don't know if that's always
-> > true with all other bridge chips.
-> >
-> > So I guess in summary: I think I could put my code in the core, but I
-> > don't _think_ I can just make it automatically enabled.
-> >
-> > * In sn65dsi I'd have to only enable it if we have a fixed refclk.
-> >
-> > * Maybe in ps8640 I could just always enable it and replace the
-> > existing code? I'd have to find someone to test.
-> >
-> > * In anx7625 things look totally different.
-> >
-> > Can you give me any advice on how you'd like me to proceed?
-> 
-> OK, I've got something that maybe looks better. You can tell me what
-> you think [1]. I did manage to use PM Runtime to avoid some of the
-> complexity and I put that usage in simple-panel. We'll see if I get
-> yelled at for adding more to simple-panel. ;-P
-> 
-> [1] https://lore.kernel.org/dri-devel/20210330025345.3980086-1-dianders@chromium.org/
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ arch/arm/mm/ptdump_debugfs.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-Nice :-)
-
-I'm unfortunately afraid I'm quite busy these days. Could you ping me in
-a few weeks if I haven't reviewed the series ?
-
+diff --git a/arch/arm/mm/ptdump_debugfs.c b/arch/arm/mm/ptdump_debugfs.c
+index 8df9afac8d81..318de969ae0f 100644
+--- a/arch/arm/mm/ptdump_debugfs.c
++++ b/arch/arm/mm/ptdump_debugfs.c
+@@ -11,18 +11,7 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 	ptdump_walk_pgd(m, info);
+ 	return 0;
+ }
+-
+-static int ptdump_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, ptdump_show, inode->i_private);
+-}
+-
+-static const struct file_operations ptdump_fops = {
+-	.open		= ptdump_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(ptdump);
+ 
+ void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name)
+ {
 -- 
-Regards,
+2.31.0
 
-Laurent Pinchart
