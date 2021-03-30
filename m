@@ -2,183 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF6334E587
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833A934E58A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 12:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhC3Kez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 06:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S231731AbhC3Kfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 06:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhC3KeU (ORCPT
+        with ESMTP id S231649AbhC3Kev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:34:20 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D90C061574;
-        Tue, 30 Mar 2021 03:34:19 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id i81so16003514oif.6;
-        Tue, 30 Mar 2021 03:34:19 -0700 (PDT)
+        Tue, 30 Mar 2021 06:34:51 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFADC061574;
+        Tue, 30 Mar 2021 03:34:51 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id d191so8094137wmd.2;
+        Tue, 30 Mar 2021 03:34:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I2t0XJ2lc0H9u915HEvnhQtWR0pGaixnG20LdM71wb0=;
-        b=oa6CXcZ9XauhK7h6wBzxnv1o1GqbxgTFKQ/89wm8MJF98Casyt3cwuyN9/TdGomJXM
-         x+ovYbMvGZFVyA1PJOsJp1asBGjz1152Zf3DDj4e/xTAJIiQu3pMqiIBgDCuOH9jB677
-         jWOWbQJfzJoFg1Rx6ctumR2nrid9o1Dy0AxoI/ONbpbns3OZZgbLHbnHoGpt8PejMbxh
-         Z52d73lPizXmCOgFuyP8JumptCdYQjP3ggBMzkJr23mqqhkIM+1FLx6UcWtYy4N88uGv
-         50V2Fu8Q9dThoAwsjZmKPJNaz6oOQWdPU7uqLklmqs3BrZJqDdivCY/BjknRZESe1wtE
-         eZnw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IKhgdA7IcdpUmIcp9LYMuYlTkJ/X/xDStYFjCCWtH0E=;
+        b=L9+YP5uF5lUC3kfPwHeot2K4g+mhil7Im7mx8/oxjEUmwQodlNz08osCMRZp8xy5vH
+         3adG+ekiScfM04iHesfJjtJdK8YhPc+4AzcLRtHBt8xyI14fFSxpwS0p54kHBJgZeZps
+         baVPelKyUT8J/XlK5M1aiVM8cQWfbA5tmcX5DQIXMgoxi6TMcsLv1OV8aVcfABv/u8id
+         QbwVaBO2KQrz6cElI91T/+7RpwY4DJnuS0qMaAgm84syvoAiXwwcKbZWXEA1iO3SELA7
+         B8nnY8CmplaeZg/v97dr9CgedV+tnmeBl/cSlWAkVRToeDWbNnJGLFE4AoQLL6a3oTkT
+         xkwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=I2t0XJ2lc0H9u915HEvnhQtWR0pGaixnG20LdM71wb0=;
-        b=AUJYv8fqM26Z2k+qWaZk21rGeqW+9CzxAi+ZD5ye+wtYPd4AaAPKM5jTaHudFphvuy
-         ub9390WfxE2+5KarwKMmmaLSPUcKSvxksy1sBP1SL7z68JtxTCyzt9O9ddYvn2fUXZaj
-         Dmqh5tHd+M0czeUgmNAPFFaryZNdr3030g1w9sm5b+Y6rCDRCj9yNO4rOpOSmHBJRtbg
-         iOmjlcvQS9DwWg0MCk433e6/1DkHsObQqMzUOx4fGVPAj9OfKTpBm74DgJ+uInd/cUSk
-         /zD21mtN+8y8P0Q47zlfsT2AkIuu8yUmBVVgPnXOpQ0EjsD0l1vQEs/ZsmtssXciwr5G
-         hGfA==
-X-Gm-Message-State: AOAM532/xG1JApthWTTHa8Pl67/TdrufdFx9ZEI5z9WEKy/RBEGOMsct
-        f7yJGcTCEvybgmkjpN04khE=
-X-Google-Smtp-Source: ABdhPJw0B9mU/6W/9fwKE2UmUOzPCX+4Iobr/yfDqBLmU+jBh0U6njx3tbTnqSMxGHCKQk88EDbQhg==
-X-Received: by 2002:a05:6808:907:: with SMTP id w7mr2656064oih.148.1617100459154;
-        Tue, 30 Mar 2021 03:34:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d24sm4925782otf.12.2021.03.30.03.34.17
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IKhgdA7IcdpUmIcp9LYMuYlTkJ/X/xDStYFjCCWtH0E=;
+        b=UFIbYVu5BfHilq20atEM+G4ldnbumTQCAAlpeJqlzQdSXJ8ZfxloYOU/pO2EfJczg5
+         PmeFu5Q8r3s+R1/i3IU5vJVvFX1TEoHAgXU65IhS40mcdr1fvwHXJWX/b+WeePOeP0tv
+         YGE/S4Pw4EdA8yTSAYSG5ImbNZILbaCZeJ+Ljgp2JFAHk/ERuGpbeUOdFfaUUWAhRhTT
+         xum3+6KdCU0M6uoqPqTKsjBScnN5mE+2r9T3BHzIMOx0KKcI5gUdNStplouiHIyW1+QS
+         yd3dXkyE2spv6ZCRIN8M1oQonyAR6zn1Ggixip623jmxLFV1U8WQuF+m73EFtenZ2619
+         fAjg==
+X-Gm-Message-State: AOAM530C/D6U7aw14FC+awtnGjokEr8QOPKTsb1GjMvT+CXdJ1+hbY/I
+        qD5hip4i+jtBilBZh7Pb/fI+tsM+s9LyPl2e
+X-Google-Smtp-Source: ABdhPJyeURqXYD/cnr28buRAMw5ZpFL6vzxE5BY1Y9JvfpjlzuG9PzdcIzBZ2PZDVFebowgOj+DlNg==
+X-Received: by 2002:a1c:bd55:: with SMTP id n82mr3310167wmf.3.1617100490242;
+        Tue, 30 Mar 2021 03:34:50 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id z8sm31845449wrh.37.2021.03.30.03.34.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 03:34:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Enabling pmbus power control
-To:     Zev Weiss <zev@bewilderbeest.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
-Date:   Tue, 30 Mar 2021 03:34:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 30 Mar 2021 03:34:49 -0700 (PDT)
+Subject: Re: [PATCH v6 0/5] Add PMIC wrapper support for Mediatek MT6873/8192
+ SoC IC
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, drinkcat@chromium.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <e33053cf-f337-d7f6-fbf6-93d385f7e683@gmail.com>
+Date:   Tue, 30 Mar 2021 12:34:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+In-Reply-To: <1615563286-22126-1-git-send-email-hsin-hsiung.wang@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 1:17 AM, Zev Weiss wrote:
-> 
-> Hello,
-> 
-> I'm working on a board that has a handful of LM25066 PMICs controlling
-> the power supply to various devices, and I'd like to have both the
-> existing hwmon sensor functionality as well as userspace power on/off
-> control, which does not currently seem to be available (other than via
-> 'i2cset -f', which I'd of course prefer to avoid).  I've drafted up a
-> couple possible versions of this, and was hoping to get some opinions
-> on the appropriate overall approach.
-> 
-> One option is to add a read-write sysfs attribute to the existing
-> hwmon directory (current incarnation of the patch:
-> https://thorn.bewilderbeest.net/~zev/patches/pmbus-statectl.patch).
-> This bears a vague resemblance to a patch that was rejected a couple
-> years ago
-> (https://lore.kernel.org/linux-hwmon/20190417161817.GA13109@roeck-us.net/),
-> but is different enough that I wonder if it might potentially be
-> tolerable?  (It exposes significantly less, for one thing.)
-> 
 
-This is a no-go. We are not going to replicate regulator functionality
-in the hwmon subsystem, no matter by what means.
 
-> The other approach involves layering a regulator device over the pmbus
-> device as is done in the LTC2978 driver, and then putting a
-> reg-userspace-consumer on top of that (current patch:
-> https://thorn.bewilderbeest.net/~zev/patches/pmbus-ureg.patch).  My
-
-This is the way to go, but the regulator descriptor (what is currently
-CONFIG_PMBUS_USERSPACE_REGULATOR_CONSUMER) should be in the lm25066
-driver. I don't want to pollute the pmbus core with that at this point
-(and I don't know if the userspace consumer code is appropriate - you
-might want to check with the regulator maintainer on that).
-
-> first attempt at this ran into problems with all the
-> reg-userspace-consumer instances getting attached to the first
-> regulator device, I think due to all of the regulators ending up under
-> the same name in the global namespace of regulator_map_list.  I worked
-> around that by adding an ID counter to produce a unique name for each,
-> though that changes device names in userspace-visible ways that I'm
-> not sure would be considered OK for backwards compatibility.  (I'm not
-> familiar enough with the regulator code to know if there's a better
-> way of fixing that problem.)  The #if-ing to keep it behind a Kconfig
-
-Maybe ask that question on the regulator mailing list.
-
-Guenter
-
-> option is also kind of ugly as it stands.
+On 12/03/2021 16:34, Hsin-Hsiung Wang wrote:
+> This series adds support for new SoC MT6873/8192 to the pmic-wrap driver.
+> This series is based on Weiyi's patches[1].
 > 
-> The first version seems simpler to me (and avoids the rather more
-> cumbersome sysfs paths the second one produces, for what that's
-> worth).  I think the second is (at least structurally) perhaps more
-> aligned with what Guenter was saying in the previous discussion linked
-> above, though.  Does anyone have any advice on the best way to proceed
-> with this?  If the reg-userspace-consumer approach is the preferred
-> route, suggestions on a better fix for the name collision problem
-> would be welcome.
+> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/1608642587-15634-7-git-send-email-weiyi.lu@mediatek.com/
 > 
+> changes since v5:
+> - rebase to Linux 5.12
 > 
-> Thanks,
-> Zev
-> 
+> Hsin-Hsiung Wang (5):
+>   soc: mediatek: pwrap: use BIT() macro
+>   soc: mediatek: pwrap: add arbiter capability
+>   dt-bindings: mediatek: add compatible for MT6873/8192 pwrap
+>   soc: mediatek: pwrap: add pwrap driver for MT6873/8192 SoCs
 
+Applied to first four to v5.12-next/soc
+
+Please resubmit the DTS node once the clock driver is accepted.
+
+Regards,
+Matthias
+
+>   arm64: dts: mt8192: add pwrap node
+> 
+>  .../bindings/soc/mediatek/pwrap.txt           |  1 +
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi      | 12 +++
+>  drivers/soc/mediatek/mtk-pmic-wrap.c          | 97 ++++++++++++++++---
+>  3 files changed, 95 insertions(+), 15 deletions(-)
+> 
