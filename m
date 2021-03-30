@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F95634DD79
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F1A34DD87
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 03:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhC3B2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 21:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhC3B2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 21:28:01 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5C9C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:28:01 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id x17so14755661iog.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 18:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qwcXVymEU/ZJLMA71UNTq1rRmsQJ0OyPmER1NfJWWqQ=;
-        b=BvFzhJJrQqUuSpzJet1erfFVq+ppk7DvL/ktYDUTlwrHqDZdNNMzDcpoyeyXkCsch8
-         bkkoZw0qhXUeSJY/I3b71qBCSPMS3htB57vW0GpIk1TR5gaMj3w+Y727EAAyaMqn3OF8
-         GqYWs6NyXP0dgxwNjk8v2BxEHXlh28zNVQkX4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qwcXVymEU/ZJLMA71UNTq1rRmsQJ0OyPmER1NfJWWqQ=;
-        b=Q9mprJKwq1klx9a7VyxeNfS/vAJFBMRhM6wxLd3+2CQNi7Te9yh+fix/RpSU3lm2Dr
-         Hu/HMgSBPuusMBNojpJzlAxeC8XmDbP3gjNCJwcmU9hKGOY9PhocQ7oLlE5eJSSIdnVe
-         iOfMf7dlmVb+oxt33ewA++As/+zDRs/h9Wlu2npmNA1OtLyj77jX/as5utFGJbEYwXLB
-         /hrcqJHqMBlt+3Rj5I2QkjK6aCyvBVQiiOmvs+TNbOTcyy79aULwlq3cuQiGMy2DnUPu
-         bNQX/DdBXeq0dXorE2sKFfMSe8JSoHhxRRTNqMjY5mCLELblb4nkVz8eHJ6HXONaI+k2
-         YsOQ==
-X-Gm-Message-State: AOAM530E6IBCLbsjSYdJHFFBwHJXIQaG1HXITg4ewn3uSyJFTAQQnN5y
-        gK5d+05hwRipbYZ8sAZNLq9ZAg==
-X-Google-Smtp-Source: ABdhPJzNQDTQQdzKN4s7uCpEG9fT9O2vxnyblbcEsR/2lY6GtzlAxlQK/hkEpWM5oxPp21rCeVUoxg==
-X-Received: by 2002:a05:6638:3399:: with SMTP id h25mr26795575jav.15.1617067680706;
-        Mon, 29 Mar 2021 18:28:00 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b15sm10347660ilm.25.2021.03.29.18.27.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 18:28:00 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/53] 4.9.264-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <20d28e84-15e9-a14f-a104-c5d7830e86c0@linuxfoundation.org>
-Date:   Mon, 29 Mar 2021 19:27:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231184AbhC3B27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 21:28:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60386 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230482AbhC3B2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 21:28:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617067720; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=W0CeRTRi7xkYCGy0/MQcTApz1UF8CSVp9Uuh60jOJ9w=; b=qzvxGHokjuwoo0vLVQhZ4kVUJb5kGK8ondLwyUwN8hc1OXomqh0cxxhJcilJafFTR2wh6xQB
+ rkDag+iQ/rP1Sf2kVom5Ld9mHw63eOknYjYuwwqmvWDUOq93wJCKCGpVTt3tQ8sUj7tu5xkv
+ 5LBsz8VwMY46k2Qt9MO/ZcaPvCU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60627ebe04a1954ec3157dba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Mar 2021 01:28:30
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 10CADC43464; Tue, 30 Mar 2021 01:28:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 13A6EC43461;
+        Tue, 30 Mar 2021 01:28:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 13A6EC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, abickett@codeaurora.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v1 0/7] MHI Emergency download and flash programmer support
+Date:   Mon, 29 Mar 2021 18:28:17 -0700
+Message-Id: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 1:57 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.264 release.
-> There are 53 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.264-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Allow handling EDL mode after SYS_ERROR occurs by reading the execution
+environment post handling and move to power on reset state to accommodate the
+scenario.
+Handle EDL mode properly and wait for ready instead of just exiting from the
+firmware load.
+Allow use of the Flash Programmer execution environment as a mission mode
+use case for a blank NAND power up scenario.
+Always attempt a wait for MHI ready state as device could be waiting for the
+host to do so after pass through execution environment is seen.
+Introduce patch to improve state awareness and aid in debugging.
 
-Compiled and booted on my test system. No dmesg regressions.
+This patch series was tested on x86_64 architecture.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Bhaumik Bhatt (6):
+  bus: mhi: core: Rely on accurate method to determine EDL mode
+  bus: mhi: core: Wait for ready after an EDL firmware download
+  bus: mhi: core: Handle EDL mode entry appropriately
+  bus: mhi: core: Identify Flash Programmer as a mission mode use case
+  bus: mhi: core: Wait for MHI READY state in most scenarios
+  bus: mhi: core: Improve state strings for debug messages
 
-thanks,
--- Shuah
+Carl Yin (1):
+  bus: mhi: core: Add support for Flash Programmer execution environment
+
+ drivers/bus/mhi/core/boot.c     | 13 +++++++------
+ drivers/bus/mhi/core/init.c     | 34 ++++++++++++++++++----------------
+ drivers/bus/mhi/core/internal.h |  4 +++-
+ drivers/bus/mhi/core/main.c     |  3 +++
+ drivers/bus/mhi/core/pm.c       | 28 +++++++++++++++++++++++++---
+ include/linux/mhi.h             |  4 +++-
+ 6 files changed, 59 insertions(+), 27 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
