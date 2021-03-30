@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F8834EB14
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD76234EB1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 16:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhC3Ovm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 10:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232118AbhC3Ovc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A07F60C41;
-        Tue, 30 Mar 2021 14:51:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617115892;
-        bh=jQvBFhkZ2SR0hSEovncl3Olh0doa2fgmumWI1v2bnwg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ym0XbF9jJwHKpaRE0p4tw4acwA7QutOSOEIVbwqhlFlx5MG7eyf2HZlpN23Q8Fmx/
-         cKx7EkjpBfv07MDOczh7b/OfKT+xp2UyP1hFlDhc3CLQdnkZ7Z5SEyElDk7SbeDW/B
-         gffCqYmoOuWSsy99q/ZJ/JMbCWsmnyI3DwBXKbXM=
-Date:   Tue, 30 Mar 2021 16:51:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>
-Subject: Re: [PATCH v1 1/4] docs: make reporting-issues.rst official and
- delete reporting-bugs.rst
-Message-ID: <YGM68Q0+aeNgjsdy@kroah.com>
-References: <cover.1617113469.git.linux@leemhuis.info>
- <49c674c2d304d87e6259063580fda05267e8c348.1617113469.git.linux@leemhuis.info>
+        id S232170AbhC3OwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 10:52:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20366 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232068AbhC3Ov4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:51:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617115915;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJVm+BmDLZgTWR3iPU4bINy5jGu0DH6bKNz0lNZl+3Q=;
+        b=IctOlp9hO+/p9W52M4EG3Mpf8wzznnC+n/Dr5StjkVP5BzFxWrZUgLLb3z+hSOtBpnm4K8
+        HC3Md/hYrCrdAIO3E+5Xs+pzygQHraO+7PIvJGhjQNrcojmA3UneynL578scyxycWFqoBO
+        gR4qgi+1Mq70sE5iwVuh6w1JnJ9/MeU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-JaTNFoPKMVSSWsWfcIgTnw-1; Tue, 30 Mar 2021 10:51:50 -0400
+X-MC-Unique: JaTNFoPKMVSSWsWfcIgTnw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7F96802B40;
+        Tue, 30 Mar 2021 14:51:48 +0000 (UTC)
+Received: from crecklin.bos.csb (unknown [10.22.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 16C8E19C44;
+        Tue, 30 Mar 2021 14:51:48 +0000 (UTC)
+Reply-To: crecklin@redhat.com
+Subject: Re: Fix hibernation in FIPS mode?
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <MW2PR2101MB08924CD74C6EB773C4D5FAFDBF7E9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+ <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+Organization: Red Hat
+Message-ID: <c5524a2e-a405-e3a5-c68e-b74953a2f8a8@redhat.com>
+Date:   Tue, 30 Mar 2021 10:51:47 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49c674c2d304d87e6259063580fda05267e8c348.1617113469.git.linux@leemhuis.info>
+In-Reply-To: <CAJZ5v0g+=AnRAmAAn8NpHm8bmZ1WkwDpjb5rr_zPOVABW1PYug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:13:04PM +0200, Thorsten Leemhuis wrote:
-> Removing Documentation/admin-guide/reporting-bugs.rst will break links
-> in some of the translations. I was unsure if simply changing them to
-> Documentation/admin-guide/reporting-issue.rst was wise, so I didn't
-> touch anything for now and CCed the maintainers for the Chinese and
-> Italian translation. I couldn't find one for the Japanse translation.
-> 
-> Please advice. For completeness, this are the places where things will
-> break afaics:
-> 
-> $ grep -ri 'reporting-bugs.rst' Documentation/
-> Documentation/translations/zh_CN/SecurityBugs:是有帮助的信息，那就请重温一下admin-guide/reporting-bugs.rst文件中的概述过程。任
-> Documentation/translations/zh_CN/process/howto.rst:内核源码主目录中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
-> Documentation/translations/zh_CN/admin-guide/reporting-issues.rst:   本文档将取代“Documentation/admin-guide/reporting-bugs.rst”。主要的工作
-> Documentation/translations/zh_CN/admin-guide/reporting-issues.rst:   “Documentation/admin-guide/reporting-bugs.rst”中的旧文字非常相似。它和它
-> Documentation/translations/it_IT/process/howto.rst:Il file admin-guide/reporting-bugs.rst nella cartella principale del kernel
-> Documentation/translations/ja_JP/howto.rst:admin-guide/reporting-bugs.rstはカーネルバグらしいものについてどうレポー
+On 3/30/21 10:46 AM, Rafael J. Wysocki wrote:
+> On Tue, Mar 30, 2021 at 12:14 AM Dexuan Cui <decui@microsoft.com> wrote:
+>> Hi,
+>> MD5 was marked incompliant with FIPS in 2009:
+>> a3bef3a31a19 ("crypto: testmgr - Skip algs not flagged fips_allowed in fips mode")
+>> a1915d51e8e7 ("crypto: testmgr - Mark algs allowed in fips mode")
+>>
+>> But hibernation_e820_save() is still using MD5, and fails in FIPS mode
+>> due to the 2018 patch:
+>> 749fa17093ff ("PM / hibernate: Check the success of generating md5 digest before hibernation")
+>>
+>> As a result, hibernation doesn't work when FIPS is on.
+>>
+>> Do you think if hibernation_e820_save() should be changed to use a
+>> FIPS-compliant algorithm like SHA-1?
+> I would say yes, it should.
 
-Traditionally translations catch up much later on, you shouldn't have to
-worry about them the authors will clean them up and submit patches for
-them when they get the chance.
 
-thanks,
+If we're not actually encrypting anything, shouldn't something like 
+ghash work as well?
 
-greg k-h
+
+>
+>> PS, currently it looks like FIPS mode is broken in the mainline:
+>> https://www.mail-archive.com/linux-crypto@vger.kernel.org/msg49414.html
+
+
