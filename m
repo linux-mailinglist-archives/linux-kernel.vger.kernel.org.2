@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9324634F25C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1038A34F25D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhC3Umu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 30 Mar 2021 16:42:50 -0400
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:44596 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhC3Umg (ORCPT
+        id S231952AbhC3UoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232292AbhC3UoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:42:36 -0400
-Received: by mail-ej1-f50.google.com with SMTP id e14so26738962ejz.11;
-        Tue, 30 Mar 2021 13:42:35 -0700 (PDT)
+        Tue, 30 Mar 2021 16:44:16 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0267CC061574;
+        Tue, 30 Mar 2021 13:44:16 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c204so12971657pfc.4;
+        Tue, 30 Mar 2021 13:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ikt8x9vsRo6fslY+KskypKUYg47GoKmKr0e0fK5lyqs=;
+        b=JOV+dSI+6xbFizW0GgAZEadJ7Yl6usRyPRvG8pEMD4usKP+v2u2XOL9I5igrHZ+4Ux
+         NuwtPUVfHV44u4dlDxgGdRggIolexZp8vx5fwUXRT6ElTZZ7LyLXCcSu2ZhOuYQw1luW
+         8ioLGidpIcdruYRWThFp5pkaUrgrd/ECMlam+UKE85BHzcmdLTt6Af5kTsvUPmJRWgI7
+         9E7OjOYrKdUlYjdjuOB08X9y3IlfyCJBZkzkmAC+KR6N6JPH6HXSbUeiQ8c9kSyyX/LN
+         yp9pwtsX6/L3wcGODP77YSHph3ZDvoGTuhqRN7cB68wam9MNCWyTxoVKeE5bsJ8U3V0p
+         dI6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6y0w4epdy1zgw6lkitkraNKrAbYioLiFpd2DfbWTyl8=;
-        b=Inb7zticwx0eIkksP/PyxErSyQ+GvY8gPMbfEefPME5MCgrUj/Zos8ahk71jMy/3FQ
-         NoKAumj/zxrS/7RWcZg+UMcqZkNmmngXkzGzoradW4f0fX8hlUReS7T+fVaZ9K4ZsDV7
-         wCyKWzek4v5bADCoFma5qKpcnOnas35ifmZPW+eagJjZOPnP158nRJA2so3QAmmg5IPg
-         0PChIQ2bnWVmTtRDExtaOC5KXzcPqA9gUDK0qBLrlSefo+QqZJdgS0rX1f6B7t70RsWX
-         dxhQWZEHCHIdfvGg2vl+3qjr5LU9VODlOy/OfJUB7dBR6n5XApFUEJQ+FpS0KhKM1WoQ
-         FE5A==
-X-Gm-Message-State: AOAM532KRgr4pJS4Z9zqnrixeNIRkFIY8ErRiBoBRkYKSrrlqgPVjfml
-        BHgyh5U81rRPdtEYQAkeBO37qadQLgX9S5gNFTQ=
-X-Google-Smtp-Source: ABdhPJyrA2haUymQO29Ez3sUhVUwRRFyYvafzbD5Smm8CpiSI7WxlTg1TiYD2c/PTh+vB6yqvyj441BjJtKgKmzV2eU=
-X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr35338549ejc.219.1617136955046;
- Tue, 30 Mar 2021 13:42:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <d10affcb-d315-cebc-4162-084f0a1e4d43@intel.com> <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net>
-In-Reply-To: <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 30 Mar 2021 16:42:23 -0400
-Message-ID: <CAJvTdKnwexRpHrLFQv+2ykK9WEqtXMwehjfa_D7T+O_8DO_CGA@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ikt8x9vsRo6fslY+KskypKUYg47GoKmKr0e0fK5lyqs=;
+        b=Te2iUjVkT+Pr8qoFScuTV5AfqU05JTUzwwRxa0ZRTNN/skK/7Z052i1wGerJD7pqZu
+         TaHSK8gsSCWEkEw9Yf/9ZSGpamcUOwgJ9k8Lvihmv1KpM5QZmgp3OXfMNioMErJb0ca8
+         lfSZaT3y5jfy84BhqgVc+jdzp7j0bAB9fqZhPXfmiQiMCdiLDpT7hdFsWgbRdrvX+jAI
+         zp7AAGdPjbSGQJWdQG0hyGcvq6Muasn08P8Q97w3y4nYC0EIZrj8n41GO9Vva8QvGWnY
+         xpcs0tL2w0G+Pjfpl/gvXbfSrcm6rEOd6beWrNgH3HR/y7irGYbAMCbni3cEWUm9FeRZ
+         WI3w==
+X-Gm-Message-State: AOAM531HlLwgX9e+4mGVDAB+U8hJKginEE60Xwb4G7xVTyoVHZvJ0Hzo
+        TlOeHAQxyxPfJsEekmvVaAA=
+X-Google-Smtp-Source: ABdhPJxXNIpzrMiiqr0IM1h/qYcKH97qDHg9IAvuD6XcLfhFJZwojDnKm64sW/vAW7w6ew4gvOOI3Q==
+X-Received: by 2002:a63:81:: with SMTP id 123mr29439711pga.307.1617137055341;
+        Tue, 30 Mar 2021 13:44:15 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:d1c0:d79d:e260:a650])
+        by smtp.googlemail.com with ESMTPSA id b140sm21677434pfb.98.2021.03.30.13.44.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 13:44:14 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux@armlinux.org.uk
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: mach-sa1100: fix incorrect kernel-doc comment syntax in file
+Date:   Wed, 31 Mar 2021 02:14:07 +0530
+Message-Id: <20210330204407.25690-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 4:20 PM Andy Lutomirski <luto@amacapital.net> wrote:
->
->
-> > On Mar 30, 2021, at 12:12 PM, Dave Hansen <dave.hansen@intel.com> wrote:
-> >
-> > ﻿On 3/30/21 10:56 AM, Len Brown wrote:
-> >> On Tue, Mar 30, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> >>>> On Mar 30, 2021, at 10:01 AM, Len Brown <lenb@kernel.org> wrote:
-> >>>> Is it required (by the "ABI") that a user program has everything
-> >>>> on the stack for user-space XSAVE/XRESTOR to get back
-> >>>> to the state of the program just before receiving the signal?
-> >>> The current Linux signal frame format has XSTATE in uncompacted format,
-> >>> so everything has to be there.
-> >>> Maybe we could have an opt in new signal frame format, but the details would need to be worked out.
-> >>>
-> >>> It is certainly the case that a signal should be able to be delivered, run “async-signal-safe” code,
-> >>> and return, without corrupting register contents.
-> >> And so an an acknowledgement:
-> >>
-> >> We can't change the legacy signal stack format without breaking
-> >> existing programs.  The legacy is uncompressed XSTATE.  It is a
-> >> complete set of architectural state -- everything necessary to
-> >> XRESTOR.  Further, the sigreturn flow allows the signal handler to
-> >> *change* any of that state, so that it becomes active upon return from
-> >> signal.
-> >
-> > One nit with this: XRSTOR itself can work with the compacted format or
-> > uncompacted format.  Unlike the XSAVE/XSAVEC side where compaction is
-> > explicit from the instruction itself, XRSTOR changes its behavior by
-> > reading XCOMP_BV.  There's no XRSTORC.
-> >
-> > The issue with using the compacted format is when legacy software in the
-> > signal handler needs to go access the state.  *That* is what can't
-> > handle a change in the XSAVE buffer format (either optimized/XSAVEOPT,
-> > or compacted/XSAVEC).
->
-> The compacted format isn’t compact enough anyway. If we want to keep AMX and AVX512 enabled in XCR0 then we need to further muck with the format to omit the not-in-use features. I *think* we can pull this off in a way that still does the right thing wrt XRSTOR.
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+The header for arch/arm/mach-sa1100/jornada720_ssp.c follows this syntax,
+but the content inside does not comply with kernel-doc.
 
-Agreed.  Compacted format doesn't save any space when INIT=0, so it is
-only a half-step forward.
+This line was probably not meant for kernel-doc parsing, but is parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes these warnings from kernel-doc:
+"warning: Function parameter or member 'jornada_ssp_lock' not described in 'DEFINE_SPINLOCK'"
+"warning: expecting prototype for mac(). Prototype was for DEFINE_SPINLOCK() instead"
 
-> If we go this route, I think we want a way for sigreturn to understand a pointer to the state instead of inline state to allow programs to change the state.  Or maybe just to have a way to ask sigreturn to skip the restore entirely.
+Provide a simple fix by replacing this occurrence with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-The legacy approach puts all architectural state on the signal stack
-in XSTATE format.
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210326
 
-If we make the signal stack smaller with a new fast-signal scheme, we
-need to find another place for that state to live.
+ arch/arm/mach-sa1100/jornada720_ssp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It can't live in the task context switch buffer.  If we put it there
-and then take an interrupt while running the signal handler, then we'd
-overwrite the signaled thread's state with the signal handler's state.
+diff --git a/arch/arm/mach-sa1100/jornada720_ssp.c b/arch/arm/mach-sa1100/jornada720_ssp.c
+index 1dbe98948ce3..148bcee3ee58 100644
+--- a/arch/arm/mach-sa1100/jornada720_ssp.c
++++ b/arch/arm/mach-sa1100/jornada720_ssp.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  *  arch/arm/mac-sa1100/jornada720_ssp.c
+  *
+  *  Copyright (C) 2006/2007 Kristoffer Ericson <Kristoffer.Ericson@gmail.com>
+-- 
+2.17.1
 
-Can we leave it in live registers?  That would be the speed-of-light
-signal handler approach.  But we'd need to teach the signal handler to
-not clobber it.  Perhaps that could be part of the contract that a
-fast signal handler signs?  INIT=0 AMX state could simply sit
-patiently in the AMX registers for the duration of the signal handler.
-You can't get any faster than doing nothing :-)
-
-Of course part of the contract for the fast signal handler is that it
-knows that it can't possibly use XRESTOR of the stuff on the stack to
-necessarily get back to the state of the signaled thread (assuming we
-even used XSTATE format on the fast signal handler stack, it would
-forget the contents of the AMX registers, in this example)
-
-Len Brown, Intel Open Source Technology Center
