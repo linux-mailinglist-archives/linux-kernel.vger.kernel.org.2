@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E56834ECC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1842134ECC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhC3Pku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        id S232273AbhC3Pl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhC3PkS (ORCPT
+        with ESMTP id S231622AbhC3PlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:40:18 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6015CC061574;
-        Tue, 30 Mar 2021 08:40:17 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id o126so24521627lfa.0;
-        Tue, 30 Mar 2021 08:40:17 -0700 (PDT)
+        Tue, 30 Mar 2021 11:41:14 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A0DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:41:14 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id u21so25461139ejo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=urZWxZfB9unPuEm4Qf4bW/iI+i8H6VODYdeRAS1F/MI=;
-        b=MrnFWRQtgTGgchvSFTJRhG0iKpk9EDN2YXdCjpBbyB8rh22kK7jvid3cRUCNSBbLpZ
-         UejA7C1qrcoNQ+7CHGGy1GBQtXARqaJzuNWrsloNP9L1oevIk5+KdNgZ/O4zLJJqQRBi
-         CEO5W9FO7KicYhSVJphTPoVAdpTyRLFC4NkP3+4OjbnBowZBSSbrj8tt0K8oQ4GXArbI
-         BZz/KOfVyEgcCkd2fvLH0kiV9peZL7+hJpDwja5M3V0MTvgEVqc3OqEWF5h2v+f06xlE
-         EZqPuLVN7WQ4DMMHa9URMvoSFxduS1DyOTvCk96kxR0CQL8pAkodscvdb/KL528TOrp9
-         WSKw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DrmbtE2dQXz59+Tv0kxMP5lgZLSi9Ve2ZbONo4ZS6cE=;
+        b=alDstcpgm2rtv8wkKKY+5877CcuLLvwwEWcP1xQBr6vplqGdlOl795TVFQITWkWtUc
+         pArS1nMnYliatNQ8hVVV6LKCrcwIFOrRI8I2gfcUc0flh68/LWLNQDWTYzbsIpVxTEt1
+         /J3uh3uhNirsvmnmnrPZN/tD0uTYXeHOu5NSVuOGWkRefSiMAmqkV0muPsgG8yz82f8i
+         BMqFkUN1rTuGWBk3h10RO5vm7PniWdqk6rBooE0XOyMaVaxXNrsM6Kdb7x3/NC29jydO
+         v8j1Asj5WtEJZ3UPSsdHbEE88F8SDEvN7Vsdfd7duXUnr6VnKOzbN6j7qg9jAWGvy9et
+         h2jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=urZWxZfB9unPuEm4Qf4bW/iI+i8H6VODYdeRAS1F/MI=;
-        b=VkV1va/19voeszKcSB82ec5A5Fq6b0B+M1G9fQI5jSspdwdkmYhq3b3OpQSUNQHl6O
-         G5oFwPji2PKJokK+T/eumwHOGtEXyC/Tb9g6ieMpHIjMDF/06LoyxbHpx/PcbgUk9RBs
-         JMlC7SnqSko1dWrNuoLV22qX3eZukGRL1kEqNKFjR9yo6tLPHCHg088876y6FOGR1z2Z
-         rsjeNU6YZU2WncSVORnMG/GrrAlYl8DCs61+so0xxT1QCrVQfwtz8kQJqbdrOzOdkl6M
-         A77dIw4GjHRhhnv+FF2RzxCsgsvMhZ+wMVRJV/EOmSjAgvtfZf3rPTqxq+iGuFt9my3/
-         zBfg==
-X-Gm-Message-State: AOAM532+oOy+Kst1EIXgFBhhf2hPk+D5FhlUHj8Mdh/iu5mMsgVgSV39
-        uHNA+C5+CAlWzhasgODfMzA65CNp84o=
-X-Google-Smtp-Source: ABdhPJxLFpSSfuhNS0hdHsznwk8YNQRRUIPd6xUixqlH59yRifshaEk4JlORzzZoe3gmo0A7krPl6Q==
-X-Received: by 2002:a05:6512:3b9a:: with SMTP id g26mr20260153lfv.560.1617118815739;
-        Tue, 30 Mar 2021 08:40:15 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id y17sm2204847lfb.132.2021.03.30.08.40.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 08:40:15 -0700 (PDT)
-Subject: Re: [PATCH v6 0/7] Couple improvements for Tegra clk driver
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210320152648.8389-1-digetx@gmail.com>
-Message-ID: <c4394764-184c-3680-5e6f-2df8d2d18972@gmail.com>
-Date:   Tue, 30 Mar 2021 18:40:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DrmbtE2dQXz59+Tv0kxMP5lgZLSi9Ve2ZbONo4ZS6cE=;
+        b=UyzXHTT/PbBV8vryuAoPpwnC3lSBJv5yDJxOGbWUHYeE0Hsp+wkxo8yqzBfiSkX2eP
+         yG88SCgEjj8wf+xohNUCq6UKjX4FA5ige8qu+Hl5fS2pmNtlu9Gf0Kra93b1y1v7lcu2
+         CdnInOAdEoLW2XZc6QwbGbmgxB8cREnCCIXAjQndXzLbtpBNWyuGmnEZcNIiWQvJ3H41
+         tZDRiCBq1K3ewIAxSNmAT5wsY0TWkAeusUtySnytU1T4Xe1yAdn9PBapNMkPPMLNldZ8
+         D3lgZG3xdXKgoMOhEvoD0g9362Kbva4d+IhNTgcd3uR+OKjDaHyN1xVJ03txUfAHCvQK
+         5kxw==
+X-Gm-Message-State: AOAM530KwqWcPYaseu1KnrirYH+uE6Faq1TNd4tnW00fcxHeO39EOjwW
+        squIGplYCeF/4O51oXBalwNcRbxC6779f5EyTZA=
+X-Google-Smtp-Source: ABdhPJzUUncsplACHM9EAxXmcqgIv0tIWc19SZ9rZOYZ61bk2/Z0mFIhqt5yBNTodZt1q0bPZx0fp7F6o3Un45jcLPI=
+X-Received: by 2002:a17:907:d1b:: with SMTP id gn27mr33850149ejc.227.1617118872916;
+ Tue, 30 Mar 2021 08:41:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210320152648.8389-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210329125449.GA3805@willie-the-truck> <20210330081417.22011-1-lecopzer.chen@mediatek.com>
+In-Reply-To: <20210330081417.22011-1-lecopzer.chen@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Tue, 30 Mar 2021 17:41:02 +0200
+Message-ID: <CA+fCnZdugY3ei_iZ3OLukdgLnGx8b0h-TmbFARXQQWwww3EZmA@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] arm64: Kconfig: select KASAN_VMALLOC if
+ KANSAN_GENERIC is enabled
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>, gustavoars@kernel.org,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, linux@roeck-us.net,
+        maz@kernel.org, rppt@kernel.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        tyhicks@linux.microsoft.com, yj.chiang@mediatek.com,
+        lecopzer@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.03.2021 18:26, Dmitry Osipenko пишет:
-> This series fixes couple minor standalone problems of the Tegra clk
-> driver.
+On Tue, Mar 30, 2021 at 10:14 AM Lecopzer Chen
+<lecopzer.chen@mediatek.com> wrote:
+>
+> > Do you know if anybody is working on this? It's really unfortunate that
+> > we can't move exclusively to VMAP_STACK just because of SW_TAGS KASAN.
+> >
+> > That said, what is there to do? As things stand, won't kernel stack
+> > addresses end up using KASAN_TAG_KERNEL?
+>
+> Hi Andrey,
+>
+> Do you or any KASAN developers have already had any plan for this?
 
-Hello Stephen,
+Hi Will and Lecopzer,
 
-Do you have any objects if Thierry will take this series into the Tegra
-tree?
+We have an issue open to track this [1], but no immediate plans to work on this.
 
-Or will you be able to take the patches into the clk tree?
+Now that we have GENERIC vmalloc support for arm64, there's a chance
+that SW_TAGS vmalloc will just work once allowed via configs. However,
+I would expect that we'll still need to at least add some
+kasan_reset_tag() annotations here and there.
 
-Please let us know what works best for you, thanks in advance.
+Thanks!
 
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=211777
