@@ -2,206 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E94634E2F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9028B34E2F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 10:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhC3IRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 04:17:18 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3056 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhC3IRN (ORCPT
+        id S231489AbhC3IRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 04:17:52 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:34325 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231310AbhC3IRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:17:13 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F8hzf2vHPzWPxF;
-        Tue, 30 Mar 2021 16:13:50 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 30 Mar 2021 16:17:09 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
- Tue, 30 Mar 2021 16:17:08 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-CC:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        linmiaohe <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [External] Re: [PATCH v2 1/8] mm/cma: change cma mutex to irq
- safe spinlock
-Thread-Topic: [External] Re: [PATCH v2 1/8] mm/cma: change cma mutex to irq
- safe spinlock
-Thread-Index: AQHXJPKtsGY6CpxmIUeixSCzA9mWXKqbpbEAgAACEQCAAIU+UA==
-Date:   Tue, 30 Mar 2021 08:17:08 +0000
-Message-ID: <7087d077cb814e7abbc5a4a98ab06369@hisilicon.com>
-References: <20210329232402.575396-1-mike.kravetz@oracle.com>
- <20210329232402.575396-2-mike.kravetz@oracle.com>
- <YGLayMqYOrMMQ841@dhcp22.suse.cz>
- <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
-In-Reply-To: <CAMZfGtUv4O_+W5rHt0P4Xbw=WXJ-ZwHYMrg=iJa2CEkfxb91gA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.13]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 30 Mar 2021 04:17:46 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 7C61B167;
+        Tue, 30 Mar 2021 01:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617092264;
+        bh=VvcznrS1rjWpiKZiP+i/h/lLrJJWsyYrC/wQiX5Rzo4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BvQQY0nhA/SRfdxkuOha5Hqtzy/xI4EkYwYD4wGb6h1Mnr36FErF3EKR87j1QcKEE
+         OfjIjzj2mchfpXLz3sFDwclz/oC+MrmjuSG2o+lST0qzZNW514NiyHEKO27ZUjDkEP
+         KC2XR1G41bxVQLgDZW+0MzAhJN2yShvPd2ig/Re0=
+Date:   Tue, 30 Mar 2021 03:17:41 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Enabling pmbus power control
+Message-ID: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTXVjaHVuIFNvbmcgW21h
-aWx0bzpzb25nbXVjaHVuQGJ5dGVkYW5jZS5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDMw
-LCAyMDIxIDk6MDkgUE0NCj4gVG86IE1pY2hhbCBIb2NrbyA8bWhvY2tvQHN1c2UuY29tPg0KPiBD
-YzogTWlrZSBLcmF2ZXR6IDxtaWtlLmtyYXZldHpAb3JhY2xlLmNvbT47IExpbnV4IE1lbW9yeSBN
-YW5hZ2VtZW50IExpc3QNCj4gPGxpbnV4LW1tQGt2YWNrLm9yZz47IExLTUwgPGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmc+OyBSb21hbiBHdXNoY2hpbg0KPiA8Z3Vyb0BmYi5jb20+OyBTaGFr
-ZWVsIEJ1dHQgPHNoYWtlZWxiQGdvb2dsZS5jb20+OyBPc2NhciBTYWx2YWRvcg0KPiA8b3NhbHZh
-ZG9yQHN1c2UuZGU+OyBEYXZpZCBIaWxkZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT47IERhdmlk
-IFJpZW50amVzDQo+IDxyaWVudGplc0Bnb29nbGUuY29tPjsgbGlubWlhb2hlIDxsaW5taWFvaGVA
-aHVhd2VpLmNvbT47IFBldGVyIFppamxzdHJhDQo+IDxwZXRlcnpAaW5mcmFkZWFkLm9yZz47IE1h
-dHRoZXcgV2lsY294IDx3aWxseUBpbmZyYWRlYWQub3JnPjsgSE9SSUdVQ0hJIE5BT1lBDQo+IDxu
-YW95YS5ob3JpZ3VjaGlAbmVjLmNvbT47IEFuZWVzaCBLdW1hciBLIC4gViA8YW5lZXNoLmt1bWFy
-QGxpbnV4LmlibS5jb20+Ow0KPiBXYWltYW4gTG9uZyA8bG9uZ21hbkByZWRoYXQuY29tPjsgUGV0
-ZXIgWHUgPHBldGVyeEByZWRoYXQuY29tPjsgTWluYSBBbG1hc3J5DQo+IDxhbG1hc3J5bWluYUBn
-b29nbGUuY29tPjsgSGlsbGYgRGFudG9uIDxoZGFudG9uQHNpbmEuY29tPjsgSm9vbnNvbyBLaW0N
-Cj4gPGlhbWpvb25zb28ua2ltQGxnZS5jb20+OyBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpDQo+
-IDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT47IFdpbGwgRGVhY29uIDx3aWxsQGtlcm5lbC5v
-cmc+OyBBbmRyZXcgTW9ydG9uDQo+IDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiBTdWJq
-ZWN0OiBSZTogW0V4dGVybmFsXSBSZTogW1BBVENIIHYyIDEvOF0gbW0vY21hOiBjaGFuZ2UgY21h
-IG11dGV4IHRvIGlycSBzYWZlDQo+IHNwaW5sb2NrDQo+IA0KPiBPbiBUdWUsIE1hciAzMCwgMjAy
-MSBhdCA0OjAxIFBNIE1pY2hhbCBIb2NrbyA8bWhvY2tvQHN1c2UuY29tPiB3cm90ZToNCj4gPg0K
-PiA+IE9uIE1vbiAyOS0wMy0yMSAxNjoyMzo1NSwgTWlrZSBLcmF2ZXR6IHdyb3RlOg0KPiA+ID4g
-SWRlYWxseSwgY21hX3JlbGVhc2UgY291bGQgYmUgY2FsbGVkIGZyb20gYW55IGNvbnRleHQuICBI
-b3dldmVyLA0KPiA+ID4gdGhhdCBpcyBub3QgcG9zc2libGUgYmVjYXVzZSBhIG11dGV4IGlzIHVz
-ZWQgdG8gcHJvdGVjdCB0aGUgcGVyLWFyZWEgYml0bWFwLg0KPiA+ID4gQ2hhbmdlIHRoZSBiaXRt
-YXAgdG8gYW4gaXJxIHNhZmUgc3BpbmxvY2suDQo+ID4NCj4gPiBJIHdvdWxkIHBocmFzZSB0aGUg
-Y2hhbmdlbG9nIHNsaWdodGx5IGRpZmZlcmVyZW50ICINCj4gPiBjbWFfcmVsZWFzZSBpcyBjdXJy
-ZW50bHkgYSBzbGVlcGFibGUgb3BlcmF0YXRpb24gYmVjYXVzZSB0aGUgYml0bWFwDQo+ID4gbWFu
-aXB1bGF0aW9uIGlzIHByb3RlY3RlZCBieSBjbWEtPmxvY2sgbXV0ZXguIEh1Z2V0bGIgY29kZSB3
-aGljaA0KPiA+IHJlbGllcyBvbiBjbWFfcmVsZWFzZSBmb3IgQ01BIGJhY2tlZCAoZ2lnYSkgaHVn
-ZXRsYiBwYWdlcywgaG93ZXZlciwNCj4gPiBuZWVkcyB0byBiZSBpcnEgc2FmZS4NCj4gPg0KPiA+
-IFRoZSBsb2NrIGRvZXNuJ3QgcHJvdGVjdCBhbnkgc2xlZXBhYmxlIG9wZXJhdGlvbiBzbyBpdCBj
-YW4gYmUgY2hhbmdlZA0KPiA+IHRvIGEgKGlycSBhd2FyZSkgc3BpbiBsb2NrLiBUaGUgYml0bWFw
-IHByb2Nlc3Npbmcgc2hvdWxkIGJlIHF1aXRlIGZhc3QNCj4gPiBpbiB0eXBpY2FsIGNhc2UgYnV0
-IGlmIGNtYSBzaXplcyBncm93IHRvIFRCIHRoZW4gd2Ugd2lsbCBsaWtlbHkgbmVlZA0KPiA+IHRv
-IHJlcGxhY2UgdGhlIGxvY2sgYnkgYSBtb3JlIG9wdGltaXplZCBiaXRtYXAgaW1wbGVtZW50YXRp
-b24uDQo+ID4gIg0KPiA+DQo+ID4gaXQgc2VlbXMgdGhhdCB5b3UgYXJlIG92ZXJ1c2luZyBpcnFz
-YXZlIHZhcmlhbnRzIGV2ZW4gZnJvbSBjb250ZXh0DQo+ID4gd2hpY2ggYXJlIG5ldmVyIGNhbGxl
-ZCBmcm9tIHRoZSBJUlEgY29udGV4dCBzbyB0aGV5IGRvIG5vdCBuZWVkIHN0b3JpbmcgZmxhZ3Mu
-DQo+ID4NCj4gPiBbLi4uXQ0KPiA+ID4gQEAgLTM5MSw4ICszOTEsOSBAQCBzdGF0aWMgdm9pZCBj
-bWFfZGVidWdfc2hvd19hcmVhcyhzdHJ1Y3QgY21hICpjbWEpDQo+ID4gPiAgICAgICB1bnNpZ25l
-ZCBsb25nIHN0YXJ0ID0gMDsNCj4gPiA+ICAgICAgIHVuc2lnbmVkIGxvbmcgbnJfcGFydCwgbnJf
-dG90YWwgPSAwOw0KPiA+ID4gICAgICAgdW5zaWduZWQgbG9uZyBuYml0cyA9IGNtYV9iaXRtYXBf
-bWF4bm8oY21hKTsNCj4gPiA+ICsgICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gPg0KPiA+
-ID4gLSAgICAgbXV0ZXhfbG9jaygmY21hLT5sb2NrKTsNCj4gPiA+ICsgICAgIHNwaW5fbG9ja19p
-cnFzYXZlKCZjbWEtPmxvY2ssIGZsYWdzKTsNCj4gPg0KPiA+IHNwaW5fbG9ja19pcnEgc2hvdWxk
-IGJlIHN1ZmZpY2llbnQuIFRoaXMgaXMgb25seSBjYWxsZWQgZnJvbSB0aGUNCj4gPiBhbGxvY2F0
-aW9uIGNvbnRleHQgYW5kIHRoYXQgaXMgbmV2ZXIgY2FsbGVkIGZyb20gSVJRIGNvbnRleHQuDQo+
-IA0KPiBUaGlzIG1ha2VzIG1lIHRoaW5rIG1vcmUuIEkgdGhpbmsgdGhhdCBzcGluX2xvY2sgc2hv
-dWxkIGJlIHN1ZmZpY2llbnQuIFJpZ2h0Pw0KPiANCg0KSXQgc2VlbXMgTWlrZSdzIHBvaW50IGlz
-IHRoYXQgY21hX3JlbGVhc2UgbWlnaHQgYmUgY2FsbGVkIGZyb20gYm90aA0KaXJxIGNvbnRleHQg
-YW5kIHByb2Nlc3MgY29udGV4dC4NCg0KSWYgaXQgaXMgcnVubmluZyBpbiBwcm9jZXNzIGNvbnRl
-eHQsIHdlIG5lZWQgdGhlIGlycS1kaXNhYmxlIHRvIGxvY2sNCnRoZSBpcnEgY29udGV4dCB3aGlj
-aCBtaWdodCBqdW1wIHRvIGNhbGwgY21hX3JlbGVhc2UgYXQgdGhlIHNhbWUgdGltZS4NCg0KV2Ug
-aGF2ZSBuZXZlciBzZWVuIGNtYV9yZWxlYXNlIGhhcyBiZWVuIHJlYWxseSBjYWxsZWQgaW4gaXJx
-IGNvbnRleHQNCmJ5IG5vdywgYW55d2F5Lg0KDQo+IA0KPiA+DQo+ID4gPiAgICAgICBwcl9pbmZv
-KCJudW1iZXIgb2YgYXZhaWxhYmxlIHBhZ2VzOiAiKTsNCj4gPiA+ICAgICAgIGZvciAoOzspIHsN
-Cj4gPiA+ICAgICAgICAgICAgICAgbmV4dF96ZXJvX2JpdCA9IGZpbmRfbmV4dF96ZXJvX2JpdChj
-bWEtPmJpdG1hcCwgbmJpdHMsDQo+ID4gPiBzdGFydCk7IEBAIC00MDcsNyArNDA4LDcgQEAgc3Rh
-dGljIHZvaWQgY21hX2RlYnVnX3Nob3dfYXJlYXMoc3RydWN0IGNtYQ0KPiAqY21hKQ0KPiA+ID4g
-ICAgICAgICAgICAgICBzdGFydCA9IG5leHRfemVyb19iaXQgKyBucl96ZXJvOw0KPiA+ID4gICAg
-ICAgfQ0KPiA+ID4gICAgICAgcHJfY29udCgiPT4gJWx1IGZyZWUgb2YgJWx1IHRvdGFsIHBhZ2Vz
-XG4iLCBucl90b3RhbCwgY21hLT5jb3VudCk7DQo+ID4gPiAtICAgICBtdXRleF91bmxvY2soJmNt
-YS0+bG9jayk7DQo+ID4gPiArICAgICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbWEtPmxvY2ss
-IGZsYWdzKTsNCj4gPiA+ICB9DQo+ID4gPiAgI2Vsc2UNCj4gPiA+ICBzdGF0aWMgaW5saW5lIHZv
-aWQgY21hX2RlYnVnX3Nob3dfYXJlYXMoc3RydWN0IGNtYSAqY21hKSB7IH0gQEANCj4gPiA+IC00
-MzAsNiArNDMxLDcgQEAgc3RydWN0IHBhZ2UgKmNtYV9hbGxvYyhzdHJ1Y3QgY21hICpjbWEsIHNp
-emVfdCBjb3VudCwNCj4gdW5zaWduZWQgaW50IGFsaWduLA0KPiA+ID4gICAgICAgdW5zaWduZWQg
-bG9uZyBwZm4gPSAtMTsNCj4gPiA+ICAgICAgIHVuc2lnbmVkIGxvbmcgc3RhcnQgPSAwOw0KPiA+
-ID4gICAgICAgdW5zaWduZWQgbG9uZyBiaXRtYXBfbWF4bm8sIGJpdG1hcF9ubywgYml0bWFwX2Nv
-dW50Ow0KPiA+ID4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gPiA+ICAgICAgIHNpemVf
-dCBpOw0KPiA+ID4gICAgICAgc3RydWN0IHBhZ2UgKnBhZ2UgPSBOVUxMOw0KPiA+ID4gICAgICAg
-aW50IHJldCA9IC1FTk9NRU07DQo+ID4gPiBAQCAtNDU0LDEyICs0NTYsMTIgQEAgc3RydWN0IHBh
-Z2UgKmNtYV9hbGxvYyhzdHJ1Y3QgY21hICpjbWEsIHNpemVfdCBjb3VudCwNCj4gdW5zaWduZWQg
-aW50IGFsaWduLA0KPiA+ID4gICAgICAgICAgICAgICBnb3RvIG91dDsNCj4gPiA+DQo+ID4gPiAg
-ICAgICBmb3IgKDs7KSB7DQo+ID4gPiAtICAgICAgICAgICAgIG11dGV4X2xvY2soJmNtYS0+bG9j
-ayk7DQo+ID4gPiArICAgICAgICAgICAgIHNwaW5fbG9ja19pcnFzYXZlKCZjbWEtPmxvY2ssIGZs
-YWdzKTsNCj4gPiA+ICAgICAgICAgICAgICAgYml0bWFwX25vID0gYml0bWFwX2ZpbmRfbmV4dF96
-ZXJvX2FyZWFfb2ZmKGNtYS0+Yml0bWFwLA0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgYml0bWFwX21heG5vLCBzdGFydCwgYml0bWFwX2NvdW50LCBtYXNrLA0KPiA+ID4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgb2Zmc2V0KTsNCj4gPiA+ICAgICAgICAgICAgICAg
-aWYgKGJpdG1hcF9ubyA+PSBiaXRtYXBfbWF4bm8pIHsNCj4gPiA+IC0gICAgICAgICAgICAgICAg
-ICAgICBtdXRleF91bmxvY2soJmNtYS0+bG9jayk7DQo+ID4gPiArICAgICAgICAgICAgICAgICAg
-ICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmY21hLT5sb2NrLCBmbGFncyk7DQo+ID4gPiAgICAg
-ICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gPiAgICAgICAgICAgICAgIH0NCj4gPiA+ICAg
-ICAgICAgICAgICAgYml0bWFwX3NldChjbWEtPmJpdG1hcCwgYml0bWFwX25vLCBiaXRtYXBfY291
-bnQpOw0KPiA+DQo+ID4gc2FtZSBoZXJlLg0KPiA+DQo+ID4gPiBAQCAtNDY4LDcgKzQ3MCw3IEBA
-IHN0cnVjdCBwYWdlICpjbWFfYWxsb2Moc3RydWN0IGNtYSAqY21hLCBzaXplX3QgY291bnQsDQo+
-IHVuc2lnbmVkIGludCBhbGlnbiwNCj4gPiA+ICAgICAgICAgICAgICAgICogb3VyIGV4Y2x1c2l2
-ZSB1c2UuIElmIHRoZSBtaWdyYXRpb24gZmFpbHMgd2Ugd2lsbCB0YWtlIHRoZQ0KPiA+ID4gICAg
-ICAgICAgICAgICAgKiBsb2NrIGFnYWluIGFuZCB1bm1hcmsgaXQuDQo+ID4gPiAgICAgICAgICAg
-ICAgICAqLw0KPiA+ID4gLSAgICAgICAgICAgICBtdXRleF91bmxvY2soJmNtYS0+bG9jayk7DQo+
-ID4gPiArICAgICAgICAgICAgIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmNtYS0+bG9jaywgZmxh
-Z3MpOw0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgcGZuID0gY21hLT5iYXNlX3BmbiArIChi
-aXRtYXBfbm8gPDwgY21hLT5vcmRlcl9wZXJfYml0KTsNCj4gPiA+ICAgICAgICAgICAgICAgcmV0
-ID0gYWxsb2NfY29udGlnX3JhbmdlKHBmbiwgcGZuICsgY291bnQsDQo+ID4gPiBNSUdSQVRFX0NN
-QSwgZGlmZiAtLWdpdCBhL21tL2NtYS5oIGIvbW0vY21hLmggaW5kZXgNCj4gPiA+IDY4ZmZhZDRl
-NDMwZC4uMmM3NzU4NzdlYWUyIDEwMDY0NA0KPiA+ID4gLS0tIGEvbW0vY21hLmgNCj4gPiA+ICsr
-KyBiL21tL2NtYS5oDQo+ID4gPiBAQCAtMTUsNyArMTUsNyBAQCBzdHJ1Y3QgY21hIHsNCj4gPiA+
-ICAgICAgIHVuc2lnbmVkIGxvbmcgICBjb3VudDsNCj4gPiA+ICAgICAgIHVuc2lnbmVkIGxvbmcg
-ICAqYml0bWFwOw0KPiA+ID4gICAgICAgdW5zaWduZWQgaW50IG9yZGVyX3Blcl9iaXQ7IC8qIE9y
-ZGVyIG9mIHBhZ2VzIHJlcHJlc2VudGVkIGJ5IG9uZSBiaXQNCj4gKi8NCj4gPiA+IC0gICAgIHN0
-cnVjdCBtdXRleCAgICBsb2NrOw0KPiA+ID4gKyAgICAgc3BpbmxvY2tfdCAgICAgIGxvY2s7DQo+
-ID4gPiAgI2lmZGVmIENPTkZJR19DTUFfREVCVUdGUw0KPiA+ID4gICAgICAgc3RydWN0IGhsaXN0
-X2hlYWQgbWVtX2hlYWQ7DQo+ID4gPiAgICAgICBzcGlubG9ja190IG1lbV9oZWFkX2xvY2s7DQo+
-ID4gPiBkaWZmIC0tZ2l0IGEvbW0vY21hX2RlYnVnLmMgYi9tbS9jbWFfZGVidWcuYyBpbmRleA0K
-PiA+ID4gZDViZjhhYTM0ZmRjLi42Mzc5Y2ZiZmQ1NjggMTAwNjQ0DQo+ID4gPiAtLS0gYS9tbS9j
-bWFfZGVidWcuYw0KPiA+ID4gKysrIGIvbW0vY21hX2RlYnVnLmMNCj4gPiA+IEBAIC0zNSwxMSAr
-MzUsMTIgQEAgc3RhdGljIGludCBjbWFfdXNlZF9nZXQodm9pZCAqZGF0YSwgdTY0ICp2YWwpICB7
-DQo+ID4gPiAgICAgICBzdHJ1Y3QgY21hICpjbWEgPSBkYXRhOw0KPiA+ID4gICAgICAgdW5zaWdu
-ZWQgbG9uZyB1c2VkOw0KPiA+ID4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gPiA+DQo+
-ID4gPiAtICAgICBtdXRleF9sb2NrKCZjbWEtPmxvY2spOw0KPiA+ID4gKyAgICAgc3Bpbl9sb2Nr
-X2lycXNhdmUoJmNtYS0+bG9jaywgZmxhZ3MpOw0KPiA+ID4gICAgICAgLyogcGFnZXMgY291bnRl
-ciBpcyBzbWFsbGVyIHRoYW4gc2l6ZW9mKGludCkgKi8NCj4gPiA+ICAgICAgIHVzZWQgPSBiaXRt
-YXBfd2VpZ2h0KGNtYS0+Yml0bWFwLCAoaW50KWNtYV9iaXRtYXBfbWF4bm8oY21hKSk7DQo+ID4g
-PiAtICAgICBtdXRleF91bmxvY2soJmNtYS0+bG9jayk7DQo+ID4gPiArICAgICBzcGluX3VubG9j
-a19pcnFyZXN0b3JlKCZjbWEtPmxvY2ssIGZsYWdzKTsNCj4gPiA+ICAgICAgICp2YWwgPSAodTY0
-KXVzZWQgPDwgY21hLT5vcmRlcl9wZXJfYml0Ow0KPiA+DQo+ID4gc2FtZSBoZXJlDQo+ID4NCj4g
-PiA+DQo+ID4gPiAgICAgICByZXR1cm4gMDsNCj4gPiA+IEBAIC01Miw4ICs1Myw5IEBAIHN0YXRp
-YyBpbnQgY21hX21heGNodW5rX2dldCh2b2lkICpkYXRhLCB1NjQgKnZhbCkNCj4gPiA+ICAgICAg
-IHVuc2lnbmVkIGxvbmcgbWF4Y2h1bmsgPSAwOw0KPiA+ID4gICAgICAgdW5zaWduZWQgbG9uZyBz
-dGFydCwgZW5kID0gMDsNCj4gPiA+ICAgICAgIHVuc2lnbmVkIGxvbmcgYml0bWFwX21heG5vID0g
-Y21hX2JpdG1hcF9tYXhubyhjbWEpOw0KPiA+ID4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsN
-Cj4gPiA+DQo+ID4gPiAtICAgICBtdXRleF9sb2NrKCZjbWEtPmxvY2spOw0KPiA+ID4gKyAgICAg
-c3Bpbl9sb2NrX2lycXNhdmUoJmNtYS0+bG9jaywgZmxhZ3MpOw0KPiA+ID4gICAgICAgZm9yICg7
-Oykgew0KPiA+ID4gICAgICAgICAgICAgICBzdGFydCA9IGZpbmRfbmV4dF96ZXJvX2JpdChjbWEt
-PmJpdG1hcCwgYml0bWFwX21heG5vLCBlbmQpOw0KPiA+ID4gICAgICAgICAgICAgICBpZiAoc3Rh
-cnQgPj0gYml0bWFwX21heG5vKQ0KPiA+ID4gQEAgLTYxLDcgKzYzLDcgQEAgc3RhdGljIGludCBj
-bWFfbWF4Y2h1bmtfZ2V0KHZvaWQgKmRhdGEsIHU2NCAqdmFsKQ0KPiA+ID4gICAgICAgICAgICAg
-ICBlbmQgPSBmaW5kX25leHRfYml0KGNtYS0+Yml0bWFwLCBiaXRtYXBfbWF4bm8sIHN0YXJ0KTsN
-Cj4gPiA+ICAgICAgICAgICAgICAgbWF4Y2h1bmsgPSBtYXgoZW5kIC0gc3RhcnQsIG1heGNodW5r
-KTsNCj4gPiA+ICAgICAgIH0NCj4gPiA+IC0gICAgIG11dGV4X3VubG9jaygmY21hLT5sb2NrKTsN
-Cj4gPiA+ICsgICAgIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmNtYS0+bG9jaywgZmxhZ3MpOw0K
-PiA+ID4gICAgICAgKnZhbCA9ICh1NjQpbWF4Y2h1bmsgPDwgY21hLT5vcmRlcl9wZXJfYml0Ow0K
-PiA+ID4NCj4gPiA+ICAgICAgIHJldHVybiAwOw0KPiA+DQo+ID4gYW5kIGhlcmUuDQo+ID4gLS0N
-Cj4gPiBNaWNoYWwgSG9ja28NCj4gPiBTVVNFIExhYnMNCg==
+
+Hello,
+
+I'm working on a board that has a handful of LM25066 PMICs controlling
+the power supply to various devices, and I'd like to have both the
+existing hwmon sensor functionality as well as userspace power on/off
+control, which does not currently seem to be available (other than via
+'i2cset -f', which I'd of course prefer to avoid).  I've drafted up a
+couple possible versions of this, and was hoping to get some opinions
+on the appropriate overall approach.
+
+One option is to add a read-write sysfs attribute to the existing
+hwmon directory (current incarnation of the patch:
+https://thorn.bewilderbeest.net/~zev/patches/pmbus-statectl.patch).
+This bears a vague resemblance to a patch that was rejected a couple
+years ago
+(https://lore.kernel.org/linux-hwmon/20190417161817.GA13109@roeck-us.net/),
+but is different enough that I wonder if it might potentially be
+tolerable?  (It exposes significantly less, for one thing.)
+
+The other approach involves layering a regulator device over the pmbus
+device as is done in the LTC2978 driver, and then putting a
+reg-userspace-consumer on top of that (current patch:
+https://thorn.bewilderbeest.net/~zev/patches/pmbus-ureg.patch).  My
+first attempt at this ran into problems with all the
+reg-userspace-consumer instances getting attached to the first
+regulator device, I think due to all of the regulators ending up under
+the same name in the global namespace of regulator_map_list.  I worked
+around that by adding an ID counter to produce a unique name for each,
+though that changes device names in userspace-visible ways that I'm
+not sure would be considered OK for backwards compatibility.  (I'm not
+familiar enough with the regulator code to know if there's a better
+way of fixing that problem.)  The #if-ing to keep it behind a Kconfig
+option is also kind of ugly as it stands.
+
+The first version seems simpler to me (and avoids the rather more
+cumbersome sysfs paths the second one produces, for what that's
+worth).  I think the second is (at least structurally) perhaps more
+aligned with what Guenter was saying in the previous discussion linked
+above, though.  Does anyone have any advice on the best way to proceed
+with this?  If the reg-userspace-consumer approach is the preferred
+route, suggestions on a better fix for the name collision problem
+would be welcome.
+
+
+Thanks,
+Zev
+
