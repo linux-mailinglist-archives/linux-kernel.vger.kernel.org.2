@@ -2,196 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B80034DF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5216134DF2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 05:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhC3DR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 23:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhC3DRA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 23:17:00 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BEEC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id l13so10948350qtu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
+        id S230347AbhC3DUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 23:20:25 -0400
+Received: from mail-mw2nam10on2072.outbound.protection.outlook.com ([40.107.94.72]:9985
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230339AbhC3DTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 23:19:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UDkW90tI2cV3+Wtn3TgQk2xtkQBVrONv6hNINMvxkZO6aTpp3+zjejeksyJsvnEMJiiTZWhA29XX5aOKAyd/wPswJblvizGDEjnS47AnnARD+UeIr+yM/Xptpsg9BqtPF2rkN2kBTiVC4Eag5mKB2kSLKrp+gf0Yy3xH6HT0pfzcyuk2lVwpqAhpJGpaiDkjTtlmxb+dhONiJcD9fT/UVA1xvYgEqX71yrkw2+GfHiwB7hoTbYMKMp2qWioo5KLYoOmEe5kZxLPiHhVCxu2/C+SJIoeonpIWt7FYsJ+pTGSoHB+JsPGo5ZuxxMsX+kF4TLAS7uzKBiUEnC7MQmfBcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NQ6q9lQxvewPEKCqYKtL56IiNEpYGnmXtCJ3z4lvezo=;
+ b=kyVWeKC02QpNXJFVOrMoTI01py7nYljJiOw6DQpzO3/qANV7psokmnA/W50Xck5MspK7oXSW2xoimEVbxZmS6j/7/yvNKEsC+aiGabjKLcX0SXN0KKb0N2RYc7S15/XoIek+bhJAeJbiwppSHuiDd/fjklllSIhfGufATs6ltPu5jg+VkqaYoZrFe6FWO/ta1unvyz3lduMw/c+P6p/QyGKzCXEu0uBE0hAtNo56r/yF9d6deL8KPuobRCCCXXW6y7aO7qo/rkF4c55JKdr5SbPFE2EygqW+1M3uBZjkUqEVxr4eJdvC06/FEfOFMXrJmG+k1b6n+WBKjNeuTVc5xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=protocubo.io; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KrQ9+vOA/VSPB4rvbiUZ1dmmGCXpZPt3Kvj7vnRoOHE=;
-        b=eQdyGWzUgymZCFmDoJWwE69QwNPg1UIA/oD8YrprJONhRAVaizUwYaGeHToGC0QUD+
-         M4a1elFp/SfS+7FRq05/8bS0mxbtvMJX9OXX9QpTVwBIZUkTwka90rcPD7VensUTISPA
-         di6mzq0HD0Uqi8wyGVYZSZ1IPcpfxU5nyaR37py56JaJ+VhBCjYtAlw3R5dFbY8fImBV
-         0nZWp/rL58bUGOCR0GLOXtd0UIq4hl+tPtrwufeBvNPoY5LYKhT+anheXrkCXjuIqJSj
-         byq0Fb2FKx4G7H3Yp03X/eSmeyE3ZGl5A53AksyM3LgYFh/aQQSGDRaFoT4ckTLFeSGI
-         o29A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KrQ9+vOA/VSPB4rvbiUZ1dmmGCXpZPt3Kvj7vnRoOHE=;
-        b=MJgr8P1u0GkT8oX+m7hmALxhWNKoOH+xeiuXTm56tMlCdQuA8RBG2OzXsLEfd6GD7k
-         vu6oogI39h2UMqpm83cmq7sHuXMni55lPjG2d5oodFJ+LY4xYrXt5FYMKnnzqxIP02uG
-         DMFa+LcvcLWe4wP9IAInSYH4d8Rk6Hi49rT0ufS9qGwde3n6Nh3CKeoacFXISMJJea0N
-         rTzhxNrUIJ1bM5QIZ6rFPqwHusjf78qh3CH5a9LBV7dsTUDGfeRmHsx3RVO4pIJcA7NI
-         Iv54MzkHndbWHFNiAx3DBVbPwj7h6w7HIz+5AU3QmT29BQGCjpfiO2EmOWfjikkCsjc/
-         VZTQ==
-X-Gm-Message-State: AOAM530xmqwsJweyGxensHyaECrifb6+h9KaszKzVuH0SKoX5Imwd73O
-        Z1ZNVeQV+HWdSPgzv/ZOSQW5xQ==
-X-Google-Smtp-Source: ABdhPJyiP9vmdxWOPjPZV2x/nat6M95/bdDPdzyGqKDkYT6ztj38NxqvoXmTS1klvwqyfKVeFpvzJw==
-X-Received: by 2002:ac8:6684:: with SMTP id d4mr23646804qtp.34.1617074217049;
-        Mon, 29 Mar 2021 20:16:57 -0700 (PDT)
-Received: from calvin.localdomain ([2804:14d:5c5a:802e:bdc9:ded9:cc08:a4e9])
-        by smtp.gmail.com with ESMTPSA id y8sm4903820qtn.68.2021.03.29.20.16.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 20:16:56 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 00:16:52 -0300
-From:   Jonas Malaco <jonas@protocubo.io>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (nzxt-kraken2) mark and order concurrent accesses
-Message-ID: <20210330031652.zhhxft4trli6zqtw@calvin.localdomain>
-References: <20210329082211.86716-1-jonas@protocubo.io>
- <20210329215339.GH220164@roeck-us.net>
- <20210330002131.s2qz3dr6bwr6jz25@calvin.localdomain>
- <56ebbf0f-cdcb-d5af-e1ad-c7604597566e@roeck-us.net>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NQ6q9lQxvewPEKCqYKtL56IiNEpYGnmXtCJ3z4lvezo=;
+ b=NVwXr3obyOmUTHJ1pJAU49Vr5DMBQ5yfNGqLqLZ013XhG+f6Mu2CXRwm8lBRogyTbgh2X6XnKYSiYOIraKNnUmucSBohaAmL5A5KLEZp0RWtL3fNr2rxgSRVtwhjm2dIG+CcO0YZlgo87p/6VEH0U8MmwB6QmN/LqcfE8rAvo54=
+Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BYAPR03MB4616.namprd03.prod.outlook.com (2603:10b6:a03:13c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Tue, 30 Mar
+ 2021 03:19:28 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%9]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 03:19:27 +0000
+Date:   Tue, 30 Mar 2021 11:19:22 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: ptdump: add __init section marker to three functions
+Message-ID: <20210330111922.2fb4eaa4@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR02CA0064.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::41) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <56ebbf0f-cdcb-d5af-e1ad-c7604597566e@roeck-us.net>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR02CA0064.namprd02.prod.outlook.com (2603:10b6:a03:54::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Tue, 30 Mar 2021 03:19:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 18e89f8b-c80b-46bf-f762-08d8f32aa055
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4616:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB4616A9727D953BD5F6F1393EED7D9@BYAPR03MB4616.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:632;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DmU2FnK7prHKCOBbIEQOSlVU00ler/6MqX4Q1MOSL87kzltUnXfQ18/aJXYK1+fc4fHFeewqKMHpffL3D6H2iGeIG/E6i7bRRVwYaCbJzgM/b5+CJ7al+PJwfApj1K2CqdndyoJueplAa66IPa7A59kgOoc6Sf1rw56SxAEEQUAnjr7hlY0RmViP/uwL/veobKzVeq4vJhjiLst4AyuJXwI//1cZrTbQSjPXKcSpjSnBEVIJ8hW/Ck3EY7ATFwzcbzPIFpDCowt85dsZKTNYzHb02A4FvgF8REpEvGNhcq5ohDfO7/K4Ds5OcJeMsVKT5zmq8rjMxGI4/Li2hkAULfoXcE+4HEqqsVN/g4O+xp3ZBNDYtlij+bQ4Oe/8lt1Fsjmj2/DicusWDKhqxuFBH4MBw41/+Ur7Kvsx/r5qA+VHHXwvh0bSXK/OBkUtEqtew62L2FrV7eN2oQK5Vpe7X8Nn1dM5lH7JcM4bdz+YTOs22dyEUxX0WBPtzCOoOpUiqpIjc4GalqE0R0M7wpMe+i7DhBalT8jM94rU4sewkQ53+7G4jRkbeVUhr4pEdwAbIsKsBxh4j184V+C+ZDDCewkyCx/nfyvmS4nXhOqlCkhRxCiF53lz9Jgugs3DEgr6vKB440UJqmrJyPUgk8ru5Td0XBoJYo8VJ44fUYAjsmM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(86362001)(4326008)(2906002)(8676002)(83380400001)(478600001)(186003)(26005)(16526019)(6506007)(316002)(5660300002)(1076003)(7696005)(9686003)(956004)(66556008)(66476007)(66946007)(8936002)(55016002)(6666004)(52116002)(38100700001)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?yARtMDFZlFJ+SywBLPbFeT9vGnhMLPEYiZAfBrjU7PvRRYSH8JX2OdQrkjM6?=
+ =?us-ascii?Q?n8LoBsMDaIunXqoivHHRFCLh8C/V3Y6s4otP8OEEZWtiU124LKmnFnMQhURL?=
+ =?us-ascii?Q?inpV4fzX4jfYIe+qUTc6lH9GbiWF+TpuHU0bKJepayGLyBTMbIayEm9O4qy0?=
+ =?us-ascii?Q?PBl26qzRap7uSNUcycqouilkPHBnzCkzc1lpmHj1TkIekWv8IIPJux3k7J88?=
+ =?us-ascii?Q?NQ15XFidCUWmFwYOU38xIIN+jkZJdKEBy+bIs7SjQ4GA6Z5qP/96yrlngBOh?=
+ =?us-ascii?Q?va3y1+NkSNTnnUC4UGZtmDdBKJVTKW7ah1jr/ZJPbZty+K6MxsTyVZ309m9+?=
+ =?us-ascii?Q?Vjo/nLSI5vm2TvThqytC8D7sNEvcLpXNyMoBRBvm6ThqolGJ3V2CzjVnxFEh?=
+ =?us-ascii?Q?n1kFV6CFwb4+k//s27G/fjh6fHRaVFkDxCTRHDqFJSLRc/6yIraEvFGeoS5D?=
+ =?us-ascii?Q?QM6AxV7owAlHwpCWzMJQZ9f+Onxf7NVNCoyg4RoM1BnK9/UbJdS+VZWPVAdk?=
+ =?us-ascii?Q?92Q5ic9EA+r7IxthIyZHW47Dp4Nh6RV7qrxZk6TSl6/OtvGkxrhbAKv904bn?=
+ =?us-ascii?Q?ZnxwW/6rL3Fe3lwiwscofkRdrFRquoNXr8Z89kKujL3z4+qWJtM+QpTWR/0/?=
+ =?us-ascii?Q?MqI+fbIk1q7l2sGGkK6KgFK+fbAC+luZ+2j7R+Qa3uh/ALCuWduF2eKw/cq8?=
+ =?us-ascii?Q?8+Wn2ebqcFtQ+hvFBWDcVixEAOMXOWpzl+Z8UujQhP4LUfNwYIP+dqvujENs?=
+ =?us-ascii?Q?tdMSdQXQ9DudaHJ5AO1EKfmNMbkKY5tj5DRkG/emTbm3dpNhR8nwO6WNCn3/?=
+ =?us-ascii?Q?2wdO6f5nq4xFUslrNL6JU14ZI6xyXRY7cjxcZJGMyvIMVE//N5gRgnYWeddw?=
+ =?us-ascii?Q?CsXlrL3HcXQBJQ8wIj98saL+naaw9VjPwpSxZnlVl63bZPhCBpx6K3AD620i?=
+ =?us-ascii?Q?J51WMpfevzMTjWNegj2JFXPKNmFSG4/9iSXxd+6bDUtf10ffxC7IiqJLOT4+?=
+ =?us-ascii?Q?Mr+/PqlxhxMP7OvM4Og2q/cdFXLrcY7FY1DV7j+zDR/GY4mOU8Q+8dPfMbHr?=
+ =?us-ascii?Q?AMWiG/MqkGRtxVSveuw/VfJfDumAyMyN677Q9rJ0vfHXzOjdkkY2Ug951tlj?=
+ =?us-ascii?Q?+LP+rvqZ809sEi2FzoEOcXpNSJ5b2Y/fllVASbFxeSyE8zbH6yUbTEQvszA/?=
+ =?us-ascii?Q?E9+jkCQxPFG29ocTEfQgbHVpUB34XM/clZkL1pMovgV56g7UdwCTQDaQqSsQ?=
+ =?us-ascii?Q?jBN3Tfb0dAPrwrOAGI8CyFlsDEkKfwooBfPBO36LVtH3SWMzx6l8WU3bNnYg?=
+ =?us-ascii?Q?6qF+kYJN2WX/RRNeMZhIYzRB?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18e89f8b-c80b-46bf-f762-08d8f32aa055
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 03:19:27.8354
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5b5xhbAzgGL305rG4jaDHVAatGdgG7ARtGFiQMqng1IjjyMUledw9rO99nPVKBIuMaGld8ZnMquxndXjux3Zdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4616
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 06:01:00PM -0700, Guenter Roeck wrote:
-> On 3/29/21 5:21 PM, Jonas Malaco wrote:
-> > On Mon, Mar 29, 2021 at 02:53:39PM -0700, Guenter Roeck wrote:
-> >> On Mon, Mar 29, 2021 at 05:22:01AM -0300, Jonas Malaco wrote:
-> >>> To avoid a spinlock, the driver explores concurrent memory accesses
-> >>> between _raw_event and _read, having the former updating fields on a
-> >>> data structure while the latter could be reading from them.  Because
-> >>> these are "plain" accesses, those are data races according to the Linux
-> >>> kernel memory model (LKMM).
-> >>>
-> >>> Data races are undefined behavior in both C11 and LKMM.  In practice,
-> >>> the compiler is free to make optimizations assuming there is no data
-> >>> race, including load tearing, load fusing and many others,[1] most of
-> >>> which could result in corruption of the values reported to user-space.
-> >>>
-> >>> Prevent undesirable optimizations to those concurrent accesses by
-> >>> marking them with READ_ONCE() and WRITE_ONCE().  This also removes the
-> >>> data races, according to the LKMM, because both loads and stores to each
-> >>> location are now "marked" accesses.
-> >>>
-> >>> As a special case, use smp_load_acquire() and smp_load_release() when
-> >>> loading and storing ->updated, as it is used to track the validity of
-> >>> the other values, and thus has to be stored after and loaded before
-> >>> them.  These imply READ_ONCE()/WRITE_ONCE() but also ensure the desired
-> >>> order of memory accesses.
-> >>>
-> >>> [1] https://lwn.net/Articles/793253/
-> >>>
-> >>
-> >> I think you lost me a bit there. What out-of-order accesses that would be
-> >> triggered by a compiler optimization are you concerned about here ?
-> >> The only "problem" I can think of is that priv->updated may have been
-> >> written before the actual values. The impact would be ... zero. An
-> >> attribute read would return "stale" data for a few microseconds.
-> >> Why is that a concern, and what difference does it make ?
-> > 
-> > The impact of out-of-order accesses to priv->updated is indeed minimal.
-> > 
-> > That said, smp_load_acquire() and smp_store_release() were meant to
-> > prevent reordering at runtime, and only affect architectures other than
-> > x86.  READ_ONCE() and WRITE_ONCE() would already prevent reordering from
-> > compiler optimizations, and x86 provides the load-acquire/store-release
-> > semantics by default.
-> > 
-> > But the reordering issue is not a concern to me, I got carried away when
-> > adding READ_ONCE()/WRITE_ONCE().  While smp_load_acquire() and
-> > smp_store_release() make the code work more like I intend it to, they
-> > are (small) costs we can spare.
-> > 
-> > I still think that READ_ONCE()/WRITE_ONCE() are necessary, including for
-> > priv->updated.  Do you agree?
-> > 
-> 
-> No. What is the point ? The order of writes doesn't matter, the writes won't
-> be randomly dropped, and it doesn't matter if the reader reports old values
-> for a couple of microseconds either. This would be different if the values
-> were used as synchronization primitives or similar, but that isn't the case
-> here. As for priv->updated, if you are concerned about lost reports and
-> the 4th report is received a few microseconds before the read, I'd suggest
-> to loosen the interval a bit instead.
-> 
-> Supposedly we are getting reports every 500ms. We have two situations:
-> - More than three reports are lost, making priv->updated somewhat relevant.
->   In this case, it doesn't matter if outdated values are reported for
->   a few uS since most/many/some reports are outdated more than a second
->   anyway.
-> - A report is received but old values are reported for a few uS. That
->   doesn't matter either because reports are always outdated anyway by
->   much more than a few uS anyway, and the code already tolerates up to
->   2 seconds of lost reports.
-> 
-> Sorry, I completely fail to see the problem you are trying to solve here.
+They are not needed after booting, so mark them as __init to move them
+to the .init section.
 
-Please disregard the out-of-order accesses, I agree that preventing them
-"are a (small) cost we can spare".
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ arch/arm/mm/dump.c           | 4 ++--
+ arch/arm/mm/ptdump_debugfs.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-The main problem I still would like to address are the data races.
-While the stores and loads cannot be dropped, and we can tolerate their
-reordering, they could still be teared, fused, perhaps invented...
-According to [1] these types of optimizations are not unheard.
+diff --git a/arch/arm/mm/dump.c b/arch/arm/mm/dump.c
+index 93ff0097f00b..fb688003d156 100644
+--- a/arch/arm/mm/dump.c
++++ b/arch/arm/mm/dump.c
+@@ -420,7 +420,7 @@ void ptdump_walk_pgd(struct seq_file *m, struct ptdump_info *info)
+ 	note_page(&st, 0, 0, 0, NULL);
+ }
+ 
+-static void ptdump_initialize(void)
++static void __init ptdump_initialize(void)
+ {
+ 	unsigned i, j;
+ 
+@@ -466,7 +466,7 @@ void ptdump_check_wx(void)
+ 		pr_info("Checked W+X mappings: passed, no W+X pages found\n");
+ }
+ 
+-static int ptdump_init(void)
++static int __init ptdump_init(void)
+ {
+ 	ptdump_initialize();
+ 	ptdump_debugfs_register(&kernel_ptdump_info, "kernel_page_tables");
+diff --git a/arch/arm/mm/ptdump_debugfs.c b/arch/arm/mm/ptdump_debugfs.c
+index 598b636615a2..8df9afac8d81 100644
+--- a/arch/arm/mm/ptdump_debugfs.c
++++ b/arch/arm/mm/ptdump_debugfs.c
+@@ -24,7 +24,7 @@ static const struct file_operations ptdump_fops = {
+ 	.release	= single_release,
+ };
+ 
+-void ptdump_debugfs_register(struct ptdump_info *info, const char *name)
++void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name)
+ {
+ 	debugfs_create_file(name, 0400, NULL, info, &ptdump_fops);
+ }
+-- 
+2.31.0
 
-Load tearing alone could easily produce values that are not stale, but
-wrong.  Do we also tolerate wrong values, even if they are infrequent?
-
-Another detail I should have mentioned sooner is that READ_ONCE() and
-WRITE_ONCE() cause only minor (gcc) to no (clang) changes to the
-generated code for x86_64 and i386.[2]  While this seems contrary to the
-point I am trying to make, I want to show that, for the most part, these
-changes just lock in a reasonable compiler behavior.
-
-Specifically, on x86_64/gcc (the most relevant arch/compiler for this
-driver) the changes are restricted to kraken2_read:
-
-1.	Loading of priv->updated and jiffies are reordered, because
-	(with READ_ONCE()) both are volatile and time_after(a, b) is
-	defined as b - a.
-
-2.	When loading priv->fan_input[channel],
-		movzx  eax,WORD PTR [rdx+rcx*2+0x14]
-	is split into
-		add rcx,0x8
-		movzx  eax,WORD PTR [rdx+rcx*2+0x4]
-	for no reason I could find in the x86 manual.
-
-3.	Similarly, when loading priv->temp_input[channel]
-		movsxd rax,DWORD PTR [rdx+rcx*4+0x10]
-	turns into
-		add    rcx,0x4
-		movsxd rax,DWORD PTR [rdx+rcx*4]
-
-Both 2 and 3 admittedly get a bit worse with READ_ONCE()/WRITE_ONCE().
-But that is on gcc, and with the data race it could very well decide to
-produce much worse code than that at any moment.
-
-On Arm64 the code does get a lot more ordered, which we have already
-agreed is not really necessary.  But removing smp_load_acquire() and
-smp_store_release() should still allow the CPU to reorder those,
-mitigating some of the impact.
-
-I hope this email clarifies what I am concerned about.
-
-Thanks for the patience,
-Jonas
-
-P.S. Tested with gcc 10.2.0 and clang 11.1.0.
-
-[1] https://lwn.net/Articles/793253/
-[2] (outdated, still with smp_*()): https://github.com/jonasmalacofilho/patches/tree/master/linux/nzxt-kraken2-mark-and-order-concurrent-accesses/objdumps
