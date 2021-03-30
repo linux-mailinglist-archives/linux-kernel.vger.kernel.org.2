@@ -2,248 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C2134F1E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D87D34F1EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbhC3UBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:01:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21622 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233298AbhC3UBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:01:10 -0400
-IronPort-SDR: lcEVUQFOV+M5Xb7GE9KcIPFtHSNCN9PJahLLjwGA5HM0tBhrXQCATWzwh634ZC4C4sdcQURIbP
- F6CO/sDrNd5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191948266"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="gz'50?scan'50,208,50";a="191948266"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 13:01:08 -0700
-IronPort-SDR: u4AzXSDWQMnzok7K4nL7ac9HxNxngY67WQJR169i+AaRbgvc8GAX88wbQ3dbHaaZTA1BpTmY8y
- YmgUQJ/xWqKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="gz'50?scan'50,208,50";a="378615520"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 30 Mar 2021 13:01:06 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lRKXx-0005S2-Tl; Tue, 30 Mar 2021 20:01:05 +0000
-Date:   Wed, 31 Mar 2021 04:00:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johannes Berg <johannes.berg@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-Subject: ERROR: "X86_FEATURE_XMM" [drivers/fpga/altera-pr-ip-core.ko]
- undefined!
-Message-ID: <202103310424.Pr2MePtr-lkp@intel.com>
+        id S233326AbhC3UBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhC3UBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 16:01:12 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E72C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:01:11 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 15so21335219ljj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 13:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iUQpi+sJY96M0oTRItdYRMKHG3+VxUz+t6vY8dGmO+U=;
+        b=oeUZ5mND0ZbBb92my2vpif9MOmzQpXmPHa6ESdE9DoEgmJ+f4n7aaHY2hH2cLOqBU5
+         lVvw3oI5Hub03dWw0BPaeUYp7WteB8Z+ilsGDG0uvhCNa0btjGOj4iqHeXlIKIh2AqM3
+         HMOgo3bj2JQddAe6BV9FPcySj7NAFx4dwvGTQHf3a30b44vc8Vpc/9QkLiUDRuMchM0k
+         zrxWJ4f6fkYlf0ube1r+3OFxfH05Nf0v9t/1zeHq26DG7zOuAjK/m1t0GVOiC3DM5hjt
+         iSsfM4b2LKDhF+tTotxIuu8AzYxnN/Tv5JkVaPgMIgPArL+cQSbK9IzJQvEkhuszTrYy
+         FdpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iUQpi+sJY96M0oTRItdYRMKHG3+VxUz+t6vY8dGmO+U=;
+        b=jsD0QJfAEgITXpR/CgqCOMBZKh6iLHcT5PVWXguhITtGoYLF7Oy6GkUsPV5orqhls3
+         Jpfn+rrbbEhVNs0PpMVLXjGX20HXUClAPZhaMkjG5RqVKGra+Yf0cgJHRmDqE8+F3lRM
+         EbaxCmTl9oudEATKQlPXg294/PMfVsvtnSXK7jIWJWNpJ7CQksKb6h+yd4DarAihJkhK
+         lg7XujjlXVX9BDZmeauDv7ExR7rjtWWFq/nBCJZeiqBQqqhkmyDqlPD1HzXBzz3Olgk0
+         Md8634/pKj2j3ARlpzeBxwq/jtjxUpIrIyV0EYmsK7sPm25hYP0iJxhxJdSaIyVzrgeO
+         /RTQ==
+X-Gm-Message-State: AOAM531q3UZOxDgcrQeZpdkmKjolEQz3KzaLfKqAXO4Uf8fOtDPbxxuF
+        LSzHavdmUvSmnUtgGmc21gl4wyRgsplLAluBRGExNQ==
+X-Google-Smtp-Source: ABdhPJz3sX1eTQm5fKKV5RmJJoxAuSmvn4gDPlEJ/96820aGiIae+uwCS6EeIvCfqacZ4jbrc/sDWj9KXHXzdKtgdwI=
+X-Received: by 2002:a2e:8196:: with SMTP id e22mr22326561ljg.398.1617134470053;
+ Tue, 30 Mar 2021 13:01:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210322215823.962758-1-cfijalkovich@google.com>
+ <CAPhsuW4RK9-yWrFmoUzi09bquxr_K16LqeZBYWoJXM0t=qo+Gw@mail.gmail.com>
+ <CAL+PeoGfCmbMSEYgaJNPHWfLvmmXJGaEM5G6rFstKzhTeY=2yw@mail.gmail.com> <2E59E29C-E04D-417C-9B2B-7F0F7D5E43EA@fb.com>
+In-Reply-To: <2E59E29C-E04D-417C-9B2B-7F0F7D5E43EA@fb.com>
+From:   Collin Fijalkovich <cfijalkovich@google.com>
+Date:   Tue, 30 Mar 2021 13:00:59 -0700
+Message-ID: <CAL+PeoHXNjcgR=te+WnkGGMiGyqqdparX+HH8K2KCK0CV9sUKg@mail.gmail.com>
+Subject: Re: [PATCH] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There will be an immediate performance hit when the file is opened for
+write, as its associated pages are removed from the page cache. While
+the writer is present there will be the usual overhead of using 4kB
+pages instead of THPs, but there should not be an additional penalty.
+It is problematic if a file is repeatedly opened for write, as it will
+need to refault each time.
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+- Collin
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2bb25b3a748af6f11df42298e80b9863ed23f2b3
-commit: a30cc14fe49c2d5913caf6b987d7cbd86c5e370b um: Don't use generic barrier.h
-date:   1 year, 6 months ago
-config: um-randconfig-r013-20210330 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a30cc14fe49c2d5913caf6b987d7cbd86c5e370b
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout a30cc14fe49c2d5913caf6b987d7cbd86c5e370b
-        # save the attached .config to linux build tree
-        make W=1 ARCH=um 
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> ERROR: "X86_FEATURE_XMM" [drivers/fpga/altera-pr-ip-core.ko] undefined!
->> ERROR: "X86_FEATURE_XMM2" [drivers/fpga/altera-pr-ip-core.ko] undefined!
->> ERROR: "X86_FEATURE_XMM2" [drivers/mtd/nand/raw/nand.ko] undefined!
-   ERROR: "X86_FEATURE_XMM" [drivers/misc/altera-stapl/altera-stapl.ko] undefined!
-   ERROR: "X86_FEATURE_XMM2" [drivers/misc/altera-stapl/altera-stapl.ko] undefined!
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---Nq2Wo0NMKNjxTN9z--
+On Sun, Mar 28, 2021 at 9:45 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Mar 23, 2021, at 10:13 AM, Collin Fijalkovich <cfijalkovich@google.c=
+om> wrote:
+> >
+> > Question: when we use this on shared library, the library is still
+> > writable. When the
+> > shared library is opened for write, these pages will refault in as 4kB
+> > pages, right?
+> >
+> > That's correct, while a file is opened for write it will refault into 4=
+kB pages and block use of THPs. Once all writers complete (i_writecount <=
+=3D0), the file can fault into THPs again and khugepaged can collapse exist=
+ing page ranges provided that it can successfully allocate new huge pages.
+>
+> Will it be a problem if a slow writer (say a slow scp) writes to the
+> shared library while the shared library is in use?
+>
+> Thanks,
+> Song
+>
+> >
+> > From,
+> > Collin
+> >
+> > On Mon, Mar 22, 2021 at 4:55 PM Song Liu <song@kernel.org> wrote:
+> > On Mon, Mar 22, 2021 at 3:00 PM Collin Fijalkovich
+> > <cfijalkovich@google.com> wrote:
+> > >
+> > > Transparent huge pages are supported for read-only non-shmem filesyst=
+ems,
+> > > but are only used for vmas with VM_DENYWRITE. This condition ensures =
+that
+> > > file THPs are protected from writes while an application is running
+> > > (ETXTBSY).  Any existing file THPs are then dropped from the page cac=
+he
+> > > when a file is opened for write in do_dentry_open(). Since sys_mmap
+> > > ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
+> > > produced by execve().
+> > >
+> > > Systems that make heavy use of shared libraries (e.g. Android) are un=
+able
+> > > to apply VM_DENYWRITE through the dynamic linker, preventing them fro=
+m
+> > > benefiting from the resultant reduced contention on the TLB.
+> > >
+> > > This patch reduces the constraint on file THPs allowing use with any
+> > > executable mapping from a file not opened for write (see
+> > > inode_is_open_for_write()). It also introduces additional conditions =
+to
+> > > ensure that files opened for write will never be backed by file THPs.
+> >
+> > Thanks for working on this. We could also use this in many data center
+> > workloads.
+> >
+> > Question: when we use this on shared library, the library is still
+> > writable. When the
+> > shared library is opened for write, these pages will refault in as 4kB
+> > pages, right?
+> >
+> > Thanks,
+> > Song
+>
