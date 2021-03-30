@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF6134EC85
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD1D34EC8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhC3PcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S232445AbhC3Pct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhC3Pb6 (ORCPT
+        with ESMTP id S231532AbhC3PcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:31:58 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D512C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:31:58 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id c9so630393wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 08:31:58 -0700 (PDT)
+        Tue, 30 Mar 2021 11:32:23 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEF7C061574;
+        Tue, 30 Mar 2021 08:32:23 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i26so24360738lfl.1;
+        Tue, 30 Mar 2021 08:32:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=3cy7QAZwcM0qFIMC//13hJw8FRpw0MBxMbErk7zBrt4=;
-        b=hTB5eRLtCe5NqZk2lmE+RtfJKTufqW8xwNBuVspthnS2F1BfGX4jeWY2GkXPEnMBSw
-         80L6q4iQDtV36/tBpGpoCepa+EjvAWAWapt1w53TW9phkLZtiN4eum+tYuVjvYPQCclf
-         zQLNuDknXSsBTO4dVduFRu8ugjcSjJiciIOqcagk7Rwh54lrN3wlUz9b1PBadZmyUHZ9
-         hUF8tIkLxgvgGxPpannVnFuCuAx0H3fLDs9jb2/GEQDv+sbKzyIFstT0gIvIxjaz37G8
-         Wq5FVgkWFQZW5w8F/Ahmde0ZHveN9hpTvN1n1UtGFbkNkP/A+wfycovKPvYNmgA6qSrL
-         QwJw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c2IZxiP/PHTUNylXu7cGThAF7WUnRTJb00OUl3ALDOE=;
+        b=V2WsCB9e+V4zvZcDi+ZiIVqL966DXzs5U1s6M1jZTGaLKgvlC4B/LL1fIdX3obzY5W
+         v4v0f+gQGfhvbjdqAgdmMnbQZf+8dKGXGlHa/ka+pQ9QgXqrDExWLpyiw6e0GiOzcEh1
+         ME0gJCTG+4vRvTSzZEqoq4l0W7gHBxSg6pzf9fGVt0bl6Du0r4Xy7mOpqtxDuOLN5TUz
+         ImgQ48ySQElZD0rVxrIn7Otmrceu+MzNz46m+b94mRa/tPr8IBXnOam6VeBNOV7M/tXl
+         SrqaffD19nG6GxBYX/ayZMP6/B3irEi+NYyWYvORNr5IXiKuGFIlXqdXf0eW1QZc3Bj4
+         GDuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=3cy7QAZwcM0qFIMC//13hJw8FRpw0MBxMbErk7zBrt4=;
-        b=Ll4HcdI85t11tPl+tpwIvC73db62d4q43ZEhWl2IavJjS9GLd/daO0h5XdhAn3nFe6
-         /WVIPh6lA20vZUGxflcjNcUODmG3UE4mOgY42/tQdMjMS5bptEqnylDeXLef/oEys8oG
-         AhEp6jmsReev9XgqFqsMv583j9kMAkzwfE9p0vLlI/Q+SIE/ZB4fNeWGMJdutt/UScxm
-         IkW4J+wLlA3MZc6PGA3Pwtd8Ur/o1u7JthQGNAjZFp0a1FprlNLs3bFmtHd0e8t4BByJ
-         1imi48eF0jxiD8c2uIgjP4EEmJjUQ7W6baWXK1SKEY3zb5gdCjNNLXKYZbU40/aC2kUe
-         qBVA==
-X-Gm-Message-State: AOAM532l80HpuYiY/Xz20blEfvxZT6XlGtkt1Y/Y0nn3yexHR8C3bX85
-        SomKDaUrPGB1ylEhFvCSj6BE9mb6EdIMhHFl
-X-Google-Smtp-Source: ABdhPJw0vSXe4Xw64WO8uJrYsy7s7rzJcu18Vn5SMJYlS+KZ3mLl65FDIFCfjsv0oByaw6aiJVEWtthfNGpvlg45
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:f567:b52b:fb1e:b54e])
- (user=andreyknvl job=sendgmr) by 2002:a7b:ce06:: with SMTP id
- m6mr4526147wmc.38.1617118316958; Tue, 30 Mar 2021 08:31:56 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 17:31:54 +0200
-Message-Id: <2e5e80481533e73876d5d187d1f278f9656df73a.1617118134.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH mm] mm, kasan: fix for "integrate page_alloc init with HW_TAGS"
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c2IZxiP/PHTUNylXu7cGThAF7WUnRTJb00OUl3ALDOE=;
+        b=WcXJ+ABgCbuU25VTcENvVpyVq5KS9trgMne+AIkYKskk32tFumSvT9J8gXeJq4avSu
+         qhqf8UV79eBMHYP+zHyTAPCA3jOcoXq2Acer4eDyRCPN27bb4hxOusxxk6x1V/hZYby8
+         d53CVgl+xKYCX7mu2I+htcamQTjHX4rFBXsKJoCbc2p0ZEkDps95GwnQCJvw73GF0BqW
+         0QgYy9AXZh4vRII1f7X9TedtigFjdmGDxYbqOZZHVFZLsIzlbyt4/HxJLZVAGrVaQOS6
+         PCYhUU/j14U6nPvZ3N6DD4PzXTDTJTjWImwatNnhBU4VyczqB9dvD8SekvbSJMh6+lIq
+         VywQ==
+X-Gm-Message-State: AOAM532R1zYxEOk7K2Rbhi4sSV7q83BDbVc9xQCpx5HksdWCCCGDNOv8
+        UG7BIoO76taZWvTeU+h1tDe2ZQvfuks=
+X-Google-Smtp-Source: ABdhPJzl+nrn7AEc/akvrf/8yMHU22UkGVLpS22NsjqkyIingW81F7l/JaMXP09VghP8+TQqhk8mfQ==
+X-Received: by 2002:ac2:4c29:: with SMTP id u9mr16310671lfq.164.1617118341879;
+        Tue, 30 Mar 2021 08:32:21 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id j22sm225899lfh.31.2021.03.30.08.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Mar 2021 08:32:21 -0700 (PDT)
+Subject: Re: [PATCH v1 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210329194602.17049-1-digetx@gmail.com>
+ <20210329194602.17049-6-digetx@gmail.com>
+ <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2ded3a2d-6487-6e6d-d211-0cae45f4f948@gmail.com>
+Date:   Tue, 30 Mar 2021 18:32:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <7e45375c-3e24-4fc1-5776-190db32681e5@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My commit "integrate page_alloc init with HW_TAGS" changed the order of
-kernel_unpoison_pages() and kernel_init_free_pages() calls. This leads
-to __GFP_ZERO allocations being incorrectly poisoned when page poisoning
-is enabled.
+30.03.2021 11:48, Krzysztof Kozlowski пишет:
+>> +  nvidia,use-ram-code:
+>> +    type: boolean
+>> +    description:
+>> +      If present, the emc-tables@ sub-nodes will be addressed.
+>> +
+>> +patternProperties:
+>> +  "^emc-table@[0-9]+$":
+> This might not be easy but you should add constraints when emc-table and
+> emc-tables are expected. The schema should check if proper node is used
+> depending on "nvidia,use-ram-code".
+> 
 
-Fix by restoring the initial order. Also add a warning comment.
+I'm afraid this is not doable. If you have an example how to do this,
+please share it with me.
 
-Reported-by: Vlastimil Babka <vbabka@suse.cz>
-Reported-by: Sergei Trofimovich <slyfox@gentoo.org>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- mm/page_alloc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 033bd92e8398..1fc5061f8ca1 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2328,6 +2328,12 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
- 	arch_alloc_page(page, order);
- 	debug_pagealloc_map_pages(page, 1 << order);
- 
-+	/*
-+	 * Page unpoisoning must happen before memory initialization.
-+	 * Otherwise, a __GFP_ZERO allocation will not be initialized.
-+	 */
-+	kernel_unpoison_pages(page, 1 << order);
-+
- 	/*
- 	 * As memory initialization might be integrated into KASAN,
- 	 * kasan_alloc_pages and kernel_init_free_pages must be
-@@ -2338,7 +2344,6 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
- 	if (init && !kasan_has_integrated_init())
- 		kernel_init_free_pages(page, 1 << order);
- 
--	kernel_unpoison_pages(page, 1 << order);
- 	set_page_owner(page, order, gfp_flags);
- }
- 
--- 
-2.31.0.291.g576ba9dcdaf-goog
-
+I see that there is a "dependencies:", but it doesn't work with the
+patterns, IIUC.
