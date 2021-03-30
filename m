@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203F34F256
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9324634F25C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhC3UkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhC3Ujj (ORCPT
+        id S232236AbhC3Umu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 30 Mar 2021 16:42:50 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:44596 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhC3Umg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:39:39 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED4DC061574;
-        Tue, 30 Mar 2021 13:39:39 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 8so18733728ybc.13;
-        Tue, 30 Mar 2021 13:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fHFETPlCm5ghAjLH5TwVdNy5XrA3VED7pKjEr1FvnQI=;
-        b=uycPTR+xErTW6WvImIxkYRVwhbADeQEdOUjkK+Cd8k+Ghk3NESFWsx7hbg3zNl8rYM
-         7VNLB7aZ7I0kJYeDVcVM4JFggeZ+camx28CbuWthp2jsl9CoBCUakkMM6hB7JHUBtThM
-         K29405u0YpRbegkCbU77RQw46UMVXMRGZTZHw/iQFE5J8Cbdwrtxr3KbrKezeMppOczX
-         jZA0mRitWHQrR089DUeIZUAC7KPgM8SC3bzEYKDiRG2Ix5Uyhpve3jOL7kFlqeCUtvn3
-         eLuFI7m2RSBmw+FSP9HR0ULXJTrErSxujmKH82/lMIKbV//MYauYzTC3LmIocY9yWJ6p
-         JP1Q==
+        Tue, 30 Mar 2021 16:42:36 -0400
+Received: by mail-ej1-f50.google.com with SMTP id e14so26738962ejz.11;
+        Tue, 30 Mar 2021 13:42:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fHFETPlCm5ghAjLH5TwVdNy5XrA3VED7pKjEr1FvnQI=;
-        b=SteT7Vvj8tCkMzJ2L5spLt1BswEdh38pwNGEMBf9mM7AuMX0189sWUwtviTkJOv5Lj
-         /iwr70CqefQ1RoP88gXtmiE6GsXk7i+f+CZKHqwjE2qV7qSQk+4KPHF5m7HrNPNqR9fW
-         5C3NHlcTEbVtyx7hVu0hFfsKMvnMjZWha4ACbyVCsj5hCtGzuE+dygFdVIQjMpG7twS1
-         nR4aEXuwh8C9RsgyaZJ3FFAdEa7utfeefHOh3PY5/1NkjN5Sd8vD+UOir1zwo7zNB9io
-         UCMlx8PtzU/QJFDfO1E4qJ8IqLTEWSE0HV2QPMmPyn520rUd4yroYAecydQ/ZoPHY3uV
-         6cjg==
-X-Gm-Message-State: AOAM5332ZJvbn9zMEY/XyZ/JCCRsVJSkFlsHnfSaurGCBBFLGcXWE0p5
-        WfFNUZxkOsABmUov+qC0Lp0iVs8rvMKSo1+oEZM=
-X-Google-Smtp-Source: ABdhPJz/C/OKlDXnUKi7UwL7ca2OiUVAIYqhZ8kErBU1p7eHbesrmmeSL53C+RjbeCXCtosZxEgAXzmiIdAoCy8sfH8=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr92030ybo.230.1617136778404;
- Tue, 30 Mar 2021 13:39:38 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6y0w4epdy1zgw6lkitkraNKrAbYioLiFpd2DfbWTyl8=;
+        b=Inb7zticwx0eIkksP/PyxErSyQ+GvY8gPMbfEefPME5MCgrUj/Zos8ahk71jMy/3FQ
+         NoKAumj/zxrS/7RWcZg+UMcqZkNmmngXkzGzoradW4f0fX8hlUReS7T+fVaZ9K4ZsDV7
+         wCyKWzek4v5bADCoFma5qKpcnOnas35ifmZPW+eagJjZOPnP158nRJA2so3QAmmg5IPg
+         0PChIQ2bnWVmTtRDExtaOC5KXzcPqA9gUDK0qBLrlSefo+QqZJdgS0rX1f6B7t70RsWX
+         dxhQWZEHCHIdfvGg2vl+3qjr5LU9VODlOy/OfJUB7dBR6n5XApFUEJQ+FpS0KhKM1WoQ
+         FE5A==
+X-Gm-Message-State: AOAM532KRgr4pJS4Z9zqnrixeNIRkFIY8ErRiBoBRkYKSrrlqgPVjfml
+        BHgyh5U81rRPdtEYQAkeBO37qadQLgX9S5gNFTQ=
+X-Google-Smtp-Source: ABdhPJyrA2haUymQO29Ez3sUhVUwRRFyYvafzbD5Smm8CpiSI7WxlTg1TiYD2c/PTh+vB6yqvyj441BjJtKgKmzV2eU=
+X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr35338549ejc.219.1617136955046;
+ Tue, 30 Mar 2021 13:42:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com> <20210328080648.oorx2no2j6zslejk@apollo>
-In-Reply-To: <20210328080648.oorx2no2j6zslejk@apollo>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:39:27 -0700
-Message-ID: <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <d10affcb-d315-cebc-4162-084f0a1e4d43@intel.com> <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net>
+In-Reply-To: <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 30 Mar 2021 16:42:23 -0400
+Message-ID: <CAJvTdKnwexRpHrLFQv+2ykK9WEqtXMwehjfa_D7T+O_8DO_CGA@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Mar 30, 2021 at 4:20 PM Andy Lutomirski <luto@amacapital.net> wrote:
 >
-> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
-> > Is there some succinct but complete enough documentation/tutorial/etc
-> > that I can reasonably read to understand kernel APIs provided by TC
-> > (w.r.t. BPF, of course). I'm trying to wrap my head around this and
-> > whether API makes sense or not. Please share links, if you have some.
+>
+> > On Mar 30, 2021, at 12:12 PM, Dave Hansen <dave.hansen@intel.com> wrote:
 > >
+> > ﻿On 3/30/21 10:56 AM, Len Brown wrote:
+> >> On Tue, Mar 30, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> >>>> On Mar 30, 2021, at 10:01 AM, Len Brown <lenb@kernel.org> wrote:
+> >>>> Is it required (by the "ABI") that a user program has everything
+> >>>> on the stack for user-space XSAVE/XRESTOR to get back
+> >>>> to the state of the program just before receiving the signal?
+> >>> The current Linux signal frame format has XSTATE in uncompacted format,
+> >>> so everything has to be there.
+> >>> Maybe we could have an opt in new signal frame format, but the details would need to be worked out.
+> >>>
+> >>> It is certainly the case that a signal should be able to be delivered, run “async-signal-safe” code,
+> >>> and return, without corrupting register contents.
+> >> And so an an acknowledgement:
+> >>
+> >> We can't change the legacy signal stack format without breaking
+> >> existing programs.  The legacy is uncompressed XSTATE.  It is a
+> >> complete set of architectural state -- everything necessary to
+> >> XRESTOR.  Further, the sigreturn flow allows the signal handler to
+> >> *change* any of that state, so that it becomes active upon return from
+> >> signal.
+> >
+> > One nit with this: XRSTOR itself can work with the compacted format or
+> > uncompacted format.  Unlike the XSAVE/XSAVEC side where compaction is
+> > explicit from the instruction itself, XRSTOR changes its behavior by
+> > reading XCOMP_BV.  There's no XRSTORC.
+> >
+> > The issue with using the compacted format is when legacy software in the
+> > signal handler needs to go access the state.  *That* is what can't
+> > handle a change in the XSAVE buffer format (either optimized/XSAVEOPT,
+> > or compacted/XSAVEC).
 >
-> Hi Andrii,
->
-> Unfortunately for the kernel API part, I couldn't find any when I was working
-> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
-> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
-> act_bpf.c) to grok anything I didn't understand. There's also similar code in
-> libnl (lib/route/{act,cls}.c).
->
-> Other than that, these resources were useful (perhaps you already went through
-> some/all of them):
->
-> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
-> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
-> tc(8), and tc-bpf(8) man pages
->
-> I hope this is helpful!
+> The compacted format isn’t compact enough anyway. If we want to keep AMX and AVX512 enabled in XCR0 then we need to further muck with the format to omit the not-in-use features. I *think* we can pull this off in a way that still does the right thing wrt XRSTOR.
 
-Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
-trying to catch up.
+Agreed.  Compacted format doesn't save any space when INIT=0, so it is
+only a half-step forward.
 
-I was just wondering if it would be more natural instead of having
-_dev _block variants and having to specify __u32 ifindex, __u32
-parent_id, __u32 protocol, to have some struct specifying TC
-"destination"? Maybe not, but I thought I'd bring this up early. So
-you'd have just bpf_tc_cls_attach(), and you'd so something like
+> If we go this route, I think we want a way for sigreturn to understand a pointer to the state instead of inline state to allow programs to change the state.  Or maybe just to have a way to ask sigreturn to skip the restore entirely.
 
-bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
+The legacy approach puts all architectural state on the signal stack
+in XSTATE format.
 
-or
+If we make the signal stack smaller with a new fast-signal scheme, we
+need to find another place for that state to live.
 
-bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
+It can't live in the task context switch buffer.  If we put it there
+and then take an interrupt while running the signal handler, then we'd
+overwrite the signaled thread's state with the signal handler's state.
 
-? Or it's taking it too far?
+Can we leave it in live registers?  That would be the speed-of-light
+signal handler approach.  But we'd need to teach the signal handler to
+not clobber it.  Perhaps that could be part of the contract that a
+fast signal handler signs?  INIT=0 AMX state could simply sit
+patiently in the AMX registers for the duration of the signal handler.
+You can't get any faster than doing nothing :-)
 
-But even if not, I think detaching can be unified between _dev and
-_block, can't it?
+Of course part of the contract for the fast signal handler is that it
+knows that it can't possibly use XRESTOR of the stuff on the stack to
+necessarily get back to the state of the signaled thread (assuming we
+even used XSTATE format on the fast signal handler stack, it would
+forget the contents of the AMX registers, in this example)
 
->
-> --
-> Kartikeya
+Len Brown, Intel Open Source Technology Center
