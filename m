@@ -2,341 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC3134F26D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B40A34F275
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 22:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhC3Uua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 16:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232286AbhC3UuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:50:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47796619C5;
-        Tue, 30 Mar 2021 20:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617137415;
-        bh=tEAaMi25yS2z1dnSdhQ8QZl8Bk7j7DHZni+5n8JXYHc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Rdzc8CkvroMV7cdj/UcdaPbo2V6+EbK5Rf5eGGZ97XaDBANE/rG+7+cKQTnwpHEB9
-         m1Ibk9lTuQF1E2xyFtBa3EKaZVhD9ca0kZVpW660yJ/hcRARwn+NKi/ILj1xcVlxoE
-         HDKW4AuGNRS5BPEiFiEK+crGd0S+kINUs1wrFoiXgpm0Ufp+KswEL5qzXoFvDXccCM
-         NUIR0GVw8eGD3ikdReXz8HvPptPZhjii0LhMXQCb2WFi3qIsyTIZAUcgv3wIPpvKUF
-         KB/tX9dmLa2UAzkburLzGOQWXLK6n1DUtJ1KGRUlb6v5bDoS5lBen2OXGkBgiw11HD
-         vD6nEIjaDAYqw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 134903522698; Tue, 30 Mar 2021 13:50:15 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 13:50:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     340442286@qq.com, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RCU: some improvements to comments of tree.c
-Message-ID: <20210330205015.GY2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210321031725.15823-1-zhouzhouyi@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321031725.15823-1-zhouzhouyi@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S232573AbhC3Uwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 16:52:36 -0400
+Received: from st43p00im-ztbu10063701.me.com ([17.58.63.178]:53966 "EHLO
+        st43p00im-ztbu10063701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232571AbhC3UwA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 16:52:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1617137520; bh=ZKLWSMdxWfNs8QN6JF4XTqugfEbF2VXoXeQPmxKIWZc=;
+        h=From:To:Subject:Date:Message-Id;
+        b=YNkxX5LnpNCyuQuh0foeEdQrDo/+gSjUYQJzTrpg0bL6zlMxEvVf+1QhhATm5uxBU
+         ikW733Q0arc6QPbx95lZfp96F39VIAcqKhTBXZZ+Z2ZTD5bmSlsCVwYS15ddE+jrcV
+         VDCdrx528l3zo5vfFFCYhKZGVpM6ILRs4pcQTlP75rxt68cs5A39MnMHyvt/fn+hzc
+         QvPzu692n6+7IAvyj1dpffa050wguycG7gPCTHwPjRhmYV0Y633qqg2cNnRHesPWAH
+         jcg2O4h2JIrTUYc23R/pdy40nRRQKit6ynf9iZlIAVWdSiSOpahzAPu79yaFeL3lMr
+         bQBJjRPwPsWzQ==
+Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztbu10063701.me.com (Postfix) with ESMTPSA id 719E29A06A8;
+        Tue, 30 Mar 2021 20:51:59 +0000 (UTC)
+From:   Alain Volmat <avolmat@me.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
+Subject: [PATCH v3 0/7] clk: st: embed clock outputs within drivers
+Date:   Tue, 30 Mar 2021 22:51:18 +0200
+Message-Id: <20210330205125.25708-1-avolmat@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-03-30=5F09:2021-03-30=5F01,2021-03-30=5F09,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ clxscore=1015 mlxlogscore=903 suspectscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103300153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 11:17:25AM +0800, Zhouyi Zhou wrote:
-> During my study of RCU, I go through tree.c many times
-> and try to make some improvements to the comments.
-> 
-> Thanks a lot.
+Most of ST clock drivers used by STi platform are updated in
+order to introduce clock outputs informations within each drivers
+and thus allow to avoid having to rely on clock-output-names properties
+within DT clock nodes.
+For that purpose, drivers are updated to allow handling both modes
+(with or without clock-output-names).
+Once all DT will have been updated, the legacy mode could be removed
+from the drivers.
+This will also allow, once all STi DT will be corrected, to remove the
+of_clk_detect_critical API from clk core code since STi clock drivers
+are the only drivers using this API.
 
-Thank you for looking this over and for the patch!
+This serie also contains modifications within STi DTS in order to use
+the newly introduced compatible and remove clock-output-names
+properties.
 
-The commit log should read something like this:
+Alain Volmat (7):
+  clk: st: clkgen-pll: remove used variable of struct clkgen_pll
+  clk: st: flexgen: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: flexgen: add new introduced compatible
+  clk: st: clkgen-pll: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-pll: add new introduced compatible
+  clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
 
-	This commit provides some cleanups to comments and code in the
-	kernel/rcu/tree.c file.
+ .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
+ .../bindings/clock/st/st,flexgen.txt          |  10 +
+ .../bindings/clock/st/st,quadfs.txt           |   3 +
+ drivers/clk/st/clk-flexgen.c                  | 366 +++++++++++++++++-
+ drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
+ drivers/clk/st/clkgen-pll.c                   | 121 +++++-
+ 6 files changed, 575 insertions(+), 41 deletions(-)
 
-I have provided responses below, followed by a modified commit.
-Please let me know if you have objections to having your Signed-off-by
-on this modified commit.
+---
+v3: - removal some useless CLK_IS_CRITICAL and add some comments
+    - only keep clk drivers/binding patches within the serie
+v2: fix drivers to update some clocks as CLK_IS_CRITICAL
 
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> ---
->  kernel/rcu/tree.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index da6f5213fb74..50c6b8fd8d08 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -201,7 +201,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
->   * the need for long delays to increase some race probabilities with the
->   * need for fast grace periods to increase other race probabilities.
->   */
-> -#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays. */
-> +#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays, for debug purpose. */
+-- 
+2.17.1
 
-This should be something like "delays for debugging".
-
->  /*
->   * Compute the mask of online CPUs for the specified rcu_node structure.
-> @@ -835,9 +835,9 @@ void noinstr rcu_irq_exit(void)
->  
->  /**
->   * rcu_irq_exit_preempt - Inform RCU that current CPU is exiting irq
-> - *			  towards in kernel preemption
-> + *			  towards kernel preemption
->   *
-> - * Same as rcu_irq_exit() but has a sanity check that scheduling is safe
-> + * Same as rcu_irq_exit() but has some sanity checks that scheduling is safe
->   * from RCU point of view. Invoked from return from interrupt before kernel
->   * preemption.
->   */
-
-Huh.  It does not look like this function is used.  And Thomas Gleixner
-confirmed that it can be removed, which I did as a separate commit.
-
-> @@ -959,7 +959,7 @@ EXPORT_SYMBOL_GPL(rcu_idle_exit);
->   */
->  void noinstr rcu_user_exit(void)
->  {
-> -	rcu_eqs_exit(1);
-> +	rcu_eqs_exit(true);
-
-Fair enough, might as well be consistent with the other call to
-rcu_eqs_exit().
-
->  }
->  
->  /**
-> @@ -1226,7 +1226,7 @@ EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
->  #endif /* #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU) */
->  
->  /*
-> - * We are reporting a quiescent state on behalf of some other CPU, so
-> + * We may reporting a quiescent state on behalf of some other CPU, so
-
-Fair enough, although we are trying to report or preparing to report
-a quiescent state when invoking this function, we might end up not doing
-so.  I reworded as follows:
-
- * When trying to report a quiescent state on behalf of some other CPU,
-
->   * it is our responsibility to check for and handle potential overflow
->   * of the rcu_node ->gp_seq counter with respect to the rcu_data counters.
->   * After all, the CPU might be in deep idle state, and thus executing no
-> @@ -1808,9 +1808,9 @@ static bool rcu_gp_init(void)
->  		return false;
->  	}
->  
-> -	/* Advance to a new grace period and initialize state. */
-> -	record_gp_stall_check_time();
->  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> +	record_gp_stall_check_time();
-> +	/* Advance to a new grace period and initialize state. */
-
-Recording the grace-period stall machinery is part of advancing to a new
-grace period, so I left this one as is.
-
->  	rcu_seq_start(&rcu_state.gp_seq);
->  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
->  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> @@ -2630,7 +2630,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
->   * state, for example, user mode or idle loop.  It also schedules RCU
->   * core processing.  If the current grace period has gone on too long,
->   * it will ask the scheduler to manufacture a context switch for the sole
-> - * purpose of providing a providing the needed quiescent state.
-> + * purpose of providing the needed quiescent state.
-
-Good catch, applied as you suggested.
-
->   */
->  void rcu_sched_clock_irq(int user)
->  {
-> @@ -3260,7 +3260,7 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
->  
->  /*
->   * This function is invoked in workqueue context after a grace period.
-> - * It frees all the objects queued on ->bhead_free or ->head_free.
-> + * It frees all the objects queued on ->bkvhead_free or ->head_free.
-
-And for this one as well.
-
->   */
->  static void kfree_rcu_work(struct work_struct *work)
->  {
-> @@ -3287,7 +3287,7 @@ static void kfree_rcu_work(struct work_struct *work)
->  	krwp->head_free = NULL;
->  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
->  
-> -	// Handle two first channels.
-> +	// Handle first two channels.
-
-This one I translated the rest of the way to English as follows:
-
-	// Handle the first two channels.
-
->  	for (i = 0; i < FREE_N_CHANNELS; i++) {
->  		for (; bkvhead[i]; bkvhead[i] = bnext) {
->  			bnext = bkvhead[i]->next;
-> @@ -3530,7 +3530,7 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
->  
->  /*
->   * Queue a request for lazy invocation of appropriate free routine after a
-> - * grace period. Please note there are three paths are maintained, two are the
-> + * grace period. Please note there are three paths maintained, two are the
-
-I made this "Please note that three paths are maintained" and fixed up a few
-other things, resulting in this:
-
- * Queue a request for lazy invocation of the appropriate free routine
- * after a grace period.  Please note that three paths are maintained,
- * two for the common case using arrays of pointers and a third one that
- * is used only when the main paths cannot be used, for example, due to
- * memory pressure.
-
->   * main ones that use array of pointers interface and third one is emergency
->   * one, that is used only when the main path can not be maintained temporary,
->   * due to memory pressure.
-> @@ -3813,7 +3813,7 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
->  
->  /*
->   * Check to see if there is any immediate RCU-related work to be done by
-> - * the current CPU, returning 1 if so and zero otherwise.  The checks are
-> + * the current CPU, returning 1 if so and 0 otherwise.  The checks are
-
-I am not feeling it for this one...
-
->   * in order of increasing expense: checks that can be carried out against
->   * CPU-local state are performed first.  However, we must check for CPU
->   * stalls first, else we might not get a chance.
-> @@ -4153,7 +4153,7 @@ int rcutree_online_cpu(unsigned int cpu)
->  }
->  
->  /*
-> - * Near the beginning of the process.  The CPU is still very much alive
-> + * Near the beginning of the offline process. The CPU is still very much alive
->   * with pretty much all services enabled.
->   */
->  int rcutree_offline_cpu(unsigned int cpu)
-
-The name of the function suffices here.
-
-I will agree that finding all the pieces of RCU's CPU-hotplug processing
-can be a bit annoying.  I have been thinking in terms of gathering these
-functions into a tree_hotplug.c or similar.
-
-Thoughts?
-
-> @@ -4651,7 +4651,7 @@ void __init rcu_init(void)
->  		rcutree_online_cpu(cpu);
->  	}
->  
-> -	/* Create workqueue for expedited GPs and for Tree SRCU. */
-> +	/* Create workqueue for Tree SRCU and for expedited GPs. */
-
-Fair enough...
-
->  	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
->  	WARN_ON(!rcu_gp_wq);
->  	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
-
-------------------------------------------------------------------------
-
-commit 3f0d0d00b8f3fe58754071eb7726c5128b5816da
-Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue Mar 30 13:47:42 2021 -0700
-
-    rcu: Improve tree.c comments and add code cleanups
-    
-    This commit cleans up some comments and code in kernel/rcu/tree.c.
-    
-    Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 418c743..ce5b4cd 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -202,7 +202,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
-  * the need for long delays to increase some race probabilities with the
-  * need for fast grace periods to increase other race probabilities.
-  */
--#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays. */
-+#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays for debugging. */
- 
- /*
-  * Compute the mask of online CPUs for the specified rcu_node structure.
-@@ -938,7 +938,7 @@ EXPORT_SYMBOL_GPL(rcu_idle_exit);
-  */
- void noinstr rcu_user_exit(void)
- {
--	rcu_eqs_exit(1);
-+	rcu_eqs_exit(true);
- }
- 
- /**
-@@ -1204,7 +1204,7 @@ EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
- #endif /* #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU) */
- 
- /*
-- * We are reporting a quiescent state on behalf of some other CPU, so
-+ * When trying to report a quiescent state on behalf of some other CPU,
-  * it is our responsibility to check for and handle potential overflow
-  * of the rcu_node ->gp_seq counter with respect to the rcu_data counters.
-  * After all, the CPU might be in deep idle state, and thus executing no
-@@ -2608,7 +2608,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
-  * state, for example, user mode or idle loop.  It also schedules RCU
-  * core processing.  If the current grace period has gone on too long,
-  * it will ask the scheduler to manufacture a context switch for the sole
-- * purpose of providing a providing the needed quiescent state.
-+ * purpose of providing the needed quiescent state.
-  */
- void rcu_sched_clock_irq(int user)
- {
-@@ -3237,7 +3237,7 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 
- /*
-  * This function is invoked in workqueue context after a grace period.
-- * It frees all the objects queued on ->bhead_free or ->head_free.
-+ * It frees all the objects queued on ->bkvhead_free or ->head_free.
-  */
- static void kfree_rcu_work(struct work_struct *work)
- {
-@@ -3264,7 +3264,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	krwp->head_free = NULL;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
--	// Handle two first channels.
-+	// Handle the first two channels.
- 	for (i = 0; i < FREE_N_CHANNELS; i++) {
- 		for (; bkvhead[i]; bkvhead[i] = bnext) {
- 			bnext = bkvhead[i]->next;
-@@ -3531,11 +3531,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- }
- 
- /*
-- * Queue a request for lazy invocation of appropriate free routine after a
-- * grace period. Please note there are three paths are maintained, two are the
-- * main ones that use array of pointers interface and third one is emergency
-- * one, that is used only when the main path can not be maintained temporary,
-- * due to memory pressure.
-+ * Queue a request for lazy invocation of the appropriate free routine
-+ * after a grace period.  Please note that three paths are maintained,
-+ * two for the common case using arrays of pointers and a third one that
-+ * is used only when the main paths cannot be used, for example, due to
-+ * memory pressure.
-  *
-  * Each kvfree_call_rcu() request is added to a batch. The batch will be drained
-  * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch will
-@@ -4709,7 +4709,7 @@ void __init rcu_init(void)
- 		rcutree_online_cpu(cpu);
- 	}
- 
--	/* Create workqueue for expedited GPs and for Tree SRCU. */
-+	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
- 	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
