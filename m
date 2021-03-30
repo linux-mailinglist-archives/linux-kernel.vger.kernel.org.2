@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0E534E09F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EF934E0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 07:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhC3FXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 01:23:43 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:32928 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230294AbhC3FX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:23:29 -0400
-X-UUID: f27e7d8e5e3441b68c30088bed172cd5-20210330
-X-UUID: f27e7d8e5e3441b68c30088bed172cd5-20210330
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <pk.chi@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 169471129; Tue, 30 Mar 2021 13:23:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 30 Mar 2021 13:23:23 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 30 Mar 2021 13:23:23 +0800
-From:   Po-Kai Chi <pk.chi@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>,
-        Po-Kai Chi <pk.chi@mediatek.com>
-Subject: [PATCH v1 4/4] arm64: defconfig: Enable MediaTek DRAMC common driver
-Date:   Tue, 30 Mar 2021 13:22:11 +0800
-Message-ID: <1617081731-7408-5-git-send-email-pk.chi@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1617081731-7408-1-git-send-email-pk.chi@mediatek.com>
-References: <1617081731-7408-1-git-send-email-pk.chi@mediatek.com>
+        id S229677AbhC3F3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 01:29:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhC3F3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 01:29:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81EE461921;
+        Tue, 30 Mar 2021 05:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617082171;
+        bh=8I7DqHNKkHoQuqnMHUExWNfnew54U0aGIlJ/JSc4DuQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gNsS5Hq1zZvyXLoIKggM0Laqwgx9GQDCRSubWKvHBkg68by1ByQgXrhO1EH6VqwAt
+         c78FnjAquP16SnS+YSKL5QBAyiEHUuerQYmXDAyU2LGlWbTt/+t4IqaZ+qYXm2sHgR
+         fQWa/iSoc5AAmbZgSMKQmU9JspMq+U9HytOZl5zgZCgBvrROzhz7S2DWmJIUzgRMUg
+         OvU754rBTvWwmVvjzHG076rh/Bjdfl9pbb1kFvQc8k3GdSO17R66il3OT0zHQ0j8qD
+         obkz2HwOrnFWBuO7vf05Pji0CpA8rinGGxQu8sf6hZfGcEQ5OmhjZt4zdXg8Pe/p07
+         raaeW+F2bErmw==
+Date:   Mon, 29 Mar 2021 22:29:30 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation: crypto: add info about "fips=" boot
+ option
+Message-ID: <YGK3OlT3+6WdXbux@sol.localdomain>
+References: <20210330050651.13344-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330050651.13344-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit enables MediaTek DRAMC common driver to be built
-as a module by default for the ARM64 builds.
+On Mon, Mar 29, 2021 at 10:06:51PM -0700, Randy Dunlap wrote:
+> Having just seen a report of using "fips=1" on the kernel command line,
+> I could not find it documented anywhere, so add some help for it.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> ---
+> Updates/corrections welcome.
+> 
+> v2: drop comment that "fips_enabled can cause some tests to be skipped".
+> 
+>  Documentation/admin-guide/kernel-parameters.txt |   14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> --- linux-next-20210329.orig/Documentation/admin-guide/kernel-parameters.txt
+> +++ linux-next-20210329/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1370,6 +1370,20 @@
+>  			See Documentation/admin-guide/sysctl/net.rst for
+>  			fb_tunnels_only_for_init_ns
+>  
+> +	fips=		Format: { 0 | 1}
+> +			Use to disable (0) or enable (1) FIPS mode.
+> +			If enabled, any process that is waiting on the
+> +			'fips_fail_notif_chain' will be notified of fips
+> +			failures.
+> +			This setting can also be modified via sysctl at
+> +			/proc/sysctl/crypto/fips_enabled, i.e.,
+> +			crypto.fips_enabled.
+> +			If fips_enabled = 1 and a test fails, it will cause a
+> +			kernel panic.
+> +			If fips_enabled = 1, RSA test requires a key size of
+> +			2K or larger.
+> +			It can also effect which ECC curve is used.
 
-Signed-off-by: Po-Kai Chi <pk.chi@mediatek.com>
----
- arch/arm64/configs/defconfig |    1 +
- 1 file changed, 1 insertion(+)
+This doesn't really explain why anyone would want to give this option.
+What high-level thing is this option meant to be accomplishing?
+That's what the documentation should explain.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index d612f63..49d7464 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1163,3 +1163,4 @@ CONFIG_DEBUG_KERNEL=y
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
- CONFIG_MEMTEST=y
-+CONFIG_MTK_DRAMC=m
--- 
-1.7.9.5
-
+- Eric
