@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675CF34ECDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECBA34ECE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhC3PrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:47:23 -0400
-Received: from mail-bn8nam11on2046.outbound.protection.outlook.com ([40.107.236.46]:52577
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232263AbhC3PrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:47:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KbWV/faEQSlQzj0UC+J0nk/RPTxJ74dHaaGoZyovfQ05smFvklXdXUq9x6jhAOwLzhL+NX5DDWoz/2leRR9AZCbaNsDtWtZjPRwDBjNo5QIEqJGHtPfenpcjI10HfceWWVN0pXempPCXPT6rweNHK/Yu/rakWNFJ0sQImUb9QC9SYW/cZf30keadqFwzbx/r3NrY4FoSrW5TfZrErxd1cx0SeevidPH6fIDk1XUp85vBZROKR+l/dKBpvxmKTE0z3l6LgxyHP+N8mrfv5P0A7uopIAKCzPZuGmdyS/QiTNq6O5AAOihA+ENVqKWCaimmWxFSLYm9w7/5fyaeXhRTjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miSRgMmBQwbSQKtLZlPbZYDzP3rnCM2z+mWSYmUVNuU=;
- b=GjI29mcN7YFkjA/PlDKO2TqcQJYGkpXi2E1GyDGctEaJMtU1jhFaN+cVslzapflw+wRpE3Rl7Q5ecE9Fj24BRYeocIwWeQQb4CSEgr2raUDgcVh7fIGw4Ip6pTTaT4RIhm2ObVmSqf4MM247qUqS4g17U5vl8LcRyCz7i/GsMkPaMYF9rSCrNzouslxJhXifZq6wURyc1KG8Ztnt1Oj+t7LPZRDQRSMug74+EcaIGXM+JLuS1r2r+OdgNuCQopL/A2z95VH+qMhBfxbH/t/3QcqORsCkuzkyrcTRkQ/60XOMzcDqCFEI4tdOSNuij8JgByfE+S7CJHyX1ytOPKyY5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miSRgMmBQwbSQKtLZlPbZYDzP3rnCM2z+mWSYmUVNuU=;
- b=Y4ZQXBrDuSx+WcAX0TtC1gapRSBVtQBzneKs4uW3qbMmfiXVMXrBjntDAZGt4VrbDoeu+4cilXQCfusbYRjN9kmx+7HWBYnLGxHm1tY8CZN0lupyp7Dya1O8EyeikSnvwOhrJ5u5X4UcLqJ3QiBo7dtBLwP3JA5HodhHfagkKv8KCjvQ0vnzbf5mS/mCcxelqQh2RKWUM4AsenEZ97qRbsPHAri+ugiSCofrP9d2VnI5WeKmqEXqHFdUUTmm0Y5hdcz6Le03BncfByTfu7cuiR/xdhmXxL/iRSoyLjqvzt5FwmYb3Kmjal/+iXNRZnFeAX5fzJenJSceYHQHfD0AFA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1882.namprd12.prod.outlook.com (2603:10b6:3:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.33; Tue, 30 Mar
- 2021 15:47:14 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 15:47:14 +0000
-Date:   Tue, 30 Mar 2021 12:47:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>
-Subject: Re: [PATCH v2 2/4] cxl/mem: Fix synchronization mechanism for device
- removal vs ioctl operations
-Message-ID: <20210330154712.GR2356281@nvidia.com>
-References: <161707245893.2072157.6743322596719518693.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161707246948.2072157.2116502455691653472.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210330111620.GK2356281@nvidia.com>
- <CAPcyv4iGByX1+CoUnc3SJahvoT0NGNnbkcDLyEkSJ8YFC9PBUg@mail.gmail.com>
+        id S231967AbhC3Pth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:49:37 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:60125 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231622AbhC3PtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:49:22 -0400
+Received: (qmail 980943 invoked by uid 1000); 30 Mar 2021 11:49:21 -0400
+Date:   Tue, 30 Mar 2021 11:49:21 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] usb: Iterator for ports
+Message-ID: <20210330154921.GC980260@rowland.harvard.edu>
+References: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
+ <20210329084426.78138-6-heikki.krogerus@linux.intel.com>
+ <20210329184946.GA944482@rowland.harvard.edu>
+ <YGLqV4nB/lPS1AOF@kuha.fi.intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4iGByX1+CoUnc3SJahvoT0NGNnbkcDLyEkSJ8YFC9PBUg@mail.gmail.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR11CA0029.namprd11.prod.outlook.com
- (2603:10b6:208:23b::34) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0029.namprd11.prod.outlook.com (2603:10b6:208:23b::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.33 via Frontend Transport; Tue, 30 Mar 2021 15:47:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRGaG-005vzN-5A; Tue, 30 Mar 2021 12:47:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d6cd0ada-4a9c-450e-88e1-08d8f393168c
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1882:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1882075F056EADE806497A6EC27D9@DM5PR12MB1882.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N5v+M48q3j7BuRk3Ufc8+7Yujx0NVKh53tTCYpe0LzjWLg5nQnR/3+ZbOb5vWHvjuW18HPafSBbddfsB4C6wO+2wHe3/Y6diu09zemSd0y/AsAKRxsQYqdesbKQ2comrEOPV65H/ODirGMvRK/+FyrHklgCtuK2bqZR3S4TckQk3YTpz5opFkZLaxinsjdz5Qj/4c8axZUkBrazEkZVO/xb6B8olPCaJJjRsC/OffSfG+gomLcUY+IjC4qXv8zYvNh8LsNHyuNa/MOtT9sCtun4sYSoV6GtlYVAom6MoyBoorqL7z7oV3JWaRn/gFf2l6QxIMvRPKwr66p81i3K8i0ZFlbCvKulri+mTACjf5aCMOFW+Tvvc0gyG6AKCiTXJ4r6XNH3GZM/lG4wXWFhnMjvY/mERUni1Q4Uw8ZdsOXKaxOcZkGiSHwNltexsHDJgU/Im81y7EzH1kmu+6loiNnRhCIx2DgTqVm4ae9K5T5guZ6j2aAIUDKOgJvZ8gtWjDlBFmFwoHU2PGxUfJcb0E33wQeZz5JiN4afwcpFMvE6eBbRRLdvXbGuRuSJqTzfHArN8FrhgshMJaaNc8A0sDlAWL5+WW0jQ4Zm45y9hQD88OFrFbEYrmz2NFKQi3JXy/HWUft1Cp2x2e7Zm9M5hg1sGyKqrEb6ca94Vn8R100M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(136003)(376002)(366004)(2906002)(36756003)(86362001)(83380400001)(426003)(33656002)(26005)(2616005)(186003)(6916009)(53546011)(66476007)(316002)(478600001)(54906003)(4326008)(66556008)(66946007)(9746002)(38100700001)(8936002)(1076003)(8676002)(9786002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?izjxZYSF3hNShbR9p7hhwa8h0EWQfkjMcTvjE/X7HNwLrpCY5Y/KklRzU8rh?=
- =?us-ascii?Q?mI1zUAOnWBCfvqgxfbyhpc/mAva1rZovwGCQJn039Qv/DbVLOERJwXS1vFQH?=
- =?us-ascii?Q?R0Z9QUKSD2BeeNYhCEorkUqxipWliICIWDU1ESHZYQ5AEvoiOpOjKYRNQnVU?=
- =?us-ascii?Q?PUSlx77ZR/T3nm/7Rz1zXpKG7hG3rcpsEKSeU1KERv3KdUqahVxb4uz5hzgb?=
- =?us-ascii?Q?RtuLRKFVv/jmeXCaS/rPVfdkLToNo4Z+EK8BtEvMFEYwimK2/UPW2gI53Dfj?=
- =?us-ascii?Q?8CLJrsLFWlIvgBPvAOdFD7svJwhQhjdK9MjGwXQ+Fnw2umbLGfJsl4agIEBz?=
- =?us-ascii?Q?uuP2xsVEE6CHwX+BiPWi5UBLp/U86xM7a29qYs+uU3N+5MoN6rapBA19mmQ0?=
- =?us-ascii?Q?i4NgYve5qNz99xpEuf7yKcRUZ0Qt1R5FoD6pO0L8nHyVhvl73tgGg6ItWGyj?=
- =?us-ascii?Q?09B+a7kK8uvpD6bqSmng0n6sUVQsetPt7CpbOSJfmG2HcXpjQ1MIcJz0R5sP?=
- =?us-ascii?Q?21UQITWY212cOn4cTed3P4mFHh7RTPlB4kl3h7gb2YvA2wS9B0P2L83Ov6KU?=
- =?us-ascii?Q?bXP4J0bqJsmuYbwtz2ik99Se3E1nTOf76wXrqq/Er3sfvzOrJAhm6OJTOKos?=
- =?us-ascii?Q?7URUNGvppLb1rNzbRFFl79E5XiDCGyeWbioAZwiVyuNNIZYcjhlklXsn1Geo?=
- =?us-ascii?Q?IZHLsS11LjoLStvwgVJreAnjpb5eAiq/tzDsLGj/S0pM7HKqXI+LWBNFE5oj?=
- =?us-ascii?Q?UV6Ny+jHcxVcPoeECeknQa5J44hs3lv7n2azW5PZB7Dx+XlD/YB/3eBnu9VO?=
- =?us-ascii?Q?wbQKSlQF0ktiiOlJnFIhR4CfD7nUcfcQzdpkezae7Jh1IvS/JAdIi2QSjC2h?=
- =?us-ascii?Q?ZuH0SOi5Zp3bueI7Ah1hPigUIdFWC8V+R9xslf7et+EGLswabZkXT5HZOErt?=
- =?us-ascii?Q?0irxY37RC50lSTlXG6dASYkynD5yHHYn3MA+ILR8lj4F2So2QXgxEx3Ao8V8?=
- =?us-ascii?Q?H7cxK4tolXjyRY17EGOcpfMRJYdTzbyIMj3zQ8GNahNBZyMPbZR85Wr87x/U?=
- =?us-ascii?Q?0VBsU5FeDriJ1i4sRl8//yVGvMtlcqPsgDFUnrAiGMquGuHBOBjSNRMBCyC3?=
- =?us-ascii?Q?4a+z078L6gd+eftxBzAHs1IM6Sh2/nwwTIhmIVjCG5ZAdAgOHd5q0tJi8Of1?=
- =?us-ascii?Q?mjnUlewwI3OwJUzg5QoZgLgGvNESVgFcGYes/QCKIUwBhxZaXAZBc6y6DDb4?=
- =?us-ascii?Q?vyVUc0P4N600ACcuLKdqZ4iRbeYUUrCpISAxtd+EYpqs9z0i/qxPxOMS2p2N?=
- =?us-ascii?Q?KqZGlmXMRPppEx42ZTIXXZnvgpSQmcjyAGovqObhd75feg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6cd0ada-4a9c-450e-88e1-08d8f393168c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 15:47:14.2692
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DRoJcRVW6YGV4Ezz6e/2vOOQD+LARZGN8YVs6x8CTSrN/dHY1rLCNmrt/HXFjMA8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
+In-Reply-To: <YGLqV4nB/lPS1AOF@kuha.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:37:19AM -0700, Dan Williams wrote:
-> On Tue, Mar 30, 2021 at 4:16 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Mon, Mar 29, 2021 at 07:47:49PM -0700, Dan Williams wrote:
-> >
-> > > @@ -1155,21 +1175,12 @@ static void cxlmdev_unregister(void *_cxlmd)
-> > >       struct cxl_memdev *cxlmd = _cxlmd;
-> > >       struct device *dev = &cxlmd->dev;
-> > >
-> > > -     percpu_ref_kill(&cxlmd->ops_active);
-> > >       cdev_device_del(&cxlmd->cdev, dev);
-> > > -     wait_for_completion(&cxlmd->ops_dead);
-> > > +     synchronize_srcu(&cxl_memdev_srcu);
-> >
-> > This needs some kind of rcu protected pointer for SRCU to to
-> > work.. The write side has to null the pointer and the read side has to
-> > copy the pointer to the stack and check for NULL.
-> >
-> > Otherwise the read side can't detect when the write side is shutting
-> > down.
-> >
-> > Basically you must use rcu_derference(), rcu_assign_pointer(), etc
-> > when working with RCU.
+On Tue, Mar 30, 2021 at 12:07:35PM +0300, Heikki Krogerus wrote:
+> On Mon, Mar 29, 2021 at 02:49:46PM -0400, Alan Stern wrote:
+> > On Mon, Mar 29, 2021 at 11:44:25AM +0300, Heikki Krogerus wrote:
+> > > Introducing usb_for_each_port(). It works the same way as
+> > > usb_for_each_dev(), but instead of going through every USB
+> > > device in the system, it walks through the USB ports in the
+> > > system.
+> > > 
+> > > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > ---
+> > >  drivers/usb/core/usb.c | 46 ++++++++++++++++++++++++++++++++++++++++++
+> > >  include/linux/usb.h    |  1 +
+> > >  2 files changed, 47 insertions(+)
+> > > 
+> > > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> > > index 2ce3667ec6fae..62368c4ed37af 100644
+> > > --- a/drivers/usb/core/usb.c
+> > > +++ b/drivers/usb/core/usb.c
+> > > @@ -398,6 +398,52 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(usb_for_each_dev);
+> > >  
+> > > +struct each_hub_arg {
+> > > +	void *data;
+> > > +	int (*fn)(struct device *, void *);
+> > > +};
+> > > +
+> > > +static int __each_hub(struct usb_device *hdev, void *data)
+> > > +{
+> > > +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
+> > > +	struct usb_hub *hub;
+> > > +	int ret = 0;
+> > > +	int i;
+> > > +
+> > > +	hub = usb_hub_to_struct_hub(hdev);
+> > > +	if (!hub)
+> > > +		return 0;
+> > 
+> > What happens if the hub is removed exactly now?  Although hdev is 
+> > reference-counted (and the loop iterator does take a reference to it), 
+> > usb_hub_to_struct_hub doesn't take a reference to hub.  And hub->ports 
+> > isn't refcounted at all.
 > 
-> If the shutdown path was not using synchronize_rcu() then I would
-> agree with you. This usage of srcu is also used to protect dax device
-> shutdown after talking through rwsem vs srcu in this thread with Jan
-> and Paul [1]. The syncrhonize_rcu() guarantees that all read-side
-> critical sections have had at least one chance to quiesce.
+> If the hub is removed right now, and if hub_disconnect() also manages
+> to remove the ports before we have time to take the lock below, then
+> hdev->maxchild will be 0 by the time we can take the lock. In that
+> case nothing happens here.
+
+Okay, good.
+
+> If on the other hand we manage to acquire the usb_port_peer_mutex
+> before hub_disconnect(), then hub_disconnect() will simply have to
+> wait until we are done, and only after that remove the ports.
 > 
-> So this could either use rcu pointer accessors and call_srcu to free
-> the object in a quiescent state, or it can use synchronize_srcu()
-> relative to a condition that aborts usage of the pointer.
+> > > +	mutex_lock(&usb_port_peer_mutex);
+> > > +
+> > > +	for (i = 0; i < hdev->maxchild; i++) {
+> > > +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
+> > > +		if (ret)
+> > > +			break;
+> > > +	}
+> > > +
+> > > +	mutex_unlock(&usb_port_peer_mutex);
+> > 
+> > I have a feeling that it would be better to take and release this mutex 
+> > in usb_for_each_port (or its caller), so that it is held over the whole 
+> > loop.
+> 
+> I disagree. The lock is for the ports, not the hubs. We should take
+> the lock when we are going through the ports of a hub, but release it
+> between the hubs. Otherwise we will be only keeping things on hold for
+> a long period of time for no good reason (I for example have to
+> evaluate the _PLD of every single port which takes a lot of time). We
+> don't need to prevent other things from happening to the hubs at the
+> same time.
 
-synchronize_rcu doesn't stop the read side from running it. It only
-guarentees that all running or future read sides will see the *write*
-performed prior to synchronize_rcu.
+All right, you convinced me.
 
-If you can't clearly point to the *data* under RCU protection it is
-being used wrong.
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
-Same as if you can't point to the *data* being protected by a rwsem it
-is probably being used wrong.
-
-We are not locking code.
-
-Jason
+Alan Stern
