@@ -2,306 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFED234DD10
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C6D34DD1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 02:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhC3AhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 20:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhC3Ags (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 20:36:48 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4652CC061765
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 17:36:48 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id a143so15589057ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 17:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e0Xgly3/MZD4u1bhPt7p5rGuNpm9J7gxSx+RZ+5tojE=;
-        b=C4vCswuKGx7cZEieLZPlVR8c3eqhOf/MAUJSmS+mfzU0oAYPGNC2pXExMsIHePc8dB
-         rWCguwVZZzBcnF0wTxr9hv56xxr+VD9KVFLzvZ5EXnGd6R53Shi++nRdApMukMozoo9p
-         IgTwcJC4s8VjEROuuSaseZD72SDHm4KHdVPxUm1NhD4LEB5IATzMiYHOpFBxscH4/aDD
-         IBXMM9EWktQyj7uoSfsuXSvRnbphPGcdQ+Uqqgf5TEwvazTSjihZKdJWcgZijNuzPZ73
-         ALIREsE0obrykeojI1JdRoer7e6PHv9LPtPhQ78f/rhAd+a2eghSXuOz3xGDxLtK4097
-         sARA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e0Xgly3/MZD4u1bhPt7p5rGuNpm9J7gxSx+RZ+5tojE=;
-        b=d43ugAO2MxHEf5Cku9rKgmUHHoplQ00ocun4kuDLruush5b/ABv52SXPLaqPKUVKjg
-         GoNMdBQja4Wj2z6e9y4CHkf5nJyvgRu10IEhDNfLqWJ6rGjc5pD+Vbl0dLJxGyb3eXYE
-         6dY9ss54thujIOnLjPfClGPO9hKoV1+mtJhnNKm/b5wGiEWQtUsrcubtDxXtBywF2Kzl
-         wLJRDXZSMfkE6IDuONRLnmyPRM8GE4wYfnD3RYWd+NZXifhApwDCbWngQ0D+NrDIa6n3
-         u3o3ZTXkvpuJMgzwSpTDShQSTR/0VEfcSpBTVqfexhnE+fwemK0s3Ol6Dr49Wj9mMEpU
-         o4HA==
-X-Gm-Message-State: AOAM53156tAH0lWJtv8hAiRD4+80d9wQKdZbS5Otg9ImcWTmV98Zfwp1
-        EOtdawyOVnS8ovQE/Fyapqu0M/zF+ft8ohO+c91+KA==
-X-Google-Smtp-Source: ABdhPJyYwafLcd1IwNEMrIVEuiKK2RtsWhb9Dqtvho+Jbbt5oB70NiQ04g1PlA8PLy5lpVslCYfdGZQG/r5zuSApP8Q=
-X-Received: by 2002:a25:ec0e:: with SMTP id j14mr4864458ybh.310.1617064606984;
- Mon, 29 Mar 2021 17:36:46 -0700 (PDT)
+        id S230240AbhC3Aj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 20:39:27 -0400
+Received: from mail-mw2nam12on2063.outbound.protection.outlook.com ([40.107.244.63]:27968
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229557AbhC3AjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 20:39:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fGi4UhdsxBMUgw6sPUYROcQesmTXnGCoXNQiZbCkg1X2pY8QkIA3AD0UsPzw/dybRDbo147WA+PZESvwLZijVW60yHynQECtixBspYDfx7/Zs4w+ij7JADVJ5sT0BsH2ebUa/dMSS4FS53W15rpWlC2jFfzm/y5r78mzQ9bkHRFxbBHZT2ZVA6OQdp12kxxeEogNliJt2X4EYqAVr9f9OeTVo/YrM5rLaYsmPIVK6DSvAyL+wQ6kCACQ5JCApvQQryp2mkqwcdnfFVIiCs1MXhrZzmkm+t4e+hOzKat7SgZ7tyvdmn2N02hLi9NQeasQQSjgjo5J/zpABPDlorSgkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RvhHPX1m2DBKMDvc8kiOgCSfq9poiJAO1pmRNCdpqUA=;
+ b=KYVtwDTfTZy2qXhY1AGCss5KEL7n+YgwKuDj4Z2swLMajQ+nDS8OX08mkEYvkgp71mMyb0ZifZSSbzzn4q9Nm33Uj/m6f+XZ7lBoU/b9PFy2uPxfIoHz3LwICotDKK4wcPNC5hdqsch4r8SBFKprMe04khlU7xR43osgrDvzH4yH5u1TVDRf/9tChVTmGWz2kdx8I0B87NGXsB7PdwpuwwRV9ZgbHJMRAcrefTTclcQgRBN7rL1U7NxIE53mqYctvaR0ObwuRsx0vtAVlhHtkiCMUkCi7+iuArfYvJbis40jTDGmWSZA1x/6dVfcsSN0OpJocWfFxDblqbbEyvtaYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RvhHPX1m2DBKMDvc8kiOgCSfq9poiJAO1pmRNCdpqUA=;
+ b=ETdH81D59OYLiS0oafhGl9iS+KMg9rK3l2DJS1A9EWfgWHBt5PwQAIIcjwVEADMMsmcJHWdkCCyl9l2R8pfkje4gNHS414ZTAsR1kBDfDfFQackNNOsLDKD4qvXR50SQV4ZnfWR3HvmFebFDFCJC6NdRFsWmrg7SWv72s9SBF4wmpOaRBB7KUv1SeOFp3j/x/MeFU5YZeArTBAgrOHLyjCGpDC6J/Bj3bIn1ycgK/4FOmMEac00RTreJMLx4Btu1gIDQJk9KQM9Ny3nArobq//EmYZ5+oQtNri/83OJMhPPi5xHqcQxRZO552S/D1IIpbUE9nRUZe/Fet/pR24xtWQ==
+Received: from BN9PR03CA0431.namprd03.prod.outlook.com (2603:10b6:408:113::16)
+ by MWHPR12MB1952.namprd12.prod.outlook.com (2603:10b6:300:114::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 30 Mar
+ 2021 00:38:59 +0000
+Received: from BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:113:cafe::12) by BN9PR03CA0431.outlook.office365.com
+ (2603:10b6:408:113::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend
+ Transport; Tue, 30 Mar 2021 00:38:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT033.mail.protection.outlook.com (10.13.177.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 30 Mar 2021 00:38:59 +0000
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 30 Mar
+ 2021 00:38:57 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <david@redhat.com>, <daniel.vetter@ffwll.ch>,
+        <dan.j.williams@intel.com>, <gregkh@linuxfoundation.org>,
+        <jhubbard@nvidia.com>, <jglisse@redhat.com>,
+        <bsingharora@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+        "kernel test robot" <oliver.sang@intel.com>
+Subject: [PATCH v3] kernel/resource: Fix locking in request_free_mem_region
+Date:   Tue, 30 Mar 2021 11:38:42 +1100
+Message-ID: <20210330003842.18948-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210316215123.GA3712408@robh.at.kernel.org> <20210318210318.144961-1-sebastian.reichel@collabora.com>
- <20210326012720.GA2113788@robh.at.kernel.org> <CAGETcx9JmtbwAq_fpU5KfUzjcTw-uHPqKo3gAGjQwht=wxY8yg@mail.gmail.com>
- <20210326095212.22ty5ueowiq36y6b@earth.universe> <CAGETcx81=GwChE0eZtKKAk4kDeq2S0ijS8X7FsMnk5HhzAcOhA@mail.gmail.com>
- <20210329215300.4qnhmm4utmdectk5@earth.universe>
-In-Reply-To: <20210329215300.4qnhmm4utmdectk5@earth.universe>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 29 Mar 2021 17:36:11 -0700
-Message-ID: <CAGETcx9fpr_jXLH9OEBaDsKQcOyZd16WGBO+dXgYHUbCj+Ew=g@mail.gmail.com>
-Subject: Re: [RFC] clk: add boot clock support
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45070697-4b22-43da-6e4e-08d8f3143554
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1952:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB19524BFB6300E9346D852D07DF7D9@MWHPR12MB1952.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hkAt10ewZ9D28Mg4zwfl3IB3Z8/+KP1xu19PLtd2ubWgSD0QxIqz4ARbZN9op5+VCNI1BUBIevlgtdu0+2wRoNgTmLsAGStxuWuoFbvRABrYkzja+z6dCND0aHaUHIdPhLMvtTHvypuJlDkogfMDhNeQxafAHuJQsgvFNE+v06wRXQ9HwbeV85ST84PICXBSVRiJFh9fLDjgCifS9jnTjJBwPTBULb7GfzGIXx9kh2jtXfqZPBZT2Hy0U84M0c9qe94/daY37ZWGCCpsBjFtnXwWptecZY6gQbEIvL5mmDcPcNFH3pCocBhUpj6ZrKYHRdGJJetoLF9aBREjZ9XyafydGEvrXng/5X7lXr1RvPo5x0DY+8TZu64oPxyNc5Z0irWQYdz363EOEbeCKWwFKeUdiY8NZQsrHQWvaiPgZbQJMFfeR3q6+xuVfAGqfYft0yQEJ4Y1us6YWfJZdi6btqZg7NSg9zn6/hOHo3a+nxPQqWtm9TmOI3tZ4c6MpEg8A0JUto4RhZdAQcecrjm8/tPdXYhQyVxeFpNhFVLHg3qdVwwRFPBjiMHrITlmPIDEBJARmjL6isL0XUxlvkeqBvbDfqtyAa32MgZRf/ybGQ/gV/U26K28vZP0P8RAUEZh0ITNZL/ZkNEUeW6kri3FrfCHvBnf3nob2rd14DtSyTk=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(46966006)(36840700001)(86362001)(82310400003)(478600001)(1076003)(7416002)(83380400001)(36906005)(47076005)(26005)(70586007)(8936002)(426003)(5660300002)(2616005)(6666004)(82740400003)(7636003)(4326008)(16526019)(186003)(2906002)(336012)(6916009)(8676002)(54906003)(36860700001)(356005)(36756003)(70206006)(316002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 00:38:59.0857
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45070697-4b22-43da-6e4e-08d8f3143554
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1952
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:53 PM Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
->
-> Hi,
->
-> On Mon, Mar 29, 2021 at 01:03:20PM -0700, Saravana Kannan wrote:
-> > On Fri, Mar 26, 2021 at 2:52 AM Sebastian Reichel
-> > <sebastian.reichel@collabora.com> wrote:
-> > > On Thu, Mar 25, 2021 at 06:55:52PM -0700, Saravana Kannan wrote:
-> > > > On Thu, Mar 25, 2021 at 6:27 PM Rob Herring <robh@kernel.org> wrote:
-> > > > > On Thu, Mar 18, 2021 at 10:03:18PM +0100, Sebastian Reichel wrote:
-> > > > > > On Congatec's QMX6 system on module one of the i.MX6 fixed clocks
-> > > > > > is provided by an I2C RTC. Specifying this properly results in a
-> > > > > > circular dependency, since the I2C RTC (and thus its clock) cannot
-> > > > > > be initialized without the i.MX6 clock controller being initialized.
-> > > > > >
-> > > > > > With current code the following path is executed when i.MX6 clock
-> > > > > > controller is probed (and ckil clock is specified to be the I2C RTC
-> > > > > > via DT):
-> > > > > >
-> > > > > > 1. imx6q_obtain_fixed_clk_hw(ccm_node, "ckil", 0);
-> > > > > > 2. of_clk_get_by_name(ccm_node, "ckil");
-> > > > > > 3. __of_clk_get(ccm_node, 0, ccm_node->full_name, "ckil");
-> > > > > > 4. of_clk_get_hw(ccm_node, 0, "ckil")
-> > > > > > 5. spec = of_parse_clkspec(ccm_node, 0, "ckil"); // get phandle
-> > > > > > 6. of_clk_get_hw_from_clkspec(&spec); // returns -EPROBE_DEFER
-> > > > > > 7. error is propagated back, i.MX6q clock controller is probe deferred
-> > > > > > 8. I2C controller is never initialized without clock controller
-> > > > > >    I2C RTC is never initialized without I2C controller
-> > > > > >    CKIL clock is never initialized without I2C RTC
-> > > > > >    clock controller is never initialized without CKIL
-> > > > > >
-> > > > > > To fix the circular dependency this registers a dummy clock when
-> > > > > > the RTC clock is tried to be acquired. The dummy clock will later
-> > > > > > be unregistered when the proper clock is registered for the RTC
-> > > > > > DT node. IIUIC clk_core_reparent_orphans() will take care of
-> > > > > > fixing up the clock tree.
-> > > > > >
-> > > > > > NOTE: For now the patch is compile tested only. If this approach
-> > > > > > is the correct one I will do some testing and properly submit this.
-> > > > > > You can find all the details about the hardware in the following
-> > > > > > patchset:
-> > > > > >
-> > > > > > https://lore.kernel.org/linux-devicetree/20210222171247.97609-1-sebastian.reichel@collabora.com/
-> > > > > >
-> > > > > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > > > > > ---
-> > > > > >  .../bindings/clock/clock-bindings.txt         |   7 +
-> > > > > >  drivers/clk/clk.c                             | 146 ++++++++++++++++++
-> > > > > >  2 files changed, 153 insertions(+)
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/clock/clock-bindings.txt b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > > > > index f2ea53832ac6..66d67ff4aa0f 100644
-> > > > > > --- a/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > > > > +++ b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > > > > @@ -32,6 +32,13 @@ clock-output-names: Recommended to be a list of strings of clock output signal
-> > > > > >                   Clock consumer nodes must never directly reference
-> > > > > >                   the provider's clock-output-names property.
-> > > > > >
-> > > > > > +boot-clock-frequencies: This property is used to specify that a clock is enabled
-> > > > > > +                     by default with the provided frequency at boot time. This
-> > > > > > +                     is required to break circular clock dependencies. For clock
-> > > > > > +                     providers with #clock-cells = 0 this is a single u32
-> > > > > > +                     with the frequency in Hz. Otherwise it's a list of
-> > > > > > +                     clock cell specifier + frequency in Hz.
-> > > > >
-> > > > > Seems alright to me. I hadn't thought about the aspect of needing to
-> > > > > know the frequency. Other cases probably don't as you only need the
-> > > > > clocks once both components have registered.
-> > > > >
-> > > > > Note this could be lost being threaded in the other series.
-> > > >
-> > > > I read this thread and tried to understand it. But my head isn't right
-> > > > today (lack of sleep) so I couldn't wrap my head around it. I'll look
-> > > > at it again after the weekend. In the meantime, Sebastian can you
-> > > > please point me to the DT file and the specific device nodes (names or
-> > > > line number) where this cycle is present?
-> > >
-> > > I have not yet sent an updated DT file, but if you look at this
-> > > submission:
-> > >
-> > > https://lore.kernel.org/linux-devicetree/20210222171247.97609-7-sebastian.reichel@collabora.com/
-> > >
-> > > There is a node
-> > >
-> > > rtc: m41t62@68 { compatible = "st,m41t62"; };
-> > >
-> > > That is an I2C RTC, which provides a 32.768 kHz clock by default
-> > > (i.e. after power loss). This clock signal is used to provide the
-> > > i.MX6 CKIL:
-> > >
-> > > ------------------------------------
-> > > &clks {
-> > >     clocks = <&rtc>;
-> > >     clock-names = "ckil";
-> > > };
-> > > ------------------------------------
-> > >
-> > > > Keeping a clock on until all its consumers probe is part of my TODO
-> > > > list (next item after fw_devlink=on lands). I already have it working
-> > > > in AOSP, but need to clean it up for upstream. fw_devlink can also
-> > > > break *some* cycles (not all). So I'm wondering if the kernel will
-> > > > solve this automatically soon(ish). If it can solve it automatically,
-> > > > I'd rather not add new DT bindings because it'll make it more work for
-> > > > fw_devlink.
-> > >
-> > > As written above on Congatec QMX6 an I2C RTC provides one of the
-> > > SoC's input frequencies. The SoC basically expects that frequency
-> > > to be always enabled and this is what it works like before clock
-> > > support had been added to the RTC driver.
-> >
-> > Thanks. I skimmed through the RTC driver code and
-> > imx6q_obtain_fixed_clk_hw() and the DT files.
-> >
-> > >
-> > > With the link properly being described the Kernel tries to probe
-> > > the SoC's clock controller during early boot. Then it tries to get a
-> > > reference to the linked clock, using imx6q_obtain_fixed_clk_hw()
-> > > and that returns -EPROBE_DEFER (because the RTC driver has not
-> > > yet been probed).
-> >
-> > But the RTC (which is a proper I2C device) will never probe before
-> > CLK_OF_DECLARE() initializes the core clock controller. So, it's not
-> > clear how "protected-clocks" helps here since it doesn't change
-> > whether you get -EPROBE_DEFER from imx6q_obtain_fixed_clk_hw() (which
-> > is called from the CLK_OF_DECLARE() callback). Oof... I see what you
-> > are doing with of_clk_register_boot_clk(). You are having the consumer
-> > register its own clock and then use it. Kinda beats the whole point of
-> > describing the link in the first place.
->
-> I agree, that it does not make sense from a code point of view for
-> this platform. All of this is just to make the DT look correct.
-> From a platform point of view the most logical way is to handle the
-> RTC clock as do-not-touch always enabled fixed-clock.
->
-> > > Without the clock controller basically none of
-> > > the i.MX6 SoC drivers can probe including the I2C driver. Without
-> > > the I2C bus being registered, the RTC driver never probes and the
-> > > boot process is stuck.
-> > >
-> > > I'm not sure how fw_devlink can help here.
-> >
-> > I'll explain how it'd help. Let's assume "fsl,imx6q-ccm" was
-> > implemented as an actual platform device driver and not using
-> > CLK_OF_DECLARE() to initialize ALL the clocks. I'll get to this
-> > assumption later.
-> >
-> > In that case, fw_devlink will notice this cycle:
-> > syntax: consumer -(reason)-> supplier
-> > clks -(clocks property)-> rtc -(parent)-> i2c3  -(clocks property)-> clks.
-> >
-> > It'll then reason that it doesn't make sense for a device (clks) to
-> > have a supplier (rtc) whose parent (i2c3) in turn depends on the
-> > device (clks). It'll then drop the clks -> rtc dependency because
-> > that's the most illogical one in terms of probing.
-> >
-> > So all you'd need to do is delete any -EPROBE defer you might do in
-> > "fsl,imx6q-ccm" driver for "ckil". For cases where there's no cycle,
-> > fw_devlink will make sure the supplier of ckil has probed first. For
-> > cases where there's a cycle like this, it'll be smart enough to drop
-> > this dependency during probe ordering.
->
-> What do you mean drop? Anything using ckil will not be registered?
-> That will basically kill the system within a few seconds, since the
-> watchdog hardware uses ckil.
+request_free_mem_region() is used to find an empty range of physical
+addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
+over the range of possible addresses using region_intersects() to see if
+the range is free.
 
-No, it means that it won't block CCM on ckil. It's not a generic
-"ignore dependency for all consumers of ckil". fw_devlink does this
-specifically to the link that causes a probe dependency cycle.
+region_intersects() obtains a read lock before walking the resource tree
+to protect against concurrent changes. However it drops the lock prior
+to returning. This means by the time request_mem_region() is called in
+request_free_mem_region() another thread may have already reserved the
+requested region resulting in unexpected failures and a message in the
+kernel log from hitting this condition:
 
-> > I don't know enough about the clocks in imx6q to comment if you can
-> > get away without using CLK_OF_DECLARE() at all. The only clock that
-> > really needs to use CLK_OF_DECLARE() is any clock that's needed for
-> > the scheduler timer. Other than that, everything else can be
-> > initialized by a normal driver. Including UART clocks. I can get into
-> > more specifics if you go down this path.
-> >
-> > So, that's how fw_devlink could help here if you massage
-> > drivers/clk/imx/clk-imx6q.c to be a proper platform driver. You'll
-> > have to set fw_devlink=on in the kernel commandline though (it's work
-> > in progress to set this by default). There are some additional details
-> > here about keeping clocks on, but we can discuss the solution for that
-> > if it becomes an issue.
-> >
-> > > I see exactly two
-> > > options to solve this:
-> > >
-> > > a) do not describe the link and keep RTC clock enabled somehow.
-> > >    (my initial patchset)
-> > > b) describe the link, but ignore it during boot.
-> > >    (what I'm trying to do here)
-> > >
-> >
-> > Even if you completely ignore fw_devlink, why not just model this
-> > clock as a fixed-clock in DT for this specific machine?
-> >
-> > It's clearly expecting the clock to be an always on fixed clock.
->
-> Yes. SoC runs unreliably with this. Downstream vendor kernel does
-> not contain a clock driver for the squarewave pin of the RTC (i.e.
-> their driver does not yet contain 1373e77b4f10) and just works.
-> Upstream kernel disables the RTC's squarewave and then goes into
-> reboot loop because of watchdog going crazy.
->
-> > This will also remove the need for adding "boot-clock-frequencies"
-> > binding.  "fixed-clocks" devices are initialized very early on
-> > (they use CLK_OF_DECLARE too) even without their parents probing
-> > (not sure I agree with this, but this is how it works now).
-> >
-> > Something like:
-> >
-> > rtc: m41t62@68 {
-> > compatible = "st,m41t62";
-> > reg = <0x68>;
-> >
-> >     clock-ckil {
-> >                     compatible = "fixed-clock";
-> >                     #clock-cells = <0>;
-> >                     clock-frequency = <32768>;
-> >             };
-> > };
-> >
-> > I hope this helps.
->
-> This looks like a complex way of my initial patchset with
-> 'protected-clocks' property replaced by a fixed-clock
-> node. RTC driver needs to check if that exists and avoid
-> registering its own clock.
+        /*
+         * mm/hmm.c reserves physical addresses which then
+         * become unavailable to other users.  Conflicts are
+         * not expected.  Warn to aid debugging if encountered.
+         */
+        if (conflict->desc == IORES_DESC_DEVICE_PRIVATE_MEMORY) {
+                pr_warn("Unaddressable device %s %pR conflicts with %pR",
+                        conflict->name, conflict, res);
 
-If anything, I'd argue this is a lot more simpler because it avoids
-adding a new DT binding, it avoids changes to drivers/clk/clk.c.
-Instead of checking for "protected-clocks" you just check for this
-child node (or just any child node). Also, technically if you set the
-CLK_IGNORE_UNUSED flag for the clock, you don't even need to do any
-explicit checking in the RTC driver as long as some other driver
-doesn't try to get this clock and turn it on/off.
+To fix this create versions of region_intersects() and
+request_mem_region() that allow the caller to take the appropriate lock
+such that it may be held over the required calls.
 
--Saravana
+Instead of creating another version of devm_request_mem_region() that
+doesn't take the lock open-code it to allow the caller to pre-allocate
+the required memory prior to taking the lock.
+
+Fixes: 0c385190392d8 ("resource: add a not device managed request_free_mem_region variant")
+Fixes: 0092908d16c60 ("mm: factor out a devm_request_free_mem_region helper")
+Fixes: 4ef589dc9b10c ("mm/hmm/devmem: device memory hotplug using ZONE_DEVICE")
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Acked-by: Balbir Singh <bsingharora@gmail.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+
+---
+
+Hi Andrew,
+
+This fixes a boot issue reported by the kernel test robot with the
+previous version of the patch on x86 with CONFIG_IO_STRICT_DEVMEM=y.
+This was due to the platform specific implementation of
+devmem_is_allowed() creating a recursive lock which I missed. I notice
+you have put v2 in mmtom so apologies for the churn but can you please
+use this version instead? Thanks.
+
+ - Alistair
+---
+ kernel/resource.c | 142 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 92 insertions(+), 50 deletions(-)
+
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 627e61b0c124..7061b9f903ca 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -523,6 +523,34 @@ int __weak page_is_ram(unsigned long pfn)
+ }
+ EXPORT_SYMBOL_GPL(page_is_ram);
+ 
++static int __region_intersects(resource_size_t start, size_t size,
++			       unsigned long flags, unsigned long desc)
++{
++	struct resource res;
++	int type = 0; int other = 0;
++	struct resource *p;
++
++	res.start = start;
++	res.end = start + size - 1;
++
++	for (p = iomem_resource.child; p ; p = p->sibling) {
++		bool is_type = (((p->flags & flags) == flags) &&
++				((desc == IORES_DESC_NONE) ||
++				 (desc == p->desc)));
++
++		if (resource_overlaps(p, &res))
++			is_type ? type++ : other++;
++	}
++
++	if (type == 0)
++		return REGION_DISJOINT;
++
++	if (other == 0)
++		return REGION_INTERSECTS;
++
++	return REGION_MIXED;
++}
++
+ /**
+  * region_intersects() - determine intersection of region with known resources
+  * @start: region start address
+@@ -546,31 +574,12 @@ EXPORT_SYMBOL_GPL(page_is_ram);
+ int region_intersects(resource_size_t start, size_t size, unsigned long flags,
+ 		      unsigned long desc)
+ {
+-	struct resource res;
+-	int type = 0; int other = 0;
+-	struct resource *p;
+-
+-	res.start = start;
+-	res.end = start + size - 1;
++	int rc;
+ 
+ 	read_lock(&resource_lock);
+-	for (p = iomem_resource.child; p ; p = p->sibling) {
+-		bool is_type = (((p->flags & flags) == flags) &&
+-				((desc == IORES_DESC_NONE) ||
+-				 (desc == p->desc)));
+-
+-		if (resource_overlaps(p, &res))
+-			is_type ? type++ : other++;
+-	}
++	rc = __region_intersects(start, size, flags, desc);
+ 	read_unlock(&resource_lock);
+-
+-	if (type == 0)
+-		return REGION_DISJOINT;
+-
+-	if (other == 0)
+-		return REGION_INTERSECTS;
+-
+-	return REGION_MIXED;
++	return rc;
+ }
+ EXPORT_SYMBOL_GPL(region_intersects);
+ 
+@@ -1171,31 +1180,16 @@ struct address_space *iomem_get_mapping(void)
+ 	return smp_load_acquire(&iomem_inode)->i_mapping;
+ }
+ 
+-/**
+- * __request_region - create a new busy resource region
+- * @parent: parent resource descriptor
+- * @start: resource start address
+- * @n: resource region size
+- * @name: reserving caller's ID string
+- * @flags: IO resource flags
+- */
+-struct resource * __request_region(struct resource *parent,
+-				   resource_size_t start, resource_size_t n,
+-				   const char *name, int flags)
++static bool request_region_locked(struct resource *parent,
++				    struct resource *res, resource_size_t start,
++				    resource_size_t n, const char *name, int flags)
+ {
+ 	DECLARE_WAITQUEUE(wait, current);
+-	struct resource *res = alloc_resource(GFP_KERNEL);
+-	struct resource *orig_parent = parent;
+-
+-	if (!res)
+-		return NULL;
+ 
+ 	res->name = name;
+ 	res->start = start;
+ 	res->end = start + n - 1;
+ 
+-	write_lock(&resource_lock);
+-
+ 	for (;;) {
+ 		struct resource *conflict;
+ 
+@@ -1230,14 +1224,37 @@ struct resource * __request_region(struct resource *parent,
+ 			write_lock(&resource_lock);
+ 			continue;
+ 		}
++		return false;
++	}
++
++	return true;
++}
++
++/**
++ * __request_region - create a new busy resource region
++ * @parent: parent resource descriptor
++ * @start: resource start address
++ * @n: resource region size
++ * @name: reserving caller's ID string
++ * @flags: IO resource flags
++ */
++struct resource *__request_region(struct resource *parent,
++				  resource_size_t start, resource_size_t n,
++				  const char *name, int flags)
++{
++	struct resource *res = alloc_resource(GFP_KERNEL);
++
++	if (!res)
++		return NULL;
++
++	write_lock(&resource_lock);
++	if (!request_region_locked(parent, res, start, n, name, flags)) {
+ 		/* Uhhuh, that didn't work out.. */
+ 		free_resource(res);
+ 		res = NULL;
+-		break;
+ 	}
+ 	write_unlock(&resource_lock);
+-
+-	if (res && orig_parent == &iomem_resource)
++	if (res && parent == &iomem_resource)
+ 		revoke_iomem(res);
+ 
+ 	return res;
+@@ -1779,26 +1796,51 @@ static struct resource *__request_free_mem_region(struct device *dev,
+ {
+ 	resource_size_t end, addr;
+ 	struct resource *res;
++	struct region_devres *dr = NULL;
++
++	res = alloc_resource(GFP_KERNEL);
++	if (!res)
++		return ERR_PTR(-ENOMEM);
++
++	if (dev) {
++		dr = devres_alloc(devm_region_release, sizeof(struct region_devres),
++				  GFP_KERNEL);
++		if (!dr) {
++			free_resource(res);
++			return ERR_PTR(-ENOMEM);
++		}
++	}
+ 
+ 	size = ALIGN(size, 1UL << PA_SECTION_SHIFT);
+ 	end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
+ 	addr = end - size + 1UL;
+ 
++	write_lock(&resource_lock);
+ 	for (; addr > size && addr >= base->start; addr -= size) {
+-		if (region_intersects(addr, size, 0, IORES_DESC_NONE) !=
++		if (__region_intersects(addr, size, 0, IORES_DESC_NONE) !=
+ 				REGION_DISJOINT)
+ 			continue;
+ 
+-		if (dev)
+-			res = devm_request_mem_region(dev, addr, size, name);
+-		else
+-			res = request_mem_region(addr, size, name);
+-		if (!res)
+-			return ERR_PTR(-ENOMEM);
++		if (!request_region_locked(&iomem_resource, res, addr,
++						   size, name, 0))
++			break;
++
+ 		res->desc = IORES_DESC_DEVICE_PRIVATE_MEMORY;
++		if (dev) {
++			dr->parent = &iomem_resource;
++			dr->start = addr;
++			dr->n = size;
++			devres_add(dev, dr);
++		}
++
++		write_unlock(&resource_lock);
++		revoke_iomem(res);
+ 		return res;
+ 	}
+ 
++	write_unlock(&resource_lock);
++	free_resource(res);
++
+ 	return ERR_PTR(-ERANGE);
+ }
+ 
+-- 
+2.20.1
+
