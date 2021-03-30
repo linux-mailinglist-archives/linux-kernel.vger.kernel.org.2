@@ -2,86 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A608334EEE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A16334EEEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 19:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhC3RDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 13:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbhC3RCy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:02:54 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F9C0613DA;
-        Tue, 30 Mar 2021 10:02:20 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gb6so8097803pjb.0;
-        Tue, 30 Mar 2021 10:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=VZ7hPMfkkH0ClkPZrlLHv0WaV7eFxnm7svjyAEo3eSA=;
-        b=aN1+dAsUo/o/qwn6zz/8bJmkfICFTI0Fb8ueK8UmCji2EK2452V6bKSRAIO4/jUj60
-         Gj6vk/ssTwmCpoLkWLW6XTL3csEG8eRBRlfKK+qy+JnYblK6g1Rw77ebQfF9tw8JmMy6
-         c2wxI76UFz2AvepjXZTtgKeL7Txp2ZhFpQTdeKIVbZWn3yOP4UU7WSdvzSYPG9clj+q1
-         loWRlJzlnMQLsDyHBtQbTKFlIU3IQpQzOVFGodmuY+M1A5ODw1g2Z3X8q9m8a7G+Bb/z
-         uZlhlg89RzCAcCzqSZdd2uhSpHEit9CUNzAboe/7utL4HBadHUj+CSLfZpx4H+baaCAy
-         IicQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VZ7hPMfkkH0ClkPZrlLHv0WaV7eFxnm7svjyAEo3eSA=;
-        b=Quohzjtn3zxayzxUh3xJEH77KE2uxjZLcQZbMWIREZt87Eu6iSSp3Z33nZ/OHP39Ch
-         00vOzU3tWAbpWRqLvbtBc3hfkdjhZQey8ZwN4tZq7ygVHN8V2VApQEQuWrBXs2cixzvP
-         esXIyAeqUMKolL0lalhzVhLui+6FYnT32ofiUHSlZKVGqJ7VJ5X2U7jD7UzMK8D54Ktb
-         wMrmaoobdDHYpAGlDDTRRziqZeOkNKzethUfjzEXQAQO5nKX3ASUq1vG+7ysd23hoAc5
-         Q+SsaQNW4CecaQHxkG//c7qpbRCvhOYBFzr8c7GebGBp6nJ2RWmt74pxG+kCV6DJNlsi
-         k35g==
-X-Gm-Message-State: AOAM532FbXLmgQ2kCwjJVsO/jM1FjrUjTprfuZAmf6R8F+oJPXi+Er9t
-        2AncpdSv4JuAwWWAnBjRZMymB00Yn7c=
-X-Google-Smtp-Source: ABdhPJxDfQB3ZfQXm1ZS29uvkL7YqpNtHkHIN11UDP+eTFtwxIM+9SC9wx2gkvGY5DfdhFJ3B7m2jA==
-X-Received: by 2002:a17:90a:488a:: with SMTP id b10mr5222218pjh.2.1617123739964;
-        Tue, 30 Mar 2021 10:02:19 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 4sm3235448pjl.51.2021.03.30.10.02.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 10:02:19 -0700 (PDT)
-Subject: Re: [PATCH v2 1/6] mips: bmips: fix syscon-reboot nodes
-To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210314164351.24665-1-noltari@gmail.com>
- <20210314164351.24665-2-noltari@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cd7be816-1d88-23de-615c-ae217dda284b@gmail.com>
-Date:   Tue, 30 Mar 2021 10:02:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232370AbhC3RDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 13:03:47 -0400
+Received: from mail-eopbgr770049.outbound.protection.outlook.com ([40.107.77.49]:63733
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232250AbhC3RC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:02:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IOLJSUhQp4/MGpzk865LMYt1Q5CHZW0yjZA+NTXOBFnUCnZhLT54BNlcjvkCb4vdX/IyrC0G3vNq6WNvTQa4aEsOGj4nmLeIebSmkEl4w5hwJfwy8v6blfHsrk+GKnLei5eTD2w4YZBp9RExmnHOlCUPq0UpDZf1A2fsXxxjMhiKd10nMixF+F0R9Y35QETuXOBg/PiwOZ+FsxiBZKHxcwvNiinfRVXsg/5yfaFeG7UfvluxP1rCz5XAnjz4iQ0Rg50nD2kmNPK0ce6xAPz1injRYjmHyQIS4MzQfpgxGJT6Fm8cI2emfVUBrs+ItaHc1WK+lswhBlVhnJu4rx4H2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v4Ts0oQHR1N6hKJhAV8mgCIvXyOia4GdET1lTYfnyQI=;
+ b=Nqt55wlmX15E0Q5TrAX1zFfXCSNU2W2fmFaI4EVkqAJ7v/oSUmieAmwdP18Y9Fj3y0aS0JWPdF74ABn2LMRXtGRxTiAQnt6oiqqyWhe4XzFP8FBzD1QSZB2zEdVamp8LnbkYu65DlsA/nxiQ537wlhIp2pMoRJzX1KVtF5pfpgtnk4IkUpJvUM0OM1FphbP2sTw4X7yD3vL6i1IcrqepIjldjy9NzdwCm5aK8kp7Avj8cPSal8W4yrmd4vkqow6mYf2GCMIe2FjSYQRW0sm9eD+AegRv9R162ung88si6BpVT0E9Gx2m40mayfFQV5MvcY2liZMmx9Br1h4iCCfhdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v4Ts0oQHR1N6hKJhAV8mgCIvXyOia4GdET1lTYfnyQI=;
+ b=VGvlEfUEak4YpvcCJSzdHPErYVFAjLpDfIjDqb5RHvJGpuvGJyVf+iEZOhfYfirIysJc9YKNdJRZSxUD/lBZ8r1m66q1FR2ylLCQkLorYjUgNzvFtyTJvuidRqrTSepb+4eNhX1lW7R1y6Zrfr51b/uYqR619eVjFMgZZ2sYXe4eAFb4OQo2L2XGobADDeKL7vUmpibxCTqvwYm7WP1NgrtMRsTQ/dxkmfw3Gqw7ueBhfR4DF5TmOM6PkHkfg0bQLocZHzVGrSXW8IRKIFWPH3Hl6L3k3qGQ5aNw/bf0e1D6oK6j8NqAgfcbJ5cCoOTxZrXTmHmW9M2rCQELbGpZOA==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Tue, 30 Mar
+ 2021 17:02:54 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
+ 17:02:54 +0000
+Date:   Tue, 30 Mar 2021 14:02:53 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>
+Subject: Re: [PATCH v2 2/4] cxl/mem: Fix synchronization mechanism for device
+ removal vs ioctl operations
+Message-ID: <20210330170253.GU2356281@nvidia.com>
+References: <161707245893.2072157.6743322596719518693.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161707246948.2072157.2116502455691653472.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210330111620.GK2356281@nvidia.com>
+ <CAPcyv4iGByX1+CoUnc3SJahvoT0NGNnbkcDLyEkSJ8YFC9PBUg@mail.gmail.com>
+ <20210330154712.GR2356281@nvidia.com>
+ <CAPcyv4hL-B=1hostoj9t6EE5impmcDR2-wsgahvBKdzL9LbqLg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hL-B=1hostoj9t6EE5impmcDR2-wsgahvBKdzL9LbqLg@mail.gmail.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR04CA0008.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::21) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20210314164351.24665-2-noltari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR04CA0008.namprd04.prod.outlook.com (2603:10b6:208:d4::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Tue, 30 Mar 2021 17:02:54 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRHlV-005xOj-1J; Tue, 30 Mar 2021 14:02:53 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 64bdb86b-7957-4d12-f611-08d8f39da8f9
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3019:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB30194C452E1780C9E80FB863C27D9@DM6PR12MB3019.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fZjLBelX7Cjo1vAO3Dd5wLXxzpSm8l2PI4BBHEsz1KFDR66V5CTCoYHfn2LJei9dr2Cn34JllfCtIybiCc2KRe8axBa+M5CmVFUu3QIAYCc7EkiG/eXIj9u4hy9WlrBqlIfP5CsTUfAaw4OSWZiXGC09kAmc9i/Dmt7iEGZJMhbkf0IIoXc3TGukC5kowPLhaErn+W4VMICAHKZ2CDB8IV8u89RCkif5ASeKTPs497ePcI9d4kyipGEohTYAVCSLaFzSwQEOlPdi04zK5MFHgIBKsxrdSEuLsCBonmVAb78IsmPsskX5fks1YyLeRiHnxuL7t12L+vZpYTNMYXdSXZeGjruKhGH8Dd/I+HgxY3iSwCSiDRxDwyXRyERx9T/hsZplATWa4Yz0kVzaTBxMiu9dNuLxhlvbBnsmbr4pC7XYECfuV5SrMwVKHoywrQu8dWWWDVSSP7JCvvrbYqXvhf559sd4SxjOGCKA+ZAculHXFfQjC2bUP/MsRSLvto4MowoYCu1VEA2KSCrWsyxLBA4tDx2G6uPHv+cCB0OLEBXtJIeCk7bnQ0tPW9B0PV4jGblMYsMdwUo4RgwGJxzVgaxkix78LbHyJpj60gTPZn2ZBlOmu5Fy2Wf6eA7doiSKy0q/VscTph9KYY0K1VZj2LNuMK162yXWmwpfbUgoNzQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39860400002)(376002)(346002)(316002)(66556008)(66476007)(66946007)(1076003)(426003)(2906002)(2616005)(54906003)(4744005)(8936002)(4326008)(9786002)(86362001)(36756003)(38100700001)(6916009)(186003)(83380400001)(8676002)(26005)(33656002)(5660300002)(478600001)(9746002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?TCnONsnE9V2FUyBQGS9lI/X+XDfruRqdeYhLgcjZLqEMJ+b614RTzfcHNdHK?=
+ =?us-ascii?Q?g7v97MJiRIOeYOnlLhhmeAF8SJ2w0ifAh/W9n04k4bfPOlBshbbnBNt1z8F7?=
+ =?us-ascii?Q?Ucsk4V15EgAX0hsir3K25IKjQUSJg9hs1rxBeUIxTCLglo4lx+d/RlNrkg2d?=
+ =?us-ascii?Q?vl5Pd57rlbfb5ySVNDbq1qZDyaOGYOG8nSI2GVIU/JaOPl/0uZVWObPcz00j?=
+ =?us-ascii?Q?wGNcIQct3kbp4/bc5xQbZRdzSVl/4JNxjSQCWLQb0gwsYC63D6V+VcTWYN3t?=
+ =?us-ascii?Q?B2KGgMbgWd/ITrjoOUE5KWCHt6U3JuMBg7oadyYp66teEkLE/T4GqQTAOCec?=
+ =?us-ascii?Q?8CiPF2mfGwrOqXn1zbG25iWYTSpUsH2cJZUJEREqwH9zv7XrRn56xEYvJCI+?=
+ =?us-ascii?Q?X8Or+Vpf2EM4f+HBjUXsqYDJgJIW3dYguwQoeNaO33l48utlUKjJHhwOOGLi?=
+ =?us-ascii?Q?qMNuPFDIzMbep8JWKBFqLyqj0Ki37+CFPUK55TDyENSrDs5lChBV5e6INNc1?=
+ =?us-ascii?Q?fOB527SXVKFg4CdjgJp4OXwueOMtifHNe17AWMl4Dx1y7dLLIuStYldPZhMx?=
+ =?us-ascii?Q?ZA/9cyzxUI8KbYJIs9QcJqkV3n4M0p3ThlrUGdwO+9P+l/XO1C4Yq+Z5WnaM?=
+ =?us-ascii?Q?sd6tBUTgrDtCuhQOTThX9/YeIWd5JMQDyjlDe31O0JLskf2+c2nQPV3tQ+aH?=
+ =?us-ascii?Q?ZVD5TyWAxFyWFqEqs9GkoB6T+uSnWDPVfjuroUxdJPUikc0ngvQAteSAfu4N?=
+ =?us-ascii?Q?oXGYs4G7/MGcsmrUzTnY4nOUkOYUJABRkGaKo+OmJZKd3p1uir6A+xlaEeAG?=
+ =?us-ascii?Q?Bz7Upd1OJd24krM0Ngvyum+mQAh/MOBo7QpJf32xEKqaVX8MLens4wAL1okO?=
+ =?us-ascii?Q?uyWHpEcoYEr2QqAIjet4PAfM3+D2L217VmaVdOKtba4Z2Uq074nEjnJMdpsl?=
+ =?us-ascii?Q?joAn7+HjAkfl5JXtK2nSBApe30pddnpHIKQtqaglkMbcjK87WIjaMPx8rjnX?=
+ =?us-ascii?Q?fnqBEP7qCub1jIxqEA41CpH7+L0/TlYL8OoUgkxfJGjzMAhX98Tt5pU10w44?=
+ =?us-ascii?Q?DXNnYYmMmRmzUSqLe6RJNnCuM1n7X6mtJX7bAoskQOBxPWOTUqTqbTdL2rpf?=
+ =?us-ascii?Q?jhleka+Qazm+uqq+eNDuoqEvZ6sLQ4TJNAnD8Odt/oUrNV/uxEa7+pHlYDuS?=
+ =?us-ascii?Q?BTKz3KymxhVBKXgU3AzNh4LeWVroj0icRmGf++Z8g4JrRC0aAkrGeNf4KvtY?=
+ =?us-ascii?Q?m4oVla6BL0Cq3w4DG88e4PCX9Orgv99v+hpejaZM8BV62S4yTQiOW3OCWgWJ?=
+ =?us-ascii?Q?9flI0029/0Bn60dF3Uzovv7GbLlT0Aj2iqLa+V0ohNlfqw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64bdb86b-7957-4d12-f611-08d8f39da8f9
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 17:02:54.4763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hFZSKybsaftvk49EMQfkEfyWFZGn2LMSQ70rXiNGLVfewiABwYFogH/7WXt82yli
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/14/21 9:43 AM, Álvaro Fernández Rojas wrote:
-> Commit a23c4134955e added the clock controller nodes, incorrectly changing the
-> syscon-reboot nodes addresses.
-> 
-> Fixes: a23c4134955e ("MIPS: BMIPS: add clock controller nodes")
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+On Tue, Mar 30, 2021 at 09:05:29AM -0700, Dan Williams wrote:
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> > If you can't clearly point to the *data* under RCU protection it is
+> > being used wrong.
+> 
+> Agree.
+> 
+> The data being protected is the value of
+> dev->kobj.state_in_sysfs. The
+
+So where is that read under:
+
++	idx = srcu_read_lock(&cxl_memdev_srcu);
++	rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
++	srcu_read_unlock(&cxl_memdev_srcu, idx);
+
+?
+
+It can't read the RCU protected data outside the RCU critical region,
+and it can't read/write RCU protected data without using the helper
+macros which insert the required barriers.
+
+IMHO this can't use 'dev->kobj.state_in_sysfs' as the RCU protected data.
+
+Jason
