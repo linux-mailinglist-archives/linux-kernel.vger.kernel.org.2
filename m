@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E21534DEDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FCA34DEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 04:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhC3Cy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 22:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S231459AbhC3Cyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 22:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhC3CyP (ORCPT
+        with ESMTP id S230329AbhC3CyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:54:15 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C429C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:15 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t140so3341597pgb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:15 -0700 (PDT)
+        Mon, 29 Mar 2021 22:54:17 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86A9C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:16 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id p12so6033252pgj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 19:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H9aZHg1XmzeEuWmP1Y9k5kwByteme6M7NQeVtbNkUCU=;
-        b=C/RrhmHfFql2N/xoLubh0lDEHxjw4L7AWTRv0UuWixsW8lQIMBgwB+8VXVga1+vPpx
-         tTauyVTEvRbcQpp9YFiGpINDqXOWBUqidzrOyuJk85ZUjFx8jlv8GVRroTOH154PGPGa
-         8rKSWGuzQ6BYuBnDPUdGSqpTe/cxZfw84Xumo=
+        bh=BEKsKLyxs1+v0ZxDrM7HVhKxECDMgvUxXPP2eTukK2o=;
+        b=Uw2K3tYxkMnEPqt9yGgUQVzYBYDnNm7MC9I+61puu5TEYXLVh24tHZAbiDeW4v1ABO
+         lGkIdnuwHF0cQokbjkRoWcjmjEpKlc+ph12Sbqo9gTn+ejwL7NFFjLPfpJMnv4EcGtdv
+         3qKfSmbEv4ZtmHx9pqTWLHJJl9zjCYxw5Y7Io=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H9aZHg1XmzeEuWmP1Y9k5kwByteme6M7NQeVtbNkUCU=;
-        b=WvDY2OoMamniRAzStxZt1udi6tqyqoUUopoj0jcstUnR1QDJksKTtftccYypYVZJzB
-         oUMQ9EgXDHy5JLucc1vbxpFYNG9Rx2s613tYiCyHo6GiVtbLEeGZs9pNQ1zOHgI9lga7
-         OAuUJszQGC/ZkruIoT/rBdpbbIkdoBkwKD0gWyakyDLmW29BFiUlAu/OrsPCFlHbzQNy
-         XsorSW+4MFOiMkdc2Ac1A42eLRScfECb2M6splgHMZBeMUHYd2S3m5rERcAtzqbytYqp
-         NMZWByv4nOTHdvC89tKLvNT62P8sSHtkKAHq1KXAX7G2DlUXQZM3fB599iBmSv0QCqiP
-         53+w==
-X-Gm-Message-State: AOAM531zx92ZAq4u7YnONub+uOQuhNSqrlwij+1/z6tcxkfeIAYu6KiJ
-        7z+QImKipDD4X5GhMuC9OzqUqIhnhog1vT3o
-X-Google-Smtp-Source: ABdhPJxr8EyEo9d+F9iFHOxEgEe5cO7TbKD9tvtR+Kk8T89iLex2MLCh1rb01WF9K+Rd1+GvPT8R+A==
-X-Received: by 2002:aa7:8a4d:0:b029:211:92f2:658c with SMTP id n13-20020aa78a4d0000b029021192f2658cmr28475860pfa.29.1617072854696;
-        Mon, 29 Mar 2021 19:54:14 -0700 (PDT)
+        bh=BEKsKLyxs1+v0ZxDrM7HVhKxECDMgvUxXPP2eTukK2o=;
+        b=H+rhP9G+JUlAd6y+xAAhe3AUQSCvOrSB1D89qVjyBv2yU8RG0Orf2tceHO/dacj8Va
+         LjHtqzCRzuGTo6vNtbUD9kDGtZbDeBk4TcDDLZ2XUoyWEX37OHip6R1h/+5DTbZdMrhv
+         /Yy5tv2EoVEC5GA1+mHEE7ie2Kp73YGNuJek7fQVzsqNTlVuma4JQDf3M9M5VkWBzL3u
+         eWw3H2/xRjAPfaGGNLI8B2N0XRUCOwgwdaDqEI8/gHGp4jmjZgLbGRiYQnuJNBBBn1AM
+         IxqF0s930BfLgwnagc/x7FJyB0NQKTwffGKhJ5hk0e+Vd4PcZv9c7dni86m0FuBx7gUB
+         n1wA==
+X-Gm-Message-State: AOAM530UDgAUwA2hKYMJIBUnl36VC380TQsVFkRiHTuYm4kPc62KXlfr
+        sgqzGMGEngXYcsesKZIA//PV6g==
+X-Google-Smtp-Source: ABdhPJzP+ZMH9J8DCQEoQQe/Ka+R8gqStepZzM0+mhog7QnppOBoLReWVZeyJe79x2EaqFdRcRVrZA==
+X-Received: by 2002:a05:6a00:1585:b029:203:6bc9:3ca6 with SMTP id u5-20020a056a001585b02902036bc93ca6mr27842566pfk.79.1617072856430;
+        Mon, 29 Mar 2021 19:54:16 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:f599:1ca7:742d:6b50])
-        by smtp.gmail.com with ESMTPSA id t17sm19152706pgk.25.2021.03.29.19.54.13
+        by smtp.gmail.com with ESMTPSA id t17sm19152706pgk.25.2021.03.29.19.54.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 19:54:14 -0700 (PDT)
+        Mon, 29 Mar 2021 19:54:16 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -62,11 +62,12 @@ Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Douglas Anderson <dianders@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/14] drm/bridge: ti-sn65dsi86: Remove extra call: drm_connector_update_edid_property()
-Date:   Mon, 29 Mar 2021 19:53:39 -0700
-Message-Id: <20210329195255.v2.8.Ic14a7ab8035df89e19a25ad4fbf2004f9673f167@changeid>
+Subject: [PATCH v2 09/14] drm/edid: Use the cached EDID in drm_get_edid() if eDP
+Date:   Mon, 29 Mar 2021 19:53:40 -0700
+Message-Id: <20210329195255.v2.9.Ia7e9bb7cf6c51d960b9455fb0fa447cc68ece99d@changeid>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210330025345.3980086-1-dianders@chromium.org>
 References: <20210330025345.3980086-1-dianders@chromium.org>
@@ -76,48 +77,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of commit 5186421cbfe2 ("drm: Introduce epoch counter to
-drm_connector") the drm_get_edid() function calls
-drm_connector_update_edid_property() for us. There's no reason for us
-to call it again.
+Each time we call drm_get_edid() we:
+1. Go out to the bus and ask for the EDID.
+2. Cache the EDID.
+
+We can improve this to actually use the cached EDID so that if
+drm_get_edid() is called multiple times then we don't need to go out
+to the bus over and over again.
+
+In normal DP/HDMI cases reading the EDID over and over again isn't
+_that_ expensive so, presumably, this wasn't that critical in the
+past. However for eDP going out to the bus can be expensive. This is
+because eDP panels might be powered off before the EDID was requested
+so we need to do power sequencing in addition to the transfer.
+
+In theory we should be able to cache the EDID for all types of
+displays. There is already code throwing the cache away when we detect
+that a display was unplugged. However, it can be noted that it's
+_extra_ safe to cache the EDID for eDP since eDP isn't a hot-pluggable
+interface. If we get the EDID once then we've got the EDID and we
+should never need to read it again. For now we'll only use the cache
+for eDP both because it's more important and extra safe.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
 (no changes since v1)
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/drm_edid.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index a0a00dd1187c..9577ebd58c4c 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -270,7 +270,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index c2bbe7bee7b6..fcbf468d73c9 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -2049,15 +2049,39 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+ 			  struct i2c_adapter *adapter)
  {
- 	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
- 	struct edid *edid = pdata->edid;
--	int num, ret;
-+	int num;
+ 	struct edid *edid;
++	size_t old_edid_size;
++	const struct edid *old_edid;
  
- 	if (!edid) {
- 		pm_runtime_get_sync(pdata->dev);
-@@ -279,12 +279,9 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
- 	}
+ 	if (connector->force == DRM_FORCE_OFF)
+ 		return NULL;
  
- 	if (edid && drm_edid_is_valid(edid)) {
--		ret = drm_connector_update_edid_property(connector, edid);
--		if (!ret) {
--			num = drm_add_edid_modes(connector, edid);
--			if (num)
--				return num;
--		}
-+		num = drm_add_edid_modes(connector, edid);
-+		if (num)
-+			return num;
- 	}
+-	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+-		return NULL;
++	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
++	    connector->edid_blob_ptr) {
++		/*
++		 * eDP devices are non-removable, or at least not something
++		 * that's expected to be hot-pluggable. We can freely use
++		 * the cached EDID.
++		 *
++		 * NOTE: technically we could probably even use the cached
++		 * EDID even for non-eDP because the cached EDID should be
++		 * cleared if we ever notice a display is not connected, but
++		 * we'll use an abundance of caution and only do it for eDP.
++		 * It's more important for eDP anyway because the EDID may not
++		 * always be readable, like when the panel is powered down.
++		 */
++		old_edid = (const struct edid *)connector->edid_blob_ptr->data;
++		old_edid_size = ksize(old_edid);
++		edid = kmalloc(old_edid_size, GFP_KERNEL);
++		if (edid)
++			memcpy(edid, old_edid, old_edid_size);
++	} else {
++		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
++			return NULL;
++
++		edid = drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter);
++		drm_connector_update_edid_property(connector, edid);
++	}
  
- 	return drm_panel_get_modes(pdata->panel, connector);
+-	edid = drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter);
+-	drm_connector_update_edid_property(connector, edid);
+ 	return edid;
+ }
+ EXPORT_SYMBOL(drm_get_edid);
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
