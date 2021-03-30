@@ -2,437 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D863E34ECF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5580634ECF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 17:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhC3PzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 11:55:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:53631 "EHLO mga12.intel.com"
+        id S232240AbhC3PzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 11:55:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45704 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232048AbhC3Pyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:54:32 -0400
-IronPort-SDR: Fhr6omeLIAkabZVB0KGeLCI6K2dCFBZtQUfl/frxTCkckwqVjvqQ+3QolobKRwOiqP2kj3+CCa
- EguObDJk8xcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171206291"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="171206291"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:54:30 -0700
-IronPort-SDR: 78CTSSvidTuyP8DUeeWkK61TjiWkpmWeRiyHqh1nO3/RX7i6TOcXMcT2JJi2k+lG2cBOT1+cGU
- GRl2Edn9g6Qg==
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="516484161"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 08:54:27 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tamar Mashiah <tamar.mashiah@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH] mtd: intel-spi: add is_protected and is_bios_locked knobs
-Date:   Tue, 30 Mar 2021 18:54:14 +0300
-Message-Id: <20210330155414.58343-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.3
+        id S232201AbhC3Pyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:54:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 44DADAF10;
+        Tue, 30 Mar 2021 15:54:34 +0000 (UTC)
+Subject: Re: [PATCH mm] mm, kasan: fix for "integrate page_alloc init with
+ HW_TAGS"
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <2e5e80481533e73876d5d187d1f278f9656df73a.1617118134.git.andreyknvl@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <115c3cd4-a5ec-ea4c-fdc8-a17a0990bd30@suse.cz>
+Date:   Tue, 30 Mar 2021 17:54:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2e5e80481533e73876d5d187d1f278f9656df73a.1617118134.git.andreyknvl@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tamar Mashiah <tamar.mashiah@intel.com>
+On 3/30/21 5:31 PM, Andrey Konovalov wrote:
+> My commit "integrate page_alloc init with HW_TAGS" changed the order of
+> kernel_unpoison_pages() and kernel_init_free_pages() calls. This leads
+> to __GFP_ZERO allocations being incorrectly poisoned when page poisoning
+> is enabled.
 
-The manufacturing access to the PCH/SOC SPI device is traditionally
-performed via user space driver accessing registers via /dev/mem
-but due to security concerns /dev/mem access is being much restricted,
-hence the reason for utilizing dedicated Intel PCH/SOC SPI controller
-driver, which is already implemented in the Linux kernel.
+Correction: This leads to check_poison_mem() complain about memory corruption
+because the poison pattern has already been overwritten by zeroes.
 
-Intel PCH/SOC SPI controller protects the flash storage via two
-mechanisms one is the via region protection registers and second
-via BIOS lock.
+> Fix by restoring the initial order. Also add a warning comment.
+> 
+> Reported-by: Vlastimil Babka <vbabka@suse.cz>
+> Reported-by: Sergei Trofimovich <slyfox@gentoo.org>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-The device always boots with bios lock set, but during manufacturing
-the bios lock has to be lifted in order to enable the write access.
-So we add sysfs file (spi_bios_lock) to be able to do it on demand.
-The bios lock is automatically attempted to be lifted by the driver
-during initialization, this part is dropped.
+I expect this will be folded to your patch in mmotm anyway, so the changelog is
+not as important...
 
-Second, also the region protection status is exposed via sysfs file
-as the manufacturing will need the both files in order to validate
-that the device is properly sealed.
+> ---
+>  mm/page_alloc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 033bd92e8398..1fc5061f8ca1 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2328,6 +2328,12 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+>  	arch_alloc_page(page, order);
+>  	debug_pagealloc_map_pages(page, 1 << order);
+>  
+> +	/*
+> +	 * Page unpoisoning must happen before memory initialization.
+> +	 * Otherwise, a __GFP_ZERO allocation will not be initialized.
 
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- .../ABI/testing/sysfs-devices-intel-spi       | 16 ++++
- MAINTAINERS                                   |  1 +
- drivers/mfd/lpc_ich.c                         | 37 ++++++-
- .../mtd/spi-nor/controllers/intel-spi-pci.c   | 38 ++++++--
- drivers/mtd/spi-nor/controllers/intel-spi.c   | 96 ++++++++++++++++---
- include/linux/platform_data/x86/intel-spi.h   |  6 +-
- 6 files changed, 167 insertions(+), 27 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-intel-spi
+... but the comment should be corrected too:
+"Otherwise, a __GFP_ZERO allocation will trigger a memory corruption report
+during unpoisoning."
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-intel-spi b/Documentation/ABI/testing/sysfs-devices-intel-spi
-new file mode 100644
-index 000000000000..515c36f8b5cf
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-intel-spi
-@@ -0,0 +1,16 @@
-+What:		/sys/devices/.../is_protected
-+Date:		April 2021
-+Contact:	Tomas Winkler <tomas.winkler@intel.com>
-+Description:
-+		The /sys/devices/.../is_protected attribute allows the user
-+		space to check if the intel spi controller is write protected
-+		from the host.
-+
-+What:		/sys/devices/.../bios_lock
-+Date:		April 2021
-+Contact:	Tomas Winkler <tomas.winkler@intel.com>
-+Description:
-+		The /sys/devices/.../bios_lock attribute allows the user
-+		space to check if the intel spi controller is locked by bios
-+		for writes. It is possible to unlock the bios lock by writing
-+		"unlock" to the file.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ba561e5bc6f0..37c934f34ed7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11571,6 +11571,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
- C:	irc://irc.oftc.net/mtd
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
-+F:	Documentation/ABI/testing/sysfs-devices-intel-spi
- F:	Documentation/devicetree/bindings/mtd/
- F:	drivers/mtd/
- F:	include/linux/mtd/
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 3bbb29a7e7a5..eceaf11bec93 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -1083,12 +1083,39 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
- 	return ret;
- }
- 
-+static int lcp_ich_bios_unlock(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	if (!(bcr & BCR_WPD)) {
-+		bcr |= BCR_WPD;
-+		pci_write_config_dword(pdev, BCR, bcr);
-+		pci_read_config_dword(pdev, BCR, &bcr);
-+	}
-+
-+	if (!(bcr & BCR_WPD))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static bool lcp_ich_is_bios_locked(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	return !(bcr & BCR_WPD);
-+}
-+
- static int lpc_ich_init_spi(struct pci_dev *dev)
- {
- 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
- 	struct resource *res = &intel_spi_res[0];
- 	struct intel_spi_boardinfo *info;
--	u32 spi_base, rcba, bcr;
-+	u32 spi_base, rcba;
- 
- 	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info)
-@@ -1112,8 +1139,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 			res->start = spi_base + SPIBASE_LPT;
- 			res->end = res->start + SPIBASE_LPT_SZ - 1;
- 
--			pci_read_config_dword(dev, BCR, &bcr);
--			info->writeable = !!(bcr & BCR_WPD);
-+			info->is_bios_locked = lcp_ich_is_bios_locked;
-+			info->bios_unlock = lcp_ich_bios_unlock;
- 		}
- 		break;
- 
-@@ -1134,8 +1161,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 			res->start = spi_base & 0xfffffff0;
- 			res->end = res->start + SPIBASE_APL_SZ - 1;
- 
--			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
--			info->writeable = !!(bcr & BCR_WPD);
-+			info->is_bios_locked = lcp_ich_is_bios_locked;
-+			info->bios_unlock = lcp_ich_bios_unlock;
- 		}
- 
- 		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-index 825610a2e9dc..f83f352f874d 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-@@ -24,12 +24,38 @@ static const struct intel_spi_boardinfo cnl_info = {
- 	.type = INTEL_SPI_CNL,
- };
- 
-+static int intel_spi_pci_bios_unlock(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	if (!(bcr & BCR_WPD)) {
-+		bcr |= BCR_WPD;
-+		pci_write_config_dword(pdev, BCR, bcr);
-+		pci_read_config_dword(pdev, BCR, &bcr);
-+	}
-+
-+	if (!(bcr & BCR_WPD))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static bool intel_spi_pci_is_bios_locked(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	u32 bcr = 0;
-+
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	return !(bcr & BCR_WPD);
-+}
-+
- static int intel_spi_pci_probe(struct pci_dev *pdev,
- 			       const struct pci_device_id *id)
- {
- 	struct intel_spi_boardinfo *info;
- 	struct intel_spi *ispi;
--	u32 bcr;
- 	int ret;
- 
- 	ret = pcim_enable_device(pdev);
-@@ -41,14 +67,8 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 	if (!info)
- 		return -ENOMEM;
- 
--	/* Try to make the chip read/write */
--	pci_read_config_dword(pdev, BCR, &bcr);
--	if (!(bcr & BCR_WPD)) {
--		bcr |= BCR_WPD;
--		pci_write_config_dword(pdev, BCR, bcr);
--		pci_read_config_dword(pdev, BCR, &bcr);
--	}
--	info->writeable = !!(bcr & BCR_WPD);
-+	info->is_bios_locked = intel_spi_pci_is_bios_locked;
-+	info->bios_unlock = intel_spi_pci_bios_unlock;
- 
- 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
- 	if (IS_ERR(ispi))
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index a413892ff449..2d1cb5cc9030 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -131,7 +131,8 @@
-  * @sregs: Start of software sequencer registers
-  * @nregions: Maximum number of regions
-  * @pr_num: Maximum number of protected range registers
-- * @writeable: Is the chip writeable
-+ * @is_protected: Whether the regions are write protected
-+ * @is_bios_locked: Whether the spi is locked by BIOS
-  * @locked: Is SPI setting locked
-  * @swseq_reg: Use SW sequencer in register reads/writes
-  * @swseq_erase: Use SW sequencer in erase operation
-@@ -149,7 +150,8 @@ struct intel_spi {
- 	void __iomem *sregs;
- 	size_t nregions;
- 	size_t pr_num;
--	bool writeable;
-+	bool is_protected;
-+	bool is_bios_locked;
- 	bool locked;
- 	bool swseq_reg;
- 	bool swseq_erase;
-@@ -326,7 +328,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 				val = readl(ispi->base + BYT_BCR);
- 			}
- 
--			ispi->writeable = !!(val & BYT_BCR_WPD);
-+			ispi->is_bios_locked = !(val & BYT_BCR_WPD);
- 		}
- 
- 		break;
-@@ -862,6 +864,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	int i;
- 
- 	memset(part, 0, sizeof(*part));
-+	ispi->is_protected = false;
- 
- 	/* Start from the mandatory descriptor region */
- 	part->size = 4096;
-@@ -886,7 +889,7 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 		 * whole partition read-only to be on the safe side.
- 		 */
- 		if (intel_spi_is_protected(ispi, base, limit))
--			ispi->writeable = false;
-+			ispi->is_protected = true;
- 
- 		end = (limit << 12) + 4096;
- 		if (end > part->size)
-@@ -894,6 +897,60 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	}
- }
- 
-+static ssize_t intel_spi_is_protected_show(struct device *dev,
-+					   struct device_attribute *attr, char *buf)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d", ispi->is_protected);
-+}
-+static DEVICE_ATTR_ADMIN_RO(intel_spi_is_protected);
-+
-+static ssize_t intel_spi_bios_lock_show(struct device *dev,
-+					struct device_attribute *attr, char *buf)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d", ispi->is_bios_locked);
-+}
-+
-+static ssize_t intel_spi_bios_lock_store(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t len)
-+{
-+	struct intel_spi *ispi = dev_get_drvdata(dev);
-+	struct mtd_info *child, *master = mtd_get_master(&ispi->nor.mtd);
-+	int err;
-+
-+	if (!ispi->info->is_bios_locked)
-+		return -EOPNOTSUPP;
-+
-+	if (strcmp(buf, "unlock") != 0)
-+		return -EINVAL;
-+
-+	if (ispi->info->is_bios_locked(dev)) {
-+		err = ispi->info->bios_unlock(dev);
-+		if (err)
-+			return err;
-+	}
-+
-+	ispi->is_bios_locked = false;
-+
-+	if (ispi->is_protected || !writeable)
-+		return -EPERM;
-+
-+	/* Device is now writable */
-+	ispi->nor.mtd.flags |= MTD_WRITEABLE;
-+
-+	mutex_lock(&master->master.partitions_lock);
-+	list_for_each_entry(child, &ispi->nor.mtd.partitions, part.node)
-+		child->flags |= MTD_WRITEABLE;
-+	mutex_unlock(&master->master.partitions_lock);
-+
-+	return len;
-+}
-+static DEVICE_ATTR_ADMIN_RW(intel_spi_bios_lock);
-+
- static const struct spi_nor_controller_ops intel_spi_controller_ops = {
- 	.read_reg = intel_spi_read_reg,
- 	.write_reg = intel_spi_write_reg,
-@@ -902,6 +959,15 @@ static const struct spi_nor_controller_ops intel_spi_controller_ops = {
- 	.erase = intel_spi_erase,
- };
- 
-+int intel_spi_remove(struct intel_spi *ispi)
-+{
-+	device_remove_file(ispi->dev, &dev_attr_intel_spi_is_protected);
-+	device_remove_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
-+
-+	return mtd_device_unregister(&ispi->nor.mtd);
-+}
-+EXPORT_SYMBOL_GPL(intel_spi_remove);
-+
- struct intel_spi *intel_spi_probe(struct device *dev,
- 	struct resource *mem, const struct intel_spi_boardinfo *info)
- {
-@@ -927,7 +993,9 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 
- 	ispi->dev = dev;
- 	ispi->info = info;
--	ispi->writeable = info->writeable;
-+	ispi->is_bios_locked = info->is_bios_locked(dev);
-+	dev_dbg(ispi->dev, "is_bios_locked: %d writeable: %d\n",
-+		ispi->is_bios_locked, writeable);
- 
- 	ret = intel_spi_init(ispi);
- 	if (ret)
-@@ -946,22 +1014,28 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 	intel_spi_fill_partition(ispi, &part);
- 
- 	/* Prevent writes if not explicitly enabled */
--	if (!ispi->writeable || !writeable)
-+	if (ispi->is_protected || ispi->is_bios_locked || !writeable)
- 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
- 
- 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-+	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_is_protected);
-+	if (ret)
-+		goto err;
-+	ret = device_create_file(ispi->dev, &dev_attr_intel_spi_bios_lock);
-+	if (ret)
-+		goto err;
-+
- 	return ispi;
-+
-+err:
-+	intel_spi_remove(ispi);
-+	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL_GPL(intel_spi_probe);
- 
--int intel_spi_remove(struct intel_spi *ispi)
--{
--	return mtd_device_unregister(&ispi->nor.mtd);
--}
--EXPORT_SYMBOL_GPL(intel_spi_remove);
- 
- MODULE_DESCRIPTION("Intel PCH/PCU SPI flash core driver");
- MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
-diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
-index 7f53a5c6f35e..2fc5df13f18f 100644
---- a/include/linux/platform_data/x86/intel-spi.h
-+++ b/include/linux/platform_data/x86/intel-spi.h
-@@ -19,11 +19,13 @@ enum intel_spi_type {
- /**
-  * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
-  * @type: Type which this controller is compatible with
-- * @writeable: The chip is writeable
-+ * @is_bios_locked: report if the device is locked by BIOS
-+ * @bios_unlock: handler to unlock the bios
-  */
- struct intel_spi_boardinfo {
- 	enum intel_spi_type type;
--	bool writeable;
-+	bool (*is_bios_locked)(struct device *dev);
-+	int (*bios_unlock)(struct device *dev)
- };
- 
- #endif /* INTEL_SPI_PDATA_H */
--- 
-2.26.3
+Thanks.
+
+> +	 */
+> +	kernel_unpoison_pages(page, 1 << order);
+> +
+>  	/*
+>  	 * As memory initialization might be integrated into KASAN,
+>  	 * kasan_alloc_pages and kernel_init_free_pages must be
+> @@ -2338,7 +2344,6 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+>  	if (init && !kasan_has_integrated_init())
+>  		kernel_init_free_pages(page, 1 << order);
+>  
+> -	kernel_unpoison_pages(page, 1 << order);
+>  	set_page_owner(page, order, gfp_flags);
+>  }
+>  
+> 
 
