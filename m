@@ -2,148 +2,988 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF5E3500D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0763500D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhCaNAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:00:10 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:1889
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235707AbhCaM7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:59:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y79zYly4IM2md+4IbMb5XOceAyXW6hGi4TF4QvdRuMoYgQDVm8dm+qN5P5lBirax40J0RObiq8VvYnl786KsS9KyeSCAh6GJrL0Ouke42tIkFl6mDIonb0SRFpeZ50/WPF3T5LkOdUdUsEcX2ofzhJMnMMLKbu0AQb1qDV/QfqtpoSMK3aDPcgwPJN1Ih2lMqn93YjAyRRzsW7LZdasgODD2XSJHuECt1XPPOMDoVt7pKydrvXL2bYATFrfxpGe6FwhW572+1x0rWdOJ1x1rJGBElx29lpR8ZxQtAwijSNPlaNdl3sGTVt2Ze2JDxGY3pAXgmuiyC+DqeIrIhBc/PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AWJEySXboLipER8oMW8rutazhWLcYjjKoDiU6MlsDME=;
- b=Ae/8acdDXQYAknGwj8GFaK2kyBzf7VZVQGfvX1JnvEs6HsCRnQlvumn/RYEpwd8JtLPzJLiIwhb3VbZ+9ZL6zdDAhCOegBK/Sbq5NxZy9ZI1tFmzlSVO7pm8ASrT68zKuVC5LIG0BbKeOUpWN6Y/OvdpTPFbvj2L/xTf6Qoun4KIpmDLVEy8NUBm8TVFokX77joSbYL6SVvZAnbXonyZ/+28/hYugYDMPGDS08F72LIcX3QiNqtwt4bummOwAVmyILmAT7Iha9XsyajwYkwTgYfhibnIhGB1xcIMEqyjY0x3ibMQ3wQtWCSiWqGrlyl2vBTnK577lD8WaDmp1aHRHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AWJEySXboLipER8oMW8rutazhWLcYjjKoDiU6MlsDME=;
- b=Ugmbz7IrCTklLJwoA5eoZHK6YHnuvtuWXJuYNwLiRUyHd3WXcjEvv+FUjkk26X1Ie+kwAIKDSN8Cl5g3doXd7fDxkT7pIKH5bB4og6WAec5OORvT3IJbd7d1qNA5UVnjEkBEi98Z6luDOwn0IfuTZU5zPJTXV1rIcrsVrZ3Bqk0udDE88lu7m5XdaGRLKHuAUdV7IeB9ljSlO2QCfgKmytK12wRMmQ3VLv5HiegcQcjogiaSDYX8+W+feCYx72YWYmi8c+KgwKbTM1Ad813OdS2TKZHVJ+SxHMKKqJwBWmD9Zqrgx6TugycRNhqByTEs4UqIy5jOtRKw1tPEUAey0g==
-Received: from MW4PR03CA0203.namprd03.prod.outlook.com (2603:10b6:303:b8::28)
- by BN6PR12MB1426.namprd12.prod.outlook.com (2603:10b6:404:22::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Wed, 31 Mar
- 2021 12:59:35 +0000
-Received: from CO1NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b8:cafe::8c) by MW4PR03CA0203.outlook.office365.com
- (2603:10b6:303:b8::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend
- Transport; Wed, 31 Mar 2021 12:59:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT053.mail.protection.outlook.com (10.13.175.63) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 12:59:33 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
- 2021 12:59:30 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <hch@infradead.org>, <daniel@ffwll.ch>,
-        <willy@infradead.org>, "Christoph Hellwig" <hch@lst.de>
-Subject: Re: [PATCH v7 5/8] mm: Device exclusive memory access
-Date:   Wed, 31 Mar 2021 23:59:28 +1100
-Message-ID: <2521635.masqiumSp9@nvdebian>
-In-Reply-To: <20210330193234.GA2356281@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com> <20210326000805.2518-6-apopple@nvidia.com> <20210330193234.GA2356281@nvidia.com>
+        id S235722AbhCaNAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235470AbhCaM7x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:59:53 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404D3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:59:53 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id u9so23696322ljd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+JmQw1yuTQPvL8nhoLoutbw9BUAiFkmCSx98Hn6HqsA=;
+        b=Sl/OkgC1LGc1xT8irZnmln5V0cPXnzzn/lB04i7wIjA/KFmiA89mDolf5Phlc2v3rX
+         SEZm/PDc2RsX9fi9Sxgmhm/n5YERWIQjFqVYsFLb52ExBHKtnqwGVrB2YPbdKvVXPY5S
+         cWM2RlldBVA0Mhqr5n6xm69B+IY3GUYKEYUoc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+JmQw1yuTQPvL8nhoLoutbw9BUAiFkmCSx98Hn6HqsA=;
+        b=TIlFaxgMFLwm061JoDf/vHPbRUB1BQuvONnRICUdZCF+YuBqarlsA8DHlt+wBti3ca
+         EpI62oeamEUDOl3gXUZ9rf2yZOagxklWa6keIaII5fOALuqw2Gr1WLvFYNucLJNXTEIZ
+         uXv3f3fv7uSK71ee2rpiLZM+Njit8QKeolbYSmnRJGyRlA1ew2lsOXSeXaTqrOvjd3Ld
+         1kijVTde+u+ewirO9IO5O9oXwQdJBzvqpMYeTXyojgyk2y629/QN7Og47NuM1GZQ6yn3
+         q6CyGiAjDgQjbVwIh7nDVb0J5TvCr8i0nZtSk/b0BSOntaRuObiNSNvvlXxTRqhV3744
+         7Jtg==
+X-Gm-Message-State: AOAM5300JhZSvO8wRHR7Rr76egM4eGHMr5vNhPAtc1W/ZPV6oeAcUNIB
+        WyHTcd2XdHVI8CmTch38eH15VqnYwP7fvjXdcgR7AA==
+X-Google-Smtp-Source: ABdhPJyZp1z329M8FA4w0SvFvJduKTfSnNGQ15g6ZDdGoWTfOPFl6Hzk37KckvII4mBlszuaKZdz8FD2YniiCNSCQjc=
+X-Received: by 2002:a05:651c:1b9:: with SMTP id c25mr2020956ljn.155.1617195591407;
+ Wed, 31 Mar 2021 05:59:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c958375-292d-419d-1aaf-08d8f444d4f1
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1426:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB1426145C4B69B1C7A5F30701DF7C9@BN6PR12MB1426.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /yvKwYVH+mNpwUO2VKY1vJN4IiRfDx6+aBXpGV4N9Y2sMvb6Eu+lLBSLTa6i74aL34bN5gVeT4BEQ2lGzwWLjJC+yueZpxqrB7W3LOVjWHgkIBfJ5NtzP9m2b9S4QoxgYoa6eAQwSaLPMuGosDMBUcu7qLKV5GFsuAhODVTRGYZUyhhz4CJeWWRh50tfEqM7YCJUno6jhkh9ZL1O839wg2XPyXKqlem/P2/1CKqgHifePrhABQE8q1CE7JwCwsbmAsG2dMYorIiWjIV4KZgblNV/U6VEBQ7cwapWWaut7182Mc0Ef6PinT++cCzf8mfI2FaYjD3q2VpRAUjDyXwulbmGmZ37jh/kyWn4MubTPyx+UJzzQCPt2uT5lMXNAqzh3H1kW/X0a/nKk4vPRRPhvd3w31vz6j0zjQ5o939jQ+SLub9lSvTJEwO9Ny9GGIopT57Rljy5AUFFiI6T24349D35hNOK4bEVRyU/vAWrORG5Yb0/4ULBqQbnPEnXXNLM9kdQu2OFa1Yo6ZITFbK21RRaQJuUp5BrMSkT3iMx8QZHDWLxYDO6B+6geeHnrHuCA3yvU1Qv5GDkxhB6LnXzvmEpaKbz1tCVNz3GK6FqEgWXLW0pzZz/gWzuK2oNMBB4laRZaggk8zg0cAzL3CUr5mlK5ngw3FSQx1weDadXz22mA5P7XRIgP/ZQUM9Xn2TT
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(46966006)(36840700001)(36906005)(4326008)(54906003)(70586007)(70206006)(86362001)(316002)(8676002)(36860700001)(6636002)(33716001)(8936002)(426003)(186003)(16526019)(9576002)(336012)(26005)(6862004)(478600001)(2906002)(7416002)(9686003)(5660300002)(47076005)(82740400003)(7636003)(82310400003)(356005)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 12:59:33.9340
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c958375-292d-419d-1aaf-08d8f444d4f1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1426
+References: <20210322001214.29985-1-vitaly.wool@konsulko.com> <20f193a8-1d4a-0cfa-6ed2-6526712b23c4@huawei.com>
+In-Reply-To: <20f193a8-1d4a-0cfa-6ed2-6526712b23c4@huawei.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Wed, 31 Mar 2021 14:59:40 +0200
+Message-ID: <CAM4kBBLByxLnbYWnnNa-1pPPNRSR8nq1UPJWystAZLQ3ASjsmw@mail.gmail.com>
+Subject: Re: [PATCH v6] RISC-V: enable XIP
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Anup Patel <anup@brainfault.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>, Alex Ghiti <alex@ghiti.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 31 March 2021 6:32:34 AM AEDT Jason Gunthorpe wrote:
-> On Fri, Mar 26, 2021 at 11:08:02AM +1100, Alistair Popple wrote:
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 3a5705cfc891..33d11527ef77 100644
-> > +++ b/mm/memory.c
-> > @@ -781,6 +781,27 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct 
-mm_struct *src_mm,
-> >  				pte = pte_swp_mkuffd_wp(pte);
-> >  			set_pte_at(src_mm, addr, src_pte, pte);
-> >  		}
-> > +	} else if (is_device_exclusive_entry(entry)) {
-> > +		page = pfn_swap_entry_to_page(entry);
+Hi Kefeng,
+
+On Wed, Mar 31, 2021 at 10:37 AM Kefeng Wang <wangkefeng.wang@huawei.com> w=
+rote:
+>
+> Hi=EF=BC=8Csome error when enable XIP_KERNEL config=EF=BC=8CARCH_HAS_STRI=
+CT_KERNEL_RWX
+> should disable when enable XIP_KERNEL=EF=BC=8C
+>
+> but there
+>
+> riscv64-linux-ld: section .data LMA [0000000000800000,00000000008cd37f]
+> overlaps section .rodata LMA [0000000000706bc0,000000000085dd67]
+> riscv64-linux-ld: section .pci_fixup LMA
+> [000000000085dd68,0000000000861397] overlaps section .data LMA
+> [0000000000800000,00000000008cd37f]
+> riscv64-linux-ld: arch/riscv/mm/init.o: in function `.L138':
+> init.c:(.text+0x232): undefined reference to `__init_text_begin'
+> riscv64-linux-ld: arch/riscv/mm/init.o: in function
+> `protect_kernel_text_data':
+> init.c:(.text+0x23a): undefined reference to `__init_data_begin'
+> riscv64-linux-ld: init.c:(.text+0x28c): undefined reference to
+> `__init_text_begin'
+> riscv64-linux-ld: init.c:(.text+0x2a0): undefined reference to
+> `__init_data_begin'
+
+all the RO sections should fit in 8 MB for xipImage. Could you please
+remove the unnecessary parts from your kernel and retry?
+
+Thanks,
+   Vitaly
+
+> On 2021/3/22 8:12, Vitaly Wool wrote:
+> > Introduce XIP (eXecute In Place) support for RISC-V platforms.
+> > It allows code to be executed directly from non-volatile storage
+> > directly addressable by the CPU, such as QSPI NOR flash which can
+> > be found on many RISC-V platforms. This makes way for significant
+> > optimization of RAM footprint. The XIP kernel is not compressed
+> > since it has to run directly from flash, so it will occupy more
+> > space on the non-volatile storage. The physical flash address used
+> > to link the kernel object files and for storing it has to be known
+> > at compile time and is represented by a Kconfig option.
+> >
+> > XIP on RISC-V will for the time being only work on MMU-enabled
+> > kernels.
+> >
+> > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> >
+> > ---
+> >
+> > Changes in v2:
+> > - dedicated macro for XIP address fixup when MMU is not enabled yet
+> >    o both for 32-bit and 64-bit RISC-V
+> > - SP is explicitly set to a safe place in RAM before __copy_data call
+> > - removed redundant alignment requirements in vmlinux-xip.lds.S
+> > - changed long -> uintptr_t typecast in __XIP_FIXUP macro.
+> > Changes in v3:
+> > - rebased against latest for-next
+> > - XIP address fixup macro now takes an argument
+> > - SMP related fixes
+> > Changes in v4:
+> > - rebased against the current for-next
+> > - less #ifdef's in C/ASM code
+> > - dedicated XIP_FIXUP_OFFSET assembler macro in head.S
+> > - C-specific definitions moved into #ifndef __ASSEMBLY__
+> > - Fixed multi-core boot
+> > Changes in v5:
+> > - fixed build error for non-XIP kernels
+> > Changes in v6:
+> > - XIP_PHYS_RAM_BASE config option renamed to PHYS_RAM_BASE
+> > - added PHYS_RAM_BASE_FIXED config flag to allow usage of
+> >    PHYS_RAM_BASE in non-XIP configurations if needed
+> > - XIP_FIXUP macro rewritten with a tempoarary variable to avoid side
+> >    effects
+> > - fixed crash for non-XIP kernels that don't use built-in DTB
+> >
+> >   arch/riscv/Kconfig                  |  49 ++++++++++-
+> >   arch/riscv/Makefile                 |   8 +-
+> >   arch/riscv/boot/Makefile            |  13 +++
+> >   arch/riscv/include/asm/pgtable.h    |  65 ++++++++++++--
+> >   arch/riscv/kernel/cpu_ops_sbi.c     |  11 ++-
+> >   arch/riscv/kernel/head.S            |  49 ++++++++++-
+> >   arch/riscv/kernel/head.h            |   3 +
+> >   arch/riscv/kernel/setup.c           |   8 +-
+> >   arch/riscv/kernel/vmlinux-xip.lds.S | 132 +++++++++++++++++++++++++++=
++
+> >   arch/riscv/kernel/vmlinux.lds.S     |   6 ++
+> >   arch/riscv/mm/init.c                | 100 +++++++++++++++++++--
+> >   11 files changed, 426 insertions(+), 18 deletions(-)
+> >   create mode 100644 arch/riscv/kernel/vmlinux-xip.lds.S
+> >
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 8ea60a0a19ae..bd6f82240c34 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -441,7 +441,7 @@ config EFI_STUB
+> >
+> >   config EFI
+> >       bool "UEFI runtime support"
+> > -     depends on OF
+> > +     depends on OF && !XIP_KERNEL
+> >       select LIBFDT
+> >       select UCS2_STRING
+> >       select EFI_PARAMS_FROM_FDT
+> > @@ -465,11 +465,56 @@ config STACKPROTECTOR_PER_TASK
+> >       def_bool y
+> >       depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
+> >
+> > +config PHYS_RAM_BASE_FIXED
+> > +     bool "Explicitly specified physical RAM address"
+> > +     default n
 > > +
-> > +		get_page(page);
-> > +		rss[mm_counter(page)]++;
+> > +config PHYS_RAM_BASE
+> > +     hex "Platform Physical RAM address"
+> > +     depends on PHYS_RAM_BASE_FIXED
+> > +     default "0x80000000"
+> > +     help
+> > +       This is the physical address of RAM in the system. It has to be
+> > +       explicitly specified to run early relocations of read-write dat=
+a
+> > +       from flash to RAM.
 > > +
-> > +		if (is_writable_device_exclusive_entry(entry) &&
-> > +		    is_cow_mapping(vm_flags)) {
-> > +			/*
-> > +			 * COW mappings require pages in both
-> > +			 * parent and child to be set to read.
-> > +			 */
-> > +			entry = make_readable_device_exclusive_entry(
-> > +							swp_offset(entry));
-> > +			pte = swp_entry_to_pte(entry);
-> > +			if (pte_swp_soft_dirty(*src_pte))
-> > +				pte = pte_swp_mksoft_dirty(pte);
-> > +			if (pte_swp_uffd_wp(*src_pte))
-> > +				pte = pte_swp_mkuffd_wp(pte);
-> > +			set_pte_at(src_mm, addr, src_pte, pte);
-> > +		}
-> 
-> This needs to have the same logic as we now have in
-> copy_present_page(). The page *is* present and we can't copy the PTE
-> value hidden in a swap entry if we can't copy the PTE normally.
-
-You're saying we need to use copy_present_page() to make sure the split goes 
-the right way for pinned pages? I guess that makes sense as the split could go 
-either way at the moment but I should add a check to make sure this isn't used 
-with pinned pages anyway.
-
- - Alistair
-
-> The code should be shared because nobody is going to remember about
-> this corner case.
-> 
-> Jason
-> 
-
-
-
-
+> > +config XIP_KERNEL
+> > +     bool "Kernel Execute-In-Place from ROM"
+> > +     depends on MMU
+> > +     select PHYS_RAM_BASE_FIXED
+> > +     help
+> > +       Execute-In-Place allows the kernel to run from non-volatile sto=
+rage
+> > +       directly addressable by the CPU, such as NOR flash. This saves =
+RAM
+> > +       space since the text section of the kernel is not loaded from f=
+lash
+> > +       to RAM.  Read-write sections, such as the data section and stac=
+k,
+> > +       are still copied to RAM.  The XIP kernel is not compressed sinc=
+e
+> > +       it has to run directly from flash, so it will take more space t=
+o
+> > +       store it.  The flash address used to link the kernel object fil=
+es,
+> > +       and for storing it, is configuration dependent. Therefore, if y=
+ou
+> > +       say Y here, you must know the proper physical address where to
+> > +       store the kernel image depending on your own flash memory usage=
+.
+> > +
+> > +       Also note that the make target becomes "make xipImage" rather t=
+han
+> > +       "make zImage" or "make Image".  The final kernel binary to put =
+in
+> > +       ROM memory will be arch/riscv/boot/xipImage.
+> > +
+> > +       If unsure, say N.
+> > +
+> > +config XIP_PHYS_ADDR
+> > +     hex "XIP Kernel Physical Location"
+> > +     depends on XIP_KERNEL
+> > +     default "0x21000000"
+> > +     help
+> > +       This is the physical address in your flash memory the kernel wi=
+ll
+> > +       be linked for and stored to.  This address is dependent on your
+> > +       own flash usage.
+> > +
+> >   endmenu
+> >
+> >   config BUILTIN_DTB
+> > -     def_bool n
+> > +     bool
+> >       depends on OF
+> > +     default y if XIP_KERNEL
+> >
+> >   menu "Power management options"
+> >
+> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > index 1368d943f1f3..8fcbec03974d 100644
+> > --- a/arch/riscv/Makefile
+> > +++ b/arch/riscv/Makefile
+> > @@ -82,7 +82,11 @@ CHECKFLAGS +=3D -D__riscv -D__riscv_xlen=3D$(BITS)
+> >
+> >   # Default target when executing plain make
+> >   boot                :=3D arch/riscv/boot
+> > +ifeq ($(CONFIG_XIP_KERNEL),y)
+> > +KBUILD_IMAGE :=3D $(boot)/xipImage
+> > +else
+> >   KBUILD_IMAGE        :=3D $(boot)/Image.gz
+> > +endif
+> >
+> >   head-y :=3D arch/riscv/kernel/head.o
+> >
+> > @@ -95,12 +99,14 @@ PHONY +=3D vdso_install
+> >   vdso_install:
+> >       $(Q)$(MAKE) $(build)=3Darch/riscv/kernel/vdso $@
+> >
+> > +ifneq ($(CONFIG_XIP_KERNEL),y)
+> >   ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+> >   KBUILD_IMAGE :=3D $(boot)/loader.bin
+> >   else
+> >   KBUILD_IMAGE :=3D $(boot)/Image.gz
+> >   endif
+> > -BOOT_TARGETS :=3D Image Image.gz loader loader.bin
+> > +endif
+> > +BOOT_TARGETS :=3D Image Image.gz loader loader.bin xipImage
+> >
+> >   all:        $(notdir $(KBUILD_IMAGE))
+> >
+> > diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+> > index 03404c84f971..6bf299f70c27 100644
+> > --- a/arch/riscv/boot/Makefile
+> > +++ b/arch/riscv/boot/Makefile
+> > @@ -17,8 +17,21 @@
+> >   KCOV_INSTRUMENT :=3D n
+> >
+> >   OBJCOPYFLAGS_Image :=3D-O binary -R .note -R .note.gnu.build-id -R .c=
+omment -S
+> > +OBJCOPYFLAGS_xipImage :=3D-O binary -R .note -R .note.gnu.build-id -R =
+.comment -S
+> >
+> >   targets :=3D Image Image.* loader loader.o loader.lds loader.bin
+> > +targets :=3D Image Image.* loader loader.o loader.lds loader.bin xipIm=
+age
+> > +
+> > +ifeq ($(CONFIG_XIP_KERNEL),y)
+> > +
+> > +quiet_cmd_mkxip =3D $(quiet_cmd_objcopy)
+> > +cmd_mkxip =3D $(cmd_objcopy)
+> > +
+> > +$(obj)/xipImage: vmlinux FORCE
+> > +     $(call if_changed,mkxip)
+> > +     @$(kecho) '  Physical Address of xipImage: $(CONFIG_XIP_PHYS_ADDR=
+)'
+> > +
+> > +endif
+> >
+> >   $(obj)/Image: vmlinux FORCE
+> >       $(call if_changed,objcopy)
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/=
+pgtable.h
+> > index ebf817c1bdf4..21a9b2f8d1c7 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -11,6 +11,33 @@
+> >
+> >   #include <asm/pgtable-bits.h>
+> >
+> > +#ifdef CONFIG_MMU
+> > +
+> > +#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+> > +
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#define VMALLOC_SIZE     ((KERN_VIRT_SIZE >> 1) - SZ_16M)
+> > +#define VMALLOC_END      (PAGE_OFFSET - SZ_16M - 1)
+> > +
+> > +#define XIP_OFFSET           SZ_8M
+> > +#define XIP_MASK             (SZ_8M - 1)
+> > +#define XIP_VIRT_ADDR(physaddr)      \
+> > +     (PAGE_OFFSET - XIP_OFFSET + ((physaddr) & XIP_MASK))
+> > +
+> > +#else
+> > +
+> > +#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+> > +#define VMALLOC_END      (PAGE_OFFSET - 1)
+> > +
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> > +#else
+> > +
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#define XIP_VIRT_ADDR(physaddr) (physaddr)
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +#endif /* CONFIG_MMU */
+> > +
+> >   #ifndef __ASSEMBLY__
+> >
+> >   /* Page Upper Directory not used in RISC-V */
+> > @@ -21,9 +48,25 @@
+> >
+> >   #ifdef CONFIG_MMU
+> >
+> > -#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+> > -#define VMALLOC_END      (PAGE_OFFSET - 1)
+> > -#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +/*
+> > + * Since we use sections to map it, this macro replaces the physical a=
+ddress
+> > + * with its virtual address while keeping offset from the base section=
+.
+> > + */
+> > +#define XIP_PHYS_ADDR(va)     \
+> > +     ((uintptr_t)(va) - PAGE_OFFSET + XIP_OFFSET + CONFIG_XIP_PHYS_ADD=
+R)
+> > +
+> > +#define XIP_VIRT_ADDR_START  XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+> > +
+> > +#define XIP_FIXUP(addr)              ({ \
+> > +     uintptr_t __a =3D (uintptr_t)(addr); \
+> > +     (__a >=3D CONFIG_XIP_PHYS_ADDR && \
+> > +      __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ? \
+> > +     __a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET : =
+__a; \
+> > +})
+> > +#else
+> > +#define XIP_FIXUP(addr)              (addr)
+> > +#endif /* CONFIG_XIP_KERNEL */
+> >
+> >   #define BPF_JIT_REGION_SIZE (SZ_128M)
+> >   #define BPF_JIT_REGION_START        (PAGE_OFFSET - BPF_JIT_REGION_SIZ=
+E)
+> > @@ -484,8 +527,20 @@ static inline int ptep_clear_flush_young(struct vm=
+_area_struct *vma,
+> >
+> >   #define kern_addr_valid(addr)   (1) /* FIXME */
+> >
+> > -extern void *dtb_early_va;
+> > -extern uintptr_t dtb_early_pa;
+> > +extern void *_dtb_early_va;
+> > +extern uintptr_t _dtb_early_pa;
+> > +#if defined(CONFIG_XIP_KERNEL) && defined(CONFIG_MMU)
+> > +
+> > +#define dtb_early_va (*(void **)XIP_FIXUP(&_dtb_early_va))
+> > +#define dtb_early_pa (*(uintptr_t *)XIP_FIXUP(&_dtb_early_pa))
+> > +
+> > +#else
+> > +
+> > +#define dtb_early_va _dtb_early_va
+> > +#define dtb_early_pa _dtb_early_pa
+> > +
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> >   void setup_bootmem(void);
+> >   void paging_init(void);
+> >   void misc_mem_init(void);
+> > diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_op=
+s_sbi.c
+> > index 685fae72b7f5..2413c2997350 100644
+> > --- a/arch/riscv/kernel/cpu_ops_sbi.c
+> > +++ b/arch/riscv/kernel/cpu_ops_sbi.c
+> > @@ -53,10 +53,19 @@ static int sbi_hsm_hart_get_status(unsigned long ha=
+rtid)
+> >   }
+> >   #endif
+> >
+> > +static inline unsigned long get_secondary_start_phys(void)
+> > +{
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     return XIP_PHYS_ADDR(secondary_start_sbi);
+> > +#else
+> > +     return __pa_symbol(secondary_start_sbi);
+> > +#endif
+> > +}
+> > +
+> >   static int sbi_cpu_start(unsigned int cpuid, struct task_struct *tidl=
+e)
+> >   {
+> >       int rc;
+> > -     unsigned long boot_addr =3D __pa_symbol(secondary_start_sbi);
+> > +     unsigned long boot_addr =3D get_secondary_start_phys();
+> >       int hartid =3D cpuid_to_hartid_map(cpuid);
+> >
+> >       cpu_update_secondary_bootdata(cpuid, tidle);
+> > diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> > index f5a9bad86e58..bbe74e37914f 100644
+> > --- a/arch/riscv/kernel/head.S
+> > +++ b/arch/riscv/kernel/head.S
+> > @@ -9,11 +9,23 @@
+> >   #include <linux/linkage.h>
+> >   #include <asm/thread_info.h>
+> >   #include <asm/page.h>
+> > +#include <asm/pgtable.h>
+> >   #include <asm/csr.h>
+> >   #include <asm/hwcap.h>
+> >   #include <asm/image.h>
+> >   #include "efi-header.S"
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +.macro XIP_FIXUP_OFFSET reg
+> > +     REG_L t0, _xip_fixup
+> > +     add \reg, \reg, t0
+> > +.endm
+> > +_xip_fixup: .dword CONFIG_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_O=
+FFSET
+> > +#else
+> > +.macro XIP_FIXUP_OFFSET reg
+> > +.endm
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> >   __HEAD
+> >   ENTRY(_start)
+> >       /*
+> > @@ -69,7 +81,11 @@ pe_head_start:
+> >   #ifdef CONFIG_MMU
+> >   relocate:
+> >       /* Relocate return address */
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     li a1, XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+> > +#else
+> >       li a1, PAGE_OFFSET
+> > +#endif
+> >       la a2, _start
+> >       sub a1, a1, a2
+> >       add ra, ra, a1
+> > @@ -91,6 +107,7 @@ relocate:
+> >        * to ensure the new translations are in use.
+> >        */
+> >       la a0, trampoline_pg_dir
+> > +     XIP_FIXUP_OFFSET a0
+> >       srl a0, a0, PAGE_SHIFT
+> >       or a0, a0, a1
+> >       sfence.vma
+> > @@ -144,7 +161,9 @@ secondary_start_sbi:
+> >
+> >       slli a3, a0, LGREG
+> >       la a4, __cpu_up_stack_pointer
+> > +     XIP_FIXUP_OFFSET a4
+> >       la a5, __cpu_up_task_pointer
+> > +     XIP_FIXUP_OFFSET a5
+> >       add a4, a3, a4
+> >       add a5, a3, a5
+> >       REG_L sp, (a4)
+> > @@ -156,6 +175,7 @@ secondary_start_common:
+> >   #ifdef CONFIG_MMU
+> >       /* Enable virtual memory and relocate to virtual address */
+> >       la a0, swapper_pg_dir
+> > +     XIP_FIXUP_OFFSET a0
+> >       call relocate
+> >   #endif
+> >       call setup_trap_vector
+> > @@ -236,12 +256,33 @@ pmp_done:
+> >   .Lgood_cores:
+> >   #endif
+> >
+> > +#ifndef CONFIG_XIP_KERNEL
+> >       /* Pick one hart to run the main boot sequence */
+> >       la a3, hart_lottery
+> >       li a2, 1
+> >       amoadd.w a3, a2, (a3)
+> >       bnez a3, .Lsecondary_start
+> >
+> > +#else
+> > +     /* hart_lottery in flash contains a magic number */
+> > +     la a3, hart_lottery
+> > +     mv a2, a3
+> > +     XIP_FIXUP_OFFSET a2
+> > +     lw t1, (a3)
+> > +     amoswap.w t0, t1, (a2)
+> > +     /* first time here if hart_lottery in RAM is not set */
+> > +     beq t0, t1, .Lsecondary_start
+> > +
+> > +     la sp, _end + THREAD_SIZE
+> > +     XIP_FIXUP_OFFSET sp
+> > +     mv s0, a0
+> > +     call __copy_data
+> > +
+> > +     /* Restore a0 copy */
+> > +     mv a0, s0
+> > +#endif
+> > +
+> > +#ifndef CONFIG_XIP_KERNEL
+> >       /* Clear BSS for flat non-ELF images */
+> >       la a3, __bss_start
+> >       la a4, __bss_stop
+> > @@ -251,15 +292,18 @@ clear_bss:
+> >       add a3, a3, RISCV_SZPTR
+> >       blt a3, a4, clear_bss
+> >   clear_bss_done:
+> > -
+> > +#endif
+> >       /* Save hart ID and DTB physical address */
+> >       mv s0, a0
+> >       mv s1, a1
+> > +
+> >       la a2, boot_cpu_hartid
+> > +     XIP_FIXUP_OFFSET a2
+> >       REG_S a0, (a2)
+> >
+> >       /* Initialize page tables and relocate to virtual addresses */
+> >       la sp, init_thread_union + THREAD_SIZE
+> > +     XIP_FIXUP_OFFSET sp
+> >   #ifdef CONFIG_BUILTIN_DTB
+> >       la a0, __dtb_start
+> >   #else
+> > @@ -268,6 +312,7 @@ clear_bss_done:
+> >       call setup_vm
+> >   #ifdef CONFIG_MMU
+> >       la a0, early_pg_dir
+> > +     XIP_FIXUP_OFFSET a0
+> >       call relocate
+> >   #endif /* CONFIG_MMU */
+> >
+> > @@ -292,7 +337,9 @@ clear_bss_done:
+> >
+> >       slli a3, a0, LGREG
+> >       la a1, __cpu_up_stack_pointer
+> > +     XIP_FIXUP_OFFSET a1
+> >       la a2, __cpu_up_task_pointer
+> > +     XIP_FIXUP_OFFSET a2
+> >       add a1, a3, a1
+> >       add a2, a3, a2
+> >
+> > diff --git a/arch/riscv/kernel/head.h b/arch/riscv/kernel/head.h
+> > index b48dda3d04f6..aabbc3ac3e48 100644
+> > --- a/arch/riscv/kernel/head.h
+> > +++ b/arch/riscv/kernel/head.h
+> > @@ -12,6 +12,9 @@ extern atomic_t hart_lottery;
+> >
+> >   asmlinkage void do_page_fault(struct pt_regs *regs);
+> >   asmlinkage void __init setup_vm(uintptr_t dtb_pa);
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +asmlinkage void __init __copy_data(void);
+> > +#endif
+> >
+> >   extern void *__cpu_up_stack_pointer[];
+> >   extern void *__cpu_up_task_pointer[];
+> > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> > index e85bacff1b50..a0384c72c272 100644
+> > --- a/arch/riscv/kernel/setup.c
+> > +++ b/arch/riscv/kernel/setup.c
+> > @@ -50,7 +50,11 @@ struct screen_info screen_info __section(".data") =
+=3D {
+> >    * This is used before the kernel initializes the BSS so it can't be =
+in the
+> >    * BSS.
+> >    */
+> > -atomic_t hart_lottery __section(".sdata");
+> > +atomic_t hart_lottery __section(".sdata")
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +=3D ATOMIC_INIT(0xC001BEEF)
+> > +#endif
+> > +;
+> >   unsigned long boot_cpu_hartid;
+> >   static DEFINE_PER_CPU(struct cpu, cpu_devices);
+> >
+> > @@ -254,7 +258,7 @@ void __init setup_arch(char **cmdline_p)
+> >   #if IS_ENABLED(CONFIG_BUILTIN_DTB)
+> >       unflatten_and_copy_device_tree();
+> >   #else
+> > -     if (early_init_dt_verify(__va(dtb_early_pa)))
+> > +     if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
+> >               unflatten_device_tree();
+> >       else
+> >               pr_err("No DTB found in kernel mappings\n");
+> > diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vm=
+linux-xip.lds.S
+> > new file mode 100644
+> > index 000000000000..9f0f08c34cd3
+> > --- /dev/null
+> > +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
+> > @@ -0,0 +1,132 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (C) 2012 Regents of the University of California
+> > + * Copyright (C) 2017 SiFive
+> > + * Copyright (C) 2020 Vitaly Wool, Konsulko AB
+> > + */
+> > +
+> > +#define LOAD_OFFSET XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+> > +/* No __ro_after_init data in the .rodata section - which will always =
+be ro */
+> > +#define RO_AFTER_INIT_DATA
+> > +
+> > +#include <asm/vmlinux.lds.h>
+> > +#include <asm/page.h>
+> > +#include <asm/pgtable.h>
+> > +#include <asm/cache.h>
+> > +#include <asm/thread_info.h>
+> > +
+> > +OUTPUT_ARCH(riscv)
+> > +ENTRY(_start)
+> > +
+> > +jiffies =3D jiffies_64;
+> > +
+> > +SECTIONS
+> > +{
+> > +     /* Beginning of code and text segment */
+> > +     . =3D XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR);
+> > +     _xiprom =3D .;
+> > +     _start =3D .;
+> > +     HEAD_TEXT_SECTION
+> > +     INIT_TEXT_SECTION(PAGE_SIZE)
+> > +     /* we have to discard exit text and such at runtime, not link tim=
+e */
+> > +     .exit.text :
+> > +     {
+> > +             EXIT_TEXT
+> > +     }
+> > +
+> > +     .text : {
+> > +             _text =3D .;
+> > +             _stext =3D .;
+> > +             TEXT_TEXT
+> > +             SCHED_TEXT
+> > +             CPUIDLE_TEXT
+> > +             LOCK_TEXT
+> > +             KPROBES_TEXT
+> > +             ENTRY_TEXT
+> > +             IRQENTRY_TEXT
+> > +             SOFTIRQENTRY_TEXT
+> > +             *(.fixup)
+> > +             _etext =3D .;
+> > +     }
+> > +     RO_DATA(L1_CACHE_BYTES)
+> > +     .srodata : {
+> > +             *(.srodata*)
+> > +     }
+> > +     .init.rodata : {
+> > +             INIT_SETUP(16)
+> > +             INIT_CALLS
+> > +             CON_INITCALL
+> > +             INIT_RAM_FS
+> > +     }
+> > +     _exiprom =3D .;                   /* End of XIP ROM area */
+> > +
+> > +
+> > +/*
+> > + * From this point, stuff is considered writable and will be copied to=
+ RAM
+> > + */
+> > +     __data_loc =3D ALIGN(16);         /* location in file */
+> > +     . =3D PAGE_OFFSET;                /* location in memory */
+> > +
+> > +     _sdata =3D .;                     /* Start of data section */
+> > +     _data =3D .;
+> > +     RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+> > +     _edata =3D .;
+> > +     __start_ro_after_init =3D .;
+> > +     .data.ro_after_init : AT(ADDR(.data.ro_after_init) - LOAD_OFFSET)=
+ {
+> > +             *(.data..ro_after_init)
+> > +     }
+> > +     __end_ro_after_init =3D .;
+> > +
+> > +     . =3D ALIGN(PAGE_SIZE);
+> > +     __init_begin =3D .;
+> > +     .init.data : {
+> > +             INIT_DATA
+> > +     }
+> > +     .exit.data : {
+> > +             EXIT_DATA
+> > +     }
+> > +     . =3D ALIGN(8);
+> > +     __soc_early_init_table : {
+> > +             __soc_early_init_table_start =3D .;
+> > +             KEEP(*(__soc_early_init_table))
+> > +             __soc_early_init_table_end =3D .;
+> > +     }
+> > +     __soc_builtin_dtb_table : {
+> > +             __soc_builtin_dtb_table_start =3D .;
+> > +             KEEP(*(__soc_builtin_dtb_table))
+> > +             __soc_builtin_dtb_table_end =3D .;
+> > +     }
+> > +     PERCPU_SECTION(L1_CACHE_BYTES)
+> > +
+> > +     . =3D ALIGN(PAGE_SIZE);
+> > +     __init_end =3D .;
+> > +
+> > +     .sdata : {
+> > +             __global_pointer$ =3D . + 0x800;
+> > +             *(.sdata*)
+> > +             *(.sbss*)
+> > +     }
+> > +
+> > +     BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
+> > +     EXCEPTION_TABLE(0x10)
+> > +
+> > +     .rel.dyn : AT(ADDR(.rel.dyn) - LOAD_OFFSET) {
+> > +             *(.rel.dyn*)
+> > +     }
+> > +
+> > +     /*
+> > +      * End of copied data. We need a dummy section to get its LMA.
+> > +      * Also located before final ALIGN() as trailing padding is not s=
+tored
+> > +      * in the resulting binary file and useless to copy.
+> > +      */
+> > +     .data.endmark : AT(ADDR(.data.endmark) - LOAD_OFFSET) { }
+> > +     _edata_loc =3D LOADADDR(.data.endmark);
+> > +
+> > +     . =3D ALIGN(PAGE_SIZE);
+> > +     _end =3D .;
+> > +
+> > +     STABS_DEBUG
+> > +     DWARF_DEBUG
+> > +
+> > +     DISCARDS
+> > +}
+> > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinu=
+x.lds.S
+> > index de03cb22d0e9..6745ec325930 100644
+> > --- a/arch/riscv/kernel/vmlinux.lds.S
+> > +++ b/arch/riscv/kernel/vmlinux.lds.S
+> > @@ -4,7 +4,12 @@
+> >    * Copyright (C) 2017 SiFive
+> >    */
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#include "vmlinux-xip.lds.S"
+> > +#else
+> > +
+> >   #define LOAD_OFFSET PAGE_OFFSET
+> > +
+> >   #include <asm/vmlinux.lds.h>
+> >   #include <asm/page.h>
+> >   #include <asm/cache.h>
+> > @@ -132,3 +137,4 @@ SECTIONS
+> >
+> >       DISCARDS
+> >   }
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index 7f5036fbee8c..efe649d41f95 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -31,8 +31,8 @@ EXPORT_SYMBOL(empty_zero_page);
+> >
+> >   extern char _start[];
+> >   #define DTB_EARLY_BASE_VA      PGDIR_SIZE
+> > -void *dtb_early_va __initdata;
+> > -uintptr_t dtb_early_pa __initdata;
+> > +void *_dtb_early_va __initdata;
+> > +uintptr_t _dtb_early_pa __initdata;
+> >
+> >   struct pt_alloc_ops {
+> >       pte_t *(*get_pte_virt)(phys_addr_t pa);
+> > @@ -88,6 +88,10 @@ static void print_vm_layout(void)
+> >                 (unsigned long)VMALLOC_END);
+> >       print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+> >                 (unsigned long)high_memory);
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     print_mlm("xip", (unsigned long)XIP_VIRT_ADDR_START,
+> > +               (unsigned long)XIP_VIRT_ADDR_START + SZ_16M);
+> > +#endif /* CONFIG_XIP_KERNEL */
+> >   }
+> >   #else
+> >   static void print_vm_layout(void) { }
+> > @@ -113,6 +117,10 @@ void __init setup_bootmem(void)
+> >       phys_addr_t dram_end =3D memblock_end_of_DRAM();
+> >       phys_addr_t max_mapped_addr =3D __pa(~(ulong)0);
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     vmlinux_start =3D __pa_symbol(&_sdata);
+> > +#endif
+> > +
+> >       /* The maximal physical memory size is -PAGE_OFFSET. */
+> >       memblock_enforce_memory_limit(-PAGE_OFFSET);
+> >
+> > @@ -149,11 +157,27 @@ void __init setup_bootmem(void)
+> >       memblock_allow_resize();
+> >   }
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +
+> > +extern char _xiprom[], _exiprom[];
+> > +extern char _sdata[], _edata[];
+> > +
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> >   #ifdef CONFIG_MMU
+> > -static struct pt_alloc_ops pt_ops;
+> > +static struct pt_alloc_ops _pt_ops;
+> > +
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
+> > +#else
+> > +#define pt_ops       _pt_ops
+> > +#endif
+> >
+> >   unsigned long va_pa_offset;
+> >   EXPORT_SYMBOL(va_pa_offset);
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#define va_pa_offset (*((unsigned long *)XIP_FIXUP(&va_pa_offset)))
+> > +#endif
+> >   unsigned long pfn_base;
+> >   EXPORT_SYMBOL(pfn_base);
+> >
+> > @@ -163,6 +187,12 @@ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> >
+> >   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +#define trampoline_pg_dir    ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
+> > +#define fixmap_pte           ((pte_t *)XIP_FIXUP(fixmap_pte))
+> > +#define early_pg_dir         ((pgd_t *)XIP_FIXUP(early_pg_dir))
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> >   void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_=
+t prot)
+> >   {
+> >       unsigned long addr =3D __fix_to_virt(idx);
+> > @@ -238,6 +268,15 @@ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> >   pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> >   pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +pmd_t xip_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > +
+> > +#define trampoline_pmd       ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+> > +#define fixmap_pmd   ((pmd_t *)XIP_FIXUP(fixmap_pmd))
+> > +#define xip_pmd              ((pmd_t *)XIP_FIXUP(xip_pmd))
+> > +#define early_pmd    ((pmd_t *)XIP_FIXUP(early_pmd))
+> > +#endif /* CONFIG_XIP_KERNEL */
+> > +
+> >   static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+> >   {
+> >       /* Before MMU is enabled */
+> > @@ -354,6 +393,19 @@ static uintptr_t __init best_map_size(phys_addr_t =
+base, phys_addr_t size)
+> >       return PMD_SIZE;
+> >   }
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +/* called from head.S with MMU off */
+> > +asmlinkage void __init __copy_data(void)
+> > +{
+> > +     void *from =3D (void *)(&_sdata);
+> > +     void *end =3D (void *)(&_end);
+> > +     void *to =3D (void *)CONFIG_PHYS_RAM_BASE;
+> > +     size_t sz =3D (size_t)(end - from);
+> > +
+> > +     memcpy(to, from, sz);
+> > +}
+> > +#endif
+> > +
+> >   /*
+> >    * setup_vm() is called from head.S with MMU-off.
+> >    *
+> > @@ -374,7 +426,8 @@ static uintptr_t __init best_map_size(phys_addr_t b=
+ase, phys_addr_t size)
+> >
+> >   asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >   {
+> > -     uintptr_t va, pa, end_va;
+> > +     uintptr_t va, end_va;
+> > +     uintptr_t __maybe_unused pa;
+> >       uintptr_t load_pa =3D (uintptr_t)(&_start);
+> >       uintptr_t load_sz =3D (uintptr_t)(&_end) - load_pa;
+> >       uintptr_t map_size;
+> > @@ -382,6 +435,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >       pmd_t fix_bmap_spmd, fix_bmap_epmd;
+> >   #endif
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     uintptr_t xiprom =3D (uintptr_t)CONFIG_XIP_PHYS_ADDR;
+> > +     uintptr_t xiprom_sz =3D (uintptr_t)(&_exiprom) - (uintptr_t)(&_xi=
+prom);
+> > +
+> > +     load_pa =3D (uintptr_t)CONFIG_PHYS_RAM_BASE;
+> > +     load_sz =3D (uintptr_t)(&_end) - (uintptr_t)(&_sdata);
+> > +#endif
+> >       va_pa_offset =3D PAGE_OFFSET - load_pa;
+> >       pfn_base =3D PFN_DOWN(load_pa);
+> >
+> > @@ -420,6 +480,21 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >                          load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+> >   #endif
+> >
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     create_pgd_mapping(trampoline_pg_dir, XIP_VIRT_ADDR_START,
+> > +                        (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
+> > +     for (va =3D XIP_VIRT_ADDR_START;
+> > +          va < XIP_VIRT_ADDR_START + xiprom_sz;
+> > +          va +=3D PMD_SIZE) {
+> > +             create_pmd_mapping(xip_pmd, va,
+> > +                                xiprom + (va - XIP_VIRT_ADDR_START),
+> > +                                PMD_SIZE, PAGE_KERNEL_EXEC);
+> > +     }
+> > +
+> > +     create_pgd_mapping(early_pg_dir, XIP_VIRT_ADDR_START,
+> > +                        (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
+> > +#endif
+> > +
+> >       /*
+> >        * Setup early PGD covering entire kernel which will allows
+> >        * us to reach paging_init(). We map all memory banks later
+> > @@ -444,7 +519,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >                          pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
+> >       dtb_early_va =3D (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE =
+- 1));
+> >   #else /* CONFIG_BUILTIN_DTB */
+> > -     dtb_early_va =3D __va(dtb_pa);
+> > +     dtb_early_va =3D __va(XIP_FIXUP(dtb_pa));
+> >   #endif /* CONFIG_BUILTIN_DTB */
+> >   #else
+> >   #ifndef CONFIG_BUILTIN_DTB
+> > @@ -456,7 +531,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >                          pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
+> >       dtb_early_va =3D (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZ=
+E - 1));
+> >   #else /* CONFIG_BUILTIN_DTB */
+> > -     dtb_early_va =3D __va(dtb_pa);
+> > +     dtb_early_va =3D __va(XIP_FIXUP(dtb_pa));
+> >   #endif /* CONFIG_BUILTIN_DTB */
+> >   #endif
+> >       dtb_early_pa =3D dtb_pa;
+> > @@ -497,6 +572,9 @@ static void __init setup_vm_final(void)
+> >       uintptr_t va, map_size;
+> >       phys_addr_t pa, start, end;
+> >       u64 i;
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     uintptr_t xiprom_sz =3D (uintptr_t)(&_exiprom) - (uintptr_t)(&_xi=
+prom);
+> > +#endif
+> >
+> >       /**
+> >        * MMU is enabled at this point. But page table setup is not comp=
+lete yet.
+> > @@ -528,6 +606,16 @@ static void __init setup_vm_final(void)
+> >                                          map_size, PAGE_KERNEL_EXEC);
+> >               }
+> >       }
+> > +#ifdef CONFIG_XIP_KERNEL
+> > +     map_size =3D best_map_size(CONFIG_XIP_PHYS_ADDR, xiprom_sz);
+> > +     for (va =3D XIP_VIRT_ADDR_START;
+> > +          va < XIP_VIRT_ADDR_START + xiprom_sz;
+> > +          va +=3D map_size)
+> > +             create_pgd_mapping(swapper_pg_dir, va,
+> > +                                CONFIG_XIP_PHYS_ADDR + (va - XIP_VIRT_=
+ADDR_START),
+> > +                                map_size, PAGE_KERNEL_EXEC);
+> > +
+> > +#endif
+> >
+> >       /* Clear fixmap PTE and PMD mappings */
+> >       clear_fixmap(FIX_PTE);
