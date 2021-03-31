@@ -2,111 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B44B34FA91
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C77834FA99
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhCaHmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234238AbhCaHlb (ORCPT
+        id S234280AbhCaHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:42:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234204AbhCaHmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:41:31 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCBCC061574;
-        Wed, 31 Mar 2021 00:41:30 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id q9so9491248qvm.6;
-        Wed, 31 Mar 2021 00:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QR9n7jMBXuR7AUyYsxvNVDLdp7MMQ0XLcqNzq6Oedts=;
-        b=ItuOamKAmyL1iqPklk3GBvrSvM/SNq/FVZC+5ryPmXu7jROc6lUwTxNrOOD/xcWp2+
-         ymD4C6KALI+zjZuiS6LHcbLErQINHJmoTrnJ0Et+89desnpQaTEXUXoHYd8wMF75LlUu
-         C2weFnwQ8w1CEc06TsKIZ5QAORrxw7Ox6zFWQ=
+        Wed, 31 Mar 2021 03:42:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617176542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCixOYNQFJEmCwNjkKeRd8lCZMOXCEBzJPf2kb2CuW8=;
+        b=h4MJeym0pQC58EWxdfbCrpqhZJh7EReaizmu8gFJBuT+9wMqmeyfdkO1WfNK0ytwWuqZA4
+        9Xufpt2PJeA6QK45I/7jmLio5D4h6qXL/kSIbX2ie7okhvSP6j6cxqxQJCyOOdWifBf5WJ
+        Iot8M3UbofT4aKEC1jeTampm/8P0MrQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-0Vrx_lA2NYSbIVpoanrtuQ-1; Wed, 31 Mar 2021 03:41:41 -0400
+X-MC-Unique: 0Vrx_lA2NYSbIVpoanrtuQ-1
+Received: by mail-wr1-f69.google.com with SMTP id h5so541946wrr.17
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:41:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QR9n7jMBXuR7AUyYsxvNVDLdp7MMQ0XLcqNzq6Oedts=;
-        b=l0OWGcyZdMj82/nx6xZlVEBQQzNq7c3D7qFO+XsXf9o7KkPpE/arYnLZg9JOm72apq
-         IHAwXNTnpNnZoMu9K1H5nhQiLZOv9z1WiR4ZAn5g3udiQ5d0Y2Z3A/wYQMjLbQ1CyDT+
-         h54OsBCwviYYnQjHYD2AHQWYP595JF/LSgjJhP7AvkioDIiqAs8MiV/rb2vhvictpXuC
-         6s1oHjOXhyN3uOHxX5IcVDHRrpSB8lDBuQhMo1RQQ4Q5ddHOXM+86uF0CQ3297DaIuRs
-         e9Yq4l0Z6PhRXjxa0mpav/2FR3xQ/mMHX5wY6IREn81Zw5lOODDLNbTxQwJuIkwZIh0J
-         DwBA==
-X-Gm-Message-State: AOAM533su9wcoz0siXNKAc6oXpk2rsK8Wy7EFOGv30J+5pJ8VxkK4t1R
-        sbMWwM2M5oVZNMar6eBBs1sJcC5u0bpcI00GeOTMAM+ctQO7wYwv
-X-Google-Smtp-Source: ABdhPJyRzi3fzNlKv54UZ4uRGyUMLMYtEitqX6uumolAz+qxX3eAEqUXtMwhLc+MEgT21jRm5FxrI/X79kntIIb+PhI=
-X-Received: by 2002:ad4:58e3:: with SMTP id di3mr1756404qvb.43.1617176490132;
- Wed, 31 Mar 2021 00:41:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HCixOYNQFJEmCwNjkKeRd8lCZMOXCEBzJPf2kb2CuW8=;
+        b=CgiK2HAQEWRB+sQHqjLdnIdm8dOpiASQ8wrAF1/nbcO679iYfRusm8CvoR2tFitpJL
+         xhIoOp4oZo0YJwmAxri7ate/F4aMPL1Pqos85bQ/U9RGAzaKCUNFBck915BcRvMvFPSH
+         5Btgf9Voq9uCovDP5lH7gwp/JYDWSiDO4Uuas2DhVOFnYWOtaDYldb0Q+jnXoNdP2fXu
+         9MmBLGoUTyUh+rV+ZeQOlEjZRVHt/Uuo7/tsW/QXEmUav8Zlu7eU7WDHjiY2/KTOfpsp
+         oCIPRa3/4Subb95405miRgIS9Q+Z5xVp12bCOYq5gzuReNMdPVmOjbZnYltZubKRTLdi
+         G5TA==
+X-Gm-Message-State: AOAM532b1b7M8nUU4H3EBJRkRhrva8hy4rKfQVUx2iCASpKUE+7+IxIZ
+        yY1ObpWL62NJu7uT6gJcnWZCQ84LolRyCOW2yndNMUE/C2OJ6h8R/EWKSvbrlltA5raDpBG21fl
+        kVeQkEUpYfZ0GnIVSnblVViVw
+X-Received: by 2002:a1c:b789:: with SMTP id h131mr1904504wmf.106.1617176499782;
+        Wed, 31 Mar 2021 00:41:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiHmYD2Le+p2rRCHafUQsuCWJvR5BP1vyRx1fx+QhpZoWEEC9/7YIvjmyyJZB+n8xVLiTOmA==
+X-Received: by 2002:a1c:b789:: with SMTP id h131mr1904488wmf.106.1617176499531;
+        Wed, 31 Mar 2021 00:41:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id a131sm2662492wmc.48.2021.03.31.00.41.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 00:41:38 -0700 (PDT)
+Subject: Re: [PATCH 12/18] KVM: MIPS/MMU: Convert to the gfn-based MMU
+ notifier callbacks
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-13-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <26c87b3e-7a89-6cfa-1410-25486b114f32@redhat.com>
+Date:   Wed, 31 Mar 2021 09:41:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210330002338.335-1-zev@bewilderbeest.net> <20210330002338.335-4-zev@bewilderbeest.net>
-In-Reply-To: <20210330002338.335-4-zev@bewilderbeest.net>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 31 Mar 2021 07:41:18 +0000
-Message-ID: <CACPK8XcwMYgc9R24KuGa0hqKQAxawDScHp1+y62aeEvcpvPiSw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: aspeed: add ASRock E3C246D4I BMC
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210326021957.1424875-13-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 at 00:25, Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> This is a relatively low-cost AST2500-based Xeon E-2100/E-2200 series
-> mini-ITX board that we hope can provide a decent platform for OpenBMC
-> development.
->
-> This initial device-tree provides the necessary configuration for
-> basic BMC functionality such as host power control, serial console and
-> KVM support, and POST code snooping.
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On 26/03/21 03:19, Sean Christopherson wrote:
+> Move MIPS to the gfn-based MMU notifier APIs, which do the hva->gfn
+> lookup in common code, and whose code is nearly identical to MIPS'
+> lookup.
+> 
+> No meaningful functional change intended, though the exact order of
+> operations is slightly different since the memslot lookups occur before
+> calling into arch code.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+I'll post a couple patches to enable more coalescing of the flushes, but 
+this particular patch is okay.
+
+Paolo
 
 > ---
->  .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 188 ++++++++++++++++++
->  1 file changed, 188 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-> new file mode 100644
-> index 000000000000..27b34c3cf67a
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-> @@ -0,0 +1,188 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/dts-v1/;
-> +
-> +#include "aspeed-g5.dtsi"
-> +#include <dt-bindings/gpio/aspeed-gpio.h>
-> +#include <dt-bindings/i2c/i2c.h>
-> +
-> +/{
-> +       model = "ASRock E3C246D4I BMC";
-> +       compatible = "aspeed,ast2500";
+>   arch/mips/include/asm/kvm_host.h |  1 +
+>   arch/mips/kvm/mmu.c              | 97 ++++++--------------------------
+>   2 files changed, 17 insertions(+), 81 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
+> index feaa77036b67..374a3c8806e8 100644
+> --- a/arch/mips/include/asm/kvm_host.h
+> +++ b/arch/mips/include/asm/kvm_host.h
+> @@ -967,6 +967,7 @@ enum kvm_mips_fault_result kvm_trap_emul_gva_fault(struct kvm_vcpu *vcpu,
+>   						   bool write);
+>   
+>   #define KVM_ARCH_WANT_MMU_NOTIFIER
+> +#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+>   
+>   /* Emulation */
+>   int kvm_get_inst(u32 *opc, struct kvm_vcpu *vcpu, u32 *out);
+> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+> index 3dabeda82458..3dc885df2e32 100644
+> --- a/arch/mips/kvm/mmu.c
+> +++ b/arch/mips/kvm/mmu.c
+> @@ -439,85 +439,36 @@ static int kvm_mips_mkold_gpa_pt(struct kvm *kvm, gfn_t start_gfn,
+>   				  end_gfn << PAGE_SHIFT);
+>   }
+>   
+> -static int handle_hva_to_gpa(struct kvm *kvm,
+> -			     unsigned long start,
+> -			     unsigned long end,
+> -			     int (*handler)(struct kvm *kvm, gfn_t gfn,
+> -					    gpa_t gfn_end,
+> -					    struct kvm_memory_slot *memslot,
+> -					    void *data),
+> -			     void *data)
+> +bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>   {
+> -	struct kvm_memslots *slots;
+> -	struct kvm_memory_slot *memslot;
+> -	int ret = 0;
+> -
+> -	slots = kvm_memslots(kvm);
+> -
+> -	/* we only care about the pages that the guest sees */
+> -	kvm_for_each_memslot(memslot, slots) {
+> -		unsigned long hva_start, hva_end;
+> -		gfn_t gfn, gfn_end;
+> -
+> -		hva_start = max(start, memslot->userspace_addr);
+> -		hva_end = min(end, memslot->userspace_addr +
+> -					(memslot->npages << PAGE_SHIFT));
+> -		if (hva_start >= hva_end)
+> -			continue;
+> -
+> -		/*
+> -		 * {gfn(page) | page intersects with [hva_start, hva_end)} =
+> -		 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
+> -		 */
+> -		gfn = hva_to_gfn_memslot(hva_start, memslot);
+> -		gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
+> -
+> -		ret |= handler(kvm, gfn, gfn_end, memslot, data);
+> -	}
+> -
+> -	return ret;
+> -}
+> -
+> -
+> -static int kvm_unmap_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+> -				 struct kvm_memory_slot *memslot, void *data)
+> -{
+> -	kvm_mips_flush_gpa_pt(kvm, gfn, gfn_end);
+> -	return 1;
+> -}
+> -
+> -int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
+> -			unsigned flags)
+> -{
+> -	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, NULL);
+> +	kvm_mips_flush_gpa_pt(kvm, range->start, range->end);
+>   
+>   	kvm_mips_callbacks->flush_shadow_all(kvm);
+>   	return 0;
+>   }
+>   
+> -static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+> -				struct kvm_memory_slot *memslot, void *data)
+> +static bool __kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>   {
+> -	gpa_t gpa = gfn << PAGE_SHIFT;
+> -	pte_t hva_pte = *(pte_t *)data;
+> +	gpa_t gpa = range->start << PAGE_SHIFT;
+> +	pte_t hva_pte = range->pte;
+>   	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
+>   	pte_t old_pte;
+>   
+>   	if (!gpa_pte)
+> -		return 0;
+> +		return false;
+>   
+>   	/* Mapping may need adjusting depending on memslot flags */
+>   	old_pte = *gpa_pte;
+> -	if (memslot->flags & KVM_MEM_LOG_DIRTY_PAGES && !pte_dirty(old_pte))
+> +	if (range->slot->flags & KVM_MEM_LOG_DIRTY_PAGES && !pte_dirty(old_pte))
+>   		hva_pte = pte_mkclean(hva_pte);
+> -	else if (memslot->flags & KVM_MEM_READONLY)
+> +	else if (range->slot->flags & KVM_MEM_READONLY)
+>   		hva_pte = pte_wrprotect(hva_pte);
+>   
+>   	set_pte(gpa_pte, hva_pte);
+>   
+>   	/* Replacing an absent or old page doesn't need flushes */
+>   	if (!pte_present(old_pte) || !pte_young(old_pte))
+> -		return 0;
+> +		return false;
+>   
+>   	/* Pages swapped, aged, moved, or cleaned require flushes */
+>   	return !pte_present(hva_pte) ||
+> @@ -526,27 +477,21 @@ static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+>   	       (pte_dirty(old_pte) && !pte_dirty(hva_pte));
+>   }
+>   
+> -int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
+> +bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>   {
+> -	unsigned long end = hva + PAGE_SIZE;
+> -	int ret;
+> -
+> -	ret = handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pte);
+> -	if (ret)
+> +	if (__kvm_set_spte_gfn(kvm, range))
+>   		kvm_mips_callbacks->flush_shadow_all(kvm);
+> -	return 0;
+> +	return false;
+>   }
+>   
+> -static int kvm_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+> -			       struct kvm_memory_slot *memslot, void *data)
+> +bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>   {
+> -	return kvm_mips_mkold_gpa_pt(kvm, gfn, gfn_end);
+> +	return kvm_mips_mkold_gpa_pt(kvm, range->start, range->end);
+>   }
+>   
+> -static int kvm_test_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+> -				    struct kvm_memory_slot *memslot, void *data)
+> +bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>   {
+> -	gpa_t gpa = gfn << PAGE_SHIFT;
+> +	gpa_t gpa = range->start << PAGE_SHIFT;
+>   	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
+>   
+>   	if (!gpa_pte)
+> @@ -554,16 +499,6 @@ static int kvm_test_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
+>   	return pte_young(*gpa_pte);
+>   }
+>   
+> -int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
+> -{
+> -	return handle_hva_to_gpa(kvm, start, end, kvm_age_hva_handler, NULL);
+> -}
+> -
+> -int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
+> -{
+> -	return handle_hva_to_gpa(kvm, hva, hva, kvm_test_age_hva_handler, NULL);
+> -}
+> -
+>   /**
+>    * _kvm_mips_map_page_fast() - Fast path GPA fault handler.
+>    * @vcpu:		VCPU pointer.
+> 
 
-Convention is to add a compatible for the board. I'll add
-asrock,e3c246d4Ii-bmc when I apply the patch.
-
-> +&vuart {
-> +       status = "okay";
-> +       aspeed,sirq-active-high;
-
-We don't have support for this yet, but I'll leave it in and you will
-need to send a follow up if the property changes.
-
-Cheers,
-
-Joel
