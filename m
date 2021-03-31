@@ -2,115 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4ACB34FAD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA75C34FADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbhCaHw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:52:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52919 "EHLO
+        id S234307AbhCaHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:53:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22590 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234238AbhCaHwi (ORCPT
+        by vger.kernel.org with ESMTP id S234114AbhCaHxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:52:38 -0400
+        Wed, 31 Mar 2021 03:53:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617177158;
+        s=mimecast20190719; t=1617177190;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pQ5Qm7wzrETleGdIZygb6hZggBdQLM72Jyc7tGd4rCA=;
-        b=Pb3MkZ12nIe29/GyrQ+y0lVTcOrMgo2tE3vlLkV3c/ihfKSnePv8774ZAXxRdPr+7GnsGf
-        XXadNkkv7SvdOV27vfK5ejdf/j7kaA8JH+L3uvlDRhCIbMxUVrsifa3/b/U8i6x4G0WdGe
-        YbljWw7v2BsVSyCfU5+LH/r2sHrkPs8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-pyD-jcyzM3qtVY0zYI8iwA-1; Wed, 31 Mar 2021 03:52:36 -0400
-X-MC-Unique: pyD-jcyzM3qtVY0zYI8iwA-1
-Received: by mail-wr1-f72.google.com with SMTP id n16so570522wro.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:52:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pQ5Qm7wzrETleGdIZygb6hZggBdQLM72Jyc7tGd4rCA=;
-        b=E8ur/uXIbhQrGlhZ1EOLHHKSvylU8ZqdhAZ9cVFOYTXaJnZkYXkXg6n3joUWEvf26o
-         9WM8nqivRn12YkD0B0oSMoYQWe+2+GwFWB+uu7Z3THGC5WfM9Afp7HkPgr7QHFC4zWZF
-         gsqKJVmuQ9j9EJQKkuCJJSgoIYtoyKCFVKVZi4HQdZ8tr8mdntOnLdj+g2leknrr7t80
-         D/B8MP8O684hgDri2mKBBvo5TrCR6Tu9UW0eiAzeaeRCHqJV3yoQuZLvLqiHjZ307UkA
-         ItduBYl5RuDrJP1LD21xfWbYWYMle4UH0DDwxkle+AYTHZv79k7I2fof/vUaoFcBd/8W
-         6gFg==
-X-Gm-Message-State: AOAM533A6FtbWeBgZZ5pL5LT4evgmy/QF3ThSrmEi+/RH1GMnGjyw0UO
-        TIwF3wGnu0PTegw/ua2SJsGM6v7VKRrhDiD/FpKSck7aVMR8eK31XED9jvNLkZW1EpDaFrZQzvW
-        7TafUYTq/OCkMxVeAezOl4QBv
-X-Received: by 2002:a1c:dfc1:: with SMTP id w184mr1947753wmg.21.1617177155319;
-        Wed, 31 Mar 2021 00:52:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrEJ16pEEpfSd4UOjbnqA+7pbiSAPPFNpTAPEwcpv0H2fU5p4zyKOS02szcKvl3Y4jdrVOKQ==
-X-Received: by 2002:a1c:dfc1:: with SMTP id w184mr1947732wmg.21.1617177155168;
-        Wed, 31 Mar 2021 00:52:35 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id b17sm2793386wrt.17.2021.03.31.00.52.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 00:52:33 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <20210326021957.1424875-11-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 10/18] KVM: Move x86's MMU notifier memslot walkers to
- generic code
-Message-ID: <ba3f7a9c-0b59-cbeb-5d46-4236cde2c51f@redhat.com>
-Date:   Wed, 31 Mar 2021 09:52:30 +0200
+        bh=Bzvf+M3b77HIdjPcRSzSZeq7D/XGxIYBangMV7Eyk+w=;
+        b=H1sImrBvMB8yvc5SxAgpeOBOYxEUM8GQseL3Wz7uMRlJvWYFrCL0sc0wL6LurDe8IPZ5W7
+        Se53EVwbd+qVAPuMSPsz1UeTefGKtkpbXprKWJ/7fNdHX9HwrO1ycQx65HBadk6uukkuaq
+        vKggliX4dIOG3/a1mXqnmIFIDDj7+vA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-CUOM3dXQMymgrc6RuzP5Kw-1; Wed, 31 Mar 2021 03:53:07 -0400
+X-MC-Unique: CUOM3dXQMymgrc6RuzP5Kw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88D8B185302B;
+        Wed, 31 Mar 2021 07:53:03 +0000 (UTC)
+Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BDE9019C44;
+        Wed, 31 Mar 2021 07:52:50 +0000 (UTC)
+Subject: Re: [PATCH v3 1/8] mm/cma: change cma mutex to irq safe spinlock
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210331034148.112624-1-mike.kravetz@oracle.com>
+ <20210331034148.112624-2-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4433e570-d492-f617-7c0b-51f00557ea71@redhat.com>
+Date:   Wed, 31 Mar 2021 09:52:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210326021957.1424875-11-seanjc@google.com>
+In-Reply-To: <20210331034148.112624-2-mike.kravetz@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/21 03:19, Sean Christopherson wrote:
-> +#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
-> +	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
-> +#else
->   	struct kvm *kvm = mmu_notifier_to_kvm(mn);
->   	int idx;
->  	trace_kvm_set_spte_hva(address);
->  
-> 	idx = srcu_read_lock(&kvm->srcu);
+On 31.03.21 05:41, Mike Kravetz wrote:
+> cma_release is currently a sleepable operatation because the bitmap
+> manipulation is protected by cma->lock mutex. Hugetlb code which relies
+> on cma_release for CMA backed (giga) hugetlb pages, however, needs to be
+> irq safe.
 > 
-> 	KVM_MMU_LOCK(kvm);
+> The lock doesn't protect any sleepable operation so it can be changed to
+> a (irq aware) spin lock. The bitmap processing should be quite fast in
+> typical case but if cma sizes grow to TB then we will likely need to
+> replace the lock by a more optimized bitmap implementation.
 > 
-> 	kvm->mmu_notifier_seq++;
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>   mm/cma.c       | 18 +++++++++---------
+>   mm/cma.h       |  2 +-
+>   mm/cma_debug.c |  8 ++++----
+>   3 files changed, 14 insertions(+), 14 deletions(-)
 > 
-> 	if (kvm_set_spte_hva(kvm, address, pte))
-> 		kvm_flush_remote_tlbs(kvm);
+> diff --git a/mm/cma.c b/mm/cma.c
+> index b2393b892d3b..2380f2571eb5 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -24,7 +24,6 @@
+>   #include <linux/memblock.h>
+>   #include <linux/err.h>
+>   #include <linux/mm.h>
+> -#include <linux/mutex.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+>   #include <linux/log2.h>
+> @@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
+>   			     unsigned int count)
+>   {
+>   	unsigned long bitmap_no, bitmap_count;
+> +	unsigned long flags;
+>   
+>   	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
+>   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irqsave(&cma->lock, flags);
+>   	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irqrestore(&cma->lock, flags);
+>   }
+>   
+>   static void __init cma_activate_area(struct cma *cma)
+> @@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
+>   	     pfn += pageblock_nr_pages)
+>   		init_cma_reserved_pageblock(pfn_to_page(pfn));
+>   
+> -	mutex_init(&cma->lock);
+> +	spin_lock_init(&cma->lock);
+>   
+>   #ifdef CONFIG_CMA_DEBUGFS
+>   	INIT_HLIST_HEAD(&cma->mem_head);
+> @@ -392,7 +392,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>   	unsigned long nr_part, nr_total = 0;
+>   	unsigned long nbits = cma_bitmap_maxno(cma);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	pr_info("number of available pages: ");
+>   	for (;;) {
+>   		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
+> @@ -407,7 +407,7 @@ static void cma_debug_show_areas(struct cma *cma)
+>   		start = next_zero_bit + nr_zero;
+>   	}
+>   	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   }
+>   #else
+>   static inline void cma_debug_show_areas(struct cma *cma) { }
+> @@ -454,12 +454,12 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   		goto out;
+>   
+>   	for (;;) {
+> -		mutex_lock(&cma->lock);
+> +		spin_lock_irq(&cma->lock);
+>   		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
+>   				bitmap_maxno, start, bitmap_count, mask,
+>   				offset);
+>   		if (bitmap_no >= bitmap_maxno) {
+> -			mutex_unlock(&cma->lock);
+> +			spin_unlock_irq(&cma->lock);
+>   			break;
+>   		}
+>   		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+> @@ -468,7 +468,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   		 * our exclusive use. If the migration fails we will take the
+>   		 * lock again and unmark it.
+>   		 */
+> -		mutex_unlock(&cma->lock);
+> +		spin_unlock_irq(&cma->lock);
+>   
+>   		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
+>   		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 68ffad4e430d..2c775877eae2 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -15,7 +15,7 @@ struct cma {
+>   	unsigned long   count;
+>   	unsigned long   *bitmap;
+>   	unsigned int order_per_bit; /* Order of pages represented by one bit */
+> -	struct mutex    lock;
+> +	spinlock_t	lock;
+>   #ifdef CONFIG_CMA_DEBUGFS
+>   	struct hlist_head mem_head;
+>   	spinlock_t mem_head_lock;
+> diff --git a/mm/cma_debug.c b/mm/cma_debug.c
+> index d5bf8aa34fdc..2e7704955f4f 100644
+> --- a/mm/cma_debug.c
+> +++ b/mm/cma_debug.c
+> @@ -36,10 +36,10 @@ static int cma_used_get(void *data, u64 *val)
+>   	struct cma *cma = data;
+>   	unsigned long used;
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	/* pages counter is smaller than sizeof(int) */
+>   	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   	*val = (u64)used << cma->order_per_bit;
+>   
+>   	return 0;
+> @@ -53,7 +53,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>   	unsigned long start, end = 0;
+>   	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
+>   
+> -	mutex_lock(&cma->lock);
+> +	spin_lock_irq(&cma->lock);
+>   	for (;;) {
+>   		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
+>   		if (start >= bitmap_maxno)
+> @@ -61,7 +61,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+>   		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
+>   		maxchunk = max(end - start, maxchunk);
+>   	}
+> -	mutex_unlock(&cma->lock);
+> +	spin_unlock_irq(&cma->lock);
+>   	*val = (u64)maxchunk << cma->order_per_bit;
+>   
+>   	return 0;
 > 
->   	KVM_MMU_UNLOCK(kvm);
->   	srcu_read_unlock(&kvm->srcu, idx);
-> +#endif
 
-The kvm->mmu_notifier_seq is missing in the new API side.  I guess you 
-can add an argument to __kvm_handle_hva_range and handle it also in 
-patch 15 ("KVM: Take mmu_lock when handling MMU notifier iff the hva 
-hits a memslot").
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Paolo
+-- 
+Thanks,
+
+David / dhildenb
 
