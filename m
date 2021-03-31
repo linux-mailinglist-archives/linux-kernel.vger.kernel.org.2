@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A10350A4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02C0350A4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhCaWer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:34:47 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32250 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232001AbhCaWed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:34:33 -0400
-IronPort-SDR: CxQArir2wXM+fv6im1cXdGn4P+i2D+5OR7k8t6IFutEacw/dtW1vH/omtozN+fVTFPWYEafraf
- ZBOJ+S4sDkCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179234564"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="179234564"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:34:31 -0700
-IronPort-SDR: LuzO9bbbqwn3Pyg+IIs/ekW4bs1Rzd8xaCj9of7Ed0rVlHXNvE4Qnbm7cnUPwMCVaM65rZ5oSQ
- qv30/qT27Wig==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="418883992"
-Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:34:30 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YGTvSvr2T2v3t3XA@google.com>
- <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
- <YGTyWUQbxVZeeko+@google.com>
- <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
- <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b175f08d-2930-158d-8543-fe6a7f6aaf12@intel.com>
-Date:   Wed, 31 Mar 2021 15:34:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229787AbhCaWhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:37:34 -0400
+Received: from mail-qk1-f171.google.com ([209.85.222.171]:42579 "EHLO
+        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhCaWhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:37:25 -0400
+Received: by mail-qk1-f171.google.com with SMTP id y5so399107qkl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:37:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+C5LPs0kaCkAOGtyUr9wjTwxTgqJsfzOVQYj3EvBqCI=;
+        b=Ih70V0q5qnh233mEVhOTZnqYNsDR5H1ncJgMAkZGEgDMl4ploRp+74tgO4jmEpLyGS
+         f5XoDaeW/agc5q6/M0kuhoVcd4GuEK+c8iks5KwR+PiVFJK54M7KgQcR5v0xdeGyg6iV
+         Ui0tn0sWhcRHJ+FuYQTbXYPV6I9d4SkHFfdT9PpYwU8bDcAF0II6pO6wyKZAREtnjH13
+         tn4j3roDrNwRfcy3NpWAUWa2g348mC1kc+14CWBLIaFtcyfRwELs4EQvUI5V4DqEXLcH
+         HLY6uPd5krkB0AshVRXYONjJz5WnpBj1VuS42KlK1c4y9mMyaYuWDw33GjOb0dbVbXMP
+         9Nng==
+X-Gm-Message-State: AOAM531gB3Kf8PS8TrDyaOd4GoXN2oh1c1U7NL3Mibl1KzoAz1cSAT9g
+        3d8CIJFI6JSwB6y8sv5cKFE=
+X-Google-Smtp-Source: ABdhPJwnyEfjA2R/2V/L5FusNudKlixHn/eMgkOOFBgpwD1Qrw1jiioFMoTF3opfrajqk0ksYE1MFg==
+X-Received: by 2002:a37:bc45:: with SMTP id m66mr5692073qkf.82.1617230244711;
+        Wed, 31 Mar 2021 15:37:24 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:6302:5415:8f3:c3fc? ([2600:1700:65a0:78e0:6302:5415:8f3:c3fc])
+        by smtp.gmail.com with ESMTPSA id j18sm2387930qtl.83.2021.03.31.15.37.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 15:37:24 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     "Ewan D. Milne" <emilne@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+ <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+ <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
+Date:   Wed, 31 Mar 2021 15:37:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 3:28 PM, Kuppuswamy, Sathyanarayanan wrote:
+
+>>>> It is, but in this situation, the controller is sending a second
+>>>> completion that results in a use-after-free, which makes the
+>>>> transport irrelevant. Unless there is some other flow (which is
+>>>> unclear
+>>>> to me) that causes this which is a bug that needs to be fixed rather
+>>>> than hidden with a safeguard.
+>>>>
+>>>
+>>> The kernel should not crash regardless of any network traffic that is
+>>> sent to the system.  It should not be possible to either intentionally
+>>> of mistakenly contruct packets that will deny service in this way.
+>>
+>> This is not specific to nvme-tcp. I can build an rdma or pci controller
+>> that can trigger the same crash... I saw a similar patch from Hannes
+>> implemented in the scsi level, and not the individual scsi transports..
 > 
-> On 3/31/21 3:11 PM, Dave Hansen wrote:
->> On 3/31/21 3:06 PM, Sean Christopherson wrote:
->>> I've no objection to a nice message in the #VE handler.  What I'm
->>> objecting to
->>> is sanity checking the CPUID model provided by the TDX module.  If we
->>> don't
->>> trust the TDX module to honor the spec, then there are a huge pile of
->>> things
->>> that are far higher priority than MONITOR/MWAIT.
->>
->> In other words:  Don't muck with CPUID or the X86_FEATURE at all.  Don't
->> check it to comply with the spec.  If something doesn't comply, we'll
->> get a #VE at *SOME* point.  We don't need to do belt-and-suspenders
->> programming here.
->>
->> That sounds sane to me.
-> But I think there are cases (like MCE) where SEAM does not disable
-> them because there will be future support for it. We should at-least
-> suppress such features in kernel.
+> If scsi wants this too, this could be made generic at the blk-mq level.
+> We just need to make something like blk_mq_tag_to_rq(), but return NULL
+> if the request isn't started.
 
-Specifics, please.
+Makes sense...
 
-The hardware (and VMMs and SEAM) have ways of telling the guest kernel
-what is supported: CPUID.  If it screws up, and the guest gets an
-unexpected #VE, so be it.
+>> I would also mention, that a crash is not even the scariest issue that
+>> we can see here, because if the request happened to be reused we are
+>> in the silent data corruption realm...
+> 
+> If this does happen, I think we have to come up with some way to
+> mitigate it. We're not utilizing the full 16 bits of the command_id, so
+> maybe we can append something like a generation sequence number that can
+> be checked for validity.
 
-We don't have all kinds of crazy handling in the kernel's #UD handler
-just in case a CPU mis-enumerates a feature and we get a #UD.  We have
-to trust the underlying hardware to be sane.  If it isn't, we die a
-horrible death as fast as possible.  Why should TDX be any different?
+That's actually a great idea. scsi needs unique tags so it encodes the
+hwq in the upper 16 bits giving the actual tag the lower 16 bits which
+is more than enough for a single queue. We can do the same with
+a gencnt that will increment in both submission and completion and we
+can validate against it.
+
+This will be useful for all transports, so maintaining it in
+nvme_req(rq)->genctr and introducing a helper like:
+rq = nvme_find_tag(tagset, cqe->command_id)
+That will filter genctr, locate the request.
+
+Also:
+nvme_validate_request_gen(rq, cqe->command_id) that would
+compare against it.
+
+
+And then a helper to set the command_id like:
+cmd->common.command_id = nvme_request_command_id(rq)
+that will both increment the genctr and build a command_id
+from it.
+
+Thoughts?
