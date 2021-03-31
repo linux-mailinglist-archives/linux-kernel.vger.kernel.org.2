@@ -2,202 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973C034FB3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE1A34FB43
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhCaII4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 04:08:56 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2752 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234363AbhCaIIZ (ORCPT
+        id S234266AbhCaILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234313AbhCaILC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:08:25 -0400
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F9JcH0vpGz6842b;
-        Wed, 31 Mar 2021 15:59:11 +0800 (CST)
-Received: from lhreml735-chm.china.huawei.com (10.201.108.86) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 10:08:18 +0200
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- lhreml735-chm.china.huawei.com (10.201.108.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 09:08:18 +0100
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2106.013;
- Wed, 31 Mar 2021 09:08:18 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-Thread-Topic: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-Thread-Index: AQHXHMQXnn0Ai8cuTkuBkW77wwOhrKqLiR4AgBJGVlA=
-Date:   Wed, 31 Mar 2021 08:08:18 +0000
-Message-ID: <e9ec4d0117f049fc87d985dde6c0d7e1@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-6-git-send-email-john.garry@huawei.com>
- <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
-In-Reply-To: <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.65.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 31 Mar 2021 04:11:02 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48C8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:11:01 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id k3so9923422ybh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HFszK+twYRzz/xUh0jsb8XrFJx5lwzHPpVumbD92Nb0=;
+        b=LQ9o7qNpdXx/YGba7dXYNSd9oz0QvMwgCnJgR5jzAXl4jMXxsIDNGXDAAiNTtDL+u1
+         FWpLnp1Vu0ODsYpi/pDcItVyhSQdyfkn+WLDEcgiYjEK28w7+QuKcIrgE0yKKpgrwx+5
+         5GwPePD+FJ1bJunpFUkrbsB+FBkWNqWBYdZQEklXmIbiFEW9Z0Bdvx4UQ3KKf9xuVjwn
+         wJnRa9sCcHEFjO5VoQJ54DK+LctZydCrSimSJBeKRbH4OK+cAW1syx07qM0pW/bOu3hV
+         6Vpu99btrYZd81k6Qv+PRQet7+1+IS8k0ScfPpHK4Hk7TnsbUR62OBJzUWk9I4ImV2Qq
+         V4Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HFszK+twYRzz/xUh0jsb8XrFJx5lwzHPpVumbD92Nb0=;
+        b=kN1NUftDbbhJZ7WNdGQrv3oq3/lGWM++8+45DOfQ3wlK/R3eqmaBkHUUQXVTwTwW6j
+         cVYplNsSktMDIqhu0OfZmSJ1GMe23/06WsQV748nlSCLJfPy4KsNyIZfO8o5szzDK/c2
+         9BHKG3O5MeGGFt69OVPa1xKQqOCjWB3RaSFCkllwqEaZVxxDArfvkSYETQ3+zM4liU84
+         6HVO/A6nIaK9Py4RmMqqSmITh8bTCRlXvaqEMU3N1KxSiTbTukCPRsiaQ5tldvP2L3mz
+         OO60bOLPRNkq7vWfSGr0IGBQXroBZRllKZJbOUJbUzTXn8rX6HCEW4NN9lJw6p3ChuKn
+         5SBw==
+X-Gm-Message-State: AOAM533uMJiHUZZCoU1oTRRu/xCS8Ujb4KIUukoIdqJJQGHFsfTOeVC1
+        MZ96Ei+QZZbI3g0XynHgpf0lWW67ZXJTT0QQIiWV0Q==
+X-Google-Smtp-Source: ABdhPJw5MbiV+ENPgtwfyATho4TkJIABcrE7M4/SD09eM70DPNsLm+gNTcoY/gJQVElINbkz7RYPfiy9uCyyJADbDBc=
+X-Received: by 2002:a25:ae87:: with SMTP id b7mr2710339ybj.25.1617178261218;
+ Wed, 31 Mar 2021 01:11:01 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
+ <bf12f668db2f0dce7dfc09351780e295da30714c.camel@fi.rohmeurope.com>
+ <YGHWZuNfbSDe+B6y@smile.fi.intel.com> <92243c7b428d2025c1a9f3beb8db46995c9376d0.camel@fi.rohmeurope.com>
+In-Reply-To: <92243c7b428d2025c1a9f3beb8db46995c9376d0.camel@fi.rohmeurope.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 31 Mar 2021 10:10:50 +0200
+Message-ID: <CAMpxmJV12VgtQTXVkAFxx91a9Q=hxre9O52PGOS3x+xAR_YW0w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from config
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+) correction below, sorry for the typo in earlier post.
-
-> From: iommu [mailto:iommu-bounces@lists.linux-foundation.org] On Behalf Of
-> Robin Murphy
-> Sent: Friday, March 19, 2021 5:00 PM
-> To: John Garry <john.garry@huawei.com>; joro@8bytes.org; will@kernel.org;
-> jejb@linux.ibm.com; martin.petersen@oracle.com; hch@lst.de;
-> m.szyprowski@samsung.com
-> Cc: iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> linux-scsi@vger.kernel.org; Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-> 
-> On 2021-03-19 13:25, John Garry wrote:
-> > Add a function to allow the max size which we want to optimise DMA mappings
-> > for.
-> 
-> It seems neat in theory - particularly for packet-based interfaces that
-> might have a known fixed size of data unit that they're working on at
-> any given time - but aren't there going to be many cases where the
-> driver has no idea because it depends on whatever size(s) of request
-> userspace happens to throw at it? Even if it does know the absolute
-> maximum size of thing it could ever transfer, that could be
-> impractically large in areas like video/AI/etc., so it could still be
-> hard to make a reasonable decision.
-
-
-This is also the case for networking workloads where we have MTU set but
-actual packet sizes might vary.
-
-> 
-> Being largely workload-dependent is why I still think this should be a
-> command-line or sysfs tuneable - we could set the default based on how
-> much total memory is available, but ultimately it's the end user who
-> knows what the workload is going to be and what they care about
-> optimising for.
-> 
-> Another thought (which I'm almost reluctant to share) is that I would
-> *love* to try implementing a self-tuning strategy that can detect high
-> contention on particular allocation sizes and adjust the caches on the
-> fly, but I can easily imagine that having enough inherent overhead to
-> end up being an impractical (but fun) waste of time.
-
-
-This might be particularly useful for the NICs where packet sizes vary
-from 64B to 9K. But without optimal strategy this can affect the
-performance of networking workloads.
-
-
-> 
-> Robin.
-> 
-> > Signed-off-by: John Garry <john.garry@huawei.com>
-> > ---
-> >   drivers/iommu/dma-iommu.c   |  2 +-
-> >   include/linux/dma-map-ops.h |  1 +
-> >   include/linux/dma-mapping.h |  5 +++++
-> >   kernel/dma/mapping.c        | 11 +++++++++++
-> >   4 files changed, 18 insertions(+), 1 deletion(-)
+On Tue, Mar 30, 2021 at 6:32 AM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
+>
+> Morning Folks,
+>
+> On Mon, 2021-03-29 at 16:30 +0300, Andy Shevchenko wrote:
+> > On Mon, Mar 29, 2021 at 03:20:07PM +0300, Matti Vaittinen wrote:
+> > > On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:
+> > > > On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
+> > > > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > > > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
+> > > > > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer
+> > > > > > EOPNOTSUPP
+> > > > >
+> > > > > Make the gpiolib allow drivers to return both so driver
+> > > > > developers
+> > > > > can avoid one of the checkpatch complaints.
+> > > >
+> > > > Internally we are fine to use the ENOTSUPP.
+> > > > Checkpatch false positives there.
+> > >
+> > > I agree. OTOH, the checkpatch check makes sense to user-visible
+> > > stuff.
+> > > Yet, the checkpatch has hard time guessing what is user-visible -
+> > > so it
+> > > probably is easiest to nag about all ENOTSUPP uses as it does now.
+> > >
+> > > > I doubt we need this change. Rather checkpatch should rephrase
+> > > > this
+> > > > to
+> > > > point out that this is only applicable to _user-visible_ error
+> > > > path.
+> > > > Cc'ed Joe.
+> > >
+> > > Yes, thanks for pulling Joe in.
+> > >
+> > > Anyways, no matter what the warning says, all false positives are
+> > > annoying. I don't see why we should stay with ENOTSUPP in gpiolib?
+> > > (other than the burden of changing it).
 > >
-> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > index a5dfbd6c0496..d35881fcfb9c 100644
-> > --- a/drivers/iommu/dma-iommu.c
-> > +++ b/drivers/iommu/dma-iommu.c
-> > @@ -447,7 +447,6 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain
-> *domain,
-> >   	return (dma_addr_t)iova << shift;
-> >   }
+> > For sake of the changing we are not changing the code.
+> No. But for the sake of making it better / more consistent :)
+>
+> Anyway - after giving this second thought (thanks Andy for provoking me
+> to thinking this further) - I do agree with Andy that this particular
+> change is bad. More I think of this, less I like the idea of having two
+> separate return values to indicate the same thing. So we should support
+> only one which makes my patch terrible.
+>
+> For the sake of consistency it would be cleaner to use same, single
+> value, for same error both inside the gpiolib and at user-interface.
+> That would be EOPNOTSUPP. As I said, having two separate error codes to
+> indicate same thing is confusing. Now the confusion is at the boundary
+> of gpiolib and user-land. Please educate me - is there difference in
+> the meaning of ENOTSUPP and EOPNOTSUPP or are they really indicating
+> the same thing? If yes, then yes - correct fix would be to use only one
+> and ditch the other. Whether the amount of work is such it is
+> practically worth is another topic - but that would be the right thing
+> to do (tm).
+>
+
+In user-space there's no ENOTSUPP but there's ENOTSUP which is defined
+in most sane toolchains as:
+
+#define ENOTSUP EOPNOTSUPP
+
+While ENOTSUPP is not the same number as EOPNOTSUPP.
+
+So to answer the question: they mean the same thing in the kernel but
+not to user-space. We must never return ENOTSUPP to user-space because
+it doesn't know it.
+
+Bartosz
+
 > >
-> > -__maybe_unused
-> >   static void iommu_dma_set_opt_size(struct device *dev, size_t size)
-> >   {
-> >   	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> > @@ -1278,6 +1277,7 @@ static const struct dma_map_ops iommu_dma_ops = {
-> >   	.map_resource		= iommu_dma_map_resource,
-> >   	.unmap_resource		= iommu_dma_unmap_resource,
-> >   	.get_merge_boundary	= iommu_dma_get_merge_boundary,
-> > +	.set_max_opt_size	= iommu_dma_set_opt_size,
-> >   };
+> > > But I have no strong opinion on this. All options I see have
+> > > downsides.
+> > >
+> > > Accepting both ENOTSUPP and EOPNOTSUPP is the easy way to avoid
+> > > allowing checkpatch warnings - but I admit it isn't stylish.
 > >
-> >   /*
-> > diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> > index 51872e736e7b..fed7a183b3b9 100644
-> > --- a/include/linux/dma-map-ops.h
-> > +++ b/include/linux/dma-map-ops.h
-> > @@ -64,6 +64,7 @@ struct dma_map_ops {
-> >   	u64 (*get_required_mask)(struct device *dev);
-> >   	size_t (*max_mapping_size)(struct device *dev);
-> >   	unsigned long (*get_merge_boundary)(struct device *dev);
-> > +	void (*set_max_opt_size)(struct device *dev, size_t size);
-> >   };
+> > I think the error code which is Linux kernel internal is for a
+> > reason.
+>
+> If so, then the current checkpatch warning is even more questionable.
+>
 > >
-> >   #ifdef CONFIG_DMA_OPS
-> > diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> > index 2a984cb4d1e0..91fe770145d4 100644
-> > --- a/include/linux/dma-mapping.h
-> > +++ b/include/linux/dma-mapping.h
-> > @@ -144,6 +144,7 @@ u64 dma_get_required_mask(struct device *dev);
-> >   size_t dma_max_mapping_size(struct device *dev);
-> >   bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> >   unsigned long dma_get_merge_boundary(struct device *dev);
-> > +void dma_set_max_opt_size(struct device *dev, size_t size);
-> >   #else /* CONFIG_HAS_DMA */
-> >   static inline dma_addr_t dma_map_page_attrs(struct device *dev,
-> >   		struct page *page, size_t offset, size_t size,
-> > @@ -257,6 +258,10 @@ static inline unsigned long dma_get_merge_boundary(struct
-> device *dev)
-> >   {
-> >   	return 0;
-> >   }
-> > +static inline void dma_set_max_opt_size(struct device *dev, size_t size)
-> > +{
-> > +}
-> > +
-> >   #endif /* CONFIG_HAS_DMA */
+> > > Converting all ENOTSUPP cases inside gpiolib to EOPNOTSUPP is
+> > > teodious
+> > > although end result might be nicer.
 > >
-> >   struct page *dma_alloc_pages(struct device *dev, size_t size,
-> > diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> > index b6a633679933..59e6acb1c471 100644
-> > --- a/kernel/dma/mapping.c
-> > +++ b/kernel/dma/mapping.c
-> > @@ -608,3 +608,14 @@ unsigned long dma_get_merge_boundary(struct device *dev)
-> >   	return ops->get_merge_boundary(dev);
-> >   }
-> >   EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
-> > +
-> > +void dma_set_max_opt_size(struct device *dev, size_t size)
-> > +{
-> > +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> > +
-> > +	if (!ops || !ops->set_max_opt_size)
-> > +		return;
-> > +
-> > +	ops->set_max_opt_size(dev, size);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dma_set_max_opt_size);
+> > Why? You still missed the justification except satisfying some tool
+> > that gives
+> > you false positives. We don't do that. It's the tool that has to be
+> > fixed /
+> > amended.
 > >
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> > > Leaving it as is gives annoying false-positives to driver
+> > > developers.
+> > >
+> > > My personal preference was this patch - others can have other view
+> > > like
+> > > Andy does. I'll leave this to community/maintainers to evaluate :)
+> >
+> > This patch misses documentation fixes, for example.
+>
+> Valid point.
+>
+> > Also, do you suggest that we have to do the same in entire pin
+> > control
+> > subsystem?
+>
+> After reading/writing this, I am unsure. This is why the discussion is
+> good :) I don't see why we should have two separate error codes for
+> same thing - but as you put it:
+>
+> > I think the error code which is Linux kernel internal is for a
+> > reason.
+>
+> not all of us thinks the same. So maybe I just don't get it? :)
+>
+> Best Regards
+>         Matti Vaittinen
+>
+>
