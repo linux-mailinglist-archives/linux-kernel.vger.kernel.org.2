@@ -2,122 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A184835013A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C605235014C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhCaNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbhCaNbF (ORCPT
+        id S235819AbhCaNde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:33:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35582 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235784AbhCaNdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:31:05 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9396EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 06:31:04 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id n2so567186wmi.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 06:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=G0CRqLqXvRiG1/XBSQU7fXbBsXpuUCmZ+DzzZxxUzIo=;
-        b=rpChXq0EFgKIpVkS59ynQK6JSC0ep27UrPlpHOIVXXkfEXuY1WiqSTcyQmMkdr6XPW
-         53JPsCxnplpk4AqN/UvbynyFxEGzP9Rkq1sDPNgNceVhS5YpfVel6aA/w4KaFNV4vBL+
-         QAFVKTMZV/lVWqCLIk5bsq1MIBrRkA/Ooyp+rx78E8X8PzrXals9D+IfBPlLMlBal7B2
-         j9drq3kA22qdFUjiiv/1chYzZQIwhn77vvgUXToIwPnCIbU22Ww6RXQnMF7obLxEdoX1
-         9ex5kaUnqXGhNbhsmM+ethxGc/m0mPttOb29qF0OS9eSSj0QbOP/jOa/4Jluy5hhGv27
-         6S2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=G0CRqLqXvRiG1/XBSQU7fXbBsXpuUCmZ+DzzZxxUzIo=;
-        b=lk93lkMlVuolZMvKnZjkBDarpvvDRWlRFSHBBdev/o0Taj07iiy6oFI0/zowQJpA/U
-         rppQEHsSYpvsZ6tG9XQBVKy1xg2nKng5SY3sVSk6zWB1gMg/Q4D92vYvQSQduIDJ184q
-         LqONGsbc7LgtnXIjVzimr8Hl9N3ry9GTBVpg3+ySaGePqbb28g/EWKhsIJoWLF7ii+5H
-         3gjTOwIedrjhTjLG1YLYUZNgaj254Tb0uhXpYIj5EnPrxHl2IPyRhwHDtv1nmH0a2Z/l
-         UmC+hTwEUp8X9lhC66kbfX4Lmk895+v8Ap7DlRHNpXU5n3DjYvhXkO/WMKz0CFmIOUTM
-         ahTw==
-X-Gm-Message-State: AOAM530CxwT7cnF7trpSk/5H5v+n3X8uth5ZskGlGas/La7JlUZITclz
-        5m+ucLMH9HICADzWTUpGTVpfMw7hlxqHhg==
-X-Google-Smtp-Source: ABdhPJySMhwc9kqXQ1VmN7daeWnrVfYLeV5Uk5jjjZpqjhpojJFXojBjLNB+z8i/nKEIQhH3v7TuNHaCn5+7lg==
-X-Received: from dbrazdil.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:7f9b])
- (user=dbrazdil job=sendgmr) by 2002:adf:fb05:: with SMTP id
- c5mr3869165wrr.302.1617197463183; Wed, 31 Mar 2021 06:31:03 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 13:30:48 +0000
-Message-Id: <20210331133048.63311-1-dbrazdil@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] KVM: arm64: Support PREL/PLT relocs in EL2 code
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 31 Mar 2021 09:33:13 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12VDWbfT128296;
+        Wed, 31 Mar 2021 08:32:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1617197557;
+        bh=YYcWMd00SGs3crRbWxcFqADJOgyNtBSyyx4h5FCJOLU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=zESha82xuGVQgBYnpa0qk9GVYZ7gXXdsuOh/KJKx82e6XU/CIjU6lCoMF/ZNlz7TL
+         sw4UyFR0i0hWIxSEOImDpLNTnk/c1N2rb2vdgxUr/MujIUlexmNjjd9COB7g0qT4+x
+         Ar4nkUtW6HYrk/8Iyv+0FoJF+eGQVpYRJ6dqJ09o=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12VDWbc2119028
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 31 Mar 2021 08:32:37 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 31
+ Mar 2021 08:32:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 31 Mar 2021 08:32:36 -0500
+Received: from [10.250.234.114] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12VDWUVw091817;
+        Wed, 31 Mar 2021 08:32:30 -0500
+Subject: Re: [PATCH v5 2/5] phy: Add LVDS configuration options
+To:     Liu Ying <victor.liu@nxp.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <vkoul@kernel.org>, <robh+dt@kernel.org>, <a.hajda@samsung.com>,
+        <narmstrong@baylibre.com>, <Laurent.pinchart@ideasonboard.com>,
+        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
+        <agx@sigxcpu.org>, <robert.chiras@nxp.com>,
+        <martin.kepplinger@puri.sm>, <robert.foss@linaro.org>
+References: <1616662832-27048-1-git-send-email-victor.liu@nxp.com>
+ <1616662832-27048-3-git-send-email-victor.liu@nxp.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <f078a133-de32-0e08-2d87-f2dde7c240ec@ti.com>
+Date:   Wed, 31 Mar 2021 19:02:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1616662832-27048-3-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gen-hyprel tool parses object files of the EL2 portion of KVM
-and generates runtime relocation data. While only filtering for
-R_AARCH64_ABS64 relocations in the input object files, it has an
-allow-list of relocation types that are used for relative
-addressing. Other, unexpected, relocation types are rejected and
-cause the build to fail.
+Hi,
 
-This allow-list did not include the position-relative relocation
-types R_AARCH64_PREL64/32/16 and the recently introduced _PLT32.
-While not seen used by toolchains in the wild, add them to the
-allow-list for completeness.
+On 25/03/21 2:30 pm, Liu Ying wrote:
+> This patch allows LVDS PHYs to be configured through
+> the generic functions and through a custom structure
+> added to the generic union.
+> 
+> The parameters added here are based on common LVDS PHY
+> implementation practices.  The set of parameters
+> should cover all potential users.
+> 
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v4->v5:
+> * Align kernel-doc style to include/linux/phy/phy.h. (Vinod)
+> * Trivial tweaks.
+> * Drop Robert's R-b tag.
+> 
+> v3->v4:
+> * Add Robert's R-b tag.
+> 
+> v2->v3:
+> * No change.
+> 
+> v1->v2:
+> * No change.
+> 
+>  include/linux/phy/phy-lvds.h | 32 ++++++++++++++++++++++++++++++++
+>  include/linux/phy/phy.h      |  4 ++++
+>  2 files changed, 36 insertions(+)
+>  create mode 100644 include/linux/phy/phy-lvds.h
+> 
+> diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
+> new file mode 100644
+> index 00000000..7a2f474
+> --- /dev/null
+> +++ b/include/linux/phy/phy-lvds.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright 2020 NXP
+> + */
+> +
+> +#ifndef __PHY_LVDS_H_
+> +#define __PHY_LVDS_H_
+> +
+> +/**
+> + * struct phy_configure_opts_lvds - LVDS configuration set
+> + * @bits_per_lane_and_dclk_cycle:	Number of bits per data lane and
+> + *					differential clock cycle.
 
-Fixes: 8c49b5d43d4c ("KVM: arm64: Generate hyp relocation data")
-Cc: <stable@vger.kernel.org>
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kvm/hyp/nvhe/gen-hyprel.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+phy_set_bus_width() instead?
+> + * @differential_clk_rate:		Clock rate, in Hertz, of the LVDS
+> + *					differential clock.
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c b/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
-index ead02c6a7628..6bc88a756cb7 100644
---- a/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
-+++ b/arch/arm64/kvm/hyp/nvhe/gen-hyprel.c
-@@ -50,6 +50,18 @@
- #ifndef R_AARCH64_ABS64
- #define R_AARCH64_ABS64			257
- #endif
-+#ifndef R_AARCH64_PREL64
-+#define R_AARCH64_PREL64		260
-+#endif
-+#ifndef R_AARCH64_PREL32
-+#define R_AARCH64_PREL32		261
-+#endif
-+#ifndef R_AARCH64_PREL16
-+#define R_AARCH64_PREL16		262
-+#endif
-+#ifndef R_AARCH64_PLT32
-+#define R_AARCH64_PLT32			314
-+#endif
- #ifndef R_AARCH64_LD_PREL_LO19
- #define R_AARCH64_LD_PREL_LO19		273
- #endif
-@@ -371,6 +383,12 @@ static void emit_rela_section(Elf64_Shdr *sh_rela)
- 		case R_AARCH64_ABS64:
- 			emit_rela_abs64(rela, sh_orig_name);
- 			break;
-+		/* Allow position-relative data relocations. */
-+		case R_AARCH64_PREL64:
-+		case R_AARCH64_PREL32:
-+		case R_AARCH64_PREL16:
-+		case R_AARCH64_PLT32:
-+			break;
- 		/* Allow relocations to generate PC-relative addressing. */
- 		case R_AARCH64_LD_PREL_LO19:
- 		case R_AARCH64_ADR_PREL_LO21:
--- 
-2.31.0.291.g576ba9dcdaf-goog
+Please use clk API's to get rate.
+> + * @lanes:				Number of active, consecutive,
+> + *					data lanes, starting from lane 0,
+> + *					used for the transmissions.
+> + * @is_slave:				Boolean, true if the phy is a slave
+> + *					which works together with a master
+> + *					phy to support dual link transmission,
+> + *					otherwise a regular phy or a master phy.
 
+For parameters that are known at design time, it doesn't have to be
+passed from consumer driver. So all these parameters do they really have
+to be passed at runtime?
+
+Thanks
+Kishon
+> + *
+> + * This structure is used to represent the configuration state of a LVDS phy.
+> + */
+> +struct phy_configure_opts_lvds {
+> +	unsigned int	bits_per_lane_and_dclk_cycle;
+> +	unsigned long	differential_clk_rate;
+> +	unsigned int	lanes;
+> +	bool		is_slave;
+> +};
+> +
+> +#endif /* __PHY_LVDS_H_ */
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index e435bdb..d450b44 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/regulator/consumer.h>
+>  
+>  #include <linux/phy/phy-dp.h>
+> +#include <linux/phy/phy-lvds.h>
+>  #include <linux/phy/phy-mipi-dphy.h>
+>  
+>  struct phy;
+> @@ -51,10 +52,13 @@ enum phy_mode {
+>   *		the MIPI_DPHY phy mode.
+>   * @dp:		Configuration set applicable for phys supporting
+>   *		the DisplayPort protocol.
+> + * @lvds:	Configuration set applicable for phys supporting
+> + *		the LVDS phy mode.
+>   */
+>  union phy_configure_opts {
+>  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
+>  	struct phy_configure_opts_dp		dp;
+> +	struct phy_configure_opts_lvds		lvds;
+>  };
+>  
+>  /**
+> 
