@@ -2,63 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412D73507A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BB43507A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhCaTvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:51:45 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48292 "EHLO ms.lwn.net"
+        id S236338AbhCaTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:52:51 -0400
+Received: from ms.lwn.net ([45.79.88.28]:48346 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235995AbhCaTvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:51:19 -0400
+        id S236333AbhCaTwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 15:52:44 -0400
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1D1199B1;
-        Wed, 31 Mar 2021 19:51:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1D1199B1
+        by ms.lwn.net (Postfix) with ESMTPSA id 0659199C;
+        Wed, 31 Mar 2021 19:52:43 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0659199C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1617220275; bh=EEHjSy38eDkmBHhG9hxDYKTsPRe7jW1nMUaESQgRSZ4=;
+        t=1617220364; bh=cMlbyuJFoNBkPPv7Kar1Y441Q03a0repCPdhp/ysA4Q=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fUGiKxNLoWOp9UgcEzIj2nD17PVe/e5M1wKm1NO/65qhkBtSsnSCOSttgx0hCtlax
-         uiZqOiAFjz6RxkZdXBgp+Sf376WP3boJ4oxRPYSTn8fHN/4XrbRm8IPi4/3Le36uTU
-         QKFDjOhOtc8lZ95U286rbce6XWiKDyIKSfRLg/B3sRkkt2ge8CPyAAyJ3qryiRpYRv
-         LHXZzykKfixxlvFakMoo/rBtRWC6ECIgslWeE9HOc5c7jbOOtuEFB939L2wlEeTsfH
-         xEJ84PVovuJ+8BSjOXuUrIy2MCvCgQOh4ONH6fdIsK/luWJUCA7FhNNql//WAym8G/
-         45RQ3DmZ2mZ3Q==
+        b=pH2nN5Xqyk34Drrd06oknmlvkPjYR6qQ+N/5sF6cRWMbvBUkFL+DKQqjt8pPlM5gv
+         J9mJqppRV0afklFJ9o/OX6j9JCufoCp6fF9oA0lyniXxk3/md9ibRx3ymhsB8JuGri
+         uvhqiX7H7wsUL1WOD5pycGzchiL/4foS7oMNW4Mg+KsIABIFgRatG+dQuH83ibDx2O
+         iojKD7Vh7xJR2Wwa6yXdhjVAoPtWYV8ZkDSO5/nmFndLHI3re5NjcFHkmv8yiWf5H/
+         0wbuuxJ+cq71qqblS3Z032hQ75XRvDt2UmDsyipKASHFyPwdgE0euluYl2nOj33KPc
+         mnKLUvHkrNrsw==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     He Ying <heying24@huawei.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, ruscur@russell.cc,
-        oohall@gmail.com, heying24@huawei.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs: powerpc: Fix misspellings and grammar errors
-In-Reply-To: <20210326100853.173586-1-heying24@huawei.com>
-References: <20210326100853.173586-1-heying24@huawei.com>
-Date:   Wed, 31 Mar 2021 13:51:14 -0600
-Message-ID: <878s63ksp9.fsf@meer.lwn.net>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexander Lobakin <alobakin@pm.me>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mailmap: update email address for Alex Shi
+In-Reply-To: <1616748571-52058-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1616748571-52058-1-git-send-email-alex.shi@linux.alibaba.com>
+Date:   Wed, 31 Mar 2021 13:52:43 -0600
+Message-ID: <874kgrksms.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-He Ying <heying24@huawei.com> writes:
+Alex Shi <alex.shi@linux.alibaba.com> writes:
 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: He Ying <heying24@huawei.com>
-> ---
->  Documentation/powerpc/booting.rst                | 2 +-
->  Documentation/powerpc/dawr-power9.rst            | 2 +-
->  Documentation/powerpc/eeh-pci-error-recovery.rst | 2 +-
->  Documentation/powerpc/elfnote.rst                | 2 +-
->  Documentation/powerpc/firmware-assisted-dump.rst | 2 +-
->  Documentation/powerpc/kaslr-booke32.rst          | 2 +-
->  Documentation/powerpc/mpc52xx.rst                | 2 +-
->  Documentation/powerpc/papr_hcalls.rst            | 4 ++--
->  Documentation/powerpc/transactional_memory.rst   | 4 ++--
->  9 files changed, 11 insertions(+), 11 deletions(-)
+> Add my kernel.org address for old email address.
+>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Applied, thanks.
+Both applied, thanks.
 
 jon
