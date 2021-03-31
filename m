@@ -2,103 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E00350828
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C86335082F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbhCaU0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236409AbhCaUZd (ORCPT
+        id S236499AbhCaU2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:28:20 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:42838 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235928AbhCaU2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:25:33 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AD9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:25:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so3003598wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gi9OUsUoRxjAcioEAF4TQW9mJ2fTHnHNzeSFEtVk1Wk=;
-        b=FhezNaAYqaHT6VhiYQCDNq6ndWAbOd8uPtZWcvln9/4Ha0ctMuPzJr32kuGiG1RJ1M
-         xWXaPh0XHlgJL3tHCQjhyzrRtx4R7n9If58CaT/jwZl1i+TRKFGtDcsbWB1YOPj3PD6A
-         xp6r51Wufdf2+DHOM/tdy1zE1W8IZCuMjUFNsqvNGxkLwrZEoepPsRR3MjXT+i1ztSRV
-         +N6O7vNuav8nphw+acRW8Zr1Uk16iIEu3YgcsxCRbeXhXaML4FW7Sg+7DA4hEIaZ8bA6
-         r/tWEjNWSuU4660KSi5eiN/0Hd4R7Nq5wcGz9Vi3Df9O6wNTvVFLJ/nBQxibjfQ0Rds7
-         KwRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gi9OUsUoRxjAcioEAF4TQW9mJ2fTHnHNzeSFEtVk1Wk=;
-        b=DjC0sZ9U8WyWFPyI1+obOVidXddBhkdTcKvtRCQJAR1qDPjKlc7SqexthNkyqKPWxS
-         BjVgnE/RPGUvWrscrIaPSB0EbaQc8DgP/V0K0QdMlR4y9CBE0d72c1RwxYddot87ntGO
-         7n824Yp4+mt1rJ/Iyk0A8WhPRxCAAzCMU9ZIh1FxuEzwJoa0DLrcmFd3J0hbpNA7VYn5
-         NG0gEoifwcc18qm+uQLEyHWtKts5p6CeQd+7Wh5eUYI0yWzVy5R9ps45baC4us3iAv6g
-         MervelWH76T9ENgEiwdnAD80NWcD3pfCEntwwAwncWYsqjr/CC7Tv1qqAY8BcMCFamvZ
-         La4w==
-X-Gm-Message-State: AOAM532y4G7KxEAlBGytAPM8P4YnCqDP1+uXJhXZpCMgpQ8ZOYUc1GNk
-        DEpF14FZjC1Fn36Wya0QbhY=
-X-Google-Smtp-Source: ABdhPJzqSgyQVibalW7B3aVhjcAgmvHwW8HWc7q4lM9+ie7AzcVPs9VcvFZsoFPnVCxpDbyCELPK2A==
-X-Received: by 2002:a05:600c:4f94:: with SMTP id n20mr4701240wmq.18.1617222331572;
-        Wed, 31 Mar 2021 13:25:31 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:87e9:fdd6:2b7a:c720])
-        by smtp.gmail.com with ESMTPSA id u3sm6138637wrt.82.2021.03.31.13.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 13:25:31 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     hvaibhav.linux@gmail.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-Subject: [PATCH] staging: greybus: arche-platform: Fix ending '(' warnings
-Date:   Wed, 31 Mar 2021 21:24:45 +0100
-Message-Id: <20210331202445.108678-1-martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 31 Mar 2021 16:28:16 -0400
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 55989A0F781;
+        Wed, 31 Mar 2021 22:28:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1617222483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T7KMVsB99a0yK8chKN0u6dYbFggVxg7zD3+IE0/hDj4=;
+        b=hM6aKoK7SvmfJBr78UlGw57RJgAMx3yhbIaJk2n55OTVwC0wcGqK4+kNxhbyJhwmYMJD+u
+        B8HBVBnlHUu3aDuvvDoQxiLe7WUKk6kfbrNcJUi7XH4QvgC/ys8w+s0Z9AilFPH5KeroDT
+        GU5cUpvczBN9w1HWZwgxr9zKWlGjVbY=
+Date:   Wed, 31 Mar 2021 22:28:02 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Jan Alexander Steffens (heftig)" <jan.steffens@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] init: add support for zstd compressed modules
+Message-ID: <20210331202802.lamhovokjzolrpf6@spock.localdomain>
+References: <20210330113235.2767216-1-lucjan.lucjanov@gmail.com>
+ <20210330115023.qt742qsdekwiroey@spock.localdomain>
+ <33D7F6C9-6F53-471A-A146-7F128F6918F5@fb.com>
+ <20210331174826.uhunfmkhlpyteb3d@spock.localdomain>
+ <5288EB41-5257-4B4C-9D37-3C314FA90573@fb.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5288EB41-5257-4B4C-9D37-3C314FA90573@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch check "CHECK: Lines should not end with a '('"
-in arche-platform.c:80 and arche-platform.c:184.
+Hello.
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
- drivers/staging/greybus/arche-platform.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+On Wed, Mar 31, 2021 at 07:21:07PM +0000, Nick Terrell wrote:
+> 
+> 
+> > On Mar 31, 2021, at 10:48 AM, Oleksandr Natalenko <oleksandr@natalenko.name> wrote:
+> > 
+> > Hello.
+> > 
+> > On Wed, Mar 31, 2021 at 05:39:25PM +0000, Nick Terrell wrote:
+> >> 
+> >> 
+> >>> On Mar 30, 2021, at 4:50 AM, Oleksandr Natalenko <oleksandr@natalenko.name> wrote:
+> >>> 
+> >>> On Tue, Mar 30, 2021 at 01:32:35PM +0200, Piotr Gorski wrote:
+> >>>> kmod 28 supports modules compressed in zstd format so let's add this possibility to kernel.
+> >>>> 
+> >>>> Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
+> >>>> ---
+> >>>> Makefile     | 7 +++++--
+> >>>> init/Kconfig | 9 ++++++---
+> >>>> 2 files changed, 11 insertions(+), 5 deletions(-)
+> >>>> 
+> >>>> diff --git a/Makefile b/Makefile
+> >>>> index 5160ff8903c1..82f4f4cc2955 100644
+> >>>> --- a/Makefile
+> >>>> +++ b/Makefile
+> >>>> @@ -1156,8 +1156,8 @@ endif # INSTALL_MOD_STRIP
+> >>>> export mod_strip_cmd
+> >>>> 
+> >>>> # CONFIG_MODULE_COMPRESS, if defined, will cause module to be compressed
+> >>>> -# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP
+> >>>> -# or CONFIG_MODULE_COMPRESS_XZ.
+> >>>> +# after they are installed in agreement with CONFIG_MODULE_COMPRESS_GZIP,
+> >>>> +# CONFIG_MODULE_COMPRESS_XZ, or CONFIG_MODULE_COMPRESS_ZSTD.
+> >>>> 
+> >>>> mod_compress_cmd = true
+> >>>> ifdef CONFIG_MODULE_COMPRESS
+> >>>> @@ -1167,6 +1167,9 @@ ifdef CONFIG_MODULE_COMPRESS
+> >>>>  ifdef CONFIG_MODULE_COMPRESS_XZ
+> >>>>    mod_compress_cmd = $(XZ) --lzma2=dict=2MiB -f
+> >>>>  endif # CONFIG_MODULE_COMPRESS_XZ
+> >>>> +  ifdef CONFIG_MODULE_COMPRESS_ZSTD
+> >>>> +    mod_compress_cmd = $(ZSTD) -T0 --rm -f -q
+> >> 
+> >> This will use the default zstd level, level 3. I think it would make more sense to use a high
+> >> compression level. Level 19 would probably be a good choice. That will choose a window
+> >> size of up to 8MB, meaning the decompressor needs to allocate that much memory. If that
+> >> is unacceptable, you could use `zstd -T0 --rm -f -q -19 --zstd=wlog=21`, which will use a
+> >> window size of up to 2MB, to match the XZ command. Note that if the file is smaller than
+> >> the window size, it will be shrunk to the smallest power of two at least as large as the file.
+> > 
+> > Please no. We've already done that with initramfs in Arch, and it
+> > increased the time to generate it enormously.
+> > 
+> > I understand that building a kernel is a more rare operation than
+> > regenerating initramfs, but still I'd go against hard-coding the level.
+> > And if it should be specified anyway, I'd opt in for an explicit
+> > configuration option. Remember, not all the kernel are built on
+> > build farms...
+> > 
+> > FWIW, Piotr originally used level 9 which worked okay, but I insisted
+> > on sending the patch initially without specifying level at all like it is
+> > done for other compressors. If this is a wrong approach, then oh meh,
+> > mea culpa ;).
+> > 
+> > Whatever default non-standard compression level you choose, I'm fine
+> > as long as I can change it without editing Makefile.
+> 
+> That makes sense to me. I have a deep seated need to compress files as
+> efficiently as possible for widely distributed packages. But, I understand that
+> slow compression significantly impacts build times for quick iteration. I’d be
+> happy with a compression level parameter that defaults to a happy middle.
+> 
+> I’m also fine with taking this patch as-is if it is easier, and I can put up another
+> patch that adds a compression level parameter, since I don’t want to block
+> merging this.
 
-diff --git a/drivers/staging/greybus/arche-platform.c b/drivers/staging/greybus/arche-platform.c
-index eebf0deb39f5..e374dfc0c92f 100644
---- a/drivers/staging/greybus/arche-platform.c
-+++ b/drivers/staging/greybus/arche-platform.c
-@@ -77,9 +77,8 @@ static void arche_platform_set_state(struct arche_platform_drvdata *arche_pdata,
- }
- 
- /* Requires arche_pdata->wake_lock is held by calling context */
--static void arche_platform_set_wake_detect_state(
--				struct arche_platform_drvdata *arche_pdata,
--				enum svc_wakedetect_state state)
-+static void arche_platform_set_wake_detect_state(struct arche_platform_drvdata *arche_pdata,
-+						 enum svc_wakedetect_state state)
- {
- 	arche_pdata->wake_detect_state = state;
- }
-@@ -181,9 +180,8 @@ static irqreturn_t arche_platform_wd_irq(int irq, void *devid)
- 						WD_STATE_COLDBOOT_START) {
- 					arche_platform_set_wake_detect_state(arche_pdata,
- 									     WD_STATE_COLDBOOT_TRIG);
--					spin_unlock_irqrestore(
--						&arche_pdata->wake_lock,
--						flags);
-+					spin_unlock_irqrestore(&arche_pdata->wake_lock,
-+							       flags);
- 					return IRQ_WAKE_THREAD;
- 				}
- 			}
+Well, it seems Andrew already took this into his tree, so feel free to
+drop another one on top of that!
+
+> 
+> Best,
+> Nick Terrell
+> 
+> > Thanks!
+> > 
+> >> 
+> >> Best,
+> >> Nick Terrell
+> >> 
+> >>>> +  endif # CONFIG_MODULE_COMPRESS_ZSTD
+> >>>> endif # CONFIG_MODULE_COMPRESS
+> >>>> export mod_compress_cmd
+> >>>> 
+> >>>> diff --git a/init/Kconfig b/init/Kconfig
+> >>>> index 8c2cfd88f6ef..86a452bc2747 100644
+> >>>> --- a/init/Kconfig
+> >>>> +++ b/init/Kconfig
+> >>>> @@ -2250,8 +2250,8 @@ config MODULE_COMPRESS
+> >>>> 	bool "Compress modules on installation"
+> >>>> 	help
+> >>>> 
+> >>>> -	  Compresses kernel modules when 'make modules_install' is run; gzip or
+> >>>> -	  xz depending on "Compression algorithm" below.
+> >>>> +	  Compresses kernel modules when 'make modules_install' is run; gzip,
+> >>>> +	  xz, or zstd depending on "Compression algorithm" below.
+> >>>> 
+> >>>> 	  module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
+> >>>> 
+> >>>> @@ -2273,7 +2273,7 @@ choice
+> >>>> 	  This determines which sort of compression will be used during
+> >>>> 	  'make modules_install'.
+> >>>> 
+> >>>> -	  GZIP (default) and XZ are supported.
+> >>>> +	  GZIP (default), XZ, and ZSTD are supported.
+> >>>> 
+> >>>> config MODULE_COMPRESS_GZIP
+> >>>> 	bool "GZIP"
+> >>>> @@ -2281,6 +2281,9 @@ config MODULE_COMPRESS_GZIP
+> >>>> config MODULE_COMPRESS_XZ
+> >>>> 	bool "XZ"
+> >>>> 
+> >>>> +config MODULE_COMPRESS_ZSTD
+> >>>> +	bool "ZSTD"
+> >>>> +
+> >>>> endchoice
+> >>>> 
+> >>>> config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
+> >>>> -- 
+> >>>> 2.31.0.97.g1424303384
+> >>>> 
+> >>> 
+> >>> Great!
+> >>> 
+> >>> Reviewed-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> >>> 
+> >>> This works perfectly fine in Arch Linux if accompanied by the
+> >>> following mkinitcpio amendment: [1].
+> >>> 
+> >>> I'm also Cc'ing other people from get_maintainers output just
+> >>> to make this submission more visible.
+> >>> 
+> >>> Thanks.
+> >>> 
+> >>> [1] https://github.com/archlinux/mkinitcpio/pull/43
+> >>> 
+> >>> -- 
+> >>> Oleksandr Natalenko (post-factum)
+> >> 
+> > 
+> > -- 
+> >  Oleksandr Natalenko (post-factum)
+> 
+
 -- 
-2.25.1
-
+  Oleksandr Natalenko (post-factum)
