@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BAE350470
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774B1350480
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhCaQYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S233813AbhCaQar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhCaQYT (ORCPT
+        with ESMTP id S229787AbhCaQaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:24:19 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E662CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:24:16 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id m13so20519589oiw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:24:16 -0700 (PDT)
+        Wed, 31 Mar 2021 12:30:13 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94B05C061574;
+        Wed, 31 Mar 2021 09:30:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6ojW2lv70Zjf6csQxfrD5M3Jt02GT2Ern8AWuYsfFGY=;
-        b=WA7CspsaOUGzoSg93E6Kb+UCLYKW6UuEO+xHKotKr9HCmlukDg+vvgAdY2B0jdhjYv
-         IqSIk9iLxcUOOSvMS+iF5vv70kIQH3+CiyySeQSJSE4tPXi+Vtco06RfKmro6Eu5kqGC
-         /HgP47QXoiyaJO7bFi3zjH/XieBfuRG0WirKPKCzUWCzVWFWOADTCYbpBxm8bYqLen+0
-         KtnVv5bHTXeML1murK1rx0r7Cu0zFEk/vQU9NJXFcDc7JmOHfO+2CeHFL7xXo4zWa6JB
-         h9QYn60ZCT9ILTfCPfgav5ytklkuL4UJH6/9gLQgHmcTF22SdFyInpFCnsaVKTKskowD
-         rPBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6ojW2lv70Zjf6csQxfrD5M3Jt02GT2Ern8AWuYsfFGY=;
-        b=c+6eAvdx7o1FAB0kPCTZEDJyWqry0tLnSUujKsX4A4/nTLG74BlmJv5u4pK/YieMRp
-         +kFcUewNU1Mw0Mci9hvr/Dy7QjqFBUDUS8+a8uBCO7KfdedsfwjCTVA7Gz1PfJH+7FS+
-         aIvrVjKsQiLwpSVc8IN1RFxMtUIUHW2KSVTI+utA8wAQk2RwrrRvMa8+jJVWKj9YHt5k
-         lk7VFMzTkO6AMdvPWFx5B2X3C4hM2EYjHDD731admNryNZxy5nT3EJW9oMkmyH9PKhCc
-         i0vfJxxTIMdxuIBCmDkkG6T+VqaX5z9UDyZow45z6Pz+TR6hznsAdrURRauPKLZms36L
-         hTyQ==
-X-Gm-Message-State: AOAM530DqPreaCLJSzXkwTuUWM6FnngHxZeGtCgUwbU+YF4I9l13dr31
-        rE6QqNp7IP/Rfy7z6SlLjrEO2g==
-X-Google-Smtp-Source: ABdhPJwfdWI6nnYFm5Aq9dILT7eMDQoeMTKFzGdX2gtf7uIYU9+M/Q8rUSa0gR4MiAxlPEOfqFm5xA==
-X-Received: by 2002:aca:3389:: with SMTP id z131mr2873290oiz.11.1617207856188;
-        Wed, 31 Mar 2021 09:24:16 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m129sm506802oif.34.2021.03.31.09.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 09:24:15 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 11:24:13 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] soundwire: qcom: use signed variable for error return
-Message-ID: <20210331162413.GJ904837@yoga>
-References: <20210331072111.2945945-1-vkoul@kernel.org>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=Z3YZthlfu0euTQ+THZUZPW+nmkMWZoVGbwK6weVz8AM=; b=R4LfprXFW3i0K
+        GptS5/OFjr6eLUHAE6s8vZbnUgb14w+ptj6+vYza2lLNR3WpJ4o94RcE0PAAQBoP
+        7Gh7wmQSXN7Dl1hOzM/dgihYO8DzXZ+QpToMVDDPnx046TTrnBj0EV7Q9C5KGS2v
+        o12cva7cBbiVTKM41ifd+wi+FC0kKs=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX30tzo2RgObt6AA--.16468S2;
+        Thu, 01 Apr 2021 00:29:39 +0800 (CST)
+Date:   Thu, 1 Apr 2021 00:24:42 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v2 0/9] riscv: improve self-protection
+Message-ID: <20210401002442.2fe56b88@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331072111.2945945-1-vkoul@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDX30tzo2RgObt6AA--.16468S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8WFy7pr
+        s0kry5ZrWF9r93C3Way34kur1rJwsYg34agr45C34rJw4aqFWUAwnYqwn0qr1DXFy0gFnY
+        kF15u34Ykw18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkCb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2vPfDU
+        UUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 31 Mar 02:21 CDT 2021, Vinod Koul wrote:
+From: Jisheng Zhang <jszhang@kernel.org>
 
-> We get warning for using a unsigned variable being compared to less than
-> zero. The comparison is correct as it checks for errors from previous
-> call to qcom_swrm_get_alert_slave_dev_num(), so we should use a signed
-> variable instead.
-> 
-> drivers/soundwire/qcom.c: qcom_swrm_irq_handler() warn: impossible
-> condition '(devnum < 0) => (0-255 < 0)'
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  drivers/soundwire/qcom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index b08ecb9b418c..55ed133c6704 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -428,7 +428,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->  	struct qcom_swrm_ctrl *swrm = dev_id;
->  	u32 value, intr_sts, intr_sts_masked, slave_status;
->  	u32 i;
-> -	u8 devnum = 0;
-> +	s8 devnum = 0;
+patch1 is a trivial improvement patch to move some functions to .init
+section
 
-At least in today's linux-next qcom_swrm_get_alert_slave_dev_num()
-returns an int and the code only checks to see if this is negative.  So
-it seems like making this a full int ensures there's no truncation etc.
+Then following patches improve self-protection by:
 
-And at least as written today there's no need to initialize the
-variable.
+Marking some variables __ro_after_init
+Constifing some variables
+Enabling ARCH_HAS_STRICT_MODULE_RWX
 
-Regards,
-Bjorn
 
->  	int ret = IRQ_HANDLED;
->  
->  	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-> -- 
-> 2.26.3
-> 
+Since v1:
+  - no need to move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
+    because RV32 uses the default module_alloc() for jit code which also
+    meets W^X after patch8
+  - fix a build error caused by local debug code clean up
+
+Jisheng Zhang (9):
+  riscv: add __init section marker to some functions
+  riscv: Mark some global variables __ro_after_init
+  riscv: Constify sys_call_table
+  riscv: Constify sbi_ipi_ops
+  riscv: kprobes: Implement alloc_insn_page()
+  riscv: bpf: Write protect JIT code
+  riscv: bpf: Avoid breaking W^X on RV64
+  riscv: module: Create module allocations without exec permissions
+  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
+
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/smp.h       |  4 ++--
+ arch/riscv/include/asm/syscall.h   |  2 +-
+ arch/riscv/kernel/module.c         | 10 ++++++++--
+ arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
+ arch/riscv/kernel/sbi.c            | 10 +++++-----
+ arch/riscv/kernel/smp.c            |  6 +++---
+ arch/riscv/kernel/syscall_table.c  |  2 +-
+ arch/riscv/kernel/time.c           |  2 +-
+ arch/riscv/kernel/traps.c          |  2 +-
+ arch/riscv/kernel/vdso.c           |  4 ++--
+ arch/riscv/mm/init.c               | 12 ++++++------
+ arch/riscv/mm/kasan_init.c         |  6 +++---
+ arch/riscv/mm/ptdump.c             |  2 +-
+ arch/riscv/net/bpf_jit_comp64.c    |  2 +-
+ arch/riscv/net/bpf_jit_core.c      |  1 +
+ 16 files changed, 45 insertions(+), 29 deletions(-)
+
+-- 
+2.31.0
+
+
