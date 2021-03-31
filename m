@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A7A350197
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410D035019B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhCaNlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:41:50 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37756 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbhCaNlJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:41:09 -0400
-Received: by mail-ot1-f50.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so18972947otr.4;
-        Wed, 31 Mar 2021 06:41:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Ysq2futYM+aXUbEnhYTDLe/Ns9IPCloyqMjrGa/P5Hs=;
-        b=GxsGX2gJThBMV9Rz4EWMnD0+e/P+wy1Pa2ny6/ieej8Ppl0VrJBWKZzhGU/dQLjDI9
-         Ho5e8SxSm4L9n3QFusROUs37XcLIq7R1kjjPKhVW5vs3PSxGauh4b5S2OSYMVYVR4/Gs
-         UsrdDcG7x+aMPSq0IPLgnOrmuDcJv0tTMcl0XLvDZv+0vv8AK/LfUDqdlKoYkvBnNK0u
-         Hly+0hFtWmb+xSfxGfDRJT9MMRZmoniv87CRaRoLhJGV/jOv86/lzWeDa4S6EZlxreQs
-         ecKLEKqaJxz5SODmuh4wik86io9lFNzsb2zzXJ7PHCHs6mSnW+iKvxSdtrO0D1Fv9rUX
-         Ugaw==
-X-Gm-Message-State: AOAM531AcrjO3ErV5tlzBFEkXgqaUdwM1Wut8mSR/2zplsi+EVBnuMgX
-        x4Ee5lg3Uv4+YycDJmQydA==
-X-Google-Smtp-Source: ABdhPJzTBBb/qkQn5k2zhMOHhTWR+p65BoV9tJQb6+MMqLy1cPlSH5hPasP869gBKLq+qYaQeEzuHA==
-X-Received: by 2002:a9d:7003:: with SMTP id k3mr2738828otj.351.1617198068778;
-        Wed, 31 Mar 2021 06:41:08 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 38sm468460oth.14.2021.03.31.06.41.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 06:41:07 -0700 (PDT)
-Received: (nullmailer pid 2074861 invoked by uid 1000);
-        Wed, 31 Mar 2021 13:40:59 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, kernel@pengutronix.de,
-        robh+dt@kernel.org, kishon@ti.com, linux-imx@nxp.com,
-        marcel.ziswiler@toradex.com, linux-arm-kernel@lists.infradead.org,
-        s.hauer@pengutronix.de, lee.jones@linaro.org,
-        jernej.skrabec@siol.net, shawnguo@kernel.org,
-        Laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        a.hajda@samsung.com, jonas@kwiboo.se, narmstrong@baylibre.com,
-        robert.foss@linaro.org, vkoul@kernel.org
-In-Reply-To: <1617172405-12962-8-git-send-email-victor.liu@nxp.com>
-References: <1617172405-12962-1-git-send-email-victor.liu@nxp.com> <1617172405-12962-8-git-send-email-victor.liu@nxp.com>
-Subject: Re: [PATCH v7 07/14] dt-bindings: mfd: Add i.MX8qm/qxp Control and Status Registers module binding
-Date:   Wed, 31 Mar 2021 08:40:59 -0500
-Message-Id: <1617198059.605916.2074860.nullmailer@robh.at.kernel.org>
+        id S235808AbhCaNnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235879AbhCaNmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:42:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E025361994;
+        Wed, 31 Mar 2021 13:42:54 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lRb7U-004uXd-TC; Wed, 31 Mar 2021 14:42:53 +0100
+Date:   Wed, 31 Mar 2021 14:42:52 +0100
+Message-ID: <875z17qw0z.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Fredrik Strupe <fredrik@strupe.net>
+Cc:     Russell King <linux@armlinux.org.uk>, Rabin Vincent <rabin@rab.in>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: uprobes: Don't hook on thumb instructions
+In-reply-to: <20200518125948.25315-1-fredrik@strupe.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: fredrik@strupe.net, linux@armlinux.org.uk, rabin@rab.in, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 14:33:18 +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp Control and Status Registers module.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v6->v7:
-> * Add Rob's R-b tag.
-> 
-> v5->v6:
-> * Drop 'select' schema. (Rob)
-> 
-> v4->v5:
-> * Newly introduced in v5. (Rob)
-> 
->  .../devicetree/bindings/mfd/fsl,imx8qxp-csr.yaml   | 192 +++++++++++++++++++++
->  1 file changed, 192 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/fsl,imx8qxp-csr.yaml
-> 
+Hi Fredrik,
 
-My bot found errors running 'make dt_binding_check' on your patch:
+On  Mon, 18 May 2020, Fredrik Strupe wrote:
+> Since uprobes is not supported for thumb, check that the thumb bit is
+> not set when matching the uprobes instruction hooks.
+>
+> The Arm UDF instructions used for uprobes triggering
+> (UPROBE_SWBP_ARM_INSN and UPROBE_SS_ARM_INSN) coincidentally share the
+> same encoding as a pair of unallocated 32-bit thumb instructions (not
+> UDF) when the condition code is 0b1111 (0xf). This in effect makes it
+> possible to trigger the uprobes functionality from thumb, and at that
+> using two unallocated instructions which are not permanently
+> undefined.
+>
+> Signed-off-by: Fredrik Strupe <fredrik@strupe.net
+> Fixes: c7edc9e326d5 ("ARM: add uprobes support")
 
-yamllint warnings/errors:
+It looks like we dropped the ball on this patch. Could you please add
+it to Russell's patch system, together with a Cc: stable?
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mfd/fsl,imx8qxp-csr.example.dt.yaml:0:0: /example-0/syscon@56221000/pxl2dpi: failed to match any schema with compatible: ['fsl,imx8qxp-pxl2dpi']
-Documentation/devicetree/bindings/mfd/fsl,imx8qxp-csr.example.dt.yaml:0:0: /example-0/syscon@56221000/ldb: failed to match any schema with compatible: ['fsl,imx8qxp-ldb']
-Documentation/devicetree/bindings/mfd/fsl,imx8qxp-csr.example.dt.yaml:0:0: /example-0/phy@56228300: failed to match any schema with compatible: ['fsl,imx8qxp-mipi-dphy']
+Otherwise, just say the word and I'll do it for you.
 
-See https://patchwork.ozlabs.org/patch/1460356
+Thanks,
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+	M.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Without deviation from the norm, progress is not possible.
