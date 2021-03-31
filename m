@@ -2,234 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A603509B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF143509BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhCaVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S232334AbhCaVsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhCaVqK (ORCPT
+        with ESMTP id S230385AbhCaVr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:46:10 -0400
+        Wed, 31 Mar 2021 17:47:56 -0400
 Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9997C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so1927532pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC67C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:47:56 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1913851pjc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:47:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
-        b=NzeLyJir6d1KwpiZ3RmekcvSne/weQo4YA0Uu7Q89IkbPP0+5tkV6E7R5TuBWawoMg
-         idGZp8zqhG+5HVjnv+msYLiZQ9S7h9tCa6GvjbE5b83fycdA9pvVk1tDXnlDajKP2SLi
-         74sdgQx/uoB7+AwHV0v7j226PbBND6y7yHvDI=
+        bh=8xelLMkxcC6WtOofiMih6F32tqKnPtSyw2jgK+CDHu4=;
+        b=lRekl3fx/1xVTY4VSWAcqWY60kFcYfE3ex87ZMiyF3YMama3alXemQAvey4ua2Q2NU
+         eIzwbu8ulmg+dSFPJ/LLw9M8TUwNtZ6Kf+zsLYX2btGWc+Mt6r+WqI3nE4cuuPodpDWB
+         vkPyVKuV4l3DmqBnpyedy5K2ELlMSQALGThaUNGPrMsL7lsHqmcjeklTCzt6GLWxXFOh
+         fcNEDPnE/MDmfK1tIflC1u5mhPxRa8t1lqjHjJZcz8mlLg7SmVa3KnKTiibQ3TVoVdfM
+         W0WQ/smihKucHGWCEceoSVORhE99fiU+/wSW3je405yKPyFBfEyxm9lRJkvzLqkv3YeD
+         nlyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
-        b=OzH5iJXY1vYCJaYlpLXqoDB+iNliaRZSFtuO74FwPWIJtYfPNuhqVSwTVg1SVAGsUG
-         9alqfhwThLCfZgEHTeEdgzlNceHsEjcbVCXVrqTuGh9UZMvrL6g8acUrqvlBIS2urEW4
-         +GRJQoPlhDbnkKbJMJe5SsO55fkdop+T9vFF9hH1xKVcJc0na46OmCf9GQWpSh3xmQ0X
-         +xCp/ha3IUvr8xVBw8OQ1yN7/CVx9uBSdfeKQ8TDWZDlmA0U03grkSys803Q9e90svhR
-         lTX2NiyWPv0qLdGl3A/gLL6AbbzSTq8U+neisZCO1/x6Qp2P/TAPRWpRCMExsIHoEV43
-         IlEw==
-X-Gm-Message-State: AOAM533zFnIHJGEiho4tB5cFnMSE/WDaey4iwwT7mt88EQerQ3J+qDK2
-        e5PG5d8DJ9BnHbGUVnoY/F6JAQ==
-X-Google-Smtp-Source: ABdhPJyc6xYrPp/zlyE7RCl/S1V/S62i7LtVAPCykyeZ+e4UWpT04Q1Ln+T2FDOVuAGVX7rqBciSng==
-X-Received: by 2002:a17:90a:be0e:: with SMTP id a14mr5187306pjs.131.1617227170242;
-        Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id iq6sm3106930pjb.31.2021.03.31.14.46.09
+        bh=8xelLMkxcC6WtOofiMih6F32tqKnPtSyw2jgK+CDHu4=;
+        b=U/+LvJWjhz7efWvZPsH6EQTH8as0DTJGTlg0EPHp1YFZXT+R/PhUpCFoTgupTva6ap
+         1EFpJah3UylO4oaiPs051XXSeOzhZ9KKEVD24v7GIP9jSJ+iaoU7+g39DCIegtRNv6Z5
+         97bhFyXr5d+xEEsFm5GApKgY7NviFMOCsFSzzdHXEeXVoomL94xIEWxDA6b7awDEoKKG
+         EUPbXVaoV59KNY1K1bbymqS/qUNXXd967clKAHT1rQIrXGXCW1PkpX2mgVdAFwaYILk6
+         UdpU2CZj0+lEI+q4jawLxLI6E+Q2rYV+AFYPfKqsjEKTLHLCu+hPtixDqVffOMi6u4zx
+         IFdQ==
+X-Gm-Message-State: AOAM5325B978GMiS8lJ/VMNhH3cSxwT2FwtEd7D4RoESf9ULnEdjILke
+        uQ5JbCiMzTLh2G4DM/aGItZVcA==
+X-Google-Smtp-Source: ABdhPJyZugl5lfedBulyUfvB1YGfF9LGCaOpUeSH521YqKnnt+A07YJz3hlU79HRomGEJDuqkrmSZg==
+X-Received: by 2002:a17:90b:1987:: with SMTP id mv7mr5273831pjb.152.1617227275455;
+        Wed, 31 Mar 2021 14:47:55 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id a30sm3300970pfr.66.2021.03.31.14.47.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 14:46:09 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:46:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v4 00/17] Add support for Clang CFI
-Message-ID: <202103311442.FDB6E8223@keescook>
-References: <20210331212722.2746212-1-samitolvanen@google.com>
+        Wed, 31 Mar 2021 14:47:54 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 21:47:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <YGTuB3/JRvUwH64K@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+ <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
+ <YGSmMeSOPcjxRwf6@google.com>
+ <56ea69fe-87b0-154b-e286-efce9233864e@redhat.com>
+ <YGTRzf/4i9Y8XR2c@google.com>
+ <0e30625f-934d-9084-e293-cb3bcbc9e4b8@redhat.com>
+ <YGTkLMAzk88wOiZm@google.com>
+ <345ab567-386f-9080-f9cb-0e17fa90a852@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331212722.2746212-1-samitolvanen@google.com>
+In-Reply-To: <345ab567-386f-9080-f9cb-0e17fa90a852@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:27:04PM -0700, Sami Tolvanen wrote:
-> This series adds support for Clang's Control-Flow Integrity (CFI)
-> checking. With CFI, the compiler injects a runtime check before each
-> indirect function call to ensure the target is a valid function with
-> the correct static type. This restricts possible call targets and
-> makes it more difficult for an attacker to exploit bugs that allow the
-> modification of stored function pointers. For more details, see:
+On Wed, Mar 31, 2021, Paolo Bonzini wrote:
+> On 31/03/21 23:05, Sean Christopherson wrote:
+> > > Wouldn't it be incorrect to lock a mutex (e.g. inside*another*  MMU
+> > > notifier's invalidate callback) while holding an rwlock_t?  That makes sense
+> > > because anybody that's busy waiting in write_lock potentially cannot be
+> > > preempted until the other task gets the mutex.  This is a potential
+> > > deadlock.
+> > 
+> > Yes?  I don't think I follow your point though.  Nesting a spinlock or rwlock
+> > inside a rwlock is ok, so long as the locks are always taken in the same order,
+> > i.e. it's never mmu_lock -> mmu_notifier_slots_lock.
 > 
->   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> *Another* MMU notifier could nest a mutex inside KVM's rwlock.
 > 
-> The first patch contains build system changes and error handling,
-> and implements support for cross-module indirect call checking. The
-> remaining patches address issues caused by the compiler
-> instrumentation. These include fixing known type mismatches, as well
-> as issues with address space confusion and cross-module function
-> address equality.
-> 
-> These patches add support only for arm64, but I'll post patches also
-> for x86_64 after we address the remaining issues there, including
-> objtool support.
-> 
-> You can also pull this series from
-> 
->   https://github.com/samitolvanen/linux.git cfi-v4
+> But... is it correct that the MMU notifier invalidate callbacks are always
+> called with the mmap_sem taken (sometimes for reading, e.g.
+> try_to_merge_with_ksm_page->try_to_merge_one_page->write_protect_page)?
 
-Thanks for the updates! I think this is ready to land in -next.
+No :-(
 
-Will, Mark, Catalin: would you prefer this go via arm64 or via my LTO
-tree? (Or does anyone see other stuff they'd like fixed first?)
+File-based invalidations through the rmaps do not take mmap_sem.  They get at
+the VMAs via the address_space's interval tree, which is protected by its own
+i_mmap_rwsem.
 
--Kees
+E.g. try_to_unmap() -> rmap_walk_file() -> try_to_unmap_one() 
 
-> ---
-> Changes in v4:
->  - Per Mark's suggestion, dropped __pa_function() and renamed
->    __va_function() to function_nocfi().
->  - Added a comment to function_nocfi() to explain what it does.
->  - Updated the psci patch to use an intermediate variable for
->    the physical address for clarity.
+> We could take it temporarily in install_memslots, since the MMU notifier's mm
+> is stored in kvm->mm.
 > 
-> Changes in v3:
->  - Added a patch to change list_sort() callers treewide to use
->    const pointers instead of simply removing the internal casts.
->  - Changed cleanup_symbol_name() to return bool.
->  - Changed module.lds.S to drop the .eh_frame section only with
->    CONFIG_CFI_CLANG.
->  - Switched to synchronize_rcu() in update_shadow().
+> In this case, a pair of kvm_mmu_notifier_lock/unlock functions would be the
+> best way to abstract it.
 > 
-> Changes in v2:
->  - Fixed .text merging in module.lds.S.
->  - Added WARN_ON_FUNCTION_MISMATCH() and changed kernel/thread.c
->    and kernel/workqueue.c to use the macro instead.
+> Paolo
 > 
-> 
-> Sami Tolvanen (17):
->   add support for Clang CFI
->   cfi: add __cficanonical
->   mm: add generic function_nocfi macro
->   module: ensure __cfi_check alignment
->   workqueue: use WARN_ON_FUNCTION_MISMATCH
->   kthread: use WARN_ON_FUNCTION_MISMATCH
->   kallsyms: strip ThinLTO hashes from static functions
->   bpf: disable CFI in dispatcher functions
->   treewide: Change list_sort to use const pointers
->   lkdtm: use function_nocfi
->   psci: use function_nocfi for cpu_resume
->   arm64: implement function_nocfi
->   arm64: use function_nocfi with __pa_symbol
->   arm64: add __nocfi to functions that jump to a physical address
->   arm64: add __nocfi to __apply_alternatives
->   KVM: arm64: Disable CFI for nVHE
->   arm64: allow CONFIG_CFI_CLANG to be selected
-> 
->  Makefile                                      |  17 +
->  arch/Kconfig                                  |  45 +++
->  arch/arm64/Kconfig                            |   1 +
->  arch/arm64/include/asm/memory.h               |  15 +
->  arch/arm64/include/asm/mmu_context.h          |   4 +-
->  arch/arm64/kernel/acpi_parking_protocol.c     |   3 +-
->  arch/arm64/kernel/alternative.c               |   4 +-
->  arch/arm64/kernel/cpu-reset.h                 |  10 +-
->  arch/arm64/kernel/cpufeature.c                |   4 +-
->  arch/arm64/kernel/psci.c                      |   3 +-
->  arch/arm64/kernel/smp_spin_table.c            |   3 +-
->  arch/arm64/kvm/hyp/nvhe/Makefile              |   6 +-
->  arch/arm64/kvm/vgic/vgic-its.c                |   8 +-
->  arch/arm64/kvm/vgic/vgic.c                    |   3 +-
->  block/blk-mq-sched.c                          |   3 +-
->  block/blk-mq.c                                |   3 +-
->  drivers/acpi/nfit/core.c                      |   3 +-
->  drivers/acpi/numa/hmat.c                      |   3 +-
->  drivers/clk/keystone/sci-clk.c                |   4 +-
->  drivers/firmware/psci/psci.c                  |   7 +-
->  drivers/gpu/drm/drm_modes.c                   |   3 +-
->  drivers/gpu/drm/i915/gt/intel_engine_user.c   |   3 +-
->  drivers/gpu/drm/i915/gvt/debugfs.c            |   2 +-
->  drivers/gpu/drm/i915/selftests/i915_gem_gtt.c |   3 +-
->  drivers/gpu/drm/radeon/radeon_cs.c            |   4 +-
->  .../hw/usnic/usnic_uiom_interval_tree.c       |   3 +-
->  drivers/interconnect/qcom/bcm-voter.c         |   2 +-
->  drivers/md/raid5.c                            |   3 +-
->  drivers/misc/lkdtm/usercopy.c                 |   2 +-
->  drivers/misc/sram.c                           |   4 +-
->  drivers/nvme/host/core.c                      |   3 +-
->  .../controller/cadence/pcie-cadence-host.c    |   3 +-
->  drivers/spi/spi-loopback-test.c               |   3 +-
->  fs/btrfs/raid56.c                             |   3 +-
->  fs/btrfs/tree-log.c                           |   3 +-
->  fs/btrfs/volumes.c                            |   3 +-
->  fs/ext4/fsmap.c                               |   4 +-
->  fs/gfs2/glock.c                               |   3 +-
->  fs/gfs2/log.c                                 |   2 +-
->  fs/gfs2/lops.c                                |   3 +-
->  fs/iomap/buffered-io.c                        |   3 +-
->  fs/ubifs/gc.c                                 |   7 +-
->  fs/ubifs/replay.c                             |   4 +-
->  fs/xfs/scrub/bitmap.c                         |   4 +-
->  fs/xfs/xfs_bmap_item.c                        |   4 +-
->  fs/xfs/xfs_buf.c                              |   6 +-
->  fs/xfs/xfs_extent_busy.c                      |   4 +-
->  fs/xfs/xfs_extent_busy.h                      |   3 +-
->  fs/xfs/xfs_extfree_item.c                     |   4 +-
->  fs/xfs/xfs_refcount_item.c                    |   4 +-
->  fs/xfs/xfs_rmap_item.c                        |   4 +-
->  include/asm-generic/bug.h                     |  16 +
->  include/asm-generic/vmlinux.lds.h             |  20 +-
->  include/linux/bpf.h                           |   4 +-
->  include/linux/cfi.h                           |  41 +++
->  include/linux/compiler-clang.h                |   3 +
->  include/linux/compiler_types.h                |   8 +
->  include/linux/init.h                          |   6 +-
->  include/linux/list_sort.h                     |   7 +-
->  include/linux/mm.h                            |  10 +
->  include/linux/module.h                        |  13 +-
->  include/linux/pci.h                           |   4 +-
->  init/Kconfig                                  |   2 +-
->  kernel/Makefile                               |   4 +
->  kernel/cfi.c                                  | 329 ++++++++++++++++++
->  kernel/kallsyms.c                             |  55 ++-
->  kernel/kthread.c                              |   3 +-
->  kernel/module.c                               |  43 +++
->  kernel/workqueue.c                            |   2 +-
->  lib/list_sort.c                               |  17 +-
->  lib/test_list_sort.c                          |   3 +-
->  net/tipc/name_table.c                         |   4 +-
->  scripts/Makefile.modfinal                     |   2 +-
->  scripts/module.lds.S                          |  20 +-
->  74 files changed, 759 insertions(+), 112 deletions(-)
->  create mode 100644 include/linux/cfi.h
->  create mode 100644 kernel/cfi.c
-> 
-> 
-> base-commit: d19cc4bfbff1ae72c3505a00fb8ce0d3fa519e6c
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
-
--- 
-Kees Cook
