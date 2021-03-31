@@ -2,125 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774B1350480
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AE6350472
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbhCaQar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S233791AbhCaQZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCaQaN (ORCPT
+        with ESMTP id S230527AbhCaQZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:30:13 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94B05C061574;
-        Wed, 31 Mar 2021 09:30:01 -0700 (PDT)
+        Wed, 31 Mar 2021 12:25:04 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FE5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:25:03 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id h12so1555728qvm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Z3YZthlfu0euTQ+THZUZPW+nmkMWZoVGbwK6weVz8AM=; b=R4LfprXFW3i0K
-        GptS5/OFjr6eLUHAE6s8vZbnUgb14w+ptj6+vYza2lLNR3WpJ4o94RcE0PAAQBoP
-        7Gh7wmQSXN7Dl1hOzM/dgihYO8DzXZ+QpToMVDDPnx046TTrnBj0EV7Q9C5KGS2v
-        o12cva7cBbiVTKM41ifd+wi+FC0kKs=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX30tzo2RgObt6AA--.16468S2;
-        Thu, 01 Apr 2021 00:29:39 +0800 (CST)
-Date:   Thu, 1 Apr 2021 00:24:42 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=fCRp+f9oEZRwz2tLs+x5UFPxXT2k+8MTEajLiG543iE=;
+        b=E0qHaj7GNQHth1b1XDiydbi3LRxgSyXTRIt30yJXGr4euLVP08l00Kj4vigGox7iJE
+         jBzfkUHPMmM/Su9k+GGHog40ud31Bv7dlve/m0FKG2DG23BU8HpQY7gQoCuDsBBRH22B
+         CdY5qwoGoXR1W4nKtTgzqNuaICGfR3dR7sgKvCnxFJvoIjsjEd1EHMc0dyRrjwp45/hg
+         eGFpOYrqWX68R6j8n91eZ8spafWkdPLPObVCDafOl/6dzjSmjX4vXlrowomC/MCrslIn
+         Mp4Z4ggUIY640HII3euetw3kp67GfIyHfYix7mB77RrammP9A2Ssi2oVpQqJPcQQqVnK
+         dHKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=fCRp+f9oEZRwz2tLs+x5UFPxXT2k+8MTEajLiG543iE=;
+        b=R7deiy32It/kUs7xfJr1eTDXJBy8SCZvQzg8AnEXkKr+xkPYHOz+IAtGlJOhjuMPH7
+         GPBTLz6TF1bhYmA0ZqL98OAvBRA2U7i44xJ8KqGX3Hq1swOAemhzq8/me749oRLu3QRZ
+         WVsFR5putYCuqT2Q4zV6bvivOmUNZd9I/o50qIpuXW/WomrY1LO2L2VEv2SPbKV8iaYE
+         o2nVqlLIfhD4xtYgJUmlQKnD6HFzi0ncg1+mQY1v+2velwloiRbfVi5po43GyvhHu0Re
+         SywwB/pHWm3yyGWjYcZ/cIDNfGZ2SrDuuItFqIra6a0udGGKoHOBDmLlD5yfpG7TX3Zb
+         bkRw==
+X-Gm-Message-State: AOAM5335RB86V6BSHB6e0enBr6E+IIT9qDHdO7KNuV/EhiJmpdCUwClt
+        28AAHODIkw2z6PDOBgrYPj8QovHEKO0Fkvwh
+X-Google-Smtp-Source: ABdhPJxJoNO1B+fBvpC9kIudNhGjiUeJQbEm2VvLjUu0bQ1W0X8zAukiVTCaZU+TUNC5zkLU9rn/JCMdUCPaaB5L
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:f189:6e8f:457f:e245])
+ (user=andreyknvl job=sendgmr) by 2002:a05:6214:16c1:: with SMTP id
+ d1mr3810787qvz.29.1617207902660; Wed, 31 Mar 2021 09:25:02 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 18:24:59 +0200
+Message-Id: <48079c52cc329fbc52f4386996598d58022fb872.1617207873.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH] kasan: detect false-positives in tests
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
-        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v2 0/9] riscv: improve self-protection
-Message-ID: <20210401002442.2fe56b88@xhacker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDX30tzo2RgObt6AA--.16468S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8WFy7pr
-        s0kry5ZrWF9r93C3Way34kur1rJwsYg34agr45C34rJw4aqFWUAwnYqwn0qr1DXFy0gFnY
-        kF15u34Ykw18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkCb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2vPfDU
-        UUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Currently, KASAN-KUnit tests can check that a particular annotated part
+of code causes a KASAN report. However, they do not check that no unwanted
+reports happen between the annotated parts.
 
-patch1 is a trivial improvement patch to move some functions to .init
-section
+This patch implements these checks.
 
-Then following patches improve self-protection by:
+It is done by setting report_data.report_found to false in
+kasan_test_init() and at the end of KUNIT_EXPECT_KASAN_FAIL() and then
+checking that it remains false at the beginning of
+KUNIT_EXPECT_KASAN_FAIL() and in kasan_test_exit().
 
-Marking some variables __ro_after_init
-Constifing some variables
-Enabling ARCH_HAS_STRICT_MODULE_RWX
+kunit_add_named_resource() call is moved to kasan_test_init(), and the
+value of fail_data.report_expected is kept as false in between
+KUNIT_EXPECT_KASAN_FAIL() annotations for consistency.
 
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ lib/test_kasan.c | 49 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 21 deletions(-)
 
-Since v1:
-  - no need to move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
-    because RV32 uses the default module_alloc() for jit code which also
-    meets W^X after patch8
-  - fix a build error caused by local debug code clean up
-
-Jisheng Zhang (9):
-  riscv: add __init section marker to some functions
-  riscv: Mark some global variables __ro_after_init
-  riscv: Constify sys_call_table
-  riscv: Constify sbi_ipi_ops
-  riscv: kprobes: Implement alloc_insn_page()
-  riscv: bpf: Write protect JIT code
-  riscv: bpf: Avoid breaking W^X on RV64
-  riscv: module: Create module allocations without exec permissions
-  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
-
- arch/riscv/Kconfig                 |  1 +
- arch/riscv/include/asm/smp.h       |  4 ++--
- arch/riscv/include/asm/syscall.h   |  2 +-
- arch/riscv/kernel/module.c         | 10 ++++++++--
- arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
- arch/riscv/kernel/sbi.c            | 10 +++++-----
- arch/riscv/kernel/smp.c            |  6 +++---
- arch/riscv/kernel/syscall_table.c  |  2 +-
- arch/riscv/kernel/time.c           |  2 +-
- arch/riscv/kernel/traps.c          |  2 +-
- arch/riscv/kernel/vdso.c           |  4 ++--
- arch/riscv/mm/init.c               | 12 ++++++------
- arch/riscv/mm/kasan_init.c         |  6 +++---
- arch/riscv/mm/ptdump.c             |  2 +-
- arch/riscv/net/bpf_jit_comp64.c    |  2 +-
- arch/riscv/net/bpf_jit_core.c      |  1 +
- 16 files changed, 45 insertions(+), 29 deletions(-)
-
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index d77c45edc7cd..bf9225002a7e 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -54,6 +54,10 @@ static int kasan_test_init(struct kunit *test)
+ 
+ 	multishot = kasan_save_enable_multi_shot();
+ 	kasan_set_tagging_report_once(false);
++	fail_data.report_found = false;
++	fail_data.report_expected = false;
++	kunit_add_named_resource(test, NULL, NULL, &resource,
++					"kasan_data", &fail_data);
+ 	return 0;
+ }
+ 
+@@ -61,6 +65,7 @@ static void kasan_test_exit(struct kunit *test)
+ {
+ 	kasan_set_tagging_report_once(true);
+ 	kasan_restore_multi_shot(multishot);
++	KUNIT_EXPECT_FALSE(test, fail_data.report_found);
+ }
+ 
+ /**
+@@ -78,28 +83,30 @@ static void kasan_test_exit(struct kunit *test)
+  * fields, it can reorder or optimize away the accesses to those fields.
+  * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
+  * expression to prevent that.
++ *
++ * In between KUNIT_EXPECT_KASAN_FAIL checks, fail_data.report_found is kept as
++ * false. This allows detecting KASAN reports that happen outside of the checks
++ * by asserting !fail_data.report_found at the start of KUNIT_EXPECT_KASAN_FAIL
++ * and in kasan_test_exit.
+  */
+-#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
+-	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
+-		migrate_disable();				\
+-	WRITE_ONCE(fail_data.report_expected, true);		\
+-	WRITE_ONCE(fail_data.report_found, false);		\
+-	kunit_add_named_resource(test,				\
+-				NULL,				\
+-				NULL,				\
+-				&resource,			\
+-				"kasan_data", &fail_data);	\
+-	barrier();						\
+-	expression;						\
+-	barrier();						\
+-	KUNIT_EXPECT_EQ(test,					\
+-			READ_ONCE(fail_data.report_expected),	\
+-			READ_ONCE(fail_data.report_found));	\
+-	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
+-		if (READ_ONCE(fail_data.report_found))		\
+-			kasan_enable_tagging();			\
+-		migrate_enable();				\
+-	}							\
++#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {			\
++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))				\
++		migrate_disable();					\
++	KUNIT_EXPECT_FALSE(test, READ_ONCE(fail_data.report_found));	\
++	WRITE_ONCE(fail_data.report_expected, true);			\
++	barrier();							\
++	expression;							\
++	barrier();							\
++	KUNIT_EXPECT_EQ(test,						\
++			READ_ONCE(fail_data.report_expected),		\
++			READ_ONCE(fail_data.report_found));		\
++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {				\
++		if (READ_ONCE(fail_data.report_found))			\
++			kasan_enable_tagging();				\
++		migrate_enable();					\
++	}								\
++	WRITE_ONCE(fail_data.report_found, false);			\
++	WRITE_ONCE(fail_data.report_expected, false);			\
+ } while (0)
+ 
+ #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
 -- 
-2.31.0
-
+2.31.0.291.g576ba9dcdaf-goog
 
