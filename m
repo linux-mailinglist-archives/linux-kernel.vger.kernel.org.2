@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB5134FCFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE9634FCFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbhCaJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234822AbhCaJeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:34:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC20061874;
-        Wed, 31 Mar 2021 09:34:04 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lRXEg-004ruN-N0; Wed, 31 Mar 2021 10:34:02 +0100
+        id S234787AbhCaJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhCaJeU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:34:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B4EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:34:19 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id dm8so21523434edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:34:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UU43qIhMTe6edOnTRhDNuqs4/6Fcr5WC9xOEehVRvzQ=;
+        b=AhlaDFvX1senwjL60n28pgpN8+6gKhh33Pt/Signy08TCbnbAPNqQ0nA9Z1wo0DACP
+         XLUZZlIGeGzcaHTmd+JpG4KYSfM9vitIKd1P5deDTBfyxob4ozXwI/IAn7lD3A3FDrsB
+         9tvyGYIlG1pW3EYDXNiuxvNTv/HFSTQFXS3NbWkMEyhachGVOP60aJdrz3UsGuVD9k2j
+         0dDPpd0F13WpJTGvjKm5SPcShORoXEsa4HqN12CeKRjXrcZ9Z/m48px3DX2cnCZqoU0H
+         6KKIHpuG1nf38wTPh0sf2PeJ5cMumO/rbCIj1xb2B9gEChBrFNqDxAbNTYCMnmu5Wez1
+         syiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UU43qIhMTe6edOnTRhDNuqs4/6Fcr5WC9xOEehVRvzQ=;
+        b=OKI5N65k6H1AfNPhdPmsqEZx8sr5YUa7Aunrem7rXGtehVpHmxxSunoo5mZkpLjYaB
+         UJZHPXVnuxNwTvlnZ0pFuWSxem4zOKeElw/hxtCHJnBtitaTC+bD7KRG+n+RwuDOebLn
+         SBIdMWaMQ/KhN1WdRyS43Slx1OOpYCSY/8/XccdRrghKnVw6pOnntaZ0E/xuje8cFy45
+         /6De5RNziW/hlOlncetm2M4l+9oeB3SyUEFF0CiF1HypiPmsSjPu/8eICfCMczg3/Gxs
+         hlat70Fph/hDZt/vX4AlGpdUcHy/XIExo8wVUpRaja48QyMOH4XM9YcaYfzRUJ3I3slj
+         yFZg==
+X-Gm-Message-State: AOAM530Fk6S64j6dl6o3EqpCRmoo52sZSZfHNntypVgtnJry/GU4Uiq7
+        Sf/KrfUYfPS5wmtUxv5Ah2Q=
+X-Google-Smtp-Source: ABdhPJzlZT+Dj0fdTynGmGpq9s5/jAaugbVporKqJvGfTNKbCnpA8I1EznveD1AzeWoSx1g2mSyCQA==
+X-Received: by 2002:aa7:d74d:: with SMTP id a13mr2651401eds.199.1617183258604;
+        Wed, 31 Mar 2021 02:34:18 -0700 (PDT)
+Received: from agape ([5.171.73.44])
+        by smtp.gmail.com with ESMTPSA id bx24sm828657ejc.88.2021.03.31.02.34.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 02:34:18 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     joe@perches.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH 0/2] staging: rtl8723bs: replace private macro with print_hex_dump_debug
+Date:   Wed, 31 Mar 2021 11:34:05 +0200
+Message-Id: <cover.1617183040.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 31 Mar 2021 10:34:02 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
-In-Reply-To: <a2ca8cb2-5c91-b971-9b6e-65cf9ee97ffa@redhat.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <a2ca8cb2-5c91-b971-9b6e-65cf9ee97ffa@redhat.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e50f6f28c0446cd328e475859ef05dc4@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, paulus@ozlabs.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, bgardon@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 08:57, Paolo Bonzini wrote:
+this patchset replaces RT_PRINT_DATA private macro for dump hex values
+with the kernel helper used for this pourpose.
 
-> Queued and 1-9 and 18, thanks.  There's a small issue in patch 10 that
-> prevented me from committing 10-15, but they mostly look good.
+Fabio Aiuto (2):
+  staging: rtl8723bs: use print_hex_dump_debug instead of private
+    RT_PRINT_DATA
+  staging: rtl8723bs: remove unused macro RT_PRINT_DATA
 
-Can you please push the resulting merge somewhere?
+ drivers/staging/rtl8723bs/hal/hal_com.c       | 13 ++++-------
+ drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c  | 22 ++++++++++++++-----
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  3 ++-
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 19 ----------------
+ 4 files changed, 22 insertions(+), 35 deletions(-)
 
-I'm concerned that it will conflict in interesting way with other stuff
-that is on its way on the arm64 side, not to mentiobn that this hasn't
-been tested at all on anything but x86 (and given the series was posted
-on Friday, that's a bit of a short notice).
-
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+2.20.1
+
