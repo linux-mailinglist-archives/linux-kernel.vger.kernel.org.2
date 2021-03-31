@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7449F3505B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997613505B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhCaRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        id S234472AbhCaRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233888AbhCaRqh (ORCPT
+        with ESMTP id S234473AbhCaRrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:46:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AB3C061574;
-        Wed, 31 Mar 2021 10:46:37 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617212794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e6M3oUFoCJof3OrZX7FrHMuqU0uhJPLOBOAa++y2rnM=;
-        b=hnltiqf9FMDvo83gt70IXR/oNXXJWgEcos+iHuSQjczu8qGm5lo4hi6U1iI42+VlvC6FCd
-        jttc6ByhgDH9nBZ8mPYxgPFQEcrJpExZk09rZopS1usU4XD2Ow3cZHmJkWqUr2yTNw55bT
-        z3sI86fINzHBfN3y/erHRuX4oGbDn5LKSU0YMK1W7QqRl+Mj+v4QOAMFGmWsbhAfdbqEhh
-        nGUYR8AAY/FY4Ud5NfiErnxyIjB+zmf2XiHC5gzYCiLm6e+GeeOQNo6VB5YkMlk1h4Wf3C
-        yrPDfE7tbDZrXAE13Dg7qa/e6rLv12gQBWOngyAN5k4zVcAkdmd0rArs0CT4Sg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617212794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e6M3oUFoCJof3OrZX7FrHMuqU0uhJPLOBOAa++y2rnM=;
-        b=6v3WlBROvKSc1tFWP8PmqFrEQJ4eDxGM2AErJ05hwHVrcEFvScQiqsEjfCs9TMayipddT1
-        rrNb2GPSrmUODkAQ==
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 2/6] mm/page_alloc: Convert per-cpu list protection to local_lock
-In-Reply-To: <871rbv5iel.ffs@nanos.tec.linutronix.de>
-References: <20210329120648.19040-1-mgorman@techsingularity.net> <20210329120648.19040-3-mgorman@techsingularity.net> <877dln640j.ffs@nanos.tec.linutronix.de> <20210331110137.GA3697@techsingularity.net> <871rbv5iel.ffs@nanos.tec.linutronix.de>
-Date:   Wed, 31 Mar 2021 19:46:34 +0200
-Message-ID: <87y2e343np.ffs@nanos.tec.linutronix.de>
+        Wed, 31 Mar 2021 13:47:41 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B705C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:47:41 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id h8so8290122plt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:47:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nsx3KrQ1iXBWGMZ3l6vXrmCtQmBGgQUn9ruxNhjQYio=;
+        b=JEdVefuWbawvRM2xDGC1T8kDJTK4ExwalZ1xKx1awHgIOiWhTA1me7Rg12OC2T8nG0
+         no+8M03nYLG1i7t8LjpZzQHMEX/0jP/kQpOYiWPg/zKKIevUhig0dloCHp8L0WoL+ce9
+         snYWBFK+/NMStD/MqPS8mt+Dr1SeCw5aoBQaQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nsx3KrQ1iXBWGMZ3l6vXrmCtQmBGgQUn9ruxNhjQYio=;
+        b=Kh+uS2ykLfqtQbTzb9If6/QXvl4EsMwPF4h1teBuga1qEatdWvweJPDaOKCck4Myfe
+         9vTkpN494JHDPAH0LbwbeW+dwjhTdEwvHKz9p3frF4myigvDI5VI4hbvDxHiOPucMxE8
+         XGGEpYveCY6F81Mz4UfstpBtD5BRGS5eQ/UF4O72as5dtrw/qdMygdZjcHxzGYZg/55M
+         xhp68ah1gQZQkHzuhqfHsALJLOYO3EJ/rx3EzMuWaglwbJDCnZBC5+IO8bzGvPWHiczW
+         l2vNJ5Q4kIw3zO9mg079AfYNlQW2j8zqTSzIsrMpf7F5jh+xAGDQfbu1+uhI95BZ5hQG
+         MOOA==
+X-Gm-Message-State: AOAM532Q/CE821v7pM6hawaMsuLh4WLXoUNJUXRbh6tdy/Ocvq8aEQm4
+        wBz/P/7fKZajK7zJUG6/hp3ctw==
+X-Google-Smtp-Source: ABdhPJwp/wD4D3YAu/8vufyC5qC+hiD0LBjfUZrhsGmW1khFIL23zoPDvc7CHtr4oKfF+FdLwp4qAQ==
+X-Received: by 2002:a17:90a:f0c9:: with SMTP id fa9mr4605098pjb.39.1617212861030;
+        Wed, 31 Mar 2021 10:47:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p17sm2769690pjv.49.2021.03.31.10.47.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 10:47:40 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org, Mukesh Ojha <mojha@codeaurora.org>
+Cc:     Kees Cook <keescook@chromium.org>, ccross@android.com,
+        tony.luck@intel.com, anton@enomsg.org
+Subject: Re: [PATCH v3] pstore: Add mem_type property DT parsing support
+Date:   Wed, 31 Mar 2021 10:47:37 -0700
+Message-Id: <161721285524.1710134.18079016969330535532.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1616438537-13719-1-git-send-email-mojha@codeaurora.org>
+References: <1616438537-13719-1-git-send-email-mojha@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31 2021 at 19:42, Thomas Gleixner wrote:
-> On Wed, Mar 31 2021 at 12:01, Mel Gorman wrote:
->> On Wed, Mar 31, 2021 at 11:55:56AM +0200, Thomas Gleixner wrote:
->> @@ -887,13 +887,11 @@ void cpu_vm_stats_fold(int cpu)
->>  
->>  		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
->>  
->> -		preempt_disable();
->>  		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
->>  			if (pzstats->vm_stat_diff[i]) {
->>  				int v;
->>  
->> -				v = pzstats->vm_stat_diff[i];
->> -				pzstats->vm_stat_diff[i] = 0;
->> +				v = this_cpu_xchg(pzstats->vm_stat_diff[i], 0);
->
-> Confused. pzstats is not a percpu pointer. zone->per_cpu_zonestats is.
->
-> But @cpu is not necessarily the current CPU.
+On Tue, 23 Mar 2021 00:12:17 +0530, Mukesh Ojha wrote:
+> There could be a scenario where we define some region
+> in normal memory and use them store to logs which is later
+> retrieved by bootloader during warm reset.
+> 
+> In this scenario, we wanted to treat this memory as normal
+> cacheable memory instead of default behaviour which
+> is an overhead. Making it cacheable could improve
+> performance.
+> 
+> [...]
 
-@cpu _is_ definitely NOT the current CPU as this is invoked from the
-hotplug callback _after_ @cpu went dead. @cpu is dead and wont update
-these things concurrently. So I'm even more confused :)
+Applied to for-next/pstore, thanks!
 
-Thanks,
+[1/1] pstore: Add mem_type property DT parsing support
+      https://git.kernel.org/kees/c/9d843e8fafc7
 
-        tglx
-
+-- 
+Kees Cook
 
