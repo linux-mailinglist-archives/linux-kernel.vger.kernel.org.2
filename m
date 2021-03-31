@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D5E350A21
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC06F350A24
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhCaWUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50130 "EHLO mail.kernel.org"
+        id S232907AbhCaWUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhCaWUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:20:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E041361078;
-        Wed, 31 Mar 2021 22:20:14 +0000 (UTC)
+        id S230380AbhCaWUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 89A2361090;
+        Wed, 31 Mar 2021 22:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617229214;
-        bh=emkVMfPNBs6VfL684ehH4JMVFlgqaT3Etox40Szo5fc=;
+        s=k20201202; t=1617229218;
+        bh=manWhZhu/NQAbHmtzEDKxvO3sIpDmPpIR4Wb97E++h0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ggfSqsxqY3UdBekUS7UQ+WrTQDNqajcwkk6yfCx+rmWlEWOtOj34DM5BTy7gHe7gd
-         8PEyr+YhqSfNIhu/2ZfSHXaE0npMKXqHZ8ucfLlz8Obam6EmcSb9Sn++SzowpN9/Ou
-         osec4i+x86CM/UNIz4GvbmQwoVDBkDbU3Rwfs4TM5Ecdxb+UJNJQ4wDBhBvjB1+NnA
-         s+cjOmAq7PPMGmszMG2kDLcUQfyLyUbzU4AL0nAxAhf13hS9who4+vmJ345iBdi+VF
-         QYYmdfNJc28KXZRNHOj7xFZJsj2hqIdKbK9mr+cghZn5j4ushOaJ6tS/acFRVOHg2v
-         iagDefN6srTHw==
+        b=JkU6l4959Uh72ZihQaglWFBFE6/bSkJALLtL/AOfUzSbpa68I0bK1MutdiqZgpXpa
+         /k1EyLXkToc8CBCguYRV78RgsqxhsXb4oUtzr07mMl1AvDPa4h7hSuOYU7CZTg8pR+
+         0K9X2p0BcRQfKCDZx0uRyascdoggwlNfbazb1Ik5p3/Vg0wvA+tC7bSQtFFNdhqw+r
+         +50fgAh0N5TVYXTGhvcue751tNPFJXc/1x9qyV4PPXKFeoUa4+AXWlcbvRUFHQuQ7A
+         /Bea1AquyiAL23Y26Lv+fjCoRqwlowPTyOs05InU9E3PUpI1eIYDgt76GOUSnL7c6m
+         oqWhd+M/O8HOA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D4A6D608FA;
-        Wed, 31 Mar 2021 22:20:14 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 80633608FD;
+        Wed, 31 Mar 2021 22:20:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 1/1] xdp: fix xdp_return_frame() kernel BUG throw for
- page_pool memory model
+Subject: Re: [PATCH net-next 1/1] net: stmmac: enable MTL ECC Error Address Status
+ Over-ride by default
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161722921486.2890.11294519050752062288.git-patchwork-notify@kernel.org>
-Date:   Wed, 31 Mar 2021 22:20:14 +0000
-References: <20210331132503.15926-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210331132503.15926-1-boon.leong.ong@intel.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        makita.toshiaki@lab.ntt.co.jp, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <161722921852.2890.11864817205968379354.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 22:20:18 +0000
+References: <20210331161825.32100-1-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210331161825.32100-1-vee.khee.wong@linux.intel.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        vee.khee.wong@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 31 Mar 2021 21:25:03 +0800 you wrote:
-> xdp_return_frame() may be called outside of NAPI context to return
-> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-> napi_direct = false. For page_pool memory model, __xdp_return() calls
-> xdp_return_frame_no_direct() unconditionally and below false negative
-> kernel BUG throw happened under preempt-rt build:
+On Thu,  1 Apr 2021 00:18:25 +0800 you wrote:
+> From: Voon Weifeng <weifeng.voon@intel.com>
 > 
-> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
-> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
-> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+> Turn on the MEEAO field of MTL_ECC_Control_Register by default.
+> 
+> As the MTL ECC Error Address Status Over-ride(MEEAO) is set by default,
+> the following error address fields will hold the last valid address
+> where the error is detected.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2,1/1] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
-    https://git.kernel.org/netdev/net/c/622d13694b5f
+  - [net-next,1/1] net: stmmac: enable MTL ECC Error Address Status Over-ride by default
+    https://git.kernel.org/netdev/net-next/c/b494ba5a3cf8
 
 You are awesome, thank you!
 --
