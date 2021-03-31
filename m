@@ -2,137 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FB434FF8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0735034FF93
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhCaLgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:36:44 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:45674 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234377AbhCaLgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:36:15 -0400
+        id S235364AbhCaLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235289AbhCaLg2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:36:28 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183FFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:36:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x126so14300947pfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:36:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1617190575; x=1648726575;
-  h=from:to:cc:subject:date:message-id;
-  bh=RyAG+h56ey2LjdS2mss2T21PdnG5lqMEuStAcVDgc7c=;
-  b=maBC+hBi3KhW+FkI+1FCg214fwZrCJtnwE6xQDXeFr14+NbAexhKuYCj
-   4zzOCN+3m489pzBQq4n1Z4uRBxlPKxH+tm1TnhUqH6rYLW8m+whDfhPxk
-   EtYj8iXu7XFRWitytrCwBvvVrV0Cr32Hzj0b5mmFhODqfb5t94rsbZxTU
-   V4mXISYNjYSTQ565RpWQhIWI/9Cv+/sTCNVvE/5wbRoFYYL95QN4x7VZg
-   9exGfPyxfZ2uLLQ7LqaYxKDFpLHmFi+DY5jMj3CGwiKA9Fupf5nmz7zkC
-   u1ANgTumO+hRpi2gB9nR6OfHX6fY18wddJ5KewtwcldRdRvYcM71hGy3/
-   A==;
-IronPort-SDR: 4wDyZXTtRA/8gC37vnHhSRfN5aL6Wkdu1JOFvS2+cBRNuN4dPLH3ZPRS9P+trPD6wxCzEML7+o
- aJ4DzyEwb6hyH4oAIFDStaPT8baxR7RiQdOzWKWmpylzfLPc7CvLdpNjgMoMHH9T87EQDuilSl
- n53bqcFYpQgPjoL7Ufi3ITOe7xVJT/c+Nraf/G/TpfKhPU+GMknDHuVUOzZifizy3NY3NpYhAp
- +OIp7Gx2G7/EZ8xti6FtJWpjFB5RqOhG0XdttZ19Q7jGenlNSY4os+CNDZtQvIQdBFPCUKbl11
- pcs=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
-   d="scan'208";a="16742382"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 31 Mar 2021 13:36:11 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 31 Mar 2021 13:36:11 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 31 Mar 2021 13:36:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1617190571; x=1648726571;
-  h=from:to:cc:subject:date:message-id;
-  bh=RyAG+h56ey2LjdS2mss2T21PdnG5lqMEuStAcVDgc7c=;
-  b=hhKLVkh1IdzcVQ05A/h3KcQtCYl6AhmOJPfpQyRbwTZucb3EOkKE3SD5
-   pTGwCnuA538BuaMuBTaiTKCsARdjJLBS/f6R6iINBZlwqWirwd7csu5dJ
-   cAarjsjorNH+WCOGk+1MXuIrjD86qynv0hwzer8E0SLgFZcbXr6MYqjlY
-   s6FCDuCDaRML+8E856zmv86VLaM/P2KgWGYXJYQHVHvRQVm6xgUNcoJJW
-   cQSEn0txd1UZEUfRCSazp+kgTtFKAX+RFIa/1YM+s6cm8gmsm7Bse6jdw
-   KAUN4b5vAOHJyMAZF2tHW7BP6kskS1a9FixTPY/Po3qOSd0QHYMJtTgp7
-   Q==;
-IronPort-SDR: y8A4fCzFjxCsYE1Uqh0VUTFXRItvQ7Le6BELmpX1Azk8nznZh9Tuz7Hh45uFwiFZgvf+Ymi0Mq
- eHruoQg4MAl+/GKbvVGquE72oys4JeI3koF+bqlG3RRLv0BihqrntRf+r++WIFnet4s1iI/tZr
- 4mi5U73yNJGmHxRaNO/nv2RpDREzdnmb836VgbThkqhZYv2sIxNbMOeilWtr+XlwjTG9Yqyq/r
- XoKa4QqvpkzAjDE9DZ067/I1cBw5jBeqPS7zBtH1RLjp7CYhTGMnC8DTHTS5xBtDl4jr8iSqu6
- O1E=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
-   d="scan'208";a="16742381"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 31 Mar 2021 13:36:11 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 23AA0280075;
-        Wed, 31 Mar 2021 13:36:11 +0200 (CEST)
-X-CheckPoint: {60645E92-3-486672D-C0FA7804}
-X-MAIL-CPID: 00FEFC02EA55698BA82460F2CACBA22A_2
-X-Control-Analysis: str=0001.0A782F29.60645EAB.004C,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 3/3] mfd: tqmx86: add support for TQMxE40M
-Date:   Wed, 31 Mar 2021 13:35:45 +0200
-Message-Id: <3c19d714645f788913956223097adc360ceb6203.1617189926.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
-References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
-References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yvlwdL3ZPkvvrj1RN4wqfe16ineNedYVa7ju1Basd6I=;
+        b=Lmx9Xaww4AmYYOfPMKHEPBCKWQYnQgsUFoFQA/BeSlfECFnYBHJw+kIOBgu6ZKv+lE
+         xcJdQt6ceFAL+0iYhpTr7tUii6837+9sOhouzMcEeiBQXYNfuJ0uE+LrEYjGzrtGwlae
+         OG9jAJP/iNKmGPV5d8HviLFStPzk83RtJZDFXYiUkOj2DPi2Q8dvMw+LjbWMXBBiOtku
+         W3ocog88ZVTOGSSWoxebqSbfJ1p3a6+pU9TaEq8qr7FTWhWzzRdMcwm/J2I3T955B/L2
+         SKeLjyurZhvaD4UOEr62NO8k6ZROAtvkKBigrolYIrdE+w0hdHh2KIj4TW4d2TjhYpQ7
+         IS4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yvlwdL3ZPkvvrj1RN4wqfe16ineNedYVa7ju1Basd6I=;
+        b=NYuYyOCAXYFI7NcJ6Nt+/0lbE9duIt6OLCj4soL5yK2XpHyHhvjhNX4L1I6Zyvfhiy
+         Gg/+OrwLYQnMRv8bYlJxerdQIupdGwhRnko2YdcoZvyuEbx7oOUXwBb26WPEFNdvDnhn
+         15VvQ9dHnPRX+R4n0IABedrN+1NpFO4bHTSlNHPUi9uqh3A07/CxPC3iXhnzGZo6g4h+
+         s7DqY38Y1pDZZ95bsALm9zFTdcQurXJs0x08pw0aCbvxr0jMRlwuW+vEBnwzm6Z4z/cD
+         oyYUXaz8dmwc5g+XWnOIqFmRTueLNyk3GVe5pCDeRlPME8Z0fdTgAuQTdgwhFrQCNyG/
+         L8+A==
+X-Gm-Message-State: AOAM531XLNa2rhJxh4KANduJu6x5UaZ6XRY6KzQGI2UkWk09ULQPs4SU
+        KmqEk2tu0odIVOuxWpGE1oc+
+X-Google-Smtp-Source: ABdhPJwuUU6CrhvS2Bh59Vt/Mwk7+tbkdJKe/zj2ra0FFwqutCWeqWI5vpD+7DucRP6epuosA1HdTQ==
+X-Received: by 2002:a63:c54b:: with SMTP id g11mr2834133pgd.205.1617190587406;
+        Wed, 31 Mar 2021 04:36:27 -0700 (PDT)
+Received: from work ([103.77.37.129])
+        by smtp.gmail.com with ESMTPSA id q5sm1913664pfk.219.2021.03.31.04.36.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 31 Mar 2021 04:36:26 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 17:06:23 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v7 0/7] Updates to MHI channel handling
+Message-ID: <20210331113623.GH15610@work>
+References: <1617070307-5775-1-git-send-email-bbhatt@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617070307-5775-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All future TQMx86 SoMs will use a 24MHz LPC clock, so we can use that as
-a default instead of listing each new module individually.
+On Mon, Mar 29, 2021 at 07:11:40PM -0700, Bhaumik Bhatt wrote:
+> MHI specification shows a state machine with support for STOP channel command
+> and the validity of certain state transitions. MHI host currently does not
+> provide any mechanism to stop a channel and restart it without resetting it.
+> There are also times when the device moves on to a different execution
+> environment while client drivers on the host are unaware of it and still
+> attempt to reset the channels facing unnecessary timeouts.
+> 
+> This series addresses the above areas to provide support for stopping an MHI
+> channel, resuming it back, improved documentation and improving upon channel
+> state machine handling in general.
+> 
+> This set of patches was tested on arm64 and x86_64 architecture.
+> 
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/mfd/tqmx86.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+Please rebase this series on top of mhi-next as some of the patches
+doesn't apply cleanly.
 
-diff --git a/drivers/mfd/tqmx86.c b/drivers/mfd/tqmx86.c
-index 732013f40e4e..1d5cebc4e72b 100644
---- a/drivers/mfd/tqmx86.c
-+++ b/drivers/mfd/tqmx86.c
-@@ -36,6 +36,7 @@
- #define TQMX86_REG_BOARD_ID_70EB	8
- #define TQMX86_REG_BOARD_ID_80UC	9
- #define TQMX86_REG_BOARD_ID_90UC	10
-+#define TQMX86_REG_BOARD_ID_E40M	12
- #define TQMX86_REG_BOARD_REV	0x21
- #define TQMX86_REG_IO_EXT_INT	0x26
- #define TQMX86_REG_IO_EXT_INT_NONE		0
-@@ -130,6 +131,8 @@ static const char *tqmx86_board_id_to_name(u8 board_id)
- 		return "TQMx80UC";
- 	case TQMX86_REG_BOARD_ID_90UC:
- 		return "TQMx90UC";
-+	case TQMX86_REG_BOARD_ID_E40M:
-+		return "TQMxE40M";
- 	default:
- 		return "Unknown";
- 	}
-@@ -138,12 +141,6 @@ static const char *tqmx86_board_id_to_name(u8 board_id)
- static int tqmx86_board_id_to_clk_rate(u8 board_id)
- {
- 	switch (board_id) {
--	case TQMX86_REG_BOARD_ID_50UC:
--	case TQMX86_REG_BOARD_ID_60EB:
--	case TQMX86_REG_BOARD_ID_70EB:
--	case TQMX86_REG_BOARD_ID_80UC:
--	case TQMX86_REG_BOARD_ID_90UC:
--		return 24000;
- 	case TQMX86_REG_BOARD_ID_E39M:
- 	case TQMX86_REG_BOARD_ID_E39C:
- 	case TQMX86_REG_BOARD_ID_E39x:
-@@ -152,7 +149,7 @@ static int tqmx86_board_id_to_clk_rate(u8 board_id)
- 	case TQMX86_REG_BOARD_ID_E38C:
- 		return 33000;
- 	default:
--		return 0;
-+		return 24000;
- 	}
- }
- 
--- 
-2.17.1
+Thanks,
+Mani
 
+> v7:
+> -Tested on x86_64 architecture
+> -Drop the patch "Do not clear channel context more than once" as issue is fixed
+> differently using "bus: mhi: core: Fix double dma free()"
+> -Update the commit text to better reflect changes on state machine improvements
+> 
+> v6:
+> -Dropped the patch which introduced start/stop transfer APIs for lack of users
+> -Updated error handling and debug prints on channel handling improvements patch
+> -Improved commit text to better explain certain patches based on review comments
+> -Removed references to new APIs from the documentation improvement patch
+> 
+> v5:
+> -Added reviewed-by tags from Hemant I missed earlier
+> -Added patch to prevent kernel warnings on clearing channel context twice
+> 
+> v4:
+> -Updated commit text/descriptions and addressed checkpatch checks
+> -Added context validity check before starting/stopping channels from new API
+> -Added patch to clear channel context configuration after reset/unprepare
+> 
+> v3:
+> -Updated documentation for channel transfer APIs to highlight differences
+> -Create separate patch for "allowing channel to be disabled from stopped state"
+> 
+> v2:
+> -Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+> -Added improved documentation to avoid confusion with the new APIs
+> -Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+> 
+> Bhaumik Bhatt (7):
+>   bus: mhi: core: Allow sending the STOP channel command
+>   bus: mhi: core: Clear context for stopped channels from remove()
+>   bus: mhi: core: Improvements to the channel handling state machine
+>   bus: mhi: core: Clear configuration from channel context during reset
+>   bus: mhi: core: Check channel execution environment before issuing
+>     reset
+>   bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+>   bus: mhi: Improve documentation on channel transfer setup APIs
+> 
+>  drivers/bus/mhi/core/init.c     |  22 ++++-
+>  drivers/bus/mhi/core/internal.h |  12 +++
+>  drivers/bus/mhi/core/main.c     | 192 ++++++++++++++++++++++++----------------
+>  include/linux/mhi.h             |  18 +++-
+>  4 files changed, 163 insertions(+), 81 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
