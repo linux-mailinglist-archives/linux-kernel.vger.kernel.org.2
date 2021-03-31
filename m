@@ -2,166 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2635010C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9422350115
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235744AbhCaNRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:17:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43260 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235728AbhCaNRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:17:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67388B21D;
-        Wed, 31 Mar 2021 13:17:00 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 14:16:58 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC] NUMA balancing: reduce TLB flush via delaying mapping on
- hint page fault
-Message-ID: <20210331131658.GV15768@suse.de>
-References: <20210329062651.2487905-1-ying.huang@intel.com>
- <20210330133310.GT15768@suse.de>
- <87a6qj8t92.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        id S235756AbhCaNTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:19:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59731 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235630AbhCaNSl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:18:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617196720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V3QlNgUSfvr+/PpIlu1o+sRHvXrLP4b4ywJIkeHRotY=;
+        b=g+/6XEGauG6AfkBL5X/qquvu9NlirX3KaeVJFVr9pBtxHelsdQaa4yoyjKEFLMBjlUy3Ng
+        KvJOKoHm/C9s6HGbrvYnZVpFgvn7XjuvB3vNLcPj8MvXvm3m9+bkiz4VFSX+hqqrBY+jrF
+        x+KrECbETDAc/aJpiBpswyCgyk/Cbq4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-FQq3UjclNSeViSGtS0T6pA-1; Wed, 31 Mar 2021 09:18:36 -0400
+X-MC-Unique: FQq3UjclNSeViSGtS0T6pA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48CBF189CD01;
+        Wed, 31 Mar 2021 13:18:35 +0000 (UTC)
+Received: from ovpn-115-15.ams2.redhat.com (ovpn-115-15.ams2.redhat.com [10.36.115.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC63C100164A;
+        Wed, 31 Mar 2021 13:18:33 +0000 (UTC)
+Message-ID: <2007f97354178599db29b71b3e359168606847f9.camel@redhat.com>
+Subject: Re: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ...,
+ ...)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Norman Maurer <norman.maurer@googlemail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dsahern@kernel.org, davem@davemloft.net
+Date:   Wed, 31 Mar 2021 15:18:32 +0200
+In-Reply-To: <71BBD1B0-FA0A-493D-A1D2-40E7304B0A35@googlemail.com>
+References: <20210325195614.800687-1-norman_maurer@apple.com>
+         <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
+         <CF78DCAD-6F2C-46C4-9FF1-61DF66183C76@apple.com>
+         <2e667826f183fbef101a62f0ad8ccb4ed253cb75.camel@redhat.com>
+         <71BBD1B0-FA0A-493D-A1D2-40E7304B0A35@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87a6qj8t92.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 07:20:09PM +0800, Huang, Ying wrote:
-> Mel Gorman <mgorman@suse.de> writes:
-> 
-> > On Mon, Mar 29, 2021 at 02:26:51PM +0800, Huang Ying wrote:
-> >> For NUMA balancing, in hint page fault handler, the faulting page will
-> >> be migrated to the accessing node if necessary.  During the migration,
-> >> TLB will be shot down on all CPUs that the process has run on
-> >> recently.  Because in the hint page fault handler, the PTE will be
-> >> made accessible before the migration is tried.  The overhead of TLB
-> >> shooting down is high, so it's better to be avoided if possible.  In
-> >> fact, if we delay mapping the page in PTE until migration, that can be
-> >> avoided.  This is what this patch doing.
-> >> 
-> >
-> > Why would the overhead be high? It was previously inaccessibly so it's
-> > only parallel accesses making forward progress that trigger the need
-> > for a flush.
-> 
-> Sorry, I don't understand this.  Although the page is inaccessible, the
-> threads may access other pages, so TLB flushing is still necessary.
-> 
+On Wed, 2021-03-31 at 15:10 +0200, Norman Maurer wrote:
+> As this missing change was most likely an oversight in the original
+> commit I do think it should go into 5.12 and subsequently stable as
+> well. That’s also the reason why I didn’t send a v2 and changed the
+> commit message / subject for the patch. For me it clearly is a bug
+> and not a new feature.
 
-You assert the overhead of TLB shootdown is high and yes, it can be
-very high but you also said "the benchmark score has no visible changes"
-indicating the TLB shootdown cost is not a major problem for the workload.
-It does not mean we should ignore it though.
+I have no strong opinion against that (sorry, I hoped that was clear in
+my reply).
 
-> > <SNIP the parts that are not problematic>
-> >
-> > If migration is attempted, then the time until the migration PTE is
-> > created is variable. The page has to be isolated from the LRU so there
-> > could be contention on the LRU lock, a new page has to be allocated and
-> > that allocation potentially has to enter the page allocator slow path
-> > etc. During that time, parallel threads make forward progress but with
-> > the patch, multiple threads potentially attempt the allocation and fail
-> > instead of doing real work.
-> 
-> If my understanding of the code were correct, only the first thread will
-> attempt the isolation and allocation.  Because TestClearPageLRU() is
-> called in
-> 
->   migrate_misplaced_page()
->     numamigrate_isolate_page()
->       isolate_lru_page()
-> 
-> And migrate_misplaced_page() will return 0 immediately if
-> TestClearPageLRU() returns false.  Then the second thread will make the
-> page accessible and make forward progress.
-> 
+Please go ahead.
 
-Ok, that's true. While additional work is done, the cost is reasonably
-low -- lower than I initially imagined and with fewer side-effects.
+Thanks,
 
-> But there's still some timing difference between the original and
-> patched kernel.  We have several choices to reduce the difference.
-> 
-> 1. Check PageLRU() with PTL held in do_numa_page()
-> 
-> If PageLRU() return false, do_numa_page() can make the page accessible
-> firstly.  So the second thread will make the page accessible earlier.
-> 
-> 2. Try to lock the page with PTL held in do_numa_page()
-> 
-> If the try-locking succeeds, it's the first thread, so it can delay
-> mapping.  If try-locking fails, it may be the second thread, so it will
-> make the page accessible firstly.  We need to teach
-> migrate_misplaced_page() to work with the page locked.  This will
-> enlarge the duration that the page is locked.  Is it a problem?
-> 
-> 3. Check page_count() with PTL held in do_numa_page()
-> 
-> The first thread will call get_page() in numa_migrate_prep().  So if the
-> second thread can detect that, it can make the page accessible firstly.
-> The difficulty is that it appears hard to identify the expected
-> page_count() for the file pages.  For anonymous pages, that is much
-> easier, so at least if a page passes the following test, we can delay
-> mapping,
-> 
->     PageAnon(page) && page_count(page) == page_mapcount(page) + !!PageSwapCache(page)
-> 
-> This will disable the optimization for the file pages.  But it may be
-> good enough?
-> 
-> Which one do you think is better?  Maybe the first one is good enough?
-> 
+Paolo
 
-The first one is probably the most straight-forward but it's more
-important to figure out why interrupts were higher with at least one
-workload when the exact opposite is expected. Investigating which of
-options 1-3 are best and whether it's worth the duplicated check could
-be done as a separate patch.
-
-> > You should consider the following question -- is the potential saving
-> > of an IPI transmission enough to offset the cost of parallel accesses
-> > not making forward progress while one migration is setup and having
-> > different migration attempts collide?
-> >
-> > I have tests running just in case but I think the answer may be "no".
-> > So far only one useful test as completed (specjbb2005 with one VM per NUMA
-> > node) and it showed a mix of small gains and losses but with *higher*
-> > interrupts contrary to what was expected from the changelog.
-> 
-> That is hard to be understood.  May be caused by the bug you pointed out
-> (about was_writable)?
-> 
-
-It's possible and I could not figure out what the rationale behind the
-change was :/
-
-Fix it and run it through your tests to make sure it works as you
-expect. Assuming it passes your tests and it's posted, I'll read it again
-and run it through a battery of tests. If it shows that interrupts are
-lower and is either netural or improves performance in enough cases then
-I think it'll be ok. Even if it's only neutral in terms of performance
-but interrupts are lower, it'll be acceptable.
-
-Thanks!
-
--- 
-Mel Gorman
-SUSE Labs
