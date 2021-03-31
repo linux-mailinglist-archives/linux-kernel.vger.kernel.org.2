@@ -2,78 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515E734FAE8
+	by mail.lfdr.de (Postfix) with ESMTP id 0073534FAE7
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhCaH5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhCaH44 (ORCPT
+        id S234108AbhCaH5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:57:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234101AbhCaH4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:56:56 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0222C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id i144so20255219ybg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MgUMXHodW4czfJMBWwIWPw31+/LFTP5qzOrrXtIPGCw=;
-        b=Siv9O1/aTQJTOyFg1U8gNhaIBW8T+gXHDEXCMOZ2f/3rI2FvWEV9BghJoV768fl4qc
-         eOopFW94WgxW3h+K4y5MaW8oVhFM7g/MjxwrFcTVqbJf5aeF8mrSUFrCBcwTZlUWHVyV
-         B7njSXFqe3NUYw7qc/A4Zc5zkw+TDFdM2J7g0MNAXQBKJyojzTMb/csPbvei63oXB6m1
-         lTxtyJMBYyVkN9X+fuYY1q0lpH0jVJN2005oGF10yvvBdICWKy10f19jdfWxob9JQtT/
-         zMT73JClBXLQuzGhvOn0+Fbta9Y/ofAcXgG6ixJ9XlOFT2K5mCPOYt2EyhV5Cvs4ZP0t
-         2AIw==
+        Wed, 31 Mar 2021 03:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617177410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qTxlbCttfevuY4Yr7YqkiF6Z72PQYaAdmOgBQY9mW7c=;
+        b=PFpsKqUCpqHTMzg/RLSVlfOc3BLfSyt2Y3efJNXFxSINcLECB0PMAdJMaMtPMdpeDtlDxc
+        aGdb+P/qafq/d8nEwoKDsTAIWO+LKnstKaE6j6pxZHKLDje5kyjQwsPEsmE/EJV33Ttca+
+        Ux+c3XUkrZZj2GB6RI0EqgqlySa7pY0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-QT5o7rmOO9Gs76KjLfIyLQ-1; Wed, 31 Mar 2021 03:56:48 -0400
+X-MC-Unique: QT5o7rmOO9Gs76KjLfIyLQ-1
+Received: by mail-ed1-f69.google.com with SMTP id i19so668353edy.18
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:56:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MgUMXHodW4czfJMBWwIWPw31+/LFTP5qzOrrXtIPGCw=;
-        b=axstM1Y0MZCq77ofTHeCaXRN8VVDCMDvw0JJ30dbq5n50sCoZyEGZB7OwMvNxP2Ixq
-         4bDTNUXYSsvRP9pAgv3UI65UoyTft6+Zst/I5f9gS9TFnLetbpV5BCvH5DvPoURaNAtJ
-         BHCqdLzr0hNXdZovvH48KLPu0if7CrlAddpmR9avOMmKH1V9lKe1zwNYcvOR2gAO88r5
-         CS1NHxNzp37y5XdlRK3/WBvA+LpI7hk42LXIk2ea4HaxNXrnADfDY4k4MYNCQVwX3BT0
-         ZeYzAbFKm5aacsLCxWq/7eU6mWNE3rYb5NuIbwcI951tl8cb7Z754W1fSfN7Jso97Q7L
-         IF3w==
-X-Gm-Message-State: AOAM5302d+pjGlbb7BMIQqq+suz9O9lpqEwBd+qLGFh5HxzkSeJwijhi
-        StDT/dUlj119S3DYVCsOFkHxgyTEVFihr4R6d6pgoQ==
-X-Google-Smtp-Source: ABdhPJwAe6p7zIWjynyOOC6a+3NfJhGUZjRoLUE0/8hsS4pKJyVaZq3xDAXiChU5+H6y8JagPw7lbs2FDJQYG4Q+M+o=
-X-Received: by 2002:a25:768c:: with SMTP id r134mr3126449ybc.366.1617177415233;
- Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=qTxlbCttfevuY4Yr7YqkiF6Z72PQYaAdmOgBQY9mW7c=;
+        b=F3hHbohuobj4XCGUhEtuSvLfYR1tOpsyzEHYJljDOIHOa0/q/6bpysfioXRcPuh8/f
+         zBNwikK3qol9Pl27HTc4QGAH7gy9pEoO//VxjuDtqIC0au/DD57PFPIvRTVE/IR9o0i/
+         AJH9hgVv8LScyRDYFpAl+PcKxdig5qgKeB7/dQ51tRob/iIHdBr+mErFDtPjXkltW5nj
+         y2yHXo8FxR6gpDv21i4gl8O7j/WQeGEIFCtL3xEexEUoiKuqWRS6tcLc7lHGtgytUtNK
+         sFn7SXc4KU9JcmGCu7UU62hkUmLMAFaMBwFTUOqsPu1WyHsYfRL8YNLq7AgKGAV4KkkI
+         +HfA==
+X-Gm-Message-State: AOAM5336awsd0Q0dhy7sX5gzYsGUmJK39ieL5faX9ymtJLydDrdbQgpa
+        89HeycjcN2JXtgIt0hzvBq2oTcQkYD9xAqlvCYastJKZ7BRJ+pewL63GH4XFdFsSiohqKaWgJfi
+        blV8KPRw9vZC/CPy0+h0ntROe
+X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr2131019ejs.211.1617177407678;
+        Wed, 31 Mar 2021 00:56:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFxYg86aXW6gt6mF+7enQi7KHzpNTvnxSHMsXQA0W96uafrJeZq+ZXQBRq2t4vfe7cU2hWCg==
+X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr2131005ejs.211.1617177407440;
+        Wed, 31 Mar 2021 00:56:47 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id lk12sm665521ejb.14.2021.03.31.00.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 00:56:46 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 1/4] kvm: cpuid: adjust the returned nent field of
+ kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
+In-Reply-To: <1be7c716-8160-926e-6d76-fb15b4adc066@redhat.com>
+References: <20210330185841.44792-1-eesposit@redhat.com>
+ <20210330185841.44792-2-eesposit@redhat.com> <YGPmDbO++agqdqQL@google.com>
+ <1be7c716-8160-926e-6d76-fb15b4adc066@redhat.com>
+Date:   Wed, 31 Mar 2021 09:56:45 +0200
+Message-ID: <877dlnu56q.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com> <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 31 Mar 2021 09:56:44 +0200
-Message-ID: <CAMpxmJVKmBp06_2Hd4XF-eL4KfgZFy1o+xUvvs6H=TaAnkmYhA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 1:41 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
->
-> Do not allow exporting GPIOs which are set invalid
-> by the driver's valid mask.
->
-> Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
->
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
+Emanuele Giuseppe Esposito <eesposit@redhat.com> writes:
 
-Applied, thanks!
+> On 31/03/2021 05:01, Sean Christopherson wrote:
+>> On Tue, Mar 30, 2021, Emanuele Giuseppe Esposito wrote:
+>>> Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
+>>> a nent field inside the kvm_cpuid2 struct to be big enough to contain
+>>> all entries that will be set by kvm.
+>>> Therefore if the nent field is too high, kvm will adjust it to the
+>>> right value. If too low, -E2BIG is returned.
+>>>
+>>> However, when filling the entries do_cpuid_func() requires an
+>>> additional entry, so if the right nent is known in advance,
+>>> giving the exact number of entries won't work because it has to be increased
+>>> by one.
+>>>
+>>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+>>> ---
+>>>   arch/x86/kvm/cpuid.c | 6 ++++++
+>>>   1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>>> index 6bd2f8b830e4..5412b48b9103 100644
+>>> --- a/arch/x86/kvm/cpuid.c
+>>> +++ b/arch/x86/kvm/cpuid.c
+>>> @@ -975,6 +975,12 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+>>>   
+>>>   	if (cpuid->nent < 1)
+>>>   		return -E2BIG;
+>>> +
+>>> +	/* if there are X entries, we need to allocate at least X+1
+>>> +	 * entries but return the actual number of entries
+>>> +	 */
+>>> +	cpuid->nent++;
+>> 
+>> I don't see how this can be correct.
+>> 
+>> If this bonus entry really is needed, then won't that be reflected in array.nent?
+>> I.e won't KVM overrun the userspace buffer?
+>> 
+>> If it's not reflected in array.nent, that would imply there's an off-by-one check
+>> somewhere, or KVM is creating an entry that it doesn't copy to userspace.  The
+>> former seems unlikely as there are literally only two checks against maxnent,
+>> and they both look correct (famous last words...).
+>> 
+>> KVM does decrement array->nent in one specific case (CPUID.0xD.2..64), i.e. a
+>> false positive is theoretically possible, but that carries a WARN and requires a
+>> kernel or CPU bug as well.  And fudging nent for that case would still break
+>> normal use cases due to the overrun problem.
+>> 
+>> What am I missing?
+>
+> (Maybe I should have put this series as RFC)
+>
+> The problem I see and noticed while doing the KVM_GET_EMULATED_CPUID 
+> selftest is the following: assume there are 3 kvm emulated entries, and 
+> the user sets cpuid->nent = 3. This should work because kvm sets 3 
+> array->entries[], and copies them to user space.
+>
+> However, when the 3rd entry is populated inside kvm (array->entries[2]), 
+> array->nent is increased once more (do_host_cpuid and 
+> __do_cpuid_func_emulated). At that point, the loop in 
+> kvm_dev_ioctl_get_cpuid and get_cpuid_func can potentially iterate once 
+> more, going into the
+>
+> if (array->nent >= array->maxnent)
+> 	return -E2BIG;
+>
+> in __do_cpuid_func_emulated and do_host_cpuid, returning the error. I 
+> agree that we need that check there because the following code tries to 
+> access the array entry at array->nent index, but from what I understand 
+> that access can be potentially useless because it might just jump to the 
+> default entry in the switch statement and not set the entry, leaving 
+> array->nent to 3.
 
-Bart
+The problem seems to be exclusive to __do_cpuid_func_emulated(),
+do_host_cpuid() always does
+
+entry = &array->entries[array->nent++];
+
+Something like (completely untested and stupid):
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 6bd2f8b830e4..54dcabd3abec 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -565,14 +565,22 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
+        return entry;
+ }
+ 
++static bool cpuid_func_emulated(u32 func)
++{
++       return (func == 0) || (func == 1) || (func == 7);
++}
++
+ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+ {
+        struct kvm_cpuid_entry2 *entry;
+ 
++       if (!cpuid_func_emulated())
++               return 0;
++
+        if (array->nent >= array->maxnent)
+                return -E2BIG;
+ 
+-       entry = &array->entries[array->nent];
++       entry = &array->entries[array->nent++];
+        entry->function = func;
+        entry->index = 0;
+        entry->flags = 0;
+@@ -580,18 +588,14 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+        switch (func) {
+        case 0:
+                entry->eax = 7;
+-               ++array->nent;
+                break;
+        case 1:
+                entry->ecx = F(MOVBE);
+-               ++array->nent;
+                break;
+        case 7:
+                entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+                entry->eax = 0;
+                entry->ecx = F(RDPID);
+-               ++array->nent;
+-       default:
+                break;
+        }
+
+should do the job, right?
+
+
+-- 
+Vitaly
+
