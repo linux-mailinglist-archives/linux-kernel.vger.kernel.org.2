@@ -2,193 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED4434FD72
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE9234FD79
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbhCaJvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:51:11 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:33226 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhCaJul (ORCPT
+        id S234774AbhCaJwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:52:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234792AbhCaJvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:50:41 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210331095039euoutp0108d46f262989eeab7ad74a1fb3b7a4a4~xZH9mmboj3041030410euoutp01H
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:50:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210331095039euoutp0108d46f262989eeab7ad74a1fb3b7a4a4~xZH9mmboj3041030410euoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617184239;
-        bh=n4ijVkW2p2CbAjNlaISf5YB9Unqy0tGgSS/tBxUJTwA=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=bzm8gFrsVVfkINNQPIwJUp0A3JOgzL3UJlUJcAkRarXPkt+zy7vnw1U1UwFWtGz1z
-         7dLAbYVVg4cZ9HFlFsDWhGyFCW8JhgXb/5+PQnuXKjW32FrF3wVXCZe4plB7DlUwgC
-         rdtEic7E6LiNW1SmLyD/yq0J3nUuJj6gQlt9iMwI=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210331095039eucas1p289ed193f5a81de10a1de804bcf72937f~xZH9Oec1s0532205322eucas1p25;
-        Wed, 31 Mar 2021 09:50:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 12.4E.09452.EE544606; Wed, 31
-        Mar 2021 10:50:38 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210331095038eucas1p156a73f3dd0f205a44856e27b9682ab2b~xZH8kx2oX2614426144eucas1p1t;
-        Wed, 31 Mar 2021 09:50:38 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210331095038eusmtrp2e5306a4a5d0799cb7f4007cd8b3c6992~xZH8j5_v92531125311eusmtrp2Y;
-        Wed, 31 Mar 2021 09:50:38 +0000 (GMT)
-X-AuditID: cbfec7f2-a9fff700000024ec-8f-606445ee41ae
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F8.F4.08705.EE544606; Wed, 31
-        Mar 2021 10:50:38 +0100 (BST)
-Received: from localhost (unknown [106.210.131.79]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210331095036eusmtip25338a8acbe16b9a4ffd03c449074ce49~xZH6yaBqN0921909219eusmtip2G;
-        Wed, 31 Mar 2021 09:50:36 +0000 (GMT)
-Message-ID: <4c70cdb6-7fab-dc53-121e-f355da1ea14f@samsung.com>
-Date:   Wed, 31 Mar 2021 11:50:35 +0200
+        Wed, 31 Mar 2021 05:51:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617184310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gSVEMu/gb4JEhF05TMYdAdHmEbbEjzD0QedOu+4cT4M=;
+        b=iq4imOGbJkT/ZJ4ecr7xH9/z4je/W83CfNMXwBfR87oUT5Z3zE7MTPWnEFGmUaToi0ti52
+        qoiZZ8xIaLkTnVbYmSHB+nN9EoIjayRwc+j1buB3G2iOkfSz9qtOg+yZgpLQG4cYTnTfZj
+        gqHhtW7Rff43Q2oOefGYu9/bl9Ea2wU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-gItKbiTJMjuxxjrspMSKVQ-1; Wed, 31 Mar 2021 05:51:48 -0400
+X-MC-Unique: gItKbiTJMjuxxjrspMSKVQ-1
+Received: by mail-ed1-f71.google.com with SMTP id a2so830641edx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:51:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gSVEMu/gb4JEhF05TMYdAdHmEbbEjzD0QedOu+4cT4M=;
+        b=cM0aFIqKjWDJ7y/7emnXEbzsZ/j4EUOjb7Ym7XjHMnUulB0rfUpufJTO30Qy4syL1/
+         NR0D5dIXZgADTgzqysqeVymDL9PxU74IxL1VtQ9QTGrLyomQAVdZy6qfqQ67HCs6Wn+Q
+         sw9K6TWm0llXlvpjSsdSgSuY5jm9MTlb5MPzP/03mk8Ev0MwCZ1UdAxt5z+aPXomFTYi
+         hvWE//HscALfAQLnGia2KkBkWY9EJAPpx4tyO32j5pdSY3Bd4Y44fONUPo61o/nMRW09
+         6ngxDBkOv7oO3UNijXma33+hGHT7a933Uc1UFgTGBubXAxrYZocXbnyitxzqpRZKJz+e
+         7aXg==
+X-Gm-Message-State: AOAM532Zb06WRQDTVQI88tbWMvNelMyi61YUXeLwOASi12QlNIrbBujA
+        vFCXSnv5ZCcdOemRcvKcwDy8k24s9R3PdeI7X1Vfw6sfMDx/2er+VyYuGIOLQOCHTyGwDD/LkpM
+        QCk8zvlBLTZYvCpytOYuscxit
+X-Received: by 2002:aa7:d954:: with SMTP id l20mr2610490eds.1.1617184306910;
+        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzylwo4hPWcYcmlE62zpzxVfApqIEMleAceptnhOdFIA9MPn6oGC4nNnvquLFXWM5B7Cncu4w==
+X-Received: by 2002:aa7:d954:: with SMTP id l20mr2610446eds.1.1617184306509;
+        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h17sm1123457eds.26.2021.03.31.02.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5FCE6181B24; Wed, 31 Mar 2021 11:51:45 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 31 Mar 2021 11:51:45 +0200
+Message-ID: <878s63r6q6.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
-        Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH v2 04/14] drm/bridge: ti-sn65dsi86: Reorder remove()
-Content-Language: en-GB
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <20210329195255.v2.4.Ifcf1deaa372eba7eeb4f8eb516c5d15b77a657a9@changeid>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUwTZxzH99xzvbsSC0dx4RHfYsfULVrmZpabEpgZZJctSxRfkmGivckN
-        HbSwtuA0vrDhENupIAZCi2AUCnZuoFAo2o1ycyuMUVAGVm2sUhcGEVCKmjLHZjmW8d/n9/09
-        399bHgrKRyUx1B6NntdquEwFEYY3/xLsWT2WnKZ64/Toeua4uxNjutrGcKbb0k4wvz8ZJ5j+
-        Z8OQ6XzYjzPHiqtJpritm2T6rlQQjHBiOzMQ9ENmwnQfMnVBG2COGuKZ4M0CyLi8f2Dv0uy4
-        52uSNeddx1lzYbmEPe8YxtiKcx7IdhTdwFjvgINgW57ek7A+owtjq0v7CdZ5vARnA5eXbJyX
-        GhafxmfuyeW1cQmqsN3CAxeR3RbxxVTAS+SB6nkGIKUQvRa5/VbcAMIoOV0HUEPJJCYGkwB5
-        3E2zQQCgpyfKgAFQMxaL+4Co1wJU6eyAYvAnQHeMJ8lQXRmdgIyDjTDEOP0q6uu6C0U9EnWW
-        P8BD/DKtQlZPLRbiKJpFBpsgCTGko9FXkxckoaLz6WmAvi32z4wB6QCGJk4LMw6Cfg393XiL
-        CLGU3ooqbfmk6F6K8m3mmZEQfVuKrg76obhqErJZL+IiR6ERVxMp8iL0T2sVJvJh5Ks7Mmsu
-        BMjW0DprXo+87ikidAD4onP9lThR3oCe+aoI8S7hyDMaKc4Qjk41l0FRlqHCArn4ehnyddtm
-        C0ajmt4nRBFQmObcxTRnf9OcbUz/9z0LcCuI5nN06nRet0bD71XqOLUuR5Ou3JWlvgxe/Miu
-        adeEHZwZeawUAEYBASAKKubLopycSi5L4/bt57VZO7U5mbxOAAspXBEts5ov7pTT6Zyez+D5
-        bF77XxajpDF5mJzb8tGCtYszfr72w8fKXvsrsVHDMRHKgrtLN5S/pT6UvPrST1cvfJ9QBVeQ
-        i5XPT5Lm2rfP+D4cyrqtInu26/sqHD360pSN4yt2bKMnfjs28s2gsshyZ1Pjqpq+fZ9kTD9K
-        eScVFhpf2vppZKJ98H3HskC9IpB/qdY/5EmKmLoXk20NJIH2dYlxkzX6+nAtqvi8zBGMbR5L
-        Wbn8eYOio+gvYQE9FH9+ubN1VVMu2PZmguZWO2c3Lxmg/EON6u/eO/fQYi3ZW+lsSbwmWHZ8
-        GVua25D846ZeLjJ1JSWBWz47mnW//NfEs7uAvUa6/8jBwAePFJuNN242Fwx7q0s3X2+jW0gF
-        rtvNrXkdanXcv6BfVrMABAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPIsWRmVeSWpSXmKPExsVy+t/xe7rvXFMSDP7sE7LoPXeSyeL0/ncs
-        FmeXHWSzuPL1PZvF1e8vmS1OvrnKYtE5cQm7xcT9Z9ktLu+aw2ZxqC/a4trPx8wWn2Y9ZLZY
-        8XMro0V7l43Fz+ttzBbH7zxlchDweH+jld1jdsNFFo/ZHTNZPRbvecnkMWfRDWaPExMuMXnc
-        ubaHzWP7twesHve7jzN5LJl2lc3jQO9kFo/Pm+QCeKL0bIryS0tSFTLyi0tslaINLYz0DC0t
-        9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mg49Oc5WsJ+/4tfnO2wNjEt4uhg5OCQETCSW
-        navpYuTiEBJYyigxd+pyxi5GTqC4uMTu+W+ZIWxhiT/XuthAbCGBZ4wSi+cHgti8AnYS3Y82
-        g9WwCKhKXD59jxkiLihxcuYTFhBbVCBB4uyHeUwgtrCAh0TX1kOsIDYz0PymLytZQRaLCDQw
-        SVy6u5gJxGEW+Mok0fJqKTvESbcZJeYf+wbWwiagKfF3802wMzgFQiXmbW1mhxhlBjS2ixHC
-        lpdo3jqbeQKj0Cwkl8xCsnEWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECEwJ
-        24793LyDcd6rj3qHGJk4GA8xSnAwK4nwCh9ITBDiTUmsrEotyo8vKs1JLT7EaAoMjonMUqLJ
-        +cCklFcSb2hmYGpoYmZpYGppZqwkzrt17pp4IYH0xJLU7NTUgtQimD4mDk6pBqblB45ezXb8
-        LtO5eDLH1hoVbdM8j0yLBe+FVcp9Fv35d0blqMSUXstrzxb6C68r3aG3KEbP/PG21qq7O+Ot
-        DjwSzpac7XHxpxPDjO9G2+ME+9nWPZy4527gzKmly3Xubru9qCX8X8LPhbWp3lsXJzmdsb39
-        cV27/ZojfrNnLeuZ4Fm/32KNh4ZwRWjt7Ba+xtytBWZT9V9nrP5p9LomT70yQVSgdOqxroQJ
-        6m+mPGrIOf/23a9d55NjTudt+CyRtNTX+4+w9xt7uWf7lNL4OZXWu23VYxX6ppK36cw7XR0/
-        lrerv3xgCxTWDHph/Prfg328x+ROZE1lS8qI/nG7Lmxn/TTmKeYy0zcbBEw+fsxaiaU4I9FQ
-        i7moOBEAMaA6JpIDAAA=
-X-CMS-MailID: 20210331095038eucas1p156a73f3dd0f205a44856e27b9682ab2b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210330025419eucas1p2982892803a5d05226dbe6781bff61233
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210330025419eucas1p2982892803a5d05226dbe6781bff61233
-References: <20210330025345.3980086-1-dianders@chromium.org>
-        <CGME20210330025419eucas1p2982892803a5d05226dbe6781bff61233@eucas1p2.samsung.com>
-        <20210329195255.v2.4.Ifcf1deaa372eba7eeb4f8eb516c5d15b77a657a9@changeid>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
-> Let's make the remove() function strictly the reverse of the probe()
-> function so it's easier to reason about.
+> On 3/30/21 10:39 PM, Andrii Nakryiko wrote:
+>> On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
+>> <memxor@gmail.com> wrote:
+>>> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
+>>>> Is there some succinct but complete enough documentation/tutorial/etc
+>>>> that I can reasonably read to understand kernel APIs provided by TC
+>>>> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
+>>>> whether API makes sense or not. Please share links, if you have some.
+>>>
+>>> Hi Andrii,
+>>>
+>>> Unfortunately for the kernel API part, I couldn't find any when I was working
+>>> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
+>>> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
+>>> act_bpf.c) to grok anything I didn't understand. There's also similar code in
+>>> libnl (lib/route/{act,cls}.c).
+>>>
+>>> Other than that, these resources were useful (perhaps you already went through
+>>> some/all of them):
+>>>
+>>> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
+>>> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
+>>> tc(8), and tc-bpf(8) man pages
+>>>
+>>> I hope this is helpful!
+>> 
+>> Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
+>> trying to catch up.
+>> 
+>> I was just wondering if it would be more natural instead of having
+>> _dev _block variants and having to specify __u32 ifindex, __u32
+>> parent_id, __u32 protocol, to have some struct specifying TC
+>> "destination"? Maybe not, but I thought I'd bring this up early. So
+>> you'd have just bpf_tc_cls_attach(), and you'd so something like
+>> 
+>> bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
+>> 
+>> or
+>> 
+>> bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
+>> 
+>> ? Or it's taking it too far?
+>> 
+>> But even if not, I think detaching can be unified between _dev and
+>> _block, can't it?
 >
-> NOTES:
-> - The MIPI calls probably belong in detach() but will be moved in a
->    separate patch.
-
-
-The mipi is incorrectly handled already - mipi devices are searched 
-after bridge registration - it should be reverse, there is comment in 
-the driver that it is due to some dsi hosts, maybe it would be better to 
-fix it there instead of conserve this bad design.
-
-
-> - The cached EDID freeing isn't actually part of probe but needs to be
->    in remove to avoid orphaning memory until better handling of the
->    EDID happens.
-> This patch was created by code inspection and should move us closer to
-> a proper remove.
+> Do we even need the _block variant? I would rather prefer to take the chance
+> and make it as simple as possible, and only iff really needed extend with
+> other APIs, for example:
 >
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+>    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
 >
-> (no changes since v1)
->
->   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 15 ++++++++-------
->   1 file changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 76f43af6735d..c006678c9921 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -1315,20 +1315,21 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->   	if (!pdata)
->   		return -EINVAL;
->   
-> -	kfree(pdata->edid);
-> -	ti_sn_debugfs_remove(pdata);
-> -
-> -	of_node_put(pdata->host_node);
-> -
-> -	pm_runtime_disable(pdata->dev);
-> -
->   	if (pdata->dsi) {
->   		mipi_dsi_detach(pdata->dsi);
->   		mipi_dsi_device_unregister(pdata->dsi);
->   	}
->   
-> +	kfree(pdata->edid);
-> +
-> +	ti_sn_debugfs_remove(pdata);
-> +
->   	drm_bridge_remove(&pdata->bridge);
->   
-> +	pm_runtime_disable(pdata->dev);
-> +
-> +	of_node_put(pdata->host_node);
-> +
+> Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
+> iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
+> direct-action mode. This is /as simple as it gets/ and we don't need to bother
+> users with more complex tc/cls_bpf internals unless desired. For example,
+> extended APIs could add prio/parent so that multi-prog can be attached to a
+> single cls_bpf instance, but even that could be a second step, imho.
 
+While I'm all for simplifying where possible, the question becomes at
+what level? I.e., we initially figured we'd expose (most of) the netlink
+API in the low-level API (patch 3 in the series) and then have the
+bpf_program__* level API be the simple "just attach" one...
 
-Looks good.
+We could simplify the low-level one further, of course, for instance by
+getting rid of the block stuff entirely, but I don't see much value in
+leaving out the support for prio/parent in the bpf_tc_cls_* - we'd have
+to make the API extensible so it could be added later anyway, so why not
+just include it from the get-go (especially as Kumar has already written
+the code?)
 
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+-Toke
 
-Regards
-Andrzej
-
-
->   	return 0;
->   }
->   	
