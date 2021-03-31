@@ -2,246 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E40E35060C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAE5350617
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234842AbhCaSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
+        id S234778AbhCaSOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234526AbhCaSKp (ORCPT
+        with ESMTP id S234526AbhCaSOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:10:45 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AE5C061574;
-        Wed, 31 Mar 2021 11:10:45 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id d12so9374298lfv.11;
-        Wed, 31 Mar 2021 11:10:45 -0700 (PDT)
+        Wed, 31 Mar 2021 14:14:05 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F88C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:14:03 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id iu14so4814569qvb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xtfOZrmw/G2xBCH8BNQoITRY/KZ078scjS3Vm8ZtL54=;
-        b=b3GAoj5k+BVMB3xeSlS+LvS3MJIaA2VvG/xi1oZ3CPD+uNxGQQ2Xt8ckOqWLE42Xc5
-         S+Ph9TRefQiG56MtbR1uCeNxqMufmns2fvrHZvLGLdutaEsNzc/dq/91Ovzq5TaUpvHb
-         rKeWF1qijOJVU12OhMGYRf/8xFgr57hubiOJFY6m6azTx7Cu715EAMF0+EqDShXuzwbc
-         gO0JzTtIkhH9Q/VDms/tKun2koDqVzk6wlTWxYAYtWakt+KFgKbkOBWCOlz1mDitlq+Z
-         utt9WHuftP5VeVHUQPdCIySlRJjHgI8VssWajxCyczddvVU6Ip6ouOHY+Qr6t9ZkKUFc
-         Pvnw==
+        bh=DGHBOgZ9z+ijGSYvMbAUScUUc1fpYcdzhLK1Gz/qsF4=;
+        b=cjwRRU5r5DXi54jts92fcHzj7omC2BLIU9CC98t4b6qpx2gm1ClCcMmjFWsLdVupB3
+         pILl7DfeVfiEo+03z0lg87b0ItP3mhhaaGNyQOJhbR/IKdK9WjQcO5YbF/6iBoSkA/zL
+         aPs1DtpJC3fT0lWlCGtog20Mv9pCeYhZNrxKRTXrrCmF99BWK5+SAnLG3fxeBAax6sKN
+         1Z1ckMiKLCdPzF7QOslY3GEB6+pI2MpWtPYWBIVjwdnqwa7OA+icj8qxSulAfiKjmg6+
+         YJRE/DgkW1AJMyqXTOHFVaYHeHwLu92lUXsFyIVL0/CHISzazjPLou9hkYVt+o97aEtg
+         xWoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xtfOZrmw/G2xBCH8BNQoITRY/KZ078scjS3Vm8ZtL54=;
-        b=WTjZpyyMCcwV8HI8/XkT3iYwwcycDfnoBUxJ+c9GUwc2kECP53U7/hnd0ok36x3gND
-         5ww0zSofKgMDx2sLSo0zU1cifhV9iEftW4wPsHuY7y1vgOXYfQim57CrKIihrTeQ9xnQ
-         EGwc3pf5zhVqRDMXuGUMyce2QR8mUKQwP3r7s5vBA+yvL4HnRl19KNMuizBeziJ5vGoP
-         6Kre6TPAqY6/ZX38IcoikGgovNRgi6b6bMXzBv4Kzdk1FsnOfRMCiAqFAtXpoO55tJ3T
-         wSDfkK1/otK6mqWpRPFXYvD+gWQGLbup11cXFojDxrvlO5rsTY+7oOQAXYjgCTo9CFJ6
-         PUsA==
-X-Gm-Message-State: AOAM531ieE3rE4GFJhFhv/ZnR2J6DedAMF5pRMSj4W0YA0D9mkafzMsb
-        q5oIhekymA9lDwwJsDURyKg=
-X-Google-Smtp-Source: ABdhPJxoi8dLmsINmMA+u7ftKCym+36G1073Td2cmxITbqGPwqeTGFgJ0nNnuufO2broqZNbspGz/g==
-X-Received: by 2002:a19:4911:: with SMTP id w17mr2829730lfa.361.1617214243764;
-        Wed, 31 Mar 2021 11:10:43 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id n24sm294864lfe.264.2021.03.31.11.10.42
+        bh=DGHBOgZ9z+ijGSYvMbAUScUUc1fpYcdzhLK1Gz/qsF4=;
+        b=gpazSfYBw6Xrvna8qm95HcTw7jtiOnmRFCkOnb2Cgjxis3uBaUtR7ttoBx4Mdg90hN
+         OkYnPlGbsO9BodQtYSAFm/Wa43upxBFU2qEC+z5PcY78w2S/2/GmfvQ4P7067aPg5gFj
+         dTCGb8dm0suDTyCT3IjeV1E0/9AiRr1unaQCV2l3OaHdCvYgsQFiciVKCBKWXO20eulo
+         z3K2PFgI+QFldcKrQm2FeiwtLMDhVnz8LYIGClClg6PpZuxRqqAmOJOndlpGTTLZRH+p
+         +wMSEbJp1u7zFzd3rvzefQx18ICigqr8vhroUVTSMZ2E7Nb7zvFzJv/g0+RK5f9rsoRc
+         SQIQ==
+X-Gm-Message-State: AOAM5302aJG2C3siTv4t/m8FpdHlSBPurto8Oma7hiAxniCUymPJW7zv
+        WeKmokItRyUz3D5ob/vx+Kg1EQ==
+X-Google-Smtp-Source: ABdhPJxHXGUw0k/Ga6H629uZQFFYpj8+UNwg8mAcw6HBEcVeolwGGG6/iuNtXbxYieZFFWPJRCYZLQ==
+X-Received: by 2002:a05:6214:20ad:: with SMTP id 13mr4038088qvd.35.1617214442555;
+        Wed, 31 Mar 2021 11:14:02 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id m16sm1963179qkm.100.2021.03.31.11.14.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 11:10:43 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 21:10:41 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Brad Larson <brad@pensando.io>
-Cc:     linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        broonie@kernel.org, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, olof@lixom.net, linux-gpio@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/13] gpio: Add Elba SoC gpio driver for spi cs
- control
-Message-ID: <20210331181041.me5mqqagtml355vk@mobilestation>
-References: <20210329015938.20316-1-brad@pensando.io>
- <20210329015938.20316-2-brad@pensando.io>
+        Wed, 31 Mar 2021 11:14:01 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:14:00 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 00/27] Memory Folios
+Message-ID: <YGS76CfjNc2jfYQ7@cmpxchg.org>
+References: <20210320054104.1300774-1-willy@infradead.org>
+ <YFja/LRC1NI6quL6@cmpxchg.org>
+ <20210322184744.GU1719932@casper.infradead.org>
+ <YFqH3B80Gn8pcPqB@cmpxchg.org>
+ <20210324062421.GQ1719932@casper.infradead.org>
+ <YF4eX/VBPLmontA+@cmpxchg.org>
+ <20210329165832.GG351017@casper.infradead.org>
+ <YGN8biqigvPP0SGN@cmpxchg.org>
+ <20210330210929.GR351017@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329015938.20316-2-brad@pensando.io>
+In-Reply-To: <20210330210929.GR351017@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 06:59:26PM -0700, Brad Larson wrote:
-> This GPIO driver is for the Pensando Elba SoC which
-> provides control of four chip selects on two SPI busses.
+On Tue, Mar 30, 2021 at 10:09:29PM +0100, Matthew Wilcox wrote:
+> On Tue, Mar 30, 2021 at 03:30:54PM -0400, Johannes Weiner wrote:
+> > Hi Willy,
+> > 
+> > On Mon, Mar 29, 2021 at 05:58:32PM +0100, Matthew Wilcox wrote:
+> > > I'm going to respond to some points in detail below, but there are a
+> > > couple of overarching themes that I want to bring out up here.
+> > > 
+> > > Grand Vision
+> > > ~~~~~~~~~~~~
+> > > 
+> > > I haven't outlined my long-term plan.  Partly because it is a _very_
+> > > long way off, and partly because I think what I'm doing stands on its
+> > > own.  But some of the points below bear on this, so I'll do it now.
+> > > 
+> > > Eventually, I want to make struct page optional for allocations.  It's too
+> > > small for some things (allocating page tables, for example), and overly
+> > > large for others (allocating a 2MB page, networking page_pool).  I don't
+> > > want to change its size in the meantime; having a struct page refer to
+> > > PAGE_SIZE bytes is something that's quite deeply baked in.
+> > 
+> > Right, I think it's overloaded and it needs to go away from many
+> > contexts it's used in today.
+> > 
+> > I think it describes a real physical thing, though, and won't go away
+> > as a concept. More on that below.
 > 
-> Signed-off-by: Brad Larson <brad@pensando.io>
-> ---
->  drivers/gpio/Kconfig           |   6 ++
->  drivers/gpio/Makefile          |   1 +
->  drivers/gpio/gpio-elba-spics.c | 114 +++++++++++++++++++++++++++++++++
->  3 files changed, 121 insertions(+)
->  create mode 100644 drivers/gpio/gpio-elba-spics.c
+> I'm at least 90% with you on this, and we're just quibbling over details
+> at this point, I think.
 > 
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index e3607ec4c2e8..4720459b24f5 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -241,6 +241,12 @@ config GPIO_EIC_SPRD
->  	help
->  	  Say yes here to support Spreadtrum EIC device.
->  
-> +config GPIO_ELBA_SPICS
-> +	bool "Pensando Elba SPI chip-select"
-> +	depends on (ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST)
-> +	help
-> +	  Say yes here to support the Penasndo Elba SoC SPI chip-select driver
-> +
->  config GPIO_EM
->  	tristate "Emma Mobile GPIO"
->  	depends on (ARCH_EMEV2 || COMPILE_TEST) && OF_GPIO
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index c58a90a3c3b1..c5c7acad371b 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -54,6 +54,7 @@ obj-$(CONFIG_GPIO_DAVINCI)		+= gpio-davinci.o
->  obj-$(CONFIG_GPIO_DLN2)			+= gpio-dln2.o
->  obj-$(CONFIG_GPIO_DWAPB)		+= gpio-dwapb.o
->  obj-$(CONFIG_GPIO_EIC_SPRD)		+= gpio-eic-sprd.o
-> +obj-$(CONFIG_GPIO_ELBA_SPICS)		+= gpio-elba-spics.o
->  obj-$(CONFIG_GPIO_EM)			+= gpio-em.o
->  obj-$(CONFIG_GPIO_EP93XX)		+= gpio-ep93xx.o
->  obj-$(CONFIG_GPIO_EXAR)			+= gpio-exar.o
-> diff --git a/drivers/gpio/gpio-elba-spics.c b/drivers/gpio/gpio-elba-spics.c
-> new file mode 100644
-> index 000000000000..351bbaeea033
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-elba-spics.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Pensando Elba SoC SPI chip select driver
-> + *
-> + * Copyright (c) 2020-2021, Pensando Systems Inc.
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/gpio.h>
-> +#include <linux/module.h>
-> +#include <linux/io.h>
-> +#include <linux/init.h>
-> +//#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +/*
-> + * pin:	     3		  2	   |	   1		0
-> + * bit:	 7------6------5------4----|---3------2------1------0
-> + *	cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0	 cs0_ovr
-> + *		   ssi1		   |		 ssi0
-> + */
-> +#define SPICS_PIN_SHIFT(pin)	(2 * (pin))
-> +#define SPICS_MASK(pin)		(0x3 << SPICS_PIN_SHIFT(pin))
-> +#define SPICS_SET(pin, val)	((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
-> +
-> +struct elba_spics_priv {
-> +	void __iomem *base;
-> +	spinlock_t lock;
-> +	struct gpio_chip chip;
-> +};
-> +
-> +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static void elba_spics_set_value(struct gpio_chip *chip,
-> +		unsigned int pin, int value)
-> +{
-> +	struct elba_spics_priv *p = gpiochip_get_data(chip);
-> +	unsigned long flags;
-> +	u32 tmp;
-> +
-> +	/* select chip select from register */
-> +	spin_lock_irqsave(&p->lock, flags);
-> +	tmp = readl_relaxed(p->base);
-> +	tmp = (tmp & ~SPICS_MASK(pin)) | SPICS_SET(pin, value);
-> +	writel_relaxed(tmp, p->base);
-> +	spin_unlock_irqrestore(&p->lock, flags);
-> +}
-> +
-> +static int elba_spics_direction_input(struct gpio_chip *chip, unsigned int pin)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static int elba_spics_direction_output(struct gpio_chip *chip,
-> +		unsigned int pin, int value)
-> +{
-> +	elba_spics_set_value(chip, pin, value);
-> +	return 0;
-> +}
-> +
-> +static int elba_spics_probe(struct platform_device *pdev)
-> +{
-> +	struct elba_spics_priv *p;
-> +	struct resource *res;
-> +	int ret = 0;
-> +
-> +	p = devm_kzalloc(&pdev->dev, sizeof(*p), GFP_KERNEL);
-> +	if (!p)
-> +		return -ENOMEM;
-> +
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	p->base = devm_ioremap_resource(&pdev->dev, res);
-
-In accordance with the DTS-node this is just a single register
-0x307c2468-0x307c24C picked from some bigger block, which most likely
-belongs to something like a system controller. PCIe node has got
-another register from there "0x307c2480-0x307c2484/* MS CFG_WDT */",
-and some BSM device too "0x307c2080-0x307c2084". Please consider using
-syscon instead of directly requesting the resource here.
-
--Sergey
-
-> +	if (IS_ERR(p->base))
-> +		return PTR_ERR(p->base);
-> +	spin_lock_init(&p->lock);
-> +	platform_set_drvdata(pdev, p);
-> +
-> +	p->chip.ngpio = 4;	/* 2 cs pins for spi0, and 2 for spi1 */
-> +	p->chip.base = -1;
-> +	p->chip.direction_input = elba_spics_direction_input;
-> +	p->chip.direction_output = elba_spics_direction_output;
-> +	p->chip.get = elba_spics_get_value;
-> +	p->chip.set = elba_spics_set_value;
-> +	p->chip.label = dev_name(&pdev->dev);
-> +	p->chip.parent = &pdev->dev;
-> +	p->chip.owner = THIS_MODULE;
-> +
-> +	ret = devm_gpiochip_add_data(&pdev->dev, &p->chip, p);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "unable to add gpio chip\n");
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id elba_spics_of_match[] = {
-> +	{ .compatible = "pensando,elba-spics" },
-> +	{}
-> +};
-> +
-> +static struct platform_driver elba_spics_driver = {
-> +	.probe = elba_spics_probe,
-> +	.driver = {
-> +		.name = "pensando-elba-spics",
-> +		.of_match_table = elba_spics_of_match,
-> +	},
-> +};
-> +module_platform_driver(elba_spics_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Pensando Elba SoC SPI chip-select driver");
-> -- 
-> 2.17.1
+> > > In broad strokes, I think that having a Power Of Two Allocator
+> > > with Descriptor (POTAD) is a useful foundational allocator to have.
+> > > The specific allocator that we call the buddy allocator is very clever for
+> > > the 1990s, but touches too many cachelines to be good with today's CPUs.
+> > > The generalisation of the buddy allocator to the POTAD lets us allocate
+> > > smaller quantities (eg a 512 byte block) and allocate descriptors which
+> > > differ in size from a struct page.  For an extreme example, see xfs_buf
+> > > which is 360 bytes and is the descriptor for an allocation between 512
+> > > and 65536 bytes.
+> > 
+> > I actually disagree with this rather strongly. If anything, the buddy
+> > allocator has turned out to be a pretty poor fit for the foundational
+> > allocator.
+> > 
+> > On paper, it is elegant and versatile in serving essentially arbitrary
+> > memory blocks. In practice, we mostly just need 4k and 2M chunks from
+> > it. And it sucks at the 2M ones because of the fragmentation caused by
+> > the ungrouped 4k blocks.
 > 
+> That's a very Intel-centric way of looking at it.  Other architectures
+> support a multitude of page sizes, from the insane ia64 (4k, 8k, 16k, then
+> every power of four up to 4GB) to more reasonable options like (4k, 32k,
+> 256k, 2M, 16M, 128M).  But we (in software) shouldn't constrain ourselves
+> to thinking in terms of what the hardware currently supports.  Google
+> have data showing that for their workloads, 32kB is the goldilocks size.
+> I'm sure for some workloads, it's much higher and for others it's lower.
+> But for almost no workload is 4kB the right choice any more, and probably
+> hasn't been since the late 90s.
+
+You missed my point entirely.
+
+It's not about the exact page sizes, it's about the fragmentation
+issue when you mix variable-sized blocks without lifetime grouping.
+
+Anyway, we digressed quite far here. My argument was simply that it's
+conceivable we'll switch to a default allocation block and page size
+that is larger than the smallest paging size supported by the CPU and
+the kernel. (Various architectures might support multiple page sizes,
+but once you pick one, that's the smallest quantity the kernel pages.)
+
+That makes "bundle of pages" a short-sighted abstraction, and folio a
+poor name for pageable units.
+
+I might be wrong about what happens to PAGE_SIZE eventually (even
+though your broader arguments around allocator behavior and
+fragmentation don't seem to line up with my observations from
+production systems, or the evolution of how we manage allocations of
+different sizes) - but you also haven't made a good argument why the
+API *should* continue to imply we're dealing with one or more pages.
+
+Yes, it's a bit bikesheddy. But you're proposing an abstraction for
+one of the most fundamental data structures in the operating system,
+with tens of thousands of instances in almost all core subsystems.
+
+"Bundle of pages (for now) with filesystem data (and maybe anon data
+since it's sort of convenient in terms of data structure, for now)"
+just doesn't make me go "Yeah, that's it."
+
+I would understand cache_entry for the cache; mem for cache and file
+(that discussion trailed off); pageable if we want to imply a sizing
+and alignment constraints based on the underlying MMU.
+
+I would even prefer kerb, because at least it wouldn't be misleading
+if we do have non-struct page backing in the future.
+
+> > The great thing about the slab allocator isn't just that it manages
+> > internal fragmentation of the larger underlying blocks. It also groups
+> > related objects by lifetime/age and reclaimability, which dramatically
+> > mitigates the external fragmentation of the memory space.
+> > 
+> > The buddy allocator on the other hand has no idea what you want that
+> > 4k block for, and whether it pairs up well with the 4k block it just
+> > handed to somebody else. But the decision it makes in that moment is
+> > crucial for its ability to serve larger blocks later on.
+> > 
+> > We do some mobility grouping based on how reclaimable or migratable
+> > the memory is, but it's not the full answer.
+> 
+> I don't think that's entirely true.  The vast majority of memory in any
+> machine is either anonymous or page cache.  The problem is that right now,
+> all anonymous and page cache allocations are order-0 (... or order-9).
+> So the buddy allocator can't know anything useful about the pages and will
+> often allocate one order-0 page to the page cache, then allocate its buddy
+> to the slab cache in order to allocate the radix_tree_node to store the
+> pointer to the page in (ok, radix tree nodes come from an order-2 cache,
+> but it still prevents this order-9 page from being assembled).
+> 
+> If the movable allocations suddenly start being order-3 and order-4,
+> the unmovable, unreclaimable allocations are naturally going to group
+> down in the lower orders, and we won't have the problem that a single
+> dentry blocks the allocation of an entire 2MB page.
+
+I don't follow what you're saying here.
+
+> > A variable size allocator without object type grouping will always
+> > have difficulties producing anything but the smallest block size after
+> > some uptime. It's inherently flawed that way.
+> 
+> I think our buddy allocator is flawed, to be sure, but only because
+> it doesn't handle movable hints more aggressively.  For example, at
+> the point that a largeish block gets a single non-movable allocation,
+> all the movable allocations within that block should be migrated out.
+> If the offending allocation is freed quickly, it all collapses into a
+> large, useful chunk, or if not, then it provides a sponge to soak up
+> other non-movable allocations.
+
+The object type implies aging rules and typical access patterns that
+are not going to be captured purely by migratability. As such, the
+migratetype alone will always perform worse than full type grouping.
+
+E.g. a burst of inodes and dentries allocations can claim a large
+number of blocks from movable to reclaimable, which will then also be
+used to serve concurrent allocations of a different type that may have
+much longer lifetimes. After the inodes and dentries disappear again,
+you're stuck with very sparsely populated reclaimable blocks.
+
+They can still be reclaimed, but they won't free up as easily as a
+contiguous run of bulk-aged inodes and dentries.
+
+You also cannot easily move reclaimable objects out of the block when
+an unmovable allocation claims it the same way, so this is sort of a
+moot proposal anyway.
+
+The slab allocator isn't a guarantee, but I don't see why you're
+arguing we should leave additional lifetime/usage hints on the table.
+
+> > As drivers go, I think there are slightly different requirements to
+> > filesystems, too. For filesystems, when the VM can finally do it (and
+> > the file range permits it), I assume we want to rather transparently
+> > increase the unit of data transfer from 4k to 2M. Most drivers that
+> > currently hardcode alloc_page() or PAGE_SIZE OTOH probably don't want
+> > us to bump their allocation sizes.
+> 
+> If you take a look at my earlier work, you'll see me using a range of
+> sizes in the page cache, starting at 16kB and gradually increasing to
+> (theoretically) 2MB, although the algorithm tended to top out around
+> 256kB.  Doing particularly large reads could see 512kB/1MB reads, but
+> it was very hard to hit 2MB in practice.  I wasn't too concerned at the
+> time, but my point is that we do want to automatically tune the size
+> of the allocation unit to the workload.  An application which reads in
+> 64kB chunks is giving us a pretty clear signal that they want to manage
+> memory in 64kB chunks.
+
+You missed my point here, but it sounds like we agree that drivers who
+just want a fixed buffer should not use the same type that filesystems
+use for dynamic paging units.
+
+> > > It'd probably be better to have the dcache realise that its old entries
+> > > aren't useful any more and age them out instead of relying on memory
+> > > pressure to remove old entries, so this is probably an unnecessary
+> > > digression.
+> > 
+> > It's difficult to identify a universally acceptable line for
+> > usefulness of caches other than physical memory pressure.
+> > 
+> > The good thing about the memory pressure threshold is that you KNOW
+> > somebody else has immediate use for the memory, and you're justified
+> > in recycling and reallocating caches from the cold end.
+> > 
+> > Without that, you'd either have to set an arbitrary size cutoff or an
+> > arbitrary aging cutoff (not used in the last minute e.g.). But optimal
+> > settings for either of those depend on the workload, and aren't very
+> > intuitive to configure.
+> 
+> For the dentry cache, I think there is a more useful metric, and that's
+> length of the hash chain.  If it gets too long, we're spending more time
+> walking it than we're saving by having entries cached.  Starting reclaim
+> based on "this bucket of the dcache has twenty entries in it" would
+> probably work quite well.
+
+That might work for this cache, but it's not a generic solution to
+fragmentation caused by cache positions building in the absence of
+memory pressure.
+
+> > Our levels of internal fragmentation are historically low, which of
+> > course is nice by itself. But that's also what's causing problems in
+> > the form of external fragmentation, and why we struggle to produce 2M
+> > blocks. It's multitudes easier to free one 2M slab page of
+> > consecutively allocated inodes than it is to free 512 batches of
+> > different objects with conflicting lifetimes, ages, or potentially
+> > even reclaimability.
+> 
+> Unf.  I don't think freeing 2MB worth of _anything_ is ever going to be
+> easy enough to rely on.  My actual root filesystem:
+> 
+> xfs_inode         143134 144460   1024   32    8 : tunables    0    0    0 : slabdata   4517   4517      0
+> 
+> So we'd have to be able to free 2048 of those 143k inodes, and they all
+> have to be consecutive (and aligned).  I suppose we could model that and
+> try to work out how many we'd have to be able to free in order to get all
+> 2048 in any page free, but I bet it's a variant of the Birthday Paradox,
+> and we'd find it's something crazy like half of them.
+
+How is it different than freeing a 4k page in 1995?
+
+The descriptor size itself may not have scaled at the same rate as
+overall memory size. But that also means the cache position itself is
+much less a concern in terms of memory consumed and fragmented.
+
+Case in point, this is 141M. Yes, probably with a mixture of some hot
+and a long tail of cold entries. It's not really an interesting
+reclaim target.
+
+When slab cache positions become a reclaim concern, it's usually when
+they spike due to a change in the workload. And then you tend to get
+contiguous runs of objects with a similar age.
+
+> Without slab gaining the ability to ask users to relocate allocations,
+> I think any memory sent to slab is never coming back.
+
+Not sure what data you're basing this on.
+
+> So ... even if I accept every part of your vision as the way things
+> are going to be, I think the folio patchset I have now is a step in the
+> right direction.  I'm going to send a v6 now and hope it's not too late
+> for this merge window.
+
+I don't think folio as an abstraction is cooked enough to replace such
+a major part of the kernel with it. so I'm against merging it now.
+
+I would really like to see a better definition of what it actually
+represents, instead of a fluid combination of implementation details
+and conveniences.
