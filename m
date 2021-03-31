@@ -2,72 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C63834F942
+	by mail.lfdr.de (Postfix) with ESMTP id 87EFA34F943
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhCaGwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:52:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32931 "EHLO mga11.intel.com"
+        id S233826AbhCaGwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:52:12 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39067 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233801AbhCaGvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:51:44 -0400
-IronPort-SDR: nT8LELN3J8FAXvFlH/4IFBdY0MQjkci5evUlIgUeLdxbzudcj8Heo4626yNw0duArmBBqpqx5R
- ss0NEUx0PsjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="188671798"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="188671798"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 23:51:44 -0700
-IronPort-SDR: iW1q8JeezhyiUx+5NiGB4Y/MpMVn6fxdop4H0aMl8EVidsEQMkTEu3WTOsNdV5Gy5Jl6bYl5zw
- 5ZJFeX3zcRmg==
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="527648485"
-Received: from mwamucix-mobl3.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.24.224])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 23:51:40 -0700
-Date:   Wed, 31 Mar 2021 19:51:38 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Boris Petkov <bp@alien8.de>
-Cc:     seanjc@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarkko@kernel.org, luto@kernel.org, dave.hansen@intel.com,
-        rick.p.edgecombe@intel.com, haitao.huang@intel.com,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
- guests
-Message-Id: <20210331195138.2af97ec1bb4b5e4202f2600d@intel.com>
-In-Reply-To: <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
-References: <cover.1616136307.git.kai.huang@intel.com>
-        <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
-        <20210326150320.GF25229@zn.tnic>
-        <20210331141032.db59586da8ba2cccf7b46f77@intel.com>
-        <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233833AbhCaGv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:51:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9H6g1brSz9sW4;
+        Wed, 31 Mar 2021 17:51:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617173515;
+        bh=AFkKVjfftEpgY6NKnLbBw7v4gESuwtowd7l+3shPkmc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=A53DouJ98es2Rfv1xO3u6SN8c8PTquZp0GAAOSZ103HiZb7E4uyWp32BFnTGh4IA+
+         7+fkz18oIqupcQLESVC3TBpCbth/OgoUBzhL52r9+vwDMsg3aA9KmdVnHjLJjekAF9
+         QOG19QIfoJbMUQ8YHx9eZW4p+oEjLuZuw85L4OJSV7MY7wNn/9hgTOFrsbF7mrI9Gj
+         gOrhbpfnX8w/qIyvgWDw/IHrMK/dEsO/rkfb/xb5j8XNR/R4yKqHY5RQlG3F+T5auR
+         7d0tQAWiD8MiuCbXEHDHJ6BJ9lLY0JI6F/O//pbiyC1zHal02gRnZiGy+8qAIVhELH
+         F09R+qpyNDrMw==
+Date:   Wed, 31 Mar 2021 17:51:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the staging tree with the scmi tree
+Message-ID: <20210331175151.67fcfe4d@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/t_YDmqPOl1wSFzdtEpn/d_z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 08:44:23 +0200 Boris Petkov wrote:
-> On March 31, 2021 3:10:32 AM GMT+02:00, Kai Huang <kai.huang@intel.com> wrote: 
-> 
-> > The admin will be aware of
-> >such EPC
-> >allocation disjoint situation, and deploy host enclaves/KVM SGX guests
-> >accordingly.
-> 
-> The admin will be aware because...
-> 
-> 1) he's following our discussion?
-> 
-> 2) he'll read the commit messages and hopefully understand?
-> 
-> 3) we *actually* have documentation somewhere explaining how we envision that stuff to be used?
-> 
-> Or none of the above and he'll end up doing whatever and then he'll eventually figure out that we don't support that use case but he's doing it already anyway and we don't break userspace so we have to support it now and we're stuck somewhere between a rock and a hard place?
-> 
-> Hmm, I think we have enough misguided use cases as it is - don't need another one.
+--Sig_/t_YDmqPOl1wSFzdtEpn/d_z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-How about adding explanation to Documentation/x86/sgx.rst?
+Hi all,
+
+Today's linux-next merge of the staging tree got a conflict in:
+
+  drivers/iio/common/scmi_sensors/scmi_iio.c
+
+between commit:
+
+  25cbdd4609c0 ("iio/scmi: Port driver to the new scmi_sensor_proto_ops int=
+erface")
+
+from the scmi tree and commit:
+
+  1b33dfa5d5f1 ("Merge remote-tracking branch 'local/ib-iio-scmi-5.12-rc2-t=
+ake3' into togreg")
+
+from the staging tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/iio/common/scmi_sensors/scmi_iio.c
+index 8f4154d92c68,63e4cec9de5e..000000000000
+--- a/drivers/iio/common/scmi_sensors/scmi_iio.c
++++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+@@@ -505,25 -528,9 +505,11 @@@ static int scmi_iio_set_sampling_freq_a
+  	return 0;
+  }
+ =20
+- static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+- {
+- 	struct iio_buffer *buffer;
+-=20
+- 	buffer =3D devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+- 	if (!buffer)
+- 		return -ENOMEM;
+-=20
+- 	iio_device_attach_buffer(scmi_iiodev, buffer);
+- 	scmi_iiodev->modes |=3D INDIO_BUFFER_SOFTWARE;
+- 	scmi_iiodev->setup_ops =3D &scmi_iio_buffer_ops;
+- 	return 0;
+- }
+-=20
+ -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+ -					 struct scmi_handle *handle,
+ -					 const struct scmi_sensor_info *sensor_info)
+ +static struct iio_dev *
+ +scmi_alloc_iiodev(struct scmi_device *sdev,
+ +		  const struct scmi_sensor_proto_ops *ops,
+ +		  struct scmi_protocol_handle *ph,
+ +		  const struct scmi_sensor_info *sensor_info)
+  {
+  	struct iio_chan_spec *iio_channels;
+  	struct scmi_iio_priv *sensor;
+
+--Sig_/t_YDmqPOl1wSFzdtEpn/d_z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBkHAcACgkQAVBC80lX
+0GzRawf/foe/OFODjb9SqfahME5uln/jRruFmZ521n21M6RB/tvOZIGu3pPDomhe
+ZEMW4kXZjJ3na6sIhtn5BuwN4vDjJLrZW+oRl4I4PpkMvJN3SPl+V8JpSRERO3Oy
+mVoIurryfZONZUaf/gl+Ka4nCs6fuhTGKzyhpWMzsh/yaofUhm+sZdHZ/4kGBW5s
+628MgIYB9735qm0V2Wy3Mmken+3aANhvU6B9cAO84kOENYdJhCgAANq+CBmI/gDZ
+agqDmeAPOgH2dCzI9ecMWVfZzc167ut3RWQh9ry4nBcMrCTlU5DgegSZJbfYwWMK
+sKgh7wmcGrZjP/ky3EXF9k9D42fxPQ==
+=e9uJ
+-----END PGP SIGNATURE-----
+
+--Sig_/t_YDmqPOl1wSFzdtEpn/d_z--
