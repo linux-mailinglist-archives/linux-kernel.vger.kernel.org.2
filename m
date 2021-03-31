@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF2B35062E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F91D350624
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbhCaSUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhCaSUD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:20:03 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C65C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:20:03 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id c16so20914175oib.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eAYTQaJdrmG3cmFWcS3gzQG6ElBG/4MajNjtha7zzDA=;
-        b=HmHxGkKMJJmT48PANcI7vkvEJKgi4NyjZN4w3sws11oYxnJf0YVTtgZop08SOhbEIR
-         DPJyiK1G6YfLRzn2qhCt8yUUa2dqdGM/BlBASW2XoQUfzcKkbXGrVw9I7HOyCAacoss7
-         eMKeljq0jzXnMpK0rPkFzoqZu269qTyUOTrZnZwmWY32Lnn2gylPznHVa/zQID76N3Lp
-         48HLfAx/N6v/6kHzAfttzrPfo27hMKmGeSxmB9qdDJJOec/d6unL2h2M9AwsbUbEjds3
-         PKb3XXxJGjRzILATvItMlF+qcqiVVtilzbqBfWWnkQ2DeghrwX3vqdflccj2ZpIjxKth
-         4u4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eAYTQaJdrmG3cmFWcS3gzQG6ElBG/4MajNjtha7zzDA=;
-        b=Ydzp/yO5hgU8/biFczfpD7OUJ/8EbQqP7HK9LBSFJsz5eA8O/P13YHL2HlMOcGa1Ar
-         hhO3VvRxU/XHrUKdYgiLLb3hl00ddcwCDUKpQY8hLcC64jDPRxwQ8N2/MNCxyOiRLx0N
-         klmohyYnvOgCI79/vExV0uDuYdChldeo8vV3v6YCOjkFyqfMPRqi88P4KfZXSA0TOqJH
-         S205eEEMhU5fGmPgsmuQ5jWfpiUdn/DjQOJ6k/TXm+8Sa1vA5Ti1YcuVNSbp9/cGZ+5n
-         u9ztPFQ6cK6zlJ+vUzkW6hAxJEMuZoFkRENlEfmAFWg9j84LU9T+DehxlNjxQwpfB/jo
-         K5WQ==
-X-Gm-Message-State: AOAM533ufoRy6IBhBDFs/vZVdkXsXXdG6Tt/7RLoydnpHVyqS7WHh21H
-        KRdp2RkpewiH2JcbP0x0DgrrjQ==
-X-Google-Smtp-Source: ABdhPJzuRXYiLp8WlYMnlkAlBYIo5JGi/vQ06dRDY7thYOTvYKO/6szX6nOgwusWsQ3B7SbV2E0IhQ==
-X-Received: by 2002:aca:ea06:: with SMTP id i6mr3191034oih.82.1617214802531;
-        Wed, 31 Mar 2021 11:20:02 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a13sm574760ooj.14.2021.03.31.11.20.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 11:20:02 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 13:19:59 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     nitirawa@codeaurora.org
-Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
- vendor file
-Message-ID: <20210331181959.GL904837@yoga>
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
- <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
- <20210323152834.GH5254@yoga>
- <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
+        id S234895AbhCaSSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:18:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:12547 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233888AbhCaSSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:18:00 -0400
+IronPort-SDR: k9nTK5xipLABC/HWlKiPmU+hQ+oEwTwUmcAO+cqQolLfinYEycyN8p2izmmOOP1RnCKDs51KP3
+ kRXo/nPsqL9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179194251"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="179194251"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:17:59 -0700
+IronPort-SDR: fOu2Q4kpYz95Wg8WRpseF+M0RoDDUeiB7sxcuwl5noXe/9+0xQhstvY2lKI0cJRNqcr9UwNITL
+ 6cFVDEeuSD/w==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="394143752"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:17:59 -0700
+Date:   Wed, 31 Mar 2021 11:20:30 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210331112030.174e77b0@jacob-builder>
+In-Reply-To: <20210331173148.GN1463678@nvidia.com>
+References: <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <20210322120300.GU2356281@nvidia.com>
+        <20210324120528.24d82dbd@jacob-builder>
+        <20210329163147.GG2356281@nvidia.com>
+        <20210329155526.2ad791a9@jacob-builder>
+        <20210330134313.GP2356281@nvidia.com>
+        <20210330171041.70f2d7d0@jacob-builder>
+        <20210331122805.GC1463678@nvidia.com>
+        <20210331093457.753512d4@jacob-builder>
+        <20210331173148.GN1463678@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
+Hi Jason,
 
-> On 2021-03-23 20:58, Bjorn Andersson wrote:
-> > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
-> > 
-> > > As a part of vops handler, VCC voltage is updated
-> > > as per the ufs device probed after reading the device
-> > > descriptor. We follow below steps to configure voltage
-> > > level.
-> > > 
-> > > 1. Set the device to SLEEP state.
-> > > 2. Disable the Vcc Regulator.
-> > > 3. Set the vcc voltage according to the device type and reenable
-> > >    the regulator.
-> > > 4. Set the device mode back to ACTIVE.
-> > > 
-> > 
-> > When we discussed this a while back this was described as a requirement
-> > from the device specification, you only operate on objects "owned" by
-> > ufshcd and you invoke ufshcd operations to perform the actions.
-> > 
-> > So why is this a ufs-qcom patch and not something in ufshcd?
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-> > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> > > ---
-> > >  drivers/scsi/ufs/ufs-qcom.c | 51
-> > > +++++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 51 insertions(+)
-> > > 
-> > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> > > index f97d7b0..ca35f5c 100644
-> > > --- a/drivers/scsi/ufs/ufs-qcom.c
-> > > +++ b/drivers/scsi/ufs/ufs-qcom.c
-> > > @@ -21,6 +21,17 @@
-> > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
-> > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
-> > > 
-> > > +#define	ANDROID_BOOT_DEV_MAX	30
-> > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
-> > > +
-> > > +/* Min and Max VCC voltage values for ufs 2.x and
-> > > + * ufs 3.x devices
-> > > + */
-> > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
-> > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
-> > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
-> > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
-> > > +
-> > >  enum {
-> > >  	TSTBUS_UAWM,
-> > >  	TSTBUS_UARM,
-> > > @@ -1293,6 +1304,45 @@ static void
-> > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
-> > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
-> > >  }
-> > > 
-> > > +  /**
-> > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
-> > > +   * @hba: host controller instance
-> > > +   * Update VCC voltage based on UFS device(ufs 2.x or
-> > > +   * ufs 3.x probed)
-> > > +   */
-> > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
-> > > +{
-> > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
-> > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
-> > > +	int ret;
-> > > +
-> > > +	/* Put the device in sleep before lowering VCC level */
-> > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
-> > > +
-> > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
-> > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
-> > > +
-> > > +	/* add ~2ms delay before renabling VCC at lower voltage */
-> > > +	usleep_range(2000, 2100);
-> > > +
-> > > +	/* set VCC min and max voltage according to ufs device type */
-> > > +	if (dev_info->wspecversion >= 0x300) {
-> > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
-> > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
-> > > +	}
-> > > +
-> > > +	else {
-> > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
-> > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
-> > > +	}
-> > > +
-> > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
-> > > +
-> > > +	/* Bring the device in active now */
-> > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
-> > >  {
-> > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
-> > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
-> > > ufs_hba_qcom_vops = {
-> > >  	.device_reset		= ufs_qcom_device_reset,
-> > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
-> > >  	.program_key		= ufs_qcom_ice_program_key,
-> > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
-> > >  };
-> > > 
-> > >  /**
-> > > --
-> > > 2.7.4
-> > > 
+On Wed, 31 Mar 2021 14:31:48 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> > > We should try to avoid hidden behind the scenes kernel
+> > > interconnections between subsystems.
+> > >   
+> > Can we? in case of exception. Since all these IOCTLs are coming from the
+> > unreliable user space, we must deal all exceptions.
+> >
+> > For example, when user closes /dev/ioasid FD before (or w/o) unbind
+> > IOCTL for VFIO, KVM, kernel must do cleanup and coordinate among
+> > subsystems. In this patchset, we have a per mm(ioasid_set) notifier to
+> > inform mdev, KVM to clean up and drop its refcount. Do you have any
+> > suggestion on this?  
 > 
-> Hi Bjorn,
-> Thanks for your review.
-> But As per the earlier discussion regarding handling of vcc voltage
-> for platform supporting both ufs 2.x and ufs 3.x , it was finally concluded
-> to
-> use "vops and let vendors handle it, until specs or someone
-> has a better suggestion". Please correct me in case i am wrong.
+> The ioasid should be a reference counted object.
 > 
+yes, this is done in this patchset.
 
-I was under the impression that this would result in something custom
-per platform, but what I'm objecting to now that I see the code is that
-this is completely generic.
-
-And the concerns we discussed regarding these regulators being shared
-with other devices is not considered in this implementation. But in
-practice I don't see how you could support 2.x, 3.x and rail sharing at
-the same time.
-
-Regards,
-Bjorn
-
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
+> When the FD is closed, or the ioasid is "destroyed" it just blocks DMA
+> and parks the PASID until *all* places release it. Upon a zero
+> refcount the PASID is recycled for future use.
 > 
-> Regards,
-> Nitin
+Just to clarify, you are saying (when FREE happens before proper
+teardown) there is no need to proactively notify all users of the IOASID to
+drop their reference. Instead, just wait for the other parties to naturally
+close and drop their references. Am I understanding you correctly?
+
+I feel having the notifications can add two values:
+1. Shorten the duration of errors (as you mentioned below), FD close can
+take a long and unpredictable time. e.g. FD shared.
+2. Provide teardown ordering among PASID users. i.e. vCPU, IOMMU, mdev.
+
+> The duration between unmapping the ioasid and releasing all HW access
+> will have HW see PCIE TLP errors due to the blocked access. If
+> userspace messes up the order it is fine to cause this. We already had
+> this dicussion when talking about how to deal with process exit in the
+> simple SVA case.
+Yes, we have disabled fault reporting during this period. The slight
+differences vs. the simple SVA case is that KVM is also involved and there
+might be an ordering requirement to stop vCPU first.
+
+Thanks,
+
+Jacob
