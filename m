@@ -2,143 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8F434F7CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDCC34F803
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhCaETe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 00:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhCaETK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 00:19:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 703E8619DA;
-        Wed, 31 Mar 2021 04:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617164349;
-        bh=0XKwss4Hof3X25r6bjrJJVKM4RoMnNg6Pao3M+Ls9mU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EmuXNN/8sS0Dbso4e+1fSvCIBEJnh+7frW86Bh5XC1AUpZmbWTLOztPmx9K3uJXOM
-         XBjKOBGQRd5WESSU341/Fj2LGYqIqANNSNcbbP4Iz8pbzppxUGPJCzBEVO2mCLSif5
-         sFMyg0u7/FAWyEc0Rmc/nL2cI3ttI5QT0+3+GzQdaLGDZjeuSNKuLCoGWk4Q2Bew0a
-         xXA9RdzeIfZo0kowdTCLO8qKjGyUebWKh3tPaPok32BdzmvKg/gN8IWaL7gQq+1ZCX
-         LmPqiyI+grbC3WBT/AE1TNi1A2p9q73bVbaM6r94gNfERYwzTn4jNvcEzvmx4stWDn
-         7thLSj1O4gduQ==
-Received: by mail-lf1-f50.google.com with SMTP id d13so6112689lfg.7;
-        Tue, 30 Mar 2021 21:19:09 -0700 (PDT)
-X-Gm-Message-State: AOAM5331z8wbONkLk2WtqB1Aq1FwAXX/y6BzQFOoBAwewNK7oTUK2XOX
-        eLSyzVRkdIi7LiJRmhwPk25TZMlHXD5vYs/u0ss=
-X-Google-Smtp-Source: ABdhPJx+ii4cISAbi0jdeMRF01vf8KEr9bLID6axyIdKr+61ZHMDTxRv3u6V5SiTCLty4Ct/I0NqsI5Om8KadMxQvUE=
-X-Received: by 2002:a05:6512:ba2:: with SMTP id b34mr970839lfv.24.1617164347742;
- Tue, 30 Mar 2021 21:19:07 -0700 (PDT)
+        id S233423AbhCaEcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 00:32:17 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:56584 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhCaEbm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 00:31:42 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V4OtYL012344;
+        Wed, 31 Mar 2021 04:29:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jZzMIjY2XlBA9lqomrEcWjkgBg3vzw6cwVEXQsnkoy8=;
+ b=HIgSM5dzg5vy/U6oQ0ue+ji7TjDVaifkmt2TC+GdOHEEc4400+BPiepwlqmXkp3ZdYv6
+ dODu4xpneir8dpWeW+eVBSuGwz2uqLDliBNsOFfXtASDOuQHhPkc/QTsC2wvJ+LZCq9z
+ LGO29RHrQcSWJiSstaaUQLZs1c2wtZ+URrIs0NevkdKMBha44tXt5at0UNqsiUJAaPPl
+ Vhj4g6cn2rTRd419OI40Y1wQbltzWyes0rfsjUK49kTL7/rMCXZBL68rhoMhpUbAfXjQ
+ YcVY0QpogX8qAFWb+AcwGIT5CRbYqoW4GPo4XjOR1cYsLK4L4GHvPKyOHmzLC6qmFO5l xw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 37mafv0tpc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 04:29:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V4PZtY012978;
+        Wed, 31 Mar 2021 04:29:54 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 37mabknwvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 04:29:53 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12V4Tarv012513;
+        Wed, 31 Mar 2021 04:29:40 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 30 Mar 2021 21:29:36 -0700
+Date:   Wed, 31 Mar 2021 07:29:22 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bp@alien8.de, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, hpa@zytor.com, jmattson@google.com,
+        jmorris@namei.org, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        m.szyprowski@samsung.com, mchehab@kernel.org, mingo@redhat.com,
+        seanjc@google.com, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, tfiga@chromium.org,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
+Message-ID: <20210331042922.GE2065@kadam>
+References: <000000000000ca9a6005bec29ebe@google.com>
+ <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
- <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
- <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
- <CAK8P3a3jpQ7dDiVG0s_DQiL6n_MdnhYHMjqFfJ92JJBJFPQZPQ@mail.gmail.com>
- <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com> <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 31 Mar 2021 12:18:56 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-Message-ID: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103300000 definitions=main-2103310032
+X-Proofpoint-ORIG-GUID: 8U9S4YCrdfA3ra6tRyXiCiMZhDB1YF_P
+X-Proofpoint-GUID: 8U9S4YCrdfA3ra6tRyXiCiMZhDB1YF_P
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 adultscore=0
+ impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 3:12 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Mar 30, 2021 at 4:26 AM Guo Ren <guoren@kernel.org> wrote:
-> > On Mon, Mar 29, 2021 at 9:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Mon, Mar 29, 2021 at 2:52 PM Guo Ren <guoren@kernel.org> wrote:
-> > > > On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > > What's the architectural guarantee on LL/SC progress for RISC-V ?
-> > >
-> > >    "When LR/SC is used for memory locations marked RsrvNonEventual,
-> > >      software should provide alternative fall-back mechanisms used when
-> > >      lack of progress is detected."
-> > >
-> > > My reading of this is that if the example you tried stalls, then either
-> > > the PMA is not RsrvEventual, and it is wrong to rely on ll/sc on this,
-> > > or that the PMA is marked RsrvEventual but the implementation is
-> > > buggy.
-> >
-> > Yes, PMA just defines physical memory region attributes, But in our
-> > processor, when MMU is enabled (satp's value register > 2) in s-mode,
-> > it will look at our custom PTE's attributes BIT(63) ref [1]:
-> >
-> >    PTE format:
-> >    | 63 | 62 | 61 | 60 | 59 | 58-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-> >      SO   C    B    SH   SE    RSW   D   A   G   U   X   W   R   V
-> >      ^    ^    ^    ^    ^
-> >    BIT(63): SO - Strong Order
-> >    BIT(62): C  - Cacheable
-> >    BIT(61): B  - Bufferable
-> >    BIT(60): SH - Shareable
-> >    BIT(59): SE - Security
-> >
-> > So the memory also could be RsrvNone/RsrvEventual.
->
-> I was not talking about RsrvNone, which would clearly mean that
-> you cannot use lr/sc at all (trap would trap, right?), but "RsrvNonEventual",
-> which would explain the behavior you described in an earlier reply:
->
-> | u32 a = 0x55aa66bb;
-> | u16 *ptr = &a;
-> |
-> | CPU0                       CPU1
-> | =========             =========
-> | xchg16(ptr, new)     while(1)
-> |                                     WRITE_ONCE(*(ptr + 1), x);
-> |
-> | When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
->
-> As I understand, this example must not cause a deadlock on
-> a compliant hardware implementation when the underlying memory
-> has RsrvEventual behavior, but could deadlock in case of
-> RsrvNonEventual
-Thx for the nice explanation:
- - RsrvNonEventual - depends on software fall-back mechanisms, and
-just I'm worried about.
- - RsrvEventual - HW would provide the eventual success guarantee.
+On Tue, Mar 30, 2021 at 07:04:30PM +0200, Paolo Bonzini wrote:
+> On 30/03/21 17:26, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    93129492 Add linux-next specific files for 20210326
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
+> > 
+> > The issue was bisected to:
+> > 
+> > commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
+> > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Date:   Tue Mar 16 15:33:01 2021 +0000
+> > 
+> >      mm: Add unsafe_follow_pfn
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
+> > Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
+> 
+> This is basically intentional because get_vaddr_frames is broken, isn't it?
+> I think it needs to be ignored in syzkaller.
 
->
-> > [1] https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2fcc52afd0fcbf88
-> >
-> > >
-> > > It also seems that the current "amoswap" based implementation
-> > > would be reliable independent of RsrvEventual/RsrvNonEventual.
-> >
-> > Yes, the hardware implementation of AMO could be different from LR/SC.
-> > AMO could use ACE snoop holding to lock the bus in hw coherency
-> > design, but LR/SC uses an exclusive monitor without locking the bus.
-> >
-> > RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
-> > think LR/SC would be slower than CAS, and CAS is just good for code
-> > size.
->
-> What I meant here is that the current spinlock uses a simple amoswap,
-> which presumably does not suffer from the lack of forward process you
-> described.
-Does that mean we should prevent using LR/SC (if RsrvNonEventual)?
+What?
 
--- 
-Best Regards
- Guo Ren
+The bisect is wrong (because it's blaming the commit which added the
+warning instead of the commit which added the buggy caller) but the
+warning is correct.
 
-ML: https://lore.kernel.org/linux-csky/
+Plus users are going to be seeing this as well.  According to the commit
+message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
+there's some users where this is not fixable (like v4l userptr of iomem
+mappings)".  It sort of seems crazy to dump this giant splat and then
+tell users to ignore it forever because it can't be fixed...  0_0
+
+regards,
+dan carpenter
+
+> 
+> Paolo
+> 
+> > ------------[ cut here ]------------
+> > unsafe follow_pfn usage
+> > WARNING: CPU: 1 PID: 8426 at mm/memory.c:4807 unsafe_follow_pfn+0x20f/0x260 mm/memory.c:4807
+> > Modules linked in:
+> > CPU: 0 PID: 8426 Comm: syz-executor677 Not tainted 5.12.0-rc4-next-20210326-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:unsafe_follow_pfn+0x20f/0x260 mm/memory.c:4807
+> > Code: 8b 7c 24 20 49 89 6d 00 e8 6e 84 64 07 e9 30 ff ff ff e8 f4 19 cb ff 48 c7 c7 40 1f 76 89 c6 05 56 eb 09 0c 01 e8 34 1a 21 07 <0f> 0b e9 71 fe ff ff 41 bc ea ff ff ff e9 06 ff ff ff e8 1a 65 0f
+> > RSP: 0018:ffffc9000161f660 EFLAGS: 00010282
+> > RAX: 0000000000000000 RBX: 1ffff920002c3ecc RCX: 0000000000000000
+> > RDX: ffff88801954d580 RSI: ffffffff815c3fd5 RDI: fffff520002c3ebe
+> > RBP: ffff888023d56948 R08: 0000000000000000 R09: 0000000000000000
+> > R10: ffffffff815bd77e R11: 0000000000000000 R12: 0000000021000000
+> > R13: ffff8880143a4010 R14: 0000000000000000 R15: 0000000000000110
+> > FS:  00000000005d1300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f172c4cd6c0 CR3: 0000000011f70000 CR4: 00000000001506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   get_vaddr_frames+0x337/0x600 drivers/media/common/videobuf2/frame_vector.c:72
+> >   vb2_create_framevec+0x55/0xc0 drivers/media/common/videobuf2/videobuf2-memops.c:50
+> >   vb2_vmalloc_get_userptr+0xce/0x4c0 drivers/media/common/videobuf2/videobuf2-vmalloc.c:90
+> >   __prepare_userptr+0x342/0x15f0 drivers/media/common/videobuf2/videobuf2-core.c:1128
+> >   __buf_prepare+0x635/0x7d0 drivers/media/common/videobuf2/videobuf2-core.c:1367
+> >   vb2_core_qbuf+0xa9d/0x11c0 drivers/media/common/videobuf2/videobuf2-core.c:1658
+> >   vb2_qbuf+0x135/0x1a0 drivers/media/common/videobuf2/videobuf2-v4l2.c:820
+> >   vb2_ioctl_qbuf+0xfb/0x140 drivers/media/common/videobuf2/videobuf2-v4l2.c:1050
+> >   v4l_qbuf drivers/media/v4l2-core/v4l2-ioctl.c:2027 [inline]
+> >   v4l_qbuf+0x92/0xc0 drivers/media/v4l2-core/v4l2-ioctl.c:2021
+> >   __video_do_ioctl+0xb94/0xe20 drivers/media/v4l2-core/v4l2-ioctl.c:2951
+> >   video_usercopy+0x253/0x1300 drivers/media/v4l2-core/v4l2-ioctl.c:3297
+> >   v4l2_ioctl+0x1b3/0x250 drivers/media/v4l2-core/v4l2-dev.c:366
+> >   vfs_ioctl fs/ioctl.c:48 [inline]
+> >   __do_sys_ioctl fs/ioctl.c:753 [inline]
+> >   __se_sys_ioctl fs/ioctl.c:739 [inline]
+> >   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+> >   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > RIP: 0033:0x443639
+> > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007ffee3065668 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443639
+> > RDX: 0000000020000140 RSI: 00000000c058560f RDI: 0000000000000004
+> > RBP: 00000000004031e0 R08: 00000000004004a0 R09: 00000000004004a0
+> > R10: 00236962762f7665 R11: 0000000000000246 R12: 0000000000403270
+> > R13: 0000000000000000 R14: 00000000004b1018 R15: 00000000004004a0
+> > 
+> > 
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > 
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
+> > 
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/2db3c803-6a94-9345-261a-a2bb74370c02%40redhat.com.
