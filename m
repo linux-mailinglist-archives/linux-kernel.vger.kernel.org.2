@@ -2,88 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1AD3507B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABEB3507B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhCaT4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236273AbhCaT4T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:56:19 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E6DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so1833336pjg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0yVMQM63PjcObiBb0oRU4zW/nYZYAUpEebncM6/pp2o=;
-        b=JBuP+/jfJ+NrzwEQ20bIwN0qlX6QRN6AmPz70dknhyQ2INu0qfYigIqNcW0xFedBlV
-         xQf5RkQDJ/skE4+rekPcOkrhCWe4SeSqAXkMuakn2S2+vjrVnv2XBQ+cs1UhuMy+2Gna
-         iH7QejzLyAgWxgvH2UNo92+kxrKsiWiaW2bMY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0yVMQM63PjcObiBb0oRU4zW/nYZYAUpEebncM6/pp2o=;
-        b=BGLk39YhalzLjuDQeJXY0EJMcaGeWLLxevofDUp2RQ8J6DF6XhMq6oEGoD/OqVrQge
-         ls3AwR8nuuoRrwdJbiJ6c04j5US+wzV5NLf867Hmg7KVgcpoLh7OYaWnaeF5lsfX1v23
-         i6K2FZpdkcXxROfFdkZZBWkVCqy85PGjcTw5LyzIq+bD7aepoLL6TVlRB3X8va1SPKl8
-         //KTXdhlwFcVQfjxD3aQULV/gN8gxCu22g8VJ68j3Glu0RYzHJE/10b/CPd1OXonWpXr
-         D9WktmqAwJ1e5ZiTzxZbNzhNSye1JUt81xDdRmSFRKDlrPv+T4pUZCYIKbTIsUfjjyGE
-         Sgww==
-X-Gm-Message-State: AOAM530nWvUnlX2Stp4hXY00a7yBoQjkoGEEv9idtuFEVJe2uWAR6+Yv
-        nG5+lYenx6YwJr/u8jMgWa+8wQ==
-X-Google-Smtp-Source: ABdhPJyURfcz9EDNELOeDtoZrmz4xlbjZmZib1mS3eADG+82k71SN8I1SidrNhk1Yq7veEiZDAX/Ig==
-X-Received: by 2002:a17:90a:f02:: with SMTP id 2mr4975428pjy.209.1617220576022;
-        Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e1sm3109303pfi.175.2021.03.31.12.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 12:56:15 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Sean Christopherson <seanjc@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        id S236342AbhCaUAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:00:36 -0400
+Received: from mail-mw2nam08on2077.outbound.protection.outlook.com ([40.107.101.77]:22241
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236238AbhCaUA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 16:00:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BVbAsTFO+MOtrmw6aVAqsHeqSLFFAI/sOaPDmbGGqrCyLX2jhjHrtx+pYTgDBZNBXN7HlDAp2eHAI7mPqybFaUhFq8ULonOWL6XrtfmII0sdngZLHH51C57RxfGYCGk94gg9GvIqca5CcDcDV+q402cvE/NzKPSzcPKB6xx0pulv3MdcOT8u6qit7JlX/cPMj4McmG8Hw/f+ABf+NZXrXUsINAUqWzX5yY2nqQPEjDjI4zF+Fq+FqKoD35tUWGz9j7s83bcjW7ApEaT8g5IS+HB/GmmiQ3MFwNdDY7d+gFlILG6i1BVnof48Fj7GVua4IrozX0h9d4MIY5XOomGCmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YDGQZfQU8XRDdl9xB6Z1T2gAvtiLQw6wt0E/F7HqPss=;
+ b=k7nhOGIjx2laB/3DpGuID9/3iY54eEQMYztVAaVdjurPiSokPtwTvi2rez2KvVDyOXE9oQPuXFSymHjuQlDFRzGP/7faXLDKTaD+qryIow+dYT64tqvb2aDpC1UkCz4F9d97cJIGYqsLI2leZJPaGQ9YV2IGrGDH0LXOe4TcXY25dgfd8QD7ZF+UiFdwLSVPUC+klWPiyHxVuSRx2iIDDg6BVqrmLSX/w15GC8K7638IdGh8782viN2YFj9ZJaWY/rjLoXCH7aGJTlUgjXOtLPoil+dBHUCU2QIVFASKmpLMvedttuR+b2Ke7BD73q5mXgck3VtKjCHhPRdZNqFmIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YDGQZfQU8XRDdl9xB6Z1T2gAvtiLQw6wt0E/F7HqPss=;
+ b=Ifi/if+WgMzOSJvXFvcED5hH29cyp1L+BzwcwWBN3fWn6zOC0VEebG+RkCdzVLQnx3Jhwb6c8pZLbkMXpXos217/MFnWWnrARJ8EX3PYkb5kqfE2LN4Hj3M30BIBqznUd1bxzuuSSeAsoo1Fn+ufb/DrIM02ivRrdV/gBNran3A=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2590.namprd12.prod.outlook.com (2603:10b6:802:2e::17)
+ by SN6PR12MB4752.namprd12.prod.outlook.com (2603:10b6:805:e9::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 31 Mar
+ 2021 20:00:25 +0000
+Received: from SN1PR12MB2590.namprd12.prod.outlook.com
+ ([fe80::cc57:2080:e945:55ce]) by SN1PR12MB2590.namprd12.prod.outlook.com
+ ([fe80::cc57:2080:e945:55ce%3]) with mapi id 15.20.3999.027; Wed, 31 Mar 2021
+ 20:00:25 +0000
+Date:   Wed, 31 Mar 2021 15:00:18 -0500
+From:   John Allen <john.allen@amd.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     thomas.lendacky@amd.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Merge module sections if and only if CONFIG_LTO_CLANG is enabled
-Date:   Wed, 31 Mar 2021 12:56:02 -0700
-Message-Id: <161722055925.1870138.4983509937620008210.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210322234438.502582-1-seanjc@google.com>
-References: <20210322234438.502582-1-seanjc@google.com>
+Subject: Re: [PATCH] crypto: ccp -A value assigned to a variable is never
+ used.
+Message-ID: <20210331200018.GA32734@nikka.amd.com>
+References: <1617099029-50434-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617099029-50434-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SN4PR0401CA0030.namprd04.prod.outlook.com
+ (2603:10b6:803:2a::16) To SN1PR12MB2590.namprd12.prod.outlook.com
+ (2603:10b6:802:2e::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nikka.amd.com (165.204.78.2) by SN4PR0401CA0030.namprd04.prod.outlook.com (2603:10b6:803:2a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Wed, 31 Mar 2021 20:00:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e8b38c10-2577-4244-b27d-08d8f47f9f8d
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4752:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB475299E55F27F14EE7554AC09A7C9@SN6PR12MB4752.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w/4PYcn1ikWy7PQgOlTZfeMUquheiQ1s5SlAEzumx7VtB6ysARZ80gRlR+hsbbAcg6DlR8/6T98wcBbVQDe26JeFQ9fPz9kt0LvpP+/9uoCV3VtGPf8IZOaUdhRPSaryWPDJq2OgPOc9B/b1skJ0HJbVgnH5ACx3jIcnI/0GRgQYTRoR70Ov/cA2Hgqn5H3+XqzuUM4E942YTkLcNalZynD5zAYuxUrmPnGS3g3TbgvzkKZYZP/iwXxGd3RIBxXZ5BkgPT9aXo9nGRvAUPjjkNu6Z6KvSGtKzdQxMkfXJeFxJtuJnixJYCsT+I+PkaeKGYgbdQ9SDJyg8wN2FKibq/QjJ38M9MoqoFuAuLFUUCAjkxfy534yzOqybC5hXA5NOJPNM1ASq6B3hYWPxPLp5oSzPXqc34EDi+P81HlPXAqt+JbQeNNlYuZxCW7wgfcCq6r/j7du7zdpqVv+8UxCoW3SOC7SLmJLewuWFgiTgldgrl4JGorK+D854gUmSkq9hlWFVYtY9yab7f5Th5iw3op8/7sM9yRWmhKKc5nfs5fWXva11TAsatEaaQrjZBSKw0RqdfKYY6G5IztWILfDusjfnuiPXMuGv4zhG8I94u0RxlrQPeiso6xfpaBW2EQdWoN9k8BENV0PQgeDmGrGLCaNd7TsvaKQdkljK8X8ZOs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2590.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(8676002)(186003)(66946007)(38100700001)(316002)(66476007)(4744005)(66556008)(1076003)(6666004)(55016002)(478600001)(8936002)(33656002)(2906002)(4326008)(86362001)(5660300002)(83380400001)(7696005)(52116002)(956004)(16526019)(26005)(6916009)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5mnZuEiiCeZZn4zAJMX/j/1jMek/f6VhUZGaBb/hoOpsyqQ6GyU5nUvG9qcn?=
+ =?us-ascii?Q?WOK6NGyyyH34uuPbWWgT6E1gJQsQz6v3Y3SJ8rEfXqkwPKm2mscMBI1B/l+q?=
+ =?us-ascii?Q?wiiXHPq/Gb3w/4N7fr/LZbGW3WPkVxtNC0Mgw3wQDVRVaXRKc0f9p7fXqK6/?=
+ =?us-ascii?Q?MdRwujqfLMc84B+39eBxssRTRevJ5oTaaTpQf1tiATSVLO9i1mGRyz8J6QQQ?=
+ =?us-ascii?Q?rDmzHnr3gWsmrQQf9TNeFzbt93GK3dLVp2XSkAd0ZZap5uxR1h5jBVFBmZXu?=
+ =?us-ascii?Q?v1P338q9CxvK5Iz7rvS9zTdUj9Bji3MRhN8IepJPwD7exm+zjiQ5dNR9E77O?=
+ =?us-ascii?Q?NXt1efD7ak0Eg83Ivpq3IbYwU7Yxutd/ByZKyeEsPSiRBuWwY7XupPAql0bL?=
+ =?us-ascii?Q?OL9Kxu6DYRPuiGuH9SR4b4eEI5INtJe2TAhTg+YPOu6182R42U3IvtkoMH5C?=
+ =?us-ascii?Q?n9Xx5De/HLSFlXEGObphMQch8m16KBby33n5GIITOP97gK937Ir8dUth4Br1?=
+ =?us-ascii?Q?EO9imalK2yRjMM5vJQ0UsbU81wIlDe5EZKmDtRZyEugnymCpfsI+nIn1zpPL?=
+ =?us-ascii?Q?CqnRKUVcWuyZdh3QsqFMLW5pUuIEaTyGtVsotRfmDnCXP01NIt84pJ3nPrnF?=
+ =?us-ascii?Q?81u3KvmKJCNMSiQUoZY2yFoeDwt7XmYA+xI9Bdnr3QT+UG3MITeMMjh3/c5E?=
+ =?us-ascii?Q?iAIf5dSdOpuBo0G/LRTTWBRQTyGDqTNzfxqsPNuOo37fC0bJC7jNjQGqgHtj?=
+ =?us-ascii?Q?iRXJGoc9taYWMEFJVSIGjoF67dJZESiEAp6XXwxHArCkizo8StkZIp87VTeI?=
+ =?us-ascii?Q?YebKtwfs1T6EO6VIaw5JaPXNwOYN8Tey6bCf2VwIH2C0vz9xoVRsZdCpJmqf?=
+ =?us-ascii?Q?gCvyATsL99hy9n5ixUb6cZr6RpEXFbXFDTbBJzKcfMiiDEvhmf5uKulgQVZd?=
+ =?us-ascii?Q?st3j3BooVs2xFK4QmArFij2njJcz6WvRwFEt3JZTco/q4pp8vYPLsP9hxSAu?=
+ =?us-ascii?Q?LwwSJ1ayeQJVjHs9mLIK5LQWdzARqIFEcAZaz5yk3AF7KhVckodgTtqxmihl?=
+ =?us-ascii?Q?h/O2n+9FdjR+UhTkkLPx4xu3SpwQZRJIIqGaqhEMv0BU3lhsPoclHEW+EVnA?=
+ =?us-ascii?Q?1uPAtkVhHbrog0aUysBjXZ4GZ1UYKNWpHvdx+ixZNnhC8GYwHmF90pXhyeh8?=
+ =?us-ascii?Q?BMw3ye6k+eu1LMXasHcS9MsyKINlQ9B6K3TTbHwtlgxbQeXZuJ+DDUHKe5M4?=
+ =?us-ascii?Q?ypv8X7oR5sa4PY6XNnpXHuuFCJ+8w9dYMn2qZFYK1o+w5kgtbXiXNtd48axR?=
+ =?us-ascii?Q?FRUWoQNd5z961WMUvTPc2ZF1?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8b38c10-2577-4244-b27d-08d8f47f9f8d
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2590.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 20:00:25.1500
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M4WvbidheP+5+egTZXKErirBntvHplkex6JGxN4jLVrNKGhw4HbNw4PfmxxJZPPcpEyfn49hYJ1/v+1UkUwwig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4752
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 16:44:38 -0700, Sean Christopherson wrote:
-> Merge module sections only when using Clang LTO.  With gcc-10, merging
-> sections does not appear to update the symbol tables for the module,
-> e.g. 'readelf -s' shows the value that a symbol would have had, if
-> sections were not merged.
+On Tue, Mar 30, 2021 at 06:10:29PM +0800, Jiapeng Chong wrote:
+> Fix the following whitescan warning:
 > 
-> The stale symbol table breaks gdb's function disassambler, and presumably
-> other things, e.g.
+> Assigning value "64" to "dst.address" here, but that stored value is
+> overwritten before it can be used.
 > 
-> [...]
 
-Applied to for-linus/lto, thanks!
+Thanks for reporting.
 
-[1/1] kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG is enabled
-      https://git.kernel.org/kees/c/8b382ebc86a8
+Acked-by: John Allen <john.allen@amd.com>
 
--- 
-Kees Cook
-
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/crypto/ccp/ccp-ops.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+> index d6a8f4e..bb88198 100644
+> --- a/drivers/crypto/ccp/ccp-ops.c
+> +++ b/drivers/crypto/ccp/ccp-ops.c
+> @@ -2418,7 +2418,6 @@ static int ccp_run_ecc_pm_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
+>  	dst.address += CCP_ECC_OUTPUT_SIZE;
+>  	ccp_reverse_get_dm_area(&dst, 0, ecc->u.pm.result.y, 0,
+>  				CCP_ECC_MODULUS_BYTES);
+> -	dst.address += CCP_ECC_OUTPUT_SIZE;
+>  
+>  	/* Restore the workarea address */
+>  	dst.address = save;
+> -- 
+> 1.8.3.1
+> 
