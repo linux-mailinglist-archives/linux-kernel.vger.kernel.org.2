@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00C63502E0
+	by mail.lfdr.de (Postfix) with ESMTP id 8227F3502DF
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbhCaPAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:00:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16015 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235758AbhCaO73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:59:29 -0400
-IronPort-SDR: E5Cq8P32AScGRBHhoaoAiZPQv63oR1H3SSm4/CWuvbOYHWt5bz+iV3Q12JxLDM2Gpd0CaU2Xce
- NibaXYWqx8Nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189790367"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="189790367"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 07:59:27 -0700
-IronPort-SDR: GJPXOEHOAdm/8CThKFVkyZWknZq7eAgUwKeDG7Z0bRgYGNNyBGSv8P0fQfLziU3VbT0QPRmnsw
- 3B3T9Q/0zYkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="438836826"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Mar 2021 07:59:26 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1AC2A199; Wed, 31 Mar 2021 17:59:40 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] driver core: platform: Make clear error code used for missed IRQ
-Date:   Wed, 31 Mar 2021 17:59:36 +0300
-Message-Id: <20210331145937.35980-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S236219AbhCaPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235987AbhCaO7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:59:45 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FE0C061574;
+        Wed, 31 Mar 2021 07:59:42 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id n138so29620012lfa.3;
+        Wed, 31 Mar 2021 07:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PsO89NOx80DUPq/uoqBfqzP3oyAMU/I135Iw3m4lDgM=;
+        b=l0hxprmLlYVfUUB4XOawxL21b7Mnqt1Tj5hOz4aCWZLoGkiocEAY3EIbRMDvZB9T0S
+         LTtsIBrykLpWKN3iH4v609s/WtQ5u8VwXQuMInZbGKj5yv0aMplLf5K4faExnwIZFsAj
+         YB0z5KfNXg8JhfB2EeAS1E3rTM0R5/LjbBAJs1wswgbgRduHlHVa1h7GU3drNZbWpGHC
+         65krI08iZU4q6rtsxYNDSeYVaok/9r7N34HAdda6kv1uMDImA91t5lkbLeLr+PSxH4Wr
+         JzYr2kpPpBwvYSZZAGTLF7kqsDy3BVtjfDWpLKacEufrqZnky01B00N7KFc58xxcxe/a
+         IgOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PsO89NOx80DUPq/uoqBfqzP3oyAMU/I135Iw3m4lDgM=;
+        b=s7oNq8ec18htY2PL7noR4eitDqW953lm1c7KlMvzP6oKGHmfw+ReIh1Xt0gmVHCV3q
+         /Cs1ALNoC13eIgL2RSQhF9oZDOAjcpyoDRcG+VKxy7dumaLnZiV/yq5ZZeue/+d/fWo7
+         vpBnnQj8env1vhJhY+ZTJFKx2fRzNdd6f9jZCZgL1ltfMzXpT0HEEcU/Byjw0sjAbhnM
+         FF7rXxIVQoY+gy1fAUMwMlEHkvVVIZvU5a2JGdOLyWwjKLQ/aZaGwkNYt7DWD9x6EIsK
+         pdtZUJ9dq0ghTLYnIyAdqGO3aejg/FhU9+Hsys8mx49c3NSj5ZIEi38B+S/LJgbjdcl5
+         tbGw==
+X-Gm-Message-State: AOAM531mLSlGwcaShmMRCpyHsnGz7bEIz4cgE+plYViMMx1Fape9GOfE
+        S1vksTQbvk7xCV5HXU9dQsXvIaswud25lg==
+X-Google-Smtp-Source: ABdhPJx8es0d3p6vHRKIE2PW9CFQRyDk59ibGGL5NkPTZv7S9RNLZEkG8zAX1hwSptm5jyU2pU63Aw==
+X-Received: by 2002:ac2:58cf:: with SMTP id u15mr2423994lfo.397.1617202781069;
+        Wed, 31 Mar 2021 07:59:41 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:814d:c71f:a10:76ff:fe69:21b6? ([2a00:1370:814d:c71f:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id f20sm262375ljn.123.2021.03.31.07.59.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 07:59:40 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to
+ schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210330230445.26619-1-digetx@gmail.com>
+ <20210330230445.26619-6-digetx@gmail.com>
+ <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b4f7c7fb-1332-8490-fb4f-293fd357338e@gmail.com>
+Date:   Wed, 31 Mar 2021 17:59:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have few code paths where same error code is assigned and
-returned for missed IRQ. Unify that under single error path.
+31.03.2021 16:40, Rob Herring пишет:
+> On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
+>> Convert Tegra20 External Memory Controller binding to schema.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
+>>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
+>>  2 files changed, 294 insertions(+), 130 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+>>
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
+> 
+> See https://patchwork.ozlabs.org/patch/1460288
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/base/platform.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index d82db3eabcd4..1e61fac64435 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -174,7 +174,7 @@ static int platform_do_get_irq(struct platform_device *dev, unsigned int num)
- #ifdef CONFIG_SPARC
- 	/* sparc does not have irqs represented as IORESOURCE_IRQ resources */
- 	if (!dev || num >= dev->archdata.num_irqs)
--		return -ENXIO;
-+		goto out_not_found;
- 	ret = dev->archdata.irqs[num];
- 	goto out;
- #else
-@@ -205,10 +205,8 @@ static int platform_do_get_irq(struct platform_device *dev, unsigned int num)
- 		struct irq_data *irqd;
- 
- 		irqd = irq_get_irq_data(r->start);
--		if (!irqd) {
--			ret = -ENXIO;
--			goto out;
--		}
-+		if (!irqd)
-+			goto out_not_found;
- 		irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
- 	}
- 
-@@ -231,8 +229,9 @@ static int platform_do_get_irq(struct platform_device *dev, unsigned int num)
- 			goto out;
- 	}
- 
--	ret = -ENXIO;
- #endif
-+out_not_found:
-+	ret = -ENXIO;
- out:
- 	WARN(ret == 0, "0 is an invalid IRQ number\n");
- 	return ret;
--- 
-2.30.2
-
+FYI, I'm aware about this warning and I think it's fine to skip it in
+the case of this binding. The dtbs_check doesn't bother with that warning.
