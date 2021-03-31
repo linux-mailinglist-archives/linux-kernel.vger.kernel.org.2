@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3B134FD22
+	by mail.lfdr.de (Postfix) with ESMTP id 1E99934FD23
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbhCaJk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S234828AbhCaJkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhCaJkR (ORCPT
+        with ESMTP id S234727AbhCaJkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:40:17 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2DDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:17 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id u5so29090206ejn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:17 -0700 (PDT)
+        Wed, 31 Mar 2021 05:40:19 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:18 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id l18so21534792edc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EOd2VJooCVoEiBmjBW7G58vH0HOhKflugc8+m2NKCTM=;
-        b=vaDGrBBU8lahs5xbCyKMHnaqeesduOiyCB/BJr1px9I/1D/ChRR044R6dE56RC012C
-         9njw54rJMqWskE6oaimcnM2ihMEPZpQ7pzQihKVA9PHGcQnZX+5UpFTzZhI49dvZkfon
-         ZhJbyi3Y/6IsB/gql8vJPIzi3c/VfKGGBOveLpRVIZVOeBhtTOqETeJ7tecCz7uZpfcW
-         WWqgfL99/zmqa3u1vWJZClP5x65lcGUB9d2i/UdLGSp6I3fkkDXedmr4aiMkJq2tIWZl
-         6rbKKLEWZ6fyQhkBinXMF3yX2k2jDsye71mP/WXSu2y5uyW7xXhqVuk4vRpJMUUqfN3Z
-         sV7Q==
+        bh=6r3wJkTfgXOb09KzV4WZdWmyuiaF5CHkBHLFr4r259Y=;
+        b=kxLm/x5RnQwGDcoFaDHNV5puG9fm7YUDM/MTfIhYtvfSaeRnvkIKskFSE1TXifFFZs
+         gUbhZtDJsenbUAfUMvPDOuqv8sbCGffXM4FHPKiqxvIXW4GPP7WtMeAsQ0Rs0T91JjOy
+         CWpTrHHCg+WxMnfXO+o8fcPVFik2JIcbWg4yuJlb02fbIIit1rTrZMq1JhJyv5XDN+D3
+         e57cMpJaOFK6PsOQ1+rUoPRAdiztTIaQoaaV/VbB0fI0iIbVK+3LXt5F7RKTl96pC70R
+         vBEtVWLf31BCJJrKGCXmnqUr0CbjP6zLhU5GxaGrV8NryY8+dvg/MY8vSRphiPH7dekS
+         +LvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EOd2VJooCVoEiBmjBW7G58vH0HOhKflugc8+m2NKCTM=;
-        b=t1thvfjqJPfZpY4XhDee3RsdMuQ+u8xuK7cAhM6xz2vzlnEWUcjgW8yqpI8wLLGLwv
-         dLG2yXd6w+I+2/5p08wgZ1DkUiZAXSFK67KNsrdLU9xZFYmuE+25oWLHntMJX19zLf/9
-         MNVkXaY9LmvyLaCHKY3K7vJVMZFspkLvYqjRuMgGcKn+jX+l+PjEoTQ4eLNj7gn72P36
-         lIcoBLQrK3rIA2pvrhgNkL+8CWQzI+DN9iacNLGgQSMieGykrTV2k6G4zYF6yKs4rBgd
-         Kbw4w1JttnM1QvKSQgTZ8oLbSVXChsKwWIEWZVJWXi7oM/AnoK5+OBNsLfUIVNMgk8p+
-         E5vQ==
-X-Gm-Message-State: AOAM532rRgWmYdxZZVb7VIpohSUr9DJHcSnYz6M4hITfRu7eao60OapX
-        4K/tDExnZqiSSAJh/gOIdsjyd75aUqI75Q==
-X-Google-Smtp-Source: ABdhPJxmX838mmtzreh2tD3z6mA8tHKEkwO8kRwjX4UghnejZNgM52meCeFKsOgIGXkQoGVzHIvYZQ==
-X-Received: by 2002:a17:906:1352:: with SMTP id x18mr2463421ejb.545.1617183616296;
-        Wed, 31 Mar 2021 02:40:16 -0700 (PDT)
+        bh=6r3wJkTfgXOb09KzV4WZdWmyuiaF5CHkBHLFr4r259Y=;
+        b=Kxc2ppfPPxz6gXp1K0/TaISYOlGozMtDOD8TyjgK29gYwDdb80Qdea1I1tSIcP+DMF
+         bxSg7VVnwT5+5YJtpdAKd/Ri48ATEhiTGdtzhACXk2TQNPVzUy/QxqLDRoE62/5PRW6+
+         63jj3aSWY/XiPXw/JYUiLzeg7uZzNBDr428rsTnewobOR9g92UzSI35pgKdNXNAaspMD
+         8IsW9ZO6kW2EgtrlgnaWKm3F20/FAkFcI9R3ly8I5D3IzoBLcjOKCmLfXKAVN930A1SO
+         YZrxljSawBnauHVWx6b66zOaLzO7zqNd/UCvp7ArzVqbAegtwIjVq95A3J6JQ06U4BVL
+         3AJQ==
+X-Gm-Message-State: AOAM532I83hX63HkitzP8/IRc3j3kG/vo5Z3VR5ffmqFKEoGijvYRdcx
+        yckyuOKtF6Ent2P9NlpVKKs=
+X-Google-Smtp-Source: ABdhPJysMkymAWBe4J7W/ABLX6GzYXFMPVZFutnRVMW+vnfPqU2qlmfCb2OiXvEFyEAfRMwrzON+xg==
+X-Received: by 2002:a05:6402:158d:: with SMTP id c13mr2527746edv.297.1617183617806;
+        Wed, 31 Mar 2021 02:40:17 -0700 (PDT)
 Received: from agape ([5.171.73.44])
-        by smtp.gmail.com with ESMTPSA id mc10sm828852ejb.56.2021.03.31.02.40.15
+        by smtp.gmail.com with ESMTPSA id h17sm1098489eds.26.2021.03.31.02.40.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 02:40:16 -0700 (PDT)
+        Wed, 31 Mar 2021 02:40:17 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 02/40] staging: rtl8723bs: replace RT_TRACE with public printk wrappers in core/rtw_security.c
-Date:   Wed, 31 Mar 2021 11:39:30 +0200
-Message-Id: <ccf35a6c05b91d7de847288cd20d803ac009e0d8.1617183374.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 03/40] staging: rtl8723bs: replace RT_TRACE with public printk wrappers in core/rtw_eeprom.c
+Date:   Wed, 31 Mar 2021 11:39:31 +0200
+Message-Id: <39c2cd878bc914a00e71ea988c3cacb651670822.1617183374.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617183374.git.fabioaiuto83@gmail.com>
 References: <cover.1617183374.git.fabioaiuto83@gmail.com>
@@ -69,120 +69,106 @@ pr_* printk wrappers
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_security.c | 38 ++++++++-----------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_eeprom.c | 26 ++++++++++-----------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index 8a447e149438..5bdde7b8de01 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -237,14 +237,13 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		*((u32 *)crc) = le32_to_cpu(getcrc32(payload, length-4));
+diff --git a/drivers/staging/rtl8723bs/core/rtw_eeprom.c b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
+index 3cbd65dee741..6176d741d60e 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_eeprom.c
++++ b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
+@@ -36,7 +36,7 @@ void shift_out_bits(_adapter *padapter, u16 data, u16 count)
+ _func_enter_;
  
- 		if (crc[3] != payload[length-1] || crc[2] != payload[length-2] || crc[1] != payload[length-3] || crc[0] != payload[length-4]) {
--			RT_TRACE(_module_rtl871x_security_c_,
--				 _drv_err_,
--				 ("%s:icv error crc[3](%x)!=payload[length-1](%x) || crc[2](%x)!=payload[length-2](%x) || crc[1](%x)!=payload[length-3](%x) || crc[0](%x)!=payload[length-4](%x)\n",
-+			pr_err("%s %s:icv error crc[3](%x)!=payload[length-1](%x) || crc[2](%x)!=payload[length-2](%x) || crc[1](%x)!=payload[length-3](%x) || crc[0](%x)!=payload[length-4](%x)\n",
-+					DRIVER_PREFIX,
- 					__func__,
- 					crc[3], payload[length - 1],
- 					crc[2], payload[length - 2],
- 					crc[1], payload[length - 3],
--					crc[0], payload[length - 4]));
-+					crc[0], payload[length - 4]);
- 		}
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
  	}
- }
-@@ -609,7 +608,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 	if (pattrib->encrypt == _TKIP_) {
- 
- 		{
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo!= NULL!!!\n", __func__));
-+			pr_err("%s %s: stainfo!= NULL!!!\n", DRIVER_PREFIX, __func__);
- 
- 			if (IS_MCAST(pattrib->ra))
- 				prwskey = psecuritypriv->dot118021XGrpKey[psecuritypriv->dot118021XGrpKeyid].skey;
-@@ -631,7 +630,8 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--					RT_TRACE(_module_rtl871x_security_c_, _drv_info_, ("pattrib->iv_len =%x, pattrib->icv_len =%x\n", pattrib->iv_len, pattrib->icv_len));
-+					pr_info("%s %s: pattrib->iv_len =%x, pattrib->icv_len =%x\n",
-+						DRIVER_PREFIX, __func__, pattrib->iv_len, pattrib->icv_len);
- 					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
- 
- 					arcfour_init(&mycontext, rc4key, 16);
-@@ -740,17 +740,16 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			*((u32 *)crc) = le32_to_cpu(getcrc32(payload, length-4));
- 
- 			if (crc[3] != payload[length-1] || crc[2] != payload[length-2] || crc[1] != payload[length-3] || crc[0] != payload[length-4]) {
--				RT_TRACE(_module_rtl871x_security_c_,
--					 _drv_err_,
--					 ("rtw_wep_decrypt:icv error crc[3](%x)!=payload[length-1](%x) || crc[2](%x)!=payload[length-2](%x) || crc[1](%x)!=payload[length-3](%x) || crc[0](%x)!=payload[length-4](%x)\n",
-+				pr_err("%s %s:icv error crc[3](%x)!=payload[length-1](%x) || crc[2](%x)!=payload[length-2](%x) || crc[1](%x)!=payload[length-3](%x) || crc[0](%x)!=payload[length-4](%x)\n",
-+						DRIVER_PREFIX, __func__,
- 						crc[3], payload[length - 1],
- 						crc[2], payload[length - 2],
- 						crc[1], payload[length - 3],
--						crc[0], payload[length - 4]));
-+						crc[0], payload[length - 4]);
- 				res = _FAIL;
- 			}
- 		} else {
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo == NULL!!!\n", __func__));
-+			pr_err("%s %s: stainfo == NULL!!!\n", DRIVER_PREFIX, __func__);
- 			res = _FAIL;
+ 	mask = 0x01 << (count - 1);
+@@ -49,8 +49,8 @@ _func_enter_;
+ 		if (data & mask)
+ 			x |= _EEDI;
+ 		if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
+-		goto out;
++			pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
++			goto out;
  		}
+ 		rtw_write8(padapter, EE_9346CR, (u8)x);
+ 		udelay(CLOCK_RATE);
+@@ -59,7 +59,7 @@ _func_enter_;
+ 		mask = mask >> 1;
+ 	} while (mask);
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
  	}
-@@ -1380,7 +1379,7 @@ u32 rtw_aes_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 	/* 4 start to encrypt each fragment */
- 	if (pattrib->encrypt == _AES_) {
--		RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo!= NULL!!!\n", __func__));
-+		pr_err("%s %s: stainfo!= NULL!!!\n", DRIVER_PREFIX, __func__);
- 
- 		if (IS_MCAST(pattrib->ra))
- 			prwskey = psecuritypriv->dot118021XGrpKey[psecuritypriv->dot118021XGrpKeyid].skey;
-@@ -1611,13 +1610,12 @@ static signed int aes_decipher(u8 *key, uint	hdrlen,
- 	/* compare the mic */
- 	for (i = 0; i < 8; i++) {
- 		if (pframe[hdrlen+8+plen-8+i] != message[hdrlen+8+plen-8+i]) {
--			RT_TRACE(_module_rtl871x_security_c_,
--				 _drv_err_,
--				 ("%s:mic check error mic[%d]: pframe(%x) != message(%x)\n",
-+			pr_err("%s %s:mic check error mic[%d]: pframe(%x) != message(%x)\n",
-+					DRIVER_PREFIX,
- 					__func__,
- 					i,
- 					pframe[hdrlen + 8 + plen - 8 + i],
--					message[hdrlen + 8 + plen - 8 + i]));
-+					message[hdrlen + 8 + plen - 8 + i]);
- 			DBG_871X("%s:mic check error mic[%d]: pframe(%x) != message(%x)\n",
- 					__func__,
- 					i,
-@@ -1649,9 +1647,7 @@ u32 rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
- 	if (prxattrib->encrypt == _AES_) {
- 		stainfo = rtw_get_stainfo(&padapter->stapriv, &prxattrib->ta[0]);
- 		if (stainfo) {
--			RT_TRACE(_module_rtl871x_security_c_,
--				 _drv_err_,
--				 ("%s: stainfo!= NULL!!!\n", __func__));
-+			pr_err("%s %s: stainfo!= NULL!!!\n", DRIVER_PREFIX, __func__);
- 
- 			if (IS_MCAST(prxattrib->ra)) {
- 				static unsigned long start;
-@@ -1706,9 +1702,7 @@ u32 rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
- 			res = aes_decipher(prwskey, prxattrib->hdrlen, pframe, length);
- 
- 		} else {
--			RT_TRACE(_module_rtl871x_security_c_,
--				 _drv_err_,
--				 ("%s: stainfo == NULL!!!\n", __func__));
-+			pr_err("%s %s: stainfo == NULL!!!\n", DRIVER_PREFIX, __func__);
- 			res = _FAIL;
- 		}
+ 	x &= ~_EEDI;
+@@ -73,7 +73,7 @@ u16 shift_in_bits(_adapter *padapter)
+ 	u16 x, d = 0, i;
+ _func_enter_;
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
  	}
+ 	x = rtw_read8(padapter, EE_9346CR);
+@@ -85,7 +85,7 @@ _func_enter_;
+ 		d = d << 1;
+ 		up_clk(padapter, &x);
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 		x = rtw_read8(padapter, EE_9346CR);
+@@ -123,23 +123,23 @@ void eeprom_clean(_adapter *padapter)
+ 	u16 x;
+ _func_enter_;
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 	x = rtw_read8(padapter, EE_9346CR);
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 	x &= ~(_EECS | _EEDI);
+ 	rtw_write8(padapter, EE_9346CR, (u8)x);
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 	up_clk(padapter, &x);
+-		if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++	if (padapter->bSurpriseRemoved == true) {
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 	down_clk(padapter, &x);
+@@ -156,14 +156,14 @@ u16 eeprom_read16(_adapter *padapter, u16 reg) /*ReadEEprom*/
+ _func_enter_;
+ 
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 	/* select EEPROM, reset bits, set _EECS*/
+ 	x = rtw_read8(padapter, EE_9346CR);
+ 
+ 	if (padapter->bSurpriseRemoved == true) {
+-		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
++		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+ 		goto out;
+ 	}
+ 
 -- 
 2.20.1
 
