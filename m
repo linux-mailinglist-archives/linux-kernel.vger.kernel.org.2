@@ -2,160 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E22E3505DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A143505E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhCaRyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234832AbhCaRyQ (ORCPT
+        id S234331AbhCaR5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:57:49 -0400
+Received: from alln-iport-7.cisco.com ([173.37.142.94]:61870 "EHLO
+        alln-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhCaR5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:54:16 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2BAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:54:15 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id f26so24872542ljp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9A9ww4rQUdY3ojKZCC1DB3r6UqmhvDhvswbu4JoQEio=;
-        b=cm38beLeV+gqOXd++TM8MCiOpTRwonhIyR/dG9IXlrP4NO5zNwL5W+BGyKA/HasGvW
-         XoPblAQSWqFdftq7mEdhRjyjG4oQL45yy0Ev5bbGHTonufD/W/bNLebYSVIDQXlXTo1d
-         OBH32n1GlqnFsHnl27zWznGdIdXIeXOGGti9V2+k3gd+WtlFiKn/G9ZJBGhq44Xv4U0/
-         oTntTgWjAm3RHhanVwQOQJhmItfE2/skI9q15SPM4g+nEKaHx+3ZoUbvkcNltihDpeBy
-         RQBpcLsPl+e9iapI3v7GzxvFtaI20yTSRzx8/f1EH+3a5zG28Rqult1Ki1Ye7Hv4xhtR
-         F0RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9A9ww4rQUdY3ojKZCC1DB3r6UqmhvDhvswbu4JoQEio=;
-        b=rhg6zc3m4rqgrf4TEDtvOKdd8zwkg1+diwfTAsYnXtu/NPubch935Ujkv2ea2pqo+T
-         e/cyFVYiKS8tFl0On7t1eN3mcWNXERoI/XaNFser7frs1JqJ96yVe6iXW5Xmvo2Fu93Y
-         D9VLwi6+ndpL1/sTYTzNG6pYi4R5QYWMwi3IxXOx3MppLRuyjCZQ2mVL0R0a6dSqrcTo
-         /+q42o7iue6cHLHOLpzazvtWYwVViNJtjNQb4vITZVTOczf9asafd9zyMA6rHZvkHxyJ
-         YTIrs6pq33+r17MYd9EHzujNQv53fSxhP+yP1zEfVH4AEhdb7bO9pJaUCX5Ahz//hhvd
-         K3uw==
-X-Gm-Message-State: AOAM531baYf98SnjopHYqiMbP6vcqlMMtaWotEoQqSDZevnZH70h4LJr
-        qNO9UlPdwop7ZcQ9HaStVNvUFSgswpxsUxG3h3JwfQ==
-X-Google-Smtp-Source: ABdhPJwERGvvjLkxfZzMMn7o3xJaAAVMqEQlFROWX0ouaVknZw9OCybjMkS68AN3sG7V+DacLtuEeauazzT6G/MNPWM=
-X-Received: by 2002:a2e:5716:: with SMTP id l22mr2798734ljb.244.1617213253975;
- Wed, 31 Mar 2021 10:54:13 -0700 (PDT)
+        Wed, 31 Mar 2021 13:57:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3142; q=dns/txt; s=iport;
+  t=1617213436; x=1618423036;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9+KK6SA8vleCLJAhsbCIqaUCPho3SAWet4gWR6pTR+U=;
+  b=Y4kDA9Ojs6PaUzcrC9+ZR+rkT3qMNoL5/0oJb97nLv23/e908ij4J5H3
+   lFlPFCLFYrPMi+HVd0+mXfheHvErZ6SXwDkNIsOxrSV9Wz3pjzUFcxSiQ
+   wt55FynGuRjTlN59qhjl6ZdBQuGooFhFSiNN5nbVSxtFOn/PeLUrWNx+8
+   A=;
+X-IronPort-AV: E=Sophos;i="5.81,293,1610409600"; 
+   d="scan'208";a="670998258"
+Received: from rcdn-core-3.cisco.com ([173.37.93.154])
+  by alln-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 31 Mar 2021 17:57:12 +0000
+Received: from zorba ([10.24.8.227])
+        by rcdn-core-3.cisco.com (8.15.2/8.15.2) with ESMTPS id 12VHv9UF022319
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 31 Mar 2021 17:57:10 GMT
+Date:   Wed, 31 Mar 2021 10:57:09 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Ofer Licht <olicht@cisco.com>, xe-linux-external@cisco.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: Add support for cisco craw64 ARMv8 SoCs
+Message-ID: <20210331175709.GE2469518@zorba>
+References: <20210331014603.2496983-1-danielwa@cisco.com>
+ <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210331133811.3221540-1-masahiroy@kernel.org> <20210331133811.3221540-5-masahiroy@kernel.org>
-In-Reply-To: <20210331133811.3221540-5-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 31 Mar 2021 10:54:03 -0700
-Message-ID: <CAKwvOdnZWWbirNGu-PdfnhTqXQ6yD9-dyUy7jMRyL+O5qN4gzg@mail.gmail.com>
-Subject: Re: [PATCH 5/9] kbuild: rename extmod-prefix to extmod_prefix
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.8.227, [10.24.8.227]
+X-Outbound-Node: rcdn-core-3.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 6:38 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> This seems to be useful in sub-make as well. As a preparation of
-> exporting it, rename extmod-prefix to extmod_prefix because exported
-> variables cannot contain hyphens.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Wed, Mar 31, 2021 at 09:04:15AM +0200, Arnd Bergmann wrote:
+> On Wed, Mar 31, 2021 at 3:46 AM Daniel Walker <danielwa@cisco.com> wrote:
+> > From: Ofer Licht <olicht@cisco.com>
+> 
+> Thanks for the submission, it's always nice to see a new platform
+ 
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Define craw64 config, dts and Makefile for Cisco
+> > SoCs known as Craw.
+> 
+> I'd like some more information about the platform, e.g. the target
+> market and maybe a link to the product information.
 
-> ---
->
->  Makefile | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index b5ff4753eba8..e3c2bd1b6f42 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -919,7 +919,7 @@ endif
->  ifdef CONFIG_LTO_CLANG
->  ifdef CONFIG_LTO_CLANG_THIN
->  CC_FLAGS_LTO   := -flto=thin -fsplit-lto-unit
-> -KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod-prefix).thinlto-cache
-> +KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
->  else
->  CC_FLAGS_LTO   := -flto
->  endif
-> @@ -1141,9 +1141,9 @@ endif # CONFIG_BPF
->
->  PHONY += prepare0
->
-> -extmod-prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
-> -export MODORDER := $(extmod-prefix)modules.order
-> -export MODULES_NSDEPS := $(extmod-prefix)modules.nsdeps
-> +extmod_prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
-> +export MODORDER := $(extmod_prefix)modules.order
-> +export MODULES_NSDEPS := $(extmod_prefix)modules.nsdeps
->
->  ifeq ($(KBUILD_EXTMOD),)
->  core-y         += kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
-> @@ -1742,7 +1742,7 @@ build-dirs := $(KBUILD_EXTMOD)
->  $(MODORDER): descend
->         @:
->
-> -compile_commands.json: $(extmod-prefix)compile_commands.json
-> +compile_commands.json: $(extmod_prefix)compile_commands.json
->  PHONY += compile_commands.json
->
->  clean-dirs := $(KBUILD_EXTMOD)
-> @@ -1832,12 +1832,12 @@ endif
->
->  PHONY += single_modpost
->  single_modpost: $(single-no-ko) modules_prepare
-> -       $(Q){ $(foreach m, $(single-ko), echo $(extmod-prefix)$m;) } > $(MODORDER)
-> +       $(Q){ $(foreach m, $(single-ko), echo $(extmod_prefix)$m;) } > $(MODORDER)
->         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
->
->  KBUILD_MODULES := 1
->
-> -export KBUILD_SINGLE_TARGETS := $(addprefix $(extmod-prefix), $(single-no-ko))
-> +export KBUILD_SINGLE_TARGETS := $(addprefix $(extmod_prefix), $(single-no-ko))
->
->  # trim unrelated directories
->  build-dirs := $(foreach d, $(build-dirs), \
-> @@ -1906,12 +1906,12 @@ nsdeps: modules
->  quiet_cmd_gen_compile_commands = GEN     $@
->        cmd_gen_compile_commands = $(PYTHON3) $< -a $(AR) -o $@ $(filter-out $<, $(real-prereqs))
->
-> -$(extmod-prefix)compile_commands.json: scripts/clang-tools/gen_compile_commands.py \
-> +$(extmod_prefix)compile_commands.json: scripts/clang-tools/gen_compile_commands.py \
->         $(if $(KBUILD_EXTMOD),,$(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)) \
->         $(if $(CONFIG_MODULES), $(MODORDER)) FORCE
->         $(call if_changed,gen_compile_commands)
->
-> -targets += $(extmod-prefix)compile_commands.json
-> +targets += $(extmod_prefix)compile_commands.json
->
->  PHONY += clang-tidy clang-analyzer
->
-> @@ -1919,7 +1919,7 @@ ifdef CONFIG_CC_IS_CLANG
->  quiet_cmd_clang_tools = CHECK   $<
->        cmd_clang_tools = $(PYTHON3) $(srctree)/scripts/clang-tools/run-clang-tools.py $@ $<
->
-> -clang-tidy clang-analyzer: $(extmod-prefix)compile_commands.json
-> +clang-tidy clang-analyzer: $(extmod_prefix)compile_commands.json
->         $(call cmd,clang_tools)
->  else
->  clang-tidy clang-analyzer:
-> --
-> 2.27.0
->
+Our SoC is produced as an internal product. So SoC specifications aren't
+widely available.
 
+Here is an example of a Cisco product which uses this SoC,
 
--- 
-Thanks,
-~Nick Desaulniers
+https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9200-series-switches/nb-06-cat9200-ser-data-sheet-cte-en.html
+
+I suspect that's not really what your looking for tho.
+
+> > Cc: xe-linux-external@cisco.com
+> > Signed-off-by: Ofer Licht <olicht@cisco.com>
+> > Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> > ---
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+> >  arch/arm64/Kconfig.platforms                  |   5 +
+> >  arch/arm64/boot/dts/Makefile                  |   1 +
+> >  arch/arm64/boot/dts/cisco/Makefile            |   5 +
+> >  .../arm64/boot/dts/cisco/craw64-dopplerg2.dts | 239 +++++++++++
+> >  arch/arm64/boot/dts/cisco/craw64.dtsi         | 392 ++++++++++++++++++
+> >  arch/arm64/configs/defconfig                  |   1 +
+> 
+> We have separate branches for dt, defconfig, and the rest, so it would be
+> good to split this patch up a little more.
+> 
+> There should also be an entry in the top-level MAINTAINERS file.
+> 
+> > diff --git a/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
+> > new file mode 100644
+> > index 000000000000..20ecc57b4e5c
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
+> > @@ -0,0 +1,239 @@
+> > +/dts-v1/;
+> > +
+> > +#include "craw64.dtsi"
+> > +
+> > +/ {
+> > +       model = "Cisco Craw64 on DopplerG 2.0";
+> > +       compatible = "cisco,craw64-dopplerg2", "cisco,craw64";
+> > +
+> > +       memory {
+> > +               device_type = "memory";
+> > +               reg = <0x0 0x80000000 0x0 0x80000000>;
+> > +       };
+> 
+> The memory size is usually filled by the boot loader, just put an
+> empty node into the .dtsi file
+
+Arnd, I must regretfully inform you that Cisco has a deep dark addiction to
+bootloaders which, are, um, how do I say this diplomatically, um , brain dead.
+
+You have some other comments below related to moving things into the bootloader,
+and I can look into it, but bootloader inflexibility is wide spread inside
+Cisco.
+
+> 
+> > +       doppler {
+> > +               #address-cells = <2>;
+> > +               #size-cells = <2>;
+> > +               compatible = "simple-bus";
+> > +               ranges;
+> > +       };
+> 
+> What is this?
+> 
+
+It's a device, but the driver is not submitted. I can remove it along with the
+other device driver binding we have where the drivers and bindings aren't submitted.
+
+I'll do my best to fix the comments your given an resubmit.
+
+Daniel
