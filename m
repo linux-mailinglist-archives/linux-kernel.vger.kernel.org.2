@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2733502EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC07D3502F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbhCaPFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:05:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:50205 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236030AbhCaPFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:05:17 -0400
-IronPort-SDR: s+VCwYd9LFBEFudtfSPq76rNYMDQ7SHHEcOnMKYAms/wU4vWYZJQfbPltf9HaNsGlB6JT73ED/
- 4xTrqWfj/mUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="277206972"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="277206972"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:05:15 -0700
-IronPort-SDR: jtOjRKjp4Dzw48N7Ih0ehk5t2Gx3Mfh7/MPivrs/RhfG9djF7WEdTeTjZyTh56W3kTPcXimdnl
- 3roJyvlpO24w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="516934160"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 31 Mar 2021 08:05:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 83F55199; Wed, 31 Mar 2021 18:05:28 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v1 1/1] driver core: platform: Declare early_platform_cleanup() prototype
-Date:   Wed, 31 Mar 2021 18:05:25 +0300
-Message-Id: <20210331150525.59223-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S236173AbhCaPIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:08:12 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:33242 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235991AbhCaPHv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:07:51 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 12VF77DF021201;
+        Thu, 1 Apr 2021 00:07:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 12VF77DF021201
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617203228;
+        bh=ARbRFUFLNuhizfOq+rbCISdwf0ZvC9EkFJQtTKtjlps=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0BXLesIP5v+3wtn3FQqyG2ppqrZdnq9H6gl0+IA5olp+NBiyCMNfCxmwDLQuR2eEI
+         fl2kirvxTPzE5h+DkZRpO+kgavsmYNHxX6EA9+PAyIdGzYus1o3X6twC+Trr1bC9sJ
+         XLYKukwdDHj7ON3/wu+41FoyMeD6G34UM93Cwa18iw8q+lICyienKgDyKE0iANeqDk
+         bYfB0qMC99jkoUkhkEVUxfJIepDIsm7lV3ru0xALDquISA9GngQcrMXyd8ON/31gSm
+         RzLmoIJDGR3HGPhB9AUota4bXQ/Tuswa/CExOvGPjpK9qDD5SNrH5OA6LSyNzF/uMV
+         GY0ArNoN6PO3Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-mips@linux-mips.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 1/2] mips: replace deprecated EXTRA_CFLAGS with ccflags-y
+Date:   Thu,  1 Apr 2021 00:06:56 +0900
+Message-Id: <20210331150658.38919-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compiler is not happy:
+As Documentation/kbuild/makefiles.rst says, EXTRA_CFLAGS is deprecated.
+Replace it with ccflags-y.
 
-  CC      drivers/base/platform.o
-drivers/base/platform.c:1557:20: warning: no previous prototype for ‘early_platform_cleanup’ [-Wmissing-prototypes]
- 1557 | void __weak __init early_platform_cleanup(void) { }
-      |                    ^~~~~~~~~~~~~~~~~~~~~~
-
-Declare early_platform_cleanup() prototype in the header to make everyone happy.
-
-Fixes: eecd37e105f0 ("drivers: Fix boot problem on SuperH")
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- include/linux/platform_device.h | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index 3f23f6e430bf..cd81e060863c 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -359,4 +359,7 @@ static inline int is_sh_early_platform_device(struct platform_device *pdev)
- }
- #endif /* CONFIG_SUPERH */
+ arch/mips/kvm/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kvm/Makefile b/arch/mips/kvm/Makefile
+index 506c4ac0ba1c..7d42d624a7b9 100644
+--- a/arch/mips/kvm/Makefile
++++ b/arch/mips/kvm/Makefile
+@@ -4,7 +4,7 @@
  
-+/* For now only SuperH uses it */
-+void early_platform_cleanup(void);
-+
- #endif /* _PLATFORM_DEVICE_H_ */
+ common-objs-y = $(addprefix ../../../virt/kvm/, kvm_main.o coalesced_mmio.o eventfd.o)
+ 
+-EXTRA_CFLAGS += -Ivirt/kvm -Iarch/mips/kvm
++ccflags-y += -Ivirt/kvm -Iarch/mips/kvm
+ 
+ common-objs-$(CONFIG_CPU_HAS_MSA) += msa.o
+ 
 -- 
-2.30.2
+2.27.0
 
