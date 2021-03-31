@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CD93509A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907ED3509A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhCaVht convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 17:37:49 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3511 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbhCaVho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:37:44 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F9fkV382pzRX2b;
-        Thu,  1 Apr 2021 05:35:46 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 1 Apr 2021 05:37:41 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 1 Apr 2021 05:37:41 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
- Thu, 1 Apr 2021 05:37:41 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        yangyicong <yangyicong@huawei.com>
-Subject: RE: [PATCH v1 1/1] i2c: designware: Adjust bus_freq_hz when refuse
- high speed mode set
-Thread-Topic: [PATCH v1 1/1] i2c: designware: Adjust bus_freq_hz when refuse
- high speed mode set
-Thread-Index: AQHXJh2955I5oqU49UuEJBCnbAaQ8aqenc/g
-Date:   Wed, 31 Mar 2021 21:37:41 +0000
-Message-ID: <07b6264280314d919f2747290bb80b01@hisilicon.com>
-References: <20210331110510.67523-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210331110510.67523-1-andriy.shevchenko@linux.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.26]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232179AbhCaViU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:38:20 -0400
+Received: from mga14.intel.com ([192.55.52.115]:56905 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231347AbhCaVh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:37:58 -0400
+IronPort-SDR: yuDK7XMrYUnuqzfXDyfjZ6NR2MC0JT3r0H1har6s3ITfhE2a90C2j78K72Mmc8frvcSXLHcmhO
+ 9r7jTSeXnSKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="191575896"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="191575896"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:37:58 -0700
+IronPort-SDR: FHmohomgvnJDA9mtHdrwa91RA3IpF0X1FypVWyctU3H6H+E3UuG78d9O8DmSdXFTPtDTgPQ08j
+ XPo/BS2D1iyA==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="377433046"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.177.63]) ([10.212.177.63])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:37:57 -0700
+Subject: Re: [PATCH v2 05/24] x86/resctrl: Label the resources with their
+ configuration type
+To:     James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20210312175849.8327-1-james.morse@arm.com>
+ <20210312175849.8327-6-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <036004f2-828d-51f8-967d-a0b0625dd8d0@intel.com>
+Date:   Wed, 31 Mar 2021 14:37:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210312175849.8327-6-james.morse@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi James,
 
+On 3/12/2021 9:58 AM, James Morse wrote:
 
-> -----Original Message-----
-> From: Andy Shevchenko [mailto:andriy.shevchenko@linux.intel.com]
-> Sent: Thursday, April 1, 2021 12:05 AM
-> To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>; Serge Semin
-> <Sergey.Semin@baikalelectronics.ru>; linux-i2c@vger.kernel.org;
-> linux-kernel@vger.kernel.org
-> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>; Mika Westerberg
-> <mika.westerberg@linux.intel.com>; wsa@kernel.org; yangyicong
-> <yangyicong@huawei.com>; Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Subject: [PATCH v1 1/1] i2c: designware: Adjust bus_freq_hz when refuse high
-> speed mode set
-> 
-> When hardware doesn't support High Speed Mode, we forget bus_freq_hz
-> timing adjustment. This makes the timings and real registers being
-> unsynchronized. Adjust bus_freq_hz when refuse high speed mode set.
-> 
-> Fixes: b6e67145f149 ("i2c: designware: Enable high speed mode")
-> Reported-by: "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index 8a9da490134b..57484d2f6214 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -361,12 +361,14 @@ struct rdt_parse_data {
+>   
+>   /**
+>    * struct rdt_hw_resource - hw attributes of a resctrl resource
+> + * @conf_type:		The type that should be used when configuring. temporary
 
-Thanks for fixing that.
+This is annotated with "temporary" but still remains after entire series 
+is applied.
 
-Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-
->  drivers/i2c/busses/i2c-designware-master.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c
-> b/drivers/i2c/busses/i2c-designware-master.c
-> index 34bb4e21bcc3..9bfa06e31eec 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -129,6 +129,7 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev
-> *dev)
->  		if ((comp_param1 & DW_IC_COMP_PARAM_1_SPEED_MODE_MASK)
->  			!= DW_IC_COMP_PARAM_1_SPEED_MODE_HIGH) {
->  			dev_err(dev->dev, "High Speed not supported!\n");
-> +			t->bus_freq_hz = I2C_MAX_FAST_MODE_FREQ;
->  			dev->master_cfg &= ~DW_IC_CON_SPEED_MASK;
->  			dev->master_cfg |= DW_IC_CON_SPEED_FAST;
->  			dev->hs_hcnt = 0;
-> --
-> 2.30.2
-
+Reinette
