@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA083508BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C40A3508BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhCaVD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:03:29 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:42399 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhCaVDJ (ORCPT
+        id S231288AbhCaVE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:04:29 -0400
+Received: from st43p00im-zteg10073401.me.com ([17.58.63.181]:34883 "EHLO
+        st43p00im-zteg10073401.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231818AbhCaVEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:03:09 -0400
-Received: by mail-il1-f199.google.com with SMTP id w15so308050ilu.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:03:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=kP/y11epKcSUPOyR3ggVPINM0BmYMwSnVyCElSIqNFk=;
-        b=TtMn//ZdLLuqXekerTZgmYADtoDhopRh2PgTo5k7FyfPukdD2S5kZPKrSRrzKuC5av
-         QrILRktoT4COTZx2ByXSEAK2d9VKAsoAuygIZHmijcPGxJeve6z4sPdKdkATR8fkBVTj
-         C2MGhr5qwbyR1LQrlIQTqFl+gy0qbKH0j77U/SLi+F/MpSS3OhCFfgCZsE56xsDGV7f3
-         y8CMcNwz5wCge2/X7ZacR6LjYEYvfEWk14lqs6j0SKGVJ9cUOPCYketgJWDuleq4P5sA
-         m3qeJiJ6jyF4mZIUD+qHHJl9HpP1yYEKZBigP76jurdBJnV6V4+cQb2I1UZVRSKS13Y0
-         xm3A==
-X-Gm-Message-State: AOAM530zEmsko4lVwxQtXD7Pf1s7KEYL9KYJJ/8J6k5iAESPLLXF2/Hn
-        sExjRMi0ua/YhhzSrUM37rLDgQOh9UeK/cF6/zhHoFc0TkuW
-X-Google-Smtp-Source: ABdhPJwLRBNjRlYsZOUMcyuiCfXjpK8qdqf9jZ3VAQDOJm+DbI0iO8VxG0rEbQUcU2oSqtwg/wuXvw4w01xF8OT1kTor7aN6bJkU
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:388e:: with SMTP id b14mr4857937jav.62.1617224588612;
- Wed, 31 Mar 2021 14:03:08 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:03:08 -0700
-In-Reply-To: <00000000000073afff05bbe9a54d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020564605bedb716e@google.com>
-Subject: Re: [syzbot] WARNING in ieee802154_del_seclevel
-From:   syzbot <syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com>
-To:     a@unstable.cc, alex.aring@gmail.com,
-        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
-        info@sophiescuban.com, jkosina@suse.cz, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org, stern@rowland.harvard.edu,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 31 Mar 2021 17:04:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1617224651; bh=mLmfO9KHGTwVzdxvKCaMc7ab60/ASrOKOwWiogdgsXo=;
+        h=From:To:Subject:Date:Message-Id;
+        b=jQk+3wlLiLGIn2XUIPbKZC1jKsqrvUGNse8a1m0hCWG6XHoUYknxujjkwrTa7Gj1E
+         cfhsM1D+ffrIYukYeTzLk2eCrcy0LCJ1nCeG5DCoFLxkK0ZY5YFOXPzjQo2jzTKKSE
+         tpyCQ8Qxn82pdItGxB9kQ73ZboW/W1FwAL7Evxq2b53vDbN8MywLZh9bD8D8b7xIXF
+         GXRpr2RowX3U/PWSGHqKDcyTv/xJRbwRDFXV6S5molFTbY5bC7ZqTTyZTAiE+pQqje
+         pKPq+mTa9ymx5a+fPQmiC2VPdca+NHcSbBiT8CsL4zFTPN+Fk37OXJ9QXz0HPlF1AW
+         N/m2dg7u4JC9A==
+Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-zteg10073401.me.com (Postfix) with ESMTPSA id B49585E069F;
+        Wed, 31 Mar 2021 21:04:08 +0000 (UTC)
+From:   Alain Volmat <avolmat@me.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     linux-kernel@vger.kernel.org, avolmat@me.com
+Subject: [PATCH v3] mailbox: sti: fix struct description warnings
+Date:   Wed, 31 Mar 2021 23:03:57 +0200
+Message-Id: <20210331210357.3459-1-avolmat@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-03-31=5F08:2021-03-31=5F02,2021-03-31=5F08,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 suspectscore=0
+ mlxlogscore=859 spamscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103310146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Fix formating of struct description to avoid warning highlighted
+by W=1 compilation.
 
-commit 416dacb819f59180e4d86a5550052033ebb6d72c
-Author: Alan Stern <stern@rowland.harvard.edu>
-Date:   Wed Aug 21 17:27:12 2019 +0000
+warning: cannot understand function prototype: 'struct sti_mbox_device '
+warning: cannot understand function prototype: 'struct sti_mbox_pdata '
+warning: cannot understand function prototype: 'struct sti_channel '
 
-    HID: hidraw: Fix invalid read in hidraw_ioctl
+Signed-off-by: Alain Volmat <avolmat@me.com>
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mailbox/mailbox-sti.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127430fcd00000
-start commit:   6e5a03bc ethernet/netronome/nfp: Fix a use after free in n..
-git tree:       net
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=117430fcd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=167430fcd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-dashboard link: https://syzkaller.appspot.com/bug?extid=fbf4fc11a819824e027b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bfe45ed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1188e31ad00000
+diff --git a/drivers/mailbox/mailbox-sti.c b/drivers/mailbox/mailbox-sti.c
+index 2baf69a0b81c..0f2bc09c364d 100644
+--- a/drivers/mailbox/mailbox-sti.c
++++ b/drivers/mailbox/mailbox-sti.c
+@@ -36,7 +36,7 @@
+ #define MBOX_BASE(mdev, inst)   ((mdev)->base + ((inst) * 4))
+ 
+ /**
+- * STi Mailbox device data
++ * struct sti_mbox_device - STi Mailbox device data
+  *
+  * An IP Mailbox is currently composed of 4 instances
+  * Each instance is currently composed of 32 channels
+@@ -60,7 +60,7 @@ struct sti_mbox_device {
+ };
+ 
+ /**
+- * STi Mailbox platform specific configuration
++ * struct sti_mbox_pdata - STi Mailbox platform specific configuration
+  *
+  * @num_inst:	Maximum number of instances in one HW Mailbox
+  * @num_chan:	Maximum number of channel per instance
+@@ -71,7 +71,7 @@ struct sti_mbox_pdata {
+ };
+ 
+ /**
+- * STi Mailbox allocated channel information
++ * struct sti_channel - STi Mailbox allocated channel information
+  *
+  * @mdev:	Pointer to parent Mailbox device
+  * @instance:	Instance number channel resides in
+-- 
+2.17.1
 
-Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
-Fixes: 416dacb819f5 ("HID: hidraw: Fix invalid read in hidraw_ioctl")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
