@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D3B3505FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7500350602
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhCaSHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbhCaSHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:07:31 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64A0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:07:30 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1677581pjv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fzUxfJHs4m96o0h93XY6hLbrWDklPfvA/cxbRjLDuiE=;
-        b=AW9hN1Djcg4K3j6y1d6rLhacaldp5/qFhVVlaCM4Y4E4DJEIsgt2V+ZwiR2/a+Dazb
-         1JRokka2xSlR+ur/y4YTI5lunennSWPSD6CCusxkJwPorqyEwKEiZHy3jxOSbXjsIztY
-         CL2ZvlWfAFL4bxmN1KzcCzGxE72CVrjbkQA36b76+r7MAKX2GuYTIg4fHXGUizObFMGr
-         qh2q7GOSLeDC8hiM1lbp5K+V3Pr6tbnPU6z460UOE0JuPs6kxAj1rLgbjpxzYV18kUlX
-         62h2/pIh85HeBtJv5VaQXUJ3OYSnMML6O9vO1R/AkJUgrjd3zbEdDT4qVPfZstkbhIb0
-         7nwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fzUxfJHs4m96o0h93XY6hLbrWDklPfvA/cxbRjLDuiE=;
-        b=XYT82xwUNl5zoMxr+Q3v1aPxQqC7T0ENTo+aCTZF6bxKafXR2IP+6dXY8/WCSqdEjb
-         4NvDr8+aZzWj0/ZmBghJWI11X+G1uzOjaWm5xdPXXpHA9jS4QRGedMGsCbr2edO8jxkH
-         AYVk/D7mAm5TBsqSrCiyMgbWVUVpiBxYbHmVmPlrh4Rko7Zag9lUdYYp0dNg7sKVJxsY
-         +K5ABP1lohibGiVugm1c1FtABhcz20KIlovJqxOKTK7EcpH2tz0dhr2/eZEpYtDd4GfB
-         3XwxrgDuj/dCWg5ullEGG9H0l4lrHrEGMlkWL39XMG5wDDSgW+6uDNMhiJKx9RKCrA4U
-         +ITw==
-X-Gm-Message-State: AOAM533HcyTN1YrrAJpv6HbU+xY01frDqdIDb7RlFXPceacvUgJqHj48
-        nVvRIDOMHsZriFLYqa+QdliBrw==
-X-Google-Smtp-Source: ABdhPJwVLzSBQTNx4xs+d36/l5KaNndW79U3YjxOAWpxY+JuSKFrSViByfpBlr1uaqpRCR1PsNJC3A==
-X-Received: by 2002:a17:90a:8b16:: with SMTP id y22mr4558382pjn.191.1617214049909;
-        Wed, 31 Mar 2021 11:07:29 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id e1sm2979522pfi.175.2021.03.31.11.07.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 11:07:29 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 18:07:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Fix potential memory access error
-Message-ID: <YGS6XS87HYJdVPFQ@google.com>
-References: <1617182122-112315-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S234537AbhCaSJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:09:46 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:35946 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233735AbhCaSJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:09:30 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 50375A003F;
+        Wed, 31 Mar 2021 20:09:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 50375A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1617214165; bh=cVlBUFphs/dnp74K2p5kRDyfBDi3OUtOUvGdNmBLsP4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=sBeAQc3JNSuqQS+Lcy4Gncbk+pJfATshMepPkXFUdX1HwkUhHIm1/haAjQb1Hfz1v
+         06blgNKsS56DwNFOFLb6Xs5AJa9bKGph6vBV7HxOpgXnDXj9M5tPNyrbEXSi3W7iVs
+         qtfeT3BowNx5VOWrz/mJ6T/G6Dr0NJa8tC8mCyKk=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Wed, 31 Mar 2021 20:09:19 +0200 (CEST)
+Subject: Re: ALSA: control - add layer registration routines
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        alsa-devel@alsa-project.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <51ba335d-45ac-b50d-2ec6-333afd1daebf@perex.cz>
+Date:   Wed, 31 Mar 2021 20:09:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617182122-112315-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Yang Li wrote:
-> Using __set_bit() to set a bit in an integer is not a good idea, since
-> the function expects an unsigned long as argument, which can be 64bit wide.
-> Coverity reports this problem as
+Dne 31. 03. 21 v 17:17 Colin Ian King napsal(a):
+> Hi,
 > 
-> High:Out-of-bounds access(INCOMPATIBLE_CAST)
-> CWE119: Out-of-bounds access to a scalar
-> Pointer "&vcpu->arch.regs_avail" points to an object whose effective
-> type is "unsigned int" (32 bits, unsigned) but is dereferenced as a
-> wider "unsigned long" (64 bits, unsigned). This may lead to memory
-> corruption.
+> Static analysis on linux-next with Coverity has detected a potential
+> issue in the following commit:
 > 
-> /home/heyuan.shy/git-repo/linux/arch/x86/kvm/kvm_cache_regs.h:
-> kvm_register_is_available
+> commit 3f0638a0333bfdd0549985aa620f2ab69737af47
+> Author: Jaroslav Kysela <perex@perex.cz>
+> Date:   Wed Mar 17 18:29:41 2021 +0100
 > 
-> Just use BIT instead.
-
-Meh, we're hosed either way.  Using BIT() will either result in undefined
-behavior due to SHL shifting beyond the size of a u64, or setting random bits
-if the truncated shift ends up being less than 63.
-
-I suppose one could argue that undefined behavior is better than memory
-corruption, but KVM is very broken if 'reg' is out-of-bounds so IMO it's not
-worth changing.  There are only two call sites that don't use a hardcoded value,
-and both are guarded by WARN.  kvm_register_write() bails without calling
-kvm_register_mark_dirty(), so that's guaranteed safe.  vmx_cache_reg() WARNs
-after kvm_register_mark_available(), but except for kvm_register_read(), all
-calls to vmx_cache_reg() use a hardcoded value, and kvm_register_read() also
-WARNs and bails.
-
-Note, all of the above holds true for kvm_register_is_{available,dirty}(), too.
-
-So in the current code, it's impossible for this to be a problem.  Theoretically
-future code could introduce bugs, but IMO we should never accept code that uses
-a non-hardcoded 'reg' and doesn't pre-validate.
-
-The number of uops is basically a wash because "BTS <reg>, <mem>" is fairly
-expensive; depending on the uarch, the difference is ~1-2 uops in favor of BIT().
-On the flip side, __set_bit() shaves 8 bytes.  Of course, none these flows are
-anywhere near that senstive.
-
-TL;DR: I'm not opposed to using BIT(), I just don't see the point.
-
-
-__set_bit():
-   0x00000000000104e6 <+6>:	mov    %esi,%eax
-   0x00000000000104e8 <+8>:	mov    %rdi,%rbp
-   0x00000000000104eb <+11>:	sub    $0x8,%rsp
-   0x00000000000104ef <+15>:	bts    %rax,0x2a0(%rdi)
-
-|= BIT():
-   0x0000000000010556 <+6>:	mov    %esi,%ecx
-   0x0000000000010558 <+8>:	mov    $0x1,%eax
-   0x000000000001055d <+13>:	mov    %rdi,%rbp
-   0x0000000000010560 <+16>:	sub    $0x8,%rsp
-   0x0000000000010564 <+20>:	shl    %cl,%rax
-   0x0000000000010567 <+23>:	or     %eax,0x2a0(%rdi)
-
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/x86/kvm/kvm_cache_regs.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>     ALSA: control - add layer registration routines
 > 
-> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
-> index 2e11da2..cfa45d88 100644
-> --- a/arch/x86/kvm/kvm_cache_regs.h
-> +++ b/arch/x86/kvm/kvm_cache_regs.h
-> @@ -52,14 +52,14 @@ static inline bool kvm_register_is_dirty(struct kvm_vcpu *vcpu,
->  static inline void kvm_register_mark_available(struct kvm_vcpu *vcpu,
->  					       enum kvm_reg reg)
->  {
-> -	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
-> +	vcpu->arch.regs_avail |= BIT(reg);
->  }
->  
->  static inline void kvm_register_mark_dirty(struct kvm_vcpu *vcpu,
->  					   enum kvm_reg reg)
->  {
-> -	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_avail);
-> -	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_dirty);
-> +	vcpu->arch.regs_avail |= BIT(reg);
-> +	vcpu->arch.regs_dirty |= BIT(reg);
->  }
->  
->  static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu, int reg)
-> -- 
-> 1.8.3.1
+> The static analysis is as follows:
 > 
+> 2072 void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
+> 2073 {
+> 2074        struct snd_ctl_layer_ops *lops2, *prev_lops2;
+> 2075
+> 2076        down_write(&snd_ctl_layer_rwsem);
+> 
+>     assignment: Assigning: prev_lops2 = NULL.
+> 
+> 2077        for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2
+> = lops2->next)
+> 2078                if (lops2 == lops) {
+> 
+>     null: At condition prev_lops2, the value of prev_lops2 must be NULL.
+>     dead_error_condition: The condition !prev_lops2 must be true.
+> 
+> 2079                        if (!prev_lops2)
+> 2080                                snd_ctl_layer = lops->next;
+> 2081                        else
+> 
+>     'Constant' variable guards dead code (DEADCODE) dead_error_line:
+>     Execution cannot reach this statement: prev_lops2->next = lops->next;.
+>     Local variable prev_lops2 is assigned only once, to a constant
+> value, making it effectively constant throughout its scope. If this is
+> not the intent, examine the logic to see if there is a missing
+> assignment that would make prev_lops2 not remain constant.
+> 
+> 2082                                prev_lops2->next = lops->next;
+> 2083                        break;
+> 2084                }
+> 2085        up_write(&snd_ctl_layer_rwsem);
+> 2086 }
+> 
+> I couldn't quite figure out the original intent of the prev_lops use, so
+> I'd thought I'd report this issue as the code does look incorrect.
+
+Thank you. I submitted the fix here:
+
+https://lore.kernel.org/alsa-devel/20210331180702.663489-1-perex@perex.cz/
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
