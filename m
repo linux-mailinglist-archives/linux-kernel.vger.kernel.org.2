@@ -2,148 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BADA3505E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA743505EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhCaSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        id S234716AbhCaSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234641AbhCaSAX (ORCPT
+        with ESMTP id S234743AbhCaSBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:00:23 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68507C061574;
-        Wed, 31 Mar 2021 11:00:22 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id d13so9401433lfg.7;
-        Wed, 31 Mar 2021 11:00:22 -0700 (PDT)
+        Wed, 31 Mar 2021 14:01:24 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4698C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:01:23 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id a1so24933880ljp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Q9oxhnKEAurSYSJEH9M9Sm61COtmi4Ok3DH92mW23E=;
-        b=h2lTTlH/+QWKj7wZpU0g5C99CDE6tQqaQ5ztaODdS8rmC29fLr6Zzr0goXM/KHuhl2
-         SyVQ7j0mH5NIPXKNx6/lMvjcpwv9brWlhMmZCkgWeEPXfzylyXH7h+bqw3mni+t4PMl0
-         fG5AJpoRqAasJFzkXcgOcKut8TxjqccYSPsxyw53RBMo0IElOIw/QV3nDuf5TnFw0BLL
-         jpK+4Tfixv6ijT1wIiBcEBuTco47NCIs2vvcz6cNgSBarbfQG1U0PtXcScq8AWk0Jq3c
-         TWrxaGq+WkHSH6yozer04Gx2dLaam2idQPQ5uzQ67bZ//KQJXqJid6tuQYIipJCBxGzH
-         ijYA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t9nMQTEmpT7k/RP+1/1nM1b4H1NgzFziXfj4iuE1q+g=;
+        b=JrmLn+27truBlWU70KBlFbjf3BnhN2BonvBPyaskH1q4fTarMAgSc6yxIQQvh7vW0a
+         YIjNBvBnkM5luLwvQ45+/hFGqkBEbutTjNKLX5T0BHeci58bZe9hFmHBOfFOiaYmEJoc
+         A39FZyF3IBRNzShPWnHJyBbQSNd+3iiVs65P4DUHh/L5FzTD4knvdzABYZw3+WPyVjea
+         esgumkbEOwS17+xhdECxRgvsJLU0v1NqVYBBK/E8qYCFLWJvpRru8PVmvCUQ7Dtsy58B
+         G7I/HApX73BZj+z0Tm5QiZQ91kBoqYznQumQkT7v8qAlbqlqCRI0+p1niGn/8I3UTKfv
+         wNaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Q9oxhnKEAurSYSJEH9M9Sm61COtmi4Ok3DH92mW23E=;
-        b=d2317/cLyDk/FScYCr60ImsEEGY1vLEGHdTyLgjFOfQxoaLLyo2s+Mgm436EQq3Kep
-         QGlMJ/A8w9QN3NmIdys9MWRbRHY0g4FxBuUVp7Itv77VD5KRii8vU2caz9ph10zEFTjV
-         NwwVZaf7qpu8xkxme9vcf1J8A+PwfZWI+mVJfKNuYRjIIwVuJJ+YvERXxuevkJF3ghwj
-         ZfvRAe/Ykd1YRWolZbo3v6Rz2wIKYoP7yMUCosfc7wVgKfvQqPOiom+otTeq4qWI0HXr
-         xu/UafPoc3638QPf4yjmGTeSWr/9CtTA5rGK9jCt3BQnNTzfLql8/FcRp6J3Y2fzJC7Q
-         WIgg==
-X-Gm-Message-State: AOAM531NN/zMFqDVZ4IJZZFV23YwYCRrBTjvFtNfuzjNcnnuiuPp8YRO
-        7qnQHqPTxXBIpUfsIL+lmA8=
-X-Google-Smtp-Source: ABdhPJyx4lAT+sVVFl5m4Yt0LNsve3Yt3vkYiD3cRMaY6C0bvxtOaE1jK6wf74B0uUteMcXor6j0Kg==
-X-Received: by 2002:a19:e0d:: with SMTP id 13mr2907573lfo.549.1617213620975;
-        Wed, 31 Mar 2021 11:00:20 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id q8sm292564lfc.223.2021.03.31.11.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 11:00:20 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 21:00:18 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Brad Larson <brad@pensando.io>
-Cc:     linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        broonie@kernel.org, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, olof@lixom.net, linux-gpio@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/13] spi: dw: Add support for Pensando Elba SoC SPI
-Message-ID: <20210331180018.jir2vusuf3sbare5@mobilestation>
-References: <20210329015938.20316-1-brad@pensando.io>
- <20210329015938.20316-4-brad@pensando.io>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t9nMQTEmpT7k/RP+1/1nM1b4H1NgzFziXfj4iuE1q+g=;
+        b=oVMdmYGDI3iB4nCQehw73eD3/gQ7zyCUv8WkSQk+sL9aPOR4QdES6dutxTE4wit0Mx
+         n18B3nCRN0Fxcwf7GXLeX98i3yB/2/ECw/XmFgl7EJtaS1DQsOs3rxFdeiAbXxLfiauD
+         pYU7WJ2bFavOgknaIyZ9FVUmxmZBHmJ/49KbPUcaLJ50W6BIOJ7VXB6ojNzH60wFT/PU
+         znfJj1or8Kx/bGYJWSoR0a12hMLc1o6sJ8ABM8GBopbiXBgm1cS0KChge+3tUZyvTWvi
+         I/PY9csOMZ4YqZUnHQHX6zklhmNqvZmff/bZ9ADOF9UuglpwRcnVpNNWTJU3xUDxFT0H
+         Kw1Q==
+X-Gm-Message-State: AOAM532JeXR3Qvv9YRPLBMewZa3pnAvjMb1rEerJ/9VYuIeR3n0lNkUh
+        4pHAZixeGTS5gc1LGSjd6ZoYUR7mbvlz3oHlMmwJCw==
+X-Google-Smtp-Source: ABdhPJx4JPihO8TXaKxQJC0+V3RM2UedfYk6UaUvnoiri/D79GMCh16SgQLa3/M1zJjx47hDMPCJYeeZpyP11qjACss=
+X-Received: by 2002:a2e:868e:: with SMTP id l14mr2910204lji.479.1617213682119;
+ Wed, 31 Mar 2021 11:01:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329015938.20316-4-brad@pensando.io>
+References: <20210331133811.3221540-1-masahiroy@kernel.org> <20210331133811.3221540-9-masahiroy@kernel.org>
+In-Reply-To: <20210331133811.3221540-9-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 31 Mar 2021 11:01:11 -0700
+Message-ID: <CAKwvOdnS_V9GHF2WkdnhYE+v3qKJtEBF9k3T3ythmAc0gCiFzA@mail.gmail.com>
+Subject: Re: [PATCH 9/9] kbuild: remove CONFIG_MODULE_COMPRESS
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 06:59:28PM -0700, Brad Larson wrote:
-> The Pensando Elba SoC uses a GPIO based chip select
-> for two DW SPI busses with each bus having two
-> chip selects.
-> 
-> Signed-off-by: Brad Larson <brad@pensando.io>
+On Wed, Mar 31, 2021 at 6:39 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+
+Should the online be Kconfig rather than Kbuild, for a commit that
+only changes Kconfigs?
+
+>
+> CONFIG_MODULE_COMPRESS is only used to activate the choice for module
+> compression algorithm. It will be simpler to make the choice visible
+> all the time by adding CONFIG_MODULE_COMPRESS_NONE to allow the user to
+> disable module compression.
+>
+> This is more consistent with the "Kernel compression mode" and "Built-in
+> initramfs compression mode" choices.
+>
+> CONFIG_KERNEL_UNCOMPRESSED and CONFIG_INITRAMFS_COMPRESSION_NONE are
+> available to choose to not compress the kernel, initrd, respectively.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  drivers/spi/spi-dw-mmio.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 17c06039a74d..c323a5ceecb8 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -56,7 +56,7 @@ struct dw_spi_mscc {
->  /*
->   * The Designware SPI controller (referred to as master in the documentation)
->   * automatically deasserts chip select when the tx fifo is empty. The chip
-> - * selects then needs to be either driven as GPIOs or, for the first 4 using the
-> + * selects then needs to be either driven as GPIOs or, for the first 4 using
->   * the SPI boot controller registers. the final chip select is an OR gate
->   * between the Designware SPI controller and the SPI boot controller.
->   */
-> @@ -237,6 +237,31 @@ static int dw_spi_canaan_k210_init(struct platform_device *pdev,
->  	return 0;
->  }
->  
-> +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
-> +{
-> +	struct dw_spi *dws = spi_master_get_devdata(spi->master);
-> +
+>
+>  init/Kconfig | 45 ++++++++++++++++++++++++++-------------------
+>  1 file changed, 26 insertions(+), 19 deletions(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 019c1874e609..3ca1ffd219c4 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2225,40 +2225,47 @@ config MODULE_SIG_HASH
+>         default "sha384" if MODULE_SIG_SHA384
+>         default "sha512" if MODULE_SIG_SHA512
+>
+> -config MODULE_COMPRESS
 
-> +	if (!enable) {
+The top level Makefile has comments and code that refer to this choice
+which is now removed. I think you'll want to fix that up in this
+change as well? Ah, patch 7 in the series does that:
+https://lore.kernel.org/linux-kbuild/20210331133811.3221540-7-masahiroy@kernel.org/
 
-Please, be more attentive to the review-comments given to you before
-resending a new patchset. One more time. This version of set_cs won't
-work for Active-high CS. Each SPI controller working with GPIO-based
-chip-select is marked as supporting that feature. So your DW
-SPI controller won't be able to work correctly with SPI-devices
-activated by active-high chip-select signal. Note default
-dw_spi_set_cs() callback supports that.
+Ok then this LGTM.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
--Sergey
+> -       bool "Compress modules on installation"
+> +choice
+> +       prompt "Module compression mode"
+>         help
+> +         This option allows you to choose the algorithm which will be used to
+> +         compress modules when 'make modules_install' is run. (or, you can
+> +         choose to not compress modules at all.)
+>
+> -         Compresses kernel modules when 'make modules_install' is run; gzip or
+> -         xz depending on "Compression algorithm" below.
+> +         External modules will also be compressed in the same way during the
+> +         installation.
+>
+> -         module-init-tools MAY support gzip, and kmod MAY support gzip and xz.
+> +         For modules inside an initrd or initramfs, it's more efficient to
+> +         compress the whole initrd or initramfs instead.
+>
+> -         Out-of-tree kernel modules installed using Kbuild will also be
+> -         compressed upon installation.
+> +         This is fully compatible with signed modules.
+>
+> -         Note: for modules inside an initrd or initramfs, it's more efficient
+> -         to compress the whole initrd or initramfs instead.
+> +         Please note that the tool used to load modules needs to support the
+> +         corresponding algorithm. module-init-tools MAY support gzip, and kmod
+> +         MAY support gzip and xz.
+>
+> -         Note: This is fully compatible with signed modules.
+> +         Your build system needs to provide the appropriate compression tool
+> +         to compress the modules.
+>
+> -         If in doubt, say N.
+> +         If in doubt, select 'None'.
+>
+> -choice
+> -       prompt "Compression algorithm"
+> -       depends on MODULE_COMPRESS
+> -       default MODULE_COMPRESS_GZIP
+> +config MODULE_COMPRESS_NONE
+> +       bool "None"
+>         help
+> -         This determines which sort of compression will be used during
+> -         'make modules_install'.
+> -
+> -         GZIP (default) and XZ are supported.
+> +         Do not compress modules. The installed modules are suffixed
+> +         with .ko.
+>
+>  config MODULE_COMPRESS_GZIP
+>         bool "GZIP"
+> +       help
+> +         Compress modules with XZ. The installed modules are suffixed
+> +         with .ko.gz.
+>
+>  config MODULE_COMPRESS_XZ
+>         bool "XZ"
+> +       help
+> +         Compress modules with XZ. The installed modules are suffixed
+> +         with .ko.xz.
+>
+>  endchoice
+>
+> --
+> 2.27.0
+>
 
-> +		/*
-> +		 * Using a GPIO-based chip-select, the DW SPI
-> +		 * controller still needs its own CS bit selected
-> +		 * to start the serial engine.  On Elba the specific
-> +		 * CS doesn't matter to start the serial engine,
-> +		 * so using CS0.
-> +		 */
-> +		dw_writel(dws, DW_SPI_SER, BIT(0));
-> +	} else {
-> +		dw_writel(dws, DW_SPI_SER, 0);
-> +	}
-> +}
-> +
-> +static int dw_spi_elba_init(struct platform_device *pdev,
-> +			    struct dw_spi_mmio *dwsmmio)
-> +{
-> +	dwsmmio->dws.set_cs = dw_spi_elba_set_cs;
-> +	return 0;
-> +}
-> +
->  static int dw_spi_mmio_probe(struct platform_device *pdev)
->  {
->  	int (*init_func)(struct platform_device *pdev,
-> @@ -351,6 +376,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
->  	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
->  	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
->  	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
-> +	{ .compatible = "pensando,elba-spi", .data = dw_spi_elba_init},
->  	{ /* end of table */}
->  };
->  MODULE_DEVICE_TABLE(of, dw_spi_mmio_of_match);
-> -- 
-> 2.17.1
-> 
+
+-- 
+Thanks,
+~Nick Desaulniers
