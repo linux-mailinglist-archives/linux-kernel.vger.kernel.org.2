@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7077F34FE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92FA34FE5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhCaK4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbhCaKz4 (ORCPT
+        id S235107AbhCaK4z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 06:56:55 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:51582 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235065AbhCaK4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:55:56 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1295AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 03:55:56 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h10so21755460edt.13
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 03:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=356R7sQpshoyEfmHEDtb6MkvOb+YyBiiz66/bbaWRKI=;
-        b=usqu/C8YTsm17g7Vo36TvPv/O96ZFfzV35x47DmxM20+d2bvcrMcA6nm2XEP+UOGLr
-         FajYxSntyoaRlXNaZ7KkLecXC6HiRGJFVY9BL+avWsgEBRBR+K7+rBLaDaE8WsrLfn+7
-         1H0LnCHp4p9zvsZgX1o1uDsE1S+0aYcttEVETH8UlfmKeKQI60gh15I9cYZth7l9CEnE
-         TsYTzLw7U5Gk2qwNbGZisF0qn+qm4bnrqzU0XFPn+nskJomAOPzP2iMVlYhmRlDAjpwu
-         3P6H9Kmmszs9M6CQBi7m6EEGAazge+P5XB9PJIA7Al5QxevWR1NblpKO8LA/dJzOms/S
-         SUxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=356R7sQpshoyEfmHEDtb6MkvOb+YyBiiz66/bbaWRKI=;
-        b=fh0nMa+HlosUzRsCZt1W2oWEsP5k4b1VA8wC+c4pRRcwGZxrl6sXhiUk0BhHQThJPu
-         Tiai4rn4S+njOqhnARaJFgk4T8A8n+pA/5vQKKDTlDcldwpj6zv6HA8MtSLY48cjc9Cw
-         q3zKyWNmzHqzh8jRLLS7LcBAcJtUK/Rm/3htS4MXDqBHmGzBh99gSO060w5XVvxQsWNO
-         Chtnl/BrvHMW0InpObDc5PHrUR1CwhwJfuQkmLFIMZOB3aULvDEyd6FLREEI3nW+Dmr4
-         v+bmLzNoY/oEkCxxM9P9n0QmKNPPSbMpuqXIP/Q2bmLAgdtPZEYP08XiKPUXZi80wSXK
-         4Ttw==
-X-Gm-Message-State: AOAM530hCxzifUJy+Csei+08rauTW8ISFxZXcZGNpUyAFiHZg5JsctCm
-        pxUys/JXdXwT68g5QOyNzrs=
-X-Google-Smtp-Source: ABdhPJwQVtfUEe/IkPIPsqHlgrQIWU3tLSJcAA4jBYnI0ZX1UIfb93Kd4dY6m9D4rfDmAdXvCPskAw==
-X-Received: by 2002:aa7:d74d:: with SMTP id a13mr3021594eds.199.1617188154873;
-        Wed, 31 Mar 2021 03:55:54 -0700 (PDT)
-Received: from agape.jhs ([5.171.73.44])
-        by smtp.gmail.com with ESMTPSA id h13sm1299118edz.71.2021.03.31.03.55.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 03:55:54 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 12:55:51 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/40] staging: rtl8723bs: replace RT_TRACE with public
- printk wrappers in core/rtw_eeprom.c
-Message-ID: <20210331105551.GB1450@agape.jhs>
-References: <cover.1617183374.git.fabioaiuto83@gmail.com>
- <39c2cd878bc914a00e71ea988c3cacb651670822.1617183374.git.fabioaiuto83@gmail.com>
- <YGROiD19tgF8XnK6@kroah.com>
+        Wed, 31 Mar 2021 06:56:43 -0400
+X-AuditID: 0a580155-f55ff70000015057-86-60645566c9eb
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id FF.F3.20567.66554606; Wed, 31 Mar 2021 18:56:38 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 31 Mar
+ 2021 18:56:38 +0800
+Date:   Wed, 31 Mar 2021 18:56:37 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Oscar Salvador <osalvador@suse.de>,
+        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=( =?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, "david@redhat.com" <david@redhat.com>
+CC:     "tony.luck@intel.com" <tony.luck@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "inux-edac@vger.kernel.org" <inux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210331185637.76f863e2@alex-virtual-machine>
+In-Reply-To: <20210225113930.GA7227@localhost.localdomain>
+References: <20210224151619.67c29731@alex-virtual-machine>
+        <20210224103105.GA16368@linux>
+        <20210225114329.4e1a41c6@alex-virtual-machine>
+        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
+        <20210225113930.GA7227@localhost.localdomain>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGROiD19tgF8XnK6@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcHor5sWmpJg8KxL2WLO+jVsFp83/GOz
+        +Lr+F7PFtI3iFrcPrGG0uLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
+        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
+        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJUxu+EXU8FKvoqZV9cwNTAu4u5i5OSQEDCRePz3DSOI
+        LSQwnUmi9ZFsFyMXkP2KUWLP2152kASLgKrEjYdtYDYbkL3r3ixWkCIRgQ2MEh9fTmMEcZgF
+        ZrJINO5pYQKpEhbwkvhyfy3YWF4BK4mjuz+CxTmB7FXrp7NCrPjMKDFzQR8bSIJfQEyi98p/
+        Joib7CXatiyCahaUODnzCQuIzSygKdG6/Tc7hK0tsWzha2aIuxUlDi/5xQ7RqyRxpHsGG4Qd
+        K9F04BbbBEbhWUhGzUIyahaSUQsYmVcxshTnphttYoTEYOgOxhlNH/UOMTJxMB5ilOBgVhLh
+        FT6QmCDEm5JYWZValB9fVJqTWnyIUZqDRUmc9/uDpAQhgfTEktTs1NSC1CKYLBMHp1QDk/Cd
+        cO+p56Y4R8w+8uauOueqTaGv4zxKpm58LpN5KYfD9dGe02WTbbcncvbsrd29PW3NioJ/36c7
+        1gmvaK/zF00udKi4ssh9TZ5Hn8Yc8x1z172ePH2v7IIm/Zxb7NtvVgpw6bx/3RM5vZllWf6h
+        puD7DPvk/v799c189mO9uObXcrNf1BbucM3qSa1t/eH4eeGqs4+ZHyezMZ6aG/MnbufcECON
+        D/9jOO+0PJVvU8hY1F/S+pWniu1QsqL+vv3Vv3rvrNGIupTzKbgo8k5e4dHNG2e93+hkuaBi
+        yo3PK1ZkVK9ZyS24c/fuxcr6Jy2iDua+aou687rfesWz2rgf3y+GL8yuFRT0e6l+k31rjakS
+        S3FGoqEWc1FxIgBKt0PeMAMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 12:27:20PM +0200, Greg KH wrote:
-> On Wed, Mar 31, 2021 at 11:39:31AM +0200, Fabio Aiuto wrote:
-> > replace private macro RT_TRACE for tracing with in-kernel
-> > pr_* printk wrappers
+On Thu, 25 Feb 2021 12:39:30 +0100
+Oscar Salvador <osalvador@suse.de> wrote:
+
+> On Thu, Feb 25, 2021 at 11:28:18AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> > Hi Aili,
 > > 
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> >  drivers/staging/rtl8723bs/core/rtw_eeprom.c | 26 ++++++++++-----------
-> >  1 file changed, 13 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_eeprom.c b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > index 3cbd65dee741..6176d741d60e 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > @@ -36,7 +36,7 @@ void shift_out_bits(_adapter *padapter, u16 data, u16 count)
-> >  _func_enter_;
-> >  
-> >  	if (padapter->bSurpriseRemoved == true) {
-> > -		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
-> > +		pr_err("%s padapter->bSurpriseRemoved==true", DRIVER_PREFIX);
+> > I agree that this set_mce_nospec() is not expected to be called for
+> > "already hwpoisoned" page because in the reported case the error
+> > page is already contained and no need to resort changing cache mode.  
 > 
-> As Dan said, this is not the same thing.  You are now always printing
-> out this mess, when before you were not unless you explicitly enabled
-> "tracing".
-
-RT_TRACE is enabled if is defined the symbol DEBUG_RTL871X. It doesn't seem to be related 
-to tracing. DEBUG_RTL871X is never declared, is commented out in rtl8723bs/include/autoconf.h
-
-that's why RT_TRACE is never printed. If we try to uncomment the symbol definition we have some
-comiling errors..
-
+> Out of curiosity, what is the current behavour now?
+> Say we have an ongoing MCE which has marked the page as HWPoison but
+> memory_failure did not take any action on the page yet.
+> And then, we have another MCE, which ends up there.
+> set_mce_nospec might clear _PAGE_PRESENT bit.
 > 
-> And you are sending it to the error log?
+> Does that have any impact on the first MCE?
 > 
-> And finally, drivers should never be using pr_*() for messages, they
-> should be using dev_*() instead as they are a driver and have access to
-> a device pointer.
+> > It seems to me that memory_failure() does not return MF_XXX.  But yes,
+> > returning some positive value for the reported case could be a solution.  
 > 
-> thanks,
+> No, you are right. I somehow managed to confuse myself.
+> I see now that MF_XXX return codes are filtered out in page_action.
 > 
-> greg k-h
+> > We could use some negative value (error code) to report the reported case,
+> > then as you mentioned above, some callers need change to handle the
+> > new case, and the same is true if you use some positive value.
+> > My preference is -EHWPOISON, but other options are fine if justified well.  
+> 
+> -EHWPOISON seems like a good fit.
+> 
 
-I still wonder what's best...
+Hi Oscar, david:
 
-thanks,
+Long away fron this topic, but i noticed today I made a stupid mistake that EHWPOISON is already
+been declared, so we should better return EHWPOISON for this case.
 
-fabio
+Really sorry for this!
+
+As the patch is still under review, I will post a new version for this, if I change this, may I add
+your review tag here please?
+
+-- 
+Thanks!
+Aili Yao
