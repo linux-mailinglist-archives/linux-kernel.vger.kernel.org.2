@@ -2,40 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CA83508A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7343508A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhCaU4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:56:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44896 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232259AbhCaUzy (ORCPT
+        id S232709AbhCaU5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:57:00 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:49038 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhCaU4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:55:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617224154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mT4tluRBtnUt1Hht/N0b0oYTLjqFC49X/aal5xVWArY=;
-        b=b5GSqZ4BfURHvb+pz1cJ42KmoTg96AAUbKn+pxuT8MAahw9hBb9ZYQGbY7q+FhuAlcY6E9
-        mcCQgk0zf+W5lPbMbCwLMsgGeQTtvqDHS0IZnXhbNeOXy3LBCLIXbYpixrDU8TwOEj3e1p
-        FO0ZyYuF26Mw7lJvZkNXVOdOiVqzp18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-4BfBflQfNcWGzJsvFQzhxQ-1; Wed, 31 Mar 2021 16:55:52 -0400
-X-MC-Unique: 4BfBflQfNcWGzJsvFQzhxQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 162188189F1;
-        Wed, 31 Mar 2021 20:55:50 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEC3B19C59;
-        Wed, 31 Mar 2021 20:55:40 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 16:55:38 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
+        Wed, 31 Mar 2021 16:56:42 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 4B22A63E47;
+        Wed, 31 Mar 2021 22:56:26 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 22:56:39 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Richard Guy Briggs <rgb@redhat.com>
 Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
         netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
@@ -46,56 +28,39 @@ Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
         Jones Desougi <jones.desougi+netfilter@gmail.com>
 Subject: Re: [PATCH v5] audit: log nftables configuration change events once
  per table
-Message-ID: <20210331205538.GJ3112383@madcap2.tricolour.ca>
+Message-ID: <20210331205639.GA4972@salvia>
 References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
- <20210331204635.GA4634@salvia>
+ <20210331202230.GA4109@salvia>
+ <20210331205310.GA3141668@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210331204635.GA4634@salvia>
+In-Reply-To: <20210331205310.GA3141668@madcap2.tricolour.ca>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 22:46, Pablo Neira Ayuso wrote:
-> On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
-> > @@ -8006,12 +7966,65 @@ static void nft_commit_notify(struct net *net, u32 portid)
-> >  	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
-> >  }
-> >  
-> > +static int nf_tables_commit_audit_alloc(struct list_head *adl,
-> > +				 struct nft_table *table)
-> > +{
-> > +	struct nft_audit_data *adp;
-> > +
-> > +	list_for_each_entry(adp, adl, list) {
-> > +		if (adp->table == table)
-> > +			return 0;
-> > +	}
-> > +	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
-> > +	if (!adp)
-> > +		return -ENOMEM;
-> > +	adp->table = table;
-> > +	INIT_LIST_HEAD(&adp->list);
+On Wed, Mar 31, 2021 at 04:53:10PM -0400, Richard Guy Briggs wrote:
+> On 2021-03-31 22:22, Pablo Neira Ayuso wrote:
+> > On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
+> > > Reduce logging of nftables events to a level similar to iptables.
+> > > Restore the table field to list the table, adding the generation.
+> > > 
+> > > Indicate the op as the most significant operation in the event.
+> > 
+> > There's a UAF, Florian reported. I'm attaching an incremental fix.
+> > 
+> > nf_tables_commit_audit_collect() refers to the trans object which
+> > might have been already released.
 > 
-> This INIT_LIST_HEAD is not required for an object that is going to be
-> inserted into the 'adl' list.
-> 
-> > +	list_add(&adp->list, adl);
-> 
-> If no objections, I'll amend this patch. I'll include the UAF fix and
-> remove this unnecessary INIT_LIST_HEAD.
+> Got it.  Thanks Pablo.  I didn't see it when running nft-test.py Where
+> was it reported?
 
-Ok, so it is harmless other than being code noise and overhead, thanks again.
+CONFIG_KASAN.
 
-- RGB
+> Here I tried to stay out of the way by putting that
+> call at the end of the loop but that was obviously a mistake in
+> hindsight.  :-)
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+No problem, I'll squash this incremental fix into your audit patch.
