@@ -2,820 +2,1108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA1234FC1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF6D34FC2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhCaJEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:04:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29852 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234509AbhCaJEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:04:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617181470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oFnyCqVp+EXgH+zoavszk7CCQt6J1VVJYc4gCNFPlfU=;
-        b=DG1ikSGqfZ0YIavlW/cXGhvFR9Yjp2TB3HsInJ3CxJ3/YMsiBXmcUZTgfrDblRiUGgF5jd
-        sCMGb9RbW7mXK9uNi5gawpKabSusAGiqLxXut/rJGMo5Rm5ZP7dkn8wmMkzBZpnX1XOmqP
-        zgAVAILa75X1VYnke/OBM4NYBRO951k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-SWWCB-r3Mt-FwBxVV24kfQ-1; Wed, 31 Mar 2021 05:04:21 -0400
-X-MC-Unique: SWWCB-r3Mt-FwBxVV24kfQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3B9F1009E25;
-        Wed, 31 Mar 2021 09:04:20 +0000 (UTC)
-Received: from localhost (ovpn-115-85.ams2.redhat.com [10.36.115.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C49A619C44;
-        Wed, 31 Mar 2021 09:04:19 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 10:04:18 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     sgarzare@redhat.com
-Cc:     davem@davemloft.net, kuba@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sgarzare@redhat.com, syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org,
-        syzbot <syzbot+24452624fc4c571eedd9@syzkaller.appspotmail.com>
-Subject: Re: memory leak in virtio_transport_send_pkt_info
-Message-ID: <YGQ7EhQ+hlSUdf1C@stefanha-x1.localdomain>
-References: <00000000000069a2e905bad5d02e@google.com>
+        id S234538AbhCaJGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:06:22 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44450 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234375AbhCaJFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:05:46 -0400
+Received: from li-pc.loongson.cn (unknown [10.20.41.71])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxrchEO2RgUtgCAA--.2942S2;
+        Wed, 31 Mar 2021 17:05:08 +0800 (CST)
+From:   Chenyang Li <lichenyang@loongson.cn>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: [PATCH v7] drm/loongson: Add DRM Driver for Loongson 7A1000 bridge chip
+Date:   Wed, 31 Mar 2021 17:05:08 +0800
+Message-Id: <20210331090508.430865-1-lichenyang@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v4rJ/Oj+3HKafot9"
-Content-Disposition: inline
-In-Reply-To: <00000000000069a2e905bad5d02e@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxrchEO2RgUtgCAA--.2942S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfuw17uFyxJr45WF4DZrWUArb_yoW5Cr4kWo
+        WfZFnxW3yrWr1xCFZ09r1fJr1UZF4DXa1akrWSyF1DAw4Yy3Z8tF9Igr4fArWfAF1FyF4U
+        A34Ykr4xWF47JrZ5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYx7k0a2IF6w4kM7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0
+        x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj4
+        1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0
+        I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+        9x07beAp5UUUUU=
+X-CM-SenderInfo: xolfxvxq1d0wo6or00hjvr0hdfq/1tbiAQARA13QvNIDBQAAs2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds an initial DRM driver for the Loongson LS7A1000
+bridge chip(LS7A). The LS7A bridge chip contains two display
+controllers, support dual display output. The maximum support for
+each channel display is to 1920x1080@60Hz.
+At present, DC device detection and DRM driver registration are
+completed, the crtc/plane/encoder/connector objects has been
+implemented.
+On Loongson 3A4000 CPU and 7A1000 system, we have achieved the use
+of dual screen, and support dual screen clone mode and expansion
+mode.
 
---v4rJ/Oj+3HKafot9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v7:
+- The pixel clock is limited to less than 173000.
 
-On Mon, Feb 08, 2021 at 08:39:30AM -0800, syzbot wrote:
-> Hello,
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    9f29bd8b Merge tag 'fs_for_v5.11-rc5' of git://git.kernel=
-=2E..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11e435af500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D162a0109d6ff7=
-31f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D24452624fc4c571=
-eedd9
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D135dd494d00=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D128787e7500000
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+24452624fc4c571eedd9@syzkaller.appspotmail.com
+v6:
+- Remove spin_lock in mmio reg read and write.
+- TO_UNCAC is replac with ioremap.
+- Fix error arguments in crtc_atomic_enable/disable/mode_valid.
 
-Hi Stefano,
-Looks like tx packets are still queued when the syzkaller leak check
-runs. I don't see a fix for this in linux.git. Have you already looked
-at this?
+v5:
+- Change the name of the chip to LS7A.
+- Change magic value in crtc to macros.
+- Correct mistakes words.
+- Change the register operation function prefix to ls7a.
 
-Stefan
+v4:
+- Move the mode_valid function to the crtc.
 
->=20
-> executing program
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 26.670s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 26.670s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 26.670s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 26.670s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.040s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.040s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.040s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.040s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.100s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.100s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.100s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.100s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.160s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.160s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.160s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.160s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.230s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.230s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.230s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.230s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d380 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.290s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d280 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.290s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d200 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.290s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88811477d180 (size 96):
->   comm "syz-executor196", pid 8793, jiffies 4294968272 (age 29.290s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00  ................
->     ba 34 8c fe 00 00 00 00 00 00 01 00 01 00 05 00  .4..............
->   backtrace:
->     [<0000000051681be3>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000051681be3>] kzalloc include/linux/slab.h:682 [inline]
->     [<0000000051681be3>] virtio_transport_alloc_pkt+0x41/0x290 net/vmw_vs=
-ock/virtio_transport_common.c:51
->     [<0000000036c2d6e6>] virtio_transport_send_pkt_info+0x105/0x1b0 net/v=
-mw_vsock/virtio_transport_common.c:209
->     [<00000000dd27435f>] virtio_transport_stream_enqueue+0x58/0x80 net/vm=
-w_vsock/virtio_transport_common.c:674
->     [<00000000d7e8274a>] vsock_stream_sendmsg+0x4f7/0x590 net/vmw_vsock/a=
-f_vsock.c:1800
->     [<00000000d2b531e6>] sock_sendmsg_nosec net/socket.c:652 [inline]
->     [<00000000d2b531e6>] sock_sendmsg+0x56/0x80 net/socket.c:672
->     [<00000000803a63df>] ____sys_sendmsg+0x17a/0x390 net/socket.c:2345
->     [<000000009d42f642>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
->     [<000000000a37ed0e>] __sys_sendmmsg+0xed/0x290 net/socket.c:2489
->     [<00000000324c1c73>] __do_sys_sendmmsg net/socket.c:2518 [inline]
->     [<00000000324c1c73>] __se_sys_sendmmsg net/socket.c:2515 [inline]
->     [<00000000324c1c73>] __x64_sys_sendmmsg+0x24/0x30 net/socket.c:2515
->     [<000000004e7b2960>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:=
-46
->     [<000000002615f594>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> executing program
-> executing program
->=20
->=20
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->=20
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->=20
+v3:
+- Move the mode_valid function to the connector and optimize it.
+- Fix num_crtc calculation method.
 
---v4rJ/Oj+3HKafot9
-Content-Type: application/pgp-signature; name="signature.asc"
+v2:
+- Complete the case of 32-bit color in CRTC.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Chenyang Li <lichenyang@loongson.cn>
+---
+ drivers/gpu/drm/Kconfig                       |   2 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/loongson/Kconfig              |  14 +
+ drivers/gpu/drm/loongson/Makefile             |  14 +
+ drivers/gpu/drm/loongson/loongson_connector.c |  48 ++++
+ drivers/gpu/drm/loongson/loongson_crtc.c      | 243 ++++++++++++++++
+ drivers/gpu/drm/loongson/loongson_device.c    |  47 +++
+ drivers/gpu/drm/loongson/loongson_drv.c       | 270 ++++++++++++++++++
+ drivers/gpu/drm/loongson/loongson_drv.h       | 139 +++++++++
+ drivers/gpu/drm/loongson/loongson_encoder.c   |  37 +++
+ drivers/gpu/drm/loongson/loongson_plane.c     | 102 +++++++
+ 11 files changed, 917 insertions(+)
+ create mode 100644 drivers/gpu/drm/loongson/Kconfig
+ create mode 100644 drivers/gpu/drm/loongson/Makefile
+ create mode 100644 drivers/gpu/drm/loongson/loongson_connector.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_crtc.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_device.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_drv.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_drv.h
+ create mode 100644 drivers/gpu/drm/loongson/loongson_encoder.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_plane.c
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmBkOxIACgkQnKSrs4Gr
-c8guhQgAhNpKGNEIXYkCtDAP1kz36lsQoFPcGbWSsckfpzZCp0c4DRYsRYrcp50L
-jqz0wGVbUOkfFGBfhijgKUMYWX63OlCdVFNb42V7dAASc1JdtyvyIGyyZX+sot/m
-FwnD3xYxVqD6CdMbZeF3lc17t0Hb7mwg0Re2/difMhHjqeglpX5gxadXc9XX4Jo2
-UvkgvU4zySWIdf4nKab0DEj4RLSypvXz1M25GUDZ+9tykPD/j/M/6TKkl2HJAwUs
-RYswkNFAZF9JFWN2OTvyEDfPoO/f0+I/PuA9tLzdKiMVIm8lpzY9yR6kaeak2QG6
-9eknVoURPmrcVkOaiBv0ooMWGr0q8A==
-=Dm6J
------END PGP SIGNATURE-----
-
---v4rJ/Oj+3HKafot9--
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 0973f408d75f..6ed1b6dc2f25 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -374,6 +374,8 @@ source "drivers/gpu/drm/xen/Kconfig"
+ 
+ source "drivers/gpu/drm/vboxvideo/Kconfig"
+ 
++source "drivers/gpu/drm/loongson/Kconfig"
++
+ source "drivers/gpu/drm/lima/Kconfig"
+ 
+ source "drivers/gpu/drm/panfrost/Kconfig"
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index fefaff4c832d..f87da730ea6d 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -119,6 +119,7 @@ obj-$(CONFIG_DRM_PL111) += pl111/
+ obj-$(CONFIG_DRM_TVE200) += tve200/
+ obj-$(CONFIG_DRM_XEN) += xen/
+ obj-$(CONFIG_DRM_VBOXVIDEO) += vboxvideo/
++obj-$(CONFIG_DRM_LOONGSON) += loongson/
+ obj-$(CONFIG_DRM_LIMA)  += lima/
+ obj-$(CONFIG_DRM_PANFROST) += panfrost/
+ obj-$(CONFIG_DRM_ASPEED_GFX) += aspeed/
+diff --git a/drivers/gpu/drm/loongson/Kconfig b/drivers/gpu/drm/loongson/Kconfig
+new file mode 100644
+index 000000000000..3cf42a4cca08
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++config DRM_LOONGSON
++	tristate "DRM support for LS7A bridge chipset"
++	depends on DRM && PCI
++	depends on CPU_LOONGSON64
++	select DRM_KMS_HELPER
++	select DRM_VRAM_HELPER
++	select DRM_TTM
++	select DRM_TTM_HELPER
++	default n
++	help
++	  Support the display controllers found on the Loongson LS7A
++	  bridge.
+diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
+new file mode 100644
+index 000000000000..22d063953b78
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/Makefile
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Makefile for loongson drm drivers.
++# This driver provides support for the
++# Direct Rendering Infrastructure (DRI)
++
++ccflags-y := -Iinclude/drm
++loongson-y := loongson_drv.o \
++	loongson_crtc.o \
++	loongson_plane.o \
++	loongson_device.o \
++	loongson_connector.o \
++	loongson_encoder.o
++obj-$(CONFIG_DRM_LOONGSON) += loongson.o
+diff --git a/drivers/gpu/drm/loongson/loongson_connector.c b/drivers/gpu/drm/loongson/loongson_connector.c
+new file mode 100644
+index 000000000000..6b1f0ffa33bd
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_connector.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static int loongson_get_modes(struct drm_connector *connector)
++{
++	int count;
++
++	count = drm_add_modes_noedid(connector, 1920, 1080);
++	drm_set_preferred_mode(connector, 1024, 768);
++
++	return count;
++}
++
++static const struct drm_connector_helper_funcs loongson_connector_helper = {
++	.get_modes = loongson_get_modes,
++};
++
++static const struct drm_connector_funcs loongson_connector_funcs = {
++	.fill_modes = drm_helper_probe_single_connector_modes,
++	.destroy = drm_connector_cleanup,
++	.reset = drm_atomic_helper_connector_reset,
++	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
++};
++
++int loongson_connector_init(struct loongson_device *ldev, int index)
++{
++	struct drm_connector *connector;
++	struct loongson_connector *lconnector;
++
++	lconnector = kzalloc(sizeof(struct loongson_connector), GFP_KERNEL);
++	if (!lconnector) {
++		DRM_INFO("loongson connector kzalloc failed\n");
++		return -1;
++	}
++
++	lconnector->ldev = ldev;
++	lconnector->id = index;
++
++	ldev->mode_info[index].connector = lconnector;
++	connector = &lconnector->base;
++	drm_connector_init(ldev->dev, connector, &loongson_connector_funcs,
++			   DRM_MODE_CONNECTOR_Unknown);
++	drm_connector_helper_add(connector, &loongson_connector_helper);
++
++	return 0;
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
+new file mode 100644
+index 000000000000..4cb65fa08778
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_crtc.c
+@@ -0,0 +1,243 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void try_each_loopc(u32 clk, u32 pstdiv, u32 frefc,
++			   struct pix_pll *pll_config)
++{
++	u32 loopc;
++	u32 clk_out;
++	u32 precision;
++	u32 min = 1000;
++	u32 base_clk = 100000L;
++
++	for (loopc = LOOPC_MIN; loopc < LOOPC_MAX; loopc++) {
++		if ((loopc < FRE_REF_MIN * frefc) ||
++		    (loopc > FRE_REF_MAX * frefc))
++			continue;
++
++		clk_out = base_clk * loopc / frefc;
++		precision = (clk > clk_out) ? (clk - clk_out) : (clk_out - clk);
++		if (precision < min) {
++			pll_config->l2_div = pstdiv;
++			pll_config->l1_loopc = loopc;
++			pll_config->l1_frefc = frefc;
++		}
++	}
++}
++
++static void cal_freq(u32 pixclock, struct pix_pll *pll_config)
++{
++	u32 pstdiv;
++	u32 frefc;
++	u32 clk;
++
++	for (pstdiv = 1; pstdiv < PST_DIV_MAX; pstdiv++) {
++		clk = pixclock * pstdiv;
++		for (frefc = DIV_REF_MIN; frefc <= DIV_REF_MAX; frefc++)
++			try_each_loopc(clk, pstdiv, frefc, pll_config);
++	}
++}
++
++static void config_pll(struct loongson_device *ldev, unsigned long pll_base,
++		       struct pix_pll *pll_cfg)
++{
++	u32 val;
++	u32 count = 0;
++
++	/* clear sel_pll_out0 */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 8);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* set pll_pd */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 13);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* clear set_pll_param */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 11);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* clear old value & config new value */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(0x7fUL << 0);
++	val |= (pll_cfg->l1_frefc << 0); /* refc */
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++	val = ls7a_io_rreg(ldev, pll_base + 0x0);
++	val &= ~(0x7fUL << 0);
++	val |= (pll_cfg->l2_div << 0); /* div */
++	val &= ~(0x1ffUL << 21);
++	val |= (pll_cfg->l1_loopc << 21); /* loopc */
++	ls7a_io_wreg(ldev, pll_base + 0x0, val);
++
++	/* set set_pll_param */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 11);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++	/* clear pll_pd */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 13);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	while (!(ls7a_io_rreg(ldev, pll_base + 0x4) & 0x80)) {
++		cpu_relax();
++		count++;
++		if (count >= 1000) {
++			DRM_ERROR("loongson-7A PLL lock failed\n");
++			break;
++		}
++	}
++
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 8);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++}
++
++static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
++	const struct drm_format_info *format;
++	struct pix_pll pll_cfg;
++	u32 hr, hss, hse, hfl;
++	u32 vr, vss, vse, vfl;
++	u32 pix_freq;
++	u32 reg_offset;
++
++	hr = mode->hdisplay;
++	hss = mode->hsync_start;
++	hse = mode->hsync_end;
++	hfl = mode->htotal;
++
++	vr = mode->vdisplay;
++	vss = mode->vsync_start;
++	vse = mode->vsync_end;
++	vfl = mode->vtotal;
++
++	pix_freq = mode->clock;
++	reg_offset = lcrtc->reg_offset;
++	format = crtc->primary->state->fb->format;
++
++	ls7a_mm_wreg(ldev, FB_DITCFG_REG + reg_offset, 0);
++	ls7a_mm_wreg(ldev, FB_DITTAB_LO_REG + reg_offset, 0);
++	ls7a_mm_wreg(ldev, FB_DITTAB_HI_REG + reg_offset, 0);
++	ls7a_mm_wreg(ldev, FB_PANCFG_REG + reg_offset, FB_PANCFG_DEF);
++	ls7a_mm_wreg(ldev, FB_PANTIM_REG + reg_offset, 0);
++
++	ls7a_mm_wreg(ldev, FB_HDISPLAY_REG + reg_offset, (hfl << 16) | hr);
++	ls7a_mm_wreg(ldev, FB_HSYNC_REG + reg_offset,
++		     FB_HSYNC_PULSE | (hse << 16) | hss);
++
++	ls7a_mm_wreg(ldev, FB_VDISPLAY_REG + reg_offset, (vfl << 16) | vr);
++	ls7a_mm_wreg(ldev, FB_VSYNC_REG + reg_offset,
++		     FB_VSYNC_PULSE | (vse << 16) | vss);
++
++	switch (format->format) {
++	case DRM_FORMAT_RGB565:
++		lcrtc->cfg_reg |= 0x3;
++		break;
++	case DRM_FORMAT_RGB888:
++	case DRM_FORMAT_XRGB8888:
++	case DRM_FORMAT_ARGB8888:
++	default:
++		lcrtc->cfg_reg |= 0x4;
++		break;
++	}
++	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++
++	cal_freq(pix_freq, &pll_cfg);
++	config_pll(ldev, LS7A_PIX_PLL + reg_offset, &pll_cfg);
++}
++
++static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
++					struct drm_atomic_state *old_state)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	u32 reg_offset = lcrtc->reg_offset;
++
++	lcrtc->cfg_reg |= CFG_ENABLE;
++	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++}
++
++static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
++					 struct drm_atomic_state *old_state)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	u32 reg_offset = lcrtc->reg_offset;
++
++	lcrtc->cfg_reg &= ~CFG_ENABLE;
++	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++}
++
++static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
++						const struct drm_display_mode *mode)
++{
++	if (mode->hdisplay > 1920)
++		return MODE_BAD;
++	if (mode->vdisplay > 1080)
++		return MODE_BAD;
++	if (mode->hdisplay % 64)
++		return MODE_BAD;
++	if (mode->clock >= 173000)
++		return MODE_CLOCK_HIGH;
++
++	return MODE_OK;
++}
++
++static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
++	.mode_valid = loongson_mode_valid,
++	.atomic_enable = loongson_crtc_atomic_enable,
++	.atomic_disable = loongson_crtc_atomic_disable,
++	.mode_set_nofb = loongson_crtc_mode_set_nofb,
++};
++
++static const struct drm_crtc_funcs loongson_crtc_funcs = {
++	.set_config = drm_atomic_helper_set_config,
++	.page_flip = drm_atomic_helper_page_flip,
++	.reset = drm_atomic_helper_crtc_reset,
++	.destroy = drm_crtc_cleanup,
++	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
++};
++
++int loongson_crtc_init(struct loongson_device *ldev, int index)
++{
++	struct loongson_crtc *lcrtc;
++	u32 ret;
++
++	lcrtc = kzalloc(sizeof(struct loongson_crtc), GFP_KERNEL);
++	if (lcrtc == NULL)
++		return -1;
++
++	lcrtc->ldev = ldev;
++	lcrtc->reg_offset = index * REG_OFFSET;
++	lcrtc->cfg_reg = CFG_RESET;
++	lcrtc->crtc_id = index;
++
++	ret = loongson_plane_init(lcrtc);
++	if (ret)
++		return ret;
++
++	ret = drm_crtc_init_with_planes(ldev->dev, &lcrtc->base, lcrtc->plane,
++					NULL, &loongson_crtc_funcs, NULL);
++	if (ret) {
++		DRM_ERROR("failed to init crtc %d\n", index);
++		drm_plane_cleanup(lcrtc->plane);
++		return ret;
++	}
++
++	drm_crtc_helper_add(&lcrtc->base, &loongson_crtc_helper_funcs);
++
++	ldev->mode_info[index].crtc = lcrtc;
++
++	return 0;
++}
++
+diff --git a/drivers/gpu/drm/loongson/loongson_device.c b/drivers/gpu/drm/loongson/loongson_device.c
+new file mode 100644
+index 000000000000..e53bd8ded89b
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_device.c
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++u32 loongson_gpu_offset(struct drm_plane_state *state)
++{
++	struct drm_gem_vram_object *gbo;
++	struct loongson_crtc *lcrtc;
++	struct loongson_device *ldev;
++	u32 gpu_addr;
++
++	lcrtc = to_loongson_crtc(state->crtc);
++	ldev = lcrtc->ldev;
++
++	gbo = drm_gem_vram_of_gem(state->fb->obj[0]);
++	gpu_addr = ldev->vram_start + drm_gem_vram_offset(gbo);
++
++	return gpu_addr;
++}
++
++u32 ls7a_io_rreg(struct loongson_device *ldev, u32 offset)
++{
++	u32 val;
++
++	val = readl(ldev->io + offset);
++
++	return val;
++}
++
++void ls7a_io_wreg(struct loongson_device *ldev, u32 offset, u32 val)
++{
++	writel(val, ldev->io + offset);
++}
++
++u32 ls7a_mm_rreg(struct loongson_device *ldev, u32 offset)
++{
++	u32 val;
++
++	val = readl(ldev->mmio + offset);
++
++	return val;
++}
++
++void ls7a_mm_wreg(struct loongson_device *ldev, u32 offset, u32 val)
++{
++	writel(val, ldev->mmio + offset);
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
+new file mode 100644
+index 000000000000..e405199a3df6
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_drv.c
+@@ -0,0 +1,270 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Loongson LS7A1000 bridge chipset drm driver
++ */
++
++#include <linux/console.h>
++#include <linux/pci.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include "loongson_drv.h"
++
++/* Interface history:
++ * 0.1 - original.
++ */
++#define DRIVER_MAJOR 0
++#define DRIVER_MINOR 1
++
++static const struct drm_mode_config_funcs loongson_mode_funcs = {
++	.fb_create = drm_gem_fb_create,
++	.atomic_check = drm_atomic_helper_check,
++	.atomic_commit = drm_atomic_helper_commit,
++	.output_poll_changed = drm_fb_helper_output_poll_changed,
++	.mode_valid = drm_vram_helper_mode_valid
++};
++
++static int loongson_device_init(struct drm_device *dev, uint32_t flags)
++{
++	struct loongson_device *ldev = dev->dev_private;
++	struct pci_dev *gpu_pdev;
++	resource_size_t aper_base;
++	resource_size_t aper_size;
++	resource_size_t mmio_base;
++	resource_size_t mmio_size;
++
++	/* GPU MEM */
++	/* We need get 7A-gpu pci device information for ldev->gpu_pdev */
++	/* dev->pdev save 7A-dc pci device information */
++	gpu_pdev = pci_get_device(PCI_VENDOR_ID_LOONGSON,
++				  PCI_DEVICE_ID_LOONGSON_GPU, NULL);
++	if (IS_ERR(gpu_pdev))
++		return PTR_ERR(gpu_pdev);
++
++	ldev->gpu_pdev = gpu_pdev;
++	aper_base = pci_resource_start(gpu_pdev, 2);
++	aper_size = pci_resource_len(gpu_pdev, 2);
++	ldev->vram_start = (u32)aper_base;
++	ldev->vram_size = (u32)aper_size;
++
++	if (!devm_request_mem_region(ldev->dev->dev, ldev->vram_start,
++				     ldev->vram_size, "loongson_vram")) {
++		DRM_ERROR("Can't reserve VRAM\n");
++		return -ENXIO;
++	}
++
++	/* DC MEM */
++	mmio_base = pci_resource_start(ldev->dev->pdev, 0);
++	mmio_size = pci_resource_len(ldev->dev->pdev, 0);
++	ldev->mmio = devm_ioremap(dev->dev, mmio_base, mmio_size);
++	if (!ldev->mmio) {
++		drm_err(dev, "Cannot map mmio region\n");
++		return -ENOMEM;
++	}
++
++	if (!devm_request_mem_region(ldev->dev->dev, mmio_base,
++				     mmio_size, "loongson_mmio")) {
++		DRM_ERROR("Can't reserve mmio registers\n");
++		return -ENOMEM;
++	}
++
++	/* DC IO */
++	ldev->io = ioremap(LS7A_CHIPCFG_REG_BASE, 0xf);
++	if (ldev->io == NULL)
++		return -ENOMEM;
++
++	DRM_INFO("DC mmio base 0x%llx size 0x%llx io 0x%llx\n",
++		 mmio_base, mmio_size, *(u64 *)ldev->io);
++	DRM_INFO("GPU vram start = 0x%x size = 0x%x\n",
++		 ldev->vram_start, ldev->vram_size);
++
++	return 0;
++}
++
++int loongson_modeset_init(struct loongson_device *ldev)
++{
++	struct drm_encoder *encoder;
++	struct drm_connector *connector;
++	int i;
++	u32 ret;
++
++	ldev->dev->mode_config.allow_fb_modifiers = true;
++
++	for (i = 0; i < 2; i++) {
++		ret = loongson_crtc_init(ldev, i);
++		if (ret) {
++			DRM_WARN("loongson crtc%d init failed\n", i);
++			continue;
++		}
++
++		ret = loongson_encoder_init(ldev, i);
++		if (ret) {
++			DRM_ERROR("loongson_encoder_init failed\n");
++			return -1;
++		}
++
++		ret = loongson_connector_init(ldev, i);
++		if (ret) {
++			DRM_ERROR("loongson_connector_init failed\n");
++			return -1;
++		}
++
++		encoder = &ldev->mode_info[i].encoder->base;
++		connector = &ldev->mode_info[i].connector->base;
++		drm_connector_attach_encoder(connector, encoder);
++		ldev->num_crtc++;
++	}
++
++	return 0;
++}
++
++static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
++{
++	struct loongson_device *ldev;
++	int ret;
++
++	ldev = devm_kzalloc(dev->dev, sizeof(*ldev), GFP_KERNEL);
++	if (!ldev)
++		return -ENOMEM;
++
++	dev->dev_private = ldev;
++	ldev->dev = dev;
++
++	ret = loongson_device_init(dev, flags);
++	if (ret)
++		goto err;
++
++	ret = drmm_vram_helper_init(dev, ldev->vram_start, ldev->vram_size);
++	if (ret)
++		goto err;
++
++	drm_mode_config_init(dev);
++	dev->mode_config.funcs = (void *)&loongson_mode_funcs;
++	dev->mode_config.min_width = 1;
++	dev->mode_config.min_height = 1;
++	dev->mode_config.max_width = 4096;
++	dev->mode_config.max_height = 4096;
++	dev->mode_config.preferred_depth = 32;
++	dev->mode_config.prefer_shadow = 1;
++	dev->mode_config.fb_base = ldev->vram_start;
++
++	pci_set_drvdata(dev->pdev, dev);
++
++	ret = loongson_modeset_init(ldev);
++	if (ret)
++		dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
++
++	drm_kms_helper_poll_init(dev);
++	drm_mode_config_reset(dev);
++
++	return 0;
++
++err:
++	drm_err(dev, "failed to initialize drm driver: %d\n", ret);
++	return ret;
++}
++
++static void loongson_drm_unload(struct drm_device *dev)
++{
++	drm_vram_helper_release_mm(dev);
++	drm_mode_config_cleanup(dev);
++	dev->dev_private = NULL;
++	dev_set_drvdata(dev->dev, NULL);
++}
++
++DEFINE_DRM_GEM_FOPS(fops);
++
++static struct drm_driver loongson_drm_driver = {
++	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
++	.fops = &fops,
++	DRM_GEM_VRAM_DRIVER,
++
++	.name = DRIVER_NAME,
++	.desc = DRIVER_DESC,
++	.date = DRIVER_DATE,
++	.major = DRIVER_MAJOR,
++	.minor = DRIVER_MINOR,
++};
++
++static int loongson_pci_probe(struct pci_dev *pdev,
++			      const struct pci_device_id *ent)
++{
++	int ret;
++	struct drm_device *dev;
++
++	DRM_INFO("Start loongson drm probe\n");
++	dev = drm_dev_alloc(&loongson_drm_driver, &pdev->dev);
++	if (IS_ERR(dev)) {
++		DRM_ERROR("failed to allocate drm_device\n");
++		return PTR_ERR(dev);
++	}
++
++	dev->pdev = pdev;
++	pci_set_drvdata(pdev, dev);
++
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		drm_err(dev, "failed to enable pci device: %d\n", ret);
++		goto err_free;
++	}
++
++	ret = loongson_drm_load(dev, 0x0);
++	if (ret) {
++		drm_err(dev, "failed to load loongson: %d\n", ret);
++		goto err_pdev;
++	}
++
++	ret = drm_dev_register(dev, 0);
++	if (ret) {
++		drm_err(dev, "failed to register drv for userspace access: %d\n",
++			ret);
++		goto err_pdev;
++	}
++
++	drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
++
++	return 0;
++
++err_pdev:
++	pci_disable_device(pdev);
++err_free:
++	drm_dev_put(dev);
++	return ret;
++}
++
++static void loongson_pci_remove(struct pci_dev *pdev)
++{
++	struct drm_device *dev = pci_get_drvdata(pdev);
++
++	drm_dev_unregister(dev);
++	loongson_drm_unload(dev);
++	drm_dev_put(dev);
++}
++
++static struct pci_device_id loongson_pci_devices[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_DC) },
++	{0,}
++};
++
++static struct pci_driver loongson_drm_pci_driver = {
++	.name = DRIVER_NAME,
++	.id_table = loongson_pci_devices,
++	.probe = loongson_pci_probe,
++	.remove = loongson_pci_remove,
++};
++
++static int __init loongson_drm_init(void)
++{
++	return pci_register_driver(&loongson_drm_pci_driver);
++}
++
++static void __exit loongson_drm_exit(void)
++{
++	pci_unregister_driver(&loongson_drm_pci_driver);
++}
++
++module_init(loongson_drm_init);
++module_exit(loongson_drm_exit);
++
++MODULE_AUTHOR(DRIVER_AUTHOR);
++MODULE_DESCRIPTION(DRIVER_DESC);
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
+new file mode 100644
+index 000000000000..498d1b082a19
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_drv.h
+@@ -0,0 +1,139 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __LOONGSON_DRV_H__
++#define __LOONGSON_DRV_H__
++
++#include <drm/drm_drv.h>
++#include <drm/drm_gem.h>
++#include <drm/drm_fb_helper.h>
++#include <drm/drm_fourcc.h>
++#include <drm/drm_probe_helper.h>
++#include <drm/drm_atomic.h>
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_gem_framebuffer_helper.h>
++#include <drm/drm_gem_vram_helper.h>
++#include <drm/drm_plane.h>
++#include <drm/drm_plane_helper.h>
++#include <drm/drm_crtc.h>
++#include <drm/drm_crtc_helper.h>
++#include <drm/drm_connector.h>
++#include <drm/drm_encoder.h>
++
++/* General customization:
++ */
++#define DRIVER_AUTHOR "Loongson graphics driver team"
++#define DRIVER_NAME "loongson-drm"
++#define DRIVER_DESC "Loongson LS7A DRM driver"
++#define DRIVER_DATE "20200915"
++
++#define to_loongson_crtc(x) container_of(x, struct loongson_crtc, base)
++#define to_loongson_encoder(x) container_of(x, struct loongson_encoder, base)
++
++#define LS7A_CHIPCFG_REG_BASE (0x10010000)
++#define PCI_DEVICE_ID_LOONGSON_DC 0x7a06
++#define PCI_DEVICE_ID_LOONGSON_GPU 0x7a15
++#define LS7A_PIX_PLL (0x04b0)
++#define REG_OFFSET (0x10)
++#define FB_CFG_REG (0x1240)
++#define FB_ADDR0_REG (0x1260)
++#define FB_ADDR1_REG (0x1580)
++#define FB_STRI_REG (0x1280)
++#define FB_DITCFG_REG (0x1360)
++#define FB_DITTAB_LO_REG (0x1380)
++#define FB_DITTAB_HI_REG (0x13a0)
++#define FB_PANCFG_REG (0x13c0)
++#define FB_PANTIM_REG (0x13e0)
++#define FB_HDISPLAY_REG (0x1400)
++#define FB_HSYNC_REG (0x1420)
++#define FB_VDISPLAY_REG (0x1480)
++#define FB_VSYNC_REG (0x14a0)
++
++#define CFG_FMT GENMASK(2, 0)
++#define CFG_FBSWITCH BIT(7)
++#define CFG_ENABLE BIT(8)
++#define CFG_FBNUM BIT(11)
++#define CFG_GAMMAR BIT(12)
++#define CFG_RESET BIT(20)
++
++#define FB_PANCFG_DEF 0x80001311
++#define FB_HSYNC_PULSE (1 << 30)
++#define FB_VSYNC_PULSE (1 << 30)
++
++/* PIX PLL */
++#define LOOPC_MIN 24
++#define LOOPC_MAX 161
++#define FRE_REF_MIN 12
++#define FRE_REF_MAX 32
++#define DIV_REF_MIN 3
++#define DIV_REF_MAX 5
++#define PST_DIV_MAX 64
++
++struct pix_pll {
++	u32 l2_div;
++	u32 l1_loopc;
++	u32 l1_frefc;
++};
++
++struct loongson_crtc {
++	struct drm_crtc base;
++	struct loongson_device *ldev;
++	u32 crtc_id;
++	u32 reg_offset;
++	u32 cfg_reg;
++	struct drm_plane *plane;
++};
++
++struct loongson_encoder {
++	struct drm_encoder base;
++	struct loongson_device *ldev;
++	struct loongson_crtc *lcrtc;
++};
++
++struct loongson_connector {
++	struct drm_connector base;
++	struct loongson_device *ldev;
++	u16 id;
++	u32 type;
++};
++
++struct loongson_mode_info {
++	struct loongson_device *ldev;
++	struct loongson_crtc *crtc;
++	struct loongson_encoder *encoder;
++	struct loongson_connector *connector;
++};
++
++struct loongson_device {
++	struct drm_device *dev;
++	struct drm_atomic_state *state;
++
++	void __iomem *mmio;
++	void __iomem *io;
++	u32 vram_start;
++	u32 vram_size;
++
++	u32 num_crtc;
++	struct loongson_mode_info mode_info[2];
++	struct pci_dev *gpu_pdev; /* LS7A gpu device info */
++};
++
++/* crtc */
++int loongson_crtc_init(struct loongson_device *ldev, int index);
++
++/* connector */
++int loongson_connector_init(struct loongson_device *ldev, int index);
++
++/* encoder */
++int loongson_encoder_init(struct loongson_device *ldev, int index);
++
++/* plane */
++int loongson_plane_init(struct loongson_crtc *lcrtc);
++
++/* device */
++u32 loongson_gpu_offset(struct drm_plane_state *state);
++u32 ls7a_mm_rreg(struct loongson_device *ldev, u32 offset);
++void ls7a_mm_wreg(struct loongson_device *ldev, u32 offset, u32 val);
++u32 ls7a_io_rreg(struct loongson_device *ldev, u32 offset);
++void ls7a_io_wreg(struct loongson_device *ldev, u32 offset, u32 val);
++
++#endif /* __LOONGSON_DRV_H__ */
+diff --git a/drivers/gpu/drm/loongson/loongson_encoder.c b/drivers/gpu/drm/loongson/loongson_encoder.c
+new file mode 100644
+index 000000000000..2002cee00303
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_encoder.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void loongson_encoder_destroy(struct drm_encoder *encoder)
++{
++	struct loongson_encoder *lencoder = to_loongson_encoder(encoder);
++
++	drm_encoder_cleanup(encoder);
++	kfree(lencoder);
++}
++
++static const struct drm_encoder_funcs loongson_encoder_funcs = {
++	.destroy = loongson_encoder_destroy,
++};
++
++int loongson_encoder_init(struct loongson_device *ldev, int index)
++{
++	struct drm_encoder *encoder;
++	struct loongson_encoder *lencoder;
++
++	lencoder = kzalloc(sizeof(struct loongson_encoder), GFP_KERNEL);
++	if (!lencoder)
++		return -1;
++
++	lencoder->lcrtc = ldev->mode_info[index].crtc;
++	lencoder->ldev = ldev;
++	encoder = &lencoder->base;
++	encoder->possible_crtcs = 1 << index;
++
++	drm_encoder_init(ldev->dev, encoder, &loongson_encoder_funcs,
++			 DRM_MODE_ENCODER_DAC, NULL);
++
++	ldev->mode_info[index].encoder = lencoder;
++
++	return 0;
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_plane.c b/drivers/gpu/drm/loongson/loongson_plane.c
+new file mode 100644
+index 000000000000..f4694dcbf122
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_plane.c
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void loongson_plane_atomic_update(struct drm_plane *plane,
++					 struct drm_plane_state *old_state)
++{
++	struct loongson_crtc *lcrtc;
++	struct loongson_device *ldev;
++	struct drm_plane_state *state = plane->state;
++	u32 gpu_addr = 0;
++	u32 fb_addr = 0;
++	u32 reg_val = 0;
++	u32 reg_offset;
++	u32 pitch;
++	u8 depth;
++	u32 x, y;
++
++	if (!state->crtc || !state->fb)
++		return;
++
++	pitch = state->fb->pitches[0];
++	lcrtc = to_loongson_crtc(state->crtc);
++	ldev = lcrtc->ldev;
++	reg_offset = lcrtc->reg_offset;
++	x = state->crtc->x;
++	y = state->crtc->y;
++	depth = state->fb->format->cpp[0] << 3;
++
++	gpu_addr = loongson_gpu_offset(state);
++	reg_val = (pitch + 255) & ~255;
++	ls7a_mm_wreg(ldev, FB_STRI_REG + reg_offset, reg_val);
++
++	switch (depth) {
++	case 12 ... 16:
++		fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 2;
++		break;
++	case 24 ... 32:
++	default:
++		fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 4;
++		break;
++	}
++
++	ls7a_mm_wreg(ldev, FB_ADDR0_REG + reg_offset, fb_addr);
++	ls7a_mm_wreg(ldev, FB_ADDR1_REG + reg_offset, fb_addr);
++	reg_val = lcrtc->cfg_reg | CFG_ENABLE;
++	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, reg_val);
++}
++
++static const uint32_t loongson_formats[] = {
++	DRM_FORMAT_RGB565,
++	DRM_FORMAT_RGB888,
++	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_ARGB8888,
++};
++
++static const uint64_t loongson_format_modifiers[] = { DRM_FORMAT_MOD_LINEAR,
++						      DRM_FORMAT_MOD_INVALID };
++
++static const struct drm_plane_funcs loongson_plane_funcs = {
++	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
++	.destroy = drm_plane_cleanup,
++	.disable_plane = drm_atomic_helper_disable_plane,
++	.reset = drm_atomic_helper_plane_reset,
++	.update_plane = drm_atomic_helper_update_plane,
++};
++
++static const struct drm_plane_helper_funcs loongson_plane_helper_funcs = {
++	.prepare_fb	= drm_gem_vram_plane_helper_prepare_fb,
++	.cleanup_fb	= drm_gem_vram_plane_helper_cleanup_fb,
++	.atomic_update = loongson_plane_atomic_update,
++};
++
++int loongson_plane_init(struct loongson_crtc *lcrtc)
++{
++	struct loongson_device *ldev;
++	int crtc_id;
++	int ret;
++
++	ldev = lcrtc->ldev;
++	crtc_id = lcrtc->crtc_id;
++
++	lcrtc->plane = devm_kzalloc(ldev->dev->dev, sizeof(*lcrtc->plane),
++				    GFP_KERNEL);
++	if (!lcrtc->plane)
++		return -ENOMEM;
++
++	ret = drm_universal_plane_init(ldev->dev, lcrtc->plane, BIT(crtc_id),
++				       &loongson_plane_funcs, loongson_formats,
++				       ARRAY_SIZE(loongson_formats),
++				       loongson_format_modifiers,
++				       DRM_PLANE_TYPE_PRIMARY, NULL);
++	if (ret) {
++		DRM_ERROR("fail to init planed crtc %d\n", crtc_id);
++		return ret;
++	}
++
++	drm_plane_helper_add(lcrtc->plane, &loongson_plane_helper_funcs);
++
++	return 0;
++}
+-- 
+2.31.0
 
