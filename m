@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EC434FD9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6F234FDA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhCaJ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:59:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:37006 "EHLO foss.arm.com"
+        id S234966AbhCaJ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:59:49 -0400
+Received: from ozlabs.org ([203.11.71.1]:45529 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234908AbhCaJ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:58:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CB561042;
-        Wed, 31 Mar 2021 02:58:42 -0700 (PDT)
-Received: from [10.57.24.208] (unknown [10.57.24.208])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5A3F3F792;
-        Wed, 31 Mar 2021 02:58:40 -0700 (PDT)
-Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
-To:     John Garry <john.garry@huawei.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-2-git-send-email-john.garry@huawei.com>
- <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
- <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
- <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
- <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
-Date:   Wed, 31 Mar 2021 10:58:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234792AbhCaJ7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:59:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9MGr5TPpz9sWQ;
+        Wed, 31 Mar 2021 20:59:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1617184757;
+        bh=p3haphj09CDXdLzCL9waMMLLTSGpd53eETzf7Pujz3c=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=E1HW2jvQHKUIpNfeEsD0pCF2UnBDNvnOcHPByIEebrOXqFdoJXcpfLEJT0z9Ml8Si
+         h+m5huudFzCU+jqanSEb0XEtdOPCbEjeiaGFutoGPNrm5xEa3JullVhXanp3sJ5fpW
+         tl+YqHFLnA3otpgJ0ewWDhWzYkTTsbzjYMEwfFYLJDxi3SjALPR2IFVzlIV8pdmHsm
+         UO6j5SJXJZE7xM2/ga+uPgcxYJIdXJmmTbxhgTDBRYyxcpjXg23fBHVXs20S0iDIUS
+         fQ1LTsV1HNFOIMondRjpUJbeexX1oQv7BsC4BDifj/CC9eosK6ufxV3gHrP8vUbhE3
+         1CE5X2YtFotPQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org
+Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
+In-Reply-To: <09e8d68d-54fe-e327-b44f-8f68543edba1@csgroup.eu>
+References: <20210326191720.138155-1-dima@arista.com>
+ <09e8d68d-54fe-e327-b44f-8f68543edba1@csgroup.eu>
+Date:   Wed, 31 Mar 2021 20:59:16 +1100
+Message-ID: <8735wby77v.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 15:01, John Garry wrote:
-> On 19/03/2021 19:20, Robin Murphy wrote:
-> 
-> Hi Robin,
-> 
->>> So then we have the issue of how to dynamically increase this rcache
->>> threshold. The problem is that we may have many devices associated with
->>> the same domain. So, in theory, we can't assume that when we increase
->>> the threshold that some other device will try to fast free an IOVA which
->>> was allocated prior to the increase and was not rounded up.
->>>
->>> I'm very open to better (or less bad) suggestions on how to do this ...
->> ...but yes, regardless of exactly where it happens, rounding up or not
->> is the problem for rcaches in general. I've said several times that my
->> preferred approach is to not change it that dynamically at all, but
->> instead treat it more like we treat the default domain type.
->>
-> 
-> Can you remind me of that idea? I don't remember you mentioning using 
-> default domain handling as a reference in any context.
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 26/03/2021 =C3=A0 20:17, Dmitry Safonov a =C3=A9crit=C2=A0:
+>> Since commit 511157ab641e ("powerpc/vdso: Move vdso datapage up front")
+>> VVAR page is in front of the VDSO area. In result it breaks CRIU
+>> (Checkpoint Restore In Userspace) [1], where CRIU expects that "[vdso]"
+>> from /proc/../maps points at ELF/vdso image, rather than at VVAR data pa=
+ge.
+>> Laurent made a patch to keep CRIU working (by reading aux vector).
+>> But I think it still makes sence to separate two mappings into different
+>> VMAs. It will also make ppc64 less "special" for userspace and as
+>> a side-bonus will make VVAR page un-writable by debugger (which previous=
+ly
+>> would COW page and can be unexpected).
+>>=20
+>> I opportunistically Cc stable on it: I understand that usually such
+>> stuff isn't a stable material, but that will allow us in CRIU have
+>> one workaround less that is needed just for one release (v5.11) on
+>> one platform (ppc64), which we otherwise have to maintain.
+>> I wouldn't go as far as to say that the commit 511157ab641e is ABI
+>> regression as no other userspace got broken, but I'd really appreciate
+>> if it gets backported to v5.11 after v5.12 is released, so as not
+>> to complicate already non-simple CRIU-vdso code. Thanks!
+>>=20
+>> Cc: Andrei Vagin <avagin@gmail.com>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: stable@vger.kernel.org # v5.11
+>> [1]: https://github.com/checkpoint-restore/criu/issues/1417
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>> Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/mmu_context.h |  2 +-
+>>   arch/powerpc/kernel/vdso.c             | 54 +++++++++++++++++++-------
+>>   2 files changed, 40 insertions(+), 16 deletions(-)
+>>=20
+>
+>> @@ -133,7 +135,13 @@ static int __arch_setup_additional_pages(struct lin=
+ux_binprm *bprm, int uses_int
+>>   	 * install_special_mapping or the perf counter mmap tracking code
+>>   	 * will fail to recognise it as a vDSO.
+>>   	 */
+>> -	mm->context.vdso =3D (void __user *)vdso_base + PAGE_SIZE;
+>> +	mm->context.vdso =3D (void __user *)vdso_base + vvar_size;
+>> +
+>> +	vma =3D _install_special_mapping(mm, vdso_base, vvar_size,
+>> +				       VM_READ | VM_MAYREAD | VM_IO |
+>> +				       VM_DONTDUMP | VM_PFNMAP, &vvar_spec);
+>> +	if (IS_ERR(vma))
+>> +		return PTR_ERR(vma);
+>>=20=20=20
+>>   	/*
+>>   	 * our vma flags don't have VM_WRITE so by default, the process isn't
+>
+>
+> IIUC, VM_PFNMAP is for when we have a vvar_fault handler.
 
-Sorry if the phrasing was unclear there - the allusion to default 
-domains is new, it just occurred to me that what we do there is in fact 
-fairly close to what I've suggested previously for this. In that case, 
-we have a global policy set by the command line, which *can* be 
-overridden per-domain via sysfs at runtime, provided the user is willing 
-to tear the whole thing down. Using a similar approach here would give a 
-fair degree of flexibility but still mean that changes never have to be 
-made dynamically to a live domain.
+Some of the other flags seem odd too.
+eg. VM_IO ? VM_DONTDUMP ?
 
-Robin.
+
+cheers
