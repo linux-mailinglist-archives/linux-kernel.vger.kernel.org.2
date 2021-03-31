@@ -2,106 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113735061D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89611350623
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhCaSPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhCaSPU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:15:20 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC674C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:15:17 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id j7so20631866wrd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eA66IfwNLCvflZyaO4GLWcFCdnWN4ORiomGXqXfK2fI=;
-        b=f1Ar6CrHVwvmPAM3/9xMSRkKbN4usB8LfM583KmVSNJXs0r9cwmW9stwOKoZwMrxBC
-         8M90NIfDKnoSwcSiBxVfvwLjuz4IWvYeL1vFxRhKMDhJy6I/CtyXQDHWLF33EeEata6X
-         Vi3odTlTawbhhkRC9Uy49cUyQLQlneOe1+Gor6WnNMINgZ3UD+UJIp/iYVsdaGRunxCw
-         8/5ewEzObkstEaa9ST1but+pEE6GrBuM+tCgEoaMtfPcVJ/swYbM7F45HJ43j2bArRWg
-         1OjhHJJFXK4zMoAnUEpJPxvr1NkIVWETfE9pNj6lDRs36zWNuAsqSW7gDAoMo5YZCzYf
-         2ZZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eA66IfwNLCvflZyaO4GLWcFCdnWN4ORiomGXqXfK2fI=;
-        b=HJ+RO9Bn8mNx8kJLRvy/pvTc9sTEBMkYBw3m73tfcK3Em+7FMi7Q3kU2nmO8+rgi7G
-         HnG7BC7l0fxPgurdXiiLOt5CbiwgJA37g5yqvCTZSYfGazDMQm16VTROkf6Iyq3Hcsai
-         X/fWxmTXXAaMjC0rJ68G21t+VkrZ9bJAJphWg2LaSyaKAYaZBVaNDlUH5uRgVKxHeIB3
-         WMfBFQ5crxMPhsPJLgvF20VHvYlzh3Y65krYF/J97K2JKoeAxY+z5nQF2WLqjZTEcj8j
-         +1tK3vtV6elYpIdyV2GWqluDDkyA6cXxy8S4RFAJwj5NTpGSwvtbF1/vBAZbbHD9FWDE
-         /4Kg==
-X-Gm-Message-State: AOAM533HnKVzq8bSyMwNgm0fOlyeEWbNwySWVAGxsDlVb3r71Zx+LiDj
-        iA1GIzco2GERRsfvUt3FF40ucA==
-X-Google-Smtp-Source: ABdhPJyyWfx/c+aqE54lTrl3dhisDbSZEmIFGt41YeVVb1gbg4eQ0gsUx3VoNGnZ5VsumWW6ywd2EQ==
-X-Received: by 2002:adf:ba94:: with SMTP id p20mr5188220wrg.300.1617214516602;
-        Wed, 31 Mar 2021 11:15:16 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id i4sm4661186wmq.12.2021.03.31.11.15.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 11:15:16 -0700 (PDT)
-Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org
-References: <20210326191720.138155-1-dima@arista.com>
- <47623d02-eb29-0fcb-0cfd-a9c11c9fab02@csgroup.eu>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <8cd82b69-c8cc-8591-1f92-5c9400e00579@arista.com>
-Date:   Wed, 31 Mar 2021 19:15:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234589AbhCaSSa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 14:18:30 -0400
+Received: from mail.sch.bme.hu ([152.66.249.140]:57922 "EHLO mail.sch.bme.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233934AbhCaSR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:17:57 -0400
+Received: from mail-lj1-f177.google.com (209.85.208.177) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2176.2; Wed, 31 Mar 2021 20:17:48 +0200
+Received: by mail-lj1-f177.google.com with SMTP id a1so24990905ljp.2;
+        Wed, 31 Mar 2021 11:17:48 -0700 (PDT)
+X-Gm-Message-State: AOAM5310OX/qhNEIZhDOh3OCI3AMQPg8M5eniuLCY8M2npC3zTXECgZk
+        d2Z5gt07ED8FljckV6CGR+Vd+/PUVYFpM42eNd0=
+X-Google-Smtp-Source: ABdhPJzx3wxkCzuYO5aYQUbXVGrAPwFSBXqyDkfqbFokvamM6BMLO9tkIe5M5Rd/aoMSmHsfwgWdaH6n3e9p20Pn/IA=
+X-Received: by 2002:a05:651c:124b:: with SMTP id h11mr2852209ljh.401.1617214668164;
+ Wed, 31 Mar 2021 11:17:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <47623d02-eb29-0fcb-0cfd-a9c11c9fab02@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210318115210.2014204-1-bence98@sch.bme.hu> <20210318115210.2014204-3-bence98@sch.bme.hu>
+ <20210331095820.GA29323@ninjato>
+In-Reply-To: <20210331095820.GA29323@ninjato>
+From:   =?UTF-8?B?QmVuY2UgQ3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Date:   Wed, 31 Mar 2021 20:17:36 +0200
+X-Gmail-Original-Message-ID: <CACCVKEHYdUgx1QuJqUz3=OettOJHQWuA1O+ve1ZUDPAWz+n0aA@mail.gmail.com>
+Message-ID: <CACCVKEHYdUgx1QuJqUz3=OettOJHQWuA1O+ve1ZUDPAWz+n0aA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] Adding i2c-cp2615: i2c support for Silicon Labs'
+ CP2615 Digital Audio Bridge
+To:     Wolfram Sang <wsa@kernel.org>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [209.85.208.177]
+X-ClientProxiedBy: Exchange2016-1.sch.bme.hu (152.66.249.140) To
+ Exchange2016-1.sch.bme.hu (152.66.249.140)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 11:17 AM, Christophe Leroy wrote:
-> 
-> 
-> Le 26/03/2021 à 20:17, Dmitry Safonov a écrit :
-[..]
->> --- a/arch/powerpc/kernel/vdso.c
->> +++ b/arch/powerpc/kernel/vdso.c
->> @@ -55,10 +55,10 @@ static int vdso_mremap(const struct
->> vm_special_mapping *sm, struct vm_area_struc
->>   {
->>       unsigned long new_size = new_vma->vm_end - new_vma->vm_start;
->>   -    if (new_size != text_size + PAGE_SIZE)
->> +    if (new_size != text_size)
->>           return -EINVAL;
-> 
-> In ARM64 you have removed the above test in commit 871402e05b24cb56
-> ("mm: forbid splitting special mappings"). Do we need to keep it here ?
-> 
->>   -    current->mm->context.vdso = (void __user *)new_vma->vm_start +
->> PAGE_SIZE;
->> +    current->mm->context.vdso = (void __user *)new_vma->vm_start;
->>         return 0;
->>   }
-> 
+> drivers/i2c/busses/i2c-cp2615.c:88:21: warning: incorrect type in assignment (different base types)
+> drivers/i2c/busses/i2c-cp2615.c:88:21:    expected unsigned short [usertype] length
+> drivers/i2c/busses/i2c-cp2615.c:88:21:    got restricted __be16 [usertype]
+> ...
+Yes, I have already converted to using __be16 where needed, it will be
+in the next version of the patch I send.
 
-Yes, right you are, this can be dropped.
+> drivers/i2c/busses/i2c-cp2615.c:78:5: warning: symbol 'cp2615_init_iop_msg' was not declared. Should it be static?
+> drivers/i2c/busses/i2c-cp2615.c:96:5: warning: symbol 'cp2615_init_i2c_msg' was not declared. Should it be static?
+> drivers/i2c/busses/i2c-cp2615.c:102:5: warning: symbol 'cp2615_check_status' was not declared. Should it be static?
+I can forward declare these (copying from the header I used in v1 of
+the patch), but I'm not sure I understand the rationale behind these
+warnings...
+> drivers/i2c/busses/i2c-cp2615.c:212:27: warning: symbol 'cp2615_i2c_quirks' was not declared. Should it be static?
+Especially this. I think I will make this static instead, since it
+won't ever be exported to any other module.
 
-Thanks,
-          Dmitry
+> The missing 'static' are what buildbot also reported and are correct.
+The lkp bot complained about MODULE_DEVICE_TABLE and MODULE_AUTHOR,
+which, again, I don't see what is wrong with it.
+
+> drivers/i2c/busses/i2c-cp2615.c:244:2: warning: ‘strncpy’ specified bound 48 equals destination size [-Wstringop-truncation]
+I thought this was the correct way of strncpy... Time to RTFM then, I guess :)
+
+> Oh, and are you willing to maintain the driver? If so, please add an
+> entry to the MAINTAINERS file. Thanks!
+Sure!
+
+I will now send an updated patch, with  few additions too.
