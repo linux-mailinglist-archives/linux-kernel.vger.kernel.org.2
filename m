@@ -2,214 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E4534F52B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 01:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E4A34F53A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhC3Xvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 19:51:55 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32854 "EHLO mga02.intel.com"
+        id S232503AbhCaAAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231650AbhC3XvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 19:51:23 -0400
-IronPort-SDR: IUulo97QG3Y8yuYvrTplaJ9FTgL6G0qqIWkIy2CArKgp5CIBmU7t8aTxjizWNmH9zhv2cfDCLK
- vZiT1Gs1XTuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="179009612"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="179009612"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 16:51:23 -0700
-IronPort-SDR: GgJpxoGbYvo7rjLOJVUt0HXX+KMEoTLCUkHQ60cCyzn02gQiDYQcaI4CRSTISTp6DGek+A6c8s
- AJ5he0hqIeLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="516637850"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Mar 2021 16:51:21 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lRO8m-0005Wy-Fh; Tue, 30 Mar 2021 23:51:20 +0000
-Date:   Wed, 31 Mar 2021 07:51:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- 883ccef355b910398b99dfaf96d40557479a7e9b
-Message-ID: <6063b973.+Mf83iFvHF4hMD+J%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232221AbhCaAAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5B050619D7;
+        Wed, 31 Mar 2021 00:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617148811;
+        bh=ysOe6gV6VLVY/dAxzArYun+ymQ/xTKzYhzoq2I0b7ZA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GUHx+9enHBcPboBFsqMeROxBsZDrztZWphS/QWzotm4t6PymL1JVfkEMME30Xpmyn
+         g16hMNrBb6yX1aelq3wYjHKsQqRMHNPbiHAEH5QorFe0QtppS4n+3mKiy5urMe+8yU
+         1GAVh7PeyFULyFpeO9scl894T+9XUZi43uMDU2ms34M4ZdKqVfKWPPWhl8/Iy+nQQ+
+         dRe1VobZ/vbEL3zA527cszGOAk56/t6yhxFM7yRkgTqFhCT+jK4wRXkjDQZcsAa5Zs
+         5XYnVt9+a/t8NpzvkB/0F4D0a4wq8R+wjKQbAAI1OvRJKkpec+Ezvo5W1CAAS5ndx7
+         G9mVp25a4iisg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5424860A5B;
+        Wed, 31 Mar 2021 00:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/6] Clean up obsolete TODO files
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161714881133.29090.6649016688836045626.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 00:00:11 +0000
+References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     tsbogend@alpha.franken.de, aacraid@microsemi.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, luisbg@kernel.org,
+        salah.triki@gmail.com, dwmw2@infradead.org, richard@nod.at,
+        ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net, gregkh@linuxfoundation.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: 883ccef355b910398b99dfaf96d40557479a7e9b  genirq/irq_sim: Shrink devm_irq_domain_create_sim()
+Hello:
 
-elapsed time: 733m
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-configs tested: 152
-configs skipped: 4
+On Tue, 30 Mar 2021 15:02:43 +0800 you wrote:
+> It is mentioned in the official documents of the Linux Foundation and WIKI
+> that you can participate in its development according to the TODO files of
+> each module.
+> 
+> But the TODO files here has not been updated for 15 years, and the function
+> development described in the file have been implemented or abandoned.
+> 
+> [...]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Here is the summary with links:
+  - [1/6] mips/sgi-ip27: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/0f1b2a4912b2
+  - [2/6] scsi/aacraid: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/ef843f261b88
+  - [3/6] fs/befs: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/22612b4e6039
+  - [4/6] fs/jffs2: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/ab36ba4f3a81
+  - [5/6] net/ax25: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/8d9e5bbf5c68
+  - [6/6] net/decnet: Delete obsolete TODO file
+    https://git.kernel.org/netdev/net-next/c/b9aa074b896b
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                       imx_v4_v5_defconfig
-arm                       imx_v6_v7_defconfig
-sh                              ul2_defconfig
-microblaze                      mmu_defconfig
-mips                         db1xxx_defconfig
-arm                        cerfcube_defconfig
-arm                           tegra_defconfig
-arm                        neponset_defconfig
-sh                          urquell_defconfig
-arm                            mmp2_defconfig
-powerpc                      bamboo_defconfig
-i386                                defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                          lpd270_defconfig
-nios2                            alldefconfig
-arm                            qcom_defconfig
-arm                            pleb_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                        icon_defconfig
-powerpc                 mpc836x_rdk_defconfig
-xtensa                         virt_defconfig
-sh                            titan_defconfig
-arm                        mini2440_defconfig
-arm                       omap2plus_defconfig
-powerpc                     tqm8541_defconfig
-sparc64                             defconfig
-mips                        jmr3927_defconfig
-parisc                              defconfig
-powerpc                 linkstation_defconfig
-sh                         apsh4a3a_defconfig
-arm                         lubbock_defconfig
-arm                      footbridge_defconfig
-arm                       mainstone_defconfig
-sh                          landisk_defconfig
-arm                   milbeaut_m10v_defconfig
-m68k                           sun3_defconfig
-arm                     davinci_all_defconfig
-sh                                  defconfig
-powerpc                      ep88xc_defconfig
-sh                            hp6xx_defconfig
-powerpc                    sam440ep_defconfig
-mips                          rm200_defconfig
-arm                           u8500_defconfig
-arm                        multi_v7_defconfig
-sh                          rsk7201_defconfig
-powerpc                   motionpro_defconfig
-arm                         socfpga_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                        keystone_defconfig
-arm                           h5000_defconfig
-arm                            zeus_defconfig
-m68k                       m5208evb_defconfig
-mips                            ar7_defconfig
-arm                       netwinder_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                     ppa8548_defconfig
-sh                               alldefconfig
-sh                          r7780mp_defconfig
-arm                        spear6xx_defconfig
-arc                         haps_hs_defconfig
-mips                          malta_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      obs600_defconfig
-mips                        bcm47xx_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      ppc44x_defconfig
-mips                     cu1000-neo_defconfig
-sparc                       sparc64_defconfig
-sh                           se7619_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                      arches_defconfig
-mips                        qi_lb60_defconfig
-riscv                          rv32_defconfig
-mips                malta_kvm_guest_defconfig
-powerpc                       ebony_defconfig
-sh                            migor_defconfig
-mips                       lemote2f_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210330
-x86_64               randconfig-a003-20210330
-x86_64               randconfig-a002-20210330
-x86_64               randconfig-a001-20210330
-x86_64               randconfig-a005-20210330
-x86_64               randconfig-a006-20210330
-i386                 randconfig-a004-20210330
-i386                 randconfig-a006-20210330
-i386                 randconfig-a003-20210330
-i386                 randconfig-a002-20210330
-i386                 randconfig-a001-20210330
-i386                 randconfig-a005-20210330
-i386                 randconfig-a015-20210330
-i386                 randconfig-a011-20210330
-i386                 randconfig-a014-20210330
-i386                 randconfig-a013-20210330
-i386                 randconfig-a016-20210330
-i386                 randconfig-a012-20210330
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-clang tested configs:
-x86_64               randconfig-a012-20210330
-x86_64               randconfig-a015-20210330
-x86_64               randconfig-a014-20210330
-x86_64               randconfig-a016-20210330
-x86_64               randconfig-a013-20210330
-x86_64               randconfig-a011-20210330
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
