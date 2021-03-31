@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56233350893
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20513350896
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhCaUzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
+        id S232848AbhCaUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhCaUzE (ORCPT
+        with ESMTP id S232519AbhCaUzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:55:04 -0400
+        Wed, 31 Mar 2021 16:55:06 -0400
 Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEB3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:04 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id t140so129679pgb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787FDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:06 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q10so174549pgj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8bZ3bzKOfhPGnPGG60VssYCADe64CpCvkm0duGoaMAA=;
-        b=iK6Dd1WzfTgZlYmEbgnA8JsN6ev91O3XgM9qgKS6kJCpEDzjxzvzwCL7RPAIIEpMPO
-         m6g+Zrkan6Wwii54JTWoNBmrYZfJ1o2xcdda5yUzNDrzCoTAdDL5oMoveSYaiu0rppz9
-         QW6uvmXPJPJYn+Oeme3ufD9LvkkfwQLu9XavI=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9ijlYcKqhmRnIjh3GfaZu6VzSGgGwccaBk76YZfh88U=;
+        b=WPzOZI/7h/nIlJykeZPJIx0pP8kh07MzAyzEZatHRuIhHB97Us6jbJeY/UYOlmqOhI
+         I0ecVNwtacYNG9lms+cBmhaFNl0rIzXFYDD0LRCOvReTo3zRWs7cC3oUH7692A+ZDVVi
+         2gGuQxNlOLAX8UFE9I1BxL/Nh/X2RmBxs4Bxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8bZ3bzKOfhPGnPGG60VssYCADe64CpCvkm0duGoaMAA=;
-        b=etD8FU3g88UpqvnvVRPP5rGS5x0hXxcaQRUX/qJqV20fm8KTxZKEiiEZgA5D2SR3bz
-         1snMkPCDUibJ/x/kS4vyXT5bhqdsGBqVmxqMs2FN1SQ1BRLpGoK9HbaeHCVAPRYyMwZ+
-         ssYqoTU9ONztjgx2ktkOUb//iLFl3fGfHD6SClUr/SLoVvYFP0Lh3hFCw4LnAdj8sXc0
-         HY23AlOvscQvUlO104Bnfn8GycIWnpuJg75WPsvNd+OWKSaN/h7HaRjmUBiTmZef0cvM
-         9QEk19WKDbqnwcPp9q6IFkR0sPuANAjCLAZs8vpjwsQm3VJ1r+tfR5dGJVeU6c6Tfg0b
-         bH3Q==
-X-Gm-Message-State: AOAM530UcA1+RLsJl6IekieotkBtL35TU7n2tC3bHaug04kR5ie1Fd2W
-        ZbN+VFGD8JsmaF6IKhxUCxb/mA==
-X-Google-Smtp-Source: ABdhPJzUF8uhkl0raN0ODpiCdyJAh9H7iGlPFlGsUGF89srEBkCnpo3FL1QwTdlnzj6Suocxnxa0yg==
-X-Received: by 2002:a63:af51:: with SMTP id s17mr4640944pgo.405.1617224103801;
-        Wed, 31 Mar 2021 13:55:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9ijlYcKqhmRnIjh3GfaZu6VzSGgGwccaBk76YZfh88U=;
+        b=BRCdSYUKOy85iT1EN6jmcsnAkQRt4vaNQTKo7qjCLg9EgGC85T2qXSizprW0M26U2J
+         P6BZs4aOuTkRit1CiYg/1EVyJjw2LYxYuGrAiaXaTTunevPYnoYmjekM0HjVEzgm1Vfn
+         p4A1ToQ0vgGNYlk18mES6VLQg5kViKtlJpX2bmEB/4yCUnijazNBZ5XMpeUSS8vIXj9I
+         4Va6rqKPlc8M2JzBu+d9U0CxbYdhIpSug/Df2T5PPXJM5ORNpxyt7tgHm02r1AXQhEQB
+         HNFBV0EnIEzL6x/+/EsFuk++iQIkHpYWu8dlOcHqoQh3uVwq/z+wDC0IceWmuTXIsY37
+         JZyQ==
+X-Gm-Message-State: AOAM530XN3OuLD3HaIcedWd8BYV4teWGtVYleW8kWalnDLmvZKECW2V3
+        m41de27NKRRAg5SMpuQd+iKX1w==
+X-Google-Smtp-Source: ABdhPJwjc+yR/F1HFGbsO3JvcN74Eaz7ocQ4vidQqR9lLlweYVUpN1FMKcKww5c8xRtm5T99yzj42g==
+X-Received: by 2002:a63:4f56:: with SMTP id p22mr4811122pgl.224.1617224106052;
+        Wed, 31 Mar 2021 13:55:06 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v18sm4189804pgo.0.2021.03.31.13.55.02
+        by smtp.gmail.com with ESMTPSA id cp22sm3040786pjb.15.2021.03.31.13.55.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 31 Mar 2021 13:55:03 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Will Deacon <will@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Alexander Potapenko <glider@google.com>,
         Alexander Popov <alex.popov@linux.com>,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>,
@@ -67,93 +67,73 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-hardening@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v9 0/6] Optionally randomize kernel stack offset each syscall
-Date:   Wed, 31 Mar 2021 13:54:52 -0700
-Message-Id: <20210331205458.1871746-1-keescook@chromium.org>
+Subject: [PATCH v9 1/6] jump_label: Provide CONFIG-driven build state defaults
+Date:   Wed, 31 Mar 2021 13:54:53 -0700
+Message-Id: <20210331205458.1871746-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210331205458.1871746-1-keescook@chromium.org>
+References: <20210331205458.1871746-1-keescook@chromium.org>
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=aa54c44d1d71b9550d6015efc734f667917094a1; i=Vishx6UyAXwYzcnoSyP+eBB3iQyx+/i5smsbQfc0cnA=; m=vc4sSYlf+uaSlLSFP5TpbQv56VaSRpBLpRuMltXaB4Q=; p=mNH2Bo/K9vrGz9sBtTDV8UFO0eJ8yv8BbR/DeIaO1es=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBk4aEACgkQiXL039xtwCaqhg/+KwH hAw/wsPS1SeVqGJmKPfdQr82hCM0Ml7SVm9J6WipR0nxoHNTRoTq5fJgQ/HAKX35mqAAL3tYGqBi0 2+4WfT2O7DCmcfB4kxHIAZPP1QJPHiUWqb+fNCgutJ9rorMb8tWzDisghAXGGA5mLJTb+e3za84Mg Tz11kRO6uL8orQe4PDGMbtu4ZCR98bQV+/s0SJ2edzBC6JEfXsZGQR+aVB8IXsP7SLf4m7cqs+xko 0HsCJcGnkdPob7OY3xJ5xX638TmezTLmrLymvZQF/3nSqc6H9sGuaiM3d+AM23zJ3MCY6ZlyJXvV8 GzbL/fy12rUa+H/CHYoxEjJJDyopHQQOf677UExOEVO+E4cujeCRzdKv5dGhmFIcpDsFb7FlVCloU ORxvUCgvTSBkWF3qpl9OVmYHU6SKzdG4TU/awDvK6NojCgqhZpoIKjFDsImZzpta59PWF0iJQY7XJ jEq3UVi32y1V10znVqFCRaTTsYnknmSRGohaJqK9aIN29Ua/iBZooygQSNVS0ae3NR3YEQRHRoEZV kgil7zpFlzwuBxrLHrYvvKq3r0q0H4hsoDpFHgHGDZaTXKU4EXWsZ66xrOPJi0r6R9a8pYf+QDjxC cqQfU25fy65WH6DRJBFFXm3eRu/MP8OcVb83DQXHPhdKGC0lf0O4/2ELWKbU5SbM=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will (and Mark and Catalin),
+As shown in jump_label.h[1], choosing the initial state of static
+branches changes the assembly layout. If the condition is expected to
+be likely it's inline, and if unlikely it is out of line via a jump. A
+few places in the kernel use (or could be using) a CONFIG to choose the
+default state, which would give a small performance benefit to their
+compile-time declared default. Provide the infrastructure to do this.
 
-Can you take this via the arm64 tree for v5.13 please? Thomas has added
-his Reviewed-by, so it only leaves arm64's. :)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/jump_label.h?h=v5.11#n398
 
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/lkml/20200324220641.GT2452@worktop.programming.kicks-ass.net/
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/jump_label.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-v9:
-- comment position nit (tglx)
-- Added tglx's Reviewed-by
-v8: https://lore.kernel.org/lkml/20210330205750.428816-1-keescook@chromium.org/
-v7: https://lore.kernel.org/lkml/20210319212835.3928492-1-keescook@chromium.org/
-v6: https://lore.kernel.org/lkml/20210315180229.1224655-1-keescook@chromium.org/
-v5: https://lore.kernel.org/lkml/20210309214301.678739-1-keescook@chromium.org/
-v4: https://lore.kernel.org/lkml/20200622193146.2985288-1-keescook@chromium.org/
-v3: https://lore.kernel.org/lkml/20200406231606.37619-1-keescook@chromium.org/
-v2: https://lore.kernel.org/lkml/20200324203231.64324-1-keescook@chromium.org/
-rfc: https://lore.kernel.org/kernel-hardening/20190329081358.30497-1-elena.reshetova@intel.com/
-
-This is a continuation and refactoring of Elena's earlier effort to add
-kernel stack base offset randomization. In the time since the earlier
-discussions, two attacks[1][2] were made public that depended on stack
-determinism, so we're no longer in the position of "this is a good idea
-but we have no examples of attacks". :)
-
-Earlier discussions also devolved into debates on entropy sources, which
-is mostly a red herring, given the already low entropy available due
-to stack size. Regardless, entropy can be changed/improved separately
-from this series as needed.
-
-Earlier discussions also got stuck debating how much syscall overhead
-was too much, but this is also a red herring since the feature itself
-needs to be selectable at boot with no cost for those that don't want it:
-this is solved here with static branches.
-
-So, here is the latest improved version, made as arch-agnostic as
-possible, with usage added for x86 and arm64. It also includes some small
-static branch clean ups, and addresses some surprise performance issues
-due to the stack canary[3].
-
-Thanks!
-
--Kees
-
-[1] https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-[2] https://repositorio-aberto.up.pt/bitstream/10216/125357/2/374717.pdf
-[3] https://lore.kernel.org/lkml/202003281520.A9BFF461@keescook/
-
-
-Kees Cook (6):
-  jump_label: Provide CONFIG-driven build state defaults
-  init_on_alloc: Optimize static branches
-  stack: Optionally randomize kernel stack offset each syscall
-  x86/entry: Enable random_kstack_offset support
-  arm64: entry: Enable random_kstack_offset support
-  lkdtm: Add REPORT_STACK for checking stack offsets
-
- .../admin-guide/kernel-parameters.txt         | 11 ++++
- Makefile                                      |  4 ++
- arch/Kconfig                                  | 23 ++++++++
- arch/arm64/Kconfig                            |  1 +
- arch/arm64/kernel/Makefile                    |  5 ++
- arch/arm64/kernel/syscall.c                   | 16 ++++++
- arch/x86/Kconfig                              |  1 +
- arch/x86/entry/common.c                       |  3 ++
- arch/x86/include/asm/entry-common.h           | 16 ++++++
- drivers/misc/lkdtm/bugs.c                     | 17 ++++++
- drivers/misc/lkdtm/core.c                     |  1 +
- drivers/misc/lkdtm/lkdtm.h                    |  1 +
- include/linux/jump_label.h                    | 19 +++++++
- include/linux/mm.h                            | 10 ++--
- include/linux/randomize_kstack.h              | 54 +++++++++++++++++++
- init/main.c                                   | 23 ++++++++
- mm/page_alloc.c                               |  4 +-
- mm/slab.h                                     |  6 ++-
- 18 files changed, 207 insertions(+), 8 deletions(-)
- create mode 100644 include/linux/randomize_kstack.h
-
+diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
+index d92691262f51..05f5554d860f 100644
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -382,6 +382,21 @@ struct static_key_false {
+ 		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,	\
+ 	}
+ 
++#define _DEFINE_STATIC_KEY_1(name)	DEFINE_STATIC_KEY_TRUE(name)
++#define _DEFINE_STATIC_KEY_0(name)	DEFINE_STATIC_KEY_FALSE(name)
++#define DEFINE_STATIC_KEY_MAYBE(cfg, name)			\
++	__PASTE(_DEFINE_STATIC_KEY_, IS_ENABLED(cfg))(name)
++
++#define _DEFINE_STATIC_KEY_RO_1(name)	DEFINE_STATIC_KEY_TRUE_RO(name)
++#define _DEFINE_STATIC_KEY_RO_0(name)	DEFINE_STATIC_KEY_FALSE_RO(name)
++#define DEFINE_STATIC_KEY_MAYBE_RO(cfg, name)			\
++	__PASTE(_DEFINE_STATIC_KEY_RO_, IS_ENABLED(cfg))(name)
++
++#define _DECLARE_STATIC_KEY_1(name)	DECLARE_STATIC_KEY_TRUE(name)
++#define _DECLARE_STATIC_KEY_0(name)	DECLARE_STATIC_KEY_FALSE(name)
++#define DECLARE_STATIC_KEY_MAYBE(cfg, name)			\
++	__PASTE(_DECLARE_STATIC_KEY_, IS_ENABLED(cfg))(name)
++
+ extern bool ____wrong_branch_error(void);
+ 
+ #define static_key_enabled(x)							\
+@@ -482,6 +497,10 @@ extern bool ____wrong_branch_error(void);
+ 
+ #endif /* CONFIG_JUMP_LABEL */
+ 
++#define static_branch_maybe(config, x)					\
++	(IS_ENABLED(config) ? static_branch_likely(x)			\
++			    : static_branch_unlikely(x))
++
+ /*
+  * Advanced usage; refcount, branch is enabled when: count != 0
+  */
 -- 
 2.25.1
 
