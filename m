@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5216B35048F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B1435049C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhCaQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:31:54 -0400
-Received: from mail-ed1-f52.google.com ([209.85.208.52]:44908 "EHLO
-        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234040AbhCaQb2 (ORCPT
+        id S233727AbhCaQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234258AbhCaQci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:31:28 -0400
-Received: by mail-ed1-f52.google.com with SMTP id j3so22984265edp.11;
-        Wed, 31 Mar 2021 09:31:28 -0700 (PDT)
+        Wed, 31 Mar 2021 12:32:38 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3B3C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:32:37 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id b16so23043012eds.7
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CHPIYKHoPm42PJqRafvNC/a4AmdvyTkfRdJZanKsttc=;
+        b=Ze09H/ipxnE52y77onOvZNVnO1ZeGvC0Yi9b4ae0sab0pUNI+jokYDzSPOaXTa9YDT
+         dDXxL0tcbaXqYlhkCdvYDOedPKdEQxMfuexxU7as+Swq4liGpxbAH/tSS6Dl7rCl2at9
+         UjqOScOuWmtgvOTp3uP6oQdkOgzmOhBitMhIYaKlA3iGDC3Vzu9PmGg1PKYKJvlbExL1
+         gqMV+LGeXOB3C8S0h99TW3x2w1U10Dt+pkZ1SLbopu5tGTjHz3bdSpw/eOCjuU4f1Vzx
+         Avb9/a/OBXDmsZmaN6gIwzGt/YDyUCo4JUBo27pIoTOhdDixfatv1LqfFCbNsV1BVeb5
+         j7Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oweZjjwop38EsR+FhQjGg4CvnspHSK7xcJXVqop9w7w=;
-        b=JEvoh0jAxaeR5Fn0baKgOwx/t0QXPvOLY3OQUqE4hJeOYH99dxvj5T69vqepX2BxUS
-         a6j+wN6mmI/kuSZZlKWZtzqAfJEK9woA6Z3d4vhUKeLeGjjwtyhfj0kJ/0iXIvkl35ep
-         X6Cpf2WZnnD+9uNDkzqo7qRnm2gEpDjn4Hh/W2Lc0RgJCWpnR50gtBpijW2neRyHUG5A
-         syIQWP5KPoVvI2LcEz4l9GeG6A/hpnIWaaC2sUyFyUbEbXAkJFnTvxTFH2fjxD8AiEUJ
-         vD9PbRXQ5u/fh+RvK1bn1BV4R2i+KuU+ha8goPh14iLXxBSH6vsy0F1EMHTMBW6+D5gu
-         xcPg==
-X-Gm-Message-State: AOAM531yXn/+FPaiVwhSxY9Uhr10zjyD/o5ycKUV9LlVtjKTIH3Ob/S6
-        +15IEm0Qr3oTSFPYmhitYC8O2RjvMDMzBiuqXrA=
-X-Google-Smtp-Source: ABdhPJyx/SjornA6FNW5D3g0KangJ7zbgy74Uj8OaY2dy4QM25EW5wj+HzQ1r09VH6WBM1WGfM0CnkayxaKZfbA4+yc=
-X-Received: by 2002:a05:6402:35c9:: with SMTP id z9mr4801329edc.94.1617208287371;
- Wed, 31 Mar 2021 09:31:27 -0700 (PDT)
+        bh=CHPIYKHoPm42PJqRafvNC/a4AmdvyTkfRdJZanKsttc=;
+        b=aN6VH0iC7I94AjVR6lsNytzRTTWt4/tgQwXzu9terjhARKJilwqZFqXHzMq8ljX40g
+         MaOmcvr4NcV0n7yijXwBJR3BQZ+AGcPa6CqLq4zZGXlYr+kdI3k/BdFKRKK48Cfe+bWx
+         X4tglIbNG6p/M7qubd/DTyof5lE6NMwW1u1DCi/t+BxEYapMXZ0oiAytlPNsFdVzxFOA
+         OXcv+VKCBUN7tbXhMt6yAXJQQ2DrD9GnuQlxIVkzoCtPLxEONUrJnWE50lwuQltoJSlI
+         /usAeObmf0IPkmXy2CN1QLUmgd4zF1fZ0+n3N6xcaZ9T1/NHjeSaTKOszXSN/uvRml6W
+         h/vQ==
+X-Gm-Message-State: AOAM532oQgqdJQBUwry3rkt4S5AmHMhIQP1hLfFnNrMLTDgj94RwL7wS
+        CCGSXYzed+vGbddmfOJY65fB2C1351CS0mCRWgFeZA==
+X-Google-Smtp-Source: ABdhPJyBprJbezpGENvbhxRA2rM1vf5H+tyMGJVzBEGN7CJQywUpCe81M/bE+CulTOb+hMN8uqePj6nL3QDudP1BwUE=
+X-Received: by 2002:a05:6402:4301:: with SMTP id m1mr4975928edc.210.1617208356600;
+ Wed, 31 Mar 2021 09:32:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <d10affcb-d315-cebc-4162-084f0a1e4d43@intel.com>
- <F2653B18-239A-42BB-84EE-04F18B712279@amacapital.net> <CAJvTdKnwexRpHrLFQv+2ykK9WEqtXMwehjfa_D7T+O_8DO_CGA@mail.gmail.com>
- <4aa49572cc5f4797922352d1760f3ef4@AcuMS.aculab.com>
-In-Reply-To: <4aa49572cc5f4797922352d1760f3ef4@AcuMS.aculab.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Wed, 31 Mar 2021 12:31:16 -0400
-Message-ID: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
+References: <161714738634.2168142.10860201861152789544.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161714740233.2168142.11116065966198937093.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210331130953.GG1463678@nvidia.com> <CAPcyv4inZaSRk-eiyeRLfUOrwyD=YVLW6bdUVJ239X099n1S=Q@mail.gmail.com>
+ <20210331161759.GL1463678@nvidia.com>
+In-Reply-To: <20210331161759.GL1463678@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 31 Mar 2021 09:32:28 -0700
+Message-ID: <CAPcyv4ifsy+e2j6EPRgy2+cBpm_8ggvaT_GPnwEQKqto+x5YYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] cxl/mem: Do not rely on device_add() side effects
+ for dev_set_name() failures
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:01 PM David Laight <David.Laight@aculab.com> wrote:
-
-> > Can we leave it in live registers?  That would be the speed-of-light
-> > signal handler approach.  But we'd need to teach the signal handler to
-> > not clobber it.  Perhaps that could be part of the contract that a
-> > fast signal handler signs?  INIT=0 AMX state could simply sit
-> > patiently in the AMX registers for the duration of the signal handler.
-> > You can't get any faster than doing nothing :-)
+On Wed, Mar 31, 2021 at 9:18 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Wed, Mar 31, 2021 at 09:04:32AM -0700, Dan Williams wrote:
+> > On Wed, Mar 31, 2021 at 6:10 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > On Tue, Mar 30, 2021 at 04:36:42PM -0700, Dan Williams wrote:
+> > > > +static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> > > > +{
+> > > > +     struct cxl_memdev *cxlmd;
+> > > > +     struct device *dev;
+> > > > +     struct cdev *cdev;
+> > > > +     int rc;
+> > > > +
+> > > > +     cxlmd = cxl_memdev_alloc(cxlm);
+> > > > +     if (IS_ERR(cxlmd))
+> > > > +             return PTR_ERR(cxlmd);
+> > > > +
+> > > > +     dev = &cxlmd->dev;
+> > > > +     rc = dev_set_name(dev, "mem%d", cxlmd->id);
+> > > > +     if (rc)
+> > > > +             goto err;
+> > > >
+> > > > +     cdev = &cxlmd->cdev;
+> > > >       cxl_memdev_activate(cxlmd, cxlm);
+> > > >       rc = cdev_device_add(cdev, dev);
+> > > >       if (rc)
+> > > > -             goto err_add;
+> > > > +             goto err;
+> > >
+> > > It might read nicer to have the error unwind here just call cxl_memdev_unregister()
 > >
-> > Of course part of the contract for the fast signal handler is that it
-> > knows that it can't possibly use XRESTOR of the stuff on the stack to
-> > necessarily get back to the state of the signaled thread (assuming we
-> > even used XSTATE format on the fast signal handler stack, it would
-> > forget the contents of the AMX registers, in this example)
+> > Perhaps, but I don't think cdev_del() and device_del() are prepared to
+> > deal with an object that was not successfully added.
 >
-> gcc will just use the AVX registers for 'normal' code within
-> the signal handler.
-> So it has to have its own copy of all the registers.
-> (Well, maybe you could make the TMX instructions fault,
-> but that would need a nested signal delivered.)
-
-This is true, by default, but it doesn't have to be true.
-
-Today, gcc has an annotation for user-level interrupts
-https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html#x86-Function-Attributes
-
-An analogous annotation could be created for fast signals.
-gcc can be told exactly what registers and instructions it can use for
-that routine.
-
-Of course, this begs the question about what routines that handler calls,
-and that would need to be constrained too.
-
-Today signal-safety(7) advises programmers to limit what legacy signal handlers
-can call.  There is no reason that a fast-signal-safety(7) could not be created
-for the fast path.
-
-> There is also the register save buffer that you need in order
-> to long-jump out of a signal handler.
-> Unfortunately that is required to work.
-> I'm pretty sure the original setjmp/longjmp just saved the stack
-> pointer - but that really doesn't work any more.
+> Oh, probably not, yuk yuk yuk.
 >
-> OTOH most signal handlers don't care - but there isn't a flag
-> to sigset() (etc) so ask for a specific register layout.
+> Ideally cdev_device_add should not fail in a way that allows an open,
+> I think that is just an artifact of it being composed of smaller
+> functions..
+>
+> For instance if we replace the kobj_map with xarray then we can
+> use xa_reserve and xa_store to avoid this condition.
+>
+> This actually looks like a good fit because the dev_t has pretty
+> "lumpy" allocations and this isn't really performance sensitive.
+>
+> A clever person could then make the dev_t self allocating and solve
+> another pain point with this interface. Hum..
+>
 
-Right, the idea is to optimize for *most* signal handlers,
-since making any changes to *all* signal handlers is intractable.
+...not a bad idea.
 
-So the idea is that opting-in to a fast signal handler would opt-out
-of some legacy signal capibilities.  Complete state is one of them,
-and thus long-jump is not supported, because the complete state
-may not automatically be available.
-
-thanks,
-Len Brown, Intel Open Source Technology Center
+/me bookmarks this thread for future consideration.
