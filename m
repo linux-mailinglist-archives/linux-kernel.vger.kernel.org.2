@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BEF3507FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B936F350803
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhCaUQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236412AbhCaUQF (ORCPT
+        id S236533AbhCaURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:17:03 -0400
+Received: from st43p00im-ztdg10061801.me.com ([17.58.63.170]:34228 "EHLO
+        st43p00im-ztdg10061801.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236479AbhCaUQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:16:05 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C98C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:16:04 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id h25so112666pgm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jlWSSoi6sy6UHWMT+v1PaZmsAgCmFgO2q1+KR74XicI=;
-        b=CQY8x+TvnMDSfSmiD2oXUHMuQLXZ38oXtxiRbVY/bMFC5iyRXRtUNJEI/nL8QGZJO3
-         uCZeJr/LCn8UE+xniYVb/4u0+jxWUWA+q7hUvk92LCcFLkS/fJqFt+tNz2QcklwQQaWn
-         HvmjLhB61wZx5a5mvaQtupa2/vEyFX9Vua2CFTe6XDyB1KEIrw7j4MAG1vVvIOYtt7P3
-         pHQharrI6lixPIKmzhnGtbgX+luBHbesS+HGqteLdSBUx8hGONbonRnToFN5Hs5EJ77K
-         vKUbLwvu9gSWWmSpGD7GsVEqiFtnjRQ/qBYqBI2cKy6097T2AypJtX31JiYLExgQSWnk
-         FlJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jlWSSoi6sy6UHWMT+v1PaZmsAgCmFgO2q1+KR74XicI=;
-        b=hZON3dty0sa7YJ/C8iRRK3ytPdw5tEaujY5tqTa6AerYgL1WaKAJLhNsVHEtZ0SWv2
-         WGVX81V6gM/T9vU3gwERUIbZdodQ4EzXkNI4OK9xrZDfmGHaxKemxMxMk+jVPMOLapcO
-         B7peyuJom0MUNoewYYtO4JhcfmHqveomKMyq2x1EeZgb5pwJnUnaStBIIY9MAmdzhRLA
-         Xy0IkBG00sUEPfwmUeWX69fkOopzw5rH6MphDnelRS1hiNNpIFgcrnH44BEclYq48Lfh
-         jPvkIt5liQObQmnQ+PpmS0UsCMCW222DuW/J6fSguuekKuG2dklPKZ8Cl1YCNw6TENML
-         IXzw==
-X-Gm-Message-State: AOAM5324sqkZEHDrN3pV56DYN1LWmHXxq69+9pCfe4vOwTA+jG1vqYHW
-        3CcihggclKYtoCHeVS5P7e8YPw==
-X-Google-Smtp-Source: ABdhPJyQTtvfP4m42vBD0iJXhxNzS92c8e0qkUYdFgjeJAzyVz49/jbMuCy/LNbWI3efb+yjNskWQQ==
-X-Received: by 2002:a63:2ec7:: with SMTP id u190mr4731324pgu.18.1617221764095;
-        Wed, 31 Mar 2021 13:16:04 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 144sm3196471pfy.75.2021.03.31.13.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 13:16:03 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 20:15:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
- unless necessary
-Message-ID: <YGTYf9sWVIJqqswq@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <20210326021957.1424875-17-seanjc@google.com>
- <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
+        Wed, 31 Mar 2021 16:16:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1617221803; bh=+MVvLf7aCANyLDwQXl9EuUsXWmRo0TFhWjNfyW1qnEE=;
+        h=From:To:Subject:Date:Message-Id;
+        b=aBdOcToPoP8TxIHtizOAYVmPjWI0CClODiKDnyNUsxxqozyw30zf1SE3Y7FDVMEhs
+         Qb3wx7WBrSYBqDyeBbHqWNodUJ4dtYIjbODxT/YXtGywllkVpodi1+6WfQxYXbKU88
+         zuQ21yxudus1nih8L0ckzEI9GYGt2E+nYY3GmcmhCf6SvTNpfaG6GRVCJ3480zjktN
+         EuncrHSBfewN+cxowAnhUEVDUPYZbpzWgAVO25wqftC8NtessGpShXQ/kFax9MsNXf
+         uP3LoXAAY85nX3b9MrPVsimQmodU4OvYzzCDGMo3am3MpIKn716jxF6NKXokr4qLnU
+         4Qn2jeOLlSVTQ==
+Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztdg10061801.me.com (Postfix) with ESMTPSA id 8233E8C0876;
+        Wed, 31 Mar 2021 20:16:42 +0000 (UTC)
+From:   Alain Volmat <avolmat@me.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
+Subject: [PATCH v4 0/7] clk: st: embed clock outputs within drivers
+Date:   Wed, 31 Mar 2021 22:16:25 +0200
+Message-Id: <20210331201632.24530-1-avolmat@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-03-31=5F10:2021-03-30=5F02,2021-03-31=5F10,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=816 bulkscore=0 mlxscore=0
+ clxscore=1015 adultscore=0 spamscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103310140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Paolo Bonzini wrote:
-> On 26/03/21 03:19, Sean Christopherson wrote:
-> > +	/*
-> > +	 * Reset the lock used to prevent memslot updates between MMU notifier
-> > +	 * range_start and range_end.  At this point no more MMU notifiers will
-> > +	 * run, but the lock could still be held if KVM's notifier was removed
-> > +	 * between range_start and range_end.  No threads can be waiting on the
-> > +	 * lock as the last reference on KVM has been dropped.  If the lock is
-> > +	 * still held, freeing memslots will deadlock.
-> > +	 */
-> > +	init_rwsem(&kvm->mmu_notifier_slots_lock);
-> 
-> I was going to say that this is nasty, then I noticed that
-> mmu_notifier_unregister uses SRCU to ensure completion of concurrent calls
-> to the MMU notifier.  So I guess it's fine, but it's better to point it out:
-> 
-> 	/*
-> 	 * At this point no more MMU notifiers will run and pending
-> 	 * calls to range_start have completed, but the lock would
-> 	 * still be held and never released if the MMU notifier was
-> 	 * removed between range_start and range_end.  Since the last
-> 	 * reference to the struct kvm has been dropped, no threads can
-> 	 * be waiting on the lock, but we might still end up taking it
-> 	 * when freeing memslots in kvm_arch_destroy_vm.  Reset the lock
-> 	 * to avoid deadlocks.
-> 	 */
+Most of ST clock drivers used by STi platform are updated in
+order to introduce clock outputs informations within each drivers
+and thus allow to avoid having to rely on clock-output-names properties
+within DT clock nodes.
+For that purpose, drivers are updated to allow handling both modes
+(with or without clock-output-names).
+Once all DT will have been updated, the legacy mode could be removed
+from the drivers.
+This will also allow, once all STi DT will be corrected, to remove the
+of_clk_detect_critical API from clk core code since STi clock drivers
+are the only drivers using this API.
 
-An alternative would be to not take the lock in install_new_memslots() if
-kvm->users_count == 0.  It'd be weirder to document, and the conditional locking
-would still be quite ugly.  Not sure if that's better than blasting a lock
-during destruction?
+Alain Volmat (7):
+  clk: st: clkgen-pll: remove unused variable of struct clkgen_pll
+  clk: st: flexgen: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: flexgen: add new introduced compatible
+  clk: st: clkgen-pll: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-pll: add new introduced compatible
+  clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
+
+ .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
+ .../bindings/clock/st/st,flexgen.txt          |  10 +
+ .../bindings/clock/st/st,quadfs.txt           |   3 +
+ drivers/clk/st/clk-flexgen.c                  | 367 +++++++++++++++++-
+ drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
+ drivers/clk/st/clkgen-pll.c                   | 121 +++++-
+ 6 files changed, 576 insertions(+), 41 deletions(-)
+
+---
+v4: - add an additional CLK_IS_CRITICAL within flexgen driver
+v3: - removal some useless CLK_IS_CRITICAL and add some comments
+    - only keep clk drivers/binding patches within the serie
+
+-- 
+2.17.1
+
