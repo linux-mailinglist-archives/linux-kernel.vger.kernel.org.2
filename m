@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D697334FDB3
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA0734FDB1
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235048AbhCaKAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44030 "EHLO
+        id S234826AbhCaKA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234991AbhCaJ7v (ORCPT
+        with ESMTP id S234951AbhCaJ7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:59:51 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF9EC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:59:50 -0700 (PDT)
+        Wed, 31 Mar 2021 05:59:49 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55501C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:59:48 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ada2:b4da:6568:5ad5])
-        by andre.telenet-ops.be with bizsmtp
-        id mxzd240055W9KJv01xzdoY; Wed, 31 Mar 2021 11:59:49 +0200
+        by baptiste.telenet-ops.be with bizsmtp
+        id mxzd240015W9KJv01xzdKe; Wed, 31 Mar 2021 11:59:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lRXdQ-00BseR-AW; Wed, 31 Mar 2021 11:59:36 +0200
+        id 1lRXdQ-00BseR-73; Wed, 31 Mar 2021 11:59:36 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lRXBt-001bpk-Cn; Wed, 31 Mar 2021 11:31:09 +0200
+        id 1lRXBt-001bpo-DX; Wed, 31 Mar 2021 11:31:09 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -43,9 +43,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-embedded@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/3] tracing: Use pr_crit() instead of long fancy messages
-Date:   Wed, 31 Mar 2021 11:31:03 +0200
-Message-Id: <20210331093104.383705-3-geert+renesas@glider.be>
+Subject: [PATCH 3/3] lib/vsprintf: Use pr_crit() instead of long fancy messages
+Date:   Wed, 31 Mar 2021 11:31:04 +0200
+Message-Id: <20210331093104.383705-4-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210331093104.383705-1-geert+renesas@glider.be>
 References: <20210331093104.383705-1-geert+renesas@glider.be>
@@ -71,40 +71,40 @@ KERN_CRIT, and removing irrelevant text and graphics.
 
 This reduces kernel size by ca. 0.5 KiB.
 
-Fixes: 2184db46e425c2b8 ("tracing: Print nasty banner when trace_printk() is in use")
+Fixes: 5ead723a20e0447b ("lib/vsprintf: no_hash_pointers prints all addresses as unhashed")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- kernel/trace/trace.c | 17 +++--------------
+ lib/vsprintf.c | 17 +++--------------
  1 file changed, 3 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index eccb4e1187cc788e..b3a93aff01045923 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3175,20 +3175,9 @@ void trace_printk_init_buffers(void)
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 9b423359bb6433d3..0293f1b89064b287 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2193,20 +2193,9 @@ static int __init no_hash_pointers_enable(char *str)
  
- 	/* trace_printk() is for debug use only. Don't use it in production. */
+ 	no_hash_pointers = true;
  
--	pr_warn("\n");
 -	pr_warn("**********************************************************\n");
 -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
 -	pr_warn("**                                                      **\n");
--	pr_warn("** trace_printk() being used. Allocating extra memory.  **\n");
--	pr_warn("**                                                      **\n");
--	pr_warn("** This means that this is a DEBUG kernel and it is     **\n");
--	pr_warn("** unsafe for production use.                           **\n");
+-	pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+-	pr_warn("** via the console, logs, and other interfaces. This    **\n");
+-	pr_warn("** might reduce the security of your system.            **\n");
 -	pr_warn("**                                                      **\n");
 -	pr_warn("** If you see this message and you are not debugging    **\n");
--	pr_warn("** the kernel, report this immediately to your vendor!  **\n");
+-	pr_warn("** the kernel, report this immediately to your system   **\n");
+-	pr_warn("** administrator!                                       **\n");
 -	pr_warn("**                                                      **\n");
 -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
 -	pr_warn("**********************************************************\n");
-+	pr_crit("trace_printk() being used. Allocating extra memory.\n");
-+	pr_crit("This means that this is a DEBUG kernel and it is\n");
-+	pr_crit("unsafe for production use.\n");
- 
- 	/* Expand the buffers to set size */
- 	tracing_update_buffers();
+-
++	pr_crit("This system shows unhashed kernel memory addresses\n");
++	pr_crit("via the console, logs, and other interfaces. This\n");
++	pr_crit("might reduce the security of your system.\n");
+ 	return 0;
+ }
+ early_param("no_hash_pointers", no_hash_pointers_enable);
 -- 
 2.25.1
 
