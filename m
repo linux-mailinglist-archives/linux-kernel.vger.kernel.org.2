@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9866B350713
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33A7350717
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhCaS77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        id S235362AbhCaTCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235335AbhCaS7j (ORCPT
+        with ESMTP id S234446AbhCaTCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:59:39 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFFCC061574;
-        Wed, 31 Mar 2021 11:59:39 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id o66so22245166ybg.10;
-        Wed, 31 Mar 2021 11:59:39 -0700 (PDT)
+        Wed, 31 Mar 2021 15:02:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C216DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:02:11 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i26so30566952lfl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HNKRmMDJ0kvnDvoOj/CCsz+qwaOi3OAp0sSF6SSBBwE=;
-        b=V5HyIvcVQ+pi/bismrOytiQLYnDnSYyZcziTYNyKpUEURcwxXnEHcrgr+gJmFYJkB8
-         OmXc9M6H6Tdhpx7gat1OHCT/WwSoOxKwJd04Vc8jWgmyhblht3Vel946c3wITL/oRRTM
-         yiN/G6a4Zwj5iOYK4lqxj1zEaCSqAnz8IHCtcdXukIGJ9pNIGXIMrgQKZCV+ePmXA8oc
-         vTbIEp7ComL+U5kPaVVqk6zwwVze1fae35jZ30el/8XQRRfni71n7H30pBgCYd4cRrrb
-         q1a34kseSKavh9oObpnIubjay1t8raNBAxIzBhCScQcwMs3dRA+UARDHlNev28u2htWL
-         nrFg==
+        bh=H+VaQoy9nNIAoWhp78xbuEiZirssLKL+15uXIJ5gRdQ=;
+        b=S1BJ+dNRSdNsgQfwQbuOfmegd+KLeQT7nl+NUCAQ5roNM82bxXDXm77u1F2uUEoSY+
+         uX32LEzVrX6MSWvaY5vNz+6rQJfyyWVg0KME7LUMsK3JYVoJD4IaMo2pOTQabda1zIiM
+         DWwAk2DLJKH2SwckLZF0e/h3M1p6a3H7e59E4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HNKRmMDJ0kvnDvoOj/CCsz+qwaOi3OAp0sSF6SSBBwE=;
-        b=qLrHpR2VqeMBx6qj/yfsuhV9tBnP9ujmZENHh7M5AdtAnPtxL/C+B+jJhFfi4cK4Wh
-         OESuSh/L6y+R3KnCgMf2aXgCMC9auqTOmnmYqFMb9QLjLsMcj6bDUhvcwIZNc6kMrX+8
-         C/Edmrpw7mzwvItAfGIjeMpCOCTvPvBDnioLR8tX1v2udnys3iTjz7Pe6pnyNVhT5MUL
-         WXZEx9tozGaCLB7iUkjemsbo65SckgJhCh3zFpS4yBUu/qpY4gX6g2nWmlwAxaDpITHw
-         r2i1M7z9JYlTVtRnlhacic1QjlMnM+22TBv80H5R0FXENdKvL4Qb0XZpndE2HMFHBDlm
-         TogQ==
-X-Gm-Message-State: AOAM533lmwzTYFkmhaHZ0+h6D70k95fVDOoMl+ixNiYyyXcd+McNgf4w
-        zyZgtHFywRaqtsAzPRUsZZHLent3qMVFiV6PQrYDzdT2yZ8=
-X-Google-Smtp-Source: ABdhPJxgwGlhRV9Tc2fFDhdbm4lE+5eb8GppQ4sb9FTdDyhCVNVn3hSGpMaXpJaUzD7eo0hpipcclhC+xkRd3u9uEsc=
-X-Received: by 2002:a25:5b55:: with SMTP id p82mr6222226ybb.510.1617217178546;
- Wed, 31 Mar 2021 11:59:38 -0700 (PDT)
+        bh=H+VaQoy9nNIAoWhp78xbuEiZirssLKL+15uXIJ5gRdQ=;
+        b=hH6qzRh82KET83CNaVjNWyEBvDoDU5t559rEQ7HS8qCeFYDDxzn/t//avomIXQ9m8q
+         FM2wdtK98HweaxX5wnbwvfOPtZJYnnlfo+uzYN512n3BPkndLo6EexZVESTsEudGldEb
+         UJ5BeiGTj7UEfH/hAyMFoSRgSW1/M3mHgBEsF7qTVMW2sck4K+xb7A+jvxN3VUyNcNq2
+         KDhPKqfTZfeOJNa8OBDG3ao+BkJi6uCAZ8BCNSWBnr4njIIGl2Wp7Gfx/ydP65sg36kN
+         f3O+4J3mqm1F4mE/QbwQM/9CbI2XDuY4qp7QXyu9HjorgPZhY1T4b85hI9JUbEbhVAVc
+         KD7g==
+X-Gm-Message-State: AOAM5303hqPboHl2fQeWswbyl+h4rPYAlpRoIo4uRumZHW4GB2/29HJy
+        8V6ixy+nRLDjCeCXcfcSSki7qEwSEoNooA==
+X-Google-Smtp-Source: ABdhPJy6ZY0+2ePqLe1xQliQ012yc1tJTr1Ak9dyl3wbEgHBDln9p4XVax13IC8NpaamlNy+OIpjiQ==
+X-Received: by 2002:a05:6512:ba0:: with SMTP id b32mr3084243lfv.127.1617217329994;
+        Wed, 31 Mar 2021 12:02:09 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id o24sm308096lfg.64.2021.03.31.12.02.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 12:02:09 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id o126so30713211lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:02:08 -0700 (PDT)
+X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr2948842lfv.421.1617217328537;
+ Wed, 31 Mar 2021 12:02:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210328161055.257504-1-pctammela@mojatatu.com>
- <20210328161055.257504-3-pctammela@mojatatu.com> <BCF68ADA-5114-4E61-87DE-D5E5C946BC6F@fb.com>
-In-Reply-To: <BCF68ADA-5114-4E61-87DE-D5E5C946BC6F@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 31 Mar 2021 11:59:27 -0700
-Message-ID: <CAEf4BzYWoczwZwG1qKhZc8jEfr4EQAwY76AaD_LuJsM1ohVJkQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add '_wait()' and '_nowait()' macros for 'bpf_ring_buffer__poll()'
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Pedro Tammela <pctammela@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20210331092711.2b23fcff@gandalf.local.home> <CAHk-=wjt9b7kxQ2J=aDNKbR1QBMB3Hiqb_hYcZbKsxGRSEb+gQ@mail.gmail.com>
+ <20210331145145.0e3579fa@gandalf.local.home>
+In-Reply-To: <20210331145145.0e3579fa@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 31 Mar 2021 12:01:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgWB+VQJACE6nKLdEbwrart1WvcuzQkmBncsp0kmUT2EQ@mail.gmail.com>
+Message-ID: <CAHk-=wgWB+VQJACE6nKLdEbwrart1WvcuzQkmBncsp0kmUT2EQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ftrace: Check if pages were allocated before calling free_pages()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 9:28 AM Song Liu <songliubraving@fb.com> wrote:
+On Wed, Mar 31, 2021 at 11:51 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
->
->
-> > On Mar 28, 2021, at 9:10 AM, Pedro Tammela <pctammela@gmail.com> wrote:
-> >
-> > 'bpf_ring_buffer__poll()' abstracts the polling method, so abstract the
-> > constants that make the implementation don't wait or wait indefinetly
-> > for data.
-> >
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > ---
-> > tools/lib/bpf/libbpf.h                                 | 3 +++
-> > tools/testing/selftests/bpf/benchs/bench_ringbufs.c    | 2 +-
-> > tools/testing/selftests/bpf/prog_tests/ringbuf.c       | 6 +++---
-> > tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c | 4 ++--
-> > 4 files changed, 9 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index f500621d28e5..3817d84f91c6 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -540,6 +540,9 @@ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
-> > LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> > LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
-> >
-> > +#define ring_buffer__poll_wait(rb) ring_buffer__poll(rb, -1)
-> > +#define ring_buffer__poll_nowait(rb) ring_buffer__poll(rb, 0)
->
-> I think we don't need ring_buffer__poll_wait() as ring_buffer__poll() already
-> means "wait for timeout_ms".
->
-> Actually, I think ring_buffer__poll() is enough. ring_buffer__poll_nowait()
-> is not that useful either.
->
+> Your fls() trick might work too (have to gawk at it more). And I should fix
+> the comments. But any work on that would be for the next merge window, and
+> doesn't affect that this patch fixes a possible issue.
 
-I agree. I think adding a comment to the API itself might be useful
-specifying 0 and -1 as somewhat special cases.
+See my second email. It doesn't even fix the actual issues.
 
-> Thanks,
-> Song
->
+           Linus
