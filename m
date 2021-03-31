@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2573D34F691
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C8034F695
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhCaCWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 22:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S233202AbhCaCXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhCaCWB (ORCPT
+        with ESMTP id S233151AbhCaCX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:22:01 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF59EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:22:00 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so456790pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:22:00 -0700 (PDT)
+        Tue, 30 Mar 2021 22:23:28 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1D8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id v10so13064258pgs.12
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EzGPZze2rxZ5ckak4efZEC8hTHEU66acZEHiJwumMu8=;
-        b=q0WYGltBETSjrz66ziaGgKL0wMUSu6IL7mmgOt3LEuyY0H9q78WSOHIhgxph+WjrWd
-         c8S1y/lDaNtxbDxNGyqNd9g8T0f3OVFm5+jOnoiU6ugIJzJ44PlDYAdPs32cZOgbsCOV
-         kMA6uk3iy0AeWx3qU3kqbmDk92ci6VSCm6nWz/IvToINxPLoe8vx8/Gs7qxXcJ1qRuUI
-         6RrU3q6QKmrFndx1syyehDJ9+UWCjYvRp64+eLoENG1qKNRNmMU2HuCUIqEIF7x3JNCs
-         p9H8CAnf17PyJA/pRKHR0wqxCbFhh6kWMW6KdCWGFC/LiQjPVkjmimrzgiHB3dfFa/aK
-         KPEA==
+        bh=Su8WygcebzFTKKCHgifUWkq3uQwHLbGcTbD/6QzhQFA=;
+        b=Y9JiokHr5v35wkiv4jph4u8VPmOxHEinZssITTfyCCs0Lt/OnSRwzk1QcVs5oZn7Fl
+         ULuUJWk+qSvXs6lLC2DDi+zocNiwfQCkaJWZUftdpxg8NV8bfzwXfT8hQwLeIyYCSKmO
+         5eOCOh1MnfxJnn1arPbXS91+qAnoHqWYP8Zw1bIoLOPpObfLjtKQeeahkxOxfN5ZVKAz
+         4CgtcEpHLBWQal9HaxfS3pwVvF9BZXo6z2QZ3+XDxCcMI7oTwHfPOxJtG1UlLbU+/goU
+         jTgeY1TZtgLaBkKInJgwewhTwQxQviKsRuD60jZappGyBcwtBz3d1wUWr2TuLYJqAs20
+         aANA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EzGPZze2rxZ5ckak4efZEC8hTHEU66acZEHiJwumMu8=;
-        b=rIwB6wmc6RFYfwDaWNBIWUbd52OC1Ur9JYz123rPU/llzazN9BxqauBVUOs2IvYNv1
-         Ah4fBDN8g1hisYu6nLjfOhy1l8dfeQM8fi6pgiAITwz5x8KB5+ccM5qXpD5wwjmetQ3t
-         Kc/cGr/nL0BV9nIpEmD9/GATv5ww6XZ755NNwfh+q7mJGUlVGM+AeHx6mKyfu8RbtTKr
-         wQixj/Com0pIWm/Xj1nFH+cWTwYn4bzQKLG6RPKz5LnSVned1t6SCoMGXQtJtbtfCpdh
-         PPZ/+e96E0w8g3+OmhikQwIzqJOj87v6J6nA885K99rzU1SSCrsDI+OiyPn0jOySbK0u
-         ZphA==
-X-Gm-Message-State: AOAM53262bosFMKDzbvxbkAlIYJIxe21+2Q7d9icPNcNclmpLqfegbJn
-        zkpkBaYnHhT+XDZwaOo/KA50KA==
-X-Google-Smtp-Source: ABdhPJz/1xeV8h/a0ujmMXoNrk7xFaIvOPc4DH5SzBrfbA8/srLkePGygB3p3Y/nFWXIS0lqGL0mHw==
-X-Received: by 2002:a17:90b:4395:: with SMTP id in21mr1184209pjb.201.1617157320363;
-        Tue, 30 Mar 2021 19:22:00 -0700 (PDT)
+        bh=Su8WygcebzFTKKCHgifUWkq3uQwHLbGcTbD/6QzhQFA=;
+        b=R6usG9IScfiIAMSbR7oqQ73V5NIUKPzJNoqWbOr2RJO+rS7jHLnNXy9qzx9RQX1u17
+         6jCo8CkGsRkXpMpzFos97CUDqTtFUrW8MI8ky0/otpiXHNPy9owcdGu02vDjnf5UA0sJ
+         uKs9LdH1QALY26vbYRmlLM7Ao9avzLpKY/8kA8e72cmQgHkfFPWgyfUROScGNCLZw9wU
+         xjj5W3JndpoeM8nwsjqa1wKFTV+MTuUKeMl2RKlm9j7UO9DT6Cz8V1wCHhw7sDYCyUTp
+         AMNFEb+EpBahmYaDZ2pdg4rv1ul6ISIExvmHgrMhvOmSGaNPQHqXcz73vOer1j98iFis
+         wYFA==
+X-Gm-Message-State: AOAM5321cVvj9MbHxb6rOeCkNNScY40B1rIm7k4hSvIWlt35aASZKp9n
+        Ybjr1s2V1k/FMm76ke/6SuUsbAGu43wEuQ==
+X-Google-Smtp-Source: ABdhPJwuluuksfxHeEyLVs+MJP7emXaOY3QaGlTQNaveL0nFvokNM9H5dHQUv+3wpcbdUZItgxTNRw==
+X-Received: by 2002:a63:e5d:: with SMTP id 29mr1001171pgo.450.1617157407002;
+        Tue, 30 Mar 2021 19:23:27 -0700 (PDT)
 Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id t6sm365028pjs.26.2021.03.30.19.21.58
+        by smtp.gmail.com with ESMTPSA id y26sm295633pfq.187.2021.03.30.19.23.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 19:21:59 -0700 (PDT)
-Subject: Re: [PATCH 00/15] [Set 2] Rid W=1 warnings from ATA
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        ALWAYS copy <linux-ide@vger.kernel.org>,
-        Andre Hedrick <andre@linux-ide.org>,
-        Colten Edwards <pje120@cs.usask.ca>, Hat Inc <alan@redhat.com>,
-        Jan Harkes <jaharkes@cwi.nl>, Jaromir Koutek <miri@punknet.cz>,
-        "L.C. Chang" <lcchang@sis.com.tw>,
-        Lionel Bouton <Lionel.Bouton@inet6.fr>,
-        Mark Lord <mlord@pobox.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Torben Mathiasen <torben.mathiasen@hp.com>,
-        Vojtech Pavlik <vojtech@suse.cz>
-References: <20210318085150.3131936-1-lee.jones@linaro.org>
+        Tue, 30 Mar 2021 19:23:26 -0700 (PDT)
+Subject: Re: [PATCH] sata_mv: add IRQ checks
+To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        linux-ide@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <51436f00-27a1-e20b-c21b-0e817e0a7c86@omprussia.ru>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e4b9785d-ba31-e1ce-dbab-0fd31605e9d1@kernel.dk>
-Date:   Tue, 30 Mar 2021 20:21:58 -0600
+Message-ID: <885d2384-79df-f2d4-0adc-5b6be48e1943@kernel.dk>
+Date:   Tue, 30 Mar 2021 20:23:25 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210318085150.3131936-1-lee.jones@linaro.org>
+In-Reply-To: <51436f00-27a1-e20b-c21b-0e817e0a7c86@omprussia.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,12 +68,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 2:51 AM, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On 3/27/21 3:13 PM, Sergey Shtylyov wrote:
+> The function mv_platform_probe() neglects to check the results of the
+> calls to platform_get_irq() and irq_of_parse_and_map() and blithely
+> passes them to ata_host_activate() -- while the latter only checks
+> for IRQ0 (treating it as a polling mode indicattion) and passes the
+> negative values to devm_request_irq() causing it to fail as it takes
+> unsigned values for the IRQ #...
 > 
-> This is set 2 out of 2 sets required.
+> Add to mv_platform_probe() the proper IRQ checks to pass the positive IRQ
+> #s to ata_host_activate(), propagate upstream the negative error codes,
+> and override the IRQ0 with -EINVAL (as we don't want the polling mode).
 
 Applied, thanks.
 
