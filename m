@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73036350A34
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAEF350A3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhCaW1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhCaW1f (ORCPT
+        id S229968AbhCaW2x convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 18:28:53 -0400
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:37676 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232690AbhCaW2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:27:35 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1286C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:27:35 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x26so71679pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:27:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WpLA/8+oNDyuMS3mRjh7CIaKNZs3vVlk+cUQzEEw+V0=;
-        b=rSblG82rx/HZ2AiRUDoBIpQUlWfYIRlhssFYQBQP3Rf4waNr1zlMADu9Yc7DIMqk45
-         eZzdBd+QD0SBjyUPJbkAakPUoVu+xKWadHTrDjKulfRheuEXsn1PZuO08QRDCGGbDoNB
-         8d5hJghzXoYOC1CCSCgUC8g/C2wxb0v0yaZWai+R8LVzfzO+T8X8s118gAFgNRKJMWA3
-         zEMzpqAX6HQ4LYpAeHc6KVW3UVBdoYL3oUYwruEPAw4UWDpBzFvKPHCkBX95emRe1an8
-         5/DIHIXxdxhtbL+KR0mj0NaofnhgrrpUVFk2VsFdEy4p9x1OVkV7cR9EA3C2xXNSXIMY
-         nKKg==
+        Wed, 31 Mar 2021 18:28:39 -0400
+Received: by mail-ed1-f51.google.com with SMTP id x21so24086316eds.4;
+        Wed, 31 Mar 2021 15:28:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WpLA/8+oNDyuMS3mRjh7CIaKNZs3vVlk+cUQzEEw+V0=;
-        b=Vj6BoxphO/Si8AXGOcV4HfTmjzgXGJkGRVoRGSeKWB0KYdpXJqiunKDu52RsWTR8da
-         shg7E5zz0S5bkUJsH1QdE0JQoBe1qd3+XJpzB7sjad67BozuJTA7lmamwcm6I5gTvO7k
-         iVkd920rDerw3VehavRilOuJW+b4fkOWAtb4KU0GlZ9ieDeToPsP9xT6T+buiR91dILK
-         wkk/X9gs9EcVjuOCj7kp28PaHqs9mTARDIrENruid2N4liUhcNX/n2Nrf/+2CUtVHqwp
-         n4Ay/eNR+Cghx/GHs1U5xW92ifWoFejqq3IphylqI+u7zBsAdqdjOw44Q7X048aFKVuO
-         TYWA==
-X-Gm-Message-State: AOAM530PQV9Lv95fxdY77lRpSav6ULNDEzxcGGYMduFJtEVV/Ei7N9HC
-        3Z245pTNp36TiNbCXHQdLz2E8A==
-X-Google-Smtp-Source: ABdhPJz/NNSLb+31u+PTD2jSbK2k/r80/7e6SA3cFJYq2N69TCi83el/dCjQj51hSg3AXxUO0r5Dqw==
-X-Received: by 2002:a63:d43:: with SMTP id 3mr5029669pgn.5.1617229655137;
-        Wed, 31 Mar 2021 15:27:35 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id ds3sm3120454pjb.23.2021.03.31.15.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 15:27:34 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 22:27:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 12/13] KVM: x86/mmu: Fast invalidation for TDP MMU
-Message-ID: <YGT3UmSKVQFaY1Fd@google.com>
-References: <20210331210841.3996155-1-bgardon@google.com>
- <20210331210841.3996155-13-bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qO/MnGOAo2aKNNZIMFKn7K57e/u6m6J452MXAoHJnn0=;
+        b=VxVbnybetLd06dvzjpOW7fRjTvptvQ0C9ydDaWd+Tj7B6saGjfrdIOPAL9/cUfjT5q
+         o43IS5hAL25S7NS0tQiBZQcjlJScLBn435uQKeauFeCiH6kmTfOS2kFj1P3c08mrRtvW
+         FMR9yfTsp9fdvEuWh0i1jfVK3CJXkPqReU5w2sJ168yg9xN+PSACNqeMZl/23JtOtRMy
+         VONuR4SjF+wpHNyIl9GOk+9GSY5yydc4txbOF43bbnqcwnfIizBXyYq4etC40Thcx511
+         nJ12sjzTWOWMJ9p8cyrtts2xpCxhspdDJpBqhdx35CCjxDKOvSKyjej1ZjVx+QucSWu4
+         iPjg==
+X-Gm-Message-State: AOAM530u+z8xAahD2aaL/+bdJK+vwr7rs/MLqUeD6muOaQxINCP8BKOi
+        kWkZQz/F2VZeeChIDZ5Mj0NZ3HjZZgc98F6rZV0=
+X-Google-Smtp-Source: ABdhPJyCavZ4RcFBgd4wNh9CfsMfm1DD0nwSyeJZ5JeXCQN+/vQREPStBukJfuirUEvE5rOX7izGJkTaySudPgwlUhA=
+X-Received: by 2002:aa7:d917:: with SMTP id a23mr6502007edr.122.1617229718626;
+ Wed, 31 Mar 2021 15:28:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331210841.3996155-13-bgardon@google.com>
+References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+ <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+In-Reply-To: <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+From:   Len Brown <lenb@kernel.org>
+Date:   Wed, 31 Mar 2021 18:28:27 -0400
+Message-ID: <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Ben Gardon wrote:
-> Provide a real mechanism for fast invalidation by marking roots as
-> invalid so that their reference count will quickly fall to zero
-> and they will be torn down.
-> 
-> One negative side affect of this approach is that a vCPU thread will
-> likely drop the last reference to a root and be saddled with the work of
-> tearing down an entire paging structure. This issue will be resolved in
-> a later commit.
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
+On Wed, Mar 31, 2021 at 12:53 PM Andy Lutomirski <luto@amacapital.net> wrote:
 
-...
+> But this whole annotation thing will require serious compiler support.
+> We already have problems with compilers inlining functions and getting confused about attributes.
 
-> +/*
-> + * This function depends on running in the same MMU lock cirical section as
-> + * kvm_reload_remote_mmus. Since this is in the same critical section, no new
-> + * roots will be created between this function and the MMU reload signals
-> + * being sent.
+We added compiler annotation for user-level interrupt handlers.
+I'm not aware of it failing, or otherwise being confused.
 
-Eww.  That goes beyond just adding a lockdep assertion here.  I know you want to
-isolate the TDP MMU as much as possible, but this really feels like it should be
-open coded in kvm_mmu_zap_all_fast().  And assuming this lands after as_id is
-added to for_each_tdp_mmu_root(), it's probably easier to open code anyways, e.g.
-use list_for_each_entry() directly instead of bouncing through an iterator.
+Why would compiler support for fast-signals be any more "serious"?
 
-> + */
-> +void kvm_tdp_mmu_invalidate_roots(struct kvm *kvm)
-> +{
-> +	struct kvm_mmu_page *root;
-> +
-> +	for_each_tdp_mmu_root(kvm, root)
-> +		root->role.invalid = true;
-> +}
+> An API like:
+>
+> if (get_amx()) {
+>  use AMX;
+> } else {
+>  don’t;
+> }
+>
+> Avoids this problem. And making XCR0 dynamic, for all its faults, at least helps force a degree of discipline on user code.
+
+dynamic XCR0 breaks the installed base, I thought we had established that.
+
+We've also established that when running in a VMM, every update to
+XCR0 causes a VMEXIT.
+
+I thought the goal was to allow new programs to have fast signal handlers.
+By default, those fast signal handlers would have a stable state
+image, and would
+not inherit large architectural state on their stacks, and could thus
+have minimal overhead on all hardware.
