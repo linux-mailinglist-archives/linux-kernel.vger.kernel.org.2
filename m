@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B9C350300
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE363350305
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235452AbhCaPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236057AbhCaPLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:11:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B16960FD7;
-        Wed, 31 Mar 2021 15:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617203467;
-        bh=TbOY0j6r4pK8GJkDQSSBT0PG2JRtiy2xv/ZAq0i48Ss=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hdH3tDlHe+07OFGfYhY+WigjDnxq+BZOrIr3z28vnHUCREYXNBXiiyfLMq45Gz4KD
-         OXTKoAe6fIzf39nk/ohjZVjQ1itgFk8Qp7wtUj5WoeoEHQro70UWqsoWoJxe7re/0Y
-         6R7//wzNDqhwwgl4SytvcYDcdeHl4EdVx3OUPhvRV4uVo1SzXuOU4Knk7H0MNCXtA/
-         S/GGFBx9Rhaatf9dcX1UnKeh3p0W49ISNoSuBRj7iXZEP5EOYSi7/qExjdDebJCO7T
-         CsiZ2SSZkKJBL9FYKokkMNDMbDG5dbZalbZvz1oMcfS4EMnDrD86Djzl8IhGuG8QcH
-         qBZg0qd+DfMzQ==
-Received: by mail-lf1-f41.google.com with SMTP id i26so29574541lfl.1;
-        Wed, 31 Mar 2021 08:11:07 -0700 (PDT)
-X-Gm-Message-State: AOAM533ys/yWhw9g0+76CvOOgKo9WYHiKPHC1D0Rfj8y6wgA5pt7aEN9
-        9TjrXgH4VoISKIlztXVYU8wihmb6cfGQPB73VL8=
-X-Google-Smtp-Source: ABdhPJxs/JOsMnXbAvQoHRYQUiHPUCi/rrjdiOo3Uk29mwIYM4PTu1vWQ44R+zMcgoxUlGYwTQK+40BUJaSfUaObY3M=
-X-Received: by 2002:a05:6512:3709:: with SMTP id z9mr2415095lfr.557.1617203465685;
- Wed, 31 Mar 2021 08:11:05 -0700 (PDT)
+        id S236161AbhCaPOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236026AbhCaPOJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:14:09 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2889C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:14:08 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i26so29589296lfl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=szrnHwOMXqsq40OfwiBkaChIfbhw+vSJppKz2hMlXUk=;
+        b=SDbgjo2E4CWkK9exdps6SOvJMvHfGv2yAP96YouU6KKUJs0uYAvlW2MOIjXz9ShUlk
+         kzU0B9oTosK42j49NXJigkYjCQmI8WASV6J1LOaOp5A9tlJYPimbEWx6XMIrFC+7Lovg
+         c/NXlVPOlDlLwy9C/jk2/MkLd2PLjO/RAn79RfvX9fp3m3zdnanvMWmuKKJGaZiKaf2V
+         pgAxx4N9VA89ubrjgloFzhPlPucyM/nVEu/gC8XijuABjOgnZ1R6rGNkFPpyJeiaVypE
+         WSY/C/u4Ze7sWhHWHznoPqspQz4O23NbUaK0BnDVviowKgaoev6aI/hvtgseE+FBhw5K
+         r67g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=szrnHwOMXqsq40OfwiBkaChIfbhw+vSJppKz2hMlXUk=;
+        b=rCkAEmBRb53TyO1va+2IvTOWCzJbwsN7Jswv949I/rDxi9AYzpDGCLakoiAMed2/vz
+         Aet1eNICOJ0M0pBfAf40D9oEZIl/cG4caBvCI5lpe2g5/je2sdxYGtquMkxuvLgqRmbM
+         KvmoDfYsrCOZsK4ulDuykkJlBzOwK9zP64FmKHA5GLgeIwqcgG42HKEC9ZjvatVAXI1m
+         +JOK9sIBtstsZYwVz/GNLY9DfNBUExeif1vaCgz2aNxwq1oKUS3ybzpNs15bsvtGS1BV
+         ItBqU/JhFsAu4QPRl4/9ytPtxPak/jsq2pPLqMvrHAo2319K2jnCElGqdDVlg6EjNwR+
+         I1/w==
+X-Gm-Message-State: AOAM53121b8XuxcMEt0ZLlNJ7P0wltIqo3GrJltzBqHFberIszmR/xaI
+        uu6JHugcwnNXhYvWgQHSvtHz5g==
+X-Google-Smtp-Source: ABdhPJx8wJimx8Bjx4vf436ecI3j1vwX+V9pniNN9LBrkbdu+/2+6Y39SPXzJGhsP6No69QnxUatzQ==
+X-Received: by 2002:a05:6512:2097:: with SMTP id t23mr2393277lfr.21.1617203647130;
+        Wed, 31 Mar 2021 08:14:07 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id s29sm266586ljo.136.2021.03.31.08.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 08:14:06 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Manu Gautam <mgautam@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 1/7] dt-bindings: phy: qcom,qmp-usb3-dp-phy: move usb3 compatibles back to qcom,qmp-phy.yaml
+Date:   Wed, 31 Mar 2021 18:13:59 +0300
+Message-Id: <20210331151405.3810133-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1616868399-82848-4-git-send-email-guoren@kernel.org>
- <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net> <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
- <YGNNCEAMSWbBU+hd@hirez.programming.kicks-ass.net> <20210330223514.GE1171117@lianli.shorne-pla.net>
- <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com> <20210331123107.GF1171117@lianli.shorne-pla.net>
-In-Reply-To: <20210331123107.GF1171117@lianli.shorne-pla.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 31 Mar 2021 23:10:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRZOFL_LECFcg6nEzNaDA_MR4dhxygFwm1_sDKY9CzBPA@mail.gmail.com>
-Message-ID: <CAJF2gTRZOFL_LECFcg6nEzNaDA_MR4dhxygFwm1_sDKY9CzBPA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stafford,
+The commit 724fabf5df13 ("dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy
+information") has support for DP part of USB3+DP combo PHYs. However
+this change is not backwards compatible, placing additional requirements
+onto qcom,sc7180-qmp-usb3-phy and qcom,sdm845-qmp-usb3-phy device nodes
+(to include separate DP part, etc). However the aforementioned nodes do
+not inclue DP part, they strictly follow the schema defined in the
+qcom,qmp-phy.yaml file. Move those compatibles, leaving
+qcom,qmp-usb3-dp-phy.yaml to describe only real "combo" USB3+DP device nodes.
 
-How do think add ARCH_USE_QUEUED_SPINLOCKS_XCHG32 in openrisc?
+Fixes: 724fabf5df13 ("dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy information")
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml         | 2 ++
+ Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-https://lore.kernel.org/linux-riscv/1617201040-83905-7-git-send-email-guoren@kernel.org/T/#u
-
-On Wed, Mar 31, 2021 at 8:31 PM Stafford Horne <shorne@gmail.com> wrote:
->
-> On Wed, Mar 31, 2021 at 09:23:27AM +0200, Arnd Bergmann wrote:
-> > On Wed, Mar 31, 2021 at 12:35 AM Stafford Horne <shorne@gmail.com> wrote:
-> > >
-> > > I just want to chime in here, there may be a better spot in the thread to
-> > > mention this but, for OpenRISC I did implement some generic 8/16-bit xchg code
-> > > which I have on my todo list somwhere to replace the other generic
-> > > implementations like that in mips.
-> > >
-> > >   arch/openrisc/include/asm/cmpxchg.h
-> > >
-> > > The idea would be that architectures just implement these methods:
-> > >
-> > >   long cmpxchg_u32(*ptr,old,new)
-> > >   long xchg_u32(*ptr,val)
-> > >
-> > > Then the rest of the generic header would implement cmpxchg.
-> >
-> > I like the idea of generalizing it a little further. I'd suggest staying a
-> > little closer to the existing naming here though, as we already have
-> > cmpxchg() for the type-agnostic version, and cmpxchg64() for the
-> > fixed-length 64-bit version.
->
-> OK.
->
-> > I think a nice interface between architecture-specific and architecture
-> > independent code would be to have architectures provide
-> > arch_cmpxchg32()/arch_xchg32() as the most basic version, as well
-> > as arch_cmpxchg8()/arch_cmpxchg16()/arch_xchg8()/arch_xchg16()
-> > if they have instructions for those.
->
-> Thanks for the name suggestions, it makes it easier for me.
->
-> > The common code can then build cmpxchg16()/xchg16() on top of
-> > either the 16-bit or the 32-bit primitives, and build the cmpxchg()/xchg()
-> > wrapper around those (or alternatively we can decide to have them
-> > only deal with fixed-32-bit and long/pointer sized atomics).
->
-> Yeah, that was the idea.
->
-> -Stafford
-
-
-
+diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+index 626447fee092..7808ec8bc712 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+@@ -25,11 +25,13 @@ properties:
+       - qcom,msm8998-qmp-pcie-phy
+       - qcom,msm8998-qmp-ufs-phy
+       - qcom,msm8998-qmp-usb3-phy
++      - qcom,sc7180-qmp-usb3-phy
+       - qcom,sc8180x-qmp-ufs-phy
+       - qcom,sc8180x-qmp-usb3-phy
+       - qcom,sdm845-qhp-pcie-phy
+       - qcom,sdm845-qmp-pcie-phy
+       - qcom,sdm845-qmp-ufs-phy
++      - qcom,sdm845-qmp-usb3-phy
+       - qcom,sdm845-qmp-usb3-uni-phy
+       - qcom,sm8150-qmp-ufs-phy
+       - qcom,sm8150-qmp-usb3-phy
+diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+index 33974ad10afe..62c0179d1765 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+@@ -14,9 +14,7 @@ properties:
+   compatible:
+     enum:
+       - qcom,sc7180-qmp-usb3-dp-phy
+-      - qcom,sc7180-qmp-usb3-phy
+       - qcom,sdm845-qmp-usb3-dp-phy
+-      - qcom,sdm845-qmp-usb3-phy
+   reg:
+     items:
+       - description: Address and length of PHY's USB serdes block.
 -- 
-Best Regards
- Guo Ren
+2.30.2
 
-ML: https://lore.kernel.org/linux-csky/
