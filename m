@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4CF3509F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BF13509F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhCaWLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:11:33 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21316 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhCaWLK (ORCPT
+        id S232455AbhCaWME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:12:04 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:45944 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCaWLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:11:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1617228663; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=OfuQO4ZWcJiSj1BIStNZMUEENOCZPqJM8o1U6/irGVS+9JiwGxM8LJ9JOkdvY9eRQIMFRh5O3cWM9B+9H8MRRIEL6MHdwZHdBC+4W1xbpzljm6quD9okVJJ+S9vmiFfuO0qQlYR8YSNeMxNgJWDNnBUHlvPv0gRis6KPEtwb2GU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1617228663; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=mIj2ubKyNk1AbgGfcv8nvb+y5MC92I8zGuwTQ28EZRA=; 
-        b=czqgYAOS9tHI55e5v5y02Ks0i2vNeDLdSAFOuxz/DvmHwCVZ6u2t+qDmxBlOjUu0DU1umN/sHeLLMKRvwKrkbnBc+we61/+v536ND6GXcTkpirl466OTQ+50tWitT4LVd2TMSz59SXMDew/7UztmVLUa5OBmUwUnOKf0wh7JIcE=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1617228663;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=mIj2ubKyNk1AbgGfcv8nvb+y5MC92I8zGuwTQ28EZRA=;
-        b=TAjeW+Sv34kA6vWwySaXztudfM/lBGGf0iTs74pf4CEPnddwCr77ktoJOEIigE7T
-        E1ZIOMc9v4n9kCidyEreCdqqOWwjSJg5yQFxKOv9PiitDisxYGekq4OzA4Bju01ho7a
-        b6CaV3Daq6iRfPflscKlIAc7r3HX9WvpzxfEG+Jg=
-Received: from localhost.localdomain (106.51.106.225 [106.51.106.225]) by mx.zohomail.com
-        with SMTPS id 1617228661119881.9075492888667; Wed, 31 Mar 2021 15:11:01 -0700 (PDT)
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: fix build warning in processor_idle.c
-Date:   Thu,  1 Apr 2021 03:40:25 +0530
-Message-Id: <20210331221025.31891-1-mail@anirudhrb.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 31 Mar 2021 18:11:43 -0400
+Received: by mail-ed1-f43.google.com with SMTP id bx7so24039986edb.12;
+        Wed, 31 Mar 2021 15:11:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y2axwWxTL8XPpHwUo4AVE1zruv6RF5CEAUfc387i7Es=;
+        b=MUI0Rz04kwGUZSu+DD2JrZWSaRabmNc/h+GGyp1XexmOj+wEsIcAdM8A67S+1imDCS
+         kiVK1AOWbMbd8SuUWhYz1SxwIqVKlQ/7ckQcYZhOMjIHuDX9bAjW+wxidKwnWAxLuJSB
+         NkBXnRflmSUurzuUbBj2KicF/RqRU/pTZbpiRwlVGMa3w3lLozyMjAZqlKmicxrlQkde
+         Pa4n8hU8XwbmDsspTSyLgTtg9xoDCF5jHjUGVWRydXprvtf78azBam8KHlPj9bdXfTB8
+         FKw1MI+VRr8mm1snJpYua2PtYd2R+SVdy/XCLCAnRD64425mZNlcvKmPJH/3rfHpdtWI
+         S97Q==
+X-Gm-Message-State: AOAM532OOaE/8sWvLyBAXmoDcxDfvNo7lwWCP4yBRrxE71GU33epAl6y
+        KzhsPMUOySEH8WxWbIQdPD8wTYZ42D2afpFRnug=
+X-Google-Smtp-Source: ABdhPJxF0AoPasiOPUQ+0kRTOZRzhmrm9mBUogAT7SW0kIY9/mhNKnb1B9vGVs2u4pcp4dvBgMyrOrOTNlzbCilvdZs=
+X-Received: by 2002:aa7:d917:: with SMTP id a23mr6430206edr.122.1617228702378;
+ Wed, 31 Mar 2021 15:11:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+ <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net> <CAOp6jLb6OwfaBcYsdRZ-A5FLpY+y7WNoBqwc+2oCP7-3Sy-ZHg@mail.gmail.com>
+In-Reply-To: <CAOp6jLb6OwfaBcYsdRZ-A5FLpY+y7WNoBqwc+2oCP7-3Sy-ZHg@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Wed, 31 Mar 2021 18:11:31 -0400
+Message-ID: <CAJvTdKkYPK2iqUPGMQZ63Qdgfy_JR5fpjQevcwJZ0Y+PHM80Cw@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     robert@ocallahan.org
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC shows the following warning during build:
+On Wed, Mar 31, 2021 at 5:42 PM Robert O'Callahan <robert@ocallahan.org> wrote:
+>
+> For the record, the benefits of dynamic XCR0 for rr recording
+> portability still apply. I guess it'd be useful for CRIU too. We would
+> also benefit from anything that incentivizes increased support for
+> CPUID faulting.
 
-drivers/acpi/processor_idle.c: In function ‘acpi_idle_play_dead’:
-drivers/acpi/processor_idle.c:542:15: warning: extra tokens at end
-of #ifdef directive
+As previously mentioned, today we don't have an architectural way to
+trap a user into the kernel on CPUID,
+even though we can do this for a VMM.
 
-Fix by replacing "ifdef" with "if".
+But spoofing CPUID isn't a solution to all problems.
+The feature really needs to be OFF to prevent users from using it,
+even if the supported mechanisms of discovering that feature say "NOT PRESENT".
 
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
----
- drivers/acpi/processor_idle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Today there are plenty of users who will opportunistically try everything
+in the cloud and choose the machine that allows them to do something
+that other machines will not -- even if it is not officially supported.
 
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index 19fb28a8005b..0925b1477230 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -539,7 +539,7 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
- 		} else
- 			return -ENODEV;
- 
--#ifdef defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
-+#if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
- 		/* If NMI wants to wake up CPU0, start CPU0. */
- 		if (wakeup_cpu0())
- 			start_cpu0();
--- 
-2.26.2
+If something is not enumerated, it really needs to also be turned off.
 
+cheers,
+--Len Brown, Intel Open Source Technology Center
