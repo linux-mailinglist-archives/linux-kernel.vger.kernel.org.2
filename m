@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2659E34F596
+	by mail.lfdr.de (Postfix) with ESMTP id 7667E34F597
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhCaAuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        id S232869AbhCaAuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhCaAts (ORCPT
+        with ESMTP id S232515AbhCaAtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:49:48 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86488C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l83so439063ybf.22
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:48 -0700 (PDT)
+        Tue, 30 Mar 2021 20:49:51 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E3EC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:50 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id b127so326632qkf.19
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=UCRZL7KtC6hAv8hxA1ExjdbtxqOT/SBsALkv1r7beao=;
-        b=uHMg0cFT+fEKMEWK8V5K3WzXglXjI7x+kKFOaGNsIsv6Vfn2zin+T7x/d2lJP90lXT
-         Bd1LehSBMHPCt+dMCElqKJ435JiFDEPP/E1af1DpZu+HvHCNlqiu/IapnYDDR0EA2TwT
-         sJr6BMcANM2brzI7xSGl54UIt91ICOe4/F77wckB7rBaClqSgedxGaIQELnAa1dB+tjj
-         55AViueUvUML00898EUsCCegs92b1Z+UjyBpXAOY7gA9zmxB48mrQLhBpeVUrgebJROs
-         PVxtivTaY/poRr1idiyOd7KpyqVI2wMRPKjz1plIXwAZoO4ys6OKSG7sJXs0NMq91n+A
-         pQ5Q==
+        bh=0pQ01a6Xvm310A3j8LcU50M1ntMFUct1qAGwe2for/I=;
+        b=M9zMkM0gUqc7cw+RxOeX9G/PPlsC6SW+jLTCgvz0C/xa3gwqK4tgcFoEzmM3OCdLzr
+         N2yPBFu/OH3lDcvhkvTonWi9HpbQshUZ8aUT5DqALEfUAoltXzstN7MDFv5FZmY54PQo
+         PImKhz1Y2Tg1FhNQKkn6zSzJl3mU4duB7MiiVpe+w+EHXFBnsEl9khGH61hqa9Cj+L1p
+         xmFu0rcuNN18H7VVhKb3/U45OPqOWoYJeaNYI/cWh+CSMpxn19fsUAR4rVS6GofJ+e2L
+         6xD13vOZxEHX9yng8jrzP/FNmRThNY/mVtW2LOW/VyJipkZyKYfg4HCJ4H/sHogLOmiy
+         yVLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=UCRZL7KtC6hAv8hxA1ExjdbtxqOT/SBsALkv1r7beao=;
-        b=av02LCwYWVi0Z8OouwT5ycetdEAUFKy8nU3NjE4jfyfekqGz+pUL5yrHrGexyrfCX0
-         C7uRkfgMk8UUHxyTkxxZP4whUHglbgVwobXd7twwwExRUNE0Lt8qaxFu3JhK8kGrH2oy
-         Spl8zj4fy6XXcysTyHdQPTLym59dSCrLGBFuPcB8qmWvmOJ2UXuZvWXE/p/M5JTHYvMl
-         JhvCVy/1+q25wkwQfZyffvi8c7pzYlNA2ged1LJxrcahFNwBDL48YW9J2sjmqaBnOMTO
-         mhWigKW1SgKCOgILRwkgiv21AQFwMVhALOrWPcDUTH5EwzAbCXpX3gaBIFPIPI7g9GiV
-         5VMQ==
-X-Gm-Message-State: AOAM532MGpIaTAYVtV5IFNQhsqWd8oHJ4qmOJtfJe1TRzUAIKM6cbcW8
-        KgQV2EBbeYu0boKo8voAL6ZD+cdL7Io=
-X-Google-Smtp-Source: ABdhPJzeaxpSyGdpS0Vl6Xq9PRSLWwR78jRGbWUD35V9+T1hq4V+hfns3QOfQm1DNxUu3k8upa50kpXs6ps=
+        bh=0pQ01a6Xvm310A3j8LcU50M1ntMFUct1qAGwe2for/I=;
+        b=bVRJm3I8gT6el8fqlNq55kmQMSa/FRVXlmPS9Y+bAxwbbA54KEcV4xPZyI8uZ2cw2F
+         oD53ulfRH44Zdcpsgqqm4WUO7bs8W383SLP31Rrv3TS142Elu7uTGfjjcOLO8e/9+rN7
+         kKhHV59sekJOZo0lEQzMXZ2kwKOPM0njlaPoyFj98upHB+va7RP771q+wmV4ragJR+o0
+         789JoPjdpNQbkJtxAAcIUj+e2yMn7+7VB9U7ycQJavPVvfAlhdBDABLxrMmEjwLoaQZX
+         q8cayfUIJ0JceAz4vnev0hJI3kjT0TVb8EsQXjG2xweRJWZ47apUBYiVPU0h6Tq7N3BM
+         6PBg==
+X-Gm-Message-State: AOAM532E4WMPCAMpoOMXjHfYuE3dCdrfQ2NoShuO/+M15rTg/dKgtRJC
+        ngj2yE1kyGJE87Xh5KxBuu79tnYNArc=
+X-Google-Smtp-Source: ABdhPJzrR2EtxZGC1kDYZcmX9KPmGp0qbO2gZiVLBiZ0lyQfYYpAA0wJAgSyOkt4jnihlIT9dxUd0jWr8Tc=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c6b:5d63:9b3b:4a77])
- (user=seanjc job=sendgmr) by 2002:a05:6902:70e:: with SMTP id
- k14mr1263170ybt.286.1617151787807; Tue, 30 Mar 2021 17:49:47 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:8c4:: with SMTP id
+ da4mr644183qvb.17.1617151789751; Tue, 30 Mar 2021 17:49:49 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 30 Mar 2021 17:49:41 -0700
+Date:   Tue, 30 Mar 2021 17:49:42 -0700
 In-Reply-To: <20210331004942.2444916-1-seanjc@google.com>
-Message-Id: <20210331004942.2444916-2-seanjc@google.com>
+Message-Id: <20210331004942.2444916-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210331004942.2444916-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 1/2] KVM: x86/mmu: Remove spurious clearing of dirty bit from
- TDP MMU SPTE
+Subject: [PATCH 2/2] KVM: x86/mmu: Simplify code for aging SPTEs in TDP MMU
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,33 +66,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't clear the dirty bit when aging a TDP MMU SPTE (in response to a MMU
-notifier event).  Prematurely clearing the dirty bit could cause spurious
-PML updates if aging a page happened to coincide with dirty logging.
+Use a basic NOT+AND sequence to clear the Accessed bit in TDP MMU SPTEs,
+as opposed to the fancy ffs()+clear_bit() logic that was copied from the
+legacy MMU.  The legacy MMU uses clear_bit() because it is operating on
+the SPTE itself, i.e. clearing needs to be atomic.  The TDP MMU operates
+on a local variable that it later writes to the SPTE, and so doesn't need
+to be atomic or even resident in memory.
 
-Note, tdp_mmu_set_spte_no_acc_track() flows into __handle_changed_spte(),
-so the host PFN will be marked dirty, i.e. there is no potential for data
-corruption.
+Opportunistically drop unnecessary initialization of new_spte, it's
+guaranteed to be written before being accessed.
 
-Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+Using NOT+AND instead of ffs()+clear_bit() reduces the sequence from:
+
+   0x0000000000058be6 <+134>:	test   %rax,%rax
+   0x0000000000058be9 <+137>:	je     0x58bf4 <age_gfn_range+148>
+   0x0000000000058beb <+139>:	test   %rax,%rdi
+   0x0000000000058bee <+142>:	je     0x58cdc <age_gfn_range+380>
+   0x0000000000058bf4 <+148>:	mov    %rdi,0x8(%rsp)
+   0x0000000000058bf9 <+153>:	mov    $0xffffffff,%edx
+   0x0000000000058bfe <+158>:	bsf    %eax,%edx
+   0x0000000000058c01 <+161>:	movslq %edx,%rdx
+   0x0000000000058c04 <+164>:	lock btr %rdx,0x8(%rsp)
+   0x0000000000058c0b <+171>:	mov    0x8(%rsp),%r15
+
+to:
+
+   0x0000000000058bdd <+125>:	test   %rax,%rax
+   0x0000000000058be0 <+128>:	je     0x58beb <age_gfn_range+139>
+   0x0000000000058be2 <+130>:	test   %rax,%r8
+   0x0000000000058be5 <+133>:	je     0x58cc0 <age_gfn_range+352>
+   0x0000000000058beb <+139>:	not    %rax
+   0x0000000000058bee <+142>:	and    %r8,%rax
+   0x0000000000058bf1 <+145>:	mov    %rax,%r15
+
+thus eliminating several memory accesses, including a locked access.
+
 Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index f0c99fa04ef2..724088bea4b0 100644
+index 724088bea4b0..161b77925a19 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -978,7 +978,6 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+@@ -951,7 +951,7 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+ {
+ 	struct tdp_iter iter;
+ 	int young = 0;
+-	u64 new_spte = 0;
++	u64 new_spte;
  
- 			new_spte = mark_spte_for_access_track(new_spte);
- 		}
--		new_spte &= ~shadow_dirty_mask;
+ 	rcu_read_lock();
  
- 		tdp_mmu_set_spte_no_acc_track(kvm, &iter, new_spte);
- 		young = 1;
+@@ -966,8 +966,7 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		new_spte = iter.old_spte;
+ 
+ 		if (spte_ad_enabled(new_spte)) {
+-			clear_bit((ffs(shadow_accessed_mask) - 1),
+-				  (unsigned long *)&new_spte);
++			new_spte &= ~shadow_accessed_mask;
+ 		} else {
+ 			/*
+ 			 * Capture the dirty status of the page, so that it doesn't get
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
