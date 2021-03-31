@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B81350A27
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C12D350A2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhCaWU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S232985AbhCaWWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCaWUe (ORCPT
+        with ESMTP id S232686AbhCaWV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:20:34 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899ABC061574;
-        Wed, 31 Mar 2021 15:20:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9gk455jmz9sVt;
-        Thu,  1 Apr 2021 09:20:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617229230;
-        bh=fuNgT7aS+dH8rWhmk4dHk2bAcDwGs9Dhi1zxbtfYiTY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=a6hxe7DGfFvO4ohAbbjfEaIzCbVBxm9Ue5YSfzmrKUNv6y+sSnJ71/f6VLNVCjbcj
-         XEcljaH65kYbmhTcOBAXsm5L6MmxJaNobyGNHv4tO1r+X0vE8X8Ta9/iR5fu9rYdPA
-         54cvsXdlQ81wsoWhhLiFaGGzDaR0NcV1nkOVeajdZVYYvpOlNhDCoeEHt/cslzer5G
-         1eijrdcc0mm2coUP+A3VJPr3DhYcR5Gm+Wt1Ir7kBSOTV+o9KSjXIX1wxzHtaixY2q
-         f+h9pKGSWY/ZLKAhdGypnoKbAM+0r4zbwgt9WCD7xkYZj7v9/DByFFq6TKGKC81Ckg
-         ir3lxuNF4wt5Q==
-Date:   Thu, 1 Apr 2021 09:20:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: linux-next: manual merge of the mediatek tree with the imx-mxs tree
-Message-ID: <20210401092027.1e4c8b05@canb.auug.org.au>
+        Wed, 31 Mar 2021 18:21:58 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B6CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:21:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id w8so17851pjf.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TNLJMnrWivn3GFXa2+TzAqtoU0ub+N8TkRxfn0l4Flg=;
+        b=gQ9/NBVl4giS83ythLJ0Bf81bKdwuuKhPnKsxUuqiWwWf/EMxGPzvbYRbSyqotN4vm
+         22EKYNZKYhFvYdFjNrdwZD1oXdiJNoVE5omarseI/GrnGjOB5BDydz49ERLb9MK7dKlQ
+         By0u36NM/69ysYdyMdruTfzpIIE7UpbEMJtt7lzi+QwhAFRgyRU9s9CkGN8ph6GDFzx3
+         SlTfRLDjSw0ce8sRcyWWtdKK5kWDL1z4pIK78F5XOkVRJHNHGWulas6YmOsXa4jh+JLQ
+         0/sZic99pWXb3wv/EXvA27ef5u8Dt+Ye2h2mcpxzWjrzfI9/X2Tu6eccjmANnNLF/94e
+         kEYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TNLJMnrWivn3GFXa2+TzAqtoU0ub+N8TkRxfn0l4Flg=;
+        b=jFCcyGLWpCKifYywyUK1gUzzBquVso9MQdQLD3JJWpI55qdCmCLBo7QM8VEbULdR+W
+         eUHWgC9zMGlDbMZSRlDARUpxklq2xrNijWtWFupKjXRGM2NesNvrJAq/+Z1ArjMDyM0D
+         MbBsK78O0Ys/b4t3TYfYGEBjGZI+U9emNlwhCgQx/Mqm7b0OJrmp8IyZVaeQZCRpxqeI
+         Boc/RgzdJZWDKF/l9odLN1eByXmbFwZhr6CqWB3tqMabyPl2dqcoP9cnRSXmzOUKk9jB
+         jWErCTiNgigKjw4c8pIop4yajQOewDP5iUS6KH7Nbwin9PoSpPOY/MGs5Ytpsa187fOL
+         9IaQ==
+X-Gm-Message-State: AOAM5300ssGB48RkPR6qoTmf3gfR4rgj1hmGeM+uTCt57OkQdc+1xts+
+        4cEJ3L9pr8ajYnTq21oLYTlXG3VdXfiHNw==
+X-Google-Smtp-Source: ABdhPJw11PZCJPfSeDHa53TUna9HFcJfFsVjGOJ7EGP/H4fwhQeTvZqLMv5AwD/nK53ex5x3+kL+Yw==
+X-Received: by 2002:a17:90b:3553:: with SMTP id lt19mr5528995pjb.222.1617229317806;
+        Wed, 31 Mar 2021 15:21:57 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 138sm3260059pfv.192.2021.03.31.15.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 15:21:57 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 22:21:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 07/13] KVM: x86/mmu: Make TDP MMU root refcount atomic
+Message-ID: <YGT2AV6lhDG5yLkW@google.com>
+References: <20210331210841.3996155-1-bgardon@google.com>
+ <20210331210841.3996155-8-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A_Z4F_MLvA02L7lFY4gbo7T";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331210841.3996155-8-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A_Z4F_MLvA02L7lFY4gbo7T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 31, 2021, Ben Gardon wrote:
+> In order to parallelize more operations for the TDP MMU, make the
+> refcount on TDP MMU roots atomic, so that a future patch can allow
+> multiple threads to take a reference on the root concurrently, while
+> holding the MMU lock in read mode.
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
 
-Hi all,
+...
 
-Today's linux-next merge of the mediatek tree got a conflict in:
+> @@ -88,10 +88,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>  		next_root = list_first_entry(&kvm->arch.tdp_mmu_roots,
+>  					     typeof(*next_root), link);
+>  
+> +	while (!list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link) &&
+> +	       !kvm_tdp_mmu_get_root(kvm, next_root))
+> +		next_root = list_next_entry(next_root, link);
+> +
+>  	if (list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link))
+>  		next_root = NULL;
+> -	else
+> -		kvm_tdp_mmu_get_root(kvm, next_root);
+>  
+>  	if (prev_root)
+>  		kvm_tdp_mmu_put_root(kvm, prev_root);
+> @@ -158,14 +160,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+>  
+>  	/* Check for an existing root before allocating a new one. */
+>  	for_each_tdp_mmu_root(kvm, root) {
+> -		if (root->role.word == role.word) {
+> -			kvm_tdp_mmu_get_root(kvm, root);
+> +		if (root->role.word == role.word &&
+> +		    kvm_tdp_mmu_get_root(kvm, root))
 
-  arch/arm64/configs/defconfig
-
-between commit:
-
-  94c586e5941a ("arm64: configs: enable FlexTimer alarm timer")
-
-from the imx-mxs tree and commit:
-
-  fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from u=
-sb")
-
-from the mediatek tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/configs/defconfig
-index ec94b0438ab2,f2dc42c9b932..000000000000
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@@ -996,7 -998,7 +1006,8 @@@ CONFIG_OWL_PM_DOMAINS=3D
-  CONFIG_RASPBERRYPI_POWER=3Dy
-  CONFIG_FSL_DPAA=3Dy
-  CONFIG_FSL_MC_DPIO=3Dy
- +CONFIG_FSL_RCPM=3Dy
-+ CONFIG_MTK_PMIC_WRAP=3Dy
-  CONFIG_QCOM_AOSS_QMP=3Dy
-  CONFIG_QCOM_COMMAND_DB=3Dy
-  CONFIG_QCOM_GENI_SE=3Dy
-
---Sig_/A_Z4F_MLvA02L7lFY4gbo7T
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBk9asACgkQAVBC80lX
-0GzhsQf/TLnYB/2EyzOfDsB+FGBzqUVDdU/aZyMKgfg/ck86PrpFzSKVbpCd0NTS
-c3oLa8Ry9n6iytpuqzHJuPdyK0pg4wgyhRe16PaX4UdxNbD1VZ/EBtie2xIuyDur
-9LAKQ+qXDLwBfUcStMs/OgDbWaPrLXlzodH2hn31pet6bqwe+hlPZacErwu7meE9
-nQBbl1+MSiewbAJ8T8nfolnCNu8ACnM8vfSJw+3j6iff1jopp7qVYljGSeMmgk6b
-lMJwyjXvTbzUF2y8uS0ZAa5WzqATn/Tk6Rbm/7X5o8Z6t5Cp/tGYFoYl7GpJQ5pC
-f9XicnQeJZMwx77tb4niBNqvpoxPUA==
-=WeGX
------END PGP SIGNATURE-----
-
---Sig_/A_Z4F_MLvA02L7lFY4gbo7T--
+I'm not opposed to changing this logic while making the refcount atomic, but it
+needs to be explained in the changelog.  As is, the changelog makes it sound
+like the patch is a pure refactoring of the type.
