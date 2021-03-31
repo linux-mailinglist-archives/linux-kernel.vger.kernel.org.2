@@ -2,122 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6231D350062
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFB0350065
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhCaMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
+        id S235611AbhCaMcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235454AbhCaMbK (ORCPT
+        with ESMTP id S235563AbhCaMbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:31:10 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3BEC061574;
-        Wed, 31 Mar 2021 05:31:10 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so1168641pjb.0;
-        Wed, 31 Mar 2021 05:31:10 -0700 (PDT)
+        Wed, 31 Mar 2021 08:31:48 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E17C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:31:48 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 12so18487918lfq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r0wurEgCXpwLk8V8e0yBHXS1a2Ee8JuUUWzmEE/Af/M=;
-        b=HYh87bVhVdS5VrDKKYPgUhVykPRkLtiX6qLzPszCtA/84fkP12rXge+IibQm4nJekx
-         siTu2pLi/bDAdAuLX1RZhevc8zPWbB9UM38zuMDDi/jj5sfmyvqNzG3pjCzF82ECILC8
-         2CIYpBMZ/903hzzzU7jjx4Ei+cDy05KY614b0g1LqVH2APwryUwpCDRKtuJcYL7HxsYW
-         gYJC/ERallREgYeMhxGEBttYuQ6Zi5xKrAyUsLcEbgG+hQPgBWCHTTjyUtmuxeFvCXjv
-         JYzjZuCL9V2FrnCuQZvJCSp4jaOqcLHTXRwY9ot+U50D6yI7Qny5PrtmrI1r252xY/Td
-         y5TA==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=S6EU2YnOpdkBtjQGKeotICcap66rhKHJa003CpMwvsc=;
+        b=NMSrUSVupyaOh9cd4emHPeGipu/j7X2gWfOhsL2kEl3GrOaQM4rCxOQ/ZFBZPyKsmP
+         vHt69Jn4kH51ZPYe+xRKlgpSkP6R5K2aeGQZ86f9VHFD3VQFy3caHGLvwkRDEEHBfBod
+         qbyEo+efvrJKTfLanB1l/C++xwcZwLlKAYwurbth4ymdQVpqxd6CyMJivGs7+8JOnAUx
+         oKw+QKpcDVqbTRc/RB9DvIam0CUllJPYrLHPRW/zIPGrxdmWJVRk3lt67RbQM4eC/uWs
+         fbUPXWAOeNo5w49l/gPSjOdmwszwVGNgB+w0dEj59Ck5VztiLhc8BEWFbcvQmSS62BNT
+         w/sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r0wurEgCXpwLk8V8e0yBHXS1a2Ee8JuUUWzmEE/Af/M=;
-        b=aIW5KSgI8GOyiZdvZgMJAEtskVITphf0D7kSbYhQE/v3lv+P7ukKgywuzK/tEHFjqi
-         b46LasKYU08Sb1zui7UvkB/zf0G1lJG4IeUlf7u0CpDuvX6U4vO5VT8J8xRPKHPFkXJn
-         UFq6LfP33zHvzTHvOcaaNx5bXTHyjBHH2oPx3/gaY00sVLGkenVLLXhxcn7B8IEIxCNk
-         m4pm4Vy1GYmYMKicYzPk8GKvuZDVXnjIQaCkqFr8zEfoXBdp4uJLpIXaHjrmFvkpOZUM
-         ULGTVC3ne5e6e+EZb2gTXF7Jh5Lh3Ynb/3wokChL5Rt3Ml91oLn1eFHda8UuY03XJ1Nj
-         8dOg==
-X-Gm-Message-State: AOAM530X39xM+RUgtK/og8DGqabktI0K7q6JZbdiQBenbDIJA0REt1rE
-        NSt4aNWV0pJCrpHSM2gBYgA=
-X-Google-Smtp-Source: ABdhPJyG4a82R/BbIuiJluEQk1BqTadUrv91d79dqwaxsWtGJSEWE5901Qw1cGhEGO+9XsI5urPZDQ==
-X-Received: by 2002:a17:90a:9385:: with SMTP id q5mr3263996pjo.121.1617193870227;
-        Wed, 31 Mar 2021 05:31:10 -0700 (PDT)
-Received: from localhost (g139.124-45-193.ppp.wakwak.ne.jp. [124.45.193.139])
-        by smtp.gmail.com with ESMTPSA id r1sm2026366pjo.26.2021.03.31.05.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 05:31:09 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 21:31:07 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add
- ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Message-ID: <20210331123107.GF1171117@lianli.shorne-pla.net>
-References: <1616868399-82848-4-git-send-email-guoren@kernel.org>
- <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net>
- <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net>
- <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
- <YGNNCEAMSWbBU+hd@hirez.programming.kicks-ass.net>
- <20210330223514.GE1171117@lianli.shorne-pla.net>
- <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=S6EU2YnOpdkBtjQGKeotICcap66rhKHJa003CpMwvsc=;
+        b=lYDNloEj/OkYu/I5BuevToD1wwzcBWJOrQqdshjqdw66BZb+EqIaEthyQJS0+K64SX
+         DL5DNFlCYwH3WshQxCZN+/QkGfkS3XwzzOvl2mLvCkrfK3SCKNkS3x3sAFzXVlw6keU9
+         +oHyAqWYrbvzTSx/MUqy+N28DJkR4idr96SWPZ+KfwYX11dsgQ78hMncIkMRQEeXS9nv
+         h6SH2gbpade1V9/JTW5t2zE95/MzvJBCNo/V5Esqq87Bcpu5itwJR2vhekzZbWmeMAXN
+         /0xwgHUpA+bTmcxJRSgLmVBHrM/Hx9nhy4atgMeCFnLE88Ut4TSKPKCZldjz01zoCoev
+         DjZw==
+X-Gm-Message-State: AOAM53014eI7+vrfTVM6JVATGK9w1NmnlnFb27oFOdismktZo566ySRB
+        LzuYwcAx/mb8JlWUMbd5Dzup2kyJNkoFnoZ1/fzSiA==
+X-Google-Smtp-Source: ABdhPJzgNGDqwWJ0zqQx8Ru8esLLNouGO90hnzko0scZwHQnRkLnOlZhCOMa/zz2I7pmU7SzXhXxRPZ7oh17nTDgH6c=
+X-Received: by 2002:a19:4c08:: with SMTP id z8mr1996596lfa.157.1617193906617;
+ Wed, 31 Mar 2021 05:31:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0hj2pYr-CuNJkjO==RafZ=J+6kCo4HTWEwvvRXPcngJA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 31 Mar 2021 14:31:36 +0200
+Message-ID: <CACRpkdazjQ0jPdXYPNsC6BmYEHZgf7_zUObHTEa+B9LZCmaT8g@mail.gmail.com>
+Subject: [GIT PULL] pin control fixes for the v5.12 kernel
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:23:27AM +0200, Arnd Bergmann wrote:
-> On Wed, Mar 31, 2021 at 12:35 AM Stafford Horne <shorne@gmail.com> wrote:
-> >
-> > I just want to chime in here, there may be a better spot in the thread to
-> > mention this but, for OpenRISC I did implement some generic 8/16-bit xchg code
-> > which I have on my todo list somwhere to replace the other generic
-> > implementations like that in mips.
-> >
-> >   arch/openrisc/include/asm/cmpxchg.h
-> >
-> > The idea would be that architectures just implement these methods:
-> >
-> >   long cmpxchg_u32(*ptr,old,new)
-> >   long xchg_u32(*ptr,val)
-> >
-> > Then the rest of the generic header would implement cmpxchg.
-> 
-> I like the idea of generalizing it a little further. I'd suggest staying a
-> little closer to the existing naming here though, as we already have
-> cmpxchg() for the type-agnostic version, and cmpxchg64() for the
-> fixed-length 64-bit version.
+Hi Linus,
 
-OK.
+here are some overly ripe fixes for the v5.12 kernel. I should
+have sent earlier but had my head stuck in GDB.
 
-> I think a nice interface between architecture-specific and architecture
-> independent code would be to have architectures provide
-> arch_cmpxchg32()/arch_xchg32() as the most basic version, as well
-> as arch_cmpxchg8()/arch_cmpxchg16()/arch_xchg8()/arch_xchg16()
-> if they have instructions for those.
+All are driver fixes. Details in the signed tag.
 
-Thanks for the name suggestions, it makes it easier for me.
+Please pull it in!
 
-> The common code can then build cmpxchg16()/xchg16() on top of
-> either the 16-bit or the 32-bit primitives, and build the cmpxchg()/xchg()
-> wrapper around those (or alternatively we can decide to have them
-> only deal with fixed-32-bit and long/pointer sized atomics).
+Yours,
+Linus Walleij
 
-Yeah, that was the idea.
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
--Stafford
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.12-2
+
+for you to fetch changes up to ba845907b23a6584e5944f6fbffda3efb010c28b:
+
+  Merge tag 'intel-pinctrl-v5.12-3' of
+gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
+(2021-03-30 00:46:49 +0200)
+
+----------------------------------------------------------------
+Pin control fixes for the v5.12 kernel cycle:
+
+- Fix up some Intel GPIO base calculations.
+- Fix a register offset in the Microchip driver.
+- Fix suspend/resume bug in the Rockchip driver.
+- Default pull up strength in the Qualcomm LPASS
+  driver.
+- Fix two pingroup offsets in the Qualcomm SC7280
+  driver.
+- Fix SDC1 register offset in the Qualcomm SC7280
+  driver.
+- Fix a nasty string concatenation in the
+  Qualcomm SDX55 driver.
+- Check the REVID register to see if the device is
+  real or virtualized during virtualization in the
+  Intel driver.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      pinctrl: intel: Show the GPIO base calculation explicitly
+
+Arnd Bergmann (1):
+      pinctrl: qcom: fix unintentional string concatenation
+
+Jonathan Marek (1):
+      pinctrl: qcom: lpass lpi: use default pullup/strength values
+
+Lars Povlsen (1):
+      pinctrl: microchip-sgpio: Fix wrong register offset for IRQ trigger
+
+Linus Walleij (2):
+      Merge tag 'intel-pinctrl-v5.12-2' of
+gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
+      Merge tag 'intel-pinctrl-v5.12-3' of
+gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
+
+Rajendra Nayak (2):
+      pinctrl: qcom: sc7280: Fix SDC_QDSD_PINGROUP and UFS_RESET offsets
+      pinctrl: qcom: sc7280: Fix SDC1_RCLK configurations
+
+Roger Pau Monne (1):
+      pinctrl: intel: check REVID register value for device presence
+
+Wang Panzhenzhuan (1):
+      pinctrl: rockchip: fix restore error in resume
+
+ drivers/pinctrl/intel/pinctrl-intel.c     |  9 ++++++++-
+ drivers/pinctrl/pinctrl-microchip-sgpio.c |  2 +-
+ drivers/pinctrl/pinctrl-rockchip.c        | 13 ++++++++-----
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c  |  2 +-
+ drivers/pinctrl/qcom/pinctrl-sc7280.c     | 16 ++++++++--------
+ drivers/pinctrl/qcom/pinctrl-sdx55.c      |  2 +-
+ 6 files changed, 27 insertions(+), 17 deletions(-)
