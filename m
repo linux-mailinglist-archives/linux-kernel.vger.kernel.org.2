@@ -2,181 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3A9350412
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BC1350418
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhCaQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S233575AbhCaQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233475AbhCaQDl (ORCPT
+        with ESMTP id S232319AbhCaQEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:03:41 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45940C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:03:40 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id r20so24502275ljk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:03:40 -0700 (PDT)
+        Wed, 31 Mar 2021 12:04:44 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8303AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:04:43 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id w3so30896219ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5LKuJHnY2f7qCpjih2QE7ExZcNPVTuCmCBGxBDXYgbA=;
-        b=H3yc9Ow/ee4WAZarDtEWtUCZjqJ2SsXmt5AUo6HL+JLKuGQxZAWs5dwlRHZWTgWIyE
-         qIHARj0BQ+BN6WS2RunvcHWbffg7rKWEWYDEUvOKK/e8fru/jZSNMN6F1AcPS9J4/Pp3
-         t/KQVAuIlkvsQLmw8YTBhTu71k0LsD/R5mNNOWMQd0K6831G1F5fd1MF8MffRN9MkfJR
-         AoJzWhXyUyfYK8I/LUpSYbH9/SnRPzKrfF5M2U0zmG/aI65iqLMq6KiOkh9n2wZ7OdG3
-         FnqTsGDRQapooMou/IFxYGZhwP76g05ijTbBSlqWJIAisj4NICDMOWoFjp9XG3ozj5b3
-         j2Dg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/K8jhwDcWdtQO8TgpjZZoFEiAtw8FI9cBvy1a1rTDN8=;
+        b=n98YQxI+8gd6h3kZzKYrEF739lerNLf9t8oyCoS2TJyNMaNFL6UJhBu/UuusrT4qiF
+         4IiTkSg4USBePHxB+IYW/b9H74TqaoiTSLaPyMsY58DnwNmx1m2p2nInVBop5vaFoFqF
+         1gTDhuJ2bUKv3YWP0erWmiFTAGXG7WuKr01VIR8J6Mn3aR9e3BW4qHcpjTLr/2rJ1hOy
+         /SaZ0obFL7QqVEpsM0+l+1cNkCBrcElevYRJokNDUp0KeLWBDXbm2uBLsx7+M6U6K9Ar
+         IJMgFpN0v9+iBI3vNt5IqaYv+CspHhLfbmjIrqkJzx+nLicb0UeJ3uECqj3eL39YZV+a
+         2PNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5LKuJHnY2f7qCpjih2QE7ExZcNPVTuCmCBGxBDXYgbA=;
-        b=BB4eeNCAShy1eqL0SV/ppi0oWwkOKnnTEM3sbn6QXd+LaaYGmvnDHtpuD30L+YCwep
-         582XDoeGpO99vnIq70lEUocF+S7ROEaOXOCkmurSU8J7opr1tOySx00wvQ0JFKkOCt7g
-         zuMrmkebPh65XZm4ZXYKM4Pf4TeopxCF1o5itoHpuUKmvTApU5h0pexA2HPFbtidgp4L
-         KL+n/PiH//5VURFlWHuMhML+gTBygbiaxO2LclTQv6KSgDm7kbU+I0qy+UzoN5Khdq+X
-         o17YmlJo1Gtk5LMhfE464qJUm0KBjin7qzwFQRXhgulRyKsx5spxcvap1necQelH4tmd
-         Y4BA==
-X-Gm-Message-State: AOAM533FhtQJA3278da8xPmaF1fe2zjQWGDoGe39zGuGLTGKeX6SZUvU
-        OJteD9cBV6r4R+ZXEz7qFmjDrA==
-X-Google-Smtp-Source: ABdhPJydM4JPcYVS7QzSGSky5qgWKHISfXYt6rm2VK8r6Cgr3stz9azQ5jlBswpvlvj3bbx4cWCWsw==
-X-Received: by 2002:a2e:5c47:: with SMTP id q68mr2607391ljb.314.1617206618828;
-        Wed, 31 Mar 2021 09:03:38 -0700 (PDT)
-Received: from [192.168.43.7] ([94.25.228.171])
-        by smtp.gmail.com with ESMTPSA id d34sm268115lfv.102.2021.03.31.09.03.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 09:03:38 -0700 (PDT)
-Subject: Re: [v1] drm/msm/disp/dpu1: fix warn stack reported during dpu resume
-To:     Kalyan Thota <kalyan_t@codeaurora.org>, y@qualcomm.com,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org, hywu@google.com,
-        mka@google.com, midean@google.com, steev@kali.org
-References: <y> <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <84fdbdc7-7890-965a-bc6b-a19bd0ca4937@linaro.org>
-Date:   Wed, 31 Mar 2021 19:03:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/K8jhwDcWdtQO8TgpjZZoFEiAtw8FI9cBvy1a1rTDN8=;
+        b=gVim0m+1QoINELpLjZ9aj0UNWF5yYRRUP+caZcvVGVeRq8KvKoO/Ti9ImpTm7VYkZF
+         FFLGAVuaGTEK15b5hhiLTFyBi+DUJvCxsJh+0cPEabPugeHFOpNOhNkjb9WYyAqeqdAX
+         SAUKjRczjEYwd4spNW+cXqLfu2KN8IXB/dU1kI521zNv/bMxoVTt+PTCDhy0RMNeTnuy
+         LXLXi0GHw+UVtZ1RNaZpVIR6IIus3HQHwKF1yucmPIYF3CbzZKS1MWzuIdUFDR6IU9Q8
+         +SjhetLU+5ZGfevldi54wVs+ZrqO6VA3fIejqGC4BXmyHbTlSodM3MRqlAGz9TTQEHKc
+         ukLA==
+X-Gm-Message-State: AOAM5321JY/14YsbUt47zacaLhDW6gcMV5DafJlW5VOu8o+3h9M9TwgS
+        gbfkrF0RWon3CdHhmAFbcQBSoI0v3DvNC9MdqYfVKA==
+X-Google-Smtp-Source: ABdhPJx2vS46/Y5jbwBa9EENsyxfekhK0CyN/G/O6mqN+sRR/ycmUklyCtiEkx+kxNfBjLDHmIy1v6PK0IqgLLQq6+4=
+X-Received: by 2002:a17:906:ae88:: with SMTP id md8mr4161716ejb.264.1617206681177;
+ Wed, 31 Mar 2021 09:04:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <161714738634.2168142.10860201861152789544.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161714740233.2168142.11116065966198937093.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210331130953.GG1463678@nvidia.com>
+In-Reply-To: <20210331130953.GG1463678@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 31 Mar 2021 09:04:32 -0700
+Message-ID: <CAPcyv4inZaSRk-eiyeRLfUOrwyD=YVLW6bdUVJ239X099n1S=Q@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] cxl/mem: Do not rely on device_add() side effects
+ for dev_set_name() failures
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/03/2021 14:27, Kalyan Thota wrote:
-> WARN_ON was introduced by the below commit to catch runtime resumes
-> that are getting triggered before icc path was set.
-> 
-> "drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume"
-> 
-> For the targets where the bw scaling is not enabled, this WARN_ON is
-> a false alarm. Fix the WARN condition appropriately.
+On Wed, Mar 31, 2021 at 6:10 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Tue, Mar 30, 2021 at 04:36:42PM -0700, Dan Williams wrote:
+> > +static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> > +{
+> > +     struct cxl_memdev *cxlmd;
+> > +     struct device *dev;
+> > +     struct cdev *cdev;
+> > +     int rc;
+> > +
+> > +     cxlmd = cxl_memdev_alloc(cxlm);
+> > +     if (IS_ERR(cxlmd))
+> > +             return PTR_ERR(cxlmd);
+> > +
+> > +     dev = &cxlmd->dev;
+> > +     rc = dev_set_name(dev, "mem%d", cxlmd->id);
+> > +     if (rc)
+> > +             goto err;
+> >
+> > +     cdev = &cxlmd->cdev;
+> >       cxl_memdev_activate(cxlmd, cxlm);
+> >       rc = cdev_device_add(cdev, dev);
+> >       if (rc)
+> > -             goto err_add;
+> > +             goto err;
+>
+> It might read nicer to have the error unwind here just call cxl_memdev_unregister()
 
-Should we change all DPU targets to use bw scaling to the mdp from the 
-mdss nodes? The limitation to sc7180 looks artificial.
+Perhaps, but I don't think cdev_del() and device_del() are prepared to
+deal with an object that was not successfully added.
 
-> 
-> Reported-by: Steev Klimaszewski <steev@kali.org>
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
->   3 files changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index cab387f..0071a4d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -294,6 +294,9 @@ static int dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
->   	struct icc_path *path1;
->   	struct drm_device *dev = dpu_kms->dev;
->   
-> +	if (!dpu_supports_bw_scaling(dev))
-> +		return 0;
-> +
->   	path0 = of_icc_get(dev->dev, "mdp0-mem");
->   	path1 = of_icc_get(dev->dev, "mdp1-mem");
->   
-> @@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
->   		DPU_DEBUG("REG_DMA is not defined");
->   	}
->   
-> -	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
-> -		dpu_kms_parse_data_bus_icc_path(dpu_kms);
-> +	dpu_kms_parse_data_bus_icc_path(dpu_kms);
->   
->   	pm_runtime_get_sync(&dpu_kms->pdev->dev);
->   
-> @@ -1198,7 +1200,7 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
->   
->   	ddev = dpu_kms->dev;
->   
-> -	WARN_ON(!(dpu_kms->num_paths));
-> +	WARN_ON((dpu_supports_bw_scaling(ddev) && !dpu_kms->num_paths));
->   	/* Min vote of BW is required before turning on AXI clk */
->   	for (i = 0; i < dpu_kms->num_paths; i++)
->   		icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index d6717d6..f7bcc0a 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -154,6 +154,15 @@ struct vsync_info {
->   
->   #define to_dpu_global_state(x) container_of(x, struct dpu_global_state, base)
->   
-> +/**
-> + * dpu_supports_bw_scaling: returns true for drivers that support bw scaling.
-> + * @dev: Pointer to drm_device structure
-> + */
-> +static inline int dpu_supports_bw_scaling(struct drm_device *dev)
-> +{
-> +	return of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss");
-> +}
-> +
->   /* Global private object state for tracking resources that are shared across
->    * multiple kms objects (planes/crtcs/etc).
->    */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> index cd40788..8cd712c 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> @@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct drm_device *dev,
->   	struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
->   	struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
->   
-> +	if (dpu_supports_bw_scaling(dev))
-> +		return 0;
-> +
->   	if (IS_ERR_OR_NULL(path0))
->   		return PTR_ERR_OR_ZERO(path0);
->   
-> @@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
->   
->   	DRM_DEBUG("mapped mdss address space @%pK\n", dpu_mdss->mmio);
->   
-> -	if (!of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss")) {
-> -		ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
-> -		if (ret)
-> -			return ret;
-> -	}
-> +	ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
-> +	if (ret)
-> +		return ret;
->   
->   	mp = &dpu_mdss->mp;
->   	ret = msm_dss_parse_clock(pdev, mp);
-> 
+>
+> > -     return devm_add_action_or_reset(&pdev->dev, cxl_memdev_unregister,
+> > +     return devm_add_action_or_reset(dev->parent, cxl_memdev_unregister,
+> >                                       cxlmd);
+>
+> Since that is what the error unwind does at this point.
 
+Right, but at this point the code knows that cdev_del() and
+device_del() will receive an object in the appropriate state.
 
--- 
-With best wishes
-Dmitry
+>
+> >
+> > -err_add:
+> > +err:
+> >       /*
+> >        * The cdev was briefly live, shutdown any ioctl operations that
+> >        * saw that state.
+> >        */
+> >       cxl_memdev_shutdown(cxlmd);
+>
+> Then this doesn't need to be a function
+>
+> But it is OK as is
+
+Unless I'm missing something I think it's required to use only
+put_device() to cleanup after cdev_device_add() failure, but yes I
+don't like that cxl_memdev_shutdown() needs to be open coded like
+this.
+
+>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Appreciate it.
