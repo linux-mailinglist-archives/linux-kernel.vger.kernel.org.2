@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69302350160
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863F935016D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235701AbhCaNiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:38:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235796AbhCaNiT (ORCPT
+        id S235921AbhCaNjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:39:01 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:38964 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235864AbhCaNid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:38:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617197899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8YS4poPAZCHByMf0w+dOhsWCqsrYJ+hqPkfQ8CKmtvY=;
-        b=MZ4W5r1zLaCS99Ja11yv+QyV8cewhhXhAY6mJn2/hO/+3gYVDDMnz4r+5zrENDFSijg+ll
-        eHfokeCaXSHBS7zCzpkuxn/tDdv88BYNR4a8EBJEFbGwcP6MagjTfYb8+7E6yc+1cGOqFh
-        Pv09gEUCd/W5pCMx63N/7M/CzrJSyo0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-aBp1IZDWPqeqKr_xPiJwCw-1; Wed, 31 Mar 2021 09:38:13 -0400
-X-MC-Unique: aBp1IZDWPqeqKr_xPiJwCw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C21A84B9A2;
-        Wed, 31 Mar 2021 13:38:11 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C59460C5A;
-        Wed, 31 Mar 2021 13:38:04 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 15:38:03 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 1/1] xdp: fix xdp_return_frame() kernel BUG throw
- for page_pool memory model
-Message-ID: <20210331153803.38fb83de@carbon>
-In-Reply-To: <20210331132503.15926-1-boon.leong.ong@intel.com>
-References: <20210331132503.15926-1-boon.leong.ong@intel.com>
+        Wed, 31 Mar 2021 09:38:33 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 12VDcFea003995;
+        Wed, 31 Mar 2021 22:38:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 12VDcFea003995
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617197896;
+        bh=a7ITAPZiNOwb3mrWNfDLksGvppaUK2nb1flnwHlLEWU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jh6M9nY6XuQJv8wr1mNt7MjmpH02BrYt8x2wZmB/th/fz7levArdfkOS+MEHPa97q
+         h73x8ysabgT2TDynWMjEcfN30FxYYplmhXx10xLMaJjwxOEsEow9Etf6J6An4t7+WF
+         ZpvzFc55zrxTo2hgUMJfCq5laVBGMdpeTi8LAOO3RMCWkRq/pxtlKMcMjKvkrQFumN
+         g4IWjkBpOMG80e2D6wVZ5nwwmFuxsCirwZIbL9Fh4P6XZxhk2g7zXA2w3eu4EXT5Y2
+         Vnz7SZ3tydDAwVbPsctt+fve8WCYQEWbR+iUFb7qj+tvAJOVsQxJUv58TtpAOVHfui
+         rOcv66+32heQg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH 3/9] kbuild: show the target directory for depmod log
+Date:   Wed, 31 Mar 2021 22:38:04 +0900
+Message-Id: <20210331133811.3221540-3-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210331133811.3221540-1-masahiroy@kernel.org>
+References: <20210331133811.3221540-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 21:25:03 +0800
-Ong Boon Leong <boon.leong.ong@intel.com> wrote:
+It is clearer to show the directory which depmod will work on.
 
-> xdp_return_frame() may be called outside of NAPI context to return
-> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-> napi_direct = false. For page_pool memory model, __xdp_return() calls
-> xdp_return_frame_no_direct() unconditionally and below false negative
-> kernel BUG throw happened under preempt-rt build:
-> 
-> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
-> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
-> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
-> 
-> Changes in v2:
->  - This patch fixes the issue by making xdp_return_frame_no_direct() is
->    only called if napi_direct = true, as recommended for better by
->    Jesper Dangaard Brouer. Thanks!
-> 
-> Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  net/core/xdp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 05354976c1fc..858276e72c68 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
->  		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
->  		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
->  		page = virt_to_head_page(data);
-> -		napi_direct &= !xdp_return_frame_no_direct();
-> +		if (napi_direct && xdp_return_frame_no_direct())
-> +			napi_direct = false;
->  		page_pool_put_full_page(xa->page_pool, page, napi_direct);
->  		rcu_read_unlock();
->  		break;
-
-
-
+diff --git a/Makefile b/Makefile
+index 99a2bd51c02d..a6f73335757d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1778,7 +1778,7 @@ ifdef CONFIG_MODULES
+ modules: $(MODORDER)
+ 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
+ 
+-quiet_cmd_depmod = DEPMOD  $(KERNELRELEASE)
++quiet_cmd_depmod = DEPMOD  $(MODLIB)
+       cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
+                    $(KERNELRELEASE)
+ 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.27.0
 
