@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32113504FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300B9350508
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbhCaQr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:47:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46470 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234119AbhCaQrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:47:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617209267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ix2mfUcEg/DOypNDwaacoOT966lSJ+UT8pzFrJ6uHI=;
-        b=VTPeHIDD/uPp9CsY4tysGMAe6xtFzZpTYWx0dq2IW5mjsKc0ik6xI/z80di2ozirgxoLIx
-        yRy7fPZdZLv0MHj0BeVxgg0rTjImk8q2TzW2nIoG+JogbTZMW5Upyg4IW1FOVXn1mtZR2J
-        /3ZEI6JPQoVRtn39GxAzebkkrjrwRM4=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-zqkFBXnHPcGWwPFqz0fd2g-1; Wed, 31 Mar 2021 12:47:45 -0400
-X-MC-Unique: zqkFBXnHPcGWwPFqz0fd2g-1
-Received: by mail-ej1-f72.google.com with SMTP id t21so1056484ejf.14
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:47:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0ix2mfUcEg/DOypNDwaacoOT966lSJ+UT8pzFrJ6uHI=;
-        b=kotDnPxkp3LD9aZxw1bowkHaoqzAPM/RMUYXUimpClXX+w9gVi0Ol1aGMGAZdi3Uc1
-         RntEIEw+aisdrzZwa59cCE7hI8YF88XqeK7BApA7lxL4LBFk5T1dWWyThGumi3YD1fsq
-         VvuWIuVlThTrO8chPy+TPymqiDNrSg6Cs0TDzMpG2MsVK0OfpZajC55WPQmsI9W4oLeY
-         fJ+Bypbr30DxYIAPfED/LTvnWGkjLbsNvE/8sgEf2XMPwOyUfuNtlhhIbFOGnZnFxv7I
-         Ni0zoGGRmPAjgmBfcNtOVPfcr2hXuP377dwi9yQMwKDpAuaTfkG4ca1FRcNpJCvCgSOV
-         9k4w==
-X-Gm-Message-State: AOAM530h2Qsk76fceRU1TAkW78+aS2LYzyBYqGsPos102vC9YzShxnmm
-        DGj+TNSRHSx1b3ecktwf6WjcocfwABtDONbC07wNJRPXkJILzvRnoWJ0R3hlFXFn/wxCcSU534a
-        oag9GyQ8+CvOIbWWwBG2EJrN6
-X-Received: by 2002:a17:906:1182:: with SMTP id n2mr4597696eja.234.1617209264755;
-        Wed, 31 Mar 2021 09:47:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymG2hf8oxiTqtfGgyXFzM/nXfYjs4CdYmJnVTC5zNGPoNEIpchzu0nS+pvIuCk4GHAjhT9jA==
-X-Received: by 2002:a17:906:1182:: with SMTP id n2mr4597673eja.234.1617209264605;
-        Wed, 31 Mar 2021 09:47:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p24sm2057269edt.5.2021.03.31.09.47.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 09:47:43 -0700 (PDT)
-Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
- unless necessary
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <20210326021957.1424875-17-seanjc@google.com>
- <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
- <YGSmMeSOPcjxRwf6@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <56ea69fe-87b0-154b-e286-efce9233864e@redhat.com>
-Date:   Wed, 31 Mar 2021 18:47:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234219AbhCaQtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:49:04 -0400
+Received: from smtp-34-i2.italiaonline.it ([213.209.12.34]:55603 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234146AbhCaQsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 12:48:40 -0400
+Received: from oxapps-30-132.iol.local ([10.101.8.178])
+        by smtp-34.iol.local with ESMTPA
+        id Re1ElwntK5WrZRe1ElgaZ8; Wed, 31 Mar 2021 18:48:38 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1617209318; bh=Of8HOIFaFMIakwrrvMX5k+cnZfAxOALZ7VG6BH9w3tM=;
+        h=From;
+        b=UFpNZMB0o878+Sdcv+0gOWek0RvnjpiOZNiokvvhnZ/9YTzLzgjs3pqSmc8modp0V
+         zW6X0vtmIFnUBMNwQqlcfWHNkspL+4ee9UEm9Un+vxzWtQNTMfAxiG6JdxdcW0VBVW
+         5cswqdqBqcgqMJGMiVD33/rMn+sPbtmNE3HWAah1f2Z+Qm5sHA3sGiDolNaG/hNY2t
+         V9RY8DRQDgoIWX2nIEmieiAg1Qy/alLN0MfMtUtbxuMUzNcyj+WMVP9ycyTmi9bugZ
+         ixtp6Dnn1lLlfdeO7zaC0r6xJLPcL/uHW/olo1ME9h0urT6jL3xnCizOv8uPFyWb1c
+         ruvOAZcDL3W4Q==
+X-CNFS-Analysis: v=2.4 cv=W4/96Tak c=1 sm=1 tr=0 ts=6064a7e6 cx=a_exe
+ a=iUxb6lXnTT1s429i9ALYXg==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
+ a=_gZzKa99_6AA:10 a=2KMo9-giAAAA:8 a=VwQbUJbxAAAA:8 a=3UXsuAmxLgeg-JLg2n4A:9
+ a=QEXdDO2ut3YA:10 a=jpCfQFe7a20IPbtE3JEv:22 a=UeCTMeHK7YUBiLmz_SX7:22
+ a=AjGcO6oz07-iQ99wixmX:22
+Date:   Wed, 31 Mar 2021 18:48:36 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Tony Lindgren <tony@atomide.com>, Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
+Message-ID: <1766999502.215268.1617209316614@mail1.libero.it>
+In-Reply-To: <YGQNyGDkAbUXRYtA@atomide.com>
+References: <20210329164222.26794-1-dariobin@libero.it>
+ <161707108197.3012082.13148389244272034996@swboyd.mtv.corp.google.com>
+ <YGQNyGDkAbUXRYtA@atomide.com>
+Subject: Re: [PATCH v3 0/4] clk: ti: add am33xx spread spectrum clock
+ support
 MIME-Version: 1.0
-In-Reply-To: <YGSmMeSOPcjxRwf6@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 87.20.116.197
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: hnVdgKDLVYJ/y6bXwAkWv/iDAPJj0RoS
+x-libjamv: XJO1Mu8mf/8=
+X-CMAE-Envelope: MS4xfN81xeT9ObTSWwajh635DSRU2jTmBrUkcigubVWEJ+IwPVQ/Ygt8kqQAW+qK1LeT6WpbBNhHjtJW9N04ieC1Xn+TSsMO9W+DiFCEpy05BwRKdWJOY5kn
+ /1ZdTc6fYO/qGQbp38/2XqT+23lHsNHm+oK2DN049bR2uyxOYlF/JL0gld5FekTaMXoF/ud1QHlVjL2h7RoDwwkRxPQ3ZKl/V2pdgT1TwxK0oBk3pEc9IJug
+ H7ah7Oman9zOExhb22W8Y/4Wdw1lpP5K96fXiHOZOJ3uNeBad87R9lqiiEMGKOdDhHbmMwMzbM2BsUbR/9P2CC8syI+fcNI0B6dRM+PhRZPDJ2Ov2KnKuVjr
+ yFDYHFZ2CLPxefmYcsOgNCY2tHf3sDSFF4kySmzJwpzUO3DFLL8vTyYyv3wsp2WXxKCZWitKNck5XJTgcM/3jb+S+n4w+DKfiCMgpU6MmZzRM/AFI4/IuXSM
+ 8K0OMztguybu0+e74lT50zwKSgZSdAIzuFGTJSS2dOeLd2ysatueJ1YpxeapZRXAI7LZsaFeWvy65JxV9L7o7VAqye5rVFKfzYyHjg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/03/21 18:41, Sean Christopherson wrote:
->> That said, the easiest way to avoid this would be to always update
->> mmu_notifier_count.
-> Updating mmu_notifier_count requires taking mmu_lock, which would defeat the
-> purpose of these shenanigans.
 
-Okay; I wasn't sure if the problem was contention with page faults in 
-general, or just the long critical sections from the MMU notifier 
-callbacks.  Still updating mmu_notifier_count unconditionally is a good 
-way to break up the patch in two and keep one commit just for the rwsem 
-nastiness.
+> Il 31/03/2021 07:51 Tony Lindgren <tony@atomide.com> ha scritto:
+>=20
+> =20
+> * Stephen Boyd <sboyd@kernel.org> [210330 02:25]:
+> > Quoting Dario Binacchi (2021-03-29 09:42:17)
+> > >=20
+> > > As reported by the TI spruh73x RM, MPU and LCD modules support spread
+> > > spectrum clocking (SSC) on their output clocks. SSC is used to spread
+> > > the spectral peaking of the clock to reduce any electromagnetic
+> > > interference (EMI) that may be caused due to the clock=E2=80=99s fund=
+amental
+> > > or any of its harmonics.
+> > > The series allows you to enable and adjust the spread spectrum clocki=
+ng
+> > > for all am33xx PLLs for which it is supported.
+> > >=20
+> >=20
+> > What is your merge strategy? Should all the patches go through clk tree=
+?
+> > Or you'll send via arm-soc?
+>=20
+> Probably best to just merge all via the clk tree as that's where most of
+> the changes are.
+>=20
 
->>> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
->>> +	down_write(&kvm->mmu_notifier_slots_lock);
->>> +#endif
->>>   	rcu_assign_pointer(kvm->memslots[as_id], slots);
->>> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
->>> +	up_write(&kvm->mmu_notifier_slots_lock);
->>> +#endif
->> Please do this unconditionally, the cost is minimal if the rwsem is not
->> contended (as is the case if the architecture doesn't use MMU notifiers at
->> all).
-> It's not the cost, it's that mmu_notifier_slots_lock doesn't exist.  That's an
-> easily solved problem, but then the lock wouldn't be initialized since
-> kvm_init_mmu_notifier() is a nop.  That's again easy to solve, but IMO would
-> look rather weird.  I guess the counter argument is that __kvm_memslots()
-> wouldn't need #ifdeffery.
+This means that I no longer have to send patches to TI / OMAP maintainers, =
+commiters=20
+and fixers, as well as at linux-omap@vger.kernel.org ?
+Even if the a1e980789b06 ("am335x-spread-spectrum) clk: ti: add am33xx spre=
+ad spectrum clock support")=20
+patch is basically related to the AM33xx/AM43xx SOCs?
 
-Yep.  Less #ifdefs usually wins. :)
+Thanks and regards,
+Dario
 
-> These are the to ideas I've come up with:
-> 
-> Option 1:
-> 	static int kvm_init_mmu_notifier(struct kvm *kvm)
-> 	{
-> 		init_rwsem(&kvm->mmu_notifier_slots_lock);
-> 
-> 	#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
-> 		kvm->mmu_notifier.ops = &kvm_mmu_notifier_ops;
-> 		return mmu_notifier_register(&kvm->mmu_notifier, current->mm);
-> 	#else
-> 		return 0;
-> 	#endif
-> 	}
-
-Option 2 is also okay I guess, but the simplest is option 1 + just init 
-it in kvm_create_vm.
-
-Paolo
-
+> Regards,
+>=20
+> Tony
