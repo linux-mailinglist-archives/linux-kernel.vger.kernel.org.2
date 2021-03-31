@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8271F350AA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E64350AA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbhCaXPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54282 "EHLO mail.kernel.org"
+        id S232292AbhCaXXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:23:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232356AbhCaXOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:14:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A284F61003;
-        Wed, 31 Mar 2021 23:14:51 +0000 (UTC)
+        id S229486AbhCaXXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE02761057;
+        Wed, 31 Mar 2021 23:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617232492;
-        bh=WjxyFBkmPm+gzU0axrCxNopetlu+vQikrjFiYWKVaX8=;
+        s=k20201202; t=1617232989;
+        bh=7qKTBZ33hsy0BLYk+KPdaZQgCrEQ9vlK7Wd8SViwxuM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hDFteJct3n5Xjw8DiMEynCqUmkIQiba51625hZQyML53eneKKX2S53TS/oxuychcP
-         KrsMCa9pspD71Ui6U36EVOYaJe25O9LK/vbD0xYaMoOtXQ0cc1yEM99px4hJFl9o4P
-         FtcxYBa92ZXgrx6+h4kYIobHxoskVh1aD8hfyNTPlA7vMylK00kPowmVxp9v3CNONi
-         NvsVyrdSMuDmzhPjVqNQAd+vmmWU4GDsO52KJjzl1d+fW4FdPBs/V1YGQkF4rxsIEV
-         OfIS3WKf6WdCHDsET2q9cL6HS9TqoXynk8iK0NLKlrQ181w0mIWkV5qenTfWGTFK7+
-         1+wR4ulF32IKw==
-Date:   Thu, 1 Apr 2021 02:14:48 +0300
+        b=qdb3yZHk2W0dyxqN/4+bvUqhSr7elqo/zWtwqvOr4AVxTosVDl6gIFQDnf1rO1O4x
+         emqTSt032zJmSMr24mtgtvF3dGqqdF/5VTLijI8ouoHy/RVNtob72pNvXsZ5sgFCtv
+         tApUeQ4AoB+61iIQSMNwJNc44T0suz2jC4J6HUg/CFIW41jFAhR11f6ciYoGMKcdJ0
+         4YEHWHiKP6LrorJJv43/m6mPY6lVRq31lzhb8zP3dk4X71WiCh0U58ZT5Li6XoZnYw
+         W0ZBY7xOiBVXwMC/mOB2HLr/dAqX53y8XZa8FPelA7K6YNOYcKEhSZp3nONbkFYICx
+         qafoo+Wf2+/uQ==
+Date:   Thu, 1 Apr 2021 02:23:06 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 17/18] crypto: Accept pss as valid encoding during
- signature verification
-Message-ID: <YGUCaNuUFLlrX887@kernel.org>
-References: <20210330202829.4825-1-varad.gautam@suse.com>
- <20210330202829.4825-18-varad.gautam@suse.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "jethro@fortanix.com" <jethro@fortanix.com>,
+        "b.thiel@posteo.de" <b.thiel@posteo.de>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "corbet@lwn.net" <corbet@lwn.net>
+Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
+Message-ID: <YGUEWiY3ymVbkk0y@kernel.org>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <YF5kNPP2VyzcTuTY@kernel.org>
+ <490103d033674dbeb812def2def69543@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210330202829.4825-18-varad.gautam@suse.com>
+In-Reply-To: <490103d033674dbeb812def2def69543@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:28:28PM +0200, Varad Gautam wrote:
-> Accept pss encoding for public_key_verify_signature. If
-> CONFIG_CRYPTO_RSASSA_PSS is disabled, crypto_alloc_akcipher will
-> fail to find a pss backend anyway.
+On Sun, Mar 28, 2021 at 09:01:38PM +0000, Huang, Kai wrote:
+> > On Fri, Mar 19, 2021 at 08:29:27PM +1300, Kai Huang wrote:
+> > > This series adds KVM SGX virtualization support. The first 14 patches
+> > > starting with x86/sgx or x86/cpu.. are necessary changes to x86 and
+> > > SGX core/driver to support KVM SGX virtualization, while the rest are patches
+> > to KVM subsystem.
+> > >
+> > > This series is based against latest tip/x86/sgx, which has Jarkko's
+> > > NUMA allocation support.
+> > >
+> > > You can also get the code from upstream branch of kvm-sgx repo on github:
+> > >
+> > >         https://github.com/intel/kvm-sgx.git upstream
+> > >
+> > > It also requires Qemu changes to create VM with SGX support. You can
+> > > find Qemu repo here:
+> > >
+> > > 	https://github.com/intel/qemu-sgx.git upstream
+> > >
+> > > Please refer to README.md of above qemu-sgx repo for detail on how to
+> > > create guest with SGX support. At meantime, for your quick reference
+> > > you can use below command to create SGX guest:
+> > >
+> > > 	#qemu-system-x86_64 -smp 4 -m 2G -drive
+> > file=<your_vm_image>,if=virtio \
+> > > 		-cpu host,+sgx_provisionkey \
+> > > 		-sgx-epc id=epc1,memdev=mem1 \
+> > > 		-object memory-backend-epc,id=mem1,size=64M,prealloc
+> > >
+> > > Please note that the SGX relevant part is:
+> > >
+> > > 		-cpu host,+sgx_provisionkey \
+> > > 		-sgx-epc id=epc1,memdev=mem1 \
+> > > 		-object memory-backend-epc,id=mem1,size=64M,prealloc
+> > >
+> > > And you can change other parameters of your qemu command based on your
+> > needs.
+> > 
+> > Please also put tested-by from me to all patches (including pure KVM
+> > patches):
+> > 
+> > Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > 
+> > I did the basic test, i.e. run selftest in a VM. I think that is sufficient at this point.
+> > 
 > 
-> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-> ---
+> Thanks Jarkko for doing the test!
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Sure, have had it in my queue for some time :-)
 
 /Jarkko
-
->  crypto/asymmetric_keys/public_key.c | 18 +++++++++++++-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-> index 788a4ba1e2e7..b9cc83ba7a12 100644
-> --- a/crypto/asymmetric_keys/public_key.c
-> +++ b/crypto/asymmetric_keys/public_key.c
-> @@ -69,19 +69,20 @@ int software_key_determine_akcipher(const char *encoding,
->  {
->  	int n;
->  
-> -	if (strcmp(encoding, "pkcs1") == 0) {
-> +	if (strcmp(encoding, "pkcs1") == 0 || strcmp(encoding, "pss") == 0) {
->  		/* The data wangled by the RSA algorithm is typically padded
->  		 * and encoded in some manner, such as EMSA-PKCS1-1_5 [RFC3447
-> -		 * sec 8.2].
-> +		 * sec 8.2] or EMSA-PSS [RFC8017 sec 9.1].
->  		 */
->  		if (!hash_algo)
->  			n = snprintf(alg_name, CRYPTO_MAX_ALG_NAME,
-> -				     "pkcs1pad(%s)",
-> +				     "%spad(%s)",
-> +				     encoding,
->  				     pkey->pkey_algo);
->  		else
->  			n = snprintf(alg_name, CRYPTO_MAX_ALG_NAME,
-> -				     "pkcs1pad(%s,%s)",
-> -				     pkey->pkey_algo, hash_algo);
-> +				     "%spad(%s,%s)",
-> +				     encoding, pkey->pkey_algo, hash_algo);
->  		return n >= CRYPTO_MAX_ALG_NAME ? -EINVAL : 0;
->  	}
->  
-> @@ -363,6 +364,13 @@ int public_key_verify_signature(const struct public_key *pkey,
->  			goto error_free_key;
->  	}
->  
-> +	if (strcmp(sig->encoding, "pss") == 0) {
-> +		ret = crypto_akcipher_set_sig_params(tfm, sig, sizeof(*sig));
-> +		if (ret) {
-> +			goto error_free_key;
-> +		}
-> +	}
-> +
->  	sg_init_table(src_sg, 2);
->  	sg_set_buf(&src_sg[0], sig->s, sig->s_size);
->  	sg_set_buf(&src_sg[1], sig->digest, sig->digest_size);
-> -- 
-> 2.30.2
-> 
-> 
