@@ -2,171 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3B834FBE8
+	by mail.lfdr.de (Postfix) with ESMTP id D7AE834FBE9
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbhCaIuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:50:37 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9157 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229832AbhCaIuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:50:03 -0400
-IronPort-SDR: 2OyZs5a1ifgVJYTIPuymCKu4v1k0nWpf0TXsrBKmo2bN8SopxYZLR4FKgUfuhFrm51KYPi/MvA
- WHH22S3VGHGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171981997"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="171981997"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 01:50:02 -0700
-IronPort-SDR: hQlo2l1BVKRkyUshEz+yhKWRgeL6JN09v7aZrs/jFoIQx1Fx6RltO7mzT/AossQ0O0THbTauOu
- 2RjO8jADZ3tw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="393945027"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 31 Mar 2021 01:50:01 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lRWY4-0005mR-PZ; Wed, 31 Mar 2021 08:50:00 +0000
-Date:   Wed, 31 Mar 2021 16:49:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/wab/scsi-mpt3sas] BUILD SUCCESS
- bbd1e56a8474dee8e06c149d76c076787e043420
-Message-ID: <60643799.av1r96wtspW1b7O/%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234478AbhCaIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:50:38 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50466 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhCaIu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:50:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8o751184531;
+        Wed, 31 Mar 2021 08:50:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=etggik+6nyW56bNpiaKLu/fEPgt6EYeuNCnDSjwetdw=;
+ b=gjfzl0EKRsjgpWsiTAiOLBkceU/t5krLRgV11xlpnIwRcmjPz8/Qcd/UWpApB6T/zy2o
+ tXYRzuUJDqTHEjfmIusq0XnUf5CUmZbfXOFPH/eNDGILiw+tuXoWGxwqZocYD1GqAX75
+ kj2uQKc5aOgpRLYhqPfA37n2Fnp5kP0iwVtACLPcnglxT0fWsIHCVHArk5ITe/dVHkjv
+ JorEDrlzkSJQpUN63Nc9ef9xFKo3rR5xW2laP0u5fjmtQ3aSXwks0Hdjva/06Ud1R4JD
+ bnD7HNDtr13n+v7MWj+1ECibzsUukkHzUB9TGjpjRbmh1mR5mdj+Ni3A/HkNTVUuA4G4 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37mabqsgp3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 08:50:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8eqY7181513;
+        Wed, 31 Mar 2021 08:50:10 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 37mac8d55e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 08:50:10 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12V8o936010009;
+        Wed, 31 Mar 2021 08:50:09 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 31 Mar 2021 01:50:09 -0700
+Date:   Wed, 31 Mar 2021 11:49:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Xu Jia <xujia39@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Amarjargal Gundjalam <amarjargal16@gmail.com>,
+        Jason Yan <yanaijie@huawei.com>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] staging: rtl8723bs: core: Remove unused variable
+ 'res'
+Message-ID: <20210331084959.GH2065@kadam>
+References: <1617178363-34193-1-git-send-email-xujia39@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1617178363-34193-1-git-send-email-xujia39@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310063
+X-Proofpoint-ORIG-GUID: c1BmgHjkHjmPqhY6O_AWiJVv0XSe3goY
+X-Proofpoint-GUID: c1BmgHjkHjmPqhY6O_AWiJVv0XSe3goY
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 clxscore=1011 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/wab/scsi-mpt3sas
-branch HEAD: bbd1e56a8474dee8e06c149d76c076787e043420  scsi: mpt3sas: Fix out-of-bounds warnings in _ctl_addnl_diag_query
+I've been rejecting these patches until someone updates the callers to
+check the return.  This patch just silences the warning but the code is
+still totally buggy.
 
-elapsed time: 724m
+regards,
+dan carpenter
 
-configs tested: 109
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-mips                           gcw0_defconfig
-powerpc                        warp_defconfig
-powerpc                     kmeter1_defconfig
-mips                           ip22_defconfig
-powerpc                 mpc837x_rdb_defconfig
-nios2                         3c120_defconfig
-xtensa                    xip_kc705_defconfig
-openrisc                            defconfig
-mips                           rs90_defconfig
-arm                         s3c2410_defconfig
-sh                          urquell_defconfig
-arm                            mmp2_defconfig
-powerpc                      bamboo_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                          lpd270_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                          gemini_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                        fsp2_defconfig
-arc                              alldefconfig
-ia64                      gensparse_defconfig
-mips                      fuloong2e_defconfig
-arm                       netwinder_defconfig
-powerpc                      acadia_defconfig
-powerpc                     tqm8560_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                      arches_defconfig
-mips                        qi_lb60_defconfig
-powerpc                       ebony_defconfig
-sh                            migor_defconfig
-mips                       lemote2f_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210330
-x86_64               randconfig-a003-20210330
-x86_64               randconfig-a002-20210330
-x86_64               randconfig-a001-20210330
-x86_64               randconfig-a005-20210330
-x86_64               randconfig-a006-20210330
-i386                 randconfig-a004-20210330
-i386                 randconfig-a006-20210330
-i386                 randconfig-a003-20210330
-i386                 randconfig-a002-20210330
-i386                 randconfig-a001-20210330
-i386                 randconfig-a005-20210330
-i386                 randconfig-a015-20210330
-i386                 randconfig-a011-20210330
-i386                 randconfig-a014-20210330
-i386                 randconfig-a013-20210330
-i386                 randconfig-a016-20210330
-i386                 randconfig-a012-20210330
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20210330
-x86_64               randconfig-a015-20210330
-x86_64               randconfig-a014-20210330
-x86_64               randconfig-a016-20210330
-x86_64               randconfig-a013-20210330
-x86_64               randconfig-a011-20210330
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
