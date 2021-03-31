@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CDC34FA4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C338C34FA50
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhCaHbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:31:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42716 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhCaHbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:31:36 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12V7QQ3L020854;
-        Wed, 31 Mar 2021 09:31:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=VQ1IfAzKcaF8aoBGfFcQIald1k/JOPDpqfP8TPZYx1c=;
- b=ApZP3RpxakmeywKr0rWxNXjcASZ2lcS292+sV6L735BMiq5OdqVvkrXjP5z7v0zTe6Lv
- eWc+qL37pDSrwBYGUkQN7bT+QeeYfFYSRCRggKxw8NGhCSW5csVZQsIE1DLnzS89AA/Q
- hOFXvcQmRIxW5SWpsqaz8EVPK9vj5PvgJZ/JHyfIC1GH9/BSnmMHwaCi8WmzlukCnzMe
- rzWTemrq2nxgz4L6lBW4p3eD8oitmMaG+4FhC7y/FlRNgNGNhsftFxAJzYsMF1hqh9k9
- 4Z23owpHNgh+VpTjn0nGgRi/zsChcOvOqjM2J/zyUZzIQdj73vNMn6EJ6S1bcZQDZp5t qg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37maa2jurh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 09:31:23 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AE779100034;
-        Wed, 31 Mar 2021 09:31:22 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9BAE922321C;
-        Wed, 31 Mar 2021 09:31:22 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
- 2021 09:31:21 +0200
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: stm32-rproc: add new
- mailbox channel for detach
-To:     Rob Herring <robh@kernel.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <20210322092651.7381-1-arnaud.pouliquen@foss.st.com>
- <20210322092651.7381-2-arnaud.pouliquen@foss.st.com>
- <20210330144141.GA278273@robh.at.kernel.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <90f39f07-a9c0-73b9-ddad-e26b155d3b32@foss.st.com>
-Date:   Wed, 31 Mar 2021 09:31:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234060AbhCaHe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:34:28 -0400
+Received: from m12-17.163.com ([220.181.12.17]:47498 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234063AbhCaHeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:34:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7Vr4f
+        CiQXMgkEtD0jp2lje0Un+oKilPC7kaPBeblKvk=; b=ghyXpnAwD+6vdSKxtuNrL
+        op9yT4byz0a/TZtIl7BC0qtgrkCAIq64z3qtjK9HSsq0VKkvRQP0bAIObUITJ2G0
+        lP8NmpIUjnnI6bguFZhfafL/t8SH+TaUTviX0FpCs7yCcsGhdaq5Bnq2+SEeODyo
+        qyCeje+/irH5SbuU1LylFY=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp13 (Coremail) with SMTP id EcCowABHSZGUJWRgEOG7sw--.38716S2;
+        Wed, 31 Mar 2021 15:32:37 +0800 (CST)
+From:   dingsenjie@163.com
+To:     josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] block: rsxx: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Wed, 31 Mar 2021 15:31:51 +0800
+Message-Id: <20210331073151.15836-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210330144141.GA278273@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_01:2021-03-30,2021-03-31 signatures=0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowABHSZGUJWRgEOG7sw--.38716S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uw18Ww1fGF1DGFy3Ar1xGrg_yoW8tF1xpa
+        95uw1UAF1kAr1qkr15CayUZasav3Z3J3y8X397u34SyFn5AryagF1DJrWFyF98K3y8Jr4q
+        qan8KryUXay5tF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bYyIUUUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/xtbBRRVmyFPAK05EBgAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: dingsenjie <dingsenjie@yulong.com>
+
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/block/rsxx/core.c | 30 ++++--------------------------
+ 1 file changed, 4 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index 63f5498..8979843 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -150,16 +150,6 @@ static int rsxx_attr_stats_show(struct seq_file *m, void *p)
+ 	return 0;
+ }
+ 
+-static int rsxx_attr_stats_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, rsxx_attr_stats_show, inode->i_private);
+-}
+-
+-static int rsxx_attr_pci_regs_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, rsxx_attr_pci_regs_show, inode->i_private);
+-}
+-
+ static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
+ 			      size_t cnt, loff_t *ppos)
+ {
+@@ -206,21 +196,9 @@ static ssize_t rsxx_cram_write(struct file *fp, const char __user *ubuf,
+ 	.write		= rsxx_cram_write,
+ };
+ 
+-static const struct file_operations debugfs_stats_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= rsxx_attr_stats_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(rsxx_attr_stats);
+ 
+-static const struct file_operations debugfs_pci_regs_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= rsxx_attr_pci_regs_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(rsxx_attr_pci_regs);
+ 
+ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
+ {
+@@ -234,13 +212,13 @@ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
+ 
+ 	debugfs_stats = debugfs_create_file("stats", 0444,
+ 					    card->debugfs_dir, card,
+-					    &debugfs_stats_fops);
++					    &rsxx_attr_stats_fops);
+ 	if (IS_ERR_OR_NULL(debugfs_stats))
+ 		goto failed_debugfs_stats;
+ 
+ 	debugfs_pci_regs = debugfs_create_file("pci_regs", 0444,
+ 					       card->debugfs_dir, card,
+-					       &debugfs_pci_regs_fops);
++					       &rsxx_attr_pci_regs_fops);
+ 	if (IS_ERR_OR_NULL(debugfs_pci_regs))
+ 		goto failed_debugfs_pci_regs;
+ 
+-- 
+1.9.1
 
 
-On 3/30/21 4:41 PM, Rob Herring wrote:
-> On Mon, 22 Mar 2021 10:26:50 +0100, Arnaud Pouliquen wrote:
->> Add the "detach" mailbox item, that allows to define a mailbox to
->> send a IPCC signal to the remote processor on remoteproc detach action.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->> update from V1:
->>
->> Fix indentation error reported by 'make dt_binding_check'.
->>
->> ---
->>  .../bindings/remoteproc/st,stm32-rproc.yaml           | 11 +++++++++--
->>  1 file changed, 9 insertions(+), 2 deletions(-)
->>
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-
-Thank Rob for the review
-Since there is already a v3 that fixes the patch 2/2 , i will send a v4 to
-include your reviewed-by
-
-Regards,
-Arnaud
