@@ -2,162 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE6350472
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248D8350484
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhCaQZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S233976AbhCaQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhCaQZE (ORCPT
+        with ESMTP id S232319AbhCaQac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:25:04 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FE5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:25:03 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id h12so1555728qvm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:25:03 -0700 (PDT)
+        Wed, 31 Mar 2021 12:30:32 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB79EC061574;
+        Wed, 31 Mar 2021 09:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=fCRp+f9oEZRwz2tLs+x5UFPxXT2k+8MTEajLiG543iE=;
-        b=E0qHaj7GNQHth1b1XDiydbi3LRxgSyXTRIt30yJXGr4euLVP08l00Kj4vigGox7iJE
-         jBzfkUHPMmM/Su9k+GGHog40ud31Bv7dlve/m0FKG2DG23BU8HpQY7gQoCuDsBBRH22B
-         CdY5qwoGoXR1W4nKtTgzqNuaICGfR3dR7sgKvCnxFJvoIjsjEd1EHMc0dyRrjwp45/hg
-         eGFpOYrqWX68R6j8n91eZ8spafWkdPLPObVCDafOl/6dzjSmjX4vXlrowomC/MCrslIn
-         Mp4Z4ggUIY640HII3euetw3kp67GfIyHfYix7mB77RrammP9A2Ssi2oVpQqJPcQQqVnK
-         dHKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=fCRp+f9oEZRwz2tLs+x5UFPxXT2k+8MTEajLiG543iE=;
-        b=R7deiy32It/kUs7xfJr1eTDXJBy8SCZvQzg8AnEXkKr+xkPYHOz+IAtGlJOhjuMPH7
-         GPBTLz6TF1bhYmA0ZqL98OAvBRA2U7i44xJ8KqGX3Hq1swOAemhzq8/me749oRLu3QRZ
-         WVsFR5putYCuqT2Q4zV6bvivOmUNZd9I/o50qIpuXW/WomrY1LO2L2VEv2SPbKV8iaYE
-         o2nVqlLIfhD4xtYgJUmlQKnD6HFzi0ncg1+mQY1v+2velwloiRbfVi5po43GyvhHu0Re
-         SywwB/pHWm3yyGWjYcZ/cIDNfGZ2SrDuuItFqIra6a0udGGKoHOBDmLlD5yfpG7TX3Zb
-         bkRw==
-X-Gm-Message-State: AOAM5335RB86V6BSHB6e0enBr6E+IIT9qDHdO7KNuV/EhiJmpdCUwClt
-        28AAHODIkw2z6PDOBgrYPj8QovHEKO0Fkvwh
-X-Google-Smtp-Source: ABdhPJxJoNO1B+fBvpC9kIudNhGjiUeJQbEm2VvLjUu0bQ1W0X8zAukiVTCaZU+TUNC5zkLU9rn/JCMdUCPaaB5L
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:f189:6e8f:457f:e245])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:16c1:: with SMTP id
- d1mr3810787qvz.29.1617207902660; Wed, 31 Mar 2021 09:25:02 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 18:24:59 +0200
-Message-Id: <48079c52cc329fbc52f4386996598d58022fb872.1617207873.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] kasan: detect false-positives in tests
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=DB/sloEYmz7VRvujZiwTWQcY6o1S+cvefB
+        jxUT4Goqw=; b=HibTMtPMHatWdR2T2i27KbLrG4Eg9Qc1ki7i8U7JqLnciNHWlw
+        uvUNkZF94nSMSf//u0X387N/cRww7tsgKViQKffbi8hV1KcAJv0Rz5kPZic8cjBY
+        Go2RrQOSIiEy0KCKADkcgC/6kcowbSAH0sgneFyfQ1Zvpb/RH6oPC4gBo=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7EyWo2Rgrbt6AA--.6768S2;
+        Thu, 01 Apr 2021 00:30:15 +0800 (CST)
+Date:   Thu, 1 Apr 2021 00:25:18 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
         Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v2 1/9] riscv: add __init section marker to some functions
+Message-ID: <20210401002518.5cf48e91@xhacker>
+In-Reply-To: <20210401002442.2fe56b88@xhacker>
+References: <20210401002442.2fe56b88@xhacker>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDn7EyWo2Rgrbt6AA--.6768S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuryfXrWUJry5ur48ur4xtFb_yoW5KFyUpr
+        WkKa1kZFWYkFWvga9rAry8ur1UJ3Zaka43trsFkas8XF17ur45X34kW3yqvr1UJFWkuayr
+        A34rAry5Aw4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUklb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU81GQDUUUU
+        U==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, KASAN-KUnit tests can check that a particular annotated part
-of code causes a KASAN report. However, they do not check that no unwanted
-reports happen between the annotated parts.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-This patch implements these checks.
+They are not needed after booting, so mark them as __init to move them
+to the __init section.
 
-It is done by setting report_data.report_found to false in
-kasan_test_init() and at the end of KUNIT_EXPECT_KASAN_FAIL() and then
-checking that it remains false at the beginning of
-KUNIT_EXPECT_KASAN_FAIL() and in kasan_test_exit().
-
-kunit_add_named_resource() call is moved to kasan_test_init(), and the
-value of fail_data.report_expected is kept as false in between
-KUNIT_EXPECT_KASAN_FAIL() annotations for consistency.
-
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- lib/test_kasan.c | 49 +++++++++++++++++++++++++++---------------------
- 1 file changed, 28 insertions(+), 21 deletions(-)
+ arch/riscv/kernel/traps.c  | 2 +-
+ arch/riscv/mm/init.c       | 6 +++---
+ arch/riscv/mm/kasan_init.c | 6 +++---
+ arch/riscv/mm/ptdump.c     | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index d77c45edc7cd..bf9225002a7e 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -54,6 +54,10 @@ static int kasan_test_init(struct kunit *test)
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 1357abf79570..07fdded10c21 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -197,6 +197,6 @@ int is_valid_bugaddr(unsigned long pc)
+ #endif /* CONFIG_GENERIC_BUG */
  
- 	multishot = kasan_save_enable_multi_shot();
- 	kasan_set_tagging_report_once(false);
-+	fail_data.report_found = false;
-+	fail_data.report_expected = false;
-+	kunit_add_named_resource(test, NULL, NULL, &resource,
-+					"kasan_data", &fail_data);
- 	return 0;
- }
- 
-@@ -61,6 +65,7 @@ static void kasan_test_exit(struct kunit *test)
+ /* stvec & scratch is already set from head.S */
+-void trap_init(void)
++void __init trap_init(void)
  {
- 	kasan_set_tagging_report_once(true);
- 	kasan_restore_multi_shot(multishot);
-+	KUNIT_EXPECT_FALSE(test, fail_data.report_found);
+ }
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 067583ab1bd7..76bf2de8aa59 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -57,7 +57,7 @@ static void __init zone_sizes_init(void)
+ 	free_area_init(max_zone_pfns);
  }
  
- /**
-@@ -78,28 +83,30 @@ static void kasan_test_exit(struct kunit *test)
-  * fields, it can reorder or optimize away the accesses to those fields.
-  * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
-  * expression to prevent that.
-+ *
-+ * In between KUNIT_EXPECT_KASAN_FAIL checks, fail_data.report_found is kept as
-+ * false. This allows detecting KASAN reports that happen outside of the checks
-+ * by asserting !fail_data.report_found at the start of KUNIT_EXPECT_KASAN_FAIL
-+ * and in kasan_test_exit.
-  */
--#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
--	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))			\
--		migrate_disable();				\
--	WRITE_ONCE(fail_data.report_expected, true);		\
--	WRITE_ONCE(fail_data.report_found, false);		\
--	kunit_add_named_resource(test,				\
--				NULL,				\
--				NULL,				\
--				&resource,			\
--				"kasan_data", &fail_data);	\
--	barrier();						\
--	expression;						\
--	barrier();						\
--	KUNIT_EXPECT_EQ(test,					\
--			READ_ONCE(fail_data.report_expected),	\
--			READ_ONCE(fail_data.report_found));	\
--	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
--		if (READ_ONCE(fail_data.report_found))		\
--			kasan_enable_tagging();			\
--		migrate_enable();				\
--	}							\
-+#define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {			\
-+	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))				\
-+		migrate_disable();					\
-+	KUNIT_EXPECT_FALSE(test, READ_ONCE(fail_data.report_found));	\
-+	WRITE_ONCE(fail_data.report_expected, true);			\
-+	barrier();							\
-+	expression;							\
-+	barrier();							\
-+	KUNIT_EXPECT_EQ(test,						\
-+			READ_ONCE(fail_data.report_expected),		\
-+			READ_ONCE(fail_data.report_found));		\
-+	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {				\
-+		if (READ_ONCE(fail_data.report_found))			\
-+			kasan_enable_tagging();				\
-+		migrate_enable();					\
-+	}								\
-+	WRITE_ONCE(fail_data.report_found, false);			\
-+	WRITE_ONCE(fail_data.report_expected, false);			\
- } while (0)
+-static void setup_zero_page(void)
++static void __init setup_zero_page(void)
+ {
+ 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ }
+@@ -75,7 +75,7 @@ static inline void print_mlm(char *name, unsigned long b, unsigned long t)
+ 		  (((t) - (b)) >> 20));
+ }
  
- #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
+-static void print_vm_layout(void)
++static void __init print_vm_layout(void)
+ {
+ 	pr_notice("Virtual kernel memory layout:\n");
+ 	print_mlk("fixmap", (unsigned long)FIXADDR_START,
+@@ -557,7 +557,7 @@ static inline void setup_vm_final(void)
+ #endif /* CONFIG_MMU */
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+-void protect_kernel_text_data(void)
++void __init protect_kernel_text_data(void)
+ {
+ 	unsigned long text_start = (unsigned long)_start;
+ 	unsigned long init_text_start = (unsigned long)__init_text_begin;
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 4f85c6d0ddf8..e1d041ac1534 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -60,7 +60,7 @@ asmlinkage void __init kasan_early_init(void)
+ 	local_flush_tlb_all();
+ }
+ 
+-static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
++static void __init kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
+ {
+ 	phys_addr_t phys_addr;
+ 	pte_t *ptep, *base_pte;
+@@ -82,7 +82,7 @@ static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long en
+ 	set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(base_pte)), PAGE_TABLE));
+ }
+ 
+-static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
++static void __init kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
+ {
+ 	phys_addr_t phys_addr;
+ 	pmd_t *pmdp, *base_pmd;
+@@ -117,7 +117,7 @@ static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long en
+ 	set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(base_pmd)), PAGE_TABLE));
+ }
+ 
+-static void kasan_populate_pgd(unsigned long vaddr, unsigned long end)
++static void __init kasan_populate_pgd(unsigned long vaddr, unsigned long end)
+ {
+ 	phys_addr_t phys_addr;
+ 	pgd_t *pgdp = pgd_offset_k(vaddr);
+diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+index ace74dec7492..3b7b6e4d025e 100644
+--- a/arch/riscv/mm/ptdump.c
++++ b/arch/riscv/mm/ptdump.c
+@@ -331,7 +331,7 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 
+ DEFINE_SHOW_ATTRIBUTE(ptdump);
+ 
+-static int ptdump_init(void)
++static int __init ptdump_init(void)
+ {
+ 	unsigned int i, j;
+ 
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+2.31.0
+
 
