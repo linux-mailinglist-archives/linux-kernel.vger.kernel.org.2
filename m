@@ -2,249 +2,517 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA5B350385
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0C235038C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235713AbhCaPdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:33:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:34325 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235674AbhCaPdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:33:14 -0400
-IronPort-SDR: CF8SCsSqSRbHLE3s7DzqihiCJfQ3MuLw8QwAIjs7SIU102RprpwkOsdJuH2Xg5wiZrhJX8mgOO
- TwrkJPsi/4Tg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192053393"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="192053393"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:33:11 -0700
-IronPort-SDR: b+u0o+Bzcc7wvmJYwHoT9SjeVmrpAzAcGIWO8pYEJBZhn/Zl6+oJH8n1DxJGq83ux9lAUCQ6kD
- RplH7cb/qaeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="377311939"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP; 31 Mar 2021 08:33:10 -0700
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 08:33:10 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Wed, 31 Mar 2021 08:33:10 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.55) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Wed, 31 Mar 2021 08:33:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xzh9P80+eoxqg8Q1pdBj5+C5I6YykFw77AHT8L+NRKIQchkqxX1rTIDTSR/x6zRZy/LvQCWPniKMsTr83WhHUV5A/ejmbIP+H2EcPwnEwi1Zv63lMXmHxJ0ZJvVsuhk2BSkrOKiVx2B7X0UZbNsZ37XMukKsqkBm40mV15Op5tlSn0tFRwmhMbf9iLSyrqtDZjbFZ1/mJ02H1oQ++3mLVXJjYscuP7K/scXLHb1dIEj0msA8cjTkRmDRwU8blXtzy6nke+6BllJ15cXvS3BAPmkj4OSKTTluCbyZDnizvdbdoCkBjSHHFOJW5s0HbfuMBTXzXTDp+AgwShj007Uw5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NRCbm0tCTIg7bwVPUrjMd87vRAi8e4mOdHuN6rtGkcw=;
- b=MOxnaUeZIG5/3yAMd2MBn0ciAU3mrp8dxzbKR+5ExyMM+kq2E4o3EVURPC5qXaDUkwKxotfNUb7sc4uZOe7LZsMidVE2insocNVB1M+ANYCauC9Rk6j+qZnHAt/SLIqKW+WSURr7jhpUCzNYUSJA2TN4SbjIR4elVOhk5JVThvWo3eAKLsnX31KUopCa9NIMWJi1m53bhCilmxOqEuHBbjSfXD8UAQOcjGKYtUGmNFZMAQq1EvmGK6/PF10cjsVVDi1UWN76mP8xmo1Kd79hHu+/A9RtaU7Hb/xxlq0KzMWF5Oe6J6FQzHC0MGXoR58vhMTj/oT9hISLCfSp+2EnYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NRCbm0tCTIg7bwVPUrjMd87vRAi8e4mOdHuN6rtGkcw=;
- b=YZCrrW+mc6MSBbVegqFsPWhhqdjVW0JSPJoKuKrcCQt/B29NW3LEsvgvl7/9Ywm34hU+oyPnHrTw+ALLFWc7AroyzYhG8/3D2lXLoBCAsSzjKKCS9Z078oiSbaS41FUDqhzt38gW8lUIMTCg+AkAVraPgr2n87RPxkRU/yaC2Y8=
-Received: from DM6PR11MB2780.namprd11.prod.outlook.com (2603:10b6:5:c8::19) by
- DM5PR1101MB2153.namprd11.prod.outlook.com (2603:10b6:4:56::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.28; Wed, 31 Mar 2021 15:32:59 +0000
-Received: from DM6PR11MB2780.namprd11.prod.outlook.com
- ([fe80::dcb3:eed0:98d1:c864]) by DM6PR11MB2780.namprd11.prod.outlook.com
- ([fe80::dcb3:eed0:98d1:c864%7]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 15:32:59 +0000
-From:   "Ong, Boon Leong" <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH net-next v3 0/6] stmmac: Add XDP support
-Thread-Topic: [PATCH net-next v3 0/6] stmmac: Add XDP support
-Thread-Index: AQHXJkL6V6DW7zDlgUy0wbB2MEpyE6qeOZpQ
-Date:   Wed, 31 Mar 2021 15:32:58 +0000
-Message-ID: <DM6PR11MB27802A13B4946C51570664DFCA7C9@DM6PR11MB2780.namprd11.prod.outlook.com>
-References: <20210331153541.1892-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210331153541.1892-1-boon.leong.ong@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-authentication-results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [42.189.169.167]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e7dac727-cf0b-42be-9065-08d8f45a438b
-x-ms-traffictypediagnostic: DM5PR1101MB2153:
-x-microsoft-antispam-prvs: <DM5PR1101MB215321EE7ED418BB6CB2A7BFCA7C9@DM5PR1101MB2153.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i+r9cLtIJqFf5uNwE/vFdHlzWWxVfa/2Y5Al06Lf+cgb5hRjdeg+DgVwjN93mDYd959FySik0FfWGqbRE3+WkK/JIXEWUP6B8N7M/WqyeDCKmdGRsXDS2DINw6Lcop04rz6UPyKlmtJmZuanmUv04kPnLSnMUgByC8nOFq1XWrxjU//FxftoSF1c/W5yXN6eRYEFivCYQie58901zQr3petdIbg2vvevIPtLtkroEk71Xyul7PYRRQutjOBlSvEKd9rcOqEtfSeFe+JinLzw2yCypE3e/jcazPYiDlsycKBIEpB1iyzcSmWgshuXZ4iO/6EIoXlo8e3kBjO/8WzDzm8jQPni7u7T+gkcfQbqog0TVqaOG0GygSiseOop9oloWLAomOlNfv9tfc7bQ1EfXSIRAB1llzN6SCVDm1b+5I8s+eVnObLoqxyxbsL6Wakhd3PQCgJR226kmWj7E7lY7a5X0Mam19txek9UN0nv9ImIoD3gxcvNKa830DLmYNSucub83ptTIOFDGChIRvhGGkkLo9OMqTo2kYHZFhLI6hA+cO4fx0XqEpL43ar/flYuwHwbx4Cc1kEpdXTSYqGZKm2Wtn+JU/afuujkQACerKYfNVNJhUAXKuWmoR8jcYAnYllauRiGlqVYCBEOAOAUcgZaZOQKs3gnzCBp06rWbdfDiCJOfwhrSiGM0jc2cHYO8laIiiJfyC93jfFkiYr+WroV841YuxbzJBTDllt7jfg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(136003)(39860400002)(396003)(52536014)(186003)(71200400001)(33656002)(5660300002)(4326008)(66476007)(478600001)(66446008)(64756008)(66556008)(316002)(26005)(76116006)(110136005)(54906003)(66946007)(966005)(38100700001)(7416002)(8936002)(9686003)(6506007)(86362001)(55016002)(7696005)(8676002)(83380400001)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?S25reEVrWCtrdmdxNVphcUpCUlY3a2pac1FFNEQ4Z2ZYdkVTbDNHeDl4bnU4?=
- =?utf-8?B?RmxLc2xxdURNQ2M2T1FoVzNpbG9ZYllZSFRkV1BlMFVveDFKMWxHZ1UrL0JC?=
- =?utf-8?B?ZGhUaVlHc1ZkbnJqV0RNUDNEMG9jblJPZ01ydE5RYlZjNWMrQVBtOVZqRHNh?=
- =?utf-8?B?KzREMVM5UWJCcmtTZTZIdGhtdWQxekk1ZE9LclR3QXZsbU9mQUtqcXhDZEFn?=
- =?utf-8?B?U2J3SnN1dDBlSkptbDVHU3Q1cDNrSGpaSXU4cEgxRFF4dWRoOCtiTm0zUHlS?=
- =?utf-8?B?cEVYWTdRaDdScWV2cFFpaDAwMGhFYmVhRTl2ZURYYUI0cktVQ09jajE4N3RC?=
- =?utf-8?B?ME9CT3FlckpNV0JhZmVXeFVsRU92RmNuTWVIWDU0TkR0RjJrSGtOcUduVVRC?=
- =?utf-8?B?cWJmVEdLME9ERjNDck00RFNkUElzaGNycmdmbStGck51TmdlWTdjZlFzaDRh?=
- =?utf-8?B?cGdyZUl2YXhOckdPQUFDbFdocGRUVzBOZU1VTHVtS056V2d5aGd1MTFzYjRw?=
- =?utf-8?B?cWlQYmFxMlVFK3JMeDFTeHoxVEJ4ZURWeHFqRVlPWWlWOHRySktHN3B6WjBH?=
- =?utf-8?B?NDB5dUVLTWM1dmJlZXpJalpuK2dsWkcxc1JZbGpqcG1JREc2UkpWRzFBYStT?=
- =?utf-8?B?cWZ5QW9aOHhXYktieTMwZHlXc2x0RkEzdkNiTTJGb2oxQ1lMVWNsTCs1KzR2?=
- =?utf-8?B?VkJ1ZWRGbjJ5VlJEUHJZcWFsZkZVeGUyclBxdVUyUEZLQTN4L1lDN2NKUFlB?=
- =?utf-8?B?akV0ZEVYQzdNTXN4ZklxRnhvaWdXL1o4UFBLRVU3NXVYZVp2L2hTL0JQTmZ1?=
- =?utf-8?B?NXNLNE1oVlUveEJlQXZnRHU4TE5zd3c3d240M0lYd2ZCT2RGcXFYK0RUUFhJ?=
- =?utf-8?B?VnFwZWRsYnNBbTJtQ0t2VXJJZFVkWm9HL2FpemI1VlVPTWI1Rnp4MzgyUlhT?=
- =?utf-8?B?QjRGU0NLUlVTeGE3ZnhPcVVQNkhFTHRrcmRyV1BrMFk3bXJJY2lrOTF5RDRx?=
- =?utf-8?B?eXV2cktuOTVvd2V3am12UUI5YldCNWZrNnF1NHcvR0JTMXVRQUl6dk9jeURX?=
- =?utf-8?B?QmF2YTNyeEZ0TEc1OElycU1FRWQ0NWdNVUI5eUdYeldheEI4aTBBOERqb1RG?=
- =?utf-8?B?ZzFuanh2TS92WTBKTEtoM3RlRDJDb0JCWGN6dTBNWkp4VXkyTWtVbXR5eEFN?=
- =?utf-8?B?dU9KUzNkQk9mM1B6L3Bkb1RTSU1TTU5UVDJLdkxjS1RXV3pGTm0wLzU3MExk?=
- =?utf-8?B?WjFXWTJlL2VoWGJXOC8vb0dSemNqbG5mM3ozbjc4blNlVnZkanFOQndTVVZK?=
- =?utf-8?B?MStMbzNJZ28yRUdyNlJvbStrSytodHFPem54VU55UkVKS3dHYWRWRUhvN2E1?=
- =?utf-8?B?TDltS1pIdW84RFgwcXYzQmY3czcxUFJLekRrRmJOM0Y1ak5rek9BbkR6REdh?=
- =?utf-8?B?dVYzSy9LKzVzQ1Z0d1poUE5EanZ5UlRyLzUyODJwT1JwY3Y3cDdZK3d2Tk5E?=
- =?utf-8?B?dDR3M1duZ3JuZzYrRHI3WTlvTmhUNW5UYjRNWG9TdXFoTmNMc2lHckJYdDQr?=
- =?utf-8?B?QkhxNWIzYk1DN3dFQVZMakM1cDQ2ZHdCRWFMd3doMGMrV29oT1d1aXJ6cTU5?=
- =?utf-8?B?MGt6cFc5dlNFeDVhU2IxUmN0NjI2UXlhUGdHN0xwVnhuQjZNMy9KMWVEK0JM?=
- =?utf-8?B?U01OT281NmZFSmRsU3JRUEppdVVZaVcxRXQxcEdzNzVTS0tVNVpLZUNXNTFZ?=
- =?utf-8?Q?0hvIWO6skz7f++3LcYCDD23Mr5+dVTX5yAU8VTt?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235558AbhCaPft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:35:49 -0400
+Received: from m32-153.88.com ([43.250.32.153]:64498 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235470AbhCaPfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:35:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=1kqWvACgu23sUM/C7sF27jMVKhsnEkYmussM7
+        2M45U8=; b=CuLLze+7spqdWT3cZ0VCQ8w6edXLJ3Ef31Ofo9FcEXFuHw6IMk4HK
+        if/DXgpXf1my1dmw2VU91sf2g/fw1BTVIMgD3pGkQHxGz8au4ph8GcOfkNRF8bQ9
+        EjGC6iWC3IdpOGCNBe86XxdDFe/xsGlYQg/HnpkmkP8lsefSwrYmtA=
+Received: from mipc (unknown [120.238.248.129])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAXoiKslmRgkUtTAA--.52689S2;
+        Wed, 31 Mar 2021 23:35:11 +0800 (CST)
+Date:   Wed, 31 Mar 2021 23:35:03 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, opensource.kernel@vivo.com
+Subject: Re: [PATCH] translations/zh_CN: add translations to dev-tools gcov
+Message-ID: <20210331153503.GA19439@mipc>
+References: <20210331131408.61061-1-bernard@vivo.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2780.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7dac727-cf0b-42be-9065-08d8f45a438b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 15:32:58.9399
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ti4hoeMES6kQ6xDw85TRxRxQ026G/aUJH6wr4SVhgVkjxilgvrDqOwqxFB2otpGPkb0NhEfFj2i4e1mN/yMiVtL4YZZPQ2XNpk95+kevfgc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2153
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210331131408.61061-1-bernard@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgAXoiKslmRgkUtTAA--.52689S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3uw18JF43JFy3CF45GryUWrg_yoW8GF45to
+        W09w4rAw1UCF43Aw15GFW3JFyjyFnxWFZrAr43trn8W34UJF1fZ3WUAw43KryrZrW3Jw15
+        tr98JrWrW3WDJFnxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUU5u7k0a2IF6w4kM7kC6x804xWl1xkIjI8I6I8E6xAIw20EY4v2
+        0xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7
+        IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vE
+        x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
+        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0x
+        kIwI1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE
+        7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_Jw0_GFylIxkvb40E47kJMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUmb4SUUUUU
+X-Originating-IP: [120.238.248.129]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UGxzIGlnbm9yZSB0aGlzLiBJIHdpbGwgcmVzZW5kIHRoZSByZWFsIHYzLiBTb3JyeSBmb3IgZ2xp
-dGNoIG9uIG15IHBhcnQuIA0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9tOiBP
-bmcsIEJvb24gTGVvbmcgPGJvb24ubGVvbmcub25nQGludGVsLmNvbT4NCj5TZW50OiBXZWRuZXNk
-YXksIE1hcmNoIDMxLCAyMDIxIDExOjM2IFBNDQo+VG86IEdpdXNlcHBlIENhdmFsbGFybyA8cGVw
-cGUuY2F2YWxsYXJvQHN0LmNvbT47IEFsZXhhbmRyZSBUb3JndWUNCj48YWxleGFuZHJlLnRvcmd1
-ZUBzdC5jb20+OyBKb3NlIEFicmV1IDxqb2FicmV1QHN5bm9wc3lzLmNvbT47IERhdmlkIFMgLg0K
-Pk1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5l
-bC5vcmc+OyBBbGV4ZWkNCj5TdGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+OyBEYW5pZWwgQm9y
-a21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsNCj5KZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIDxo
-YXdrQGtlcm5lbC5vcmc+OyBKb2huIEZhc3RhYmVuZA0KPjxqb2huLmZhc3RhYmVuZEBnbWFpbC5j
-b20+DQo+Q2M6IE1heGltZSBDb3F1ZWxpbiA8bWNvcXVlbGluLnN0bTMyQGdtYWlsLmNvbT47IEFu
-ZHJpaSBOYWtyeWlrbw0KPjxhbmRyaWlAa2VybmVsLm9yZz47IE1hcnRpbiBLYUZhaSBMYXUgPGth
-ZmFpQGZiLmNvbT47IFNvbmcgTGl1DQo+PHNvbmdsaXVicmF2aW5nQGZiLmNvbT47IFlvbmdob25n
-IFNvbmcgPHloc0BmYi5jb20+OyBLUCBTaW5naA0KPjxrcHNpbmdoQGtlcm5lbC5vcmc+OyBuZXRk
-ZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1zdG0zMkBzdC1tZC0NCj5tYWlsbWFuLnN0b3JtcmVw
-bHkuY29tOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LQ0KPmtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGJwZkB2Z2VyLmtlcm5lbC5vcmc7IE9uZywgQm9vbiBMZW9u
-Zw0KPjxib29uLmxlb25nLm9uZ0BpbnRlbC5jb20+DQo+U3ViamVjdDogW1BBVENIIG5ldC1uZXh0
-IHYzIDAvNl0gc3RtbWFjOiBBZGQgWERQIHN1cHBvcnQNCj4NCj5IaSwNCj4NCj5UaGlzIGlzIHRo
-ZSB2MyBwYXRjaCBzZXJpZXMgZm9yIGFkZGluZyBYRFAgc3VwcG9ydCB0byBzdG1tYWMgZHJpdmVy
-Lg0KPg0KPlN1bW1hcnkgb2YgdGhlIGNoYW5nZXMgaW4gdjMgKHBlciBmZWVkYmFjayBmcm9tIEph
-a3ViIEtpY2luc2tpKTotDQo+DQo+NC82OiBGYWN0b3IgaW4gWERQIGJ1ZmZlciBoZWFkZXIgYW5k
-IHRhaWwgYWRqdXN0bWVudCBieSBYRFAgcHJvZy4NCj4NCj41LzY6IEFkZGVkICducS0+dHJhbnNf
-c3RhcnQgPSBqaWZmaWVzJyB0byBhdm9pZCBUWCB0aW1lLW91dCBmb3IgWERQX1RYLg0KPg0KPjYv
-NjogQWRkZWQgJ25xLT50cmFuc19zdGFydCA9IGppZmZpZXMnIHRvIGF2b2lkIFRYIHRpbWUtb3V0
-IGZvcg0KPiAgICAgbmRvX3hkcF94bWl0Lg0KPg0KPkkgcmV0ZXN0ZWQgdGhpcyBwYXRjaCBzZXJp
-ZXMgb24gYWxsIHRoZSB0ZXN0IHN0ZXBzIGxpc3RlZCBpbiB2MSBhbmQgdGhlDQo+cmVzdWx0cyBs
-b29rIGdvb2QgYXMgZXhwZWN0ZWQuIEkgYWxzbyB1c2VkIHhkcF9hZGp1c3RfdGFpbCB0ZXN0IGFw
-cCBpbg0KPnNhbXBsZXMvYnBmIGZvciBjaGVja2luZyBvdXQgWERQIGhlYWQgYW5kIHRhaWwgYWRq
-dXN0bWVudCBpbnRyb2R1Y2VkIGluDQo+NC82IGFuZCB0aGUgcmVzdWx0IGJlbG93IGxvb2tzIGNv
-cnJlY3QgdG9vLg0KPg0KPg0KPiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjDQo+IyMjIyMjIyMjIyMjIw0KPg0KPkRVVCA+IHJvb3RAaW50
-ZWwtY29yZWk3LTY0On4gJCAuL3hkcF9hZGp1c3RfdGFpbCAtaSBldGgwIC1QIDQwMCAtTg0KPj09
-PT09PT09PT09PT09PT09PT09PT09PT09DQo+aWNtcCAicGFja2V0IHRvbyBiaWciIHNlbnQ6ICAg
-ICAgICAgIDAgcGt0cw0KPmljbXAgInBhY2tldCB0b28gYmlnIiBzZW50OiAgICAgICAgICAwIHBr
-dHMNCj5pY21wICJwYWNrZXQgdG9vIGJpZyIgc2VudDogICAgICAgICAgMCBwa3RzDQo+aWNtcCAi
-cGFja2V0IHRvbyBiaWciIHNlbnQ6ICAgICAgICAgIDAgcGt0cw0KPmljbXAgInBhY2tldCB0b28g
-YmlnIiBzZW50OiAgICAgICAgICAxIHBrdHMNCj5pY21wICJwYWNrZXQgdG9vIGJpZyIgc2VudDog
-ICAgICAgICAgMSBwa3RzDQo+aWNtcCAicGFja2V0IHRvbyBiaWciIHNlbnQ6ICAgICAgICAgIDEg
-cGt0cw0KPmljbXAgInBhY2tldCB0b28gYmlnIiBzZW50OiAgICAgICAgICAyIHBrdHMNCj5pY21w
-ICJwYWNrZXQgdG9vIGJpZyIgc2VudDogICAgICAgICAgNCBwa3RzDQo+aWNtcCAicGFja2V0IHRv
-byBiaWciIHNlbnQ6ICAgICAgICAgIDYgcGt0cw0KPmljbXAgInBhY2tldCB0b28gYmlnIiBzZW50
-OiAgICAgICAgICA4IHBrdHMNCj5pY21wICJwYWNrZXQgdG9vIGJpZyIgc2VudDogICAgICAgICAg
-OSBwa3RzDQo+aWNtcCAicGFja2V0IHRvbyBiaWciIHNlbnQ6ICAgICAgICAgMTAgcGt0cw0KPmlj
-bXAgInBhY2tldCB0b28gYmlnIiBzZW50OiAgICAgICAgIDEwIHBrdHMNCj4NCj5MUCA+IHJvb3RA
-aW50ZWwtY29yZWk3LTY0On4jIHBpbmcgMTY5LjI1NC4xLjExIC1zIDMwMA0KPlBJTkcgMTY5LjI1
-NC4xLjExICgxNjkuMjU0LjEuMTEpIDMwMCgzMjgpIGJ5dGVzIG9mIGRhdGEuDQo+MzA4IGJ5dGVz
-IGZyb20gMTY5LjI1NC4xLjExOiBpY21wX3NlcT0xIHR0bD02NCB0aW1lPTEuMTcgbXMNCj4zMDgg
-Ynl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGljbXBfc2VxPTIgdHRsPTY0IHRpbWU9MC41NzUgbXMN
-Cj4zMDggYnl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGljbXBfc2VxPTMgdHRsPTY0IHRpbWU9MC41
-ODIgbXMNCj4zMDggYnl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGljbXBfc2VxPTQgdHRsPTY0IHRp
-bWU9MC41OTUgbXMNCj4zMDggYnl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGljbXBfc2VxPTUgdHRs
-PTY0IHRpbWU9MC41ODUgbXMNCj4zMDggYnl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGljbXBfc2Vx
-PTYgdHRsPTY0IHRpbWU9MC41OTEgbXMNCj4zMDggYnl0ZXMgZnJvbSAxNjkuMjU0LjEuMTE6IGlj
-bXBfc2VxPTcgdHRsPTY0IHRpbWU9MC41OTkgbXMNCj5eQw0KPi0tLSAxNjkuMjU0LjEuMTEgcGlu
-ZyBzdGF0aXN0aWNzIC0tLQ0KPjcgcGFja2V0cyB0cmFuc21pdHRlZCwgNyByZWNlaXZlZCwgMCUg
-cGFja2V0IGxvc3MsIHRpbWUgNjEwM21zDQo+cnR0IG1pbi9hdmcvbWF4L21kZXYgPSAwLjU3NS8w
-LjY3MC8xLjE2Ni8wLjIwMiBtcw0KPg0KPkxQID4gIHJvb3RAaW50ZWwtY29yZWk3LTY0On4jIHBp
-bmcgMTY5LjI1NC4xLjExIC1zIDUwMA0KPlBJTkcgMTY5LjI1NC4xLjExICgxNjkuMjU0LjEuMTEp
-IDUwMCg1MjgpIGJ5dGVzIG9mIGRhdGEuDQo+RnJvbSAxNjkuMjU0LjEuMTEgaWNtcF9zZXE9MSBG
-cmFnIG5lZWRlZCBhbmQgREYgc2V0IChtdHUgPSA0MzYpDQo+RnJvbSAxNjkuMjU0LjEuMTEgaWNt
-cF9zZXE9MiBGcmFnIG5lZWRlZCBhbmQgREYgc2V0IChtdHUgPSA0MzYpDQo+RnJvbSAxNjkuMjU0
-LjEuMTEgaWNtcF9zZXE9MyBGcmFnIG5lZWRlZCBhbmQgREYgc2V0IChtdHUgPSA0MzYpDQo+RnJv
-bSAxNjkuMjU0LjEuMTEgaWNtcF9zZXE9NCBGcmFnIG5lZWRlZCBhbmQgREYgc2V0IChtdHUgPSA0
-MzYpDQo+RnJvbSAxNjkuMjU0LjEuMTEgaWNtcF9zZXE9NSBGcmFnIG5lZWRlZCBhbmQgREYgc2V0
-IChtdHUgPSA0MzYpDQo+RnJvbSAxNjkuMjU0LjEuMTEgaWNtcF9zZXE9NiBGcmFnIG5lZWRlZCBh
-bmQgREYgc2V0IChtdHUgPSA0MzYpDQo+DQo+DQo+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCj4jIyMjIyMjIyMjIyMjDQo+DQo+SGlz
-dG9yeSBvZiB0aGUgcHJldmlvdXMgcGF0Y2ggc2VyaWVzOg0KPg0KPnYyOiBodHRwczovL3BhdGNo
-d29yay5rZXJuZWwub3JnL3Byb2plY3QvbmV0ZGV2YnBmL2xpc3QvP3Nlcmllcz00NTc3NTcNCj52
-MTogaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9saXN0Lz9z
-ZXJpZXM9NDU3MTM5DQo+DQo+SXQgd2lsbCBiZSBncmVhdCBpZiBjb21tdW5pdHkgY2FuIGhlbHAg
-dG8gdGVzdCBvciByZXZpZXcgdGhlIHYzIHBhdGNoDQo+c2VyaWVzIG9uIHlvdXIgcGxhdGZvcm0g
-YW5kIHByb3ZpZGUgbWUgYW55IG5ldyBmZWVkYmFjayBpZiBhbnkuDQo+DQo+VGhhbmsgeW91IHZl
-cnkgbXVjaC4NCj5Cb29uIExlb25nDQo+DQo+T25nIEJvb24gTGVvbmcgKDYpOg0KPiAgbmV0OiBz
-dG1tYWM6IHNldCBJUlEgYWZmaW5pdHkgaGludCBmb3IgbXVsdGkgTVNJIHZlY3RvcnMNCj4gIG5l
-dDogc3RtbWFjOiBtYWtlIFNQSCBlbmFibGUvZGlzYWJsZSB0byBiZSBjb25maWd1cmFibGUNCj4g
-IG5ldDogc3RtbWFjOiBhcnJhbmdlIFR4IHRhaWwgcG9pbnRlciB1cGRhdGUgdG8NCj4gICAgc3Rt
-bWFjX2ZsdXNoX3R4X2Rlc2NyaXB0b3JzDQo+ICBuZXQ6IHN0bW1hYzogQWRkIGluaXRpYWwgWERQ
-IHN1cHBvcnQNCj4gIG5ldDogc3RtbWFjOiBBZGQgc3VwcG9ydCBmb3IgWERQX1RYIGFjdGlvbg0K
-PiAgbmV0OiBzdG1tYWM6IEFkZCBzdXBwb3J0IGZvciBYRFBfUkVESVJFQ1QgYWN0aW9uDQo+DQo+
-IGRyaXZlcnMvbmV0L2V0aGVybmV0L3N0bWljcm8vc3RtbWFjL01ha2VmaWxlICB8ICAgMSArDQo+
-IGRyaXZlcnMvbmV0L2V0aGVybmV0L3N0bWljcm8vc3RtbWFjL3N0bW1hYy5oICB8ICAzNSArLQ0K
-PiAuLi4vbmV0L2V0aGVybmV0L3N0bWljcm8vc3RtbWFjL3N0bW1hY19tYWluLmMgfCA1MjkgKysr
-KysrKysrKysrKysrLQ0KPi0tDQo+IC4uLi9uZXQvZXRoZXJuZXQvc3RtaWNyby9zdG1tYWMvc3Rt
-bWFjX3hkcC5jICB8ICA0MCArKw0KPiAuLi4vbmV0L2V0aGVybmV0L3N0bWljcm8vc3RtbWFjL3N0
-bW1hY194ZHAuaCAgfCAgMTIgKw0KPiA1IGZpbGVzIGNoYW5nZWQsIDUzNyBpbnNlcnRpb25zKCsp
-LCA4MCBkZWxldGlvbnMoLSkNCj4gY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbmV0L2V0aGVy
-bmV0L3N0bWljcm8vc3RtbWFjL3N0bW1hY194ZHAuYw0KPiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9uZXQvZXRoZXJuZXQvc3RtaWNyby9zdG1tYWMvc3RtbWFjX3hkcC5oDQo+DQo+LS0NCj4y
-LjI1LjENCg0K
+Hi Bernard,
+
+I'd like to help Alex to make a pre-review.
+
+On Wed, Mar 31, 2021 at 06:14:05AM -0700, Bernard Zhao wrote:
+> Add translations to dev-tools gcov
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  .../translations/zh_CN/dev-tools/gcov.rst     | 274 ++++++++++++++++++
+>  1 file changed, 274 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/dev-tools/gcov.rst
+
+It seems that you are the first person who add zh translation in
+zh_CN/dev-tools, so please also add the zh_CN/dev-tools/index.rst and link
+it to zh_CN/index.rst, or your work will not appear when building docs.
+
+You could mark the un-translated docs of dev-tools in 'TodoList', just
+as zh_CN/admin-guide/index.rst.
+
+> 
+> diff --git a/Documentation/translations/zh_CN/dev-tools/gcov.rst b/Documentation/translations/zh_CN/dev-tools/gcov.rst
+> new file mode 100644
+> index 000000000000..5ebbc55e5881
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/dev-tools/gcov.rst
+> @@ -0,0 +1,274 @@
+
+<<<<<<<<<<<<<<<
+
+> +Chinese translated version of Documentation/dev-tools/gcov.rst
+> +
+> +If you have any comment or update to the content, please contact the
+> +original document maintainer directly.  However, if you have a problem
+> +communicating in English you can also ask the Chinese maintainer for
+> +help.  Contact the Chinese maintainer if this translation is outdated
+> +or if there is a problem with the translation.
+> +
+> +Chinese maintainer: Bernard Zhao <bernard@vivo.com>
+> +---------------------------------------------------------------------
+> +Documentation/dev-tools/gcov.rst 的中文翻译
+> +
+> +如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
+> +交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
+> +译存在问题，请联系中文版维护者。
+> +
+> +中文版维护者： 赵军奎 Bernard Zhao <bernard@vivo.com>
+> +中文版翻译者： 赵军奎 Bernard Zhao <bernard@vivo.com>
+> +
+> +以下为正文
+> +---------------------------------------------------------------------
+
+<<<<<<<<<<<<<<<
+
+You seems use the old style of zh translation header. Please follow this:
+
+.. include:: ../disclaimer-zh_CN.rst
+
+:Original: Documentation/dev-tools/gcov.rst
+
+:Translator: 赵军奎 Bernard Zhao <bernard@vivo.com>
+
+The 'include' will give the unified declaration, and use tags for other
+informations.
+
+Example see:
+  Documentation/translations/zh_CN/process/1.Intro.rst
+
+> +
+> +在Linux内核里使用gcov做代码覆盖率检查
+> +===============================
+
+Here, = line must longer than title text. Please make before send
+patch, will find a warning. And need a empty line under the = line.
+
+Reference:
+  Documentation/doc-guide/sphinx.rst
+
+> +gcov是linux中已经集成的一个分析模块，该模块在内核中对GCC的代码覆盖率统
+> +计提供了支持。
+> +linux内核运行时的代码覆盖率数据会以gcov兼容的格式存储在debug-fs中，可
+> +以通过如下的方式获得指定文件的代码运行覆盖率统计数据（需要跳转到内核
+> +编译路径下并且要有root权限）：
+                               ^^
+You missed "use gcov with the ``-o`` option as follows"
+
+'::' is a special symbol for ReST, do not use '：' to replace it. 
+Make test will also help with this point.
+
+> +
+> +    # cd /tmp/linux-out
+> +    # gcov -o /sys/kernel/debug/gcov/tmp/linux-out/kernel spinlock.c
+> +
+> +这个命令会在当前编译路径下创建带有注释的代码实际运行次数的计数源文件。
+
+这将在当前目录中创建带有执行计数注释的源代码文件。
+
+> +在获得这些统计文件后，可以使用图形化的gcov前端工具（比如lcov），
+> +来实现自动化处理linux kernel的覆盖率运行数据，同时生成易于阅读的HTML格
+                         ^^^^^^
+                         内核
+
+本文所有kernel是否翻译请注意统一，建议能译全译
+
+> +式文件。
+> +
+> +可能的用途：
+> +
+> +* 调试（用来判断每一行的代码是否已经运行过）
+> +* 测试改进（如何修改测试代码，尽可能地覆盖到没有运行过的代码）
+> +* 内核配置优化（对于某一个config配置，如果关联的代码从来没有运行过，是
+                             ^^^^^^
+                   option    选项
+
+> +否还需要这个配置）
+> +
+> +gcov和lcov的关联网站
+
+This line no need. Follow two lines are ReST tags.
+
+> +.. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+> +.. _lcov: http://ltp.sourceforge.net/coverage/lcov.php
+
+Maybe you need to change tags for the two lines, same tag in zh and en will
+cause warning. 
+
+> +
+> +
+> +准备
+> +-----------
+> +
+> +打开如下配置：
+> +
+> +        CONFIG_DEBUG_FS=y
+> +        CONFIG_GCOV_KERNEL=y
+> +
+> +获取整个内核的覆盖率数据，还需要打开：
+> +
+> +        CONFIG_GCOV_PROFILE_ALL=y
+> +
+> +需要注意的是，整个kernel开启覆盖率统计回造成kernel镜像文件尺寸的增大
+                     ^^^^^^              ^^      ^^^^^
+                                         会
+
+> +同时kernel运行的也会变慢一些。
+> +另外，并不是所有的架构都支持整个kernel开启覆盖率统计。
+> +
+> +代码运行覆盖率数据只在debugfs挂载完成后才可以访问：
+                                                    ^^
+                                                    ::
+
+> +
+> +        mount -t debugfs none /sys/kernel/debug
+> +
+> +
+> +客制化
+> +-------------
+> +
+> +如果要单独针对某一个路径或者文件进行代码覆盖率统计，可以在kernel相应路
+                                                             ^^^^^^
+
+> +径的Makefile中增加如下的配置：
+> +
+> +- 单独统计单个文件（例如main.o）
+> +
+> +	GCOV_PROFILE_main.o := y
+> +
+> +- 单独统计某一个路径
+> +
+> +	GCOV_PROFILE := y
+> +
+> +如果要在整个kernel的覆盖率统计（开启CONFIG_GCOV_PROFILE_ALL）中单独排除
+> +某一个文件或者路径，可以使用如下的方法：
+                                         ^^
+                                         ::
+
+> +
+> +- 不统计单个文件（例如main.o）
+
+Please do not change original content structure. If you want to change that, 
+please modify en version first.
+
+	GCOV_PROFILE_main.o := n
+
+和::
+
+	GCOV_PROFILE := n
+
+> +
+> +	GCOV_PROFILE_main.o := n
+> +
+> +- 不统计某一个路径
+> +
+> +	GCOV_PROFILE := n
+> +
+
+Missed follow sentence：
+
+Only files which are linked to the main kernel image or are compiled as
+kernel modules are supported by this mechanism.
+
+> +
+> +关联的文件
+
+相关文件
+
+> +-------------
+> +
+> +gcov功能需要在debugfs中创建如下文件
+> +
+> +``/sys/kernel/debug/gcov``
+> +    gcov相关功能的根路径
+> +
+> +``/sys/kernel/debug/gcov/reset``
+> +    gcov复位，向该文件写入数据后会将所有的gcov统计数据清0
+       ^^^^^^^^^
+Global reset file:
+全局复位文件：
+
+> +
+> +``/sys/kernel/debug/gcov/path/to/compile/dir/file.gcda``
+> +    gcov工具可以识别的覆盖率统计数据文件
+
+Missed "Resets file coverage data to zero when written to."
+
+> +
+> +``/sys/kernel/debug/gcov/path/to/compile/dir/file.gcno``
+> +    gcov工具需要的软连接文件（指向编译时生成的信息统计文件），这个文件是
+> +    在gcc编译时如果配置了选项-ftest-coverage时生成的。
+
+``-ftest-coverage``
+
+> +
+> +
+> +针对module的统计
+
+模块
+
+> +-------
+
+Too short
+
+> +
+> +kernel中的模块会动态的加载和卸载，模块卸载时对应的数据会被清除掉。
+
+Kernel modules may contain cleanup code which is only run during
+module unload time.
+
+Please be faithful to the original text.
+
+> +gcov提供了一种机制，通过保留相关数据的副本来收集这部分卸载模块的覆盖率数据。
+> +模块卸载后这些备份数据在debugfs中会继续存在。
+> +一旦这个模块重新加载，模块关联的运行统计会被初始化成debugfs中备份的数据。
+> +
+> +可以通过对内核参数gcov_persist的修改来停用gcov对module的备份机制：
+                                                                   ^^
+                                                                   ::
+
+> +
+> +        gcov_persist = 0
+> +
+> +在运行时，用户还可以通过写入模块的数据文件或者写入gcov复位文件来丢弃已卸
+> +载模块的数据。
+> +
+> +
+> +分离的编译和运行设备
+> +---------------------------------
+> +
+> +gcov的内核分析架构支持内核的编译和分析是在同一台设备上，也可以编译和运
+> +行是在不同的设备上。
+> +如果内核编译和运行是不同的设备，那么需要额外的准备工作，这取决于gcov tools
+
+gcov tools是否翻译请统一，或在第一次翻译时括注英文
+
+> +是在哪里使用的：
+> +
+> +a) gcov如果运行在测试设备上
+
+若gcov运行在测试设备上
+
+> +
+> +    测试设备上面gcov工具的版本必须要跟设备内核编译使用的gcc版本相兼容，
+> +    同时下面的文件要从编译设备拷贝到测试设备上：
+> +
+> +    从源代码中：
+> +      - 所有的C文件和头文件
+> +	  
+> +    从编译目录中：
+> +      - 所有的C文件和头文件
+> +      - 所有的.gcda文件和.gcno文件
+> +      - 所有目录的链接
+> +
+> +    需要注意的是，测试机器上面的目录结构跟编译机器上面的目录机构必须完全一致。
+
+It is important to note
+特别需要注意
+
+> +    如果文件是软链接，需要替换成真正的目录文件（这是由make的当前工作目录变量
+> +    CURDIR引起的）。
+> +
+> +b) gcov如果运行在编译设备上
+
+若gcov运行在编译设备上
+
+> +
+> +    测试用例运行结束后，如下的文件需要从测试设备中拷贝到编译设备上：
+> +	
+> +    从sysfs中的gcov目录中：
+> +      - 所有的.gcda文件
+> +      - 所有的.gcno文件软链接
+> +
+> +    这些文件可以拷贝到编译设备的任意目录下，gcov使用-o选项指定拷贝的目录。
+> +	
+> +    比如一个是示例的目录结构如下：
+                                   ^^
+                                   ::
+and a empty line
+
+> +      /tmp/linux:    内核源码目录
+> +      /tmp/out:      内核编译文件路径（make O=指定）
+> +      /tmp/coverage: 从测试机器上面拷贝的数据文件路径
+> +	
+> +      [user@build] cd /tmp/out
+> +      [user@build] gcov -o /tmp/coverage/tmp/out/init main.c
+> +
+> +
+> +关于编译器的注意事项
+> +-----------------
+
+Too short
+
+> +
+> +GCC和LLVM gcov工具不一定兼容。
+> +如果编译器是GCC，使用gcov_来处理.gcno和.gcda文件，如果是Clang编译器，
+> +则使用llvm-cov_。
+> +
+> +gcc gcov和llvm cov的关联网站
+
+No need above line.
+And duplicate tags below。
+
+> +.. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+> +.. _llvm-cov: https://llvm.org/docs/CommandGuide/llvm-cov.html
+> +
+> +GCC和Clang gcov之间的版本差异由Kconfig处理的。
+> +kconfig会根据编译工具链的检查自动选择合适的gcov格式。
+> +
+> +问题定位
+> +---------------
+> +
+> +可能出现的问题1
+> +    编译到链接阶段报错终止
+> +
+> +问题原因
+> +    分析标志指定在了源文件但是没有链接到主内核，或者客制化了链接程序
+> +
+> +解决方法
+> +    通过在Makefile中使用GCOV_PROFILE := n或者
+> +    GCOV_PROFILE_basename.o := n来将链接报错的文件排除掉
+
+corresponding Makefile
+
+``GCOV_PROFILE := n``
+``GCOV_PROFILE_basename.o := n``
+
+> +
+> +可能出现的问题2
+> +    文件从sysfs拷贝时不存在或者不可访问
+
+Files copied from sysfs appear empty or incomplete.
+从sysfs复制的文件显示为空或不完整。
+
+> +
+> +问题原因
+> +    由于seq_file的工作方式，某些工具（例如cp或tar）可能无法正确地从
+> +    sysfs复制文件。
+> +
+> +解决方法
+> +    使用cat读取.gcda文件，使用cp -d复制链接，或者使用附录B中所示的
+
+``cat``
+``.gcda``
+``cp -d`` 
+
+> +    机制。
+> +
+> +
+> +附录A：collect_on_build.sh
+> +------------------------------
+> +
+> +用于在编译设备上收集覆盖率编译中间数据文件的示例脚本
+> +
+> +.. code-block:: sh
+> +
+> +    #!/bin/bash
+> +
+> +    KSRC=$1
+> +    KOBJ=$2
+> +    DEST=$3
+> +
+> +    if [ -z "$KSRC" ] || [ -z "$KOBJ" ] || [ -z "$DEST" ]; then
+> +      echo "Usage: $0 <ksrc directory> <kobj directory> <output.tar.gz>" >&2
+> +      exit 1
+> +    fi
+> +
+> +    KSRC=$(cd $KSRC; printf "all:\n\t@echo \${CURDIR}\n" | make -f -)
+> +    KOBJ=$(cd $KOBJ; printf "all:\n\t@echo \${CURDIR}\n" | make -f -)
+> +
+> +    find $KSRC $KOBJ \( -name '*.gcno' -o -name '*.[ch]' -o -type l \) -a \
+> +                     -perm /u+r,g+r | tar cfz $DEST -P -T -
+> +
+> +    if [ $? -eq 0 ] ; then
+> +      echo "$DEST successfully created, copy to test system and unpack with:"
+> +      echo "  tar xfz $DEST -P"
+> +    else
+> +      echo "Could not create file $DEST"
+> +    fi
+> +
+> +
+> +附录B：collect_on_test.sh
+> +-----------------------------
+> +
+> +用于在测试设备上收集覆盖里统计数据数据文件的示例脚本
+
+Missed "(see 6b):"
+This tag seems not good, but just follow it.
+
+> +
+> +.. code-block:: sh
+> +
+> +    #!/bin/bash -e
+> +
+> +    DEST=$1
+> +    GCDA=/sys/kernel/debug/gcov
+> +
+> +    if [ -z "$DEST" ] ; then
+> +      echo "Usage: $0 <output.tar.gz>" >&2
+> +      exit 1
+> +    fi
+> +
+> +    TEMPDIR=$(mktemp -d)
+> +    echo Collecting data..
+> +    find $GCDA -type d -exec mkdir -p $TEMPDIR/\{\} \;
+> +    find $GCDA -name '*.gcda' -exec sh -c 'cat < $0 > '$TEMPDIR'/$0' {} \;
+> +    find $GCDA -name '*.gcno' -exec sh -c 'cp -d $0 '$TEMPDIR'/$0' {} \;
+> +    tar czf $DEST -C $TEMPDIR sys
+> +    rm -rf $TEMPDIR
+> +
+> +    echo "$DEST successfully created, copy to build system and unpack with:"
+> +    echo "  tar xfz $DEST"
+>  
+
+Thanks!
+
+Wu X.C.
+
