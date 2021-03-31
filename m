@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B42035064D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22959350652
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhCaS3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        id S234754AbhCaS3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbhCaS3J (ORCPT
+        with ESMTP id S234932AbhCaS3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:29:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3710C061574;
-        Wed, 31 Mar 2021 11:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qYhvdw4avJJTMESp5tkYv8hNlLwk4YC4NiuAbxqOmUI=; b=bQREb+OIGfQRwa5BZwbbhbTPhe
-        OMmGr72DRF/ibKkSoMlZxncoj0uKIhhm/cJC2KYCdcW66Tys1ZkVFrQFH9n/X41ZZqx4h0M3Wn5oO
-        FDMf9AHknldQgkKoQh3Dk6JCwE1EcVfiehS12lEDh+yo5+ODq1nYG22feVAJG4XO/j0+bo7M8Iprx
-        ONxh+YWEVrr8QpBm3Jk2xEFwjPON0nYwrtVKDS+umG/9mapvs5/CpZjN+Cc2pGbeh03rnsGZ+GKlb
-        puXhOFfsxdKTZfWcnHZ/JeqFnvY+eRWQUkwW88sszzGW0PBhCLr1+dMf7bMnR/2ptjB3S6Nr+muXs
-        Qj02o9/Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRfaD-004xa8-Hb; Wed, 31 Mar 2021 18:28:53 +0000
-Date:   Wed, 31 Mar 2021 19:28:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 00/27] Memory Folios
-Message-ID: <20210331182849.GZ351017@casper.infradead.org>
-References: <20210320054104.1300774-1-willy@infradead.org>
- <YFja/LRC1NI6quL6@cmpxchg.org>
- <20210322184744.GU1719932@casper.infradead.org>
- <YFqH3B80Gn8pcPqB@cmpxchg.org>
- <20210324062421.GQ1719932@casper.infradead.org>
- <YF4eX/VBPLmontA+@cmpxchg.org>
- <20210329165832.GG351017@casper.infradead.org>
- <YGN8biqigvPP0SGN@cmpxchg.org>
- <20210330210929.GR351017@casper.infradead.org>
- <YGS76CfjNc2jfYQ7@cmpxchg.org>
+        Wed, 31 Mar 2021 14:29:38 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BC0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:29:37 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 8so22138229ybc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/2jQTnecP2FoklA04onryTnkX7RD4TLimO6NvlAanGU=;
+        b=ErRuAAy/bx50uFBM/WS6oiOyBGx0gDr6lpV433S8QMDvg/bLPoMzuvx3J+nF2p3Ga9
+         asyKWy0fI0TnCsgVyVpeC+qYCi1G6HTC+cxex93z2u96IG7bOR1ofkBlKAgdCDHRxGMz
+         mePXajUbOYTCc4/Jl37HiW8O7gYRzLcfXb9EL5RjQrHbw6mG7Npa00smn5bZlsQe0IZB
+         8JN3RkYsIm0qUb5foxe2C6baZKj7+cthaEcHcGbeRNKb7HS00hO1dVeu3UQIkrG1YBwF
+         HsPWQAaoLhMlSWWFFx41hE0XD/Okes2Lmm0i+WQDPEAjRrxRATtMTlpiUnTb6YE8Vxto
+         zSRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/2jQTnecP2FoklA04onryTnkX7RD4TLimO6NvlAanGU=;
+        b=jhLIyHbAFRFqrqLSLklyi7QSVRUI0V8caiCH+aaXi6s2Ve0W1KcBDU8kDroGcGE7Av
+         byfPR6uBjv7y1OFTbjWY0b35Fb7AjJoPDwPP2691qUla1itp5acHUDc/v2L2hvKOpAEu
+         i8B8bXi/iPxEXwIBjG4t/5mFa593c8Wun12xTGXx54pL9f+xjFOobd1JWM6KWFXfQxKl
+         BoosY2oX1Zh3nUiLZKq9WKvwAMgRRqtf4YB+5HdyB2mM/2d/7EzKF9Hc4FxmTulk4tMv
+         NLUXh0EzOEskkpN2XBftRKii/uBL4CtVZFMGvQRv5DFlpZc1ieyrsyA0GbTuDXK32PgZ
+         RxoQ==
+X-Gm-Message-State: AOAM532iwFoJYc6rgeT5jFMetO7X7uDMYb1i6PY3OMvmSwzEW/piz98M
+        f9meYEvUQkMufUxGU257Tug/NrPnyoFlT50zhYkOnA==
+X-Google-Smtp-Source: ABdhPJyxdYFEdUCe0ghJ4LhNnigtSAp+W383ktXXxJT5l/nKeUbuBHMOnT9rzC5SjlDmopmGbDllxW21AEHaoqxFHsk=
+X-Received: by 2002:a25:d2d3:: with SMTP id j202mr6436313ybg.157.1617215376457;
+ Wed, 31 Mar 2021 11:29:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGS76CfjNc2jfYQ7@cmpxchg.org>
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAMpxmJVKmBp06_2Hd4XF-eL4KfgZFy1o+xUvvs6H=TaAnkmYhA@mail.gmail.com> <CAHp75Vcsw8uQOL9RAxOU3jeq4mGAiK3cNMYbKyWGe7F8Dz2dZQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vcsw8uQOL9RAxOU3jeq4mGAiK3cNMYbKyWGe7F8Dz2dZQ@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 31 Mar 2021 20:29:25 +0200
+Message-ID: <CAMpxmJXL=_8MBwb0Dy4d8vKM8SCbzyXJaE78azo1Es8hY7mN7w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:14:00PM -0400, Johannes Weiner wrote:
-> Anyway, we digressed quite far here. My argument was simply that it's
-> conceivable we'll switch to a default allocation block and page size
-> that is larger than the smallest paging size supported by the CPU and
-> the kernel. (Various architectures might support multiple page sizes,
-> but once you pick one, that's the smallest quantity the kernel pages.)
+On Wed, Mar 31, 2021 at 2:25 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Mar 31, 2021 at 10:58 AM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> >
+> > On Mon, Mar 29, 2021 at 1:41 PM Matti Vaittinen
+> > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > >
+> > > Do not allow exporting GPIOs which are set invalid
+> > > by the driver's valid mask.
+> > >
+> > > Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
+>
+> I have just noticed that this is invalid format for the Fixes tag
+> (luckily, haha, due to a blank line it's not recognized as a tag!).
+>
+> Matti, I highly recommend to add in your .gitconfig file an alias:
+>         one = show -s --pretty='format:%h (\"%s\")'
+>
+> Bart, there are real Fixes tag issues from another series. I will
+> comment there as well to let an author know.
+>
+> --
 
-We've had several attempts in the past to make 'struct page' refer to
-a different number of bytes than the-size-of-a-single-pte, and they've
-all failed in one way or another.  I don't think changing PAGE_SIZE to
-any other size is reasonable.
+Eek, sorry I should have looked more carefully. I'll fix it in my tree.
 
-Maybe we have a larger allocation unit in the future, maybe we do
-something else, but that should have its own name, not 'struct page'.
-I think the shortest path to getting what you want is having a superpage
-allocator that the current page allocator can allocate from.  When a
-superpage is allocated from the superpage allocator, we allocate an
-array of struct pages for it.
-
-> I don't think folio as an abstraction is cooked enough to replace such
-> a major part of the kernel with it. so I'm against merging it now.
-> 
-> I would really like to see a better definition of what it actually
-> represents, instead of a fluid combination of implementation details
-> and conveniences.
-
-Here's the current kernel-doc for it:
-
-/**
- * struct folio - Represents a contiguous set of bytes.
- * @flags: Identical to the page flags.
- * @lru: Least Recently Used list; tracks how recently this folio was used.
- * @mapping: The file this page belongs to, or refers to the anon_vma for
- *    anonymous pages.
- * @index: Offset within the file, in units of pages.  For anonymous pages,
- *    this is the index from the beginning of the mmap.
- * @private: Filesystem per-folio data (see attach_folio_private()).
- *    Used for swp_entry_t if FolioSwapCache().
- * @_mapcount: How many times this folio is mapped to userspace.  Use
- *    folio_mapcount() to access it.
- * @_refcount: Number of references to this folio.  Use folio_ref_count()
- *    to read it.
- * @memcg_data: Memory Control Group data.
- *
- * A folio is a physically, virtually and logically contiguous set
- * of bytes.  It is a power-of-two in size, and it is aligned to that
- * same power-of-two.  It is at least as large as %PAGE_SIZE.  If it is
- * in the page cache, it is at a file offset which is a multiple of that
- * power-of-two.
- */
-struct folio {
-        /* private: don't document the anon union */
-        union {
-                struct {
-        /* public: */
-                        unsigned long flags;
-                        struct list_head lru;
-                        struct address_space *mapping;
-                        pgoff_t index;
-                        unsigned long private;
-                        atomic_t _mapcount;
-                        atomic_t _refcount;
-#ifdef CONFIG_MEMCG
-                        unsigned long memcg_data;
-#endif
-        /* private: the union with struct page is transitional */
-                };
-                struct page page;
-        };
-};
-
+Bartosz
