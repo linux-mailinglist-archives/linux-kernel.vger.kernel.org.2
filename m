@@ -2,401 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E300434F965
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A8734F96A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbhCaHEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:04:42 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:58179 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233822AbhCaHEc (ORCPT
+        id S233924AbhCaHFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:05:17 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:35518 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233833AbhCaHFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:04:32 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MS4WT-1l4DVk00h1-00TW8J; Wed, 31 Mar 2021 09:04:31 +0200
-Received: by mail-oi1-f178.google.com with SMTP id v25so2473850oic.5;
-        Wed, 31 Mar 2021 00:04:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532kXENdqjbCfHN0LlGNp5Khsr7EaA/a/rkUdBcRPGAII6lFD+O2
-        HP5+9WNskHDGsjTUtDaqQ/h5AQE5kjG9xgwzp9k=
-X-Google-Smtp-Source: ABdhPJyIeGbUukD8qVI5qDo309eo5AeCgLJups4xAzlxGTq91SBqwp+eFLRjPFEBheBw/OjFF0/PbS6AJI3aY8vgrtc=
-X-Received: by 2002:aca:5945:: with SMTP id n66mr1326284oib.11.1617174269552;
- Wed, 31 Mar 2021 00:04:29 -0700 (PDT)
+        Wed, 31 Mar 2021 03:05:13 -0400
+Received: by mail-vs1-f44.google.com with SMTP id h11so772176vsl.2;
+        Wed, 31 Mar 2021 00:05:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5FcWqzUO5UA3cR6NbW4yOHK8OR5G4ZVaphs7Wom8voI=;
+        b=ljnC7bzJ+PyI0IB1/8/PJhjQD2cdKwo34oODmegXwaFIoI9IUzci4Ah4ogKkIkh7u3
+         I2uUKzpdGqt7PFKEwVjhr8KiGmWeAZa4V4LpMAwof1vL6/jaZMaVxpXlvh38hkC2JfuO
+         x9mbm2Oo+gwlQan9nu0bvazBLyf7hWJ9pn7lc4GFcPM4Oje/1nVfjAYjMgjt3LnsdoPE
+         y3cKpUUDd3K6luPZsgOHiEOvO/9FrOAZOm9QK4H6r26pkUUNa+WHLeM0DRF+GdRjuRWC
+         iGtL6Tg/1wEznYkTYXB9qe501FpezwDHdX3F1ia0v9gptZ7koFbwpd0l9zWtwGuN5zXd
+         wRDg==
+X-Gm-Message-State: AOAM533QpVQ3XU7W4j5tZqacQvGPyy02ppwX/psc8k+TRMIKo7T0Rb2n
+        3yVYZ4zcLv6qEt3PzT76ttRUz3rKLCLKviWtsZc=
+X-Google-Smtp-Source: ABdhPJz12mWOTz8tEinky2k83Ps60+VailbnPpLTMg//vGWbxzLaGxgDV6inNb8fwJdVyog4bNT7013JCqCOb6ltT/E=
+X-Received: by 2002:a05:6102:7cd:: with SMTP id y13mr691011vsg.40.1617174312465;
+ Wed, 31 Mar 2021 00:05:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331014603.2496983-1-danielwa@cisco.com>
-In-Reply-To: <20210331014603.2496983-1-danielwa@cisco.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 31 Mar 2021 09:04:15 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
-Message-ID: <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Add support for cisco craw64 ARMv8 SoCs
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Ofer Licht <olicht@cisco.com>, xe-linux-external@cisco.com,
-        DTML <devicetree@vger.kernel.org>,
+References: <20210205222644.2357303-9-saravanak@google.com>
+ <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
+ <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com> <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
+ <161678243444.3012082.5031467952132861429@swboyd.mtv.corp.google.com>
+ <CAMuHMdV5PGUujsFP2TXMxij4UxVnrrurh_qVhq8+480w21jJAg@mail.gmail.com>
+ <161705310317.3012082.15148238105608149214@swboyd.mtv.corp.google.com>
+ <CAGETcx8reqKoPoJ8dV7f9=SHYKmNhcVpkNHoCS-0L4UHCBahoA@mail.gmail.com>
+ <161706920822.3012082.10047587064612237296@swboyd.mtv.corp.google.com>
+ <CAMuHMdX7OxTjwQmdP8xDbVkjtZ5442qFao8K6bNpDQ5S3GPSgQ@mail.gmail.com> <161715734080.2260335.881350237641202575@swboyd.mtv.corp.google.com>
+In-Reply-To: <161715734080.2260335.881350237641202575@swboyd.mtv.corp.google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 31 Mar 2021 09:05:00 +0200
+Message-ID: <CAMuHMdXMhiOBSSwrC2A_ijXCaekBMfC8h9PFhqLtNGhtPDba=A@mail.gmail.com>
+Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        DOCUMENTATION <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetre e
+        @vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>, linux-rpi-kernel" 
+        <linux-rpi-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:o/EEY1/Vtm32SERdad9YLFVAppq5PIL92vHYcN7ewwd5tfDpA3j
- 6z55UMwmaLYrsKGYCc57TrMabjdm2lnRS4Uw9g9tc+6iHCgqz0QslEykOUosci7Z7uwDZNV
- uJ2V/VYopYIiXCC4gkjKY6FLQU5aTo8eNDh9snrC+ehpQkafGP/M/SpaTPSe3c/+xejNfpL
- azIVPpnv90Mjyz5FD52pw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hX9reeoEI60=:rN2p/4oAMgTL9I0T9Hliqo
- 23U5a6h/NfRhZUDlD6nwYRouOHP7M8IWSWc9yNrtt5ex7uLIC9KikKsambXqpmamR+SSxL5Zz
- HmT1hSGY0kLwX7lvjMM2iTKipMyhCWnUeNm9dNfzKNj9P7Ug45dNWFhJvPELvrdB7nnMcU8bP
- zrnbbKHen6iBlkW3gLcQOEOjNmPFXNVSsJtfrIrOWmBeQ0L5lbSg2I2kh8xH74teqQYDPwydg
- pGXLrmjahJLrkhtlsmzyFXheHTjaQpyA7F160sKG3iOfe7Oo5j5utV5Op7/hBps/OJu4ADYoV
- Soz4dAlg3q314l/5Gy6fplFbTwO4CwHLajmJu1yxBOECaT6HPOvYKgPANvWnq2y1mMKLdoNRQ
- m7rj2gQ7s/9pCXoG/vGs5+c1L58wecYpdvUEbQ9OP9iyO85+SZts+8AKihREk0iKvj1iPJGFB
- vqWUakkaenuuKOpzeXMNIX31VkZdEWQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 3:46 AM Daniel Walker <danielwa@cisco.com> wrote:
-> From: Ofer Licht <olicht@cisco.com>
+Hi Stephen,
 
-Thanks for the submission, it's always nice to see a new platform
+On Wed, Mar 31, 2021 at 4:22 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> Quoting Geert Uytterhoeven (2021-03-29 23:58:23)
+> > On Tue, Mar 30, 2021 at 3:53 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > Quoting Saravana Kannan (2021-03-29 16:28:20)
+> > > > On Mon, Mar 29, 2021 at 2:25 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > > Quoting Geert Uytterhoeven (2021-03-26 11:29:55)
+> > > > > > On Fri, Mar 26, 2021 at 7:13 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > > > > Quoting Nicolas Saenz Julienne (2021-03-25 11:25:24)
+> > > > > > > > >
+> > > > > > > > > This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls
+> > > > > > > > > devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL
+> > > > > > > > > dev->of_node. I'm not sure if adding a check for a NULL np in
+> > > > > > > > > of_clk_add_hw_provider() is a right fix, though.
+> > > > > > > >
+> > > > > > > > I believe the right fix is not to call 'devm_of_clk_add_hw_provider()' if
+> > > > > > > > 'pdev->dev.of_node == NULL'. In such case, which is RPi3's, only the CPU clock
+> > > > > > > > is used, and it's defined and queried later through
+> > > > > > > > devm_clk_hw_register_clkdev().
+> > > > > > > >
+> > > > > > > > @Marek, I don't mind taking care of it if it's OK with you.
+> > > > > > > >
+> > > > > > >
+> > > > > > > Ah I see this is related to the patch I just reviewed. Can you reference
+> > > > > > > this in the commit text? And instead of putting the change into the clk
+> > > > > > > provider let's check for NULL 'np' in of_clk_add_hw_provider() instead
+> > > > > > > and return 0 if there's nothing to do. That way we don't visit this
+> > > > > > > problem over and over again.
+> > > > > >
+> > > > > > I'm not sure the latter is what we reall want: shouldn't calling
+> > > > > > *of*_clk_add_hw_provider() with a NULL np be a bug in the provider?
+> > > > > >
+> > > > >
+> > > > > I don't have a strong opinion either way. Would it be useful if the
+> > > > > function returned an error when 'np' is NULL?
+> > > >
+> > > > I lean towards returning an error. Not a strong opinion either.
+> > >
+> > > Does it have any use?
+> >
+> > of_clk_del_provider() removes the first provider found with node == NULL.
+> > If there are two drivers calling of_clk_add_hw_provider(), and one of
+> > hem calls of_clk_del_provider() later, the wrong provider may be
+> > removed from the list.
+> >
+>
+> So you're saying we shouldn't add a NULL device node pointer to the list
+> so that this can't happen? That doesn't mean returning an error from
+> of_clk_add_hw_provider() would be useful though.
+> of_clk_add_hw_provider() can return 0 if np == NULL and
+> of_clk_del_provider() can return early if np == NULL too.
 
-> Define craw64 config, dts and Makefile for Cisco
-> SoCs known as Craw.
+I don't know if I grasp all meanings of the above.
 
-I'd like some more information about the platform, e.g. the target
-market and maybe a link to the product information.
+The main question is if it is valid for a driver to call
+of_clk_add_hw_provider()
+with np == NULL.
+  - If yes, should that register the provider?
+      - If yes, how to handle two drivers calling of_clk_add_hw_provider()
+        with np = NULL, as their unregistration order is not guaranteed to
+        be correct.
 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Ofer Licht <olicht@cisco.com>
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  arch/arm64/Kconfig.platforms                  |   5 +
->  arch/arm64/boot/dts/Makefile                  |   1 +
->  arch/arm64/boot/dts/cisco/Makefile            |   5 +
->  .../arm64/boot/dts/cisco/craw64-dopplerg2.dts | 239 +++++++++++
->  arch/arm64/boot/dts/cisco/craw64.dtsi         | 392 ++++++++++++++++++
->  arch/arm64/configs/defconfig                  |   1 +
+If no, is that something to ignore (0), or a bug (error)?
 
-We have separate branches for dt, defconfig, and the rest, so it would be
-good to split this patch up a little more.
+Gr{oetje,eeting}s,
 
-There should also be an entry in the top-level MAINTAINERS file.
+                        Geert
 
-> diff --git a/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
-> new file mode 100644
-> index 000000000000..20ecc57b4e5c
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
-> @@ -0,0 +1,239 @@
-> +/dts-v1/;
-> +
-> +#include "craw64.dtsi"
-> +
-> +/ {
-> +       model = "Cisco Craw64 on DopplerG 2.0";
-> +       compatible = "cisco,craw64-dopplerg2", "cisco,craw64";
-> +
-> +       memory {
-> +               device_type = "memory";
-> +               reg = <0x0 0x80000000 0x0 0x80000000>;
-> +       };
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The memory size is usually filled by the boot loader, just put an
-empty node into the .dtsi file
-
-> +
-> +       soc: soc {
-> +               uart0: serial@23f80000 {
-> +                       clock-frequency = <250000000>;
-> +                       status = "ok";
-> +               };
-> +
-> +               uart1: serial@23fc0000 {
-> +                       clock-frequency = <250000000>;
-> +                       status = "ok";
-> +               };
-> +
-> +               spiclk: spiclk {
-> +                       clock-frequency = <250000000>;
-> +               };
-
-The clock frequencies can also normally go into the .dtsi, as those
-tend to be SoC specific rather than board specific.
-
-> +               spi: spi@24000000 {
-> +                       status="ok";
-> +                       flash: flash@0 {
-> +                               compatible = "micron,n25q128a13", "jedec,spi-nor";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <1>;
-> +                               spi-max-frequency = <8000000>;
-> +                               reg = <0>;
-> +                               partition@0 {
-> +                                       label = "unused0";
-> +                                       reg = <0x0 0x10000>;
-> +                                       read-only;
-> +                               };
-> +                               partition@1 {
-> +                                       label = "brom";
-> +                                       reg = <0x10000 0x10000>;
-> +                               };
-
-The partitions in turn normally go into the bootloader, which
-needs to know about them anyway, but might pick different
-settings.
-
-> +
-> +               stmmaceth: stmmaceth {
-> +                       clock-frequency = <250000000>;
-> +               };
-> +
-> +               eth0: dwmac@282c0000 {
-> +                       status = "ok";
-> +                       mdio-channel = <0>;
-> +               };
-
-There is no point in defining labels in the board specific file, as
-nothing will reference them. If you define labels in the .dtsi file,
-you might find it easier to refer to the nodes by those labels
-rather than by the full path.
-
-Both of the node names look wrong here. The name for an ethernet
-device should be 'ethernet@282c000'.
-
-> +               wd@28500200 {
-> +                       compatible = "cisco,craw-smgmt-wdt";
-> +                       reg = <0x28500200 0x140>;
-> +               };
-
-Similarly, the watchdog should be watchdog@28500200. I don't
-see a binding document for a cisco,craw-smgmt-wdt, so please
-drop this node until the binding has been accepted. You can
-submit the binding together with the driver or the dts file (as
-a separate patch), but I don't want to merge dt nodes without a
-reviewed binding, as that has the risk of requiring incompatible
-changes later.
-
-> +
-> +               doppler_i2c: bsp_i2c {
-> +                       compatible = "cisco,dplr-i2c";
-> +                       reg = <0x23f71000 0x10>;
-> +               };
-> +       };
-> +       doppler {
-> +               intrpt {
-> +                       compatible = "cisco,dplr_intrpt";
-
-Same for both of these.
-
-> +                       reg = <0x0 0x20000000 0x0 0x0FFFFFFF>;
-> +                       interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-> +                               <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "dpu", "oob", "packet", "offload",
-> +                               "tla0", "tla1", "misc";
-> +               };
-
-The interrupt lines and register numbers are most likely hardwired, so this
-again can go into the .dtsi file. It's impossible to know without the binding
-document of course.
-
-> diff --git a/arch/arm64/boot/dts/cisco/craw64.dtsi b/arch/arm64/boot/dts/cisco/craw64.dtsi
-> new file mode 100644
-> index 000000000000..9c3c5c8c252e
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/cisco/craw64.dtsi
-> @@ -0,0 +1,392 @@
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/* the mbox for spin-table; not sure if this is needed given that it's outside our defined memory zone */
-> +/memreserve/ 0x285001F8 0x00000008;
-
-Please don't use spin-table for new machines.
-
-> +
-> +/ {
-> +       compatible = "cisco,craw64";
-> +       interrupt-parent = <&gic>;
-> +       #address-cells = <2>;
-> +       #size-cells = <2>;
-> +
-> +       aliases {
-> +               serial0 = &uart0;
-> +               spi0 = &spi; /* spi driver uses this to set bus number 0, which is tacked onto the reported device name
-> +                               so that we get device spi0 instead of spiN where N is some arbitrary large integer. */
-> +       };
-
-The aliases go into the .dts file. In particular when there are two uarts, it is
-not obvious that both of them are always connected on all boards, or which
-should be the first on a given machine.
-
-> +/* Macro definitions for reference
-> + *
-> + * define GIC_SPI 0
-> + * define GIC_PPI 1
-> + *
-> + * define GIC_CPU_MASK_RAW(x) ((x) << 8)
-> + *
-> + * define IRQ_TYPE_EDGE_RISING    1
-> + * define IRQ_TYPE_LEVEL_HIGH     4
-> + */
-
-If you prefer the numbers, it's generally fine to just open-code
-these. No need for
-the comment here either way.
-
-> +
-> +               reset: reset@20001004 {
-> +                       compatible = "syscon";
-> +                       reg = <0x20001004 0x4>;
-> +               };
-...
-> +               reboot: reboot@20001004 {
-> +                       compatible = "syscon-reboot";
-> +                       regmap = <&reset>;
-> +                       offset = <0x0>;
-> +                       mask = <0xE0002001>;
-> +               };
-
-This doesn't look right, you have two nodes with the same unit address here,
-and the syscon seems to only have a single register?
-
-> +               spiclk: spiclk {
-> +                       compatible = "fixed-clock";
-> +                       #clock-cells = <1>;
-> +                       clock-output-names = "spiclk";
-> +               };
-> +
-> +               spi:    spi@24000000 {
-> +                       compatible      = "snps,dw-spi-nor";
-> +                       reg = <0x24000000 0x1000>;
-> +                       interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       num-cs = <4>;
-> +                       clocks = <&spiclk 0>;
-> +                       status="disabled";
-> +               };
-
-Which device is this? I see a binding for a designware SPI controller,
-but it does not list that compatible string.
-
-> +
-> +               ciu: ciu {
-> +                       compatible = "fixed-clock";
-> +                       #clock-cells = <1>;
-> +                       clock-output-names = "ciu";
-> +               };
-> +
-> +               biu: biu {
-> +                       compatible = "fixed-clock";
-> +                       #clock-cells = <1>;
-> +                       clock-output-names = "biu";
-> +               };
-
-If you have a fixed-clock, there should be a clock-frequency in the node.
-If it's not actually fixed, you probably want a clock controller driver.
-
-If these are actually fixed clocks, they should be defined outside of the
-/soc node, to indicate that they are signals coming into the soc. Normally
-you'd group them under some other node then for readability.
-
-> +               i2c@23f70400 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       compatible = "snps,designware-i2c";
-> +                       reg = <0x23f70400 0x100>;
-> +                       interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&biu 0 &ciu 0>;
-> +                       clock-names = "biu", "ciu";
-> +                       interrupt-names = "dwi2c-0";
-> +                       status="disabled";
-> +                       controller-id = <0>;
-> +               };
-
-This is incompatible with the binding: the clock-names are wrong, and
-there are extraneous interrupt-names and controller-id properties.
-
-> +               eth0: dwmac@282c0000 {
-> +                       compatible = "snps,craw-dwmac";
-> +                       reg = <0x282c0000 0x8000>;
-> +                       interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "macirq";
-> +                       clock-names = "stmmaceth";
-> +                       clocks = <&stmmaceth 0>;
-> +                       phy-mode = "sgmii";
-> +                       status = "disabled";
-> +               };
-
-There is no binding for this device. It would be good to add a specific
-version of the dwmac controller as a second compatible string.
-
-The phy-mode usually goes into the .dts file and defines how it is wired up.
-
-> +               ehci: ehci@281c0000 {
-> +                       compatible = "generic-ehci";
-> +                       interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg = <0x281c0000 0x90 0x281c0000 0x24>;
-> +                       clocks = <&biu 0 &ciu 0>;
-> +                       clock-names = "biu", "ciu";
-> +               };
-> +
-> +               ohci: ohci@0x28200000 {
-> +                       compatible = "generic-ohci";
-> +                       interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg = <0x28200000 0x90>;
-> +                       clocks = <&biu 0 &ciu 0>;
-> +                       clock-names = "biu", "ciu";
-> +               };
-
-These bindings do not define clock-names.
-
-> +
-> +               mc: memory-controller@20140000 {
-> +                       compatible = "cisco,craw-dmc-400";
-> +                       reg = <0x20140000 0x40000
-> +                               0x20200000 0x1000>;
-> +                       reg-names = "dmc", "config";
-> +                       interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-> +               };
-> +       };
-
-Missing binding.
-
-> +       pcie0: pcie@0 {
-> +               status = "disabled";
-> +               compatible = "cisco,craw-pcie", "snps,dw-pcie";
-
-Missing binding.
-
-> +               interrupts = <GIC_SPI 184 IRQ_TYPE_EDGE_RISING>;
-> +               reg = <0x0 0x28370004 0x0 0x00000008    /* controller registers */
-> +                       0x0 0x73ffe000 0x0 0x00004000>;  /* configuration space */
-> +               reg-names = "regs", "config";
-> +               #address-cells = <3>;
-> +               #size-cells = <2>;
-> +               device_type = "pci";
-> +               num-lanes = <1>;
-> +               bus-range = <0x0 0xff>;
-> +               ranges = <0x43000000 0x20 0x00000000 0x20 0x00000000 0x0 0x80000000>; /* prefetchable memory */
-> +       };
-
-You need at least one non-prefetchable memory area for PCI compliance.
-There should normally also be an I/O range, but that is optional.
-
-> +       doppler {
-> +               #address-cells = <2>;
-> +               #size-cells = <2>;
-> +               compatible = "simple-bus";
-> +               ranges;
-> +       };
-
-What is this?
-
-          Arnd
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
