@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB1234FBCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919AF34FBD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhCaIjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:39:19 -0400
-Received: from mga03.intel.com ([134.134.136.65]:3666 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230093AbhCaIjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:39:02 -0400
-IronPort-SDR: 1+tMnowLkkw+XPOHBwtByv2/qq4hXcN5WPhWtnI69t9uK4jYfjAyE1Uyt9KaPvJ2KMBwoMqIBA
- fmbeMOBTNGYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191975207"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="191975207"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 01:39:00 -0700
-IronPort-SDR: cqqguWh6WGpJEpU2LTpfPWNWSAmFrraPjsgVlve/2DJ84806e03oJIAWMPMa2oYOu3b7WCGt8S
- RGbPxTghDBgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="418564055"
-Received: from mylly.fi.intel.com (HELO [10.237.72.184]) ([10.237.72.184])
-  by orsmga008.jf.intel.com with ESMTP; 31 Mar 2021 01:38:58 -0700
-Subject: Re: [PATCH v1 1/1] i2c: designware: Switch over to
- i2c_freq_mode_string()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>
-References: <20210330134633.29889-1-andriy.shevchenko@linux.intel.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <4631eddd-1855-566e-7d3c-591e5d559cf8@linux.intel.com>
-Date:   Wed, 31 Mar 2021 11:38:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210330134633.29889-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230093AbhCaIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:40:21 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34972 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232984AbhCaIkJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:40:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UTwP3vq_1617180001;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UTwP3vq_1617180001)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 31 Mar 2021 16:40:07 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     f.fainelli@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] soc: bcm: brcmstb: remove unused variable 'brcmstb_machine_match'
+Date:   Wed, 31 Mar 2021 16:39:59 +0800
+Message-Id: <1617179999-71706-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 4:46 PM, Andy Shevchenko wrote:
-> Use generic i2c_freq_mode_string() helper to print chosen bus speed.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> Depends on the "Add support for HiSilicon I2C controller" series.
-> Message-Id - 1617109549-4013-1-git-send-email-yangyicong@hisilicon.com
-> Yicong, feel free to attach to your new version of it.
-> 
->   drivers/i2c/busses/i2c-designware-master.c | 20 ++++----------------
->   1 file changed, 4 insertions(+), 16 deletions(-)
-> 
-Please note kernel test robot <lkp@intel.com> reported some issues with 
-this patch before included in this series.
+Fix the following clang warning:
 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+drivers/soc/bcm/brcmstb/common.c:17:34: warning: unused variable
+'brcmstb_machine_match' [-Wunused-const-variable].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/soc/bcm/brcmstb/common.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/soc/bcm/brcmstb/common.c b/drivers/soc/bcm/brcmstb/common.c
+index e87dfc6..2a01088 100644
+--- a/drivers/soc/bcm/brcmstb/common.c
++++ b/drivers/soc/bcm/brcmstb/common.c
+@@ -14,11 +14,6 @@
+ static u32 family_id;
+ static u32 product_id;
+ 
+-static const struct of_device_id brcmstb_machine_match[] = {
+-	{ .compatible = "brcm,brcmstb", },
+-	{ }
+-};
+-
+ u32 brcmstb_get_family_id(void)
+ {
+ 	return family_id;
+-- 
+1.8.3.1
+
