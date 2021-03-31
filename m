@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D07934FBE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B2434FBE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhCaIsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbhCaIsT (ORCPT
+        id S234470AbhCaItA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:49:00 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57548 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231375AbhCaIsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:48:19 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D31C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:48:19 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id r12so28870018ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Jw2MD2OVUN2L21+7k+pXcxOK0uQsnTVYELI5AAg+AkY=;
-        b=N6AbPRG1/jexye9J3XSF/KVyFynlBjBHEGDDiwfMG2iS7qwopHOzmadPAlEsnJ/Txd
-         92IvkFuQ4ZoTTObNz6j6Xo4RMlaGpCWnNo6+6YU+gedEwvDpt1f8sg20FIIQ70ZQ/UbD
-         ezNPlgj7oB+weWU/zY6ZRj68DLYZ+05eEw/tucOZuq/+VHzxckeL3zJzBRFF2GNCQUji
-         9UU9sgxE7yQswn7oMij1dchRrLk7yWOtLFGGdnBG/0wN50DUeDkgUfZZPDfX/dlo0ThW
-         /JZe7uDDAxNuJrLwyf4zc/AR5yTR4WM3rWy7nrTNzLNuwPvOTDjTMFPp9W8oIpmGjOmw
-         VdFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jw2MD2OVUN2L21+7k+pXcxOK0uQsnTVYELI5AAg+AkY=;
-        b=Hc5Vto1I/ALxesIXjV/If+1PHWhUfWSBXYqKe3fJV4FQue0xmbGthS/CktTrEvj4+X
-         VdJSp8odsEiWHo8fZdNhZZKfIZU67Yhb39KBa1UUW6qc/Z/VlMSOwqTU1ltWDV/klOTn
-         ye6Vqu/Mw6GXGrDI7DhQKWYieV2CNxpk5FGgnmIz+998VzAWeyJg36ktB4YFrbOw8YdU
-         askLA3YIFVXypWsJ0KzFdfZV4K83M+rQKeCii0Nd5iuZ2QQmk0IrA2a+J2bHbWQYnHUF
-         25qg2OuG+fOOm6bihVcStZBSRY4fqoE1LsV4Woa7dCdon79hr/HoOfVErXG1lZKX9LQ+
-         NBqw==
-X-Gm-Message-State: AOAM53329t0VkjuKbmsrg9zE0CmYHCjTsxItWSCStSbGNXjrKFWRNNUG
-        jUl6axDvZCPtCklkPSNhxXWyRA==
-X-Google-Smtp-Source: ABdhPJxMG+Qcy0BWZowpO27oqiWDUSa4Bq/QIaScnqsyZ5QJaPumFqthf+jlWlKNmpJN7j+YrlH0aQ==
-X-Received: by 2002:a17:906:2bc3:: with SMTP id n3mr2374169ejg.418.1617180497855;
-        Wed, 31 Mar 2021 01:48:17 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id a22sm740177ejr.89.2021.03.31.01.48.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 31 Mar 2021 01:48:17 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] arm64: dts: qcom: Add sound node for
- sc7180-trogdor-coachz
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        dianders@chromium.org, swboyd@chromium.org, judyhsiao@chromium.org
-References: <20210314061054.19451-1-srivasam@codeaurora.org>
- <20210314061054.19451-3-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <3dcbe1d3-3f6b-e9e8-f347-883b330e3404@linaro.org>
-Date:   Wed, 31 Mar 2021 09:48:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 31 Mar 2021 04:48:35 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8mVSW017955;
+        Wed, 31 Mar 2021 08:48:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+oc1CtFc57IVSoTNJ+wtqCopJ0F9XhVs7KCPIzeefuY=;
+ b=FwLRlxN0enoo1TJQ0aRPClp2si4X+bRnyIiZHxPrvBWsuRDfkOayx1mt2IDZr525sISy
+ H0jdaW+VJp2X3jPaUZdPtOkMa/xL510S+HCr193Sv8w2WJ/sHCU+EZaenBat7NEE4utu
+ 5Ph3bmHbk2Iq+nR4QqGDgzjy+n0mm6LCA2UK31wFVRFx/KT+XJa/zN3CEu+yDsx8HcrY
+ tjU1aRGDo9GVKj1LcbDov5JZCBiwKaEGxa5PBoQTqGqS8AJwScXPhxymOo3mE2Y08o15
+ kkPj+7pt7dbZT+u6G/pOFaMJNKUQdQcmD/lECQ3a1NJ2Gu3wP/QvvASyX9D6RaBT4l6h 3Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37mab3hgyb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 08:48:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8epmK181419;
+        Wed, 31 Mar 2021 08:48:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 37mac8d3g8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 08:48:29 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12V8mPUO014479;
+        Wed, 31 Mar 2021 08:48:25 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 31 Mar 2021 01:48:24 -0700
+Date:   Wed, 31 Mar 2021 11:48:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com
+Subject: Re: [PATCH] io_uring: Initialize variable before use
+Message-ID: <20210331084817.GH2088@kadam>
+References: <20210322184158.GA2095479@LEGION>
 MIME-Version: 1.0
-In-Reply-To: <20210314061054.19451-3-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322184158.GA2095479@LEGION>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ spamscore=0 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310063
+X-Proofpoint-ORIG-GUID: jIREcGX6vfH5-BUdG9Bo4chJpod9k4PI
+X-Proofpoint-GUID: jIREcGX6vfH5-BUdG9Bo4chJpod9k4PI
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/03/2021 06:10, Srinivasa Rao Mandadapu wrote:
-> This is a trgodor variant, required to have sound node variable
-> for coachz specific platform.
+On Mon, Mar 22, 2021 at 11:41:58PM +0500, Muhammad Usama Anjum wrote:
+> 1) Initialize the struct msghdr msg in the start of the function
+> 2) Uninitialized variable msg.msg_flags can get used if branch happens to
+> out_free before initialization.
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
->   arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+> So initialize variable in question in the start of the function for
+> simplicity in logic and use.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> index 4ad520f00485..e2ffe71c2d52 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> @@ -89,6 +89,16 @@ &sn65dsi86_out {
->   	data-lanes = <0 1 2 3>;
->   };
->   
-> +&sound {
-> +	compatible = "google,sc7180-coachz";
-> +	model = "sc7180-adau7002-max98357a";
-> +	audio-routing = "PDM_DAT", "DMIC";
-> +};
-> +
-> +&sound_multimedia0_codec {
-> +	sound-dai = <&adau7002>;
-> +};
-> +
->   /* PINCTRL - modifications to sc7180-trogdor.dtsi */
->   
->   &en_pp3300_dx_edp {
-> 
+> Addresses-Coverity: ("Uninitialized variable")
+> Addresses-Coverity: ("Uninitialized variable read")
+
+This bug is a false positive.
+
+When msg.msg_flags is uninitialized then ret is negative and min_ret is
+zero.
+
+fs/io_uring.c
+  4666                  ret = -EINTR;
+  4667  out_free:
+  4668          if (req->flags & REQ_F_BUFFER_SELECTED)
+  4669                  cflags = io_put_recv_kbuf(req);
+  4670          if (ret < min_ret || ((flags & MSG_WAITALL) && (msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC))))
+                    ^^^^^^^^^^^^^                               ^^^^^^^^^^^^^
+The first part of the condition is true so the second part is not used.
+
+  4671                  req_set_fail_links(req);
+  4672          __io_req_complete(req, issue_flags, ret, cflags);
+  4673          return 0;
+  4674  }
+
+regards,
+dan carpenter
+
