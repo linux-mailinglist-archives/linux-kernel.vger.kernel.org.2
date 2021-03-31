@@ -2,197 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D6C34F749
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C67334F74A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhCaDPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 23:15:33 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:8843 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233455AbhCaDPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:15:24 -0400
-IronPort-SDR: YVzuiWkmVj6Con7R2oTa/LsrRoqHrfTT3VfLt/4pMYxX7iL+D0tzwbQbvgMvZ/k9h/g4Nlwsd4
- 2+W/mGmzt7msRazXlu9GB/1/57jnoTkA4cPla+ir7cjWULFCvmLphKvG0+7KrzSK6zO4pmw38d
- rNQOxNsRtW6o8KTihHbjj53INzySFCQJRajdvhnCjsXwGSppVI2rQw3DCzs6jcwZmDGKYShEnJ
- WwYSgsay7SZzYfxhjOkNiXgRT4ssuO0P8B6dWmbZXM+V/QJjOvgF/GiDJWe8bj+oGVJ99KYEKQ
- 5uQ=
+        id S233544AbhCaDQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 23:16:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64911 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233487AbhCaDPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 23:15:32 -0400
+IronPort-SDR: 6UXHqs06M8+e/NSUZ+SMqAFjoP6bq7P6g5N9SBaCRAmU3eob0vYb7QYNDQ89sRk2RHPFMDn0gI
+ 6SmexY7o5tjw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171930482"
 X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="29735512"
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by labrats.qualcomm.com with ESMTP; 30 Mar 2021 20:15:24 -0700
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 30 Mar 2021 20:15:24 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 00E25210A6; Tue, 30 Mar 2021 20:15:23 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] scsi: ufs: Add support for hba performance monitor
-Date:   Tue, 30 Mar 2021 20:14:34 -0700
-Message-Id: <1617160475-1550-3-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617160475-1550-1-git-send-email-cang@codeaurora.org>
-References: <1617160475-1550-1-git-send-email-cang@codeaurora.org>
+   d="scan'208";a="171930482"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 20:15:31 -0700
+IronPort-SDR: AQPISo0Wt4IubOeAX44yXiWLO1+8k08pqimVsMuA2LLk41ywOXMTN+rOzJgY2geJVGNXX4cg5H
+ aycc2m/ed1Nw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="377082130"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 30 Mar 2021 20:15:29 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRRKL-0005de-1l; Wed, 31 Mar 2021 03:15:29 +0000
+Date:   Wed, 31 Mar 2021 11:14:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/hfsplus] BUILD SUCCESS
+ d0affda2cb32eff590083129a4327437b6cc7c61
+Message-ID: <6063e91c.YqbdXuNpUvvTMEZ8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new sysfs group which has nodes to monitor data/request transfer
-performance. This sysfs group has nodes showing total sectors/requests
-transferred, total busy time spent and max/min/avg/sum latencies.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/hfsplus
+branch HEAD: d0affda2cb32eff590083129a4327437b6cc7c61  hfsplus: Fix out-of-bounds warnings in __hfsplus_setxattr
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
+elapsed time: 726m
+
+configs tested: 103
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+mips                         db1xxx_defconfig
+arm                        cerfcube_defconfig
+arm                           tegra_defconfig
+sh                              ul2_defconfig
+arm                        neponset_defconfig
+powerpc                 mpc836x_rdk_defconfig
+xtensa                         virt_defconfig
+sh                            titan_defconfig
+arm                        mini2440_defconfig
+arm                          gemini_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                        fsp2_defconfig
+arc                              alldefconfig
+ia64                      gensparse_defconfig
+nios2                               defconfig
+powerpc                     pq2fads_defconfig
+powerpc                      obs600_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      ppc44x_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                      arches_defconfig
+mips                        qi_lb60_defconfig
+riscv                          rv32_defconfig
+powerpc                       ebony_defconfig
+sh                            migor_defconfig
+mips                       lemote2f_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+
 ---
- Documentation/ABI/testing/sysfs-driver-ufs | 126 +++++++++++++++++++++++++++++
- 1 file changed, 126 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d1bc23c..8380866 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -995,6 +995,132 @@ Description:	This entry shows the target state of an UFS UIC link
- 
- 		The file is read only.
- 
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/monitor_enable
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the status of performance monitor enablement
-+		and it can be used to start/stop the monitor. When the monitor
-+		is stopped, the performance data collected is also cleared.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/monitor_chunk_size
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file tells the monitor to focus on requests transferring
-+		data of specific chunk size (in Bytes). 0 means any chunk size.
-+		It can only be changed when monitor is disabled.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_total_sectors
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many sectors (in 512 Bytes) have been
-+		sent from device to host after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_total_busy
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how long (in micro seconds) has been spent
-+		sending data from device to host after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_nr_requests
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many read requests have been sent after
-+		monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_max
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the maximum latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_min
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the minimum latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_avg
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the average latency (in micro seconds) of
-+		read requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/read_req_latency_sum
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the total latency (in micro seconds) of
-+		read requests sent after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_total_sectors
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many sectors (in 512 Bytes) have been sent
-+		from host to device after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_total_busy
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how long (in micro seconds) has been spent
-+		sending data from host to device after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_nr_requests
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows how many write requests have been sent after
-+		monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_max
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the maximum latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_min
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the minimum latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_avg
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the average latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
-+Date:		January 2021
-+Contact:	Can Guo <cang@codeaurora.org>
-+Description:	This file shows the total latency (in micro seconds) of write
-+		requests after monitor gets started.
-+
-+		The file is read only.
-+
- What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/wb_presv_us_en
- Date:		June 2020
- Contact:	Asutosh Das <asutoshd@codeaurora.org>
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
