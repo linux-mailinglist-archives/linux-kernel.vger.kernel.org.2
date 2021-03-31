@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBCC35065C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6ED6350660
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhCaSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
+        id S234679AbhCaSco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235110AbhCaSb2 (ORCPT
+        with ESMTP id S234938AbhCaScU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:31:28 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E00C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:31:27 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id x189so22181687ybg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:31:27 -0700 (PDT)
+        Wed, 31 Mar 2021 14:32:20 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FBCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:32:19 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id i81so20922636oif.6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7jlof/pNjkC0LExRdM7E0LmWgRs1tjM6/e1u7N+Efkc=;
-        b=htVxUbA9Mfr5t0HtFExDE8JZMnNHBDy4/VRicG2GAFsRoetik0xCsQwDdbmPSW8hYL
-         djrulSGwMQaNb9JZFUoxaLN6oDL+dQ3kfmCkOUK7ioAqdZAVxq14im8uA8TDi1U+cfVD
-         F/QE63rj2NF6F3cICQaPal6wDDMfk1A3N/9kyl+5wyM3tu6564JByr8/S6LgUiAaQGrK
-         fL1XkHayuORUysW8HzeJnInGZKZ1LrqQqqJY3Eqg93coVu1Tbg572P1H5wx1gMpkdPIv
-         XsmM7k7mb99MOnyz5MBMQym++Uj1EBXyYNYPkucZod2/m8fSdIi10JYDB1vy0BxY/h92
-         tqiw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qpDJgLSf+XhBZgWjOA4HUIRo8TMIOMt4qQN8xcUT7Yc=;
+        b=RtkjC0li+ibQ4Jqa4lRUa7G264zhtqFQ0ippTOexSIit4u0rgqCjWmvEi59FLRlMJw
+         C5hGgoCAT+8X5Kekza3SlgPOZrermppqx8iclo+ZGv4pOiGm8ijyOryQEWcdaDvg3HHM
+         7HNknHiNiQ8NGjA6BRXHp3flO7hmlITbC7q+UWXljyawBsgHl+vIId6wnt4wSzuMNrxi
+         XA9Hkdm9GBzSRo0BqVo0CMtXFewl6RpbRQAY6N4lZF5d1/eaz5rXGKzogaFHVggYOmbT
+         yv95yUjZ+5Qj3sNovTijK8saN4Mm3GpY7Jm93T88BLJToE9P3dMchHidaBzTdz8l7MKT
+         PtKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7jlof/pNjkC0LExRdM7E0LmWgRs1tjM6/e1u7N+Efkc=;
-        b=BI1FZKEgQgU5HmecQYA3Hf21sBBCTCv9qLOq9v1ge7G380E7+qSSkrBEkB4lxMOLB9
-         JUipP5OFR1KBd9UtvlEy3lUkAviR0kIimqBhYCpF9SI7hVxyabrYYZdqzJydHY0MY/Yf
-         pjIOoHhtS4ISSDprXyAdc459njTc8gWhn1neWDzVC9TewH87tRItVsxOjP3r8WP1MI8c
-         R6BVJGMkskIlLc5nvtB1DXTaCKokctB8Yau8IPCcX0Y/Qqyj57E7W4vLXjCjdBOjAYdT
-         6zA0FA0mxGUy2Kpkp38nFfvQzplZ/UNVBly1m/hQ9CINVsxHxoMcBEhP5RB69xxwwzyt
-         7oiw==
-X-Gm-Message-State: AOAM530UvOgRavMn0r3IyrOTmUG86FyU6GTZeONYrhlmXU7mq77+08ft
-        fQI6wtzfMWqu2jnBIWJ/XQc9EQhPqxSRd7hx0zjtqA==
-X-Google-Smtp-Source: ABdhPJxpmgjd76pWGD+FESc/KM3zqDsAUVN2y3sQ4/D6QZxHWdYPhKxrIno6Bs+eJeNOFFtdktHNc4yYXxfX4SZTU34=
-X-Received: by 2002:a25:c588:: with SMTP id v130mr6398245ybe.312.1617215486701;
- Wed, 31 Mar 2021 11:31:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qpDJgLSf+XhBZgWjOA4HUIRo8TMIOMt4qQN8xcUT7Yc=;
+        b=bvku9YBQVOQp3WGk4nqx3+3+c3WlxPEM2Zox+/2SgCmF7PnrEcH13jYi6gM5T9v0cb
+         SWh0GTjKzBGdYngEamBvppZqh2xSRHH2csXIlxat6OBUvmgvTvBi+De4XZiwga31QUEh
+         9AEHElTwAgbogIBPmrkbtMqEOfeenazfRqcCWXLgK9gL9Vg/y3toorqfpbCotrGZlKTU
+         xm1HBBOrR03JQUnc03XVWS+ICOnw2xKzAvWFLD09qHvcADJtb0YmfDGBmCgjh9q/fq2D
+         yo6ChzkKCPgQIUl1hZ2tZQc5R4eFDIIpx4tf9F6SCLLQDqe4fBOoqKSV6qhpJrPe4w8Q
+         j1gQ==
+X-Gm-Message-State: AOAM533G+7sUrx3do3PGz8VymreAefzXdNVun2VzkJOtCosQolpSdzPC
+        HwnaAroUKkw/y7PP/6RcWp+PUi9UwuUCfg==
+X-Google-Smtp-Source: ABdhPJw9aZIIFK4bl49eSq1vxFZv/ytgNjkVTf40RbmdsFrI/AGg7PHyskOnmBX5Uo3IKDlviOZN8g==
+X-Received: by 2002:aca:d442:: with SMTP id l63mr3114260oig.49.1617215538553;
+        Wed, 31 Mar 2021 11:32:18 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d1sm577516oop.0.2021.03.31.11.32.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 11:32:18 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 13:32:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] soundwire: qcom: Fix a u8 comparison with less
+ than zero
+Message-ID: <20210331183216.GM904837@yoga>
+References: <20210331140944.1421940-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210329111648.7969-1-ada@thorsis.com> <20210329111648.7969-2-ada@thorsis.com>
- <CAHp75VdqtWS15YPvaPvy4yj5TdW7DDgFB+_bbavFqPBp1zm6eg@mail.gmail.com> <YGRw3PlLBYCPvPn1@ada-deb-carambola.ifak-system.com>
-In-Reply-To: <YGRw3PlLBYCPvPn1@ada-deb-carambola.ifak-system.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 31 Mar 2021 20:31:16 +0200
-Message-ID: <CAMpxmJV6F5Q4dt71JvY6_awswDFhLFRUsNvx_oP8Wds=PfJwNA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] docs: gpio: mockup: Fix parameter name
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexander Dahl <ada@thorsis.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331140944.1421940-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 2:53 PM Alexander Dahl <ada@thorsis.com> wrote:
->
-> Hello Andy,
->
-> Am Wed, Mar 31, 2021 at 03:27:05PM +0300 schrieb Andy Shevchenko:
-> > On Mon, Mar 29, 2021 at 2:18 PM Alexander Dahl <ada@thorsis.com> wrote:
-> > >
-> > > Module probing with the parameter documented yielded this in kernel log:
-> > >
-> > >         gpio_mockup: unknown parameter 'gpio_named_lines' ignored
-> > >
-> > > The parameter documented did not match the parameter actually
-> > > implemented with commit 8a68ea00a62e ("gpio: mockup: implement naming
-> > > the lines") long before introducing the documentation.
-> > >
-> > > Fixes: commit 2fd1abe99e5f ("Documentation: gpio: add documentation for gpio-mockup")
-> >
-> > Alexander, in the entire series you are using the wrong format for the
-> > Fixes tag.
-> > I highly recommend to add in your .gitconfig file an alias:
-> >         one = show -s --pretty='format:%h (\"%s\")'
->
-> You're right. Sorry, I messed things up. I first had that line without
-> the additional "commit", and added it because I thought checkpatch
-> complained (which it probably did not).
->
-> The actual format is documented of course:
->
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
->
-> I actually have a slightly different setting for pretty.fixes in my
-> ~/.gitconfig for other demands. I'll go and make that project
-> dependent now.
->
-> Thanks for pointing this out.
->
-> Greets
-> Alex
->
-> >
-> > `git one <commit ID>` will give you proper value to refer to the
-> > commit in question.
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko
+On Wed 31 Mar 09:09 CDT 2021, Colin King wrote:
 
-FYI no need to resend, I fixed it in my tree.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Variable devnum is being checked for a less than zero error return
+> however the comparison will always be false because devnum is an 8 bit
+> unsigned integer. Fix this by making devnum an int.  Also there is no
+> need to iniitialize devnum with zero as this value is no read, so
+> remove the redundant assignment.
+> 
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: c7d49c76d1d5 ("soundwire: qcom: add support to new interrupts")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Bart
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/soundwire/qcom.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index b08ecb9b418c..ec86c4e53fdb 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -428,7 +428,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>  	struct qcom_swrm_ctrl *swrm = dev_id;
+>  	u32 value, intr_sts, intr_sts_masked, slave_status;
+>  	u32 i;
+> -	u8 devnum = 0;
+> +	int devnum;
+>  	int ret = IRQ_HANDLED;
+>  
+>  	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
+> -- 
+> 2.30.2
+> 
