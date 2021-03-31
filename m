@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B4434FBB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D82E34FBBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhCaIgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:36:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:7881 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231818AbhCaIfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:35:31 -0400
-IronPort-SDR: PbcfHwnkPmksgWsQGLR8/cQa0FBnAiUZxgpj1o3spNrDsEx99kZrOzuGa3fQAx2SKq1yjA12oq
- CSBnIb4Tva7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171975903"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="171975903"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 01:35:27 -0700
-IronPort-SDR: oS3hEJDsIQSfc5HUmZO7kb01krVToVL+09b6714k3DEtfW7laak399SXzComZL5x//KeWPfZEd
- ET5E2P3NY4Ww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="418562455"
-Received: from mylly.fi.intel.com (HELO [10.237.72.184]) ([10.237.72.184])
-  by orsmga008.jf.intel.com with ESMTP; 31 Mar 2021 01:35:24 -0700
-Subject: Re: [PATCH v5 2/5] i2c: core: add api to provide frequency mode
- strings
-To:     Yicong Yang <yangyicong@hisilicon.com>, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
-        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org
-Cc:     digetx@gmail.com, treding@nvidia.com, rmk+kernel@armlinux.org.uk,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
-        linuxarm@huawei.com
-References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
- <1617113966-40498-3-git-send-email-yangyicong@hisilicon.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <0561a225-3dbb-97b1-a0a8-223520885c05@linux.intel.com>
-Date:   Wed, 31 Mar 2021 11:35:23 +0300
+        id S234373AbhCaIgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:36:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231620AbhCaIfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:35:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617179740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgm8G5pUG1KmGb3in7+y2xmYF44JOnlI4lr2O/Z99Vg=;
+        b=H8sUHIZGKT09uO2730bAmBZBHmp4NxN8aS6UmkHDK8fLmH0NnKty2Zbi5rbX4VdOdapDAu
+        J7roS4DFnLnzGKel+jGmOCs4dVlUxFVSPqnoKWdvSVIRarmotwEFpvjaL5MV4WLFB03Q7/
+        2w9O/SbsOwoFAFGOMtYxmwsfVj7jaT4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-yxilJbA1NOijTqESA2tuMA-1; Wed, 31 Mar 2021 04:35:38 -0400
+X-MC-Unique: yxilJbA1NOijTqESA2tuMA-1
+Received: by mail-wr1-f69.google.com with SMTP id e10so611080wru.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:35:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mgm8G5pUG1KmGb3in7+y2xmYF44JOnlI4lr2O/Z99Vg=;
+        b=hd1HM6fPsHDBpxVZ93B+kAvXKPahW+9o+avkOuSuLC7OXKJqqOW7GXtFEPSn74ihCW
+         BWjFQQh/zAY4nB4VtfVo38XoopPG9MDakmlwckgvluCKBZMOX/jKJ0wMaPd4PzG77N9i
+         JRF2xZ4jan/6CayXAxRoJfU9ZJpg1vrCwBxeZ91io3jDFeicDRL2/t+bErWMlzOqlX86
+         w2U4QXTI3L8/Sl/O6eSThudym643orPg7J7a+8o2iLrbz2pbW9hkNpIaFqXqjsS1k9o5
+         ojwzazYJTxoqQf+LzeiHuJTgyQ4PV09muYS8S5MjI3rxZv+kOPDpSz94dQGHaNnfnjj3
+         ZsFQ==
+X-Gm-Message-State: AOAM530dWyy2M1VQBc1eW0grSdT7LcQuDqWmnNP+XyM1qnNpzcTh4nG2
+        EVY0QMJtRLNTlTLvOUM9R4X8lCP/kmegAhF5VmPIu8L77rsQ/TQ7iE9WN8E2Cc/Vn5li16t2VaO
+        tfAO0HAzntF6GGR0jX5B4mWrk
+X-Received: by 2002:a1c:7fcd:: with SMTP id a196mr2104274wmd.180.1617179736956;
+        Wed, 31 Mar 2021 01:35:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFY4ad6E8SOin2Ll1yPB6Awyjzypf4VdxfkeKjct1tO9FsxKkluxu1V8FPsoliR6ISHwqUjA==
+X-Received: by 2002:a1c:7fcd:: with SMTP id a196mr2104245wmd.180.1617179736699;
+        Wed, 31 Mar 2021 01:35:36 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id a17sm2690084wmj.9.2021.03.31.01.35.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 01:35:35 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
+Date:   Wed, 31 Mar 2021 10:35:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <1617113966-40498-3-git-send-email-yangyicong@hisilicon.com>
+In-Reply-To: <20210326021957.1424875-17-seanjc@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On 26/03/21 03:19, Sean Christopherson wrote:
+> +	/*
+> +	 * Reset the lock used to prevent memslot updates between MMU notifier
+> +	 * range_start and range_end.  At this point no more MMU notifiers will
+> +	 * run, but the lock could still be held if KVM's notifier was removed
+> +	 * between range_start and range_end.  No threads can be waiting on the
+> +	 * lock as the last reference on KVM has been dropped.  If the lock is
+> +	 * still held, freeing memslots will deadlock.
+> +	 */
+> +	init_rwsem(&kvm->mmu_notifier_slots_lock);
 
-On 3/30/21 5:19 PM, Yicong Yang wrote:
-> Some I2C drivers like Designware and HiSilicon will print the
-> bus frequency mode information, so add a public one that everyone
-> can make use of.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> ---
->   include/linux/i2c.h | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
-> 
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 10bd0b0..6837e64 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -47,6 +47,26 @@ typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
->   #define I2C_MAX_HIGH_SPEED_MODE_FREQ	3400000
->   #define I2C_MAX_ULTRA_FAST_MODE_FREQ	5000000
->   
-> +static inline const char *i2c_freq_mode_string(u32 bus_freq_hz)
-> +{
-> +	switch (bus_freq_hz) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
-> +		return "Standard Mode(100KHz)";
-> +	case I2C_MAX_FAST_MODE_FREQ:
-> +		return "Fast Mode(400KHz)";
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> +		return "Fast Mode Plus(1.0MHz)";
-> +	case I2C_MAX_TURBO_MODE_FREQ:
-> +		return "Turbo Mode(1.4MHz)";
-> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> +		return "High Speed Mode(3.4MHz)";
-> +	case I2C_MAX_ULTRA_FAST_MODE_FREQ:
-> +		return "Ultra Fast Mode(5.0MHz)";
-> +	default:
-> +		return "Unknown Mode";
-> +	}
+I was going to say that this is nasty, then I noticed that 
+mmu_notifier_unregister uses SRCU to ensure completion of concurrent 
+calls to the MMU notifier.  So I guess it's fine, but it's better to 
+point it out:
 
-A few minor nits here:
-- KHz -> kHz
-- Space between text and opening parenthesis: "Mode(" -> "Mode ("
-- Space between number and unit: (1.0MHz) -> (1.0 MHz)
+	/*
+	 * At this point no more MMU notifiers will run and pending
+	 * calls to range_start have completed, but the lock would
+	 * still be held and never released if the MMU notifier was
+	 * removed between range_start and range_end.  Since the last
+	 * reference to the struct kvm has been dropped, no threads can
+	 * be waiting on the lock, but we might still end up taking it
+	 * when freeing memslots in kvm_arch_destroy_vm.  Reset the lock
+	 * to avoid deadlocks.
+	 */
 
-With those changes you may add my
+That said, the easiest way to avoid this would be to always update 
+mmu_notifier_count.  I don't mind the rwsem, but at least I suggest that 
+you split the patch in two---the first one keeping the 
+mmu_notifier_count update unconditional, and the second one introducing 
+the rwsem and the on_lock function kvm_inc_notifier_count.  Please 
+document the new lock in Documentation/virt/kvm/locking.rst too.
 
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Also, related to the first part of the series, perhaps you could 
+structure the series in a slightly different way:
+
+1) introduce the HVA walking API in common code, complete with on_lock 
+and patch 15, so that you can use on_lock to increase mmu_notifier_seq
+
+2) then migrate all architectures including x86 to the new API
+
+IOW, first half of patch 10 and all of patch 15; then the second half of 
+patch 10; then patches 11-14.
+
+> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+> +	down_write(&kvm->mmu_notifier_slots_lock);
+> +#endif
+>  	rcu_assign_pointer(kvm->memslots[as_id], slots);
+> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+> +	up_write(&kvm->mmu_notifier_slots_lock);
+> +#endif
+
+Please do this unconditionally, the cost is minimal if the rwsem is not 
+contended (as is the case if the architecture doesn't use MMU notifiers 
+at all).
+
+Paolo
+
