@@ -2,169 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0238734FD9A
+	by mail.lfdr.de (Postfix) with ESMTP id CBF7F34FD9C
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234731AbhCaJ6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:58:47 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:41146 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbhCaJ6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:58:08 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210331095806euoutp027ad49d85d07c7542976f106a3d937669~xZOeKA4eQ2338523385euoutp02c
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:58:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210331095806euoutp027ad49d85d07c7542976f106a3d937669~xZOeKA4eQ2338523385euoutp02c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617184686;
-        bh=SJ8K9FtjJ7RXwx5dC7P6rkLLhFNehLE0d47oQ1bMEEU=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=l3g5K6wDRZLE59OQTWswhLxt2V2jNRF2Bu9W6pmb6XwX1VhnFfQYRc/2A7MrKDfGl
-         gs5CxLh/1brRIud4QU4O9AUoFX+5jPYA529APfOzgtIk8WL4GGResqkfQwauMJgDEP
-         BkWPthMzi5WTk4YK5C76r2nUaJbRy++kQ8/OCCi0=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210331095806eucas1p27d08b0e29b83f6702629697cbb4e8c48~xZOdyu7uB2620526205eucas1p2O;
-        Wed, 31 Mar 2021 09:58:06 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id DC.F3.09444.EA744606; Wed, 31
-        Mar 2021 10:58:06 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210331095805eucas1p13f223cf8e3f6edb9a3df0a807952542e~xZOdZL0j10433504335eucas1p1f;
-        Wed, 31 Mar 2021 09:58:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210331095805eusmtrp13480f17caf3d30d8e66396394d2742b4~xZOdYStoz1997919979eusmtrp1E;
-        Wed, 31 Mar 2021 09:58:05 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-5c-606447ae5f8a
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 51.87.08696.DA744606; Wed, 31
-        Mar 2021 10:58:05 +0100 (BST)
-Received: from localhost (unknown [106.210.131.79]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210331095803eusmtip2643b0a2d8460058c9644fdf0ac9fe8eb~xZOax5KAY1195211952eusmtip22;
-        Wed, 31 Mar 2021 09:58:02 +0000 (GMT)
-Message-ID: <ee62dae9-b1bd-71ea-31e6-95ce5a528f34@samsung.com>
-Date:   Wed, 31 Mar 2021 11:58:02 +0200
+        id S234945AbhCaJ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:58:52 -0400
+Received: from ozlabs.org ([203.11.71.1]:44145 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234375AbhCaJ6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:58:25 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9MFl5f6mz9sVb;
+        Wed, 31 Mar 2021 20:58:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1617184704;
+        bh=62LWuEyrUicGCyza4BxPmll8qguht3fvwrGpruDriEg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=arHGUZR1viBTEjAXyUIXP/+nurc8liOgRj9c7NVvad7Troem8hU1kwlNCpaPBAsvP
+         1h82bqXhyB0I38ZWIKd5XW11wZbDamjeJrkS5CklXHx2aXl5h7xCWoIgoqNN2NX2xj
+         JatIx753TUP6rLjQavrVe45YO6cLoJa8gbI5xBD8pxTHRVpg3/FerLrPmJ1IEZvc4U
+         EpNsaSsCol6UEeUCC/mpwSAtrIdglSlvti1NNnYfURnRwbWrtdAaJPS3ggS/AoRxvg
+         /LU6rDVZzYU4KI3q+NJ76VlazhqDSEURUWAmKq9SDpRWQGPaIc/f7b6atnYaEsYJaw
+         2Jux27y1mafQw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Xiongwei Song <sxwjean@me.com>, benh@kernel.crashing.org,
+        paulus@samba.org, oleg@redhat.com, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, msuchanek@suse.de,
+        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        mikey@neuling.org, haren@linux.ibm.com, alistair@popple.id.au,
+        jniethe5@gmail.com, peterz@infradead.org, leobras.c@gmail.com,
+        akpm@linux-foundation.org, rppt@kernel.org, peterx@redhat.com,
+        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com, aik@ozlabs.ru,
+        pmladek@suse.com, john.ogness@linutronix.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: Re: [PATCH v2] powerpc/traps: Enhance readability for trap types
+In-Reply-To: <20210330150425.10145-1-sxwjean@me.com>
+References: <20210330150425.10145-1-sxwjean@me.com>
+Date:   Wed, 31 Mar 2021 20:58:17 +1100
+Message-ID: <875z17y79i.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
-        Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH v2 08/14] drm/bridge: ti-sn65dsi86: Remove extra call:
- drm_connector_update_edid_property()
-Content-Language: en-GB
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <20210329195255.v2.8.Ic14a7ab8035df89e19a25ad4fbf2004f9673f167@changeid>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNKsWRmVeSWpSXmKPExsWy7djP87rr3FMSDDa/ErXoPXeSyeL0/ncs
-        FmeXHWSzuPL1PZvF1e8vmS1OvrnKYtE5cQm7xcT9Z9ktLu+aw2ZxqC/a4trPx8wWn2Y9ZLZY
-        8XMro0V7l43Fz+ttzBbH7zxlchDweH+jld1jdsNFFo/ZHTNZPRbvecnkMWfRDWaPExMuMXnc
-        ubaHzWP7twesHve7jzN5LJl2lc3jQO9kFo/Pm+QCeKK4bFJSczLLUov07RK4Ms6fmMpWsI2n
-        onfdKrYGxl6uLkZODgkBE4kjx6exdTFycQgJrGCU2PdzAjuE84VRYknHZ6jMZ0aJjl33gRwO
-        sJYXD4Qh4ssZJQ4dnMgE4bxglPgw4zk7yFxeATuJx3PPs4DYLAKqEk86TzFCxAUlTs58AhYX
-        FUiQWHVjOROILSxQKPH2zGqwGmYBcYmmLytZQYaKCPxjlFg98THYBmaBz0wSn6YcAutgE9CU
-        +Lv5JthJnAKhEhO/1kE0y0s0b53NDFIvIXCNU+LyivNsEJ+6SJyZuZURwhaWeHV8CzuELSNx
-        enIPC4RdL3F/RQtUcwejxNYNO5khEtYSd879AlvGDLR4/S59SFA4Ssx5bgBh8knceCsIcQKf
-        xKRt05khwrwSHW1CEDMUJe6f3Qo1T1xi6YWvbBMYlWYhhcosJN/PQvLMLIS1CxhZVjGKp5YW
-        56anFhvlpZbrFSfmFpfmpesl5+duYgSmx9P/jn/Zwbj81Ue9Q4xMHIyHGCU4mJVEeIUPJCYI
-        8aYkVlalFuXHF5XmpBYfYpTmYFES503asiZeSCA9sSQ1OzW1ILUIJsvEwSnVwJTnEbSP741y
-        6K7P01VfvObJLBLrL3/7+vGraQoBPHZvXrBMlVKck832ZFnHj8z4Bl/uxjM//B/2eC1SUr7w
-        /SsX2/GMXUyXHQ2/qJ60NyyetanimMhSjfNmhW3uYkn8MWZrl4bFJr74E9f3g+FBy29Hi0mb
-        9T+ti1jmvW532VsDt3Xfpq1icMo89ODZ6wym3Cmbomp/3ald/Vg782HpIxe31dLfXc+veyxZ
-        Uq1QeO/67KMTHv6Q+G5lPNmYi+lFlJmZ8tqUvISUM8/vHjwizj/76qNfwcw15icS3Vu5S20S
-        Ii8cjFGe98WQpT2t32EZC4Py+hc/tthejju0yPXx7uXzukyCQ26b/VJ/cG1bfqoSS3FGoqEW
-        c1FxIgBuZtGP/gMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsVy+t/xe7pr3VMSDLomWlr0njvJZHF6/zsW
-        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
-        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
-        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFF6NkX5pSWpChn5xSW2StGGFkZ6hpYW
-        ekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GedPTGUr2MZT0btuFVsDYy9XFyMHh4SAicSL
-        B8JdjFwcQgJLGSVWnd3P0sXICRQXl9g9/y0zhC0s8edaFxtE0TNGiYaGD+wgCV4BO4nHc8+D
-        NbAIqEo86TzFCBEXlDg58wlYXFQgQeLsh3lMILawQKHE2zOrwWqYgRY0fVnJCjJURKCBSeLS
-        3cVMIA6zwFcmiZZXS8E2CAncZpTofZIPYrMJaEr83XyTDeRsToFQiYlf6yAGmUl0be2CGiov
-        0bx1NvMERqFZSO6YhWTfLCQts5C0LGBkWcUoklpanJueW2ykV5yYW1yal66XnJ+7iRGYELYd
-        +7llB+PKVx/1DjEycTAeYpTgYFYS4RU+kJggxJuSWFmVWpQfX1Sak1p8iNEUGBgTmaVEk/OB
-        KSmvJN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQamee/zZu9f+WPG
-        ROblKidDWe6URM6YvEn2kdcav7UFf7Sdp35VmhMz/RHL9evPohkz+F/2GAR/Tz/6U6LONjn7
-        0brSmdvvrHbt1I/M4ElytD2czDRhVdpxnpk/ZgBD7f+5X1LeN3ZuqzOcZzFpezan6ur1B/7E
-        +Yh3KnPJtB1d7CbD0JkY5Pdxm4352oN7nsR/zwq5++Jt8662T/achUunTwhjz130YIvXcsll
-        L92vNvmxTBNSf9kf1NuYLJWV5n7maPJHhh/eTI59EadYbWbOizqRK85o4NGVaV5WIB5cnTCh
-        RO37txen+B5mfrnEXVa9984rDgMp2TU7hLsrUiP1LmlaefyV2rze3eEn+zIlluKMREMt5qLi
-        RADz3W/SkQMAAA==
-X-CMS-MailID: 20210331095805eucas1p13f223cf8e3f6edb9a3df0a807952542e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210330025430eucas1p1a1405009766f65466cb0a2dd6f08ec3e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210330025430eucas1p1a1405009766f65466cb0a2dd6f08ec3e
-References: <20210330025345.3980086-1-dianders@chromium.org>
-        <CGME20210330025430eucas1p1a1405009766f65466cb0a2dd6f08ec3e@eucas1p1.samsung.com>
-        <20210329195255.v2.8.Ic14a7ab8035df89e19a25ad4fbf2004f9673f167@changeid>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xiongwei Song <sxwjean@me.com> writes:
+> From: Xiongwei Song <sxwjean@gmail.com>
+>
+> Create a new header named traps.h, define macros to list ppc exception
+> types in traps.h, replace the reference of the real trap values with
+> these macros.
 
-W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
-> As of commit 5186421cbfe2 ("drm: Introduce epoch counter to
-> drm_connector") the drm_get_edid() function calls
-> drm_connector_update_edid_property() for us. There's no reason for us
-> to call it again.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Personally I find the hex values easier to recognise, but I realise
+that's probably not true of other people :)
 
-Regards
-Andrzej
-> ---
->
-> (no changes since v1)
->
->   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 ++++-------
->   1 file changed, 4 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index a0a00dd1187c..9577ebd58c4c 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -270,7 +270,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->   {
->   	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
->   	struct edid *edid = pdata->edid;
-> -	int num, ret;
-> +	int num;
->   
->   	if (!edid) {
->   		pm_runtime_get_sync(pdata->dev);
-> @@ -279,12 +279,9 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->   	}
->   
->   	if (edid && drm_edid_is_valid(edid)) {
-> -		ret = drm_connector_update_edid_property(connector, edid);
-> -		if (!ret) {
-> -			num = drm_add_edid_modes(connector, edid);
-> -			if (num)
-> -				return num;
-> -		}
-> +		num = drm_add_edid_modes(connector, edid);
-> +		if (num)
-> +			return num;
->   	}
->   
->   	return drm_panel_get_modes(pdata->panel, connector);
+...
+> diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/traps.h
+> new file mode 100644
+> index 000000000000..a31b6122de23
+> --- /dev/null
+> +++ b/arch/powerpc/include/asm/traps.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_PPC_TRAPS_H
+> +#define _ASM_PPC_TRAPS_H
+> +
+> +#define TRAP_RESET   0x100 /* System reset */
+> +#define TRAP_MCE     0x200 /* Machine check */
+> +#define TRAP_DSI     0x300 /* Data storage */
+> +#define TRAP_DSEGI   0x380 /* Data segment */
+> +#define TRAP_ISI     0x400 /* Instruction storage */
+> +#define TRAP_ISEGI   0x480 /* Instruction segment */
+> +#define TRAP_ALIGN   0x600 /* Alignment */
+> +#define TRAP_PROG    0x700 /* Program */
+> +#define TRAP_DEC     0x900 /* Decrementer */
+> +#define TRAP_SYSCALL 0xc00 /* System call */
+> +#define TRAP_TRACEI  0xd00 /* Trace */
+> +#define TRAP_FPA     0xe00 /* Floating-point Assist */
+> +#define TRAP_PMI     0xf00 /* Performance monitor */
+
+I know the macro is called TRAP and the field in pt_regs is called trap,
+but the terminology in the architecture is "exception", and we already
+have many uses of that. In particular we have a lot of uses of "exc" as
+an abbreviation for "exception". So I think I'd rather we use that than
+"TRAP".
+
+I think we should probably use the names from the ISA, unless they are
+really over long.
+
+Which are:
+
+  0x100   System Reset
+  0x200   Machine Check
+  0x300   Data Storage
+  0x380   Data Segment
+  0x400   Instruction Storage
+  0x480   Instruction Segment
+  0x500   External
+  0x600   Alignment
+  0x700   Program
+  0x800   Floating-Point Unavailable
+  0x900   Decrementer
+  0x980   Hypervisor Decrementer
+  0xA00   Directed Privileged Doorbell
+  0xC00   System Call
+  0xD00   Trace
+  0xE00   Hypervisor Data Storage
+  0xE20   Hypervisor Instruction Storage
+  0xE40   Hypervisor Emulation Assistance
+  0xE60   Hypervisor Maintenance
+  0xE80   Directed Hypervisor Doorbell
+  0xEA0   Hypervisor Virtualization
+  0xF00   Performance Monitor
+  0xF20   Vector Unavailable
+  0xF40   VSX Unavailable
+  0xF60   Facility Unavailable
+  0xF80   Hypervisor Facility Unavailable
+  0xFA0   Directed Ultravisor Doorbell
+
+
+So perhaps:
+
+  EXC_SYSTEM_RESET
+  EXC_MACHINE_CHECK
+  EXC_DATA_STORAGE
+  EXC_DATA_SEGMENT
+  EXC_INST_STORAGE
+  EXC_INST_SEGMENT
+  EXC_EXTERNAL_INTERRUPT
+  EXC_ALIGNMENT
+  EXC_PROGRAM_CHECK
+  EXC_FP_UNAVAILABLE
+  EXC_DECREMENTER
+  EXC_HV_DECREMENTER
+  EXC_SYSTEM_CALL
+  EXC_HV_DATA_STORAGE
+  EXC_PERF_MONITOR
+
+
+cheers
