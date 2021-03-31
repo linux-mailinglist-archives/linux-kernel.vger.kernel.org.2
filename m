@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8227F3502DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C333502E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbhCaPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235987AbhCaO7p (ORCPT
+        id S235487AbhCaPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:02:09 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:43958 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235114AbhCaPB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:59:45 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FE0C061574;
-        Wed, 31 Mar 2021 07:59:42 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n138so29620012lfa.3;
-        Wed, 31 Mar 2021 07:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PsO89NOx80DUPq/uoqBfqzP3oyAMU/I135Iw3m4lDgM=;
-        b=l0hxprmLlYVfUUB4XOawxL21b7Mnqt1Tj5hOz4aCWZLoGkiocEAY3EIbRMDvZB9T0S
-         LTtsIBrykLpWKN3iH4v609s/WtQ5u8VwXQuMInZbGKj5yv0aMplLf5K4faExnwIZFsAj
-         YB0z5KfNXg8JhfB2EeAS1E3rTM0R5/LjbBAJs1wswgbgRduHlHVa1h7GU3drNZbWpGHC
-         65krI08iZU4q6rtsxYNDSeYVaok/9r7N34HAdda6kv1uMDImA91t5lkbLeLr+PSxH4Wr
-         JzYr2kpPpBwvYSZZAGTLF7kqsDy3BVtjfDWpLKacEufrqZnky01B00N7KFc58xxcxe/a
-         IgOA==
+        Wed, 31 Mar 2021 11:01:57 -0400
+Received: by mail-ua1-f43.google.com with SMTP id b7so6173009uam.10
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:01:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PsO89NOx80DUPq/uoqBfqzP3oyAMU/I135Iw3m4lDgM=;
-        b=s7oNq8ec18htY2PL7noR4eitDqW953lm1c7KlMvzP6oKGHmfw+ReIh1Xt0gmVHCV3q
-         /Cs1ALNoC13eIgL2RSQhF9oZDOAjcpyoDRcG+VKxy7dumaLnZiV/yq5ZZeue/+d/fWo7
-         vpBnnQj8env1vhJhY+ZTJFKx2fRzNdd6f9jZCZgL1ltfMzXpT0HEEcU/Byjw0sjAbhnM
-         FF7rXxIVQoY+gy1fAUMwMlEHkvVVIZvU5a2JGdOLyWwjKLQ/aZaGwkNYt7DWD9x6EIsK
-         pdtZUJ9dq0ghTLYnIyAdqGO3aejg/FhU9+Hsys8mx49c3NSj5ZIEi38B+S/LJgbjdcl5
-         tbGw==
-X-Gm-Message-State: AOAM531mLSlGwcaShmMRCpyHsnGz7bEIz4cgE+plYViMMx1Fape9GOfE
-        S1vksTQbvk7xCV5HXU9dQsXvIaswud25lg==
-X-Google-Smtp-Source: ABdhPJx8es0d3p6vHRKIE2PW9CFQRyDk59ibGGL5NkPTZv7S9RNLZEkG8zAX1hwSptm5jyU2pU63Aw==
-X-Received: by 2002:ac2:58cf:: with SMTP id u15mr2423994lfo.397.1617202781069;
-        Wed, 31 Mar 2021 07:59:41 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:c71f:a10:76ff:fe69:21b6? ([2a00:1370:814d:c71f:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id f20sm262375ljn.123.2021.03.31.07.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 07:59:40 -0700 (PDT)
-Subject: Re: [PATCH v2 5/6] dt-bindings: memory: tegra20: emc: Convert to
- schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210330230445.26619-1-digetx@gmail.com>
- <20210330230445.26619-6-digetx@gmail.com>
- <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b4f7c7fb-1332-8490-fb4f-293fd357338e@gmail.com>
-Date:   Wed, 31 Mar 2021 17:59:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1mc9nk86dCN75VHp4R/+UxN4s8fz6T5fsikzkkqFEsQ=;
+        b=rcfsDv/kL7EyRTTfUoDRqFJ/61AzekbtLVVmOB8ZiDWMb8MnADWMCAdGy/JcSWwpaT
+         dqcKrIZopB+XBnEing2NrEkZ7vLlTPxFG9uxjfA1HjAqEQVOlK3ZqH/vdqGyWOq2e1rU
+         U80pbhhkBYQBujvxYybiE+BnaFfSbTsAI7N4oy5n+mZ5Aix3qqP9SA3SNQhfRpowSJwr
+         SmL6isUgDLou2nOhfW6UuLMCwulkg6R3OuIhO5e59T7Dw2Pwkl0nb+Xtpb2s2bMEBknM
+         5PeXYTVkiQ1CvyOn4Z07AwHEWfKlzLERaqrVciUldg3hH4uGPIg1vZe/gpBlWKhzivFI
+         YGDQ==
+X-Gm-Message-State: AOAM531q/L5f6vtl99ZzqV/uYNNwqpz5/sQeMKv836iO5Yb1jbM5juLh
+        zpXdcX1x1oob1dVI9LE3YWEAel2kP6wtjop4u/s=
+X-Google-Smtp-Source: ABdhPJwv4UB5s4DrbZZrnToPi7FlyCQu9FFusTEse7S+9tKnQx8PerYCa0X16G17xqd6zcem/NHi8kzk7ZZIQsBRMrw=
+X-Received: by 2002:ab0:64cf:: with SMTP id j15mr1794879uaq.4.1617202917239;
+ Wed, 31 Mar 2021 08:01:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617198059.590387.2074856.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210331144336.25628-1-masahiroy@kernel.org> <20210331144336.25628-2-masahiroy@kernel.org>
+In-Reply-To: <20210331144336.25628-2-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 31 Mar 2021 17:01:46 +0200
+Message-ID: <CAMuHMdW5+ZgLeJ_jFBiWLL0MGEQZhXx56AuJNQb4p8UvQsGB1g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] m68k: remove meaningless EXTRA_LDFLAGS
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.03.2021 16:40, Rob Herring пишет:
-> On Wed, 31 Mar 2021 02:04:44 +0300, Dmitry Osipenko wrote:
->> Convert Tegra20 External Memory Controller binding to schema.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  .../memory-controllers/nvidia,tegra20-emc.txt | 130 --------
->>  .../nvidia,tegra20-emc.yaml                   | 294 ++++++++++++++++++
->>  2 files changed, 294 insertions(+), 130 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
->>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->>
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.example.dts:33.26-55.15: Warning (unit_address_vs_reg): /example-0/external-memory-controller@7000f400/emc-tables@0: node has a unit name, but no reg or ranges property
-> 
-> See https://patchwork.ozlabs.org/patch/1460288
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+On Wed, Mar 31, 2021 at 4:44 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> These two Makefiles contain only built-in objects (i.e. obj-y), which
+> are collected by $(AR) into a thin-archive.
+>
+> EXTRA_LDFLAGS is meaningless because $(LD) is not used here.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-FYI, I'm aware about this warning and I think it's fine to skip it in
-the case of this binding. The dtbs_check doesn't bother with that warning.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.13 branch.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
