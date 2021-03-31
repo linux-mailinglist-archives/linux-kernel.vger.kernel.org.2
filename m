@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76F23509E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864E13509EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhCaWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:01:03 -0400
-Received: from mga11.intel.com ([192.55.52.93]:62506 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231676AbhCaWAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:00:35 -0400
-IronPort-SDR: A07JH/gQpo9UZi/hPkczR/r6R1Iyipm+1Is21weluBZ88C2lpQeQBA9dP1joPmQV+uLcxCnmwd
- elwLc8S3Aobw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="188840334"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="188840334"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:00:35 -0700
-IronPort-SDR: wrdoTYr/42ISLP0b4O6OBy0ToBLByXBnlURGfNgKPd6KE/jnwCxCP8U18dqg74PnMjXpp6Zqtw
- VibEMx8FadLA==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="418873309"
-Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:00:34 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YGTvSvr2T2v3t3XA@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
-Date:   Wed, 31 Mar 2021 15:00:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229662AbhCaWDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:03:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229787AbhCaWDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:03:31 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12VLYOGV115406;
+        Wed, 31 Mar 2021 18:03:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=0s80tVd1/+xxWvcVo0goiNeMZ99Cty098sGMsWOUfWA=;
+ b=gMd8e2A2WI19C72rRErzSgE+xcF0p/AHUSWZz7Y/rTUqBzK42r7yU4qaQBBRqWqwUpj9
+ Ig24PhBcbsp6DpcFccAiTuak0Os9aobR9yPISnIE5g4sbSvp9pOBdAsVWAR6PZ0QMVpp
+ afjV7zYV9NP8CuYGpNktfBCiz5sY6gpdBe+e7o6ao1PY+hEqQ5D9Stvu1saBfNayLr87
+ h3k6GbLXes7nEyzcanRKgKc+HBUsZvF2ehG+S+YRc22zwXeBbRlaNPLPwrbzhiGQugFr
+ lj4/ivczJeQzMiL6u2hpPTAFQeC9iGR8NCo0JUg7NG7d26kO235MJfDVl15jyE0jovON Bw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37mnfte6wm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Mar 2021 18:03:03 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12VM2UhQ007893;
+        Wed, 31 Mar 2021 22:03:01 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 37marxggjy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Mar 2021 22:03:01 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12VM2xM536766040
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 22:02:59 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25143A4051;
+        Wed, 31 Mar 2021 22:02:59 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA5F8A4040;
+        Wed, 31 Mar 2021 22:02:58 +0000 (GMT)
+Received: from localhost (unknown [9.171.77.178])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 31 Mar 2021 22:02:58 +0000 (GMT)
+Date:   Thu, 1 Apr 2021 00:02:57 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Josef Bacik <jbacik@fb.com>, linux-kernel@vger.kernel.org
+Subject: Re: User stacktrace garbage when USER_STACKTRACE_SUPPORT is not
+ enabled
+Message-ID: <your-ad-here.call-01617228177-ext-4428@work.hours>
+References: <your-ad-here.call-01617191565-ext-9692@work.hours>
+ <20210331103749.01a7c283@gandalf.local.home>
+ <your-ad-here.call-01617223875-ext-7005@work.hours>
+ <20210331170900.5f41bcd7@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <YGTvSvr2T2v3t3XA@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20210331170900.5f41bcd7@gandalf.local.home>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xjcwSAf-x6Rd-Llh7mXPrt6UEX5AQwi1
+X-Proofpoint-ORIG-GUID: xjcwSAf-x6Rd-Llh7mXPrt6UEX5AQwi1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-31_10:2021-03-31,2021-03-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=980
+ clxscore=1015 suspectscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 2:53 PM, Sean Christopherson wrote:
-> On Wed, Mar 31, 2021, Kuppuswamy Sathyanarayanan wrote:
->> Changes since v3:
->>  * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
-> Why bother?  There are a whole pile of features that are dictated by the TDX
-> module spec.  MONITOR/MWAIT is about as uninteresting as it gets, e.g. absolute
-> worst case scenario is the guest kernel crashes, whereas a lot of spec violations
-> would compromise the security of the guest.
+On Wed, Mar 31, 2021 at 05:09:00PM -0400, Steven Rostedt wrote:
+> On Wed, 31 Mar 2021 22:51:15 +0200
+> Vasily Gorbik <gor@linux.ibm.com> wrote:
+> 
+> > It does! Thanks for the explanation and for the fix. I wonder why nobody
+> > noticed and complained about that since v5.6.
+> 
+> Because it didn't lose data, just added extra junk.
+> 
+> > 
+> > Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+> 
+> Want to give a "tested-by" too?
 
-So, what should we do?  In the #VE handler:
+I only tested it on s390 (manually + ftrace selftest), quite frankly.
+If it qualifies:
 
-	switch (exit_reason) {
-	case SOMETHING_WE_HANDLE:
-		blah();
-		break;
-		...
-	default:
-		pr_err("unhadled #VE, exit reason: %d\n", exit_reason);
-		BUG_ON(1);
-	}
-
-?
-
-Is this the *ONLY* one of these, or are we going to have another twenty?
-
-If this is the only one, we might as well give a nice string error
-message.  If there are twenty more, let's just dump the exit reason,
-BUG() and move on with our lives.
-
+Tested-by: Vasily Gorbik <gor@linux.ibm.com> # s390 only
