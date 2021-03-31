@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE1634FAE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515E734FAE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhCaHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234108AbhCaHzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:55:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9470061582;
-        Wed, 31 Mar 2021 07:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617177319;
-        bh=EzitGg86srFNwq2ybWNTNEkYH5cOxpBgx7ICUgiY5yo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HoEE25OE8avfFADAgHRysi5TbL9Q2GJYNdipPYMDvqhA1KarMfxqZpV9Uoyafa0bG
-         RZLpwqxufdgARkTFbMWqqqv2xkNdcdUfakfMbdxfguce9XtIrsT70N3gtFEWQw9yod
-         2RVA9yaHSQqHXt+rgqdBf0Zg2mU/cfzWyBDRcGiLFiPFWeLztE88cFMSAYtvYVoMXZ
-         MHwyzwGQkiGOSuirfKPNj57lYlHvQB1QNoW1frAPZ0eHOiY7HSPl9DSSJewmjlpW/e
-         zHUarypb4raAyvxr/hPfPXifCNGp5XZtEuq7+jL3gMXaw1342sCMA3FmLaNgztXyXq
-         aBZlCjym0+BFg==
-Date:   Wed, 31 Mar 2021 09:55:16 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, p.zabel@pengutronix.de,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] i2c-stm32f4: Mundane typo fix
-Message-ID: <20210331075516.GF1025@ninjato>
-References: <20210324140610.32385-1-unixbhaskar@gmail.com>
+        id S234148AbhCaH5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234127AbhCaH44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:56:56 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0222C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id i144so20255219ybg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MgUMXHodW4czfJMBWwIWPw31+/LFTP5qzOrrXtIPGCw=;
+        b=Siv9O1/aTQJTOyFg1U8gNhaIBW8T+gXHDEXCMOZ2f/3rI2FvWEV9BghJoV768fl4qc
+         eOopFW94WgxW3h+K4y5MaW8oVhFM7g/MjxwrFcTVqbJf5aeF8mrSUFrCBcwTZlUWHVyV
+         B7njSXFqe3NUYw7qc/A4Zc5zkw+TDFdM2J7g0MNAXQBKJyojzTMb/csPbvei63oXB6m1
+         lTxtyJMBYyVkN9X+fuYY1q0lpH0jVJN2005oGF10yvvBdICWKy10f19jdfWxob9JQtT/
+         zMT73JClBXLQuzGhvOn0+Fbta9Y/ofAcXgG6ixJ9XlOFT2K5mCPOYt2EyhV5Cvs4ZP0t
+         2AIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MgUMXHodW4czfJMBWwIWPw31+/LFTP5qzOrrXtIPGCw=;
+        b=axstM1Y0MZCq77ofTHeCaXRN8VVDCMDvw0JJ30dbq5n50sCoZyEGZB7OwMvNxP2Ixq
+         4bDTNUXYSsvRP9pAgv3UI65UoyTft6+Zst/I5f9gS9TFnLetbpV5BCvH5DvPoURaNAtJ
+         BHCqdLzr0hNXdZovvH48KLPu0if7CrlAddpmR9avOMmKH1V9lKe1zwNYcvOR2gAO88r5
+         CS1NHxNzp37y5XdlRK3/WBvA+LpI7hk42LXIk2ea4HaxNXrnADfDY4k4MYNCQVwX3BT0
+         ZeYzAbFKm5aacsLCxWq/7eU6mWNE3rYb5NuIbwcI951tl8cb7Z754W1fSfN7Jso97Q7L
+         IF3w==
+X-Gm-Message-State: AOAM5302d+pjGlbb7BMIQqq+suz9O9lpqEwBd+qLGFh5HxzkSeJwijhi
+        StDT/dUlj119S3DYVCsOFkHxgyTEVFihr4R6d6pgoQ==
+X-Google-Smtp-Source: ABdhPJwAe6p7zIWjynyOOC6a+3NfJhGUZjRoLUE0/8hsS4pKJyVaZq3xDAXiChU5+H6y8JagPw7lbs2FDJQYG4Q+M+o=
+X-Received: by 2002:a25:768c:: with SMTP id r134mr3126449ybc.366.1617177415233;
+ Wed, 31 Mar 2021 00:56:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CXFpZVxO6m2Ol4tQ"
-Content-Disposition: inline
-In-Reply-To: <20210324140610.32385-1-unixbhaskar@gmail.com>
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com> <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <d1ec9f4cb6dd9afcfbeecfa717e863d75e18133b.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 31 Mar 2021 09:56:44 +0200
+Message-ID: <CAMpxmJVKmBp06_2Hd4XF-eL4KfgZFy1o+xUvvs6H=TaAnkmYhA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: sysfs: Obey valid_mask
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 1:41 PM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
+>
+> Do not allow exporting GPIOs which are set invalid
+> by the driver's valid mask.
+>
+> Fixes: 726cb3ba49692bdae6caff457755e7cdb432efa4
+>
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
 
---CXFpZVxO6m2Ol4tQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
-On Wed, Mar 24, 2021 at 07:36:10PM +0530, Bhaskar Chowdhury wrote:
->=20
-> s/postion/position/
->=20
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Applied to for-current, thanks! Please check older commits to this
-driver for the proper subject prefix, i.e. "i2c: <driver>" in I2C.
-
-
---CXFpZVxO6m2Ol4tQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkKuAACgkQFA3kzBSg
-KbZcNg/+Kgz6fUXwT8UG1T6AI2mSbxrDvEf1HZabVoWUXqfAUzW70AOuupu6rANv
-ZALbbp5LgXqd9mlB6SsLgZb2Fu+KH2HHfb8Vb+3MoyVPRPxY4hz0ISqGohy4cWH0
-3WRpT7ZKYwxjHj/0YFaQxrVSa3Vxpy/iifohlnezxqWYcKm/WVoRvpUXPAqT53w5
-buqBb+CY133IjNtPg3GVrV/7yPuPM2hQAapY0PsbwPz4Krq2G6jsuhQ8V5vHIaTm
-Y8DJiRDvAzgDgTUKu/Ndi4JD1g8InykBnLRqAbdk84ktM1vuGEpvk7/LbbybBKj3
-ZezZCW9Ux/1X69t17Z8l/R8S85xRXiRcXjO04+rVHjnsMMPVyiarGQEptejqY3CH
-nQjiVNdCUh6uzkQcD6zdUgIeqrdq/IAConxpk5BAKmMqQfVkM85oY20AMZP/gEtg
-yBVkQdXVpvltbIvxtcP7Zxf2X90PpSVfexJpqHBx45MGy7FkEnu29gwo4SZ+q81S
-Y+sXwxxuyL3KvxFibgnLTLf2lcpTVGpcC5N6VZjOrAf3pfWxgx3QvJ0LqtQrYcwB
-lNZiq1C+a5eGpOdBEnEmpc69YTTs40ry4fBkTnnzOdPCJVkDsdn4ZTDp5cAnyy2E
-VKGky1q77+EEI2EIjmquoP6f/u+yQNf3In2VZbaYZjXz+kckDPM=
-=P84I
------END PGP SIGNATURE-----
-
---CXFpZVxO6m2Ol4tQ--
+Bart
