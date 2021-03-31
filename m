@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7063508C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8193508CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhCaVGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhCaVFx (ORCPT
+        id S230071AbhCaVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:08:17 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34586 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhCaVIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:05:53 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33F2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:05:53 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id j25so15457317pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OsMJWVQ5QwySc9J0D6/CmIltvLje627dYrulaN3pAYw=;
-        b=Wc7aKMlkMupX5QKCwfzZVYqMCo1X7BRsT/Kkkx7EwXhoN5RNV7t4FFC66e9PTmv1hx
-         B5fa6/ZZRBlZ7u8xuFDL9LYZr/z14+WE4xRb24HmRER5FPe8woSMl7enlu5vXfvWMl1b
-         ME7U4jYEdyICvfRyN6+B26dJ3dEizwHNQsWpWevkiP4PnR+3Jmdg2xy/JJIDOEUUXaQ0
-         ltEvaex2B8+pIp7NiAF68Y5qiyuu4234eP6u6hPNTVxaQ9AE8rdIKMAy3U8FEPBYR1GF
-         8MWtaTrm5lKR+WYnx0BpHgfhq0fkF/UBhRko1T8H4itpPFwtvOhfmo0NCytN/FJUUsy1
-         332w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OsMJWVQ5QwySc9J0D6/CmIltvLje627dYrulaN3pAYw=;
-        b=oZqLthLWwOfK/jEu58igWeuoJQjMGRll556ajbhasu0spouW/GqcqScqVpAixds1rc
-         H1mWnZeCcg+bgFM7QXWypVOioegoXWhflooqlD5DnwT0yECLBo4c4IOckeS5lvsJbukP
-         vmICR86GjuTbu22snvWkrFE5Fc1VNvwSWqldaCmfLZvW7aMZlxElgNdU2yqLksJ/Gbh5
-         LgYH7A2DI9DhRNxxsjYSFPXo9VlH5ehUvYaSrFe4H9WpktOv4K0Li/2Wfc4u89FgdXiw
-         dvwj7WcEgdIk93B27YtSJ/WB8UUN3aCK7AQH7xaIJcFdl/C08V3SWB0xnWggEUgRwVFg
-         hN7Q==
-X-Gm-Message-State: AOAM532yF3NOachTtYmppWx2iksExsLVaXQkUIzlPLrKY0me46FHJrNr
-        IwMvUb60MG/KhKX4HcmhDQ9zsA==
-X-Google-Smtp-Source: ABdhPJyf0uPjw7GKqed+RHpnFRPgnZODnH1LNH3LjT1TYsTNjhWE3dnO3pT+GkRqgzOjMV1yU6flMQ==
-X-Received: by 2002:a62:6497:0:b029:220:d96a:8a79 with SMTP id y145-20020a6264970000b0290220d96a8a79mr4625909pfb.23.1617224752934;
-        Wed, 31 Mar 2021 14:05:52 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id na18sm2894150pjb.30.2021.03.31.14.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 14:05:52 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 21:05:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
- unless necessary
-Message-ID: <YGTkLMAzk88wOiZm@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <20210326021957.1424875-17-seanjc@google.com>
- <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
- <YGSmMeSOPcjxRwf6@google.com>
- <56ea69fe-87b0-154b-e286-efce9233864e@redhat.com>
- <YGTRzf/4i9Y8XR2c@google.com>
- <0e30625f-934d-9084-e293-cb3bcbc9e4b8@redhat.com>
+        Wed, 31 Mar 2021 17:08:09 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 626441F461A9
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v6 0/4] Make UTF-8 encoding loadable
+Date:   Thu,  1 Apr 2021 02:37:47 +0530
+Message-Id: <20210331210751.281645-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e30625f-934d-9084-e293-cb3bcbc9e4b8@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Paolo Bonzini wrote:
-> On 31/03/21 21:47, Sean Christopherson wrote:
-> > Rereading things, a small chunk of the rwsem nastiness can go away.  I don't see
-> > any reason to use rw_semaphore instead of rwlock_t.
-> 
-> Wouldn't it be incorrect to lock a mutex (e.g. inside *another* MMU
-> notifier's invalidate callback) while holding an rwlock_t?  That makes sense
-> because anybody that's busy waiting in write_lock potentially cannot be
-> preempted until the other task gets the mutex.  This is a potential
-> deadlock.
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
+Currently only UTF-8 encoding is supported but if any other encodings
+are supported in future then the layer file would be responsible for
+loading the desired encoding module.
 
-Yes?  I don't think I follow your point though.  Nesting a spinlock or rwlock
-inside a rwlock is ok, so long as the locks are always taken in the same order,
-i.e. it's never mmu_lock -> mmu_notifier_slots_lock.
+1st patch in the series resolves the warning reported by kernel test
+robot by using strscpy instead of strncpy.
 
-> I also thought of busy waiting on down_read_trylock if the MMU notifier
-> cannot block, but that would also be invalid for the opposite reason (the
-> down_write task might be asleep, waiting for other readers to release the
-> task, and the down_read_trylock busy loop might not let that task run).
-> 
-> > And that's _already_ the worst case since notifications are currently
-> > serialized by mmu_lock.
-> 
-> But right now notifications are not a single critical section, they're two,
-> aren't they?
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 2nd and 3rd patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
 
-Ah, crud, yes.  Holding a spinlock across the entire start() ... end() would be
-bad, especially when the notifier can block since that opens up the possibility
-of the task sleeping/blocking/yielding while the spinlock is held.  Bummer.
+Last patch in the series adds the layer and utf8 module and also uses
+static calls which gives performance benefit when compared to indirect
+calls using function pointers.
+
+---
+Changes in v6
+  - Add spinlock to protect utf8mod and avoid NULL pointer
+    dereference.
+  - Change the static call function names for being consistent with
+    kernel coding style.
+  - Merge the unicode_load_module function with unicode_load as it is
+    not really needed to have a separate function.
+  - Use try_then_module_get instead of module_get to avoid loading the
+    module even when it is already loaded.
+  - Improve the commit message.
+
+Changes in v5
+  - Remove patch which adds NULL check in ext4/super.c and f2fs/super.c
+    before calling unicode_unload().
+  - Rename global variables and default static call functions for better
+    understanding
+  - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+    enabled provided UNICODE_UTF8 is enabled.  
+  - Improve the documentation for Kconfig
+  - Improve the commit message.
+ 
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
+
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   6 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |   6 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  17 ++-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  | 152 +++++++++++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  98 ++++++++-----
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 100 +++++++++++---
+ 12 files changed, 344 insertions(+), 80 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (57%)
+
+-- 
+2.30.2
+
