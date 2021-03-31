@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688D03503B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D48B3503A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhCaPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:41:12 -0400
-Received: from sonic310-30.consmr.mail.ne1.yahoo.com ([66.163.186.211]:40803
-        "EHLO sonic310-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235268AbhCaPk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:40:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617205257; bh=Z02XmX+0Mt2pXfYKNKZIJvP10maumL1eky6/lOZMiOI=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=Prra4wT0REJlAQjJ/8cst0bg+Dnxc8uvAf3dexHep1c9UHbUCAUeciCDUzcRRqn8i9GIxGflZkFzr5fc38cUmlZ6IvS7LhnkPHjOoo18fejHODkkznHtnd6SA0N5G/dJzalT7ZzKm7FUKqJPz+5DvORwONnPjQ16igiGlhvAiPaHj5uazXhUwdcRFj8CODUawlBJmifUgRjvL3kFpHcV22jqIC4krHDN3TFdZDU/wN5snPrCs87sy+BY7tN+Lk3Tf+nINGYWUZLu562EoJ+iI5l0uuS0+E4rYcNflKPGSVC9ER6wT60WVjF1CrgA2Y5NhxOyblW4aCv4cEhjsu2mKQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617205257; bh=7SSWanaPq37y8uzdOXVAvUAQmjRxUXenlRDNejoJzxa=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=nEwzK8Ji/7Yz+1hWIrKLSOpkzJ4znDSoKwHYeWAGj7f3/8Ql5Q7lGd4TjAO8CZj9uqcpJZxc+qej5lSoXSBTu2/RmtwFjnBoVIiESagBjtZZOeNO+vcMmDC8sGZpoY6MQo0q/8YMz81mBdgriUm2nGASEeW9CM1uYeWHpdKG64bVugR/1h5GnFSjNN1uDiyi7YGkc8KYcmnLmNEcnyF1aTTLsE4KgNaRMdPFAo2T7pE7jbr+V/3xzQ4MURSiF+88WeszsrdHwJGGmHK7S2/lxcM/GG5Ndkc1YDX2zqnEWjmyLu1zKy+tQ2CpK7VQ8r9D3PlZWPoS3sb0SkMSd4o0gw==
-X-YMail-OSG: Jz2huvMVM1kmgZwHsZ4oXA_c6hdu0VUHNzNvUtYvvSHwQQsd_BtJ4YLolictK_e
- KzOAzULFgRxVGfJBjuVn5a5fJykVZxZ5yMzM9aWOhu8rlObDiPVY2KsB86qgJK4ON3ZKvhwY8RrK
- R.j9E03PvP2Z4PuxI9iPj3_RXB3WGN_dpK5qNi7R4740I4sIIhJSX9g2PJgyCaWWQCcFJPyjFX0T
- eDxHE.m2uBq3Fv6uL6oiN4bKrfcL.y25a7__4cX.kcnUOJ_jwCxzHTgUY0OsgtAfmtkOEsziKW_q
- Fj.dUeCX92V5MENYkFQ5_.WAmPFHXciGpSGNP9bR1wGR858iZXlgg1uw6xKw_5mEBHR0FCWl4Ljc
- _66MKbUcYUlomXiJxdagZYQA17kuBY.B0T0C_Vw7e8GTmHkLBJ_QfEgIMLfOU0Ryz6ke1_KU46sH
- dePi4pTWkSkCvP4npvgEXq.MGGpF8RhoC4bEwI1zntWyvKHp.BrDhyHDb0zPaugZtksp.KWZmo2A
- PuDjhN4K.a__369d4E7iKex8QWhgWNEkzI5e7QuPAnnSZQk2znT4uwfHulOj8.RxHEggNK_wWKxr
- P_H.uVpaptraXDcxQ_Ve6ClSB1V39YV1haaNtaeOlYobnWojH5PmGVZtb7ZZez8gujifoZtJO.Vg
- OXYxOsiip_rj.z5ZvIwPOSda_HUuAHtV67JP_nDopdjkAl.qY2jWZtS2q4gVQ6s7iI3eJb4ISou7
- t2nOD6KhwNNLscrPXCzIONfaiU3fHrtY8sprovYvg_nI10bQlXyMR9p5KywFgaxxw5__sZtlUxLB
- RddlMQ5gJMbYQxa36UFjasL1mGB5aeTkaM4j4YDigj.f9W9u.uB29kSP2jffdig933R4H6nGTO5E
- UKGO8hpOmIL6CDJWtQ9RKCNwIOvSDF6AAwe487JAQAbrV8A6TMMZF4Ij2Yvj4aceNN1AgaAr.znv
- iFS1VO.jZf6rqrkv.BPdsO5JNttp3HFiQH91PyjgXDzioVgfPH..wmmYJgefdLyG_PU6dX7Zf_X8
- 7enKkUaAv_67FFBhARpHb3pFj6BjjNYVcR_8vNlbC3z0fqfyqUT3j6wn5naiesLvGOn.lXua_Syl
- ANN5bcRyMU3_tRaeQD5NHT7PxCOI.T3efZWT2x0ngMjUTc4uQ4UXO8D1hKX4wt.aF9uQPze.QIN6
- PNtQYg28YvQncivGY5DPFAoOidE9Tb_ukmIuHUSo4o34CGer3qwp6h6mw8I_QPMZxKZ3J6QCTXfM
- PflLnjwSXc4mGAP3D99KCy.WtCGVPZuFnLqAyRckpZAnKJd0rXHVsJ5DEcYSL6Z.ymdwKXFqy1_j
- AZu4Jm5.jhyZcHECE5ql5SF7C.v_6rVk395hfD_KYN8exKXcmg0pKhHC8CGiRdxKFSqPusgXSbB4
- iX5_eTGloC6wFXuN3PG3b1YaLvrVPSf6Bk.Mbw7yh_mn8RQVoh2Cdkrk4K.YakU_jlTnoeaYzcvw
- jKI_L8Gq8_.X7n_zOwv67Rn1lSJ8qNPNt.uhUPGFIZkeRxCmKo.OMEnHndiMp_TThYJbDRYMGYVz
- gcsRgjpxD4SVJu67w9e2JLfiyfvLW33C.RF1Ni7XEeCoFR9AJ5418BeoMOfuPTTbfohRRj_2PRxV
- hEoNrEA3D1F6YRVwuXd.swkuIO96Bbr60LHdrBkrJtViOYjl25XfrrTTX9VIFYS1rhID5OYGEieN
- 6p2vCTX0aZ_6qG3hq33PY75KTaT3EPosWrLIBlEiBY4E9SY2RMMpYSKvoft5YCxtApuUGstZCDJA
- _38ttkCXlrl2uIl.Dyi3rRGLN_ct0RYh2q8bAv3qTHT4Xg6fGPev392o3_P75xASKAYg9YLzh2W.
- Thk.1VP17QhkWRcjC0f_P1lbPcahJ6q8wOL9mkxelBvnFwiUXQtTVA8MjKHCD9E4GE5wE1_4gno_
- daQe6uaiB90LozR0PixxVDCNBb88nkalYsdR_f4MCZhKBKLGLelelzhJcfb89Q76jLBtYVmYrs5M
- IIrxCVJQiIFCBiaXQ4NEhYhzkM3HghGMSpZzn_KP2RvhumcWJhXtuqS_9.PYkUMgMKzxmeMDyHyR
- OS8CuYs8M8ghLbCM5MDcVGd2ogyCHSh6V5J4zeEDCQmOgaaMbJuMkn1KGctPf6bm743NmEwOdRta
- dMjYpVQpoFOh_nStbdCxL9EoSnC5DUS_ScX0_uAzdEgs1KCxwwuvZpUQFFrW94.3u.CRrWM1S7ff
- ercJ6XyNSn2zLKIBXsdVDGkl9zEtr8MAZ1HWHH78CjM8V0XnfHs55yEEPYMjGobrMnguHZ3mh9Jc
- Wn.IeSRBCZq4fu1jApgSKHNeQOvOWQ4EpSfgHgQR6Ye0EOsqTDqjOqXrcsbyF3XcY2jBIVyeOiGK
- dn4gWmxT1MKV37YavFEvmkIrETNcEa5MYGN_Y.JPfHz58zVCr_KaKZAqEEXcNnHc3lll1zmoSLdY
- twUmgaH9KIuSZAcloXvw5pOFMFMw.vPDDzwHKtWw4A_0ZSZVIEcetmC8cJnwQMglf3qnY4ZO1kAl
- kBmuLD..7ctlUPRmHQwpnt0cKBrQlvuHjjcqWmCwMABF02p4dwR1ON71zmGmxuDODapPTh0mQyEB
- jlOq11deChGTCWliHg2AYXkQeoKCCWvKqpoMu7m2qtS0vc6p1wtG8Of1umNQrL4IqWoqOvZ.p.az
- b89iR8lbFe1_6zpQs2f32s7Qi8xZRhIrABkO_IfLeKjPdDyNn35PfaHBP8gv311CVD15Apn13CHI
- EPQ8OLUCY1zaJoH3FRf7nYXYCiFGDDxkwmVh1We.8BLb3rIpmStFm.6ldCFeUv2f5tOaSOUHufKw
- y7RTwb2_sYfRkrjkq72a7DQ0hO21v0cqj_qfbcMNuhCgh7cKGP.h7Xj2d4g--
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Wed, 31 Mar 2021 15:40:57 +0000
-Received: by kubenode523.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 1e30e9276f309eedef0c4632a5394e18;
-          Wed, 31 Mar 2021 15:40:54 +0000 (UTC)
-Subject: Re: Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab breaks Smack TCP
- connections
-To:     =?UTF-8?B?5YiY5Lqa54G/?= <yacanliu@163.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <3f8328fe-e648-9d0e-729d-eb6787f11bf9.ref@schaufler-ca.com>
- <3f8328fe-e648-9d0e-729d-eb6787f11bf9@schaufler-ca.com>
- <9b85945.3cfb.178862aa787.Coremail.yacanliu@163.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <83947731-d800-9a1f-71f9-4460c46e322a@schaufler-ca.com>
-Date:   Wed, 31 Mar 2021 08:40:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235801AbhCaPh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:37:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:34667 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235520AbhCaPh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:37:26 -0400
+IronPort-SDR: 0ZDlpzQwoAAcASMccIhJbjjPByNCu/5rNQK+h+iC2XJEoUR2KIZp1uDJ5osUSmfDsngJANJaus
+ coQyH141kfUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192054455"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="192054455"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:37:26 -0700
+IronPort-SDR: bFLVobjcz36FiQAfEulhXkLO+PD+DqUOlkEpEmCQxJrLSR9BjRjPgUnK4afBfDx0Rdti0RG/UP
+ kFByFLIJdbLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="418729037"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by orsmga008.jf.intel.com with ESMTP; 31 Mar 2021 08:37:20 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net-next v3 0/6] stmmac: Add XDP support
+Date:   Wed, 31 Mar 2021 23:41:29 +0800
+Message-Id: <20210331154135.8507-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <9b85945.3cfb.178862aa787.Coremail.yacanliu@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Mailer: WebService/1.1.17936 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/2021 7:44 PM, =E5=88=98=E4=BA=9A=E7=81=BF wrote:
-> Hi Casev:
->
-> A quote from the listen(2) man page on my Ubuntu system:
-> The backlog argument defines the maximum length to which=C2=A0
-> the queue of pending connections for sockfd may grow.
-> I think this implies that the 'backlog' must be greater than zero.
-> In the test source file (tools/smack-ipv4-tcp-peersec.c) Line 60
-> I found the following code:
-> if (listen(firstsock, 0) < 0) {
-> 	=C2=A0 =C2=A0 printf("%s-listen\n", argv[0]);
-> 	=C2=A0 =C2=A0 exit(1);
-> }
-> That means that sock will not accept any requests,=C2=A0
-> so client=C2=A0TCP connections hang with SYN_SENT.
+Hi,
 
-Interesting. Prior to this change the code above was
-accepting connections. I also tried code that uses a
-backlog of 0 on a system without an LSM and discovered
-the same behavior. That is, it accepted connections
-with a 0 backlog before the change, and hangs after.
+This is the v3 patch series for adding XDP support to stmmac driver.
 
-Is this a bug fix?
+Summary of the changes in v3 (per feedback from Jakub Kicinski):-
 
-> In openssh case,=C2=A0it use SSH_LISTEN_BACKLOG as 128.
->
-> At 2021-03-30 23:42:04, "Casey Schaufler" <casey@schaufler-ca.com> wrot=
-e:
->> Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab 'net: correct
->> sk_acceptq_is_full()' breaks a system with the Smack LSM.
->> Reverting this change results in a return to correct behavior.
->>
->> The Smack testsuite can be found at:
->> 	https://github.com/smack-team/smack-testsuite.git
->>
->> The failing test is ipv4-tcp-local-peersec.sh, but it seems
->> that most TCP connections hang with SYN_SENT. Oddly, ssh
->> to 127.0.0.1 works, but other TCP connections timeout.
->>
->>
->>
->>
->
->
-> =C2=A0
->
->
-> =C2=A0
+4/6: Factor in XDP buffer header and tail adjustment by XDP prog.
+
+5/6: Added 'nq->trans_start = jiffies' to avoid TX time-out for XDP_TX.
+
+6/6: Added 'nq->trans_start = jiffies' to avoid TX time-out for
+     ndo_xdp_xmit.
+
+I retested this patch series on all the test steps listed in v1 and the
+results look good as expected. I also used xdp_adjust_tail test app in
+samples/bpf for checking out XDP head and tail adjustment introduced in
+4/6 and the result below looks correct too.
+
+ ########################################################################
+
+DUT > root@intel-corei7-64:~ $ ./xdp_adjust_tail -i eth0 -P 400 -N
+==========================
+icmp "packet too big" sent:          0 pkts
+icmp "packet too big" sent:          0 pkts
+icmp "packet too big" sent:          0 pkts
+icmp "packet too big" sent:          0 pkts
+icmp "packet too big" sent:          1 pkts
+icmp "packet too big" sent:          1 pkts
+icmp "packet too big" sent:          1 pkts
+icmp "packet too big" sent:          2 pkts
+icmp "packet too big" sent:          4 pkts
+icmp "packet too big" sent:          6 pkts
+icmp "packet too big" sent:          8 pkts
+icmp "packet too big" sent:          9 pkts
+icmp "packet too big" sent:         10 pkts
+icmp "packet too big" sent:         10 pkts
+
+LP > root@intel-corei7-64:~# ping 169.254.1.11 -s 300
+PING 169.254.1.11 (169.254.1.11) 300(328) bytes of data.
+308 bytes from 169.254.1.11: icmp_seq=1 ttl=64 time=1.17 ms
+308 bytes from 169.254.1.11: icmp_seq=2 ttl=64 time=0.575 ms
+308 bytes from 169.254.1.11: icmp_seq=3 ttl=64 time=0.582 ms
+308 bytes from 169.254.1.11: icmp_seq=4 ttl=64 time=0.595 ms
+308 bytes from 169.254.1.11: icmp_seq=5 ttl=64 time=0.585 ms
+308 bytes from 169.254.1.11: icmp_seq=6 ttl=64 time=0.591 ms
+308 bytes from 169.254.1.11: icmp_seq=7 ttl=64 time=0.599 ms
+
+--- 169.254.1.11 ping statistics ---
+7 packets transmitted, 7 received, 0% packet loss, time 6103ms
+rtt min/avg/max/mdev = 0.575/0.670/1.166/0.202 ms
+
+LP >  root@intel-corei7-64:~# ping 169.254.1.11 -s 500
+PING 169.254.1.11 (169.254.1.11) 500(528) bytes of data.
+From 169.254.1.11 icmp_seq=1 Frag needed and DF set (mtu = 436)
+From 169.254.1.11 icmp_seq=2 Frag needed and DF set (mtu = 436)
+From 169.254.1.11 icmp_seq=3 Frag needed and DF set (mtu = 436)
+From 169.254.1.11 icmp_seq=4 Frag needed and DF set (mtu = 436)
+From 169.254.1.11 icmp_seq=5 Frag needed and DF set (mtu = 436)
+From 169.254.1.11 icmp_seq=6 Frag needed and DF set (mtu = 436)
+
+ ########################################################################
+
+History of the previous patch series:
+
+v2: https://patchwork.kernel.org/project/netdevbpf/list/?series=457757
+v1: https://patchwork.kernel.org/project/netdevbpf/list/?series=457139
+
+It will be great if community can help to test or review the v3 patch
+series on your platform and provide me any new feedback if any.
+
+Thank you very much.
+Boon Leong
+
+Ong Boon Leong (6):
+  net: stmmac: set IRQ affinity hint for multi MSI vectors
+  net: stmmac: make SPH enable/disable to be configurable
+  net: stmmac: arrange Tx tail pointer update to
+    stmmac_flush_tx_descriptors
+  net: stmmac: Add initial XDP support
+  net: stmmac: Add support for XDP_TX action
+  net: stmmac: Add support for XDP_REDIRECT action
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  35 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 529 +++++++++++++++---
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |  40 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.h  |  12 +
+ 5 files changed, 537 insertions(+), 80 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.h
+
+-- 
+2.25.1
 
