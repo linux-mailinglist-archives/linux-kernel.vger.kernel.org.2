@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC3234FF01
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69A534FEDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhCaLBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:01:07 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40149 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235311AbhCaLAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:00:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617188416; x=1648724416;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ntEqB5PgwPCe/PS0yLqwZ+7nakptiiHXromZoHhD7/8=;
-  b=rOcfmdPMH/Z5/HPpZl9+D50UEfKoaT5k5WpJCD14Ezn3mswvF0FmrU63
-   ocgUnZJx75kIEPWV5+jL5fb2K9/KGCGHjF6ZGGZ5swTorAM2hPvBJZFc4
-   alH7bPrF/V5Sf8ovrotp877vuxPuf6lAzVZhwRNc1zc/Y+T4HUFZV9wrr
-   oEkQXVwtKu8WVmphhTumUSqZ9eh0qoGx4Sm7gFLMqesh3mQ5w2jbSxM1a
-   qloZQdPWaSFyOpWNJN8Bm5aujIUifprewNgINXyo67zMd/ORvedkA9dEC
-   1ZNqv8qJKd3KwEQJ4N9uROsuL2eV7vh7KvKErD/MPkieeigvMB0u7qKk+
-   A==;
-IronPort-SDR: t/WE8aXkB8EK19Rn+COffG/uB9FrigZWBwrxBAD9OnPjHyV5WpqWsK79RL9IrU+CuI2hohBM/n
- jWvhPHAd4JqRL2W4TAIF4ukcmyLQG0FfCCe/J/uEQUe46ksZsa+xSmTvPxwyAeA+qQ4nC+5cMw
- r840qSuNrxrDQjuevmGEvM/W1skHTqz6EYfMP+XkS3ASVgFYldZEy1frinxwgCjn922bUCUAfR
- KjAgo3hHaCq+PcZ2JK9Ybu0NUMl712/GCV8NP6/9wXlT7KtxLvIODjd3WoHHwdDhpwmxHijqYs
- PA0=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
-   d="scan'208";a="115333387"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 04:00:09 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 31 Mar 2021 04:00:08 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 04:00:06 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
+        id S235261AbhCaK7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:59:44 -0400
+Received: from mga05.intel.com ([192.55.52.43]:21337 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235163AbhCaK7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:59:04 -0400
+IronPort-SDR: fLrfvTskfxSx6sHknNEz/jHOWBChiIonHsF4kt0B7GE2XCtMGOMvmdzODPoZvY7fv2IRMCanxK
+ K/xGOPHtW6Hw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="277160545"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="277160545"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:59:03 -0700
+IronPort-SDR: Kzuit6maD2ldFG/Nd/j1OxYIa79SZv0xqy7hFbWFGiN6ayk+gLKTWIxsFsaObdSCp3wz/uDZlW
+ /XmtEg2YZaPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="516844107"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 31 Mar 2021 03:59:02 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 4/6] usb: Link the ports to the connectors they are attached to
 Date:   Wed, 31 Mar 2021 13:59:06 +0300
-Message-ID: <20210331105908.23027-23-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210331105908.23027-1-claudiu.beznea@microchip.com>
-References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+Message-Id: <20210331105908.67066-5-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
+References: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+Creating link to the USB Type-C connector for every new port
+that is added when possible.
 
-Introduce new family of SoCs, sama7, and first SoC, sama7g5.
-
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- arch/arm/mach-at91/Makefile |  1 +
- arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
- create mode 100644 arch/arm/mach-at91/sama7.c
+ Documentation/ABI/testing/sysfs-bus-usb | 9 +++++++++
+ drivers/usb/core/port.c                 | 3 +++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index f565490f1b70..6cc6624cddac 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
- obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
- obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
- obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-+obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
+diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
+index bf2c1968525f0..8b4303a0ff51d 100644
+--- a/Documentation/ABI/testing/sysfs-bus-usb
++++ b/Documentation/ABI/testing/sysfs-bus-usb
+@@ -255,6 +255,15 @@ Description:
+ 		is permitted, "u2" if only u2 is permitted, "u1_u2" if both u1 and
+ 		u2 are permitted.
  
- # Power Management
- obj-$(CONFIG_ATMEL_PM)		+= pm.o pm_suspend.o
-diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
-new file mode 100644
-index 000000000000..e04cadb569ad
---- /dev/null
-+++ b/arch/arm/mach-at91/sama7.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Setup code for SAMA7
-+ *
-+ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-+ *
-+ */
++What:		/sys/bus/usb/devices/.../(hub interface)/portX/connector
++Date:		April 2021
++Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
++Description:
++		Link to the USB Type-C connector when available. This link is
++		only created when USB Type-C Connector Class is enabled, and
++		only if the system firmware is capable of describing the
++		connection between a port and its connector.
 +
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+
-+#include <asm/mach/arch.h>
-+#include <asm/system_misc.h>
-+
-+#include "generic.h"
-+
-+static void __init sama7_common_init(void)
-+{
-+	of_platform_default_populate(NULL, NULL, NULL);
-+}
-+
-+static void __init sama7_dt_device_init(void)
-+{
-+	sama7_common_init();
-+}
-+
-+static const char *const sama7_dt_board_compat[] __initconst = {
-+	"microchip,sama7",
-+	NULL
-+};
-+
-+DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
-+	/* Maintainer: Microchip */
-+	.init_machine	= sama7_dt_device_init,
-+	.dt_compat	= sama7_dt_board_compat,
-+MACHINE_END
-+
-+static const char *const sama7g5_dt_board_compat[] __initconst = {
-+	"microchip,sama7g5",
-+	NULL
-+};
-+
-+DT_MACHINE_START(sama7g5_dt, "Microchip SAMA7G5")
-+	/* Maintainer: Microchip */
-+	.init_machine	= sama7_dt_device_init,
-+	.dt_compat	= sama7g5_dt_board_compat,
-+MACHINE_END
-+
+ What:		/sys/bus/usb/devices/.../power/usb2_lpm_l1_timeout
+ Date:		May 2013
+ Contact:	Mathias Nyman <mathias.nyman@linux.intel.com>
+diff --git a/drivers/usb/core/port.c b/drivers/usb/core/port.c
+index dfcca9c876c73..3c382a4b648ec 100644
+--- a/drivers/usb/core/port.c
++++ b/drivers/usb/core/port.c
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/slab.h>
+ #include <linux/pm_qos.h>
++#include <linux/usb/typec.h>
+ 
+ #include "hub.h"
+ 
+@@ -576,6 +577,7 @@ int usb_hub_create_port_device(struct usb_hub *hub, int port1)
+ 	}
+ 
+ 	find_and_link_peer(hub, port1);
++	typec_link_port(&port_dev->dev);
+ 
+ 	/*
+ 	 * Enable runtime pm and hold a refernce that hub_configure()
+@@ -619,5 +621,6 @@ void usb_hub_remove_port_device(struct usb_hub *hub, int port1)
+ 	peer = port_dev->peer;
+ 	if (peer)
+ 		unlink_peers(port_dev, peer);
++	typec_unlink_port(&port_dev->dev);
+ 	device_unregister(&port_dev->dev);
+ }
 -- 
-2.25.1
+2.30.2
 
