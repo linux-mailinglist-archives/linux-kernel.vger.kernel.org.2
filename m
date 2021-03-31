@@ -2,159 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4262934F84A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 07:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A625634F84D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 07:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhCaFdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 01:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhCaFdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 01:33:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A04C061574;
-        Tue, 30 Mar 2021 22:33:16 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso629404pjb.3;
-        Tue, 30 Mar 2021 22:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FXgyDK8HaAZ+Nc4iB+GC6jvOWWlR3QxAnX+r+74mycw=;
-        b=WojBFC/jd/BJWPXfRIuEsMiF5Z1TVSvCgju7IUpBWGuzOlLkM6KdCcNrD1HvwbeVLU
-         sHIyEO45ILd6GHJt0ZxsOfxbhz5BqEaQBMMMTrnGwHSE/QJa8kqLTqCVmYVleuYDu60g
-         gJfSK57NpaFWngP+Wcg7zcbhfWA/61MXwOy1wLiAMSRsr9maNjwR0nkAMOb9WHzEg3Be
-         jko8RNKLNRZUtLaVuSVNB1CQZKj3yiL0sFZNoSw9Mfpo9dbLL1R4jicLEIGycw0vwbFu
-         hhiB0VxcLzn4czYME/gnOEHaVGJknQgqiYWbflUwMRl+lntt8PLoFv201e+yf/3gDxCQ
-         CkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=FXgyDK8HaAZ+Nc4iB+GC6jvOWWlR3QxAnX+r+74mycw=;
-        b=VFU6DF66r6twcCzhEGFEAZRsawWZxw+7ITLGepFMxIDe9S/2p5YsnbmV5HVwlx+tHC
-         iPlWYviIn9NUICbDqiL33nfxhss4ltGF6kI4IScqPFFT3zPJ8Xp03X+nBrldHEj3fayp
-         QdJgr4Dj+L+ahXQxFcpNCWhKiuX7+v/0qSuV9cTKMuilldFHLyoBP4htdW40ZFdNw6u4
-         XiJirTFkqlGjOs+4GxdjnmMbGUuP0W27JPK7WWa+roKQHTfpeSI/ufiwJpiV/CEKbK6d
-         uYg1C9MT6tXNnVM92E6mLnarv3KA48y5SGsasozrN4UkmPzlT4JtHt7CO85SqspNadLN
-         VanA==
-X-Gm-Message-State: AOAM533mHtfNe26Bzfu+aQhpWL3976tjz+V68H0BFbPUMZ8IoIKYGbH1
-        C6uFlFqrCS1hhgKVwV9gP4A=
-X-Google-Smtp-Source: ABdhPJyCJ2tQgtsy3Hs4dSWT7ZLW7WoOXoxU9abeyHdakOvY7DeC47ipXFHFloPMfMWmgniWXjoEyA==
-X-Received: by 2002:a17:90a:fe93:: with SMTP id co19mr1810470pjb.142.1617168795740;
-        Tue, 30 Mar 2021 22:33:15 -0700 (PDT)
-Received: from rata.localnet (fred.taniwha.com. [203.86.204.69])
-        by smtp.gmail.com with ESMTPSA id y66sm974623pgb.78.2021.03.30.22.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 22:33:15 -0700 (PDT)
-From:   Paul Campbell <taniwha@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Date:   Wed, 31 Mar 2021 18:33:07 +1300
-Message-ID: <1706037.TLkxdtWsSY@rata>
-Organization: Moonbase Otago
-In-Reply-To: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org> <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com> <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S233660AbhCaFg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 01:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233469AbhCaFgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 01:36:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47026619D6;
+        Wed, 31 Mar 2021 05:36:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617168998;
+        bh=A+/iyXhYmUd1Chjclmg8Qj+R34Mk/6o9vstaVVjDevk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cBwsi3nspFGQ+Zcaf07hLFV9MUMcPzSNvZdSVqHHq6+xsp0lbYzaL10O2SSPfgKsR
+         tv9W+cyaA96DW9Irw5kpvTNp3lP/vgFbX5hqPKASNUBrxHq1sdrLCEULembBIK/FiP
+         7uhsj82jjmiPgwvZ7mApOFODlIjjjeyaogjrxaoA=
+Date:   Tue, 30 Mar 2021 22:36:37 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+Message-Id: <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
+In-Reply-To: <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+        <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 31 March 2021 5:18:56 PM NZDT Guo Ren wrote:
-> > > [1]
-> > > https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2fcc
-> > > 52afd0fcbf88> > 
-> > > > It also seems that the current "amoswap" based implementation
-> > > > would be reliable independent of RsrvEventual/RsrvNonEventual.
-> > > 
-> > > Yes, the hardware implementation of AMO could be different from LR/SC.
-> > > AMO could use ACE snoop holding to lock the bus in hw coherency
-> > > design, but LR/SC uses an exclusive monitor without locking the bus.
-> > > 
-> > > RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
-> > > think LR/SC would be slower than CAS, and CAS is just good for code
-> > > size.
-> > 
-> > What I meant here is that the current spinlock uses a simple amoswap,
-> > which presumably does not suffer from the lack of forward process you
-> > described.
+On Mon, 29 Mar 2021 16:54:26 +0200 Andrey Konovalov <andreyknvl@google.com> wrote:
+
+> Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
+> that was merged into 5.12-rc causes a build time warning:
 > 
-> Does that mean we should prevent using LR/SC (if RsrvNonEventual)?
+> include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
+> defined, evaluates to 0 [-Wundef]
+> #if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> 
+> The fix for it would either be reverting the patch (which would leave
+> the initial issue unfixed) or applying this "kasan: remove redundant
+> config option" patch.
+> 
+> Would it be possible to send this patch (with the fix-up you have in
+> mm) for the next 5.12-rc?
+> 
+> Here are the required tags:
+> 
+> Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
+> Cc: stable@vger.kernel.org
 
-Let me provide another data-point, I'm working on a high-end highly 
-speculative implementation with many concurrent instructions in flight - from 
-my point of view  both sorts of AMO (LR/SC and swap/add/etc) require me to 
-grab a cache line in an exclusive modifiable state (so no difference there).
-
-More importantly both sorts of AMO instructions  (unlike most loads and 
-stores) can't be speculated (not even LR because it changes hidden state, I 
-found this out the hard way bringing up the kernel).
-
-This means that both LR AND SC individually can't be executed until all 
-speculation is resolved (that means that they happen really late in the 
-execute path and block the resolution of the speculation of subsequent 
-instructions) - equally a single amoswap/add/etc instruction can't happen 
-until late in the execute path - so both require the same cache line state, 
-but one of these sorts of events is better than two of them.
-
-Which in short means that amoswap/add/etc is better for small things - small 
-buzzy lock loops, while LR/SC is better for more complex things with actual 
-processing between the LR and SC.
-
-----
-
-Another issue here is to consider is what happens when you hit one of these 
-tight spinlocks when the branch target cache is empty and they fail (ie loop 
-back and try again) - the default branch prediction, and resulting 
-speculation, is (very) likely to be looping back, while hopefully most locks 
-are not contended when you hit them and that speculation would be wrong - a 
-spinlock like this may not be so good:
-
-	li a0, 1
-loop: 
-	amoswap	a1, a0, (a2)
-	beqz	a1, loop
-	..... subsequent code
-
-In my world with no BTC info the pipe fills with dozens of amoswaps, rather 
-than  the 'subsequent code'. While (in my world) code like this:
-
-	li a0, 1
-loop: 
-	amoswap	a1, a0, (a2)
-	bnez	a1, 1f
-	.... subsequent code
-
-1:	j loop
-
-would actually be better (in my world unconditional jump instructions are 
-folded early and never see execution so they're sort of free, though they mess 
-with the issue/decode rate). Smart compilers could move the "j loop" out of 
-the way, while the double branch on failure is not a big deal since either the 
-lock is still held (and you don't care if it's slow) or it's been released in 
-which case the cache line has been stolen and the refetch of that cache line 
-is going to dominate the next time around the loop
-
-I need to stress here that this is how my architecture works, other's will of 
-course be different though I expect that other heavily speculative 
-architectures to have similar issues :-)
-
-	Paul Campbell
-	Moonbase Otago
-
-
+Got it, thanks.  I updated the changelog to mention the warning fix and
+moved these ahead for a -rc merge.
 
