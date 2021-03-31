@@ -2,261 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11F734FF46
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D289534FF4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhCaLJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:09:15 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:40419 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbhCaLIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:08:44 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210331110843euoutp015107814453ec2162dd095e9938b2fd4e~xaMHtwa6O1671616716euoutp01e
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:08:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210331110843euoutp015107814453ec2162dd095e9938b2fd4e~xaMHtwa6O1671616716euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617188923;
-        bh=j+UFKhaDTfw2uKkr/VQDaf1s66d3cV4S9KODX1UazYQ=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=PiVVIbjvluJBbF1JJNhQ9q6YeYiuRoZrXwgXjBuGLkDah0AI9ta3bEDAXjvzq4x0a
-         sfZnRWkw9HzpEQAHYjJBr6t2urNuJobS7turJBkqSbmsDXwO6XcSu5HDtuxKZdOQMt
-         /657S/ZDOX5Ww4WRKk7/zCpY0BL43dYTE0QEfkWk=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210331110842eucas1p2ce1bf4d00cf2397f86bce5bc521972af~xaMHNsH791935019350eucas1p2B;
-        Wed, 31 Mar 2021 11:08:42 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8A.B0.09444.A3854606; Wed, 31
-        Mar 2021 12:08:42 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210331110842eucas1p1576a6beef2125a458efc4db8c56819d2~xaMGlczxA2294722947eucas1p1R;
-        Wed, 31 Mar 2021 11:08:42 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210331110842eusmtrp2e24972c498edad3a5ba610be4a304d65~xaMGkSfha0192101921eusmtrp2X;
-        Wed, 31 Mar 2021 11:08:42 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-05-6064583a52ef
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 60.A1.08705.93854606; Wed, 31
-        Mar 2021 12:08:41 +0100 (BST)
-Received: from localhost (unknown [106.210.131.79]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210331110840eusmtip1a267e66273b8c6acbe8b5397b1cb6cd7~xaMEydLoj1360613606eusmtip1G;
-        Wed, 31 Mar 2021 11:08:39 +0000 (GMT)
-Message-ID: <8887ded7-d1ab-844c-e3a3-f39f6ef6264a@samsung.com>
-Date:   Wed, 31 Mar 2021 13:08:38 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
-        Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH v2 11/14] drm/bridge: ti-sn65dsi86: Power things
- properly for reading the EDID
-Content-Language: en-GB
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <20210329195255.v2.11.Ied721dc895156046ac523baa55a71da241cd09c7@changeid>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFKsWRmVeSWpSXmKPExsWy7djPc7pWESkJBte/aVv0njvJZHF6/zsW
-        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
-        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
-        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFFcNimpOZllqUX6dglcGbd+nmEuOKZR
-        MWn2dPYGxs3yXYwcHBICJhI//4R1MXJxCAmsYJRYcugucxcjJ5DzhVHi/+lAiMRnRolPu/ex
-        gyRAGp68XcACkVjOKLH//zs2COcFo0TDyS9sIGN5Bewkti+UBTFZBFQllj7IB+nlFRCUODnz
-        CQuILSqQILHqxnImEFtYIEXi9aaTYIuZBcQlmr6sZAUZKSLwj1Fi9cTHTCAOs8BnJolPUw6B
-        dbAJaEr83XyTDcTmFAiTOL75JCNEt7xE89bZzCANEgKXOCV6dnyFOttF4t6pZ8wQtrDEq+Nb
-        oOIyEv93zmeCsOsl7q9ogWruYJTYumEnVIO1xJ1zv8A+YwbavH6XPkTYUWLam2WMkHDkk7jx
-        VhDiBj6JSdumM0OEeSU62oQgqhUl7p/dCjVQXGLpha9sExiVZiGFyywk/89C8s0shL0LGFlW
-        MYqnlhbnpqcWG+WllusVJ+YWl+al6yXn525iBCbH0/+Of9nBuPzVR71DjEwcjIcYJTiYlUR4
-        hQ8kJgjxpiRWVqUW5ccXleakFh9ilOZgURLnTdqyJl5IID2xJDU7NbUgtQgmy8TBKdXAZPlW
-        oGlG3LorNTL5C14lXL9Zt705UM/qePnpZ3aM98/xHX4ZX6fTePm5/UsFIbmMOxt1PARfMjdl
-        GkTuvCDx4qmAfVRdaCQLs3nS3LQzCw3unum6/7pCeNNrwXvnAmsKF27c3uN4z8xHcp1oxanz
-        S453t1YcO7SPT0E8jPtM7z/B+x3vu/bIHt5cWrR45bdt298anE0Izfz9Jf4ho+zrDKFN+nb6
-        1hdPra0LbyyL/vi3cJvG835l/uZN/2ZkX/A0eaNxtanTJsXfc1r84SOG50zfB3gp7c39bL1a
-        pNc/nplvwWvugwvNA37rfzM+Iasvulqczehox0652h2e+8WEXvTdm6r8xE7e3rJ+C98FJZbi
-        jERDLeai4kQAKzEsm/0DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsVy+t/xu7pWESkJBp90LXrPnWSyOL3/HYvF
-        2WUH2SyufH3PZnH1+0tmi5NvrrJYdE5cwm4xcf9ZdovLu+awWRzqi7a49vMxs8WnWQ+ZLVb8
-        3Mpo0d5lY/HzehuzxfE7T5kcBDze32hl95jdcJHFY3bHTFaPxXteMnnMWXSD2ePEhEtMHneu
-        7WHz2P7tAavH/e7jTB5Lpl1l8zjQO5nF4/MmuQCeKD2bovzSklSFjPziElulaEMLIz1DSws9
-        IxNLPUNj81grI1MlfTublNSczLLUIn27BL2MWz/PMBcc06iYNHs6ewPjZvkuRk4OCQETiSdv
-        F7B0MXJxCAksZZT48P0VC0RCXGL3/LfMELawxJ9rXWwQRc8YJebf2cHaxcjBwStgJ7F9oSyI
-        ySKgKrH0QT5IOa+AoMTJmU/AxogKJEic/TCPCcQWFkiRaPy4khHEZgYa3/RlJSvISBGBBiaJ
-        S3cXM4E4zAJfmSRaXi1lh1h2h1Hi7OoFYO1sApoSfzffZAOxOQXCJI5vPgk1ykyia2sXlC0v
-        0bx1NvMERqFZSC6ZhWTjLCQts5C0LGBkWcUoklpanJueW2yoV5yYW1yal66XnJ+7iRGYELYd
-        +7l5B+O8Vx/1DjEycTAeYpTgYFYS4RU+kJggxJuSWFmVWpQfX1Sak1p8iNEUGBoTmaVEk/OB
-        KSmvJN7QzMDU0MTM0sDU0sxYSZx369w18UIC6YklqdmpqQWpRTB9TBycUg1Ms0tjYtikrp6K
-        0C2Pk8iLsYw+c7Az+4HjW77aylm6wQKznTpszkzK7RJZm/M0cnIVz9JNijZeGvdsr90rEX2T
-        8zQnsatgbcPTzuM9Bev5+f1alk1aXVX9L6x234En1dNt3n+fUagc+bP0TUr8iaCZ9hb7pxSd
-        ft7XIhAQr1okrvCjeWup/aaw9tlvpk490caYW7iQIc172l79yLDTYrOqRaUDBB+6Llij4Kxx
-        6MHz4OWsM3kD5kqFh/c/qvVjvBbgl7Bm70cTe+kMC6Pu34evN4eGfms6t5Q3MjWxQfDvzVZZ
-        PcEW/i/HrvT0P+UKnaz1QbVc93/VAp3uvYc/Orb4/VlTsUFno/jFi6sEOZRYijMSDbWYi4oT
-        AStYB3CRAwAA
-X-CMS-MailID: 20210331110842eucas1p1576a6beef2125a458efc4db8c56819d2
-X-Msg-Generator: CA
+        id S235124AbhCaLKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:10:48 -0400
+Received: from mail-eopbgr60078.outbound.protection.outlook.com ([40.107.6.78]:54791
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235024AbhCaLKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:10:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=frgrt5VvCPnCePTWpA4gDmPDJHmUigKUyVZfg41hSftyi/AeIz2j4/gcJZnZ1llfWZL3ogahHyP2Cs2wGlJwKtjuJs0Hh+y6a/I0Y47JUHHZ1JJyhDP+ywjzFBdobBZwI3OCkU49sGOjUt5i3O2vVZtOCUtUjzre1YuI3qHmkVrO+K2TAkE5uXjmnljJMh3T28zrB0hgARkT3mW4d3iMye/KRgYlpVbxxcGjnrObxvsVVlU0uJ9Gmm8HkgLKHaLES6kdhRijuGBi+zP2jPrjPBSanAjrlbQI0Kdt3UYZgWso3xB6CDFYp2o6QvD+/kTUBpa3WFIg3xYvpODLQ2ABcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mi6ZGw5C6BvuIxNNQa9/GuyWieExFqoTw0Oi+WJjCQA=;
+ b=MS6zyY8jgWucJa+itgk3L1ApWhiv0KsT9WWTPJKmQXXQ8GjxWUvsHsjUvudLnCClD/0nYjEZYqh9wH2MaADg0eLNvrN+g3h4nJrTDbtmn6g1QW/ASKc0oYex89jk1caECZ83F3RX4XDFJOdI4iUgnTBHDJWHf4N34hmGEQ1d8NSNjhTLC2IHMlPPTghofcFFPCusZ6JCjaoMqznB0Q8PgxZSp/0fm2S5nWijY2W79n3XkpzZ9TSdi/KeJTXr0s+9rglMrUINES1lDPEK9Wp/DmSJB8gRG+4GnAYfTvHoZmVmWR3rGDI5rWyZvfwV5WBvHtgx10QXDoBFe/xpu3AkVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mi6ZGw5C6BvuIxNNQa9/GuyWieExFqoTw0Oi+WJjCQA=;
+ b=CE/bt5fV/zer3yAwBEtqyqUsIMxrpumt5nS0K5kGrWMqEZt40xR44Yw9sRmTEkm9o5gX07f1aF00IpCLxaJ5Yhg8N/EJx5oOcQndFBKZpDBdDPI4ZB+3vvabPzbV5qYklXkxmXc6qizlnOgoxm0iVLDSNYiRn+TVJ7fmtiYoAUg=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB6970.eurprd04.prod.outlook.com (2603:10a6:10:fa::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 31 Mar
+ 2021 11:10:14 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9598:ace0:4417:d1d5]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9598:ace0:4417:d1d5%5]) with mapi id 15.20.3999.027; Wed, 31 Mar 2021
+ 11:10:14 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: RE: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
+ resume back
+Thread-Topic: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
+ resume back
+Thread-Index: AQHXIJuN/Okb/PN4nkWB+yH0VnH6i6qTC9OwgAAITACAAT8a8IAABYcAgAABmVCACCsMAIABO0DQgAA346A=
+Date:   Wed, 31 Mar 2021 11:10:14 +0000
+Message-ID: <DB8PR04MB6795D4C733DC4938B1D62EBDE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com>
+ <DB8PR04MB679546EC2493ABC35414CCF9E6639@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
+ <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <8e92b562-fa8f-0a2b-d8da-525ee52fc2d4@nvidia.com>
+ <DB8PR04MB67959FC7AF5CFCF1A08D10B2E6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <ac9f8a31-536e-ec75-c73f-14a0623c5d56@nvidia.com>
+ <DB8PR04MB6795F4333BCA9CE83C288FEEE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB6795F4333BCA9CE83C288FEEE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1ce254fb-cef5-4c37-2cde-08d8f4358f40
+x-ms-traffictypediagnostic: DB8PR04MB6970:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB6970922E63829B9CB3412E79E67C9@DB8PR04MB6970.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ekQFJPhOqnpqcYyA/h22J6OQIYq265TsYQwFkUr0unu/ov+h7LjyHX6/g3Cc56OBXhFfC52nsoQ8HXtrOgmcLS/+/l6vxgRT25WiCmGY3lf7FplaXrQjOPlBIAq96APqBpuhT+Cy9KFGZeMlMd003+FvRZs0xLFlvo4R7FerKY14wet/dvnm23n6SlHanBIJRgqPTdzG3kLJ2dsg1Di+DmaSK3O2p+U7uX3+uTWoB9ymSkume4c9ziqwUdKDHkqvHXhVrBC7kHLfYY+ZAsLmgdTGDxiEr40EAxdeA1fFqH16IKlX8MWB23Ufh3W6ix14YWRrlmxGs/nkdUGjxUrju2p0pKxDr+uAeHT3NbFvp0wxQooDqqR8sosbRW63NGq8D/13vdUf0XqDhZbUk4Sa7NJBlNh2Yuf6xurT8qTwr/tsaMOoO8FFHP8LuwrTnqjW01Fdo0B51zX37ynGazexryT/2inu5RuVltSz3eI/LyuufZquSrhgxRkhFVnfT6xBWlRsmqwqdpn70U8uWjU9gl/khN5zr6Lz4FtFrfqD0/WLIm5EbDPJ55L9IXrk9a1+D8KNYaVkVth/sxSGBtJN7QjHJm5/6u36ZoaUXOFPA1v5wZmaxa0v3IiGRIWYeQGM7Op5MORm7XhFGC4nBlqvZPgUJty9017HuhRI+gB9d4c=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(2940100002)(86362001)(83380400001)(498600001)(8676002)(66476007)(9686003)(55016002)(33656002)(2906002)(8936002)(6506007)(5660300002)(66446008)(71200400001)(64756008)(38100700001)(7696005)(26005)(186003)(53546011)(110136005)(66946007)(76116006)(54906003)(4326008)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WWtHb0dLblQ0NWRqSjJiNG50V2x2MTRzUk1pVERIb3htUDR5NEcyaTNsZ2xO?=
+ =?utf-8?B?UHlJeGFSN1dZZzBCVk9XVWdMbkdxWm1VZFFMc3I1Y2wvVThZRVR5UGpGYWFh?=
+ =?utf-8?B?djViQ0xOaVVaakh0bkJ6OHNNcjcwcXJnR1RRdGR6M212emgxcWM3ZUc0ZHZn?=
+ =?utf-8?B?Vzl0K1pYZkEzNmtjMHRNUnNpOEo4VVdBZnBuNG00VnZWZ25RYkF3OWpxYmht?=
+ =?utf-8?B?TG9zZE9adVJPN2JZbVRLZzdQZU9hcjl2d2hGS2Vob3N2cXU1NE9HcTZiKzgv?=
+ =?utf-8?B?cklHdlB4Y1N1aFpvVEN2OXJWTFJNcG1yNS9kNGJ3V3JITlRicGl0MFZnTEJw?=
+ =?utf-8?B?bkM2bWgycnFoS0JDTTJFU2tpd2FoNUtrak91UFIyUmtxTjA3NDEzbEhYaGly?=
+ =?utf-8?B?MGJYak5HUURRcEl2b3d5aFNwRkJEcmtHMnErREFZaTdBVEZ6VjlWdENjNWpm?=
+ =?utf-8?B?MllSVmZYaUkvVHlHeUJLZXRTeGNNVCtsc1N6cEtuSFJZbnd1WmJvZzB3cTdn?=
+ =?utf-8?B?ck42RHk0QTl2NHlweVNBM1MraUswNjZnTGQ2RVJkSmkwaUp3Ni9zMTJqczVN?=
+ =?utf-8?B?Yi9iWjZaeHQwYllYUU9MZGk1RkYyU1dmRHF5UEIxTVFJVEpWT3I5Ym9Ubisy?=
+ =?utf-8?B?Z2IrMEZuME5vQkg0NDlNYlRmOXVZbzZCR1g1V1NRVVJlKzdxMUREOE9RSDVY?=
+ =?utf-8?B?VWh4b2NtdUh0T3d1UFQ4YnZIR293WHFBbDJVNk1vQ1dVa25zRmV0TlVZQTBL?=
+ =?utf-8?B?aiswWHBXenp5TGh1WFlsWGZuRmZsOFZ4a0UrbUN2VEpPZ1hic2dxWEovQ2Fi?=
+ =?utf-8?B?R0hqa3FXK2JUcHdUVE5TWnhHZmlLYUdpZTZSVHdXNlhzU1B4d2NNTU5MNHRP?=
+ =?utf-8?B?VzJXaVQzeHNhSTZwbDEvenMra3dYWnpPcS9NeTZ2MTZoRGFwdkNNRjE5aTVp?=
+ =?utf-8?B?T1kxTjBvN09CSE4xTytXWXJtbC9MZTQzY1d0YTBHYi9mOGpNS2VJVERBeVV2?=
+ =?utf-8?B?c041QkxoTnZMaDNKNnZVQlI1aldRYSsrZDg1bGRtZ25tNmZoc2JUTXluY1FT?=
+ =?utf-8?B?RVR4M0ZFVGcrT1FTNG9PU1V2cyt6RVpuRHlKMGdxcVpYMWtiMGhuNmRNMC9j?=
+ =?utf-8?B?UlM0TnNSRitTcU82N1VqdnV4NTNkanFtcFhNUVI0WGt4Mk5PNHVsa25kUU44?=
+ =?utf-8?B?K3VHd0lncEQrNCtkbG90VDNGeFdmdnB1UnAxOFQyamtoaHI0NkRCeUdTMHQ4?=
+ =?utf-8?B?cnVXRFRZU1Q1ajVXcjJqR24xR0xDZDM3MUNlUkpBM1J1NWVJRS9KUTh6Yzdx?=
+ =?utf-8?B?Z2lScGx4MFlkTlM3UTErUVdteUxRaVV3N2w2Tk9Bc2ZjbkV2ek0xNFArR2RY?=
+ =?utf-8?B?ejZkWjJoSkF5TG5CalhGZUk5MzJUUy9yZHFmL09xdmV1ZWFwYnBzTXl3eDZC?=
+ =?utf-8?B?L0R2ZUhaSldMblFaV2VTWDJ6ZlFZRGdjWVJsRWU3WjZVdVJxWHhRN09WR1Nm?=
+ =?utf-8?B?djlYOGlSRnlpWkpsMUZUSlNGNHJPd1Vtc1JkaFMwaHRueE1VMW5HQVcyajMx?=
+ =?utf-8?B?d0V2c2d3Ynlob3ZIZk0wVEVOWTFFWGhQWUI2WFFteUdsMWE4VmNnYTh4L0cy?=
+ =?utf-8?B?T2RqQWg1OUp4RVZyZVlLc2hGVFkyMFRDSmphQjlqMmFLVGtHeWNTV2JRb2Rl?=
+ =?utf-8?B?aXI2RjI2bE0wTGpWUE1qbmJ2clZIdnJaMVV3ZlI5M2grZkF5am16UmpXdThI?=
+ =?utf-8?Q?SW0XNUSry9yzjIbmTPzRqZooVF4Tk+xGqCEZ3Pk?=
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210330025435eucas1p12b96966451ee0691f6d5d99b64ac2c8b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210330025435eucas1p12b96966451ee0691f6d5d99b64ac2c8b
-References: <20210330025345.3980086-1-dianders@chromium.org>
-        <CGME20210330025435eucas1p12b96966451ee0691f6d5d99b64ac2c8b@eucas1p1.samsung.com>
-        <20210329195255.v2.11.Ied721dc895156046ac523baa55a71da241cd09c7@changeid>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ce254fb-cef5-4c37-2cde-08d8f4358f40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 11:10:14.4934
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: i9i9abA7TpxSLYvoJ2UILq6jDcK8vps2mlBUPW1VxipD/uQv4Bzq4aifjcTzBFGsdtWHfdYmLip3P1C575CJzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6970
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
-> eDP panels won't provide their EDID unless they're powered on. Let's
-> chain a power-on before we read the EDID. This roughly matches what
-> was done in 'parade-ps8640.c'.
->
-> NOTE: The old code attempted to call pm_runtime_get_sync() before
-> reading the EDID. While that was enough to power the bridge chip on,
-> it wasn't enough to talk to the panel for two reasons:
-> 1. Since we never ran the bridge chip's pre-enable then we never set
->     the bit to ignore HPD. This meant the bridge chip didn't even _try_
->     to go out on the bus and communicate with the panel.
-> 2. Even if we fixed things to ignore HPD, the EDID still wouldn't read
->     if the panel wasn't on.
->
-> One thing that's a bit odd here is taking advantage of the EDID that
-> the core might have cached for us. See the patch ("drm/edid: Use the
-> cached EDID in drm_get_edid() if eDP"). We manage to get at the cache
-> by:
-> - Instantly failing aux transfers if we're not powered.
-> - If the first read of the EDID fails we try again after powering.
->
-> Fixes: 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> Depending on what people think of the other patches in this series,
-> some of this could change.
-> - If everyone loves the "runtime PM" in the panel driver then we
->    could, in theory, put the pre-enable chaining straight in the "aux
->    transfer" function.
-> - If everyone hates the EDID cache moving to the core then we can
->    avoid some of the awkward flow of things and keep the EDID cache in
->    the sn65dsi86 driver.
-
-
-I wonder if this shouldn't be solved in the core - ie caller of 
-get_modes callback should be responsible for powering up the pipeline, 
-otherwise we need to repeat this stuff in every bridge/panel driver.
-
-Any thoughts?
-
-
-Regards
-
-Andrzej
-
-
->
-> (no changes since v1)
->
->   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 +++++++++++++++++++++++++--
->   1 file changed, 37 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index c0398daaa4a6..673c9f1c2d8e 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -128,6 +128,7 @@
->    * @dp_lanes:     Count of dp_lanes we're using.
->    * @ln_assign:    Value to program to the LN_ASSIGN register.
->    * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-> + * @pre_enabled:  If true then pre_enable() has run.
->    *
->    * @gchip:        If we expose our GPIOs, this is used.
->    * @gchip_output: A cache of whether we've set GPIOs to output.  This
-> @@ -155,6 +156,7 @@ struct ti_sn_bridge {
->   	int				dp_lanes;
->   	u8				ln_assign;
->   	u8				ln_polrs;
-> +	bool				pre_enabled;
->   
->   #if defined(CONFIG_OF_GPIO)
->   	struct gpio_chip		gchip;
-> @@ -268,11 +270,33 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->   {
->   	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
->   	struct edid *edid;
-> +	bool was_enabled;
->   	int num = 0;
->   
-> -	pm_runtime_get_sync(pdata->dev);
-> +	/*
-> +	 * Try to get the EDID first without anything special. There are
-> +	 * three things that could happen with this call.
-> +	 * a) It might just return from its cache.
-> +	 * b) It might try to initiate an AUX transfer which might work.
-> +	 * c) It might try to initiate an AUX transfer which might fail because
-> +	 *    we're not powered up.
-> +	 *
-> +	 * If we get a failure we'll assume case c) and try again. NOTE: we
-> +	 * don't want to power up every time because that's slow and we don't
-> +	 * have visibility into whether the data has already been cached.
-> +	 */
->   	edid = drm_get_edid(connector, &pdata->aux.ddc);
-> -	pm_runtime_put(pdata->dev);
-> +	if (!edid) {
-> +		was_enabled = pdata->pre_enabled;
-> +
-> +		if (!was_enabled)
-> +			drm_bridge_chain_pre_enable(&pdata->bridge);
-> +
-> +		edid = drm_get_edid(connector, &pdata->aux.ddc);
-> +
-> +		if (!was_enabled)
-> +			drm_bridge_chain_post_disable(&pdata->bridge);
-> +	}
->   
->   	if (edid) {
->   		if (drm_edid_is_valid(edid))
-> @@ -852,12 +876,16 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
->   			   HPD_DISABLE);
->   
->   	drm_panel_prepare(pdata->panel);
-> +
-> +	pdata->pre_enabled = true;
->   }
->   
->   static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
->   {
->   	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
->   
-> +	pdata->pre_enabled = false;
-> +
->   	drm_panel_unprepare(pdata->panel);
->   
->   	clk_disable_unprepare(pdata->refclk);
-> @@ -891,6 +919,13 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->   	int ret;
->   	u8 addr_len[SN_AUX_LENGTH_REG + 1 - SN_AUX_ADDR_19_16_REG];
->   
-> +	/*
-> +	 * Things just won't work if the panel isn't powered. Return failure
-> +	 * right away.
-> +	 */
-> +	if (!pdata->pre_enabled)
-> +		return -EIO;
-> +
->   	if (len > SN_AUX_MAX_PAYLOAD_BYTES)
->   		return -EINVAL;
->   
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
+bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMjHlubQz5pyIMzHml6UgMTU6NDQNCj4g
+VG86IEpvbiBIdW50ZXIgPGpvbmF0aGFuaEBudmlkaWEuY29tPg0KPiBDYzogbmV0ZGV2QHZnZXIu
+a2VybmVsLm9yZzsgTGludXggS2VybmVsIE1haWxpbmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZz47IGxpbnV4LXRlZ3JhIDxsaW51eC10ZWdyYUB2Z2VyLmtlcm5lbC5vcmc+
+Ow0KPiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSRTogUmVn
+cmVzc2lvbiB2NS4xMi1yYzM6IG5ldDogc3RtbWFjOiByZS1pbml0IHJ4IGJ1ZmZlcnMgd2hlbiBt
+YWMNCj4gcmVzdW1lIGJhY2sNCj4gDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+ID4gRnJvbTogSm9uIEh1bnRlciA8am9uYXRoYW5oQG52aWRpYS5jb20+DQo+ID4gU2VudDog
+MjAyMeW5tDPmnIgzMOaXpSAyMDo1MQ0KPiA+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56
+aGFuZ0BueHAuY29tPg0KPiA+IENjOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBMaW51eCBLZXJu
+ZWwgTWFpbGluZyBMaXN0DQo+ID4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBsaW51
+eC10ZWdyYQ0KPiA+IDxsaW51eC10ZWdyYUB2Z2VyLmtlcm5lbC5vcmc+OyBKYWt1YiBLaWNpbnNr
+aSA8a3ViYUBrZXJuZWwub3JnPg0KPiA+IFN1YmplY3Q6IFJlOiBSZWdyZXNzaW9uIHY1LjEyLXJj
+MzogbmV0OiBzdG1tYWM6IHJlLWluaXQgcnggYnVmZmVycw0KPiA+IHdoZW4gbWFjIHJlc3VtZSBi
+YWNrDQo+ID4NCj4gPg0KPiA+DQo+ID4gT24gMjUvMDMvMjAyMSAwODoxMiwgSm9ha2ltIFpoYW5n
+IHdyb3RlOg0KPiA+DQo+ID4gLi4uDQo+ID4NCj4gPiA+Pj4+PiBZb3UgbWVhbiBvbmUgb2YgeW91
+ciBib2FyZHM/IERvZXMgb3RoZXIgYm9hcmRzIHdpdGggU1RNTUFDIGNhbg0KPiA+ID4+Pj4+IHdv
+cmsNCj4gPiA+Pj4+IGZpbmU/DQo+ID4gPj4+Pg0KPiA+ID4+Pj4gV2UgaGF2ZSB0d28gZGV2aWNl
+cyB3aXRoIHRoZSBTVE1NQUMgYW5kIG9uZSB3b3JrcyBPSyBhbmQgdGhlDQo+ID4gPj4+PiBvdGhl
+cg0KPiA+ID4+IGZhaWxzLg0KPiA+ID4+Pj4gVGhleSBhcmUgZGlmZmVyZW50IGdlbmVyYXRpb24g
+b2YgZGV2aWNlIGFuZCBzbyB0aGVyZSBjb3VsZCBiZQ0KPiA+ID4+Pj4gc29tZSBhcmNoaXRlY3R1
+cmFsIGRpZmZlcmVuY2VzIHdoaWNoIGlzIGNhdXNpbmcgdGhpcyB0byBvbmx5IGJlDQo+ID4gPj4+
+PiBzZWVuIG9uIG9uZQ0KPiA+IGRldmljZS4NCj4gPiA+Pj4gSXQncyByZWFsbHkgc3RyYW5nZSwg
+YnV0IEkgYWxzbyBkb24ndCBrbm93IHdoYXQgYXJjaGl0ZWN0dXJhbA0KPiA+ID4+PiBkaWZmZXJl
+bmNlcyBjb3VsZA0KPiA+ID4+IGFmZmVjdCB0aGlzLiBTb3JyeS4NCj4gPg0KPiA+DQo+ID4gSSBy
+ZWFsaXNlZCB0aGF0IGZvciB0aGUgYm9hcmQgd2hpY2ggZmFpbHMgYWZ0ZXIgdGhpcyBjaGFuZ2Ug
+aXMgbWFkZSwNCj4gPiBpdCBoYXMgdGhlIElPTU1VIGVuYWJsZWQuIFRoZSBvdGhlciBib2FyZCBk
+b2VzIG5vdCBhdCB0aGUgbW9tZW50DQo+ID4gKGFsdGhvdWdoIHdvcmsgaXMgaW4gcHJvZ3Jlc3Mg
+dG8gZW5hYmxlKS4gSWYgSSBhZGQNCj4gPiAnaW9tbXUucGFzc3Rocm91Z2g9MScgdG8gY21kbGlu
+ZSBmb3IgdGhlIGZhaWxpbmcgYm9hcmQsIHRoZW4gaXQgd29ya3MNCj4gPiBhZ2Fpbi4gU28gaW4g
+bXkgY2FzZSwgdGhlIHByb2JsZW0gaXMgbGlua2VkIHRvIHRoZSBJT01NVSBiZWluZyBlbmFibGVk
+Lg0KPiA+DQo+ID4gRG9lcyB5b3UgcGxhdGZvcm0gZW5hYmxlIHRoZSBJT01NVT8NCj4gDQo+IEhp
+IEpvbiwNCj4gDQo+IFRoZXJlIGlzIG5vIElPTU1VIGhhcmR3YXJlIGF2YWlsYWJsZSBvbiBvdXIg
+Ym9hcmRzLiBCdXQgd2h5IElPTU1VIHdvdWxkDQo+IGFmZmVjdCBpdCBkdXJpbmcgc3VzcGVuZC9y
+ZXN1bWUsIGFuZCBubyBwcm9ibGVtIGluIG5vcm1hbCBtb2RlPw0KDQpPbmUgbW9yZSBhZGQsIEkg
+c2F3IGRyaXZlcnMvaW9tbXUvdGVncmEtZ2FydC5jKG5vdCBzdXJlIGlmIGlzIHRoaXMpIHN1cHBv
+cnQgc3VzcGVuZC9yZXN1bWUsIGlzIGl0IHBvc3NpYmxlIGlvbW11IHJlc3VtZSBiYWNrIGFmdGVy
+IHN0bW1hYz8NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IEJlc3QgUmVnYXJkcywN
+Cj4gSm9ha2ltIFpoYW5nDQo+ID4gVGhhbmtzDQo+ID4gSm9uDQo+ID4NCj4gPiAtLQ0KPiA+IG52
+cHVibGljDQo=
