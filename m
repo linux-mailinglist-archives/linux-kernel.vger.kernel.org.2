@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8710034FF85
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D61A34FF87
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhCaLfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:35:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:29692 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbhCaLe6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:34:58 -0400
+        id S235280AbhCaLf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:35:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38319 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235284AbhCaLfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:35:21 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617190498; h=Content-Transfer-Encoding: Content-Type:
+ s=smtp; t=1617190521; h=Content-Transfer-Encoding: Content-Type:
  In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=aLE2e54gqStA8Gea85ZN6DBrVkGCQq0RGwMhe1LwdI0=; b=eyPlpdErgWEKkop0AtNIHe6NQ/T5xI0gpXdjRj/0E3QJ0aHGUvlTO6wyG3sHCaUHLCeoupb2
- nPeDIc8It3sQKLXLHtKG5vXTY2TJkc5piAJhz11rdIAYfwA73132vW/f9UpyXq8Pla7I+Ydj
- enHqRpLhQovuNi0iaKZQ42BNlOo=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ Subject: Sender; bh=98yvjg8uN7rArkdP8FF11rFh+sbQunmzYH5Enq8SXyM=; b=nSqA30ddotgEpAjUltlWU7CLrjUfnfL0Hu/caw7Ijf3cUANOuYvkDJoEeTpZB7nu8wc6OQOI
+ F5lUj9p9eV992KMdwTwq0lvVoexoGXuSyIMlC8EvdQIXsYeefGXQP3bNLTlrVgFR0GzdseMV
+ gXAGVcQytlFvJ9OQo0qgb8aZZ+k=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60645e5f9a9ff96d95ba4837 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 11:34:55
+ 60645e739a9ff96d95ba8403 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 11:35:15
  GMT
 Sender: clingutla=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 90847C43461; Wed, 31 Mar 2021 11:34:55 +0000 (UTC)
+        id 6D6D7C43462; Wed, 31 Mar 2021 11:35:15 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,13 +37,13 @@ Received: from [192.168.43.40] (unknown [223.185.99.217])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: clingutla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 590E7C433CA;
-        Wed, 31 Mar 2021 11:34:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 590E7C433CA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70D86C433C6;
+        Wed, 31 Mar 2021 11:35:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 70D86C433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clingutla@codeaurora.org
-Subject: Re: [PATCH v3 4/7] sched/fair: Introduce a CPU capacity comparison
- helper
+Subject: Re: [PATCH v3 5/7] sched/fair: Employ capacity_greater() throughout
+ load_balance()
 To:     Valentin Schneider <valentin.schneider@arm.com>,
         linux-kernel@vger.kernel.org
 Cc:     Qais Yousef <qais.yousef@arm.com>,
@@ -57,14 +56,14 @@ Cc:     Qais Yousef <qais.yousef@arm.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
         Rik van Riel <riel@surriel.com>
 References: <20210311120527.167870-1-valentin.schneider@arm.com>
- <20210311120527.167870-5-valentin.schneider@arm.com>
+ <20210311120527.167870-6-valentin.schneider@arm.com>
 From:   Chandra Sekhar Lingutla <clingutla@codeaurora.org>
-Message-ID: <c833d09c-d99f-7541-f8cb-5202dc5e7243@codeaurora.org>
-Date:   Wed, 31 Mar 2021 17:04:47 +0530
+Message-ID: <3f5c3f78-0d0d-af89-56d7-cb9a91b98898@codeaurora.org>
+Date:   Wed, 31 Mar 2021 17:05:06 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210311120527.167870-5-valentin.schneider@arm.com>
+In-Reply-To: <20210311120527.167870-6-valentin.schneider@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-GB
@@ -80,49 +79,80 @@ tested-by tag:
 Tested-by:  Lingutla Chandrasekhar <clingutla@codeaurora.org>
 
 On 3/11/2021 5:35 PM, Valentin Schneider wrote:
-> During load-balance, groups classified as group_misfit_task are filtered
-> out if they do not pass
->
->    group_smaller_max_cpu_capacity(<candidate group>, <local group>);
->
-> which itself employs fits_capacity() to compare the sgc->max_capacity of
-> both groups.
->
-> Due to the underlying margin, fits_capacity(X, 1024) will return false for
-> any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
-> {261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
-> CPUs, misfit migration will never intentionally upmigrate it to a CPU of
-> higher capacity due to the aforementioned margin.
->
-> One may argue the 20% margin of fits_capacity() is excessive in the advent
-> of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
-> is that fits_capacity() is meant to compare a utilization value to a
-> capacity value, whereas here it is being used to compare two capacity
-> values. As CPU capacity and task utilization have different dynamics, a
-> sensible approach here would be to add a new helper dedicated to comparing
-> CPU capacities.
+> While at it, replace group_smaller_{min, max}_cpu_capacity() with
+> comparisons of the source group's min/max capacity and the destination
+> CPU's capacity.
 >
 > Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 > Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->   kernel/sched/fair.c | 7 +++++++
->   1 file changed, 7 insertions(+)
+>   kernel/sched/fair.c | 33 ++++-----------------------------
+>   1 file changed, 4 insertions(+), 29 deletions(-)
 >
 > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index db892f6e222f..ddb2ab3edf6d 100644
+> index ddb2ab3edf6d..1e8a242cd1f7 100644
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
->    */
->   #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+> @@ -8350,26 +8350,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+>   	return false;
+>   }
 >   
-> +/*
-> + * The margin used when comparing CPU capacities.
-> + * is 'cap1' noticeably greater than 'cap2'
-> + *
-> + * (default: ~5%)
-> + */
-> +#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
->   #endif
+> -/*
+> - * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
+> - * per-CPU capacity than sched_group ref.
+> - */
+> -static inline bool
+> -group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+> -{
+> -	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
+> -}
+> -
+> -/*
+> - * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
+> - * per-CPU capacity_orig than sched_group ref.
+> - */
+> -static inline bool
+> -group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+> -{
+> -	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
+> -}
+> -
+>   static inline enum
+>   group_type group_classify(unsigned int imbalance_pct,
+>   			  struct sched_group *group,
+> @@ -8518,15 +8498,10 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>   	if (!sgs->sum_h_nr_running)
+>   		return false;
 >   
->   #ifdef CONFIG_CFS_BANDWIDTH
+> -	/*
+> -	 * Don't try to pull misfit tasks we can't help.
+> -	 * We can use max_capacity here as reduction in capacity on some
+> -	 * CPUs in the group should either be possible to resolve
+> -	 * internally or be covered by avg_load imbalance (eventually).
+> -	 */
+> +	/* Don't try to pull misfit tasks we can't help */
+>   	if (static_branch_unlikely(&sched_asym_cpucapacity) &&
+>   	    sgs->group_type == group_misfit_task &&
+> -	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
+> +	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+>   	     sds->local_stat.group_type != group_has_spare))
+>   		return false;
+>   
+> @@ -8610,7 +8585,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>   	 */
+>   	if (sd_has_asym_cpucapacity(env->sd) &&
+>   	    (sgs->group_type <= group_fully_busy) &&
+> -	    (group_smaller_min_cpu_capacity(sds->local, sg)))
+> +	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
+>   		return false;
+>   
+>   	return true;
+> @@ -9410,7 +9385,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>   		 * average load.
+>   		 */
+>   		if (sd_has_asym_cpucapacity(env->sd) &&
+> -		    capacity_of(env->dst_cpu) < capacity &&
+> +		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
+>   		    nr_running == 1)
+>   			continue;
+>   
