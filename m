@@ -2,200 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2538834FB0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02E934FB0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhCaIB6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 31 Mar 2021 04:01:58 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2751 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhCaIBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:01:40 -0400
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F9JWK4cvMz684bH;
-        Wed, 31 Mar 2021 15:54:53 +0800 (CST)
-Received: from lhreml723-chm.china.huawei.com (10.201.108.74) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 31 Mar 2021 10:01:37 +0200
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- lhreml723-chm.china.huawei.com (10.201.108.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 09:01:36 +0100
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2106.013;
- Wed, 31 Mar 2021 09:01:36 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-Thread-Topic: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-Thread-Index: AQHXHMQXnn0Ai8cuTkuBkW77wwOhrKqLiR4AgBJBpmA=
-Date:   Wed, 31 Mar 2021 08:01:36 +0000
-Message-ID: <4eda43a40b8c4940a982787e0f542458@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-6-git-send-email-john.garry@huawei.com>
- <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
-In-Reply-To: <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.65.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S234348AbhCaICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:02:55 -0400
+Received: from sauhun.de ([88.99.104.3]:33970 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234120AbhCaIBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:01:55 -0400
+Received: from localhost (i577BC086.versanet.de [87.123.192.134])
+        by pokefinder.org (Postfix) with ESMTPSA id 32F032C01E8;
+        Wed, 31 Mar 2021 10:01:53 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 10:01:52 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: Make i2c_recover_bus() to return -EBUSY if bus
+ recovery unimplemented
+Message-ID: <20210331080152.GH1025@ninjato>
+References: <20210329195530.1053-1-digetx@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EemXnrF2ob+xzFeB"
+Content-Disposition: inline
+In-Reply-To: <20210329195530.1053-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: iommu [mailto:iommu-bounces@lists.linux-foundation.org] On Behalf Of
-> Robin Murphy
-> Sent: Friday, March 19, 2021 5:00 PM
-> To: John Garry <john.garry@huawei.com>; joro@8bytes.org; will@kernel.org;
-> jejb@linux.ibm.com; martin.petersen@oracle.com; hch@lst.de;
-> m.szyprowski@samsung.com
-> Cc: iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> linux-scsi@vger.kernel.org; Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
-> 
-> On 2021-03-19 13:25, John Garry wrote:
-> > Add a function to allow the max size which we want to optimise DMA mappings
-> > for.
-> 
-> It seems neat in theory - particularly for packet-based interfaces that
-> might have a known fixed size of data unit that they're working on at
-> any given time - but aren't there going to be many cases where the
-> driver has no idea because it depends on whatever size(s) of request
-> userspace happens to throw at it? Even if it does know the absolute
-> maximum size of thing it could ever transfer, that could be
-> impractically large in areas like video/AI/etc., so it could still be
-> hard to make a reasonable decision.
+
+--EemXnrF2ob+xzFeB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Mar 29, 2021 at 10:55:30PM +0300, Dmitry Osipenko wrote:
+> The i2c_recover_bus() returns -EOPNOTSUPP if bus recovery isn't wired up
+> by the bus driver, which the case for Tegra I2C driver for example. This
+> error code is then propagated to I2C client and might be confusing, thus
+> make i2c_recover_bus() to return -EBUSY instead.
+>=20
+> Suggested-by: Wolfram Sang <wsa@the-dreams.de>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+
+Applied to for-next, thanks!
 
 
-This is also the case in networking workloads where we have MTU set but
-actual packet sizes might vary.
+--EemXnrF2ob+xzFeB
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> Being largely workload-dependent is why I still think this should be a
-> command-line or sysfs tuneable - we could set the default based on how
-> much total memory is available, but ultimately it's the end user who
-> knows what the workload is going to be and what they care about
-> optimising for.
-> 
-> Another thought (which I'm almost reluctant to share) is that I would
-> *love* to try implementing a self-tuning strategy that can detect high
-> contention on particular allocation sizes and adjust the caches on the
-> fly, but I can easily imagine that having enough inherent overhead to
-> end up being an impractical (but fun) waste of time.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkLHAACgkQFA3kzBSg
+Kba3xhAAmsP5Oo1B/oB41uXANcZr+efoYffJan31arqosJxrfeH4jeoQqVjCo8uR
+Ik6lmb/4ojlLaZirKUtuxAxrRZrTODbeFQVVAAffJsWAud7W5bYcmqLUYsON0hQ/
+SPMC2EpWizwBOfhsrzY/Dpthzf6VuWXguEEZpCsF1PHtZ8djyf1X+OtJT0s9Nwex
+GlgXDNqr7YDak/hlKt7UN2JX/UZ2SIdtw2nVrFTbxdBH6bip3k28RBJRfm4ivNB3
+B4RiQ8bW/kqCWMvpy4aqx3V0iWnj3jWCNn38j6o6DYrLBgIXjjgN7BvcFbFYVXpQ
+jpdwzUaFYro85h8q0n4PZupXLsi5SPtx6GHOy6+6mnJY7J1bcQk2VrIlBjLJdEEN
+PTtqLe2P29r48KlA/7twdMChPXRsiqRGoAdm1pPcHJkYaENdn+/QHlznrCdFwLa+
+tqtxMLRwmr3wUEHrR1ZyRQ78O4fn0WGdPKEqnuS63OhPAHzrqbjTsB4ExwG9cKhq
++XPCNvg8Bt6COaTBac5AO7j/Txme8RZNT9NC53pos70xFf5dPbzyPcpb5ftMFn8x
+VhBmTwEjnFwTiZLgJUeMlTgwkNwhQp5nAj2l/+PXCCq/LkAZss236l2YaDfrKzoV
+NFi59IIh4D8pA0ZH2pFlTrLVYYh+CAfatK/Jz8x/swf4chpotDs=
+=hxrj
+-----END PGP SIGNATURE-----
 
-This might be particularly useful for the NICs where packet sizes vary
-from 64K to 9K. Hence, without optimal strategy this can affect the
-performance of networking workloads.
-
-
-> 
-> Robin.
-> 
-> > Signed-off-by: John Garry <john.garry@huawei.com>
-> > ---
-> >   drivers/iommu/dma-iommu.c   |  2 +-
-> >   include/linux/dma-map-ops.h |  1 +
-> >   include/linux/dma-mapping.h |  5 +++++
-> >   kernel/dma/mapping.c        | 11 +++++++++++
-> >   4 files changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > index a5dfbd6c0496..d35881fcfb9c 100644
-> > --- a/drivers/iommu/dma-iommu.c
-> > +++ b/drivers/iommu/dma-iommu.c
-> > @@ -447,7 +447,6 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain
-> *domain,
-> >   	return (dma_addr_t)iova << shift;
-> >   }
-> >
-> > -__maybe_unused
-> >   static void iommu_dma_set_opt_size(struct device *dev, size_t size)
-> >   {
-> >   	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> > @@ -1278,6 +1277,7 @@ static const struct dma_map_ops iommu_dma_ops = {
-> >   	.map_resource		= iommu_dma_map_resource,
-> >   	.unmap_resource		= iommu_dma_unmap_resource,
-> >   	.get_merge_boundary	= iommu_dma_get_merge_boundary,
-> > +	.set_max_opt_size	= iommu_dma_set_opt_size,
-> >   };
-> >
-> >   /*
-> > diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> > index 51872e736e7b..fed7a183b3b9 100644
-> > --- a/include/linux/dma-map-ops.h
-> > +++ b/include/linux/dma-map-ops.h
-> > @@ -64,6 +64,7 @@ struct dma_map_ops {
-> >   	u64 (*get_required_mask)(struct device *dev);
-> >   	size_t (*max_mapping_size)(struct device *dev);
-> >   	unsigned long (*get_merge_boundary)(struct device *dev);
-> > +	void (*set_max_opt_size)(struct device *dev, size_t size);
-> >   };
-> >
-> >   #ifdef CONFIG_DMA_OPS
-> > diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> > index 2a984cb4d1e0..91fe770145d4 100644
-> > --- a/include/linux/dma-mapping.h
-> > +++ b/include/linux/dma-mapping.h
-> > @@ -144,6 +144,7 @@ u64 dma_get_required_mask(struct device *dev);
-> >   size_t dma_max_mapping_size(struct device *dev);
-> >   bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> >   unsigned long dma_get_merge_boundary(struct device *dev);
-> > +void dma_set_max_opt_size(struct device *dev, size_t size);
-> >   #else /* CONFIG_HAS_DMA */
-> >   static inline dma_addr_t dma_map_page_attrs(struct device *dev,
-> >   		struct page *page, size_t offset, size_t size,
-> > @@ -257,6 +258,10 @@ static inline unsigned long dma_get_merge_boundary(struct
-> device *dev)
-> >   {
-> >   	return 0;
-> >   }
-> > +static inline void dma_set_max_opt_size(struct device *dev, size_t size)
-> > +{
-> > +}
-> > +
-> >   #endif /* CONFIG_HAS_DMA */
-> >
-> >   struct page *dma_alloc_pages(struct device *dev, size_t size,
-> > diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> > index b6a633679933..59e6acb1c471 100644
-> > --- a/kernel/dma/mapping.c
-> > +++ b/kernel/dma/mapping.c
-> > @@ -608,3 +608,14 @@ unsigned long dma_get_merge_boundary(struct device *dev)
-> >   	return ops->get_merge_boundary(dev);
-> >   }
-> >   EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
-> > +
-> > +void dma_set_max_opt_size(struct device *dev, size_t size)
-> > +{
-> > +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> > +
-> > +	if (!ops || !ops->set_max_opt_size)
-> > +		return;
-> > +
-> > +	ops->set_max_opt_size(dev, size);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dma_set_max_opt_size);
-> >
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+--EemXnrF2ob+xzFeB--
