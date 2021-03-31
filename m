@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A398C35009C
+	by mail.lfdr.de (Postfix) with ESMTP id EF8B835009D
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhCaMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:46:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42488 "EHLO mail.kernel.org"
+        id S235614AbhCaMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:46:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235434AbhCaMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:46:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0696198F;
-        Wed, 31 Mar 2021 12:46:04 +0000 (UTC)
+        id S235450AbhCaMqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:46:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E315461959;
+        Wed, 31 Mar 2021 12:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617194764;
-        bh=wcR7EVS00j3kLUJX293YavODkDh9p6za/Q/SMTCbKZM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DBjmqJBVZzae1CqFCfu9VV92wR5hz2a9nZOe+mbXGMf07rBzZWlQ0F7D2w4mWWO3y
-         1G0FL7jGjNV7WztjHRn3B7NY1K8IyJS9GtMdr7cdpzilydgO7EMqleYb8boqWorPq0
-         Nw88nkHAbDAQCTYwgwzJqjrY/B8MPByqGcdxCHhWRRZTcDbPf7XxaDDZT/WNZbvdmh
-         9sMQJfIAK5A7EewZ+Te3KPnN2azXbGD3nrcYG4t+yjw89LAll4Hxo/cTBvpsU9862h
-         t2942I+ms073LddIpIPPLioQzkaDDvL/kyXWHwDJzoGdrkuPV6GEERdwb/jlzIOq/l
-         esweauDwzKikQ==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] dt-bindings: timer: renesas,tmu: add r8a779a0 TMU support
-Date:   Wed, 31 Mar 2021 14:45:55 +0200
-Message-Id: <20210331124555.2150-1-wsa@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        s=k20201202; t=1617194783;
+        bh=TQkoHACl/sFM+5iuM6x9rFOysAjN+duolQetZcUwOWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tqRxQ6KO5Yo+HpqJhww4Y98I+1ZL0YA14AIiEGQRGDc2J8BaKegd6HvMh8s2S6Pu9
+         hujaLdAsFyJWfrTLTxPDLXq/RrxSsZvSQVHG5SSedEqo4L8MYNBtUKtgzMNMKFp7Oy
+         NedtbimR2scRy2fmCQCZaUkM3CD2+UW+JIqAaRgqPdWq4W58jEsGaIefGBgdtV1XsE
+         +TwJHetOtZuV+LQVDRqeDSS/ge23LlmogViLNIDdgVZYhjbWCoDB2AEqosviKt12yI
+         CuSM46EowOq91jlcKyYWy3iuUGVuWmqHCO87SX1e22aGLxwFxJo3FSxVXghWjmMPMy
+         3xx3hJErZ0+/A==
+Date:   Wed, 31 Mar 2021 18:16:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Atul Gopinathan <leoatul12@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yu Chen <chenyu56@huawei.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-staging@lists.linux.dev, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 (RESEND) 1/7] phy: phy-hi3670-usb3: move driver from
+ staging into phy
+Message-ID: <YGRvG+3sD0gX2I+b@vkoul-mobl.Dlink>
+References: <cover.1616695231.git.mchehab+huawei@kernel.org>
+ <36c31dcdcd49d5a728a1fe4040bbaef5268d7f79.1616695231.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36c31dcdcd49d5a728a1fe4040bbaef5268d7f79.1616695231.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On 25-03-21, 19:05, Mauro Carvalho Chehab wrote:
+> The phy USB3 driver for Hisilicon 970 (hi3670) is ready
+> for mainstream. Mode it from staging into the main driver's
+> phy/ directory.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Changes since v1:
-* rebased to -next (other SoCs have been added meanwhile)
-* added tags from Niklas and Geert (thanks!)
+Overall lgtm, some nits below. With those fixed:
 
- Documentation/devicetree/bindings/timer/renesas,tmu.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-index f0f0f121c355..c57169118b68 100644
---- a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-+++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-@@ -36,6 +36,7 @@ properties:
-           - renesas,tmu-r8a77980 # R-Car V3H
-           - renesas,tmu-r8a77990 # R-Car E3
-           - renesas,tmu-r8a77995 # R-Car D3
-+          - renesas,tmu-r8a779a0 # R-Car V3U
-       - const: renesas,tmu
- 
-   reg:
+> +static int hi3670_phy_cr_clk(struct regmap *usb31misc)
+> +{
+> +	int ret;
+> +
+> +	/* Clock up */
+> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +				 CFG54_USB31PHY_CR_CLK, CFG54_USB31PHY_CR_CLK);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Clock down */
+> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
+> +				 CFG54_USB31PHY_CR_CLK, 0);
+> +
+> +	return ret;
+
+return regmap_update_bits() ?
+ (i see few more in driver like this, pls change others as well)
+
+> +static int hi3670_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
+> +{
+> +	int reg;
+> +	int i;
+> +	int ret;
+
+all these could be in a single line
+
 -- 
-2.30.0
-
+~Vinod
