@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31523350A77
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E84F350A91
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhCaWth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:49:37 -0400
-Received: from smtprelay0034.hostedemail.com ([216.40.44.34]:43564 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229624AbhCaWtW (ORCPT
+        id S232988AbhCaXJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:09:19 -0400
+Received: from gateway23.websitewelcome.com ([192.185.47.80]:49474 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233128AbhCaXJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:49:22 -0400
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C6BE8837F24C;
-        Wed, 31 Mar 2021 22:49:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 041DA27DD18;
-        Wed, 31 Mar 2021 22:49:20 +0000 (UTC)
-Message-ID: <391203d8794c2fc5343f2bf991a5497d3d5b7fcd.camel@perches.com>
-Subject: Re: [PATCH v1 1/7] Add Driver for SUNIX PCI(e) I/O expansion board
-From:   Joe Perches <joe@perches.com>
-To:     Moriis Ku <saumah@gmail.com>, lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org
-Date:   Wed, 31 Mar 2021 15:49:19 -0700
-In-Reply-To: <20210330082350.6890-1-saumah@gmail.com>
-References: <20210330082350.6890-1-saumah@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 31 Mar 2021 19:09:06 -0400
+X-Greylist: delayed 1499 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Mar 2021 19:09:05 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id BD8C21011C
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 17:21:41 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id RjDZleUKvL7DmRjDZl1JE3; Wed, 31 Mar 2021 17:21:41 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YojvDQ3EVOB0i+R+aoTOGVliEyEdWdfUxsBrA9b3YJY=; b=uqW4o/SQjZe6HtQmsZzdOzRPK0
+        pSPdwToqdS8sMt91UZdSz1IrfQ7EZTux2Ii5f6pm07i4UBfzGY6+SWRkXrprxlNYYjRLfnl87JLpf
+        /6XQyZ5LfhG3QRGeh8fSRddHgieVZPRWqIMaO8X6mxY0AdHJ0CHPISB2wIwsEkr3+m5qGvDlws2BJ
+        V/QCGQsr2YgkuI0dO8hXm7zuGz+DNBW8evNYMOxD5nROxMSZsKWZYqvGVcqoe6prPH5/rfZli5u19
+        J4wuAt0iyD+u2WnqOOPOpzcChZFS0uAP2zsi92q3/BUQCsITKT3iv1egE6s+0zRblMNm76hCiwPhB
+        73/0Kmbw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:51022 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lRjDZ-000iqw-CV; Wed, 31 Mar 2021 17:21:41 -0500
+Subject: Re: [PATCH][next] hfsplus: Fix out-of-bounds warnings in
+ __hfsplus_setxattr
+To:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210330145226.GA207011@embeddedor>
+ <20210330214320.93600506530f1ab18338b467@linux-foundation.org>
+ <20210331045357.GV351017@casper.infradead.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <2693ab27-64b6-9088-e172-83e7f8b4e95b@embeddedor.com>
+Date:   Wed, 31 Mar 2021 16:21:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: qqo8xj84t45bkhbdybjsp7m1b1em4stc
-X-Rspamd-Queue-Id: 041DA27DD18
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+QArIPAEnPqZrr3WXrYHQav7xxq5L2Ixs=
-X-HE-Tag: 1617230960-288004
+In-Reply-To: <20210331045357.GV351017@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lRjDZ-000iqw-CV
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:51022
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-30 at 16:23 +0800, Moriis Ku wrote:
-> From: Morris <saumah@gmail.com>
+
+
+On 3/30/21 23:53, Matthew Wilcox wrote:
+> On Tue, Mar 30, 2021 at 09:43:20PM -0700, Andrew Morton wrote:
+>> On Tue, 30 Mar 2021 09:52:26 -0500 "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+>>
+>>> Fix the following out-of-bounds warnings by enclosing
+>>> structure members file and finder into new struct info:
+>>>
+>>> fs/hfsplus/xattr.c:300:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
+>>> fs/hfsplus/xattr.c:313:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
+>>>
+>>> Refactor the code by making it more "structured."
+>>>
+>>> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+>>> makes the code clearer and avoid confusing the compiler.
+>>
+>> Confused.  What was wrong with the old code?  Was this warning
+>> legitimate and if so, why?  Or is this patch a workaround for a
+>> compiler shortcoming?
 > 
-> Signed-off-by: Morris <saumah@gmail.com>
-> ---
->  spi_pack.c | 1506 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+> The offending line is this:
+> 
+> -                               memcpy(&entry.file.user_info, value,
+> +                               memcpy(&entry.file.info, value,
+>                                                 file_finderinfo_len);
+> 
+> what it's trying to do is copy two structs which are adjacent to each
+> other in a single call to memcpy().  gcc legitimately complains that the
+> memcpy to this struct overruns the bounds of the struct.  What Gustavo
+> has done here is introduce a new struct that contains the two structs,
+> and now gcc is happy that the memcpy doesn't overrun the length of this
+> containing struct.
 
-You might try to use scripts/checkpatch.pl on this and see
-if there is anything you want to change to have the code look
-more like the rest of the kernel.
+Thanks for this, Matthew. :)
 
-Using
-	./scripts/checkpatch.pl --strict --fix <patch>
-from the top of the kernel tree should help quite a bit with
-making the code layout look more like typical kernel style.
-
-> diff --git a/spi_pack.c b/spi_pack.c
-[]
-> +static void get_info(struct sunix_sdc_spi_channel *spi_chl, unsigned int incomeLength, unsigned int * translateLength)
-> +{
-[]
-> +	do
-> +	{
-> +		Address = spi_chl->info.phy2_base_start + spi_chl->info.memoffset;
-> +
-> +	} while (false);
-
-That's an odd and unnecessary use of a do while.
-
-> +	memset(TrBuff, 0, SUNIX_SDC_SPI_BUFF);
-> +	TrLength = 0;
-> +
-> +	pTrHeader->Version = 0x01;
-> +	pTrHeader->CmdResponseEventData = pRxHeader->CmdResponseEventData | 0x8000;
-> +	pTrHeader->ResponseStatus = nStatus;
-> +	pTrHeader->Length = (nStatus == SDCSPI_STATUS_SUCCESS)?(31 + (cib_info->spi_number_of_device * 12)):0;
-> +	TrLength = sizeof(SPI_HEADER);
-
-Perhaps reorder the patch submission to define the structs first.
-
-This can't compile as SPI_HEADER isn't defined
-SPI_HEADER and PSPI_HEADER should use not use typedefs and use the typical
-	struct spi_header
-and
-	struct spi_header *
-
-> +	if (pTrHeader->ResponseStatus == SDCSPI_STATUS_SUCCESS)
-
-Hungarian isn't generally used in the kernel.
-CamelCase isn't generally used either.
-
-> +	{
-> +		memcpy(&TrBuff[TrLength], spi_chl->info.model_name, 16);
-> +		TrLength += 16;
-> +		TrBuff[TrLength++] = spi_chl->info.bus_number;
-> +		TrBuff[TrLength++] = spi_chl->info.dev_number;
-> +		TrBuff[TrLength++] = spi_chl->info.line;
-> +		TrBuff[TrLength++] = (unsigned char)((Address & 0xff000000) >> 24);
-> +		TrBuff[TrLength++] = (unsigned char)((Address & 0x00ff0000) >> 16);
-> +		TrBuff[TrLength++] = (unsigned char)((Address & 0x0000ff00) >> 8);
-> +		TrBuff[TrLength++] = (unsigned char)((Address & 0x000000ff));
-> +		TrBuff[TrLength++] = (unsigned char)(spi_chl->info.irq);
-
-You might consider using a single char * and increment that and not use
-TrLength at all and use p - TrBuff when necessary.
-
-		*p++ = spi_chl->info.bus_number;
-		*p++ = spi_chl->info.dev_number;
-		...
-
-> +		TrBuff[TrLength++] = (unsigned char)((cib_info->spi_significand_of_clock & 0xff000000) >> 24);
-> +		TrBuff[TrLength++] = (unsigned char)((cib_info->spi_significand_of_clock & 0x00ff0000) >> 16);
-> +		TrBuff[TrLength++] = (unsigned char)((cib_info->spi_significand_of_clock & 0x0000ff00) >> 8);
-> +		TrBuff[TrLength++] = (unsigned char)((cib_info->spi_significand_of_clock & 0x000000ff));
-
-Perhaps
-
-		put_unaligned_le32(cib_info->spi_significant_of_clock, p);
-		p += 4;
-
-etc...
-
-
+--
+Gustavo
