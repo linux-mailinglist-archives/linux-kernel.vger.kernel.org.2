@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFEE350AB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D77350AB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhCaX0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:26:44 -0400
+        id S233040AbhCaX0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:26:46 -0400
 Received: from mga12.intel.com ([192.55.52.136]:4846 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232655AbhCaX0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:26:39 -0400
-IronPort-SDR: MNhDKmpl7Q+GNfB6eXVNIIs+OlckdXLrGZd/hiQ6g70+HWOMCethFA1vQYQUylteLBa73+Hv7S
- NFriQiSeseaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528069"
+        id S230349AbhCaX0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:26:40 -0400
+IronPort-SDR: 6Nd8f6N0/mShUsdTsIVxxqZ4dBWZ1AinEL/gS5phC2U9QWSbxq7T5XJOmcMDA6d4b/O+FW23of
+ qA7nr9dUX0zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528070"
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="171528069"
+   d="scan'208";a="171528070"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:39 -0700
-IronPort-SDR: lA3ZSjELFa0NIDo8bePPi1qY9wOPlIzkzGr7G0jYNESBC/NgEm6HokONY706097FC17yerrMDu
- PlEeLO5VeDug==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:40 -0700
+IronPort-SDR: d5yxGRZnD/XDs2IorH/z4o64+vz+2u/UR07eeyxgZ/dreb4l6N1DNBkKQOBp5pQNftfVXCtfjq
+ CCVgYnz0aJaA==
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="610685724"
+   d="scan'208";a="610685728"
 Received: from dfrayn-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.146.236])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:38 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:39 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Johannes Berg <johannes@sipsolutions.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/7] drivers/base: remove kernel-doc warnings
-Date:   Wed, 31 Mar 2021 18:26:07 -0500
-Message-Id: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/7] driver core: remove kernel-doc warnings
+Date:   Wed, 31 Mar 2021 18:26:08 -0500
+Message-Id: <20210331232614.304591-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
+References: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trivial fixes to reduce the number of warnings with make W=1
+remove make W=1 warning:
 
-After this patchset, there are still a number of false positives
-reported, I left them as is.
+drivers/base/core.c:1670: warning: Function parameter or member
+'flags' not described in 'fw_devlink_create_devlink'
 
-drivers/base/power/runtime.c:347: warning: Excess function parameter
-'dev' description in '__rpm_callback'
+drivers/base/core.c:1670: warning: Function parameter or member 'con'
+not described in 'fw_devlink_create_devlink'
 
+drivers/base/core.c:1670: warning: Function parameter or member
+'sup_handle' not described in 'fw_devlink_create_devlink'
 
-drivers/base/platform.c:1545:20: warning: no previous prototype for
-‘early_platform_cleanup’ [-Wmissing-prototypes]
- 1545 | void __weak __init early_platform_cleanup(void) { }
-      |                    ^~~~~~~~~~~~~~~~~~~~~~
+drivers/base/core.c:1670: warning: Function parameter or member
+'flags' not described in 'fw_devlink_create_devlink'
 
-drivers/base/attribute_container.c:304: warning: Function parameter or
-member 'fn' not described in 'attribute_container_device_trigger_safe'
+drivers/base/core.c:1763: warning: Function parameter or member 'dev'
+not described in '__fw_devlink_link_to_consumers'
 
-drivers/base/attribute_container.c:304: warning: Function parameter or
-member 'undo' not described in
-'attribute_container_device_trigger_safe'
+drivers/base/core.c:1844: warning: Function parameter or member 'dev'
+not described in '__fw_devlink_link_to_suppliers'
 
-drivers/base/attribute_container.c:357: warning: Function parameter or
-member 'fn' not described in 'attribute_container_device_trigger'
+drivers/base/core.c:1844: warning: Function parameter or member
+'fwnode' not described in '__fw_devlink_link_to_suppliers'
 
-drivers/base/module.c: In function ‘module_add_driver’:
-drivers/base/module.c:36:6: warning: variable ‘no_warn’ set but not
-used [-Wunused-but-set-variable]
-   36 |  int no_warn;
-      |      ^~~~~~~
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/base/core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-
-Pierre-Louis Bossart (7):
-  driver core: remove kernel-doc warnings
-  driver core: attribute_container: remove kernel-doc warnings
-  PM: runtime: remove kernel-doc warnings
-  PM: wakeup: fix kernel-doc warnings and fix typos
-  PM: clk: remove kernel-doc warning
-  platform-msi: fix kernel-doc warnings
-  devcoredump: fix kernel-doc warning
-
- drivers/base/attribute_container.c |  4 ++++
- drivers/base/core.c                | 11 ++++++-----
- drivers/base/devcoredump.c         |  4 ++--
- drivers/base/platform-msi.c        |  3 ++-
- drivers/base/power/clock_ops.c     |  2 +-
- drivers/base/power/runtime.c       |  2 +-
- drivers/base/power/wakeup.c        | 17 +++++++++--------
- 7 files changed, 25 insertions(+), 18 deletions(-)
-
-
-base-commit: 7a43c78d0573e0bbbb0456b033e2b9a895b89464
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index de518178ac36..ad0d26f04215 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1647,8 +1647,9 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
+ 
+ /**
+  * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
+- * @con - Consumer device for the device link
+- * @sup_handle - fwnode handle of supplier
++ * @con: consumer device for the device link
++ * @sup_handle: fwnode handle of supplier
++ * @flags: devlink flags
+  *
+  * This function will try to create a device link between the consumer device
+  * @con and the supplier device represented by @sup_handle.
+@@ -1744,7 +1745,7 @@ static int fw_devlink_create_devlink(struct device *con,
+ 
+ /**
+  * __fw_devlink_link_to_consumers - Create device links to consumers of a device
+- * @dev - Device that needs to be linked to its consumers
++ * @dev: Device that needs to be linked to its consumers
+  *
+  * This function looks at all the consumer fwnodes of @dev and creates device
+  * links between the consumer device and @dev (supplier).
+@@ -1814,8 +1815,8 @@ static void __fw_devlink_link_to_consumers(struct device *dev)
+ 
+ /**
+  * __fw_devlink_link_to_suppliers - Create device links to suppliers of a device
+- * @dev - The consumer device that needs to be linked to its suppliers
+- * @fwnode - Root of the fwnode tree that is used to create device links
++ * @dev: The consumer device that needs to be linked to its suppliers
++ * @fwnode: Root of the fwnode tree that is used to create device links
+  *
+  * This function looks at all the supplier fwnodes of fwnode tree rooted at
+  * @fwnode and creates device links between @dev (consumer) and all the
 -- 
 2.25.1
 
