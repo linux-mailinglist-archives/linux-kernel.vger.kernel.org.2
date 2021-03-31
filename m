@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118B334F565
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E037834F569
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhCaART (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhCaARC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:17:02 -0400
-X-Greylist: delayed 2144 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 30 Mar 2021 17:17:02 PDT
-Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF7EC061574;
-        Tue, 30 Mar 2021 17:17:02 -0700 (PDT)
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4F96Lz16hBzyd1;
-        Wed, 31 Mar 2021 11:16:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1617149820;
-        bh=93HAt3FYQfyd9HrVKQg+TwNp3vFOYJkRDVBNXPnzLHA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fgpbJTXVn9M/y+DnubnnODTiILtFpoVkrRFJJ0y4YDpnlYfMpbUa02JKPLI2rGJhR
-         8OTnk8XhyhXoomAVuZEUrNoWJcii6jzrD+SrQl9CE2P5Pm+HUzviq7vK6IK/hYPiEU
-         sGeU/3TjiEH9nA8/jjBLJNMU0jWrt4GeP15vfFFqtTwrvuvSfzuuXF+uRzt0vNMZKi
-         dm39BSSXFsIflaCQqDZzG/2cGZQ1xl+weBGYfe0jfihrUmC/BxXirDBLBbsNwkluzv
-         dr2lfwNvL4VsZXBL+NvojAGmszjty1R/nkVp7COoDngR4V17dSCb2sxpvVHYtLpSFO
-         dIBhKfkQAbQIA==
-Date:   Wed, 31 Mar 2021 11:16:57 +1100
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the overlayfs tree
-Message-ID: <20210331111657.0babeb05@elm.ozlabs.ibm.com>
-In-Reply-To: <CAJfpeguWeWp=648jtvaxNc+RFShTGDa=_gMDuq72qznt5LqQvw@mail.gmail.com>
-References: <20210329201426.78d4b28b@canb.auug.org.au>
-        <CAJfpeguWeWp=648jtvaxNc+RFShTGDa=_gMDuq72qznt5LqQvw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232394AbhCaAUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231701AbhCaAUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:20:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9D8AC619A7;
+        Wed, 31 Mar 2021 00:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617150010;
+        bh=6kSL9gs4I6to6gpb9c/w1ktYJp1T1wUwDqb+3use/xg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FG9m+jXhO1gD3LN3WQHhIRX+K5kZADBfDnsDLUgxNXmZMkaGwDLHM/dZN1yxP503Y
+         P2VfnYvrHhI2By+EoYoJg554kFpCOiQQwhG7s6bSwUBbV5F5zwgY2DJ3e3u3yipcaa
+         si/T6Y/Z5GocFTnIq7MKs7p5hPccqTpoWrWbiaFXcinxMTJCaludLtJkDGGBugC5aM
+         c7F9EKLfQXG9jAEVhg7OUU2aYHEf52pqDDm+TReqP4GPyy0s+uJ0ES5lOBFSV7M9b9
+         0kAA/GPIszROxZjl3wUhD8sI/PPCgPGqHsIuKASy808IhyjIHf0znWmTn91mNMIWwR
+         vAqNfS38C6/qA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8F1B860A72;
+        Wed, 31 Mar 2021 00:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] tc-testing: add simple action change test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161715001058.3850.13772855808502684032.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 00:20:10 +0000
+References: <20210330104110.25360-1-vladbu@nvidia.com>
+In-Reply-To: <20210330104110.25360-1-vladbu@nvidia.com>
+To:     Vlad Buslov <vladbu@nvidia.com>
+Cc:     memxor@gmail.com, xiyou.wangcong@gmail.com, davem@davemloft.net,
+        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
+        toke@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
+Hello:
 
-On Mon, 29 Mar 2021 11:28:10 +0200 Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Mon, Mar 29, 2021 at 11:14 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > After merging the overlayfs tree, today's linux-next build (htmldocs)  
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 30 Mar 2021 13:41:10 +0300 you wrote:
+> Use act_simple to verify that action created with 'tc actions change'
+> command exists after command returns. The goal is to verify internal action
+> API reference counting to ensure that the case when netlink message has
+> NLM_F_REPLACE flag set but action with specified index doesn't exist is
+> handled correctly.
 > 
-> I think you mixed up drivers/of/overlay.c with fs/overlay/.
+> Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
+> 
+> [...]
 
-You are entirely correct and I have no idea how I managed that :-(
+Here is the summary with links:
+  - [net-next] tc-testing: add simple action change test
+    https://git.kernel.org/netdev/net-next/c/e48792a9ec78
 
--- 
-Cheers,
-Stephen Rothwell
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
