@@ -2,104 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5365C34F884
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3D534F889
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbhCaGG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:06:59 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53490 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhCaGGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:06:40 -0400
-Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 801F38DA;
-        Wed, 31 Mar 2021 08:06:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1617170797;
-        bh=VILbDV1g0gxNqONJ/YaXNqbdVu6oy81uJAYmz2A735k=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=Zp00r5q6OLXWjlSuXKr+hxYs0jNggnJa6qp4kkhVrgkOaL2nBl7oG2OcAL+w03Xgd
-         37Ohb1Si1LYdjkshfbgFZGdAFIhDYTLyD9z7odYtbc2DphDpHkgh0N/ABFSz4w1b7E
-         OpKx+5OplgF7UtIBMfX2e8RfT7flEyA6j1aEpswQ=
-To:     Pratyush Yadav <p.yadav@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Peter Chen <peter.chen@nxp.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        dmaengine@vger.kernel.org
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>
-References: <20210330173348.30135-1-p.yadav@ti.com>
- <20210330173348.30135-14-p.yadav@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH 13/16] media: ti-vpe: csi2rx: Add CSI2RX support
-Message-ID: <91bbf2a9-9d27-7f9b-1c17-ad6544a828f1@ideasonboard.com>
-Date:   Wed, 31 Mar 2021 09:06:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233731AbhCaGIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:08:51 -0400
+Received: from muru.com ([72.249.23.125]:49100 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233690AbhCaGHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:07:16 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6ABEB80C3;
+        Wed, 31 Mar 2021 06:08:18 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 09:07:12 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org, aaro.koskinen@iki.fi, linux@armlinux.org.uk,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH] ARM: OMAP1: fix incorrect kernel-doc comment syntax in
+ file
+Message-ID: <YGQRkEEE+y7pU3LL@atomide.com>
+References: <20210330205330.26345-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210330173348.30135-14-p.yadav@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330205330.26345-1-yashsri421@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 30/03/2021 20:33, Pratyush Yadav wrote:
-> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> capture over a CSI-2 bus.
+* Aditya Srivastava <yashsri421@gmail.com> [210330 23:54]:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for arch/arm/mach-omap1/timer.c follows this syntax, but the
+> content inside does not comply with kernel-doc.
 > 
-> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
-> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
-> called the SHIM layer. It takes in data from stream 0, repacks it, and
-> sends it to memory over PSI-L DMA.
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> "warning: expecting prototype for OMAP1 Dual(). Prototype was for OMAP1610_GPTIMER1_BASE() instead"
 > 
-> This driver acts as the "front end" to V4L2 client applications. It
-> implements the required ioctls and buffer operations, passes the
-> necessary calls on to the bridge, programs the SHIM layer, and performs
-> DMA via the dmaengine API to finally return the data to a buffer
-> supplied by the application.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
->   MAINTAINERS                               |   7 +
->   drivers/media/platform/Kconfig            |  11 +
->   drivers/media/platform/ti-vpe/Makefile    |   1 +
->   drivers/media/platform/ti-vpe/ti-csi2rx.c | 964 ++++++++++++++++++++++
->   4 files changed, 983 insertions(+)
->   create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-Some quick comments:
+Thanks applying into omap-for-v5.13/soc.
 
-"ti-vpe" directory is not correct, this has nothing to do with VPE. That 
-said, the directory has already been abused by having CAL driver there, 
-perhaps we should rename the directory just to "ti". But if we do that, 
-I think we should have subdirs for cal, vpe and this new one.
-
-"ti-csi2rx" is rather generic name. TI has had CSI-2 RX IPs before (CAL) 
-and probably will also have new ones in the future. If there's no clear 
-model name for the IP, as I think is the case here, it's probably best 
-to just use the SoC model in the name. E.g. the DSS on J7 is "ti,j721e-dss".
-
-This driver implements the legacy video API. I think it would be better 
-(and easier to maintain) to only implement the media-controller API, 
-unless you specifically need to support the legacy API for existing 
-userspace.
-
-  Tomi
+Tony
