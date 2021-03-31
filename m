@@ -2,179 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EF834FF15
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364DF34FF1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235565AbhCaLCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbhCaLBJ (ORCPT
+        id S235442AbhCaLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:02:16 -0400
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:40025 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235539AbhCaLBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:01:09 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EBBC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:01:08 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id x13so19199493wrs.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IN1SjCUiJXttEzEwKJpOwO8v8lxJB5yWOIgxTzXkjf4=;
-        b=mES/btcERywUzdWQs1lJxM93buJiHXH0MILQ1g6KKVjqG1sh10JFCAQI2AA2xTNX46
-         fYc9nHcE8G81eSRcDO9fesgjtZcNXyE+ZCZ07MYPvDxkig2XST3Sv1VBAkV4ZAAWHcMW
-         P1E8dzFXRygT10p1+Z8dhDxqY/icRWDlEcKKCrRpW/GJPrIEVQQQwUoa9mphcogE9lwB
-         Ye65w2zXC7BjafTuGEhrNfvG+5KIy3OVbmgePRstcMZTq9bZAoZccoa9Rzb/h16fW7Cf
-         jzPH422YDX0/p8XLb/Vpt/n8VlCuaNRqgpESHWRMx4BiknJaRQkqylA3nORJ6GGoFIxL
-         2nTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=IN1SjCUiJXttEzEwKJpOwO8v8lxJB5yWOIgxTzXkjf4=;
-        b=PCghmNH3I1rfLEtZJTJFzr1yJoOtMBTySzKif3Zj8txJpqTbn+rHZCnq+gbavt+0WV
-         9F2I+kkRryH5DsaBSS+SIFAlr0vfRh1orF3NtdRuwaMREPuEw1LHKubeC9P4mqQ5aNje
-         4RdpEd3Jm1YzjQaSU653BsrmTuSwhJSO7cQHDP6J+6jyNRYEsQQ1YVJaqUv7FuskfD6T
-         lMRHkR2alk3bE7z7BL/cnEbpI6/twnfCvf0+lyOFCi9/1R4FSSZaUslRa+iCACmS5OuQ
-         xDpCl4nTkx96DOGHYdQBJv4zc/a9uQCi32aYcZD7dePm+uIt02TmIT52qQFOBA6DGwIK
-         DnJw==
-X-Gm-Message-State: AOAM532iNU1dIWcanhFTsWxQYLGd2U9Z+hOle2KD2OtsgUvBYkE00Lvo
-        upZ0/+awPcNmVAar9ExGRzFEjw==
-X-Google-Smtp-Source: ABdhPJwXB9udYyPZ0xNfNBsjZDV8tE93OQn+3FxyoN6FYG1NtKaJrcBuKwjihsQ3EyRCQPPCtOg84w==
-X-Received: by 2002:a5d:6684:: with SMTP id l4mr2973647wru.381.1617188467320;
-        Wed, 31 Mar 2021 04:01:07 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.26.252])
-        by smtp.gmail.com with ESMTPSA id u23sm3376275wmn.26.2021.03.31.04.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 04:01:06 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukasz.luba@arm.com, rafael@kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH v5 5/5] powercap/drivers/dtpm: Scale the power with the load
-Date:   Wed, 31 Mar 2021 13:00:48 +0200
-Message-Id: <20210331110048.24956-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210331110048.24956-1-daniel.lezcano@linaro.org>
-References: <20210331110048.24956-1-daniel.lezcano@linaro.org>
+        Wed, 31 Mar 2021 07:01:41 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id F070C1C3851
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:01:38 +0100 (IST)
+Received: (qmail 6962 invoked from network); 31 Mar 2021 11:01:38 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Mar 2021 11:01:38 -0000
+Date:   Wed, 31 Mar 2021 12:01:37 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 2/6] mm/page_alloc: Convert per-cpu list protection to
+ local_lock
+Message-ID: <20210331110137.GA3697@techsingularity.net>
+References: <20210329120648.19040-1-mgorman@techsingularity.net>
+ <20210329120648.19040-3-mgorman@techsingularity.net>
+ <877dln640j.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <877dln640j.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the power consumption is based on the current OPP power
-assuming the entire performance domain is fully loaded.
+On Wed, Mar 31, 2021 at 11:55:56AM +0200, Thomas Gleixner wrote:
+> On Mon, Mar 29 2021 at 13:06, Mel Gorman wrote:
+> > There is a lack of clarity of what exactly local_irq_save/local_irq_restore
+> > protects in page_alloc.c . It conflates the protection of per-cpu page
+> > allocation structures with per-cpu vmstat deltas.
+> >
+> > This patch protects the PCP structure using local_lock which
+> > for most configurations is identical to IRQ enabling/disabling.
+> > The scope of the lock is still wider than it should be but this is
+> > decreased in later patches. The per-cpu vmstat deltas are protected by
+> > preempt_disable/preempt_enable where necessary instead of relying on
+> > IRQ disable/enable.
+> 
+> Yes, this goes into the right direction and I really appreciate the
+> scoped protection for clarity sake.
+> 
 
-That gives very gross power estimation and we can do much better by
-using the load to scale the power consumption.
+Thanks.
 
-Use the utilization to normalize and scale the power usage over the
-max possible power.
+> >  #ifdef CONFIG_MEMORY_HOTREMOVE
+> > diff --git a/mm/vmstat.c b/mm/vmstat.c
+> > index 8a8f1a26b231..01b74ff73549 100644
+> > --- a/mm/vmstat.c
+> > +++ b/mm/vmstat.c
+> > @@ -887,6 +887,7 @@ void cpu_vm_stats_fold(int cpu)
+> >  
+> >  		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+> >  
+> > +		preempt_disable();
+> 
+> What's the reason for the preempt_disable() here? A comment would be
+> appreciated.
+> 
 
-Tested on a rock960 with 2 big CPUS, the power consumption estimation
-conforms with the expected one.
+Very good question because it's protecting vm_stat_diff and
+vm_numa_stat_diff in different contexts and not quite correctly at this
+point of the series. By the end of the series vm_numa_stat_diff is a
+simple counter and does not need special protection.
 
-Before this change:
+Right now, it's protecting against a read and clear of vm_stat_diff
+in two contexts -- cpu_vm_stats_fold and drain_zonestats but it's only
+defensive. cpu_vm_stats_fold is only called when a CPU is going dead and
+drain_zonestats is called from memory hotplug context. The protection is
+necessary only if a new drain_zonestats caller was added without taking
+the RMW of vm_stat_diff into account which may never happen.
 
-~$ ~/dhrystone -t 1 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-2260000
+This whole problem with preemption could be avoided altogether if
+this_cpu_xchg was used similar to what is done elsewhere in vmstat
+so.... this?
 
-After this change:
-
-~$ ~/dhrystone -t 1 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-1130000
-
-~$ ~/dhrystone -t 2 -l 10000&
-~$ cat /sys/devices/virtual/powercap/dtpm/dtpm:0/dtpm:0:1/constraint_0_max_power_uw
-2260000
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
----
-
-V3:
-  - Fixed uninitialized 'cpu' in scaled_power_uw()
-V2:
-  - Replaced cpumask by em_span_cpus
-  - Changed 'util' metrics variable types
-  - Optimized utilization scaling power computation
-  - Renamed parameter name for scale_pd_power_uw()
----
- drivers/powercap/dtpm_cpu.c | 46 +++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index f4092d1b01d7..eae35ae3c42e 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -68,27 +68,59 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
- 	return power_limit;
- }
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 64429ca4957f..9528304ce24d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8969,8 +8969,9 @@ void zone_pcp_reset(struct zone *zone)
+ 	struct per_cpu_zonestat *pzstats;
  
-+static u64 scale_pd_power_uw(struct cpumask *pd_mask, u64 power)
-+{
-+	unsigned long max = 0, sum_util = 0;
-+	int cpu;
-+
-+	for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
-+
-+		/*
-+		 * The capacity is the same for all CPUs belonging to
-+		 * the same perf domain, so a single call to
-+		 * arch_scale_cpu_capacity() is enough. However, we
-+		 * need the CPU parameter to be initialized by the
-+		 * loop, so the call ends up in this block.
-+		 *
-+		 * We can initialize 'max' with a cpumask_first() call
-+		 * before the loop but the bits computation is not
-+		 * worth given the arch_scale_cpu_capacity() just
-+		 * returns a value where the resulting assembly code
-+		 * will be optimized by the compiler.
-+		 */
-+		max = arch_scale_cpu_capacity(cpu);
-+		sum_util += sched_cpu_util(cpu, max);
-+	}
-+
-+	/*
-+	 * In the improbable case where all the CPUs of the perf
-+	 * domain are offline, 'max' will be zero and will lead to an
-+	 * illegal operation with a zero division.
-+	 */
-+	return max ? (power * ((sum_util << 10) / max)) >> 10 : 0;
-+}
-+
- static u64 get_pd_power_uw(struct dtpm *dtpm)
- {
- 	struct dtpm_cpu *dtpm_cpu = to_dtpm_cpu(dtpm);
- 	struct em_perf_domain *pd;
--	struct cpumask cpus;
-+	struct cpumask *pd_mask;
- 	unsigned long freq;
--	int i, nr_cpus;
-+	int i;
+ 	/*
+-	 * No race with drain_pages. drain_zonestat disables preemption
+-	 * and drain_pages relies on the pcp local_lock.
++	 * No race with drain_pages. drain_zonestat is only concerned with
++	 * vm_*_stat_diff which is updated with this_cpu_xchg and drain_pages
++	 * only cares about the PCP lists protected by local_lock.
+ 	 */
+ 	if (zone->per_cpu_pageset != &boot_pageset) {
+ 		for_each_online_cpu(cpu) {
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 01b74ff73549..34ff61a145d2 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -887,13 +887,11 @@ void cpu_vm_stats_fold(int cpu)
  
- 	pd = em_cpu_get(dtpm_cpu->cpu);
--	freq = cpufreq_quick_get(dtpm_cpu->cpu);
+ 		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
  
--	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
--	nr_cpus = cpumask_weight(&cpus);
-+	pd_mask = em_span_cpus(pd);
-+
-+	freq = cpufreq_quick_get(dtpm_cpu->cpu);
+-		preempt_disable();
+ 		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+ 			if (pzstats->vm_stat_diff[i]) {
+ 				int v;
  
- 	for (i = 0; i < pd->nr_perf_states; i++) {
+-				v = pzstats->vm_stat_diff[i];
+-				pzstats->vm_stat_diff[i] = 0;
++				v = this_cpu_xchg(pzstats->vm_stat_diff[i], 0);
+ 				atomic_long_add(v, &zone->vm_stat[i]);
+ 				global_zone_diff[i] += v;
+ 			}
+@@ -903,13 +901,11 @@ void cpu_vm_stats_fold(int cpu)
+ 			if (pzstats->vm_numa_stat_diff[i]) {
+ 				int v;
  
- 		if (pd->table[i].frequency < freq)
- 			continue;
- 
--		return pd->table[i].power *
--			MICROWATT_PER_MILLIWATT * nr_cpus;
-+		return scale_pd_power_uw(pd_mask, pd->table[i].power *
-+					 MICROWATT_PER_MILLIWATT);
+-				v = pzstats->vm_numa_stat_diff[i];
+-				pzstats->vm_numa_stat_diff[i] = 0;
++				v = this_cpu_xchg(pzstats->vm_numa_stat_diff[i], 0);
+ 				atomic_long_add(v, &zone->vm_numa_stat[i]);
+ 				global_numa_diff[i] += v;
+ 			}
+ #endif
+-		preempt_enable();
  	}
  
- 	return 0;
+ 	for_each_online_pgdat(pgdat) {
+@@ -943,10 +939,9 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+ {
+ 	int i;
+ 
+-	preempt_disable();
+ 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+ 		if (pzstats->vm_stat_diff[i]) {
+-			int v = pzstats->vm_stat_diff[i];
++			int v = this_cpu_xchg(pzstats->vm_stat_diff[i], 0);
+ 			pzstats->vm_stat_diff[i] = 0;
+ 			atomic_long_add(v, &zone->vm_stat[i]);
+ 			atomic_long_add(v, &vm_zone_stat[i]);
+@@ -955,14 +950,12 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+ #ifdef CONFIG_NUMA
+ 	for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
+ 		if (pzstats->vm_numa_stat_diff[i]) {
+-			int v = pzstats->vm_numa_stat_diff[i];
++			int v = this_cpu_xchg(pzstats->vm_numa_stat_diff[i], 0);
+ 
+-			pzstats->vm_numa_stat_diff[i] = 0;
+ 			atomic_long_add(v, &zone->vm_numa_stat[i]);
+ 			atomic_long_add(v, &vm_numa_stat[i]);
+ 		}
+ #endif
+-	preempt_enable();
+ }
+ #endif
+ 
+ 
 -- 
-2.17.1
-
+Mel Gorman
+SUSE Labs
