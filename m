@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E02034FC34
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CDB34FC37
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhCaJHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbhCaJHJ (ORCPT
+        id S234449AbhCaJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:09:35 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:56779 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234086AbhCaJJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:07:09 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ED0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:07:09 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 934E21F45B06
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [RESEND PATCH 2/2] arm64: defconfig: Enable options to support panel display for Mediatek Chromebooks
-Date:   Wed, 31 Mar 2021 11:06:58 +0200
-Message-Id: <20210331090659.4169966-2-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210331090659.4169966-1-enric.balletbo@collabora.com>
-References: <20210331090659.4169966-1-enric.balletbo@collabora.com>
+        Wed, 31 Mar 2021 05:09:27 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210331090925euoutp0248b8a17462bb091a128f134db04982a2~xYj95GRu50467704677euoutp02M
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:09:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210331090925euoutp0248b8a17462bb091a128f134db04982a2~xYj95GRu50467704677euoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617181765;
+        bh=6dZgJ7+u2oNHcSEqdGB5HmhKWoHD6aPUWlKb9K/uY5U=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=pzv6QGI01PT8D5FTnWIMORywVGNptAx/h/Ew3EGoAU8OiPDylsJF6QU9uQoAmCgwZ
+         CN5jb1XnhTvc/NCMvyMSLuDfEtJVh35Fe/Qu8GwNZG0cPNwFQSQow4vuDk1ZH5KGXK
+         ExN2KMIq3DoCpYhFA8yXVZBtAYwJgCZ5g6dDiUn0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210331090925eucas1p2bda3e34916b7508729c2a9e4803c9240~xYj9VWhyZ0330803308eucas1p2x;
+        Wed, 31 Mar 2021 09:09:25 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id AB.EA.09439.54C34606; Wed, 31
+        Mar 2021 10:09:25 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210331090924eucas1p2dc32b8a29be69272125bb0c16d64f865~xYj8zCGQ80378603786eucas1p2k;
+        Wed, 31 Mar 2021 09:09:24 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210331090924eusmtrp13f37a641a4fb089b626a5d0483cc7891~xYj8yEwgP2592125921eusmtrp1S;
+        Wed, 31 Mar 2021 09:09:24 +0000 (GMT)
+X-AuditID: cbfec7f5-c03ff700000024df-e8-60643c457ae8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id C8.ED.08705.44C34606; Wed, 31
+        Mar 2021 10:09:24 +0100 (BST)
+Received: from localhost (unknown [106.210.131.79]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210331090921eusmtip11f3d876c79f7500ba5e10fdb94d4188f~xYj55otVO1707417074eusmtip1P;
+        Wed, 31 Mar 2021 09:09:21 +0000 (GMT)
+Message-ID: <083f59ab-b67e-f574-12e7-5ef42f443e4e@samsung.com>
+Date:   Wed, 31 Mar 2021 11:09:20 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
+        Gecko/20100101 Thunderbird/88.0
+Subject: Re: [PATCH v2 02/14] drm/bridge: ti-sn65dsi86: Simplify refclk
+ handling
+Content-Language: en-GB
+To:     Douglas Anderson <dianders@chromium.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org
+From:   Andrzej Hajda <a.hajda@samsung.com>
+In-Reply-To: <20210329195255.v2.2.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLKsWRmVeSWpSXmKPExsWy7djPc7quNikJBt/28Fn0njvJZHF6/zsW
+        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
+        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
+        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFFcNimpOZllqUX6dglcGT/m9jMV7OGt
+        WHz6L3MD42zuLkZODgkBE4ltizcxdjFycQgJrGCUeHqtjQ3C+cIosb6llRXC+cwosbFvNRtM
+        S/OMd1BVyxklFtxazAThvGCUmHN1F1gVr4CdxJ/vS5i7GDk4WARUJe4eKYAIC0qcnPmEBcQW
+        FUiQWHVjOROILSwQJDHxzBVWEJtZQFyi6ctKsM0iAv8YJVZPfAy2gFngM5PEpymHwDrYBDQl
+        /m6+CbaMUyBU4vqtJSwQ3fISzVtnM4M0SAjc4pT4/uE3K8TdLhIXJ15ghrCFJV4d38IOYctI
+        nJ7cwwJh10vcX9EC1dzBKLF1w06oBmuJO+d+sYG8wwy0ef0ufYiwo0T7hTZWkLCEAJ/EjbeC
+        EDfwSUzaNp0ZIswr0dEmBFGtKHH/7FaogeISSy98ZZvAqDQLKVxmIfl/FpJvZiHsXcDIsopR
+        PLW0ODc9tdg4L7Vcrzgxt7g0L10vOT93EyMwRZ7+d/zrDsYVrz7qHWJk4mA8xCjBwawkwit8
+        IDFBiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+urWvihQTSE0tSs1NTC1KLYLJMHJxSDUxlIXFl
+        Kbrz41jmtkyfHL+UkVEh9OmnumsNuo2bNv9ruxNREjH5w5v5UR1OZf4eBa8TXNI/Tn+kt/jg
+        HQkfXtF50sWz/yxq+F7560OoK6/Gu+ldV6wib65Yv11nVqF6prrWBXedJUXPbhX6Vc19nb3/
+        zgJ5l27Gc01zNlwQ+za1Zz3ro/OBMx/+kJ3sq3JRQ/F7o/XWwu6q1F72Aun9N1xvMDX2XTzr
+        zlvTVnnK8nFbEodmRvzHZ49u+13f5LbYY67PovhfTsfOrpTuP/V5hu1h15Nz69duULVf8F+3
+        JzYwgPUqW9kfocVSm+RyIrze/iviZ2IQsdkrZhntlNazvlFH3nBD4gGznxPcJWq3/1ZiKc5I
+        NNRiLipOBADwpogEAAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPIsWRmVeSWpSXmKPExsVy+t/xu7ouNikJBvuOalr0njvJZHF6/zsW
+        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
+        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
+        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFF6NkX5pSWpChn5xSW2StGGFkZ6hpYW
+        ekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GT/m9jMV7OGtWHz6L3MD42zuLkZODgkBE4nm
+        Ge/Yuhi5OIQEljJKXLm2ix0iIS6xe/5bZghbWOLPtS6oomeMEtPaX7CBJHgF7CT+fF8CVMTB
+        wSKgKnH3SAFEWFDi5MwnLCC2qECCxNkP85hAbGGBIImJZ66wgtjMQPObvqxkBZkpItDAJHHp
+        7mImEIdZ4CuTRMurpWBXCAncZpTY3K4EYrMJaEr83XwTbDGnQKjE9VtLWCAmmUl0be1ihLDl
+        JZq3zmaewCg0C8khs5AsnIWkZRaSlgWMLKsYRVJLi3PTc4sN9YoTc4tL89L1kvNzNzECU8K2
+        Yz8372Cc9+qj3iFGJg7GQ4wSHMxKIrzCBxIThHhTEiurUovy44tKc1KLDzGaAgNjIrOUaHI+
+        MCnllcQbmhmYGpqYWRqYWpoZK4nzbp27Jl5IID2xJDU7NbUgtQimj4mDU6qBKW4/0+WHZTdv
+        z58tOfnek51vlv2esfV54ryzqXe6e+5seTA1/Cnn4U07fKvkt+i/2spiea0+aNnBL2nb1k+V
+        1f6RuClWw8tmoiKXY4eGx8Em6fzm5vtPXt0vcc/pV7uyp/zu4sj5f3ntr64OfJF9bf6M5+K/
+        zHflHHskInGN72yKjvGCdr3bF2zD1jBMm/3Mz3zqvD2LGMs3qi3WFZ3w/+bfJxdfp+znMhC8
+        mt0g8nFm/2fN+Iifqxbx9FTkrfl4NyHxmVOK7JFeN6tE7SkXJoZ8/fjoh497U0/PrPVZzzv8
+        Tay/rT36dYPg8ZyLzyclt1xfXzFZ/c+Fb/cPrfBMaph18NI33aMmMwrMqve2OT3aq8RSnJFo
+        qMVcVJwIAMtR7l2SAwAA
+X-CMS-MailID: 20210331090924eucas1p2dc32b8a29be69272125bb0c16d64f865
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210330025415eucas1p1352aa392523853fe5207481597f3c32e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210330025415eucas1p1352aa392523853fe5207481597f3c32e
+References: <20210330025345.3980086-1-dianders@chromium.org>
+        <CGME20210330025415eucas1p1352aa392523853fe5207481597f3c32e@eucas1p1.samsung.com>
+        <20210329195255.v2.2.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some Mediatek based Chromebooks supported in the kernel. Enable the
-required config options to have the panel display working on both devices.
-This was tested on the ACER Chromebook R13 (MT8173) and the Lenovo
-Ideapad Duet (MT8183), but should also enable display support for similar
-devices.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
-This is only a resend rebased on top of mainline to fix some trivial
-conflicts.
+W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
+> The clock framework makes it simple to deal with an optional clock.
+> You can call clk_get_optional() and if the clock isn't specified it'll
+> just return NULL without complaint. It's valid to pass NULL to
+> enable/disable/prepare/unprepare. Let's make use of this to simplify
+> things a tiny bit.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
 
- arch/arm64/configs/defconfig | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 7b4be3807b6d..f2dc42c9b932 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -686,6 +686,7 @@ CONFIG_DRM_MSM=m
- CONFIG_DRM_TEGRA=m
- CONFIG_DRM_PANEL_LVDS=m
- CONFIG_DRM_PANEL_SIMPLE=m
-+CONFIG_DRM_PANEL_BOE_TV101WUM_NL6=m
- CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
- CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
- CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-@@ -693,6 +694,7 @@ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_DISPLAY_CONNECTOR=m
- CONFIG_DRM_NWL_MIPI_DSI=m
- CONFIG_DRM_LONTIUM_LT9611=m
-+CONFIG_DRM_PARADE_PS8640=m
- CONFIG_DRM_SII902X=m
- CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_THINE_THC63LVD1024=m
-@@ -707,6 +709,8 @@ CONFIG_DRM_VC4=m
- CONFIG_DRM_ETNAVIV=m
- CONFIG_DRM_HISI_HIBMC=m
- CONFIG_DRM_HISI_KIRIN=m
-+CONFIG_DRM_MEDIATEK=m
-+CONFIG_DRM_MEDIATEK_HDMI=m
- CONFIG_DRM_MXSFB=m
- CONFIG_DRM_MESON=m
- CONFIG_DRM_PL111=m
-@@ -979,6 +983,7 @@ CONFIG_ROCKCHIP_IOMMU=y
- CONFIG_TEGRA_IOMMU_SMMU=y
- CONFIG_ARM_SMMU=y
- CONFIG_ARM_SMMU_V3=y
-+CONFIG_MTK_IOMMU=y
- CONFIG_QCOM_IOMMU=y
- CONFIG_REMOTEPROC=y
- CONFIG_QCOM_Q6V5_MSS=m
-@@ -1051,6 +1056,8 @@ CONFIG_PWM_BCM2835=m
- CONFIG_PWM_CROS_EC=m
- CONFIG_PWM_IMX27=m
- CONFIG_PWM_MESON=m
-+CONFIG_PWM_MTK_DISP=m
-+CONFIG_PWM_MEDIATEK=m
- CONFIG_PWM_RCAR=m
- CONFIG_PWM_ROCKCHIP=y
- CONFIG_PWM_SAMSUNG=y
-@@ -1095,6 +1102,7 @@ CONFIG_QCOM_L3_PMU=y
- CONFIG_NVMEM_IMX_OCOTP=y
- CONFIG_NVMEM_IMX_OCOTP_SCU=y
- CONFIG_QCOM_QFPROM=y
-+CONFIG_MTK_EFUSE=y
- CONFIG_ROCKCHIP_EFUSE=y
- CONFIG_NVMEM_SUNXI_SID=y
- CONFIG_UNIPHIER_EFUSE=y
--- 
-2.30.2
-
+Regards
+Andrzej
+> ---
+>
+> Changes in v2:
+> - Removed 2nd paragraph in commit message.
+>
+>   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++--------
+>   1 file changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 88df4dd0f39d..96fe8f2c0ea9 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1275,14 +1275,9 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
+>   		return ret;
+>   	}
+>   
+> -	pdata->refclk = devm_clk_get(pdata->dev, "refclk");
+> -	if (IS_ERR(pdata->refclk)) {
+> -		ret = PTR_ERR(pdata->refclk);
+> -		if (ret == -EPROBE_DEFER)
+> -			return ret;
+> -		DRM_DEBUG_KMS("refclk not found\n");
+> -		pdata->refclk = NULL;
+> -	}
+> +	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
+> +	if (IS_ERR(pdata->refclk))
+> +		return PTR_ERR(pdata->refclk);
+>   
+>   	ret = ti_sn_bridge_parse_dsi_host(pdata);
+>   	if (ret)
