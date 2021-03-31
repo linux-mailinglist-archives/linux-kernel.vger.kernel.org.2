@@ -2,44 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95ED34F86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D6534F87D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhCaF7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 01:59:51 -0400
-Received: from muru.com ([72.249.23.125]:49076 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233690AbhCaF7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 01:59:40 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id C98AB80C3;
-        Wed, 31 Mar 2021 06:00:41 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 08:59:35 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Chen Lifu <chenlifu@huawei.com>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Russell King <linux@armlinux.org.uk>, heying24@huawei.com,
-        yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        johnny.chenyi@huawei.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] ARM: OMAP: Use DEFINE_SPINLOCK() for spinlock
-Message-ID: <YGQPx5UMmHnFoJi+@atomide.com>
-References: <20210327095227.105081-1-chenlifu@huawei.com>
+        id S233708AbhCaGDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhCaGDM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:03:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545ADC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 23:03:12 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id f10so13401682pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 23:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GmdAprXBSLF+KiQkRQ1q6vYXVXHwCxP7HlnSoKUve+E=;
+        b=a72k4tykYSfcww6NBUiHL0zy6aIlNDSB4CejRuiPqncwpwT/iOS2lob/SKlfYsiX8m
+         +R6f4d4BT27SSqjP1AKEG+4/D6fahhWMM9Fz8Q+EvonjBqKyTPx8CJQuhUtZ/XUMRAHs
+         K1lqi4wk7ikNlzv/JVBK0PZTK2/WB92FEOAUc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GmdAprXBSLF+KiQkRQ1q6vYXVXHwCxP7HlnSoKUve+E=;
+        b=MHU9+xBveeg1apISDLTM6QffruQaDT1zXnafNIU43S3DnOTAiZXq3KqhbyEz9P5Kvw
+         WFHmeyEWgOZhClhcNub83mSzA0i0nkkRSojYAm5p5HxuUNzHNj+hgyW6PtULwfoy6+Mr
+         kn3NIbPvUUKoY1JoWrpTCmZIsWMrjX0Hxse6DhrdfRP5w6o/gZ8Hp4C05hoYePVTT9tf
+         RyM+PSTiQOq84rchymdDMPbyyeAE8fPQgQOu5c9dlbT5Qk7t74kfIJz4is0rskyOPFGw
+         3iQ+qUJKnMnkgzsWhmqPq4WDvscgjyQlSDgVGtcm7mYimwrySShWntaUz8jMrPiCIH6n
+         5yTg==
+X-Gm-Message-State: AOAM532Zsz7BxJrOp+JcDZdKyMNh2dkxL/kLFQvYX0gLGA3A6qLWizYQ
+        10kxe5pIViSr0MKFoPh3W3kT4w==
+X-Google-Smtp-Source: ABdhPJxmNy7PylTCLuqIaivE7U+e509y9y5sjk/y3ctOSW8bh+OYWli4WsmRUOoAPXMhkYHa18YcNg==
+X-Received: by 2002:a65:6a0e:: with SMTP id m14mr1700967pgu.448.1617170591906;
+        Tue, 30 Mar 2021 23:03:11 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 190sm1107681pgh.61.2021.03.30.23.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 23:03:11 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 23:03:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v5 1/1] fs: Allow no_new_privs tasks to call chroot(2)
+Message-ID: <202103302249.6FE62C03@keescook>
+References: <20210316203633.424794-1-mic@digikod.net>
+ <20210316203633.424794-2-mic@digikod.net>
+ <fef10d28-df59-640e-ecf7-576f8348324e@digikod.net>
+ <85ebb3a1-bd5e-9f12-6d02-c08d2c0acff5@schaufler-ca.com>
+ <b47f73fe-1e79-ff52-b93e-d86b2927bbdc@digikod.net>
+ <77ec5d18-f88e-5c7c-7450-744f69654f69@schaufler-ca.com>
+ <a8b2545f-51c7-01dc-1a14-e87beefc5419@digikod.net>
+ <2fcff3d7-e7ca-af3b-9306-d8ef2d3fb4fb@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210327095227.105081-1-chenlifu@huawei.com>
+In-Reply-To: <2fcff3d7-e7ca-af3b-9306-d8ef2d3fb4fb@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Chen Lifu <chenlifu@huawei.com> [210327 11:53]:
-> From: Lifu Chen <chenlifu@huawei.com>
-> 
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
+On Tue, Mar 30, 2021 at 03:53:37PM -0700, Casey Schaufler wrote:
+> If you need to run legitimate SETUID (or file capability enabled) binaries
+> you can't use NO_NEW_PRIVS. You can use CAP_SYS_CHROOT, because capabilities
+> where designed to work with the UID mechanisms.
 
-Thanks applying into omap-for-v5.13/soc.
+All the discussion of "designing a system" around the isolation is
+missing the point here: this is designed so that no system owner
+coordination is needed. An arbitrary process can set no_new_privs and
+then confine itself in a chroot. There is no need for extra privileges,
+etc, etc. There shouldn't be a need for a privileged environment to
+exist just to let a process confine itself. This is why seccomp is
+generally so useful, and why Landlock is important: no coordination with
+the system owner is needed to shed attack surface.
 
-Tony
+> In any case, if you can get other people to endorse your change I'm not
+> all that opposed to it. I think it's gratuitous. It irks me that you're
+> unwilling to use the facilities that are available, and instead want to
+> complicate the security mechanisms and policy further. But, that hasn't
+> seemed to stop anyone before.
+
+There's a difference between "designing a system" and "designing a
+process". No privileges are needed to use seccomp, for example.
+
+The only part of this design that worries me is that it seems as though
+it's still possible to escape the chroot if a process didn't set up its fds carefully, as Jann discussed earlier:
+https://lore.kernel.org/lkml/c7fbf088-02c2-6cac-f353-14bff23d6864@digikod.net/
+
+Regardless, I still endorse this change because it doesn't make things
+_worse_, since without this, a compromised process wouldn't need ANY
+tricks to escape a chroot because it wouldn't be in one. :) It'd be nice
+if there were some way to make future openat() calls be unable to
+resolve outside the chroot, but I view that as an enhancement.
+
+But, as it stands, I think this makes sense and I stand by my
+Reviewed-by tag. If Al is too busy to take it, and James would rather
+not take VFS, perhaps akpm would carry it? That's where other similar
+VFS security work has landed.
+
+-- 
+Kees Cook
