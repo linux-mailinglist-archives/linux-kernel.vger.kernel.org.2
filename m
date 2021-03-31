@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A420A3509AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A7B3509B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhCaVmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhCaVmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:42:22 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9CCC061574;
-        Wed, 31 Mar 2021 14:42:21 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id h34so6607952uah.5;
-        Wed, 31 Mar 2021 14:42:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ocallahan-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Dm0wbOpFh785zQvfbpu+Gc+GoqlFqm/RgMC8mqoD454=;
-        b=WErKMdfwEEzxHs7ggw/O2PQZpwoXB2Iotis7qJYEo0LRMCZXsa+qYkwiSOCFmPYHSa
-         Liu6m1KZBi2RPMTFSN6sNzBiRYruN286prnZ5ftunCiK7tKu5bIHt7mBwhOZ+H7HTnQF
-         AKw0Au9LcsoOAs4NgfVmrL8a+W37Ub2+pqsY//5W3xDYPFdqHmnlsRvQamuZLFdncL2z
-         YjmXe8tXjicjVLSxR0u/VH82Ks94K1sTf8f16ZZnvDYLVWE73Fx/MusoAtKEfKGRqc+q
-         4w7yY9ULAMo/gfWNdh0RakFn36LylnUnn4LIU8KJ+f37gOVtSFeTCeaY3Zj+mBqxwgFz
-         qLMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Dm0wbOpFh785zQvfbpu+Gc+GoqlFqm/RgMC8mqoD454=;
-        b=eYWm2KA1pt3qNY1kOOWNzB39qhncuSHTmRy0FvClfgahfshFggpoIw1REbKqCEzcLv
-         bHxOEh9DqfVMEKG+YnOm9FeIZrSibPUOmDiBsSy5gfExl8emeLQS6fuDWKwJdMHsdrDu
-         mQjYgmijXSJTDuCbX1JGN2zRbDXb29DPFT+MtAJAnkGszQswGEIiNycP27Abiavmz/AR
-         e1tOGJa8JFezqRkPxxZZic48Qt6dxQrm5zSpIcgPcIljSfrgSGVU4glUyKVt+cnRWJYU
-         9DyAsILY1ZeRQ+RHUIMpZMUMiXHvXsy0pgm8p+cTSXs3H2tPUnIc3r+rFLX3v+mGBDLN
-         rUDA==
-X-Gm-Message-State: AOAM531+Yy4IDFtbS/mM6V1qp7wEjN5t+4wRZTA0c4kAOvGhh8io/h4U
-        6K0QkkLJqiY8WJXZ4HawMGlQjkg20ZGl9WnG+OY=
-X-Google-Smtp-Source: ABdhPJzQXGO7xNMfiF+fsWwrOhWMH2IoZPkeQ1c/q0a5akhIsplUSQbq7ZQS2Km1iImMQjHLVJxaxaOJ6yhhEwdPiGs=
-X-Received: by 2002:ab0:4042:: with SMTP id h60mr3070914uad.133.1617226940932;
- Wed, 31 Mar 2021 14:42:20 -0700 (PDT)
+        id S232057AbhCaVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:43:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230073AbhCaVmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:42:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D729460FE8;
+        Wed, 31 Mar 2021 21:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617226957;
+        bh=Fz/I/hl1yyAm72gSCKg/MoqAzZtuus5hQonetSpNc3I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RW787MI6LE5UtC5glGn/yEU6oFwJDa73G+GlcJhOken3vy86TdE6sAAxps0iZK0Qw
+         Y2oArBelG3AKmHuD46Ng83ZWBhbqDIo/Fuq7/qpoFCdiI1jfY58ahnJtJ8LFJUcwXl
+         9pHo0aABYPxyu5NbQbYUn7NMSpSX+2M8n1J68f9yJOUIp5W4M5snSwvgqCEKVr5lRp
+         9AME9mLRTClC/OLr7jgaF5mOJeY3de/6eQgFx5uiasgRexeBw2WTUvkBNayPdKvJWh
+         TqNdKCWsANAZUkxiRbLDyggIK1a+oAbAQFd6ub5HpQmttIln6uaZpxFCqVxkGG9wYw
+         T3YG47kvI60pw==
+Date:   Wed, 31 Mar 2021 14:42:35 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 5/6] net: stmmac: Add support for XDP_TX
+ action
+Message-ID: <20210331144235.799dea32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210331154135.8507-6-boon.leong.ong@intel.com>
+References: <20210331154135.8507-1-boon.leong.ong@intel.com>
+        <20210331154135.8507-6-boon.leong.ong@intel.com>
 MIME-Version: 1.0
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
-In-Reply-To: <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
-Reply-To: robert@ocallahan.org
-From:   "Robert O'Callahan" <robert@ocallahan.org>
-Date:   Thu, 1 Apr 2021 10:42:09 +1300
-Message-ID: <CAOp6jLb6OwfaBcYsdRZ-A5FLpY+y7WNoBqwc+2oCP7-3Sy-ZHg@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Len Brown <lenb@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the record, the benefits of dynamic XCR0 for rr recording
-portability still apply. I guess it'd be useful for CRIU too. We would
-also benefit from anything that incentivizes increased support for
-CPUID faulting.
+On Wed, 31 Mar 2021 23:41:34 +0800 Ong Boon Leong wrote:
+> This patch adds support for XDP_TX action which enables XDP program to
+> transmit back received frames.
+> 
+> This patch has been tested with the "xdp2" app located in samples/bpf
+> dir. The DUT receives burst traffic packet generated using pktgen script
+> 'pktgen_sample03_burst_single_flow.sh'.
+> 
+> v3: Added 'nq->trans_start = jiffies' to avoid TX time-out as we are
+>     sharing TX queue between slow path and XDP. Thanks to Jakub Kicinski
+>     for pointing out.
+> 
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-Rob
---
-Su ot deraeppa sah dna Rehtaf eht htiw saw hcihw, efil lanrete eht uoy
-ot mialcorp ew dna, ti ot yfitset dna ti nees evah ew; deraeppa efil
-eht. Efil fo Drow eht gninrecnoc mialcorp ew siht - dehcuot evah sdnah
-ruo dna ta dekool evah ew hcihw, seye ruo htiw nees evah ew hcihw,
-draeh evah ew hcihw, gninnigeb eht morf saw hcihw taht.
+> +static int stmmac_xdp_xmit_back(struct stmmac_priv *priv,
+> +				struct xdp_buff *xdp)
+> +{
+> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+> +	int cpu = smp_processor_id();
+> +	struct netdev_queue *nq;
+> +	int queue;
+> +	int res;
+> +
+> +	if (unlikely(!xdpf))
+> +		return -EFAULT;
+
+Can you return -EFAULT here? looks like the function is otherwise
+returning positive STMMAC_XDP_* return codes/masks.
+
+> +	queue = stmmac_xdp_get_tx_queue(priv, cpu);
+> +	nq = netdev_get_tx_queue(priv->dev, queue);
+> +
+> +	__netif_tx_lock(nq, cpu);
+> +	/* Avoids TX time-out as we are sharing with slow path */
+> +	nq->trans_start = jiffies;
+> +	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf);
+> +	if (res == STMMAC_XDP_TX) {
+> +		stmmac_flush_tx_descriptors(priv, queue);
+> +		stmmac_tx_timer_arm(priv, queue);
+
+Would it make sense to arm the timer and flush descriptors at the end
+of the NAPI poll cycle? Instead of after every TX frame?
+
+> +	}
+> +	__netif_tx_unlock(nq);
+> +
+> +	return res;
+> +}
+
+> @@ -4365,16 +4538,26 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>  			xdp.data_hard_start = page_address(buf->page);
+>  			xdp_set_data_meta_invalid(&xdp);
+>  			xdp.frame_sz = buf_sz;
+> +			xdp.rxq = &rx_q->xdp_rxq;
+>  
+> +			pre_len = xdp.data_end - xdp.data_hard_start -
+> +				  buf->page_offset;
+>  			skb = stmmac_xdp_run_prog(priv, &xdp);
+> +			/* Due xdp_adjust_tail: DMA sync for_device
+> +			 * cover max len CPU touch
+> +			 */
+> +			sync_len = xdp.data_end - xdp.data_hard_start -
+> +				   buf->page_offset;
+> +			sync_len = max(sync_len, pre_len);
+>  
+>  			/* For Not XDP_PASS verdict */
+>  			if (IS_ERR(skb)) {
+>  				unsigned int xdp_res = -PTR_ERR(skb);
+>  
+>  				if (xdp_res & STMMAC_XDP_CONSUMED) {
+> -					page_pool_recycle_direct(rx_q->page_pool,
+> -								 buf->page);
+> +					page_pool_put_page(rx_q->page_pool,
+> +							   virt_to_head_page(xdp.data),
+> +							   sync_len, true);
+
+IMHO the dma_sync_size logic is a little question, but it's not really
+related to your patch, others are already doing the same thing, so it's
+fine, I guess.
+
+>  					buf->page = NULL;
+>  					priv->dev->stats.rx_dropped++;
+
