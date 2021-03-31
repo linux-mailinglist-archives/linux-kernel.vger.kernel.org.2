@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBE834FC4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6396134FC4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbhCaJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:13:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15833 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhCaJNc (ORCPT
+        id S234586AbhCaJOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234537AbhCaJNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:13:32 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F9LCc41hqz9tpr;
-        Wed, 31 Mar 2021 17:11:24 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 17:13:20 +0800
-Subject: Re: [RFC PATCH v2 0/2] kvm/arm64: Try stage2 block mapping for host
- device MMIO
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-References: <20210316134338.18052-1-zhukeqian1@huawei.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <1870563d-4da8-60d6-22e4-242ac820f5ba@huawei.com>
-Date:   Wed, 31 Mar 2021 17:13:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 31 Mar 2021 05:13:33 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B982C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:13:32 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x126so14055624pfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wSMkZYokyXMj9ctwi5eddd7Z7dKdZakXqSVex3m7s3s=;
+        b=iKyT42M8FtBBrZU64CJCqhrGn/NHfzX638A7M0468/GCD/oYHOGTnlW/HqaudcG+xA
+         R8BVx9YeAgDRgdxrmFUPG9c1T6l6OnQF6jZLNEftkYs8zMWeUrnH6rMe5L9dCPsjHlUI
+         e9MIt9uTuVNq/qkThX+Z2V+iTjQhUElC4HPCw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wSMkZYokyXMj9ctwi5eddd7Z7dKdZakXqSVex3m7s3s=;
+        b=A97G0K+SRMZHG01Asne6CSG3HNlBVQcpIo3Ba9pslI1jc7ynSK0XP7406AiwAsIqFz
+         5cawY4JFfDd+x6qpgcCpBAL16WrTlIPhggraAB8FO2QfO1cYvNJPflrX59TLHM2i5rar
+         ho2xcjXNsAWZYwVdAFhSVn0G10YgPk3f20d8L/fQ3812+qon04rr+wEVXfmxXM+J4R3m
+         +Td9etbMFHGQWCLLNSnsSIqZZdNL5ejHQ6tVO2hdYgn6KWSvt8cjSP4LoJEQWjZsrxvI
+         XsYywr60MDl/OX8n904uopsFhnMai8ZDJ8FZtjgtkN1Z0KFgTUFdLS/EUve3DD79dwyN
+         0wSQ==
+X-Gm-Message-State: AOAM533z6gxtTpG1qjQuoaI3XBS+/rSzVDjxo7ujOSNwzYcB9BKJCk6j
+        tb2IJdSnOe7oX8IO7y+S2usZ9Q==
+X-Google-Smtp-Source: ABdhPJz4SDU8/o1IrKvO9iaYz+4Maznj3uz3Ov0JJ5HmuiCTXEcgqFw51BPz0s58frC2OQS5+sBLtg==
+X-Received: by 2002:a63:6f8a:: with SMTP id k132mr2451919pgc.59.1617182011967;
+        Wed, 31 Mar 2021 02:13:31 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:85fc:9f25:6293:28f1])
+        by smtp.gmail.com with ESMTPSA id s7sm1484723pjr.18.2021.03.31.02.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 02:13:31 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+        Ben Ho <Ben.Ho@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH 1/4] dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-kakadu
+Date:   Wed, 31 Mar 2021 17:13:24 +0800
+Message-Id: <20210331091327.1198529-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-In-Reply-To: <20210316134338.18052-1-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kind ping...
+Kakadu is also known as ASUS Chromebook Detachable CM3.
 
-On 2021/3/16 21:43, Keqian Zhu wrote:
-> Hi all,
-> 
-> We have two pathes to build stage2 mapping for MMIO regions.
-> 
-> Create time's path and stage2 fault path.
-> 
-> Patch#1 removes the creation time's mapping of MMIO regions
-> Patch#2 tries stage2 block mapping for host device MMIO at fault path
-> 
-> Thanks,
-> Keqian
-> 
-> Keqian Zhu (2):
->   kvm/arm64: Remove the creation time's mapping of MMIO regions
->   kvm/arm64: Try stage2 block mapping for host device MMIO
-> 
->  arch/arm64/kvm/mmu.c | 80 +++++++++++++++++++++++---------------------
->  1 file changed, 41 insertions(+), 39 deletions(-)
-> 
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index cf24401edb85..9774f44b51d9 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -138,6 +138,13 @@ properties:
+           - const: google,juniper-sku16
+           - const: google,juniper
+           - const: mediatek,mt8183
++      - description: Google Kakadu (ASUS Chromebook Detachable CM3)
++        items:
++          - const: google,kakadu-rev3
++          - const: google,kakadu-rev2
++          - const: google,kakadu
++          - const: mediatek,mt8183
++
+ 
+ additionalProperties: true
+ 
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
