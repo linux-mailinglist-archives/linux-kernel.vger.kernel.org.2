@@ -2,314 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8CB35078C
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5838B35078F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbhCaTkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235186AbhCaTkq (ORCPT
+        id S236312AbhCaTlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:41:53 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:15533 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236294AbhCaTlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:40:46 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22696C061574;
-        Wed, 31 Mar 2021 12:40:46 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u9so31788387ejj.7;
-        Wed, 31 Mar 2021 12:40:46 -0700 (PDT)
+        Wed, 31 Mar 2021 15:41:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617219679; x=1648755679;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=9bd2R2SSm1hcptPDwabchIHhSMUNsobJtRpS7y6D02M=;
+  b=RTSfu01iz1ei/6r0FAvf9nEl4l9I4fJrxYWUbhlA5sVeCkwfa3ZLeLNZ
+   Xp4gRXdRQVbkZdw8dgw5YcaND0jRS/LPbWj8cCWpkDioLawxYuyIpKyOG
+   caSgD40Y9UXcplRUkLyKZTuWkJcJSKUqRJQ4COypRGz66fGiAIhoSxOCR
+   hEdBDlQdv+76Wt65v9/7MBXbV9dDOccAxrR38WgCmESkjrlZb0glv7sXP
+   E6qddPQmm1tytAIfaFAjFntzUbxBhOj6BPjs7uLQGSWY5Axw3ys9hj/m+
+   VeHJKMMbhHjh8Vye6LHjrVR3IWJpxMOnW5lZjTDKUj8cF1bn2ths4iW+l
+   g==;
+IronPort-SDR: hAOlkm2MazdspDraw1B7DTLl4GdQjU7wDB0O0mavUdKTAUTUg8bKWZfnnVnGOsyZCWM7hc6ogo
+ R9NFiJ7xbUF9JXtb0J89UZ7weNpggM8e0mAKJmnpkZVk0vBmnQQuN9RlnfItYHIi0Va5C2xRLz
+ kwbH0TfrtRs7qnuNTCffpdsDSTDHa67dCJF3rXP7R4BqS4gOW+BGh49rTrBvysli4HaKKm7fV8
+ V77Ngz7jcVd5DUFRcFZ2HpXgEVQjDwXY3GIizvqKTOc7hqOnbphxymKF6QHeTCSRpEVOwTcN15
+ Sng=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
+   d="scan'208";a="49593739"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 12:41:18 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 31 Mar 2021 12:41:17 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Wed, 31 Mar 2021 12:41:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iE4QEUxOe7Dq/jFBF28si6x+sqj9Qtu/1NKCK39CSRU94NWtjLaE7QQkuXhKBLmyanpZhINLnZezb76tiF8obOMtD3SFtQiCdUg1c/7L7A75DqBuhDY5bXo6T5pwpDmf1qlu93KZBAxncso5x9hX0WoK64eZOr8fgHav3XS4kGPo4eEH7VM6EC1Gitgp1cbQIWJMyeuIJywGBF+wLhFVjxVkE3Txgbe4WpqGgzCqtYE5TqoJl8TE/zKqgfYNlAFg8z1/WW+XgmflhfDvshdBhsGpwQT4TdqPY1lfZMzy8Rz5sRwhnFMNHQTO/Rv0TSPQR5A0SuSpF6TghTGiPYeQqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9bd2R2SSm1hcptPDwabchIHhSMUNsobJtRpS7y6D02M=;
+ b=L8pfWCB+hE2BkZ2W9pO5sb870JVzoRnoq2W46s1hp0ctlc9nTwgyiwPPggQVtTZ4hMSxZPasq4CI2V7FIGmDF4N0VLWEgEeZHk9KAAfHP2aQg8M38lhHeob1dWfxPO6+oTgp8Xiwx6zR/TejFlvDgYd9g0sLGdb+fbqD8tONNezTS7HHgGljyztn9pDocgdkdcD4LKZ25JbqwjRFPpnU9iBHI8rQT7OUH7Uk3D0o2p+tPi2wq52PP0C937y4HCfB9/g9HlXU/7vDjdtfEYQ1w4gJrPPwnFZZgLWEXw9W7V4O46pxuw91KhB+hZLjV18l/XVnlVFGNW8dUv8+sKguUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=6Yh8B7LxbmaaegPfpCFo+6onwLvIWY/EgGO9ntKTOmU=;
-        b=mv5vcJzsO0W1NPhmjtCQ4tojMzho+hpAG5XnZhS+hoG9DDxClaQsZ+tdzvlohi7iXD
-         f517MHoxePVdYGoXPbIWcvN0dk8XFSZMCKKXcfpugsi8ztQpSEqUwspYfkjjLtlJtPXQ
-         W3gXYHGcXbgWuahvYuuZRhHv3l893obJGJ1s7DbPWZBRNgYRCj354iWThfFD2gHwOUWF
-         mWPIBx4/6INLbbmYulmZCEr7yYs2Uj9xV+lERGo6q6337CIQUahYHnzt4X4BU93DiIXn
-         veX7ACZwwyvrRp9qXoAhWlKmFqCPUHqU/C5gAjJjW7K8wztDkl+dSNxHHY/pxjDBdmQ6
-         VhAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=6Yh8B7LxbmaaegPfpCFo+6onwLvIWY/EgGO9ntKTOmU=;
-        b=gu1lEbp2imqvL9kX3RC/S8vVFbifxQnqb1gt5rlkX9+GvAKkGszln3VjBgZ2j1TYAw
-         hbI62AzaeHnZm8tuVHGQPOexF5PiIUdP8NIclHWOro8f9LWbL7iZxznF8hum3WYYdQRe
-         IvWvKaqVmU4ll92B7QgH9BtZhP4uTDNIvv8za561NszRqn3HLRqoZR8Swzr/kJKXd3Tc
-         DzBXnWg39rAYR/EEeRzfc1a+mR4UIlkcJVSw2K2EqklppBulPgko/svpSps/A1BGi91c
-         N9ZZ8Lc4Uo98qrsRnd5Tw1Xdk6f08kVjM63yfnR353cWBYzf6MnC00D7Pshk5OHfPgUk
-         BA0Q==
-X-Gm-Message-State: AOAM5333oexIwVMqCyLPQ4cDskLKs/x3UeBRtLWqqSmEwl8T8cMaCwav
-        brINpJ3kWDNKvaVvWYCxaH8=
-X-Google-Smtp-Source: ABdhPJxFqgHYupfgGWTcshfwdfP0cMJDMdQAfSq6MLc1WpQPIXljRO5oWccQ+pRQnTnIptoX7GaUbg==
-X-Received: by 2002:a17:907:2bdd:: with SMTP id gv29mr5208555ejc.259.1617219644697;
-        Wed, 31 Mar 2021 12:40:44 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id q16sm2321341edv.61.2021.03.31.12.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 12:40:44 -0700 (PDT)
-Message-ID: <a57cc487bcd1ccea0bc328d394d3ebdafb67a2f5.camel@gmail.com>
-Subject: Re: [PATCH v32 0/4] scsi: ufs: Add Host Performance Booster Support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-Date:   Wed, 31 Mar 2021 21:40:42 +0200
-In-Reply-To: <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
-References: <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
-         <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9bd2R2SSm1hcptPDwabchIHhSMUNsobJtRpS7y6D02M=;
+ b=SznRzRgdkYEtU0lK0675V3ZC1QACNsQrmHNGiZbVAqAUBvOiSesW0ugeitm9VdKYKrzNdo1vUfys62xeLoVjl0Hun+4j1JiNL1WgcPp+ikeJdZX4fnx5/uR5/YTxqyyOto3ffTZdNe2WSyaRH1rUpF7iaEq7cFezUizfYdxjiSU=
+Received: from MWHPR1101MB2288.namprd11.prod.outlook.com
+ (2603:10b6:301:53::11) by MWHPR11MB1645.namprd11.prod.outlook.com
+ (2603:10b6:301:b::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Wed, 31 Mar
+ 2021 19:41:16 +0000
+Received: from MWHPR1101MB2288.namprd11.prod.outlook.com
+ ([fe80::f1c8:bb6e:79a2:1e65]) by MWHPR1101MB2288.namprd11.prod.outlook.com
+ ([fe80::f1c8:bb6e:79a2:1e65%12]) with mapi id 15.20.3977.033; Wed, 31 Mar
+ 2021 19:41:15 +0000
+From:   <Cristian.Birsan@microchip.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <linux@roeck-us.net>, <heikki.krogerus@linux.intel.com>,
+        <robh+dt@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 0/2] usb: typec: Add driver for Microchip sama7g5
+ tcpc
+Thread-Topic: [RFC PATCH v2 0/2] usb: typec: Add driver for Microchip sama7g5
+ tcpc
+Thread-Index: AQHXJabxGHnGM9FAeUOvdjG3n6OHl6qdoPIAgADfX4A=
+Date:   Wed, 31 Mar 2021 19:41:15 +0000
+Message-ID: <b42ddee2-1006-7e46-2df8-156c14c3a2e0@microchip.com>
+References: <20210330205442.981649-1-cristian.birsan@microchip.com>
+ <YGQU+g8J6gZhn13X@kroah.com>
+In-Reply-To: <YGQU+g8J6gZhn13X@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [2a02:2f01:5318:7c00::92e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99e9435a-ab97-491d-ff78-08d8f47cf2b8
+x-ms-traffictypediagnostic: MWHPR11MB1645:
+x-microsoft-antispam-prvs: <MWHPR11MB16458ED330A2E5D80228E647EF7C9@MWHPR11MB1645.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: M1v6dLaLfXw9iKWF74EoAEMSYpPx/7puB5YrL+qAKK0aA/PojGLogqAKLYpYqry4EbUe/KXf650P1NoIYnGs9uBL3Cu6uoAv/2066myRoFSwPVaz76P2LHVPRO5+0wP/c8T3JbErWXLkhUftOm6QLAvKTpN6/qoaJQRPXbcrQyF7ASoXbJ2j4ovVRyfl3CGdbTseftDWugG4qSUUoFABrk+xXLdY4sQ2dfkL9n3gLC0BqYILGLjmNfA/lqI0qGjFI/093N43JIPRM4wDX6sCCNgtX9d8LLhMbfJ7/iH1IW7a5U+4bcQSOdLLxIPJnkBL7ED6g1WASGT1CP6SEhxQsk3CRKTZaaYb+q8SvO+q1ZLSIRDnUNrT7u29ELXDI4A2FPi4Ob0rhKkdpLu6KldumcTvs1BweY5/e7/wIAlBWax7y7PaFhEbRIiPrkOBFhaEbMmhHKb2SuNP34pyERqdM96QGPjYPRy8coMHIMqZzyJzAr38KQsJkvozyKhLT0vl9RpXsIn22i8f+5IT2zk30FPnTaXdIX46+ZcIXQJY4jXZ7AajEtXOevYZsTDsaGVDmS2J4tfIJgBWUIS7ES1trWtGfYpk/i4jkH6/vr4Mik1qSwfkb40S+q5oRE55QlYJXlX06u2ecXyh+ilrpBFuWVkFbrRvKOuIy8xQjCxOPPukcfLrYxpuiQwtX4w45zlG16ov1uW5dkA3v0+NG5k+BBiyPoiRXrtOnlFBHIiRBYw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2288.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(396003)(366004)(136003)(64756008)(8676002)(66556008)(31696002)(66446008)(76116006)(66946007)(186003)(36756003)(6506007)(66476007)(31686004)(2616005)(6512007)(6916009)(478600001)(316002)(4326008)(54906003)(6486002)(83380400001)(86362001)(2906002)(53546011)(71200400001)(91956017)(5660300002)(38100700001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SWJvNlVWS0JPVDdqL3dYQXJ4NGxSeFh4TzRRaWg4ZW9BbTJWbXBDeEJHZXY4?=
+ =?utf-8?B?emhnZTV3NVBzMDk2NHltazJYcjFWaGZYS1RMMXl5M2M4RHdwN1RXS0w4ZUY0?=
+ =?utf-8?B?Y01uMi9uU2xwcms3OEhiL3lvYkgzZi9WZ3VTRUlIWEZHYmh3L1R4eGhyM3ds?=
+ =?utf-8?B?YjZESXVYWmxhVS9LbDA3Z3lUZ0dBZmRJQk50aDlhamFXaUh6N2ppMUNkUHFl?=
+ =?utf-8?B?bE9WandtZk1xRU0rZkpLRUd3WUpNRlBMaW1wMTcwOG9vekN6WHZNYTZJdE4r?=
+ =?utf-8?B?V3RGY1lXL2pSK2hjb1U0eXFyd3FHWllqOXdPQlkwSlg2MVl4Rkh6Yk5zb1o0?=
+ =?utf-8?B?N0liUGpld1ZZSXoraDkwOEF5QnNndmRDK1ZYdlA4eklFb3RQSjVmZStTbzFT?=
+ =?utf-8?B?UEw1ZkpnQytiSjhLaVV6QVkxVmFBYUlJZjFIVEZkbzdLNzdPQytUVGFVRlNR?=
+ =?utf-8?B?RXNDOTJaSE9xU0w1NlBQQXVxcTQ2a0YwSFVqeGE1MFZucFg0bnFoMDhTbWR1?=
+ =?utf-8?B?Z3FJWkNGRHEvcng5MStPakh2OEFKSkxLNzFIQUJlMmwyVVZhR1NpeEtkYnBV?=
+ =?utf-8?B?UjV0eUJSMncvdE9xQ05ZVWZ6Z2FNWmhXano0VUtNL2h2T0RmQnVVQXczUVly?=
+ =?utf-8?B?dFZPWXZwSXh5cU1KUlUxVmF5akVPcDYxN0xtSHE5dWpKZ0l5ZTFqR0NVY0Vy?=
+ =?utf-8?B?ZmMydENoY01WRlVQUzJoczRrTTFNSVVqZml4V0hQV1ZrbVpnZWE1ZHpDYWl6?=
+ =?utf-8?B?ejJTMStkVHU5Y2loSVdJL04xVVA3anVMaGVXRUtTdm1vekxoV3V1OUpWeUt0?=
+ =?utf-8?B?cXViNjVZVERLV2J0WllhVE5QSWRXTVNyK3R1SjNoNkluWk1sV3k1TnlhcU5K?=
+ =?utf-8?B?cUx0cVJvL0k0czl1cm1Tdis0QTl6bzBSb3RZNHlzY3RqMUVqTDNrQjFMWTBX?=
+ =?utf-8?B?amJ3OVM4bnZSaXBWZHdSTFQxczJkYm5lY3U0aUYxdlVRWGdTZEJmVjZzWk9X?=
+ =?utf-8?B?N09sK015R244THRENFUwRkdTYVhDZEtQNHAzMlBTVm1SaFdGME0wMERSRHFt?=
+ =?utf-8?B?WklRdmNJOHFNMEFOSWdMaFh3UHdjYnlYeitYL3RsY0ZBSyt0ZUNzVG1ndXN6?=
+ =?utf-8?B?Zk5VaTFQWjMyZTFhcEZDWFpybWx3bHFGTlNRTW9HV1hqYWJDMjU0SURsdy90?=
+ =?utf-8?B?WlhyRjFmQ0swb09iWEpXUFlpdzFrbkNoUG45dkcybDRaNERBMk4rUkIyTE82?=
+ =?utf-8?B?RUM5VHVkMXJQWjhPb0FiYmFTQWtiTE1vRnVHS09NWjFta2t3K1UzUlQ5SjRC?=
+ =?utf-8?B?aGVFUlpqMjdIM3N1Rk9TVFRtb1ZUTmo3S21sZFdJNVg4TUJueER0RXZPWUVO?=
+ =?utf-8?B?dW5GYzB5SUw2NGVCOHk1azNqVmZtUnJEaHE5a0tBbDVHK1F3ZVZIUWs4UUMx?=
+ =?utf-8?B?aWdJS0NrNktLR1I5WEhxaGVXeWhGaDB6YUtraDI3MVNJVmN2bWZiQjlDWW5P?=
+ =?utf-8?B?R2Z3UDI4WEh2bnJmallMc3l5cTQ5bWhZRXA0MjhhL1dlLzdEV1hMTXNJOElH?=
+ =?utf-8?B?SGNKNXVCcm5hN1UrTG5qN0tpdlhFd1B1Q1ZrYldDZ2FudXhFU0E1YmZZMk9Y?=
+ =?utf-8?B?SG4rNmtaaFhEbWhOKzNKYUlwajAyZEdRZ0h2UGRDRDNVSG90eXp6T1R1SzFX?=
+ =?utf-8?B?MzBKSTVyayswQmNaWE9DSUlWTTd2SVhxZG5HVlM2WHBGT0FoQ3B3eDNnemJR?=
+ =?utf-8?B?bzhTQ1drb0NzS1V3Zm1lWDhBYWRMMUZuRmFxdU1odkJCdkF3dm15bC8wZzdC?=
+ =?utf-8?B?aGt2UmNHVnBFcUlsL1dkQT09?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FF899984CF71524AAE6A59FD98B5F07F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2288.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99e9435a-ab97-491d-ff78-08d8f47cf2b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 19:41:15.7128
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gYc0mudstwLRfTAwsugzdm2RlFWiIijOvTKbtqb5ogCm/4vCS/xYFe3+0+iWQ46XtgXCr+CepKbF2s4s8dEZh+2vhR7XG5hu6Gbx1/wEaQo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1645
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin
-
-I don't know when/how do you plan to accept this patch. I think the
-Mobile vendors and chipset vendors are all looking forward to this UFS
-HPB feature that can be mainlined in the upstream Linux. Since the
-first version HPB driver submitted in the community, it is now V32, and
-we have been working on this feature for two years. Would you please
-take a look at this? thanks.
-
-Kind regards,
-Bean
-
-
-
-On Wed, 2021-03-31 at 10:15 +0900, Daejun Park wrote:
-> Changelog:
-> 
-> v31 -> v32
-> Delete unused parameter of unmap API.
-> 
-> v30 -> v31
-> Delete unnecessary debug message.
-> 
-> v29 -> v30
-> 1. Add support to reuse bio of pre-request.
-> 2. Delete unreached code in the ufshpb_issue_map_req.
-> 
-> v28 -> v29
-> 1. Remove unused variable that reported by kernel test robot.
-> 
-> v27 -> v28
-> 1. Fix wrong return value of ufshpb_prep.
-> 
-> v26 -> v27
-> 1. Fix wrong refernce of sense buffer in pre_req complete function.
-> 2. Fix read_id error.
-> 3. Fix chunk size checking for HPB 1.0.
-> 4. Mute unnecessary messages before HPB initialization.
-> 
-> v25 -> v26
-> 1. Fix wrong chunk size checking for HPB 1.0.
-> 2. Fix wrong max data size for HPB single command.
-> 3. Fix typo error.
-> 
-> v24 -> v25
-> 1. Change write buffer API for unmap region.
-> 2. Add checking hpb_enable for avoiding unnecessary memory
-> allocation.
-> 3. Change pr_info to dev_info.
-> 4. Change default requeue timeout value for HPB read.
-> 5. Fix wrong offset manipulation on ufshpb_prep_entry.
-> 
-> v23 -> v24
-> 1. Fix build error reported by kernel test robot.
-> 
-> v22 -> v23
-> 1. Add support compatibility of HPB 1.0.
-> 2. Fix read id for single HPB read command.
-> 3. Fix number of pre-allocated requests for write buffer.
-> 4. Add fast path for response UPIU that has same LUN in sense data.
-> 5. Remove WARN_ON for preventing kernel crash.
-> 7. Fix wrong argument for read buffer command.
-> 
-> v21 -> v22
-> 1. Add support processing response UPIU in suspend state.
-> 2. Add support HPB hint from other LU.
-> 3. Add sending write buffer with 0x03 after HPB init.
-> 
-> v20 -> v21
-> 1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag
-> support.
-> 
-> v19 -> v20
-> 1. Add documentation for sysfs entries of hpb->stat.
-> 2. Fix read buffer command for under-sized sub-region.
-> 3. Fix wrong condition checking for kick map work.
-> 4. Delete redundant response UPIU checking.
-> 5. Add LUN checking in response UPIU.
-> 6. Fix possible deadlock problem due to runtime PM.
-> 7. Add instant changing of sub-region state from response UPIU.
-> 8. Fix endian problem in prefetched PPN.
-> 9. Add JESD220-3A (HPB v2.0) support.
-> 
-> v18 -> 19
-> 1. Fix null pointer error when printing sysfs from non-HPB LU.
-> 2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
-> 3. Rebase the patch on 5.12/scsi-queue.
-> 
-> v17 -> v18
-> Fix build error which reported by kernel test robot.
-> 
-> v16 -> v17
-> 1. Rename hpb_state_lock to rgn_state_lock and move it to
-> corresponding
-> patch.
-> 2. Remove redundant information messages.
-> 
-> v15 -> v16
-> 1. Add missed sysfs ABI documentation.
-> 
-> v14 -> v15
-> 1. Remove duplicated sysfs ABI entries in documentation.
-> 2. Add experiment result of HPB performance testing with iozone.
-> 
-> v13 -> v14
-> 1. Cleanup codes by commentted in Greg's review.
-> 2. Add documentation for sysfs entries (from Greg's review).
-> 3. Add experiment result of HPB performance testing.
-> 
-> v12 -> v13
-> 1. Cleanup codes by comments from Can Guo.
-> 2. Add HPB related descriptor/flag/attributes in sysfs.
-> 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
-> 
-> v11 -> v12
-> 1. Fixed to return error value when HPB fails to initialize pinned
-> active 
-> region.
-> 2. Fixed to disable HPB feature if HPB fails to allocate essential
-> memory
-> and workqueue.
-> 3. Fixed to change proper sub-region state when region is already
-> evicted.
-> 
-> v10 -> v11
-> Add a newline at end the last line on Kconfig file.
-> 
-> v9 -> v10
-> 1. Fixed 64-bit division error
-> 2. Fixed problems commentted in Bart's review.
-> 
-> v8 -> v9
-> 1. Change sysfs initialization.
-> 2. Change reading descriptor during HPB initialization
-> 3. Fixed problems commentted in Bart's review.
-> 4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
-> 
-> v7 -> v8
-> Remove wrongly added tags.
-> 
-> v6 -> v7
-> 1. Remove UFS feature layer.
-> 2. Cleanup for sparse error.
-> 
-> v5 -> v6
-> Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
-> 
-> v4 -> v5
-> Delete unused macro define.
-> 
-> v3 -> v4
-> 1. Cleanup.
-> 
-> v2 -> v3
-> 1. Add checking input module parameter value.
-> 2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-> 3. Cleanup for unused variables and label.
-> 
-> v1 -> v2
-> 1. Change the full boilerplate text to SPDX style.
-> 2. Adopt dynamic allocation for sub-region data structure.
-> 3. Cleanup.
-> 
-> NAND flash memory-based storage devices use Flash Translation Layer
-> (FTL)
-> to translate logical addresses of I/O requests to corresponding flash
-> memory addresses. Mobile storage devices typically have RAM with
-> constrained size, thus lack in memory to keep the whole mapping
-> table.
-> Therefore, mapping tables are partially retrieved from NAND flash on
-> demand, causing random-read performance degradation.
-> 
-> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-> (Host Performance Booster) which uses host system memory as a cache
-> for the
-> FTL mapping table. By using HPB, FTL data can be read from host
-> memory
-> faster than from NAND flash memory. 
-> 
-> The current version only supports the DCM (device control mode).
-> This patch consists of 3 parts to support HPB feature.
-> 
-> 1) HPB probe and initialization process
-> 2) READ -> HPB READ using cached map information
-> 3) L2P (logical to physical) map management
-> 
-> In the HPB probe and init process, the device information of the UFS
-> is
-> queried. After checking supported features, the data structure for
-> the HPB
-> is initialized according to the device information.
-> 
-> A read I/O in the active sub-region where the map is cached is
-> changed to
-> HPB READ by the HPB.
-> 
-> The HPB manages the L2P map using information received from the
-> device. For active sub-region, the HPB caches through ufshpb_map
-> request. For the in-active region, the HPB discards the L2P map.
-> When a write I/O occurs in an active sub-region area, associated
-> dirty
-> bitmap checked as dirty for preventing stale read.
-> 
-> HPB is shown to have a performance improvement of 58 - 67% for random
-> read
-> workload. [1]
-> 
-> [1]:
-> https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-> 
-> Daejun Park (4):
->   scsi: ufs: Introduce HPB feature
->   scsi: ufs: L2P map management for HPB read
->   scsi: ufs: Prepare HPB read for cached sub-region
->   scsi: ufs: Add HPB 2.0 support
-> 
->  Documentation/ABI/testing/sysfs-driver-ufs |  162 ++
->  drivers/scsi/ufs/Kconfig                   |    9 +
->  drivers/scsi/ufs/Makefile                  |    1 +
->  drivers/scsi/ufs/ufs-sysfs.c               |   22 +
->  drivers/scsi/ufs/ufs.h                     |   54 +-
->  drivers/scsi/ufs/ufshcd.c                  |   74 +-
->  drivers/scsi/ufs/ufshcd.h                  |   29 +
->  drivers/scsi/ufs/ufshpb.c                  | 2387
-> ++++++++++++++++++++
->  drivers/scsi/ufs/ufshpb.h                  |  277 +++
->  9 files changed, 3013 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/scsi/ufs/ufshpb.c
->  create mode 100644 drivers/scsi/ufs/ufshpb.h
-> 
-
+DQoNCk9uIDMvMzEvMjEgOToyMSBBTSwgR3JlZyBLSCB3cm90ZToNCj4gDQo+IE9uIFR1ZSwgTWFy
+IDMwLCAyMDIxIGF0IDExOjU0OjQwUE0gKzAzMDAsIGNyaXN0aWFuLmJpcnNhbkBtaWNyb2NoaXAu
+Y29tIHdyb3RlOg0KPj4gRnJvbTogQ3Jpc3RpYW4gQmlyc2FuIDxjcmlzdGlhbi5iaXJzYW5AbWlj
+cm9jaGlwLmNvbT4NCj4+DQo+PiBUaGlzIHBhdGNoIHNldCBhZGRzIGluaXRpYWwgZHJpdmVyIHN1
+cHBvcnQgZm9yIE1pY3JvY2hpcCBVU0IgVHlwZS1DIFBvcnQNCj4+IENvbnRyb2xsZXIgKFRDUEMp
+IGVtYmVkZGVkIGluIHNhbWE3ZzUgU29DLg0KPj4NCj4+IFRoZSBjb250cm9sbGVyIGRvZXMgbm90
+IGltcGxlbWVudCBwb3dlciBkZWxpdmVyeSBhbmQgdGhlIGRyaXZlciB1c2VzIGR1bW15DQo+PiBm
+dW5jdGlvbnMgdG8gcmVnaXN0ZXIgdGhlIHBvcnQgd2l0aCBUQ1BNLiBUaGUgY3VycmVudCBzaWxp
+Y29uIHZlcnNpb24gaXMNCj4+IG5vdCBhYmxlIHRvIHRyaWdnZXIgaW50ZXJydXB0cyBzbyB0aGUg
+ZHJpdmVyIHdpbGwgcG9sbCBmb3IgY2hhbmdlcyBvbg0KPj4gQ0MxL0NDMiBsaW5lcy4NCj4+DQo+
+PiBTdXBwb3J0IGZvciBzaW5rIGlzIGltcGxlbWVudGVkIGFuZCB0ZXN0ZWQgd2l0aCBhbiBVU0Ig
+ZGV2aWNlLiBUaGUgcGxhbiBpcw0KPj4gdG8gZXh0ZW5kIHRoZSBkcml2ZXIgYW5kIGFkZCBzb3Vy
+Y2Ugc3VwcG9ydC4NCj4gDQo+IFdoeSBhcmUgdGhlc2UgbWFya2VkICJSRkMiPw0KDQpJIHNlbnQg
+dGhlIHBhdGNoIGFzIFJGQyBiZWNhdXNlIEkgd2FudGVkIHRvIGdhdGhlciBmZWVkYmFjayBvbiBp
+dCBhbmQgb24gaG93DQppdCBmaXRzIHVuZGVyIFR5cGUtQy9UQ1BNIHN1YnN5c3RlbS4NCg0KPiAN
+Cj4gRG8geW91IHJlYWxseSBub3QgdGhpbmsgdGhleSBzaG91bGQgYmUgYWNjZXB0ZWQ/ICBXaHkg
+bm90LCB3aGF0IGlzIGxlZnQNCj4gdG8gZG8gd2l0aCB0aGVtPw0KPiANCg0KSSB0aGluayB0aGUg
+ZHJpdmVyIGNhbiBiZSBtZXJnZWQgYWZ0ZXIgSSBhZGRyZXNzIHRoZSByZXZpZXcgcmVjZWl2ZWQg
+b24gdGhlDQptYWlsaW5nIGxpc3QuIEF0IHRoZSBzYW1lIHRpbWUsIEkgcGxhbiB0byBlbmhhbmNl
+IGl0IHdpdGggdGhlIGZvbGxvd2luZzoNCg0KLSBhZGQgc2luayBkZXRlY3Rpb24gYXQgcG93ZXIg
+c291cmNlIGFuZCBjaGVjayBpdCB3aXRoIFVTQiBIb3N0Lg0KDQotIGFkZCBhIHdheSB0byBub3Rp
+ZnkgVkJVUyBwcmVzZW5jZSBiYWNrIHRvIFVTQiBnYWRnZXQuICBBcyBUQ1BDIG5lZWRzIHRvDQpk
+ZXRlY3QgVkJVUyBhbmQgcmVwb3J0IGl0IHRvIFRDUE0sIEkgbW92ZWQgdGhlIFZCVVMgZGV0ZWN0
+aW9uIGdwaW8gZnJvbSB0aGUNClVTQiBnYWRnZXQgZGV2aWNlIHRyZWUgbm9kZSB0byBUQ1BDLiBG
+b3Igbm93LCB0aGUgZ2FkZ2V0IGFsd2F5cyBhc3N1bWVzIHRoYXQNClZCVVMgaXMgb24uIEkgc2F3
+IHRoYXQgc29tZSBVU0IgUEhZIGRyaXZlcnMgdXNlIGEgbm90aWZpZXIgY2hhaW4uIEkgY2FuDQpp
+bXBsZW1lbnQgc29tZXRoaW5nIHNpbWlsYXIuDQogIA0KPiBJIGRvIG5vdCBub3JtYWxseSByZXZp
+ZXcgIlJGQyIgcGF0Y2hlcyBhcyB0aGUgYXV0aG9ycyBkbyBub3QgdGhpbmsgdGhleQ0KPiBzaG91
+bGQgYmUgbWVyZ2VkLCBhbmQgd2UgaGF2ZSBwbGVudHkgb2YgcGF0Y2hlcyB0aGF0IGFyZSBiZWlu
+ZyBhc2tlZCB0bw0KPiBiZSBtZXJnZWQgYWxyZWFkeSA6KQ0KDQpVbnRpbCBub3cgSSByZWNlaXZl
+ZCBhIHJldmlldyBmcm9tIEhlaWtraSBLcm9nZXJ1cy4gSSB3aWxsIGxldCB0aGlzIHZlcnNpb24N
+Cm9mIHRoZSBwYXRjaCBvbiB0aGUgbWFpbGluZyBsaXN0IGZvciBzb21lIHRpbWUgaW4gY2FzZSB0
+aGVyZSBpcyBhZGRpdGlvbmFsDQpmZWVkYmFjay4NCg0KPiANCj4gdGhhbmtzLA0KPiANCj4gZ3Jl
+ZyBrLWgNCj4gDQoNClJlZ2FyZHMsDQpDcmlzdGlhbg0K
