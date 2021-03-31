@@ -2,129 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53F23502AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CDF3502AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbhCaOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236166AbhCaOsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:48:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F906101C;
-        Wed, 31 Mar 2021 14:48:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617202083;
-        bh=dXpBkyPDmbez1Pv+mZa7eusgRzqDeW4JZXnYKhHzMk4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Re/nuxKj6QEYHf70+XHtUekdh0SgLtX2v0Dq4k/E/fjt30sf13znsjWRI0kjJM0Au
-         n1YlstKhZlykOk+cnE6MvbEJSV7mx0zjGqRTI8VYNp6YFlRgSY8POv5d+N5lZlXh+9
-         mwumfHkHrHUZWwbI6qMbkO5mGTY11xCmtyTg6qMQHWYIuO283M9fT2bkKV7qnVE4FJ
-         A/0aSitADe9d7Mloan8wwpuLg76c4K5GMvu2c36Pwy1liSOzI4bafKwlbaZkZYzaXR
-         Oun1TPpqQB5WRz161Npy3wLI569ki5fUnfLw4UaofWMv4hlLuLYbxBZqf+vXOttInp
-         8oLRFyWt3sBhw==
-Received: by mail-lf1-f48.google.com with SMTP id 12so19132755lfq.13;
-        Wed, 31 Mar 2021 07:48:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531JCbQ2twCAuAqw4sHbZm6zcVRFXsXWDi7jcoWKbknPVmLir0uC
-        Xeu0LPzgpSUHoPUc3ndTBAhPd985SLC9FPGFbps=
-X-Google-Smtp-Source: ABdhPJxV0SkyhL0J9EtcC6qc8ehvvfZdh5JPRdhm6ZIBPp9ZQqcovoazEDBeivA8bcGEP5e3bpkou1wZRXG+mH7U7hM=
-X-Received: by 2002:a05:6512:ba2:: with SMTP id b34mr2434254lfv.24.1617202081736;
- Wed, 31 Mar 2021 07:48:01 -0700 (PDT)
+        id S236203AbhCaOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236166AbhCaOsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:48:20 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D90DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:48:20 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id s2so14570052qtx.10
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3lwR7HXndtvl1w7O6ZpDHif+FQe2GlWLZc8UMd7kr0w=;
+        b=Q5gB522Cib9/yr2J2bN+e8A1FXsZWvmP2Me2QWawupdm+sCa3WkCW71rbPYdbEelXU
+         o3S3qH2G76n8cjtY2HV8faFVosUovgnrTf1IBz9Xn5ajC7Jm8KubPmM93fU+T3oL7RwE
+         5BrtIGKHxKZdSxirTzZE+F8UgLfdOrkDS6KjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3lwR7HXndtvl1w7O6ZpDHif+FQe2GlWLZc8UMd7kr0w=;
+        b=oKh0a2ysltA8mH/kJFWBm7wVUYJdQDvY0JdhCwzMclOdO2LywltxIv+dwpiknd47Dq
+         j6doDE4VfUYQZYh0LFKj+a2Ob4RiNPghg9u4KSOUXsKHO+qMK7Z26nAHhEnovQeraqBI
+         mtCFUu8oYN646qu3mQ4fAEe77YCLU0UVgU1GTTSptzUBOu3UzU2nolA+5t1Om1DQSwFc
+         4+uzVDrQxIeiUrPBk1ilMOr9NYvwPIiDsmYw5/iOit44A+5bVB2O/koV5OHigvxJPsPB
+         gZ15dvWw9ZRHs8yHHA+QN9khcvfoxqAhLMH2clsOi+PXiVRXBszwlxInCmJaLgJztnqZ
+         oaAw==
+X-Gm-Message-State: AOAM533T/UPvRsZmgXhieK5gZQmitqg/oHU1Dqatt6+wSNNxnZxO/3ND
+        +Ebfbz11jc8LsZRD/0bU/f4snEd6BOEJFA==
+X-Google-Smtp-Source: ABdhPJxxaEvoT5yUyIog/tkofWceM81Hb36E6SXjaZFZPLDg9PSu56iRq1Ch4dCD2aKJlNmGIDW6eA==
+X-Received: by 2002:ac8:57c4:: with SMTP id w4mr2618339qta.281.1617202098701;
+        Wed, 31 Mar 2021 07:48:18 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id e14sm1417339qte.78.2021.03.31.07.48.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 07:48:17 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id o66so21417823ybg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:48:17 -0700 (PDT)
+X-Received: by 2002:a25:2f4b:: with SMTP id v72mr4829154ybv.79.1617202097234;
+ Wed, 31 Mar 2021 07:48:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAJF2gTQNV+_txMHJw0cmtS-xcnuaCja-F7XBuOL_J0yN39c+uQ@mail.gmail.com>
- <YGG5c4QGq6q+lKZI@hirez.programming.kicks-ass.net> <CAJF2gTQUe237NY-kh+4_Yk4DTFJmA5_xgNQ5+BMpFZpUDUEYdw@mail.gmail.com>
- <YGHM2/s4FpWZiEQ6@hirez.programming.kicks-ass.net> <CAJF2gTRncV1+GT7nBpYkvfpyaG57o9ecaHBjoR6gEQAkG2ELrg@mail.gmail.com>
- <4d0dbaa0-1f96-470c-0ed0-04f6827ea384@redhat.com>
-In-Reply-To: <4d0dbaa0-1f96-470c-0ed0-04f6827ea384@redhat.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 31 Mar 2021 22:47:50 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSavTCv2yyGvMyHWXapN2nWG17Z02catYJgC3s-hYco9g@mail.gmail.com>
-Message-ID: <CAJF2gTSavTCv2yyGvMyHWXapN2nWG17Z02catYJgC3s-hYco9g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+References: <20210330025345.3980086-1-dianders@chromium.org>
+ <CGME20210330025435eucas1p12b96966451ee0691f6d5d99b64ac2c8b@eucas1p1.samsung.com>
+ <20210329195255.v2.11.Ied721dc895156046ac523baa55a71da241cd09c7@changeid> <8887ded7-d1ab-844c-e3a3-f39f6ef6264a@samsung.com>
+In-Reply-To: <8887ded7-d1ab-844c-e3a3-f39f6ef6264a@samsung.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 31 Mar 2021 07:48:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XJ5qtMDn5B431ObPS0JU3-P3755N7jzLZbbcc6XpqYtg@mail.gmail.com>
+Message-ID: <CAD=FV=XJ5qtMDn5B431ObPS0JU3-P3755N7jzLZbbcc6XpqYtg@mail.gmail.com>
+Subject: Re: [PATCH v2 11/14] drm/bridge: ti-sn65dsi86: Power things properly
+ for reading the EDID
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:09 PM Waiman Long <longman@redhat.com> wrote:
+Hi,
+
+On Wed, Mar 31, 2021 at 4:08 AM Andrzej Hajda <a.hajda@samsung.com> wrote:
 >
-> On 3/29/21 11:13 PM, Guo Ren wrote:
-> > On Mon, Mar 29, 2021 at 8:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >> On Mon, Mar 29, 2021 at 08:01:41PM +0800, Guo Ren wrote:
-> >>> u32 a = 0x55aa66bb;
-> >>> u16 *ptr = &a;
-> >>>
-> >>> CPU0                       CPU1
-> >>> =========             =========
-> >>> xchg16(ptr, new)     while(1)
-> >>>                                      WRITE_ONCE(*(ptr + 1), x);
-> >>>
-> >>> When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
-> >> Then I think your LL/SC is broken.
-> >>
-> >> That also means you really don't want to build super complex locking
-> >> primitives on top, because that live-lock will percolate through.
-> > Do you mean the below implementation has live-lock risk?
-> > +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-> > +{
-> > +       u32 old, new, val = atomic_read(&lock->val);
-> > +
-> > +       for (;;) {
-> > +               new = (val & _Q_LOCKED_PENDING_MASK) | tail;
-> > +               old = atomic_cmpxchg(&lock->val, val, new);
-> > +               if (old == val)
-> > +                       break;
-> > +
-> > +               val = old;
-> > +       }
-> > +       return old;
-> > +}
-> If there is a continuous stream of incoming spinlock takers, it is
-> possible that some cpus may have to wait a long time to set the tail
-> right. However, this should only happen on artificial workload. I doubt
-> it will happen with real workload or with limit number of cpus.
-Yes, I agree or it couldn't with NR_CPU > 16k.
+>
+> W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
+> > eDP panels won't provide their EDID unless they're powered on. Let's
+> > chain a power-on before we read the EDID. This roughly matches what
+> > was done in 'parade-ps8640.c'.
+> >
+> > NOTE: The old code attempted to call pm_runtime_get_sync() before
+> > reading the EDID. While that was enough to power the bridge chip on,
+> > it wasn't enough to talk to the panel for two reasons:
+> > 1. Since we never ran the bridge chip's pre-enable then we never set
+> >     the bit to ignore HPD. This meant the bridge chip didn't even _try_
+> >     to go out on the bus and communicate with the panel.
+> > 2. Even if we fixed things to ignore HPD, the EDID still wouldn't read
+> >     if the panel wasn't on.
+> >
+> > One thing that's a bit odd here is taking advantage of the EDID that
+> > the core might have cached for us. See the patch ("drm/edid: Use the
+> > cached EDID in drm_get_edid() if eDP"). We manage to get at the cache
+> > by:
+> > - Instantly failing aux transfers if we're not powered.
+> > - If the first read of the EDID fails we try again after powering.
+> >
+> > Fixes: 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > Depending on what people think of the other patches in this series,
+> > some of this could change.
+> > - If everyone loves the "runtime PM" in the panel driver then we
+> >    could, in theory, put the pre-enable chaining straight in the "aux
+> >    transfer" function.
+> > - If everyone hates the EDID cache moving to the core then we can
+> >    avoid some of the awkward flow of things and keep the EDID cache in
+> >    the sn65dsi86 driver.
+>
+>
+> I wonder if this shouldn't be solved in the core - ie caller of
+> get_modes callback should be responsible for powering up the pipeline,
+> otherwise we need to repeat this stuff in every bridge/panel driver.
+>
+> Any thoughts?
 
-So the implementation above is suitable for non-sub-word-xchg architecture.
+Yeah, I did look at this a little bit. Presumably it would only make
+sense to do it for eDP connections since:
 
-> >
-> >> Step 1 would be to get your architecute fixed such that it can provide
-> >> fwd progress guarantees for LL/SC. Otherwise there's absolutely no point
-> >> in building complex systems with it.
-> > Quote Waiman's comment [1] on xchg16 optimization:
-> >
-> > "This optimization is needed to make the qspinlock achieve performance
-> > parity with ticket spinlock at light load."
-> >
-> > [1] https://lore.kernel.org/kvm/1429901803-29771-6-git-send-email-Waiman.Long@hp.com/
-> >
-> > So for a non-xhg16 machine:
-> >   - ticket-lock for small numbers of CPUs
-> >   - qspinlock for large numbers of CPUs
-> >
-> > Okay, I'll put all of them into the next patch :P
-> >
-> It is true that qspinlock may not offer much advantage when the number
-> of cpus is small. It shines for systems with many cpus. You may use
-> NR_CPUS to determine if the default should be ticket or qspinlock with
-> user override. To determine the right NR_CPUS threshold, you may need to
-> run on real SMP RISCV systems to find out.
-We'd give the choice to the users, and they could select ticket-lock
-or qspinlock in riscv.
+a) The concept of reading an EDID doesn't make sense for things like MIPI.
 
--- 
-Best Regards
- Guo Ren
+b) For something with an external connector (DP and HDMI) you don't
+even know they're inserted unless the EDID is ready to read (these
+devices are, essentially, always powered).
 
-ML: https://lore.kernel.org/linux-csky/
+So I started off trying to do this in the core for eDP, but then it
+wasn't completely clear how to write this code in a way that was super
+generic. Specifically:
+
+1. I don't think it's a 100% guarantee that everything is powered on
+in pre-enable and powered off in post-disable. In this bridge chip
+it's true, but maybe not every eDP driver? Would you want me to just
+assume this, or add a flag?
+
+2. It wasn't totally clear to me which state to use for telling if the
+bridge had already been pre-enabled so I could avoid double-calling
+it. I could dig more if need be but I spent a bit of time looking and
+was coming up empty. If you have advice I'd appreciate it, though.
+
+3. It wasn't clear to me if I should be using the atomic version
+(drm_atomic_bridge_chain_pre_enable) if I put this in the core and how
+exactly to do this, though I am a self-admitted DRM noob. I can do
+more digging if need be. Again, advice is appreciated.
+
+4. Since I got feedback that the EDID caching belongs in the driver,
+not in the core [1] then we might end up powering things up
+pointlessly since the core wouldn't know if the driver was going to
+return the cache or not.
+
+Given that this patch isn't too much code and not too complicated (and
+will be even less complicated if I move the EDID caching back into the
+driver), maybe we can land it and if we see the pattern repeat a bunch
+more times then think about moving it to the core?
+
+
+[1] https://lore.kernel.org/dri-devel/YGMvO3PNDCiBmqov@intel.com/
+
+-Doug
