@@ -2,55 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C7934F819
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706F234F81C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233577AbhCaEnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 00:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhCaEnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 00:43:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 033256146B;
-        Wed, 31 Mar 2021 04:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617165801;
-        bh=UdCoaA3sJ8z5N002h6jBT07ZBJSUx0gnuR107bZBVpc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xkXPTK9Nog2Z87eV20bMjEQJLSaujKYteiw04LKUJ1q3J9J/PSHnlAwcb1tKPbpSe
-         FcUG4bWqb9nWrNZD0SnivRxpStr6FN6hpWhGu4AtKjpp/36ExgFXc4ZbmxzOiC7cGd
-         roDtFBknoXmbF63G/OkEh0U9vL3aHwFwtNEsnJQo=
-Date:   Tue, 30 Mar 2021 21:43:20 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] hfsplus: Fix out-of-bounds warnings in
- __hfsplus_setxattr
-Message-Id: <20210330214320.93600506530f1ab18338b467@linux-foundation.org>
-In-Reply-To: <20210330145226.GA207011@embeddedor>
-References: <20210330145226.GA207011@embeddedor>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233486AbhCaEut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 00:50:49 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:51991 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhCaEul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 00:50:41 -0400
+IronPort-SDR: PfZ6ebAWMII3s2EChd/xHkbGjR9QNpOlR0o+gHyV0kyK9mUsAeRc5a+VBngGi6B+Eq+mIhwFNy
+ eYbZII1VCL8Lquc4whrHWAIXWM+QQqiSee+yrH/cA4Cl9OGddDP6P8UbjH3hIRY8+XON931xum
+ l6QgJ/Z6rpwlta9cx03I1+2gIVr34zgBdJpKIqxpWDDwf1fP8R+/A65kOUvSz3JxBfwE4s/Z9Z
+ JOpt/yK69U7sLI/X4t0TF4FVUTy+Wsf2lISk9cAd1vsQuPSOij1WEJJ1NqJ8Fk3lUqCzO2Cmf9
+ n/E=
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="29735581"
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by labrats.qualcomm.com with ESMTP; 30 Mar 2021 21:50:40 -0700
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 30 Mar 2021 21:50:40 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 2F22F21093; Tue, 30 Mar 2021 21:50:40 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 1/2] scsi: ufs: Fix task management request completion timeout
+Date:   Tue, 30 Mar 2021 21:50:34 -0700
+Message-Id: <1617166236-39908-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1617166236-39908-1-git-send-email-cang@codeaurora.org>
+References: <1617166236-39908-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 09:52:26 -0500 "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn = ufshcd_compl_tm()),
+but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
+and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
+chance to run. Thus, TMR always ends up with completion timeout. Fix it by
+calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
 
-> Fix the following out-of-bounds warnings by enclosing
-> structure members file and finder into new struct info:
-> 
-> fs/hfsplus/xattr.c:300:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
-> fs/hfsplus/xattr.c:313:5: warning: 'memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
-> 
-> Refactor the code by making it more "structured."
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds and
-> makes the code clearer and avoid confusing the compiler.
+Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate and free TMFs")
 
-Confused.  What was wrong with the old code?  Was this warning
-legitimate and if so, why?  Or is this patch a workaround for a
-compiler shortcoming?
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b49555fa..d4f8cb2 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6464,6 +6464,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 
+ 	spin_lock_irqsave(host->host_lock, flags);
+ 	task_tag = hba->nutrs + free_slot;
++	blk_mq_start_request(req);
+ 
+ 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
+ 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
