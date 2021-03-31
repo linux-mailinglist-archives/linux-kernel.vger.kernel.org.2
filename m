@@ -2,112 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FD234FF6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F20134FF6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbhCaLZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235163AbhCaLYT (ORCPT
+        id S235214AbhCaLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:25:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235171AbhCaLZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:24:19 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8468FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:24:09 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id v10so13968853pgs.12
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:24:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sJBaCHwwIuvtPkiNIiI44cG7FfU3ForiEr6IkmHZGUA=;
-        b=FUCoXc+xa03mNs8QiV77/Vvcp94qGkwKJICyMNwfKrNKZdC7Nbp3cSKX3nZJhUWbvS
-         VH7IQrHaSxYqbkr9/HGzDZWAImxkQsTNuZBauEUZwwohdbhAZw2RDWnmGetzSzAewopi
-         P2+OEVe3dCboKX8MwJ7wg0TEdHRuESbD8c/kR0IYEwzZui1Jojsk62BQ3oFQh7w4Unij
-         KuObXu1+A+IPvGhcmjzPow9MlFkxwwIa6R7VKWLkFztyGaB3CMOiUL0b1ID2H66LWqNO
-         h0TkK8ZEpu9FGafCwLwWxLC99ceBkNkuibWRntUhePkh4tiIanbs0BPjpZ5rngrWiyLE
-         WHMw==
+        Wed, 31 Mar 2021 07:25:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617189907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0YukIclCbkitu8LAK2OczA30OhLVEbhRlLWMHuTB+bk=;
+        b=dYx3cACKU30Ux3GGPg2qc6+y/2xJMSv8GIe1Xuj1ZE8n7ZdmD9AVsvgoJVQoAnO4XJ3V38
+        9/v6AtTsnjYoo+co/Le2dvRCDH0xx6WMxQwRhcLpanrCQsGK5rutvXkZYFPyAHXBAJIQ7t
+        DH9Kl6/pumY73pXK40HkTa6gXMF1DWs=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-SdUeEhtLNLW0bzAV6ogjhQ-1; Wed, 31 Mar 2021 07:25:05 -0400
+X-MC-Unique: SdUeEhtLNLW0bzAV6ogjhQ-1
+Received: by mail-ed1-f72.google.com with SMTP id w18so947069edu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:25:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sJBaCHwwIuvtPkiNIiI44cG7FfU3ForiEr6IkmHZGUA=;
-        b=Z2h0bWazT5lfVQ9TAyexRL+2gCUITQXrUwFFO/DTasi89FmI8yk5ly+QEwi0aWzGVf
-         si3v5xsZIDFTa2ee5VI3MkmDMkZJ6kvZdcPtblmESGEZvt1tbAym99iN0Lj29dTGmOeU
-         wV2TOivieTDKWrkQqG3Sbcocu8ngHF62odretQEda4fVD73g1xwydrtT6SRnkprAuZdq
-         p8E0o2xMxpsHLF2aNVw/lXz9cnzUjKxC1uj0zuNDapl/cYbPG8lIoXH1J51ymewlm5HS
-         ON2hZ1Jvd8ussa01QntpyqxbVLp94BvQHFPy9nmDhden01E+hn76yeI6TflVvRLKq7w3
-         gUZA==
-X-Gm-Message-State: AOAM531noz3sFQLri6jRlvR1kWHUnxXIjodFSEzc8bBX/yguivL3Qal2
-        mbHVSXnf4e4x2gl+Oh0Y61Li
-X-Google-Smtp-Source: ABdhPJzr2k3zeeARoVMh7VMjADub05kwf4UnlJAfpGS5drrVveiOb4csqKWwpEKz8SPvgdG7GhvzHA==
-X-Received: by 2002:a62:3847:0:b029:202:ad05:4476 with SMTP id f68-20020a6238470000b0290202ad054476mr2437271pfa.67.1617189848843;
-        Wed, 31 Mar 2021 04:24:08 -0700 (PDT)
-Received: from work ([103.77.37.129])
-        by smtp.gmail.com with ESMTPSA id t1sm2140094pfc.173.2021.03.31.04.24.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 31 Mar 2021 04:24:08 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 16:54:04 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org, abickett@codeaurora.org
-Subject: Re: [PATCH v1 0/7] MHI Emergency download and flash programmer
- support
-Message-ID: <20210331112404.GF15610@work>
-References: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0YukIclCbkitu8LAK2OczA30OhLVEbhRlLWMHuTB+bk=;
+        b=CpaHRIWxZERfMNDfib2yDWQ+hRqWllkulF11oEthKkhS1NDuhEw0KiXNH5cS8PCaeB
+         MGqOFFnkL75Ay33di0JbZSqigd+upbYA5e/lY56gM+cC1znD58cS9GSzGtpSvL3duv9g
+         SA75tpoVeQB40ehMZaW5mzGCOwMucu5n+Fn1tlCZfoORpkxh4afyJntm6vV1peIIplKS
+         zRVi3qxRVE1vzT4m1h5+wcuVbUZs8ET0xYwOzEPLR54ckA2GqFROfIeifOVaY4M11Irw
+         CP4/Wt8ntcAQU15VmJBjopUHhejj4EHezPov55VrqFWQ+Ukpp+vBWanLgeMO3bI2Tsd6
+         3I/Q==
+X-Gm-Message-State: AOAM533k2EMVHl0AC9f4a+SzTE3TRyK/KYeKhUz/mEDXSv3+NyBXE1gt
+        PTslOfcwk9SfjffGVJPCLKmObeYB3MUvSBw4SFz/SxqWs6TFZizj+xWUX+q6PGIvyUfaOXCelsZ
+        nd0VXBDMG/3Fw8QzocPdf49F9
+X-Received: by 2002:a17:906:1a44:: with SMTP id j4mr2985725ejf.401.1617189904376;
+        Wed, 31 Mar 2021 04:25:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqArdkg2azP7NIVFS6iYV1n6tCIuDgMxMfpypu+EIdM461jdEjsoZjRmXorrL3A1k1T5ogQQ==
+X-Received: by 2002:a17:906:1a44:: with SMTP id j4mr2985697ejf.401.1617189904137;
+        Wed, 31 Mar 2021 04:25:04 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z9sm1389068edr.75.2021.03.31.04.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 04:25:03 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 1/4] kvm: cpuid: adjust the returned nent field of
+ kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
+In-Reply-To: <9b68907b-cb99-db0d-9151-0d3d5cf3c972@redhat.com>
+References: <20210330185841.44792-1-eesposit@redhat.com>
+ <20210330185841.44792-2-eesposit@redhat.com> <YGPmDbO++agqdqQL@google.com>
+ <1be7c716-8160-926e-6d76-fb15b4adc066@redhat.com>
+ <877dlnu56q.fsf@vitty.brq.redhat.com>
+ <9b68907b-cb99-db0d-9151-0d3d5cf3c972@redhat.com>
+Date:   Wed, 31 Mar 2021 13:25:02 +0200
+Message-ID: <87y2e3sgz5.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 06:28:17PM -0700, Bhaumik Bhatt wrote:
-> Allow handling EDL mode after SYS_ERROR occurs by reading the execution
-> environment post handling and move to power on reset state to accommodate the
-> scenario.
-> Handle EDL mode properly and wait for ready instead of just exiting from the
-> firmware load.
-> Allow use of the Flash Programmer execution environment as a mission mode
-> use case for a blank NAND power up scenario.
-> Always attempt a wait for MHI ready state as device could be waiting for the
-> host to do so after pass through execution environment is seen.
-> Introduce patch to improve state awareness and aid in debugging.
-> 
-> This patch series was tested on x86_64 architecture.
-> 
+Emanuele Giuseppe Esposito <eesposit@redhat.com> writes:
 
-Applied to mhi-next!
+> On 31/03/2021 09:56, Vitaly Kuznetsov wrote:
+>> Emanuele Giuseppe Esposito <eesposit@redhat.com> writes:
+>> 
+>>> On 31/03/2021 05:01, Sean Christopherson wrote:
+>>>> On Tue, Mar 30, 2021, Emanuele Giuseppe Esposito wrote:
+>>>>> Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
+>>>>> a nent field inside the kvm_cpuid2 struct to be big enough to contain
+>>>>> all entries that will be set by kvm.
+>>>>> Therefore if the nent field is too high, kvm will adjust it to the
+>>>>> right value. If too low, -E2BIG is returned.
+>>>>>
+>>>>> However, when filling the entries do_cpuid_func() requires an
+>>>>> additional entry, so if the right nent is known in advance,
+>>>>> giving the exact number of entries won't work because it has to be increased
+>>>>> by one.
+>>>>>
+>>>>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+>>>>> ---
+>>>>>    arch/x86/kvm/cpuid.c | 6 ++++++
+>>>>>    1 file changed, 6 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>>>>> index 6bd2f8b830e4..5412b48b9103 100644
+>>>>> --- a/arch/x86/kvm/cpuid.c
+>>>>> +++ b/arch/x86/kvm/cpuid.c
+>>>>> @@ -975,6 +975,12 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+>>>>>    
+>>>>>    	if (cpuid->nent < 1)
+>>>>>    		return -E2BIG;
+>>>>> +
+>>>>> +	/* if there are X entries, we need to allocate at least X+1
+>>>>> +	 * entries but return the actual number of entries
+>>>>> +	 */
+>>>>> +	cpuid->nent++;
+>>>>
+>>>> I don't see how this can be correct.
+>>>>
+>>>> If this bonus entry really is needed, then won't that be reflected in array.nent?
+>>>> I.e won't KVM overrun the userspace buffer?
+>>>>
+>>>> If it's not reflected in array.nent, that would imply there's an off-by-one check
+>>>> somewhere, or KVM is creating an entry that it doesn't copy to userspace.  The
+>>>> former seems unlikely as there are literally only two checks against maxnent,
+>>>> and they both look correct (famous last words...).
+>>>>
+>>>> KVM does decrement array->nent in one specific case (CPUID.0xD.2..64), i.e. a
+>>>> false positive is theoretically possible, but that carries a WARN and requires a
+>>>> kernel or CPU bug as well.  And fudging nent for that case would still break
+>>>> normal use cases due to the overrun problem.
+>>>>
+>>>> What am I missing?
+>>>
+>>> (Maybe I should have put this series as RFC)
+>>>
+>>> The problem I see and noticed while doing the KVM_GET_EMULATED_CPUID
+>>> selftest is the following: assume there are 3 kvm emulated entries, and
+>>> the user sets cpuid->nent = 3. This should work because kvm sets 3
+>>> array->entries[], and copies them to user space.
+>>>
+>>> However, when the 3rd entry is populated inside kvm (array->entries[2]),
+>>> array->nent is increased once more (do_host_cpuid and
+>>> __do_cpuid_func_emulated). At that point, the loop in
+>>> kvm_dev_ioctl_get_cpuid and get_cpuid_func can potentially iterate once
+>>> more, going into the
+>>>
+>>> if (array->nent >= array->maxnent)
+>>> 	return -E2BIG;
+>>>
+>>> in __do_cpuid_func_emulated and do_host_cpuid, returning the error. I
+>>> agree that we need that check there because the following code tries to
+>>> access the array entry at array->nent index, but from what I understand
+>>> that access can be potentially useless because it might just jump to the
+>>> default entry in the switch statement and not set the entry, leaving
+>>> array->nent to 3.
+>> 
+>> The problem seems to be exclusive to __do_cpuid_func_emulated(),
+>> do_host_cpuid() always does
+>> 
+>> entry = &array->entries[array->nent++];
+>> 
+>> Something like (completely untested and stupid):
+>> 
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 6bd2f8b830e4..54dcabd3abec 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -565,14 +565,22 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
+>>          return entry;
+>>   }
+>>   
+>> +static bool cpuid_func_emulated(u32 func)
+>> +{
+>> +       return (func == 0) || (func == 1) || (func == 7);
+>> +}
+>> +
+>>   static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>>   {
+>>          struct kvm_cpuid_entry2 *entry;
+>>   
+>> +       if (!cpuid_func_emulated())
+>> +               return 0;
+>> +
+>>          if (array->nent >= array->maxnent)
+>>                  return -E2BIG;
+>>   
+>> -       entry = &array->entries[array->nent];
+>> +       entry = &array->entries[array->nent++];
+>>          entry->function = func;
+>>          entry->index = 0;
+>>          entry->flags = 0;
+>> @@ -580,18 +588,14 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
+>>          switch (func) {
+>>          case 0:
+>>                  entry->eax = 7;
+>> -               ++array->nent;
+>>                  break;
+>>          case 1:
+>>                  entry->ecx = F(MOVBE);
+>> -               ++array->nent;
+>>                  break;
+>>          case 7:
+>>                  entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+>>                  entry->eax = 0;
+>>                  entry->ecx = F(RDPID);
+>> -               ++array->nent;
+>> -       default:
+>>                  break;
+>>          }
+>> 
+>> should do the job, right?
+>> 
+>> 
+>
+> Yes, it would work better. Alternatively:
+>
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index ba7437308d28..452b0acd6e9d 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -567,34 +567,37 @@ static struct kvm_cpuid_entry2 
+> *do_host_cpuid(struct kvm_cpuid_array *array,
+>
+>   static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 
+> func)
+>   {
+> -	struct kvm_cpuid_entry2 *entry;
+> -
+> -	if (array->nent >= array->maxnent)
+> -		return -E2BIG;
+> +	struct kvm_cpuid_entry2 entry;
+> +	bool changed = true;
+>
+> -	entry = &array->entries[array->nent];
+> -	entry->function = func;
+> -	entry->index = 0;
+> -	entry->flags = 0;
+> +	entry.function = func;
+> +	entry.index = 0;
+> +	entry.flags = 0;
+>
+>   	switch (func) {
+>   	case 0:
+> -		entry->eax = 7;
+> -		++array->nent;
+> +		entry.eax = 7;
+>   		break;
+>   	case 1:
+> -		entry->ecx = F(MOVBE);
+> -		++array->nent;
+> +		entry.ecx = F(MOVBE);
+>   		break;
+>   	case 7:
+> -		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+> -		entry->eax = 0;
+> -		entry->ecx = F(RDPID);
+> -		++array->nent;
+> +		entry.flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
+> +		entry.eax = 0;
+> +		entry.ecx = F(RDPID);
+> +		break;
+>   	default:
+> +		changed = false;
+>   		break;
+>   	}
+>
+> +	if (changed) {
+> +		if (array->nent >= array->maxnent)
+> +			return -E2BIG;
+> +
+> +		memcpy(&array->entries[array->nent++], &entry, sizeof(entry));
+> +	}
+> +
+>   	return 0;
+>   }
+>
+> pros: avoids hard-coding another function that would check what the 
+> switch already does. it will be more flexible if another func has to be 
+> added. cons: there is a memcpy for each entry.
 
-Thanks,
-Mani
+Looks good to me,
 
-> Bhaumik Bhatt (6):
->   bus: mhi: core: Rely on accurate method to determine EDL mode
->   bus: mhi: core: Wait for ready after an EDL firmware download
->   bus: mhi: core: Handle EDL mode entry appropriately
->   bus: mhi: core: Identify Flash Programmer as a mission mode use case
->   bus: mhi: core: Wait for MHI READY state in most scenarios
->   bus: mhi: core: Improve state strings for debug messages
-> 
-> Carl Yin (1):
->   bus: mhi: core: Add support for Flash Programmer execution environment
-> 
->  drivers/bus/mhi/core/boot.c     | 13 +++++++------
->  drivers/bus/mhi/core/init.c     | 34 ++++++++++++++++++----------------
->  drivers/bus/mhi/core/internal.h |  4 +++-
->  drivers/bus/mhi/core/main.c     |  3 +++
->  drivers/bus/mhi/core/pm.c       | 28 +++++++++++++++++++++++++---
->  include/linux/mhi.h             |  4 +++-
->  6 files changed, 59 insertions(+), 27 deletions(-)
-> 
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+I'd drop just 'bool changed' and replaced it with 'goto out' in the
+'default' case.
+
+memcpy() here is not a problem I believe, this path is not that
+performace critical.
+
+-- 
+Vitaly
+
