@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3085350AB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327B1350ABB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhCaX1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:27:16 -0400
+        id S233110AbhCaX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:27:18 -0400
 Received: from mga12.intel.com ([192.55.52.136]:4846 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhCaX0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:26:41 -0400
-IronPort-SDR: S0aHk6GCniZOfAj9Mq6ifpwuEeXwz/TsmGuvFwnGe3j5kyAaZ1iB4Qk0JyScxu2fSEr+tPtmlJ
- O9m3Z9zw3WuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528072"
+        id S231974AbhCaX0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:26:43 -0400
+IronPort-SDR: w5MCbd54sERppn6hTod8839NmdGgDpo+2pTPrTs5P/ySEmhq9B5CmBivU+0dl7C4Uvh9mV047C
+ KoylDuzAmgNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528075"
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="171528072"
+   d="scan'208";a="171528075"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:41 -0700
-IronPort-SDR: 3No0/Qf/eTO89iepDYeyx95eT3Ej5/O6UCR8hJ6rSQe0tsfJsmX6baCmpdw+MA0prgCk7dixxE
- 8ls0AID5FGBg==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:43 -0700
+IronPort-SDR: xwOOwb0k9GZShlrNlTui8Sij0F6Vrg2dDW+fs8qHpcXkAPPQak7zEPawSN9Bz6kH1jDaewC58Y
+ y5pW+hBM36+A==
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="610685731"
+   d="scan'208";a="610685743"
 Received: from dfrayn-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.146.236])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:40 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:41 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Johannes Berg <johannes@sipsolutions.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/7] driver core: attribute_container: remove kernel-doc warnings
-Date:   Wed, 31 Mar 2021 18:26:09 -0500
-Message-Id: <20210331232614.304591-3-pierre-louis.bossart@linux.intel.com>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-pm@vger.kernel.org (open list:SUSPEND TO RAM)
+Subject: [PATCH 3/7] PM: runtime: remove kernel-doc warnings
+Date:   Wed, 31 Mar 2021 18:26:10 -0500
+Message-Id: <20210331232614.304591-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
 References: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
@@ -42,39 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove make W=1 warnings
+remove make W=1 warnings
 
-drivers/base/attribute_container.c:471: warning: Function parameter or
-member 'cont' not described in
-'attribute_container_add_class_device_adapter'
+drivers/base/power/runtime.c:926: warning: Function parameter or
+member 'timer' not described in 'pm_suspend_timer_fn'
 
-drivers/base/attribute_container.c:471: warning: Function parameter or
-member 'dev' not described in
-'attribute_container_add_class_device_adapter'
-
-drivers/base/attribute_container.c:471: warning: Function parameter or
-member 'classdev' not described in
-'attribute_container_add_class_device_adapter'
+drivers/base/power/runtime.c:926: warning: Excess function parameter
+'data' description in 'pm_suspend_timer_fn'
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/base/attribute_container.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/base/power/runtime.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/attribute_container.c b/drivers/base/attribute_container.c
-index f7bd0f4db13d..9c00d203d61e 100644
---- a/drivers/base/attribute_container.c
-+++ b/drivers/base/attribute_container.c
-@@ -461,6 +461,10 @@ attribute_container_add_class_device(struct device *classdev)
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index fe1dad68aee4..1fc1a992f90c 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -951,7 +951,7 @@ static void pm_runtime_work(struct work_struct *work)
+ 
  /**
-  * attribute_container_add_class_device_adapter - simple adapter for triggers
+  * pm_suspend_timer_fn - Timer function for pm_schedule_suspend().
+- * @data: Device pointer passed by pm_schedule_suspend().
++ * @timer: hrtimer used by pm_schedule_suspend().
   *
-+ * @cont: the container to register.
-+ * @dev:  the generic device to activate the trigger for
-+ * @classdev:	the class device to add
-+ *
-  * This function is identical to attribute_container_add_class_device except
-  * that it is designed to be called from the triggers
+  * Check if the time is right and queue a suspend request.
   */
 -- 
 2.25.1
