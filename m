@@ -2,142 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0884834FF7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CAE34FF7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235254AbhCaL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:27:54 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:27604 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235144AbhCaL1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:27:38 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 31 Mar 2021 04:27:38 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 31 Mar 2021 04:27:36 -0700
-X-QCInternal: smtphost
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 31 Mar 2021 16:57:04 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id BE5EA433F; Wed, 31 Mar 2021 04:27:02 -0700 (PDT)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org, hywu@google.com,
-        mka@google.com, midean@google.com, steev@kali.org
-Subject: [v1] drm/msm/disp/dpu1: fix warn stack reported during dpu resume
-Date:   Wed, 31 Mar 2021 04:27:00 -0700
-Message-Id: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <y>
-References: <y>
+        id S235182AbhCaLa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:30:57 -0400
+Received: from mail-mw2nam12on2066.outbound.protection.outlook.com ([40.107.244.66]:38393
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235199AbhCaLaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:30:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oJGu6FYDVWgMHUioAkwvlhN+uGcGl3+tKtMprpPPFNqWbAz1AE5wbziNAi7ejYRDVmppNOqm56OgN/jNkl84XIdiUfW6L0CPBnd9ATjfhVWkLrjRE29Qk5rQT65o08Dv8xinW12p76TPcX1rIiO7eLF7UQ3Rpeb/KiYMh8C4EQNGzKIZr2LQq65d6WbXLFhsNkE3scZGG8sZqvB7DVWJGZ6dNMDwBAaBeT3OAMoYO3AxkGkR83g226YNTzpW7WJ5Oq5CNS5Uic/YGsdjK/XDIm6BS/hC1eVc4ERLn2YEQifA2WAoB+MmMtBUNy9ZWSNiAlc0FoBg3FPWfOM5yM6aGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/pK6DsKrPx2zdBZhSSixGjrFDwqBIY6E156+koF1jOE=;
+ b=hCCdRLpZi1I4jth9S8Vpv5u+zhVBpTFQHoM6jdg8oE2WBQccwahFJdoEc5ONgd8CAExLhMstP2fjhIQonz3cKZjTmpnA1OkpekXomZCosmfOWc2ZQ4l2EVHy7g/9nAvZ9Oal+2OJIFuQceXJgfVV57ViQHKP0YWzTqDIClE6q4+XvgShXzJRaMcMkCSKHrdkKrmAAAGdPGfJzr7SfpI5Nv6632MLG7WQ/ZlBrCRo65m9F1L5CFwpbA6Q+2ZR0+gycS/BWb/5ZczbOK6xmiGbi8Vy6M6w3ESo7+sgyRQv7//dHu9D+ISZokFqx/jLjRrCtUkEeos541kKp/0/84/fvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=st.com smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/pK6DsKrPx2zdBZhSSixGjrFDwqBIY6E156+koF1jOE=;
+ b=k9Hj5Pw1SF5w8PJ+hApjJ8k6NkYj29QQEZwoheVAW36gSSXwXJQKQooO2PyIRv30/vDOdZBd9moPYmn/xJhsOPc7FkALGqyYHggDMVbcIDmuGSVBYb/tYNYSxfHISFAs2EPzqQ/ujIk8PmcuWO8qAb4KsZ890aOhQGHGyzr37W5OeRp+K/Up5JBqEr40m5DK/J32GepfbRlUPYMpfIsjJtG9K2SxyPMUQB3tLJc2LsKd6pR9sscXzIO0l/XKWQWFqJYEDkrySYhf8AY8hZy0ozCxV5MmuP2QbwhOM8HtfSQcTWK0n9a7U1G8smX+StkfR317QvXa4QT//C62sLwVug==
+Received: from MWHPR10CA0024.namprd10.prod.outlook.com (2603:10b6:301::34) by
+ SN6PR12MB2686.namprd12.prod.outlook.com (2603:10b6:805:72::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.24; Wed, 31 Mar 2021 11:29:06 +0000
+Received: from CO1NAM11FT067.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:301:0:cafe::42) by MWHPR10CA0024.outlook.office365.com
+ (2603:10b6:301::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend
+ Transport; Wed, 31 Mar 2021 11:29:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; st.com; dkim=none (message not signed)
+ header.d=none;st.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT067.mail.protection.outlook.com (10.13.174.212) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 11:29:05 +0000
+Received: from [10.26.49.14] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
+ 2021 11:29:03 +0000
+Subject: Re: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
+ resume back
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com>
+ <DB8PR04MB679546EC2493ABC35414CCF9E6639@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
+ <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <8e92b562-fa8f-0a2b-d8da-525ee52fc2d4@nvidia.com>
+ <DB8PR04MB67959FC7AF5CFCF1A08D10B2E6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <ac9f8a31-536e-ec75-c73f-14a0623c5d56@nvidia.com>
+ <DB8PR04MB6795F4333BCA9CE83C288FEEE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <DB8PR04MB6795D4C733DC4938B1D62EBDE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <85f02fbc-6956-2b19-1779-cd51b2e71e3d@nvidia.com>
+Date:   Wed, 31 Mar 2021 12:29:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <DB8PR04MB6795D4C733DC4938B1D62EBDE67C9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e6044614-290d-4fe0-2042-08d8f438313d
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2686:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2686386BC9BC1F96DBB142EAD97C9@SN6PR12MB2686.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NF3CZ5Potxk9hCAbrbYBQdCbWJNspKZRQJ9Yr1sLCZZUkRRkczpKQDWS182QQA/b5h7u4szO52KkN0ywEiKtkL0KGJ/9ko2fB28I57qZyLqTv3Btv52yJ8tj4EcmAt2xmTrKFua8KElxOGBTjGq38wwohWkaoi9+D9CcbGbZOI0TV004ijKzph7IY8y4t291GHoCOKKfME8FvvLCe41A/4Vf1qYWBZpSHBxMuQekqFmBQnBCIilq0GuBeVUTrMrJHISikSmxB8Lqs3cjodPYY5ufq4yez3GRVsMqbfpaLV/2LZkfJ25CcIoHBbde/qRmrLyKnzfwOfRby/4BTWpxKOrcI1wcjfAqYYEI5unH0Epm87gE5NptNYL9Pay5HtYMIylE1FEioSnakyyHGPLGYaMSRqip674rb1yh4i2HbBv7Lrt7yRHD87pokehVQbJpNF1i79UmcOgQSVnhuYSS+CWLULDhlM0UKb5NIfg3zNskRoBtSKAmTaRtvNbanRGkcGYDeT7b85oklO6m0stqaUOG+WfbxhdYnQ8Kk5+Ggp+bD8t/O8N5T20t7gTbjlrqGkSb1ZNycGQCWSpSvQyerjep36AYxxV/MVzGBBe27G9pQuJ4mVgqangInWihFei9yTv8g6AztJ+FHhSM8vdjU4IgHLDGx3yLvsikn8XBTh+zBCdwxSKVNEgsyBgLrL9T
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(36840700001)(46966006)(8676002)(31696002)(36756003)(47076005)(7636003)(70206006)(2616005)(356005)(53546011)(70586007)(83380400001)(4326008)(82740400003)(426003)(82310400003)(16576012)(36860700001)(2906002)(186003)(110136005)(16526019)(26005)(336012)(5660300002)(54906003)(478600001)(86362001)(8936002)(31686004)(36906005)(316002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 11:29:05.3281
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6044614-290d-4fe0-2042-08d8f438313d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT067.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2686
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARN_ON was introduced by the below commit to catch runtime resumes
-that are getting triggered before icc path was set.
 
-"drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume"
+On 31/03/2021 12:10, Joakim Zhang wrote:
 
-For the targets where the bw scaling is not enabled, this WARN_ON is
-a false alarm. Fix the WARN condition appropriately.
+...
 
-Reported-by: Steev Klimaszewski <steev@kali.org>
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
- drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
- 3 files changed, 20 insertions(+), 8 deletions(-)
+>>>>>>>> You mean one of your boards? Does other boards with STMMAC can
+>>>>>>>> work
+>>>>>>> fine?
+>>>>>>>
+>>>>>>> We have two devices with the STMMAC and one works OK and the
+>>>>>>> other
+>>>>> fails.
+>>>>>>> They are different generation of device and so there could be
+>>>>>>> some architectural differences which is causing this to only be
+>>>>>>> seen on one
+>>> device.
+>>>>>> It's really strange, but I also don't know what architectural
+>>>>>> differences could
+>>>>> affect this. Sorry.
+>>>
+>>>
+>>> I realised that for the board which fails after this change is made,
+>>> it has the IOMMU enabled. The other board does not at the moment
+>>> (although work is in progress to enable). If I add
+>>> 'iommu.passthrough=1' to cmdline for the failing board, then it works
+>>> again. So in my case, the problem is linked to the IOMMU being enabled.
+>>>
+>>> Does you platform enable the IOMMU?
+>>
+>> Hi Jon,
+>>
+>> There is no IOMMU hardware available on our boards. But why IOMMU would
+>> affect it during suspend/resume, and no problem in normal mode?
+> 
+> One more add, I saw drivers/iommu/tegra-gart.c(not sure if is this) support suspend/resume, is it possible iommu resume back after stmmac?
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index cab387f..0071a4d 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -294,6 +294,9 @@ static int dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
- 	struct icc_path *path1;
- 	struct drm_device *dev = dpu_kms->dev;
- 
-+	if (!dpu_supports_bw_scaling(dev))
-+		return 0;
-+
- 	path0 = of_icc_get(dev->dev, "mdp0-mem");
- 	path1 = of_icc_get(dev->dev, "mdp1-mem");
- 
-@@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
- 		DPU_DEBUG("REG_DMA is not defined");
- 	}
- 
--	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
--		dpu_kms_parse_data_bus_icc_path(dpu_kms);
-+	dpu_kms_parse_data_bus_icc_path(dpu_kms);
- 
- 	pm_runtime_get_sync(&dpu_kms->pdev->dev);
- 
-@@ -1198,7 +1200,7 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
- 
- 	ddev = dpu_kms->dev;
- 
--	WARN_ON(!(dpu_kms->num_paths));
-+	WARN_ON((dpu_supports_bw_scaling(ddev) && !dpu_kms->num_paths));
- 	/* Min vote of BW is required before turning on AXI clk */
- 	for (i = 0; i < dpu_kms->num_paths; i++)
- 		icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-index d6717d6..f7bcc0a 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-@@ -154,6 +154,15 @@ struct vsync_info {
- 
- #define to_dpu_global_state(x) container_of(x, struct dpu_global_state, base)
- 
-+/**
-+ * dpu_supports_bw_scaling: returns true for drivers that support bw scaling.
-+ * @dev: Pointer to drm_device structure
-+ */
-+static inline int dpu_supports_bw_scaling(struct drm_device *dev)
-+{
-+	return of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss");
-+}
-+
- /* Global private object state for tracking resources that are shared across
-  * multiple kms objects (planes/crtcs/etc).
-  */
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-index cd40788..8cd712c 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-@@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct drm_device *dev,
- 	struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
- 	struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
- 
-+	if (dpu_supports_bw_scaling(dev))
-+		return 0;
-+
- 	if (IS_ERR_OR_NULL(path0))
- 		return PTR_ERR_OR_ZERO(path0);
- 
-@@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
- 
- 	DRM_DEBUG("mapped mdss address space @%pK\n", dpu_mdss->mmio);
- 
--	if (!of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss")) {
--		ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
--		if (ret)
--			return ret;
--	}
-+	ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
-+	if (ret)
-+		return ret;
- 
- 	mp = &dpu_mdss->mp;
- 	ret = msm_dss_parse_clock(pdev, mp);
+
+This board is the tegra186-p2771-0000 (Jetson TX2) and uses the
+arm,mmu-500 and not the above driver.
+
+In answer to your question, resuming from suspend does work on this
+board without your change. We have been testing suspend/resume now on
+this board since Linux v5.8 and so we have the ability to bisect such
+regressions. So it is clear to me that this is the change that caused
+this, but I am not sure why.
+
+Thanks
+Jon
+
 -- 
-2.7.4
-
+nvpublic
