@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E3134FADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE1634FAE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234178AbhCaHxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:53:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49728 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbhCaHx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:53:27 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617177206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZtZF2/xRNH8fh4hE5BwT2wTWTeqB0uXB55wapYkngo=;
-        b=GWyURJemE04fXbv/dNXDF/0LWRaQ4tGALC9OOaZZX1jX909PJnJqQNLmRHU5bdnoOe2BPx
-        0l8tqzO1C4X81JC4UF9EgqK+rv+MMuq4vKZKBmgS5xgoh8kHJoK3yGMc2JwD7K7KVPN5Zq
-        RLphVVO5mdZn4sd3F2SxpVYjMeGrFZSuYdnsdxeQ9UVJIKrFKj+c/KkC8NhGXn4uFrQQUq
-        9QLF3bKV+Mu5u9aWn5wv2Q3URdLLaeajI6nGfeAAJVefUJq5RO+JEKMZN24tbHnVEBUmEF
-        FOZzekWqIHRsr935F3eIGzBuCrVBchBs81pOqz2+wQGf9LvkUKRzkPamj+H42g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617177206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZtZF2/xRNH8fh4hE5BwT2wTWTeqB0uXB55wapYkngo=;
-        b=FVaJ/rkH5MysXsEMr6SCeJ7tpYOEQWBQj1HtTudrC96F3XUvn+lMIWByyEe5qL5WKknhun
-        e3t0jDC5LkQ4NZCQ==
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/6] stack: Optionally randomize kernel stack offset each syscall
-In-Reply-To: <20210330205750.428816-4-keescook@chromium.org>
-References: <20210330205750.428816-1-keescook@chromium.org> <20210330205750.428816-4-keescook@chromium.org>
-Date:   Wed, 31 Mar 2021 09:53:26 +0200
-Message-ID: <87im5769op.ffs@nanos.tec.linutronix.de>
+        id S234113AbhCaHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234108AbhCaHzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9470061582;
+        Wed, 31 Mar 2021 07:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617177319;
+        bh=EzitGg86srFNwq2ybWNTNEkYH5cOxpBgx7ICUgiY5yo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HoEE25OE8avfFADAgHRysi5TbL9Q2GJYNdipPYMDvqhA1KarMfxqZpV9Uoyafa0bG
+         RZLpwqxufdgARkTFbMWqqqv2xkNdcdUfakfMbdxfguce9XtIrsT70N3gtFEWQw9yod
+         2RVA9yaHSQqHXt+rgqdBf0Zg2mU/cfzWyBDRcGiLFiPFWeLztE88cFMSAYtvYVoMXZ
+         MHwyzwGQkiGOSuirfKPNj57lYlHvQB1QNoW1frAPZ0eHOiY7HSPl9DSSJewmjlpW/e
+         zHUarypb4raAyvxr/hPfPXifCNGp5XZtEuq7+jL3gMXaw1342sCMA3FmLaNgztXyXq
+         aBZlCjym0+BFg==
+Date:   Wed, 31 Mar 2021 09:55:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, p.zabel@pengutronix.de,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] i2c-stm32f4: Mundane typo fix
+Message-ID: <20210331075516.GF1025@ninjato>
+References: <20210324140610.32385-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CXFpZVxO6m2Ol4tQ"
+Content-Disposition: inline
+In-Reply-To: <20210324140610.32385-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30 2021 at 13:57, Kees Cook wrote:
-> +/*
-> + * Do not use this anywhere else in the kernel. This is used here because
-> + * it provides an arch-agnostic way to grow the stack with correct
-> + * alignment. Also, since this use is being explicitly masked to a max of
-> + * 10 bits, stack-clash style attacks are unlikely. For more details see
-> + * "VLAs" in Documentation/process/deprecated.rst
-> + * The asm statement is designed to convince the compiler to keep the
-> + * allocation around even after "ptr" goes out of scope.
 
-Nit. That explanation of "ptr" might be better placed right at the
-add_random...() macro.
+--CXFpZVxO6m2Ol4tQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> + */
-> +void *__builtin_alloca(size_t size);
-> +/*
-> + * Use, at most, 10 bits of entropy. We explicitly cap this to keep the
-> + * "VLA" from being unbounded (see above). 10 bits leaves enough room for
-> + * per-arch offset masks to reduce entropy (by removing higher bits, since
-> + * high entropy may overly constrain usable stack space), and for
-> + * compiler/arch-specific stack alignment to remove the lower bits.
-> + */
-> +#define KSTACK_OFFSET_MAX(x)	((x) & 0x3FF)
-> +
-> +/*
-> + * These macros must be used during syscall entry when interrupts and
-> + * preempt are disabled, and after user registers have been stored to
-> + * the stack.
-> + */
-> +#define add_random_kstack_offset() do {					\
-> +	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
-> +				&randomize_kstack_offset)) {		\
-> +		u32 offset = __this_cpu_read(kstack_offset);		\
-> +		u8 *ptr = __builtin_alloca(KSTACK_OFFSET_MAX(offset));	\
-> +		asm volatile("" : "=m"(*ptr) :: "memory");		\
-> +	}								\
-> +} while (0)
+On Wed, Mar 24, 2021 at 07:36:10PM +0530, Bhaskar Chowdhury wrote:
+>=20
+> s/postion/position/
+>=20
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Other than that.
+Applied to for-current, thanks! Please check older commits to this
+driver for the proper subject prefix, i.e. "i2c: <driver>" in I2C.
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+
+--CXFpZVxO6m2Ol4tQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkKuAACgkQFA3kzBSg
+KbZcNg/+Kgz6fUXwT8UG1T6AI2mSbxrDvEf1HZabVoWUXqfAUzW70AOuupu6rANv
+ZALbbp5LgXqd9mlB6SsLgZb2Fu+KH2HHfb8Vb+3MoyVPRPxY4hz0ISqGohy4cWH0
+3WRpT7ZKYwxjHj/0YFaQxrVSa3Vxpy/iifohlnezxqWYcKm/WVoRvpUXPAqT53w5
+buqBb+CY133IjNtPg3GVrV/7yPuPM2hQAapY0PsbwPz4Krq2G6jsuhQ8V5vHIaTm
+Y8DJiRDvAzgDgTUKu/Ndi4JD1g8InykBnLRqAbdk84ktM1vuGEpvk7/LbbybBKj3
+ZezZCW9Ux/1X69t17Z8l/R8S85xRXiRcXjO04+rVHjnsMMPVyiarGQEptejqY3CH
+nQjiVNdCUh6uzkQcD6zdUgIeqrdq/IAConxpk5BAKmMqQfVkM85oY20AMZP/gEtg
+yBVkQdXVpvltbIvxtcP7Zxf2X90PpSVfexJpqHBx45MGy7FkEnu29gwo4SZ+q81S
+Y+sXwxxuyL3KvxFibgnLTLf2lcpTVGpcC5N6VZjOrAf3pfWxgx3QvJ0LqtQrYcwB
+lNZiq1C+a5eGpOdBEnEmpc69YTTs40ry4fBkTnnzOdPCJVkDsdn4ZTDp5cAnyy2E
+VKGky1q77+EEI2EIjmquoP6f/u+yQNf3In2VZbaYZjXz+kckDPM=
+=P84I
+-----END PGP SIGNATURE-----
+
+--CXFpZVxO6m2Ol4tQ--
