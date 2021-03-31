@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33ACA34F655
+	by mail.lfdr.de (Postfix) with ESMTP id A3FFA34F656
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhCaBoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:44:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15109 "EHLO
+        id S233200AbhCaBoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 21:44:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14647 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhCaBna (ORCPT
+        with ESMTP id S233072AbhCaBno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:43:30 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F98DL3NR9z19K7t;
-        Wed, 31 Mar 2021 09:41:22 +0800 (CST)
+        Tue, 30 Mar 2021 21:43:44 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F98Cz16rnzmbkG;
+        Wed, 31 Mar 2021 09:41:03 +0800 (CST)
 Received: from ubuntu180.huawei.com (10.175.100.227) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 09:43:17 +0800
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 31 Mar 2021 09:43:27 +0800
 From:   Tang Yizhou <tangyizhou@huawei.com>
-To:     <tangyizhou@huawei.com>, Tom Lendacky <thomas.lendacky@amd.com>,
-        "John Allen" <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <tangyizhou@huawei.com>, Potnuri Bharat Teja <bharat@chelsio.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] crypto: ccp - Use DEFINE_SPINLOCK() for spinlock
-Date:   Wed, 31 Mar 2021 10:00:55 +0800
-Message-ID: <20210331020055.4631-1-tangyizhou@huawei.com>
+Subject: [PATCH -next] RDMA/iw_cxgb4: Use DEFINE_SPINLOCK() for spinlock
+Date:   Wed, 31 Mar 2021 10:01:05 +0800
+Message-ID: <20210331020105.4858-1-tangyizhou@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
@@ -43,28 +43,28 @@ rather than explicitly calling spin_lock_init().
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
 ---
- drivers/crypto/ccp/ccp-crypto-main.c | 3 +--
+ drivers/infiniband/hw/cxgb4/cm.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/ccp/ccp-crypto-main.c b/drivers/crypto/ccp/ccp-crypto-main.c
-index 88275b4867ea..5976530c00a8 100644
---- a/drivers/crypto/ccp/ccp-crypto-main.c
-+++ b/drivers/crypto/ccp/ccp-crypto-main.c
-@@ -59,7 +59,7 @@ struct ccp_crypto_queue {
- #define CCP_CRYPTO_MAX_QLEN	100
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 81903749d241..c97e84d5db74 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -145,7 +145,7 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status);
+ static int sched(struct c4iw_dev *dev, struct sk_buff *skb);
  
- static struct ccp_crypto_queue req_queue;
--static spinlock_t req_queue_lock;
-+static DEFINE_SPINLOCK(req_queue_lock);
+ static LIST_HEAD(timeout_list);
+-static spinlock_t timeout_lock;
++static DEFINE_SPINLOCK(timeout_lock);
  
- struct ccp_crypto_cmd {
- 	struct list_head entry;
-@@ -410,7 +410,6 @@ static int ccp_crypto_init(void)
- 		return ret;
- 	}
+ static void deref_cm_id(struct c4iw_ep_common *epc)
+ {
+@@ -4451,7 +4451,6 @@ c4iw_handler_func c4iw_handlers[NUM_CPL_CMDS] = {
  
--	spin_lock_init(&req_queue_lock);
- 	INIT_LIST_HEAD(&req_queue.cmds);
- 	req_queue.backlog = &req_queue.cmds;
- 	req_queue.cmd_count = 0;
+ int __init c4iw_cm_init(void)
+ {
+-	spin_lock_init(&timeout_lock);
+ 	skb_queue_head_init(&rxq);
+ 
+ 	workq = alloc_ordered_workqueue("iw_cxgb4", WQ_MEM_RECLAIM);
 
