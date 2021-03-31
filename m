@@ -2,126 +2,526 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C516534FBED
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F25834FBEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhCaIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:52:13 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59460 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhCaIv7 (ORCPT
+        id S234494AbhCaIwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhCaIwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:51:59 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8mYs1017983;
-        Wed, 31 Mar 2021 08:51:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=dnKkt0M7ZM9uOvBvDE5xPvS4fmbMM0b1FB5vY1/3kZ0=;
- b=OonruPuYEq+kIrF2Zn2rMcgXYPotTFyTocUqYcgcvVsBHxwKod6KRa601Vis4NcFFVx1
- qg9xr9twoZXa+xHhKilYbL/jq48T15LhWsjBb8/NEy5HFZOIHfxZmnLQmLkgTqM37JBC
- HevHcXZd7feZX8QcmgrpjcmxKEckgSix9fJvcCplW3zYrPgyB4duthHRRZEq19TuGqLQ
- oaGMrUoofN+VT/zILNhdhQR+cVPVxwwerO7IBn08OaTwrOludiAizLl2/Rg6wce65JQQ
- CRahUH7DpxRh2jnwtZR5NIdqGmTLNRsjPvWHLhPgknd7tN3KlKMblUM1BTFgPL8wepXB pA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 37mab3hhbs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 31 Mar 2021 08:51:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12V8nVT4090806;
-        Wed, 31 Mar 2021 08:51:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 37mabkxbq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 31 Mar 2021 08:51:52 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12V8ppcE001235;
-        Wed, 31 Mar 2021 08:51:51 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 31 Mar 2021 01:51:50 -0700
-Date:   Wed, 31 Mar 2021 11:51:42 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
-Cc:     hverkuil-cisco@xs4all.nl, syzkaller-bugs@googlegroups.com,
-        dvyukov@google.com, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:EM28XX VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] media: em28xx: fix memory leak
-Message-ID: <20210331085142.GI2065@kadam>
-References: <20210324180753.GA410359@LEGION>
- <675efa79414d2d8cb3696d3ca3a0c3be99bd92fa.camel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <675efa79414d2d8cb3696d3ca3a0c3be99bd92fa.camel@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103300000 definitions=main-2103310064
-X-Proofpoint-ORIG-GUID: rcRGErqPT3_0x9OwQpvA5bhZ0rguoNSA
-X-Proofpoint-GUID: rcRGErqPT3_0x9OwQpvA5bhZ0rguoNSA
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0
- clxscore=1011 impostorscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
- definitions=main-2103310064
+        Wed, 31 Mar 2021 04:52:00 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA426C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:51:59 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id k8so18824354wrc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uVavhtqxMdWJhL5S/zAQOYoqxaE7aoAeAuI3YuqGGhA=;
+        b=b+TVw/XVz/ATolZ8wMuYbfZIagPfurKtw2Aq7mkrs8vKmiMl8lipdilXr58ZPwOQmo
+         DkNdSwK2nDsrQR7WvTK0wegwRbJOE8OiDvV2jDJAaS7mNTgft22nWctymDVuwMehDPFB
+         +OSeOrwKMoteyN6NW/KZ/vH7U4Eh/u0Y/nKYnP8op70H/bxGuKeAKqFyjsPgGMAY/jPo
+         gSdI1GZOZtP/B20hXFUUwj669eLpu5ZYBXrVuLBNH+qjqBISSVcZ5/6mlPvQja0ut1OA
+         AgGl0XK6VR6uwz9zbw9ee5kCzmeqdxyHfLjw+NesQxJ7afdYa5MFw7nQmjKSw1TnVCyM
+         ZADg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uVavhtqxMdWJhL5S/zAQOYoqxaE7aoAeAuI3YuqGGhA=;
+        b=MSxfRGtiXIhbBYXAiZR7kuzgbxuct46FLULfk41SAJF3tF6pxI0Cz7bKrNVtHdujsU
+         8HwSs6FpCQI1YueyvS1Bq7f1c+RHbVJMEQzJN7NCUAyFcdQ6MHb6RyJeZfCM0vtSikT2
+         CqSQPraS0bqdDXzY6yRDz8fl/Ve0/I/MpHbYJjvRu5ksOB3UhWGfjEvUku0f6BAJg8p8
+         HVkMpPWdFw5ivYqbbVidyJXRgfSF7JWEj+FgkA6lwWHOHdKTemzprM+jFeHe9xpS9M+v
+         cfRGJLvmNEZRXQNuZS6pfxCDj7K8xJ3ddvdZgclRBW03T2ffe5bGOIuivDbOSslNH9Ja
+         CktQ==
+X-Gm-Message-State: AOAM530BwO8exJy4LHc3cT+iBksD+XFIrSzaEKUYSA+NuIpKWIHim+Vu
+        Buknm2ReMB3oyX0y6GGkbdU=
+X-Google-Smtp-Source: ABdhPJyV0V/dlT7urwQM7lPxGV6RxwbNpnM4AtCHQ5MUgt0d88gNPtTDPYTGZ4mtDLS/Fu+fRm/F7Q==
+X-Received: by 2002:a5d:570c:: with SMTP id a12mr2403080wrv.209.1617180718606;
+        Wed, 31 Mar 2021 01:51:58 -0700 (PDT)
+Received: from oliver-Z170M-D3H.cuni.cz ([2001:718:1e03:5128:d1ec:8c5:2b34:58fe])
+        by smtp.gmail.com with ESMTPSA id m11sm3205346wrz.40.2021.03.31.01.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 01:51:58 -0700 (PDT)
+From:   glittao@gmail.com
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Oliver Glitta <glittao@gmail.com>
+Subject: [PATCH v3 1/2] kunit: add a KUnit test for SLUB debugging functionality
+Date:   Wed, 31 Mar 2021 10:51:55 +0200
+Message-Id: <20210331085156.5028-1-glittao@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 01:22:01PM +0500, Muhammad Usama Anjum wrote:
-> On Wed, 2021-03-24 at 23:07 +0500, Muhammad Usama Anjum wrote:
-> > If some error occurs, URB buffers should also be freed. If they aren't
-> > freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
-> > buffers as dvb is set to NULL. The function in which error occurs should
-> > do all the cleanup for the allocations it had done.
-> > 
-> > Tested the patch with the reproducer provided by syzbot. This patch
-> > fixes the memleak.
-> > 
-> > Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
-> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > ---
-> > Resending the same path as some email addresses were missing from the
-> > earlier email.
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
-> > 
-> >  drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-> > index 526424279637..471bd74667e3 100644
-> > --- a/drivers/media/usb/em28xx/em28xx-dvb.c
-> > +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-> > @@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
-> >  	return result;
-> >  
-> >  out_free:
-> > +	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
-> >  	kfree(dvb);
-> >  	dev->dvb = NULL;
-> >  	goto ret;
-> 
-> I'd received the following notice and waiting for the review:
+From: Oliver Glitta <glittao@gmail.com>
 
-Please wait a minimum of two weeks before asking for updates.
+SLUB has resiliency_test() function which is hidden behind #ifdef
+SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+runs it. KUnit should be a proper replacement for it.
 
-regards,
-dan carpenter
+Try changing byte in redzone after allocation and changing
+pointer to next free node, first byte, 50th byte and redzone
+byte. Check if validation finds errors.
+
+There are several differences from the original resiliency test:
+Tests create own caches with known state instead of corrupting
+shared kmalloc caches.
+
+The corruption of freepointer uses correct offset, the original
+resiliency test got broken with freepointer changes.
+
+Scratch changing random byte test, because it does not have
+meaning in this form where we need deterministic results.
+
+Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
+
+Add a counter field "errors" to struct kmem_cache to count number
+of errors detected in cache.
+
+Silence bug report in SLUB test. Add SLAB_SILENT_ERRORS debug flag.
+Add SLAB_SILENT_ERRORS flag to SLAB_NEVER_MERGE, SLAB_DEBUG_FLAGS,
+SLAB_FLAGS_PERMITTED macros.
+
+Signed-off-by: Oliver Glitta <glittao@gmail.com>
+---
+Changes since v2
+
+Use bit operation & instead of logical && as reported by kernel test 
+robot and Dan Carpenter
+
+Changes since v1
+
+Conversion from kselftest to KUnit test suggested by Marco Elver.
+Error silencing.
+Error counting improvements. 
+
+ include/linux/slab.h     |   2 +
+ include/linux/slub_def.h |   2 +
+ lib/Kconfig.debug        |   5 ++
+ lib/Makefile             |   1 +
+ lib/test_slub.c          | 124 +++++++++++++++++++++++++++++++++++++++
+ mm/slab.h                |   7 ++-
+ mm/slab_common.c         |   2 +-
+ mm/slub.c                |  64 +++++++++++++-------
+ 8 files changed, 184 insertions(+), 23 deletions(-)
+ create mode 100644 lib/test_slub.c
+
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 7ae604076767..ed1a5a64d028 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -25,6 +25,8 @@
+  */
+ /* DEBUG: Perform (expensive) checks on alloc/free */
+ #define SLAB_CONSISTENCY_CHECKS	((slab_flags_t __force)0x00000100U)
++/* DEBUG: Silent bug reports */
++#define SLAB_SILENT_ERRORS	((slab_flags_t __force)0x00000200U)
+ /* DEBUG: Red zone objs in a cache */
+ #define SLAB_RED_ZONE		((slab_flags_t __force)0x00000400U)
+ /* DEBUG: Poison objects */
+diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+index dcde82a4434c..e4b51bb5bb83 100644
+--- a/include/linux/slub_def.h
++++ b/include/linux/slub_def.h
+@@ -133,6 +133,8 @@ struct kmem_cache {
+ 	unsigned int usersize;		/* Usercopy region size */
+ 
+ 	struct kmem_cache_node *node[MAX_NUMNODES];
++
++	int errors;			/* Number of errors in cache */
+ };
+ 
+ #ifdef CONFIG_SLUB_CPU_PARTIAL
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 2779c29d9981..e0dec830c269 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2371,6 +2371,11 @@ config BITS_TEST
+ 
+ 	  If unsure, say N.
+ 
++config SLUB_KUNIT_TEST
++	tristate "KUnit Test for SLUB cache error detection" if !KUNIT_ALL_TESTS
++	depends on SLUB_DEBUG && KUNIT
++	default KUNIT_ALL_TESTS
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index b5307d3eec1a..e1eb986c0e87 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -352,5 +352,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+ obj-$(CONFIG_BITS_TEST) += test_bits.o
+ obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
++obj-$(CONFIG_SLUB_KUNIT_TEST) += test_slub.o
+ 
+ obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
+diff --git a/lib/test_slub.c b/lib/test_slub.c
+new file mode 100644
+index 000000000000..4f8ea3c7d867
+--- /dev/null
++++ b/lib/test_slub.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <kunit/test.h>
++#include <linux/mm.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include "../mm/slab.h"
++
++
++static void test_clobber_zone(struct kunit *test)
++{
++	struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_alloc", 64, 0,
++				SLAB_RED_ZONE | SLAB_SILENT_ERRORS, NULL);
++	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
++
++	p[64] = 0x12;
++
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 1, s->errors);
++
++	kmem_cache_free(s, p);
++	kmem_cache_destroy(s);
++}
++
++static void test_next_pointer(struct kunit *test)
++{
++	struct kmem_cache *s = kmem_cache_create("TestSlub_next_ptr_free", 64, 0,
++				SLAB_POISON | SLAB_SILENT_ERRORS, NULL);
++	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
++	unsigned long tmp;
++	unsigned long *ptr_addr;
++
++	kmem_cache_free(s, p);
++
++	ptr_addr = (unsigned long *)(p + s->offset);
++	tmp = *ptr_addr;
++	p[s->offset] = 0x12;
++
++	/*
++	 * Expecting two errors.
++	 * One for the corrupted freechain and the other one for the wrong
++	 * count of objects in use.
++	 */
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 2, s->errors);
++
++	/*
++	 * Try to repair corrupted freepointer.
++	 * Still expecting one error for the wrong count of objects in use.
++	 */
++	*ptr_addr = tmp;
++
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 1, s->errors);
++
++	/*
++	 * Previous validation repaired the count of objects in use.
++	 * Now expecting no error.
++	 */
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 0, s->errors);
++
++	kmem_cache_destroy(s);
++}
++
++static void test_first_word(struct kunit *test)
++{
++	struct kmem_cache *s = kmem_cache_create("TestSlub_1th_word_free", 64, 0,
++				SLAB_POISON | SLAB_SILENT_ERRORS, NULL);
++	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
++
++	kmem_cache_free(s, p);
++	*p = 0x78;
++
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 1, s->errors);
++
++	kmem_cache_destroy(s);
++}
++
++static void test_clobber_50th_byte(struct kunit *test)
++{
++	struct kmem_cache *s = kmem_cache_create("TestSlub_50th_word_free", 64, 0,
++				SLAB_POISON | SLAB_SILENT_ERRORS, NULL);
++	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
++
++	kmem_cache_free(s, p);
++	p[50] = 0x9a;
++
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 1, s->errors);
++	kmem_cache_destroy(s);
++}
++
++static void test_clobber_redzone_free(struct kunit *test)
++{
++	struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_free", 64, 0,
++				SLAB_RED_ZONE | SLAB_SILENT_ERRORS, NULL);
++	u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
++
++	kmem_cache_free(s, p);
++	p[64] = 0xab;
++
++	validate_slab_cache(s);
++	KUNIT_EXPECT_EQ(test, 1, s->errors);
++	kmem_cache_destroy(s);
++}
++
++static struct kunit_case test_cases[] = {
++	KUNIT_CASE(test_clobber_zone),
++	KUNIT_CASE(test_next_pointer),
++	KUNIT_CASE(test_first_word),
++	KUNIT_CASE(test_clobber_50th_byte),
++	KUNIT_CASE(test_clobber_redzone_free),
++	{}
++};
++
++static struct kunit_suite test_suite = {
++	.name = "slub_test",
++	.test_cases = test_cases,
++};
++kunit_test_suite(test_suite);
++
++MODULE_LICENSE("GPL");
+diff --git a/mm/slab.h b/mm/slab.h
+index 076582f58f68..382507b6cab9 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -134,7 +134,8 @@ static inline slab_flags_t kmem_cache_flags(unsigned int object_size,
+ #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER)
+ #elif defined(CONFIG_SLUB_DEBUG)
+ #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
+-			  SLAB_TRACE | SLAB_CONSISTENCY_CHECKS)
++			  SLAB_TRACE | SLAB_CONSISTENCY_CHECKS | \
++			  SLAB_SILENT_ERRORS)
+ #else
+ #define SLAB_DEBUG_FLAGS (0)
+ #endif
+@@ -164,7 +165,8 @@ static inline slab_flags_t kmem_cache_flags(unsigned int object_size,
+ 			      SLAB_NOLEAKTRACE | \
+ 			      SLAB_RECLAIM_ACCOUNT | \
+ 			      SLAB_TEMPORARY | \
+-			      SLAB_ACCOUNT)
++			      SLAB_ACCOUNT | \
++			      SLAB_SILENT_ERRORS)
+ 
+ bool __kmem_cache_empty(struct kmem_cache *);
+ int __kmem_cache_shutdown(struct kmem_cache *);
+@@ -215,6 +217,7 @@ DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+ DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
+ #endif
+ extern void print_tracking(struct kmem_cache *s, void *object);
++long validate_slab_cache(struct kmem_cache *s);
+ #else
+ static inline void print_tracking(struct kmem_cache *s, void *object)
+ {
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 88e833986332..239c9095e7ea 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -55,7 +55,7 @@ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+  */
+ #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
+ 		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
+-		SLAB_FAILSLAB | kasan_never_merge())
++		SLAB_FAILSLAB | SLAB_SILENT_ERRORS | kasan_never_merge())
+ 
+ #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
+ 			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
+diff --git a/mm/slub.c b/mm/slub.c
+index 3021ce9bf1b3..7083e89432d0 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -673,14 +673,16 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
+ 
+ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
+ {
+-	struct va_format vaf;
+-	va_list args;
+-
+-	va_start(args, fmt);
+-	vaf.fmt = fmt;
+-	vaf.va = &args;
+-	pr_err("FIX %s: %pV\n", s->name, &vaf);
+-	va_end(args);
++	if (!(s->flags & SLAB_SILENT_ERRORS)) {
++		struct va_format vaf;
++		va_list args;
++
++		va_start(args, fmt);
++		vaf.fmt = fmt;
++		vaf.va = &args;
++		pr_err("FIX %s: %pV\n", s->name, &vaf);
++		va_end(args);
++	}
+ }
+ 
+ static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
+@@ -739,8 +741,10 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
+ void object_err(struct kmem_cache *s, struct page *page,
+ 			u8 *object, char *reason)
+ {
+-	slab_bug(s, "%s", reason);
+-	print_trailer(s, page, object);
++	if (!(s->flags & SLAB_SILENT_ERRORS)) {
++		slab_bug(s, "%s", reason);
++		print_trailer(s, page, object);
++	}
+ }
+ 
+ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
+@@ -752,9 +756,11 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
+ 	va_start(args, fmt);
+ 	vsnprintf(buf, sizeof(buf), fmt, args);
+ 	va_end(args);
+-	slab_bug(s, "%s", buf);
+-	print_page_info(page);
+-	dump_stack();
++	if (!(s->flags & SLAB_SILENT_ERRORS)) {
++		slab_bug(s, "%s", buf);
++		print_page_info(page);
++		dump_stack();
++	}
+ }
+ 
+ static void init_object(struct kmem_cache *s, void *object, u8 val)
+@@ -798,11 +804,13 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+ 	while (end > fault && end[-1] == value)
+ 		end--;
+ 
+-	slab_bug(s, "%s overwritten", what);
+-	pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
++	if (!(s->flags & SLAB_SILENT_ERRORS)) {
++		slab_bug(s, "%s overwritten", what);
++		pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+ 					fault, end - 1, fault - addr,
+ 					fault[0], value);
+-	print_trailer(s, page, object);
++		print_trailer(s, page, object);
++	}
+ 
+ 	restore_bytes(s, what, value, fault, end);
+ 	return 0;
+@@ -964,6 +972,7 @@ static int check_slab(struct kmem_cache *s, struct page *page)
+ 
+ 	if (!PageSlab(page)) {
+ 		slab_err(s, page, "Not a valid slab page");
++		s->errors += 1;
+ 		return 0;
+ 	}
+ 
+@@ -971,11 +980,13 @@ static int check_slab(struct kmem_cache *s, struct page *page)
+ 	if (page->objects > maxobj) {
+ 		slab_err(s, page, "objects %u > max %u",
+ 			page->objects, maxobj);
++		s->errors += 1;
+ 		return 0;
+ 	}
+ 	if (page->inuse > page->objects) {
+ 		slab_err(s, page, "inuse %u > max %u",
+ 			page->inuse, page->objects);
++		s->errors += 1;
+ 		return 0;
+ 	}
+ 	/* Slab_pad_check fixes things up after itself */
+@@ -1008,8 +1019,10 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
+ 				page->freelist = NULL;
+ 				page->inuse = page->objects;
+ 				slab_fix(s, "Freelist cleared");
++				s->errors += 1;
+ 				return 0;
+ 			}
++			s->errors += 1;
+ 			break;
+ 		}
+ 		object = fp;
+@@ -1026,12 +1039,14 @@ static int on_freelist(struct kmem_cache *s, struct page *page, void *search)
+ 			 page->objects, max_objects);
+ 		page->objects = max_objects;
+ 		slab_fix(s, "Number of objects adjusted.");
++		s->errors += 1;
+ 	}
+ 	if (page->inuse != page->objects - nr) {
+ 		slab_err(s, page, "Wrong object count. Counter is %d but counted were %d",
+ 			 page->inuse, page->objects - nr);
+ 		page->inuse = page->objects - nr;
+ 		slab_fix(s, "Object count adjusted.");
++		s->errors += 1;
+ 	}
+ 	return search == NULL;
+ }
+@@ -4629,8 +4644,10 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
+ 		u8 val = test_bit(__obj_to_index(s, addr, p), map) ?
+ 			 SLUB_RED_INACTIVE : SLUB_RED_ACTIVE;
+ 
+-		if (!check_object(s, page, p, val))
++		if (!check_object(s, page, p, val)) {
++			s->errors += 1;
+ 			break;
++		}
+ 	}
+ 	put_map(map);
+ unlock:
+@@ -4650,9 +4667,11 @@ static int validate_slab_node(struct kmem_cache *s,
+ 		validate_slab(s, page);
+ 		count++;
+ 	}
+-	if (count != n->nr_partial)
++	if (count != n->nr_partial) {
+ 		pr_err("SLUB %s: %ld partial slabs counted but counter=%ld\n",
+ 		       s->name, count, n->nr_partial);
++		s->errors += 1;
++	}
+ 
+ 	if (!(s->flags & SLAB_STORE_USER))
+ 		goto out;
+@@ -4661,20 +4680,23 @@ static int validate_slab_node(struct kmem_cache *s,
+ 		validate_slab(s, page);
+ 		count++;
+ 	}
+-	if (count != atomic_long_read(&n->nr_slabs))
++	if (count != atomic_long_read(&n->nr_slabs)) {
+ 		pr_err("SLUB: %s %ld slabs counted but counter=%ld\n",
+ 		       s->name, count, atomic_long_read(&n->nr_slabs));
++		s->errors += 1;
++	}
+ 
+ out:
+ 	spin_unlock_irqrestore(&n->list_lock, flags);
+ 	return count;
+ }
+ 
+-static long validate_slab_cache(struct kmem_cache *s)
++long validate_slab_cache(struct kmem_cache *s)
+ {
+ 	int node;
+ 	unsigned long count = 0;
+ 	struct kmem_cache_node *n;
++	s->errors = 0;
+ 
+ 	flush_all(s);
+ 	for_each_kmem_cache_node(s, node, n)
+@@ -4682,6 +4704,8 @@ static long validate_slab_cache(struct kmem_cache *s)
+ 
+ 	return count;
+ }
++EXPORT_SYMBOL(validate_slab_cache);
++
+ /*
+  * Generate lists of code addresses where slabcache objects are allocated
+  * and freed.
+-- 
+2.17.1
 
