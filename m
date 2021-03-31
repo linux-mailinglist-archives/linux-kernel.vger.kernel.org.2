@@ -2,62 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9813734F639
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B889734F63D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhCaB3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:29:24 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:21094 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhCaB3S (ORCPT
+        id S232946AbhCaBbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 21:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhCaBaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:29:18 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id E94BC9801DF;
-        Wed, 31 Mar 2021 09:29:15 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] arch: parisc: Remove duplicate struct task_struct declaration
-Date:   Wed, 31 Mar 2021 09:28:50 +0800
-Message-Id: <20210331012857.2799385-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Mar 2021 21:30:52 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A831C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 18:30:52 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id a8so18429038oic.11
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 18:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=KQ4UhoRuOYIePIQ52r8+aVrhFWUe79SfbbimcSIL+Nc=;
+        b=lQx2TYvo3z4/Y4K/aqMjcHcRs6Wma0Bb6oKkFH9AIxVw34/QBkIzCjYOs0bfDw9izS
+         j1yelFrahfno18c3R6rrJk6pF/aghxdTt32ikGRWmoIeGuL1FnH3bw88C0HBHj3J2wvI
+         TgIVA8/qZhNr9ivGIfA0FP4+jByBTuc+2bJFmHQXY3YO5ZJ3u4Lcob2X4H0T/y+BqOgg
+         F7pFfydHBC4to4A5RcWZYzWCIelEUmAD45atU/J84syxq3vRvFaUZ4ydNwKEJMWxYA8M
+         T9fIxBg84kK59o8yCDeArwA9HIijk+I9//OcqphHVpWlrHFh4StWLqFZScfmE86NpUVB
+         +rgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=KQ4UhoRuOYIePIQ52r8+aVrhFWUe79SfbbimcSIL+Nc=;
+        b=SgUEV8rhMwwic55LK0D4bdj6dLJXD3aSORAMVzu2/gY0tTbVWhebsnkxlkDfcVTglk
+         EDxYzNCJ2HUY/vRbnfVcBhTVQ2Db7L6al5xb5Fb5dT2lPk4o/q6Y1/0sdM4RG8PzsbKw
+         WyTJZbABBqaBVJ9mv3CI7W3k0GRhBSXWCp1m6tv2ZmabUsZr/OFE7I/gwKfKVse/bQHF
+         SbKedRRfcqr6gyQ+NSxEuZOab9kvf4VJj+HPTG4wSw/gOoGLykeoHFxFuLTbRvAKuWzs
+         NZ9mu5WBt25ECZEo6y2dWhtahHAAeWeyHpQ712jyJF6Y6QasPmFObwydpJGyCUybOrSY
+         P7pQ==
+X-Gm-Message-State: AOAM532CodITQ7V03RltGx2YIUWT3SfRzmF4P+KEWeltWj01PdqgAQgw
+        e9sSjNRJc7nkjFHOuwWzGF7J5w==
+X-Google-Smtp-Source: ABdhPJzgATn5d/xGPP8lN0hUfrUaP2MzX9O5uWPP80RgZEGYBVqB4ER4X7Jo2RE+R3sVH8Ekz00hSQ==
+X-Received: by 2002:a05:6808:5cb:: with SMTP id d11mr502740oij.169.1617154251409;
+        Tue, 30 Mar 2021 18:30:51 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g11sm141653ots.34.2021.03.30.18.30.50
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 30 Mar 2021 18:30:51 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 18:30:22 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: BUG_ON(!mapping_empty(&inode->i_data))
+Message-ID: <alpine.LSU.2.11.2103301654520.2648@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTx1IGRgYQxlKTx9KVkpNSkxKTk9KTk1JSkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pwg6Sgw5UT8XQzZKLBFNCTIX
-        KzhPCRhVSlVKTUpMSk5PSk5NTklOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUtINwY+
-X-HM-Tid: 0a7885e62653d992kuwse94bc9801df
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct task_struct is declared twice. One has been declared
-at 154th line. Remove the duplicate.
+Running my usual tmpfs kernel builds swapping load, on Sunday's rc4-mm1
+mmotm (I never got to try rc3-mm1 but presume it behaved the same way),
+I hit clear_inode()'s BUG_ON(!mapping_empty(&inode->i_data)); on two
+machines, within an hour or few, repeatably though not to order.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/parisc/include/asm/processor.h | 1 -
- 1 file changed, 1 deletion(-)
+The stack backtrace has always been clear_inode < ext4_clear_inode <
+ext4_evict_inode < evict < dispose_list < prune_icache_sb <
+super_cache_scan < do_shrink_slab < shrink_slab_memcg < shrink_slab <
+shrink_node_memgs < shrink_node < balance_pgdat < kswapd.
 
-diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm/processor.h
-index 11ece0d07374..b5fbcd2c1780 100644
---- a/arch/parisc/include/asm/processor.h
-+++ b/arch/parisc/include/asm/processor.h
-@@ -272,7 +272,6 @@ on downward growing arches, it looks like this:
- 	regs->gr[23] = 0;				\
- } while(0)
- 
--struct task_struct;
- struct mm_struct;
- 
- /* Free all resources held by a thread. */
--- 
-2.25.1
+ext4 is the disk filesystem I read the source to build from, and also
+the filesystem I use on a loop device on a tmpfs file: I have not tried
+with other filesystems, nor checked whether perhaps it happens always on
+the loop one or always on the disk one.  I have not seen it happen with
+tmpfs - probably because its inodes cannot be evicted by the shrinker
+anyway; I have not seen it happen when "rm -rf" evicts ext4 or tmpfs
+inodes (but suspect that may be down to timing, or less pressure).
+I doubt it's a matter of filesystem: think it's an XArray thing.
 
+Whenever I've looked at the XArray nodes involved, the root node
+(shift 6) contained one or three (adjacent) pointers to empty shift
+0 nodes, which each had offset and parent and array correctly set.
+Is there some way in which empty nodes can get left behind, and so
+fail eviction's mapping_empty() check?
+
+I did wonder whether some might get left behind if xas_alloc() fails
+(though probably the tree here is too shallow to show that).  Printks
+showed that occasionally xas_alloc() did fail while testing (maybe at
+memcg limit), but there was no correlation with the BUG_ONs.
+
+I did wonder whether this is a long-standing issue, which your new
+BUG_ON is the first to detect: so tried 5.12-rc5 clear_inode() with
+a BUG_ON(!xa_empty(&inode->i_data.i_pages)) after its nrpages and
+nrexceptional BUG_ONs.  The result there surprised me: I expected
+it to behave the same way, but it hits that BUG_ON in a minute or
+so, instead of an hour or so.  Was there a fix you made somewhere,
+to avoid the BUG_ON(!mapping_empty) most of the time? but needs
+more work. I looked around a little, but didn't find any.
+
+I had hoped to work this out myself, and save us both some writing:
+but better hand over to you, in the hope that you'll quickly guess
+what's up, then I can try patches. I do like the no-nrexceptionals
+series, but there's something still to be fixed.
+
+Hugh
