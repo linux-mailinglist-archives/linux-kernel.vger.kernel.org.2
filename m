@@ -2,155 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9748350A6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A043F350A52
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhCaWov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S232417AbhCaWlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhCaWoj (ORCPT
+        with ESMTP id S229497AbhCaWlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:44:39 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D3C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:44:39 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id 1so232405qtb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:44:38 -0700 (PDT)
+        Wed, 31 Mar 2021 18:41:09 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C344FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:41:08 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j7so21210285wrd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:41:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SAjs9EXx6Yc80YSTGK/3hcA/MZAHT8V3jPabf02H2g4=;
-        b=M8JTOyCV+omhztb3AOc76Z2AYBAfNhaBfcELYiMbILrjm988hUt/iB9zi/7/Ye5al2
-         Sn6VCj2mDj3ceKf+3fr2qzzD47B2KNRVS4F1UIOg7YbXoq/bC/lk9IHsrh1eehX7uBNX
-         VjmHcTe+Qf5Bi5FQJsrSXKg4tBnotQmwxT59Q=
+        bh=zL02aTh2+xB20mrzZTojWu/p9mboxJJMVbqdRwrxVWU=;
+        b=adqroYbVZMOn6aywcuL5FiFj/TTSYhza0g/b3jWAXGkMbxgka2FAwP2vwkFuKh5YKR
+         sBzIeT+qEa1cE8HG0ukQctjtt1Os2zzGE/bpKid0jlqSIorrQb3A4KuCGhvHAIsbMm/r
+         K0Lu7AUyvzUA6cbYk1h9WWFaO9HeqnZkLoLhnPg2i9U5OX/H3PB3CH1o3KMrnyv7HkdE
+         jcVD++Q0NuQp9d8GG3B5E0U6KPWh4W+UnxDsTquo1JARfUEjBHtEzss+Kds4RLOjN+Y5
+         p2yAGvybkIlSHcnOo4Lv36R51cyXwC1+OH6oRyUgmsWAFtqR7Jhdsy9461shUQzIaYgI
+         KV9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SAjs9EXx6Yc80YSTGK/3hcA/MZAHT8V3jPabf02H2g4=;
-        b=CxEmranFAr7dZST3PQZpeHkc2bBEy8AU+M6mSadCpvnnZqoLcq3tt551oO3WLnoZ+m
-         XCjaaLGtZVRjWCvfN8+8bvyNcO44Q7XxL+BWPF7gDlEgj+iqmy7qVtU5iHf0Ro5ZXGbp
-         qCv2csQfd+4iD1lmtiL5KgSyeWBxXpuQ+LVnuB/ipCkbsF8/+sGvWQ8pCE+XJYHrmCYA
-         0nidHRAKgDZ7Zo7UueL4B6CNFJ5xQw9rliD3Rzj5ZJKSLjOY5g55PrjdnqIl0MT09IYm
-         1ri21TUKS+6pmiOwE+zN6NHq/PJQwyUtMemdNwzvomltfEix9rlOm+ffS9BIXvqvojSt
-         l6dQ==
-X-Gm-Message-State: AOAM532BMOwmShNcdX1nFlxNJoe/D6EnknanAvUdpNDKQmUnn2r6NUgQ
-        iNaqvvEYisYQXse6XUWGmAUEmQbTQBZLig==
-X-Google-Smtp-Source: ABdhPJwc8tPrZetXDWbAuxRkDYFkQ8WW2cBtej4mn9QKRaL1o/p1dG149NN0SoB+tAr8EB5zp3XGOw==
-X-Received: by 2002:ac8:7b8b:: with SMTP id p11mr4484844qtu.57.1617230677572;
-        Wed, 31 Mar 2021 15:44:37 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id o197sm2538073qka.26.2021.03.31.15.44.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 15:44:36 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id g38so22841615ybi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:44:36 -0700 (PDT)
-X-Received: by 2002:a25:74ca:: with SMTP id p193mr7640863ybc.405.1617230676164;
- Wed, 31 Mar 2021 15:44:36 -0700 (PDT)
+        bh=zL02aTh2+xB20mrzZTojWu/p9mboxJJMVbqdRwrxVWU=;
+        b=H2eD12pMg3Kk2RXr0lILdk3SwXVD9PRmqkNxecAmuZZJYjT5xAqhF1WjWB7a7tNg7R
+         hV7LMHAnKiCUniariO6PkNa3vVKQ2R/ZGRCGPmgxsd0w6qgKGtTNJOY0LGyrfxl6g5wy
+         AmCp7zcD/ef90PrN1HvdoenTGbxYmpHW+ohcMlCKe4B/ZUzM7pessLTX27USRa4Y95pC
+         eC3sQYDc9jDRaoN1d6KquXHwj7FzjYfoKJaRkQiakZnbgJGJhRIg9ores/hd6icypKsp
+         iww9kfzdYd9eaMSy4jM1zOxHdNw0fa1yr/bZwgzso4SxKcIxdEG/0gJCcpIX4joQ1hz9
+         rirA==
+X-Gm-Message-State: AOAM530Mh3dSHdgRN2jxd1/wuYZuaV1Oy/GCc1ei6G4EJ1Yp3wQtMsdj
+        KraT89aaLnwLw2q1rFcXAdTYGyTBMdPxYwk105M=
+X-Google-Smtp-Source: ABdhPJzweIdnxhLeaiHOfcBP3GgWZUWJ0OWvZt5FEH6yBIZLAVjYG4OgES7RTLr/BWfJJImn3MtWWDxPyBcSdMcriyY=
+X-Received: by 2002:adf:fb42:: with SMTP id c2mr6066632wrs.83.1617230467404;
+ Wed, 31 Mar 2021 15:41:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com> <20210331221630.488498-3-robdclark@gmail.com>
-In-Reply-To: <20210331221630.488498-3-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 31 Mar 2021 15:44:24 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=USXBm-ZLafNWbUK=Ny7_vwtyG164mQFs87SkXqim-Vpw@mail.gmail.com>
-Message-ID: <CAD=FV=USXBm-ZLafNWbUK=Ny7_vwtyG164mQFs87SkXqim-Vpw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drm/msm: Avoid mutex in shrinker_count()
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210325143700.1490518-1-jordan@cosmicpenguin.net>
+In-Reply-To: <20210325143700.1490518-1-jordan@cosmicpenguin.net>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 31 Mar 2021 15:44:31 -0700
+Message-ID: <CAF6AEGuf45zpE67YEBjgtYWbrr7zGhEY6xvsZpwXSDM1OFoyeQ@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH] mailmap: Update email address for Jordan Crouse
+To:     Jordan Crouse <jordan@cosmicpenguin.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        freedreno <freedreno@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
+On Thu, Mar 25, 2021 at 7:37 AM Jordan Crouse <jordan@cosmicpenguin.net> wrote:
 >
-> @@ -818,11 +820,19 @@ static void update_inactive(struct msm_gem_object *msm_obj)
->         mutex_lock(&priv->mm_lock);
->         WARN_ON(msm_obj->active_count != 0);
+> jcrouse at codeaurora.org ha started bouncing. Redirect to a
+
+nit: s/ha/has/
+
+> more permanent address.
 >
-> +       if (msm_obj->dontneed)
-> +               mark_unpurgable(msm_obj);
-> +
->         list_del_init(&msm_obj->mm_list);
-> -       if (msm_obj->madv == MSM_MADV_WILLNEED)
-> +       if (msm_obj->madv == MSM_MADV_WILLNEED) {
->                 list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
-> -       else
-> +       } else if (msm_obj->madv == MSM_MADV_DONTNEED) {
->                 list_add_tail(&msm_obj->mm_list, &priv->inactive_dontneed);
-> +               mark_purgable(msm_obj);
-> +       } else {
-> +               WARN_ON(msm_obj->madv != __MSM_MADV_PURGED);
-> +               list_add_tail(&msm_obj->mm_list, &priv->inactive_purged);
+> Signed-off-by: Jordan Crouse <jordan@cosmicpenguin.net>
 
-I'm probably being dense, but what's the point of adding it to the
-"inactive_purged" list here? You never look at that list, right? You
-already did a list_del_init() on this object's list pointer
-("mm_list"). I don't see how adding it to a bogus list helps with
-anything.
+Acked-by: Rob Clark <robdclark@gmail.com>
 
-
-> @@ -198,6 +203,33 @@ static inline bool is_vunmapable(struct msm_gem_object *msm_obj)
->         return (msm_obj->vmap_count == 0) && msm_obj->vaddr;
->  }
+> ---
 >
-> +static inline void mark_purgable(struct msm_gem_object *msm_obj)
-> +{
-> +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
-> +
-> +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
-> +
-> +       if (WARN_ON(msm_obj->dontneed))
-> +               return;
-
-The is_purgeable() function also checks other things besides just
-"MSM_MADV_DONTNEED". Do we need to check those too? Specifically:
-
- msm_obj->sgt && !msm_obj->base.dma_buf && !msm_obj->base.import_attach
-
-...or is it just being paranoid?
-
-I guess I'm just worried that if any of those might be important then
-we'll consistently report back that we have a count of things that can
-be purged but then scan() won't find anything to do. That wouldn't be
-great.
-
-
-> +       priv->shrinkable_count += msm_obj->base.size >> PAGE_SHIFT;
-> +       msm_obj->dontneed = true;
-> +}
-> +
-> +static inline void mark_unpurgable(struct msm_gem_object *msm_obj)
-> +{
-> +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
-> +
-> +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
-> +
-> +       if (WARN_ON(!msm_obj->dontneed))
-> +               return;
-> +
-> +       priv->shrinkable_count -= msm_obj->base.size >> PAGE_SHIFT;
-> +       WARN_ON(priv->shrinkable_count < 0);
-
-If you changed the order maybe you could make shrinkable_count
-"unsigned long" to match the shrinker API?
-
- new_shrinkable = msm_obj->base.size >> PAGE_SHIFT;
- WARN_ON(new_shrinkable > priv->shrinkable_count);
- priv->shrinkable_count -= new_shrinkable
-
-
--Doug
+>  .mailmap | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/.mailmap b/.mailmap
+> index 85b93cdefc87..8c489cb1d1ce 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -165,6 +165,7 @@ Johan Hovold <johan@kernel.org> <jhovold@gmail.com>
+>  Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
+>  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>  John Stultz <johnstul@us.ibm.com>
+> +Jordan Crouse <jordan@cosmicpenguin.net> <jcrouse@codeaurora.org>
+>  <josh@joshtriplett.org> <josh@freedesktop.org>
+>  <josh@joshtriplett.org> <josh@kernel.org>
+>  <josh@joshtriplett.org> <josht@linux.vnet.ibm.com>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
