@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821A03509CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974A73509CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhCaVwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
+        id S232290AbhCaVx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhCaVwU (ORCPT
+        with ESMTP id S231676AbhCaVxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:52:20 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43109C061574;
-        Wed, 31 Mar 2021 14:52:20 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id o5so389615qkb.0;
-        Wed, 31 Mar 2021 14:52:20 -0700 (PDT)
+        Wed, 31 Mar 2021 17:53:19 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8111DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id w10so249202pgh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iVgFfy9Gk4TopgDWAZb3OEMFsekIXo3QttoRKgThI1I=;
-        b=LlC/3vOcZu0Rh5837wBCMc/jMQBLoS5tu19QTNj1eof7IhHTCSrowwreYpcEeTbT5X
-         NlWLfUqhbD9HhkHO9DsT4Tyx2dRlg91X71xYeCMm7fKtrUmafIBq7/LrPrNoupfhFp3m
-         GewFfvppFWbs9VRkNf6T/omLtxmxV/Um2gbRVOo+AHZwOoh9mGFiVd9+oTJRsbPr+urV
-         9+SzjFJBATN+dQCPHnqvB4BC59ngCo/QcWw7P40soldfgVxjJkBfgZEWDD018mop0vXZ
-         RHFwc/5vTY5r72yfm8jOOOnGx6oz9cJw+eVDnJnP827bZO8OihlinIME1rTQWHzKsxKK
-         ckUg==
+        bh=MM0j2oe36X//rQQ8+GyI9vMxc0vf6Nwq2VgkiW4HgEw=;
+        b=eiEMv4/PuzRRpwJGs4ojsw2qXKVA+nsWHdR/jJo8hrb977VXco2X0B5pJTRZngZvI3
+         mj+E2o1JLGDQ7ePxR1DzidIkcOWf6HpuTaTbOkvCxVanOg7kssWTRzyJ+mq8+JF6R8bS
+         a7doki5tC3wTAMlO3vi4fNjPWeRN5Eb45UOI+quwVBHfrS4VnPKxKKON9nTfFXG871c5
+         GQFkXfw/PFnAeCso4esXRCMAxBNw1toz0booDEaSZ/55+91axgNUd47cTjH5O6+t45aN
+         IwpZC48V92xTnQiiaS8fZpgqmrdwA6lqAgUOE1pm5rBzBFfMZR2Xuz2aZCoRAseLOgiD
+         5Jvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iVgFfy9Gk4TopgDWAZb3OEMFsekIXo3QttoRKgThI1I=;
-        b=agDMhbaDAHhjurNo28A9Y1aV0ZC/Zyt/xhO3l+yk31Vamck4ce7KHRm/vpbK+iLv7d
-         Wy6a9M6RF+Uhduu77L93Ar3mhuT2m+2/OdcydyCeDcIsBllYc8CVFLlxQJ74lNd0Qt/W
-         ZZ4PRKhthAZ4aCENq1pGyu/517QKZvod6UwcUnCWfDwHUaAIE6jOz52ffkQ+wN0yrt5Q
-         p6dJPbYNBGC5aoHTk3zyKj9y9AIzI+z3m2jwlnIiWC7PHCJqVIKiyH1tnDmp3vzxzGfv
-         xQIBg/aGjzEwZYTBKih505nmNuF7iTi45Io5/Y67q2ZdVAEP2dS0f9Bp9gu6aLkR98Ld
-         lWfQ==
-X-Gm-Message-State: AOAM533G4wIwFMIZpqZKQPjpNwq5k6JnUGs59f8qpN6bU0TE+I+fvTdK
-        ZD3YHFrVtp7CHOPDD0Q6OzU=
-X-Google-Smtp-Source: ABdhPJwK1AgyeLn7/B6+lfbSP03Q/ohuFDGUVnzdZCNHOlmGfkjpcbj+5GbXHWQQi4iDLVthXpiBHg==
-X-Received: by 2002:a37:78b:: with SMTP id 133mr5361746qkh.109.1617227539232;
-        Wed, 31 Mar 2021 14:52:19 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id d84sm2453310qke.53.2021.03.31.14.52.18
+        bh=MM0j2oe36X//rQQ8+GyI9vMxc0vf6Nwq2VgkiW4HgEw=;
+        b=QS9gjFLva/4kkhpxq5L/rNjTYBwKIRdo76cWT3DuT7JamWWcAA0SITfkjPYr+3/T0s
+         xGlv7JE7i45DG4HhsfQYKzaBxxo6qtK3lSxfFm7N0s8wJN8deRFIolmL4HUo4yHU/NyS
+         buZwBO5SG9o0zsaqY9zBHTHSjvsoxowI8BjzlP8WYCp/XJlHUBqgCDLjQOsU34diib+A
+         Hc8yFABTzFJdJG3jvVIg3q9hHOP8AbkkxoT9MmMK0IyN0t5FhBlcKqaIqeeS3vd8aUcz
+         JHRgGL/2/nVK2vuMUD+UI1wpZNU7EXw5iYCZaMIK2F48K9ngx6lavVV7iDqjeeewOiA0
+         GHFw==
+X-Gm-Message-State: AOAM532LNnPc6zReE82iq2O3lS1HWi00pBhP8ICLK0l8pH1kWE9AhXBu
+        TAxItWylE61qGQ/r86EumzzeGQ==
+X-Google-Smtp-Source: ABdhPJzxk3OvWmDbPosHgkRyAsP6nvxaf+fnOjHVCqb5cNwnBuDUp1zakhvQzQOhTHLpnCqXFcMjJQ==
+X-Received: by 2002:a62:7f45:0:b029:205:9617:a819 with SMTP id a66-20020a627f450000b02902059617a819mr4681004pfd.17.1617227598227;
+        Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s22sm3172807pfe.150.2021.03.31.14.53.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 14:52:18 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:52:18 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Wed, 31 Mar 2021 14:53:17 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 21:53:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH] memfd_secret: use unsigned int rather than long as
- syscall flags type
-Message-ID: <20210331215218.GA3437@yury-ThinkPad>
-References: <20210331142345.27532-1-rppt@kernel.org>
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <YGTvSvr2T2v3t3XA@google.com>
+References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+ <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331142345.27532-1-rppt@kernel.org>
+In-Reply-To: <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 05:23:45PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Yuri Norov says:
-> 
->   If parameter size is the same for native and compat ABIs, we may
->   wire a syscall made by compat client to native handler. This is
->   true for unsigned int, but not true for unsigned long or pointer.
-> 
->   That's why I suggest using unsigned int and so avoid creating compat
->   entry point.
-> 
-> Use unsigned int as the type of the flags parameter in memfd_secret()
-> system call.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Mar 31, 2021, Kuppuswamy Sathyanarayanan wrote:
+> Changes since v3:
+>  * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
+Why bother?  There are a whole pile of features that are dictated by the TDX
+module spec.  MONITOR/MWAIT is about as uninteresting as it gets, e.g. absolute
+worst case scenario is the guest kernel crashes, whereas a lot of spec violations
+would compromise the security of the guest.
+
+> +	case EXIT_REASON_MONITOR_INSTRUCTION:
+> +	case EXIT_REASON_MWAIT_INSTRUCTION:
+> +		/*
+> +		 * MWAIT/MONITOR features are disabled by TDX Module (SEAM)
+> +		 * and also re-suppressed in kernel by clearing
+> +		 * X86_FEATURE_MWAIT CPU feature flag in tdx_early_init(). So
+> +		 * if TD guest still executes MWAIT/MONITOR instruction with
+> +		 * above suppression, it needs user attention.
+> +		 */
+> +		WARN(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
+
+Why not just WARN_ONCE and call it good?
+
+> +		break;
+>  	default:
+>  		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
+>  		return -EFAULT;
+> -- 
+> 2.25.1
+> 
