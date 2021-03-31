@@ -2,175 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B573350AA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF86350ACA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhCaXYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhCaXXh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:23:37 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570A9C061574;
-        Wed, 31 Mar 2021 16:23:37 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id j18so21261608wra.2;
-        Wed, 31 Mar 2021 16:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nvf0X0kuUBIrjJFQmPlTVUK+MzbbTsSvRRBV7ySWQKg=;
-        b=lVWxM0JGLTdhYBijWz/nIZB9LzTKgbZPO19dHm0sk/cBxx+Oqdc8737D9KnCyuvnCl
-         mwDozu7eI1gcMX+0ntLDdn6prF1BPV4Z1fBILe6HWyAfP4uAtiYqrvXcKIZIFhIyfUXq
-         CTmDqA9FNnvFXAanZ7MLPuep6TJqt6JJTcNzF7baQWT3W6bgZ778sYKKnSFYNN4RZyx3
-         CGnFZxHU+uISZgqCPGdVkOtNhOO/nj4F7feqV8c4h8CF70ULvUqrDZSl7bj0PRCJ3041
-         NtQ7/nmLgoiog5piPryYwlV12xACbfIqZUyi2CCNOKpi33KdLFXbOYjmgiiVVV0U6W/I
-         rKqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nvf0X0kuUBIrjJFQmPlTVUK+MzbbTsSvRRBV7ySWQKg=;
-        b=EWio6Z7+ydpvgQ0d3h/5gFDBl8TobML9WIJxB4cCW6Si4kkVz+aEwf1FAk2JUilm0C
-         dxnT2h1Ncd8JOVawYg9UsthsJP/UOyNtioAYYvfvEILk1AHfHrDKc6W4zPQ9O7eum5fQ
-         Sk4LDmS1qgb2eYTz5xS5vOhCyTsMmSz+u7rO6xpDVtPGWmoQMltuc8IOfzG3TPf1aupK
-         RkrO7D1QHsfW5l9Oc0Dv2xuQ7bCbfUBqMbxyS+OiwN52HOvROVwvqr7y7MNeS/zxRhEF
-         xnHKkU8Bqh1dWtmoJtWVYu9TNwo87RvnAfHbigQ2h+PCVM72gGjr9uLegIN+kHTB1Ldy
-         w/zA==
-X-Gm-Message-State: AOAM532/TqxLji6zKLQIxXDDrOKvrElrXmv5n0J0E2rLrv45Kj9S9yC/
-        OnfpcBjbRxBmJIWnKOtXxRiVYE5AdHjVJduSHQQ=
-X-Google-Smtp-Source: ABdhPJwvz9Ycqmxh2Dl4E/ryLEp40/A9F1+XN64OU+/Ry0sHhsIc7yf4hJ5mrxQZUnNmEef3RGCq0N0JQYZqWBeoE5Y=
-X-Received: by 2002:adf:b30f:: with SMTP id j15mr6273325wrd.132.1617233016052;
- Wed, 31 Mar 2021 16:23:36 -0700 (PDT)
+        id S232493AbhCaX3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:29:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231620AbhCaX3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:29:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B823561057;
+        Wed, 31 Mar 2021 23:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617233364;
+        bh=JebS+wdY/3yB7SUptLSmC/sUwEFAeCuSulf8NIrcDyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SqAPqz6e3245+08kGeFKcOh4uuGzFMATtNMfF4K+fHHKK7c7Kr+hRXR7G5pE/6bur
+         2AAhu97AchtYopAQpd7v7t2dSKJTgqspLKJRtje04wwY93yNMFxsjnLLuH5Xcqpsgt
+         nyRnchFKt0uVCzAAvKVXFwXjrBOpmBf/FDijVMKj9WrZ/0YQN9ZCkdgdJWHYQrVK4H
+         MOASZSPhGjhT7gUrSqEj93YYqJfnZyk7dLb96c51Z0+LSQEdo+Z0tKmT1sgeUNuwQS
+         wJz/irzAboWWXhLW4rxkSOn3T6RvUYPi5Ube+yGfNcneWYDq80ONpPMu8sds8946YL
+         5ceiA4W9mVfcQ==
+Date:   Thu, 1 Apr 2021 02:29:22 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     David Gstir <david@sigma-star.at>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+Message-ID: <YGUF0sArOSy2gdpS@kernel.org>
+References: <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+ <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
+ <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
+ <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
+ <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
+ <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
+ <YGDpA4yPWmTWEyx+@kernel.org>
+ <1171de9c-97b9-3936-707b-16ec34cf94d5@pengutronix.de>
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com> <20210331221630.488498-3-robdclark@gmail.com>
- <CAD=FV=USXBm-ZLafNWbUK=Ny7_vwtyG164mQFs87SkXqim-Vpw@mail.gmail.com>
-In-Reply-To: <CAD=FV=USXBm-ZLafNWbUK=Ny7_vwtyG164mQFs87SkXqim-Vpw@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 31 Mar 2021 16:26:59 -0700
-Message-ID: <CAF6AEGutvjUQ-bQMsAYDLq5kdRo7rQ5XwWjGSRV27VT_UOuMTw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drm/msm: Avoid mutex in shrinker_count()
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1171de9c-97b9-3936-707b-16ec34cf94d5@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 3:44 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > @@ -818,11 +820,19 @@ static void update_inactive(struct msm_gem_object *msm_obj)
-> >         mutex_lock(&priv->mm_lock);
-> >         WARN_ON(msm_obj->active_count != 0);
-> >
-> > +       if (msm_obj->dontneed)
-> > +               mark_unpurgable(msm_obj);
-> > +
-> >         list_del_init(&msm_obj->mm_list);
-> > -       if (msm_obj->madv == MSM_MADV_WILLNEED)
-> > +       if (msm_obj->madv == MSM_MADV_WILLNEED) {
-> >                 list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
-> > -       else
-> > +       } else if (msm_obj->madv == MSM_MADV_DONTNEED) {
-> >                 list_add_tail(&msm_obj->mm_list, &priv->inactive_dontneed);
-> > +               mark_purgable(msm_obj);
-> > +       } else {
-> > +               WARN_ON(msm_obj->madv != __MSM_MADV_PURGED);
-> > +               list_add_tail(&msm_obj->mm_list, &priv->inactive_purged);
->
-> I'm probably being dense, but what's the point of adding it to the
-> "inactive_purged" list here? You never look at that list, right? You
-> already did a list_del_init() on this object's list pointer
-> ("mm_list"). I don't see how adding it to a bogus list helps with
-> anything.
+On Mon, Mar 29, 2021 at 12:11:24PM +0200, Ahmad Fatoum wrote:
+> Hello Jarkko,
+> 
+> On 28.03.21 22:37, Jarkko Sakkinen wrote:
+> > On Sat, Mar 27, 2021 at 01:41:24PM +0100, David Gstir wrote:
+> >> Generally speaking, I’d say trusting the CAAM RNG and trusting in it’s
+> >> other features are two separate things. However, reading through the CAAM
+> >> key blob spec I’ve got here, CAAM key blob keys (the keys that secure a blob’s
+> >> content) are generated using its internal RNG. So I’d save if the CAAM RNG
+> >> is insecure, so are generated key blobs. Maybe somebody with more insight
+> >> into the CAAM internals can verify that, but I don’t see any point in using
+> >> the kernel’s RNG as long as we let CAAM generate the key blob keys for us.
+> > 
+> > Here's my long'ish analysis. Please read it to the end if by ever means
+> > possible, and apologies, I usually try to keep usually my comms short, but
+> > this requires some more meat than the usual.
+> 
+> Thanks for the write-up!
+> 
+> > The Bad News
+> > ============
+> > 
+> > Now that we add multiple hardware trust sources for trusted keys, will
+> > there ever be a scenario where a trusted key is originally sealed with a
+> > backing hardware A, unsealed, and resealed with hardware B?
+> > 
+> > The hardware and vendor neutral way to generate the key material would be
+> > unconditionally always just the kernel RNG.
+> > 
+> > CAAM is actually worse than TCG because it's not even a standards body, if
+> > I got it right. Not a lot but at least a tiny fraction.
+> 
+> CAAM is how NXP calls the crypto accelerator built into some of its SoCs.
+> 
+> > This brings an open item in TEE patches: trusted_tee_get_random() is an
+> > issue in generating kernel material. I would rather replace that with
+> > kernel RNG *for now*, because the same open question applies also to ARM
+> > TEE. It's also a single company controlled backing technology.
+> > 
+> > By all practical means, I do trust ARM TEE in my personal life but this is
+> > not important.
+> > 
+> > CAAM *and* TEE backends break the golden rule of putting as little trust as
+> > possible to anything, even not anything weird is clear at sight, as
+> > security is essentially a game of known unknowns and unknown unknowns.
+> 
+> Agreed.
+> 
+> > The GOOD News
+> > =============
+> > 
+> > So there's actually option (C) that also fixes the TPM trustd keys issue:
+> > 
+> > Add a new kernel patch, which:
+> > 
+> > 1. Adds the use of kernel RNG as a boot option.
+> > 2. If this boot option is not active, the subsystem will print a warning
+> >    to klog denoting this.
+> > 3. Default is of course vendor RNG given the bad design issue in the TPM
+> >    trusted keys, but the warning in klog will help to address it at least
+> >    a bit.
+> 
+> Why should the TPM backend's choice influence later backends? We could add
+> a new option for key creation time, e.g.:
+> 
+>    keyctl add trusted kmk "new keylen rng=kernel" @s
+> 
+> The default would be rng=vendor if available with a fallback to rng=kernel,
+> which should always be available.
 
-It preserves the "every bo is in one of these lists" statement, but
-other than that you are right we aren't otherwise doing anything with
-that list.  (Or we could replace the list_del_init() with list_del()..
-I tend to instinctively go for list_del_init())
+It matters a lot because it is existing ABI - for better or worse.
 
->
-> > @@ -198,6 +203,33 @@ static inline bool is_vunmapable(struct msm_gem_object *msm_obj)
-> >         return (msm_obj->vmap_count == 0) && msm_obj->vaddr;
-> >  }
-> >
-> > +static inline void mark_purgable(struct msm_gem_object *msm_obj)
-> > +{
-> > +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
-> > +
-> > +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
-> > +
-> > +       if (WARN_ON(msm_obj->dontneed))
-> > +               return;
->
-> The is_purgeable() function also checks other things besides just
-> "MSM_MADV_DONTNEED". Do we need to check those too? Specifically:
->
->  msm_obj->sgt && !msm_obj->base.dma_buf && !msm_obj->base.import_attach
->
-> ...or is it just being paranoid?
->
-> I guess I'm just worried that if any of those might be important then
-> we'll consistently report back that we have a count of things that can
-> be purged but then scan() won't find anything to do. That wouldn't be
-> great.
+I think a new option is a bad idea, because it cannot easily enforced.
+Kernel command-line on the other hand can be even signed.
 
-Hmm, I thought msm_gem_madvise() returned an error instead of allowing
-MSM_MADV_DONTNEED to be set on imported/exported dma-bufs.. it
-probably should to be complete (but userspace already knows not to
-madvise an imported/exported buffer for other reasons.. ie. we can't
-let a shared buffer end up in the bo cache).  I'll re-work that a bit.
-
-The msm_obj->sgt case is a bit more tricky.. that will be the case of
-a freshly allocated obj that does not have backing patches yet.  But
-it seems like enough of a corner case, that I'm happy to live with
-it.. ie. the tricky thing is not leaking decrements of
-priv->shrinkable_count or underflowing priv->shrinkable_count, and
-caring about the !msm_obj->sgt case doubles the number of states an
-object can be in, and the shrinker->count() return value is just an
-estimate.
-
->
-> > +       priv->shrinkable_count += msm_obj->base.size >> PAGE_SHIFT;
-> > +       msm_obj->dontneed = true;
-> > +}
-> > +
-> > +static inline void mark_unpurgable(struct msm_gem_object *msm_obj)
-> > +{
-> > +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
-> > +
-> > +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
-> > +
-> > +       if (WARN_ON(!msm_obj->dontneed))
-> > +               return;
-> > +
-> > +       priv->shrinkable_count -= msm_obj->base.size >> PAGE_SHIFT;
-> > +       WARN_ON(priv->shrinkable_count < 0);
->
-> If you changed the order maybe you could make shrinkable_count
-> "unsigned long" to match the shrinker API?
->
->  new_shrinkable = msm_obj->base.size >> PAGE_SHIFT;
->  WARN_ON(new_shrinkable > priv->shrinkable_count);
->  priv->shrinkable_count -= new_shrinkable
->
-
-True, although I've developed a preference for signed integers in
-cases where it can underflow if you mess up
-
-BR,
--R
+/Jarkko
