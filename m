@@ -2,289 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0DF34FDC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C36934FDCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhCaKHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:07:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234977AbhCaKHU (ORCPT
+        id S234892AbhCaKID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:08:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2753 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234836AbhCaKHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:07:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617185240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bm++c+1VlgWS+VnaCRHUFFk01a8cY+kp6lk42gfIfr4=;
-        b=EFN9J0ThvpmeHU8mvui7ue8W9ghnYSPL83mvBmJJuTrcaIF1FCsqKKKdTFwnuZZM97pkLC
-        hxTsMf1gvHZ835+TS0XcJ3uvyc72awx6dX2TuHgwhla6IdD+xPXNA/qsli8z7R7zQsFla9
-        S/2iYz8tLmvpMyLQBVokhfDS/HdzZIY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-NXHZQmU3OayUTzoV4Ly1ug-1; Wed, 31 Mar 2021 06:07:18 -0400
-X-MC-Unique: NXHZQmU3OayUTzoV4Ly1ug-1
-Received: by mail-ed1-f71.google.com with SMTP id cq11so834996edb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 03:07:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bm++c+1VlgWS+VnaCRHUFFk01a8cY+kp6lk42gfIfr4=;
-        b=PAOszvgSogiMe3rWikQjMTVBi9Gm3NcjKgRluBp3etQaBSsbyHyZEd/2RFu+VuJ6ND
-         UETjOD9cADFO/lAlCwQB86nIsGbGGb5SoXt48zXB3owrg9NBcuesGzetMi3x2xnoGh6v
-         R+WLjVXr3a9rymBH6d9fGPlKTdwcdAOeVzX7ZdUcAY2av+5vGKr5W8MmC6qMyEayeC97
-         6SPcpUTzDbm8kZz8+Y/KAQ6idr9KDHqWG5wn+bj6abulw6B2/MEA5bvHxne32ayNc0O7
-         J2HGu/q7LfUnvBy5XzfDI94p17nlQtUQ6GkXCv8ipG96PwAhP1+mJJ6uweLf+AcBsIcD
-         +8pA==
-X-Gm-Message-State: AOAM530d9rIT79s+eZma1H2d+5u0qvyrT1jgmcp7en/7QK08sbc4pO4F
-        ZooS2Ka306NZM8+LKxHFZQ+EXjXsuxI8k74sRwKyS7hRFD5DhD8ZtrV967u8LT6BmmfvCKuNPFo
-        4Sbhf0Lmp/vDr7TKd4cyESTBb
-X-Received: by 2002:aa7:d2d5:: with SMTP id k21mr2677864edr.216.1617185236709;
-        Wed, 31 Mar 2021 03:07:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvzhv1VUya9K3jIgLaWMjPWf122CdHmdeQRUIqNd3m/Au+UXZfEO2S14HnC6jPB+w5izpKLw==
-X-Received: by 2002:aa7:d2d5:: with SMTP id k21mr2677832edr.216.1617185236430;
-        Wed, 31 Mar 2021 03:07:16 -0700 (PDT)
-Received: from localhost.localdomain ([194.230.155.154])
-        by smtp.gmail.com with ESMTPSA id a22sm1162412edu.14.2021.03.31.03.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 03:07:15 -0700 (PDT)
-Subject: Re: [PATCH 1/4] kvm: cpuid: adjust the returned nent field of
- kvm_cpuid2 for KVM_GET_SUPPORTED_CPUID and KVM_GET_EMULATED_CPUID
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-References: <20210330185841.44792-1-eesposit@redhat.com>
- <20210330185841.44792-2-eesposit@redhat.com> <YGPmDbO++agqdqQL@google.com>
- <1be7c716-8160-926e-6d76-fb15b4adc066@redhat.com>
- <877dlnu56q.fsf@vitty.brq.redhat.com>
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Message-ID: <9b68907b-cb99-db0d-9151-0d3d5cf3c972@redhat.com>
-Date:   Wed, 31 Mar 2021 12:07:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <877dlnu56q.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 31 Mar 2021 06:07:35 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F9MFq5Xxcz685P0;
+        Wed, 31 Mar 2021 17:58:23 +0800 (CST)
+Received: from lhreml711-chm.china.huawei.com (10.201.108.62) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 31 Mar 2021 12:07:31 +0200
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml711-chm.china.huawei.com (10.201.108.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 31 Mar 2021 11:07:30 +0100
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Wed, 31 Mar 2021 18:07:28 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for x86
+Thread-Topic: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for
+ x86
+Thread-Index: AQHXHHecEK2PZNeGJ0y0ASUDVCEuNqqRruSAgACLbJCAC7WRgA==
+Date:   Wed, 31 Mar 2021 10:07:28 +0000
+Message-ID: <3888ad9a9b3e49feb4767452ebcdacdd@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-5-song.bao.hua@hisilicon.com>
+ <110234d1-22ce-8a9a-eabb-c15ac29a5dcd@linux.intel.com> 
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.63]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 31/03/2021 09:56, Vitaly Kuznetsov wrote:
-> Emanuele Giuseppe Esposito <eesposit@redhat.com> writes:
-> 
->> On 31/03/2021 05:01, Sean Christopherson wrote:
->>> On Tue, Mar 30, 2021, Emanuele Giuseppe Esposito wrote:
->>>> Calling the kvm KVM_GET_[SUPPORTED/EMULATED]_CPUID ioctl requires
->>>> a nent field inside the kvm_cpuid2 struct to be big enough to contain
->>>> all entries that will be set by kvm.
->>>> Therefore if the nent field is too high, kvm will adjust it to the
->>>> right value. If too low, -E2BIG is returned.
->>>>
->>>> However, when filling the entries do_cpuid_func() requires an
->>>> additional entry, so if the right nent is known in advance,
->>>> giving the exact number of entries won't work because it has to be increased
->>>> by one.
->>>>
->>>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
->>>> ---
->>>>    arch/x86/kvm/cpuid.c | 6 ++++++
->>>>    1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->>>> index 6bd2f8b830e4..5412b48b9103 100644
->>>> --- a/arch/x86/kvm/cpuid.c
->>>> +++ b/arch/x86/kvm/cpuid.c
->>>> @@ -975,6 +975,12 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
->>>>    
->>>>    	if (cpuid->nent < 1)
->>>>    		return -E2BIG;
->>>> +
->>>> +	/* if there are X entries, we need to allocate at least X+1
->>>> +	 * entries but return the actual number of entries
->>>> +	 */
->>>> +	cpuid->nent++;
->>>
->>> I don't see how this can be correct.
->>>
->>> If this bonus entry really is needed, then won't that be reflected in array.nent?
->>> I.e won't KVM overrun the userspace buffer?
->>>
->>> If it's not reflected in array.nent, that would imply there's an off-by-one check
->>> somewhere, or KVM is creating an entry that it doesn't copy to userspace.  The
->>> former seems unlikely as there are literally only two checks against maxnent,
->>> and they both look correct (famous last words...).
->>>
->>> KVM does decrement array->nent in one specific case (CPUID.0xD.2..64), i.e. a
->>> false positive is theoretically possible, but that carries a WARN and requires a
->>> kernel or CPU bug as well.  And fudging nent for that case would still break
->>> normal use cases due to the overrun problem.
->>>
->>> What am I missing?
->>
->> (Maybe I should have put this series as RFC)
->>
->> The problem I see and noticed while doing the KVM_GET_EMULATED_CPUID
->> selftest is the following: assume there are 3 kvm emulated entries, and
->> the user sets cpuid->nent = 3. This should work because kvm sets 3
->> array->entries[], and copies them to user space.
->>
->> However, when the 3rd entry is populated inside kvm (array->entries[2]),
->> array->nent is increased once more (do_host_cpuid and
->> __do_cpuid_func_emulated). At that point, the loop in
->> kvm_dev_ioctl_get_cpuid and get_cpuid_func can potentially iterate once
->> more, going into the
->>
->> if (array->nent >= array->maxnent)
->> 	return -E2BIG;
->>
->> in __do_cpuid_func_emulated and do_host_cpuid, returning the error. I
->> agree that we need that check there because the following code tries to
->> access the array entry at array->nent index, but from what I understand
->> that access can be potentially useless because it might just jump to the
->> default entry in the switch statement and not set the entry, leaving
->> array->nent to 3.
-> 
-> The problem seems to be exclusive to __do_cpuid_func_emulated(),
-> do_host_cpuid() always does
-> 
-> entry = &array->entries[array->nent++];
-> 
-> Something like (completely untested and stupid):
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..54dcabd3abec 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -565,14 +565,22 @@ static struct kvm_cpuid_entry2 *do_host_cpuid(struct kvm_cpuid_array *array,
->          return entry;
->   }
->   
-> +static bool cpuid_func_emulated(u32 func)
-> +{
-> +       return (func == 0) || (func == 1) || (func == 7);
-> +}
-> +
->   static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
->   {
->          struct kvm_cpuid_entry2 *entry;
->   
-> +       if (!cpuid_func_emulated())
-> +               return 0;
-> +
->          if (array->nent >= array->maxnent)
->                  return -E2BIG;
->   
-> -       entry = &array->entries[array->nent];
-> +       entry = &array->entries[array->nent++];
->          entry->function = func;
->          entry->index = 0;
->          entry->flags = 0;
-> @@ -580,18 +588,14 @@ static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 func)
->          switch (func) {
->          case 0:
->                  entry->eax = 7;
-> -               ++array->nent;
->                  break;
->          case 1:
->                  entry->ecx = F(MOVBE);
-> -               ++array->nent;
->                  break;
->          case 7:
->                  entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
->                  entry->eax = 0;
->                  entry->ecx = F(RDPID);
-> -               ++array->nent;
-> -       default:
->                  break;
->          }
-> 
-> should do the job, right?
-> 
-> 
-
-Yes, it would work better. Alternatively:
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index ba7437308d28..452b0acd6e9d 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -567,34 +567,37 @@ static struct kvm_cpuid_entry2 
-*do_host_cpuid(struct kvm_cpuid_array *array,
-
-  static int __do_cpuid_func_emulated(struct kvm_cpuid_array *array, u32 
-func)
-  {
--	struct kvm_cpuid_entry2 *entry;
--
--	if (array->nent >= array->maxnent)
--		return -E2BIG;
-+	struct kvm_cpuid_entry2 entry;
-+	bool changed = true;
-
--	entry = &array->entries[array->nent];
--	entry->function = func;
--	entry->index = 0;
--	entry->flags = 0;
-+	entry.function = func;
-+	entry.index = 0;
-+	entry.flags = 0;
-
-  	switch (func) {
-  	case 0:
--		entry->eax = 7;
--		++array->nent;
-+		entry.eax = 7;
-  		break;
-  	case 1:
--		entry->ecx = F(MOVBE);
--		++array->nent;
-+		entry.ecx = F(MOVBE);
-  		break;
-  	case 7:
--		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
--		entry->eax = 0;
--		entry->ecx = F(RDPID);
--		++array->nent;
-+		entry.flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
-+		entry.eax = 0;
-+		entry.ecx = F(RDPID);
-+		break;
-  	default:
-+		changed = false;
-  		break;
-  	}
-
-+	if (changed) {
-+		if (array->nent >= array->maxnent)
-+			return -E2BIG;
-+
-+		memcpy(&array->entries[array->nent++], &entry, sizeof(entry));
-+	}
-+
-  	return 0;
-  }
-
-pros: avoids hard-coding another function that would check what the 
-switch already does. it will be more flexible if another func has to be 
-added.
-cons: there is a memcpy for each entry.
-
-What do you think?
-
-Emanuele
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU29uZyBCYW8gSHVhIChC
+YXJyeSBTb25nKQ0KPiBTZW50OiBXZWRuZXNkYXksIE1hcmNoIDI0LCAyMDIxIDEyOjE1IFBNDQo+
+IFRvOiAnVGltIENoZW4nIDx0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbT47IGNhdGFsaW4ubWFy
+aW5hc0Bhcm0uY29tOw0KPiB3aWxsQGtlcm5lbC5vcmc7IHJqd0Byand5c29ja2kubmV0OyB2aW5j
+ZW50Lmd1aXR0b3RAbGluYXJvLm9yZzsgYnBAYWxpZW44LmRlOw0KPiB0Z2x4QGxpbnV0cm9uaXgu
+ZGU7IG1pbmdvQHJlZGhhdC5jb207IGxlbmJAa2VybmVsLm9yZzsgcGV0ZXJ6QGluZnJhZGVhZC5v
+cmc7DQo+IGRpZXRtYXIuZWdnZW1hbm5AYXJtLmNvbTsgcm9zdGVkdEBnb29kbWlzLm9yZzsgYnNl
+Z2FsbEBnb29nbGUuY29tOw0KPiBtZ29ybWFuQHN1c2UuZGUNCj4gQ2M6IG1zeXMubWl6dW1hQGdt
+YWlsLmNvbTsgdmFsZW50aW4uc2NobmVpZGVyQGFybS5jb207DQo+IGdyZWdraEBsaW51eGZvdW5k
+YXRpb24ub3JnOyBKb25hdGhhbiBDYW1lcm9uIDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+
+Ow0KPiBqdXJpLmxlbGxpQHJlZGhhdC5jb207IG1hcmsucnV0bGFuZEBhcm0uY29tOyBzdWRlZXAu
+aG9sbGFAYXJtLmNvbTsNCj4gYXVicmV5LmxpQGxpbnV4LmludGVsLmNvbTsgbGludXgtYXJtLWtl
+cm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+OyBsaW51eC1hY3BpQHZnZXIua2VybmVsLm9yZzsgeDg2QGtlcm5lbC5vcmc7DQo+IHh1d2VpIChP
+KSA8eHV3ZWk1QGh1YXdlaS5jb20+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24u
+Y29tPjsNCj4gZ3VvZG9uZy54dUBsaW5hcm8ub3JnOyB5YW5neWljb25nIDx5YW5neWljb25nQGh1
+YXdlaS5jb20+OyBMaWd1b3podSAoS2VubmV0aCkNCj4gPGxpZ3Vvemh1QGhpc2lsaWNvbi5jb20+
+OyBsaW51eGFybUBvcGVuZXVsZXIub3JnOyBocGFAenl0b3IuY29tDQo+IFN1YmplY3Q6IFJFOiBb
+UkZDIFBBVENIIHY1IDQvNF0gc2NoZWR1bGVyOiBBZGQgY2x1c3RlciBzY2hlZHVsZXIgbGV2ZWwg
+Zm9yIHg4Ng0KPiANCj4gDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4g
+RnJvbTogVGltIENoZW4gW21haWx0bzp0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbV0NCj4gPiBT
+ZW50OiBXZWRuZXNkYXksIE1hcmNoIDI0LCAyMDIxIDExOjUxIEFNDQo+ID4gVG86IFNvbmcgQmFv
+IEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPjsNCj4gPiBjYXRh
+bGluLm1hcmluYXNAYXJtLmNvbTsgd2lsbEBrZXJuZWwub3JnOyByandAcmp3eXNvY2tpLm5ldDsN
+Cj4gPiB2aW5jZW50Lmd1aXR0b3RAbGluYXJvLm9yZzsgYnBAYWxpZW44LmRlOyB0Z2x4QGxpbnV0
+cm9uaXguZGU7DQo+ID4gbWluZ29AcmVkaGF0LmNvbTsgbGVuYkBrZXJuZWwub3JnOyBwZXRlcnpA
+aW5mcmFkZWFkLm9yZzsNCj4gPiBkaWV0bWFyLmVnZ2VtYW5uQGFybS5jb207IHJvc3RlZHRAZ29v
+ZG1pcy5vcmc7IGJzZWdhbGxAZ29vZ2xlLmNvbTsNCj4gPiBtZ29ybWFuQHN1c2UuZGUNCj4gPiBD
+YzogbXN5cy5taXp1bWFAZ21haWwuY29tOyB2YWxlbnRpbi5zY2huZWlkZXJAYXJtLmNvbTsNCj4g
+PiBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgSm9uYXRoYW4gQ2FtZXJvbiA8am9uYXRoYW4u
+Y2FtZXJvbkBodWF3ZWkuY29tPjsNCj4gPiBqdXJpLmxlbGxpQHJlZGhhdC5jb207IG1hcmsucnV0
+bGFuZEBhcm0uY29tOyBzdWRlZXAuaG9sbGFAYXJtLmNvbTsNCj4gPiBhdWJyZXkubGlAbGludXgu
+aW50ZWwuY29tOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+ID4gbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc7IHg4
+NkBrZXJuZWwub3JnOw0KPiA+IHh1d2VpIChPKSA8eHV3ZWk1QGh1YXdlaS5jb20+OyBaZW5ndGFv
+IChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsNCj4gPiBndW9kb25nLnh1QGxpbmFyby5v
+cmc7IHlhbmd5aWNvbmcgPHlhbmd5aWNvbmdAaHVhd2VpLmNvbT47IExpZ3Vvemh1DQo+IChLZW5u
+ZXRoKQ0KPiA+IDxsaWd1b3podUBoaXNpbGljb24uY29tPjsgbGludXhhcm1Ab3BlbmV1bGVyLm9y
+ZzsgaHBhQHp5dG9yLmNvbQ0KPiA+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIHY1IDQvNF0gc2No
+ZWR1bGVyOiBBZGQgY2x1c3RlciBzY2hlZHVsZXIgbGV2ZWwgZm9yDQo+IHg4Ng0KPiA+DQo+ID4N
+Cj4gPg0KPiA+IE9uIDMvMTgvMjEgOToxNiBQTSwgQmFycnkgU29uZyB3cm90ZToNCj4gPiA+IEZy
+b206IFRpbSBDaGVuIDx0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbT4NCj4gPiA+DQo+ID4gPiBU
+aGVyZSBhcmUgeDg2IENQVSBhcmNoaXRlY3R1cmVzIChlLmcuIEphY29ic3ZpbGxlKSB3aGVyZSBM
+MiBjYWhjZQ0KPiA+ID4gaXMgc2hhcmVkIGFtb25nIGEgY2x1c3RlciBvZiBjb3JlcyBpbnN0ZWFk
+IG9mIGJlaW5nIGV4Y2x1c2l2ZQ0KPiA+ID4gdG8gb25lIHNpbmdsZSBjb3JlLg0KPiA+ID4NCj4g
+PiA+IFRvIHByZXZlbnQgb3ZlcnN1YnNjcmlwdGlvbiBvZiBMMiBjYWNoZSwgbG9hZCBzaG91bGQg
+YmUNCj4gPiA+IGJhbGFuY2VkIGJldHdlZW4gc3VjaCBMMiBjbHVzdGVycywgZXNwZWNpYWxseSBm
+b3IgdGFza3Mgd2l0aA0KPiA+ID4gbm8gc2hhcmVkIGRhdGEuDQo+ID4gPg0KPiA+ID4gQWxzbyB3
+aXRoIGNsdXN0ZXIgc2NoZWR1bGluZyBwb2xpY3kgd2hlcmUgdGFza3MgYXJlIHdva2VuIHVwDQo+
+ID4gPiBpbiB0aGUgc2FtZSBMMiBjbHVzdGVyLCB3ZSB3aWxsIGJlbmVmaXQgZnJvbSBrZWVwaW5n
+IHRhc2tzDQo+ID4gPiByZWxhdGVkIHRvIGVhY2ggb3RoZXIgYW5kIGxpa2VseSBzaGFyaW5nIGRh
+dGEgaW4gdGhlIHNhbWUgTDINCj4gPiA+IGNsdXN0ZXIuDQo+ID4gPg0KPiA+ID4gQWRkIENQVSBt
+YXNrcyBvZiBDUFVzIHNoYXJpbmcgdGhlIEwyIGNhY2hlIHNvIHdlIGNhbiBidWlsZCBzdWNoDQo+
+ID4gPiBMMiBjbHVzdGVyIHNjaGVkdWxlciBkb21haW4uDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9m
+Zi1ieTogVGltIENoZW4gPHRpbS5jLmNoZW5AbGludXguaW50ZWwuY29tPg0KPiA+ID4gU2lnbmVk
+LW9mZi1ieTogQmFycnkgU29uZyA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+DQo+ID4NCj4g
+Pg0KPiA+IEJhcnJ5LA0KPiA+DQo+ID4gQ2FuIHlvdSBhbHNvIGFkZCB0aGlzIGNodW5rIHRvIHRo
+ZSBwYXRjaC4NCj4gPiBUaGFua3MuDQo+IA0KPiBTdXJlLCBUaW0sIFRoYW5rcy4gSSdsbCBwdXQg
+dGhhdCBpbnRvIHBhdGNoIDQvNCBpbiB2Ni4NCg0KSGkgVGltLA0KWW91IG1pZ2h0IHdhbnQgdG8g
+dGFrZSBhIGxvb2sgYXQgdGhpcyBxZW11IHBhdGNoc2V0Og0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
+cmcvcWVtdS1kZXZlbC8yMDIxMDMzMTA5NTM0My4xMjE3Mi0xLXdhbmd5YW5hbjU1QGh1YXdlaS5j
+b20vVC8jdA0KDQpzb21lb25lIGlzIHRyeWluZyB0byBsZXZlcmFnZSB0aGlzIGNsdXN0ZXIgdG9w
+b2xvZ3kNCnRvIGltcHJvdmUgS1ZNIHZpcnR1YWwgbWFjaGluZXMgcGVyZm9ybWFuY2UuDQoNCj4g
+DQo+ID4NCj4gPiBUaW0NCj4gPg0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1
+ZGUvYXNtL3RvcG9sb2d5LmgNCj4gPiBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3RvcG9sb2d5LmgN
+Cj4gPiBpbmRleCAyYTExY2NjMTRmYjEuLjgwMGZhNDhjOWZjZCAxMDA2NDQNCj4gPiAtLS0gYS9h
+cmNoL3g4Ni9pbmNsdWRlL2FzbS90b3BvbG9neS5oDQo+ID4gKysrIGIvYXJjaC94ODYvaW5jbHVk
+ZS9hc20vdG9wb2xvZ3kuaA0KPiA+IEBAIC0xMTUsNiArMTE1LDcgQEAgZXh0ZXJuIHVuc2lnbmVk
+IGludCBfX21heF9kaWVfcGVyX3BhY2thZ2U7DQo+ID4NCj4gPiAgI2lmZGVmIENPTkZJR19TTVAN
+Cj4gPiAgI2RlZmluZSB0b3BvbG9neV9kaWVfY3B1bWFzayhjcHUpCQkocGVyX2NwdShjcHVfZGll
+X21hcCwgY3B1KSkNCj4gPiArI2RlZmluZSB0b3BvbG9neV9jbHVzdGVyX2NwdW1hc2soY3B1KQkJ
+KGNwdV9jbHVzdGVyZ3JvdXBfbWFzayhjcHUpKQ0KPiA+ICAjZGVmaW5lIHRvcG9sb2d5X2NvcmVf
+Y3B1bWFzayhjcHUpCQkocGVyX2NwdShjcHVfY29yZV9tYXAsIGNwdSkpDQo+ID4gICNkZWZpbmUg
+dG9wb2xvZ3lfc2libGluZ19jcHVtYXNrKGNwdSkJCShwZXJfY3B1KGNwdV9zaWJsaW5nX21hcCwg
+Y3B1KSkNCj4gPg0KPiANCg0KVGhhbmtzDQpCYXJyeQ0K
