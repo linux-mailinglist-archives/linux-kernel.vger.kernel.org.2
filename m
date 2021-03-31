@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8300034F6A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CC234F6A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhCaCbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 22:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S233280AbhCaCbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhCaCa3 (ORCPT
+        with ESMTP id S233067AbhCaCab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:30:29 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E59CC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:30:29 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y13so664287ybk.20
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:30:29 -0700 (PDT)
+        Tue, 30 Mar 2021 22:30:31 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:30:31 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id y13so664379ybk.20
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 19:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=gQCuwGLAfsbw/UNMTMJ5GJMFsizewCkNOypdYowqK48=;
-        b=wSryiJNO0/HtB5GXTbVL00PPqna6O7GlK+7E34vVtFEfl/ee5FOWHf36YgIP+5Kthy
-         pcea+iq0lPtzOiZN1WlKxV81tK+ZNbYmP5nv2I6GpglqgMLax8hw7w0M6lLKSAXSVFZb
-         Tv13wHHoE5JHQ3mUOnZRugmnalesT78gxOj/lkw0Amx4xiVXUSzHNaJ2XTEpFmk3+oqL
-         S5cBspBO1WxvwGZnZS+WTiR7kCQR0a0SXT9N/RCNQIwnW9d0mWn0nvXrh6AvFhPkcLZd
-         NaS1qsXm02OE9DfD3en6WKSs6Gqh0Syj+o8cTsw5AuKSaP5Oroc7NQORIsb047C4z0NL
-         lItg==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=uV4x6+EdkMXZhg7wMEUNEc/cXMhh5NFoJhoLXAZa4XA=;
+        b=hyxAm79V1CoNeCcaWjPRj6j5vKrjB66hHPXwlccvH/3YB10lOq1utFmsZxYp8F3HpG
+         WOVVmSaroJAJOzz4lNDIbz7ei9dCL3cKP4c17RXAj462cjZTMs8oecds+x1bGGRaLRVE
+         vmKYsAvI44f3RBbPqlZk3+kcxA5yCOsa4zYDyKO9Y6bRuhE8JVlAQhJa+kJ+6Wv/2Ghz
+         4xMYiQHQSD02fcexUHEgrkqc/uqoNUwmNr9s/ylUQx15EFvA2VaXTuppXEfG0Eg2XXWz
+         B2M6KfrdkALt0ZTB/hRS7drJULF5z50LaOIqMSYoWDCtbYm31kQwZ7CcI9NMzcJM3792
+         c7fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=gQCuwGLAfsbw/UNMTMJ5GJMFsizewCkNOypdYowqK48=;
-        b=PCjsaUZd1pYgrHxENJ2gu5fsu1BYMfkWvBcppvvTStEN4e8sVysPNIHp8eDie6zuA4
-         Qs9HAn6m5MXkSPUkbYC37TChV7KRCFbdYM4PRMTDSJvvCVxm1BeqvXKPYobSwWHE25Em
-         wAMhdh2QwQEPrPFzB1pd2jL+Ifqsju89SRUcXPzN4L4La2ebMbscOCRjx6sFVAexNmJZ
-         ZPZ0JCPDjjAxugZafzfVkVIoS4eqvbZv2/sH+SdDTtDj29K2U99yhqajT/vAyAZ48JT4
-         FMWgHoBiEaaFFSqqIWlzToSrNhJyhogiAvuR2CnyJvG7uxgokOsf1yMuXSpUL0z0eEyj
-         a8Yw==
-X-Gm-Message-State: AOAM5308dfgLuZBgTaE5wvGcyk7ihnYzPJvZUloLo8e0DedkTf1Et3Ui
-        ujCqP3NrniaEBcNA/MJRv2j2RW0MhjA=
-X-Google-Smtp-Source: ABdhPJzIBEctIXJVpThNi6OlflzTn7FgBN15h3E04Il0jjJ+PmqaPLPHYW1WqIwC6phByJXcquT8AMP5OvE=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=uV4x6+EdkMXZhg7wMEUNEc/cXMhh5NFoJhoLXAZa4XA=;
+        b=KI7L2IErjoRUFGZwCjc/ys0WJ3F8OyT+UwMn9+vCK6gIRpIEeo8arUkEf/C6m6NJv6
+         XlhJLGUwdYYe3iLARa0tu69IBXgopSjTA0QAZaH6dmGWSzj3MEVpCIk8CT0QiXSG70Fh
+         xOqSMg0ADx+JoYJ/EokHDxnLROKvNhZg4k6tHpDi1playZhuqmRsgLU6gwm6RT24st9e
+         KTtSsI4EWeJI8w+6SQcdFpNTNYPhyNyjAtCJfsqEHw1f0/tZpxgNbQTWnyRRutjo3Bka
+         5dbcjg3XoAEng4+3AAgRzjAp11ABVjgSZhbI+8WmXEkgLvZyrz6V/CKlYyBmftZuf3De
+         4SgA==
+X-Gm-Message-State: AOAM530EEF1MnKIZr3tGP2Y4p7j77CefQZeUvXoiKNDWUGDdlCBpQejD
+        Es2uRCg3QxAkUFLGv71tV7BTaE5QkQc=
+X-Google-Smtp-Source: ABdhPJyoJU2Rdi/to8R+u7+o3IMo1VtUs59XwyVJUPXLriy3TmcY1tCAqdD1U35l7io8CdK4mvxxJmJF+eM=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c6b:5d63:9b3b:4a77])
- (user=seanjc job=sendgmr) by 2002:a25:ce13:: with SMTP id x19mr1522852ybe.235.1617157828611;
- Tue, 30 Mar 2021 19:30:28 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:c588:: with SMTP id v130mr1592057ybe.312.1617157831002;
+ Tue, 30 Mar 2021 19:30:31 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 30 Mar 2021 19:30:23 -0700
-Message-Id: <20210331023025.2485960-1-seanjc@google.com>
+Date:   Tue, 30 Mar 2021 19:30:24 -0700
+In-Reply-To: <20210331023025.2485960-1-seanjc@google.com>
+Message-Id: <20210331023025.2485960-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210331023025.2485960-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 0/2] KVM: Fix missing GFP_KERNEL_ACCOUNT usage
+Subject: [PATCH 1/2] KVM: Account memory allocations for 'struct kvm_vcpu'
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -63,36 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix (almost) all cases in KVM x86 where allocations that are tied to a           
-task/VM are not correctly accounted.                                            
-                                                                                
-There are a handful of allocations in SEV code that I intentionally didn't
-fix in this series.  I'm 95% certain those allocations can be eliminated
-completely, changing them in this series only to delete them seemed
-pointless.
+Use GFP_KERNEL_ACCOUNT for the vCPU allocations, the vCPUs are very much
+tied to a single task/VM.  For x86, the allocations were accounted up
+until the allocation code was moved to common KVM.  For all other
+architectures, vCPU allocations were never previously accounted, but only
+because most architectures lack accounting in general (for KVM).
 
-The allocations in questions are for structs that are used to communicate
- with the PSP; they are temporary (freed in the same function that does
-the allocation) and small (some are _tiny_, e.g. 4 bytes).   AFAICT, the
-sole reason they are dynamically allocated is because the CCP driver uses
-__pa() to retrieve the physical address that is passed to the PSP, and
-__pa() does not work for vmalloc'd memory, which is in play when running
-with CONFIG_VMAP_STACKS=y.  
+Fixes: e529ef66e6b5 ("KVM: Move vcpu alloc and init invocation to common code")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ virt/kvm/kvm_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have functional code that uses a scratch buffer as a bounce buffer to
-cleanly handle vmalloc'd memory in the CCP driver.  I'll hopefully get
-that posted tomorrow.
-
-Sean Christopherson (2):
-  KVM: Account memory allocations for 'struct kvm_vcpu'
-  KVM: x86: Account a variety of miscellaneous allocations
-
- arch/x86/kvm/svm/nested.c | 4 ++--
- arch/x86/kvm/svm/sev.c    | 6 +++---
- arch/x86/kvm/vmx/vmx.c    | 2 +-
- virt/kvm/kvm_main.c       | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
-
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 383df23514b9..3884e9f30251 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3182,7 +3182,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
+ 	if (r)
+ 		goto vcpu_decrement;
+ 
+-	vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL);
++	vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL_ACCOUNT);
+ 	if (!vcpu) {
+ 		r = -ENOMEM;
+ 		goto vcpu_decrement;
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
