@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C174634FAFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D5534FB05
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhCaH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhCaH7n (ORCPT
+        id S234315AbhCaIA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:00:26 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:59243 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234137AbhCaIAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:59:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8FAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:59:42 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617177580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EwENOV5fEtmm72Pvhge8smr8aYXEWHQVNQRqr1NurZ8=;
-        b=HgYwf+F5t8/gQgaF2YZ17DNXo2yFb0pVTZn0ZbtZzqd8Y8Sahi6vDVeZ0yDH70XJiw0lYy
-        IK406t8beuNJxH/nzZQzcWA/+RKwjqyUs73YOdDIcQaxefWARdaqrvvi8vrYEBXmgHaHr+
-        /FYl89dM6MubMB7wiK1nxPRKCKwPD2bGb5i9UPJU7tgIY2LiqAVuAwuunDsFRrSDNh0I4v
-        WlfdgErhyH1WDEQToFUy5Z/KFpxMkU1s6CQxFPHluQW67Vj+WuamrzwdOP99FhY4iMolJ5
-        ehk4vzv9DwvPis/DM3Em1aEAz+5bwH2MpcfVmgMKTdLWSbSGGgbu/DijF3vdww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617177580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EwENOV5fEtmm72Pvhge8smr8aYXEWHQVNQRqr1NurZ8=;
-        b=OFsxY0ULFZzlVDBhGsXuic6UtSXoqjsWNTcAn2ba/w5Yp2FKfdTtXYRsqVzLZI5u8tMC41
-        ZAd55frkyv+omGAQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Yue Hu <huyue2@yulong.com>, Rafael Aquini <aquini@redhat.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH printk v2 2/5] printk: remove safe buffers
-In-Reply-To: <20210330153512.1182-3-john.ogness@linutronix.de>
-References: <20210330153512.1182-1-john.ogness@linutronix.de> <20210330153512.1182-3-john.ogness@linutronix.de>
-Date:   Wed, 31 Mar 2021 09:59:39 +0200
-Message-ID: <875z17vjmc.fsf@jogness.linutronix.de>
+        Wed, 31 Mar 2021 04:00:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617177601; x=1648713601;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=QAMy0aKzrxFM3Ag+XLeRLy9l4AN42Ui0jKuCNNrgJVM=;
+  b=zpZwRbp99G+T1V5bA1icUTVQk9tnX6119JeBHvz1rgxbvVSVJJOnlE9p
+   S89h2lHEbXYNWOXtfcdbkmABQHUXPx1NZYjOjPIlLxonuvfXcMuPQd9Gx
+   pVpIEW5HaRoLDNvpHibgUwQ3W3oq9pJAvP6uzjf6qGiAV6gBc71McdLW6
+   IfR0LrLrLyoHHYfY+qKjMBmY01kAxa20LaxkMP8n9tmPW4ENGdyhPYzz0
+   HxCEjnmI/xM0T3r3jfuLjcFIgd/QaqrvkGDguRzGGdoHgqugOU3NmjdFy
+   P2bPhag39fijH8oKfqBBcjot3asNVZqSMIIaMcuUxtTr4H7NkONwu0Gz7
+   A==;
+IronPort-SDR: i9OxWw8o1ULYSqFkAQsesztI4c8ZNzhFSdD6CQfiD06asGzAD1lQk4+Ueu4Hc6/5ZamFpL9NCj
+ wL6a1T5DxBlFEKMBvt0ZIrnVSis72I9fpvoOUuWBV9W7QdNOaYALw7zdX3UY6Z+GEWyClTLzGP
+ PP3mTxM3qdaWTC6138hN9ODPA3RH+7VjSCgDxXwv/+1RISOPvORdNxgYCakcJOuR5CGKM2rOMY
+ /wfXWXlqK+uCfRqRfoTsfA9SbJ4Tb1egFydZFCbO6QEeqVcF3ydwGsxb41P3bpCnkOpWw/Il6N
+ AhY=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
+   d="scan'208";a="109181483"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 01:00:00 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 31 Mar 2021 00:59:59 -0700
+Received: from [10.171.246.91] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Wed, 31 Mar 2021 00:59:57 -0700
+Subject: Re: [PATCH] clk: at91: Trivial typo fixes in the file sama7g5.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <claudiu.beznea@microchip.com>, <eugen.hristev@microchip.com>,
+        <tudor.ambarus@microchip.com>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <rdunlap@infradead.org>
+References: <20210313053222.14706-1-unixbhaskar@gmail.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <498a30fd-405b-8599-92ca-ca37269d49d4@microchip.com>
+Date:   Wed, 31 Mar 2021 09:59:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210313053222.14706-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30, John Ogness <john.ogness@linutronix.de> wrote:
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index e971c0a9ec9e..f090d6a1b39e 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1772,16 +1759,21 @@ static struct task_struct *console_owner;
->  static bool console_waiter;
->=20=20
->  /**
-> - * console_lock_spinning_enable - mark beginning of code where another
-> + * console_lock_spinning_enable_irqsave - mark beginning of code where a=
-nother
->   *	thread might safely busy wait
->   *
->   * This basically converts console_lock into a spinlock. This marks
->   * the section where the console_lock owner can not sleep, because
->   * there may be a waiter spinning (like a spinlock). Also it must be
->   * ready to hand over the lock at the end of the section.
-> + *
-> + * This disables interrupts because the hand over to a waiter must not be
-> + * interrupted until the hand over is completed (@console_waiter is clea=
-red).
->   */
-> -static void console_lock_spinning_enable(void)
-> +static void console_lock_spinning_enable_irqsave(unsigned long *flags)
+On 13/03/2021 at 06:32, Bhaskar Chowdhury wrote:
+> s/critial/critical/  ......two different places
+> s/parrent/parent/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I missed the prototype change for the !CONFIG_PRINTK case, resulting in:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-linux/kernel/printk/printk.c:2707:3: error: implicit declaration of functio=
-n =E2=80=98console_lock_spinning_enable_irqsave=E2=80=99; did you mean =E2=
-=80=98console_lock_spinning_enable=E2=80=99? [-Werror=3Dimplicit-function-d=
-eclaration]
-   console_lock_spinning_enable_irqsave(&flags);
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   console_lock_spinning_enable
+> ---
+>   drivers/clk/at91/sama7g5.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+> index a6e20b35960e..9e1ec48c4474 100644
+> --- a/drivers/clk/at91/sama7g5.c
+> +++ b/drivers/clk/at91/sama7g5.c
+> @@ -166,7 +166,7 @@ static const struct {
+>                    .c = &pll_characteristics,
+>                    .t = PLL_TYPE_FRAC,
+>                     /*
+> -                   * This feeds syspll_divpmcck which may feed critial parts
+> +                   * This feeds syspll_divpmcck which may feed critical parts
+>                      * of the systems like timers. Therefore it should not be
+>                      * disabled.
+>                      */
+> @@ -178,7 +178,7 @@ static const struct {
+>                    .c = &pll_characteristics,
+>                    .t = PLL_TYPE_DIV,
+>                     /*
+> -                   * This may feed critial parts of the systems like timers.
+> +                   * This may feed critical parts of the systems like timers.
+>                      * Therefore it should not be disabled.
+>                      */
+>                    .f = CLK_IS_CRITICAL | CLK_SET_RATE_GATE,
+> @@ -455,7 +455,7 @@ static const struct {
+>    * @pp:                        PLL parents
+>    * @pp_mux_table:      PLL parents mux table
+>    * @r:                 clock output range
+> - * @pp_chg_id:         id in parrent array of changeable PLL parent
+> + * @pp_chg_id:         id in parent array of changeable PLL parent
+>    * @pp_count:          PLL parents count
+>    * @id:                        clock id
+>    */
+> --
+> 2.26.2
+> 
 
-Will be fixed for v3.
 
-(I have now officially added !CONFIG_PRINTK to my CI tests.)
-
-John Ogness
+-- 
+Nicolas Ferre
