@@ -2,203 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D1B35016A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69302350160
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbhCaNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:38:57 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:38966 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235863AbhCaNid (ORCPT
+        id S235701AbhCaNiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:38:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235796AbhCaNiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:38:33 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 12VDcFeZ003995;
-        Wed, 31 Mar 2021 22:38:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 12VDcFeZ003995
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617197896;
-        bh=gRUT51AU4p255I4cNjY1DaJbtyk6brMPDK+FMwMQ8Q8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FRy42q6WyAh7zA5ZlsmsyJJMyLtsbKlHvALi9oGyewxqdR2P2zJFvh1LjAP/d7s60
-         8bnFPiFUYQDVq9Uly31PFkuVlrIZV9HPbOv120OnEye3WV+54fwCzayF9x2fBSB6JX
-         gz57DHPgDQUIACtTs0Hb5Q/55VMxCrhi/xK6dthClRZAwlJpVTlvzSQs8Sqrv6izhe
-         Bv95shlb2mmpmdQP23scwBFdMQIpXXqs2nwH95DRxSPnzBntjGcZ+JiZxd3bxHQVLh
-         BCqe3gl4f0UvfJ9+YxX6VUUONqmKJmQI4FOsY5uJqgD+2gn9dSFFaAwuFg+5dn2HtH
-         89rcode/GlPIw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH 2/9] kbuild: unify modules(_install) for in-tree and external modules
-Date:   Wed, 31 Mar 2021 22:38:03 +0900
-Message-Id: <20210331133811.3221540-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210331133811.3221540-1-masahiroy@kernel.org>
-References: <20210331133811.3221540-1-masahiroy@kernel.org>
+        Wed, 31 Mar 2021 09:38:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617197899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8YS4poPAZCHByMf0w+dOhsWCqsrYJ+hqPkfQ8CKmtvY=;
+        b=MZ4W5r1zLaCS99Ja11yv+QyV8cewhhXhAY6mJn2/hO/+3gYVDDMnz4r+5zrENDFSijg+ll
+        eHfokeCaXSHBS7zCzpkuxn/tDdv88BYNR4a8EBJEFbGwcP6MagjTfYb8+7E6yc+1cGOqFh
+        Pv09gEUCd/W5pCMx63N/7M/CzrJSyo0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-aBp1IZDWPqeqKr_xPiJwCw-1; Wed, 31 Mar 2021 09:38:13 -0400
+X-MC-Unique: aBp1IZDWPqeqKr_xPiJwCw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C21A84B9A2;
+        Wed, 31 Mar 2021 13:38:11 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C59460C5A;
+        Wed, 31 Mar 2021 13:38:04 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 15:38:03 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 1/1] xdp: fix xdp_return_frame() kernel BUG throw
+ for page_pool memory model
+Message-ID: <20210331153803.38fb83de@carbon>
+In-Reply-To: <20210331132503.15926-1-boon.leong.ong@intel.com>
+References: <20210331132503.15926-1-boon.leong.ong@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you attempt to build/install modules ('make modules(_install)' with
-CONFIG_MODULES disabled, you will get a clear error message, but nothing
-for external module builds.
+On Wed, 31 Mar 2021 21:25:03 +0800
+Ong Boon Leong <boon.leong.ong@intel.com> wrote:
 
-Factor out the modules and modules_install rules into the common part,
-then you will get the same error message when you try to build external
-modules with CONFIG_MODULES=n.
+> xdp_return_frame() may be called outside of NAPI context to return
+> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
+> napi_direct = false. For page_pool memory model, __xdp_return() calls
+> xdp_return_frame_no_direct() unconditionally and below false negative
+> kernel BUG throw happened under preempt-rt build:
+> 
+> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
+> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
+> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+> 
+> Changes in v2:
+>  - This patch fixes the issue by making xdp_return_frame_no_direct() is
+>    only called if napi_direct = true, as recommended for better by
+>    Jesper Dangaard Brouer. Thanks!
+> 
+> Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
- Makefile | 85 ++++++++++++++++++++++++--------------------------------
- 1 file changed, 36 insertions(+), 49 deletions(-)
+> ---
+>  net/core/xdp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 05354976c1fc..858276e72c68 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+>  		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+>  		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+>  		page = virt_to_head_page(data);
+> -		napi_direct &= !xdp_return_frame_no_direct();
+> +		if (napi_direct && xdp_return_frame_no_direct())
+> +			napi_direct = false;
+>  		page_pool_put_full_page(xa->page_pool, page, napi_direct);
+>  		rcu_read_unlock();
+>  		break;
 
-diff --git a/Makefile b/Makefile
-index 0e06db5ed9d8..99a2bd51c02d 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1458,7 +1458,6 @@ endif
- 
- PHONY += modules
- modules: $(if $(KBUILD_BUILTIN),vmlinux) modules_check modules_prepare
--	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
- 
- PHONY += modules_check
- modules_check: modules.order
-@@ -1476,12 +1475,9 @@ PHONY += modules_prepare
- modules_prepare: prepare
- 	$(Q)$(MAKE) $(build)=scripts scripts/module.lds
- 
--# Target to install modules
--PHONY += modules_install
--modules_install: _modinst_ _modinst_post
--
--PHONY += _modinst_
--_modinst_:
-+modules_install: __modinst_pre
-+PHONY += __modinst_pre
-+__modinst_pre:
- 	@rm -rf $(MODLIB)/kernel
- 	@rm -f $(MODLIB)/source
- 	@mkdir -p $(MODLIB)/kernel
-@@ -1493,14 +1489,6 @@ _modinst_:
- 	@sed 's:^:kernel/:' modules.order > $(MODLIB)/modules.order
- 	@cp -f modules.builtin $(MODLIB)/
- 	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
--	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
--
--# This depmod is only for convenience to give the initial
--# boot a modules.dep even before / is mounted read-write.  However the
--# boot script depmod is the master version.
--PHONY += _modinst_post
--_modinst_post: _modinst_
--	$(call cmd,depmod)
- 
- ifeq ($(CONFIG_MODULE_SIG), y)
- PHONY += modules_sign
-@@ -1508,20 +1496,6 @@ modules_sign:
- 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modsign
- endif
- 
--else # CONFIG_MODULES
--
--# Modules not configured
--# ---------------------------------------------------------------------------
--
--PHONY += modules modules_install
--modules modules_install:
--	@echo >&2
--	@echo >&2 "The present kernel configuration has modules disabled."
--	@echo >&2 "Type 'make config' and enable loadable module support."
--	@echo >&2 "Then build a kernel with module support enabled."
--	@echo >&2
--	@exit 1
--
- endif # CONFIG_MODULES
- 
- ###
-@@ -1769,24 +1743,9 @@ KBUILD_BUILTIN :=
- KBUILD_MODULES := 1
- 
- build-dirs := $(KBUILD_EXTMOD)
--PHONY += modules
--modules: $(MODORDER)
--	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
--
- $(MODORDER): descend
- 	@:
- 
--PHONY += modules_install
--modules_install: _emodinst_ _emodinst_post
--
--PHONY += _emodinst_
--_emodinst_:
--	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
--
--PHONY += _emodinst_post
--_emodinst_post: _emodinst_
--	$(call cmd,depmod)
--
- compile_commands.json: $(extmod-prefix)compile_commands.json
- PHONY += compile_commands.json
- 
-@@ -1809,6 +1768,39 @@ PHONY += prepare modules_prepare
- 
- endif # KBUILD_EXTMOD
- 
-+# ---------------------------------------------------------------------------
-+# Modules
-+
-+PHONY += modules modules_install
-+
-+ifdef CONFIG_MODULES
-+
-+modules: $(MODORDER)
-+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
-+
-+quiet_cmd_depmod = DEPMOD  $(KERNELRELEASE)
-+      cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
-+                   $(KERNELRELEASE)
-+
-+modules_install:
-+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
-+	$(call cmd,depmod)
-+
-+else # CONFIG_MODULES
-+
-+# Modules not configured
-+# ---------------------------------------------------------------------------
-+
-+modules modules_install:
-+	@echo >&2 '***'
-+	@echo >&2 '*** The present kernel configuration has modules disabled.'
-+	@echo >&2 '*** To use the module feature, please run "make menuconfig" etc.'
-+	@echo >&2 '*** to enable CONFIG_MODULES.'
-+	@echo >&2 '***'
-+	@exit 1
-+
-+endif # CONFIG_MODULES
-+
- # Single targets
- # ---------------------------------------------------------------------------
- # To build individual files in subdirectories, you can do like this:
-@@ -1997,11 +1989,6 @@ tools/%: FORCE
- quiet_cmd_rmfiles = $(if $(wildcard $(rm-files)),CLEAN   $(wildcard $(rm-files)))
-       cmd_rmfiles = rm -rf $(rm-files)
- 
--# Run depmod only if we have System.map and depmod is executable
--quiet_cmd_depmod = DEPMOD  $(KERNELRELEASE)
--      cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
--                   $(KERNELRELEASE)
--
- # read saved command lines for existing targets
- existing-targets := $(wildcard $(sort $(targets)))
- 
+
+
 -- 
-2.27.0
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
