@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E914135005E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D9B350063
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhCaMa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235668AbhCaM36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D9D619EA;
-        Wed, 31 Mar 2021 12:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617193797;
-        bh=6mxWdwyZ+0OCFlssSvpvvsbni0ng5CFRshB25j/A10I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y/riIKShzYjOVvxgxDs3wPB5rrR10eESV3fmZwiiqzqBF9OLJXxzYZ1qodOGJkrte
-         9Hlpj/hOZbmx8Wri24t4Cc19uMkcnOf+BxefbGzCoTI/Or2vDhOP5guwmg9rI9DNQl
-         Zk2jFIJwUhYBOF2QZWp27ZfNSfSL9u1N5YsPoXIpvjPOtgZbDdxX9y8GPSWFnuNgKZ
-         HIto9E7quKwqSlw9nuUDvE7KaFBCgZUT3JaMRP0GNFi5abTE8jIA+QFJd4Y3CXMvT0
-         UCy1pgk8VxbgF7DZU+cbpL+Mlc9VPv8T4j55kl8yICByo5tjwAQA5k4/wPlPbZINkF
-         uWsYvcHb31xCg==
-Date:   Wed, 31 Mar 2021 17:59:53 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Hao Fang <fanghao11@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     kishon@ti.com, xuejiancheng@huawei.com,
-        linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com
-Subject: Re: [PATCH] phy: hisilicon: Use the correct HiSilicon copyright
-Message-ID: <YGRrQV8VEp3rs19L@vkoul-mobl.Dlink>
-References: <1617086861-13900-1-git-send-email-fanghao11@huawei.com>
+        id S235553AbhCaMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235458AbhCaMbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:31:13 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CFFC061574;
+        Wed, 31 Mar 2021 05:31:12 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id v186so14103486pgv.7;
+        Wed, 31 Mar 2021 05:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EA3BksYoWUwDpWXfwob/BjbORZtBEbr57FHVgHn33lA=;
+        b=QKZL8ZTBDHj4T9d0oHHetihGUztCDUbwKe3r0gOUDzG97gDt10rgix4RcfQx1Gxuzt
+         cXJn4tjqe+ghZzOby+c1tJkct1VG78ZZryezhUU/rOFFWI0deMlGzd5ctO4zudw4uagH
+         kzLzU4ctQGyxefS8ajhe0Q3W+I7qZz59+JmtqqrRNQVBGZL5lBeh2kUgu/nfLYRJgamF
+         uiVSTDDgQUUXUIXcdDN9EKRcOt8glo0/3Ob/J0o+BLYpZhMsrst2bUn1AcFqKsa1DISj
+         mSVwfLzZOs9JISe2K070naXwo3Qsdlrx1havRcwzbjL+jENQtThFUABMFzL111DZbiU7
+         ei/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EA3BksYoWUwDpWXfwob/BjbORZtBEbr57FHVgHn33lA=;
+        b=tkBHvsneorDsHh2Owx9+ywS1rRUC2kIPwyy1YkAxJN9pLEq6ksQbCwTV+n87xLwDnl
+         5jvx9/T2dPrSxdY3oazFtLTpACrUa0NQfdL7lKdU1qf+a1CaWpC4iZCc6obDqeFIMHOB
+         9q/keMvPk72MablnClwOpip9rFOKQpP7cvj6M3QsVYklNTYFPuKpPLCxoqmMMAdP1Lwd
+         5AOhXOQydM8jIMk+5rl/mnOlrU4jOiHZMjfZNJvkIszuZ7DRNzHT3Vocz8Zm9omDl+3V
+         gHbqKtD+vN4w3ADZ7DVDiJMZp7f6Te8Ptc3YTDUX7vlelHdBfgSJrXuBUmiL9MmR1wLr
+         nnIw==
+X-Gm-Message-State: AOAM531COGIrChQ142dIF9N2XTACTFsnd3tGfs7Jb//H4SeEKv5YSIPE
+        +IFIA03GBQuR8Th73ZaZ/dzACXLh4ylInolwu5A=
+X-Google-Smtp-Source: ABdhPJye3qo7n+pc6V1hv7tiiSujP4SVYulRSEF09xCWZsTwhDd+bkBSq0kDB7v0JUKOFa+VY92525dvlrxLezVKW5s=
+X-Received: by 2002:a63:3e4b:: with SMTP id l72mr2996644pga.203.1617193872532;
+ Wed, 31 Mar 2021 05:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617086861-13900-1-git-send-email-fanghao11@huawei.com>
+References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com> <11a8323c249ae6ea7584402ab0fb74551b6a4b7d.1617189926.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <11a8323c249ae6ea7584402ab0fb74551b6a4b7d.1617189926.git.matthias.schiffer@ew.tq-group.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 31 Mar 2021 15:30:56 +0300
+Message-ID: <CAHp75VdXJd8h+56AxXgzSYXRfx6+NxCXNjb0sFwCR1GBHdp_UQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: tqmx86: really make IRQ optional
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-03-21, 14:47, Hao Fang wrote:
-> s/Hisilicon/HiSilicon/g.
-> It should use capital S,
-> according to https://www.hisilicon.com/en/terms-of-use.
+On Wed, Mar 31, 2021 at 2:37 PM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
+>
+> The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
+> causes warnings with newer kernels.
+>
+> Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
+> missing IRQ properly.
 
-And I have not agreed to those terms of use! If you wish to change the
-name, please do send the patch dropping this terms of use link. I dont
-mind name appearing properly...
-
-Thanks
-> 
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
-> ---
->  drivers/phy/hisilicon/phy-hi6220-usb.c   | 2 +-
->  drivers/phy/hisilicon/phy-hix5hd2-sata.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/phy/hisilicon/phy-hi6220-usb.c b/drivers/phy/hisilicon/phy-hi6220-usb.c
-> index be05292..e92ba78 100644
-> --- a/drivers/phy/hisilicon/phy-hi6220-usb.c
-> +++ b/drivers/phy/hisilicon/phy-hi6220-usb.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2015 Linaro Ltd.
-> - * Copyright (c) 2015 Hisilicon Limited.
-> + * Copyright (c) 2015 HiSilicon Limited.
->   */
->  
->  #include <linux/mfd/syscon.h>
-> diff --git a/drivers/phy/hisilicon/phy-hix5hd2-sata.c b/drivers/phy/hisilicon/phy-hix5hd2-sata.c
-> index c67b78c..b0f99a9 100644
-> --- a/drivers/phy/hisilicon/phy-hix5hd2-sata.c
-> +++ b/drivers/phy/hisilicon/phy-hix5hd2-sata.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2014 Linaro Ltd.
-> - * Copyright (c) 2014 Hisilicon Limited.
-> + * Copyright (c) 2014 HiSilicon Limited.
->   */
->  
->  #include <linux/delay.h>
-> -- 
-> 2.8.1
+Also you missed a Fixes tag.
 
 -- 
-~Vinod
+With Best Regards,
+Andy Shevchenko
