@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D43F3503C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068923503C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhCaPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
+        id S235840AbhCaPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235715AbhCaPpe (ORCPT
+        with ESMTP id S235410AbhCaPpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:45:34 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FC1C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:45:33 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id u5so30772056ejn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:45:33 -0700 (PDT)
+        Wed, 31 Mar 2021 11:45:42 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A33C061574;
+        Wed, 31 Mar 2021 08:45:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id o16so10372710ljp.3;
+        Wed, 31 Mar 2021 08:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vZvTeEIjG7hTC60MU99hsLQZS7LHfA5UNSzOvxjACt8=;
-        b=fXH/mAvHacC9Z8pz246d+YnXXN5MWHNHjElL48QIg54VEmSuiNzgDYSUizBO7MY4ab
-         uAVfw9BR3DLIdY0xMpeZyPXKfjxY+7MrXrvnal/hh7RoaJq1zWdGA1lgR1Uzuf0I6HUF
-         ZMyzcQV6/xnE8tJvobv6MKdjTHyHeebl91rQCJeimSqlGr0bRBOtccpStf1zFACueNzt
-         8XeyZVyqhM5VDYt8zeIXg/2fQhdrlrJharVAJzSiSH13/YHZB1oOrwsZf7ttSj+CD1Bz
-         2GzvFkf8t+JuHGBhrPxELoqiyuVamJ8j+Z37OO2rbLkR8ZfGdBvtJIV+9VBZpJvPFf2n
-         dRhw==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sg2M5vnLvA6N/v/unukjBIy2TElIYCrmD7g4frzymRQ=;
+        b=rkkFwJ9Cpq5k0SUA92s1t0S+rpZf1whcRDyyhdYF+yvH3fJ0KJOD9TbUObQp19+2fw
+         jDRmZCOQXy5+egCihBqXOdI3vaOo7iTf+81KhlvNjtfLU4UGfXe+m9j9P8s/N223jj5P
+         kV2AbMwLHyDSvlM8yyrWOSUirPB892b0kMffK/xzpKLw3COLvH9/RcB7p2/FLlrYNDvn
+         54LvMqE6zZPXp4r5n2pAk+imsO/ckDLs68Zn2Gx/e8FI2ZLDaJtabr2nuTFTfMt5hVKs
+         D2r2d1G6PV1QxYpdjW8zNg84dU45ihBEWLc4vI/v+lrjvTVqmYLNChgExA8xotU2t2nn
+         VVfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vZvTeEIjG7hTC60MU99hsLQZS7LHfA5UNSzOvxjACt8=;
-        b=Z4AGR6Y+FEHi1D7Wv8rQkvyju7kyc3u+Iy+KezhdwgByk1A3CpdsfE7YdKM2XVE2OY
-         JiDp8Fmv+cOM0fRANznuMVxa8vYJxT+6jLmwLSGb6K/MngRRkgrHJMFMBtgbYU6M6Zcx
-         3Sv2yKsKfa4Deg9Lf+ztzwKrNnMUkOhKZa+Dhlixvv6OAwjLpjlHQrc6f/OUQXxwp4IO
-         D6wGRI/0vu7h+6YUWCoEMtyQMnosNdkZMD4QDXLykTC/21+iWry926U26ReR2RPozXLi
-         UxtUq70f8a8oiDweuxvyri00txZQOYk3Py+645AjxtnFFdmTb+CVurvPK3uS20UGsBlw
-         6fcQ==
-X-Gm-Message-State: AOAM530EiaS+7/xkWpWogYsNXR9RqTSz6wCNHjYwoR5MJphTawb3tgoA
-        oq0c7BfbYvOA/D0vRKnggWQGXr6lYTzHTJwlwkmtsA==
-X-Google-Smtp-Source: ABdhPJw1YouJGVVEEuAelWJYwoGubYOmgwmigz+nnYb7sSU7Yqz3tCAoDuaId7uScLRM/fMDHiCUSusnuCZE97Yzcs0=
-X-Received: by 2002:a17:906:8447:: with SMTP id e7mr4225482ejy.523.1617205532398;
- Wed, 31 Mar 2021 08:45:32 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sg2M5vnLvA6N/v/unukjBIy2TElIYCrmD7g4frzymRQ=;
+        b=FrxcAk1mYVwLa3Z8OYpLXumXgVB0g9WH8PBqMDvH93ub8gvFiDlMJTUOurrIMB/zJo
+         AONlwt7N4dhS2WPYktr4c+GlwrRetEmw/Zr+hgSrkCh/u3w9EJIc8Dkv7vfikRapxl//
+         BeWtmLBy2+lCLzT36oHfm9rN1xAYqTzOXNZzzLroJIhgMkHHRIuEsO4XC9uo/oIRCN5l
+         B4Qf5xVeQJ8ivxGyCb93o7aXhfnItOLPfi6raEAY+zwBiKtScKwh96tgAOSUVvofWPk1
+         8Z8wGv7ex0kg5p3z9ZUzT5dOeQyw1xmxtGUpQ9RQjeRS05j45Zm8gPBkqV8YO4mSin7z
+         bR/g==
+X-Gm-Message-State: AOAM530rtOZrZRyiqrIU315UEA7y1ZgBEBuFFgZ/VS8mP5nuqiEB4WC3
+        jAdya5Msw/mQe+g1GsCqaCjV8T0GlPQ=
+X-Google-Smtp-Source: ABdhPJxlLOpGqgOWnEgE7B4HJ0pcInOcka2zS2ofj5+/faiRKNsihhdztJFakPdBZVJRL1tzI5FcDQ==
+X-Received: by 2002:a2e:b88c:: with SMTP id r12mr2476537ljp.212.1617205539966;
+        Wed, 31 Mar 2021 08:45:39 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:814d:c71f:a10:76ff:fe69:21b6? ([2a00:1370:814d:c71f:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id 203sm275275ljf.41.2021.03.31.08.45.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 08:45:39 -0700 (PDT)
+Subject: Re: [PATCH v4 1/6] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table()
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210314164810.26317-1-digetx@gmail.com>
+ <20210314164810.26317-2-digetx@gmail.com>
+ <8f78a014-eeab-d788-7d3b-b52b8109cb2c@gmail.com>
+ <20210318103250.shjyd66pxw2g2nsd@vireshk-i7>
+ <2498dd11-1d71-b245-2651-e43ab3f70e17@gmail.com>
+Message-ID: <9115b38c-5d00-03e2-f51a-8c1ea15b9b6b@gmail.com>
+Date:   Wed, 31 Mar 2021 18:45:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <161714738634.2168142.10860201861152789544.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161714739718.2168142.17960000558666300914.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210331130720.GF1463678@nvidia.com>
-In-Reply-To: <20210331130720.GF1463678@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 31 Mar 2021 08:45:23 -0700
-Message-ID: <CAPcyv4gv3rk+NhdhN=QcJMDwRSziqeDKhYtrnZFa6yOZe-_caQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] cxl/mem: Fix synchronization mechanism for device
- removal vs ioctl operations
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2498dd11-1d71-b245-2651-e43ab3f70e17@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 6:07 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Tue, Mar 30, 2021 at 04:36:37PM -0700, Dan Williams wrote:
-> > -static void cxlmdev_unregister(void *_cxlmd)
-> > +static void cxl_memdev_activate(struct cxl_memdev *cxlmd, struct cxl_mem *cxlm)
-> >  {
-> > -     struct cxl_memdev *cxlmd = _cxlmd;
-> > -     struct device *dev = &cxlmd->dev;
-> > +     cxlmd->cxlm = cxlm;
-> > +     down_write(&cxl_memdev_rwsem);
-> > +     up_write(&cxl_memdev_rwsem);
-> > +}
->
-> No reason not to put the assignment inside the lock. Though using the
-> lock at all is overkill as the pointer hasn't left the local stack
-> frame at this point.
+18.03.2021 13:37, Dmitry Osipenko пишет:
+> 18.03.2021 13:32, Viresh Kumar пишет:
+>> On 18-03-21, 13:27, Dmitry Osipenko wrote:
+>>> 14.03.2021 19:48, Dmitry Osipenko пишет:
+>>>> Add common helper which initializes OPP table for Tegra SoC core devices.
+>>>>
+>>>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>>>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+>>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  drivers/soc/tegra/common.c | 137 +++++++++++++++++++++++++++++++++++++
+>>>>  include/soc/tegra/common.h |  30 ++++++++
+>>>>  2 files changed, 167 insertions(+)
+>>>
+>>> Viresh, do you think it will be possible to take this patch via the OPP
+>>> tree along with the devres patches if Thierry will give an ack? This
+>>> will allow us to start adding power management support to Tegra drivers
+>>> once 5.13 will be released.
+>>
+>> I can do that.. OR
+>>
+>> I can give an immutable to Thierry over which he can base these patches..
+>>
+> 
+> Thank you!
+> 
+> Thierry, please let us know if you're okay with this patch and what
+> variant you prefer more.
+> 
 
-Right, I was considering just leaving it as a bare pointer assignment,
-in fact that must be sufficient as publishing the cdev needs to depend
-on all cdev init having completed. So if this write somehow leaks into
-cdev_device_add() there are much larger problems afoot.
-
->
-> >  err_add:
-> > -     ida_free(&cxl_memdev_ida, cxlmd->id);
-> > -err_id:
-> >       /*
-> > -      * Theoretically userspace could have already entered the fops,
-> > -      * so flush ops_active.
-> > +      * The cdev was briefly live, shutdown any ioctl operations that
-> > +      * saw that state.
-> >        */
->
-> Wow it is really subtle that cdev_device_add has this tiny hole where
-> it can fail but have already allowed open() :<
-
-Yes, this was something I wanted to address in the cdev api proposal
-integrating the debugfs fops proxy / reference counting aproach. I
-want a cdev api that does not allow open until after the associated
-device has registered and fired the KOBJ_ADD event.
-
->
-> Other than the lock it looks OK
->
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Thanks, Jason.
+It's a bit too late now for 5.13, so I'll re-send this patch later on
+for 5.14 separately and along with other patches that will make use of
+this new helper.
