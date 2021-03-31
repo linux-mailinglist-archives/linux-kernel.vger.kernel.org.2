@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFB0350065
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168C735006A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhCaMcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S235458AbhCaMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhCaMbs (ORCPT
+        with ESMTP id S235399AbhCaMdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:31:48 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E17C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:31:48 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 12so18487918lfq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:31:48 -0700 (PDT)
+        Wed, 31 Mar 2021 08:33:11 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D34C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:33:10 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so18791496otn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=S6EU2YnOpdkBtjQGKeotICcap66rhKHJa003CpMwvsc=;
-        b=NMSrUSVupyaOh9cd4emHPeGipu/j7X2gWfOhsL2kEl3GrOaQM4rCxOQ/ZFBZPyKsmP
-         vHt69Jn4kH51ZPYe+xRKlgpSkP6R5K2aeGQZ86f9VHFD3VQFy3caHGLvwkRDEEHBfBod
-         qbyEo+efvrJKTfLanB1l/C++xwcZwLlKAYwurbth4ymdQVpqxd6CyMJivGs7+8JOnAUx
-         oKw+QKpcDVqbTRc/RB9DvIam0CUllJPYrLHPRW/zIPGrxdmWJVRk3lt67RbQM4eC/uWs
-         fbUPXWAOeNo5w49l/gPSjOdmwszwVGNgB+w0dEj59Ck5VztiLhc8BEWFbcvQmSS62BNT
-         w/sw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G2AUmQQuU10DnwHLe3j88zasAy4fwJf13uqVDHeKF6c=;
+        b=dMoq/sx5t1QGdWz5mTYVbtcbABRgM77PzP4Pt01l7AzVneg2FZGmwBCFUhIPg13pZ0
+         R619RV7rjyIwhw5y6lVdlrOdBwndHm4XiOVOHkGdmfWiebKt0dk4gJkSv+ZqujYccdk1
+         /Y9YUnUSj7EaYfCx4xSDb8WZXyAwY2BQYjCLWh/2BQ7A8YdPpd0RTCwD0ajhFfvFREy6
+         8KaYkaqq+Obvx6/ePJpZLkWM8F7nHI2VRFTELT4G7dijwVkjF7wjpCvxPW6gxRuAnniL
+         UURsS9hiUCAws+mhBJ1hPy3MFGmAiuLzrd7NwoGC1DlVfrl/kvwiEwz4DVaEIK/NAQyY
+         B5lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=S6EU2YnOpdkBtjQGKeotICcap66rhKHJa003CpMwvsc=;
-        b=lYDNloEj/OkYu/I5BuevToD1wwzcBWJOrQqdshjqdw66BZb+EqIaEthyQJS0+K64SX
-         DL5DNFlCYwH3WshQxCZN+/QkGfkS3XwzzOvl2mLvCkrfK3SCKNkS3x3sAFzXVlw6keU9
-         +oHyAqWYrbvzTSx/MUqy+N28DJkR4idr96SWPZ+KfwYX11dsgQ78hMncIkMRQEeXS9nv
-         h6SH2gbpade1V9/JTW5t2zE95/MzvJBCNo/V5Esqq87Bcpu5itwJR2vhekzZbWmeMAXN
-         /0xwgHUpA+bTmcxJRSgLmVBHrM/Hx9nhy4atgMeCFnLE88Ut4TSKPKCZldjz01zoCoev
-         DjZw==
-X-Gm-Message-State: AOAM53014eI7+vrfTVM6JVATGK9w1NmnlnFb27oFOdismktZo566ySRB
-        LzuYwcAx/mb8JlWUMbd5Dzup2kyJNkoFnoZ1/fzSiA==
-X-Google-Smtp-Source: ABdhPJzgNGDqwWJ0zqQx8Ru8esLLNouGO90hnzko0scZwHQnRkLnOlZhCOMa/zz2I7pmU7SzXhXxRPZ7oh17nTDgH6c=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr1996596lfa.157.1617193906617;
- Wed, 31 Mar 2021 05:31:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G2AUmQQuU10DnwHLe3j88zasAy4fwJf13uqVDHeKF6c=;
+        b=Yjw6wf960NBCaYjW9lCgZmt2yv/pOQWkycbRs9RrvTsw749m7cBTIaOu0v0HG/P31P
+         ZOM3PAregS68vUcVGNhrvNXoavFUMHeIREjzbzJBhILFFMXeM+b4Ik08cmX5mifp8DKk
+         iT50aNC5Fli+2XgiRYseu5XMwPADXQUEQJaDDSvh7f+m8AExk+sISv7VsjJkvyNP+vdU
+         x9OMD4UeN6Fy8Hmdy36Ob/GEfRSGtdGLZpdFWunttvlfanKfFVwR2EF3NdqE5QrS90Se
+         +qw6fVEjPqWHNVZdD5SEAjCvcYUgB/NIbjtS2rEihaXVta3Hi5RAQVkfXcB9077h7eLU
+         7zdg==
+X-Gm-Message-State: AOAM5323yrrilkrta3n8KAxXEyQqFKBguydxReJkht7ivwIhSIqSnKob
+        cC26fb7ZlQRAfTR9JSTgLKwQQDRyWlVxjQuDQ7jzkw==
+X-Google-Smtp-Source: ABdhPJx6YDqVXlG9dIvGvuotdIeqBs0jLh1oYI6fps8tuotAwF3xJLdVe9L4RGLJ/HPVeJgnUb4aEQgH994pcSTpmPk=
+X-Received: by 2002:a9d:5508:: with SMTP id l8mr2553279oth.233.1617193990006;
+ Wed, 31 Mar 2021 05:33:10 -0700 (PDT)
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 31 Mar 2021 14:31:36 +0200
-Message-ID: <CACRpkdazjQ0jPdXYPNsC6BmYEHZgf7_zUObHTEa+B9LZCmaT8g@mail.gmail.com>
-Subject: [GIT PULL] pin control fixes for the v5.12 kernel
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
+References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-7-elver@google.com>
+ <YFxGb+QHEumZB6G8@elver.google.com> <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
+In-Reply-To: <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 31 Mar 2021 14:32:58 +0200
+Message-ID: <CANpmjNOPJNhJ2L7cxrvf__tCZpy=+T1nBotKmzr2xMJypd-oJQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/11] perf: Add support for SIGTRAP on perf events
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, 29 Mar 2021 at 14:07, Peter Zijlstra <peterz@infradead.org> wrote:
 
-here are some overly ripe fixes for the v5.12 kernel. I should
-have sent earlier but had my head stuck in GDB.
+> (and we might already have a problem on some architectures where there
+> can be significant time between these due to not having
+> arch_irq_work_raise(), so ideally we ought to double check current in
+> your case)
 
-All are driver fixes. Details in the signed tag.
+I missed this bit -- just to verify: here we want to check that
+event->ctx->task == current, in case the the irq_work runs when the
+current task has already been replaced. Correct?
 
-Please pull it in!
-
-Yours,
-Linus Walleij
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v5.12-2
-
-for you to fetch changes up to ba845907b23a6584e5944f6fbffda3efb010c28b:
-
-  Merge tag 'intel-pinctrl-v5.12-3' of
-gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
-(2021-03-30 00:46:49 +0200)
-
-----------------------------------------------------------------
-Pin control fixes for the v5.12 kernel cycle:
-
-- Fix up some Intel GPIO base calculations.
-- Fix a register offset in the Microchip driver.
-- Fix suspend/resume bug in the Rockchip driver.
-- Default pull up strength in the Qualcomm LPASS
-  driver.
-- Fix two pingroup offsets in the Qualcomm SC7280
-  driver.
-- Fix SDC1 register offset in the Qualcomm SC7280
-  driver.
-- Fix a nasty string concatenation in the
-  Qualcomm SDX55 driver.
-- Check the REVID register to see if the device is
-  real or virtualized during virtualization in the
-  Intel driver.
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      pinctrl: intel: Show the GPIO base calculation explicitly
-
-Arnd Bergmann (1):
-      pinctrl: qcom: fix unintentional string concatenation
-
-Jonathan Marek (1):
-      pinctrl: qcom: lpass lpi: use default pullup/strength values
-
-Lars Povlsen (1):
-      pinctrl: microchip-sgpio: Fix wrong register offset for IRQ trigger
-
-Linus Walleij (2):
-      Merge tag 'intel-pinctrl-v5.12-2' of
-gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
-      Merge tag 'intel-pinctrl-v5.12-3' of
-gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
-
-Rajendra Nayak (2):
-      pinctrl: qcom: sc7280: Fix SDC_QDSD_PINGROUP and UFS_RESET offsets
-      pinctrl: qcom: sc7280: Fix SDC1_RCLK configurations
-
-Roger Pau Monne (1):
-      pinctrl: intel: check REVID register value for device presence
-
-Wang Panzhenzhuan (1):
-      pinctrl: rockchip: fix restore error in resume
-
- drivers/pinctrl/intel/pinctrl-intel.c     |  9 ++++++++-
- drivers/pinctrl/pinctrl-microchip-sgpio.c |  2 +-
- drivers/pinctrl/pinctrl-rockchip.c        | 13 ++++++++-----
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.c  |  2 +-
- drivers/pinctrl/qcom/pinctrl-sc7280.c     | 16 ++++++++--------
- drivers/pinctrl/qcom/pinctrl-sdx55.c      |  2 +-
- 6 files changed, 27 insertions(+), 17 deletions(-)
+Thanks,
+-- Marco
