@@ -2,139 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7B3509B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373E43509B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhCaVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230073AbhCaVmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D729460FE8;
-        Wed, 31 Mar 2021 21:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617226957;
-        bh=Fz/I/hl1yyAm72gSCKg/MoqAzZtuus5hQonetSpNc3I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RW787MI6LE5UtC5glGn/yEU6oFwJDa73G+GlcJhOken3vy86TdE6sAAxps0iZK0Qw
-         Y2oArBelG3AKmHuD46Ng83ZWBhbqDIo/Fuq7/qpoFCdiI1jfY58ahnJtJ8LFJUcwXl
-         9pHo0aABYPxyu5NbQbYUn7NMSpSX+2M8n1J68f9yJOUIp5W4M5snSwvgqCEKVr5lRp
-         9AME9mLRTClC/OLr7jgaF5mOJeY3de/6eQgFx5uiasgRexeBw2WTUvkBNayPdKvJWh
-         TqNdKCWsANAZUkxiRbLDyggIK1a+oAbAQFd6ub5HpQmttIln6uaZpxFCqVxkGG9wYw
-         T3YG47kvI60pw==
-Date:   Wed, 31 Mar 2021 14:42:35 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v3 5/6] net: stmmac: Add support for XDP_TX
- action
-Message-ID: <20210331144235.799dea32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210331154135.8507-6-boon.leong.ong@intel.com>
-References: <20210331154135.8507-1-boon.leong.ong@intel.com>
-        <20210331154135.8507-6-boon.leong.ong@intel.com>
+        id S230142AbhCaVoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232362AbhCaVnl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:43:41 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FD4C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:43:41 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id v186so226715pgv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=cnHQL6nhksmECTngumtx7isJMVbBS3FZiWqfUCFPpaQ=;
+        b=h0VijdokJCZWQXC+NNjYXjooYVjHgngBMYAexJDmHByRhIka/TzFeuz4hsU1v/4n2K
+         MiAo1Jp+1n57o6EwxAwlNqiHt94OIFjvMYWYDaAPDpp8t2ERnv0Q51XxMpQZUgyuXB7n
+         JIn7LdKvyhqlMO3DvzF4izIlOANTN43s5GB3uLBuqrkLZLl5oBtqqQc1Zo2sNm9WTlNL
+         fCer96+6PzzGPEuQAL9204lP+78h5GxURnlMSjsTL7kF8lzOhs3pUiEfIeNU7KYv43ln
+         SbprkpSGs0Hl2D6rHGO4MFYMpHx+0hrWQ+57m4H9FvpXvooIxQo9ROFyp7YSfpqQpXo7
+         lYgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=cnHQL6nhksmECTngumtx7isJMVbBS3FZiWqfUCFPpaQ=;
+        b=ZL7LYeBGaU/lqCz4zZ5ect4jedfYn6kjD2kj4uwm5+mtHAM0lchhkBCSIpbTn6Y2DW
+         AwbcLZKl2cCVQaqh2dHCewtFQYp3Af4xjsrSb0oNgbv4mkN1brtOf+eiYwG9GDJLflMn
+         QFmQ8KOv3dEgUg7mAXTITw5yzI6xtwth9DHWwtBUbMcegRr2mHTTEI9aZpGhNRxl6E1M
+         Z7Gqr06QxqF0Cegk0ICynIUFo/UL7npLsTjVmp1noiPYxZBjRJjkMglHwdbf2JOhypWi
+         zZ2yGNUwOJfW1kZUW9MHsXkmCM2UH2IFKeVgQjpFXSvWuqs2VAZanyzOYgzeMPaAXE60
+         mt7g==
+X-Gm-Message-State: AOAM533P06L8rjnT7kmC7Mjm7VJgxpDQi0xpXBDDwL20tQNfb7s+Pxgh
+        BzOWuwexBaXQWQEoQggh6unb0A==
+X-Google-Smtp-Source: ABdhPJxhtefXccGOWGfyA0tfM/FxbU7D/svAKPT0QzP01kIfR1fvcZUFpKyPx4kReSZxgv3ylQuwUA==
+X-Received: by 2002:aa7:9614:0:b029:1fa:e77b:722 with SMTP id q20-20020aa796140000b02901fae77b0722mr5009269pfg.2.1617227020445;
+        Wed, 31 Mar 2021 14:43:40 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id 143sm3421730pfx.144.2021.03.31.14.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:43:39 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        Drazen Spio <drazsp@gmail.com>
+Subject: Re: [PATCH 0/3] arm64: dts: meson: add support for MeCool
+ KII-Pro/KIII-Pro
+In-Reply-To: <20210329154753.30074-1-christianshewitt@gmail.com>
+References: <20210329154753.30074-1-christianshewitt@gmail.com>
+Date:   Wed, 31 Mar 2021 14:43:39 -0700
+Message-ID: <7hzgyjatis.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 23:41:34 +0800 Ong Boon Leong wrote:
-> This patch adds support for XDP_TX action which enables XDP program to
-> transmit back received frames.
-> 
-> This patch has been tested with the "xdp2" app located in samples/bpf
-> dir. The DUT receives burst traffic packet generated using pktgen script
-> 'pktgen_sample03_burst_single_flow.sh'.
-> 
-> v3: Added 'nq->trans_start = jiffies' to avoid TX time-out as we are
->     sharing TX queue between slow path and XDP. Thanks to Jakub Kicinski
->     for pointing out.
-> 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Christian Hewitt <christianshewitt@gmail.com> writes:
 
-> +static int stmmac_xdp_xmit_back(struct stmmac_priv *priv,
-> +				struct xdp_buff *xdp)
-> +{
-> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
-> +	int cpu = smp_processor_id();
-> +	struct netdev_queue *nq;
-> +	int queue;
-> +	int res;
-> +
-> +	if (unlikely(!xdpf))
-> +		return -EFAULT;
+> This series adds support for the MeCool (Videostrong) KII Pro (GXL)
+> and KIII Pro (GXM) Android STB devices. These are quite popular due
+> to the embedded multi-standard tuner card (which is sadly not-yet
+> supported in the kernel). Both devices closely follow the Amlogic
+> reference designs with keys/buttons/LED details taken from known-
+> working vendor kernel device-trees.
+>
+> Testing was made by Drazen Spio via the LibreELEC forums [0] as I
+> don't own either device. Since dts files were added to LibreELEC
+> nightly test images I've seen the number of active installs grow
+> without reported issues.
 
-Can you return -EFAULT here? looks like the function is otherwise
-returning positive STMMAC_XDP_* return codes/masks.
+Great, thanks for the new board.
 
-> +	queue = stmmac_xdp_get_tx_queue(priv, cpu);
-> +	nq = netdev_get_tx_queue(priv->dev, queue);
-> +
-> +	__netif_tx_lock(nq, cpu);
-> +	/* Avoids TX time-out as we are sharing with slow path */
-> +	nq->trans_start = jiffies;
-> +	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf);
-> +	if (res == STMMAC_XDP_TX) {
-> +		stmmac_flush_tx_descriptors(priv, queue);
-> +		stmmac_tx_timer_arm(priv, queue);
+Do you mind rebasing this on top of my v5.13/dt64 branch, since it has
+some conflicts with the Minix NEO U9-H series.
 
-Would it make sense to arm the timer and flush descriptors at the end
-of the NAPI poll cycle? Instead of after every TX frame?
+Thanks,
 
-> +	}
-> +	__netif_tx_unlock(nq);
-> +
-> +	return res;
-> +}
-
-> @@ -4365,16 +4538,26 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->  			xdp.data_hard_start = page_address(buf->page);
->  			xdp_set_data_meta_invalid(&xdp);
->  			xdp.frame_sz = buf_sz;
-> +			xdp.rxq = &rx_q->xdp_rxq;
->  
-> +			pre_len = xdp.data_end - xdp.data_hard_start -
-> +				  buf->page_offset;
->  			skb = stmmac_xdp_run_prog(priv, &xdp);
-> +			/* Due xdp_adjust_tail: DMA sync for_device
-> +			 * cover max len CPU touch
-> +			 */
-> +			sync_len = xdp.data_end - xdp.data_hard_start -
-> +				   buf->page_offset;
-> +			sync_len = max(sync_len, pre_len);
->  
->  			/* For Not XDP_PASS verdict */
->  			if (IS_ERR(skb)) {
->  				unsigned int xdp_res = -PTR_ERR(skb);
->  
->  				if (xdp_res & STMMAC_XDP_CONSUMED) {
-> -					page_pool_recycle_direct(rx_q->page_pool,
-> -								 buf->page);
-> +					page_pool_put_page(rx_q->page_pool,
-> +							   virt_to_head_page(xdp.data),
-> +							   sync_len, true);
-
-IMHO the dma_sync_size logic is a little question, but it's not really
-related to your patch, others are already doing the same thing, so it's
-fine, I guess.
-
->  					buf->page = NULL;
->  					priv->dev->stats.rx_dropped++;
-
+Kevin
