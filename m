@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB9334FFE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B2A34FFF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhCaMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:05:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56978 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235140AbhCaMFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:05:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 75AA1B1E6;
-        Wed, 31 Mar 2021 12:05:08 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 306301E4415; Wed, 31 Mar 2021 14:05:08 +0200 (CEST)
-Date:   Wed, 31 Mar 2021 14:05:08 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] ext2: Convert kmap to kmap_local_page
-Message-ID: <20210331120508.GG30749@quack2.suse.cz>
-References: <20210329065402.3297092-1-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329065402.3297092-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S235494AbhCaMHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:07:17 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:8168 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235347AbhCaMGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:06:33 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 31 Mar 2021 05:06:32 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 31 Mar 2021 05:06:31 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 31 Mar 2021 17:35:59 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 76AB426F7; Wed, 31 Mar 2021 17:35:57 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, rnayak@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org,
+        satya priya <skakit@codeaurora.org>
+Subject: [PATCH V3 0/5] Add PM7325/PM8350C/PMR735A regulator support 
+Date:   Wed, 31 Mar 2021 17:35:34 +0530
+Message-Id: <1617192339-3760-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ira!
+This series is dependent on below series which adds DT files for SC7280 SoC
+https://lore.kernel.org/patchwork/project/lkml/list/?series=488871
 
-On Sun 28-03-21 23:54:00, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> kmap is inefficient and can be abused so it is being phased out in favor of
-> kmap_local_page where possible.
-> 
-> ext2 uses kmap in ext2_[get|put]_page().  All of the calls to
-> ext2_[get|put]_page() occur in single threads so it is perfectly safe and
-> preferable to use kmap_local_page().
-> 
-> This series has a clean up which matches ext2_put_page() with ext2_dotdot() and
-> ext2_find_entry().  Those calls use ext2_get_page() to map the page prior to
-> returning it to their callers.  And they document that ext2_put_page() should
-> be matched up with them.  This was the case but the ext2_put_page() calls were
-> hidden in other functions.  We lift the ext2_put_page() calls to match up to
-> the functions where ext2_dotdot() and ext2_find_entry() are called.
-> 
-> After that clean up convert ext2_[get|put]_page() to kmap and adjust for
-> kunmap_local() requiring the page address.
-> 
-> Nesting of kmap_local_page() calls is maintained with minor changes.
+satya priya (5):
+  regulator: qcom-rpmh: Add pmic5_ftsmps520 buck
+  regulator: qcom-rpmh: Add PM7325/PMR735A regulator support
+  arm64: dts: qcom: sc7280: Add RPMh regulators for sc7280-idp
+  dt-bindings: regulator: Convert RPMh regulator bindings to YAML
+  dt-bindings: regulator: Add compatibles for PM7325/PMR735A
 
-Pulled into my tree. Thanks!
+ .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 -----------------
+ .../bindings/regulator/qcom,rpmh-regulator.yaml    | 162 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            | 212 +++++++++++++++++++++
+ drivers/regulator/qcom-rpmh-regulator.c            |  62 +++++-
+ 4 files changed, 435 insertions(+), 181 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
 
-								Honza
-
-> 
-> Ira Weiny (2):
->   ext2: Match up ext2_put_page() with ext2_dotdot() and
->     ext2_find_entry()
->   fs/ext2: Replace kmap() with kmap_local_page()
-> 
->  fs/ext2/dir.c   | 94 +++++++++++++++++++++++++++++++------------------
->  fs/ext2/ext2.h  | 12 ++++---
->  fs/ext2/namei.c | 34 +++++++++++-------
->  3 files changed, 89 insertions(+), 51 deletions(-)
-> 
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
