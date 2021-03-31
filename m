@@ -2,108 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F72834FDF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251B634FDFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhCaKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbhCaKUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:20:10 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2E5C061574;
-        Wed, 31 Mar 2021 03:20:10 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j7so19127220wrd.1;
-        Wed, 31 Mar 2021 03:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3rXla0hHRtnVRfLF9YfnBTiK94WVn7aEJZMJWrzafGo=;
-        b=BxYU+5fteJflK1TOZMykibmAPmMWBqlU6pyq6c3GYkZk+Zc7WDm3U2ZC4JA2TVtmMr
-         c+/Zkf7+pMiJG45AOLog4xTM+rQx5jjRD6Y0oAK75WCV0BGt6kHQaCCeFsVPz43Ltfhm
-         6aJbFXc+2aZgcGoQy1tAxDXJ7jLC31SdN9szJhmewx8z/8TNG3EAGriL+acp0oAGaB5U
-         56drsyzCNjhoHdhJn63DRgqRiqk7WZJWrp6LWoPkEZ8qo9y+/HNUVy9o1bN71kF2Bznm
-         jcKMVSTxjXN0TTIWxMD14X6MkUCJfoOSikA2dDFYqC/FOuFm/XbxroO9jJ4UP2dnYWyF
-         Uw3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3rXla0hHRtnVRfLF9YfnBTiK94WVn7aEJZMJWrzafGo=;
-        b=R/7X/kukN3yhprT7Pj7QzDukYwQyw9Vp0jIDiLUKOr+m1zBuFS1cMwSYtbi3h8vF0y
-         +nNFidzynWn8eMu8ouu70k8J8EQyeo+SeBzP9hQ1F6OOgdA0FmvM7KUOtS4EWIB0whj4
-         9ElqoiejxksaLywWPL7x6HGuDVTrDkXTCeRCVd9/sNIw6VoW+O/17PV0oaPbOYj1flDT
-         DNtTzPKfH4WOL73Y/NYn3BCqH3PemOihPnE/BWPpwPvgufBa93P8byPKQ3kOGg+i7LlU
-         P58r2ZWqMQCZMs1goiUJdWGkVW93AOPvunk+2kyxjsWIKPhaFkid/wldfeq3+nkr7cLC
-         gaPQ==
-X-Gm-Message-State: AOAM533ssMYl1QRTtgcmoc2gCDNWD/IJo2ZaHRFLFgRJCSN20qGO752y
-        lrzUpiFwfaaTsKezOUWI4mQ=
-X-Google-Smtp-Source: ABdhPJzN80ItuTRHrC4wh+zxjzi0b6qONHFSsilv18FRfi7CBNJJSZ574//AWCzfQl4jVKGUK3m9NQ==
-X-Received: by 2002:a5d:628c:: with SMTP id k12mr2765032wru.316.1617186008745;
-        Wed, 31 Mar 2021 03:20:08 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id n7sm3662246wrv.71.2021.03.31.03.20.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 03:20:08 -0700 (PDT)
-Subject: Re: [PATCH 1/4] dt-bindings: arm64: dts: mediatek: Add
- mt8183-kukui-kakadu
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210331091327.1198529-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <28e5fe3c-aae5-9c48-74ca-f1c4964a6124@gmail.com>
-Date:   Wed, 31 Mar 2021 12:20:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234887AbhCaKXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:23:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:11506 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhCaKXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:23:15 -0400
+IronPort-SDR: hY9L/JklEIOhduOY5tnGhYbhJ2PbAjU/vcjSl9iamXlHTHCNsfX6lMBmwVuJ1Ux32I8feFY+ye
+ vs43jpYfSFlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="192001020"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="192001020"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:23:14 -0700
+IronPort-SDR: bC+KVBoS52Juqx5R1W7wQFLKdXiSaNjA2aDVZoCPNJ/razK/3G9G+JXOqh93Uc9XfzRs14SATh
+ lDyUo7kdkRTw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="438721437"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Mar 2021 03:23:13 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lRY0G-0005q1-7C; Wed, 31 Mar 2021 10:23:12 +0000
+Date:   Wed, 31 Mar 2021 18:22:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/warray-bounds] BUILD SUCCESS WITH
+ WARNING a7eacffc61cc1af1ebdb61e1736a8e6e08674eb8
+Message-ID: <60644d53.pWyZJ+sY+1JDfBoF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210331091327.1198529-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/warray-bounds
+branch HEAD: a7eacffc61cc1af1ebdb61e1736a8e6e08674eb8  hpfs: Replace one-element array with flexible-array member
 
+possible Warning in current branch:
 
-On 31/03/2021 11:13, Hsin-Yi Wang wrote:
-> Kakadu is also known as ASUS Chromebook Detachable CM3.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [3, 64] from the object at 'report' is out of the bounds of referenced subobject 'report' with type 'unsigned char' at offset 1 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [6, 26] from the object at 'param_element' is out of the bounds of referenced subobject 'qui' with type 'u8[3]' {aka 'unsigned char[3]'} at offset 2 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [6, 9] from the object at 'qos_info_element' is out of the bounds of referenced subobject 'qui' with type 'u8[3]' {aka 'unsigned char[3]'} at offset 2 [-Warray-bounds]
+drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
 
-Whole series applied to v5.12-next/dts64
+Warning ids grouped by kconfigs:
 
-Thanks!
+gcc_recent_errors
+|-- i386-randconfig-a002-20210330
+|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-param_element-is-out-of-the-bounds-of-referenced-subobject-qui-with-type-u8-aka-unsigned-char-at-offset
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-qos_info_element-is-out-of-the-bounds-of-referenced-subobject-qui-with-type-u8-aka-unsigned-char-at-offset
+|-- i386-randconfig-s002-20210330
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-report-is-out-of-the-bounds-of-referenced-subobject-report-with-type-unsigned-char-at-offset
+|-- ia64-allmodconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-randconfig-c024-20210330
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-randconfig-r016-20210330
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- parisc-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- powerpc-allyesconfig
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+|-- x86_64-randconfig-a005-20210330
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- x86_64-randconfig-c004-20210330
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+`-- x86_64-randconfig-c022-20210330
+    `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
 
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> index cf24401edb85..9774f44b51d9 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -138,6 +138,13 @@ properties:
->            - const: google,juniper-sku16
->            - const: google,juniper
->            - const: mediatek,mt8183
-> +      - description: Google Kakadu (ASUS Chromebook Detachable CM3)
-> +        items:
-> +          - const: google,kakadu-rev3
-> +          - const: google,kakadu-rev2
-> +          - const: google,kakadu
-> +          - const: mediatek,mt8183
-> +
->  
->  additionalProperties: true
->  
-> 
+elapsed time: 723m
+
+configs tested: 98
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+nios2                         3c120_defconfig
+xtensa                    xip_kc705_defconfig
+openrisc                            defconfig
+mips                           rs90_defconfig
+arm                         s3c2410_defconfig
+sh                          sdk7780_defconfig
+m68k                          amiga_defconfig
+sh                               j2_defconfig
+arm                        magician_defconfig
+arm                          exynos_defconfig
+h8300                               defconfig
+powerpc                     pq2fads_defconfig
+powerpc                      obs600_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      ppc44x_defconfig
+mips                           xway_defconfig
+powerpc                        fsp2_defconfig
+powerpc                       ppc64_defconfig
+arm                          iop32x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210330
+i386                 randconfig-a006-20210330
+i386                 randconfig-a003-20210330
+i386                 randconfig-a002-20210330
+i386                 randconfig-a001-20210330
+i386                 randconfig-a005-20210330
+i386                 randconfig-a015-20210330
+i386                 randconfig-a011-20210330
+i386                 randconfig-a014-20210330
+i386                 randconfig-a013-20210330
+i386                 randconfig-a016-20210330
+i386                 randconfig-a012-20210330
+x86_64               randconfig-a004-20210330
+x86_64               randconfig-a003-20210330
+x86_64               randconfig-a002-20210330
+x86_64               randconfig-a001-20210330
+x86_64               randconfig-a005-20210330
+x86_64               randconfig-a006-20210330
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20210330
+x86_64               randconfig-a015-20210330
+x86_64               randconfig-a014-20210330
+x86_64               randconfig-a016-20210330
+x86_64               randconfig-a013-20210330
+x86_64               randconfig-a011-20210330
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
