@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE96034F728
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3689534F729
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhCaDFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233572AbhCaDFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 30 Mar 2021 23:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbhCaDFb (ORCPT
+        with ESMTP id S233470AbhCaDFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:05:31 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7BBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:31 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id l123so13513977pfl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:31 -0700 (PDT)
+        Tue, 30 Mar 2021 23:05:33 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C583AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:32 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id v23so7179601ple.9
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mpMmDhY+dCpZ19xacYYKQOde4316qnbnc7ljrLohPKE=;
-        b=Ver8reiPZMpiyLCuRsv1l+OLOUVQQz+1AVoVQx07SbSwxc0DEbf00Z5jlSHnLSkTnY
-         rtI7YRvtpWE09kxM7dHdCjVyAqeMp50PBIXSjcZKfNDh8PCfUXbnyLpB4qL3RLlJByVn
-         MHmHACZL1kuKSyRQ/chtMzmzEhD2oHHB6rRsw=
+        bh=bXxtCW2oZxmP3x76plR5OR7eL+Iwsnt548Hrnczvi0s=;
+        b=XLD9F85qb2CDrC6QBWCIUPDBLGNigM2zs3dKfZGRh2rg8uco4exjq4XfIJh/nudH5p
+         8XRXgknYeqnhm58OX4gxk+XQisC/amGzhXQdMVvIDwYAhwG1x4u36vLXHJjcmbByfxSV
+         Da8aQTJ+jLdBDU7CbudDvSYjvkBu8YfTYgeHI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mpMmDhY+dCpZ19xacYYKQOde4316qnbnc7ljrLohPKE=;
-        b=bW0ffmUZwh++olKG+I8HK9Ht2SazMUpFm9ig46PFiH7qE1QWnqjX9Ripg5LBhXTlqb
-         7secwJaax7Lq0uwNPgIrKMCjUIsdli/pUgeAT5kBWw5Ukx+8RsDJlkmVObnvlrFSz7ti
-         2qXpZqIh8ogP7rU3zg7eKQNanj5SYJH7cfh6x6xvgI+SrI4BPZs08ON8Xpz8obnzsNZC
-         b7sh9oUlvfqGOzxC8JLChmmtlZTF7ykJH+kgp5jybL594IXQFVifOpIqjj452gvHgMbR
-         yWn46Vy0JteKeNKRcoovAJmi7rgXpBaf0PSvxNaz9KS4xK3PthP0+B2NOqU9UvxIsYe3
-         sNCw==
-X-Gm-Message-State: AOAM530XznUql5OAY60F/URUN4U36nGqQ/mBORaXqzKz24StCNn1LAhv
-        /PEccfbGYrMgoj+4CGGmwBN+JQ==
-X-Google-Smtp-Source: ABdhPJyJx2npVrKvtFfocELgGN1prwFx/P+I7iSdtbgt8/1SE28RZtfmZqzLT62lHv7BFhAbx7xl4g==
-X-Received: by 2002:a63:ed12:: with SMTP id d18mr1177504pgi.20.1617159931148;
-        Tue, 30 Mar 2021 20:05:31 -0700 (PDT)
+        bh=bXxtCW2oZxmP3x76plR5OR7eL+Iwsnt548Hrnczvi0s=;
+        b=ToXUv8JYHwiITPAURxXSl0nHh9orvUCtk2CKg7FR4j2LRszfGVYV5FuTQA9jFzLFQ0
+         OzZCg2TX4NKKb9FKThm1L+9RW9kdUT1GU29ZSmWe3CShjHKMIOqcURiF56gJqZSBySnX
+         MZY6UxCp8yfLERcdfmd/NvYKxhgxAJjuHlawuFbvMYCrgFp19kbE2e6CeiN3SrqA/5m+
+         D+BuYwfe8XZqWUbsfYPBas7VF7Jm4Y4qHPD+xrPWoqFRf5+wLrT+m6GoXDloV28uiTW1
+         VNpx/PEngSX2VZb+rotNKzHlmNpaOqdLBIZd034y32J3UYaRS3Og6zOy+vHcO3PVBaXI
+         2g7A==
+X-Gm-Message-State: AOAM531JukNbITqzLbIqs44tefEisJzGUqZW3mDwizyodYMq5kRJ8E2O
+        7Sb1x3F89YAnTAuf5oHo3yaKlw==
+X-Google-Smtp-Source: ABdhPJze+nqtRmVmHnLMeuanSLzHBeos+FNf+J04/0GCJYFgrlJplS934+XnLWOr59tt2gYeiwNp6g==
+X-Received: by 2002:a17:902:c407:b029:e7:3568:9604 with SMTP id k7-20020a170902c407b02900e735689604mr1184471plk.31.1617159932394;
+        Tue, 30 Mar 2021 20:05:32 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:c8c2:b814:df0f:253f])
-        by smtp.gmail.com with ESMTPSA id c6sm389024pfj.99.2021.03.30.20.05.29
+        by smtp.gmail.com with ESMTPSA id c6sm389024pfj.99.2021.03.30.20.05.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 20:05:30 -0700 (PDT)
+        Tue, 30 Mar 2021 20:05:32 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Jiri Olsa <jolsa@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Jessica Yu <jeyu@kernel.org>,
         Evan Green <evgreen@chromium.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Sasha Levin <sashal@kernel.org>,
         Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v3 06/12] x86/dumpstack: Use %pSb for backtrace printing
-Date:   Tue, 30 Mar 2021 20:05:14 -0700
-Message-Id: <20210331030520.3816265-7-swboyd@chromium.org>
+Subject: [PATCH v3 07/12] scripts/decode_stacktrace.sh: Support debuginfod
+Date:   Tue, 30 Mar 2021 20:05:15 -0700
+Message-Id: <20210331030520.3816265-8-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210331030520.3816265-1-swboyd@chromium.org>
 References: <20210331030520.3816265-1-swboyd@chromium.org>
@@ -70,47 +70,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use the new printk format to print the stacktrace entry when
-printing a backtrace to the kernel logs. This will include any module's
-build ID[1] in it so that offline/crash debugging can easily locate the
-debuginfo for a module via something like debuginfod[2].
+Now that stacktraces contain the build ID information we can update this
+script to use debuginfod-find to locate the debuginfo for the vmlinux
+and modules automatically. This can replace the existing code that
+requires specifying a path to vmlinux or tries to find the vmlinux and
+modules automatically by using the release number. Work it into the
+script as a fallback option if the vmlinux isn't specified on the
+commandline.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: <x86@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Jessica Yu <jeyu@kernel.org>
 Cc: Evan Green <evgreen@chromium.org>
 Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc: Sasha Levin <sashal@kernel.org>
 Cc: Petr Mladek <pmladek@suse.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Matthew Wilcox <willy@infradead.org>
-Link: https://fedoraproject.org/wiki/Releases/FeatureBuildId [1]
-Link: https://sourceware.org/elfutils/Debuginfod.html [2]
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/x86/kernel/dumpstack.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ scripts/decode_stacktrace.sh | 81 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 70 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-index 299c20f0a38b..7ad5eea99b2b 100644
---- a/arch/x86/kernel/dumpstack.c
-+++ b/arch/x86/kernel/dumpstack.c
-@@ -143,9 +143,9 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
- void show_ip(struct pt_regs *regs, const char *loglvl)
- {
- #ifdef CONFIG_X86_32
--	printk("%sEIP: %pS\n", loglvl, (void *)regs->ip);
-+	printk("%sEIP: %pSb\n", loglvl, (void *)regs->ip);
- #else
--	printk("%sRIP: %04x:%pS\n", loglvl, (int)regs->cs, (void *)regs->ip);
-+	printk("%sRIP: %04x:%pSb\n", loglvl, (int)regs->cs, (void *)regs->ip);
- #endif
- 	show_opcodes(regs, loglvl);
+diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
+index 90398347e366..ca21f8bdf5f2 100755
+--- a/scripts/decode_stacktrace.sh
++++ b/scripts/decode_stacktrace.sh
+@@ -3,11 +3,10 @@
+ # (c) 2014, Sasha Levin <sasha.levin@oracle.com>
+ #set -x
+ 
+-if [[ $# < 1 ]]; then
++usage() {
+ 	echo "Usage:"
+ 	echo "	$0 -r <release> | <vmlinux> [base path] [modules path]"
+-	exit 1
+-fi
++}
+ 
+ if [[ $1 == "-r" ]] ; then
+ 	vmlinux=""
+@@ -24,6 +23,7 @@ if [[ $1 == "-r" ]] ; then
+ 
+ 	if [[ $vmlinux == "" ]] ; then
+ 		echo "ERROR! vmlinux image for release $release is not found" >&2
++		usage
+ 		exit 2
+ 	fi
+ else
+@@ -31,12 +31,35 @@ else
+ 	basepath=${2-auto}
+ 	modpath=$3
+ 	release=""
++	debuginfod=
++
++	# Can we use debuginfod-find?
++	if type debuginfod-find >/dev/null 2>&1 ; then
++		debuginfod=${1-only}
++	fi
++
++	if [[ $vmlinux == "" && -z $debuginfod ]] ; then
++		echo "ERROR! vmlinux image must be specified" >&2
++		usage
++		exit 1
++	fi
+ fi
+ 
+ declare -A cache
+ declare -A modcache
+ 
+ find_module() {
++	if [[ -n $debuginfod ]] ; then
++		if [[ -n $modbuildid ]] ; then
++			debuginfod-find debuginfo $modbuildid && return
++		fi
++
++		# Only using debuginfod so don't try to find vmlinux module path
++		if [[ $debuginfod == "only" ]] ; then
++			return
++		fi
++	fi
++
+ 	if [[ "$modpath" != "" ]] ; then
+ 		for fn in $(find "$modpath" -name "${module//_/[-_]}.ko*") ; do
+ 			if readelf -WS "$fn" | grep -qwF .debug_line ; then
+@@ -150,6 +173,27 @@ parse_symbol() {
+ 	symbol="$segment$name ($code)"
  }
+ 
++debuginfod_get_vmlinux() {
++	local vmlinux_buildid=${1##* }
++
++	if [[ $vmlinux != "" ]]; then
++		return
++	fi
++
++	if [[ $vmlinux_buildid =~ ^[0-9a-f]+ ]]; then
++		vmlinux=$(debuginfod-find debuginfo $vmlinux_buildid)
++		if [[ $? -ne 0 ]] ; then
++			echo "ERROR! vmlinux image not found via debuginfod-find" >&2
++			usage
++			exit 2
++		fi
++		return
++	fi
++	echo "ERROR! Build ID for vmlinux not found. Try passing -r or specifying vmlinux" >&2
++	usage
++	exit 2
++}
++
+ decode_code() {
+ 	local scripts=`dirname "${BASH_SOURCE[0]}"`
+ 
+@@ -157,6 +201,14 @@ decode_code() {
+ }
+ 
+ handle_line() {
++	if [[ $basepath == "auto" && $vmlinux != "" ]] ; then
++		module=""
++		symbol="kernel_init+0x0/0x0"
++		parse_symbol
++		basepath=${symbol#kernel_init (}
++		basepath=${basepath%/init/main.c:*)}
++	fi
++
+ 	local words
+ 
+ 	# Tokenize
+@@ -182,16 +234,28 @@ handle_line() {
+ 		fi
+ 	done
+ 
++	if [[ ${words[$last]} =~ ^[0-9a-f]+\] ]]; then
++		words[$last-1]="${words[$last-1]} ${words[$last]}"
++		unset words[$last]
++		last=$(( $last - 1 ))
++	fi
++
+ 	if [[ ${words[$last]} =~ \[([^]]+)\] ]]; then
+ 		module=${words[$last]}
+ 		module=${module#\[}
+ 		module=${module%\]}
++		modbuildid=${module#* }
++		module=${module% *}
++		if [[ $modbuildid == $module ]]; then
++			modbuildid=
++		fi
+ 		symbol=${words[$last-1]}
+ 		unset words[$last-1]
+ 	else
+ 		# The symbol is the last element, process it
+ 		symbol=${words[$last]}
+ 		module=
++		modbuildid=
+ 	fi
+ 
+ 	unset words[$last]
+@@ -201,14 +265,6 @@ handle_line() {
+ 	echo "${words[@]}" "$symbol $module"
+ }
+ 
+-if [[ $basepath == "auto" ]] ; then
+-	module=""
+-	symbol="kernel_init+0x0/0x0"
+-	parse_symbol
+-	basepath=${symbol#kernel_init (}
+-	basepath=${basepath%/init/main.c:*)}
+-fi
+-
+ while read line; do
+ 	# Let's see if we have an address in the line
+ 	if [[ $line =~ \[\<([^]]+)\>\] ]] ||
+@@ -218,6 +274,9 @@ while read line; do
+ 	# Is it a code line?
+ 	elif [[ $line == *Code:* ]]; then
+ 		decode_code "$line"
++	# Is it a version line?
++	elif [[ -n $debuginfod && $line =~ PID:\ [0-9]+\ Comm: ]]; then
++		debuginfod_get_vmlinux "$line"
+ 	else
+ 		# Nothing special in this line, show it as is
+ 		echo "$line"
 -- 
 https://chromeos.dev
 
