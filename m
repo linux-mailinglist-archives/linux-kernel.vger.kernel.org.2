@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9545350685
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44593350686
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235090AbhCaSjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbhCaSii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235112AbhCaSjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:39:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46847 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234963AbhCaSii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 31 Mar 2021 14:38:38 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1469DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:38:38 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v8so8363919plz.10
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xVFz/Gq0fZO5UVwwcIiQh0M0HySLnxCGk6JFPLS55FQ=;
-        b=nD+fMWxyp1aMJrHunt0P+awE8UXGq9q5H/OouV/r40K/EMiLhnVygeAB/ntSafx7f/
-         aAOv4UCmR9rDrMrFXQyZ1+5hSPmsBf7TKgfQTEZEzywXqguuGE+XbdHc04zYwcFkNW8B
-         WXQNLTMhtnJrrihE4CI1etpLIb3BZvdEG6vem8h7Ct2L2IeXdd0B6UbueVfSFe/hBIaB
-         hKWiV/6UcHBc/UBZQoFShDn3pLaIghR6nMT1SVUhBweZj7klbRW0JEJE+1pPyQFIhBYk
-         WpHU7oq4qijrtzP1CPJXAGwq6KhgEHvbFx6b+SX9QQz2j1GMg1i2kuyNHEFb61xzTjBh
-         LIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xVFz/Gq0fZO5UVwwcIiQh0M0HySLnxCGk6JFPLS55FQ=;
-        b=e1QNc4AOkS7IyjGwVor2iD8ebcw6HwaQZHSQkmkj09xDRusjqfUSNWDblLGUfiQxiM
-         eQvJvjQknAVii+jHFa6GxJG5IXdpGcH/GlT2nOc8yJQU6SLJnl1/FqTxGfXegSaX70yI
-         4gXiz8ysJ+pVzuPz8j61Ij41/I+D9/LdGnW3D+LppBcb+Z/Yv3RfftysCJcYZ5KnssrV
-         Fsp5PiSs2PHks+M/9S7Di6geiIHBhh4jAFwLOBFqcmBiFWbAkrzo7bUQ0kABhW70F2kB
-         VG0Y48S4KvjRNyjU4nDdJA1ui/41Ogl7XpFRF2BCzHdoz1yaD9++ZgIAPH0BX6thn4M8
-         vf0A==
-X-Gm-Message-State: AOAM5301FGQtyURtStlx0q3X1+XQ/MG9IMevVKGCbLGE42iD8LsOn8aM
-        Y2NP+yFa5eqoKnizJqxa1OS9
-X-Google-Smtp-Source: ABdhPJwSj5cF7swcDrkrrQqUOU5UwVjBN8W+tp6XjVg6MJ0qV4YyRUMhQAADjDmkEn2nDQ+kkWmtJw==
-X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr4779631pjb.207.1617215911978;
-        Wed, 31 Mar 2021 11:38:31 -0700 (PDT)
-Received: from work ([103.77.37.129])
-        by smtp.gmail.com with ESMTPSA id i14sm2953078pjh.17.2021.03.31.11.38.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 31 Mar 2021 11:38:31 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 00:08:27 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v6 1/2] bus: mhi: core: Introduce internal register poll
- helper function
-Message-ID: <20210331183827.GM15610@work>
-References: <1617215665-19593-1-git-send-email-bbhatt@codeaurora.org>
- <1617215665-19593-2-git-send-email-bbhatt@codeaurora.org>
+IronPort-SDR: 5qxbLfrKzrhV5aDrhh6kn8b88+d4aKPY8uHyvmFWDV9D719NKwUIDT19EMiLgGWdq0zXuDcs71
+ U4ua6NnMgN2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="256054236"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="256054236"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:38:35 -0700
+IronPort-SDR: tgecgx9ye8u3SLe947FDLLViSgVcOUu1AX+GTEuhluo/vICKFCAZjZIQerNZD6opH7meP9H+sY
+ qP10KS/C30mw==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="607291433"
+Received: from tgvanner-mobl1.amr.corp.intel.com (HELO [10.254.114.81]) ([10.254.114.81])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:38:33 -0700
+Subject: Re: [PATCH] soundwire: qcom: wait for fifo space to be available
+ before read/write
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org
+Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+References: <20210331170033.17174-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ad9f1d18-8f72-9a53-535a-ab5a99379016@linux.intel.com>
+Date:   Wed, 31 Mar 2021 13:38:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617215665-19593-2-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210331170033.17174-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:34:24AM -0700, Bhaumik Bhatt wrote:
-> Introduce helper function to allow MHI core driver to poll for
-> a value in a register field. This helps reach a common path to
-> read and poll register values along with a retry time interval.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/core/internal.h |  3 +++
->  drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 7aa5cfd..e690f15 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -646,6 +646,9 @@ int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->  int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->  				    void __iomem *base, u32 offset, u32 mask,
->  				    u32 shift, u32 *out);
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +				    void __iomem *base, u32 offset, u32 mask,
-> +				    u32 shift, u32 val, u32 delayus);
->  void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
->  		   u32 offset, u32 val);
->  void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 8b68657..58b8111 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -4,6 +4,7 @@
->   *
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/dma-direction.h>
->  #include <linux/dma-mapping.h>
-> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
->  	return 0;
->  }
->  
-> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
-> +				    void __iomem *base, u32 offset,
-> +				    u32 mask, u32 shift, u32 val, u32 delayus)
+> +static int swrm_wait_for_rd_fifo_avail(struct qcom_swrm_ctrl *swrm)
 > +{
-> +	int ret;
-> +	u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
+> +	u32 fifo_outstanding_cmd, value;
+> +	u8 fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
 > +
-> +	while (retry--) {
-> +		ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, shift,
-> +					 &out);
-> +		if (ret)
-> +			return ret;
+> +	/* Check for fifo underflow during read */
+> +	swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +	fifo_outstanding_cmd = FIELD_GET(SWRM_RD_CMD_FIFO_CNT_MASK, value);
 > +
-> +		if (out == val)
-> +			return 0;
+> +	 /* Check number of outstanding commands in fifo before read */
+> +	if (fifo_outstanding_cmd)
+> +		return 0;
 > +
-> +		fsleep(delayus);
+> +	do {
+> +		usleep_range(500, 510);
+> +		swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +		fifo_outstanding_cmd = FIELD_GET(SWRM_RD_CMD_FIFO_CNT_MASK, value);
+> +		if (fifo_outstanding_cmd > 0)
+> +			break;
+> +	} while (fifo_retry_count--);
+> +
+> +	if (fifo_outstanding_cmd == 0) {
+> +		dev_err_ratelimited(swrm->dev, "%s err read underflow\n", __func__);
+> +		return -ENOMEM;
 > +	}
 > +
-> +	return -ETIMEDOUT;
+> +	return 0;
 > +}
 > +
->  void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
->  		   u32 offset, u32 val)
->  {
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> +static int swrm_wait_for_wr_fifo_avail(struct qcom_swrm_ctrl *swrm)
+> +{
+> +	u32 fifo_outstanding_cmd, value;
+> +	u8 fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
+> +
+> +	/* Check for fifo overflow during write */
+> +	swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +	fifo_outstanding_cmd = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
+> +
+> +	/* Check number of outstanding commands in fifo before write */
+> +	if (fifo_outstanding_cmd != swrm->wr_fifo_depth)
+> +		return 0;
+> +
+> +	do {
+> +		usleep_range(500, 510);
+> +		swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +		fifo_outstanding_cmd = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
+> +		if (fifo_outstanding_cmd < swrm->wr_fifo_depth)
+> +			break;
+> +	} while (fifo_retry_count--);
+> +
+> +	if (fifo_outstanding_cmd == swrm->wr_fifo_depth) {
+> +		dev_err_ratelimited(swrm->dev, "%s err write overflow\n", __func__);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+
+nit-pick: you could merge the prologue and loop body with a 
+while(fifo_retry_count--) and put the usleep_range() at the end of the loop.
+
