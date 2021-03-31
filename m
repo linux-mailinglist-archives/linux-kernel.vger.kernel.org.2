@@ -2,154 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CC434FAEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1994734FAFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbhCaH5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:57:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234173AbhCaH5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617177444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QzUhMnMU3zQi7kbLUex8emke2jBdKMAGI8Tet8F4dtw=;
-        b=PICz9S+uBtGk/mte47jDU1AGrkdflPKcD5bU88EEagj46Oqn1uIHDo/bIGCl0/x62ltz4e
-        NzPRIUwYEUu16rBRMCTz5vVNLPe0CGgBV1F7pjtpj10uBlurF3ClfpS7Il8yt2yAXV0gqB
-        PjSHJgEzf/9ugPVOYl1jllwv0YcX9co=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-v62Gzx7aPmOH7RHcEjALkg-1; Wed, 31 Mar 2021 03:57:22 -0400
-X-MC-Unique: v62Gzx7aPmOH7RHcEjALkg-1
-Received: by mail-wr1-f71.google.com with SMTP id i5so568573wrp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:57:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QzUhMnMU3zQi7kbLUex8emke2jBdKMAGI8Tet8F4dtw=;
-        b=uiMnZmQcsDmsR6bHwKp0xLBgniGeIztDwmk/MIfCzxLuYiNVKJ7/4j7rjy/FxUiW5n
-         EUS+rfqhZHFtLam2wrnUZr91L4WNVraD5SXWvACxUqsz+gpArrser7p0vp5wY38nLwuQ
-         vIy5IO2yzmSeakf/FBS0zBHwS0Ml4SRXD6NqXpj13b455MaXK50KwjEw2e3Nz0lCdDCC
-         A4AY4iOqpH7Nf4PmiZ/RHIjaRytpnXiGNTyAdcvBqFcsde5heSXSItgJebz+H9FN5JVM
-         QqGiaGkCSblYBNBYnLYU+huPGE9VQNemjMfMKxlDlyEGxAM3la3CcnDKlrY1gaq9k+Ls
-         6y6g==
-X-Gm-Message-State: AOAM530Ip7XAEQEH6Q1znQbRLSC4+v8XVmxQvZljhuZE1bl/UwDeTuOA
-        /q+BIB9dwWdtncZHM1CEzR4dMoOO41qbwYiEhfxlSxMtiHlzWYWyd5TdwhjbQriFaMIyPnNaOI3
-        xAdYjeI6/A+0N1+bO+33u7jeG
-X-Received: by 2002:a05:600c:190a:: with SMTP id j10mr1935783wmq.140.1617177441042;
-        Wed, 31 Mar 2021 00:57:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyg+EcdGfruRX3HrpM78c15MOqjXD+Pq6QPq9lrCE+nNtYrHVJVg0glnjf7PSn4UemOs7R8Kw==
-X-Received: by 2002:a05:600c:190a:: with SMTP id j10mr1935760wmq.140.1617177440807;
-        Wed, 31 Mar 2021 00:57:20 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id b65sm2631515wmh.4.2021.03.31.00.57.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 00:57:19 -0700 (PDT)
-Subject: Re: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a2ca8cb2-5c91-b971-9b6e-65cf9ee97ffa@redhat.com>
-Date:   Wed, 31 Mar 2021 09:57:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234309AbhCaH7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:59:51 -0400
+Received: from mail-co1nam11on2069.outbound.protection.outlook.com ([40.107.220.69]:43565
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234273AbhCaH7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:59:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eRtYawaGqvWuj9c03ddGU81p7r0k7tiqvxFtPGJkCd/9VFSwEH256C99rNE3gOtySf1M4loAo58X/tpeAvNXfkwDLYpv0HpHwNQMOT9602n1dAAISQpC0ElzJuS2OqcLjeqBCllrjPmjlNrs3dKSk7md4OALlrfzbYT8792RTj5XC/UevPOrnERukqx9ATr6tfRuqiuv2xoYQlg5zKeIQmzq0+Hw4dd8ajsgRpbUT81UDMQzIoxmqH0Fz9aGYRkrRQYjNXaLsMcVyuxkSoDpSSjMEn0TybSPo6KX8SFYfsj4d94qyTn9/kiE63e68lVx7gP8GttcFsijueW9b4Jh+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCexuLTxgP1kr4moKiS3JDsfUSw4LNw/1gqSahYVQ/w=;
+ b=TzuwIzXZRk6sADvVUgigk6atG+AY71DHb6IijTnyiHSGIppgRbCRvxoBvAk9IFcFvowkCQSPPbQvTdjlKy0NsQVCw4VZxFNQtJaZjgYyobBJb9HMIIdCmuGmyqodMiHTsOCcCrtY0K5IY+TBL8waIIjmTKKn8+O9bMYEUAzh1EoYH5nxMv/vUW2ZvGhVRm64ivNrft+JiZQeJzGXUYkpA5FrpYoFBKit+PgVaR6TMhuQ1TVBBvt9Dux1Q9BwbO79TskG7y290rGKpFEtn2PUOi3/Wk/8i090T5sOUXSL7AcFiYV77ve6sUehEFTDU00zhYwrc4DOtcPy1vyQLRfHMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GCexuLTxgP1kr4moKiS3JDsfUSw4LNw/1gqSahYVQ/w=;
+ b=ZYxbi4LtxB6UjsdY8Wwv4/oE8UdM9id1v4aW4iuEB13FXCYpd8iD+0dt/5bpRfliAO8aayp5JfmWtGCfRWMzop2swHHoFj2gnlKaGIrAKa8fTcJkk69lW5TbpylDTG6gGVJ8yHuHaZgqf6ifU1xLDP0PNZU3e0P3PoASxyMGFwDVI0hFG2xnOcx+gBgtKZMxNGgoMZMywACbRyL5MQQmWOHtwU9xo1kYOWDiwVFEMQHbzrzPg44lAcIAkHwlhpEpuLx31Dn0G78RI9sTkWhKRPD6Hbr/OoJjeemIoke/t1Gg1zt25tWLGTI/ReKQJMLFCGtmj06EXhtEydsUsDW5sQ==
+Received: from MW4PR03CA0165.namprd03.prod.outlook.com (2603:10b6:303:8d::20)
+ by CH2PR12MB4262.namprd12.prod.outlook.com (2603:10b6:610:af::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Wed, 31 Mar
+ 2021 07:59:44 +0000
+Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8d:cafe::19) by MW4PR03CA0165.outlook.office365.com
+ (2603:10b6:303:8d::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend
+ Transport; Wed, 31 Mar 2021 07:59:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 07:59:44 +0000
+Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 31 Mar 2021 07:59:40 +0000
+References: <20210329225322.143135-1-memxor@gmail.com>
+ <CAM_iQpVAo+Zxus-FC59xzwcmbS7UOi6F8kNMzsrEVrBY2YRtNA@mail.gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v2 1/1] net: sched: bump refcount for new action in ACT
+ replace mode
+In-Reply-To: <CAM_iQpVAo+Zxus-FC59xzwcmbS7UOi6F8kNMzsrEVrBY2YRtNA@mail.gmail.com>
+Date:   Wed, 31 Mar 2021 10:59:37 +0300
+Message-ID: <ygnh8s63hhxy.fsf@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 52b5c3a5-cab5-4afc-6d15-08d8f41af21d
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4262:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB4262ABC3C91CC8FD1C99A48FA07C9@CH2PR12MB4262.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EwtG37koOeF0pVWrrzMwiWBA3IXfornRFPS0PDSCFLJIKkzBXLTTB5ntDZoGSJNy6G5/dRkoNxORah/GVI+PbJ9AMr7lnJABy15MQ8bfEMnhGmE0bWKoUGN4DLSuv3YJq5LABXTgtVjtgOT56t4BMC2efp8rrx0fUGlMcHzQQZZ43zMCiXsd06tK/AJli6j2CI8b5i+7WugxyT7KFDSNQY2AvnmLTiMhnE6yNXowy2iF+oNaLuF11MLIHsZAihHbUqHYwEMnjI3w1SNtgvQ+mf9jHhpLt5922UxDnOw4GOu3CohnXmRaqKEF0iTG0OKLioKzJqPkjoGuA+aED9GafTCVyrTxrsvZGaEhac1Ouqv9kLBTQuRZQPP9RGO6GPF+d+0P/TEshTnmduoZWqG8vUyFdxic5yt70NN82iegARc42W7hVzo53bkGMQuzUCAA9flwY5BrA6bUJdMGHj8kbIQlGwwDFGM60+QqKLL7Db3Faxv+U4znC4xN5UrAspH0PH58I+dTh0KFLsqZ3C5kdOQs9btiMxm38rlBDse6fwR9Y4Kob8cYulecsQXxKpVovLgwrU5GYNoizUilr4PSDu1HLOdjretmcNqGqURMgnR0aWEUUdDzHL3Y+jvwOdwxN1pXILrixVXZFR/TUSOKUhs9zFyAK0uvsjsXGPqnKBg=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(46966006)(36840700001)(7696005)(36906005)(36756003)(4326008)(186003)(426003)(36860700001)(7636003)(2616005)(2906002)(316002)(336012)(54906003)(26005)(356005)(53546011)(82740400003)(83380400001)(8676002)(5660300002)(8936002)(70586007)(16526019)(478600001)(6666004)(86362001)(47076005)(82310400003)(70206006)(6916009);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 07:59:44.0237
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52b5c3a5-cab5-4afc-6d15-08d8f41af21d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4262
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/21 03:19, Sean Christopherson wrote:
-> The end goal of this series is to optimize the MMU notifiers to take
-> mmu_lock if and only if the notification is relevant to KVM, i.e. the hva
-> range overlaps a memslot.   Large VMs (hundreds of vCPUs) are very
-> sensitive to mmu_lock being taken for write at inopportune times, and
-> such VMs also tend to be "static", e.g. backed by HugeTLB with minimal
-> page shenanigans.  The vast majority of notifications for these VMs will
-> be spurious (for KVM), and eliding mmu_lock for spurious notifications
-> avoids an otherwise unacceptable disruption to the guest.
-> 
-> To get there without potentially degrading performance, e.g. due to
-> multiple memslot lookups, especially on non-x86 where the use cases are
-> largely unknown (from my perspective), first consolidate the MMU notifier
-> logic by moving the hva->gfn lookups into common KVM.
-> 
-> Applies on my TDP MMU TLB flushing bug fixes[*], which conflict horribly
-> with the TDP MMU changes in this series.  That code applies on kvm/queue
-> (commit 4a98623d5d90, "KVM: x86/mmu: Mark the PAE roots as decrypted for
-> shadow paging").
-> 
-> Speaking of conflicts, Ben will soon be posting a series to convert a
-> bunch of TDP MMU flows to take mmu_lock only for read.  Presumably there
-> will be an absurd number of conflicts; Ben and I will sort out the
-> conflicts in whichever series loses the race.
-> 
-> Well tested on Intel and AMD.  Compile tested for arm64, MIPS, PPC,
-> PPC e500, and s390.  Absolutely needs to be tested for real on non-x86,
-> I give it even odds that I introduced an off-by-one bug somewhere.
-> 
-> [*] https://lkml.kernel.org/r/20210325200119.1359384-1-seanjc@google.com
-> 
-> 
-> Patches 1-7 are x86 specific prep patches to play nice with moving
-> the hva->gfn memslot lookups into common code.  There ended up being waaay
-> more of these than I expected/wanted, but I had a hell of a time getting
-> the flushing logic right when shuffling the memslot and address space
-> loops.  In the end, I was more confident I got things correct by batching
-> the flushes.
-> 
-> Patch 8 moves the existing API prototypes into common code.  It could
-> technically be dropped since the old APIs are gone in the end, but I
-> thought the switch to the new APIs would suck a bit less this way.
-> 
-> Patch 9 moves arm64's MMU notifier tracepoints into common code so that
-> they are not lost when arm64 is converted to the new APIs, and so that all
-> architectures can benefit.
-> 
-> Patch 10 moves x86's memslot walkers into common KVM.  I chose x86 purely
-> because I could actually test it.  All architectures use nearly identical
-> code, so I don't think it actually matters in the end.
-> 
-> Patches 11-13 move arm64, MIPS, and PPC to the new APIs.
-> 
-> Patch 14 yanks out the old APIs.
-> 
-> Patch 15 adds the mmu_lock elision, but only for unpaired notifications.
-> 
-> Patch 16 adds mmu_lock elision for paired .invalidate_range_{start,end}().
-> This is quite nasty and no small part of me thinks the patch should be
-> burned with fire (I won't spoil it any further), but it's also the most
-> problematic scenario for our particular use case.  :-/
-> 
-> Patches 17-18 are additional x86 cleanups.
 
-Queued and 1-9 and 18, thanks.  There's a small issue in patch 10 that 
-prevented me from committing 10-15, but they mostly look good.
+On Wed 31 Mar 2021 at 07:40, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> On Mon, Mar 29, 2021 at 3:55 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+>> diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+>> index b919826939e0..43cceb924976 100644
+>> --- a/net/sched/act_api.c
+>> +++ b/net/sched/act_api.c
+>> @@ -1042,6 +1042,9 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+>>         if (err != ACT_P_CREATED)
+>>                 module_put(a_o->owner);
+>>
+>> +       if (!bind && ovr && err == ACT_P_CREATED)
+>> +               refcount_set(&a->tcfa_refcnt, 2);
+>> +
+>
+> Hmm, if we set the refcnt to 2 here, how could tcf_action_destroy()
+> destroy them when we rollback from a failure in the middle of the loop
+> in tcf_action_init()?
+>
+> Thanks.
 
-Paolo
+Hmm, you might be right. Also, the error handling code in
+tcf_action_init() looks incorrect:
 
+err:
+	tcf_action_destroy(actions, bind);
+err_mod:
+	for (i = 0; i < TCA_ACT_MAX_PRIO; i++) {
+		if (ops[i])
+			module_put(ops[i]->owner);
+	}
+	return err;
+
+It looks like here the modules for all actions that successfully
+completed their init has already been release by either
+tcf_action_init_1() on action overwrite or by tcf_action_destroy() on
+action create. I'll try to come up with tests that validate these corner
+cases.
+
+Regards,
+Vlad
