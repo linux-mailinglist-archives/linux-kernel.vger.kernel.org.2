@@ -2,162 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E627350A70
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A603509B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhCaWpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:45:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233103AbhCaWpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:45:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 725836105A;
-        Wed, 31 Mar 2021 22:45:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617230732;
-        bh=eOMEKgNYxeamI99PREgwqO+0ZE43rgZqPo/0e5CC1iw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/hDCtYga5ZDJ0am61+W7bi58nMV7Ay7UJ9lNi+7aWwyxcq6/3EaXcuxsWT08SG6X
-         TYuFXe1InfuTZipyqH1jAeIflcOQFEe1MMuiL5qIkuNs47QoVkuZ6ZTGTjoSX9ii/Q
-         dTaTVdH424f8XPHWvX7UMChlv3A5eolbl9mbJ7UGu4EX9QT7ZXPF0mdWTajad4utIo
-         l2+HCNvR0mfovPyIjsiKO8F2ZFkWq4Jl1H4aVFDYK/At6Z+g48VbDqgFQRgaOH88gL
-         iG133xTWJdtN1cQX6fUojwE2mXOt28KDZt04KcEiPuaz9n297LWhTqhhz0Q7//zlo1
-         di2BPsRjYqBWg==
-Date:   Wed, 31 Mar 2021 16:45:34 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH v2 2/2][next] wl3501_cs: Fix out-of-bounds warning in
- wl3501_mgmt_join
-Message-ID: <83b0388403a61c01fad8d638db40b4245666ff53.1617226664.git.gustavoars@kernel.org>
-References: <cover.1617226663.git.gustavoars@kernel.org>
+        id S232246AbhCaVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhCaVqK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:46:10 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9997C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so1927532pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
+        b=NzeLyJir6d1KwpiZ3RmekcvSne/weQo4YA0Uu7Q89IkbPP0+5tkV6E7R5TuBWawoMg
+         idGZp8zqhG+5HVjnv+msYLiZQ9S7h9tCa6GvjbE5b83fycdA9pvVk1tDXnlDajKP2SLi
+         74sdgQx/uoB7+AwHV0v7j226PbBND6y7yHvDI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
+        b=OzH5iJXY1vYCJaYlpLXqoDB+iNliaRZSFtuO74FwPWIJtYfPNuhqVSwTVg1SVAGsUG
+         9alqfhwThLCfZgEHTeEdgzlNceHsEjcbVCXVrqTuGh9UZMvrL6g8acUrqvlBIS2urEW4
+         +GRJQoPlhDbnkKbJMJe5SsO55fkdop+T9vFF9hH1xKVcJc0na46OmCf9GQWpSh3xmQ0X
+         +xCp/ha3IUvr8xVBw8OQ1yN7/CVx9uBSdfeKQ8TDWZDlmA0U03grkSys803Q9e90svhR
+         lTX2NiyWPv0qLdGl3A/gLL6AbbzSTq8U+neisZCO1/x6Qp2P/TAPRWpRCMExsIHoEV43
+         IlEw==
+X-Gm-Message-State: AOAM533zFnIHJGEiho4tB5cFnMSE/WDaey4iwwT7mt88EQerQ3J+qDK2
+        e5PG5d8DJ9BnHbGUVnoY/F6JAQ==
+X-Google-Smtp-Source: ABdhPJyc6xYrPp/zlyE7RCl/S1V/S62i7LtVAPCykyeZ+e4UWpT04Q1Ln+T2FDOVuAGVX7rqBciSng==
+X-Received: by 2002:a17:90a:be0e:: with SMTP id a14mr5187306pjs.131.1617227170242;
+        Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id iq6sm3106930pjb.31.2021.03.31.14.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:46:09 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:46:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4 00/17] Add support for Clang CFI
+Message-ID: <202103311442.FDB6E8223@keescook>
+References: <20210331212722.2746212-1-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617226663.git.gustavoars@kernel.org>
+In-Reply-To: <20210331212722.2746212-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warning by enclosing
-some structure members into new struct req:
+On Wed, Mar 31, 2021 at 02:27:04PM -0700, Sami Tolvanen wrote:
+> This series adds support for Clang's Control-Flow Integrity (CFI)
+> checking. With CFI, the compiler injects a runtime check before each
+> indirect function call to ensure the target is a valid function with
+> the correct static type. This restricts possible call targets and
+> makes it more difficult for an attacker to exploit bugs that allow the
+> modification of stored function pointers. For more details, see:
+> 
+>   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> 
+> The first patch contains build system changes and error handling,
+> and implements support for cross-module indirect call checking. The
+> remaining patches address issues caused by the compiler
+> instrumentation. These include fixing known type mismatches, as well
+> as issues with address space confusion and cross-module function
+> address equality.
+> 
+> These patches add support only for arm64, but I'll post patches also
+> for x86_64 after we address the remaining issues there, including
+> objtool support.
+> 
+> You can also pull this series from
+> 
+>   https://github.com/samitolvanen/linux.git cfi-v4
 
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
+Thanks for the updates! I think this is ready to land in -next.
 
-Refactor the code, accordingly:
+Will, Mark, Catalin: would you prefer this go via arm64 or via my LTO
+tree? (Or does anyone see other stuff they'd like fixed first?)
 
-$ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_join_req {
-	u16                        next_blk;             /*     0     2 */
-	u8                         sig_id;               /*     2     1 */
-	u8                         reserved;             /*     3     1 */
-	struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
-	u16                        reserved2;            /*    14     2 */
-	u16                        timeout;              /*    16     2 */
-	u16                        probe_delay;          /*    18     2 */
-	u8                         timestamp[8];         /*    20     8 */
-	u8                         local_time[8];        /*    28     8 */
-	struct {
-		u16                beacon_period;        /*    36     2 */
-		u16                dtim_period;          /*    38     2 */
-		u16                cap_info;             /*    40     2 */
-		u8                 bss_type;             /*    42     1 */
-		u8                 bssid[6];             /*    43     6 */
-		struct iw_mgmt_essid_pset ssid;          /*    49    34 */
-		/* --- cacheline 1 boundary (64 bytes) was 19 bytes ago --- */
-		struct iw_mgmt_ds_pset ds_pset;          /*    83     3 */
-		struct iw_mgmt_cf_pset cf_pset;          /*    86     8 */
-		struct iw_mgmt_ibss_pset ibss_pset;      /*    94     4 */
-		struct iw_mgmt_data_rset bss_basic_rset; /*    98    10 */
-	} req;                                           /*    36    72 */
+-Kees
 
-	/* size: 108, cachelines: 2, members: 10 */
-	/* last cacheline: 44 bytes */
-};
+> ---
+> Changes in v4:
+>  - Per Mark's suggestion, dropped __pa_function() and renamed
+>    __va_function() to function_nocfi().
+>  - Added a comment to function_nocfi() to explain what it does.
+>  - Updated the psci patch to use an intermediate variable for
+>    the physical address for clarity.
+> 
+> Changes in v3:
+>  - Added a patch to change list_sort() callers treewide to use
+>    const pointers instead of simply removing the internal casts.
+>  - Changed cleanup_symbol_name() to return bool.
+>  - Changed module.lds.S to drop the .eh_frame section only with
+>    CONFIG_CFI_CLANG.
+>  - Switched to synchronize_rcu() in update_shadow().
+> 
+> Changes in v2:
+>  - Fixed .text merging in module.lds.S.
+>  - Added WARN_ON_FUNCTION_MISMATCH() and changed kernel/thread.c
+>    and kernel/workqueue.c to use the macro instead.
+> 
+> 
+> Sami Tolvanen (17):
+>   add support for Clang CFI
+>   cfi: add __cficanonical
+>   mm: add generic function_nocfi macro
+>   module: ensure __cfi_check alignment
+>   workqueue: use WARN_ON_FUNCTION_MISMATCH
+>   kthread: use WARN_ON_FUNCTION_MISMATCH
+>   kallsyms: strip ThinLTO hashes from static functions
+>   bpf: disable CFI in dispatcher functions
+>   treewide: Change list_sort to use const pointers
+>   lkdtm: use function_nocfi
+>   psci: use function_nocfi for cpu_resume
+>   arm64: implement function_nocfi
+>   arm64: use function_nocfi with __pa_symbol
+>   arm64: add __nocfi to functions that jump to a physical address
+>   arm64: add __nocfi to __apply_alternatives
+>   KVM: arm64: Disable CFI for nVHE
+>   arm64: allow CONFIG_CFI_CLANG to be selected
+> 
+>  Makefile                                      |  17 +
+>  arch/Kconfig                                  |  45 +++
+>  arch/arm64/Kconfig                            |   1 +
+>  arch/arm64/include/asm/memory.h               |  15 +
+>  arch/arm64/include/asm/mmu_context.h          |   4 +-
+>  arch/arm64/kernel/acpi_parking_protocol.c     |   3 +-
+>  arch/arm64/kernel/alternative.c               |   4 +-
+>  arch/arm64/kernel/cpu-reset.h                 |  10 +-
+>  arch/arm64/kernel/cpufeature.c                |   4 +-
+>  arch/arm64/kernel/psci.c                      |   3 +-
+>  arch/arm64/kernel/smp_spin_table.c            |   3 +-
+>  arch/arm64/kvm/hyp/nvhe/Makefile              |   6 +-
+>  arch/arm64/kvm/vgic/vgic-its.c                |   8 +-
+>  arch/arm64/kvm/vgic/vgic.c                    |   3 +-
+>  block/blk-mq-sched.c                          |   3 +-
+>  block/blk-mq.c                                |   3 +-
+>  drivers/acpi/nfit/core.c                      |   3 +-
+>  drivers/acpi/numa/hmat.c                      |   3 +-
+>  drivers/clk/keystone/sci-clk.c                |   4 +-
+>  drivers/firmware/psci/psci.c                  |   7 +-
+>  drivers/gpu/drm/drm_modes.c                   |   3 +-
+>  drivers/gpu/drm/i915/gt/intel_engine_user.c   |   3 +-
+>  drivers/gpu/drm/i915/gvt/debugfs.c            |   2 +-
+>  drivers/gpu/drm/i915/selftests/i915_gem_gtt.c |   3 +-
+>  drivers/gpu/drm/radeon/radeon_cs.c            |   4 +-
+>  .../hw/usnic/usnic_uiom_interval_tree.c       |   3 +-
+>  drivers/interconnect/qcom/bcm-voter.c         |   2 +-
+>  drivers/md/raid5.c                            |   3 +-
+>  drivers/misc/lkdtm/usercopy.c                 |   2 +-
+>  drivers/misc/sram.c                           |   4 +-
+>  drivers/nvme/host/core.c                      |   3 +-
+>  .../controller/cadence/pcie-cadence-host.c    |   3 +-
+>  drivers/spi/spi-loopback-test.c               |   3 +-
+>  fs/btrfs/raid56.c                             |   3 +-
+>  fs/btrfs/tree-log.c                           |   3 +-
+>  fs/btrfs/volumes.c                            |   3 +-
+>  fs/ext4/fsmap.c                               |   4 +-
+>  fs/gfs2/glock.c                               |   3 +-
+>  fs/gfs2/log.c                                 |   2 +-
+>  fs/gfs2/lops.c                                |   3 +-
+>  fs/iomap/buffered-io.c                        |   3 +-
+>  fs/ubifs/gc.c                                 |   7 +-
+>  fs/ubifs/replay.c                             |   4 +-
+>  fs/xfs/scrub/bitmap.c                         |   4 +-
+>  fs/xfs/xfs_bmap_item.c                        |   4 +-
+>  fs/xfs/xfs_buf.c                              |   6 +-
+>  fs/xfs/xfs_extent_busy.c                      |   4 +-
+>  fs/xfs/xfs_extent_busy.h                      |   3 +-
+>  fs/xfs/xfs_extfree_item.c                     |   4 +-
+>  fs/xfs/xfs_refcount_item.c                    |   4 +-
+>  fs/xfs/xfs_rmap_item.c                        |   4 +-
+>  include/asm-generic/bug.h                     |  16 +
+>  include/asm-generic/vmlinux.lds.h             |  20 +-
+>  include/linux/bpf.h                           |   4 +-
+>  include/linux/cfi.h                           |  41 +++
+>  include/linux/compiler-clang.h                |   3 +
+>  include/linux/compiler_types.h                |   8 +
+>  include/linux/init.h                          |   6 +-
+>  include/linux/list_sort.h                     |   7 +-
+>  include/linux/mm.h                            |  10 +
+>  include/linux/module.h                        |  13 +-
+>  include/linux/pci.h                           |   4 +-
+>  init/Kconfig                                  |   2 +-
+>  kernel/Makefile                               |   4 +
+>  kernel/cfi.c                                  | 329 ++++++++++++++++++
+>  kernel/kallsyms.c                             |  55 ++-
+>  kernel/kthread.c                              |   3 +-
+>  kernel/module.c                               |  43 +++
+>  kernel/workqueue.c                            |   2 +-
+>  lib/list_sort.c                               |  17 +-
+>  lib/test_list_sort.c                          |   3 +-
+>  net/tipc/name_table.c                         |   4 +-
+>  scripts/Makefile.modfinal                     |   2 +-
+>  scripts/module.lds.S                          |  20 +-
+>  74 files changed, 759 insertions(+), 112 deletions(-)
+>  create mode 100644 include/linux/cfi.h
+>  create mode 100644 kernel/cfi.c
+> 
+> 
+> base-commit: d19cc4bfbff1ae72c3505a00fb8ce0d3fa519e6c
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
 
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). Now that a new struct _req_ enclosing all those adjacent
-members is introduced, memcpy() doesn't overrun the length of
-&sig.beacon_period, because the address of the new struct object
-_req_ is used as the destination, instead.
-
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-avoid confusing the compiler.
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - None.
-
- drivers/net/wireless/wl3501.h    | 22 ++++++++++++----------
- drivers/net/wireless/wl3501_cs.c |  4 ++--
- 2 files changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
-index ef9d605d8c88..774d8cac046d 100644
---- a/drivers/net/wireless/wl3501.h
-+++ b/drivers/net/wireless/wl3501.h
-@@ -389,16 +389,18 @@ struct wl3501_join_req {
- 	u16			    probe_delay;
- 	u8			    timestamp[8];
- 	u8			    local_time[8];
--	u16			    beacon_period;
--	u16			    dtim_period;
--	u16			    cap_info;
--	u8			    bss_type;
--	u8			    bssid[ETH_ALEN];
--	struct iw_mgmt_essid_pset   ssid;
--	struct iw_mgmt_ds_pset	    ds_pset;
--	struct iw_mgmt_cf_pset	    cf_pset;
--	struct iw_mgmt_ibss_pset    ibss_pset;
--	struct iw_mgmt_data_rset    bss_basic_rset;
-+	struct {
-+		u16			    beacon_period;
-+		u16			    dtim_period;
-+		u16			    cap_info;
-+		u8			    bss_type;
-+		u8			    bssid[ETH_ALEN];
-+		struct iw_mgmt_essid_pset   ssid;
-+		struct iw_mgmt_ds_pset	    ds_pset;
-+		struct iw_mgmt_cf_pset	    cf_pset;
-+		struct iw_mgmt_ibss_pset    ibss_pset;
-+		struct iw_mgmt_data_rset    bss_basic_rset;
-+	} req;
- };
- 
- struct wl3501_join_confirm {
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index e149ef81d6cc..399d3bd2ae76 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 	struct wl3501_join_req sig = {
- 		.sig_id		  = WL3501_SIG_JOIN_REQ,
- 		.timeout	  = 10,
--		.ds_pset = {
-+		.req.ds_pset = {
- 			.el = {
- 				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
- 				.len = 1,
-@@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 		},
- 	};
- 
--	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
-+	memcpy(&sig.req, &this->bss_set[stas].beacon_period, sizeof(sig.req));
- 	return wl3501_esbq_exec(this, &sig, sizeof(sig));
- }
- 
 -- 
-2.27.0
-
+Kees Cook
