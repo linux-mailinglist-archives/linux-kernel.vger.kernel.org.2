@@ -2,136 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470F035055E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1128350564
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbhCaRWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233900AbhCaRWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:22:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B721961041;
-        Wed, 31 Mar 2021 17:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617211332;
-        bh=UNNvx8KRbir/+SlHakk0v0B4spVKeTNYcTv3zPs9JaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Y+w6NTt0eiDQrd/3cvK6U8FxlBYYQDStYl+pTMOrnYv5SRqR9ou5//rEZoXqXa6iA
-         bqZXtWIHoGkR6BCUqOR+xkJxAtrXK6++GFvEVtTQLuuQz8rb/G424ffNkHN3OFDU5j
-         T87XdnLPLslscLynwtM+aQU2UKqpAJyG/rBkXwzmCXyJFkgjalwgzG2a5UVkBb1/bG
-         0dMtuuEOkTsb1YIEuAQURB9HE++Xu9K14sG2y+EXAGYNlXPGZ8f0qnlI/kFYmSbViT
-         V8qFnLiFWMgqdtxbciYGFSLK1MYyb9yBFezmbQLzjhb+3F292NIj0dXTbiCSJZlm1t
-         DeUVdbnQRnPYw==
-Date:   Wed, 31 Mar 2021 12:22:10 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH v2 04/15] ACPI: table: replace __attribute__((packed)) by
- __packed
-Message-ID: <20210331172210.GA1397554@bjorn-Precision-5520>
+        id S234299AbhCaRYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:24:01 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24885 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234386AbhCaRX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 13:23:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617211406; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=5zPrWlxFJHLDtc9SoIBmfqJpJkOSn1LpHhAgsB/5vG0=;
+ b=v4AFphORCKIDwRGXNTLhuZRO+VfzHq1UfK4VJwujJSIE8eu+gCFblrZ8avQD6TlOzZCqr6IU
+ jO4PzPXr/QyGp5IFdbDMzj5aKtFwpfbT/7tghPQlx4EcAYUAfgSwD/5sRYzIxGPEIdRcq/br
+ ycGK0eOdOIDEPM+OVOM8mXw49zk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6064affa03cfff345268c71a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 17:23:06
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F2690C43463; Wed, 31 Mar 2021 17:23:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA0B9C433C6;
+        Wed, 31 Mar 2021 17:23:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0d626837e577e60f226b8bbf354bd8cbb1fe40a.camel@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 31 Mar 2021 10:23:04 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v5 2/2] bus: mhi: core: Move to polling method to wait for
+ MHI ready
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210331130451.GJ15610@work>
+References: <1617047583-12104-1-git-send-email-bbhatt@codeaurora.org>
+ <1617047583-12104-3-git-send-email-bbhatt@codeaurora.org>
+ <20210331130451.GJ15610@work>
+Message-ID: <0ae6fde544fe67ea9b0a849026a344e2@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:55:08PM +0800, Zhang Rui wrote:
-> ...
-
-> From e18c942855e2f51e814d057fff4dd951cd0d0907 Mon Sep 17 00:00:00 2001
-> From: Zhang Rui <rui.zhang@intel.com>
-> Date: Wed, 31 Mar 2021 20:34:13 +0800
-> Subject: [PATCH] ACPI: tables: FPDT: Fix 64bit alignment issue
+On 2021-03-31 06:04 AM, Manivannan Sadhasivam wrote:
+> On Mon, Mar 29, 2021 at 12:53:03PM -0700, Bhaumik Bhatt wrote:
+>> In certain devices, it is likely that there is no incoming MHI
+>> interrupt for a transition to MHI READY state. One such example
+>> is the move from Pass Through to an SBL or AMSS execution
+>> environment. In order to facilitate faster bootup times as there
+>> is no need to wait until timeout_ms completes, MHI host can poll
+>> every 25 milliseconds to check if device has entered MHI READY
+>> until a maximum timeout of twice the timeout_ms is reached.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/pm.c | 32 +++++++++++++++-----------------
+>>  1 file changed, 15 insertions(+), 17 deletions(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> index 681960c..dcc7fe0 100644
+>> --- a/drivers/bus/mhi/core/pm.c
+>> +++ b/drivers/bus/mhi/core/pm.c
+>> @@ -153,34 +153,32 @@ static void mhi_toggle_dev_wake(struct 
+>> mhi_controller *mhi_cntrl)
+>>  /* Handle device ready state transition */
+>>  int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
+>>  {
+>> -	void __iomem *base = mhi_cntrl->regs;
+>>  	struct mhi_event *mhi_event;
+>>  	enum mhi_pm_state cur_state;
+>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> -	u32 reset = 1, ready = 0;
+>> +	u32 interval_us = 25000; /* poll register field every 25 
+>> milliseconds */
+>>  	int ret, i;
+>> 
+>> -	/* Wait for RESET to be cleared and READY bit to be set by the 
+>> device */
+>> -	wait_event_timeout(mhi_cntrl->state_event,
+>> -			   MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state) ||
+>> -			   mhi_read_reg_field(mhi_cntrl, base, MHICTRL,
+>> -					      MHICTRL_RESET_MASK,
+>> -					      MHICTRL_RESET_SHIFT, &reset) ||
+>> -			   mhi_read_reg_field(mhi_cntrl, base, MHISTATUS,
+>> -					      MHISTATUS_READY_MASK,
+>> -					      MHISTATUS_READY_SHIFT, &ready) ||
+>> -			   (!reset && ready),
+>> -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>> -
+>>  	/* Check if device entered error state */
+>>  	if (MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+>>  		dev_err(dev, "Device link is not accessible\n");
+>>  		return -EIO;
+>>  	}
+>> 
+>> -	/* Timeout if device did not transition to ready state */
+>> -	if (reset || !ready) {
+>> -		dev_err(dev, "Device Ready timeout\n");
+>> +	/* Wait for RESET to be cleared and READY bit to be set by the 
+>> device */
+>> +	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHICTRL,
+>> +				 MHICTRL_RESET_MASK, MHICTRL_RESET_SHIFT, 0,
+>> +				 interval_us);
+>> +	if (ret) {
+>> +		dev_err(dev, "Device failed to clear MHI Reset\n");
+>> +		return -ETIMEDOUT;
 > 
-> Some of the 64bit items in FPDT table may be 32bit aligned.
-> Using __attribute__((packed)) is not needed in this case, fixing it by
-> allowing 32bit alignment for these 64bit items.
-
-1) Can you please add a spec reference for this?  I think it's ACPI
-   v6.3, sec 5.2.23.5, or something close to that.
-
-2) The exact layout in memory is prescribed by the spec.  I think
-   that's basically what "packed" accomplishes.  I don't understand
-   why using "aligned" would be preferable.  Using "aligned" means
-   things can be at different offsets depending on the starting
-   address of the structure.  We always want the identical layout, no
-   matter what the starting address is.
-
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> ---
->  drivers/acpi/acpi_fpdt.c | 28 +++++++++++++++-------------
->  1 file changed, 15 insertions(+), 13 deletions(-)
+> You should return the actual error code since there are couple of error
+> paths.
 > 
-> diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-> index a89a806a7a2a..94e107b9a114 100644
-> --- a/drivers/acpi/acpi_fpdt.c
-> +++ b/drivers/acpi/acpi_fpdt.c
-> @@ -23,12 +23,14 @@ enum fpdt_subtable_type {
->  	SUBTABLE_S3PT,
->  };
->  
-> +typedef u64 __attribute__((aligned(4))) u64_align32;
-> +
->  struct fpdt_subtable_entry {
->  	u16 type;		/* refer to enum fpdt_subtable_type */
->  	u8 length;
->  	u8 revision;
->  	u32 reserved;
-> -	u64 address;		/* physical address of the S3PT/FBPT table */
-> +	u64_align32 address;		/* physical address of the S3PT/FBPT table */
->  };
->  
->  struct fpdt_subtable_header {
-> @@ -51,25 +53,25 @@ struct fpdt_record_header {
->  struct resume_performance_record {
->  	struct fpdt_record_header header;
->  	u32 resume_count;
-> -	u64 resume_prev;
-> -	u64 resume_avg;
-> -} __attribute__((packed));
-> +	u64_align32 resume_prev;
-> +	u64_align32 resume_avg;
-> +};
->  
->  struct boot_performance_record {
->  	struct fpdt_record_header header;
->  	u32 reserved;
-> -	u64 firmware_start;
-> -	u64 bootloader_load;
-> -	u64 bootloader_launch;
-> -	u64 exitbootservice_start;
-> -	u64 exitbootservice_end;
-> -} __attribute__((packed));
-> +	u64_align32 firmware_start;
-> +	u64_align32 bootloader_load;
-> +	u64_align32 bootloader_launch;
-> +	u64_align32 exitbootservice_start;
-> +	u64_align32 exitbootservice_end;
-> +};
->  
->  struct suspend_performance_record {
->  	struct fpdt_record_header header;
-> -	u64 suspend_start;
-> -	u64 suspend_end;
-> -} __attribute__((packed));
-> +	u64_align32 suspend_start;
-> +	u64_align32 suspend_end;
-> +};
->  
->  
->  static struct resume_performance_record *record_resume;
-> -- 
-> 2.17.1
+> Thanks,
+> Mani
 > 
-> 
+Sure. With the update on patch #1, this will be taken care of properly 
+as we
+return -ETIMEDOUT from the API.
+>> +	}
+>> +
+>> +	ret = mhi_poll_reg_field(mhi_cntrl, mhi_cntrl->regs, MHISTATUS,
+>> +				 MHISTATUS_READY_MASK, MHISTATUS_READY_SHIFT, 1,
+>> +				 interval_us);
+>> +	if (ret) {
+>> +		dev_err(dev, "Device failed to enter MHI Ready\n");
+>>  		return -ETIMEDOUT;
+>>  	}
+>> 
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
