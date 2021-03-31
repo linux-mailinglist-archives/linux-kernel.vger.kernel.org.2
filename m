@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1930934FBD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B4434FBB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhCaIl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:41:27 -0400
-Received: from m34-101.88.com ([104.250.34.101]:29677 "EHLO 88.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232984AbhCaIlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:41:11 -0400
-X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Mar 2021 04:41:10 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=cGMIpLGopqNGNJ8RtjhCfqrGOBvIa0fV5k9lD
-        6TjwrA=; b=c6bRa0dptnvgjHRsMjv0sucfkdazNFjgxm6bnDyAi/st5tSqVLnoP
-        hX4c+OHUS76pY4yOT/Kc6yZ0dml95THMexBeB31vLQm7DXaYc84rMRbXh2LER5Gc
-        07QXLqhhFYTDQUfhwM7BYNqIk/IgXynog0O6qv3w6H8c+8F9YXsUnk=
-Received: from mipc (unknown [120.238.248.129])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDnWdDhM2RgVdpDAA--.21247S2;
-        Wed, 31 Mar 2021 16:33:39 +0800 (CST)
-Date:   Wed, 31 Mar 2021 16:33:37 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alex Shi <alexs@kernel.org>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 1/4] docs: make reporting-issues.rst official and
- delete reporting-bugs.rst
-Message-ID: <20210331083337.GA5287@mipc>
-References: <cover.1617113469.git.linux@leemhuis.info>
- <49c674c2d304d87e6259063580fda05267e8c348.1617113469.git.linux@leemhuis.info>
+        id S234329AbhCaIgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:36:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:7881 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231818AbhCaIfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:35:31 -0400
+IronPort-SDR: PbcfHwnkPmksgWsQGLR8/cQa0FBnAiUZxgpj1o3spNrDsEx99kZrOzuGa3fQAx2SKq1yjA12oq
+ CSBnIb4Tva7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171975903"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="171975903"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 01:35:27 -0700
+IronPort-SDR: oS3hEJDsIQSfc5HUmZO7kb01krVToVL+09b6714k3DEtfW7laak399SXzComZL5x//KeWPfZEd
+ ET5E2P3NY4Ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="418562455"
+Received: from mylly.fi.intel.com (HELO [10.237.72.184]) ([10.237.72.184])
+  by orsmga008.jf.intel.com with ESMTP; 31 Mar 2021 01:35:24 -0700
+Subject: Re: [PATCH v5 2/5] i2c: core: add api to provide frequency mode
+ strings
+To:     Yicong Yang <yangyicong@hisilicon.com>, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        Sergey.Semin@baikalelectronics.ru, linux-kernel@vger.kernel.org
+Cc:     digetx@gmail.com, treding@nvidia.com, rmk+kernel@armlinux.org.uk,
+        song.bao.hua@hisilicon.com, john.garry@huawei.com,
+        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
+        linuxarm@huawei.com
+References: <1617113966-40498-1-git-send-email-yangyicong@hisilicon.com>
+ <1617113966-40498-3-git-send-email-yangyicong@hisilicon.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <0561a225-3dbb-97b1-a0a8-223520885c05@linux.intel.com>
+Date:   Wed, 31 Mar 2021 11:35:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49c674c2d304d87e6259063580fda05267e8c348.1617113469.git.linux@leemhuis.info>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: LCKnCgDnWdDhM2RgVdpDAA--.21247S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zry3WFW7ArWDZrWxtrW5Wrg_yoW8Zr13p3
-        WDKrZ2q3ZxJFn0kr1xGr12qw12va4xuayrJr48Xw1rCrs8CF1ktrWqvr90vas3ury8tFWU
-        XF4Fgr90yr1jyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyvb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
-        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
-        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2
-        xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1U
-        JwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IUeOTmDUUUUU==
-X-Originating-IP: [120.238.248.129]
-X-CM-SenderInfo: pere453f6hztlloou0/
+In-Reply-To: <1617113966-40498-3-git-send-email-yangyicong@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc Alex Shi's new email <alexs@kernel.org>
+Hi
 
-On Tue, Mar 30, 2021 at 04:13:04PM +0200, Thorsten Leemhuis wrote:
-> Removing Documentation/admin-guide/reporting-bugs.rst will break links
-> in some of the translations. I was unsure if simply changing them to
-> Documentation/admin-guide/reporting-issue.rst was wise, so I didn't
-> touch anything for now and CCed the maintainers for the Chinese and
-> Italian translation. I couldn't find one for the Japanse translation.
+On 3/30/21 5:19 PM, Yicong Yang wrote:
+> Some I2C drivers like Designware and HiSilicon will print the
+> bus frequency mode information, so add a public one that everyone
+> can make use of.
 > 
-> Please advice. For completeness, this are the places where things will
-> break afaics:
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>   include/linux/i2c.h | 20 ++++++++++++++++++++
+>   1 file changed, 20 insertions(+)
 > 
-> $ grep -ri 'reporting-bugs.rst' Documentation/
-> Documentation/translations/zh_CN/SecurityBugs:是有帮助的信息，那就请重温一下admin-guide/reporting-bugs.rst文件中的概述过程。任
-> Documentation/translations/zh_CN/process/howto.rst:内核源码主目录中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
-> Documentation/translations/zh_CN/admin-guide/reporting-issues.rst:   本文档将取代“Documentation/admin-guide/reporting-bugs.rst”。主要的工作
-> Documentation/translations/zh_CN/admin-guide/reporting-issues.rst:   “Documentation/admin-guide/reporting-bugs.rst”中的旧文字非常相似。它和它
+> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+> index 10bd0b0..6837e64 100644
+> --- a/include/linux/i2c.h
+> +++ b/include/linux/i2c.h
+> @@ -47,6 +47,26 @@ typedef int (*i2c_slave_cb_t)(struct i2c_client *client,
+>   #define I2C_MAX_HIGH_SPEED_MODE_FREQ	3400000
+>   #define I2C_MAX_ULTRA_FAST_MODE_FREQ	5000000
+>   
+> +static inline const char *i2c_freq_mode_string(u32 bus_freq_hz)
+> +{
+> +	switch (bus_freq_hz) {
+> +	case I2C_MAX_STANDARD_MODE_FREQ:
+> +		return "Standard Mode(100KHz)";
+> +	case I2C_MAX_FAST_MODE_FREQ:
+> +		return "Fast Mode(400KHz)";
+> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
+> +		return "Fast Mode Plus(1.0MHz)";
+> +	case I2C_MAX_TURBO_MODE_FREQ:
+> +		return "Turbo Mode(1.4MHz)";
+> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
+> +		return "High Speed Mode(3.4MHz)";
+> +	case I2C_MAX_ULTRA_FAST_MODE_FREQ:
+> +		return "Ultra Fast Mode(5.0MHz)";
+> +	default:
+> +		return "Unknown Mode";
+> +	}
 
-Yeah, as Greg said, we will solve that after you patches be merged in next
-tree. Since I have translate the zh reporting-issues.rst in the next tree,
-will correct the link when I sync it with your new version. May cause 
-Warning for some days, but don't worry about it.
+A few minor nits here:
+- KHz -> kHz
+- Space between text and opening parenthesis: "Mode(" -> "Mode ("
+- Space between number and unit: (1.0MHz) -> (1.0 MHz)
 
-Wu X.C.
+With those changes you may add my
 
-> Documentation/translations/it_IT/process/howto.rst:Il file admin-guide/reporting-bugs.rst nella cartella principale del kernel
-> Documentation/translations/ja_JP/howto.rst:admin-guide/reporting-bugs.rstはカーネルバグらしいものについてどうレポー
-> 
-> Ciao, Thorsten
-
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
