@@ -2,128 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE1435040A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3A9350412
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhCaQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:01:51 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:48121 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhCaQBb (ORCPT
+        id S233692AbhCaQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233475AbhCaQDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:01:31 -0400
-Received: from localhost (lfbn-lyo-1-1679-174.w90-65.abo.wanadoo.fr [90.65.110.174])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 20CE3240011;
-        Wed, 31 Mar 2021 16:01:24 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 18:01:24 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        robh+dt@kernel.org, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: Re: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
-Message-ID: <YGSc1L8yW0KniOsx@piout.net>
-References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
- <20210331105908.23027-23-claudiu.beznea@microchip.com>
+        Wed, 31 Mar 2021 12:03:41 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45940C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:03:40 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id r20so24502275ljk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5LKuJHnY2f7qCpjih2QE7ExZcNPVTuCmCBGxBDXYgbA=;
+        b=H3yc9Ow/ee4WAZarDtEWtUCZjqJ2SsXmt5AUo6HL+JLKuGQxZAWs5dwlRHZWTgWIyE
+         qIHARj0BQ+BN6WS2RunvcHWbffg7rKWEWYDEUvOKK/e8fru/jZSNMN6F1AcPS9J4/Pp3
+         t/KQVAuIlkvsQLmw8YTBhTu71k0LsD/R5mNNOWMQd0K6831G1F5fd1MF8MffRN9MkfJR
+         AoJzWhXyUyfYK8I/LUpSYbH9/SnRPzKrfF5M2U0zmG/aI65iqLMq6KiOkh9n2wZ7OdG3
+         FnqTsGDRQapooMou/IFxYGZhwP76g05ijTbBSlqWJIAisj4NICDMOWoFjp9XG3ozj5b3
+         j2Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5LKuJHnY2f7qCpjih2QE7ExZcNPVTuCmCBGxBDXYgbA=;
+        b=BB4eeNCAShy1eqL0SV/ppi0oWwkOKnnTEM3sbn6QXd+LaaYGmvnDHtpuD30L+YCwep
+         582XDoeGpO99vnIq70lEUocF+S7ROEaOXOCkmurSU8J7opr1tOySx00wvQ0JFKkOCt7g
+         zuMrmkebPh65XZm4ZXYKM4Pf4TeopxCF1o5itoHpuUKmvTApU5h0pexA2HPFbtidgp4L
+         KL+n/PiH//5VURFlWHuMhML+gTBygbiaxO2LclTQv6KSgDm7kbU+I0qy+UzoN5Khdq+X
+         o17YmlJo1Gtk5LMhfE464qJUm0KBjin7qzwFQRXhgulRyKsx5spxcvap1necQelH4tmd
+         Y4BA==
+X-Gm-Message-State: AOAM533FhtQJA3278da8xPmaF1fe2zjQWGDoGe39zGuGLTGKeX6SZUvU
+        OJteD9cBV6r4R+ZXEz7qFmjDrA==
+X-Google-Smtp-Source: ABdhPJydM4JPcYVS7QzSGSky5qgWKHISfXYt6rm2VK8r6Cgr3stz9azQ5jlBswpvlvj3bbx4cWCWsw==
+X-Received: by 2002:a2e:5c47:: with SMTP id q68mr2607391ljb.314.1617206618828;
+        Wed, 31 Mar 2021 09:03:38 -0700 (PDT)
+Received: from [192.168.43.7] ([94.25.228.171])
+        by smtp.gmail.com with ESMTPSA id d34sm268115lfv.102.2021.03.31.09.03.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 09:03:38 -0700 (PDT)
+Subject: Re: [v1] drm/msm/disp/dpu1: fix warn stack reported during dpu resume
+To:     Kalyan Thota <kalyan_t@codeaurora.org>, y@qualcomm.com,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org, hywu@google.com,
+        mka@google.com, midean@google.com, steev@kali.org
+References: <y> <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <84fdbdc7-7890-965a-bc6b-a19bd0ca4937@linaro.org>
+Date:   Wed, 31 Mar 2021 19:03:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331105908.23027-23-claudiu.beznea@microchip.com>
+In-Reply-To: <1617190020-7931-1-git-send-email-kalyan_t@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/03/2021 13:59:06+0300, Claudiu Beznea wrote:
-> From: Eugen Hristev <eugen.hristev@microchip.com>
+On 31/03/2021 14:27, Kalyan Thota wrote:
+> WARN_ON was introduced by the below commit to catch runtime resumes
+> that are getting triggered before icc path was set.
 > 
-> Introduce new family of SoCs, sama7, and first SoC, sama7g5.
+> "drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume"
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> For the targets where the bw scaling is not enabled, this WARN_ON is
+> a false alarm. Fix the WARN condition appropriately.
+
+Should we change all DPU targets to use bw scaling to the mdp from the 
+mdss nodes? The limitation to sc7180 looks artificial.
+
+> 
+> Reported-by: Steev Klimaszewski <steev@kali.org>
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
 > ---
->  arch/arm/mach-at91/Makefile |  1 +
->  arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
->  2 files changed, 49 insertions(+)
->  create mode 100644 arch/arm/mach-at91/sama7.c
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  8 +++++---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h  |  9 +++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 11 ++++++-----
+>   3 files changed, 20 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-> index f565490f1b70..6cc6624cddac 100644
-> --- a/arch/arm/mach-at91/Makefile
-> +++ b/arch/arm/mach-at91/Makefile
-> @@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
->  obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
->  obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
->  obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-> +obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
->  
->  # Power Management
->  obj-$(CONFIG_ATMEL_PM)		+= pm.o pm_suspend.o
-> diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
-> new file mode 100644
-> index 000000000000..e04cadb569ad
-> --- /dev/null
-> +++ b/arch/arm/mach-at91/sama7.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Setup code for SAMA7
-> + *
-> + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-> + *
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> index cab387f..0071a4d 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> @@ -294,6 +294,9 @@ static int dpu_kms_parse_data_bus_icc_path(struct dpu_kms *dpu_kms)
+>   	struct icc_path *path1;
+>   	struct drm_device *dev = dpu_kms->dev;
+>   
+> +	if (!dpu_supports_bw_scaling(dev))
+> +		return 0;
+> +
+>   	path0 = of_icc_get(dev->dev, "mdp0-mem");
+>   	path1 = of_icc_get(dev->dev, "mdp1-mem");
+>   
+> @@ -934,8 +937,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+>   		DPU_DEBUG("REG_DMA is not defined");
+>   	}
+>   
+> -	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
+> -		dpu_kms_parse_data_bus_icc_path(dpu_kms);
+> +	dpu_kms_parse_data_bus_icc_path(dpu_kms);
+>   
+>   	pm_runtime_get_sync(&dpu_kms->pdev->dev);
+>   
+> @@ -1198,7 +1200,7 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+>   
+>   	ddev = dpu_kms->dev;
+>   
+> -	WARN_ON(!(dpu_kms->num_paths));
+> +	WARN_ON((dpu_supports_bw_scaling(ddev) && !dpu_kms->num_paths));
+>   	/* Min vote of BW is required before turning on AXI clk */
+>   	for (i = 0; i < dpu_kms->num_paths; i++)
+>   		icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> index d6717d6..f7bcc0a 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
+> @@ -154,6 +154,15 @@ struct vsync_info {
+>   
+>   #define to_dpu_global_state(x) container_of(x, struct dpu_global_state, base)
+>   
+> +/**
+> + * dpu_supports_bw_scaling: returns true for drivers that support bw scaling.
+> + * @dev: Pointer to drm_device structure
 > + */
-> +
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +
-> +#include <asm/mach/arch.h>
-> +#include <asm/system_misc.h>
-> +
-> +#include "generic.h"
-> +
-> +static void __init sama7_common_init(void)
+> +static inline int dpu_supports_bw_scaling(struct drm_device *dev)
 > +{
-> +	of_platform_default_populate(NULL, NULL, NULL);
-
-Is this necessary? This is left as a workaround for the old SoCs using
-pinctrl-at91. I guess this will be using pio4 so this has to be removed.
-
+> +	return of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss");
 > +}
 > +
-> +static void __init sama7_dt_device_init(void)
-> +{
-> +	sama7_common_init();
-> +}
+>   /* Global private object state for tracking resources that are shared across
+>    * multiple kms objects (planes/crtcs/etc).
+>    */
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> index cd40788..8cd712c 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> @@ -41,6 +41,9 @@ static int dpu_mdss_parse_data_bus_icc_path(struct drm_device *dev,
+>   	struct icc_path *path0 = of_icc_get(dev->dev, "mdp0-mem");
+>   	struct icc_path *path1 = of_icc_get(dev->dev, "mdp1-mem");
+>   
+> +	if (dpu_supports_bw_scaling(dev))
+> +		return 0;
 > +
-> +static const char *const sama7_dt_board_compat[] __initconst = {
-> +	"microchip,sama7",
-> +	NULL
-> +};
-> +
-> +DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
-> +	/* Maintainer: Microchip */
-> +	.init_machine	= sama7_dt_device_init,
-> +	.dt_compat	= sama7_dt_board_compat,
-> +MACHINE_END
-> +
-> +static const char *const sama7g5_dt_board_compat[] __initconst = {
-> +	"microchip,sama7g5",
-> +	NULL
-> +};
-> +
-> +DT_MACHINE_START(sama7g5_dt, "Microchip SAMA7G5")
-> +	/* Maintainer: Microchip */
-> +	.init_machine	= sama7_dt_device_init,
-> +	.dt_compat	= sama7g5_dt_board_compat,
-> +MACHINE_END
-> +
-> -- 
-> 2.25.1
+>   	if (IS_ERR_OR_NULL(path0))
+>   		return PTR_ERR_OR_ZERO(path0);
+>   
+> @@ -276,11 +279,9 @@ int dpu_mdss_init(struct drm_device *dev)
+>   
+>   	DRM_DEBUG("mapped mdss address space @%pK\n", dpu_mdss->mmio);
+>   
+> -	if (!of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss")) {
+> -		ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
+> -		if (ret)
+> -			return ret;
+> -	}
+> +	ret = dpu_mdss_parse_data_bus_icc_path(dev, dpu_mdss);
+> +	if (ret)
+> +		return ret;
+>   
+>   	mp = &dpu_mdss->mp;
+>   	ret = msm_dss_parse_clock(pdev, mp);
 > 
+
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With best wishes
+Dmitry
