@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E55A3509A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A420A3509AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhCaVj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:39:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39566 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232839AbhCaVje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:39:34 -0400
-IronPort-SDR: gZ9XVsZXd9La1n1EXzzdIG6NrPT3b7bChE3fLuT7hjYi/DYJ9ML77XPmYBQvrHzH7SvLKRPGBS
- Ldf3+DFIKBfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="253432727"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="253432727"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:39:33 -0700
-IronPort-SDR: rg4vCFY7u575fL2/Uo0K4u5OtieTpCfP9y1Zo+P5cVPLG4UAfn3kBGG46Wi/r3BzFSX10y9mPA
- Cw2ey0c08nGA==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="377433387"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.177.63]) ([10.212.177.63])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:39:33 -0700
-Subject: Re: [PATCH v2 10/24] x86/resctrl: Swizzle rdt_resource and
- resctrl_schema in pseudo_lock_region
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20210312175849.8327-1-james.morse@arm.com>
- <20210312175849.8327-11-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <087b646a-91b6-d333-830d-4d040be2fd24@intel.com>
-Date:   Wed, 31 Mar 2021 14:39:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229734AbhCaVmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231180AbhCaVmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:42:22 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9CCC061574;
+        Wed, 31 Mar 2021 14:42:21 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id h34so6607952uah.5;
+        Wed, 31 Mar 2021 14:42:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ocallahan-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Dm0wbOpFh785zQvfbpu+Gc+GoqlFqm/RgMC8mqoD454=;
+        b=WErKMdfwEEzxHs7ggw/O2PQZpwoXB2Iotis7qJYEo0LRMCZXsa+qYkwiSOCFmPYHSa
+         Liu6m1KZBi2RPMTFSN6sNzBiRYruN286prnZ5ftunCiK7tKu5bIHt7mBwhOZ+H7HTnQF
+         AKw0Au9LcsoOAs4NgfVmrL8a+W37Ub2+pqsY//5W3xDYPFdqHmnlsRvQamuZLFdncL2z
+         YjmXe8tXjicjVLSxR0u/VH82Ks94K1sTf8f16ZZnvDYLVWE73Fx/MusoAtKEfKGRqc+q
+         4w7yY9ULAMo/gfWNdh0RakFn36LylnUnn4LIU8KJ+f37gOVtSFeTCeaY3Zj+mBqxwgFz
+         qLMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Dm0wbOpFh785zQvfbpu+Gc+GoqlFqm/RgMC8mqoD454=;
+        b=eYWm2KA1pt3qNY1kOOWNzB39qhncuSHTmRy0FvClfgahfshFggpoIw1REbKqCEzcLv
+         bHxOEh9DqfVMEKG+YnOm9FeIZrSibPUOmDiBsSy5gfExl8emeLQS6fuDWKwJdMHsdrDu
+         mQjYgmijXSJTDuCbX1JGN2zRbDXb29DPFT+MtAJAnkGszQswGEIiNycP27Abiavmz/AR
+         e1tOGJa8JFezqRkPxxZZic48Qt6dxQrm5zSpIcgPcIljSfrgSGVU4glUyKVt+cnRWJYU
+         9DyAsILY1ZeRQ+RHUIMpZMUMiXHvXsy0pgm8p+cTSXs3H2tPUnIc3r+rFLX3v+mGBDLN
+         rUDA==
+X-Gm-Message-State: AOAM531+Yy4IDFtbS/mM6V1qp7wEjN5t+4wRZTA0c4kAOvGhh8io/h4U
+        6K0QkkLJqiY8WJXZ4HawMGlQjkg20ZGl9WnG+OY=
+X-Google-Smtp-Source: ABdhPJzQXGO7xNMfiF+fsWwrOhWMH2IoZPkeQ1c/q0a5akhIsplUSQbq7ZQS2Km1iImMQjHLVJxaxaOJ6yhhEwdPiGs=
+X-Received: by 2002:ab0:4042:: with SMTP id h60mr3070914uad.133.1617226940932;
+ Wed, 31 Mar 2021 14:42:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210312175849.8327-11-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+ <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+In-Reply-To: <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+Reply-To: robert@ocallahan.org
+From:   "Robert O'Callahan" <robert@ocallahan.org>
+Date:   Thu, 1 Apr 2021 10:42:09 +1300
+Message-ID: <CAOp6jLb6OwfaBcYsdRZ-A5FLpY+y7WNoBqwc+2oCP7-3Sy-ZHg@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Len Brown <lenb@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+For the record, the benefits of dynamic XCR0 for rr recording
+portability still apply. I guess it'd be useful for CRIU too. We would
+also benefit from anything that incentivizes increased support for
+CPUID faulting.
 
-On 3/12/2021 9:58 AM, James Morse wrote:
-> struct pseudo_lock_region points to the rdt_resource. Once the
-> resources are merged, this won't be unique. The resource name
-> is moving into the scheam, so that eventually resctrl can generate
-
-s/scheam/schema/?
-
-Reinette
+Rob
+--
+Su ot deraeppa sah dna Rehtaf eht htiw saw hcihw, efil lanrete eht uoy
+ot mialcorp ew dna, ti ot yfitset dna ti nees evah ew; deraeppa efil
+eht. Efil fo Drow eht gninrecnoc mialcorp ew siht - dehcuot evah sdnah
+ruo dna ta dekool evah ew hcihw, seye ruo htiw nees evah ew hcihw,
+draeh evah ew hcihw, gninnigeb eht morf saw hcihw taht.
