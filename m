@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EFA34F943
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4B734F952
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbhCaGwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:52:12 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39067 "EHLO ozlabs.org"
+        id S233928AbhCaGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:54:53 -0400
+Received: from m12-15.163.com ([220.181.12.15]:37761 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233833AbhCaGv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:51:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9H6g1brSz9sW4;
-        Wed, 31 Mar 2021 17:51:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617173515;
-        bh=AFkKVjfftEpgY6NKnLbBw7v4gESuwtowd7l+3shPkmc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=A53DouJ98es2Rfv1xO3u6SN8c8PTquZp0GAAOSZ103HiZb7E4uyWp32BFnTGh4IA+
-         7+fkz18oIqupcQLESVC3TBpCbth/OgoUBzhL52r9+vwDMsg3aA9KmdVnHjLJjekAF9
-         QOG19QIfoJbMUQ8YHx9eZW4p+oEjLuZuw85L4OJSV7MY7wNn/9hgTOFrsbF7mrI9Gj
-         gOrhbpfnX8w/qIyvgWDw/IHrMK/dEsO/rkfb/xb5j8XNR/R4yKqHY5RQlG3F+T5auR
-         7d0tQAWiD8MiuCbXEHDHJ6BJ9lLY0JI6F/O//pbiyC1zHal02gRnZiGy+8qAIVhELH
-         F09R+qpyNDrMw==
-Date:   Wed, 31 Mar 2021 17:51:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the staging tree with the scmi tree
-Message-ID: <20210331175151.67fcfe4d@canb.auug.org.au>
+        id S233882AbhCaGy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:54:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=oq8zk
+        QsfRmP+TwGtngegVNID8FxzD/vz8LfBVGUEitY=; b=n+sb+1lSil55V04CxwAbB
+        RgghwsOHNkkDrnWebTteVbrKyOM5HUiLrquSnn8z9LAjxna7mT80zfJzAaP2mD/i
+        5HXrKIk+qSMFwJ2otYxlAKHNWdcHOaXqqTHZadckW7n+BXjOo0AALa48NNikvVUE
+        /NbEIpQRaHs/WOENbsfKqo=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp11 (Coremail) with SMTP id D8CowAD3UYByHGRgP7ZeAA--.11704S2;
+        Wed, 31 Mar 2021 14:53:41 +0800 (CST)
+From:   dingsenjie@163.com
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] scsi: snic: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Wed, 31 Mar 2021 14:53:25 +0800
+Message-Id: <20210331065326.18804-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t_YDmqPOl1wSFzdtEpn/d_z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowAD3UYByHGRgP7ZeAA--.11704S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw4rXF1xGw43KrWxKFW8tFb_yoWkuwbE9a
+        y8tr13Cry8trWxJ34vgryvvFWSvayUWw1vgrsaqFWfCwnxZF95Ar1kWFW7Zw4UWr47JF90
+        9ryfXF1Yyr1UujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8UKsUUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRVmyFUMdIMmrwAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t_YDmqPOl1wSFzdtEpn/d_z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: dingsenjie <dingsenjie@yulong.com>
 
-Hi all,
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-Today's linux-next merge of the staging tree got a conflict in:
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/scsi/snic/snic_debugfs.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
-  drivers/iio/common/scmi_sensors/scmi_iio.c
+diff --git a/drivers/scsi/snic/snic_debugfs.c b/drivers/scsi/snic/snic_debugfs.c
+index 4471c4c..3aeee85 100644
+--- a/drivers/scsi/snic/snic_debugfs.c
++++ b/drivers/scsi/snic/snic_debugfs.c
+@@ -334,25 +334,7 @@ void snic_debugfs_init(void)
+ 	return 0;
+ }
+ 
+-/*
+- * snic_stats_open - Open the stats file for specific host
+- *
+- * Description:
+- * This routine opens a debugfs file stats of specific host
+- */
+-static int
+-snic_stats_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, snic_stats_show, inode->i_private);
+-}
+-
+-static const struct file_operations snic_stats_fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= snic_stats_open,
+-	.read	= seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(snic_stats);
+ 
+ static const struct file_operations snic_reset_stats_fops = {
+ 	.owner = THIS_MODULE,
+-- 
+1.9.1
 
-between commit:
 
-  25cbdd4609c0 ("iio/scmi: Port driver to the new scmi_sensor_proto_ops int=
-erface")
-
-from the scmi tree and commit:
-
-  1b33dfa5d5f1 ("Merge remote-tracking branch 'local/ib-iio-scmi-5.12-rc2-t=
-ake3' into togreg")
-
-from the staging tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/iio/common/scmi_sensors/scmi_iio.c
-index 8f4154d92c68,63e4cec9de5e..000000000000
---- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-+++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-@@@ -505,25 -528,9 +505,11 @@@ static int scmi_iio_set_sampling_freq_a
-  	return 0;
-  }
- =20
-- static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
-- {
-- 	struct iio_buffer *buffer;
--=20
-- 	buffer =3D devm_iio_kfifo_allocate(&scmi_iiodev->dev);
-- 	if (!buffer)
-- 		return -ENOMEM;
--=20
-- 	iio_device_attach_buffer(scmi_iiodev, buffer);
-- 	scmi_iiodev->modes |=3D INDIO_BUFFER_SOFTWARE;
-- 	scmi_iiodev->setup_ops =3D &scmi_iio_buffer_ops;
-- 	return 0;
-- }
--=20
- -static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
- -					 struct scmi_handle *handle,
- -					 const struct scmi_sensor_info *sensor_info)
- +static struct iio_dev *
- +scmi_alloc_iiodev(struct scmi_device *sdev,
- +		  const struct scmi_sensor_proto_ops *ops,
- +		  struct scmi_protocol_handle *ph,
- +		  const struct scmi_sensor_info *sensor_info)
-  {
-  	struct iio_chan_spec *iio_channels;
-  	struct scmi_iio_priv *sensor;
-
---Sig_/t_YDmqPOl1wSFzdtEpn/d_z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBkHAcACgkQAVBC80lX
-0GzRawf/foe/OFODjb9SqfahME5uln/jRruFmZ521n21M6RB/tvOZIGu3pPDomhe
-ZEMW4kXZjJ3na6sIhtn5BuwN4vDjJLrZW+oRl4I4PpkMvJN3SPl+V8JpSRERO3Oy
-mVoIurryfZONZUaf/gl+Ka4nCs6fuhTGKzyhpWMzsh/yaofUhm+sZdHZ/4kGBW5s
-628MgIYB9735qm0V2Wy3Mmken+3aANhvU6B9cAO84kOENYdJhCgAANq+CBmI/gDZ
-agqDmeAPOgH2dCzI9ecMWVfZzc167ut3RWQh9ry4nBcMrCTlU5DgegSZJbfYwWMK
-sKgh7wmcGrZjP/ky3EXF9k9D42fxPQ==
-=e9uJ
------END PGP SIGNATURE-----
-
---Sig_/t_YDmqPOl1wSFzdtEpn/d_z--
