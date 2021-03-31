@@ -2,274 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87043350207
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FE035020D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236017AbhCaOSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:18:21 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:3170 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbhCaOR7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:17:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1617200278; x=1648736278;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=XnvPxbBXboMXThG51DhkKacds/bACMwNyqUuT36GveY=;
-  b=MTbN/gQ19wHq/IAV259l8yoOY3vKrrkORtNqKcajr9eUNeUsUtaNGYUS
-   LgL6qNAf66mQ5WHDiOxVE68rMCXy6ElVN1+KWFguIR1rAmc2mwcJrhT9o
-   XngwZj2r7JtUkPsWDJsuVNP5ZLwhsZ07cesyxPcxpAREzjq2d7GhXxAzK
-   MQoVoCg+W2vNPYiAiMEFlNlLhEW+rMY27s5K4+E6713JffwQdGq/3P+6E
-   +0dRr98siEkaTmKDnXFVi7AGilPOVOg+NiiyeWGN1wWeUEdmzq5S70zW9
-   BqSZ7StFfesmOWKlCju8inIUEW3NQtLQU2H9gkbKAZkuzi9m2Pm/F+YPI
-   g==;
-IronPort-SDR: 35OTDcTHH1U0xAEAd8gWMXVOdFUs0uY1MpVK7upZjKtEKKPiSvPj94Gw3qwKXY23FN2efp4BqJ
- 2/8hkzM+wK2nEkW4vJ/naVIzut/GnjB/Nl1tWUyTNFMUx0akSSTXrDM46Im8P5x3d2ZD+Ec51t
- WFsP21J8sAKQVPS1Zr4ILsrJKwjGQhInwtvNr4VVX9BGs0Oag4Z6S8ZyPpTw833NqdJJ1ivzbY
- EqiTAXJrhYcZ/3d1sHSP1J/U1Yf+cMgud4VVcsSwb08Ll+bXmdknaZMoFCAIkZTcbthvsFMhgc
- MTs=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610380800"; 
-   d="scan'208";a="167930898"
-Received: from mail-bn7nam10lp2102.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.102])
-  by ob1.hgst.iphmx.com with ESMTP; 31 Mar 2021 22:17:57 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nNT0Fke524gZlhiKqN9EO2+ClHyF2gA+V9GwXNbN0Y87NW4SkOUom0pxRBTqOtA5BfxDqptBnVejOETwYbaqL7kNLTJAQ8harFTjzWLkz0OtoNKybDVKc9Z4ctFpAZY040rKopb51f3ACHCEFeAVYGe1pvQEljIyOXX9DmESBgSmDVOMZs17ljf9h79tqmoslGHgnT8Os26Xc791AgkLWX0uAV6zSli/ql2iGXoxs9JQxBjEz/Dv10LJIN8xP2ZbOUVdfIbkRPlqc7rqyZIRXwFmT7bHcWGpKmdv2QqL9WYdWl7oDiLn/ZIobKvzLjNExrykYEhATqSO9mGEjT93Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q0+2zV+mqkLXlcM2yr9VSGPjWJmAYaT+wp2gs17Pz/U=;
- b=fZ03FJUz5YI8LBSNOs0JdnTR5ndfVTl03CDRDM5egfvNtRIe0fQuDygWE8+NI3WB87FiSU6hv1eMhUdtvGBhPIYXXtoPYvk1s+RtUVs73XFcF8+aRtwVShJzjQ6nsil3hhv83FidnbAboK+fZPfPeof1h5WOIcG6gSoY7xGvN74Hti3H8KvC5VwTqKWxuCHiiVMtadX4bgV8JHQ4/sOfP1ohFHo0Ruk2JnBA0LwCgcbeBdkf8+8UvTiKSFoq8sR8c5rGLqtwhgjhiNOk9WWl1z1vs/M0AQl4S1uJSt6h0qYjmnDh0KGv/WVx0kgICVPA+9FOiQdWjptWaV5c09TsSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q0+2zV+mqkLXlcM2yr9VSGPjWJmAYaT+wp2gs17Pz/U=;
- b=fjwNVTz6yazGjgnNtqEjqkcZRDEQcWyD/ddEOO3Qr3eUiVufXfy3rRe6HRCVxs23KhELyNnLZTHatl2qbcuLWnz1QlCCiAxYZwzu2324gr69wVG+LyOhAQ9gGQYzaQWP6WIOMbAcrcNRzt5Tc4tL5/frto4XY8zSGq4Os90Gtwc=
-Received: from CY4PR04MB0678.namprd04.prod.outlook.com (2603:10b6:903:e2::7)
- by CY4PR04MB0870.namprd04.prod.outlook.com (2603:10b6:910:53::38) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.31; Wed, 31 Mar
- 2021 14:17:56 +0000
-Received: from CY4PR04MB0678.namprd04.prod.outlook.com
- ([fe80::642f:22c6:66fc:24f2]) by CY4PR04MB0678.namprd04.prod.outlook.com
- ([fe80::642f:22c6:66fc:24f2%7]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 14:17:55 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     "javier@javigon.com" <javier@javigon.com>
-CC:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] nvme: allow NVME_IOCTL_IO_CMD on controller char dev
- even when multiple ns
-Thread-Topic: [RFC PATCH] nvme: allow NVME_IOCTL_IO_CMD on controller char dev
- even when multiple ns
-Thread-Index: AQHXIoL7j11tDXmjqEi1+b31xtgfo6qc4HYAgAFLyQA=
-Date:   Wed, 31 Mar 2021 14:17:55 +0000
-Message-ID: <YGR/9X2y1ci/m/1v@x1-carbon.lan>
-References: <20210326205943.431185-1-Niklas.Cassel@wdc.com>
- <20210330183022.arjiqiufiuqkrvwc@mpHalley.local>
-In-Reply-To: <20210330183022.arjiqiufiuqkrvwc@mpHalley.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: javigon.com; dkim=none (message not signed)
- header.d=none;javigon.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [85.226.244.4]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c8fd705f-58b6-41dd-b089-08d8f44fc781
-x-ms-traffictypediagnostic: CY4PR04MB0870:
-x-microsoft-antispam-prvs: <CY4PR04MB087046081B194FE8EFE02E39F27C9@CY4PR04MB0870.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /O0MKq+q3IzW4M3EWS0k5qE6whK8a+5N1teT2Id8iGVZsjhWGW1IjXzMeYdxAu9pV9mLLc5b9o5s1+GG5aC4Vx5dNRGyiwOQceHg9picQJZ9mu7kPgQ2AFA+GCY1fZ6VwxW10bihtsrJ20ElSjoHuPjc8nsqfMurIgg3LCOixOjoPLyKaBQwir33UYbtn0MDdHyvyZhMpmratnO3vXShDHkkMOYER5OiATUNgIaVlloDknVFAqmKIexhSzNJ+1MrBm1xXBhZolYAJGH9RQ2uUPkmW7GUm1jPXKLrOxE2UYGeRRmmFBCFdQ/zrKD9RMSBewljim4h/XgRKxPNwv+FSUMAJF6KGJjnbBEKZs7P/BZKrwbJNiwwEOwssoTTEjHtYixH8ffKUdAB4mB6quoEcmie9I4KcfGGqWW7QkdTulB53iZ6p/aN/C/GdVKixEc/yUkSHEms/T8bjY1Jk7CDfEavvadniUviwHlAfAqmEUjFofcRXh+JOUqCCVBk0SubhZ9m3q0IS6x3cFaGfC65u8s5C6kurF7lLgKLlB1D5yQpOPeIWoJMoyAhFgAiFfGYhc7L3SRaKBhZAl/aYg5v9Dlv6MRsyd76G3CKVJBV9yiu2et7BZ4EsyGlppRFtUGitOfNRu1WUqVp99C8Jbhd6X6ggY6b8oSWnhmn66U734o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB0678.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(478600001)(186003)(36756003)(71200400001)(66946007)(66476007)(9686003)(6506007)(8936002)(66446008)(66556008)(2906002)(76116006)(316002)(6512007)(64756008)(54906003)(5660300002)(6486002)(53546011)(38100700001)(91956017)(4326008)(86362001)(26005)(8676002)(6916009)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BYNJj+f1UbIf1og7AmlAiA+qb+vh0v7S9+bdNqRpCh/mQu/8EIjHOEBr7Qh9?=
- =?us-ascii?Q?wCatMVSyGLhd0tXiU4qkhszZgubwQ0tcLtlJ3KHwlka/3yPds6Hgqu2gML92?=
- =?us-ascii?Q?yT1PiLqKU5ac5GE/3pCWDinEle/rP8ReZ+5t8Wkn0zizZMqqGj5y4q4kBxoI?=
- =?us-ascii?Q?uMYDqDKZnzsy4W9s0y/qFvx6BqR/QQjZsBCB/Czo4KISuz3KTsZhBK2lzp6Q?=
- =?us-ascii?Q?sl9y0icWIPzwMBjrYY+Yh4rFsye5PP7TEFFhPOUXbT0ojJDkDy46OGumERD5?=
- =?us-ascii?Q?FDbMTLEw6ZK3lPQ6NH1qQQgMbB8T9xFpyI/0QgpIOLQNZeAdiT9ld7/VDo6Y?=
- =?us-ascii?Q?C+TjiDSp7dWQ4MLgAGyp/UDBqJpAN0as6J9EvFY6j1YGySKy82MTl/6h4era?=
- =?us-ascii?Q?S+CA97/NGB9HmWIQcWH27WgCIL+smBNZt03w0x2G7oqkmaLLpHUc+x7WK9Ht?=
- =?us-ascii?Q?T1LgWp+jLgBVxq5GH40mavvI1gUuEodioGSzEKJtbSYfkgjE0A+zJ2m7cOHl?=
- =?us-ascii?Q?BRy4NsAgsgT6bNaxhcfPfqh5+8AJECnRPa6sTFd7p+zEXkzb7ZcPsveuFclF?=
- =?us-ascii?Q?UnHtrQyN3xwumz1aeoqCNTd0860kv4qqgS6k4SKcs57e2eiH2EVA2WsA6mIC?=
- =?us-ascii?Q?g0CmozThnnvAkoDxCibCDHi37CPIDWVlmfrjHnpN4Q0XsAOXajBUAYm2g/34?=
- =?us-ascii?Q?Jwr4hyMeW98q2HiWwHhkfiB9LqZ3eS3WRIgr4NMFlfXXht2SljZPtV/hevBu?=
- =?us-ascii?Q?2jmIHGEcrf0+gK1GGNTLkimQP86TSNAmMAj2ww5OUIVQulsTSpKZtqC0BsxK?=
- =?us-ascii?Q?CwO3TbDzr0FNeeVh2RXSIJAWAEhjCqdE0w1BpEM5ydF5+wt8rfrXWc6sq5vq?=
- =?us-ascii?Q?qfIjJ3M39qfCGBDggEWLgIubTrq/ubgR3C8kTnG70vMXGYap4pl/qTD3f9gZ?=
- =?us-ascii?Q?DwdMO3Z2Ey20VbzhH7IuCvyXCOnQg84ZtwX0xXMhCwx23heFABNMMWGo5/z7?=
- =?us-ascii?Q?vJE0Yh9U1me+2bPtc9ht6X7MRrvVhJ3o3Oue6GThS9wsMARuVxYlW4lhduyp?=
- =?us-ascii?Q?FdkccvbZ7lSHw7vNPUrKkyS5P9BahP8aOsZzdoa5V7xEoiraMV4CYJiNrRB6?=
- =?us-ascii?Q?ujNCIdy2uVmXc9IfQS8/StssfZ99fsZvXtc8Cy7u0YHfGWJ9KGB+f/bFudyR?=
- =?us-ascii?Q?uHUHG2xZmXG/Bsh+1SrZYinzabflAeEUrEf4qwZj1noMBfAVgr9+sYjhywHf?=
- =?us-ascii?Q?FU6lLV9GnmhF2HBdJRvKjjtenWnuQCjyGkIzhxiZHp4gm3BKy/8deHuOvC8p?=
- =?us-ascii?Q?zXZzBuJU4bBZKWJfPvFJjIZT?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4B8B4E1667CA264B927CD9022EEB1585@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S235959AbhCaOT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:19:57 -0400
+Received: from mga12.intel.com ([192.55.52.136]:25411 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236101AbhCaOTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:19:23 -0400
+IronPort-SDR: uYcsX6iOCzlSVbtCe17emogWsovB1tiFCUhKBPyh/CJM1cWUGmBw7dGtf/91/HoIKiJ+wpuJ9t
+ +zdCXyAktksA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171428736"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="171428736"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 07:19:22 -0700
+IronPort-SDR: 1IJ9U49tZyes7rDzg9rqFwKFSXrdEJkj5eIUoEaQ5WKaBH6PmPZNxD5VbIUV+iRyXM1v7IpFVF
+ 32EurUDBrWSg==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="394054396"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 07:19:19 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lRbgi-00025b-Ql; Wed, 31 Mar 2021 17:19:16 +0300
+Date:   Wed, 31 Mar 2021 17:19:16 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sanket Goswami <Sanket.Goswami@amd.com>
+Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Subject: Re: [PATCH v4] i2c: designware: Add driver support for AMD NAVI GPU
+Message-ID: <YGSE5C+3E6BNR997@smile.fi.intel.com>
+References: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB0678.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8fd705f-58b6-41dd-b089-08d8f44fc781
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 14:17:55.8404
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eJ8lNa6D68pVRrtnLWk5nq46nd7Jrh4CRekwnEmk86sGyXMdXSGnI6I+q65cqCKbqM+LmauQwtHaFgiLVrl3Jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0870
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:30:22PM +0200, javier@javigon.com wrote:
-> On 26.03.2021 20:59, Niklas Cassel wrote:
-> > From: Niklas Cassel <niklas.cassel@wdc.com>
-> >=20
-> > Currently when doing NVME_IOCTL_IO_CMD on the controller character devi=
-ce,
-> > the command is rejected if there is more than one namespace in the
-> > ctrl->namespaces list.
-> >=20
-> > There is not really any reason for this restriction.
-> > Instead, check the nsid value specified in the passthru command, and tr=
-y
-> > to find the matching namespace in ctrl->namespaces list.
-> > If found, call nvme_user_cmd() on the namespace.
-> > If not found, reject the command.
-> >=20
-> > While at it, remove the warning that says that NVME_IOCTL_IO_CMD is
-> > deprecated on the controller character device.
-> > There is no comment saying why it is deprecated.
-> > It might be very unsafe to send a passthru command, but if that is
-> > the issue with this IOCTL, then we should add a warning about that
-> > instead.
-> >=20
-> > Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
->=20
-> I think the idea is OK, but I have 3 questions:
->=20
->   1. Wouldn't this break user-space when nsid is not specified?
+On Wed, Mar 31, 2021 at 07:37:30PM +0530, Sanket Goswami wrote:
+> The Latest AMD NAVI GPU card has an integrated Type-C controller and
+> Designware I2C with PCI Interface. The PD controller for USB Type-C can
+> be accessed over I2C. The client driver is part of the USB Type-C UCSI
+> driver.
+> 
+> Also, there exists a couple of notable IP limitations that are dealt as
+> workarounds:
+> - I2C transaction work on a polling mode as IP does not generate
+> interrupt.
+> - I2C read command sent twice to address the IP issues.
+> - AMD NAVI GPU based products are already in the commercial market,
+>   hence some of the I2C parameters are statically programmed as they
+>   can not be part of the ACPI table.
 
-Since this is an ioctl, the kernel will always read some value
-from cmd.nsid, so I assume you mean when specifying cmd.nsid =3D=3D 0.
+Looks good enough to me, thanks.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I don't think we have anything to worry about because:
+> Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> Co-developed-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+> ---
+> Changes in v4:
+> - Fixes review comments given by Andy. 
+> 
+> Changes in v3:
+> - Fixes runtime PM issue.
+> - Addressed review comments were given by Jarkko and Andy.
+> 
+> Changes in v2:
+> - Utilized existing functionality of i2c_dw_xfer_init to configure I2C
+>   bus.
+> - Removed i2c_dw_populate_client and rewrrient navi_amd_register_client
+>   to deduplicate from existing drivers.
+> - Addressed review comments were given by Andy.
+> 
+>  drivers/i2c/busses/i2c-designware-common.c |   3 +
+>  drivers/i2c/busses/i2c-designware-core.h   |   8 ++
+>  drivers/i2c/busses/i2c-designware-master.c | 133 +++++++++++++++++++++
+>  drivers/i2c/busses/i2c-designware-pcidrv.c |  61 ++++++++++
+>  4 files changed, 205 insertions(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+> index 3c19aada4b30..fdc34d9e3702 100644
+> --- a/drivers/i2c/busses/i2c-designware-common.c
+> +++ b/drivers/i2c/busses/i2c-designware-common.c
+> @@ -150,6 +150,9 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
+>  	reg = readl(dev->base + DW_IC_COMP_TYPE);
+>  	i2c_dw_release_lock(dev);
+>  
+> +	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU)
+> +		map_cfg.max_register = AMD_UCSI_INTR_REG;
+> +
+>  	if (reg == swab32(DW_IC_COMP_TYPE_VALUE)) {
+>  		map_cfg.reg_read = dw_reg_read_swab;
+>  		map_cfg.reg_write = dw_reg_write_swab;
+> diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
+> index 5392b82f68a4..6a53f75abf7c 100644
+> --- a/drivers/i2c/busses/i2c-designware-core.h
+> +++ b/drivers/i2c/busses/i2c-designware-core.h
+> @@ -295,8 +295,16 @@ struct dw_i2c_dev {
+>  
+>  #define MODEL_MSCC_OCELOT	BIT(8)
+>  #define MODEL_BAIKAL_BT1	BIT(9)
+> +#define MODEL_AMD_NAVI_GPU	BIT(10)
+>  #define MODEL_MASK		GENMASK(11, 8)
+>  
+> +/*
+> + * Enable UCSI interrupt by writing 0xd at register
+> + * offset 0x474 specified in hardware specification.
+> + */
+> +#define AMD_UCSI_INTR_REG	0x474
+> +#define AMD_UCSI_INTR_EN	0xd
+> +
+>  int i2c_dw_init_regmap(struct dw_i2c_dev *dev);
+>  u32 i2c_dw_scl_hcnt(u32 ic_clk, u32 tSYMBOL, u32 tf, int cond, int offset);
+>  u32 i2c_dw_scl_lcnt(u32 ic_clk, u32 tLOW, u32 tf, int offset);
+> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+> index dd27b9dbe931..e288b654cb47 100644
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -23,6 +23,10 @@
+>  
+>  #include "i2c-designware-core.h"
+>  
+> +#define AMD_TIMEOUT_MIN_US	25
+> +#define AMD_TIMEOUT_MAX_US	250
+> +#define AMD_MASTERCFG_MASK	GENMASK(15, 0)
+> +
+>  static void i2c_dw_configure_fifo_master(struct dw_i2c_dev *dev)
+>  {
+>  	/* Configure Tx/Rx FIFO threshold levels */
+> @@ -259,6 +263,108 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
+>  	regmap_write(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_MASTER_MASK);
+>  }
+>  
+> +static int i2c_dw_check_stopbit(struct dw_i2c_dev *dev)
+> +{
+> +	u32 val;
+> +	int ret;
+> +
+> +	ret = regmap_read_poll_timeout(dev->map, DW_IC_INTR_STAT, val,
+> +				       !(val & DW_IC_INTR_STOP_DET),
+> +					1100, 20000);
+> +	if (ret)
+> +		dev_err(dev->dev, "i2c timeout error %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int i2c_dw_status(struct dw_i2c_dev *dev)
+> +{
+> +	int status;
+> +
+> +	status = i2c_dw_wait_bus_not_busy(dev);
+> +	if (status)
+> +		return status;
+> +
+> +	return i2c_dw_check_stopbit(dev);
+> +}
+> +
+> +/*
+> + * Initiate and continue master read/write transaction with polling
+> + * based transfer routine afterward write messages into the Tx buffer.
+> + */
+> +static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs, int num_msgs)
+> +{
+> +	struct dw_i2c_dev *dev = i2c_get_adapdata(adap);
+> +	int msg_wrt_idx, msg_itr_lmt, buf_len, data_idx;
+> +	int cmd = 0, status;
+> +	u8 *tx_buf;
+> +	u32 val;
+> +
+> +	/*
+> +	 * In order to enable the interrupt for UCSI i.e. AMD NAVI GPU card,
+> +	 * it is mandatory to set the right value in specific register
+> +	 * (offset:0x474) as per the hardware IP specification.
+> +	 */
+> +	regmap_write(dev->map, AMD_UCSI_INTR_REG, AMD_UCSI_INTR_EN);
+> +
+> +	dev->msgs = msgs;
+> +	dev->msgs_num = num_msgs;
+> +	i2c_dw_xfer_init(dev);
+> +	i2c_dw_disable_int(dev);
+> +
+> +	/* Initiate messages read/write transaction */
+> +	for (msg_wrt_idx = 0; msg_wrt_idx < num_msgs; msg_wrt_idx++) {
+> +		tx_buf = msgs[msg_wrt_idx].buf;
+> +		buf_len = msgs[msg_wrt_idx].len;
+> +
+> +		if (!(msgs[msg_wrt_idx].flags & I2C_M_RD))
+> +			regmap_write(dev->map, DW_IC_TX_TL, buf_len - 1);
+> +		/*
+> +		 * Initiate the i2c read/write transaction of buffer length,
+> +		 * and poll for bus busy status. For the last message transfer,
+> +		 * update the command with stopbit enable.
+> +		 */
+> +		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
+> +			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
+> +				cmd |= BIT(9);
+> +
+> +			if (msgs[msg_wrt_idx].flags & I2C_M_RD) {
+> +				/* Due to hardware bug, need to write the same command twice. */
+> +				regmap_write(dev->map, DW_IC_DATA_CMD, 0x100);
+> +				regmap_write(dev->map, DW_IC_DATA_CMD, 0x100 | cmd);
+> +				if (cmd) {
+> +					regmap_write(dev->map, DW_IC_TX_TL, 2 * (buf_len - 1));
+> +					regmap_write(dev->map, DW_IC_RX_TL, 2 * (buf_len - 1));
+> +					/*
+> +					 * Need to check the stop bit. However, it cannot be
+> +					 * detected from the registers so we check it always
+> +					 * when read/write the last byte.
+> +					 */
+> +					status = i2c_dw_status(dev);
+> +					if (status)
+> +						return status;
+> +
+> +					for (data_idx = 0; data_idx < buf_len; data_idx++) {
+> +						regmap_read(dev->map, DW_IC_DATA_CMD, &val);
+> +						tx_buf[data_idx] = val;
+> +					}
+> +					status = i2c_dw_check_stopbit(dev);
+> +					if (status)
+> +						return status;
+> +				}
+> +			} else {
+> +				regmap_write(dev->map, DW_IC_DATA_CMD, *tx_buf++ | cmd);
+> +				usleep_range(AMD_TIMEOUT_MIN_US, AMD_TIMEOUT_MAX_US);
+> +			}
+> +		}
+> +		status = i2c_dw_check_stopbit(dev);
+> +		if (status)
+> +			return status;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Initiate (and continue) low level master read/write transaction.
+>   * This function is only called from i2c_dw_isr, and pumping i2c_msg
+> @@ -462,6 +568,16 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
+>  
+>  	pm_runtime_get_sync(dev->dev);
+>  
+> +	/*
+> +	 * Initiate I2C message transfer when AMD NAVI GPU card is enabled,
+> +	 * As it is polling based transfer mechanism, which does not support
+> +	 * interrupt based functionalities of existing DesignWare driver.
+> +	 */
+> +	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
+> +		ret = amd_i2c_dw_xfer_quirk(adap, msgs, num);
+> +		goto done_nolock;
+> +	}
+> +
+>  	if (dev_WARN_ONCE(dev->dev, dev->suspended, "Transfer while suspended\n")) {
+>  		ret = -ESHUTDOWN;
+>  		goto done_nolock;
+> @@ -738,6 +854,20 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
+>  	return 0;
+>  }
+>  
+> +static int amd_i2c_adap_quirk(struct dw_i2c_dev *dev)
+> +{
+> +	struct i2c_adapter *adap = &dev->adapter;
+> +	int ret;
+> +
+> +	pm_runtime_get_noresume(dev->dev);
+> +	ret = i2c_add_numbered_adapter(adap);
+> +	if (ret)
+> +		dev_err(dev->dev, "Failed to add adapter: %d\n", ret);
+> +	pm_runtime_put_noidle(dev->dev);
+> +
+> +	return ret;
+> +}
+> +
+>  int i2c_dw_probe_master(struct dw_i2c_dev *dev)
+>  {
+>  	struct i2c_adapter *adap = &dev->adapter;
+> @@ -774,6 +904,9 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
+>  	adap->dev.parent = dev->dev;
+>  	i2c_set_adapdata(adap, dev);
+>  
+> +	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU)
+> +		return amd_i2c_adap_quirk(dev);
+> +
+>  	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
+>  		irq_flags = IRQF_NO_SUSPEND;
+>  	} else {
+> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> index 55c83a7a24f3..7ca0017883a6 100644
+> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> @@ -26,6 +26,7 @@
+>  #include "i2c-designware-core.h"
+>  
+>  #define DRIVER_NAME "i2c-designware-pci"
+> +#define AMD_CLK_RATE_HZ	100000
+>  
+>  enum dw_pci_ctl_id_t {
+>  	medfield,
+> @@ -34,6 +35,7 @@ enum dw_pci_ctl_id_t {
+>  	cherrytrail,
+>  	haswell,
+>  	elkhartlake,
+> +	navi_amd,
+>  };
+>  
+>  struct dw_scl_sda_cfg {
+> @@ -78,11 +80,23 @@ static struct dw_scl_sda_cfg hsw_config = {
+>  	.sda_hold = 0x9,
+>  };
+>  
+> +/* NAVI-AMD HCNT/LCNT/SDA hold time */
+> +static struct dw_scl_sda_cfg navi_amd_config = {
+> +	.ss_hcnt = 0x1ae,
+> +	.ss_lcnt = 0x23a,
+> +	.sda_hold = 0x9,
+> +};
+> +
+>  static u32 mfld_get_clk_rate_khz(struct dw_i2c_dev *dev)
+>  {
+>  	return 25000;
+>  }
+>  
+> +static u32 navi_amd_get_clk_rate_khz(struct dw_i2c_dev *dev)
+> +{
+> +	return AMD_CLK_RATE_HZ;
+> +}
+> +
+>  static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+>  {
+>  	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
+> @@ -104,6 +118,35 @@ static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+>  	return -ENODEV;
+>  }
+>  
+> + /*
+> +  * TODO find a better way how to deduplicate instantiation
+> +  * of USB PD slave device from nVidia GPU driver.
+> +  */
+> +static int navi_amd_register_client(struct dw_i2c_dev *dev)
+> +{
+> +	struct i2c_board_info	info;
+> +
+> +	memset(&info, 0, sizeof(struct i2c_board_info));
+> +	strscpy(info.type, "ccgx-ucsi", I2C_NAME_SIZE);
+> +	info.addr = 0x08;
+> +	info.irq = dev->irq;
+> +
+> +	dev->slave = i2c_new_client_device(&dev->adapter, &info);
+> +	if (!dev->slave)
+> +		return -ENODEV;
+> +
+> +	return 0;
+> +}
+> +
+> +static int navi_amd_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+> +{
+> +	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
+> +
+> +	dev->flags |= MODEL_AMD_NAVI_GPU;
+> +	dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
+> +	return 0;
+> +}
+> +
+>  static int mrfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+>  {
+>  	/*
+> @@ -155,6 +198,12 @@ static struct dw_pci_controller dw_pci_controllers[] = {
+>  		.bus_num = -1,
+>  		.get_clk_rate_khz = ehl_get_clk_rate_khz,
+>  	},
+> +	[navi_amd] = {
+> +		.bus_num = -1,
+> +		.scl_sda_cfg = &navi_amd_config,
+> +		.setup =  navi_amd_setup,
+> +		.get_clk_rate_khz = navi_amd_get_clk_rate_khz,
+> +	},
+>  };
+>  
+>  #ifdef CONFIG_PM
+> @@ -274,6 +323,14 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+>  		return r;
+>  	}
+>  
+> +	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
+> +		r = navi_amd_register_client(dev);
+> +		if (r) {
+> +			dev_err(dev->dev, "register client failed with %d\n", r);
+> +			return r;
+> +		}
+> +	}
+> +
+>  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+>  	pm_runtime_use_autosuspend(&pdev->dev);
+>  	pm_runtime_put_autosuspend(&pdev->dev);
+> @@ -337,6 +394,10 @@ static const struct pci_device_id i2_designware_pci_ids[] = {
+>  	{ PCI_VDEVICE(INTEL, 0x4bbe), elkhartlake },
+>  	{ PCI_VDEVICE(INTEL, 0x4bbf), elkhartlake },
+>  	{ PCI_VDEVICE(INTEL, 0x4bc0), elkhartlake },
+> +	{ PCI_VDEVICE(ATI,  0x7314), navi_amd },
+> +	{ PCI_VDEVICE(ATI,  0x73a4), navi_amd },
+> +	{ PCI_VDEVICE(ATI,  0x73e4), navi_amd },
+> +	{ PCI_VDEVICE(ATI,  0x73c4), navi_amd },
+>  	{ 0,}
+>  };
+>  MODULE_DEVICE_TABLE(pci, i2_designware_pci_ids);
+> -- 
+> 2.25.1
+> 
 
-a)
-Like Keith said in the other thread:
-"There are no IO commands accepting a 0 NSID, so rejecting those from the
-driver should be okay."
-
-Currently, when sending a NVME_IOCTL_IO_CMD on the ctrl char dev with
-cmd.nsid =3D=3D 0, we will take the first namespace in the list, use the
-request_queue of that namespace, and then send the command there.
-
-Since there are no I/O commands that accept a NSID =3D=3D 0, whatever you
-specified in cmd.opcode, you should get an "Invalid Namespace or Format"
-error back from the controller.
-
-I don't think that there is any harm in adding a check (which is essentiall=
-y
-what this RFC does), that will reject the command before sending it down to
-the controller.
-
-(A potential improvement in the future, on top of this patch, is to allow
-nsid.cmd =3D=3D broadcast address, but that is out of scope for this patch.
-And no, since the current behavior on master does reject any cmd when there
-is more than one namespace attached to the controller (more than one ns in
-ctrl->namespaces list), I wouldn't say that master handles this case.)
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-b)
-If you use nvme-cli then all commands that calls nvme_submit_io_passthru()
-already does:
-
-        if (!cfg.namespace_id) {
-                err =3D cfg.namespace_id =3D nvme_get_nsid(fd);
-                if (err < 0) {
-                        perror("get-namespace-id");
-                        goto close_fd;
-                }
-        }
-
-So either if you do a:
-nvme write-zeroes -s 0 -c 0 --namespace-id=3D0 /dev/nvme0
-or if you completely omit --namespace-id:
-nvme write-zeroes -s 0 -c 0  /dev/nvme0
-
-nvme-cli will already reject it (since the controller char device does not
-(and can not) implement NVME_IOCTL_ID).
-
-Sure, nvme-cli is just a single user of this ioctl (there might be other
-users), but it is probably the most common one.
-
-If nvme-cli already rejects it in user space, and we concluded that the
-controller will reject it, I think it should be safe to reject it also
-at the kernel side.
-
-Without this patch, we are already rejecting any command, to any nsid,
-if the controller has more than one namespace attached, which I think
-makes less sense.
-
->   2. What is the use case for this? As I understand it, this char device
->   is primarily for admin commands sent to the controller. Do you see a
->   use case for sending commands to the namespace using the controller
->   char device?
-
-I don't have any use case for this, more than allowing to specify whatever
-nsid you want in the --namespace-id parameter for nvme, when opening
-/dev/nvme0, even when the controller has more than one namespace.
-
-Why allow NVME_IOCTL_IO_CMD on /dev/nvme0 when the controller has one
-namespace attached, but not when it has more than one namespace attached?
-
-Doesn't make sense to me.
-
->   3. Following up on the above, if the use-case is I/O, don't you think
->   it is cleaner to use the ongoing per-namespace char device effort? We
->   would very much like to get your input there and eventually send a
->   series together. When this is merged, we could wire that logic to the
->   controller char device if there is an use-case for it.
-
-While I'm not against your per-namespace char device effort, I'm not sure
-if clean is the word I would use to decribe creating a bunch of extra
-character devices, that almost no one will use, in the root of /dev/ even
-(which is what the current proposal suggests.)
-
-Perhaps it would be better if you had to do a
-echo $nsid > /sys/class/nvme/nvme0/export_unsupported_namespace
-to actually create one of these suggested additional per namespace
-character devices. But I do realize that things such as udev rules might
-be harder to do, since not all devices would be there automatically.
-
-However, I do agree about using the existing per namespace block devices:
-e.g.:
-nvme write-zeroes -s 0 -c 0  /dev/nvme0n1
-is cleaner than
-nvme write-zeroes -s 0 -c 0 --namespace-id=3D1 /dev/nvme0
-
-And I also agree that if we manage to support IOCTLs on rejected
-namespaces, then it would be nice if we could do something like:
-nvme write-zeroes -s 0 -c 0 --namespace-id=3D4 /dev/nvme0
-if NSID was a namespace that was rejected/unsupported by the kernel.
-
-
-Kind regards,
-Niklas=
