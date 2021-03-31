@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6DC350092
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC83D35008E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhCaMmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235599AbhCaMlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235624AbhCaMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:42:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59767 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235614AbhCaMlm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 31 Mar 2021 08:41:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC97F61994;
-        Wed, 31 Mar 2021 12:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617194502;
-        bh=zm1U2asdNanF5cpISHi4RXdhMiKXWLQuzRX4ihBNozA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bIx7on3VSej6fZif3gPY4S0BCciwmdqBi8evHbPC6eFjv7eNNEIXKj57a0wQC7vmS
-         W1pEUMMEI9csOts1YH8DRwZ54hSS0A0Qe1Yka8uLQcTyJs36PfnQx/pgrQBcof/jil
-         xfOLo+IbUE6WEL/hxYFNxbktjwYA0Vnr55rFu/11pj9o0aBWoTmMWIS0vtJW1ixzAh
-         +mIF6tlZgPrbwRqFY88z1HKBkKz3WRmK3WXp8/zZhdfwH5NKDDnyMeJpddRy9n1s9+
-         ggHTGdBuOCw5PwcBnxRhjTMGvchd4S+qKAzbNzZ8ljFkEZmiTNFG3aAmtH5GJ62eFK
-         /HeDVj2SKWqVQ==
-Date:   Wed, 31 Mar 2021 13:41:29 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Move port/ports properties out of
- audio-graph-port.yaml
-Message-ID: <20210331124129.GA12190@sirena.org.uk>
-References: <20210323163634.877511-1-robh@kernel.org>
- <20210323163634.877511-2-robh@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617194501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CJ7CAhfyI891QLLS7moyInEYvvulvtUZ6HJ9gvElXsM=;
+        b=iZvplfDipN69d4anZZC2vGs71wB1MW6Wxmk+340aooN46glnfCexHc81r881jUHn+aKbHE
+        LbZJJhBwIKoOaIvUQ2B4syM4zbK6lymF2mLHb+A3ayWviXFjEK7qrM/IeIUNczNWRpmZ1q
+        hnaBbJ3RclxQjKyQsqTe6OpspILEoxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-oLRSX5A8OnyGFcPonUWJWg-1; Wed, 31 Mar 2021 08:41:39 -0400
+X-MC-Unique: oLRSX5A8OnyGFcPonUWJWg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97D178143FE;
+        Wed, 31 Mar 2021 12:41:37 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.193.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 64BC360861;
+        Wed, 31 Mar 2021 12:41:35 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] KVM: x86: Prevent 'hv_clock->system_time' from going negative in kvm_guest_time_update()
+Date:   Wed, 31 Mar 2021 14:41:29 +0200
+Message-Id: <20210331124130.337992-2-vkuznets@redhat.com>
+In-Reply-To: <20210331124130.337992-1-vkuznets@redhat.com>
+References: <20210331124130.337992-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-In-Reply-To: <20210323163634.877511-2-robh@kernel.org>
-X-Cookie: Slow day.  Practice crawling.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When guest time is reset with KVM_SET_CLOCK(0), it is possible for
+'hv_clock->system_time' to become a small negative number. This happens
+because in KVM_SET_CLOCK handling we set 'kvm->arch.kvmclock_offset' based
+on get_kvmclock_ns(kvm) but when KVM_REQ_CLOCK_UPDATE is handled,
+kvm_guest_time_update() does (masterclock in use case):
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+hv_clock.system_time = ka->master_kernel_ns + v->kvm->arch.kvmclock_offset;
 
-On Tue, Mar 23, 2021 at 10:36:32AM -0600, Rob Herring wrote:
-> Users of the audio-graph-port schema need to define how many ports
-> and what each port is, so they need to define 'ports' and/or 'port'
-> anyways. Let's drop 'ports' and 'port' from the schema and adjust users
-> to reference audio-graph-port.yaml from a port property.
+And 'master_kernel_ns' represents the last time when masterclock
+got updated, it can precede KVM_SET_CLOCK() call. Normally, this is not a
+problem, the difference is very small, e.g. I'm observing
+hv_clock.system_time = -70 ns. The issue comes from the fact that
+'hv_clock.system_time' is stored as unsigned and 'system_time / 100' in
+compute_tsc_page_parameters() becomes a very big number.
 
-This doesn't apply against current code, please check and resend:
+Use 'master_kernel_ns' instead of get_kvmclock_ns() when masterclock is in
+use and get_kvmclock_base_ns() when it's not to prevent 'system_time' from
+going negative.
 
-Applying: ASoC: dt-bindings: Move port/ports properties out of audio-graph-port.yaml
-Using index info to reconstruct a base tree...
-M	Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-Falling back to patching base and 3-way merge...
-Auto-merging Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-error: Failed to merge in the changes.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/x86.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2bfd00da465f..2f54beed0105 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5728,6 +5728,7 @@ long kvm_arch_vm_ioctl(struct file *filp,
+ 	}
+ #endif
+ 	case KVM_SET_CLOCK: {
++		struct kvm_arch *ka = &kvm->arch;
+ 		struct kvm_clock_data user_ns;
+ 		u64 now_ns;
+ 
+@@ -5746,8 +5747,22 @@ long kvm_arch_vm_ioctl(struct file *filp,
+ 		 * pvclock_update_vm_gtod_copy().
+ 		 */
+ 		kvm_gen_update_masterclock(kvm);
+-		now_ns = get_kvmclock_ns(kvm);
+-		kvm->arch.kvmclock_offset += user_ns.clock - now_ns;
++
++		/*
++		 * This pairs with kvm_guest_time_update(): when masterclock is
++		 * in use, we use master_kernel_ns + kvmclock_offset to set
++		 * unsigned 'system_time' so if we use get_kvmclock_ns() (which
++		 * is slightly ahead) here we risk going negative on unsigned
++		 * 'system_time' when 'user_ns.clock' is very small.
++		 */
++		spin_lock_irq(&ka->pvclock_gtod_sync_lock);
++		if (kvm->arch.use_master_clock)
++			now_ns = ka->master_kernel_ns;
++		else
++			now_ns = get_kvmclock_base_ns();
++		ka->kvmclock_offset = user_ns.clock - now_ns;
++		spin_unlock_irq(&ka->pvclock_gtod_sync_lock);
++
+ 		kvm_make_all_cpus_request(kvm, KVM_REQ_CLOCK_UPDATE);
+ 		break;
+ 	}
+-- 
+2.30.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBkbfgACgkQJNaLcl1U
-h9DCTQf/VXrFjEDBwqi/S16woGqbw7uTfUGNiWntINuFSTdoWm5MZlK+x4xsuzsn
-twkOz7U17Di3KsZeCBBp2gc9V5st50Xstb4CwseS12fVuxi/Y32IsvTEWt6/1kDT
-6g8nkF9vQjlnxTrChB0XxoUgJxRp/tmE1PMmC9gUdRvfRZ6Qz5OVD2JWhSbDNVY7
-AZAcSqYWJGExtd7thkF5yn8bqlffzSspOLc2AyNQKbzoiht+EkungbwoXUDItn+i
-iM01+wByIhZq0xgWtdGPzq64jmni6MVb77dTOdX08eopkRsoc70YF8UX2VXpzhy2
-pecOljG+BTXB/OkkhdzH2ARE+jfF6Q==
-=5C9M
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
