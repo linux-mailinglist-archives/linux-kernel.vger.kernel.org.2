@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E64350AA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4870E350AB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhCaXXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:23:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhCaXXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:23:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE02761057;
-        Wed, 31 Mar 2021 23:23:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617232989;
-        bh=7qKTBZ33hsy0BLYk+KPdaZQgCrEQ9vlK7Wd8SViwxuM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qdb3yZHk2W0dyxqN/4+bvUqhSr7elqo/zWtwqvOr4AVxTosVDl6gIFQDnf1rO1O4x
-         emqTSt032zJmSMr24mtgtvF3dGqqdF/5VTLijI8ouoHy/RVNtob72pNvXsZ5sgFCtv
-         tApUeQ4AoB+61iIQSMNwJNc44T0suz2jC4J6HUg/CFIW41jFAhR11f6ciYoGMKcdJ0
-         4YEHWHiKP6LrorJJv43/m6mPY6lVRq31lzhb8zP3dk4X71WiCh0U58ZT5Li6XoZnYw
-         W0ZBY7xOiBVXwMC/mOB2HLr/dAqX53y8XZa8FPelA7K6YNOYcKEhSZp3nONbkFYICx
-         qafoo+Wf2+/uQ==
-Date:   Thu, 1 Apr 2021 02:23:06 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "jethro@fortanix.com" <jethro@fortanix.com>,
-        "b.thiel@posteo.de" <b.thiel@posteo.de>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "corbet@lwn.net" <corbet@lwn.net>
-Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
-Message-ID: <YGUEWiY3ymVbkk0y@kernel.org>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <YF5kNPP2VyzcTuTY@kernel.org>
- <490103d033674dbeb812def2def69543@intel.com>
+        id S232917AbhCaXYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCaXYA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:24:00 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28279C061574;
+        Wed, 31 Mar 2021 16:24:00 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id z2so21250811wrl.5;
+        Wed, 31 Mar 2021 16:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TmV7bsD3079FhPGeR+NPlT6XRWILLECqCaOl72fDWFs=;
+        b=bXCACYRX/djgxFAejtEdDm3upE/3aE9oU4l2pbC+d4zWIe6/RXR0jpfTxWRaJvYDWn
+         3vl0mp+7Dsg4YLD/b8l0o2sEOPeeWjh1AlPnIobsOXqmMZf35lQGNMVAj7kefS6fTguJ
+         1W2KhenQMpoYEPvhuXaIoD9f6nURYPd86ZCUiw2yMKZ3qjEmltNNNLIjH5LVb0Vy4fxw
+         AXx1dGdnJjZ3O/hQT+DId6q44Le9zexzBf/YoomvOAGHoPR1Oicvq2+OeD53pWz5FyzE
+         njEgDnHZWK/t8qRyXjWOBMUcvwRsbpfwonLtK9QeXS1MSliIBaTynkX8sWvIIqec7/oQ
+         B/iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TmV7bsD3079FhPGeR+NPlT6XRWILLECqCaOl72fDWFs=;
+        b=VOubw/qBV+9z4/D7CPG1qqLrgaX1NIb3SHVBgJwVB7d572UIgrcWw9fa+oIDl6JJvJ
+         0927FzbQDBR0IbEDje6pmJc6XDUBF1z35Imv2L7LdP2GO3IdK50R+zWiAMt2BV24W3/N
+         gXxnwtuK7RBLW4Ukv3wXK5gf9WkwyaaPXUabQPEP4y25ORXGPQGicD8ShEE62MOHxYQF
+         lLS8SPm9CxYDwRZ11qvYUtLs7iGSpkoyj05cRedt3BCYX/BQcPlfjoHmdAfV3+1iOFYU
+         H4d1qSGK2LDRliMmooD/BdEw+v4y6/Z8BxrLV8zMQtXSiRPm9xWDbUPm8vpN/qyCW1Kn
+         W6uw==
+X-Gm-Message-State: AOAM531o4eok6zF0E7hiSP2Xq3is691/4zlkciIVpsclq/jceTI+gbGB
+        LWTEtJNgKkrNh8umfUHr8YG8dTR2oxc=
+X-Google-Smtp-Source: ABdhPJwmAqEskNEpxs9rH0nlfEuPHxKDi8Evc0T5PsAYABC2wqYmQQntnNAwvbp9+WiJA2Rmz221OA==
+X-Received: by 2002:a5d:6152:: with SMTP id y18mr6218334wrt.255.1617233038862;
+        Wed, 31 Mar 2021 16:23:58 -0700 (PDT)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd27007d57ea0d08d946c1.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:7d57:ea0d:8d9:46c1])
+        by smtp.gmail.com with ESMTPSA id t14sm6343041wru.64.2021.03.31.16.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 16:23:58 -0700 (PDT)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        bjorn.andersson@linaro.org, krzk@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v3 0/4] Add peripheral support to imx8mq-nitrogen board
+Date:   Thu,  1 Apr 2021 01:23:52 +0200
+Message-Id: <20210331232356.2204476-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <490103d033674dbeb812def2def69543@intel.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 09:01:38PM +0000, Huang, Kai wrote:
-> > On Fri, Mar 19, 2021 at 08:29:27PM +1300, Kai Huang wrote:
-> > > This series adds KVM SGX virtualization support. The first 14 patches
-> > > starting with x86/sgx or x86/cpu.. are necessary changes to x86 and
-> > > SGX core/driver to support KVM SGX virtualization, while the rest are patches
-> > to KVM subsystem.
-> > >
-> > > This series is based against latest tip/x86/sgx, which has Jarkko's
-> > > NUMA allocation support.
-> > >
-> > > You can also get the code from upstream branch of kvm-sgx repo on github:
-> > >
-> > >         https://github.com/intel/kvm-sgx.git upstream
-> > >
-> > > It also requires Qemu changes to create VM with SGX support. You can
-> > > find Qemu repo here:
-> > >
-> > > 	https://github.com/intel/qemu-sgx.git upstream
-> > >
-> > > Please refer to README.md of above qemu-sgx repo for detail on how to
-> > > create guest with SGX support. At meantime, for your quick reference
-> > > you can use below command to create SGX guest:
-> > >
-> > > 	#qemu-system-x86_64 -smp 4 -m 2G -drive
-> > file=<your_vm_image>,if=virtio \
-> > > 		-cpu host,+sgx_provisionkey \
-> > > 		-sgx-epc id=epc1,memdev=mem1 \
-> > > 		-object memory-backend-epc,id=mem1,size=64M,prealloc
-> > >
-> > > Please note that the SGX relevant part is:
-> > >
-> > > 		-cpu host,+sgx_provisionkey \
-> > > 		-sgx-epc id=epc1,memdev=mem1 \
-> > > 		-object memory-backend-epc,id=mem1,size=64M,prealloc
-> > >
-> > > And you can change other parameters of your qemu command based on your
-> > needs.
-> > 
-> > Please also put tested-by from me to all patches (including pure KVM
-> > patches):
-> > 
-> > Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > I did the basic test, i.e. run selftest in a VM. I think that is sufficient at this point.
-> > 
-> 
-> Thanks Jarkko for doing the test!
+Hi,
 
-Sure, have had it in my queue for some time :-)
+this patch set aims is to add support of multiple peripheral of the
+Boundary8M board:
+  - USB Host;
+  - USB device;
+  - DB_DSIHD sub board for MIPI-DSI to HDMI output (via lt8912b chip).
 
-/Jarkko
+
+Updates in v2:
+  - Use a GPIO hog to handle the USB HOST reset line;
+  - Remove useless GPIO hog for lt8912b.
+
+Update in v3:
+  - Fix bad squash in git commits.
+
+Thanks,
+
+Adrien Grassein (4):
+  arm64: dts: imx8mq-nitrogen: add USB OTG support
+  arm64: dts: imx8mq-nitrogen: add USB HOST support
+  arm64: dts: imx8mq-nitrogen: add lt8912 MIPI-DSI to HDMI
+  arm64: defconfig: Enable LT8912B DRM bridge driver
+
+ .../boot/dts/freescale/imx8mq-nitrogen.dts    | 185 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 2 files changed, 186 insertions(+)
+
+-- 
+2.25.1
+
