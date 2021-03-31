@@ -2,272 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B5534FA64
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F163334FA53
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbhCaHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:36:39 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:45990 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbhCaHgL (ORCPT
+        id S234091AbhCaHfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:35:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34084 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234063AbhCaHe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:36:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617176171; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=eKE6TORk3uu2Mue5ICyI2YcOP7cyaLaRE/LhequtKEg=; b=WRl/Pi5zz8xRVmTK3tgDxa4MsPIK/xKoyG4Kb+nSpIlSF+tsjmX78GvEsQkPvCeK+TTacIXa
- G4un3C1mB/1UC50/ff8ab7gqT7VqeFohgPC6HIysGnocEjAbrU6uSo76BYiXKWiHKF04Mh84
- 6//jR+NmbhQjwR+lbKtEJKkZs/Q=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6064265d04a1954ec39c873b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 07:35:57
- GMT
-Sender: hangl=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E9434C43461; Wed, 31 Mar 2021 07:35:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hangl-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Wed, 31 Mar 2021 03:34:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617176095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rw79CBvMLi5mEY0tcvp9kTn6CghMbW3t144/yxRDUX4=;
+        b=HvURMu1hUDFg7UEMiYVY4j7YvBeOgTeyQEAZ7Q1eG9jmWhni9ntk9RV4nzdd988o4QXnSr
+        ezxT42ztPe4w11EqctwdLowVCBvliDNyoRdiFSdqLOg0EEos8qvkqFQGZUyFghuy/2Ctj7
+        MujZpK9uFLuHNNZrAE712v83HG/N3Ns=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-Q4AVGFAoNCuvO8_eHBIvbQ-1; Wed, 31 Mar 2021 03:34:52 -0400
+X-MC-Unique: Q4AVGFAoNCuvO8_eHBIvbQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: hangl)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D7A7C433C6;
-        Wed, 31 Mar 2021 07:35:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D7A7C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hangl@codeaurora.org
-From:   Hang Lu <hangl@codeaurora.org>
-To:     gregkh@linuxfoundation.org, tkjos@android.com, maco@android.com
-Cc:     arve@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, Hang Lu <hangl@codeaurora.org>
-Subject: [PATCH] binder: tell userspace to dump current backtrace when detecting oneway spamming
-Date:   Wed, 31 Mar 2021 15:34:16 +0800
-Message-Id: <1617176056-1440-1-git-send-email-hangl@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87C43108BD09;
+        Wed, 31 Mar 2021 07:34:50 +0000 (UTC)
+Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5582D5C5AE;
+        Wed, 31 Mar 2021 07:34:45 +0000 (UTC)
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Steven Price <steven.price@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>, Haibo Xu <Haibo.Xu@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        qemu-devel@nongnu.org, Marc Zyngier <maz@kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+References: <20210312151902.17853-1-steven.price@arm.com>
+ <20210312151902.17853-3-steven.price@arm.com>
+ <20210327152324.GA28167@arm.com> <20210328122131.GB17535@arm.com>
+ <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
+ <20210330103013.GD18075@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <8977120b-841d-4882-2472-6e403bc9c797@redhat.com>
+Date:   Wed, 31 Mar 2021 09:34:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210330103013.GD18075@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When async binder buffer got exhausted, some normal oneway transaction
-will also be discarded and finally caused system/app stop. By that time,
-the binder debug information we dump may not relevant to the root cause.
-And this issue is difficult to debug if without the backtrace of thread
-sending spam.
+On 30.03.21 12:30, Catalin Marinas wrote:
+> On Mon, Mar 29, 2021 at 05:06:51PM +0100, Steven Price wrote:
+>> On 28/03/2021 13:21, Catalin Marinas wrote:
+>>> On Sat, Mar 27, 2021 at 03:23:24PM +0000, Catalin Marinas wrote:
+>>>> On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
+>>>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>>>> index 77cb2d28f2a4..b31b7a821f90 100644
+>>>>> --- a/arch/arm64/kvm/mmu.c
+>>>>> +++ b/arch/arm64/kvm/mmu.c
+>>>>> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>>>    	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>>>>>    		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>>>>>    							   &pfn, &fault_ipa);
+>>>>> +
+>>>>> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
+>>>>> +		/*
+>>>>> +		 * VM will be able to see the page's tags, so we must ensure
+>>>>> +		 * they have been initialised. if PG_mte_tagged is set, tags
+>>>>> +		 * have already been initialised.
+>>>>> +		 */
+>>>>> +		struct page *page = pfn_to_page(pfn);
+>>>>> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
+>>>>> +
+>>>>> +		for (i = 0; i < nr_pages; i++, page++) {
+>>>>> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+>>>>> +				mte_clear_page_tags(page_address(page));
+>>>>> +		}
+>>>>> +	}
+>>>>
+>>>> This pfn_valid() check may be problematic. Following commit eeb0753ba27b
+>>>> ("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
+>>>> true for ZONE_DEVICE memory but such memory is allowed not to support
+>>>> MTE.
+>>>
+>>> Some more thinking, this should be safe as any ZONE_DEVICE would be
+>>> mapped as untagged memory in the kernel linear map. It could be slightly
+>>> inefficient if it unnecessarily tries to clear tags in ZONE_DEVICE,
+>>> untagged memory. Another overhead is pfn_valid() which will likely end
+>>> up calling memblock_is_map_memory().
+>>>
+>>> However, the bigger issue is that Stage 2 cannot disable tagging for
+>>> Stage 1 unless the memory is Non-cacheable or Device at S2. Is there a
+>>> way to detect what gets mapped in the guest as Normal Cacheable memory
+>>> and make sure it's only early memory or hotplug but no ZONE_DEVICE (or
+>>> something else like on-chip memory)?  If we can't guarantee that all
+>>> Cacheable memory given to a guest supports tags, we should disable the
+>>> feature altogether.
+>>
+>> In stage 2 I believe we only have two types of mapping - 'normal' or
+>> DEVICE_nGnRE (see stage2_map_set_prot_attr()). Filtering out the latter is a
+>> case of checking the 'device' variable, and makes sense to avoid the
+>> overhead you describe.
+>>
+>> This should also guarantee that all stage-2 cacheable memory supports tags,
+>> as kvm_is_device_pfn() is simply !pfn_valid(), and pfn_valid() should only
+>> be true for memory that Linux considers "normal".
 
-This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when detecting
-oneway spamming, request to dump current backtrace. The detection will
-happened only once when exceeding the threshold (target process dips
-below 80% of its oneway space, and current process is responsible for
-either more than 50 transactions, or more than 50% of the oneway space).
-And the detection will restart when the async buffer has returned to a
-healthy state.
+If you think "normal" == "normal System RAM", that's wrong; see below.
 
-Signed-off-by: Hang Lu <hangl@codeaurora.org>
----
- drivers/android/binder.c            | 25 ++++++++++++++++++++++---
- drivers/android/binder_alloc.c      | 15 ++++++++++++---
- drivers/android/binder_alloc.h      |  8 +++++++-
- drivers/android/binder_internal.h   |  1 +
- include/uapi/linux/android/binder.h |  8 ++++++++
- 5 files changed, 50 insertions(+), 7 deletions(-)
+> 
+> That's the problem. With Anshuman's commit I mentioned above,
+> pfn_valid() returns true for ZONE_DEVICE mappings (e.g. persistent
+> memory, not talking about some I/O mapping that requires Device_nGnRE).
+> So kvm_is_device_pfn() is false for such memory and it may be mapped as
+> Normal but it is not guaranteed to support tagging.
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index c119736..28ceaf9 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -87,6 +87,7 @@ static DEFINE_SPINLOCK(binder_dead_nodes_lock);
- static struct dentry *binder_debugfs_dir_entry_root;
- static struct dentry *binder_debugfs_dir_entry_proc;
- static atomic_t binder_last_id;
-+static bool oneway_spam_detection_enabled;
- 
- static int proc_show(struct seq_file *m, void *unused);
- DEFINE_SHOW_ATTRIBUTE(proc);
-@@ -3007,7 +3008,10 @@ static void binder_transaction(struct binder_proc *proc,
- 			goto err_bad_object_type;
- 		}
- 	}
--	tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
-+	if (t->buffer->oneway_spam_suspect)
-+		tcomplete->type = BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT;
-+	else
-+		tcomplete->type = BINDER_WORK_TRANSACTION_COMPLETE;
- 	t->work.type = BINDER_WORK_TRANSACTION;
- 
- 	if (reply) {
-@@ -3875,9 +3879,14 @@ static int binder_thread_read(struct binder_proc *proc,
- 
- 			binder_stat_br(proc, thread, cmd);
- 		} break;
--		case BINDER_WORK_TRANSACTION_COMPLETE: {
-+		case BINDER_WORK_TRANSACTION_COMPLETE:
-+		case BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT: {
- 			binder_inner_proc_unlock(proc);
--			cmd = BR_TRANSACTION_COMPLETE;
-+			if (oneway_spam_detection_enabled &&
-+				   w->type == BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT)
-+				cmd = BR_ONEWAY_SPAM_SUSPECT;
-+			else
-+				cmd = BR_TRANSACTION_COMPLETE;
- 			kfree(w);
- 			binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
- 			if (put_user(cmd, (uint32_t __user *)ptr))
-@@ -4727,6 +4736,16 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		}
- 		break;
- 	}
-+	case BINDER_ENABLE_ONEWAY_SPAM_DETECTION: {
-+		uint32_t enable;
-+
-+		if (copy_from_user(&enable, ubuf, sizeof(enable))) {
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+		oneway_spam_detection_enabled = (bool)enable;
-+		break;
-+	}
- 	default:
- 		ret = -EINVAL;
- 		goto err;
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 7caf74a..a09872b 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -338,7 +338,7 @@ static inline struct vm_area_struct *binder_alloc_get_vma(
- 	return vma;
- }
- 
--static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
-+static bool debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
- {
- 	/*
- 	 * Find the amount and size of buffers allocated by the current caller;
-@@ -366,13 +366,19 @@ static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
- 
- 	/*
- 	 * Warn if this pid has more than 50 transactions, or more than 50% of
--	 * async space (which is 25% of total buffer size).
-+	 * async space (which is 25% of total buffer size). Oneway spam only
-+	 * detect once when exceed the threshold.
- 	 */
- 	if (num_buffers > 50 || total_alloc_size > alloc->buffer_size / 4) {
- 		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
- 			     "%d: pid %d spamming oneway? %zd buffers allocated for a total size of %zd\n",
- 			      alloc->pid, pid, num_buffers, total_alloc_size);
-+		if (!alloc->oneway_spam_detected) {
-+			alloc->oneway_spam_detected = true;
-+			return true;
-+		}
- 	}
-+	return false;
- }
- 
- static struct binder_buffer *binder_alloc_new_buf_locked(
-@@ -525,6 +531,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 	buffer->async_transaction = is_async;
- 	buffer->extra_buffers_size = extra_buffers_size;
- 	buffer->pid = pid;
-+	buffer->oneway_spam_suspect = false;
- 	if (is_async) {
- 		alloc->free_async_space -= size + sizeof(struct binder_buffer);
- 		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC_ASYNC,
-@@ -536,7 +543,9 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 			 * of async space left (which is less than 10% of total
- 			 * buffer size).
- 			 */
--			debug_low_async_space_locked(alloc, pid);
-+			buffer->oneway_spam_suspect = debug_low_async_space_locked(alloc, pid);
-+		} else {
-+			alloc->oneway_spam_detected = false;
- 		}
- 	}
- 	return buffer;
-diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
-index 6e8e001..7dea57a 100644
---- a/drivers/android/binder_alloc.h
-+++ b/drivers/android/binder_alloc.h
-@@ -26,6 +26,8 @@ struct binder_transaction;
-  * @clear_on_free:      %true if buffer must be zeroed after use
-  * @allow_user_free:    %true if user is allowed to free buffer
-  * @async_transaction:  %true if buffer is in use for an async txn
-+ * @oneway_spam_suspect: %true if total async allocate size just exceed
-+ * spamming detect threshold
-  * @debug_id:           unique ID for debugging
-  * @transaction:        pointer to associated struct binder_transaction
-  * @target_node:        struct binder_node associated with this buffer
-@@ -45,7 +47,8 @@ struct binder_buffer {
- 	unsigned clear_on_free:1;
- 	unsigned allow_user_free:1;
- 	unsigned async_transaction:1;
--	unsigned debug_id:28;
-+	unsigned oneway_spam_suspect:1;
-+	unsigned debug_id:27;
- 
- 	struct binder_transaction *transaction;
- 
-@@ -87,6 +90,8 @@ struct binder_lru_page {
-  * @buffer_size:        size of address space specified via mmap
-  * @pid:                pid for associated binder_proc (invariant after init)
-  * @pages_high:         high watermark of offset in @pages
-+ * @oneway_spam_detected: %true if oneway spam detection fired, clear that
-+ * flag once the async buffer has returned to a healthy state
-  *
-  * Bookkeeping structure for per-proc address space management for binder
-  * buffers. It is normally initialized during binder_init() and binder_mmap()
-@@ -107,6 +112,7 @@ struct binder_alloc {
- 	uint32_t buffer_free;
- 	int pid;
- 	size_t pages_high;
-+	bool oneway_spam_detected;
- };
- 
- #ifdef CONFIG_ANDROID_BINDER_IPC_SELFTEST
-diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-index 6cd7901..e380545 100644
---- a/drivers/android/binder_internal.h
-+++ b/drivers/android/binder_internal.h
-@@ -174,6 +174,7 @@ struct binder_work {
- 	enum binder_work_type {
- 		BINDER_WORK_TRANSACTION = 1,
- 		BINDER_WORK_TRANSACTION_COMPLETE,
-+		BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT,
- 		BINDER_WORK_RETURN_ERROR,
- 		BINDER_WORK_NODE,
- 		BINDER_WORK_DEAD_BINDER,
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-index ec84ad1..d0da772 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -227,6 +227,7 @@ struct binder_node_info_for_ref {
- #define BINDER_GET_NODE_DEBUG_INFO	_IOWR('b', 11, struct binder_node_debug_info)
- #define BINDER_GET_NODE_INFO_FOR_REF	_IOWR('b', 12, struct binder_node_info_for_ref)
- #define BINDER_SET_CONTEXT_MGR_EXT	_IOW('b', 13, struct flat_binder_object)
-+#define BINDER_ENABLE_ONEWAY_SPAM_DETECTION	_IOW('b', 15, __u32)
- 
- /*
-  * NOTE: Two special error codes you should check for when calling
-@@ -408,6 +409,13 @@ enum binder_driver_return_protocol {
- 	 * The last transaction (either a bcTRANSACTION or
- 	 * a bcATTEMPT_ACQUIRE) failed (e.g. out of memory).  No parameters.
- 	 */
-+
-+	BR_ONEWAY_SPAM_SUSPECT = _IO('r', 19),
-+	/*
-+	 * Current process sent too many oneway calls to target, and the last
-+	 * asynchronous transaction makes the allocated async buffer size exceed
-+	 * detection threshold.  No parameters.
-+	 */
- };
- 
- enum binder_driver_command_protocol {
+pfn_valid() means "there is a struct page"; if you do pfn_to_page() and 
+touch the page, you won't fault. So Anshuman's commit is correct.
+
+pfn_to_online_page() means, "there is a struct page and it's system RAM 
+that's in use; the memmap has a sane content"
+
+> 
+> For user MTE, we get away with this as the MAP_ANONYMOUS requirement
+> would filter it out while arch_add_memory() will ensure it's mapped as
+> untagged in the linear map. See another recent fix for hotplugged
+> memory: d15dfd31384b ("arm64: mte: Map hotplugged memory as Normal
+> Tagged"). We needed to ensure that ZONE_DEVICE doesn't end up as tagged,
+> only hoplugged memory. Both handled via arch_add_memory() in the arch
+> code with ZONE_DEVICE starting at devm_memremap_pages().
+> 
+>>>> I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
+>>>> even without virtualisation.
+>>>
+>>> I haven't checked all the code paths but I don't think we can get a
+>>> MAP_ANONYMOUS mapping of ZONE_DEVICE memory as we normally need a file
+>>> descriptor.
+>>
+>> I certainly hope this is the case - it's the weird corner cases of device
+>> drivers that worry me. E.g. I know i915 has a "hidden" mmap behind an ioctl
+>> (see i915_gem_mmap_ioctl(), although this case is fine - it's MAP_SHARED).
+>> Mali's kbase did something similar in the past.
+> 
+> I think this should be fine since it's not a MAP_ANONYMOUS (we do allow
+> MAP_SHARED to be tagged).
+> 
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks,
+
+David / dhildenb
 
