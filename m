@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F64534FA4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2B834FA5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbhCaHdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbhCaHdJ (ORCPT
+        id S233906AbhCaHgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:36:07 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:5376 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234019AbhCaHfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:33:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D67C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FCOeNsdqWlXJJzwZbuVskDWYiqHeP5gXynaJwTTANcc=; b=plAm4hZUpsSpsxqx+jW/gn4Fut
-        VfWup/icq2Hq38lolETXuZxVQqx6wim2ihPB+y4mYuZC394djW8lXkEvCp9sN/94GbCoVuzGa2kc+
-        uvaOqJqZTg44JOKztdY1IeGR2qMtFhSckYtLziUedc372yc99BZ5gHppUN4f0O6ptDTqpbOsEgTyN
-        W6or09iuSorZD+2WzXi5zih0SqAd2bbhPP4IWbLefT7GL57b803QfG6UFoGLx0+vaqUpsD0DeDmRp
-        Ex5KR+A0XuRyuRIG+xEe3/BV/BtpQLmOI5fKQdn7vVUcQT+SSto1r9V9pEdrc8Mi1doIJc17nz1oX
-        0VWPVhgQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRVKw-004C3H-2M; Wed, 31 Mar 2021 07:32:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 38459304B90;
-        Wed, 31 Mar 2021 09:32:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1DEB82B878558; Wed, 31 Mar 2021 09:32:21 +0200 (CEST)
-Date:   Wed, 31 Mar 2021 09:32:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: kernel/sched/core.c:5370:37: warning: cast between incompatible
- function types from 'long int (*)(void)' to 'int (*)(void)'
-Message-ID: <YGQlhQ9rfkKBwUKB@hirez.programming.kicks-ass.net>
-References: <202103311434.dpBaRaX7-lkp@intel.com>
+        Wed, 31 Mar 2021 03:35:40 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12V7WO4U030217;
+        Wed, 31 Mar 2021 09:35:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=6S17a4DMaG4t2vtryx2GtKbdTj1uUfFwBsX6+IG/U7o=;
+ b=X+3HKtY4fko9oA/gOq2dVY9Vj8yyfoxEqoe1jE2y+LNyiEMIED5I/I7grK718MMr1zU2
+ S4eo3oXhwpHQu4QdCFE+rX45gAcb8YqI8E4Knd+ev11GrrSUVMWwy+d65gqpBXRTbRzt
+ 7A7vZfFqQHy29k1SWORifYXX/cH5pK89blDpytLHk32+j8SCeB5pG8A4X6JsFnItK+je
+ 5ij9RVCuSxcVIhnIUd2rQsM62HgfVTEie5jUTNTr9aIh9pUP+OY4nxNrOiZfUbjfo5I1
+ A45zfTHVUjM2r2UGY1v5e9CFMOcrbwsMvwTQGS9QgYWnreIyK9oMIlEB6XCPq2urAOI1 VQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37mab3tvk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Mar 2021 09:35:28 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DD0AB10002A;
+        Wed, 31 Mar 2021 09:35:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CC10B224823;
+        Wed, 31 Mar 2021 09:35:27 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar 2021 09:35:27
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v4 0/2] remoteproc: stm32: add support of detaching a remote processor
+Date:   Wed, 31 Mar 2021 09:33:45 +0200
+Message-ID: <20210331073347.8293-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103311434.dpBaRaX7-lkp@intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-31_01:2021-03-30,2021-03-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:15:41PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5e46d1b78a03d52306f21f77a4e4a144b6d31486
-> commit: 826bfeb37bb4302ee6042f330c4c0c757152bdb8 preempt/dynamic: Support dynamic preempt with preempt= boot option
-> date:   6 weeks ago
-> config: x86_64-randconfig-r011-20210331 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=826bfeb37bb4302ee6042f330c4c0c757152bdb8
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 826bfeb37bb4302ee6042f330c4c0c757152bdb8
->         # save the attached .config to linux build tree
->         make W=1 ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    kernel/sched/core.c: In function 'schedule_tail':
->    kernel/sched/core.c:4252:13: warning: variable 'rq' set but not used [-Wunused-but-set-variable]
->     4252 |  struct rq *rq;
->          |             ^~
->    In file included from include/linux/err.h:5,
->                     from include/linux/kthread.h:5,
->                     from include/trace/events/sched.h:8,
->                     from kernel/sched/core.c:10:
->    kernel/sched/core.c: In function 'setup_preempt_mode':
-> >> kernel/sched/core.c:5370:37: warning: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Wcast-function-type]
+Update from V3:
+add Reviewed by Rob Herring in patch 1/2 for bindings
 
-That warning is broken IMO.
+This patchset is the stm32mp1 platform implementation of the detach operation
+added in series [1].
 
-Still, I have a patch for this somewhere.. I'll try and push it out
-sometime soon.
+On detach, the stm32 rproc driver sends a mailbox signal to the remote 
+processor to inform it that it will be detached. 
+
+Applied and tested on Bjorn's "for_next" branch (2b81aa17008e)
+
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=447171
+
+Arnaud Pouliquen (2):
+  dt-bindings: remoteproc: stm32-rproc: add new mailbox channel for
+    detach
+  remoteproc: stm32: add capability to detach
+
+ .../bindings/remoteproc/st,stm32-rproc.yaml   | 11 +++++-
+ drivers/remoteproc/stm32_rproc.c              | 39 ++++++++++++++++++-
+ 2 files changed, 46 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
