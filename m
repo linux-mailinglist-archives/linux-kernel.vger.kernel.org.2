@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C266350821
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7693C350825
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbhCaUWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:22:52 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:48918 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236379AbhCaUWf (ORCPT
+        id S236475AbhCaUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236441AbhCaUYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:22:35 -0400
-Received: from us.es (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 8110663E47;
-        Wed, 31 Mar 2021 22:22:19 +0200 (CEST)
-Date:   Wed, 31 Mar 2021 22:22:30 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-Message-ID: <20210331202230.GA4109@salvia>
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
+        Wed, 31 Mar 2021 16:24:19 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D60C061574;
+        Wed, 31 Mar 2021 13:24:18 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A81FF867;
+        Wed, 31 Mar 2021 20:24:18 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A81FF867
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1617222258; bh=V69OvbPP4NOdAIt0hpaxumI8PQ/bvcYp0rVSuSOspz0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=qndR9uk9iHQlt4ULDyGVHLbKrxpIuqPacZyF11P/wtVbXiu/l6euEHfwMcgURxULQ
+         Kt737M9aauHClqbkb0sRv0KaMXIIITE3Su/VwnYXDbNnpo3xpIwsppxlzZQAJrHfip
+         XrHXlquCz/CDpwuZsDBzm090DIyiV/5mLNZIN22g0mUDLDcxg092Fu68aYuYhRhkZW
+         FkgO3QRuCdTJOqcTVfPGAbSGwrzer9XTOo9+20f/BrRT9N3mo14dO2udUSvbs5iuvY
+         lUvrRBG0cnYYVDn1wkb4zYXHMvgC48ziIOI+7Dozf+AssEorYwmDQH8D6EIDl3Tg75
+         FPCzkkkzoM55w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] fs/namespace: corrent/improve kernel-doc notation
+In-Reply-To: <20210318025227.4162-1-rdunlap@infradead.org>
+References: <20210318025227.4162-1-rdunlap@infradead.org>
+Date:   Wed, 31 Mar 2021 14:24:18 -0600
+Message-ID: <87r1jvjclp.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
-In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Randy Dunlap <rdunlap@infradead.org> writes:
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+> Fix kernel-doc warnings in fs/namespace.c:
+>
+> ./fs/namespace.c:1379: warning: Function parameter or member 'm' not described in 'may_umount_tree'
+> ./fs/namespace.c:1379: warning: Excess function parameter 'mnt' description in 'may_umount_tree'
+> ./fs/namespace.c:1950: warning: Function parameter or member 'path' not described in 'clone_private_mount'
+>
+> Also convert path_is_mountpoint() comments to kernel-doc.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> ---
+> Jon, Al has OK-ed you to merge this patch (and the next one, please).
+>
+>  fs/namespace.c |   14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 
-On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
-> Reduce logging of nftables events to a level similar to iptables.
-> Restore the table field to list the table, adding the generation.
-> 
-> Indicate the op as the most significant operation in the event.
+An actual acked-by would have been nice, oh well.  Meanwhile, I've
+applied them with fixes to the typos in both changelogs :)
 
-There's a UAF, Florian reported. I'm attaching an incremental fix.
+Thanks,
 
-nf_tables_commit_audit_collect() refers to the trans object which
-might have been already released.
-
---OXfL5xGRrasGEqWY
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="fix-uaf.patch"
-
-commit e4d272948d25b66d86fc241cefd95281bfb1079e
-Author: Pablo Neira Ayuso <pablo@netfilter.org>
-Date:   Wed Mar 31 22:19:51 2021 +0200
-
-    netfilter: nf_tables: use-after-free
-    
-    Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 5dd4bb7cabf5..01674c0d9103 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8063,6 +8063,8 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 	net->nft.gencursor = nft_gencursor_next(net);
- 
- 	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
-+		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
-+					       trans->msg_type);
- 		switch (trans->msg_type) {
- 		case NFT_MSG_NEWTABLE:
- 			if (nft_trans_table_update(trans)) {
-@@ -8211,8 +8213,6 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 			}
- 			break;
- 		}
--		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
--					       trans->msg_type);
- 	}
- 
- 	nft_commit_notify(net, NETLINK_CB(skb).portid);
-
---OXfL5xGRrasGEqWY--
+jon
