@@ -2,240 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5353508FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5C1350905
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhCaVWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:22:06 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:58542 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhCaVVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:21:38 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lRiHQ-0006Uu-27; Wed, 31 Mar 2021 23:21:36 +0200
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-usb@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <6f5be7a5-bf82-e857-5c81-322f2886099a@maciej.szmigiero.name>
- <20210329152201.GA933773@rowland.harvard.edu>
- <2c99b46a-3643-c22a-9aae-024565222794@maciej.szmigiero.name>
- <20210331195539.GA1027699@rowland.harvard.edu>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: >20 KB URBs + EHCI = bad performance due to stalls
-Message-ID: <e3a7efbc-6f72-d276-2f86-f2a783e73f6d@maciej.szmigiero.name>
-Date:   Wed, 31 Mar 2021 23:21:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231315AbhCaVXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230309AbhCaVWh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:22:37 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5834C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:22:37 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1884371pjc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pXrqzXzEChtI1XfxNDISXq0z9cppP2LyACAbcjVV7bg=;
+        b=PXiE5CdfJSVRzY2wAQZx9s0kr/QwU1b4znKQScxqzpI8tabgUAg4SVda6p+Sbl9XJ8
+         SBgRoqUAGTlVZz7E+Yi6I70OUwxuE63QPaveGtR2bhifB+6rtU00zzhKHv9EBm/mOGzN
+         axtTf1lg1vUe15bNFHV8EITJJNRmtXVeAU1fXFkWHv2T5+TW9Km9hv31+xGyNz9RNJZg
+         yMQRHypkP6w+Q7LQSIUVr+KimkqklaqBn3G2feNNtJU0xZlEKop+CQjdve0cSM8ihM7k
+         HG24zwAIliz3Jl1sIN7OyrjvzgKi+Qg8zzhSysSO7OjGMtFwPaqpFPvyawOeIZ21OLuK
+         occA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pXrqzXzEChtI1XfxNDISXq0z9cppP2LyACAbcjVV7bg=;
+        b=J6Q8RK7IJZgqu5Ny6lZ3nu+uTJ2wAwfRsZVLGbHvo1UxLbH05PmSqLXXWbqeCq+bMv
+         fxD1Grrmsc0qE4jS9ted0rEEhQZwrnPcINFOtMZGorD2tsTrDEn4w5fxLGpYb8wf2SMO
+         f5TB+JA6lqPB/lu04xZDUJ+JMhuueyD8Y9yn81p7jrRmozpt+Vaxb6+YUpNgUtPqE1qI
+         fRejDZws/N0UMv/PzhiPdviIwPYAAUlPbTyvfZUPXrqalV44OyBgKkd8zgfjBjMSkXBv
+         QOsJQa58GDvkxSB33Ffh9QA59S7LL/0Ngm489ACBD0CiPEvvjWae6Mk4I85yiaKpCPsF
+         Qs+A==
+X-Gm-Message-State: AOAM533v9eKdPU2LcunYL3Ygl3yyDzTwhvxmv9d9mj0PG9/xnXeva+Ae
+        yRk1zhSWimQzLoXfFJrPTKbtYA==
+X-Google-Smtp-Source: ABdhPJxsIyLoShTQKKQWzcjkczRyz+c6fh0aTYwa65djAo2j70cBG0eZD/ja+to5RbqNzFwrtXDXaA==
+X-Received: by 2002:a17:90b:4b87:: with SMTP id lr7mr5086802pjb.5.1617225756928;
+        Wed, 31 Mar 2021 14:22:36 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id o4sm3237010pfk.15.2021.03.31.14.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:22:36 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 21:22:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <YGToGBvdfPiCr3WA@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+ <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
+ <YGSmMeSOPcjxRwf6@google.com>
+ <56ea69fe-87b0-154b-e286-efce9233864e@redhat.com>
+ <YGTRzf/4i9Y8XR2c@google.com>
+ <0e30625f-934d-9084-e293-cb3bcbc9e4b8@redhat.com>
+ <YGTkLMAzk88wOiZm@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210331195539.GA1027699@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGTkLMAzk88wOiZm@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.03.2021 21:55, Alan Stern wrote:
-> On Wed, Mar 31, 2021 at 08:20:56PM +0200, Maciej S. Szmigiero wrote:
->> On 29.03.2021 17:22, Alan Stern wrote:
->>> On Sat, Mar 27, 2021 at 04:55:20PM +0100, Maciej S. Szmigiero wrote:
->>>> Hi,
->>>>
->>>> Is there any specific reason that URBs without URB_SHORT_NOT_OK flag that
->>>> span multiple EHCI qTDs have Alternate Next qTD pointer set to the dummy
->>>> qTD in their every qTD besides the last one (instead of to the first qTD
->>>> of the next URB to that endpoint)?
->>>
->>> Quick answer: I don't know.  I can't think of any good reason.  This
->>> code was all written a long time ago.  Maybe the issue was overlooked
->>> or the details were misunderstood.
->>
->> I've dug out the original EHCI driver, that landed in 2.5.2:
->> https://marc.info/?l=linux-usb-devel&m=100875066109269&w=2
->> https://marc.info/?l=linux-usb-devel&m=100982880716373&w=2
->>
->> It already had the following qTD setup code, roughly similar to what
->> the current one does:
->>> /* previous urb allows short rx? maybe optimize. */
->>> if (!(last_qtd->urb->transfer_flags & USB_DISABLE_SPD)
->>> 		&& (epnum & 0x10)) {
->>> 	// only the last QTD for now
->>> 	last_qtd->hw_alt_next = hw_next;
->>
->> The "for now" language seems to suggest that ultimately other-than-last
->> qTDs were supposed to be set not to stall the queue, too.
->> Just the code to handle this case was never written.
+On Wed, Mar 31, 2021, Sean Christopherson wrote:
+> On Wed, Mar 31, 2021, Paolo Bonzini wrote:
+> > On 31/03/21 21:47, Sean Christopherson wrote:
+> > I also thought of busy waiting on down_read_trylock if the MMU notifier
+> > cannot block, but that would also be invalid for the opposite reason (the
+> > down_write task might be asleep, waiting for other readers to release the
+> > task, and the down_read_trylock busy loop might not let that task run).
+> > 
+> > > And that's _already_ the worst case since notifications are currently
+> > > serialized by mmu_lock.
+> > 
+> > But right now notifications are not a single critical section, they're two,
+> > aren't they?
 > 
-> Probably it just slipped out of the developer's mind.
-> 
->> It seems to me though, this should be possible with relatively few
->> changes to the code:
->> qh_append_tds() will need to patch these other-than-last qTDs
->> hw_alt_next pointer to point to the (new) dummy qTD (instead of just
->> pointing the last submitted qTD hw_next to it and adding the remaining
->> qTDs verbatim to the qH qTD list).
-> 
-> Right.
-> 
->> Then qh_completions() will need few changes:
->> *
->>>   } else if (IS_SHORT_READ (token)
->>> 	      && !(qtd->hw_alt_next
->>>            	   & EHCI_LIST_END(ehci))) {
->> This branch will need to be modified not to mark the queue as stopped
->> and request its unlinking when such type of short qTD was processed.
-> 
-> This would be a good place to introduce a macro.  For example:
-> 
-> 	} else if (IS_SHORT_READ(token) &&
-> 			EHCI_PTR_IS_SET(qtd->hw_alt_next)) {
-> 
-> or something similar.
+> Ah, crud, yes.  Holding a spinlock across the entire start() ... end() would be
+> bad, especially when the notifier can block since that opens up the possibility
+> of the task sleeping/blocking/yielding while the spinlock is held.  Bummer.
 
-I agree, this certainly looks more readable.
+On a related topic, any preference on whether to have an explicit "must_lock"
+flag (what I posted), or derive the logic based on other params?
 
->> * The ACTIVE bit should be treated as unset on any qTD following the
->> one that hits the above condition until a qTD for a different URB is
->> encountered.
->> Otherwise the unprocessed remaining qTDs from that short URB will be
->> considered pending active qTDs and the code will wait forever for their
->> processing,
-> 
-> The treatment shouldn't be exactly the same as if ACTIVE is clear.  The
-> following qTDs can be removed from the list and deallocated immediately,
-> since the hardware won't look at them.  And they shouldn't affect the
-> URB's status.
+The helper I posted does:
 
- From my understanding of qh_completions() if these "remaining" qTDs from
-a short read are treated as !ACTIVE then none of the conditions in
-!ACTIVE branch will hit: they don't have DBE or HALT set and they aren't
-queue-stopping short read qTDs (I am assuming here that the
-aforementioned qtd->hw_alt_next condition will be changed to exclude
-them).
+	if (range->must_lock &&
+	    kvm_mmu_lock_and_check_handler(kvm, range, &locked))
+		goto out_unlock;
 
-So the qTD processing loop will reach "if (last_status == -EINPROGRESS)",
-this will be false since previous qTD (that one that has actually
-partially completed) had already set the last_status to -EREMOTEIO.
-Then the code will delete this qTD from qTD list and go to the next qTD
-(either next "remaining" qTD from that URB or from a different URB).
+but it could be:
 
-Once a qTD from a different URB is encountered the special treatment of
-ACTIVE qTDs as !ACTIVE has to end.
+	if (!IS_KVM_NULL_FN(range->on_lock) && !range->may_block &&
+	    kvm_mmu_lock_and_check_handler(kvm, range, &locked))
+		goto out_unlock;
 
->> * The code that patches the previous qTD hw_next pointer when removing a
->> qTD that isn't currently at the qH will need changing to also patch
->> hw_alt_next pointers of the qTDs belonging to the previous URB in case
->> the previous URB was one of these short-read-ok ones.
-> 
-> Yes.  Awkward but necessary.
-> 
-> Although I know nothing at all about the USB API in Windows, I suspect
-> that it manages to avoid this awkwardness entirely by not allowing URBs
-> in the middle of the queue to be unlinked.  Or perhaps allowing it only
-> for endpoint 0.  I've often wished Linux's API had been written that
-> way.
-
-According to Microsoft docs every IRP that might remain queued for an
-indefinite interval has to have a cancel handler.
-URBs are submitted wrapped in IRPs, so at least in theory it should be
-possible to cancel them.
-But I don't know how it works in practice.
-
-I also remember getting "warning: guest updated active QH" often when
-launching Windows VMs in QEMU.
-That does not seem like a good sign, but it might ultimately be a
-deficiency in QEMU EHCI HC emulation, not Windows.
-
-In Linux at least we could (theoretically) change the API and modify
-all the client drivers.
-But I think the benefit is not worth the cost at that point.
-
->> That's was my quick assessment what is required to handle these
->> transactions effectively in the EHCI driver.
->>
->> I suspect, however, there may be some corner cases involving
->> non-ordinary qTD unlinking which might need fixing, too (like caused
->> by usb_unlink_urb(), system suspend or HC removal).
->> But I am not sure about this since I don't know this code well.
-> 
-> Those shouldn't present any difficulty.  There are inherently easier to
-> handle because the QH won't be actively running when they occur.
-
-I've meant that these can exercise a different code path than ordinary
-unlink so one has to check this, too.
-
-(...)
->> That's what I had on mind by saying that it seems strange to me that
->> the URB buffer size should be managed by a particular USB device driver
->> depending on the host controller in use.
->>
->>> In short, the behavior you observed is a bug, resulting in a loss of
->>> throughput (though not in any loss of data).  It needs to be fixed.
->>>
->>> If you would like to write and submit a patch, that would be great.
->>> Otherwise, I'll try to find time to work on it.
->>
->> Unfortunately, I doubt I will be able to work on this in coming weeks
->> due to time constraints, I'm sorry :(
-> 
-> All right, then I'll work on it when time permits.
-
-That's great, thanks.
-
->>> I would appreciate any effort you could make toward checking the code
->>> in qh_completions(); I suspect that the checks it does involving
->>> EHCI_LIST_END may not be right.  At the very least, they should be
->>> encapsulated in a macro so that they are easier to understand.
->>
->> I've went through the (short) URB linking and unlinking code
->> (including qh_completions()) and I haven't found anything suspicious
->> there, besides one thing that's actually on the URB *linking* path:
->> in qh_append_tds() the dummy qTD that is the last qTD in that
->> endpoint queue is being overwritten using an assignment operator.
->>
->> While both this dummy qTD and the source qTD that overwrites it have
->> the HALT bit set it looks a bit uncomfortable to me to see a qTD that
->> the HC might just be fetching (while trying to advance the queue) being
->> overwritten.
-> 
-> I agree.  But there's no way around it; if you're going to change the
-> contents of the qTD queue while the QH is running, at some point you
-> have to overwrite something that the controller might be accessing
-> concurrently.
-
-I agree, that's a bit unfortunate.
-
-Unless one unlinks the qH temporarily (but as we have observed that's
-rather slow) or disables the async list for a moment (probably slow,
-too, and impacts other endpoints).
-
->> Like, is C standard giving guarantees that no intermediate values are
->> being written to a struct when that struct is a target of an assignment
->> operator?
-> 
-> THe C standard doesn't say anything like that, but the kernel does
-> generally rely on such behavior. 
-
-I see, thanks.
-
-> However, it wouldn't hurt to mark this
-> special case by using WRITE_ONCE.
-
-I think WRITE_ONCE() at least to the hw_token would make a lot of sense
-here.
-
->> But apparently this doesn't cause trouble, so I guess in practice
->> this works okay.
-> 
-> Yes, it does.
-> 
-> Alan Stern
-> 
-
-Thanks,
-Maciej
-
+The generated code should be nearly identical on a modern compiler, so it's
+purely a question of aesthetics.  I slightly prefer the explicit "must_lock" to
+avoid spreading out the logic too much, but it also feels a bit superfluous.
