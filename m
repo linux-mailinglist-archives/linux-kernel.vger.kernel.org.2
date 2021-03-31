@@ -2,372 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DFB34FF86
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8602A34FF8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhCaLfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235286AbhCaLfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:35:20 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C44BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:35:20 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c17so14342585pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 04:35:20 -0700 (PDT)
+        id S235303AbhCaLg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:36:28 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:45674 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235325AbhCaLgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:36:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sdrCcTjWBEf6hUrnk/JmDzkUMra8+BF3Wg/YYGCrdxE=;
-        b=EYGzv2Oj1h0fl4+3ZppBptiKZ6WdWMN8zWXJmbeNIn9cWSde4qdNpeiLG8j/ixr/H+
-         z0yW56Jn4ixfY4X33ywjWLofu1IyU5ILriQKggIbxK2olHe3ND84CEQWLncJB4sMKZWZ
-         3imJneVT/OIVBs7niIWYjujo8uq7ssLOuol3Dm6OJuZ5ZTfHUpnyOdTGco/pkeyXGAnU
-         v9mW9USq/0Hg/PEfM4srV7CrAGEIHVG97k3l6Km91szWpTv5qN99SCds3qcLvBHHx1Ab
-         2MyOXXvsZi6Siq9agdGmkJZMjRALMAjwm6RR4YSk+gOqosrlLfU+Q0d/WaDMKacXr6m7
-         cbyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sdrCcTjWBEf6hUrnk/JmDzkUMra8+BF3Wg/YYGCrdxE=;
-        b=BkFxxwv6rPXtiEcA0WWGiyjNYCRtq0qXdMYNaA7MuFZOs6R1x4Jdh+Bo7I/FTUZHLi
-         v1qbItqu2OXIwciMVTUWQUnkD5DV/fCOIckdM6oRUivgxox2DIx1avxL7EGk6dAD4BPm
-         RrDwzh8a4yGGuGk9UBY5V7ZGJ46EcRDiMAOd5FdVgjwfYlg7VvcDKVFdJxZX+08nZvvw
-         zQHuXjCNVPlg2y2d1Fc6D/6p6aFBh7lqF1hdip1n7Vn10WvIF2L3d7b0a8WavHdblKQ+
-         wIKz6ywDKs+c28mWuhnLy/Hjgwwos4saNV0mpjwxLi3gsO5yJ+t2mkz+qriiaCAaOLYg
-         OUIw==
-X-Gm-Message-State: AOAM531uXPyt8Gc2nls6D8LKtAJkfnJTe3JKmUr6Q6Nr4AjNrI0MGPO+
-        hXsKCG5Bcm0imgtdUHAmz9+tQl0vZ4MwWaE=
-X-Google-Smtp-Source: ABdhPJzf/0lUy9a1Znq+oLUnqrH4DCpHNSCUOpFn50NTuQ/8eSZi+uFwbKLyJF5Gcewmw6SmRW0Jbw==
-X-Received: by 2002:a65:5a4a:: with SMTP id z10mr2829408pgs.240.1617190519382;
-        Wed, 31 Mar 2021 04:35:19 -0700 (PDT)
-Received: from work ([103.77.37.129])
-        by smtp.gmail.com with ESMTPSA id h6sm2136243pfb.157.2021.03.31.04.35.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 31 Mar 2021 04:35:18 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 17:05:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v7 3/7] bus: mhi: core: Improvements to the channel
- handling state machine
-Message-ID: <20210331113515.GG15610@work>
-References: <1617070307-5775-1-git-send-email-bbhatt@codeaurora.org>
- <1617070307-5775-4-git-send-email-bbhatt@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617070307-5775-4-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1617190572; x=1648726572;
+  h=from:to:cc:subject:date:message-id;
+  bh=PduPPRM2NzqbWS0miuL9W7dSI7e2jWuOJrDqBANWxp0=;
+  b=YpSzFzUvrDvAZnfLo1K7RWSUhtLuZjeXsehFLZn04wW3zn0NOUpJ9Suy
+   2QjJMVJqAB9f8ft9DteBstXv8UULZBrwf6FbNlSd1udSMwljFTnhraQcF
+   cM10Y4lGSti3cbbuBJ8mkeZkTAsYSCiEPfcZuj2MdBPJEQIta6PV1WtkT
+   HRmFtPcKwND6vRux8hXeaLfEiGYMOm7O1+LLCfBomUQF25VvdKBNwZMEu
+   mzix/N8ElvL+2ubhQANOfjFe7S9o9RTdg7o/Yx5c7smzDAcTfJ285xS1i
+   2zxV2+sHAkz44GcxlYZg+DKVJYTmZuwOskM+F5cy8FMfdeSqcgFtk1u1Z
+   g==;
+IronPort-SDR: NMerk/w2FR/wZuA+hpH2m8wOa2iEJgKE51I8SCNLA8DzRvhCHDfzICg6HC5SaY2A+paESqJ2MJ
+ oHwAeM2jrjeDQTzQAjs1TkjAqA9BrASQKgB5hWvkjeLb5dwo9Ozl9LX1jakbJHf7ScGG6XZCYD
+ LZpg3xn64f9QiYb3tlxkMl368yb/QBFHPZi63awdNjEcjVfthuh1y/nERA/B16eZ8ZHaxcDwZn
+ jjihyJECVgH4xtgvAhUUd+a6cTohEpGabGDQWVM+v42rMkS0wWh4t+NgA0IJy5U7q3pq7OFzu1
+ 5BQ=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
+   d="scan'208";a="16742375"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 31 Mar 2021 13:36:10 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 31 Mar 2021 13:36:10 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 31 Mar 2021 13:36:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1617190570; x=1648726570;
+  h=from:to:cc:subject:date:message-id;
+  bh=PduPPRM2NzqbWS0miuL9W7dSI7e2jWuOJrDqBANWxp0=;
+  b=FmojG0ilaDbk0qeByHlkt50tOiXSSrziN7gPzSDYU04L67XTKUJ3S6oo
+   r1NxsCLaOU7ifs/JPiit6s4RLBQpJpvKKcjE1WzSZX9pCw+GF7zz7oeyk
+   +UP/qaQXk9FP9Xe0v2rkhND4jrESjyad+apNtEM0lpde4q5iPa8fM+dOu
+   HotQyHLy2PJvJMRbEDfP+dafhWWeSlWJQOhOtznfK4wUbExW5mlKC1MIg
+   92PxZdAiB34/HK5IwafJacq0wc8+bF+sv3zdTtyYKVky5RTNbY+swWgtY
+   EqGuPqVRhgU5GTDcO40TRqcH6fYNwGEomotOaLYx1PtvCXsV+DgRpl7jB
+   w==;
+IronPort-SDR: lSoEZDF/rnmI8sDFJbzN2P5HTbr2MGqeG8tNVxoVd3jgKmhQWUosRrnCjCG/l4V7lc0E3g2lNE
+ 8gZXcaUoPerwv4rKO7xvMFT879+OX5IV8W2RKYY6E/mIPQKe6Xdx1k0m5RRzpiFJyrLw4nvx4v
+ fOxHdHXWWeeB1gWgtesIEPm8gM6TPoKyjxKqn1iI3SKjLmfQWEqn8X8RtfoOLEXb37CDXhCrsj
+ zBTapWywROOJTbOkETSTxKHCTd/1++Xk7GTDjKCDQc5nj9cg6eQb7I7i64h+ba/l17JuAxF63a
+ qsw=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
+   d="scan'208";a="16742374"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 31 Mar 2021 13:36:10 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 1EAEE280070;
+        Wed, 31 Mar 2021 13:36:10 +0200 (CEST)
+X-CheckPoint: {60645E92-3-486672D-C0FA7804}
+X-MAIL-CPID: E147051C322BD6D64161476F71C5EBFF_2
+X-Control-Analysis: str=0001.0A782F29.60645EAA.0054,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 0/3] tqmx86: TQMxE40M support
+Date:   Wed, 31 Mar 2021 13:35:42 +0200
+Message-Id: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 07:11:43PM -0700, Bhaumik Bhatt wrote:
-> Improve the channel handling state machine such that all commands
-> go through a common function and a validation process to ensure
-> that the state machine is not violated in any way and adheres to
-> the MHI specification. Using this common function allows MHI to:
-> 1. Fail early if device is in a bad state by attempting to assert
-> device wake before sending a channel update command instead of
-> performing a wake toggle and waiting longer for the send to fail
-> 2. Use channel specific print messages to accurately identify the
-> use client device for the channel(s) being updated
-> 3. Eliminate unnecessary debug messages and code duplication
+This fixes a bug in the IRQ setup of the tqmx86 MFD / GPIO drivers and
+adds support for our upcoming Elkhart Lake module TQMxE40M (as well as
+future SoMs).
 
-Please don't club these changes in a single patch. Split them as
-individual patches.
+As patch 2 depends on patch 1, it would make sense to push the whole
+series through the same tree.
 
-Thanks,
-Mani
+Matthias Schiffer (3):
+  gpio: tqmx86: really make IRQ optional
+  mfd: tqmx86: clear GPIO IRQ resource when no IRQ is set
+  mfd: tqmx86: add support for TQMxE40M
 
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/init.c     |   6 ++
->  drivers/bus/mhi/core/internal.h |  12 +++
->  drivers/bus/mhi/core/main.c     | 172 ++++++++++++++++++++++------------------
->  3 files changed, 114 insertions(+), 76 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index bd62efcb..64846c4 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -54,6 +54,12 @@ const char * const mhi_state_str[MHI_STATE_MAX] = {
->  	[MHI_STATE_SYS_ERR] = "SYS_ERR",
->  };
->  
-> +const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
-> +	[MHI_CH_STATE_TYPE_RESET] = "RESET",
-> +	[MHI_CH_STATE_TYPE_STOP] = "STOP",
-> +	[MHI_CH_STATE_TYPE_START] = "START",
-> +};
-> +
->  static const char * const mhi_pm_state_str[] = {
->  	[MHI_PM_STATE_DISABLE] = "DISABLE",
->  	[MHI_PM_STATE_POR] = "POR",
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 6f37439..d8fd197 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -369,6 +369,18 @@ enum mhi_ch_state {
->  	MHI_CH_STATE_ERROR = 0x5,
->  };
->  
-> +enum mhi_ch_state_type {
-> +	MHI_CH_STATE_TYPE_RESET,
-> +	MHI_CH_STATE_TYPE_STOP,
-> +	MHI_CH_STATE_TYPE_START,
-> +	MHI_CH_STATE_TYPE_MAX,
-> +};
-> +
-> +extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
-> +#define TO_CH_STATE_TYPE_STR(state) (((state) >= MHI_CH_STATE_TYPE_MAX) ? \
-> +				     "INVALID_STATE" : \
-> +				     mhi_ch_state_type_str[(state)])
-> +
->  #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
->  				    mode != MHI_DB_BRST_ENABLE)
->  
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 0dc3749..6c3234e 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1208,56 +1208,114 @@ int mhi_send_cmd(struct mhi_controller *mhi_cntrl,
->  	return 0;
->  }
->  
-> -static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
-> -				    struct mhi_chan *mhi_chan)
-> +static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
-> +				    struct mhi_chan *mhi_chan,
-> +				    enum mhi_ch_state_type to_state)
->  {
-> -	int ret;
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	struct device *dev = &mhi_chan->mhi_dev->dev;
-> +	enum mhi_cmd_type cmd = MHI_CMD_NOP;
-> +	int ret = -EIO;
-> +
-> +	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
-> +		TO_CH_STATE_TYPE_STR(to_state));
-> +
-> +	switch (to_state) {
-> +	case MHI_CH_STATE_TYPE_RESET:
-> +		write_lock_irq(&mhi_chan->lock);
-> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
-> +		    mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
-> +		    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
-> +			write_unlock_irq(&mhi_chan->lock);
-> +			return -EINVAL;
-> +		}
-> +		mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
-> +		write_unlock_irq(&mhi_chan->lock);
->  
-> -	dev_dbg(dev, "Entered: unprepare channel:%d\n", mhi_chan->chan);
-> +		cmd = MHI_CMD_RESET_CHAN;
-> +		break;
-> +	case MHI_CH_STATE_TYPE_STOP:
-> +		if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
-> +			return -EINVAL;
->  
-> -	/* no more processing events for this channel */
-> -	mutex_lock(&mhi_chan->mutex);
-> -	write_lock_irq(&mhi_chan->lock);
-> -	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
-> -	    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
-> -		write_unlock_irq(&mhi_chan->lock);
-> -		mutex_unlock(&mhi_chan->mutex);
-> -		return;
-> +		cmd = MHI_CMD_STOP_CHAN;
-> +		break;
-> +	case MHI_CH_STATE_TYPE_START:
-> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
-> +		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED)
-> +			return -EINVAL;
-> +
-> +		cmd = MHI_CMD_START_CHAN;
-> +		break;
-> +	default:
-> +		dev_err(dev, "%d: Channel state update to %s not allowed\n",
-> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> +		return -EINVAL;
->  	}
->  
-> -	mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
-> -	write_unlock_irq(&mhi_chan->lock);
-> +	/* bring host and device out of suspended states */
-> +	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
-> +	if (ret)
-> +		return ret;
-> +	mhi_cntrl->runtime_get(mhi_cntrl);
->  
->  	reinit_completion(&mhi_chan->completion);
-> -	read_lock_bh(&mhi_cntrl->pm_lock);
-> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
-> -		read_unlock_bh(&mhi_cntrl->pm_lock);
-> -		goto error_invalid_state;
-> +	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, cmd);
-> +	if (ret) {
-> +		dev_err(dev, "%d: Failed to send %s channel command\n",
-> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> +		goto exit_channel_update;
->  	}
->  
-> -	mhi_cntrl->wake_toggle(mhi_cntrl);
-> -	read_unlock_bh(&mhi_cntrl->pm_lock);
-> +	ret = wait_for_completion_timeout(&mhi_chan->completion,
-> +				       msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> +	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
-> +		dev_err(dev,
-> +			"%d: Failed to receive %s channel command completion\n",
-> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> +		ret = -EIO;
-> +		goto exit_channel_update;
-> +	}
->  
-> -	mhi_cntrl->runtime_get(mhi_cntrl);
-> +	ret = 0;
-> +
-> +	if (to_state != MHI_CH_STATE_TYPE_RESET) {
-> +		write_lock_irq(&mhi_chan->lock);
-> +		mhi_chan->ch_state = (to_state == MHI_CH_STATE_TYPE_START) ?
-> +				      MHI_CH_STATE_ENABLED : MHI_CH_STATE_STOP;
-> +		write_unlock_irq(&mhi_chan->lock);
-> +	}
-> +
-> +	dev_dbg(dev, "%d: Channel state change to %s successful\n",
-> +		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> +
-> +exit_channel_update:
->  	mhi_cntrl->runtime_put(mhi_cntrl);
-> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_RESET_CHAN);
-> -	if (ret)
-> -		goto error_invalid_state;
-> +	mhi_device_put(mhi_cntrl->mhi_dev);
->  
-> -	/* even if it fails we will still reset */
-> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
-> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS)
-> -		dev_err(dev,
-> -			"Failed to receive cmd completion, still resetting\n");
-> +	return ret;
-> +}
-> +
-> +static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
-> +				    struct mhi_chan *mhi_chan)
-> +{
-> +	int ret;
-> +	struct device *dev = &mhi_chan->mhi_dev->dev;
-> +
-> +	mutex_lock(&mhi_chan->mutex);
-> +
-> +	/* no more processing events for this channel */
-> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
-> +				       MHI_CH_STATE_TYPE_RESET);
-> +	if (ret)
-> +		dev_err(dev, "%d: Failed to reset channel, still resetting\n",
-> +			mhi_chan->chan);
->  
-> -error_invalid_state:
->  	if (!mhi_chan->offload_ch) {
->  		mhi_reset_chan(mhi_cntrl, mhi_chan);
->  		mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
->  	}
-> -	dev_dbg(dev, "chan:%d successfully resetted\n", mhi_chan->chan);
-> +	dev_dbg(dev, "%d: successfully reset\n", mhi_chan->chan);
-> +
->  	mutex_unlock(&mhi_chan->mutex);
->  }
->  
-> @@ -1265,28 +1323,16 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
->  			struct mhi_chan *mhi_chan)
->  {
->  	int ret = 0;
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> -
-> -	dev_dbg(dev, "Preparing channel: %d\n", mhi_chan->chan);
-> +	struct device *dev = &mhi_chan->mhi_dev->dev;
->  
->  	if (!(BIT(mhi_cntrl->ee) & mhi_chan->ee_mask)) {
-> -		dev_err(dev,
-> -			"Current EE: %s Required EE Mask: 0x%x for chan: %s\n",
-> -			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask,
-> -			mhi_chan->name);
-> +		dev_err(dev, "Current EE: %s Required EE Mask: 0x%x\n",
-> +			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask);
->  		return -ENOTCONN;
->  	}
->  
->  	mutex_lock(&mhi_chan->mutex);
->  
-> -	/* If channel is not in disable state, do not allow it to start */
-> -	if (mhi_chan->ch_state != MHI_CH_STATE_DISABLED) {
-> -		ret = -EIO;
-> -		dev_dbg(dev, "channel: %d is not in disabled state\n",
-> -			mhi_chan->chan);
-> -		goto error_init_chan;
-> -	}
-> -
->  	/* Check of client manages channel context for offload channels */
->  	if (!mhi_chan->offload_ch) {
->  		ret = mhi_init_chan_ctxt(mhi_cntrl, mhi_chan);
-> @@ -1294,34 +1340,11 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
->  			goto error_init_chan;
->  	}
->  
-> -	reinit_completion(&mhi_chan->completion);
-> -	read_lock_bh(&mhi_cntrl->pm_lock);
-> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
-> -		read_unlock_bh(&mhi_cntrl->pm_lock);
-> -		ret = -EIO;
-> -		goto error_pm_state;
-> -	}
-> -
-> -	mhi_cntrl->wake_toggle(mhi_cntrl);
-> -	read_unlock_bh(&mhi_cntrl->pm_lock);
-> -	mhi_cntrl->runtime_get(mhi_cntrl);
-> -	mhi_cntrl->runtime_put(mhi_cntrl);
-> -
-> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_START_CHAN);
-> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
-> +				       MHI_CH_STATE_TYPE_START);
->  	if (ret)
->  		goto error_pm_state;
->  
-> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
-> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
-> -		ret = -EIO;
-> -		goto error_pm_state;
-> -	}
-> -
-> -	write_lock_irq(&mhi_chan->lock);
-> -	mhi_chan->ch_state = MHI_CH_STATE_ENABLED;
-> -	write_unlock_irq(&mhi_chan->lock);
-> -
->  	/* Pre-allocate buffer for xfer ring */
->  	if (mhi_chan->pre_alloc) {
->  		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
-> @@ -1359,9 +1382,6 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
->  
->  	mutex_unlock(&mhi_chan->mutex);
->  
-> -	dev_dbg(dev, "Chan: %d successfully moved to start state\n",
-> -		mhi_chan->chan);
-> -
->  	return 0;
->  
->  error_pm_state:
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+ drivers/gpio/gpio-tqmx86.c |  6 +++---
+ drivers/mfd/tqmx86.c       | 13 ++++++-------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
+
+-- 
+2.17.1
+
