@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8B835009D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF1B35009F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbhCaMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:46:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42530 "EHLO mail.kernel.org"
+        id S235671AbhCaMrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235450AbhCaMqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:46:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E315461959;
-        Wed, 31 Mar 2021 12:46:22 +0000 (UTC)
+        id S235625AbhCaMqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:46:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D00861959;
+        Wed, 31 Mar 2021 12:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617194783;
-        bh=TQkoHACl/sFM+5iuM6x9rFOysAjN+duolQetZcUwOWQ=;
+        s=k20201202; t=1617194804;
+        bh=5dsan0ndrXUIqy53+oo57Q3YAilOJBB0JkfIOMsN35Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tqRxQ6KO5Yo+HpqJhww4Y98I+1ZL0YA14AIiEGQRGDc2J8BaKegd6HvMh8s2S6Pu9
-         hujaLdAsFyJWfrTLTxPDLXq/RrxSsZvSQVHG5SSedEqo4L8MYNBtUKtgzMNMKFp7Oy
-         NedtbimR2scRy2fmCQCZaUkM3CD2+UW+JIqAaRgqPdWq4W58jEsGaIefGBgdtV1XsE
-         +TwJHetOtZuV+LQVDRqeDSS/ge23LlmogViLNIDdgVZYhjbWCoDB2AEqosviKt12yI
-         CuSM46EowOq91jlcKyYWy3iuUGVuWmqHCO87SX1e22aGLxwFxJo3FSxVXghWjmMPMy
-         3xx3hJErZ0+/A==
-Date:   Wed, 31 Mar 2021 18:16:19 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Atul Gopinathan <leoatul12@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yu Chen <chenyu56@huawei.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-staging@lists.linux.dev, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 (RESEND) 1/7] phy: phy-hi3670-usb3: move driver from
- staging into phy
-Message-ID: <YGRvG+3sD0gX2I+b@vkoul-mobl.Dlink>
-References: <cover.1616695231.git.mchehab+huawei@kernel.org>
- <36c31dcdcd49d5a728a1fe4040bbaef5268d7f79.1616695231.git.mchehab+huawei@kernel.org>
+        b=WvD7Ur3aG34dAIIV3x8Ep36vwkt/PVipw5fzhcrVagpmzfdHtQ5KPdiRpnXTXa5Ee
+         N5HeHEcnaATBhnNfgGxMWUCZ70xxa/KdLbUFjYitonL9zuz/uVGMOSqlelQ9JDjFrC
+         x1p8JELeQoinINo/caQyDTmEwpFu3tV2MfWy4e8U7/CbXFG9vqmfulRtsQo4vAR1Qh
+         9lh3OdN5jNUTdB9DevHlGLf8pchl9vlJokB5uQRh/YJc7yukmRhRUZeyY1k8g33jmy
+         nmmqwNVchp1S37LWivGJ25psBmGv5mjOCsj0Z7J5jcZ8HQVmhp+8ZiILsJseIqfxHE
+         ocSrHbIR5GNAQ==
+Date:   Wed, 31 Mar 2021 13:46:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] ASoC: cs35l35: Remove unused including
+ <linux/version.h>
+Message-ID: <20210331124632.GA13402@sirena.org.uk>
+References: <20210326061331.3234485-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
 Content-Disposition: inline
-In-Reply-To: <36c31dcdcd49d5a728a1fe4040bbaef5268d7f79.1616695231.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210326061331.3234485-1-zhengyongjun3@huawei.com>
+X-Cookie: Never trust an operating system.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-03-21, 19:05, Mauro Carvalho Chehab wrote:
-> The phy USB3 driver for Hisilicon 970 (hi3670) is ready
-> for mainstream. Mode it from staging into the main driver's
-> phy/ directory.
 
-Overall lgtm, some nits below. With those fixed:
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+On Fri, Mar 26, 2021 at 02:13:31PM +0800, Zheng Yongjun wrote:
+> Remove including <linux/version.h> that don't need it.
 
-> +static int hi3670_phy_cr_clk(struct regmap *usb31misc)
-> +{
-> +	int ret;
-> +
-> +	/* Clock up */
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +				 CFG54_USB31PHY_CR_CLK, CFG54_USB31PHY_CR_CLK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Clock down */
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +				 CFG54_USB31PHY_CR_CLK, 0);
-> +
-> +	return ret;
+This doesn't apply against current code, please check and resend:
 
-return regmap_update_bits() ?
- (i see few more in driver like this, pls change others as well)
+Applying: ASoC: cs35l35: Remove unused including <linux/version.h>
+Using index info to reconstruct a base tree...
+error: patch failed: sound/soc/codecs/cs35l35.c:9
+error: sound/soc/codecs/cs35l35.c: patch does not apply
+error: Did you hand edit your patch?
+It does not apply to blobs recorded in its index.
+Patch failed at 0006 ASoC: cs35l35: Remove unused including <linux/version.h>
 
-> +static int hi3670_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
-> +{
-> +	int reg;
-> +	int i;
-> +	int ret;
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-all these could be in a single line
+-----BEGIN PGP SIGNATURE-----
 
--- 
-~Vinod
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBkbycACgkQJNaLcl1U
+h9BQPAf2LsQP1f+PG5zYRfgPSGavlopGgeKfjprn3O75A5oiJlzvm6qtBoDQfd36
+3Ie6NJeYqSbZxPeoparIMdoehrOPqfLiZloLHr1kubQqxSzIuesasZv5vsoGMh3F
+NQkJ96QANzEC3TxzldAoZ+hjoISN1K9rLjk+Wo/fNIVhV3gHadQ3Sfc/aUO+aFuk
+Yhl4JpCOLjv5C9im4PIsc2LtTZRnMIXxDUb77gldP++BpWbwE2TGP3yApoxEIUnP
+yowqZe/4ISSFsto4+zLw2PudWRRhCNyFb6IbZxi/qYGswR+0XvtuCWAB7WDxd38U
+eo6yb5SZPwIDWiPka5SyHKJGLLcX
+=RbL7
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
