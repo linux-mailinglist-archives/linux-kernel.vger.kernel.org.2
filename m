@@ -2,69 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E5F34F55A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E434F54C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhCaAKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
+        id S232118AbhCaAIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:08:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34747 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhCaAKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:10:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6648E619D9;
-        Wed, 31 Mar 2021 00:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617149409;
-        bh=/0LRbsaltMti8B7mmjtHchCXMqUeMYXvNEe4Sx1pXSY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DU2MCFNzjiwjwhMwOJJq2cdXvF9jL0Zi1mFgioSG/Zz05WimGIN83zSAuq72QbFbr
-         tnAhS3D8Pyg2MHsj5nFozEO73Mq3ak7CHx6HUIo6/Ei//7tk6NJYv8MwlPW4mK7jr5
-         xztyoQ9JETrfpmZgXPN91I0tFb8hatP1L8X3gjtu41VG1oQ4VZy1VwcUThxSpohWLr
-         aO3NeawtGmNqZI4tdtRWVngolbpbqD2214C4Rsw4G9cF5lJXsBaDEQ7s08UxNKM08v
-         tSxrgy7vasQS4yf+DewCOTgXEzxwogGlG+Ikm9Robbfc/VR7crNNh2sdGfyPk4MJb7
-         duuUPy8CZ+C6w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55FED60A5B;
-        Wed, 31 Mar 2021 00:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232401AbhCaAIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:08:11 -0400
+IronPort-SDR: TvWKEDXpG38ibe2lWWB2Y7LGeAiJPdXO+iZTyIu7pYWRgFPgRivhzuHOAsMd170ZsQZQXxKzsi
+ ypAMSbIKXs9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171906789"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="171906789"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 17:08:11 -0700
+IronPort-SDR: HUurJyYDUTND8ozX4erY0t4tlGlrQCC5ScJGMIGUlQMd5+m5YuCEtkemwmeM+oxQ3k2dIQN7sZ
+ ngtIj+/noGFA==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="377035543"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 17:08:10 -0700
+Date:   Tue, 30 Mar 2021 17:10:41 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210330171041.70f2d7d0@jacob-builder>
+In-Reply-To: <20210330134313.GP2356281@nvidia.com>
+References: <20210318172234.3e8c34f7@jacob-builder>
+        <YFR10eeDVf5ZHV5l@myrica>
+        <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <20210322120300.GU2356281@nvidia.com>
+        <20210324120528.24d82dbd@jacob-builder>
+        <20210329163147.GG2356281@nvidia.com>
+        <20210329155526.2ad791a9@jacob-builder>
+        <20210330134313.GP2356281@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ppp: deflate: Remove useless call "zlib_inflateEnd"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161714940934.32754.10257093294349777080.git-patchwork-notify@kernel.org>
-Date:   Wed, 31 Mar 2021 00:10:09 +0000
-References: <1617097890-27020-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1617097890-27020-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     paulus@samba.org, davem@davemloft.net, kuba@kernel.org,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Jason,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+On Tue, 30 Mar 2021 10:43:13 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-On Tue, 30 Mar 2021 17:51:30 +0800 you wrote:
-> Fix the following whitescan warning:
+> > If two mdevs from the same PF dev are assigned to two VMs, the PASID
+> > table will be shared. IOASID set ensures one VM cannot program another
+> > VM's PASIDs. I assume 'secure context' is per VM when it comes to host
+> > PASID.  
 > 
-> Calling "zlib_inflateEnd(&state->strm)" is only useful for its return
-> value, which is ignored.
+> No, the mdev device driver must enforce this directly. It is the one
+> that programms the physical shared HW, it is the one that needs a list
+> of PASID's it is allowed to program *for each mdev*
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+This requires the mdev driver to obtain a list of allowed PASIDs(possibly
+during PASID bind time) prior to do enforcement. IMHO, the PASID enforcement
+points are:
+1. During WQ configuration (e.g.program MSI)
+2. During work submission
+
+For VT-d shared workqueue, there is no way to enforce #2 in mdev driver in
+that the PASID is obtained from PASID MSR from the CPU and submitted w/o
+driver involvement. The enforcement for #2 is in the KVM PASID translation
+table, which is per VM.
+
+For our current VFIO mdev model, bind guest page table does not involve
+mdev driver. So this is a gap we must fill, i.e. include a callback from
+mdev driver?
+
+> ioasid_set doesn't seem to help at all, certainly not as a concept
+> tied to /dev/ioasid.
 > 
-> [...]
+Yes, we can take the security role off ioasid_set once we have per mdev
+list. However, ioasid_set being a per VM/mm entity also bridge
+communications among kernel subsystems that don't have direct call path.
+e.g. KVM, VDCM and IOMMU.
 
-Here is the summary with links:
-  - ppp: deflate: Remove useless call "zlib_inflateEnd"
-    https://git.kernel.org/netdev/net-next/c/dc5fa2073f63
+> > No. the mdev driver consults with IOASID core When the guest programs a
+> > guest PASID on to he mdev. VDCM driver does a lookup:
+> > host_pasid = ioasid_find_by_spid(ioasid_set, guest_pasid);  
+> 
+> This is the wrong layering. Tell the mdev device directly what it is
+> allowed to do. Do not pollute the ioasid core with security stuff.
+> 
+> > > I'd say you shoul have a single /dev/ioasid per VM and KVM should
+> > > attach to that - it should get all the global events/etc that are not
+> > > device specific.
+> > >   
+> > You mean a single /dev/ioasid FD per VM and KVM? I think that is what we
+> > are doing in this set. A VM process can only open /dev/ioasid once, then
+> > use the FD for allocation and pass the PASID for bind page table etc.  
+> 
+> Yes, I think that is reasonable.
+> 
+> Tag all the IOCTL's with the IOASID number.
+>  
+> > > Not sure what guest-host PASID means, these have to be 1:1 for device
+> > > assignment to work - why would use something else for mdev?
+> > >   
+> > We have G-H PASID translation. They don't have to be 1:1.
+> > IOASID Set Private ID (SPID) is intended as a generic solution for
+> > guest PASID. Could you review the secion Section: IOASID Set Private ID
+> > (SPID) in the doc patch?  
+> 
+> Again this only works for MDEV? How would you do translation for a
+> real PF/VF?
+> 
+Right, we will need some mediation for PF/VF.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> So when you 'allow' a mdev to access a PASID you want to say:
+>  Allow Guest PASID A, map it to host PASID B on this /dev/ioasid FD
+> 
+> ?
+> 
+Host and guest PASID value, as well as device info are available through
+iommu_uapi_sva_bind_gpasid(), we just need to feed that info to mdev driver.
 
+> That seems like a good helper library to provide for drivers to use,
+> but it should be a construct entirely contained in the driver.
+why? would it be cleaner if it is in the common code?
 
+Thanks,
+
+Jacob
