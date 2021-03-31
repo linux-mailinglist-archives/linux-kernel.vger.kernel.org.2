@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD83A35022E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CB435022F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236104AbhCaO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:28:12 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:38739 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235948AbhCaO15 (ORCPT
+        id S236111AbhCaO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:28:14 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:40827 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235951AbhCaO2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:27:57 -0400
-Received: by mail-oi1-f171.google.com with SMTP id v25so3560257oic.5;
-        Wed, 31 Mar 2021 07:27:57 -0700 (PDT)
+        Wed, 31 Mar 2021 10:28:00 -0400
+Received: by mail-ot1-f52.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so19081306otb.7;
+        Wed, 31 Mar 2021 07:28:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VXRg8g46EQQdfaQQE5j+9aJCuQ11jH3qTJJtKuhoDX4=;
-        b=GT0N9sswpDDrCfRK/AG/XBdkm0AFlEM71K0MVOGS3wTXpXRkPB4e9tI09nvf5zVU7k
-         uMvbgq5dwkMms7xPj+5YYtztCN8iEXp6Jstpl4nq4QpX+R2D17Sis4jKatuFfR3G8d1a
-         zkUNh6K5WAmykHnNeGW13upFymVnJNlw0POp6D/8/HLwICYgFx9v5B7+CkyUV5ZxWrfr
-         OjEsby3ZV2il/gltoMdzMEHQhU0tMRpRqK0NfgA7u2oBFt2FuYbPUeRYGkLrlP8Eh1Vs
-         9h7NlyB7RZh1VX7jpmRkEf/9SSNFMgT9cYE1diZkAW5rJ9z6UDlPPJDNyu49t2M4ZtS5
-         gMcQ==
-X-Gm-Message-State: AOAM530HJnmVKRcu6N+83aZN79686792kOVywp+dfUWhdU+5PBHnHmfv
-        8zYeg8OQQclNKIoA3coD0A==
-X-Google-Smtp-Source: ABdhPJx/r+uJSPnbV2RZAwQzxbxafoglGFYnTVKVL5A6Xbw1EwPTr5j4W6fn8n9sai+N1CGtZQsR8g==
-X-Received: by 2002:a05:6808:13d0:: with SMTP id d16mr2542244oiw.169.1617200875988;
-        Wed, 31 Mar 2021 07:27:55 -0700 (PDT)
+        bh=a5L9Gfl5bF9CWxUCr8sVjvHZWCe8RrXgbQdGFig1nYs=;
+        b=IZkJCgd74DfkKmCuO1NJUr4ju9yJqO72gePDRAHWDarScho1v1ad0rpqB9iMp9Q6UA
+         B9cIMIGNwf4v2HLuEu4ApAjx7obeoCd6n21MzeksFs8JLawMwbZnPJkGT/mVb9J//2nk
+         ydu3nbpHSw0Xafo4sx2vDM16wz+IbpQNuBBExq2nhgKDrufjhqUNx/H4ztGiYP7MujF3
+         Wnxd49HrosbxNpTkbIG7aZWWMcQvcTv1CJgCvgWENQ/IKHMtIBr+MRob+Hrxs90HHZQX
+         FWM6QKDWq2DJvzjIS9mjn/htuyuAKnoJ6derEaRdpMVT6b/OMNtIGhRhUIyHhkkWj/Dz
+         aY8w==
+X-Gm-Message-State: AOAM532mrnBLpRit1qfVv8KNeNv+yKKu4D15kU7D2Ke8+7k9Fw5BxXbx
+        pTkB5jr2W1m0z9326CUJlupZCAToPg==
+X-Google-Smtp-Source: ABdhPJyOs4V5V3Q3Hn8BauTqhypFGiAuWczQrsYjG6DCb8QtcbtJDsu+mU39XCkUHElkU3lAcJXO9g==
+X-Received: by 2002:a9d:68d7:: with SMTP id i23mr3005001oto.133.1617200879927;
+        Wed, 31 Mar 2021 07:27:59 -0700 (PDT)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id v136sm451146oie.15.2021.03.31.07.27.53
+        by smtp.googlemail.com with ESMTPSA id v136sm451146oie.15.2021.03.31.07.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 07:27:54 -0700 (PDT)
+        Wed, 31 Mar 2021 07:27:56 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -45,9 +45,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         Sameer Pujar <spujar@nvidia.com>,
         Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH v2 2/3] ASoC: dt-bindings: Use OF graph schema
-Date:   Wed, 31 Mar 2021 09:27:47 -0500
-Message-Id: <20210331142748.2163272-3-robh@kernel.org>
+Subject: [PATCH v2 3/3] ASoC: dt-bindings: socionext: Use audio-graph-port schema
+Date:   Wed, 31 Mar 2021 09:27:48 -0500
+Message-Id: <20210331142748.2163272-4-robh@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210331142748.2163272-1-robh@kernel.org>
 References: <20210331142748.2163272-1-robh@kernel.org>
@@ -57,47 +57,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have an OF graph schema, let's use it for the
-audio-graph-port schema.
+Convert the Socionext audio schemas to use audio-graph-port.yaml schema
+for 'port' nodes.
 
+The number and numbering of port nodes should be documented, but is not.
+Leave a FIXME here so others don't copy.
+
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/sound/audio-graph-port.yaml      | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ .../devicetree/bindings/sound/socionext,uniphier-aio.yaml | 8 +++-----
+ .../bindings/sound/socionext,uniphier-evea.yaml           | 8 +++-----
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-index 9f68142c9ae3..43e7f86e3b23 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-@@ -11,9 +11,10 @@ maintainers:
+diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
+index 4987eb91f2ab..55ae198220f4 100644
+--- a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
++++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
+@@ -46,11 +46,9 @@ properties:
  
- select: false
- 
-+allOf:
-+  - $ref: /schemas/graph.yaml#/$defs/port-base
-+
- properties:
--  reg:
--    maxItems: 1
-   prefix:
-     description: "device name prefix"
-     $ref: /schemas/types.yaml#/definitions/string
-@@ -25,10 +26,8 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
  patternProperties:
-   "^endpoint(@[0-9a-f]+)?":
+   "^port@[0-9]$":
 -    type: object
-+    $ref: /schemas/graph.yaml#/$defs/endpoint-base
-     properties:
--      remote-endpoint:
--        maxItems: 1
-       mclk-fs:
-         description: |
-           Multiplication factor between stream rate and codec mclk.
+-    properties:
+-      endpoint: true
+-    required:
+-      - endpoint
++    description: FIXME, Need to define what each port is.
++    $ref: audio-graph-port.yaml#
++    unevaluatedProperties: false
+ 
+ additionalProperties: false
+ 
+diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
+index 228168f685cf..48ddfcbbcbae 100644
+--- a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
++++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
+@@ -40,11 +40,9 @@ properties:
+ 
+ patternProperties:
+   "^port@[0-9]$":
+-    type: object
+-    properties:
+-      endpoint: true
+-    required:
+-      - endpoint
++    description: FIXME, Need to define what each port is.
++    $ref: audio-graph-port.yaml#
++    unevaluatedProperties: false
+ 
+ additionalProperties: false
+ 
 -- 
 2.27.0
 
