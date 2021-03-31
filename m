@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D6534F87D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5365C34F884
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhCaGDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhCaGDM (ORCPT
+        id S233728AbhCaGG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:06:59 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:53490 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCaGGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:03:12 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545ADC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 23:03:12 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id f10so13401682pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 23:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GmdAprXBSLF+KiQkRQ1q6vYXVXHwCxP7HlnSoKUve+E=;
-        b=a72k4tykYSfcww6NBUiHL0zy6aIlNDSB4CejRuiPqncwpwT/iOS2lob/SKlfYsiX8m
-         +R6f4d4BT27SSqjP1AKEG+4/D6fahhWMM9Fz8Q+EvonjBqKyTPx8CJQuhUtZ/XUMRAHs
-         K1lqi4wk7ikNlzv/JVBK0PZTK2/WB92FEOAUc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GmdAprXBSLF+KiQkRQ1q6vYXVXHwCxP7HlnSoKUve+E=;
-        b=MHU9+xBveeg1apISDLTM6QffruQaDT1zXnafNIU43S3DnOTAiZXq3KqhbyEz9P5Kvw
-         WFHmeyEWgOZhClhcNub83mSzA0i0nkkRSojYAm5p5HxuUNzHNj+hgyW6PtULwfoy6+Mr
-         kn3NIbPvUUKoY1JoWrpTCmZIsWMrjX0Hxse6DhrdfRP5w6o/gZ8Hp4C05hoYePVTT9tf
-         RyM+PSTiQOq84rchymdDMPbyyeAE8fPQgQOu5c9dlbT5Qk7t74kfIJz4is0rskyOPFGw
-         3iQ+qUJKnMnkgzsWhmqPq4WDvscgjyQlSDgVGtcm7mYimwrySShWntaUz8jMrPiCIH6n
-         5yTg==
-X-Gm-Message-State: AOAM532Zsz7BxJrOp+JcDZdKyMNh2dkxL/kLFQvYX0gLGA3A6qLWizYQ
-        10kxe5pIViSr0MKFoPh3W3kT4w==
-X-Google-Smtp-Source: ABdhPJxmNy7PylTCLuqIaivE7U+e509y9y5sjk/y3ctOSW8bh+OYWli4WsmRUOoAPXMhkYHa18YcNg==
-X-Received: by 2002:a65:6a0e:: with SMTP id m14mr1700967pgu.448.1617170591906;
-        Tue, 30 Mar 2021 23:03:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 190sm1107681pgh.61.2021.03.30.23.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 23:03:11 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 23:03:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v5 1/1] fs: Allow no_new_privs tasks to call chroot(2)
-Message-ID: <202103302249.6FE62C03@keescook>
-References: <20210316203633.424794-1-mic@digikod.net>
- <20210316203633.424794-2-mic@digikod.net>
- <fef10d28-df59-640e-ecf7-576f8348324e@digikod.net>
- <85ebb3a1-bd5e-9f12-6d02-c08d2c0acff5@schaufler-ca.com>
- <b47f73fe-1e79-ff52-b93e-d86b2927bbdc@digikod.net>
- <77ec5d18-f88e-5c7c-7450-744f69654f69@schaufler-ca.com>
- <a8b2545f-51c7-01dc-1a14-e87beefc5419@digikod.net>
- <2fcff3d7-e7ca-af3b-9306-d8ef2d3fb4fb@schaufler-ca.com>
+        Wed, 31 Mar 2021 02:06:40 -0400
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 801F38DA;
+        Wed, 31 Mar 2021 08:06:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617170797;
+        bh=VILbDV1g0gxNqONJ/YaXNqbdVu6oy81uJAYmz2A735k=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=Zp00r5q6OLXWjlSuXKr+hxYs0jNggnJa6qp4kkhVrgkOaL2nBl7oG2OcAL+w03Xgd
+         37Ohb1Si1LYdjkshfbgFZGdAFIhDYTLyD9z7odYtbc2DphDpHkgh0N/ABFSz4w1b7E
+         OpKx+5OplgF7UtIBMfX2e8RfT7flEyA6j1aEpswQ=
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Peter Chen <peter.chen@nxp.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>
+References: <20210330173348.30135-1-p.yadav@ti.com>
+ <20210330173348.30135-14-p.yadav@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH 13/16] media: ti-vpe: csi2rx: Add CSI2RX support
+Message-ID: <91bbf2a9-9d27-7f9b-1c17-ad6544a828f1@ideasonboard.com>
+Date:   Wed, 31 Mar 2021 09:06:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fcff3d7-e7ca-af3b-9306-d8ef2d3fb4fb@schaufler-ca.com>
+In-Reply-To: <20210330173348.30135-14-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 03:53:37PM -0700, Casey Schaufler wrote:
-> If you need to run legitimate SETUID (or file capability enabled) binaries
-> you can't use NO_NEW_PRIVS. You can use CAP_SYS_CHROOT, because capabilities
-> where designed to work with the UID mechanisms.
+Hi,
 
-All the discussion of "designing a system" around the isolation is
-missing the point here: this is designed so that no system owner
-coordination is needed. An arbitrary process can set no_new_privs and
-then confine itself in a chroot. There is no need for extra privileges,
-etc, etc. There shouldn't be a need for a privileged environment to
-exist just to let a process confine itself. This is why seccomp is
-generally so useful, and why Landlock is important: no coordination with
-the system owner is needed to shed attack surface.
+On 30/03/2021 20:33, Pratyush Yadav wrote:
+> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+> capture over a CSI-2 bus.
+> 
+> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
+> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
+> called the SHIM layer. It takes in data from stream 0, repacks it, and
+> sends it to memory over PSI-L DMA.
+> 
+> This driver acts as the "front end" to V4L2 client applications. It
+> implements the required ioctls and buffer operations, passes the
+> necessary calls on to the bridge, programs the SHIM layer, and performs
+> DMA via the dmaengine API to finally return the data to a buffer
+> supplied by the application.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>   MAINTAINERS                               |   7 +
+>   drivers/media/platform/Kconfig            |  11 +
+>   drivers/media/platform/ti-vpe/Makefile    |   1 +
+>   drivers/media/platform/ti-vpe/ti-csi2rx.c | 964 ++++++++++++++++++++++
+>   4 files changed, 983 insertions(+)
+>   create mode 100644 drivers/media/platform/ti-vpe/ti-csi2rx.c
 
-> In any case, if you can get other people to endorse your change I'm not
-> all that opposed to it. I think it's gratuitous. It irks me that you're
-> unwilling to use the facilities that are available, and instead want to
-> complicate the security mechanisms and policy further. But, that hasn't
-> seemed to stop anyone before.
+Some quick comments:
 
-There's a difference between "designing a system" and "designing a
-process". No privileges are needed to use seccomp, for example.
+"ti-vpe" directory is not correct, this has nothing to do with VPE. That 
+said, the directory has already been abused by having CAL driver there, 
+perhaps we should rename the directory just to "ti". But if we do that, 
+I think we should have subdirs for cal, vpe and this new one.
 
-The only part of this design that worries me is that it seems as though
-it's still possible to escape the chroot if a process didn't set up its fds carefully, as Jann discussed earlier:
-https://lore.kernel.org/lkml/c7fbf088-02c2-6cac-f353-14bff23d6864@digikod.net/
+"ti-csi2rx" is rather generic name. TI has had CSI-2 RX IPs before (CAL) 
+and probably will also have new ones in the future. If there's no clear 
+model name for the IP, as I think is the case here, it's probably best 
+to just use the SoC model in the name. E.g. the DSS on J7 is "ti,j721e-dss".
 
-Regardless, I still endorse this change because it doesn't make things
-_worse_, since without this, a compromised process wouldn't need ANY
-tricks to escape a chroot because it wouldn't be in one. :) It'd be nice
-if there were some way to make future openat() calls be unable to
-resolve outside the chroot, but I view that as an enhancement.
+This driver implements the legacy video API. I think it would be better 
+(and easier to maintain) to only implement the media-controller API, 
+unless you specifically need to support the legacy API for existing 
+userspace.
 
-But, as it stands, I think this makes sense and I stand by my
-Reviewed-by tag. If Al is too busy to take it, and James would rather
-not take VFS, perhaps akpm would carry it? That's where other similar
-VFS security work has landed.
-
--- 
-Kees Cook
+  Tomi
