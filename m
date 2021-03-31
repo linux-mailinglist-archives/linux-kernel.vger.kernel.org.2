@@ -2,72 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B601434F6B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A92534F6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhCaCdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 22:33:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15830 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbhCaCcw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:32:52 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F99KH0y9Gz9v1q;
-        Wed, 31 Mar 2021 10:30:43 +0800 (CST)
-Received: from [10.174.178.154] (10.174.178.154) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 31 Mar
- 2021 10:32:39 +0800
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-To:     <dhowells@redhat.com>, <linux-afs@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <huawei.libin@huawei.com>
-References: <20210327121624.194639-1-zhengzengkai@huawei.com>
-From:   Zheng Zengkai <zhengzengkai@huawei.com>
-Message-ID: <19cc788d-2c14-99ef-1162-ed919364dcfd@huawei.com>
-Date:   Wed, 31 Mar 2021 10:32:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S233539AbhCaCeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233633AbhCaCeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 22:34:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D64D0619BB;
+        Wed, 31 Mar 2021 02:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617158049;
+        bh=P1ycCaJRtdTw/ez3I1U4IXmZ4dBfUAPvRerdfcoqC+U=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=laS3cyhbq2vDgu7+lt+mPI1EJXXLr04Rb0MtT/+83yNTxhNugSCfLVFvLpg4IE4x4
+         KQR4YQ3xLpa/4aQwIa2+lE6wXkaituRuPMsXdH5Kti+nZ8ANFbd2wmh+1Dv5cxCZnu
+         vuaWtIxP87Y0lGBiMFZzs7LyGZG5lyqFl3fMaBKOQULYB8bKL3BMpfnY+ZfYbK5lwR
+         jHvCHUDhtwKbfXBGcbrjx+bT1WL/EF7Zjh6oxEtL34mMVNmrpTmEl6ohsihijSRb8N
+         zm4GF9dXGo1DeHDIvFsuVQoLZoJuFcVaNTNz9jI6V9NgyCjWeyPplLYimxipNArqcY
+         /aQ9cYjkPUY6w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210327121624.194639-1-zhengzengkai@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210331023119.3294893-1-sboyd@kernel.org>
+References: <20210331023119.3294893-1-sboyd@kernel.org>
+Subject: Re: [PATCH] clk: socfpga: Fix code formatting
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Dinh Nguyen <dinguyen@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Date:   Tue, 30 Mar 2021 19:34:08 -0700
+Message-ID: <161715804871.2260335.17275038281861049092@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David and Reviewers,
-
-> Add missing return to fix following compilation issue:
->
-> fs/afs/dir.c: In function ‘afs_dir_set_page_dirty’:
-> fs/afs/dir.c:51:1: error: no return statement in function
-> returning non-void [-Werror=return-type]
->
-> Fixes: f3ddee8dc4e2 ("afs: Fix directory handling")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
+Quoting Stephen Boyd (2021-03-30 19:31:19)
+> This function's parameters are oddly formatted. Looks like a newline was
+> missed or something. Fix it.
+>=20
+> Cc: Dinh Nguyen <dinguyen@kernel.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 > ---
->   fs/afs/dir.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-> index 17548c1faf02..1795a05b7cb7 100644
-> --- a/fs/afs/dir.c
-> +++ b/fs/afs/dir.c
-> @@ -48,6 +48,7 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
->   static int afs_dir_set_page_dirty(struct page *page)
->   {
->   	BUG(); /* This should never happen. */
-> +	return 0;
->   }
->   
->   const struct file_operations afs_dir_file_operations = {
 
-Is there anyone who can take a look?  ;-)
-
-Thanks!
-
+Applied to clk-next
