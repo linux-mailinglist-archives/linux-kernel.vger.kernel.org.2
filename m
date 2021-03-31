@@ -2,221 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F1E3507AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1AD3507B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 21:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhCaT4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 15:56:07 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48721 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236256AbhCaTzl (ORCPT
+        id S236383AbhCaT4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 15:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236273AbhCaT4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:55:41 -0400
-Received: (qmail 1028965 invoked by uid 1000); 31 Mar 2021 15:55:39 -0400
-Date:   Wed, 31 Mar 2021 15:55:39 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     linux-usb@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: >20 KB URBs + EHCI = bad performance due to stalls
-Message-ID: <20210331195539.GA1027699@rowland.harvard.edu>
-References: <6f5be7a5-bf82-e857-5c81-322f2886099a@maciej.szmigiero.name>
- <20210329152201.GA933773@rowland.harvard.edu>
- <2c99b46a-3643-c22a-9aae-024565222794@maciej.szmigiero.name>
+        Wed, 31 Mar 2021 15:56:19 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E6DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so1833336pjg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0yVMQM63PjcObiBb0oRU4zW/nYZYAUpEebncM6/pp2o=;
+        b=JBuP+/jfJ+NrzwEQ20bIwN0qlX6QRN6AmPz70dknhyQ2INu0qfYigIqNcW0xFedBlV
+         xQf5RkQDJ/skE4+rekPcOkrhCWe4SeSqAXkMuakn2S2+vjrVnv2XBQ+cs1UhuMy+2Gna
+         iH7QejzLyAgWxgvH2UNo92+kxrKsiWiaW2bMY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0yVMQM63PjcObiBb0oRU4zW/nYZYAUpEebncM6/pp2o=;
+        b=BGLk39YhalzLjuDQeJXY0EJMcaGeWLLxevofDUp2RQ8J6DF6XhMq6oEGoD/OqVrQge
+         ls3AwR8nuuoRrwdJbiJ6c04j5US+wzV5NLf867Hmg7KVgcpoLh7OYaWnaeF5lsfX1v23
+         i6K2FZpdkcXxROfFdkZZBWkVCqy85PGjcTw5LyzIq+bD7aepoLL6TVlRB3X8va1SPKl8
+         //KTXdhlwFcVQfjxD3aQULV/gN8gxCu22g8VJ68j3Glu0RYzHJE/10b/CPd1OXonWpXr
+         D9WktmqAwJ1e5ZiTzxZbNzhNSye1JUt81xDdRmSFRKDlrPv+T4pUZCYIKbTIsUfjjyGE
+         Sgww==
+X-Gm-Message-State: AOAM530nWvUnlX2Stp4hXY00a7yBoQjkoGEEv9idtuFEVJe2uWAR6+Yv
+        nG5+lYenx6YwJr/u8jMgWa+8wQ==
+X-Google-Smtp-Source: ABdhPJyURfcz9EDNELOeDtoZrmz4xlbjZmZib1mS3eADG+82k71SN8I1SidrNhk1Yq7veEiZDAX/Ig==
+X-Received: by 2002:a17:90a:f02:: with SMTP id 2mr4975428pjy.209.1617220576022;
+        Wed, 31 Mar 2021 12:56:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e1sm3109303pfi.175.2021.03.31.12.56.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 12:56:15 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Sean Christopherson <seanjc@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Merge module sections if and only if CONFIG_LTO_CLANG is enabled
+Date:   Wed, 31 Mar 2021 12:56:02 -0700
+Message-Id: <161722055925.1870138.4983509937620008210.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210322234438.502582-1-seanjc@google.com>
+References: <20210322234438.502582-1-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c99b46a-3643-c22a-9aae-024565222794@maciej.szmigiero.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 08:20:56PM +0200, Maciej S. Szmigiero wrote:
-> On 29.03.2021 17:22, Alan Stern wrote:
-> > On Sat, Mar 27, 2021 at 04:55:20PM +0100, Maciej S. Szmigiero wrote:
-> > > Hi,
-> > > 
-> > > Is there any specific reason that URBs without URB_SHORT_NOT_OK flag that
-> > > span multiple EHCI qTDs have Alternate Next qTD pointer set to the dummy
-> > > qTD in their every qTD besides the last one (instead of to the first qTD
-> > > of the next URB to that endpoint)?
-> > 
-> > Quick answer: I don't know.  I can't think of any good reason.  This
-> > code was all written a long time ago.  Maybe the issue was overlooked
-> > or the details were misunderstood.
+On Mon, 22 Mar 2021 16:44:38 -0700, Sean Christopherson wrote:
+> Merge module sections only when using Clang LTO.  With gcc-10, merging
+> sections does not appear to update the symbol tables for the module,
+> e.g. 'readelf -s' shows the value that a symbol would have had, if
+> sections were not merged.
 > 
-> I've dug out the original EHCI driver, that landed in 2.5.2:
-> https://marc.info/?l=linux-usb-devel&m=100875066109269&w=2
-> https://marc.info/?l=linux-usb-devel&m=100982880716373&w=2
+> The stale symbol table breaks gdb's function disassambler, and presumably
+> other things, e.g.
 > 
-> It already had the following qTD setup code, roughly similar to what
-> the current one does:
-> > /* previous urb allows short rx? maybe optimize. */
-> > if (!(last_qtd->urb->transfer_flags & USB_DISABLE_SPD)
-> > 		&& (epnum & 0x10)) {
-> > 	// only the last QTD for now
-> > 	last_qtd->hw_alt_next = hw_next;
-> 
-> The "for now" language seems to suggest that ultimately other-than-last
-> qTDs were supposed to be set not to stall the queue, too.
-> Just the code to handle this case was never written.
+> [...]
 
-Probably it just slipped out of the developer's mind.
+Applied to for-linus/lto, thanks!
 
-> It seems to me though, this should be possible with relatively few
-> changes to the code:
-> qh_append_tds() will need to patch these other-than-last qTDs
-> hw_alt_next pointer to point to the (new) dummy qTD (instead of just
-> pointing the last submitted qTD hw_next to it and adding the remaining
-> qTDs verbatim to the qH qTD list).
+[1/1] kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG is enabled
+      https://git.kernel.org/kees/c/8b382ebc86a8
 
-Right.
+-- 
+Kees Cook
 
-> Then qh_completions() will need few changes:
-> *
-> >  } else if (IS_SHORT_READ (token)
-> > 	      && !(qtd->hw_alt_next
-> >           	   & EHCI_LIST_END(ehci))) {
-> This branch will need to be modified not to mark the queue as stopped
-> and request its unlinking when such type of short qTD was processed.
-
-This would be a good place to introduce a macro.  For example:
-
-	} else if (IS_SHORT_READ(token) && 
-			EHCI_PTR_IS_SET(qtd->hw_alt_next)) {
-
-or something similar.
-
-> * The ACTIVE bit should be treated as unset on any qTD following the
-> one that hits the above condition until a qTD for a different URB is
-> encountered.
-> Otherwise the unprocessed remaining qTDs from that short URB will be
-> considered pending active qTDs and the code will wait forever for their
-> processing,
-
-The treatment shouldn't be exactly the same as if ACTIVE is clear.  The 
-following qTDs can be removed from the list and deallocated immediately, 
-since the hardware won't look at them.  And they shouldn't affect the 
-URB's status.
-
-> * The code that patches the previous qTD hw_next pointer when removing a
-> qTD that isn't currently at the qH will need changing to also patch
-> hw_alt_next pointers of the qTDs belonging to the previous URB in case
-> the previous URB was one of these short-read-ok ones.
-
-Yes.  Awkward but necessary.
-
-Although I know nothing at all about the USB API in Windows, I suspect 
-that it manages to avoid this awkwardness entirely by not allowing URBs 
-in the middle of the queue to be unlinked.  Or perhaps allowing it only 
-for endpoint 0.  I've often wished Linux's API had been written that 
-way.
-
-> That's was my quick assessment what is required to handle these
-> transactions effectively in the EHCI driver.
-> 
-> I suspect, however, there may be some corner cases involving
-> non-ordinary qTD unlinking which might need fixing, too (like caused
-> by usb_unlink_urb(), system suspend or HC removal).
-> But I am not sure about this since I don't know this code well.
-
-Those shouldn't present any difficulty.  There are inherently easier to 
-handle because the QH won't be actively running when they occur.
-
-> > > This causes that endpoint queue to stall in case of a short read that
-> > > does not reach the last qTD (I guess this condition persists until an
-> > > URB is (re)submitted to that endpoint, but I am not sure here).
-> > 
-> > It persists until the driver cleans up the queue.
-> 
-> I guess by "the driver" you mean the host controller driver, not the USB
-> device driver.
-
-Yes, I meant ehci-hcd.
-
-> > > Looking at OHCI and UHCI host controller drivers the equivalent
-> > > limits seem to be different there (8 KB and 2 KB), while I don't
-> > > see any specific limit in the XHCI case.
-> > 
-> > I'd have to review the details of ohci-hcd and uhci-hcd to make
-> > sure.  In principle, the queue isn't supposed to stop merely because
-> > of a short transfer unless URB_SHORT_NOT_OK is set.  However, the UHCI
-> > hardware in particular may offer no other way to handle a short transfer.
-> 
-> Here I think it is lesser of an issue due to sheer slowness of these
-> devices.
-> 
-> So even if an URB needs some extra processing time the device should
-> still be able to maintain that 12 Mbps.
-> But I might be wrong here for USB devices with super-small on-chip
-> FIFOs.
-> 
-> > > Because of that variance in the URB buffer limit it seems strange
-> > > to me that this should be managed by a particular USB device driver
-> > > rather than by the host controller driver, because this would mean
-> > > every such driver would need to either use the lowest common
-> > > denominator for the URB buffer size (which is very small) or
-> > > hardcode the limit for every host controller that the device can
-> > > be connected to, which seems a bit inefficient.
-> > 
-> > I don't understand what you're saying in this paragraph.  What do you
-> > think USB device drivers are supposed to be managing?  The URB buffer
-> > size?
-> 
-> Yes, I've meant the URB "transfer_buffer_length".
-> 
-> > They should set that field without regard to the type of host
-> > controller in use.
-> 
-> That's what I had on mind by saying that it seems strange to me that
-> the URB buffer size should be managed by a particular USB device driver
-> depending on the host controller in use.
-> 
-> > In short, the behavior you observed is a bug, resulting in a loss of
-> > throughput (though not in any loss of data).  It needs to be fixed.
-> > 
-> > If you would like to write and submit a patch, that would be great.
-> > Otherwise, I'll try to find time to work on it.
-> 
-> Unfortunately, I doubt I will be able to work on this in coming weeks
-> due to time constraints, I'm sorry :(
-
-All right, then I'll work on it when time permits.
-
-> > I would appreciate any effort you could make toward checking the code
-> > in qh_completions(); I suspect that the checks it does involving
-> > EHCI_LIST_END may not be right.  At the very least, they should be
-> > encapsulated in a macro so that they are easier to understand.
-> 
-> I've went through the (short) URB linking and unlinking code
-> (including qh_completions()) and I haven't found anything suspicious
-> there, besides one thing that's actually on the URB *linking* path:
-> in qh_append_tds() the dummy qTD that is the last qTD in that
-> endpoint queue is being overwritten using an assignment operator.
-> 
-> While both this dummy qTD and the source qTD that overwrites it have
-> the HALT bit set it looks a bit uncomfortable to me to see a qTD that
-> the HC might just be fetching (while trying to advance the queue) being
-> overwritten.
-
-I agree.  But there's no way around it; if you're going to change the 
-contents of the qTD queue while the QH is running, at some point you 
-have to overwrite something that the controller might be accessing 
-concurrently.
-
-> Like, is C standard giving guarantees that no intermediate values are
-> being written to a struct when that struct is a target of an assignment
-> operator?
-
-THe C standard doesn't say anything like that, but the kernel does 
-generally rely on such behavior.  However, it wouldn't hurt to mark this 
-special case by using WRITE_ONCE.
-
-> But apparently this doesn't cause trouble, so I guess in practice
-> this works okay.
-
-Yes, it does.
-
-Alan Stern
