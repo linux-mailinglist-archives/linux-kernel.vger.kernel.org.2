@@ -2,188 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B11C350276
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203DD35027E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhCaOgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:36:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34444 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235835AbhCaOge (ORCPT
+        id S236100AbhCaOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235929AbhCaOhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:36:34 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12VEWvYd149155;
-        Wed, 31 Mar 2021 10:36:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rcCa/v/+J0NqSpgbBHqnlhizh/g5c/c8dt5640dLkIo=;
- b=VNjd6V9HaHhDmNjc8+ZYiQZXcnmFfjUaqk+A9lLhvkO7Q6qiYlTWscZrdpWYpkpEUdK/
- TLpiY8mYhtu0WoTeSi3WG5tXjOSNbEfaeWVl8TwFKO72kP9L+gr1Oe6QBPvR15ZRQT9O
- MkSBkU7GIxawBa/TeyzRtUkVThjWBPXC4FtlMjT/0yDczoo7Qw6JA2NGi6iVrqW2YShK
- ZUsHU+URUIpBdvKWowXCDFulbZIk7HAxfJTmw56tA4T1NrHXJwhlDMmI9dxUceUU4MX3
- dULbiS1x/sVLXispEImIKTNyTVUu7zvrpk0cQUNtAjgOjLcDZjOE2OWUVUIAWmbEhT7+ kQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37mt98hqf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 10:36:28 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12VEY1jf157283;
-        Wed, 31 Mar 2021 10:36:28 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37mt98hqep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 10:36:27 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12VELrI9015730;
-        Wed, 31 Mar 2021 14:36:26 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03wdc.us.ibm.com with ESMTP id 37maarwkgy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Mar 2021 14:36:26 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12VEaPXD9241498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 31 Mar 2021 14:36:25 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 090B2112065;
-        Wed, 31 Mar 2021 14:36:25 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C392112061;
-        Wed, 31 Mar 2021 14:36:24 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.146.149])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 31 Mar 2021 14:36:24 +0000 (GMT)
-Subject: Re: [PATCH v13 06/15] s390/vfio-ap: allow assignment of unavailable
- AP queues to mdev device
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
- <20201223011606.5265-7-akrowiak@linux.ibm.com>
- <20210111214037.477f0f03.pasic@linux.ibm.com>
- <270e192b-b88d-b072-428c-6cbfc0f9a280@linux.ibm.com>
- <20210115024441.1d8f41bc.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <762bee4a-7daa-948a-2054-41b3e172fa8c@linux.ibm.com>
-Date:   Wed, 31 Mar 2021 10:36:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 31 Mar 2021 10:37:52 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED36EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:37:51 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id b5so9980958vsl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=PrOeyIsfmyawYZ1vfP9+xdtuKzrmy/TFXyHIZc29Pz4=;
+        b=QiAU5jH5/mT50jXgSTiJzfuK780KBW1QFUZ3qeXHNlKeCzdUw09tCxsH1RQ6q2EQ0k
+         1V5o97/ylgYLhKhm237nZmbaUsR4Dm8KN+gvELfyQ8YPwWTOZ+o5t5peavPYGcK4kwAq
+         0pCw/LsN3bmrQdbmg8hWSSaauJFIGK69ZcFdd4AvBVBKJush5VB8d7jKqwZ0AaId4IX9
+         6vvFAWGcrv7iaGi8OXXQJjS8afdSvKDBQVBnVYjKObJ7CDeOIxqyfq2sYyuFn8J8B4Bo
+         2hficOOlFDkMOM/2YUzE43LRooC2XLP8s3wQahEAz/MmZeyuEy8hnIqmkiUHJBdy1wim
+         3NJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=PrOeyIsfmyawYZ1vfP9+xdtuKzrmy/TFXyHIZc29Pz4=;
+        b=lFI6EN3Y5iNNCq3GwDUEQy+BVYnSAw8rQqoLd31r1jCkunsQko+vxU7rLe2QgT7uc9
+         9FQZ2rh4KU/HWPmdwrpHzhVZHTbI64yhoMNawsNwNtZT1i5HCfDbb0vQOgwyPmzCu3eW
+         lDKEIrJbK+OMx8J0A4g1a4X2aCIQuGCEgbx81jtNn0rLucXQjpdlUxDj+jlmvqHHVBPb
+         BH2zLVszXzvRxUm4UrLP1I/avmOrcZSOgReh79nGzV93slnJCXWyxymUjZaTvbqhdug+
+         NWnyInCxhr1x65VHk020I5MpPLGllik8mmWCYmJ9tOd+DBZ2pDWbnSyN4D0glieKZ2FK
+         pHwQ==
+X-Gm-Message-State: AOAM530luiJYnmTJZAV18LGzWk+ryw/frR7sQ5zASmoMw3YCU5G0JBe9
+        8Fmyt9/EopPf6agQLMAICu2/xLCQCg1cuaLMxiY=
+X-Google-Smtp-Source: ABdhPJzu1NiCZiPQyEPQSt+b965IJYwmPEcEv1yTdHolcdrR2cahYPy9p8RCyZeeA6O7UzdSMyRW5lk7cDUiDkh0+8Q=
+X-Received: by 2002:a67:688e:: with SMTP id d136mr1706294vsc.58.1617201465303;
+ Wed, 31 Mar 2021 07:37:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210115024441.1d8f41bc.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZLXsEjiyn207Jpp_SaIZ_TdQVxW0s_qI
-X-Proofpoint-ORIG-GUID: GcTU25s7Xa9-9JZAQP3tS2rzjxyjKl38
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_03:2021-03-31,2021-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2103300000 definitions=main-2103310105
+Sender: missalicewarlord@gmail.com
+Received: by 2002:ab0:2358:0:0:0:0:0 with HTTP; Wed, 31 Mar 2021 07:37:44
+ -0700 (PDT)
+From:   "Mrs. Nadia Emaan" <mrsnadiaemaan50@gmail.com>
+Date:   Wed, 31 Mar 2021 14:37:44 +0000
+X-Google-Sender-Auth: jM1iKF8aqbK8XTAgZFXOzqHtoOc
+Message-ID: <CAPGg-FF0XzBi23j+q7axvrqRsfxFyoMOqjJFyUYNphsFGgJvGQ@mail.gmail.com>
+Subject: HELLO MY DEAR FRIEND:
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+May God Bless you,
+
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
 
-On 1/14/21 8:44 PM, Halil Pasic wrote:
-> On Thu, 14 Jan 2021 12:54:39 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->>>>    /**
->>>>     * vfio_ap_mdev_verify_no_sharing
->>>>     *
->>>> - * Verifies that the APQNs derived from the cross product of the AP adapter IDs
->>>> - * and AP queue indexes comprising the AP matrix are not configured for another
->>>> - * mediated device. AP queue sharing is not allowed.
->>>> + * Verifies that each APQN derived from the Cartesian product of the AP adapter
->>>> + * IDs and AP queue indexes comprising the AP matrix are not configured for
->>>> + * another mediated device. AP queue sharing is not allowed.
->>>>     *
->>>> - * @matrix_mdev: the mediated matrix device
->>>> + * @matrix_mdev: the mediated matrix device to which the APQNs being verified
->>>> + *		 are assigned.
->>>> + * @mdev_apm: mask indicating the APIDs of the APQNs to be verified
->>>> + * @mdev_aqm: mask indicating the APQIs of the APQNs to be verified
->>>>     *
->>>> - * Returns 0 if the APQNs are not shared, otherwise; returns -EADDRINUSE.
->>>> + * Returns 0 if the APQNs are not shared, otherwise; returns -EBUSY.
->>>>     */
->>>> -static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
->>>> +static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
->>>> +					  unsigned long *mdev_apm,
->>>> +					  unsigned long *mdev_aqm)
->>>>    {
->>>>    	struct ap_matrix_mdev *lstdev;
->>>>    	DECLARE_BITMAP(apm, AP_DEVICES);
->>>> @@ -523,20 +426,31 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
->>>>    		 * We work on full longs, as we can only exclude the leftover
->>>>    		 * bits in non-inverse order. The leftover is all zeros.
->>>>    		 */
->>>> -		if (!bitmap_and(apm, matrix_mdev->matrix.apm,
->>>> -				lstdev->matrix.apm, AP_DEVICES))
->>>> +		if (!bitmap_and(apm, mdev_apm, lstdev->matrix.apm, AP_DEVICES))
->>>>    			continue;
->>>>    
->>>> -		if (!bitmap_and(aqm, matrix_mdev->matrix.aqm,
->>>> -				lstdev->matrix.aqm, AP_DOMAINS))
->>>> +		if (!bitmap_and(aqm, mdev_aqm, lstdev->matrix.aqm, AP_DOMAINS))
->>>>    			continue;
->>>>    
->>>> -		return -EADDRINUSE;
->>>> +		vfio_ap_mdev_log_sharing_err(dev_name(mdev_dev(lstdev->mdev)),
->>>> +					     apm, aqm);
->>>> +
->>>> +		return -EBUSY;
->>> Why do we change -EADDRINUSE to -EBUSY? This gets bubbled up to
->>> userspace, or? So a tool that checks for the other mdev has it
->>> condition by checking for -EADDRINUSE, would be confused...
->> Back in v8 of the series, Christian suggested the occurrences
->> of -EADDRINUSE should be replaced by the more appropriate
->> -EBUSY (Message ID <d7954c15-b14f-d6e5-0193-aadca61883a8@de.ibm.com>),
->> so I changed it here. It does get bubbled up to userspace, so you make a
->> valid point. I will
->> change it back. I will, however, set the value returned from the
->> __verify_card_reservations() function in ap_bus.c to -EBUSY as
->> suggested by Christian.
-> As long as the error code for an ephemeral failure due to can't take a
-> lock right now, and the error code for a failure due to a sharing
-> conflict are (which most likely requires admin action to be resolved)
-> I'm fine.
->
-> Choosing EBUSY for sharing conflict, and something else for can't take
-> lock for the bus attributes, while choosing EADDRINUSE for sharing
-> conflict, and EBUSY for can't take lock in the case of the mdev
-> attributes (assign_*; unassign_*) sounds confusing to me, but is still
-> better than collating the two conditions. Maybe we can choose EAGAIN
-> or EWOULDBLOCK for the can't take the lock right now. I don't know.
+My name is Ms. Faroul Nadia Emaan, a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
 
-I was in the process of creating the change log for v14 of
-this patch series and realized I never addressed this.
-I think EAGAIN would be a better return code for the
-mutex_trylock failures in the mdev assign/unassign
-operations.
 
->
-> I'm open to suggestions. And if Christian wants to change this for
-> the already released interfaces, I will have to live with that. But it
-> has to be a conscious decision at least.
->
-> What I consider tricky about EBUSY, is that according to my intuition,
-> in pseudocode, object.operation(argument) returns -EBUSY probably tells
-> me that object is busy (i.e. is in the middle of something incompatible
-> with performing operation). In our case, it is not the object that is
-> busy, but the resource denoted by the argument.
->
-> Regards,
-> Halil
+you will use this $12.5 Million for public benefit as follows;
 
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16, without minding our
+different religions.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Ms. Faroul Emaan Nadia .
