@@ -2,121 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B47E34F8FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75A434F939
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhCaGrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:47:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30301 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233822AbhCaGrN (ORCPT
+        id S234009AbhCaGuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:50:21 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14652 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233975AbhCaGtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:47:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617173231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JrtocEpDB4VtWPFMNINTrS+vkx/a/h89EctpsdAcq94=;
-        b=iRf7OLGiw35jkQzUXV6SkV5aT9MSrWtBoJWVtSG7gp1xYKItq4+LITLIC7X7kLSkS8lT2R
-        JJMLEVc0aZQnzGWc0bFnzc/1JU0mv4vw0ZdudTigRV24GNgINk9ehFUzedR+QdgG8r3E/N
-        1oP2/89kvQLrwJpgnB6hXFxZ7HNkKyI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-CQDt-NDmP7SzyxnaLN8W3g-1; Wed, 31 Mar 2021 02:47:07 -0400
-X-MC-Unique: CQDt-NDmP7SzyxnaLN8W3g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 226CA1084D68;
-        Wed, 31 Mar 2021 06:47:03 +0000 (UTC)
-Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 431544F3C6;
-        Wed, 31 Mar 2021 06:46:48 +0000 (UTC)
-Subject: Re: [PATCH v1 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
- to prefault/prealloc memory
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Rik van Riel <riel@surriel.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20210317110644.25343-1-david@redhat.com>
- <af5555cf-d112-44fd-e030-bfe8f89c8ddc@redhat.com>
- <20210330215812.5279462ba693833680384b1b@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <48cede0e-152a-598c-c63a-ed712e0f61c3@redhat.com>
-Date:   Wed, 31 Mar 2021 08:46:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 31 Mar 2021 02:49:53 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F9H1D4y4tzmVnc;
+        Wed, 31 Mar 2021 14:47:12 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
+ 14:49:42 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <nsaenzjulienne@suse.de>,
+        <sudeep.holla@arm.com>, <linus.walleij@linaro.org>,
+        <robh@kernel.org>, <john.stultz@linaro.org>,
+        <colin.king@canonical.com>
+CC:     <heying24@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] firmware: qcom-scm: Fix QCOM_SCM configuration
+Date:   Wed, 31 Mar 2021 02:49:41 -0400
+Message-ID: <20210331064941.134333-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210330215812.5279462ba693833680384b1b@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.03.21 06:58, Andrew Morton wrote:
-> On Tue, 30 Mar 2021 10:58:43 +0200 David Hildenbrand <david@redhat.com> wrote:
-> 
->>>
->>>    MAINTAINERS                                |   1 +
->>>    arch/alpha/include/uapi/asm/mman.h         |   3 +
->>>    arch/mips/include/uapi/asm/mman.h          |   3 +
->>>    arch/parisc/include/uapi/asm/mman.h        |   3 +
->>>    arch/xtensa/include/uapi/asm/mman.h        |   3 +
->>>    include/uapi/asm-generic/mman-common.h     |   3 +
->>>    mm/gup.c                                   |  54 ++++
->>>    mm/internal.h                              |   5 +-
->>>    mm/madvise.c                               |  69 +++++
->>>    tools/testing/selftests/vm/.gitignore      |   3 +
->>>    tools/testing/selftests/vm/Makefile        |   1 +
->>>    tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
->>>    tools/testing/selftests/vm/run_vmtests.sh  |  16 +
->>>    13 files changed, 505 insertions(+), 1 deletion(-)
->>>    create mode 100644 tools/testing/selftests/vm/madv_populate.c
->>>
->>
->> Gentle ping.
-> 
-> Ping who ;)
+When CONFIG_QCOM_SCM is y while CONFIG_HAVE_ARM_SMCCC
+is not set, compiling errors are encountered as follows:
 
-Well, the ping worked - Jann replied! :)
+drivers/firmware/qcom_scm-smc.o: In function `__scm_smc_do_quirk':
+qcom_scm-smc.c:(.text+0x36): undefined reference to `__arm_smccc_smc'
+drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call':
+qcom_scm-legacy.c:(.text+0xe2): undefined reference to `__arm_smccc_smc'
+drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call_atomic':
+qcom_scm-legacy.c:(.text+0x1f0): undefined reference to `__arm_smccc_smc'
 
-> 
-> I was hoping for more review activity.  Were no changes expected from
-> the [2/5] discussion with Jann?
+So add dependency on HAVE_ARM_SMCCC in QCOM_SCM configuration.
 
-They are, but that discussion happened after the ping. There will be a 
-new version some-when next week or so, after I figure out some details.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+---
+ drivers/firmware/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 3f14dffb9669..5dd19dbd67a3 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -237,6 +237,7 @@ config INTEL_STRATIX10_RSU
+ config QCOM_SCM
+ 	bool
+ 	depends on ARM || ARM64
++	depends on HAVE_ARM_SMCCC
+ 	select RESET_CONTROLLER
+ 
+ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
