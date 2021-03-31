@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44383500B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637953500BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhCaMyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:54:19 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:59344 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235654AbhCaMyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:54:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 885F93970;
-        Wed, 31 Mar 2021 14:53:59 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ddy8e7D0VyZZ; Wed, 31 Mar 2021 14:53:59 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 53D3D390B; Wed, 31 Mar 2021 14:53:59 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: thorsis.com]
-        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
-        * -0.0 NO_RECEIVED Informational: message has no Received headers
-Date:   Wed, 31 Mar 2021 14:53:48 +0200
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexander Dahl <ada@thorsis.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 1/3] docs: gpio: mockup: Fix parameter name
-Message-ID: <YGRw3PlLBYCPvPn1@ada-deb-carambola.ifak-system.com>
-Mail-Followup-To: Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20210329111648.7969-1-ada@thorsis.com>
- <20210329111648.7969-2-ada@thorsis.com>
- <CAHp75VdqtWS15YPvaPvy4yj5TdW7DDgFB+_bbavFqPBp1zm6eg@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
+        id S235712AbhCaMys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:54:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235666AbhCaMyR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:54:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617195257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BLVqguYYRqWS+fkpiZrnYWlDg4Em6ZwexNgxX0lsnu4=;
+        b=H8RavXFVBwHwcMCLYL+w7w5HA8GwqCDwN0UWs8+titAW1NYzoE8V8+P3ndQRHGgPvJxviJ
+        eyuw3IgvxPULNWW9++nk8q0Eb4KM2LKwYJuTbw4yVZy4njiulPUkL7JejYzbulGn5II+iQ
+        XKBuDL+dnurIQw5/HEX3kusHddJYqh0=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-GMw99CW5OJ6r9YIgsygUdQ-1; Wed, 31 Mar 2021 08:54:14 -0400
+X-MC-Unique: GMw99CW5OJ6r9YIgsygUdQ-1
+Received: by mail-qt1-f198.google.com with SMTP id g7so1090932qtb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:54:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BLVqguYYRqWS+fkpiZrnYWlDg4Em6ZwexNgxX0lsnu4=;
+        b=NJaEnK45b7yppEjCNt0Y0lb8lpHLs16ADqyqKB/UoOoo2wgLI/w+8fRJaTyWUOo7am
+         +3VXglt+7nCZaZDJGQZvLC5/mAD4z80598mdrg5+F4B2P+LxoAL0qCK9OeSHlNJfYVNt
+         ptId3SLJHFQdsRU294rornQTozYqnkXdRSEmD/pYAMcPy8EPFhoEJhWZjI3HBsXiXBbG
+         vmTu82iwJw1q1SvWTVbfCSF3lWdG0XH6xFkCUBKuqIzU3eUOivZXT1tLTJeXUq9vUEnH
+         kSRhuJrgFik8BJuqq77q5Z5OpxP1DKbbA4sHURVJsWuISr3vXfVmxqc2tUd/JIy7jGER
+         hNKA==
+X-Gm-Message-State: AOAM5337IKqiVB/UIF0yh6Ak0AOSAp4Eipc/+9PyYUxUr2btPhUXKBkn
+        fk80q57fGUQhlg1oX0pQVxJvUMLHrMnlDsIW4kFfQ/6epQR9EQJxQrrnyJ1x+2QFzm6mOb1nyhU
+        vt5h8Kidkp+7vRgpkBZPjsDC2
+X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr2279126qtx.21.1617195253824;
+        Wed, 31 Mar 2021 05:54:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUI7wPo7TLqkGMdpy3kH1M1sXi6ovrIE72FbmoqiknBlD6P60sY1MhBQ3ElvmViqcwOGvUsQ==
+X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr2279090qtx.21.1617195253556;
+        Wed, 31 Mar 2021 05:54:13 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id a19sm1330189qkl.126.2021.03.31.05.54.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 05:54:12 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 08:54:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v3] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE behavior
+Message-ID: <20210331125409.GL429942@xz-x1>
+References: <20210329234131.304999-1-axelrasmussen@google.com>
+ <20210330205519.GK429942@xz-x1>
+ <CAJHvVcikF9MJepyvf6riVKZEUxQvV1QMdoQoN5Kirs0TLcn-Dg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75VdqtWS15YPvaPvy4yj5TdW7DDgFB+_bbavFqPBp1zm6eg@mail.gmail.com>
+In-Reply-To: <CAJHvVcikF9MJepyvf6riVKZEUxQvV1QMdoQoN5Kirs0TLcn-Dg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy,
+Axel,
 
-Am Wed, Mar 31, 2021 at 03:27:05PM +0300 schrieb Andy Shevchenko:
-> On Mon, Mar 29, 2021 at 2:18 PM Alexander Dahl <ada@thorsis.com> wrote:
-> >
-> > Module probing with the parameter documented yielded this in kernel log:
-> >
-> >         gpio_mockup: unknown parameter 'gpio_named_lines' ignored
-> >
-> > The parameter documented did not match the parameter actually
-> > implemented with commit 8a68ea00a62e ("gpio: mockup: implement naming
-> > the lines") long before introducing the documentation.
-> >
-> > Fixes: commit 2fd1abe99e5f ("Documentation: gpio: add documentation for gpio-mockup")
-> 
-> Alexander, in the entire series you are using the wrong format for the
-> Fixes tag.
-> I highly recommend to add in your .gitconfig file an alias:
->         one = show -s --pretty='format:%h (\"%s\")'
+On Tue, Mar 30, 2021 at 04:30:13PM -0700, Axel Rasmussen wrote:
+> Yes, a refactor like that is promising. It's hard to say for certain
+> without actually looking at the result - I'll spend some time tomorrow
+> on a few options, and send along the cleanest version I come up with.
 
-You're right. Sorry, I messed things up. I first had that line without
-the additional "commit", and added it because I thought checkpatch
-complained (which it probably did not).
+Before you move onto a new version...  See this commit:
 
-The actual format is documented of course:
+5b51072e97d5 ("userfaultfd: shmem: allocate anonymous memory for MAP_PRIVATE shmem", 2018-11-30)
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+I found it when I was thinking why not move the whole continue logic directly
+into mfill_atomic_pte(), if we can have the pte installation helper, because
+that's all we need.
 
-I actually have a slightly different setting for pretty.fixes in my
-~/.gitconfig for other demands. I'll go and make that project
-dependent now.
+So previously I got the semantics a bit mixed up: for private shmem mappings,
+UFFDIO_COPY won't fill in page cache at all, but it's all private.  We keep the
+page cache empty even after UFFDIO_COPY for a private mapping.
 
-Thanks for pointing this out.
+UFFDIO_CONTINUE is slightly different, since we _know_ the page cache is
+there..  So I'm thinking maybe you need to handle the continue request in
+mfill_atomic_pte() before the VM_SHARED check so as to cover both cases.
 
-Greets
-Alex
+-- 
+Peter Xu
 
-> 
-> `git one <commit ID>` will give you proper value to refer to the
-> commit in question.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
