@@ -2,147 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF7F34FD9C
+	by mail.lfdr.de (Postfix) with ESMTP id 50CE934FD9B
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbhCaJ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:58:52 -0400
-Received: from ozlabs.org ([203.11.71.1]:44145 "EHLO ozlabs.org"
+        id S234934AbhCaJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:58:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234375AbhCaJ6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:58:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F9MFl5f6mz9sVb;
-        Wed, 31 Mar 2021 20:58:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1617184704;
-        bh=62LWuEyrUicGCyza4BxPmll8qguht3fvwrGpruDriEg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=arHGUZR1viBTEjAXyUIXP/+nurc8liOgRj9c7NVvad7Troem8hU1kwlNCpaPBAsvP
-         1h82bqXhyB0I38ZWIKd5XW11wZbDamjeJrkS5CklXHx2aXl5h7xCWoIgoqNN2NX2xj
-         JatIx753TUP6rLjQavrVe45YO6cLoJa8gbI5xBD8pxTHRVpg3/FerLrPmJ1IEZvc4U
-         EpNsaSsCol6UEeUCC/mpwSAtrIdglSlvti1NNnYfURnRwbWrtdAaJPS3ggS/AoRxvg
-         /LU6rDVZzYU4KI3q+NJ76VlazhqDSEURUWAmKq9SDpRWQGPaIc/f7b6atnYaEsYJaw
-         2Jux27y1mafQw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Xiongwei Song <sxwjean@me.com>, benh@kernel.crashing.org,
-        paulus@samba.org, oleg@redhat.com, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, msuchanek@suse.de,
-        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        mikey@neuling.org, haren@linux.ibm.com, alistair@popple.id.au,
-        jniethe5@gmail.com, peterz@infradead.org, leobras.c@gmail.com,
-        akpm@linux-foundation.org, rppt@kernel.org, peterx@redhat.com,
-        atrajeev@linux.vnet.ibm.com, maddy@linux.ibm.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com, aik@ozlabs.ru,
-        pmladek@suse.com, john.ogness@linutronix.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH v2] powerpc/traps: Enhance readability for trap types
-In-Reply-To: <20210330150425.10145-1-sxwjean@me.com>
-References: <20210330150425.10145-1-sxwjean@me.com>
-Date:   Wed, 31 Mar 2021 20:58:17 +1100
-Message-ID: <875z17y79i.fsf@mpe.ellerman.id.au>
+        id S234800AbhCaJ6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:58:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B8D61962;
+        Wed, 31 Mar 2021 09:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617184703;
+        bh=8Q1AY7JdoH+Ccf14MEMA3ArldP3X6QQIw2Ci/bJX6aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jkVipl8FKiITCLaNAo5tIYm56VPEtOMwUlt7hG8gOF3dvH7fimr5DIZmuP9marqj1
+         /mnjdUnlB9y3y55HwxPhPavT/H616N9jvOTv0QPYR1+KfXHkpmPX69flxznfs6Ms7Z
+         2oej7lUKG3GXH4CdWWl4nbLtg9cGeF+/ivj4In+fsPs/HXZluJtTsiTsOcWRsI09Bx
+         tgw2F6Ky47a56QPwR5i1/NNSAiNha2WiDSE21hkNHQwDCGWlQT9qHREG0twIzNGPNp
+         90YeQi9UCbkiMPC4ttUmzLEwBWGiYw1gE8+9eK5IDbXsYlb6wYKdt2ek853jQtkbTC
+         vqMQDKH/XDfMg==
+Date:   Wed, 31 Mar 2021 11:58:20 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] Adding i2c-cp2615: i2c support for Silicon Labs'
+ CP2615 Digital Audio Bridge
+Message-ID: <20210331095820.GA29323@ninjato>
+References: <20210318115210.2014204-1-bence98@sch.bme.hu>
+ <20210318115210.2014204-3-bence98@sch.bme.hu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Content-Disposition: inline
+In-Reply-To: <20210318115210.2014204-3-bence98@sch.bme.hu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiongwei Song <sxwjean@me.com> writes:
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> Create a new header named traps.h, define macros to list ppc exception
-> types in traps.h, replace the reference of the real trap values with
-> these macros.
 
-Personally I find the hex values easier to recognise, but I realise
-that's probably not true of other people :)
-
-...
-> diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/traps.h
-> new file mode 100644
-> index 000000000000..a31b6122de23
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/traps.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_PPC_TRAPS_H
-> +#define _ASM_PPC_TRAPS_H
-> +
-> +#define TRAP_RESET   0x100 /* System reset */
-> +#define TRAP_MCE     0x200 /* Machine check */
-> +#define TRAP_DSI     0x300 /* Data storage */
-> +#define TRAP_DSEGI   0x380 /* Data segment */
-> +#define TRAP_ISI     0x400 /* Instruction storage */
-> +#define TRAP_ISEGI   0x480 /* Instruction segment */
-> +#define TRAP_ALIGN   0x600 /* Alignment */
-> +#define TRAP_PROG    0x700 /* Program */
-> +#define TRAP_DEC     0x900 /* Decrementer */
-> +#define TRAP_SYSCALL 0xc00 /* System call */
-> +#define TRAP_TRACEI  0xd00 /* Trace */
-> +#define TRAP_FPA     0xe00 /* Floating-point Assist */
-> +#define TRAP_PMI     0xf00 /* Performance monitor */
-
-I know the macro is called TRAP and the field in pt_regs is called trap,
-but the terminology in the architecture is "exception", and we already
-have many uses of that. In particular we have a lot of uses of "exc" as
-an abbreviation for "exception". So I think I'd rather we use that than
-"TRAP".
-
-I think we should probably use the names from the ISA, unless they are
-really over long.
-
-Which are:
-
-  0x100   System Reset
-  0x200   Machine Check
-  0x300   Data Storage
-  0x380   Data Segment
-  0x400   Instruction Storage
-  0x480   Instruction Segment
-  0x500   External
-  0x600   Alignment
-  0x700   Program
-  0x800   Floating-Point Unavailable
-  0x900   Decrementer
-  0x980   Hypervisor Decrementer
-  0xA00   Directed Privileged Doorbell
-  0xC00   System Call
-  0xD00   Trace
-  0xE00   Hypervisor Data Storage
-  0xE20   Hypervisor Instruction Storage
-  0xE40   Hypervisor Emulation Assistance
-  0xE60   Hypervisor Maintenance
-  0xE80   Directed Hypervisor Doorbell
-  0xEA0   Hypervisor Virtualization
-  0xF00   Performance Monitor
-  0xF20   Vector Unavailable
-  0xF40   VSX Unavailable
-  0xF60   Facility Unavailable
-  0xF80   Hypervisor Facility Unavailable
-  0xFA0   Directed Ultravisor Doorbell
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-So perhaps:
-
-  EXC_SYSTEM_RESET
-  EXC_MACHINE_CHECK
-  EXC_DATA_STORAGE
-  EXC_DATA_SEGMENT
-  EXC_INST_STORAGE
-  EXC_INST_SEGMENT
-  EXC_EXTERNAL_INTERRUPT
-  EXC_ALIGNMENT
-  EXC_PROGRAM_CHECK
-  EXC_FP_UNAVAILABLE
-  EXC_DECREMENTER
-  EXC_HV_DECREMENTER
-  EXC_SYSTEM_CALL
-  EXC_HV_DATA_STORAGE
-  EXC_PERF_MONITOR
+Oh, and are you willing to maintain the driver? If so, please add an
+entry to the MAINTAINERS file. Thanks!
 
 
-cheers
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkR7kACgkQFA3kzBSg
+KbYvxA//TVMuQ85JEg3VH6wHD5KLvwBecyQ5pOwMbUTo3Io+EIYkqYpxGuC44ovu
+r7OI1VfGuZJow4mI+z0XK3OHOZ/eXbVO7zSR3GN5j5rLegzTjoTiqDJEW7UObUN/
+DizBz/FJsB02ri1VyZSe/QtPMtk2YDtPRf4k35cXy45ZMwUBJUQssgA49yH/8Ew8
+wsOxiA6L0HdMZO2OSzNChnlWnXTl9sJI8nlM9cbvsugIJ3M4OgdL1Muym7K+fxV3
+xvOhFpmloRmH9A/VKg+CZ66RmdMgVyu+JYHyYXTtC4Lwc8gg/qb9iUlYEAw97lWK
++ugTO984259osiah66k+diGnynZywuiNs4S0nNJzjb5AQm2crIxHI/LE8EccrI/T
+W470Tkk9iMQl3sKXLi9irlCTU1jzNLmdxZpu/UtHSps2SjmKd+bGbBemJduiz4j5
+Yq4ut/FZJttp/im9v0+hMtlbSi13Q2ewGhJQ9jrPcW1necetCmdr5oLcDadiIKwF
+7uxBJ6oZvzcvTLobjeXGq3nJnVA6UMEykLw/GqESyaAIrIAHPGoLwyfzTh7Po3l+
+zqOyYAgp6jmS/ji4orU/MbsNctmuQuRfNJB2LxoQOU4o+ZIp0LMd225lH/G1jm90
+faWZQSVgYV43lvQS+0FIeS6GvQWyqtkzc3tmrGAX2pcxraq3dm8=
+=4I3s
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
