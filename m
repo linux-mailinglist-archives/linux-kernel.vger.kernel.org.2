@@ -2,188 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7213F34F7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8F434F7CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 06:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbhCaEQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 00:16:39 -0400
-Received: from mail-bn7nam10on2058.outbound.protection.outlook.com ([40.107.92.58]:52961
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229615AbhCaEP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 00:15:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a7LY33UxZk2G4h5mRNtXFx4YgL/k0ZXuUXP44C+G1p1xxmT+4xCh8X2mje1mSa/gZULd1PMObyrkcxCQvJ1nBmfgltMVoMnDHGHilUw/CEUs58vic3BcJtu8x2tbQcsQm/xqq65f1Lh0fHsmmOXizLFFHEWAtOMocHQn4iM5TExWziooSEaZCbCer6SJwenmlYeq+RkbhIdWly7T8NmPJZ0fTpS5kbg1JtRXbUfEwHEP+vUk+jVB9w7sFVm8+3j5T4oRcsPX5wtTZL3J1tgsiakKOGVdixK6fm/s1/nHDZlQs2Vs4cEylM+9QLFfPBQvTwqUrYC9gU34vOcPiklxpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tXVBh3Lr2Q+llzfyoKDr9TK6PnWud4S73nyB0YZ6vv8=;
- b=apDB9U40XENpavrQIeG1KqvxqBlF6OmbsX3hW94Ae68Kz1bM/dHWkS6gMxZp12nOFPY89+g7qHFh+I9N4GtA0EZNTnBvgVs4dveWm6GTJddRd5chZZzyiAuwLvf88236DsUSC2Lzv/W1La3iY9yThksgL0zCP+zsrMK6pmnOkMlVDkh5+jpAe4PQdtM+6Vxa8b/IOtYq6nvcw860NokqSkspt1bfYZ+EyoH5iv+SMipZMQIrKJea1TkyTI1BF+vL2FHaFgrrF7KdYwNUabpGD1kX/D+WNB+0fLXBxl1EzB8pgbRW0uW7cY6WnMZf6k167I7d4s4mRXnjcgwVPYdnxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tXVBh3Lr2Q+llzfyoKDr9TK6PnWud4S73nyB0YZ6vv8=;
- b=X2M2KZlFz2IZlT94dARfUGChn7NEUks0gWB65t3JDcnzqJ0oOj2dIUWUJYKUHUhLg1HV5EeTXwtpvD7MILv13sPcBkObUjQSFI2mRscs/yHkR0znWLk9iTaIiRz+s+zVFAZlCOKVTnuNNRm+QBwXqi8o4AswJQd3GiktXLV3EFm2c27+C9oNYHjRE2I7CXVx50S+U89gabbPNir+dEEn3Ge3i7XcHNMYVVFdd5AmiudDF4VgaoTNNMSPOphHreFg78K4zX59t8XP1uVAbjmI8v12oTG6qLeeCcqYfR0ARHFSb1sRhBr4eSb3Ju3tU36qrUbsmGSjcPcE4gIF4QjcHA==
-Received: from MW3PR05CA0027.namprd05.prod.outlook.com (2603:10b6:303:2b::32)
- by MN2PR12MB4389.namprd12.prod.outlook.com (2603:10b6:208:262::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Wed, 31 Mar
- 2021 04:15:54 +0000
-Received: from CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:2b:cafe::a3) by MW3PR05CA0027.outlook.office365.com
- (2603:10b6:303:2b::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
- Transport; Wed, 31 Mar 2021 04:15:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT008.mail.protection.outlook.com (10.13.175.191) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 04:15:53 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 31 Mar
- 2021 04:15:50 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
-        <akpm@linux-foundation.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kvm-ppc@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <hch@infradead.org>, <daniel@ffwll.ch>,
-        <willy@infradead.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-Date:   Wed, 31 Mar 2021 15:15:47 +1100
-Message-ID: <23784464.epyy5R1Yul@nvdebian>
-In-Reply-To: <b4b11c59-975d-26c7-043a-6acddff78dfd@nvidia.com>
-References: <20210326000805.2518-1-apopple@nvidia.com> <12636584.zsJ0Sx4KLp@nvdebian> <b4b11c59-975d-26c7-043a-6acddff78dfd@nvidia.com>
+        id S233293AbhCaETe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 00:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229852AbhCaETK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 00:19:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 703E8619DA;
+        Wed, 31 Mar 2021 04:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617164349;
+        bh=0XKwss4Hof3X25r6bjrJJVKM4RoMnNg6Pao3M+Ls9mU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EmuXNN/8sS0Dbso4e+1fSvCIBEJnh+7frW86Bh5XC1AUpZmbWTLOztPmx9K3uJXOM
+         XBjKOBGQRd5WESSU341/Fj2LGYqIqANNSNcbbP4Iz8pbzppxUGPJCzBEVO2mCLSif5
+         sFMyg0u7/FAWyEc0Rmc/nL2cI3ttI5QT0+3+GzQdaLGDZjeuSNKuLCoGWk4Q2Bew0a
+         xXA9RdzeIfZo0kowdTCLO8qKjGyUebWKh3tPaPok32BdzmvKg/gN8IWaL7gQq+1ZCX
+         LmPqiyI+grbC3WBT/AE1TNi1A2p9q73bVbaM6r94gNfERYwzTn4jNvcEzvmx4stWDn
+         7thLSj1O4gduQ==
+Received: by mail-lf1-f50.google.com with SMTP id d13so6112689lfg.7;
+        Tue, 30 Mar 2021 21:19:09 -0700 (PDT)
+X-Gm-Message-State: AOAM5331z8wbONkLk2WtqB1Aq1FwAXX/y6BzQFOoBAwewNK7oTUK2XOX
+        eLSyzVRkdIi7LiJRmhwPk25TZMlHXD5vYs/u0ss=
+X-Google-Smtp-Source: ABdhPJx+ii4cISAbi0jdeMRF01vf8KEr9bLID6axyIdKr+61ZHMDTxRv3u6V5SiTCLty4Ct/I0NqsI5Om8KadMxQvUE=
+X-Received: by 2002:a05:6512:ba2:: with SMTP id b34mr970839lfv.24.1617164347742;
+ Tue, 30 Mar 2021 21:19:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c18fdbde-10a1-4087-d612-08d8f3fbacf2
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4389:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB43896332354D6FE1506B56BDDF7C9@MN2PR12MB4389.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9B2jvmXp0IJmbTltM6MJzSIWqWJTDgsXRQHLr5Moi75R5EB0aPNjR+3Qva5uFugo76BDi0JB6eoRvAaiMIQFCz6rhuDKz30xLf97Ka7EDQ9yCe70v6XcLwA8mG8OmL+ToC+S+Bu6ZOhZcRkM1IXYdL4HmxQD/HR3K4tNXswGkExyJFyGAPjfgqsXBooA6oafF7+bmVNLk7ZS5oARy92z0SHYqQk1iEWtjfrcJ72UDg7QixlM6MnBNNfOFfwakM7tcxZFiTeg43tuSU4dEijkmTdFcASZiU5Z6u6ABkzxbEI4qCT0R4n5FApQPNbRVxFlah9JsUfvN0Tt06M9NXnp1vi/dN0fLWAZjgYV/a/eJ4iakJT7E8Gb0iRIZ7z/DrwQe9Semlzf4jLLK5XQDs9KfwadkCfE0Rdk98wYdW+dHSW4qe2kw4b5B9+2nJydzWBX2kF9FmE8mRr1w8Tx5lGp+E92PTHoYZjwofIHsFnLnGimcACppY7w/kbnsqpZlZkR1BtzQxCZj9exv4peze6bx0ICGHyfqwxFut6aoTGihh8f2qQFHcp0c/cY+B1MLhVdLom6TzEXGiMjnLywGgvXt3VwjmGCSznuSCiI40FuxHb/qE6cQF8FRsqpR3zXiXRCNfMmjYugh87hZ7Gvot8gLqqoBsj8QYcj5ipYoCkFEA3CcdfLZJ+kCAyLnkPW0h3M
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(136003)(376002)(36840700001)(46966006)(82310400003)(6666004)(26005)(186003)(53546011)(16526019)(82740400003)(316002)(6862004)(54906003)(8676002)(36906005)(2906002)(9576002)(8936002)(70206006)(70586007)(33716001)(36860700001)(336012)(478600001)(47076005)(83380400001)(86362001)(4326008)(9686003)(356005)(6636002)(5660300002)(426003)(7416002)(7636003)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 04:15:53.5732
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c18fdbde-10a1-4087-d612-08d8f3fbacf2
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4389
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
+ <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
+ <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
+ <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
+ <CAK8P3a3jpQ7dDiVG0s_DQiL6n_MdnhYHMjqFfJ92JJBJFPQZPQ@mail.gmail.com>
+ <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com> <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 31 Mar 2021 12:18:56 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
+Message-ID: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anup Patel <anup@brainfault.org>,
+        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 31 March 2021 2:56:38 PM AEDT John Hubbard wrote:
-> On 3/30/21 3:56 PM, Alistair Popple wrote:
-> ...
-> >> +1 for renaming "munlock*" items to "mlock*", where applicable. good 
-grief.
-> > 
-> > At least the situation was weird enough to prompt further investigation :)
-> > 
-> > Renaming to mlock* doesn't feel like the right solution to me either 
-though. I
-> > am not sure if you saw me responding to myself earlier but I am thinking
-> > renaming try_to_munlock() -> page_mlocked() and try_to_munlock_one() ->
-> > page_mlock_one() might be better. Thoughts?
-> > 
-> 
-> Quite confused by this naming idea. Because: try_to_munlock() returns
-> void, so a boolean-style name such as "page_mlocked()" is already not a
-> good fit.
-> 
-> Even more important, though, is that try_to_munlock() is mlock-ing the
-> page, right? Is there some subtle point I'm missing? It really is doing
-> an mlock to the best of my knowledge here. Although the kerneldoc
-> comment for try_to_munlock() seems questionable too:
-
-It's mlocking the page if it turns out it still needs to be locked after 
-unlocking it. But I don't think you're missing anything.
-
-> /**
->   * try_to_munlock - try to munlock a page
->   * @page: the page to be munlocked
->   *
->   * Called from munlock code.  Checks all of the VMAs mapping the page
->   * to make sure nobody else has this page mlocked. The page will be
->   * returned with PG_mlocked cleared if no other vmas have it mlocked.
->   */
-> 
-> ...because I don't see where, in *this* routine, it clears PG_mlocked!
+On Tue, Mar 30, 2021 at 3:12 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Obviously we agree that a routine should be named based on what it does,
-> rather than on who calls it. So I think that still leads to:
-> 
->       try_to_munlock() --> try_to_mlock()
->       try_to_munlock_one() --> try_to_mlock_one()
-> 
-> Sorry if I'm missing something really obvious.
+> On Tue, Mar 30, 2021 at 4:26 AM Guo Ren <guoren@kernel.org> wrote:
+> > On Mon, Mar 29, 2021 at 9:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Mon, Mar 29, 2021 at 2:52 PM Guo Ren <guoren@kernel.org> wrote:
+> > > > On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > >
+> > > > > What's the architectural guarantee on LL/SC progress for RISC-V ?
+> > >
+> > >    "When LR/SC is used for memory locations marked RsrvNonEventual,
+> > >      software should provide alternative fall-back mechanisms used when
+> > >      lack of progress is detected."
+> > >
+> > > My reading of this is that if the example you tried stalls, then either
+> > > the PMA is not RsrvEventual, and it is wrong to rely on ll/sc on this,
+> > > or that the PMA is marked RsrvEventual but the implementation is
+> > > buggy.
+> >
+> > Yes, PMA just defines physical memory region attributes, But in our
+> > processor, when MMU is enabled (satp's value register > 2) in s-mode,
+> > it will look at our custom PTE's attributes BIT(63) ref [1]:
+> >
+> >    PTE format:
+> >    | 63 | 62 | 61 | 60 | 59 | 58-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+> >      SO   C    B    SH   SE    RSW   D   A   G   U   X   W   R   V
+> >      ^    ^    ^    ^    ^
+> >    BIT(63): SO - Strong Order
+> >    BIT(62): C  - Cacheable
+> >    BIT(61): B  - Bufferable
+> >    BIT(60): SH - Shareable
+> >    BIT(59): SE - Security
+> >
+> > So the memory also could be RsrvNone/RsrvEventual.
+>
+> I was not talking about RsrvNone, which would clearly mean that
+> you cannot use lr/sc at all (trap would trap, right?), but "RsrvNonEventual",
+> which would explain the behavior you described in an earlier reply:
+>
+> | u32 a = 0x55aa66bb;
+> | u16 *ptr = &a;
+> |
+> | CPU0                       CPU1
+> | =========             =========
+> | xchg16(ptr, new)     while(1)
+> |                                     WRITE_ONCE(*(ptr + 1), x);
+> |
+> | When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
+>
+> As I understand, this example must not cause a deadlock on
+> a compliant hardware implementation when the underlying memory
+> has RsrvEventual behavior, but could deadlock in case of
+> RsrvNonEventual
+Thx for the nice explanation:
+ - RsrvNonEventual - depends on software fall-back mechanisms, and
+just I'm worried about.
+ - RsrvEventual - HW would provide the eventual success guarantee.
 
-Nope, I confused things somewhat by blindly quoting the documentation whilst 
-forgetting that try_to_munlock() returns void rather than a bool.
+>
+> > [1] https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2fcc52afd0fcbf88
+> >
+> > >
+> > > It also seems that the current "amoswap" based implementation
+> > > would be reliable independent of RsrvEventual/RsrvNonEventual.
+> >
+> > Yes, the hardware implementation of AMO could be different from LR/SC.
+> > AMO could use ACE snoop holding to lock the bus in hw coherency
+> > design, but LR/SC uses an exclusive monitor without locking the bus.
+> >
+> > RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
+> > think LR/SC would be slower than CAS, and CAS is just good for code
+> > size.
+>
+> What I meant here is that the current spinlock uses a simple amoswap,
+> which presumably does not suffer from the lack of forward process you
+> described.
+Does that mean we should prevent using LR/SC (if RsrvNonEventual)?
 
-> > This is actually inspired from a suggestion in Documentation/vm/
-unevictable-
-> > lru.rst which warns about this problem:
-> > 
-> > try_to_munlock() Reverse Map Scan
-> > ---------------------------------
-> > 
-> > .. warning::
-> >     [!] TODO/FIXME: a better name might be page_mlocked() - analogous to 
-the
-> >     page_referenced() reverse map walker.
-> > 
-> 
-> This is actually rather bad advice! page_referenced() returns an
-> int-that-is-really-a-boolean, whereas try_to_munlock(), at least as it
-> stands now, returns void. Usually when I'm writing a TODO item, I'm in a
-> hurry, and I think that's what probably happened here, too. :)
+-- 
+Best Regards
+ Guo Ren
 
-So I think we're in agreement. The naming is bad and the advice in the 
-documentation is also questionable :-)
-
-Thanks for the thoughts, I will re-send this with naming and documentation 
-updates.
-
-> >> Although, it seems reasonable to tack such renaming patches onto the tail
-> > end
-> >> of this series. But whatever works.
-> > 
-> > Unless anyone objects strongly I will roll the rename into this patch as 
-there
-> > is only one caller of try_to_munlock.
-> > 
-> >   - Alistair
-> > 
-> 
-> No objections here. :)
-> 
-> thanks,
-> 
-
-
-
-
+ML: https://lore.kernel.org/linux-csky/
