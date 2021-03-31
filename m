@@ -2,131 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A7334FB7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3613D34FB7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhCaIWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbhCaIWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:22:14 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D6CC06175F;
-        Wed, 31 Mar 2021 01:22:08 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j18so18741516wra.2;
-        Wed, 31 Mar 2021 01:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=M1iFyRy+/vZUwYcc1X6N0dJDOfsIozzsPvSrVwXYI9E=;
-        b=E9WAczEs5N19fSB2T1k0zRDej2UTmXciCl1vBTv2mrC+k/PVxFG7YLMPlJhGH3Ttdr
-         kF5g0jXEYnQOkluMhUEwlstLasx2EeajhnzLS9Ti0AHqvCMzx5xPfPpp0bFjNjyhMK/O
-         nU40OVqg5m/kZ6IkQ7np7Rh5UCeaIWvMfyzpZJicYdk7MWCEi0UN/TdssTSsF65QFfzn
-         NtyzqznzHFNQT0I5VJpCxHtew9xVVpfEf1+h9cvs82OWshGVNOyf+/omSatS9Z6nFsG6
-         wFCFbHXJlniMN0xKaQNtrq5qvxLpae8r1NJTiqaFG1oHBQbqbJdjimgjt8qqm3mu1ceL
-         zCYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=M1iFyRy+/vZUwYcc1X6N0dJDOfsIozzsPvSrVwXYI9E=;
-        b=Tn7dBDecP662mh4sW9SWEpFw3sCZJJOFr0bHZhgRjqJ0dYTEQVw0e7GzpbkR3l+gCW
-         2Yorc1NLZrsQTTyvMQoNksSxl6wdx9mPiLzv6PnjkbQ42QZeJqIm3/aPLZ7xFDy3mFTC
-         wU/g5bKPzPyDuzHRpXKbxkEy0BZEyGz6zaGazFrfJXWVdhy2y+VMoElDuMDcf+8N8cKw
-         ssWVprm+EL2AN427miTVTyaAPqSTzLN1FhB3WIlv3VYY4jU6dlaqab9V7Xmlq0G3rV/K
-         TVMm0qBtV9HiLC5AAItZlYRxwM2LC2Sbphqf2f8ObTjqMoTfbDkXk9h47CwEWtIresdg
-         rWfA==
-X-Gm-Message-State: AOAM531gF6k8OgzAJvNxrG38VUDOasp2E2+Mu2JX+D1Q3/tv7bMiMMuc
-        tx2O5dwWBML1An6wn0DoZiE=
-X-Google-Smtp-Source: ABdhPJxocGQz+VOIBDxcQHX4MBugeeIBnoWOESz5Gn2qa0vf/v1c+0QFQ56/BWtzigKb4KRRKERVqA==
-X-Received: by 2002:adf:dd4f:: with SMTP id u15mr2293305wrm.260.1617178927531;
-        Wed, 31 Mar 2021 01:22:07 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.7.73])
-        by smtp.gmail.com with ESMTPSA id i8sm2812844wrx.43.2021.03.31.01.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 01:22:07 -0700 (PDT)
-Message-ID: <675efa79414d2d8cb3696d3ca3a0c3be99bd92fa.camel@gmail.com>
-Subject: Re: [PATCH] media: em28xx: fix memory leak
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     hverkuil-cisco@xs4all.nl
-Cc:     syzkaller-bugs@googlegroups.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:EM28XX VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
-        stable@vger.kernel.org
-Date:   Wed, 31 Mar 2021 13:22:01 +0500
-In-Reply-To: <20210324180753.GA410359@LEGION>
-References: <20210324180753.GA410359@LEGION>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S232366AbhCaIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:23:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:33726 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231180AbhCaIWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:22:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F918D6E;
+        Wed, 31 Mar 2021 01:22:48 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8C4AA3F792;
+        Wed, 31 Mar 2021 01:22:46 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, etienne.carriere@linaro.org,
+        souvik.chakravarty@arm.com, vincent.guittot@linaro.org,
+        Jonathan.Cameron@Huawei.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, thara.gopinath@linaro.org,
+        f.fainelli@gmail.com
+Subject: Re: [PATCH v7 00/38] SCMI vendor protocols and modularization
+Date:   Wed, 31 Mar 2021 09:22:41 +0100
+Message-Id: <161717882079.1834611.15637274566917063721.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210316124903.35011-1-cristian.marussi@arm.com>
+References: <20210316124903.35011-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 23:07 +0500, Muhammad Usama Anjum wrote:
-> If some error occurs, URB buffers should also be freed. If they aren't
-> freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
-> buffers as dvb is set to NULL. The function in which error occurs should
-> do all the cleanup for the allocations it had done.
+On Tue, 16 Mar 2021 12:48:25 +0000, Cristian Marussi wrote:
+> The current SCMI implementation does not provide an interface to easily
+> develop and include a custom vendor protocol implementation as prescribed
+> by the SCMI standard, also because, there is not currently any custom
+> protocol in the upstream to justify the development of a custom interface
+> and its maintenance.
 > 
-> Tested the patch with the reproducer provided by syzbot. This patch
-> fixes the memleak.
+> Moreover the current interface exposes protocol operations to the SCMI
+> driver users attaching per-protocol operations directly to the handle
+> structure, which, in this way, tends to grow indefinitely for each new
+> protocol addition.
 > 
-> Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
-> Resending the same path as some email addresses were missing from the
-> earlier email.
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
-> dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
-> 
->  drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-> index 526424279637..471bd74667e3 100644
-> --- a/drivers/media/usb/em28xx/em28xx-dvb.c
-> +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-> @@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
->  	return result;
->  
->  out_free:
-> +	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
->  	kfree(dvb);
->  	dev->dvb = NULL;
->  	goto ret;
+> [...]
 
-I'd received the following notice and waiting for the review:
-On Thu, 2021-03-25 at 09:06 +0000, Patchwork wrote:
-> Hello,
-> 
-> The following patch (submitted by you) has been updated in Patchwork:
-> 
->  * linux-media: media: em28xx: fix memory leak
->      - http://patchwork.linuxtv.org/project/linux-media/patch/20210324180753.GA410359@LEGION/
->      - for: Linux Media kernel patches
->     was: New
->     now: Under Review
-> 
-> This email is a notification only - you do not need to respond.
-> 
-> Happy patchworking.
-> 
 
-Thanks,
-Usama
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
+[01/38] firmware: arm_scmi: review protocol registration interface
+        https://git.kernel.org/sudeep.holla/c/48dc16e2e5
+[02/38] firmware: arm_scmi: introduce protocol handle definitions
+        https://git.kernel.org/sudeep.holla/c/d7b6cc563a
+[03/38] firmware: arm_scmi: introduce devres get/put protocols operations
+        https://git.kernel.org/sudeep.holla/c/23934efe37
+[04/38] firmware: arm_scmi: make notifications aware of protocols users
+        https://git.kernel.org/sudeep.holla/c/3dd2c81475
+[05/38] firmware: arm_scmi: introduce new devres notification ops
+        https://git.kernel.org/sudeep.holla/c/5ad3d1cf7d
+[06/38] firmware: arm_scmi: refactor events registration
+        https://git.kernel.org/sudeep.holla/c/533c7095b1
+[07/38] firmware: arm_scmi: convert events registration to protocol handles
+        https://git.kernel.org/sudeep.holla/c/b9f7fd907c
+[08/38] firmware: arm_scmi: add new protocol handle core xfer ops
+        https://git.kernel.org/sudeep.holla/c/a4a20b0975
+[09/38] firmware: arm_scmi: add helper to access revision area memory
+        https://git.kernel.org/sudeep.holla/c/3d5d6e84ea
+[10/38] firmware: arm_scmi: port Base protocol to new interface
+        https://git.kernel.org/sudeep.holla/c/8d3581c252
+[11/38] firmware: arm_scmi: port Perf protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/1fec5e6b52
+[12/38] cpufreq: scmi: port driver to the new scmi_perf_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/eb1d35c6e3
+[13/38] firmware: arm_scmi: remove legacy scmi_perf_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/f58315a49c
+[14/38] firmware: arm_scmi: port Power protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/9bc8069c85
+[15/38] firmware: arm_scmi: port GenPD driver to the new scmi_power_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/26f19496a9
+[16/38] firmware: arm_scmi: remove legacy scmi_power_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/0f84576a62
+[17/38] firmware: arm_scmi: port Clock protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/887281c751
+[18/38] clk: scmi: port driver to the new scmi_clk_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/beb076bb18
+[19/38] firmware: arm_scmi: remove legacy scmi_clk_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/137e68659e
+[20/38] firmware: arm_scmi: port Reset protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/7e02934422
+[21/38] reset: reset-scmi: port driver to the new scmi_reset_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/35cc263062
+[22/38] firmware: arm_scmi: remove legacy scmi_reset_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/497ef0cbc6
+[23/38] firmware: arm_scmi: port Sensor protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/9694a7f623
+[24/38] hwmon: (scmi) port driver to the new scmi_sensor_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/987bae41e9
+[25/38] iio/scmi: port driver to the new scmi_sensor_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/25cbdd4609
+[26/38] firmware: arm_scmi: remove legacy scmi_sensor_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/f3690d9729
+[27/38] firmware: arm_scmi: port SystemPower protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/b46d852718
+[28/38] firmware: arm_scmi: port Voltage protocol to new protocols interface
+        https://git.kernel.org/sudeep.holla/c/fe4894d968
+[29/38] regulator: scmi: port driver to the new scmi_voltage_proto_ops interface
+        https://git.kernel.org/sudeep.holla/c/59046d157d
+[30/38] firmware: arm_scmi: remove legacy scmi_voltage_ops protocol interface
+        https://git.kernel.org/sudeep.holla/c/c3ed5e953e
+[31/38] firmware: arm_scmi: make references to handle const
+        https://git.kernel.org/sudeep.holla/c/f0e73cee26
+[32/38] firmware: arm_scmi: cleanup legacy protocol init code
+        https://git.kernel.org/sudeep.holla/c/51fe1b154e
+[33/38] firmware: arm_scmi: cleanup unused core xfer wrappers
+        https://git.kernel.org/sudeep.holla/c/9162afa2ae
+[34/38] firmware: arm_scmi: cleanup events registration transient code
+        https://git.kernel.org/sudeep.holla/c/3cb8c95f4b
+[35/38] firmware: arm_scmi: make notify_priv really private
+        https://git.kernel.org/sudeep.holla/c/a02d7c93c1
+[36/38] firmware: arm_scmi: rename non devres notify_ops
+        https://git.kernel.org/sudeep.holla/c/aa1fd3e4cb
+[37/38] firmware: arm_scmi: add protocol modularization support
+        https://git.kernel.org/sudeep.holla/c/f5800e0bf6
+[38/38] firmware: arm_scmi: add dynamic scmi devices creation
+        https://git.kernel.org/sudeep.holla/c/d4f9dddd21
+
+--
+Regards,
+Sudeep
 
