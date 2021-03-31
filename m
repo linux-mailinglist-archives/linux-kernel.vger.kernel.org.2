@@ -2,177 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E254E34F72E
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDB334F732
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhCaDFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 23:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S233625AbhCaDGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 23:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbhCaDFi (ORCPT
+        with ESMTP id S233349AbhCaDGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:05:38 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30588C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:38 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id l76so13144498pga.6
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 20:05:38 -0700 (PDT)
+        Tue, 30 Mar 2021 23:06:04 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA78C061574;
+        Tue, 30 Mar 2021 20:06:03 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id a12so4645854pfc.7;
+        Tue, 30 Mar 2021 20:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N2ngqVyWuXaPweoaHCYGBgBwQb+GOOcKRlPbrkbWiqM=;
-        b=LeQcohqOOm5cr6wT5INmoqw7KuA+4LIoP8kgspyu7cyNviHOi8D7Yf/jrQtNr867YF
-         8yfaJrrwCs2aH9jAIfyEBq5S6Xx4d8BZTgM3AKB1+x4C8pKQ1vI4VKYQdakBUV5SGRWJ
-         gMqTirk7k1rNz8oXwN1r9zVYbLVEAdmj7MkYE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7IZPrYnPkidjfkwOd95npa8XUYpnaw/oHRnVzmbq1aY=;
+        b=F+f6y0/3BlkhyuHDYfJfPdxpx/7rP5+f7mEribYnja+kgWL8OfuZ7zaafwnBW9N2fm
+         l2ju4kj9Xb22kIYf0uM0iNefKb/SMxTLiBXu/gknw46mV4oZpTUNeA/DZlgXxva4jc5f
+         T9WISUDA4DyZHpKZib+K3RSXNVX+R1km5cgTJJrhDQEKQRCsu/O6PXZNAMm9G+bBDghp
+         vs48gbPQvRy91fdBkfGLcWdDot7dQ0C4VOeIGtVlFfv9kqZqwZ1g8XA9L2+kwyFVueWN
+         4dClyMpFrGR4TFnN2KWnB/frjta8Dzy7f5Ka0Ihid6yoF8PC83NDnxa0bzma+l7Ox4nH
+         Ov4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N2ngqVyWuXaPweoaHCYGBgBwQb+GOOcKRlPbrkbWiqM=;
-        b=UUhO4G/yjsckFpKjy5Z4GdYmucgMXoN9QAGzoMcnFnKizo7Wh/3rtzboKqkjbcJil6
-         DzvRhgBDzGKl7mdUDd1NksUkON0mrOX7XEGZJkt/zwHJhpqGxoA6QuEJeLDTOy+q16UU
-         FcwZ1ndd+sTPhSgAW45BOBMDEhNB0l0u1hdLBnLfxQ2ka1LkaS2MN/6/MljzMbytVb0N
-         9kduwqpWanAXLR9E/q5dJQ4mKZPr0ijFjKycEmB8TrKGMsdhXPnl2fB0C35J3zgp7XX1
-         R4C5929d+BFZfgxqTooh24NbAEF0jvN4h3Vryg59aAYbgRxNvf7d8LHlCR+FuVN+P9YS
-         efBQ==
-X-Gm-Message-State: AOAM530zSMq46ChWZE5JPDp3qAK7wiAaPUGX2K6FiaddJeICXLfqKMg1
-        epUHI2qkhJ5es8IZre7/9vNiOQ==
-X-Google-Smtp-Source: ABdhPJzOtvrGQEJzIFkbI8x/nm7bBVFtdW24D4Lp1GRqZMvhok8UmPCM5DPaNI5MRXBwQJZmbv7O1w==
-X-Received: by 2002:a65:404b:: with SMTP id h11mr1143856pgp.25.1617159937830;
-        Tue, 30 Mar 2021 20:05:37 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:c8c2:b814:df0f:253f])
-        by smtp.gmail.com with ESMTPSA id c6sm389024pfj.99.2021.03.30.20.05.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7IZPrYnPkidjfkwOd95npa8XUYpnaw/oHRnVzmbq1aY=;
+        b=c4SP9IfBZJXb8dhXL6iWNKvcqyPH1OKic8Afpus4yOIzyNYDwuwDiu+L9PiJQ/P2Ql
+         FwQ2lYvq3d4a1QMykjfukwLfD7Y0ZMm0ind7//8PIHzw1LyG8DrtwczY+7FQPMEWvuf/
+         brpE87I/jSot8EBG89EdxgG1rIFHgPTqUCKmIzo/UNnKFUGjpLLEQg4X/fj/Ri5l9RWJ
+         0EM9EDULyX6ZV8F0IwFoeCFybbOoomFvTR4l2V4+1hY2Z5XmD1GER+sPM+Q7ZxX2msTU
+         ihMcDuq/C0pdR1PDFEDYCb2sk5UoH+v0CM1yqQzPH5Sw+iGOYTEscTAgsnNdH7TLUvzT
+         fyww==
+X-Gm-Message-State: AOAM532AHAZkEV+0y1dXfvLCfFUo2/0BGl1dDxFBhGOkQFG78ol2oJQB
+        5zANOe0wnypcwbTBI64Ai/0=
+X-Google-Smtp-Source: ABdhPJzR3p/VuEwkIaS7e9O0f5ShH/3oUMeC6mvL9qRrkJ7j6anwyFNzHSLGiSPd5JZc9f3552HU8A==
+X-Received: by 2002:a63:f014:: with SMTP id k20mr1127406pgh.323.1617159963467;
+        Tue, 30 Mar 2021 20:06:03 -0700 (PDT)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id k21sm375376pfi.28.2021.03.30.20.06.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 20:05:37 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
-Subject: [PATCH v3 12/12] kdump: Use vmlinux_build_id to simplify
-Date:   Tue, 30 Mar 2021 20:05:20 -0700
-Message-Id: <20210331030520.3816265-13-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-In-Reply-To: <20210331030520.3816265-1-swboyd@chromium.org>
-References: <20210331030520.3816265-1-swboyd@chromium.org>
+        Tue, 30 Mar 2021 20:06:02 -0700 (PDT)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     airlied@linux.ie, daniel@ffwll.ch, zhangxuezhi1@yulong.com,
+        robh+dt@kernel.org
+Cc:     sam@ravnborg.org, kraxel@redhat.com, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 0/2] add support for Waveshare 2inch LCD module
+Date:   Wed, 31 Mar 2021 03:05:48 +0000
+Message-Id: <20210331030550.119493-1-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can use the vmlinux_build_id array here now instead of open coding
-it. This mostly consolidates code.
+From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Evan Green <evgreen@chromium.org>
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: <kexec@lists.infradead.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- include/linux/crash_core.h |  6 +-----
- kernel/crash_core.c        | 41 ++------------------------------------
- 2 files changed, 3 insertions(+), 44 deletions(-)
+This patch add support for Waveshare 2inch LCD module.
 
-diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
-index 206bde8308b2..fb8ab99bb2ee 100644
---- a/include/linux/crash_core.h
-+++ b/include/linux/crash_core.h
-@@ -39,7 +39,7 @@ phys_addr_t paddr_vmcoreinfo_note(void);
- #define VMCOREINFO_OSRELEASE(value) \
- 	vmcoreinfo_append_str("OSRELEASE=%s\n", value)
- #define VMCOREINFO_BUILD_ID(value) \
--	vmcoreinfo_append_str("BUILD-ID=%s\n", value)
-+	vmcoreinfo_append_str("BUILD-ID=%20phN\n", value)
- #define VMCOREINFO_PAGESIZE(value) \
- 	vmcoreinfo_append_str("PAGESIZE=%ld\n", value)
- #define VMCOREINFO_SYMBOL(name) \
-@@ -69,10 +69,6 @@ extern unsigned char *vmcoreinfo_data;
- extern size_t vmcoreinfo_size;
- extern u32 *vmcoreinfo_note;
- 
--/* raw contents of kernel .notes section */
--extern const void __start_notes __weak;
--extern const void __stop_notes __weak;
--
- Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
- 			  void *data, size_t data_len);
- void final_note(Elf_Word *buf);
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 825284baaf46..6b560cf9f374 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
-  */
- 
-+#include <linux/buildid.h>
- #include <linux/crash_core.h>
- #include <linux/utsname.h>
- #include <linux/vmalloc.h>
-@@ -378,51 +379,13 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
- }
- EXPORT_SYMBOL(paddr_vmcoreinfo_note);
- 
--#define NOTES_SIZE (&__stop_notes - &__start_notes)
--#define BUILD_ID_MAX SHA1_DIGEST_SIZE
--#define NT_GNU_BUILD_ID 3
--
--struct elf_note_section {
--	struct elf_note	n_hdr;
--	u8 n_data[];
--};
--
- /*
-  * Add build ID from .notes section as generated by the GNU ld(1)
-  * or LLVM lld(1) --build-id option.
-  */
- static void add_build_id_vmcoreinfo(void)
- {
--	char build_id[BUILD_ID_MAX * 2 + 1];
--	int n_remain = NOTES_SIZE;
--
--	while (n_remain >= sizeof(struct elf_note)) {
--		const struct elf_note_section *note_sec =
--			&__start_notes + NOTES_SIZE - n_remain;
--		const u32 n_namesz = note_sec->n_hdr.n_namesz;
--
--		if (note_sec->n_hdr.n_type == NT_GNU_BUILD_ID &&
--		    n_namesz != 0 &&
--		    !strcmp((char *)&note_sec->n_data[0], "GNU")) {
--			if (note_sec->n_hdr.n_descsz <= BUILD_ID_MAX) {
--				const u32 n_descsz = note_sec->n_hdr.n_descsz;
--				const u8 *s = &note_sec->n_data[n_namesz];
--
--				s = PTR_ALIGN(s, 4);
--				bin2hex(build_id, s, n_descsz);
--				build_id[2 * n_descsz] = '\0';
--				VMCOREINFO_BUILD_ID(build_id);
--				return;
--			}
--			pr_warn("Build ID is too large to include in vmcoreinfo: %u > %u\n",
--				note_sec->n_hdr.n_descsz,
--				BUILD_ID_MAX);
--			return;
--		}
--		n_remain -= sizeof(struct elf_note) +
--			ALIGN(note_sec->n_hdr.n_namesz, 4) +
--			ALIGN(note_sec->n_hdr.n_descsz, 4);
--	}
-+	VMCOREINFO_BUILD_ID(vmlinux_build_id);
- }
- 
- static int __init crash_save_vmcoreinfo_init(void)
+Xuezhi Zhang (2):
+  drm/tiny: add support for Waveshare 2inch LCD module
+  dt-bindings: display: sitronix,st7789v-dbi: Add Waveshare 2inch LCD
+    module
+
+ .../display/sitronix,st7789v-dbi.yaml         |  72 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/gpu/drm/tiny/Kconfig                  |  14 +
+ drivers/gpu/drm/tiny/Makefile                 |   1 +
+ drivers/gpu/drm/tiny/st7789v.c                | 269 ++++++++++++++++++
+ 5 files changed, 363 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sitronix,st7789v-dbi.yaml
+ create mode 100644 drivers/gpu/drm/tiny/st7789v.c
+
 -- 
-https://chromeos.dev
+2.25.1
 
