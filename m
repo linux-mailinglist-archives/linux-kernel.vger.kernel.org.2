@@ -2,172 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9E434F8F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C9B34F8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 08:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhCaGpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233877AbhCaGoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:44:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D28619C2;
-        Wed, 31 Mar 2021 06:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617173093;
-        bh=RCtIwtDpANVEhOwxfHGQkphllx8RKXVlHbyBxFGWDK4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=g44+W5BgDfH0Mjud17uzJVuImiF0tl5u9sfPtLjbXhtm20ORWA0v8fwCgdlWIpMMu
-         OfnXztDZwRdq79+Gz01hfvlHohRYt6oKuY+FXAtiZLnrgzFBtYM1MbadNRK73JSUOB
-         hAlAkXlzDsz59wy3xxja7mC8LkquZtM17TYYr7L2cV8RsdmmeoY55K1CnktQ80tyDJ
-         2fD/v2SOK6bfbyouEaELgfG8JJQ+PvIS6TUlMG53YSohQvDSRKbPqLE2C/zH9hiOb7
-         CGhhM1vVL68ilTdg/RkuxgSPd3l3ydh6jfoCllXj6XM7U7d+rt12tAmraeffVYchnk
-         y8IZY8j/Y4ZJA==
-Received: by mail-lf1-f42.google.com with SMTP id n138so27551147lfa.3;
-        Tue, 30 Mar 2021 23:44:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5303M64GCyUOb7t8zVOSJroeWfXgsKMs71M5XNOjAhNr9DJdsKBF
-        GQ1ifsmRAmwiM709Z+vUDmiXEyqMcS3VVMvB2ek=
-X-Google-Smtp-Source: ABdhPJxWYKb5vHi3klerXBGqzxQaEaOsaVtBWtfmdufISdS1fHhvHXRHt+Ss9wnIFsGhtXF8Im+2yqjIQpsIkJolMPg=
-X-Received: by 2002:a05:6512:3709:: with SMTP id z9mr1231142lfr.557.1617173090981;
- Tue, 30 Mar 2021 23:44:50 -0700 (PDT)
+        id S230196AbhCaGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 02:45:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60828 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233882AbhCaGpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:45:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617173103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sOu3IBaGpEdrns18pR1ePpxympivW2akSHdNF3h92OE=;
+        b=JI1muXHc5Gva7b7TOxGhihHE77rGy4pEVoQJduZJYEWbHwA9JpIeNNDr7eTX9aFUxGGP4N
+        6n/W88+kVINuqvknkc/KLZCn5MUbGL77rPVWHdizzpWX5Fe5/dlkQO5JCDbfvmHz2mS9PK
+        VStgt9rshBXK5IA/k3IdEXvC5HZyUQE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-T3j-aA0FNWuBocLvx2Mxcg-1; Wed, 31 Mar 2021 02:44:59 -0400
+X-MC-Unique: T3j-aA0FNWuBocLvx2Mxcg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E8F0100960D;
+        Wed, 31 Mar 2021 06:44:57 +0000 (UTC)
+Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C33E060CE7;
+        Wed, 31 Mar 2021 06:44:54 +0000 (UTC)
+Subject: Re: [PATCH v5] mm/gup: check page hwposion status for coredump.
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Aili Yao <yaoaili@kingsoft.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
+ <20210318044600.GJ3420@casper.infradead.org>
+ <20210318133412.12078eb7@alex-virtual-machine>
+ <20210319104437.6f30e80d@alex-virtual-machine>
+ <20210320003516.GC3420@casper.infradead.org>
+ <20210322193318.377c9ce9@alex-virtual-machine>
+ <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
+ <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
+ <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
+ <20210331104303.145aea53@alex-virtual-machine>
+ <20210331043231.GA26013@hori.linux.bs1.fc.nec.co.jp>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9f49c415-a75a-1ea3-b80c-5ba512331de6@redhat.com>
+Date:   Wed, 31 Mar 2021 08:44:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
- <1616868399-82848-4-git-send-email-guoren@kernel.org> <YGGGqftfr872/4CU@hirez.programming.kicks-ass.net>
- <CAK8P3a2bNH-1VjsZmZJkvGzzZY=ckaaOK9ZGL-oD0DH4jW-+kQ@mail.gmail.com>
- <YGG3JIBVO0w6W3fg@hirez.programming.kicks-ass.net> <YGG6Ms5Rl0AOJL2i@hirez.programming.kicks-ass.net>
- <CAJF2gTRwd0QpUZumDFUN1J=effv67ucUdsQ96PJwjBhPgJ1npw@mail.gmail.com>
- <CAK8P3a3jpQ7dDiVG0s_DQiL6n_MdnhYHMjqFfJ92JJBJFPQZPQ@mail.gmail.com>
- <CAJF2gTSpnHndT9NkrzvNP6xvqV51_DENwh2BHaduUnGyUE=Jaw@mail.gmail.com>
- <CAK8P3a0DkbM=4oBBhA2DWvzMV7DwN1sqOU8Wa1qFtpd_w7iWmQ@mail.gmail.com> <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-In-Reply-To: <CAJF2gTSGLn7katm6YAtkKWJcQRqw36_yqn+aK1pKUSRM5V1zUg@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 31 Mar 2021 14:44:39 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSXY1fCBSZ-Z=8_AcRxoiCOoaNu-5A_JximGJxZY18RzQ@mail.gmail.com>
-Message-ID: <CAJF2gTSXY1fCBSZ-Z=8_AcRxoiCOoaNu-5A_JximGJxZY18RzQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anup Patel <anup@brainfault.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210331043231.GA26013@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
+On 31.03.21 06:32, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Wed, Mar 31, 2021 at 10:43:36AM +0800, Aili Yao wrote:
+>> On Wed, 31 Mar 2021 01:52:59 +0000 HORIGUCHI NAOYA(堀口　直也) <naoya.horiguchi@nec.com> wrote:
+>>> On Fri, Mar 26, 2021 at 03:22:49PM +0100, David Hildenbrand wrote:
+>>>> On 26.03.21 15:09, David Hildenbrand wrote:
+>>>>> On 22.03.21 12:33, Aili Yao wrote:
+>>>>>> When we do coredump for user process signal, this may be one SIGBUS signal
+>>>>>> with BUS_MCEERR_AR or BUS_MCEERR_AO code, which means this signal is
+>>>>>> resulted from ECC memory fail like SRAR or SRAO, we expect the memory
+>>>>>> recovery work is finished correctly, then the get_dump_page() will not
+>>>>>> return the error page as its process pte is set invalid by
+>>>>>> memory_failure().
+>>>>>>
+>>>>>> But memory_failure() may fail, and the process's related pte may not be
+>>>>>> correctly set invalid, for current code, we will return the poison page,
+>>>>>> get it dumped, and then lead to system panic as its in kernel code.
+>>>>>>
+>>>>>> So check the hwpoison status in get_dump_page(), and if TRUE, return NULL.
+>>>>>>
+>>>>>> There maybe other scenario that is also better to check hwposion status
+>>>>>> and not to panic, so make a wrapper for this check, Thanks to David's
+>>>>>> suggestion(<david@redhat.com>).
+>>>>>>
+>>>>>> Link: https://lkml.kernel.org/r/20210319104437.6f30e80d@alex-virtual-machine
+>>>>>> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+>>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>>> Cc: Matthew Wilcox <willy@infradead.org>
+>>>>>> Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>>>>>> Cc: Oscar Salvador <osalvador@suse.de>
+>>>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>>>>> Cc: Aili Yao <yaoaili@kingsoft.com>
+>>>>>> Cc: stable@vger.kernel.org
+>>>>>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>>>>>> ---
+>>>>>>     mm/gup.c      |  4 ++++
+>>>>>>     mm/internal.h | 20 ++++++++++++++++++++
+>>>>>>     2 files changed, 24 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/gup.c b/mm/gup.c
+>>>>>> index e4c224c..6f7e1aa 100644
+>>>>>> --- a/mm/gup.c
+>>>>>> +++ b/mm/gup.c
+>>>>>> @@ -1536,6 +1536,10 @@ struct page *get_dump_page(unsigned long addr)
+>>>>>>     				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
+>>>>>>     	if (locked)
+>>>>>>     		mmap_read_unlock(mm);
+>>>>>
+>>>>> Thinking again, wouldn't we get -EFAULT from __get_user_pages_locked()
+>>>>> when stumbling over a hwpoisoned page?
+>>>>>
+>>>>> See __get_user_pages_locked()->__get_user_pages()->faultin_page():
+>>>>>
+>>>>> handle_mm_fault()->vm_fault_to_errno(), which translates
+>>>>> VM_FAULT_HWPOISON to -EFAULT, unless FOLL_HWPOISON is set (-> -EHWPOISON)
+>>>>>
+>>>>> ?
+>>>
+>>> We could get -EFAULT, but sometimes not (depends on how memory_failure() fails).
+>>>
+>>> If we failed to unmap, the page table is not converted to hwpoison entry,
+>>> so __get_user_pages_locked() get the hwpoisoned page.
+>>>
+>>> If we successfully unmapped but failed in truncate_error_page() for example,
+>>> the processes mapping the page would get -EFAULT as expected.  But even in
+>>> this case, other processes could reach the error page via page cache and
+>>> __get_user_pages_locked() for them could return the hwpoisoned page.
+>>>
+>>>>
+>>>> Or doesn't that happen as you describe "But memory_failure() may fail, and
+>>>> the process's related pte may not be correctly set invalid" -- but why does
+>>>> that happen?
+>>>
+>>> Simply because memory_failure() doesn't handle some page types like ksm page
+>>> and zero page. Or maybe shmem thp also belongs to this class.
 
-On Wed, Mar 31, 2021 at 12:18 PM Guo Ren <guoren@kernel.org> wrote:
->
-> On Tue, Mar 30, 2021 at 3:12 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Tue, Mar 30, 2021 at 4:26 AM Guo Ren <guoren@kernel.org> wrote:
-> > > On Mon, Mar 29, 2021 at 9:56 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > On Mon, Mar 29, 2021 at 2:52 PM Guo Ren <guoren@kernel.org> wrote:
-> > > > > On Mon, Mar 29, 2021 at 7:31 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > > >
-> > > > > > What's the architectural guarantee on LL/SC progress for RISC-V ?
-> > > >
-> > > >    "When LR/SC is used for memory locations marked RsrvNonEventual,
-> > > >      software should provide alternative fall-back mechanisms used when
-> > > >      lack of progress is detected."
-> > > >
-> > > > My reading of this is that if the example you tried stalls, then either
-> > > > the PMA is not RsrvEventual, and it is wrong to rely on ll/sc on this,
-> > > > or that the PMA is marked RsrvEventual but the implementation is
-> > > > buggy.
-> > >
-> > > Yes, PMA just defines physical memory region attributes, But in our
-> > > processor, when MMU is enabled (satp's value register > 2) in s-mode,
-> > > it will look at our custom PTE's attributes BIT(63) ref [1]:
-> > >
-> > >    PTE format:
-> > >    | 63 | 62 | 61 | 60 | 59 | 58-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
-> > >      SO   C    B    SH   SE    RSW   D   A   G   U   X   W   R   V
-> > >      ^    ^    ^    ^    ^
-> > >    BIT(63): SO - Strong Order
-> > >    BIT(62): C  - Cacheable
-> > >    BIT(61): B  - Bufferable
-> > >    BIT(60): SH - Shareable
-> > >    BIT(59): SE - Security
-> > >
-> > > So the memory also could be RsrvNone/RsrvEventual.
-> >
-> > I was not talking about RsrvNone, which would clearly mean that
-> > you cannot use lr/sc at all (trap would trap, right?), but "RsrvNonEventual",
-> > which would explain the behavior you described in an earlier reply:
-> >
-> > | u32 a = 0x55aa66bb;
-> > | u16 *ptr = &a;
-> > |
-> > | CPU0                       CPU1
-> > | =========             =========
-> > | xchg16(ptr, new)     while(1)
-> > |                                     WRITE_ONCE(*(ptr + 1), x);
-> > |
-> > | When we use lr.w/sc.w implement xchg16, it'll cause CPU0 deadlock.
-> >
-> > As I understand, this example must not cause a deadlock on
-> > a compliant hardware implementation when the underlying memory
-> > has RsrvEventual behavior, but could deadlock in case of
-> > RsrvNonEventual
-> Thx for the nice explanation:
->  - RsrvNonEventual - depends on software fall-back mechanisms, and
-> just I'm worried about.
->  - RsrvEventual - HW would provide the eventual success guarantee.
-In riscv-spec 8.3 Eventual Success of Store-Conditional Instructions
+Thanks for that info!
 
-I found:
-"As a consequence of the eventuality guarantee, if some harts in an
-execution environment are
-executing constrained LR/SC loops, and no other harts or devices in
-the execution environment
-execute an unconditional store or AMO to that reservation set, then at
-least one hart will
-eventually exit its constrained LR/SC loop. *** By contrast, if other
-harts or devices continue to
-write to that reservation set, it ***is not guaranteed*** that any
-hart will exit its LR/SC loop.*** "
+>>>
+>>>>
+>>>> On a similar thought, should get_user_pages() never return a page that has
+>>>> HWPoison set? E.g., check also for existing PTEs if the page is hwpoisoned?
+>>>
+>>> Make sense to me. Maybe inserting hwpoison check into follow_page_pte() and
+>>> follow_huge_pmd() would work well.
+>>
+>> I think we should take more care to broadcast the hwpoison check to other cases,
+>> SIGBUS coredump is such a case that it is supposed to not touch the poison page,
+>> and if we return NULL for this, the coredump process will get a successful finish.
+>>
+>> Other cases may also meet the requirements like coredump, but we need to identify it,
+>> that's the poison check wrapper's purpose. If not, we may break the integrity of the
+>> related action, which may be no better than panic.
+> 
+> If you worry about regression and would like to make this new behavior conditional,
+> we could use FOLL_HWPOISON to specify that the caller is hwpoison-aware so that
+> any !FOLL_HWPOISON caller ignores the hwpoison check and works as it does now.
+> This approach looks to me helpful because it would encourage developers touching
+> gup code to pay attention to FOLL_HWPOISON code.
 
-Seems RsrvEventual couldn't solve the code's problem I've mentioned.
-
->
-> >
-> > > [1] https://github.com/c-sky/csky-linux/commit/e837aad23148542771794d8a2fcc52afd0fcbf88
-> > >
-> > > >
-> > > > It also seems that the current "amoswap" based implementation
-> > > > would be reliable independent of RsrvEventual/RsrvNonEventual.
-> > >
-> > > Yes, the hardware implementation of AMO could be different from LR/SC.
-> > > AMO could use ACE snoop holding to lock the bus in hw coherency
-> > > design, but LR/SC uses an exclusive monitor without locking the bus.
-> > >
-> > > RISC-V hasn't CAS instructions, and it uses LR/SC for cmpxchg. I don't
-> > > think LR/SC would be slower than CAS, and CAS is just good for code
-> > > size.
-> >
-> > What I meant here is that the current spinlock uses a simple amoswap,
-> > which presumably does not suffer from the lack of forward process you
-> > described.
-> Does that mean we should prevent using LR/SC (if RsrvNonEventual)?
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
-
-
+FOLL_HWPOISON might be the right start, indeed.
 
 -- 
-Best Regards
- Guo Ren
+Thanks,
 
-ML: https://lore.kernel.org/linux-csky/
+David / dhildenb
+
