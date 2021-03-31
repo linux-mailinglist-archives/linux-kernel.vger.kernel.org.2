@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C12D350A2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAAF350A2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhCaWWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbhCaWV6 (ORCPT
+        id S232716AbhCaWZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:25:04 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:38886 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhCaWYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:21:58 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B6CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:21:58 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id w8so17851pjf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TNLJMnrWivn3GFXa2+TzAqtoU0ub+N8TkRxfn0l4Flg=;
-        b=gQ9/NBVl4giS83ythLJ0Bf81bKdwuuKhPnKsxUuqiWwWf/EMxGPzvbYRbSyqotN4vm
-         22EKYNZKYhFvYdFjNrdwZD1oXdiJNoVE5omarseI/GrnGjOB5BDydz49ERLb9MK7dKlQ
-         By0u36NM/69ysYdyMdruTfzpIIE7UpbEMJtt7lzi+QwhAFRgyRU9s9CkGN8ph6GDFzx3
-         SlTfRLDjSw0ce8sRcyWWtdKK5kWDL1z4pIK78F5XOkVRJHNHGWulas6YmOsXa4jh+JLQ
-         0/sZic99pWXb3wv/EXvA27ef5u8Dt+Ye2h2mcpxzWjrzfI9/X2Tu6eccjmANnNLF/94e
-         kEYQ==
+        Wed, 31 Mar 2021 18:24:53 -0400
+Received: by mail-ot1-f46.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so362925otk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:24:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TNLJMnrWivn3GFXa2+TzAqtoU0ub+N8TkRxfn0l4Flg=;
-        b=jFCcyGLWpCKifYywyUK1gUzzBquVso9MQdQLD3JJWpI55qdCmCLBo7QM8VEbULdR+W
-         eUHWgC9zMGlDbMZSRlDARUpxklq2xrNijWtWFupKjXRGM2NesNvrJAq/+Z1ArjMDyM0D
-         MbBsK78O0Ys/b4t3TYfYGEBjGZI+U9emNlwhCgQx/Mqm7b0OJrmp8IyZVaeQZCRpxqeI
-         Boc/RgzdJZWDKF/l9odLN1eByXmbFwZhr6CqWB3tqMabyPl2dqcoP9cnRSXmzOUKk9jB
-         jWErCTiNgigKjw4c8pIop4yajQOewDP5iUS6KH7Nbwin9PoSpPOY/MGs5Ytpsa187fOL
-         9IaQ==
-X-Gm-Message-State: AOAM5300ssGB48RkPR6qoTmf3gfR4rgj1hmGeM+uTCt57OkQdc+1xts+
-        4cEJ3L9pr8ajYnTq21oLYTlXG3VdXfiHNw==
-X-Google-Smtp-Source: ABdhPJw11PZCJPfSeDHa53TUna9HFcJfFsVjGOJ7EGP/H4fwhQeTvZqLMv5AwD/nK53ex5x3+kL+Yw==
-X-Received: by 2002:a17:90b:3553:: with SMTP id lt19mr5528995pjb.222.1617229317806;
-        Wed, 31 Mar 2021 15:21:57 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 138sm3260059pfv.192.2021.03.31.15.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 15:21:57 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 22:21:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 07/13] KVM: x86/mmu: Make TDP MMU root refcount atomic
-Message-ID: <YGT2AV6lhDG5yLkW@google.com>
-References: <20210331210841.3996155-1-bgardon@google.com>
- <20210331210841.3996155-8-bgardon@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OZW7ZXqwQfZjqkb90Ox/iujIj7/RYaX8vsIM9kTDCa4=;
+        b=Oh3L54U0ltXWoQokDVr3Me4wNMgctHAF8iqOxZgB4jn2Dl1TXS8ACzFrCYRAH7lKTX
+         5thqPmsntbWyE32hsKj+ajntVtuL98Q7EygfOwqt2trTjtKkhty3ex5m2hcy0AFfkLEg
+         r727cGPihSCkRoBYGSojN7z5H9VyL6O8pfC8qOXeH96ZK7HwEDDLmCnH873n0m6oVF3R
+         dlG7jwITvqDOA8uWWkpxeuTTkxf6XBsDZNdHXJZp1k4xmH6mDD9MRV8nvxM2De6pTXmq
+         CMsuWRDX/oMH5ua1OOn1V5IvziIRqpXi2NbDx/QE+O+YsnM9EVSXLUkTs6iXzYpI0xqV
+         UTPw==
+X-Gm-Message-State: AOAM530Wm7+cONNsnLo8F3AwRAa685+ZD7RaWjvm0kG2fh6IQYasjMWE
+        4e4iJVjvkZ+jusJGWbCDUhM=
+X-Google-Smtp-Source: ABdhPJxWYblKkQ2Rbcl1pEHpKNGN1gKTw5zwYhFckf9cnHZFpl4w5pzn/FHdyv6KV9OS04qRmMBjuA==
+X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr4394137otp.295.1617229492582;
+        Wed, 31 Mar 2021 15:24:52 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:6302:5415:8f3:c3fc? ([2600:1700:65a0:78e0:6302:5415:8f3:c3fc])
+        by smtp.gmail.com with ESMTPSA id n6sm696289oop.48.2021.03.31.15.24.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 15:24:51 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     "Ewan D. Milne" <emilne@redhat.com>,
+        Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>
+Cc:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+ <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+ <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+ <e4bee13c-647a-55ff-2017-27ccfc314973@suse.de>
+ <ad2fcbcd6707de4e219b39b012f6e42cb03dc92d.camel@redhat.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <5715ef78-eaf1-dcb6-c2a2-f4725e1a01c4@grimberg.me>
+Date:   Wed, 31 Mar 2021 15:24:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331210841.3996155-8-bgardon@google.com>
+In-Reply-To: <ad2fcbcd6707de4e219b39b012f6e42cb03dc92d.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Ben Gardon wrote:
-> In order to parallelize more operations for the TDP MMU, make the
-> refcount on TDP MMU roots atomic, so that a future patch can allow
-> multiple threads to take a reference on the root concurrently, while
-> holding the MMU lock in read mode.
+
+>> What we can do, though, is checking the 'state' field in the tcp
+>> request, and only allow completions for commands which are in a state
+>> allowing for completions.
+>>
+>> Let's see if I can whip up a patch.
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
+> That would be great.  BTW in the crash dump I am looking at now, it
+> looks like pdu->command_id was zero in nvme_tcp_recv_data(), and
+> blk_mq_tag_to_rq() returned a request struct that had not been used.
+> So I think we do need to check that the tag was actually allocated.
 
-...
-
-> @@ -88,10 +88,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->  		next_root = list_first_entry(&kvm->arch.tdp_mmu_roots,
->  					     typeof(*next_root), link);
->  
-> +	while (!list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link) &&
-> +	       !kvm_tdp_mmu_get_root(kvm, next_root))
-> +		next_root = list_next_entry(next_root, link);
-> +
->  	if (list_entry_is_head(next_root, &kvm->arch.tdp_mmu_roots, link))
->  		next_root = NULL;
-> -	else
-> -		kvm_tdp_mmu_get_root(kvm, next_root);
->  
->  	if (prev_root)
->  		kvm_tdp_mmu_put_root(kvm, prev_root);
-> @@ -158,14 +160,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
->  
->  	/* Check for an existing root before allocating a new one. */
->  	for_each_tdp_mmu_root(kvm, root) {
-> -		if (root->role.word == role.word) {
-> -			kvm_tdp_mmu_get_root(kvm, root);
-> +		if (root->role.word == role.word &&
-> +		    kvm_tdp_mmu_get_root(kvm, root))
-
-I'm not opposed to changing this logic while making the refcount atomic, but it
-needs to be explained in the changelog.  As is, the changelog makes it sound
-like the patch is a pure refactoring of the type.
+request tag can't be zero? I forget...
