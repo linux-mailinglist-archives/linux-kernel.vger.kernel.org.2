@@ -2,82 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114CA350AE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662B1350AF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbhCaXes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34808 "EHLO mail.kernel.org"
+        id S232655AbhCaXoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhCaXec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:34:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29A7C60724;
-        Wed, 31 Mar 2021 23:34:31 +0000 (UTC)
+        id S229486AbhCaXng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:43:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BBB760C3E;
+        Wed, 31 Mar 2021 23:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617233671;
-        bh=VHAWYRxy4bXutKQaag3jfIG0mzVbXNUJpeALfhV5//A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lS+AwwMVCTIo09zlTKi4crYXm1RZfX3vKkF85+eCjryasiCbM1xrvOtDv+/mxAKZg
-         4Ri8i+9lw2Fn3FRPM0x9Sf66YU7FqFO5U8fv30kRzJkWUfiOCPMFkV1Yg8bA0opOhZ
-         Q5yAi3Cr1SogpVAe6mlqngN4ZUpiI0n8fupFhxJMHf7p9QyrR0cCuzkubdw0tQwsfF
-         Bf6tbldLGu/mKxRzmNJd/09arSK6lVgEzksGj+ORJXiTXj34GxRDgPQEcHNF6uSc/c
-         pMZSpd/2hZtjMog6+w33jGso1J6W7rqp/AvMRU8Szfb0K//JHWDVBh66LD2Ip7Cr19
-         Fe7xvtDDgbqVw==
-Date:   Wed, 31 Mar 2021 16:34:29 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Gstir <david@sigma-star.at>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-Message-ID: <YGUHBelwhvJDhKoo@gmail.com>
-References: <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
- <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
- <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
- <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
- <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
- <YGDpA4yPWmTWEyx+@kernel.org>
- <YGOcZtkw3ZM5kvl6@gmail.com>
- <YGUGYi4Q3Uxyol6r@kernel.org>
+        s=k20201202; t=1617234216;
+        bh=y9REhSnSTBr9I8rgkZ3Ma5J00fwbHmJxEfLgak8mJKU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QGejDCJapO204hq/HX5MNq1WHOclMyy6AqHcLAu74CLi816sbHVUXKGEW543lmu3s
+         CwFGh/wK1737ywIRXHSdQTV7RtxZX87I+r2lpHhAHk2yR03t6wd894lMFwiman1+AD
+         x/3uPUCM9z/7oRVGvxA4KuilfLQEW01bQXojpsJ83GuksxOUd77O1C84pZiquJ7HIj
+         FG/8q4agFMCKzW3BBK0SZ7eZkDz7gCdwQyFznt9CAtPRkghK2Y+TMa3Czai5e8R41O
+         OXwmWBDXzrbY3zn+2BZ/w4Ei9K2DwlE8T6y5Vlgye3vEW2r3+cvXT/DDeFqFYD6+RN
+         ZRluM44BFaWzA==
+Date:   Wed, 31 Mar 2021 17:43:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] scsi: ufs: Fix out-of-bounds warnings in
+ ufshcd_exec_raw_upiu_cmd
+Message-ID: <20210331224338.GA347171@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGUGYi4Q3Uxyol6r@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:31:46AM +0300, Jarkko Sakkinen wrote:
-> 
-> It's a bummer but uapi is the god in the end. Since TPM does not do it
-> today, that behaviour must be supported forever. That's why a boot option
-> AND a warning would be the best compromise.
-> 
+Fix the following out-of-bounds warnings by enclosing
+some structure members into new structure objects upiu_req
+and upiu_rsp:
 
-It's not UAPI if there is no way for userspace to tell if it changed.
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [29, 48] from the object at 'treq' is out of the bounds of referenced subobject 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [61, 80] from the object at 'treq' is out of the bounds of referenced subobject 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
+arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset [29, 48] from the object at 'treq' is out of the bounds of referenced subobject 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
+arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset [61, 80] from the object at 'treq' is out of the bounds of referenced subobject 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
 
-- Eric
+Refactor the code by making it more structured.
+
+The problem is that the original code is trying to copy data into a
+bunch of struct members adjacent to each other in a single call to
+memcpy(). Now that a new struct _upiu_req_ enclosing all those adjacent
+members is introduced, memcpy() doesn't overrun the length of
+&treq.req_header, because the address of the new struct object
+_upiu_req_ is used as the destination, instead. The same problem
+is present when memcpy() overruns the length of the source
+&treq.rsp_header; in this case the address of the new struct
+object _upiu_rsp_ is used, instead.
+
+Also, this helps with the ongoing efforts to enable -Warray-bounds
+and avoid confusing the compiler.
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/60640558.lsAxiK6otPwTo9rv%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 28 ++++++++++++++++------------
+ drivers/scsi/ufs/ufshci.h | 22 +++++++++++++---------
+ 2 files changed, 29 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 7539a4ee9494..324eb641e66f 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -336,11 +336,15 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+ 		return;
+ 
+ 	if (str_t == UFS_TM_SEND)
+-		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
+-				  &descp->input_param1, UFS_TSF_TM_INPUT);
++		trace_ufshcd_upiu(dev_name(hba->dev), str_t,
++				  &descp->upiu_req.req_header,
++				  &descp->upiu_req.input_param1,
++				  UFS_TSF_TM_INPUT);
+ 	else
+-		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
+-				  &descp->output_param1, UFS_TSF_TM_OUTPUT);
++		trace_ufshcd_upiu(dev_name(hba->dev), str_t,
++				  &descp->upiu_rsp.rsp_header,
++				  &descp->upiu_rsp.output_param1,
++				  UFS_TSF_TM_OUTPUT);
+ }
+ 
+ static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
+@@ -6420,7 +6424,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 	spin_lock_irqsave(host->host_lock, flags);
+ 	task_tag = hba->nutrs + free_slot;
+ 
+-	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
++	treq->upiu_req.req_header.dword_0 |= cpu_to_be32(task_tag);
+ 
+ 	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
+ 	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
+@@ -6493,16 +6497,16 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba, int lun_id, int task_id,
+ 	treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
+ 
+ 	/* Configure task request UPIU */
+-	treq.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
++	treq.upiu_req.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
+ 				  cpu_to_be32(UPIU_TRANSACTION_TASK_REQ << 24);
+-	treq.req_header.dword_1 = cpu_to_be32(tm_function << 16);
++	treq.upiu_req.req_header.dword_1 = cpu_to_be32(tm_function << 16);
+ 
+ 	/*
+ 	 * The host shall provide the same value for LUN field in the basic
+ 	 * header and for Input Parameter.
+ 	 */
+-	treq.input_param1 = cpu_to_be32(lun_id);
+-	treq.input_param2 = cpu_to_be32(task_id);
++	treq.upiu_req.input_param1 = cpu_to_be32(lun_id);
++	treq.upiu_req.input_param2 = cpu_to_be32(task_id);
+ 
+ 	err = __ufshcd_issue_tm_cmd(hba, &treq, tm_function);
+ 	if (err == -ETIMEDOUT)
+@@ -6513,7 +6517,7 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba, int lun_id, int task_id,
+ 		dev_err(hba->dev, "%s: failed, ocs = 0x%x\n",
+ 				__func__, ocs_value);
+ 	else if (tm_response)
+-		*tm_response = be32_to_cpu(treq.output_param1) &
++		*tm_response = be32_to_cpu(treq.upiu_rsp.output_param1) &
+ 				MASK_TM_SERVICE_RESP;
+ 	return err;
+ }
+@@ -6693,7 +6697,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
+ 		treq.header.dword_0 = cpu_to_le32(UTP_REQ_DESC_INT_CMD);
+ 		treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
+ 
+-		memcpy(&treq.req_header, req_upiu, sizeof(*req_upiu));
++		memcpy(&treq.upiu_req, req_upiu, sizeof(*req_upiu));
+ 
+ 		err = __ufshcd_issue_tm_cmd(hba, &treq, tm_f);
+ 		if (err == -ETIMEDOUT)
+@@ -6706,7 +6710,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
+ 			break;
+ 		}
+ 
+-		memcpy(rsp_upiu, &treq.rsp_header, sizeof(*rsp_upiu));
++		memcpy(rsp_upiu, &treq.upiu_rsp, sizeof(*rsp_upiu));
+ 
+ 		break;
+ 	default:
+diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
+index 6795e1f0e8f8..235236859285 100644
+--- a/drivers/scsi/ufs/ufshci.h
++++ b/drivers/scsi/ufs/ufshci.h
+@@ -482,17 +482,21 @@ struct utp_task_req_desc {
+ 	struct request_desc_header header;
+ 
+ 	/* DW 4-11 - Task request UPIU structure */
+-	struct utp_upiu_header	req_header;
+-	__be32			input_param1;
+-	__be32			input_param2;
+-	__be32			input_param3;
+-	__be32			__reserved1[2];
++	struct {
++		struct utp_upiu_header	req_header;
++		__be32			input_param1;
++		__be32			input_param2;
++		__be32			input_param3;
++		__be32			__reserved1[2];
++	} upiu_req;
+ 
+ 	/* DW 12-19 - Task Management Response UPIU structure */
+-	struct utp_upiu_header	rsp_header;
+-	__be32			output_param1;
+-	__be32			output_param2;
+-	__be32			__reserved2[3];
++	struct {
++		struct utp_upiu_header	rsp_header;
++		__be32			output_param1;
++		__be32			output_param2;
++		__be32			__reserved2[3];
++	} upiu_rsp;
+ };
+ 
+ #endif /* End of Header */
+-- 
+2.27.0
+
