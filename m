@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB6134FD88
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542F34FD89
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234843AbhCaJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:56:00 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:37260 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbhCaJzl (ORCPT
+        id S234871AbhCaJ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:56:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50514 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234758AbhCaJz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:55:41 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210331095539euoutp019cfa68ce17dc8176cee351a90cec8921~xZMVaZ3WA3181331813euoutp01d
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:55:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210331095539euoutp019cfa68ce17dc8176cee351a90cec8921~xZMVaZ3WA3181331813euoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617184540;
-        bh=gMJiOGrhF20BZsQobIHMer5qNyPyBLX7IwREEKYEdSE=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=D0mEM8Suo2myVpBQNoK/SFmgpg5dXLmlcNPdSOSbTUtN9XN+HejF+iSR0fZ9FJ/cD
-         bHH5oie3CH1RB1kpMtobheqjBhE1kWbmMzbgGiLUzBjzhZH9O0/rt1eX5mDHapFM+l
-         7DU4Woxj30fHBw4nq9oyPNbZU3R0TCHshnYiU/qU=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210331095539eucas1p26de1039b3796b58b6c3a2bfae6c25e52~xZMVIXH341615516155eucas1p2A;
-        Wed, 31 Mar 2021 09:55:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 63.C3.09439.B1744606; Wed, 31
-        Mar 2021 10:55:39 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210331095539eucas1p298f10946de0d7fdfc7234d8694179327~xZMUmeuDU2419424194eucas1p2v;
-        Wed, 31 Mar 2021 09:55:39 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210331095539eusmtrp16a7b7f506baf9522098fb70bca5bb285~xZMUlgkjD1808918089eusmtrp1h;
-        Wed, 31 Mar 2021 09:55:39 +0000 (GMT)
-X-AuditID: cbfec7f5-c1bff700000024df-d3-6064471be993
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 6B.07.08696.A1744606; Wed, 31
-        Mar 2021 10:55:38 +0100 (BST)
-Received: from localhost (unknown [106.210.131.79]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210331095535eusmtip135b3ced999d488f1f23ad7ed22a68cb2~xZMRsUTmf0245102451eusmtip1z;
-        Wed, 31 Mar 2021 09:55:35 +0000 (GMT)
-Message-ID: <c88a04f2-5968-dd3f-562d-ddf67cb983db@samsung.com>
-Date:   Wed, 31 Mar 2021 11:55:34 +0200
+        Wed, 31 Mar 2021 05:55:57 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617184556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n8egLNe9biouITjDj57a69uKUzbO74IUflUeJpXEdpM=;
+        b=vgFKIwF1PDKfOwsLvywFqtaLQ1rldkb8KcKa17SY6OccT9RxhvdquFLWKyAcjsF+l7IzEN
+        qsx+Uph3aia+K/A0I1zabNKRK5t6zFcNEU4He2oDTK2e+h+cltQUfPj6tN14h+tsvLjnLS
+        QM4E9QH9Mp3CkrSZoso4BogGL1sn45Tb4HG95rL3u8Vw7bUs0dFJ2pg6B8R2hUJSgJs2U2
+        pSrV10Chu0tqAPCEjEAogI5V+4QI2Paj0IH8o2P8J++LAQWCT3gWgATncpxHz0K63yuCS4
+        I4/ZOqPE1XCZCnfIVGsjF5LQqwkanChLSJh1ol13z2OLweXAkeANYYbYC9gICQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617184556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n8egLNe9biouITjDj57a69uKUzbO74IUflUeJpXEdpM=;
+        b=96Cww/ZrNvgw9pMzmh5ehCcFirJhESxBhLoSS9Xm9UvtZUJHcVgW2k375Y6GzDK4DTtJt1
+        bUVhyatgMN7+yTBA==
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>
+Cc:     Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 2/6] mm/page_alloc: Convert per-cpu list protection to local_lock
+In-Reply-To: <20210329120648.19040-3-mgorman@techsingularity.net>
+References: <20210329120648.19040-1-mgorman@techsingularity.net> <20210329120648.19040-3-mgorman@techsingularity.net>
+Date:   Wed, 31 Mar 2021 11:55:56 +0200
+Message-ID: <877dln640j.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
-        Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH v2 07/14] drm/bridge: ti-sn65dsi86: Get rid of the
- useless detect() function
-Content-Language: en-GB
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <20210329195255.v2.7.I826adf4faeb7f39f560b387f6b380e639c6986c8@changeid>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJKsWRmVeSWpSXmKPExsWy7djP87rS7ikJButeKVj0njvJZHF6/zsW
-        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
-        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
-        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFFcNimpOZllqUX6dglcGUsvf2Qp2MpT
-        MaH1H3MD4yauLkZODgkBE4nl39+wdzFycQgJrGCUeL6xkRHC+cIosev4MVYI5zOjxOfb/9lg
-        Wtr2nmQGsYUEljNKnL3MBFH0glFi7ftdQEUcHLwCdhJ7H7qBmCwCqhIPTnCAlPMKCEqcnPmE
-        BcQWFUiQWHVjORNIibBAksTN3cIgYWYBcYmmLyvB1ooI/GOUWD3xMdh4ZoHPTBKfphxiAqli
-        E9CU+Lv5Jtg9nAKhEmsfL2OD6JaXaN46mxnizlucEkve80PYLhKrlh9lhbCFJV4d38IOYctI
-        nJ7cwwJh10vcX9HCDLJMQqCDUWLrhp1Qg6wl7pz7BfYXM9Di9bv0IcKOEjcvTWUECUsI8Enc
-        eCsIcQKfxKRt05khwrwSHW1CENWKEvfPboUaKC6x9MJXtgmMSrOQQmUWkvdnIXlmFsLeBYws
-        qxjFU0uLc9NTi43zUsv1ihNzi0vz0vWS83M3MQJT4+l/x7/uYFzx6qPeIUYmDsZDjBIczEoi
-        vMIHEhOEeFMSK6tSi/Lji0pzUosPMUpzsCiJ8+7auiZeSCA9sSQ1OzW1ILUIJsvEwSnVwKQ0
-        aULG/SW1emuWZU2ctVpsXuJSq70L7vy5KSaddu5yWbdvKvOdTZVPSmdM38qy9lFBa01pduM+
-        q+0cZ9bbTbG8bH1v/gvvaQ8id2k+PP278MQnlVveyi8LzaZv5Zm3/kj5k3W2Vz6x3m6Zecpr
-        g2XZX/m5G5fsNpJ+v2BZeniRDYvw+rSzUXnHHaZaea0WD+t2kDkmuuu0h5CKzunLRyq67Fk2
-        SztWOTh9uxSmdftbkMoCBY8fdmcc3PzOmAieXZrROfkhj82v/fOSw6acZyld1ZgxrbD8df+i
-        v+8NxTjFLma/Pixw6sTchvX7WQ7+vVzH6vZqT37BhisXhV6ln9xYsG3hhWtnE/a2tc2Vn7Hy
-        jBJLcUaioRZzUXEiAFy1i638AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsVy+t/xu7pS7ikJBtsOWlv0njvJZHF6/zsW
-        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
-        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
-        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFF6NkX5pSWpChn5xSW2StGGFkZ6hpYW
-        ekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GUsvf2Qp2MpTMaH1H3MD4yauLkZODgkBE4m2
-        vSeZuxi5OIQEljJK3FhwkBUiIS6xe/5bZghbWOLPtS42iKJnjBIzexaydDFycPAK2EnsfegG
-        YrIIqEo8OMEBUs4rIChxcuYTFhBbVCBB4uyHeUwgtrBAksTOB+2MIDYz0PimLytZQUaKCDQw
-        SVy6u5gJxGEW+Mok0fJqKTtIlZDAbUaJyd9rQWw2AU2Jv5tvsoHYnAKhEmsfL2ODmGQm0bW1
-        C2qqvETz1tnMExiFZiE5ZBaShbOQtMxC0rKAkWUVo0hqaXFuem6xkV5xYm5xaV66XnJ+7iZG
-        YELYduznlh2MK1991DvEyMTBeIhRgoNZSYRX+EBighBvSmJlVWpRfnxRaU5q8SFGU2BgTGSW
-        Ek3OB6akvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUamFINha07
-        DU6UT/594BHzcj+Gl0m1mzbrNRj8ZVNb9HWrWsB6GcsJ5ufLVjkz1U1kMFr9qLVWf/8ztxXe
-        rLI7/fwdn1wRtv1TKBX+jGtx1QbGF7xXj7WuU5oqox+84PPso5/P35G2K/gZvVs+/OqqGRHs
-        /TOmv/uYZFrUvylUbprrnTOaPy98cDtXcmP6P6UZIalXi7ZYhP35P5dZIJd5H5uxcm3mtGPH
-        NWtnK1/Q+C1wvtjxgS/3ja7Dd8uezN2wIa9YmCEtM41JOKWp0ZWfJ0GjoO2qSW5OMtvP4vRk
-        wQ1rXT7ynPt49da3mA31raefMggWREwR/n7ZJCPXLK5tdrnIjcKiB8s9tj2vOO+xUomlOCPR
-        UIu5qDgRAGNyjryRAwAA
-X-CMS-MailID: 20210331095539eucas1p298f10946de0d7fdfc7234d8694179327
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210330025424eucas1p2f0a5f19db47a75c27d65f07cb4bfcd4d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210330025424eucas1p2f0a5f19db47a75c27d65f07cb4bfcd4d
-References: <20210330025345.3980086-1-dianders@chromium.org>
-        <CGME20210330025424eucas1p2f0a5f19db47a75c27d65f07cb4bfcd4d@eucas1p2.samsung.com>
-        <20210329195255.v2.7.I826adf4faeb7f39f560b387f6b380e639c6986c8@changeid>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29 2021 at 13:06, Mel Gorman wrote:
+> There is a lack of clarity of what exactly local_irq_save/local_irq_restore
+> protects in page_alloc.c . It conflates the protection of per-cpu page
+> allocation structures with per-cpu vmstat deltas.
+>
+> This patch protects the PCP structure using local_lock which
+> for most configurations is identical to IRQ enabling/disabling.
+> The scope of the lock is still wider than it should be but this is
+> decreased in later patches. The per-cpu vmstat deltas are protected by
+> preempt_disable/preempt_enable where necessary instead of relying on
+> IRQ disable/enable.
 
-W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
-> If we just leave the detect() function as NULL then the upper layers
-> assume we're always connected. There's no reason for a stub.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Yes, this goes into the right direction and I really appreciate the
+scoped protection for clarity sake.
 
-Regards
-Andrzej
-> ---
->
-> (no changes since v1)
->
->   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 12 ------------
->   1 file changed, 12 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 50a52af8e39f..a0a00dd1187c 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -306,20 +306,8 @@ static struct drm_connector_helper_funcs ti_sn_bridge_connector_helper_funcs = {
->   	.mode_valid = ti_sn_bridge_connector_mode_valid,
->   };
->   
-> -static enum drm_connector_status
-> -ti_sn_bridge_connector_detect(struct drm_connector *connector, bool force)
-> -{
-> -	/**
-> -	 * TODO: Currently if drm_panel is present, then always
-> -	 * return the status as connected. Need to add support to detect
-> -	 * device state for hot pluggable scenarios.
-> -	 */
-> -	return connector_status_connected;
-> -}
-> -
->   static const struct drm_connector_funcs ti_sn_bridge_connector_funcs = {
->   	.fill_modes = drm_helper_probe_single_connector_modes,
-> -	.detect = ti_sn_bridge_connector_detect,
->   	.destroy = drm_connector_cleanup,
->   	.reset = drm_atomic_helper_connector_reset,
->   	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+>  #ifdef CONFIG_MEMORY_HOTREMOVE
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 8a8f1a26b231..01b74ff73549 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -887,6 +887,7 @@ void cpu_vm_stats_fold(int cpu)
+>  
+>  		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+>  
+> +		preempt_disable();
+
+What's the reason for the preempt_disable() here? A comment would be
+appreciated.
+
+>  		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+>  			if (pzstats->vm_stat_diff[i]) {
+>  				int v;
+> @@ -908,6 +909,7 @@ void cpu_vm_stats_fold(int cpu)
+>  				global_numa_diff[i] += v;
+>  			}
+>  #endif
+> +		preempt_enable();
+>  	}
+>  
+>  	for_each_online_pgdat(pgdat) {
+> @@ -941,6 +943,7 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+>  {
+>  	int i;
+>  
+> +	preempt_disable();
+
+Same here.
+
+>  	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+>  		if (pzstats->vm_stat_diff[i]) {
+>  			int v = pzstats->vm_stat_diff[i];
+> @@ -959,6 +962,7 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+>  			atomic_long_add(v, &vm_numa_stat[i]);
+>  		}
+>  #endif
+> +	preempt_enable();
+
+Thanks,
+
+        tglx
