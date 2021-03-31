@@ -2,324 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E63634F66D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779EE34F671
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 04:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhCaB6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhCaB54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF1D2619B1;
-        Wed, 31 Mar 2021 01:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617155876;
-        bh=w65uvHVY+51Wt+ySuWN/EFojpBAJPntcBukMYf783d0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jOX7tJyuD97xAvcSdXtFiV8VZNVDWlfo3jX0RHeCGGT+VVgdYpOMev3tqml/eF0uf
-         RD7cRJ0t8lcVL5Sl2TlqUQVVKkMGXgK+yqt/iCvSvIPdrB6pQ46X1PhOifTT5OTTm8
-         42vp7Vh7Nznniut02LA4XylPuLDrrpUC4FASscF5Jl/OM7srQO/htXNSpq6GVOLa2J
-         zgxilLZkpko0inT3zmAR5YuUvPJadzh4P7cJJnPVeHiOJuuOUgVmIf4DGROK8dfTRC
-         utzGjaNlFmgLzoz1rC9jTNawnvbPIysmCv4toeThygthEcqmdSpZhNOv2kjkfRGRGB
-         MkUtYHVDCWFuA==
-Date:   Tue, 30 Mar 2021 18:57:54 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] Revert "f2fs: give a warning only for
- readonly partition"
-Message-ID: <YGPXIhdqWHAysqeY@google.com>
-References: <YFq+aQW7eihFuSst@google.com>
- <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
- <YFvA6uzDLeD7dRdY@google.com>
- <8b0b0782-a667-9edc-5ee9-98ac9f67b7b7@huawei.com>
- <c1e48546-f61b-5db9-13b6-6430ce368661@huawei.com>
- <YF02sFKa778eomr9@google.com>
- <84688aac-75da-1226-df4d-47ac97087c51@huawei.com>
- <YF4aJYVwOVtWsAbH@google.com>
- <4b64099b-064d-43a8-461d-b54007f2c16c@huawei.com>
- <dad9c2df-02af-5df5-1dd1-9ee1fe91d229@huawei.com>
+        id S233221AbhCaCAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 22:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhCaCAP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 22:00:15 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4B6B1C061574;
+        Tue, 30 Mar 2021 19:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=OycOHuyRcI
+        IO+xylTwknRNm1rxJYX7lsX0dug9h2cBI=; b=D3MgoIexR9DmyQIRzDsE0CeZBI
+        DO+NCf3lvx1JXaa5ZvVy2G7vKCuXH1SKGqA19+PF+ftSDBizL7NL/96RVICR8MQB
+        KvaObYsS0cBflktfQbg2wvRB+3387TYcEgYmlCV9Jf+KeRDZd9YNSQnIwUA36qmn
+        5ybhziOxiJIqQCfKs=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXIqyk12NgIbl0AA--.651S4;
+        Wed, 31 Mar 2021 10:00:04 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH v2] net/rds: Fix a use after free in rds_message_map_pages
+Date:   Tue, 30 Mar 2021 18:59:59 -0700
+Message-Id: <20210331015959.4404-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dad9c2df-02af-5df5-1dd1-9ee1fe91d229@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygAXIqyk12NgIbl0AA--.651S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtrWrGF1UCF1fJw4Duw45KFg_yoWDAFg_Zr
+        WxJFn7W347XFnFy397GrsxAr4fXr1kJw109a42qFn5tFWDAFn5Xw4ktrn8uwnrCF42qr1x
+        W3yDXr9xA34kZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VU1wZ23UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/27, Chao Yu wrote:
-> On 2021/3/27 9:52, Chao Yu wrote:
-> > On 2021/3/27 1:30, Jaegeuk Kim wrote:
-> > > On 03/26, Chao Yu wrote:
-> > > > On 2021/3/26 9:19, Jaegeuk Kim wrote:
-> > > > > On 03/26, Chao Yu wrote:
-> > > > > > On 2021/3/25 9:59, Chao Yu wrote:
-> > > > > > > On 2021/3/25 6:44, Jaegeuk Kim wrote:
-> > > > > > > > On 03/24, Chao Yu wrote:
-> > > > > > > > > On 2021/3/24 12:22, Jaegeuk Kim wrote:
-> > > > > > > > > > On 03/24, Chao Yu wrote:
-> > > > > > > > > > > On 2021/3/24 2:39, Jaegeuk Kim wrote:
-> > > > > > > > > > > > On 03/23, Chao Yu wrote:
-> > > > > > > > > > > > > This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Because that commit fails generic/050 testcase which expect failure
-> > > > > > > > > > > > > during mount a recoverable readonly partition.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > I think we need to change generic/050, since f2fs can recover this partition,
-> > > > > > > > > > > 
-> > > > > > > > > > > Well, not sure we can change that testcase, since it restricts all generic
-> > > > > > > > > > > filesystems behavior. At least, ext4's behavior makes sense to me:
-> > > > > > > > > > > 
-> > > > > > > > > > > 	journal_dev_ro = bdev_read_only(journal->j_dev);
-> > > > > > > > > > > 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
-> > > > > > > > > > > 
-> > > > > > > > > > > 	if (journal_dev_ro && !sb_rdonly(sb)) {
-> > > > > > > > > > > 		ext4_msg(sb, KERN_ERR,
-> > > > > > > > > > > 			 "journal device read-only, try mounting with '-o ro'");
-> > > > > > > > > > > 		err = -EROFS;
-> > > > > > > > > > > 		goto err_out;
-> > > > > > > > > > > 	}
-> > > > > > > > > > > 
-> > > > > > > > > > > 	if (ext4_has_feature_journal_needs_recovery(sb)) {
-> > > > > > > > > > > 		if (sb_rdonly(sb)) {
-> > > > > > > > > > > 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
-> > > > > > > > > > > 					"required on readonly filesystem");
-> > > > > > > > > > > 			if (really_read_only) {
-> > > > > > > > > > > 				ext4_msg(sb, KERN_ERR, "write access "
-> > > > > > > > > > > 					"unavailable, cannot proceed "
-> > > > > > > > > > > 					"(try mounting with noload)");
-> > > > > > > > > > > 				err = -EROFS;
-> > > > > > > > > > > 				goto err_out;
-> > > > > > > > > > > 			}
-> > > > > > > > > > > 			ext4_msg(sb, KERN_INFO, "write access will "
-> > > > > > > > > > > 			       "be enabled during recovery");
-> > > > > > > > > > > 		}
-> > > > > > > > > > > 	}
-> > > > > > > > > > > 
-> > > > > > > > > > > > even though using it as readonly. And, valid checkpoint can allow for user to
-> > > > > > > > > > > > read all the data without problem.
-> > > > > > > > > > > 
-> > > > > > > > > > > > >         		if (f2fs_hw_is_readonly(sbi)) {
-> > > > > > > > > > > 
-> > > > > > > > > > > Since device is readonly now, all write to the device will fail, checkpoint can
-> > > > > > > > > > > not persist recovered data, after page cache is expired, user can see stale data.
-> > > > > > > > > > 
-> > > > > > > > > > My point is, after mount with ro, there'll be no data write which preserves the
-> > > > > > > > > > current status. So, in the next time, we can recover fsync'ed data later, if
-> > > > > > > > > > user succeeds to mount as rw. Another point is, with the current checkpoint, we
-> > > > > > > > > > should not have any corrupted metadata. So, why not giving a chance to show what
-> > > > > > > > > > data remained to user? I think this can be doable only with CoW filesystems.
-> > > > > > > > > 
-> > > > > > > > > I guess we're talking about the different things...
-> > > > > > > > > 
-> > > > > > > > > Let me declare two different readonly status:
-> > > > > > > > > 
-> > > > > > > > > 1. filesystem readonly: file system is mount with ro mount option, and
-> > > > > > > > > app from userspace can not modify any thing of filesystem, but filesystem
-> > > > > > > > > itself can modify data on device since device may be writable.
-> > > > > > > > > 
-> > > > > > > > > 2. device readonly: device is set to readonly status via 'blockdev --setro'
-> > > > > > > > > command, and then filesystem should never issue any write IO to the device.
-> > > > > > > > > 
-> > > > > > > > > So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
-> > > > > > > > > is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
-> > > > > > > > > f2fs_readonly() returns true), in this condition, we should not issue any
-> > > > > > > > > write IO to device anyway, because, AFAIK, write IO will fail due to
-> > > > > > > > > bio_check_ro() check.
-> > > > > > > > 
-> > > > > > > > In that case, mount(2) will try readonly, no?
-> > > > > > > 
-> > > > > > > Yes, if device is readonly, mount (2) can not mount/remount device to rw
-> > > > > > > mountpoint.
-> > > > > > 
-> > > > > > Any other concern about this patch?
-> > > > > 
-> > > > > Indeed we're talking about different things. :)
-> > > > > 
-> > > > > This case is mount(ro) with device(ro) having some data to recover.
-> > > > > My point is why not giving a chance to mount(ro) to show the current data
-> > > > > covered by a valid checkpoint. This doesn't change anything in the disk,
-> > > > Got your idea.
-> > > > 
-> > > > IMO, it has potential issue in above condition:
-> > > > 
-> > > > > > > > > > > Since device is readonly now, all write to the device will fail, checkpoint can
-> > > > > > > > > > > not persist recovered data, after page cache is expired, user can see stale data.
-> > > > 
-> > > > e.g.
-> > > > 
-> > > > Recovery writes one inode and then triggers a checkpoint, all writes fail
-> > > 
-> > > I'm confused. Currently we don't trigger the roll-forward recovery.
-> > 
-> > Oh, my miss, sorry. :-P
-> > 
-> > My point is in this condition we can return error and try to notice user to
-> > mount with disable_roll_forward or norecovery option, then at least user can
-> > know he should not expect last fsynced data in newly mounted image.
-> > 
-> > Or we can use f2fs_recover_fsync_data() to check whether there is fsynced data,
-> > if there is no such data, then let mount() succeed.
-> 
-> Something like this, maybe:
-> 
-> ---
->  fs/f2fs/super.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 954b1fe97d67..5e1a1caf412d 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -3966,10 +3966,19 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->  		 * previous checkpoint was not done by clean system shutdown.
->  		 */
->  		if (f2fs_hw_is_readonly(sbi)) {
-> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
-> -				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
-> -			else
-> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
-> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
-> +				err = f2fs_recover_fsync_data(sbi, true);
+In rds_message_map_pages, the rm is freed by rds_message_put(rm).
+But rm is still used by rm->data.op_sg in return value.
 
-Can we do like this?
+My patch assigns ERR_CAST(rm->data.op_sg) to err before the rm is
+freed to avoid the uaf.
 
-				if (err > 0) {
-					err = -EROFS;
-					f2fs_err(sbi, "Need to recover fsync data, but "
-						"write access unavailable, please try "
-						"mount w/ disable_roll_forward or norecovery");
-				}
-				if (err < 0)
-					goto free_meta;
-			}
-			f2fs_info(sbi, "write access unavailable, skipping recovery");
-			goto reset_checkpoint;
+Fixes: 7dba92037baf3 ("net/rds: Use ERR_PTR for rds_message_alloc_sgs()")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ net/rds/message.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +				if (!err)
-> +					goto reset_checkpoint;
-> +				else if (err < 0)
-> +					goto free_meta;
-> +				err = -EROFS;
-> +				f2fs_err(sbi, "Need to recover fsync data, but "
-> +					"write access unavailable, please try "
-> +					"mount w/ disable_roll_forward or norecovery");
-> +				goto free_meta;
-> +			}
-> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
->  			goto reset_checkpoint;
->  		}
-> 
-> -- 
-> 2.29.2
-> 
-> Thanks,
-> 
-> > 
-> > Thanks,
-> > 
-> > > 
-> > > > due to device is readonly, once inode cache is reclaimed by vm, user will see
-> > > > old inode when reloading it, or even see corrupted fs if partial meta inode's
-> > > > cache is expired.
-> > > > 
-> > > > Thoughts?
-> > > > 
-> > > > Thanks,
-> > > > 
-> > > > > and in the next time, it allows mount(rw|ro) with device(rw) to recover
-> > > > > the data seamlessly.
-> > > > > 
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > 
-> > > > > > > 
-> > > > > > > Thanks,
-> > > > > > > 
-> > > > > > > > 
-> > > > > > > > # blockdev --setro /dev/vdb
-> > > > > > > > # mount -t f2fs /dev/vdb /mnt/test/
-> > > > > > > > mount: /mnt/test: WARNING: source write-protected, mounted read-only.
-> > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > >       		if (f2fs_hw_is_readonly(sbi)) {
-> > > > > > > > > -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
-> > > > > > > > > -				err = -EROFS;
-> > > > > > > > > +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
-> > > > > > > > >       				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
-> > > > > > > > > -				goto free_meta;
-> > > > > > > > > -			}
-> > > > > > > > > -			f2fs_info(sbi, "write access unavailable, skipping recovery");
-> > > > > > > > > +			else
-> > > > > > > > > +				f2fs_info(sbi, "write access unavailable, skipping recovery");
-> > > > > > > > >       			goto reset_checkpoint;
-> > > > > > > > >       		}
-> > > > > > > > > 
-> > > > > > > > > For the case of filesystem is readonly and device is writable, it's fine
-> > > > > > > > > to do recovery in order to let user to see fsynced data.
-> > > > > > > > > 
-> > > > > > > > > Thanks,
-> > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > > 
-> > > > > > > > > > > Am I missing something?
-> > > > > > > > > > > 
-> > > > > > > > > > > Thanks,
-> > > > > > > > > > > 
-> > > > > > > > > > > > 
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
-> > > > > > > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > > > > > > > > > ---
-> > > > > > > > > > > > >         fs/f2fs/super.c | 8 +++++---
-> > > > > > > > > > > > >         1 file changed, 5 insertions(+), 3 deletions(-)
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > > > > > > > > > > > > index b48281642e98..2b78ee11f093 100644
-> > > > > > > > > > > > > --- a/fs/f2fs/super.c
-> > > > > > > > > > > > > +++ b/fs/f2fs/super.c
-> > > > > > > > > > > > > @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
-> > > > > > > > > > > > >         		 * previous checkpoint was not done by clean system shutdown.
-> > > > > > > > > > > > >         		 */
-> > > > > > > > > > > > >         		if (f2fs_hw_is_readonly(sbi)) {
-> > > > > > > > > > > > > -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
-> > > > > > > > > > > > > +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
-> > > > > > > > > > > > > +				err = -EROFS;
-> > > > > > > > > > > > >         				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
-> > > > > > > > > > > > > -			else
-> > > > > > > > > > > > > -				f2fs_info(sbi, "write access unavailable, skipping recovery");
-> > > > > > > > > > > > > +				goto free_meta;
-> > > > > > > > > > > > > +			}
-> > > > > > > > > > > > > +			f2fs_info(sbi, "write access unavailable, skipping recovery");
-> > > > > > > > > > > > >         			goto reset_checkpoint;
-> > > > > > > > > > > > >         		}
-> > > > > > > > > > > > > -- 
-> > > > > > > > > > > > > 2.29.2
-> > > > > > > > > > > > .
-> > > > > > > > > > > > 
-> > > > > > > > > > .
-> > > > > > > > > > 
-> > > > > > > > .
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > 
-> > > > > > > _______________________________________________
-> > > > > > > Linux-f2fs-devel mailing list
-> > > > > > > Linux-f2fs-devel@lists.sourceforge.net
-> > > > > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > > > > > > .
-> > > > > > > 
-> > > > > .
-> > > > > 
-> > > .
-> > > 
-> > 
-> > 
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > .
-> > 
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 071a261fdaab..799034e0f513 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -347,8 +347,9 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
+ 	if (IS_ERR(rm->data.op_sg)) {
++		void *err = ERR_CAST(rm->data.op_sg);
+ 		rds_message_put(rm);
+-		return ERR_CAST(rm->data.op_sg);
++		return err;
+ 	}
+ 
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
+-- 
+2.25.1
+
+
