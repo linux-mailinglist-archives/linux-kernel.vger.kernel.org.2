@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A61350980
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10324350981
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhCaV3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:29:01 -0400
+        id S233250AbhCaV3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:29:03 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbhCaV1x (ORCPT
+        with ESMTP id S232905AbhCaV1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:27:53 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D86C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:52 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id m8so1929479qtp.14
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:52 -0700 (PDT)
+        Wed, 31 Mar 2021 17:27:55 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E22C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:54 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id l16so2091398qvt.19
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=qCxq1N1gA7TwxAMFKmL7hLg9EO4lnSukatZLoaD+FFE=;
-        b=KeQedqCHSppeGUQMSB3qvddKepeNQHx1p1/VSfzMSylvv0LONVB89TrLW3prq8oZLd
-         GBGSMaPvGJnxYeqpyXqf46YXoIA4BadxdCS+/OCujIT/cSSW4RH6HuseJGcAaYs/B2h0
-         VPCq2Yot/QxDNIrN078Op8TpVyvUgNLnqtUsZWFs4jkRLeq3QIubrq+hsNm8jw0/sNbu
-         x6ydT94rlxQyzBBmMXhSg1nR2cT5jJEpSyTDeTKaFhRS7JORrsdmSYdEe1cmftX7I5J0
-         WBiVyhSq+sZPQBRPdqZ0g2ebTLAodY/JCdgVHrXBLyUi190r5xfaOS+yUqmC2AQgYhO3
-         ejSg==
+        bh=qAbADIQAzXUoq/ElYpa9rjjQHxphEP8wPywcql//gEU=;
+        b=BIwBbz27li9nhzZOJpPItRxIEwjbJxKUY6UbYU5CqvzA6WV2OyusxpPuP2GbqEKsF4
+         wPUN1Q4or2K+m1thBQd2qBYnnhno/+HEhUjZP6mN++bKuXujnCF7ElDczhg5KqD0DiHQ
+         hAtx85mO6qIZNWn2hkAtwUeoT/7iOQYyLpsYMn5GkmPZR/+IClF4QAklOY48jwFmIUYr
+         aQsEWMT4TYApAtAL/gjYcoyIEfUpYswWr1684dszxQxu7VwcvcTCnnc8GPEf+Ef5ZYIf
+         aeqjPvWk/ub/50LBqjLxSVw1zYmdKi8DPaVfSVN+0mUmPWgG8aIRBCTvTk4SH2B+EppC
+         /dgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=qCxq1N1gA7TwxAMFKmL7hLg9EO4lnSukatZLoaD+FFE=;
-        b=oSVigDXh8E0Nm334P+wsQ2kPeq2lgeOPiZ2KpbrIGP+tXwZFumc3UvCLwJuZ2h1bbI
-         o3TQdpbXJtn5650Jv2BHZceHFQXM3pd7spoOEuhqspRToh+LvbV3bgMQSRo/Txku4yvb
-         WevKfnhPYrd58ntRcVj3LKlZ65L4xZFg9BlgfLZKLqbVtLsSecSoaIVJJ2cJ3V90pvEl
-         2hJKu3bajziwAV2QemWiA3+pDEQhaE8RFGhsXmTVTb9qknCLGss2XFmIfXtt47OxJ2HX
-         eM2a747xMa+TOOMw7fGgXrtvFzaGzlzc7KytgmHxBZusL3/rgpQk5q/HKf8/6vY5rBjk
-         wNmQ==
-X-Gm-Message-State: AOAM5307esf2yiJJURB4WoIlrDjP78L61ngMBQXc3qcVpoe99EzqhW36
-        y7PZpZ5WWkvnjoYPUZ8eOjgVs/Rr81szzRyay3c=
-X-Google-Smtp-Source: ABdhPJx7XX2KOGLVRiBBOLjdMcWGg8SbFNRL+HOjMTa79TjDOvRh955y/RHVoyp83P6xuYihqrO7IRPK/3G0aLsMx0w=
+        bh=qAbADIQAzXUoq/ElYpa9rjjQHxphEP8wPywcql//gEU=;
+        b=gayZif59XxY7CgkiSiF9YKT56xq04xu5nAPlXjeTOBaMyvzdiSLEnzegZheHJpbma1
+         /KAJdkt9kLO4nrF4jfqhOe7l9pwyyy73pfL29akPl0a1QyDRNnC4FFOShSgqX7HrubC8
+         o5QYs7Bn3dSBzYAZfGGUEqTU5f4oU+TZerUlNeH11r8PhBzL+P7lsIXt8utULn50t9ns
+         lMkPSIzspYMJjRLpU6i5qDOqZe2VuxEBwFOtEMltazD6UDnUFzEI7YJ9/Cy8Eqk01lS5
+         AHERRNidZVRlGpc9PhgRlOTpLykuO7xGXKCdO62bXc/WqFg6bDFDe9Lokqut+T5YucFX
+         uS8A==
+X-Gm-Message-State: AOAM532u+1YO94lT37EXqw/61OqAfZItf/FWz9NTJW6EFU3ciHYlqVH3
+        NckX/8DrWS1uUcuXu8WMQ5pplL0KItOsU6tEgJ4=
+X-Google-Smtp-Source: ABdhPJwBmNvm14+TDBMdxtVUmeFtuXceFyrO8XCaMzs+ImrOy+72TpNn3ja8CYb7Rf87hbMIOM4aIfmuWPGKh8vvqRQ=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:7933:7015:a5d5:3835])
- (user=samitolvanen job=sendgmr) by 2002:a05:6214:b04:: with SMTP id
- u4mr5243055qvj.0.1617226071830; Wed, 31 Mar 2021 14:27:51 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:27:18 -0700
+ (user=samitolvanen job=sendgmr) by 2002:ad4:5614:: with SMTP id
+ ca20mr4929242qvb.37.1617226074055; Wed, 31 Mar 2021 14:27:54 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:27:19 -0700
 In-Reply-To: <20210331212722.2746212-1-samitolvanen@google.com>
-Message-Id: <20210331212722.2746212-15-samitolvanen@google.com>
+Message-Id: <20210331212722.2746212-16-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210331212722.2746212-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v4 14/17] arm64: add __nocfi to functions that jump to a
- physical address
+Subject: [PATCH v4 15/17] arm64: add __nocfi to __apply_alternatives
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -74,64 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable CFI checking for functions that switch to linear mapping and
-make an indirect call to a physical address, since the compiler only
-understands virtual addresses and the CFI check for such indirect calls
-would always fail.
+__apply_alternatives makes indirect calls to functions whose address
+is taken in assembly code using the alternative_cb macro. With
+non-canonical CFI, the compiler won't replace these function
+references with the jump table addresses, which trips CFI. Disable CFI
+checking in the function to work around the issue.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/include/asm/mmu_context.h | 2 +-
- arch/arm64/kernel/cpu-reset.h        | 8 ++++----
- arch/arm64/kernel/cpufeature.c       | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/kernel/alternative.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index 386b96400a57..d3cef9133539 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
-  * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
-  * avoiding the possibility of conflicting TLB entries being allocated.
-  */
--static inline void cpu_replace_ttbr1(pgd_t *pgdp)
-+static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
- {
- 	typedef void (ttbr_replace_func)(phys_addr_t);
- 	extern ttbr_replace_func idmap_cpu_replace_ttbr1;
-diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-index f3adc574f969..9a7b1262ef17 100644
---- a/arch/arm64/kernel/cpu-reset.h
-+++ b/arch/arm64/kernel/cpu-reset.h
-@@ -13,10 +13,10 @@
- void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
- 	unsigned long arg0, unsigned long arg1, unsigned long arg2);
- 
--static inline void __noreturn cpu_soft_restart(unsigned long entry,
--					       unsigned long arg0,
--					       unsigned long arg1,
--					       unsigned long arg2)
-+static inline void __noreturn __nocfi cpu_soft_restart(unsigned long entry,
-+						       unsigned long arg0,
-+						       unsigned long arg1,
-+						       unsigned long arg2)
- {
- 	typeof(__cpu_soft_restart) *restart;
- 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index ac616c59ae92..1cd7877deada 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1446,7 +1446,7 @@ static bool unmap_kernel_at_el0(const struct arm64_cpu_capabilities *entry,
+diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
+index 1184c44ea2c7..abc84636af07 100644
+--- a/arch/arm64/kernel/alternative.c
++++ b/arch/arm64/kernel/alternative.c
+@@ -133,8 +133,8 @@ static void clean_dcache_range_nopatch(u64 start, u64 end)
+ 	} while (cur += d_size, cur < end);
  }
  
- #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
--static void
-+static void __nocfi
- kpti_install_ng_mappings(const struct arm64_cpu_capabilities *__unused)
+-static void __apply_alternatives(void *alt_region,  bool is_module,
+-				 unsigned long *feature_mask)
++static void __nocfi __apply_alternatives(void *alt_region,  bool is_module,
++					 unsigned long *feature_mask)
  {
- 	typedef void (kpti_remap_fn)(int, int, phys_addr_t);
+ 	struct alt_instr *alt;
+ 	struct alt_region *region = alt_region;
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
