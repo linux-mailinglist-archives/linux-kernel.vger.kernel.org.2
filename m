@@ -2,173 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE09134F579
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E819A34F57A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhCaA0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S232692AbhCaA2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 20:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhCaA0l (ORCPT
+        with ESMTP id S232101AbhCaA2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:26:41 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5819DC061574;
-        Tue, 30 Mar 2021 17:26:41 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so17378255otn.1;
-        Tue, 30 Mar 2021 17:26:41 -0700 (PDT)
+        Tue, 30 Mar 2021 20:28:20 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91D5C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:28:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id b4so26486313lfi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A3/p+2wdiqENyYUtU71W73gJVlvDw7pvzFfTfd6nkdU=;
-        b=u2qQCchGEvQzg+Ig6EjUgXpu0fMKvuw26dQ8En71ewUDKh2NdKYHj/pyFaUWmbzEW/
-         +adjkEd1V3nxZbL8LMievROoqjfBrgBPAIvjTk0yDqEYnVEU6S6/ShF0gLNIhJzXa2+2
-         ZC8yrTeeUBjx8pMRXw6gttKyLJIa2L5CiYB4vIu29/wDQJKoNMQzkW5hheMcqTOrzSMG
-         b7G/efJrwmM26eRviNWoCNNVqLAoe3tFenThznJW4t9rPSu5slA0q+JmLPB/RmQ02Lb7
-         /IE5+a68kmtKFfPGpBhyxzwPbkUbMlATvYFsGfnIz2BH3R/CgIbRt5guxwmBsQqfxLxp
-         PrPQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1cv7lLfghP1Iplp/hAe0FKDdnNBVuJ0m8vGvM7Ky2GY=;
+        b=LUWalD0ZKI8m3/8ws2U1R9cKhzvVEE8ZXL1jnnHaRB0hPlC9XelvwMiaO4hEl/m186
+         VaLaI9FB38PWu1TJYiNcmHWicQPvp0uG3d2nQXMyL7n8PGVKo8ZEgiZ//KNP9zzw0oz5
+         x3POwWHcxIHM33aAQRSTBodiW3OBXjAYhb0KthStXZr6a1SrqNSovgG3J/iftaUkzy92
+         G4VqcHdmQKZqwqLWdPUanSmXutoaOC/c/ttM3WUD7ZdlelCAWQ6nb1Pn4NI31qR/QnK/
+         9bWdAm8/gFGRvCByS6ykpBfJlZBpdut0c9fPbNrKNwJqT9uphY4eQsPhdGmHdIAkPy2p
+         XD4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=A3/p+2wdiqENyYUtU71W73gJVlvDw7pvzFfTfd6nkdU=;
-        b=SGc15JYD59Ngq8fbdd5RaJqMKG7mkjzAigQbJ6507iTRsm50M02AHMkyYcgYD//ioq
-         W3LztGOHAdXz1Z75DItJMk/SqU7NrZWkT7YRdTK0mFelzY9oL5SucyUlys6JDCOoTlex
-         8rhOyPwyCYF8T/EaaQakdWihkXGek1Q4aCApwo7TVIEKd6yp42m/IJfjQmNxdI0W/dJc
-         6DEofEiYEy73i+11UFVUri7VGZr7LguvLmrVjY0bv6kAqDZs1xBOx4QQ15xh0mW5K8lE
-         P0hwTv1GKiAtkikrQ7yc6yGiASA9xQuDjKpEC4MK+AmbWKXTPoimpqwE67Klop96ms0B
-         Zmxg==
-X-Gm-Message-State: AOAM532XqDd66US/Pc8KRF9jBgwdGT2YzkznzYUaF2w/louxzlmBIJVU
-        So8E7hkiUCiCHKKAGXtDGLchzGc39rw=
-X-Google-Smtp-Source: ABdhPJzAuAJsGm4rNyPEK4mOWvEWR5pJI+fJpVMhviuqwzAZrvdDl4kpgpSXawsyDNr6a5Z8iv5cmQ==
-X-Received: by 2002:a05:6830:c1:: with SMTP id x1mr419827oto.87.1617150400539;
-        Tue, 30 Mar 2021 17:26:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w199sm130255oif.41.2021.03.30.17.26.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 17:26:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] blk-mq: fix alignment mismatch.
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Jian Cai <jiancai@google.com>
-Cc:     cjdb@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jens Axboe <axboe@kernel.dk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210330230249.709221-1-jiancai@google.com>
- <20210330232946.m5p7426macyjduzm@archlinux-ax161>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <114a5697-9b5c-daf1-f0fc-dc190d4db74d@roeck-us.net>
-Date:   Tue, 30 Mar 2021 17:26:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1cv7lLfghP1Iplp/hAe0FKDdnNBVuJ0m8vGvM7Ky2GY=;
+        b=rwqxvySqbWcm51C2SPyLm4Kv1P1qq1tvwMOD7tjGSJHCMlFPeWTeDxDtAxrkbrMoma
+         xL0V5mEZyfKkk/NCAP+bgfInEmTwvJ94fqw7r56BJ/Mhg55vsVeFF4Py0VFLShvQEtHT
+         oAd0yz14qJOg/qs/zwunrkB51dxd8aHILXZPFN2A/3qPWm876fdJByFw0BepBEMEM++Z
+         G7ry4tmLMIOb7q2TAMmkGX5U3Hm2hWgovc2lPn/ijqu94g/Rl5rtv50+00xgtS+r16WA
+         dd4riZpMzHCkIvAYbiJVsC66gASe5x61TEfupl2IEiOvMAmv0yV+nYeTP2Iv4Q4CpWRi
+         5mEg==
+X-Gm-Message-State: AOAM532tagpBflMQI4kVMHhGnMiLysqaXCdTsUlIiJy0xRSgn/vmigIU
+        2jOWYXfcKbq1dp1zeb8M0jR/x8A6HvJrcCInX08PbA==
+X-Google-Smtp-Source: ABdhPJyxesGnlIEAzu+klNre9N8aN6gRtEWSNL9sbHRRtHrhdTo5FEe7AgGTZdu4xQndQZX8OgrKnIY0GN/M3c2Y34A=
+X-Received: by 2002:a19:e0d:: with SMTP id 13mr458683lfo.549.1617150498014;
+ Tue, 30 Mar 2021 17:28:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210330232946.m5p7426macyjduzm@archlinux-ax161>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210330101531.82752-1-songmuchun@bytedance.com>
+ <CALvZod4xHNmTQMd+zg71s7uyXUHEfwnQ-zqRXSWphwi9RogeNg@mail.gmail.com> <YGOTrAf5bRBRJaBP@cmpxchg.org>
+In-Reply-To: <YGOTrAf5bRBRJaBP@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 30 Mar 2021 17:28:06 -0700
+Message-ID: <CALvZod6zOUBBBbEcAxbYxDgwGUwtZht8EhB_ygm25bAsssZj5Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/15] Use obj_cgroup APIs to charge the LRU pages
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Greg Thelen <gthelen@google.com>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/21 4:29 PM, Nathan Chancellor wrote:
-> Hi Jian,
-> 
-> On Tue, Mar 30, 2021 at 04:02:49PM -0700, Jian Cai wrote:
->> This fixes the mismatch of alignments between csd and its use as an
->> argument to smp_call_function_single_async, which causes build failure
->> when -Walign-mismatch in Clang is used.
->>
->> Link:
->> http://crrev.com/c/1193732
->>
->> Suggested-by: Guenter Roeck <linux@roeck-us.net>
->> Signed-off-by: Jian Cai <jiancai@google.com>
-> 
-> Thanks for the patch. This is effectively a revert of commit
-> 4ccafe032005 ("block: unalign call_single_data in struct request"),
-> which I had brought up in this thread:
-> 
-> https://lore.kernel.org/r/20210310182307.zzcbi5w5jrmveld4@archlinux-ax161/
-> 
-> This is obviously a correct fix, I am not just sure what the impact to
-> 'struct request' will be.
-> 
+On Tue, Mar 30, 2021 at 2:10 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+[...]
+> > The main concern I have with *just* reparenting LRU pages is that for
+> > the long running systems, the root memcg will become a dumping ground.
+> > In addition a job running multiple times on a machine will see
+> > inconsistent memory usage if it re-accesses the file pages which were
+> > reparented to the root memcg.
+>
+> I don't understand how Muchun's patches are supposed to *change* the
+> behavior the way you are describing it. This IS today's behavior.
+>
+> We have hierarchical accounting, and a page that belongs to a leaf
+> cgroup will automatically belong to all its parents.
+>
+> Further, if you delete a cgroup today, the abandoned cache will stay
+> physically linked to that cgroup, but that zombie group no longer acts
+> as a control structure: it imposes no limit and no protection; the
+> pages will be reclaimed as if it WERE linked to the parent.
+>
+> For all intents and purposes, when you delete a cgroup today, its
+> remaining pages ARE dumped onto the parent.
+>
+> The only difference is that today they pointlessly pin the leaf cgroup
+> as a holding vessel - which is then round-robin'd from the parent
+> during reclaim in order to pretend that all these child pages actually
+> ARE linked to the parent's LRU list.
+>
+> Remember how we used to have every page physically linked to multiple
+> lrus? The leaf cgroup and the root?
+>
+> All pages always belong to the (virtual) LRU list of all ancestor
+> cgroups. The only thing Muchun changes is that they no longer pin a
+> cgroup that has no semantical meaning anymore (because it's neither
+> visible to the user nor exerts any contol over the pages anymore).
+>
 
-As commit 4ccafe032005 states, it increases the request structure size.
-Given the exchange referenced above, I think we'll need to disable
-the warning in the block code.
+Indeed you are right. Even if the physical representation of the tree
+has changed, the logical picture remains the same.
 
-Thanks,
-Guenter
+[Subconsciously I was sad that we will lose the information about the
+origin memcg of the page for debugging purposes but then I thought if
+we really need it then we can just add that metadata in the obj_cgroup
+object. So, never mind.]
 
-> Cheers,
-> Nathan
-> 
->> ---
->>  include/linux/blkdev.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
->> index bc6bc8383b43..3b92330d95ad 100644
->> --- a/include/linux/blkdev.h
->> +++ b/include/linux/blkdev.h
->> @@ -231,7 +231,7 @@ struct request {
->>  	unsigned long deadline;
->>  
->>  	union {
->> -		struct __call_single_data csd;
->> +		call_single_data_t csd;
->>  		u64 fifo_time;
->>  	};
->>  
->> -- 
->> 2.31.0.291.g576ba9dcdaf-goog
->>
+> Maybe I'm missing something that either you or Roman can explain to
+> me. But this series looks like a (rare) pure win.
+>
+> Whether you like the current semantics is a separate discussion IMO.
+>
+> > Please note that I do agree with the mentioned problem and we do see
+> > this issue in our fleet. Internally we have a "memcg mount option"
+> > feature which couples a file system with a memcg and all file pages
+> > allocated on that file system will be charged to that memcg. Multiple
+> > instances (concurrent or subsequent) of the job will use that file
+> > system (with a dedicated memcg) without leaving the zombies behind. I
+> > am not pushing for this solution as it comes with its own intricacies
+> > (e.g. if memcg coupled with a file system has a limit, the oom
+> > behavior would be awkward and therefore internally we don't put a
+> > limit on such memcgs). Though I want this to be part of discussion.
+>
+> Right, you disconnect memory from the tasks that are allocating it,
+> and so you can't assign culpability when you need to.
+>
+> OOM is one thing, but there are also CPU cycles and IO bandwidth
+> consumed during reclaim.
+>
 
+We didn't really have any issue regarding CPU or IO but that might be
+due to our unique setup (i.e. no local disk).
+
+> > I think the underlying reasons behind this issue are:
+> >
+> > 1) Filesystem shared by disjoint jobs.
+> > 2) For job dedicated filesystems, the lifetime of the filesystem is
+> > different from the lifetime of the job.
+>
+> There is also the case of deleting a cgroup just to recreate it right
+> after for the same job. Many job managers do this on restart right now
+> - like systemd, and what we're using in our fleet. This seems
+> avoidable by recycling a group for another instance of the same job.
+
+I was bundling the scenario you mentioned with (2) i.e. the filesystem
+persists across multiple subsequent instances of the same job.
+
+>
+> Sharing is a more difficult discussion. If you access a page that you
+> share with another cgroup, it may or may not be subject to your own or
+> your buddy's memory limits. The only limit it is guaranteed to be
+> subjected to is that of your parent. So One thing I could imagine is,
+> instead of having a separate cgroup outside the hierarchy, we would
+> reparent live pages the second they are accessed from a foreign
+> cgroup. And reparent them until you reach the first common ancestor.
+>
+> This way, when you mount a filesystem shared by two jobs, you can put
+> them into a joint subtree, and the root level of this subtree captures
+> all the memory (as well as the reclaim CPU and IO) used by the two
+> jobs - the private portions and the shared portions - and doesn't make
+> them the liability of jobs in the system that DON'T share the same fs.
+
+I will give more thought on this idea and see where it goes.
+
+>
+> But again, this is a useful discussion to have, but I don't quite see
+> why it's relevant to Muchun's patches. They're purely an optimization.
+>
+> So I'd like to clear that up first before going further.
+
+I think we are on the same page i.e. these patches change the physical
+representation of the memcg tree but logically it remains the same and
+fixes the zombie memcg issue.
