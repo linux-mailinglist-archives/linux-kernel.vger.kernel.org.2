@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651F634FDAA
+	by mail.lfdr.de (Postfix) with ESMTP id 18BEF34FDA9
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhCaJ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S234993AbhCaJ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbhCaJ7k (ORCPT
+        with ESMTP id S234964AbhCaJ7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:59:40 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4A3C06174A
+        Wed, 31 Mar 2021 05:59:41 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B6EC061760
         for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:59:40 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ada2:b4da:6568:5ad5])
-        by xavier.telenet-ops.be with bizsmtp
-        id mxzd2400A5W9KJv01xzdYQ; Wed, 31 Mar 2021 11:59:37 +0200
+        by baptiste.telenet-ops.be with bizsmtp
+        id mxzd2400C5W9KJv01xzdKj; Wed, 31 Mar 2021 11:59:39 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lRXdQ-00BseR-Ok; Wed, 31 Mar 2021 11:59:36 +0200
+        id 1lRXdQ-00BseR-MX; Wed, 31 Mar 2021 11:59:36 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lRW0W-001XUV-DX; Wed, 31 Mar 2021 10:15:20 +0200
+        id 1lRW2i-001XXx-8w; Wed, 31 Mar 2021 10:17:36 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Dilip Kota <eswara.kota@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
+To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] reset: RESET_INTEL_GW should depend on X86
-Date:   Wed, 31 Mar 2021 10:15:19 +0200
-Message-Id: <20210331081519.367024-1-geert+renesas@glider.be>
+Subject: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not default to m
+Date:   Wed, 31 Mar 2021 10:17:35 +0200
+Message-Id: <20210331081735.367238-1-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,29 +48,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel Gateway reset controller is only present on Intel Gateway
-platforms.  Hence add a dependency on X86, to prevent asking the user
-about this driver when configuring a kernel without Intel Gateway
-support.
+The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
+Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
+ARCH_MXC, to prevent asking the user about this driver when configuring
+a kernel without i.MX8 support.
 
-Fixes: c9aef213e38cde27 ("reset: intel: Add system reset controller driver")
+Drop the "default m" (which means "default y" if CONFIG_MODULES is not
+enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
+additional code.
+
+Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/reset/Kconfig | 1 +
+ drivers/media/platform/imx-jpeg/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 6dba675bcec47777..c5dc1503de7909fa 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -83,6 +83,7 @@ config RESET_IMX7
- 
- config RESET_INTEL_GW
- 	bool "Intel Reset Controller Driver"
-+	depends on X86 || COMPILE_TEST
- 	depends on OF && HAS_IOMEM
- 	select REGMAP_MMIO
- 	help
+diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
+index d875f7c88cdad125..0e3269d06ded30ec 100644
+--- a/drivers/media/platform/imx-jpeg/Kconfig
++++ b/drivers/media/platform/imx-jpeg/Kconfig
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config VIDEO_IMX8_JPEG
+ 	tristate "IMX8 JPEG Encoder/Decoder"
++	depends on ARCH_MXC || COMPILE_TEST
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
 -- 
 2.25.1
 
