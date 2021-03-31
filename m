@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6192334FB30
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF2434FB37
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhCaIHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbhCaIG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:06:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABD6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 01:06:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617178018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WLglFDK/erfIgGVGC1sqtTmnJNmaibFNYmNaVl8FDYQ=;
-        b=gjAO6Q+N/6DSmnRVGirnEHHbt07VuJojBLVQ/iIADbpgnvCZ93VZ1AvWcR3UAsfknq7vOd
-        iZCMPamkX467Oo4o0FTktv8dZpBsrBBF38BzU2Eo3VnKevjI/44ZgIRqaMYUoyDbPXihFj
-        AhUJFmWXK/lBZeXzzh6DZgT0Bbn9NoeCOTe3NdxtOecM73nBhvJvv5qUfBJQv65VyBX4bA
-        LLti3nVBf+n8dz0u5KT5+VZ+zdObsic1nDuCyb0UdxqJbyZWOD0lFJrMp7xDbagMfXiIMM
-        7biSmmQ/sxiu1+eUOhGVvlSqnHByCwHs5FT0dUdyVjAtNv8U1CTssmNOyFCS5A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617178018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WLglFDK/erfIgGVGC1sqtTmnJNmaibFNYmNaVl8FDYQ=;
-        b=YLKk5XAITZPUGFM6aX5t8A1a0Kb3FH0JATaf8rv9UXdG9zyfKq2aMlG2iDhz/Q/NWIlkGE
-        HAb0iniCRbuyPeDw==
-To:     Jindong Yue <jindong.yue@nxp.com>, fweisbec@gmail.com,
-        mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jindong.yue@nxp.com
-Subject: Re: [PATCH v2] tick/broadcast: Allow later registered device enter oneshot mode
-In-Reply-To: <20210331011045.25381-1-jindong.yue@nxp.com>
-References: <20210331011045.25381-1-jindong.yue@nxp.com>
-Date:   Wed, 31 Mar 2021 10:06:57 +0200
-Message-ID: <87ft0b6926.ffs@nanos.tec.linutronix.de>
+        id S234437AbhCaIH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234387AbhCaIHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:07:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D49461957;
+        Wed, 31 Mar 2021 08:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617178024;
+        bh=Y7odu3gWfoFbX+gyh39LrT9JYQsI9QtVqTb3q08MgRU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mMmI7uRr/yVYfV1tSwGtA1yMGldK+smBQJVoriH5c6m3erkrhYX8b7a5as1XIsVU1
+         NG8hoVds46bA0vWZx7zmIGtjVGjP4jI9cqg4e7fPAhrGuyPmcXulEClSF+wldQzGkt
+         OOQDKAIH+971S6ARZHFmaIl35H8MWtYG2HM5fbKa8lUsxlkx5V1V6we3VDcolkR+Pi
+         u/EF15egfxitmm/BmpZ0x+0zKsAVS+sBNtxRWTBUHHaKSBM3ndHzAL+dUKmvzWgLyA
+         7VqNjnQpwwZsyZHxFVyXNG43WKy8hjB099x/xElG3b1RYC7BiqzyePwwrOPhAZ09B+
+         Pqb+tAMUT3A1Q==
+Date:   Wed, 31 Mar 2021 10:07:01 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Hao Fang <fanghao11@huawei.com>
+Cc:     thor.thayer@linux.intel.com, mani@kernel.org,
+        bjorn.andersson@linaro.org, tiantao6@hisilicon.com,
+        zhengdejin5@gmail.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com
+Subject: Re: [PATCH] i2c: hix5hd2: use the correct HiSilicon copyright
+Message-ID: <20210331080701.GI1025@ninjato>
+References: <1617086234-35270-1-git-send-email-fanghao11@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v2/QI0iRXglpx0hK"
+Content-Disposition: inline
+In-Reply-To: <1617086234-35270-1-git-send-email-fanghao11@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31 2021 at 09:10, Jindong Yue wrote:
-> --- a/kernel/time/tick-broadcast.c
-> +++ b/kernel/time/tick-broadcast.c
-> @@ -47,6 +47,7 @@ static inline void tick_resume_broadcast_oneshot(struct clock_event_device *bc)
->  static inline void tick_broadcast_oneshot_offline(unsigned int cpu) { }
->  # endif
->  #endif
-> +static void tick_handle_oneshot_broadcast(struct clock_event_device *dev);
 
-Leftover ...
-  
->  /*
->   * Debugging: see timer_list.c
-> @@ -107,6 +108,19 @@ void tick_install_broadcast_device(struct clock_event_device *dev)
->  	tick_broadcast_device.evtdev = dev;
->  	if (!cpumask_empty(tick_broadcast_mask))
->  		tick_broadcast_start_periodic(dev);
-> +
-> +	if (!(dev->features & CLOCK_EVT_FEAT_ONESHOT))
-> +		return;
-> +
-> +	/*
-> +	 * If system already runs in oneshot mode, switch new registered
+--v2/QI0iRXglpx0hK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-the system .... the newly registered
+On Tue, Mar 30, 2021 at 02:37:14PM +0800, Hao Fang wrote:
+> s/Hisilicon/HiSilicon/g.
+> It should use capital S, according to
+> https://www.hisilicon.com/en/terms-of-use.
+>=20
+> Signed-off-by: Hao Fang <fanghao11@huawei.com>
 
-> +	 * broadcast device to oneshot mode explicitly if possiable.
+Applied to for-current, thanks!
 
-s/possible/possiable/
 
-But the 'if possible' makes no sense here. The above check for
-CLOCK_EVT_FEAT_ONESHOT established that it _is_ possible. So just remove
-the 'if ...'.
+--v2/QI0iRXglpx0hK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +	 */
-> +	if (tick_broadcast_oneshot_active()) {
-> +		tick_broadcast_switch_to_oneshot();
-> +		return;
-> +	}
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBkLaUACgkQFA3kzBSg
+KbbOUA//ZXB7/o6B7F4UBi7o66xRRvU53gSj+/48ouENxrrgxhSopHzNOEsnJuEQ
+7G/xE4bqy6wj5MWGpfUTxXLqF/Zb7DrbTBzNcz0aWsVeQGbL0wQMK9r7ATxmJoLj
+VblwnP5sixzDk0B+vrVvq9V+uYi/DircHhbujhmhpivnGgy6gIM0VjZRRDDOFo8O
+6qrNZX/QRu6H4W5olcmXGx2n6w0kpw30LUOSP0Z4J57QYJYTVfIzeRmNbWPcvL1K
+WklduYtPNqDarNHy3+XsA4ROKcSg7IIlVXi1kKlfSEKwFicVrNd1ISmyD6yOYn+A
+nVKzMwnYubHnFM8VRqbS3VRbgmrNWlpctddMpCXfe66N/JJ3DdQuHQQLSkDNBNAu
+Ez2fxyq4UDSXJxibZFCKGwBYY8j7AtTJMRCWgf8D/nTZYSoDvtZKDC9tNq9cZbcz
+FJrTZJ6LsVkFi5UJdw8+UycngJ6/Qm4RCvc1vEqY8Wklcx0FB8t7AHBSgLLVR0XH
+vphW1anBBgbD83K4LokPwJaHAdF2/Vk9qn6U8YfrotVaiwsU9jQ8XEeg/4V5ADVY
+kUh729NUVWPQ98sVSwCRPuD7MMd03mJeSCoetAF1911pMBaZOxQwa5zuZU92Zj1R
+1LTLorfJBH/EFgqdFNaDJENiz6PQwbY84uxeAujAo0lzBQzS0sk=
+=bPY9
+-----END PGP SIGNATURE-----
 
-        tglx
+--v2/QI0iRXglpx0hK--
