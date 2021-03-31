@@ -2,99 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A45834F764
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A4C34F766
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhCaDV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 23:21:57 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63852 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233433AbhCaDVt (ORCPT
+        id S233067AbhCaDXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 23:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233538AbhCaDWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:21:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617160909; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ivUpf+CR1j921S+V2zzG1O7pU102BuBZciI4i8H1+m0=;
- b=R2alvtBmbdzPMqdNIvcnIpY5OOasnAmalYHzuR1jmKE+enY1EUxiEDNZqGVA90CB2Er3ZdR7
- L97qz50fIbyQLrdWtWL2d7KjVpEoKOxDqQdmgqPoS53eYqIueWTPQCxvaZh1hjj6yJzq6LWy
- kSJw2R+pmrFuNNSPkz9FgzhJhps=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6063eacc8166b7eff7b51dad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 03:21:48
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 13AFFC43462; Wed, 31 Mar 2021 03:21:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB476C433CA;
-        Wed, 31 Mar 2021 03:21:46 +0000 (UTC)
+        Tue, 30 Mar 2021 23:22:38 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DB2C061574;
+        Tue, 30 Mar 2021 20:22:38 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id l1so7193178plg.12;
+        Tue, 30 Mar 2021 20:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jkm3P5RE80U8+woiHQI1EQe+BOt3uSMFxDJpxjcNUTA=;
+        b=LXNSnC/zeHOFL0gy9CmsCFdS+u43TkrZ4i4izXbo61O8g5SRFuRnra4b2bj8XtQUVH
+         +0AyeuA5crGcmObs0eKB/zthjlFy45Lk6973MSgNC3iYpjpvtyJ+SamGOWYt95arCx55
+         INIvzt/vw4qRotFT+KpkkBEW8uDdqC3bQKeYz4UxOkd48W/lDTT5VUDejLY59WuYK9WI
+         rDQlLQRhYQ6LH15STDTtn2/WqaDD53Dvp/xkl69yqgLDJ/z94uiZ0CyQGz2FHO4lOf3K
+         n3N99VGhpN82+8rayMhp640uRNUUlw8b3+ntvv4ix79GRLDryG+ifKy/I3ORkOJkH6+k
+         zrOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jkm3P5RE80U8+woiHQI1EQe+BOt3uSMFxDJpxjcNUTA=;
+        b=V+kn3BDKChCeUcYsa84OGKdw86uDAqSsNq+omDM1mDBhcY/jlSk2iBVBXNVqJLqkhI
+         dv3iXpa8fJKg3KouKqJbijl73vAVjJRKD69C/RRZfWG4TgcnymkPAbOqozbVSC35NCIX
+         fiktE7wXKWsxNooyWzulxHe4G/ng5wjALTzXWy2VF6m5rkJ7mDS5lmo65DKf63z3l2fI
+         Cgh96vlWT0pP4hmg2FZAR6aY5TaEqlbXgLh8fWrvUwYQiXM3Gaii4AQL4INfP5SZn6c6
+         LGiBakQVbPsGhgjIvaLTXV42Y2E7oLjU2aJJ6rYkJGQacqWcmxvz9KmHkOhUTDWwpvOh
+         bkdA==
+X-Gm-Message-State: AOAM530ylqOgg5vMaSzNSIE5KMVWQVr4Zz9lsOVdZJ/8WYNwbSpEZ9AO
+        /Nol3xEimBOg06Ykuj6J75Q4nRvH1ZI=
+X-Google-Smtp-Source: ABdhPJzR37hbTkvRe9594EWtvrv9MYDoJ2XWwdls3VL9cdeDjWnDwuoQCc+Yka2SpxqdHWSn0AQygQ==
+X-Received: by 2002:a17:902:e752:b029:e6:822c:355c with SMTP id p18-20020a170902e752b02900e6822c355cmr1296179plf.69.1617160957232;
+        Tue, 30 Mar 2021 20:22:37 -0700 (PDT)
+Received: from localhost.localdomain (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id a13sm562053pgm.43.2021.03.30.20.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 20:22:36 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
+Date:   Tue, 30 Mar 2021 20:22:07 -0700
+Message-Id: <20210331032228.21251-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 31 Mar 2021 11:21:46 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, huobean@gmail.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-Subject: Re: [PATCH v32 4/4] scsi: ufs: Add HPB 2.0 support
-In-Reply-To: <20210331011839epcms2p45d3d059fcd9e85a548014a79c3f388bc@epcms2p4>
-References: <20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p3>
- <CGME20210331011526epcms2p37684869a9781d1eb45bfcbfe9babd217@epcms2p4>
- <20210331011839epcms2p45d3d059fcd9e85a548014a79c3f388bc@epcms2p4>
-Message-ID: <0c05e460470d2b9f5aebd9b6935ef42d@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-31 09:18, Daejun Park wrote:
-> This patch supports the HPB 2.0.
-> 
-> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
-> In the case of Read (<= 32KB) is supported as single HPB read.
-> In the case of Read (36KB ~ 512KB) is supported by as a combination of
-> write buffer command and HPB read command to deliver more PPN.
-> The write buffer commands may not be issued immediately due to busy 
-> tags.
-> To use HPB read more aggressively, the driver can requeue the write 
-> buffer
-> command. The requeue threshold is implemented as timeout and can be
-> modified with requeue_timeout_ms entry in sysfs.
-> 
-> Reviewed-by: Can Guo <cang@codeaurora.org>
-> Reviewed-by: Bean Huo <beanhuo@micron.com>
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
+Provide hooks to intercept bad usages of virt_to_phys() and
+__pa_symbol() throughout the kernel. To make this possible, we need to
+rename the current implement of virt_to_phys() into
+__virt_to_phys_nodebug() and wrap it around depending on
+CONFIG_DEBUG_VIRTUAL.
 
-Please allow me a few more days in April to have this whole series
-tested one more time.
+A similar thing is needed for __pa_symbol() which is now aliased to
+__phys_addr_symbol() whose implementation is either the direct return of
+RELOC_HIDE or goes through the debug version.
 
-Thanks,
-Can Guo.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v4:
+
+- properly address sparse warning in arch/mips/kernel/vdso.c and
+  eliminate it entirely
+
+Changes in v3:
+
+- added missing SDPX license tag in physaddr.c
+
+Changes in v2:
+- fixed sparse warning in arch/mips/kernel/vdso.c
+
+ arch/mips/Kconfig            |  1 +
+ arch/mips/include/asm/io.h   | 14 ++++++++-
+ arch/mips/include/asm/page.h |  9 +++++-
+ arch/mips/kernel/vdso.c      |  5 ++--
+ arch/mips/mm/Makefile        |  2 ++
+ arch/mips/mm/physaddr.c      | 56 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 83 insertions(+), 4 deletions(-)
+ create mode 100644 arch/mips/mm/physaddr.c
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d89efba3d8a4..0904d6351808 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -4,6 +4,7 @@ config MIPS
+ 	default y
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
++	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 78537aa23500..2c138450ad3b 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -100,11 +100,23 @@ static inline void set_io_port_base(unsigned long base)
+  *     almost all conceivable cases a device driver should not be using
+  *     this function
+  */
+-static inline unsigned long virt_to_phys(volatile const void *address)
++static inline unsigned long __virt_to_phys_nodebug(volatile const void *address)
+ {
+ 	return __pa(address);
+ }
+ 
++#ifdef CONFIG_DEBUG_VIRTUAL
++extern phys_addr_t __virt_to_phys(volatile const void *x);
++#else
++#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
++#endif
++
++#define virt_to_phys virt_to_phys
++static inline phys_addr_t virt_to_phys(const volatile void *x)
++{
++	return __virt_to_phys(x);
++}
++
+ /*
+  *     phys_to_virt    -       map physical address to virtual
+  *     @address: address to remap
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index 65acab9c41f9..195ff4e9771f 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -210,9 +210,16 @@ static inline unsigned long ___pa(unsigned long x)
+  * also affect MIPS so we keep this one until GCC 3.x has been retired
+  * before we can apply https://patchwork.linux-mips.org/patch/1541/
+  */
++#define __pa_symbol_nodebug(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
++
++#ifdef CONFIG_DEBUG_VIRTUAL
++extern phys_addr_t __phys_addr_symbol(unsigned long x);
++#else
++#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
++#endif
+ 
+ #ifndef __pa_symbol
+-#define __pa_symbol(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
++#define __pa_symbol(x)		__phys_addr_symbol((unsigned long)(x))
+ #endif
+ 
+ #define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
+diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+index 7d0b91ad2581..3d0cf471f2fe 100644
+--- a/arch/mips/kernel/vdso.c
++++ b/arch/mips/kernel/vdso.c
+@@ -90,7 +90,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ {
+ 	struct mips_vdso_image *image = current->thread.abi->vdso;
+ 	struct mm_struct *mm = current->mm;
+-	unsigned long gic_size, vvar_size, size, base, data_addr, vdso_addr, gic_pfn;
++	unsigned long gic_size, vvar_size, size, base, data_addr, vdso_addr, gic_pfn, gic_base;
+ 	struct vm_area_struct *vma;
+ 	int ret;
+ 
+@@ -158,7 +158,8 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 
+ 	/* Map GIC user page. */
+ 	if (gic_size) {
+-		gic_pfn = virt_to_phys(mips_gic_base + MIPS_GIC_USER_OFS) >> PAGE_SHIFT;
++		gic_base = (unsigned long)mips_gic_base + MIPS_GIC_USER_OFS;
++		gic_pfn = virt_to_phys((void *)gic_base) >> PAGE_SHIFT;
+ 
+ 		ret = io_remap_pfn_range(vma, base, gic_pfn, gic_size,
+ 					 pgprot_noncached(vma->vm_page_prot));
+diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
+index 865926a37775..fa1f729e0700 100644
+--- a/arch/mips/mm/Makefile
++++ b/arch/mips/mm/Makefile
+@@ -40,3 +40,5 @@ obj-$(CONFIG_R5000_CPU_SCACHE)	+= sc-r5k.o
+ obj-$(CONFIG_RM7000_CPU_SCACHE) += sc-rm7k.o
+ obj-$(CONFIG_MIPS_CPU_SCACHE)	+= sc-mips.o
+ obj-$(CONFIG_SCACHE_DEBUGFS)	+= sc-debugfs.o
++
++obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+diff --git a/arch/mips/mm/physaddr.c b/arch/mips/mm/physaddr.c
+new file mode 100644
+index 000000000000..a1ced5e44951
+--- /dev/null
++++ b/arch/mips/mm/physaddr.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bug.h>
++#include <linux/export.h>
++#include <linux/types.h>
++#include <linux/mmdebug.h>
++#include <linux/mm.h>
++
++#include <asm/sections.h>
++#include <asm/io.h>
++#include <asm/page.h>
++#include <asm/dma.h>
++
++static inline bool __debug_virt_addr_valid(unsigned long x)
++{
++	/* high_memory does not get immediately defined, and there
++	 * are early callers of __pa() against PAGE_OFFSET
++	 */
++	if (!high_memory && x >= PAGE_OFFSET)
++		return true;
++
++	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
++		return true;
++
++	/*
++	 * MAX_DMA_ADDRESS is a virtual address that may not correspond to an
++	 * actual physical address. Enough code relies on
++	 * virt_to_phys(MAX_DMA_ADDRESS) that we just need to work around it
++	 * and always return true.
++	 */
++	if (x == MAX_DMA_ADDRESS)
++		return true;
++
++	return false;
++}
++
++phys_addr_t __virt_to_phys(volatile const void *x)
++{
++	WARN(!__debug_virt_addr_valid((unsigned long)x),
++	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
++	     x, x);
++
++	return __virt_to_phys_nodebug(x);
++}
++EXPORT_SYMBOL(__virt_to_phys);
++
++phys_addr_t __phys_addr_symbol(unsigned long x)
++{
++	/* This is bounds checking against the kernel image only.
++	 * __pa_symbol should only be used on kernel symbol addresses.
++	 */
++	VIRTUAL_BUG_ON(x < (unsigned long)_text ||
++		       x > (unsigned long)_end);
++
++	return __pa_symbol_nodebug(x);
++}
++EXPORT_SYMBOL(__phys_addr_symbol);
+-- 
+2.25.1
+
