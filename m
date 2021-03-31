@@ -2,79 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BEF34FDA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1869F34FB59
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbhCaJ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbhCaJ7l (ORCPT
+        id S234294AbhCaISR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:18:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27447 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234098AbhCaIRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:59:41 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B6EC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 02:59:40 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ada2:b4da:6568:5ad5])
-        by baptiste.telenet-ops.be with bizsmtp
-        id mxzd2400C5W9KJv01xzdKj; Wed, 31 Mar 2021 11:59:39 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lRXdQ-00BseR-MX; Wed, 31 Mar 2021 11:59:36 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lRW2i-001XXx-8w; Wed, 31 Mar 2021 10:17:36 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] media: VIDEO_IMX8_JPEG should depend on ARCH_MXC and not default to m
-Date:   Wed, 31 Mar 2021 10:17:35 +0200
-Message-Id: <20210331081735.367238-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 31 Mar 2021 04:17:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617178672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3bTqLjMGBkNyk6LPfhvftRY7GVRzCJFKJwpWtZQvrdY=;
+        b=bxq8/UeN840xD8FxtBJr/6TeZjv63MefU0pkHwOhreGopYAL7hv1mjBogRHAlAtDO4u3MV
+        vCcIY0EoOcXmYSeee9dz4E0QiPxAN8osEItTuELSPdvarTYJDMCqxI2s1fHHZJxNDk3/nV
+        rdgPHD4IO6Bn9gYJ+41+kRcAYVxxb4I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-vV6X7zIlNfaW18iSYhKvUA-1; Wed, 31 Mar 2021 04:17:48 -0400
+X-MC-Unique: vV6X7zIlNfaW18iSYhKvUA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E33BB8710FD;
+        Wed, 31 Mar 2021 08:17:45 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 597E46A900;
+        Wed, 31 Mar 2021 08:17:40 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 10:17:39 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>, brouer@redhat.com
+Subject: Re: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce
+ stat overhead
+Message-ID: <20210331101739.0cc3630e@carbon>
+In-Reply-To: <20210331073805.GY3697@techsingularity.net>
+References: <20210329120648.19040-1-mgorman@techsingularity.net>
+        <20210330205154.1fe1e479@carbon>
+        <20210331073805.GY3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8 QXP/QM integrated JPEG encoder/decoder is only present on
-Freescale/NXP i.MX8 QXP and QM SoCs.  Hence add a dependency on
-ARCH_MXC, to prevent asking the user about this driver when configuring
-a kernel without i.MX8 support.
+On Wed, 31 Mar 2021 08:38:05 +0100
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Drop the "default m" (which means "default y" if CONFIG_MODULES is not
-enabled), as merely enabling CONFIG_COMPILE_TEST should not enable
-additional code.
+> On Tue, Mar 30, 2021 at 08:51:54PM +0200, Jesper Dangaard Brouer wrote:
+> > On Mon, 29 Mar 2021 13:06:42 +0100
+> > Mel Gorman <mgorman@techsingularity.net> wrote:
+> >   
+> > > This series requires patches in Andrew's tree so the series is also
+> > > available at
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
+> > > 
+> > > tldr: Jesper and Chuck, it would be nice to verify if this series helps
+> > > 	the allocation rate of the bulk page allocator. RT people, this
+> > > 	*partially* addresses some problems PREEMPT_RT has with the page
+> > > 	allocator but it needs review.  
+> > 
+> > I've run a new micro-benchmark[1] which shows:
+> > (CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
+> > 
+> > <Editting to focus on arrays>
+> > BASELINE
+> >  single_page alloc+put: 194 cycles(tsc) 54.106 ns
+> > 
+> > ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+> > 
+> >  Per elem: 195 cycles(tsc) 54.225 ns (step:1)
+> >  Per elem: 127 cycles(tsc) 35.492 ns (step:2)
+> >  Per elem: 117 cycles(tsc) 32.643 ns (step:3)
+> >  Per elem: 111 cycles(tsc) 30.992 ns (step:4)
+> >  Per elem: 106 cycles(tsc) 29.606 ns (step:8)
+> >  Per elem: 102 cycles(tsc) 28.532 ns (step:16)
+> >  Per elem: 99 cycles(tsc) 27.728 ns (step:32)
+> >  Per elem: 98 cycles(tsc) 27.252 ns (step:64)
+> >  Per elem: 97 cycles(tsc) 27.090 ns (step:128)
+> > 
+> > This should be seen in comparison with the older micro-benchmark[2]
+> > done on branch mm-bulk-rebase-v5r9.
+> > 
+> > BASELINE
+> >  single_page alloc+put: Per elem: 199 cycles(tsc) 55.472 ns
+> > 
+> > ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+> > 
+> >  Per elem: 202 cycles(tsc) 56.383 ns (step:1)
+> >  Per elem: 144 cycles(tsc) 40.047 ns (step:2)
+> >  Per elem: 134 cycles(tsc) 37.339 ns (step:3)
+> >  Per elem: 128 cycles(tsc) 35.578 ns (step:4)
+> >  Per elem: 120 cycles(tsc) 33.592 ns (step:8)
+> >  Per elem: 116 cycles(tsc) 32.362 ns (step:16)
+> >  Per elem: 113 cycles(tsc) 31.476 ns (step:32)
+> >  Per elem: 110 cycles(tsc) 30.633 ns (step:64)
+> >  Per elem: 110 cycles(tsc) 30.596 ns (step:128)
+> >   
+> 
+> Ok, so bulk allocation is faster than allocating single pages, no surprise
+> there. Putting the array figures for bulk allocation into tabular format
+> and comparing we get;
+> 
+> Array variant (time to allocate a page in nanoseconds, lower is better)
+>         Baseline        Patched
+> 1       56.383          54.225 (+3.83%)
+> 2       40.047          35.492 (+11.38%)
+> 3       37.339          32.643 (+12.58%)
+> 4       35.578          30.992 (+12.89%)
+> 8       33.592          29.606 (+11.87%)
+> 16      32.362          28.532 (+11.85%)
+> 32      31.476          27.728 (+11.91%)
+> 64      30.633          27.252 (+11.04%)
+> 128     30.596          27.090 (+11.46%)
+> 
+> The series is 11-12% faster when allocating multiple pages.  That's a
+> fairly positive outcome and I'll include this in the series leader if
+> you have no objections.
 
-Fixes: 2db16c6ed72ce644 ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/media/platform/imx-jpeg/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+That is fine by me to add this to the cover letter.  I like your
+tabular format as it makes is easier to compare. If you use the
+nanosec measurements and not the cycles, you should state that
+this was run on a CPU E5-1650 v4 @ 3.60GHz.  You might notice that the
+factor between cycles(tsc) and ns is very close to 3.6.
 
-diff --git a/drivers/media/platform/imx-jpeg/Kconfig b/drivers/media/platform/imx-jpeg/Kconfig
-index d875f7c88cdad125..0e3269d06ded30ec 100644
---- a/drivers/media/platform/imx-jpeg/Kconfig
-+++ b/drivers/media/platform/imx-jpeg/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- config VIDEO_IMX8_JPEG
- 	tristate "IMX8 JPEG Encoder/Decoder"
-+	depends on ARCH_MXC || COMPILE_TEST
- 	depends on VIDEO_DEV && VIDEO_V4L2
- 	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
 -- 
-2.25.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
