@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503933503B6
+	by mail.lfdr.de (Postfix) with ESMTP id 688D03503B7
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbhCaPlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235615AbhCaPkk (ORCPT
+        id S235447AbhCaPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:41:12 -0400
+Received: from sonic310-30.consmr.mail.ne1.yahoo.com ([66.163.186.211]:40803
+        "EHLO sonic310-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235268AbhCaPk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:40:40 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8BFC061574;
-        Wed, 31 Mar 2021 08:40:39 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v23so8103326ple.9;
-        Wed, 31 Mar 2021 08:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R6vLllu9NqucYXJnQP0Sflwu7dB317CsKp7w2fmXXOU=;
-        b=iqNHS7tFCrbcBhgDkH9R3OIxnlD/q3+u1fbyGpF47PAhllzkR+CWKoMzHvzJd9AQEc
-         NNItEbX4+t2n9J+oh/8FopoPdDgbWkzzZ3L8raSn0291kxGefxSG/RH3tyuerPO+9guV
-         j2Dtn9mNYPWDEsPqWzmcwgrVcneKUIen5J7uyRTBGS0g+OTgI5HrDRdl/2rio+K9aZkz
-         CeUYppQrihGYM2b19CgdJRQF3MwnBSwa9kyrRABFXdHR38tbWcpwYvi4XckYMiIK2xJF
-         jhtXpF+Xd5ciq9x0HPohdqrNbXg9c+vIlR5DpjJRpRA1s9LVEkIMuZUhLp0IMJXsM6w2
-         1cWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R6vLllu9NqucYXJnQP0Sflwu7dB317CsKp7w2fmXXOU=;
-        b=m0YNxpym2FWcjPfbrb2wuyZtEFYXIPXHAwZ9+e/rrq9cVrMnQtbL4aOwim7iPTvgW4
-         4WO/QUMw1qBnv9ctqsducjZDHa697qM1NZ2WNfAGQnDs1fyCvaguKqCS7VRfO2kn4LAk
-         2max/rTQQ5uoGWzY5B6qhESj0SNYpMQr9yRAtnOL8HIn23CE8qSaOpUnGf6RKFcdH6Iy
-         g2PZa1iN3bFC7AIamrlbyDb2TLVP4LDzn1fqb044FI38csMYFibsy5/NJCfkccg4rT7J
-         ypPstE8v4pxqG5nt5ZKUs+ZVfmO3aRSI33A0Q+Qchee7vFhIHzzwOwT2+ewSwj2v5iAP
-         c/uw==
-X-Gm-Message-State: AOAM532V2WGt0P0qW5JxPIDqhzp37ZuHxIJnBTukw2taYF1OCO4JBbo8
-        B4aB8pSF76GWsJAf9EETtnEnLkQLaCDR3Ra3hiQ=
-X-Google-Smtp-Source: ABdhPJwv2pyxhDNSlO7MQXhBGTADia4NSvtEr8A19JdTQLSff9QIY/yCzRKsle2Yiz/YnL7AN8zfL7P+bP08E/0vXqo=
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
- z2-20020a170902ee02b02900e65397d79cmr3801793plb.21.1617205239423; Wed, 31 Mar
- 2021 08:40:39 -0700 (PDT)
+        Wed, 31 Mar 2021 11:40:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617205257; bh=Z02XmX+0Mt2pXfYKNKZIJvP10maumL1eky6/lOZMiOI=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=Prra4wT0REJlAQjJ/8cst0bg+Dnxc8uvAf3dexHep1c9UHbUCAUeciCDUzcRRqn8i9GIxGflZkFzr5fc38cUmlZ6IvS7LhnkPHjOoo18fejHODkkznHtnd6SA0N5G/dJzalT7ZzKm7FUKqJPz+5DvORwONnPjQ16igiGlhvAiPaHj5uazXhUwdcRFj8CODUawlBJmifUgRjvL3kFpHcV22jqIC4krHDN3TFdZDU/wN5snPrCs87sy+BY7tN+Lk3Tf+nINGYWUZLu562EoJ+iI5l0uuS0+E4rYcNflKPGSVC9ER6wT60WVjF1CrgA2Y5NhxOyblW4aCv4cEhjsu2mKQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1617205257; bh=7SSWanaPq37y8uzdOXVAvUAQmjRxUXenlRDNejoJzxa=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=nEwzK8Ji/7Yz+1hWIrKLSOpkzJ4znDSoKwHYeWAGj7f3/8Ql5Q7lGd4TjAO8CZj9uqcpJZxc+qej5lSoXSBTu2/RmtwFjnBoVIiESagBjtZZOeNO+vcMmDC8sGZpoY6MQo0q/8YMz81mBdgriUm2nGASEeW9CM1uYeWHpdKG64bVugR/1h5GnFSjNN1uDiyi7YGkc8KYcmnLmNEcnyF1aTTLsE4KgNaRMdPFAo2T7pE7jbr+V/3xzQ4MURSiF+88WeszsrdHwJGGmHK7S2/lxcM/GG5Ndkc1YDX2zqnEWjmyLu1zKy+tQ2CpK7VQ8r9D3PlZWPoS3sb0SkMSd4o0gw==
+X-YMail-OSG: Jz2huvMVM1kmgZwHsZ4oXA_c6hdu0VUHNzNvUtYvvSHwQQsd_BtJ4YLolictK_e
+ KzOAzULFgRxVGfJBjuVn5a5fJykVZxZ5yMzM9aWOhu8rlObDiPVY2KsB86qgJK4ON3ZKvhwY8RrK
+ R.j9E03PvP2Z4PuxI9iPj3_RXB3WGN_dpK5qNi7R4740I4sIIhJSX9g2PJgyCaWWQCcFJPyjFX0T
+ eDxHE.m2uBq3Fv6uL6oiN4bKrfcL.y25a7__4cX.kcnUOJ_jwCxzHTgUY0OsgtAfmtkOEsziKW_q
+ Fj.dUeCX92V5MENYkFQ5_.WAmPFHXciGpSGNP9bR1wGR858iZXlgg1uw6xKw_5mEBHR0FCWl4Ljc
+ _66MKbUcYUlomXiJxdagZYQA17kuBY.B0T0C_Vw7e8GTmHkLBJ_QfEgIMLfOU0Ryz6ke1_KU46sH
+ dePi4pTWkSkCvP4npvgEXq.MGGpF8RhoC4bEwI1zntWyvKHp.BrDhyHDb0zPaugZtksp.KWZmo2A
+ PuDjhN4K.a__369d4E7iKex8QWhgWNEkzI5e7QuPAnnSZQk2znT4uwfHulOj8.RxHEggNK_wWKxr
+ P_H.uVpaptraXDcxQ_Ve6ClSB1V39YV1haaNtaeOlYobnWojH5PmGVZtb7ZZez8gujifoZtJO.Vg
+ OXYxOsiip_rj.z5ZvIwPOSda_HUuAHtV67JP_nDopdjkAl.qY2jWZtS2q4gVQ6s7iI3eJb4ISou7
+ t2nOD6KhwNNLscrPXCzIONfaiU3fHrtY8sprovYvg_nI10bQlXyMR9p5KywFgaxxw5__sZtlUxLB
+ RddlMQ5gJMbYQxa36UFjasL1mGB5aeTkaM4j4YDigj.f9W9u.uB29kSP2jffdig933R4H6nGTO5E
+ UKGO8hpOmIL6CDJWtQ9RKCNwIOvSDF6AAwe487JAQAbrV8A6TMMZF4Ij2Yvj4aceNN1AgaAr.znv
+ iFS1VO.jZf6rqrkv.BPdsO5JNttp3HFiQH91PyjgXDzioVgfPH..wmmYJgefdLyG_PU6dX7Zf_X8
+ 7enKkUaAv_67FFBhARpHb3pFj6BjjNYVcR_8vNlbC3z0fqfyqUT3j6wn5naiesLvGOn.lXua_Syl
+ ANN5bcRyMU3_tRaeQD5NHT7PxCOI.T3efZWT2x0ngMjUTc4uQ4UXO8D1hKX4wt.aF9uQPze.QIN6
+ PNtQYg28YvQncivGY5DPFAoOidE9Tb_ukmIuHUSo4o34CGer3qwp6h6mw8I_QPMZxKZ3J6QCTXfM
+ PflLnjwSXc4mGAP3D99KCy.WtCGVPZuFnLqAyRckpZAnKJd0rXHVsJ5DEcYSL6Z.ymdwKXFqy1_j
+ AZu4Jm5.jhyZcHECE5ql5SF7C.v_6rVk395hfD_KYN8exKXcmg0pKhHC8CGiRdxKFSqPusgXSbB4
+ iX5_eTGloC6wFXuN3PG3b1YaLvrVPSf6Bk.Mbw7yh_mn8RQVoh2Cdkrk4K.YakU_jlTnoeaYzcvw
+ jKI_L8Gq8_.X7n_zOwv67Rn1lSJ8qNPNt.uhUPGFIZkeRxCmKo.OMEnHndiMp_TThYJbDRYMGYVz
+ gcsRgjpxD4SVJu67w9e2JLfiyfvLW33C.RF1Ni7XEeCoFR9AJ5418BeoMOfuPTTbfohRRj_2PRxV
+ hEoNrEA3D1F6YRVwuXd.swkuIO96Bbr60LHdrBkrJtViOYjl25XfrrTTX9VIFYS1rhID5OYGEieN
+ 6p2vCTX0aZ_6qG3hq33PY75KTaT3EPosWrLIBlEiBY4E9SY2RMMpYSKvoft5YCxtApuUGstZCDJA
+ _38ttkCXlrl2uIl.Dyi3rRGLN_ct0RYh2q8bAv3qTHT4Xg6fGPev392o3_P75xASKAYg9YLzh2W.
+ Thk.1VP17QhkWRcjC0f_P1lbPcahJ6q8wOL9mkxelBvnFwiUXQtTVA8MjKHCD9E4GE5wE1_4gno_
+ daQe6uaiB90LozR0PixxVDCNBb88nkalYsdR_f4MCZhKBKLGLelelzhJcfb89Q76jLBtYVmYrs5M
+ IIrxCVJQiIFCBiaXQ4NEhYhzkM3HghGMSpZzn_KP2RvhumcWJhXtuqS_9.PYkUMgMKzxmeMDyHyR
+ OS8CuYs8M8ghLbCM5MDcVGd2ogyCHSh6V5J4zeEDCQmOgaaMbJuMkn1KGctPf6bm743NmEwOdRta
+ dMjYpVQpoFOh_nStbdCxL9EoSnC5DUS_ScX0_uAzdEgs1KCxwwuvZpUQFFrW94.3u.CRrWM1S7ff
+ ercJ6XyNSn2zLKIBXsdVDGkl9zEtr8MAZ1HWHH78CjM8V0XnfHs55yEEPYMjGobrMnguHZ3mh9Jc
+ Wn.IeSRBCZq4fu1jApgSKHNeQOvOWQ4EpSfgHgQR6Ye0EOsqTDqjOqXrcsbyF3XcY2jBIVyeOiGK
+ dn4gWmxT1MKV37YavFEvmkIrETNcEa5MYGN_Y.JPfHz58zVCr_KaKZAqEEXcNnHc3lll1zmoSLdY
+ twUmgaH9KIuSZAcloXvw5pOFMFMw.vPDDzwHKtWw4A_0ZSZVIEcetmC8cJnwQMglf3qnY4ZO1kAl
+ kBmuLD..7ctlUPRmHQwpnt0cKBrQlvuHjjcqWmCwMABF02p4dwR1ON71zmGmxuDODapPTh0mQyEB
+ jlOq11deChGTCWliHg2AYXkQeoKCCWvKqpoMu7m2qtS0vc6p1wtG8Of1umNQrL4IqWoqOvZ.p.az
+ b89iR8lbFe1_6zpQs2f32s7Qi8xZRhIrABkO_IfLeKjPdDyNn35PfaHBP8gv311CVD15Apn13CHI
+ EPQ8OLUCY1zaJoH3FRf7nYXYCiFGDDxkwmVh1We.8BLb3rIpmStFm.6ldCFeUv2f5tOaSOUHufKw
+ y7RTwb2_sYfRkrjkq72a7DQ0hO21v0cqj_qfbcMNuhCgh7cKGP.h7Xj2d4g--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Wed, 31 Mar 2021 15:40:57 +0000
+Received: by kubenode523.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 1e30e9276f309eedef0c4632a5394e18;
+          Wed, 31 Mar 2021 15:40:54 +0000 (UTC)
+Subject: Re: Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab breaks Smack TCP
+ connections
+To:     =?UTF-8?B?5YiY5Lqa54G/?= <yacanliu@163.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <3f8328fe-e648-9d0e-729d-eb6787f11bf9.ref@schaufler-ca.com>
+ <3f8328fe-e648-9d0e-729d-eb6787f11bf9@schaufler-ca.com>
+ <9b85945.3cfb.178862aa787.Coremail.yacanliu@163.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <83947731-d800-9a1f-71f9-4460c46e322a@schaufler-ca.com>
+Date:   Wed, 31 Mar 2021 08:40:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210329174928.18816-1-henning.schild@siemens.com>
- <20210329174928.18816-3-henning.schild@siemens.com> <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
- <20210330135808.373c3308@md1za8fc.ad001.siemens.net> <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
- <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net> <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
- <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 31 Mar 2021 18:40:23 +0300
-Message-ID: <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9b85945.3cfb.178862aa787.Coremail.yacanliu@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.17936 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:33 PM Henning Schild
-<henning.schild@siemens.com> wrote:
-> Am Tue, 30 Mar 2021 15:41:53 +0300
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > On Tue, Mar 30, 2021 at 3:35 PM Henning Schild
-> > <henning.schild@siemens.com> wrote:
-> > > Am Tue, 30 Mar 2021 15:15:16 +0300
-> > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > > > On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
-> > > > <henning.schild@siemens.com> wrote:
-> > > > > Am Tue, 30 Mar 2021 14:04:35 +0300
-> > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > > > > > <henning.schild@siemens.com> wrote:
-> >
-> > > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > > > > > +       { }
-> > > > > > > +};
-> > > > > >
-> > > > > > It seems to me like poking GPIO controller registers directly.
-> > > > > > This is not good. The question still remains: Can we simply
-> > > > > > register a GPIO (pin control) driver and use an LED GPIO
-> > > > > > driver with an additional board file that instantiates it?
-> > > > >
-> > > > > I wrote about that in reply to the cover letter. My view is
-> > > > > still that it would be an abstraction with only one user, just
-> > > > > causing work and likely not ending up as generic as it might
-> > > > > eventually have to be.
-> > > > >
-> > > > > The region is reserved, not sure what the problem with the
-> > > > > "poking" is.
-> > > >
-> > > >
-> > > > > Maybe i do not understand all the benefits of such a split at
-> > > > > this point in time. At the moment i only see work with hardly
-> > > > > any benefit, not just work for me but also for maintainers. I
-> > > > > sure do not mean to be ignorant. Maybe you go into details and
-> > > > > convince me or we wait for other peoples opinions on how to
-> > > > > proceed, maybe there is a second user that i am not aware of?
-> > > > > Until i am convinced otherwise i will try to argue that a
-> > > > > single-user-abstraction is needless work/code, and should be
-> > > > > done only when actually needed.
-> > > >
-> > > > I have just read your messages (there is a cover letter and
-> > > > additional email which was sent lately).
-> > > >
-> > > > I would like to know what the CPU model number on that board is.
-> > > > Than we can continue to see what possibilities we have here.
-> > >
-> > > I guess we are talking about the one that uses memory mapped, that
-> > > is called an "IPC127E" and seems to have either Intel Atom E3940 or
-> > > E3930 which seems to be Apollo Lake.
-> >
-> > Yep. And now the question, in my patch series you should have got the
-> > apollolake-pinctrl driver loaded (if not, we have to investigate why
-> > it's not being instantiated). This will give you a read GPIO driver.
+On 3/30/2021 7:44 PM, =E5=88=98=E4=BA=9A=E7=81=BF wrote:
+> Hi Casev:
 >
-> Ok, so there is the existing driver i asked about several times. Thanks
-> for pointing it out.
+> A quote from the listen(2) man page on my Ubuntu system:
+> The backlog argument defines the maximum length to which=C2=A0
+> the queue of pending connections for sockfd may grow.
+> I think this implies that the 'backlog' must be greater than zero.
+> In the test source file (tools/smack-ipv4-tcp-peersec.c) Line 60
+> I found the following code:
+> if (listen(firstsock, 0) < 0) {
+> 	=C2=A0 =C2=A0 printf("%s-listen\n", argv[0]);
+> 	=C2=A0 =C2=A0 exit(1);
+> }
+> That means that sock will not accept any requests,=C2=A0
+> so client=C2=A0TCP connections hang with SYN_SENT.
 
-If you remember, I asked you about the chip twice :-)
-I assumed that we were talking about Apollo Lake and that's why I
-insisted that the driver is in the kernel source tree.
+Interesting. Prior to this change the code above was
+accepting connections. I also tried code that uses a
+backlog of 0 on a system without an LSM and discovered
+the same behavior. That is, it accepted connections
+with a 0 backlog before the change, and hangs after.
 
+Is this a bug fix?
 
-> > So, you may use regular LED GPIO on top of it
-> > (https://elixir.bootlin.com/linux/latest/source/drivers/leds/leds-gpio.c).
-> > I would like to understand why it can't be achieved.
+> In openssh case,=C2=A0it use SSH_LISTEN_BACKLOG as 128.
 >
-> Will have a look. Unfortunately this one box is missing in my personal
-> collection, but let us assume that one can be converted to that
-> existing driver.
+> At 2021-03-30 23:42:04, "Casey Schaufler" <casey@schaufler-ca.com> wrot=
+e:
+>> Commit f211ac154577ec9ccf07c15f18a6abf0d9bdb4ab 'net: correct
+>> sk_acceptq_is_full()' breaks a system with the Smack LSM.
+>> Reverting this change results in a return to correct behavior.
+>>
+>> The Smack testsuite can be found at:
+>> 	https://github.com/smack-team/smack-testsuite.git
+>>
+>> The failing test is ipv4-tcp-local-peersec.sh, but it seems
+>> that most TCP connections hang with SYN_SENT. Oddly, ssh
+>> to 127.0.0.1 works, but other TCP connections timeout.
+>>
+>>
+>>
+>>
+>
+>
+> =C2=A0
+>
+>
+> =C2=A0
 
-OK!
-
-> I guess that will still mean the PIO-based part of the LED driver will
-> have to stay as is.
-
-Probably yes. I haven't looked into that part and I have no idea
-what's going on on that platform(s).
-
--- 
-With Best Regards,
-Andy Shevchenko
