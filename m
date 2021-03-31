@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A0C350983
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02779350987
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhCaV3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232944AbhCaV17 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:27:59 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3303AC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:59 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id ev19so2101353qvb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=lk8inZlzo7fNLcnXaQ1bMqH+Yl1xnIiMxwLQYqKIvN0=;
-        b=Vn+IV2jTMQ3qfrTZI0BaCIvipMQjXnOyPVdlyPeO2A1ydhmBtiQ0/KPQbFLprUQsKz
-         XEsE22KBNeTSVCxLa9BdhULZj1AuDO/PaWmw/EF9j8xlXX10FsmT0+B+8p/x/fbzZqXB
-         ioPa4cOo0iYeLpwms5O94L4r44baMvUxEDLYiQ4o+KUu+SAM7a1CX7s/NWI/L7SfPxrM
-         Ua/5ZcXDAjzY32eJHiQGKkogawbLWhdKE06AvSW60VNJY10icae6GpzRlVISoSMCZyJ1
-         ZgYMtg4qfAmuFnaNGf+3dlT/SZspW5x0yX39FkVTOC7fQmzwrn8FU2ClEoHTyE8AdE0d
-         Bd6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=lk8inZlzo7fNLcnXaQ1bMqH+Yl1xnIiMxwLQYqKIvN0=;
-        b=AlW0FV7chbeUf7J40qDPVGFFupiiZM5V7AF+SSb3feKK+V9EQxCzKgnDZbbIG/5tvK
-         ZQGBkor3jBXKswkq7fGkYPsuSAvRD8R+N79VJDqa7J6KrtFL62UVThN1uMcwIHV+1qZc
-         FpMHytYCdoRF3v2AqfKG7Zu4d/NF9mnThaQhc8lzo7P5K47IGYM85cGYAFXkBNk+6MGu
-         OuzEJ4pd30wGl6b6hasIt3ePVhHm5wB1BJdyQIAMA4oWn+10KsS1ADZ1hgV7WP3xXJtP
-         dz7G+yQWsa/0krhAc/8fgMqPIk/MfY5/9EsZacOkMlUaOeQcLAREdyS8MnTXRhKzses/
-         pUeA==
-X-Gm-Message-State: AOAM533Npk38MJkWajDgqUgFE4cQzxCT5xgSkSDmSp+DAjfQv1MoRFy3
-        PulzGUiW080rlK4ETCrpxMnB0urzifJOGndl1SQ=
-X-Google-Smtp-Source: ABdhPJxbLnYVkEE3SX2BDreH5/lfjqbV3qQJ9QM78vYg3uiCL7YeQbGCVkgbIG/Qv+7aSalIOwO+SwFDW3TO97SD7KU=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:7933:7015:a5d5:3835])
- (user=samitolvanen job=sendgmr) by 2002:a0c:e148:: with SMTP id
- c8mr5184451qvl.56.1617226078315; Wed, 31 Mar 2021 14:27:58 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:27:21 -0700
-In-Reply-To: <20210331212722.2746212-1-samitolvanen@google.com>
-Message-Id: <20210331212722.2746212-18-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210331212722.2746212-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v4 17/17] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232855AbhCaVaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233302AbhCaVaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D4A4B61073;
+        Wed, 31 Mar 2021 21:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617226207;
+        bh=ja6wIkS8ptibhefhaLH9EIBKhl2lvpF1GyxSpsDEwlA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=faNf2vloN1VMK+CsD0Cl66dmOz4f0GN9p7ZjfxqrPjbaaZXGmycPQy9w15D80MqTr
+         XiWFUrxSKUerWIv6HJMBt6T5UA3ph+exBDvxdHiUoJYjjQizLTHsJh1Mln75raFIvp
+         0BhTx6WGq7Oh8HEC30EYdBxrIbFenVhFigpS8CMBRh6Ug6FZxzA1NtQMf6oClkKrZu
+         f4AwJRHvSERlHL8zben9MbH269+spZULnTiocyKHsT277QiDjPpZFH2WRhXBzWwa5K
+         blxzl3oCwo1i0TgXfPGGFQk+NHCdupwM19So7dMa1uSRjdqLsD0Jtay0wko6JPCP9J
+         verhdB23kjiog==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C659D608FA;
+        Wed, 31 Mar 2021 21:30:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net/rds: Fix a use after free in rds_message_map_pages
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161722620780.13975.16375102859564408293.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 21:30:07 +0000
+References: <20210331015959.4404-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210331015959.4404-1-lyl2019@mail.ustc.edu.cn>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+Hello:
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This patch was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..d7395772b6b8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.31.0.291.g576ba9dcdaf-goog
+On Tue, 30 Mar 2021 18:59:59 -0700 you wrote:
+> In rds_message_map_pages, the rm is freed by rds_message_put(rm).
+> But rm is still used by rm->data.op_sg in return value.
+> 
+> My patch assigns ERR_CAST(rm->data.op_sg) to err before the rm is
+> freed to avoid the uaf.
+> 
+> Fixes: 7dba92037baf3 ("net/rds: Use ERR_PTR for rds_message_alloc_sgs()")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] net/rds: Fix a use after free in rds_message_map_pages
+    https://git.kernel.org/netdev/net/c/bdc2ab5c61a5
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
