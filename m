@@ -2,195 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E38434FDD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C5534FDDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhCaKM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:12:56 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:51432 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhCaKMk (ORCPT
+        id S234909AbhCaKOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234890AbhCaKOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:12:40 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210331101238euoutp01ee751618bc1044228ea3dd6c0450e1a3~xZbKTUcw22006020060euoutp01C
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 10:12:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210331101238euoutp01ee751618bc1044228ea3dd6c0450e1a3~xZbKTUcw22006020060euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617185558;
-        bh=IuD+yxbAFDnUrs1IElAd4pJHc//IKV7VHIBWdBNLg1A=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=N9jpzoGNeql5KyEj+t2QnpGC2aWUke8ulhOEy4IOr4sj8HAyvrrW2of+7iNzqKupe
-         hx1ik9gjHifGe+k03l2jgQlHzwQrBcKDG+H9JS0R+FRRWo0l/HHuVM43uk/OOoaN5m
-         q4keX8fqtUHIKTqYohk8xsRT13iCC57Wszm/aARg=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210331101238eucas1p2057f863548fde34dbf2ba7bf546fafa9~xZbJyUt8m0678706787eucas1p2Y;
-        Wed, 31 Mar 2021 10:12:38 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 27.F6.09444.61B44606; Wed, 31
-        Mar 2021 11:12:38 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210331101237eucas1p1ae152c11cd6959fa949a181a84a0a2b1~xZbJDxxPn3077430774eucas1p1O;
-        Wed, 31 Mar 2021 10:12:37 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210331101237eusmtrp1ee2a22286b721365132450f8d4bf6c73~xZbJC2_rQ2878428784eusmtrp13;
-        Wed, 31 Mar 2021 10:12:37 +0000 (GMT)
-X-AuditID: cbfec7f4-dbdff700000024e4-4d-60644b163bfc
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 33.4A.08696.51B44606; Wed, 31
-        Mar 2021 11:12:37 +0100 (BST)
-Received: from localhost (unknown [106.210.131.79]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210331101232eusmtip1bb0d13edb05953affdffa10885f15017~xZbEq2HeB1360313603eusmtip1K;
-        Wed, 31 Mar 2021 10:12:32 +0000 (GMT)
-Message-ID: <26d73f36-e150-57ec-d957-4b7bda6b366e@samsung.com>
-Date:   Wed, 31 Mar 2021 12:12:31 +0200
+        Wed, 31 Mar 2021 06:14:12 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF46EC061574;
+        Wed, 31 Mar 2021 03:14:05 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so917732pjh.1;
+        Wed, 31 Mar 2021 03:14:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F1YkyOMP0wJPgBURTtt63CrNTQAoys/vYKd1J6GUTeQ=;
+        b=e0ryJIaBfp29NpDIsf8uc3dX1SM61cv4hdDMQP4gpwqgQA0QeL/tWTPOZTEqjh24+E
+         CwokC7cgqpYfGJEt+AxTH1odHbWLH/3TbSTLFr7FiCQr5rYh+7XybZGrrawNmjIwWfwv
+         w5nH9Ik9/NcWiZgDO3kIdSpgrRkU9UBos4bogb9zFekdkBxzH9FVavDshSEMarlswrmY
+         IbUUT5tj04retqZ8nH/rE/oOO5sXfow8V4sOdm4L8DO8qSzyPt29xcqTJd5GRr9EzRQw
+         aXjC0VJWWO6j+s5iFgwFJUOlv4kdpaC3Gf5Q3kRVxMp6fFOYvbTG8lXDe7mIFyYr9RlM
+         Y5HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F1YkyOMP0wJPgBURTtt63CrNTQAoys/vYKd1J6GUTeQ=;
+        b=PkdZuY/wn32PxIdnnOXy9+R5p+bHW+490hMtSaKle46PSvpG7HpgvSUjWRksE8XVk/
+         YTG+2O85LtgvHe5LSBypPyWCzUqHKei2Zj3Brzs9ULFOh8DVvloEv5p43xx5elCHIG/2
+         bNfUeTEJKOLzcTccK/RBpXRzX1+bPrlQLJeJQSyXh1rKJbEt1yKzCzv4VRQTHAV1RNCd
+         Yv47kf57Dv+cuce4L4uPHmtTAb3mzlI/ZhmwSzuGYE0E4FjJM3VPDGd1DVyNRNfJcpld
+         a0M3E1sJczav266Cu3S7Ps7VSygxKCzTZL7Ov/edzOsSV1XlcD69QFXXd0cdxdFVQo9U
+         cmTg==
+X-Gm-Message-State: AOAM531hjEA1vLIWLxvaohTDHoaa8xnl40V47kIK8EIPJHQZz927nJcH
+        hUx8HZkS6IjDTlV7cNC5BZAHSgQ4ylf2CauCEyM=
+X-Google-Smtp-Source: ABdhPJx1HDeLlxyvmhGidVheMaey/qhxP6V63IqjsHWGkeVi05wC3/bYFGgWJMFNvt3TXsjCcDwuBHQaCWb08h+DSMw=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr2860644pjb.129.1617185645305;
+ Wed, 31 Mar 2021 03:14:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0)
-        Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH v2 10/14] drm/bridge: ti-sn65dsi86: Stop caching the
- EDID ourselves
-Content-Language: en-GB
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <20210329195255.v2.10.Ida6151df6bfc71df77afee1d72bb7eb0a443f327@changeid>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHKsWRmVeSWpSXmKPExsWy7djPc7pi3ikJBmdvcVj0njvJZHF6/zsW
-        i7PLDrJZXPn6ns3i6veXzBYn31xlseicuITdYuL+s+wWl3fNYbM41Bdtce3nY2aLT7MeMlus
-        +LmV0aK9y8bi5/U2Zovjd54yOQh4vL/Ryu4xu+Eii8fsjpmsHov3vGTymLPoBrPHiQmXmDzu
-        XNvD5rH92wNWj/vdx5k8lky7yuZxoHcyi8fnTXIBPFFcNimpOZllqUX6dglcGRN6j7IXXBCu
-        mNGzgrGBcRN/FyMnh4SAiURHxz7mLkYuDiGBFYwSU1qfsEM4XxglPh3dwAThfGaUuD2jlQWm
-        pWHuYaiq5YwS81duYoRwXjBKzNraywxSxStgJ3G5pxesg0VAVeLkjDusEHFBiZMzn4DFRQUS
-        JFbdWM4EYgsLREqsO/cCrIZZQFyi6ctKVpChIgL/GCVWT3wMdgezwGcmiU9TDoF1sAloSvzd
-        fJMNxOYUCJPYsegDM0S3vETz1tlgL0kIXOKUWLDoNzPE4S4SO5ZNh3pCWOLV8S3sELaMxOnJ
-        PVDxeon7K1qgmjsYJbZu2AnVbC1x59wvoG0cQBs0Jdbv0ocIO0q8aekEC0sI8EnceCsIcQOf
-        xKRt05khwrwSHW1CENWKEvfPboUaKC6x9MJXtgmMSrOQwmUWkv9nIflmFsLeBYwsqxjFU0uL
-        c9NTi43yUsv1ihNzi0vz0vWS83M3MQKT5Ol/x7/sYFz+6qPeIUYmDsZDjBIczEoivMIHEhOE
-        eFMSK6tSi/Lji0pzUosPMUpzsCiJ8yZtWRMvJJCeWJKanZpakFoEk2Xi4JRqYJpwguvRpv+f
-        GkJWxXed1//54iVPBN8MvaWtq2WS+AQur4nZlBNS3tF2PNaAxfph7sJrersDRByf8NzcMaHP
-        JftGMhdT3sW/u5wuL5/3I/4yp9xfNSfrRnVN4Y0/LYKWH4xPmmoX9eaAuFP+lW3CvnVWYibL
-        J52xWj7d85NznHp1wPRSF6G0ntRprlH2YnGHX7dNMm4OvClReCu3dsvMb7opqhsPaqQ/yuVa
-        a/Aub8X8f44J19wffjJUrzTbWGszZVU1x47b9mxn1KfNKZZZPn1ejqs609O+PF/bRPVg5ntL
-        Eksua09zmByQl98ktP+RTl6cp7qvZf41lz9bfNncQqJboz5f2PvEbePyruwWJZbijERDLeai
-        4kQAeqgr6QEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4XV1R75QEg2c7JCx6z51ksji9/x2L
-        xdllB9ksrnx9z2Zx9ftLZouTb66yWHROXMJuMXH/WXaLy7vmsFkc6ou2uPbzMbPFp1kPmS1W
-        /NzKaNHeZWPx83obs8XxO0+ZHAQ83t9oZfeY3XCRxWN2x0xWj8V7XjJ5zFl0g9njxIRLTB53
-        ru1h89j+7QGrx/3u40weS6ZdZfM40DuZxePzJrkAnig9m6L80pJUhYz84hJbpWhDCyM9Q0sL
-        PSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jAm9R9kLLghXzOhZwdjAuIm/i5GTQ0LARKJh
-        7mH2LkYuDiGBpYwSV7e0sEEkxCV2z3/LDGELS/y51gUWFxJ4xiix5moUiM0rYCdxuaeXBcRm
-        EVCVODnjDitEXFDi5MwnYHFRgQSJsx/mMYHYwgKREv3zroHFmYHmN31ZyQqyWESggUni0t3F
-        TCAOs8BXJomWV0uhTrrDKHFq/xSw1WwCmhJ/N98EszkFwiR2LPrADDHKTKJraxcjhC0v0bx1
-        NvMERqFZSC6ZhWTjLCQts5C0LGBkWcUoklpanJueW2ykV5yYW1yal66XnJ+7iRGYFLYd+7ll
-        B+PKVx/1DjEycTAeYpTgYFYS4RU+kJggxJuSWFmVWpQfX1Sak1p8iNEUGBwTmaVEk/OBaSmv
-        JN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYmq5DkrmrP2XWnZPvb
-        DuqlreGe8J3nrPnchxf9wjt7/ntHNNjbrmO/u/DxpZqPWg9ElvE4iF1ZaGieO7n6eUzYgwPt
-        bcH5+0XSHy+/1MP07c8Wo0PM77gjz1Y5RbxsEj7VHXswf8rSC5M3byjfej5HLKQsfuWhr+Hc
-        HOf4+X8Kr02YpXYmsSpO9PMBzulsMsXRS5geFD9Wcl13pWH1zHntzAabojxPpXLd2/Pl/Q/P
-        aTq6VzXP87+tiTk7rU+/M+lmTYbF2neGEfVGCf5xidVz/Ri2rZ1wauvRa2znvjBf9r6w60GU
-        6tSAZZsap9m2b/9uzjVH50kwj9syIameAyvvrNnfFq++hkWlwWj7zXORSizFGYmGWsxFxYkA
-        m6aZjZMDAAA=
-X-CMS-MailID: 20210331101237eucas1p1ae152c11cd6959fa949a181a84a0a2b1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5
-References: <20210330025345.3980086-1-dianders@chromium.org>
-        <CGME20210330025443eucas1p1e53f4fb8623c3dc2ae8ce514e3009bc5@eucas1p1.samsung.com>
-        <20210329195255.v2.10.Ida6151df6bfc71df77afee1d72bb7eb0a443f327@changeid>
+References: <20210330134633.29889-1-andriy.shevchenko@linux.intel.com> <4631eddd-1855-566e-7d3c-591e5d559cf8@linux.intel.com>
+In-Reply-To: <4631eddd-1855-566e-7d3c-591e5d559cf8@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 31 Mar 2021 13:13:48 +0300
+Message-ID: <CAHp75VdCXuprrRpF6-DihSNJr=ghp5TuJVqh4rMs=GG7fBfd_A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] i2c: designware: Switch over to i2c_freq_mode_string()
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 31, 2021 at 11:42 AM Jarkko Nikula
+<jarkko.nikula@linux.intel.com> wrote:
+>
+> On 3/30/21 4:46 PM, Andy Shevchenko wrote:
+> > Use generic i2c_freq_mode_string() helper to print chosen bus speed.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> > Depends on the "Add support for HiSilicon I2C controller" series.
+> > Message-Id - 1617109549-4013-1-git-send-email-yangyicong@hisilicon.com
+> > Yicong, feel free to attach to your new version of it.
+> >
+> >   drivers/i2c/busses/i2c-designware-master.c | 20 ++++----------------
+> >   1 file changed, 4 insertions(+), 16 deletions(-)
+> >
+> Please note kernel test robot <lkp@intel.com> reported some issues with
+> this patch before included in this series.
 
-W dniu 30.03.2021 o 04:53, Douglas Anderson pisze:
-> Now that we have the patch ("drm/edid: Use the cached EDID in
-> drm_get_edid() if eDP") we no longer need to maintain our own
-> cache. Drop this code.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Report due to absence of dependencies.
 
-Regards
-Andrzej
-> ---
->
-> (no changes since v1)
->
->   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 +++++++++-------------
->   1 file changed, 9 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 9577ebd58c4c..c0398daaa4a6 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -121,7 +121,6 @@
->    * @debugfs:      Used for managing our debugfs.
->    * @host_node:    Remote DSI node.
->    * @dsi:          Our MIPI DSI source.
-> - * @edid:         Detected EDID of eDP panel.
->    * @refclk:       Our reference clock.
->    * @panel:        Our panel.
->    * @enable_gpio:  The GPIO we toggle to enable the bridge.
-> @@ -147,7 +146,6 @@ struct ti_sn_bridge {
->   	struct drm_bridge		bridge;
->   	struct drm_connector		connector;
->   	struct dentry			*debugfs;
-> -	struct edid			*edid;
->   	struct device_node		*host_node;
->   	struct mipi_dsi_device		*dsi;
->   	struct clk			*refclk;
-> @@ -269,17 +267,17 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
->   static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->   {
->   	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
-> -	struct edid *edid = pdata->edid;
-> -	int num;
-> +	struct edid *edid;
-> +	int num = 0;
->   
-> -	if (!edid) {
-> -		pm_runtime_get_sync(pdata->dev);
-> -		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-> -		pm_runtime_put(pdata->dev);
-> -	}
-> +	pm_runtime_get_sync(pdata->dev);
-> +	edid = drm_get_edid(connector, &pdata->aux.ddc);
-> +	pm_runtime_put(pdata->dev);
->   
-> -	if (edid && drm_edid_is_valid(edid)) {
-> -		num = drm_add_edid_modes(connector, edid);
-> +	if (edid) {
-> +		if (drm_edid_is_valid(edid))
-> +			num = drm_add_edid_modes(connector, edid);
-> +		kfree(edid);
->   		if (num)
->   			return num;
->   	}
-> @@ -1308,8 +1306,6 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->   	if (!pdata)
->   		return -EINVAL;
->   
-> -	kfree(pdata->edid);
-> -
->   	ti_sn_debugfs_remove(pdata);
->   
->   	drm_bridge_remove(&pdata->bridge);
+> Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+
+Thanks!
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
