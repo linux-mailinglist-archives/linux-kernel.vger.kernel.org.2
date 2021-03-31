@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDD6350091
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C25E350098
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbhCaMmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:42:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55641 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235618AbhCaMln (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:41:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617194502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H7dNXYaOTclqUn9MijXwZ7hg6tnWG/YqlnOo2zWP1Ro=;
-        b=QMFkUeM3/FhzJ3hVyDmAsSxF/Hat94myuKhCr5lPpMnl+/uBDo/s1sQmlqw1sXEAXQRrkb
-        1ImL4e3CUAbEXiGyscm2WWOb5rUxdl/SXkylcYObFABms0JAWv41hDvDg0xA6KrSGrAlIL
-        uOl5paXvDlnP7mZWCSUfvmr1vvbfJ2k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-YZromXsBOru0T6J7NaNcQA-1; Wed, 31 Mar 2021 08:41:41 -0400
-X-MC-Unique: YZromXsBOru0T6J7NaNcQA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14270108BD0C;
-        Wed, 31 Mar 2021 12:41:40 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 01E9B60861;
-        Wed, 31 Mar 2021 12:41:37 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests: kvm: Check that TSC page value is small after KVM_SET_CLOCK(0)
-Date:   Wed, 31 Mar 2021 14:41:30 +0200
-Message-Id: <20210331124130.337992-3-vkuznets@redhat.com>
-In-Reply-To: <20210331124130.337992-1-vkuznets@redhat.com>
-References: <20210331124130.337992-1-vkuznets@redhat.com>
+        id S235457AbhCaMo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:44:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235434AbhCaMoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:44:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEFA61959;
+        Wed, 31 Mar 2021 12:44:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617194674;
+        bh=zu5+7E3FlVx1B02C+X7ZBz7+D9LN8HEMJnjE1Je3NZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ivif8rLiEpy+yTQbX5AQrdpFree1FdwAVyRpOZwQyWuOr7yJ0OvozGPzO6OxzoWh5
+         BUsDrcq5ZR8R5euuGOtk0eX7ibhoq50adYQU1A+ZD8U8/6zFGmS3hMt92tsIuiExn5
+         6nE2sIaEgSEZUxkwG3dNjjxByFGbpdqIzwQLMB3dWkh8ZJF1gHN0jCHMR8ALRdAcym
+         4kQZPcpv1ntbTS6iMjGzYGqP72OXRh4/xb6fpgAFEN/Y9z8jrmU/hmBYE3YMfjtyL+
+         IyNAuqJh2KhAnOAhZySyVkkBbtltARa/XVIyi13XPbZuOfYZkReX3IW4AfOceCogVe
+         yjvgCqPM+nRRA==
+Date:   Wed, 31 Mar 2021 13:44:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] ASoC: cs42l42: Remove unused including
+ <linux/version.h>
+Message-ID: <20210331124419.GA12878@sirena.org.uk>
+References: <20210326061335.3234571-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+Content-Disposition: inline
+In-Reply-To: <20210326061335.3234571-1-zhengyongjun3@huawei.com>
+X-Cookie: I'm rated PG-34!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test for the issue when KVM_SET_CLOCK(0) call could cause
-TSC page value to go very big because of a signedness issue around
-hv_clock->system_time.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- tools/testing/selftests/kvm/x86_64/hyperv_clock.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
-index ffbc4555c6e2..7f1d2765572c 100644
---- a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
-+++ b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
-@@ -80,19 +80,24 @@ static inline void check_tsc_msr_rdtsc(void)
- 	GUEST_ASSERT(delta_ns * 100 < (t2 - t1) * 100);
- }
- 
-+static inline u64 get_tscpage_ts(struct ms_hyperv_tsc_page *tsc_page)
-+{
-+	return mul_u64_u64_shr64(rdtsc(), tsc_page->tsc_scale) + tsc_page->tsc_offset;
-+}
-+
- static inline void check_tsc_msr_tsc_page(struct ms_hyperv_tsc_page *tsc_page)
- {
- 	u64 r1, r2, t1, t2;
- 
- 	/* Compare TSC page clocksource with HV_X64_MSR_TIME_REF_COUNT */
--	t1 = mul_u64_u64_shr64(rdtsc(), tsc_page->tsc_scale) + tsc_page->tsc_offset;
-+	t1 = get_tscpage_ts(tsc_page);
- 	r1 = rdmsr(HV_X64_MSR_TIME_REF_COUNT);
- 
- 	/* 10 ms tolerance */
- 	GUEST_ASSERT(r1 >= t1 && r1 - t1 < 100000);
- 	nop_loop();
- 
--	t2 = mul_u64_u64_shr64(rdtsc(), tsc_page->tsc_scale) + tsc_page->tsc_offset;
-+	t2 = get_tscpage_ts(tsc_page);
- 	r2 = rdmsr(HV_X64_MSR_TIME_REF_COUNT);
- 	GUEST_ASSERT(r2 >= t1 && r2 - t2 < 100000);
- }
-@@ -130,7 +135,11 @@ static void guest_main(struct ms_hyperv_tsc_page *tsc_page, vm_paddr_t tsc_page_
- 
- 	tsc_offset = tsc_page->tsc_offset;
- 	/* Call KVM_SET_CLOCK from userspace, check that TSC page was updated */
-+
- 	GUEST_SYNC(7);
-+	/* Sanity check TSC page timestamp, it should be close to 0 */
-+	GUEST_ASSERT(get_tscpage_ts(tsc_page) < 100000);
-+
- 	GUEST_ASSERT(tsc_page->tsc_offset != tsc_offset);
- 
- 	nop_loop();
--- 
-2.30.2
+On Fri, Mar 26, 2021 at 02:13:35PM +0800, Zheng Yongjun wrote:
+> Remove including <linux/version.h> that don't need it.
 
+This doesn't apply against current code, please check and resend:
+
+Applying: ASoC: cs42l42: Remove unused including <linux/version.h>
+Using index info to reconstruct a base tree...
+error: patch failed: sound/soc/codecs/cs42l42.c:11
+error: sound/soc/codecs/cs42l42.c: patch does not apply
+error: Did you hand edit your patch?
+It does not apply to blobs recorded in its index.
+Patch failed at 0006 ASoC: cs42l42: Remove unused including <linux/version.h>
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBkbqIACgkQJNaLcl1U
+h9CoJwf/QAjGb6XA/wFK32XB2wDQQzeicvhjhNfxqPyxmO/wmoYc805JcqgbOLTx
+i+fBFtquaB5YgPCNDF7Qx+tXsVbLcRsE6IB9Wh5A24qOBZySbh9JzwIB74QkJri8
+1Kdd+pblf5HHjreotAi0WRtvFEE0654Q/QK5Llb2sWF/9qTbj8j77AOmT6akewnn
+0qzN2K9+LtTYdIa8muL3cLFGVeN6ab7M05jWqUnlCn4yRww26+y4/zhwmcSbMpLH
+BGmwc4/r8J7aFTWFG0x+/Tg/GnmYUtvA+oBrF2zCa9ps5Uxbt+TNrBAO5yQvmJvw
+Zqy95Udm0SRXT5rOcWzZHQoHrFiFMg==
+=QE6g
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
