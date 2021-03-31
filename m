@@ -2,149 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E2350378
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C73A350397
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbhCaPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:32:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:10013 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235420AbhCaPbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:31:42 -0400
-IronPort-SDR: ix/TbFdwhqexlKDLzcSimdpnwqJy5k9ySxCYjUqlJ0+cbqK3u3U3HQbj+V79dN+DR1PyFljj/j
- S3N+iLVHSAFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="253363775"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="253363775"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:31:38 -0700
-IronPort-SDR: t2ElSMhwnt8Hm7hqczZh4uqwTpjrT0CnReQGioO25F9+uRM8nZaJ0EiW3QO6AW0NUOZbkxvh/h
- y9c5DTJJe8Yg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="455537071"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2021 08:31:32 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next v3 0/6] stmmac: Add XDP support
-Date:   Wed, 31 Mar 2021 23:35:41 +0800
-Message-Id: <20210331153541.1892-1-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S235680AbhCaPh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:37:26 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:42635 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235557AbhCaPhX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:37:23 -0400
+Received: by mail-io1-f69.google.com with SMTP id q7so1805009ioh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 08:37:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=z8nPr3JJgPpDKpFIfZ1dGIHn+oOycU54gsgANu1iR7Y=;
+        b=OU3s5sRap2m5DFHhdUa48JZZ8YdIOzUJfZOVOatSkjMo2H9vtsBJiEX+k1N9MqHzJ3
+         k9b1fKzUMEQbk+GGp9+RaEkFaI5e04WqfgoyJWtiuGR/sAYAx/QKylU+AduL3yh06PTE
+         lbFAN3gkMOrm1jaiqgnNdcuBiJhxvTCHNCYvva4xcBcXvZpaUfp7CL1mtiKGOLPD08kz
+         GyU2aq53StowZM7ecOdRMIFmCFWTdtG98MtCWWTQ3HlOGl2WdXLW8UDgO2EWkFmBz6Dz
+         lsZ8byC8XQVno+tcCshbSzlu2PHAfXByo5+pmDPa/iA1E5vQMpkYK9N6K23ov8EXas1k
+         Bazw==
+X-Gm-Message-State: AOAM532jz9HWGLJqiKTdRstVseIcU6g+Ry5RKtmK6IGs4SJ7Ih8EG4Jw
+        4mqpMrTwlFIbSfcFQBWeVNeO2BtYcFwQFQo6F3EOb1UM3Pxo
+X-Google-Smtp-Source: ABdhPJzpn3gNjL7+SCcEUqLRMWQRZSARdIaxLvqqjoq1bXcdI/fd+yjXZLzdGGXK/BOgbLa86Ch6CDdzFZqQkMJqg4RYPqMG2s7l
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:2f0c:: with SMTP id q12mr2795111iow.82.1617205043423;
+ Wed, 31 Mar 2021 08:37:23 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 08:37:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000246d0105bed6e42d@google.com>
+Subject: [syzbot] possible deadlock in ipv6_sock_ac_close
+From:   syzbot <syzbot+c18d9ae8897308206c1d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-This is the v3 patch series for adding XDP support to stmmac driver.
+syzbot found the following issue on:
 
-Summary of the changes in v3 (per feedback from Jakub Kicinski):-
+HEAD commit:    37f368d8 lan743x: remove redundant intializations of point..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13fe28ced00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=c18d9ae8897308206c1d
 
-4/6: Factor in XDP buffer header and tail adjustment by XDP prog.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-5/6: Added 'nq->trans_start = jiffies' to avoid TX time-out for XDP_TX.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c18d9ae8897308206c1d@syzkaller.appspotmail.com
 
-6/6: Added 'nq->trans_start = jiffies' to avoid TX time-out for
-     ndo_xdp_xmit.
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-rc4-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.3/17484 is trying to acquire lock:
+ffffffff8d66d328 (rtnl_mutex){+.+.}-{3:3}, at: ipv6_sock_ac_close+0xd5/0x110 net/ipv6/anycast.c:219
 
-I retested this patch series on all the test steps listed in v1 and the
-results look good as expected. I also used xdp_adjust_tail test app in
-samples/bpf for checking out XDP head and tail adjustment introduced in
-4/6 and the result below looks correct too.
+but task is already holding lock:
+ffff88806c808120 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
+ffff88806c808120 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp6_release+0x57/0x130 net/mptcp/protocol.c:3530
 
- ########################################################################
+which lock already depends on the new lock.
 
-DUT > root@intel-corei7-64:~ $ ./xdp_adjust_tail -i eth0 -P 400 -N
-==========================
-icmp "packet too big" sent:          0 pkts
-icmp "packet too big" sent:          0 pkts
-icmp "packet too big" sent:          0 pkts
-icmp "packet too big" sent:          0 pkts
-icmp "packet too big" sent:          1 pkts
-icmp "packet too big" sent:          1 pkts
-icmp "packet too big" sent:          1 pkts
-icmp "packet too big" sent:          2 pkts
-icmp "packet too big" sent:          4 pkts
-icmp "packet too big" sent:          6 pkts
-icmp "packet too big" sent:          8 pkts
-icmp "packet too big" sent:          9 pkts
-icmp "packet too big" sent:         10 pkts
-icmp "packet too big" sent:         10 pkts
 
-LP > root@intel-corei7-64:~# ping 169.254.1.11 -s 300
-PING 169.254.1.11 (169.254.1.11) 300(328) bytes of data.
-308 bytes from 169.254.1.11: icmp_seq=1 ttl=64 time=1.17 ms
-308 bytes from 169.254.1.11: icmp_seq=2 ttl=64 time=0.575 ms
-308 bytes from 169.254.1.11: icmp_seq=3 ttl=64 time=0.582 ms
-308 bytes from 169.254.1.11: icmp_seq=4 ttl=64 time=0.595 ms
-308 bytes from 169.254.1.11: icmp_seq=5 ttl=64 time=0.585 ms
-308 bytes from 169.254.1.11: icmp_seq=6 ttl=64 time=0.591 ms
-308 bytes from 169.254.1.11: icmp_seq=7 ttl=64 time=0.599 ms
-^C
---- 169.254.1.11 ping statistics ---
-7 packets transmitted, 7 received, 0% packet loss, time 6103ms
-rtt min/avg/max/mdev = 0.575/0.670/1.166/0.202 ms
+the existing dependency chain (in reverse order) is:
 
-LP >  root@intel-corei7-64:~# ping 169.254.1.11 -s 500
-PING 169.254.1.11 (169.254.1.11) 500(528) bytes of data.
-From 169.254.1.11 icmp_seq=1 Frag needed and DF set (mtu = 436)
-From 169.254.1.11 icmp_seq=2 Frag needed and DF set (mtu = 436)
-From 169.254.1.11 icmp_seq=3 Frag needed and DF set (mtu = 436)
-From 169.254.1.11 icmp_seq=4 Frag needed and DF set (mtu = 436)
-From 169.254.1.11 icmp_seq=5 Frag needed and DF set (mtu = 436)
-From 169.254.1.11 icmp_seq=6 Frag needed and DF set (mtu = 436)
+-> #1 (sk_lock-AF_INET6){+.+.}-{0:0}:
+       lock_sock_nested+0xca/0x120 net/core/sock.c:3071
+       lock_sock include/net/sock.h:1600 [inline]
+       do_ipv6_setsockopt.constprop.0+0x31f/0x4220 net/ipv6/ipv6_sockglue.c:418
+       ipv6_setsockopt+0xd6/0x180 net/ipv6/ipv6_sockglue.c:1003
+       __sys_setsockopt+0x2db/0x610 net/socket.c:2117
+       __do_sys_setsockopt net/socket.c:2128 [inline]
+       __se_sys_setsockopt net/socket.c:2125 [inline]
+       __x64_sys_setsockopt+0xba/0x150 net/socket.c:2125
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
- ########################################################################
+-> #0 (rtnl_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2936 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+       validate_chain kernel/locking/lockdep.c:3674 [inline]
+       __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+       lock_acquire kernel/locking/lockdep.c:5510 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       ipv6_sock_ac_close+0xd5/0x110 net/ipv6/anycast.c:219
+       mptcp6_release+0xc1/0x130 net/mptcp/protocol.c:3539
+       __sock_release+0xcd/0x280 net/socket.c:599
+       sock_close+0x18/0x20 net/socket.c:1258
+       __fput+0x288/0x920 fs/file_table.c:280
+       task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+       exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-History of the previous patch series:
+other info that might help us debug this:
 
-v2: https://patchwork.kernel.org/project/netdevbpf/list/?series=457757
-v1: https://patchwork.kernel.org/project/netdevbpf/list/?series=457139
+ Possible unsafe locking scenario:
 
-It will be great if community can help to test or review the v3 patch
-series on your platform and provide me any new feedback if any.
+       CPU0                    CPU1
+       ----                    ----
+  lock(sk_lock-AF_INET6);
+                               lock(rtnl_mutex);
+                               lock(sk_lock-AF_INET6);
+  lock(rtnl_mutex);
 
-Thank you very much.
-Boon Leong
+ *** DEADLOCK ***
 
-Ong Boon Leong (6):
-  net: stmmac: set IRQ affinity hint for multi MSI vectors
-  net: stmmac: make SPH enable/disable to be configurable
-  net: stmmac: arrange Tx tail pointer update to
-    stmmac_flush_tx_descriptors
-  net: stmmac: Add initial XDP support
-  net: stmmac: Add support for XDP_TX action
-  net: stmmac: Add support for XDP_REDIRECT action
+2 locks held by syz-executor.3/17484:
+ #0: ffff888062f3a6d0 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #0: ffff888062f3a6d0 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:598
+ #1: ffff88806c808120 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1600 [inline]
+ #1: ffff88806c808120 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp6_release+0x57/0x130 net/mptcp/protocol.c:3530
 
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  35 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 529 +++++++++++++++---
- .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |  40 ++
- .../net/ethernet/stmicro/stmmac/stmmac_xdp.h  |  12 +
- 5 files changed, 537 insertions(+), 80 deletions(-)
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.h
+stack backtrace:
+CPU: 0 PID: 17484 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2127
+ check_prev_add kernel/locking/lockdep.c:2936 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3059 [inline]
+ validate_chain kernel/locking/lockdep.c:3674 [inline]
+ __lock_acquire+0x2b14/0x54c0 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+ ipv6_sock_ac_close+0xd5/0x110 net/ipv6/anycast.c:219
+ mptcp6_release+0xc1/0x130 net/mptcp/protocol.c:3539
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x41926b
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
+RSP: 002b:00007fffdbb1c900 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 000000000041926b
+RDX: 0000000000000000 RSI: 000000000d1327a1 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b32727cec
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000056c9e0
+R13: 000000000056c9e0 R14: 000000000056bf60 R15: 000000000005bd25
 
--- 
-2.25.1
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
