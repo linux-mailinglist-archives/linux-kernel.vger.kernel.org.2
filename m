@@ -2,141 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A143505E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610D93505E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbhCaR5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:57:49 -0400
-Received: from alln-iport-7.cisco.com ([173.37.142.94]:61870 "EHLO
-        alln-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCaR5Q (ORCPT
+        id S234557AbhCaR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233867AbhCaR7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:57:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3142; q=dns/txt; s=iport;
-  t=1617213436; x=1618423036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9+KK6SA8vleCLJAhsbCIqaUCPho3SAWet4gWR6pTR+U=;
-  b=Y4kDA9Ojs6PaUzcrC9+ZR+rkT3qMNoL5/0oJb97nLv23/e908ij4J5H3
-   lFlPFCLFYrPMi+HVd0+mXfheHvErZ6SXwDkNIsOxrSV9Wz3pjzUFcxSiQ
-   wt55FynGuRjTlN59qhjl6ZdBQuGooFhFSiNN5nbVSxtFOn/PeLUrWNx+8
-   A=;
-X-IronPort-AV: E=Sophos;i="5.81,293,1610409600"; 
-   d="scan'208";a="670998258"
-Received: from rcdn-core-3.cisco.com ([173.37.93.154])
-  by alln-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 31 Mar 2021 17:57:12 +0000
-Received: from zorba ([10.24.8.227])
-        by rcdn-core-3.cisco.com (8.15.2/8.15.2) with ESMTPS id 12VHv9UF022319
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 31 Mar 2021 17:57:10 GMT
-Date:   Wed, 31 Mar 2021 10:57:09 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Ofer Licht <olicht@cisco.com>, xe-linux-external@cisco.com,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: Add support for cisco craw64 ARMv8 SoCs
-Message-ID: <20210331175709.GE2469518@zorba>
-References: <20210331014603.2496983-1-danielwa@cisco.com>
- <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
+        Wed, 31 Mar 2021 13:59:12 -0400
+Received: from hs01.dk-develop.de (hs01.dk-develop.de [IPv6:2a02:c207:3002:6234::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C4FC061574;
+        Wed, 31 Mar 2021 10:59:11 -0700 (PDT)
+Received: from mail.dk-develop.de (hs01.dk-develop.de [IPv6:::1])
+        by hs01.dk-develop.de (Postfix) with ESMTP id 7360A1DA396;
+        Wed, 31 Mar 2021 19:58:33 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1rbGPxjRiUTy3AKh4S9jqxk=SHoa9s0Z-3nhgQb3xJUw@mail.gmail.com>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.8.227, [10.24.8.227]
-X-Outbound-Node: rcdn-core-3.cisco.com
+Date:   Wed, 31 Mar 2021 19:58:33 +0200
+From:   danilokrummrich@dk-develop.de
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     linux@armlinux.org.uk, davem@davemloft.net, hkallweit1@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jeremy.linton@arm.com
+Subject: Re: [PATCH 2/2] net: mdio: support c45 peripherals on c22 busses
+In-Reply-To: <YGSi+b/r4zlq9rm8@lunn.ch>
+References: <20210331141755.126178-1-danilokrummrich@dk-develop.de>
+ <20210331141755.126178-3-danilokrummrich@dk-develop.de>
+ <YGSi+b/r4zlq9rm8@lunn.ch>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <6f1dfc28368d098ace9564e53ed92041@dk-develop.de>
+X-Sender: danilokrummrich@dk-develop.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:04:15AM +0200, Arnd Bergmann wrote:
-> On Wed, Mar 31, 2021 at 3:46 AM Daniel Walker <danielwa@cisco.com> wrote:
-> > From: Ofer Licht <olicht@cisco.com>
+Hi Andrew,
+
+On 2021-03-31 18:27, Andrew Lunn wrote:
+>> @@ -670,19 +670,21 @@ struct phy_device *mdiobus_scan(struct mii_bus 
+>> *bus, int addr)
+>>  	struct phy_device *phydev = ERR_PTR(-ENODEV);
+>>  	int err;
+>> 
+>> +	/* In case of NO_CAP and C22 only, we still can try to scan for C45
+>> +	 * devices, since indirect access will be used for busses that are 
+>> not
+>> +	 * capable of C45 frame format.
+>> +	 */
+>>  	switch (bus->capabilities) {
+>>  	case MDIOBUS_NO_CAP:
+>>  	case MDIOBUS_C22:
+>> -		phydev = get_phy_device(bus, addr, false);
+>> -		break;
+>> -	case MDIOBUS_C45:
+>> -		phydev = get_phy_device(bus, addr, true);
+>> -		break;
+>>  	case MDIOBUS_C22_C45:
+>>  		phydev = get_phy_device(bus, addr, false);
+>>  		if (IS_ERR(phydev))
+>>  			phydev = get_phy_device(bus, addr, true);
+>>  		break;
+>> +	case MDIOBUS_C45:
+>> +		phydev = get_phy_device(bus, addr, true);
+>> +		break;
+>>  	}
 > 
-> Thanks for the submission, it's always nice to see a new platform
- 
+> I think this is going to cause problems.
+Please note that this patch does not change already existing behaviour, 
+it does
+only extend it with the option to drive C45 peripherals from a bus not 
+being
+capable of C45 framing.
 
-> > Define craw64 config, dts and Makefile for Cisco
-> > SoCs known as Craw.
+For this cited change the only thing happening is that if 
+get_phy_device()
+already failed for probing with is_c45==false (C22 devices) it tries to 
+probe
+with is_c45==true (C45 devices) which then either results into actual 
+C45 frame
+transfers or indirect accesses by calling mdiobus_c45_*() functions.
+
+This is a valid approach, since we made sure that even if the MDIO 
+controller does
+not support C45 framing we can go with indirect accesses.
 > 
-> I'd like some more information about the platform, e.g. the target
-> market and maybe a link to the product information.
-
-Our SoC is produced as an internal product. So SoC specifications aren't
-widely available.
-
-Here is an example of a Cisco product which uses this SoC,
-
-https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9200-series-switches/nb-06-cat9200-ser-data-sheet-cte-en.html
-
-I suspect that's not really what your looking for tho.
-
-> > Cc: xe-linux-external@cisco.com
-> > Signed-off-by: Ofer Licht <olicht@cisco.com>
-> > Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> > ---
-> >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
-> >  arch/arm64/Kconfig.platforms                  |   5 +
-> >  arch/arm64/boot/dts/Makefile                  |   1 +
-> >  arch/arm64/boot/dts/cisco/Makefile            |   5 +
-> >  .../arm64/boot/dts/cisco/craw64-dopplerg2.dts | 239 +++++++++++
-> >  arch/arm64/boot/dts/cisco/craw64.dtsi         | 392 ++++++++++++++++++
-> >  arch/arm64/configs/defconfig                  |   1 +
+> commit 0231b1a074c672f8c00da00a57144072890d816b
+> Author: Kevin Hao <haokexin@gmail.com>
+> Date:   Tue Mar 20 09:44:53 2018 +0800
 > 
-> We have separate branches for dt, defconfig, and the rest, so it would be
-> good to split this patch up a little more.
+>     net: phy: realtek: Use the dummy stubs for MMD register access for 
+> rtl8211b
 > 
-> There should also be an entry in the top-level MAINTAINERS file.
+>     The Ethernet on mpc8315erdb is broken since commit b6b5e8a69118
+>     ("gianfar: Disable EEE autoneg by default"). The reason is that
+>     even though the rtl8211b doesn't support the MMD extended registers
+>     access, it does return some random values if we trying to access
+>     the MMD register via indirect method. This makes it seem that the
+>     EEE is supported by this phy device. And the subsequent writing to
+>     the MMD registers does cause the phy malfunction. So use the dummy
+>     stubs for the MMD register access to fix this issue.
+This is something different, here the issue is that an indirect access 
+does
+not work with a PHY being registered with is_c45==false. This is not 
+related
+to this change.
 > 
-> > diff --git a/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
-> > new file mode 100644
-> > index 000000000000..20ecc57b4e5c
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/cisco/craw64-dopplerg2.dts
-> > @@ -0,0 +1,239 @@
-> > +/dts-v1/;
-> > +
-> > +#include "craw64.dtsi"
-> > +
-> > +/ {
-> > +       model = "Cisco Craw64 on DopplerG 2.0";
-> > +       compatible = "cisco,craw64-dopplerg2", "cisco,craw64";
-> > +
-> > +       memory {
-> > +               device_type = "memory";
-> > +               reg = <0x0 0x80000000 0x0 0x80000000>;
-> > +       };
+> Indirect access to C45 via C22 is not a guaranteed part of C22. So
+> there are C22 only PHYs which return random junk when you try to use
+> this access method.
+For C22 only PHYs nothing will change. If there is not an indirect 
+access
+to a C22 PHY already, then there will not be one by applying this patch
+either.
 > 
-> The memory size is usually filled by the boot loader, just put an
-> empty node into the .dtsi file
-
-Arnd, I must regretfully inform you that Cisco has a deep dark addiction to
-bootloaders which, are, um, how do I say this diplomatically, um , brain dead.
-
-You have some other comments below related to moving things into the bootloader,
-and I can look into it, but bootloader inflexibility is wide spread inside
-Cisco.
-
+> I'm also a bit confused why this is actually needed. PHY drivers which
+> make use of C45 use the functions phy_read_mmd(), phy_write_mmd().
+I'm looking on it from the perspective of the MDIO controller. If the
+controller is not capable of C45 framing this doesn't help.
+ From only the PHY's capability point of view this is fine, indeed.
 > 
-> > +       doppler {
-> > +               #address-cells = <2>;
-> > +               #size-cells = <2>;
-> > +               compatible = "simple-bus";
-> > +               ranges;
-> > +       };
+> int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
+> {
+> 	int val;
 > 
-> What is this?
+> 	if (regnum > (u16)~0 || devad > 32)
+> 		return -EINVAL;
 > 
-
-It's a device, but the driver is not submitted. I can remove it along with the
-other device driver binding we have where the drivers and bindings aren't submitted.
-
-I'll do my best to fix the comments your given an resubmit.
-
-Daniel
+> 	if (phydev->drv && phydev->drv->read_mmd) {
+> 		val = phydev->drv->read_mmd(phydev, devad, regnum);
+> 	} else if (phydev->is_c45) {
+> 		val = __mdiobus_c45_read(phydev->mdio.bus, phydev->mdio.addr,
+> 					 devad, regnum);
+> 	} else {
+> 		struct mii_bus *bus = phydev->mdio.bus;
+> 		int phy_addr = phydev->mdio.addr;
+> 
+> 		mmd_phy_indirect(bus, phy_addr, devad, regnum);
+> 
+> 		/* Read the content of the MMD's selected register */
+> 		val = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
+> 	}
+> 	return val;
+> }
+> 
+> So if the device is a c45 device, C45 transfers are used, otherwise it
+That's the issue I'm addressing, if the device is a C45 device and the 
+MDIO
+controller is not capable of C45 framing, currently, the device won't be 
+probed
+as a C45 device, because mdiobus_c45_read() will fail. Instead with this 
+patch
+mdiobus_c45_read() can check the bus's capabilities and perform indirect 
+accesses
+in case the MDIO controller is not capable of C45 framing, and therefore 
+be able
+to probe C45 PHYs from a MDIO controller not being capable of C45 
+framing.
+> falls back to mmd_phy_indirect(), which is C45 over C22.
+Only if is_c45==false, that's not what I'm addressing. I'm addressing 
+the case that
+is_c45==true, but the MDIO controller does not support C45 framing.
+> 
+> Why does this not work for you?
+As explained inline above.
+> 
+>     Andrew
+Kind regards,
+Danilo
