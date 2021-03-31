@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A2E34FCF4
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0F834FCF3
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhCaJdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:33:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15058 "EHLO
+        id S234762AbhCaJdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:33:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15057 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234648AbhCaJdM (ORCPT
+        with ESMTP id S234375AbhCaJdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:33:12 -0400
+        Wed, 31 Mar 2021 05:33:11 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9Ldf55QGzNrHZ;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F9Ldf5dqxzNrK7;
         Wed, 31 Mar 2021 17:30:30 +0800 (CST)
 Received: from huawei.com (10.67.165.24) by DGGEMS404-HUB.china.huawei.com
  (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
@@ -22,9 +22,9 @@ From:   Kai Ye <yekai13@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 2/5] crypto: hisilicon/sgl - delete unneeded variable initialization
-Date:   Wed, 31 Mar 2021 17:30:29 +0800
-Message-ID: <1617183032-30983-3-git-send-email-yekai13@huawei.com>
+Subject: [PATCH v2 3/5] crypto: hisilicon/sgl - add some dfx logs
+Date:   Wed, 31 Mar 2021 17:30:30 +0800
+Message-ID: <1617183032-30983-4-git-send-email-yekai13@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617183032-30983-1-git-send-email-yekai13@huawei.com>
 References: <1617183032-30983-1-git-send-email-yekai13@huawei.com>
@@ -36,26 +36,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete unneeded variable initialization
+Add some dfx logs in some abnormal exit situations.
 
 Signed-off-by: Kai Ye <yekai13@huawei.com>
 ---
- drivers/crypto/hisilicon/sgl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/hisilicon/sgl.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
-index cf1629c..b8a811f 100644
+index b8a811f..d04e551 100644
 --- a/drivers/crypto/hisilicon/sgl.c
 +++ b/drivers/crypto/hisilicon/sgl.c
-@@ -56,7 +56,7 @@ struct hisi_acc_sgl_pool {
- struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
- 						   u32 count, u32 sge_nr)
- {
--	u32 sgl_size, block_size, sgl_num_per_block, block_num, remain_sgl = 0;
-+	u32 sgl_size, block_size, sgl_num_per_block, block_num, remain_sgl;
- 	struct hisi_acc_sgl_pool *pool;
- 	struct mem_block *block;
- 	u32 i, j;
+@@ -90,8 +90,10 @@ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
+ 		block[i].sgl = dma_alloc_coherent(dev, block_size,
+ 						  &block[i].sgl_dma,
+ 						  GFP_KERNEL);
+-		if (!block[i].sgl)
++		if (!block[i].sgl) {
++			dev_err(dev, "Fail to allocate hw SG buffer!\n");
+ 			goto err_free_mem;
++		}
+ 
+ 		block[i].size = block_size;
+ 	}
+@@ -100,8 +102,10 @@ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
+ 		block[i].sgl = dma_alloc_coherent(dev, remain_sgl * sgl_size,
+ 						  &block[i].sgl_dma,
+ 						  GFP_KERNEL);
+-		if (!block[i].sgl)
++		if (!block[i].sgl) {
++			dev_err(dev, "Fail to allocate remained hw SG buffer!\n");
+ 			goto err_free_mem;
++		}
+ 
+ 		block[i].size = remain_sgl * sgl_size;
+ 	}
+@@ -216,16 +220,19 @@ hisi_acc_sg_buf_map_to_hw_sgl(struct device *dev,
+ 	sg_n = sg_nents(sgl);
+ 
+ 	sg_n_mapped = dma_map_sg(dev, sgl, sg_n, DMA_BIDIRECTIONAL);
+-	if (!sg_n_mapped)
++	if (!sg_n_mapped) {
++		dev_err(dev, "DMA mapping for SG error!\n");
+ 		return ERR_PTR(-EINVAL);
++	}
+ 
+ 	if (sg_n_mapped > pool->sge_nr) {
+-		dma_unmap_sg(dev, sgl, sg_n, DMA_BIDIRECTIONAL);
++		dev_err(dev, "the number of entries in input scatterlist is bigger than SGL pool setting.\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	curr_hw_sgl = acc_get_sgl(pool, index, &curr_sgl_dma);
+ 	if (IS_ERR(curr_hw_sgl)) {
++		dev_err(dev, "Get SGL error!\n");
+ 		dma_unmap_sg(dev, sgl, sg_n, DMA_BIDIRECTIONAL);
+ 		return ERR_PTR(-ENOMEM);
+ 
 -- 
 2.8.1
 
