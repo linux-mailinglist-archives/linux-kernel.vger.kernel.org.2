@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFBF35017B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39E435015C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 15:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhCaNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:39:40 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15415 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235870AbhCaNjP (ORCPT
+        id S235832AbhCaNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 09:37:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53808 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235834AbhCaNhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:39:15 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9S6c0C6xzlWpH;
-        Wed, 31 Mar 2021 21:37:28 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 21:39:01 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <wsa@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-i2c@vger.kernel.org>, <Sergey.Semin@baikalelectronics.ru>,
-        <linux-kernel@vger.kernel.org>
-CC:     <digetx@gmail.com>, <treding@nvidia.com>,
-        <jarkko.nikula@linux.intel.com>, <rmk+kernel@armlinux.org.uk>,
-        <song.bao.hua@hisilicon.com>, <john.garry@huawei.com>,
-        <mika.westerberg@linux.intel.com>, <yangyicong@hisilicon.com>,
-        <prime.zeng@huawei.com>, <linuxarm@huawei.com>
-Subject: [PATCH v6 5/5] i2c: designware: Switch over to i2c_freq_mode_string()
-Date:   Wed, 31 Mar 2021 21:36:30 +0800
-Message-ID: <1617197790-30627-6-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
-References: <1617197790-30627-1-git-send-email-yangyicong@hisilicon.com>
+        Wed, 31 Mar 2021 09:37:40 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lRb2O-0004hj-MQ; Wed, 31 Mar 2021 13:37:36 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amd/display: remove redundant initialization of variable status
+Date:   Wed, 31 Mar 2021 14:37:36 +0100
+Message-Id: <20210331133736.1420943-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Use generic i2c_freq_mode_string() helper to print chosen bus speed.
+The variable status is being initialized with a value that is
+never read and it is being updated later with a new value.
+The initialization is redundant and can be removed. Also clean
+up an indentation.
 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/i2c/busses/i2c-designware-master.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index dd27b9d..b64c4c8 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -35,10 +35,10 @@ static void i2c_dw_configure_fifo_master(struct dw_i2c_dev *dev)
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index b092627bd661..4c226db777dc 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -1729,12 +1729,11 @@ bool perform_link_training_with_retries(
+ 			dc_link_dp_perform_link_training_skip_aux(link, link_setting);
+ 			return true;
+ 		} else {
+-			enum link_training_result status = LINK_TRAINING_CR_FAIL_LANE0;
++			enum link_training_result status;
  
- static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- {
--	const char *mode_str, *fp_str = "";
- 	u32 comp_param1;
- 	u32 sda_falling_time, scl_falling_time;
- 	struct i2c_timings *t = &dev->timings;
-+	const char *fp_str = "";
- 	u32 ic_clk;
- 	int ret;
- 
-@@ -153,22 +153,10 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- 
- 	ret = i2c_dw_set_sda_hold(dev);
- 	if (ret)
--		goto out;
--
--	switch (dev->master_cfg & DW_IC_CON_SPEED_MASK) {
--	case DW_IC_CON_SPEED_STD:
--		mode_str = "Standard Mode";
--		break;
--	case DW_IC_CON_SPEED_HIGH:
--		mode_str = "High Speed Mode";
--		break;
--	default:
--		mode_str = "Fast Mode";
--	}
--	dev_dbg(dev->dev, "Bus speed: %s%s\n", mode_str, fp_str);
-+		return ret;
- 
--out:
--	return ret;
-+	dev_dbg(dev->dev, "Bus speed: %s\n", i2c_freq_mode_string(t->bus_freq_hz));
-+	return 0;
- }
- 
- /**
+-				status = dc_link_dp_perform_link_training(
+-										link,
+-										link_setting,
+-										skip_video_pattern);
++			status = dc_link_dp_perform_link_training(link,
++								  link_setting,
++								  skip_video_pattern);
+ 			if (status == LINK_TRAINING_SUCCESS)
+ 				return true;
+ 		}
 -- 
-2.8.1
+2.30.2
 
