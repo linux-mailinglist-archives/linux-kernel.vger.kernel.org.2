@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7114834F960
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5DB34F963
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbhCaG7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 02:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        id S233882AbhCaHDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhCaG7X (ORCPT
+        with ESMTP id S233693AbhCaHC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:59:23 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFB3C061574;
-        Tue, 30 Mar 2021 23:59:23 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id p12so8868295pgj.10;
-        Tue, 30 Mar 2021 23:59:23 -0700 (PDT)
+        Wed, 31 Mar 2021 03:02:58 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E61C061574;
+        Wed, 31 Mar 2021 00:02:58 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i144so20120257ybg.1;
+        Wed, 31 Mar 2021 00:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UJOBofPObDNYMGsBSlhGej7Cpe8ovuQ3/ENLYS3IMVQ=;
-        b=MTHH0ApwlbyIykIs64IpY5gSDyGQts/pyHYUmrlhRKLt3YIP35F36aeqR6Zc0PONd/
-         huPaVqNR2lkG6Eopm8qlahqemxdn0crCmMjmAQejTQIcqKudX8KWMcIjwZJq2+K6Yl62
-         XptbiXh7LQMScWgepLmKWplHHu4JLsScfmexXfFFipp948HHEWACTPRYX2jNYPSnkl2j
-         nLthNM9Dd7NVSSh9b01Y/2VlbeflcjHJs5AaC+ibRA4xSMz1GG46lH9OEgMWNBPb8+TV
-         kzOg8zGe8p9IuDycQX/4NKtlnyXx5veHCCfxuifA9u48b2l+bWqMypDLkaP6Bqu+8asZ
-         5lnw==
+        bh=D0KyMxRH/MSdDpCqeXLz794JFymGnRXmUM0jutYpMxU=;
+        b=a0wjM8gJkYA4DzT8s8yqg6YWcMYpORL8cJphMk1omNFSFPPv0glmy+ftTJDWyWtfwa
+         6OCHDN6+OoW3yFtX+UtjNvDfZMa42hA08dldh8wr7ZavGva+BvYawRKLZNr4uRNwvEFK
+         h3NZ/As6rJ6lYHnO5o5NPXd5NWXFSrduTnMEBI14HnXiN82Rw/DhG559XDMNO0EdtpDH
+         Tj25siyORWk+sDcTLcD7gyRl1bp8svEVEuHWxrP9AwYXCO/rggRdrukzT9EW6qOKTZO9
+         SuvHM/TVioD64Jb0aIhI3tqkgZGFKWDB7FSUlv3Er+ZAhadFLn0PAnQfwiJjJQ5VAhIb
+         cIzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UJOBofPObDNYMGsBSlhGej7Cpe8ovuQ3/ENLYS3IMVQ=;
-        b=VF+P3dScT9XVA84rNnvgxgb4ep0pzo+DUm9rJQO2lK2Kb8CPuM1dweVpJAJMiZl5zq
-         2BmXBrmYcydFtZ98LLiJYrFwXLLZHxt1uR6nirNxu07OGzVnoS4SCsGdK5PmMHinIUNI
-         FN8dql/Ms0emJcrmvMwm/pqOQTBKOlUIHp2Fhcw66ab/5uxYKsQwGSTkMORPWt+oSPM/
-         ECPps2pI/6iytRwdF20YP8FfZlaoXPzqmZQI2COrEH3/tOyKHgNvmdY4DqpHjRMl9Rb2
-         jOizVUboP6GsCXyCCvEB9qNyV9QGAzqFX3i+C6iB5Cr+KVd7XDw2qhFUAYw+Yail86+h
-         DfGQ==
-X-Gm-Message-State: AOAM530cWGGOhoKQZfdWJpwxee7BvP5CVxoPXPymTB69iLbzppMFZdjb
-        Ru96K1VFi/YLCMH0RWfXvm06wVjwLkXWG8czEMs=
-X-Google-Smtp-Source: ABdhPJx0/mRvSYPq3REz2mXyxcPF6tbk9kRbQksLbTIpgbKUzsHjVll09iDn811ekJYlT5uB4STSeVkjXl7Xb2AvKm8=
-X-Received: by 2002:a63:cc:: with SMTP id 195mr1878785pga.282.1617173962706;
- Tue, 30 Mar 2021 23:59:22 -0700 (PDT)
+        bh=D0KyMxRH/MSdDpCqeXLz794JFymGnRXmUM0jutYpMxU=;
+        b=cn5ru+Kh8M3p6cKLwivVXuiHG3iQ6SGRzGxYgK8GRe0tw4jSJiQABrS9lh762uXdzr
+         vCdGeENW0Ucj1653zYwwkR6CaNvv8EuASJm1cHNPxfGuDuWMsBxfdyot+SY1GD7OWYjU
+         o6qaykC2SC2g0tgglsuGczhzgqW0mEE/YjUdiK5w8YB6ptPLMQeb6Lcvfror+coQZA3r
+         g1GzjxitzK7tkUSSdk0o4wTwhmhOH0UF1Nsd3nPPRkoo+Xl8MQu06tC/Cza3KDzilOLu
+         q7iLreiO3pr/vW0XlfJuvEWg5MgbquNYDKHGwzwjmy2Ok3ue/GRhjF1mUY1/PTrC4KGT
+         8/Dw==
+X-Gm-Message-State: AOAM5316Vuvpv7GjB4H4XwasoY7BwY4y99537o765nSk+ahKZW0nAV8I
+        XJUuH9F9FSxO1QnQjkOY7OwzdAFz83g3uq1fI3A=
+X-Google-Smtp-Source: ABdhPJyDpa+3z1LUDvQCHnSRFQtrI+vI+s6CU2sMF9n1GsD+jaF9YAfLwJzkOrDUlzc9Sz3rMe1HCFUve6pE5YyV8eg=
+X-Received: by 2002:a25:5b55:: with SMTP id p82mr2513780ybb.510.1617174177319;
+ Wed, 31 Mar 2021 00:02:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <1617086448-51054-1-git-send-email-fanghao11@huawei.com>
-In-Reply-To: <1617086448-51054-1-git-send-email-fanghao11@huawei.com>
-From:   Zhangfei Gao <zhangfei.gao@gmail.com>
-Date:   Wed, 31 Mar 2021 14:59:11 +0800
-Message-ID: <CAMj5BkjT7nBst4pa+Z6WKtfxhOYPLr3wcSU2ONoOqscu5uqCHg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: dw_mmc-k3: use the correct HiSilicon copyright
-To:     Hao Fang <fanghao11@huawei.com>
-Cc:     Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        prime.zeng@hisilicon.com
+References: <20210330223748.399563-1-pctammela@mojatatu.com> <CAADnVQK+n69_uUm6Ac1WgvqM4X0_74nXHwkYxbkWFc1F5hU98Q@mail.gmail.com>
+In-Reply-To: <CAADnVQK+n69_uUm6Ac1WgvqM4X0_74nXHwkYxbkWFc1F5hU98Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 31 Mar 2021 00:02:46 -0700
+Message-ID: <CAEf4BzZmBiq_JG5-Y2u9jTZraEtyyuOJYWgKivcKk0WFCzKa8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: check flags in 'bpf_ringbuf_discard()'
+ and 'bpf_ringbuf_submit()'
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Pedro Tammela <pctammela@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 2:46 PM Hao Fang <fanghao11@huawei.com> wrote:
+On Tue, Mar 30, 2021 at 4:16 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> s/Hisilicon/HiSilicon/g.
-> It should use capital S, according to
-> https://www.hisilicon.com/en/terms-of-use.
+> On Tue, Mar 30, 2021 at 3:54 PM Pedro Tammela <pctammela@gmail.com> wrote:
+> >
+> >  BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
+> >  {
+> > +       if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
+> > +               return -EINVAL;
+> > +
+> >         bpf_ringbuf_commit(sample, flags, false /* discard */);
+> > +
+> >         return 0;
 >
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
+> I think ringbuf design was meant for bpf_ringbuf_submit to never fail.
+> If we do flag validation it probably should be done at the verifier time.
 
-Thanks for the fix.
-
-Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-
-> ---
->  drivers/mmc/host/dw_mmc-k3.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/dw_mmc-k3.c b/drivers/mmc/host/dw_mmc-k3.c
-> index 29d2494..0311a37 100644
-> --- a/drivers/mmc/host/dw_mmc-k3.c
-> +++ b/drivers/mmc/host/dw_mmc-k3.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2013 Linaro Ltd.
-> - * Copyright (c) 2013 Hisilicon Limited.
-> + * Copyright (c) 2013 HiSilicon Limited.
->   */
->
->  #include <linux/bitops.h>
-> --
-> 2.8.1
->
+Oops, replied on another version already. But yes, BPF verifier relies
+on it succeeding. I don't think we can do flags validation at BPF
+verification time, though, because it is defined as non-const integer
+and we do have valid cases where we dynamically determine whether to
+FORCE_WAKEUP or NO_WAKEUP, based on application-driven criteria (e.g.,
+amount of enqueued data).
