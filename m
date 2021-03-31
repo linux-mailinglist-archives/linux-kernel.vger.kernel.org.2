@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856963501F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026E93501F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235962AbhCaOM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbhCaOLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:11:55 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F523C061574;
-        Wed, 31 Mar 2021 07:11:54 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id h25so14317807pgm.3;
-        Wed, 31 Mar 2021 07:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32RQZhHIbg29tka7G3qVJxotSTluRvACFQj5Q5cAkVI=;
-        b=dA3v6PZlP6yJ4F/duWkL8VjDyGtZjvkoGZi+dIT9MJOFVnRwv9Lz+As+CbuMvyLGaz
-         D/r9j5zaFWu3x4rO+EerPDiVdTjpfAvxZvwST1zS2Uu9pMUvQypwQVqDISJgXlt1l2S7
-         ld8PXXY3SVF7Ol4ocwFunP8KW16K4oPAYTZm4IoeGTJpesRrpfMELIdUQazNKIEXvEss
-         zITkhn2h7n7UCtNkVSlB7CpwEMywrBOtQSzwWB74bONhiN1IttLBZFTAzF7ZVL21OGPe
-         hAV40WkO5XeV+VfrvPsPXwIQNIYz8A650sCoCYbwxEuhNNhy+LWMc2dgtZPFTylTaQAh
-         oyYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32RQZhHIbg29tka7G3qVJxotSTluRvACFQj5Q5cAkVI=;
-        b=VYkjOPMENH23MNjBUYUmWmuD3NaWuSHEKE8acOvDINYL0yF8CliIR7YSntB9kx0wA5
-         NIZNozf2STmB6TPBNadT39mOubYLCgZmg7mCTY8PEmVY5og1EgjPKHxgO2oyidy6cW4b
-         BZsqDmXggnHdP4Tgej0mFDfSUuqwSkHIqQ6Q6v2FQ0sQTSKFmggeZUaljXrAnTscEmGH
-         +idZu/LdGcuTN4L1f1bwkOY08Gkba4TWpvYIOwRtPC4h80DaKGDxB3WG1WUbBVx8J+Ca
-         0mI8yHagt7K3H3aEvp63HEPzyA2MvD9S+oLEkMdHDD8JlwWSGgWSYH+6vEzFxLFSXLVP
-         +1TQ==
-X-Gm-Message-State: AOAM532PfSvN0O6I5uULrniUhfBi1HR76NsyD4vurXHQjbX1u6qX9Xjz
-        llLpj+tQWOkm7GoU1pZ+p7VaNpHKe0d6ULC4oj4yTBpPBjx7sg==
-X-Google-Smtp-Source: ABdhPJw/DJ6Ldm3VbtELcfCNAvPjiAS7dmSM/JT1E6iQPEKoNsJeojtgvNM26HJs2Cyh0GsLiEQ+3+OY5Vug4EeB67o=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr3427053pgm.74.1617199913923;
- Wed, 31 Mar 2021 07:11:53 -0700 (PDT)
+        id S235917AbhCaOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:12:27 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:59031 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235959AbhCaOMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:12:14 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F9Stg5l9Cz9tyxm;
+        Wed, 31 Mar 2021 16:12:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 1HGotb5q2Doe; Wed, 31 Mar 2021 16:12:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F9Stg4vQFz9v328;
+        Wed, 31 Mar 2021 16:12:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C8AE38B828;
+        Wed, 31 Mar 2021 16:12:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vMVCrlZfARoR; Wed, 31 Mar 2021 16:12:12 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 363738B80D;
+        Wed, 31 Mar 2021 16:12:12 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/8xx: Load modules closer to kernel text
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Jordan Niethe <jniethe5@gmail.com>
+References: <db20abbecb129c49d3c663de67dac6a87501ac0b.1617001615.git.christophe.leroy@csgroup.eu>
+ <87czvf788t.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e50f8127-3a87-92eb-d88a-72aa1557ffe7@csgroup.eu>
+Date:   Wed, 31 Mar 2021 16:12:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
- <3c19d714645f788913956223097adc360ceb6203.1617189926.git.matthias.schiffer@ew.tq-group.com>
- <CAHp75Vdk4rxiD_nm8Cb53oTYNvMqkAOM4U5zEn5tchtptQZEBw@mail.gmail.com> <83d7ea27b27225727fec7b077efe1a67ba1184a9.camel@ew.tq-group.com>
-In-Reply-To: <83d7ea27b27225727fec7b077efe1a67ba1184a9.camel@ew.tq-group.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 31 Mar 2021 17:11:37 +0300
-Message-ID: <CAHp75Vc5Nw+GJ4tFeciYZQhJ_NbRZMJjJNcWeFq7nOuAOe0=jQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mfd: tqmx86: add support for TQMxE40M
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87czvf788t.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 4:33 PM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
-> On Wed, 2021-03-31 at 15:37 +0300, Andy Shevchenko wrote:
-> > On Wed, Mar 31, 2021 at 2:38 PM Matthias Schiffer
-> > <matthias.schiffer@ew.tq-group.com> wrote:
 
-...
 
-> > > +               return 24000;
-> >
-> > AFAICS it will return 24 MHz for "Unknown" board. Is it okay to be so brave?
->
-> As noted in the commit message, our hardware developers intend to use
-> 24 MHz for all future x86 SoMs.
+Le 31/03/2021 à 15:39, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> On the 8xx, TASK_SIZE is 0x80000000. The space between TASK_SIZE and
+>> PAGE_OFFSET is not used.
+>>
+>> Use it to load modules in order to minimise the distance between
+>> kernel text and modules and avoid trampolines in modules to access
+>> kernel functions or other module functions.
+>>
+>> Define a 16Mbytes area for modules, that's more than enough.
+> 
+> 16MB seems kind of small.
+> 
+> At least on 64-bit we could potentially have hundreds of MBs of modules.
+> 
 
-What may go wrong in the future?.. (rhetorical question, obviously)
+Well, with a 16 MB kernel and 16 MB modules, my board is full :)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Even on the more recent board that has 128 MB, I don't expect more than a few MBs of modules in 
+addition to the kernel which is approx 8M.
+
+
+But ok, I'll do something more generic, though it will conflict with Jordan's series.
+
+Christophe
