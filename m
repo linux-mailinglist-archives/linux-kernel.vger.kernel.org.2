@@ -2,366 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262E034F9B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B5534F9C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbhCaHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:20:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38442 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234049AbhCaHUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:20:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ADE8EAE6D;
-        Wed, 31 Mar 2021 07:20:13 +0000 (UTC)
-To:     Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "airlied@linux.ie" <airlied@linux.ie>,
-        Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        Arc Sung <arc_sung@aspeedtech.com>,
-        "airlied@redhat.com" <airlied@redhat.com>
-References: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
- <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
- <b0e960ee-b987-69f7-13fd-0270c347ad5e@suse.de>
- <HK2PR06MB3300FC50877DC77AF06DED8C8C7C9@HK2PR06MB3300.apcprd06.prod.outlook.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
-Message-ID: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
-Date:   Wed, 31 Mar 2021 09:20:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234031AbhCaHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234039AbhCaHVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:21:18 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257BCC061574;
+        Wed, 31 Mar 2021 00:21:18 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id j7so13803513qtx.5;
+        Wed, 31 Mar 2021 00:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s4dZpKsQjRIf/50NcJCIC9AC6YrNNOPiTIacHmapqUk=;
+        b=KNeC8fgHEIGbXL6MkMCcRhM8c8/bw5Fqa99LAA9XUWBQfo4dGIfI7K7aw2WiLfeZ2+
+         S/QYZw/AvMC47f8HgBVTcomSLsmoDcoZvQbccRD77AEwNgmGu/8m4jy6m2E90YSCvK5o
+         J3MKquvsYOtrLSOEA4wgCkulSWpXgqTwB0388=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s4dZpKsQjRIf/50NcJCIC9AC6YrNNOPiTIacHmapqUk=;
+        b=PPQVKmba2M7nxJw2h0D9y3ohTQRcSAQgu2//FeCEwyCkon7U02/tCkiFswsDy00m/Y
+         BdZTXsn2zVI2o6t2LreiKWXbSr86IUkioGFcehEAVAmgv/B0NcEK1VoCl64g8gy7VyA4
+         Zfy/EOpGRzJdwM4aYWQZlncabbJnf47g7u6HZnHMsz+eTbSM+UjT3OestXJIxPoRi4OA
+         Wnx/Ghdjmisu6OztJttmrmrhXPblx9/CuWnXp5o9xzxd0IACw+znnelUy2SFU5N9xcLK
+         ehY70bxofu+eHjgFfkz6EREceLtWp/2n5rMx3/Z7VwmkxOgZsQ0H2+XaLQLGGhIH25BX
+         CfTg==
+X-Gm-Message-State: AOAM533S2fZe8ExJXT+LZLThnB6r5sAfcYdIOy4OFfaFeQ6hiC6oXZHk
+        B4wFhysIwN6bJf92S7TGtmwQvOAINosC3uVNNTYQBwJMDlRmbw==
+X-Google-Smtp-Source: ABdhPJwnUlUXgKe2tnHuiik3PVhNtVpJHhdq/BPuODbeA/sZCuXAIkATJqEwOFPe8pk3PPsITOGZ1i91w6KQ5iosdGU=
+X-Received: by 2002:ac8:7547:: with SMTP id b7mr1372933qtr.176.1617175277091;
+ Wed, 31 Mar 2021 00:21:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <HK2PR06MB3300FC50877DC77AF06DED8C8C7C9@HK2PR06MB3300.apcprd06.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="08S8Qoi9Py4mFjTYvbdT82oa9vE8AuQhy"
+References: <20210329121759.5644-1-quan@os.amperecomputing.com> <20210329121759.5644-3-quan@os.amperecomputing.com>
+In-Reply-To: <20210329121759.5644-3-quan@os.amperecomputing.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 31 Mar 2021 07:21:05 +0000
+Message-ID: <CACPK8Xf5d67-KR9AQ9QMcyT2Or9ieF_Q+_RbMMTHt4ckiKi6_A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] drivers: char: ipmi: Add Aspeed SSIF BMC driver
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---08S8Qoi9Py4mFjTYvbdT82oa9vE8AuQhy
-Content-Type: multipart/mixed; boundary="ekoxlmtp8XUA2LZRpM9xC9TgYiRQ4d9S0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "airlied@linux.ie" <airlied@linux.ie>,
- Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
- Tommy Huang <tommy_huang@aspeedtech.com>, Arc Sung
- <arc_sung@aspeedtech.com>, "airlied@redhat.com" <airlied@redhat.com>
-Message-ID: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
-Subject: Re: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
-References: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
- <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
- <b0e960ee-b987-69f7-13fd-0270c347ad5e@suse.de>
- <HK2PR06MB3300FC50877DC77AF06DED8C8C7C9@HK2PR06MB3300.apcprd06.prod.outlook.com>
-In-Reply-To: <HK2PR06MB3300FC50877DC77AF06DED8C8C7C9@HK2PR06MB3300.apcprd06.prod.outlook.com>
+On Mon, 29 Mar 2021 at 12:18, Quan Nguyen <quan@os.amperecomputing.com> wrote:
+>
+> The SMBus system interface (SSIF) IPMI BMC driver can be used to perform
+> in-band IPMI communication with their host in management (BMC) side.
+>
+> This commits adds support specifically for Aspeed AST2500 which commonly
+> used as Board Management Controllers.
+>
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
 
---ekoxlmtp8XUA2LZRpM9xC9TgYiRQ4d9S0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I don't have any SSIF or IPMI related feedback on your patch, but some
+general things I noticed when reading it.
 
-Hi
+> ---
+>  drivers/char/ipmi/Kconfig           |  22 +
+>  drivers/char/ipmi/Makefile          |   2 +
+>  drivers/char/ipmi/ssif_bmc.c        | 645 ++++++++++++++++++++++++++++
+>  drivers/char/ipmi/ssif_bmc.h        |  92 ++++
+>  drivers/char/ipmi/ssif_bmc_aspeed.c | 132 ++++++
+>  5 files changed, 893 insertions(+)
+>  create mode 100644 drivers/char/ipmi/ssif_bmc.c
+>  create mode 100644 drivers/char/ipmi/ssif_bmc.h
+>  create mode 100644 drivers/char/ipmi/ssif_bmc_aspeed.c
 
-Am 31.03.21 um 08:56 schrieb Kuo-Hsiang Chou:
-> Message-ID: <20201228030823.294147-1-kuohsiang_chou@aspeedtech.com>
->=20
-> -----Original Message-----
-> From: Thomas Zimmermann [mailto:tzimmermann@suse.de]
-> Sent: Monday, March 29, 2021 5:17 PM
-> To: Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>; dri-devel@lists.fr=
-eedesktop.org; linux-kernel@vger.kernel.org
->=20
-> Subject: Re: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
->=20
-> Hi,
->=20
-> I cannot apply this patch. The error is shown below. Which tree do you =
-use? Can you please move to drm-misc-next?
->=20
-> Applying: drm/ast: Disable fast reset after DRAM initial
-> error: sha1 information is lacking or useless (drivers/gpu/drm/ast/ast_=
-drv.h).
-> error: could not build fake ancestor
-> Patch failed at 0001 drm/ast: Disable fast reset after DRAM initial
-> hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch =
-When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".=
+It would make sense to split the aspeed implementation into a separate
+patch form the ssif framework.
 
-> dim: ERROR: git apply-mbox failed
->=20
-> Hi, Thomas,
->=20
-> Thanks for the comments, I still use kernel_5.9. Yes, I will move to th=
-e latest version of drm-misc-next.
-> The errors seem to be caused by a pending patch(Message-ID: <2020122803=
-0823.294147-1-kuohsiang_chou@aspeedtech.com>).
-> And I submitted current patch before reviewer result of pending patch(M=
-essage-ID: <20201228030823.294147-1-kuohsiang_chou@aspeedtech.com>).
->=20
-> Please give an instruction how to works to next step.
-> Continue waiting for the reviewer result, or move to kernel_5.12-rc1 an=
-d submit the pending patch again? Or other suggestions?
+> +++ b/drivers/char/ipmi/ssif_bmc.c
+> @@ -0,0 +1,645 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * The driver for BMC side of SSIF interface
+> + *
+> + * Copyright (c) 2021, Ampere Computing LLC
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-The official Linux kernel tree is always behind with new features. So=20
-for development, you'll need a tree for the rsp topic. For DRM graphics, =
+You should omit the licence text; it is replaced by the SPDX tags.
 
-this would usually be drm-misc-next. [1]
+> +static int send_ssif_bmc_response(struct ssif_bmc_ctx *ssif_bmc, bool non_blocking)
+> +{
+> +       unsigned long flags;
+> +       int ret;
+> +
+> +       if (!non_blocking) {
+> +retry:
+> +               ret = wait_event_interruptible(ssif_bmc->wait_queue,
+> +                                              !ssif_bmc->response_in_progress);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+> +       spin_lock_irqsave(&ssif_bmc->lock, flags);
 
-I already wanted to apply the patch as it is in v3. I suggest to simply=20
-rebase it on top of drm-misc-next and resubmit to the mailing list.
+What's the lock doing here? We've just waited for response_in_progress
+to be false, so we then take the lock to check what value it is?
+Should it also be sending some data in this function?
 
-When you create the patch file, 'git format-patch' and 'git am' support=20
-the --base option. It allows to set an upstream commit id. This can be=20
-helpful when git tries to apply the patch file later on. Several of our=20
-automated tests also use the base ref when they test patchsets. See the=20
-manpage of 'git format-patch' for a description of --base. [2]
+> +       if (ssif_bmc->response_in_progress) {
+> +               spin_unlock_irqrestore(&ssif_bmc->lock, flags);
+> +               if (non_blocking)
+> +                       return -EAGAIN;
+> +
+> +               goto retry;
 
-Best regards
-Thomas
+The goto threw me, so I tried re-writing it without. Again, I don't
+quite follow what the spinlock is doing.
 
-[1] git://anongit.freedesktop.org/drm/drm-misc
-[2] https://git-scm.com/docs/git-format-patch
+while (1) {
+    if (blocking) {
+        ret = wait_event_interruptible();
+        if (ret)
+             return ret;
+    }
 
-> Thanks!
->=20
-> Best Regards,
-> 	Kuo-Hsiang Chou
->=20
-> Best regards
-> Thomas
->=20
->=20
-> Am 19.03.21 um 10:23 schrieb KuoHsiang Chou:
->> [Bug][AST2500]
->>
->> V1:
->> When AST2500 acts as stand-alone VGA so that DRAM and DVO
->> initialization have to be achieved by VGA driver with P2A (PCI to AHB)=
- enabling.
->> However, HW suggests disable Fast reset mode after DRAM initializaton,=
-
->> because fast reset mode is mainly designed for ARM ICE debugger.
->> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should
->> be first enabled to avoid system deadlock before disable fast reset mo=
-de.
->>
->> V2:
->> Use to_pci_dev() to get revision of PCI configuration.
->>
->> V3:
->> If SCU00 is not unlocked, just enter its password again.
->> It is unnecessary to clear AHB lock condition and restore WDT default
->> setting again, before Fast-reset clearing.
->>
->> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
->> ---
->>    drivers/gpu/drm/ast/ast_drv.h  |  1 +
->>    drivers/gpu/drm/ast/ast_main.c |  5 +++
->>    drivers/gpu/drm/ast/ast_post.c | 68 +++++++++++++++++++++----------=
----
->>    3 files changed, 48 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/ast/ast_drv.h
->> b/drivers/gpu/drm/ast/ast_drv.h index da6dfb677540..a2cf5fef2399
->> 100644
->> --- a/drivers/gpu/drm/ast/ast_drv.h
->> +++ b/drivers/gpu/drm/ast/ast_drv.h
->> @@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
->>    void ast_post_gpu(struct drm_device *dev);
->>    u32 ast_mindwm(struct ast_private *ast, u32 r);
->>    void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
->> +void ast_patch_ahb_2500(struct ast_private *ast);
->>    /* ast dp501 */
->>    void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
->>    bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size); dif=
-f
->> --git a/drivers/gpu/drm/ast/ast_main.c
->> b/drivers/gpu/drm/ast/ast_main.c index 3775fe26f792..0e4dfcc25623
->> 100644
->> --- a/drivers/gpu/drm/ast/ast_main.c
->> +++ b/drivers/gpu/drm/ast/ast_main.c
->> @@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device=
- *dev, u32 *scu_rev)
->>    {
->>    	struct device_node *np =3D dev->pdev->dev.of_node;
->>    	struct ast_private *ast =3D to_ast_private(dev);
->> +	struct pci_dev *pdev =3D to_pci_dev(dev->dev);
->>    	uint32_t data, jregd0, jregd1;
->>
->>    	/* Defaults */
->> @@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_devic=
-e *dev, u32 *scu_rev)
->>    	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xf=
-f);
->>    	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xf=
-f);
->>    	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
->> +		/* Patch AST2500 */
->> +		if (((pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=3D=
- 0))
->> +			ast_patch_ahb_2500(ast);
->> +
->>    		/* Double check it's actually working */
->>    		data =3D ast_read32(ast, 0xf004);
->>    		if (data !=3D 0xFFFFFFFF) {
->> diff --git a/drivers/gpu/drm/ast/ast_post.c
->> b/drivers/gpu/drm/ast/ast_post.c index 8902c2f84bf9..4f194c5fd2c2
->> 100644
->> --- a/drivers/gpu/drm/ast/ast_post.c
->> +++ b/drivers/gpu/drm/ast/ast_post.c
->> @@ -2026,6 +2026,30 @@ static bool ast_dram_init_2500(struct ast_priva=
-te *ast)
->>    	return true;
->>    }
->>
->> +void ast_patch_ahb_2500(struct ast_private *ast) {
->> +	u32	data;
->> +
->> +	/* Clear bus lock condition */
->> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
->> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
->> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
->> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
->> +	data =3D ast_mindwm(ast, 0x1e6e2070);
->> +	if (data & 0x08000000) {					/* check fast reset */
->> +
->> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
->> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
->> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
->> +		udelay(1000);
->> +	}
->> +	do {
->> +		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
->> +		data =3D ast_mindwm(ast, 0x1e6e2000);
->> +	}	while (data !=3D 1);
->> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
->> +}
->> +
->>    void ast_post_chip_2500(struct drm_device *dev)
->>    {
->>    	struct ast_private *ast =3D to_ast_private(dev); @@ -2033,39 +2057=
-,31
->> @@ void ast_post_chip_2500(struct drm_device *dev)
->>    	u8 reg;
->>
->>    	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);=
-
->> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
->> +	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
->>    		/* Clear bus lock condition */
->> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
->> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
->> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
->> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
->> -		ast_write32(ast, 0xf004, 0x1e6e0000);
->> -		ast_write32(ast, 0xf000, 0x1);
->> -		ast_write32(ast, 0x12000, 0x1688a8a8);
->> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
->> -			;
->> -
->> -		ast_write32(ast, 0x10000, 0xfc600309);
->> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
->> -			;
->> +		ast_patch_ahb_2500(ast);
->> +
->> +		/* Disable watchdog */
->> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
->> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
->> +		/* Reset USB port */
->> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
->> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
->> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
->> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
->> +			mdelay(100);
->> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
->> +		}
->> +		/* Modify eSPI reset pin */
->> +		temp =3D ast_mindwm(ast, 0x1E6E2070);
->> +		if (temp & 0x02000000)
->> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
->>
->>    		/* Slow down CPU/AHB CLK in VGA only mode */
->>    		temp =3D ast_read32(ast, 0x12008);
->>    		temp |=3D 0x73;
->>    		ast_write32(ast, 0x12008, temp);
->>
->> -		/* Reset USB port to patch USB unknown device issue */
->> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
->> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
->> -		temp |=3D 0x00004000;
->> -		ast_moutdwm(ast, 0x1e6e2094, temp);
->> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
->> -		if (temp & 0x00800000) {
->> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
->> -			mdelay(100);
->> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
->> -		}
->> -
->>    		if (!ast_dram_init_2500(ast))
->>    			drm_err(dev, "DRAM init failed !\n");
->>
->> --
->> 2.18.4
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->>
->=20
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-> (HRB 36809, AG N=C3=BCrnberg)
-> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
->=20
->=20
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+     spin_lock_irqsave()
+     if (ssif_bmc->response_in_progress) {
+         spin_lock_irqrestore()
+         if (!blocking)
+             return -EAGAIN;
+     } else {
+        spin_lock_irqrestore()
+        break;
+     }
+}
 
 
---ekoxlmtp8XUA2LZRpM9xC9TgYiRQ4d9S0--
+> +       }
+> +
+> +       /*
+> +        * Check the response data length from userspace to determine the type
+> +        * of the response message whether it is single-part or multi-part.
+> +        */
+> +       ssif_bmc->is_singlepart_read =
+> +               (ssif_msg_len(&ssif_bmc->response) <= (MAX_PAYLOAD_PER_TRANSACTION + 1)) ?
+> +               true : false; /* 1: byte of length */
 
---08S8Qoi9Py4mFjTYvbdT82oa9vE8AuQhy
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+I don't follow the 1: byte of length comment, what is it telling me?
 
------BEGIN PGP SIGNATURE-----
+The ternary operator is a bit messy here, I'd go for a good old if statement.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBkIqwFAwAAAAAACgkQlh/E3EQov+C3
-nBAAonguc4xUWibFOSSo0KN2DTWVAy1Vfq+LjOFrS0hAwLJnhY3zV/EerhZP32kOzKKl1zfanYi4
-1J0y+bGBKm0MUGlAoiHi1r6q50rDIcuWv5uDyTyov8m0nB5FRPM27HS+kNW9123xmX2vnGUkFCrz
-JBBtDc+GP5aFlF2UJxwmmPRX263Q+kc8vf6wIpsUPa6TJIDnJiFH56kUqbNsjAHm15vya5Yq0FrA
-xxX8JYyFBv5XADd0wuiCcAB5iBTvtHIiH9Qgw+c6rZCh7zmoeWMPWQc4cv1OcgL2OY5TMYnsbwln
-cSO7bZXqMZjK1ZoWjss/0kBf8RUreruOPbdRR5O6ToN1MYYhZCt9PYDjEsrn/1NRPCo5PX3nlb3q
-y0UBIp6aTGlP/pmItSkwSdOoHXVRRm6SgDcXcHlEtsm3dDZ6ymWSQvg/4eZOA8BBfDrMxuZZcqUQ
-iiq1mnGWeCdKQtF5cVPnYyeHE8C9NxQ5GTpWdOKIhw0yo5TNm/vhgI4fYXWemVQ/c0l3rQVvDjMJ
-dXLJVrHIg+w0XrZW4ptCdLA3jKo6HI+ioS10DDteTMXczS0TtWwDq5uAs2pDoC/IcAAa3/27BmVy
-A2zcLX9hGqrN3TYO72CYrAEan1Lb97PLk69FVoorGuymacoNM63l8C3/L/kzYKMjw1u3g6rKDHb4
-PIs=
-=Wdr3
------END PGP SIGNATURE-----
+> +
+> +       ssif_bmc->response_in_progress = true;
+> +       spin_unlock_irqrestore(&ssif_bmc->lock, flags);
+> +
+> +       return 0;
+> +}
 
---08S8Qoi9Py4mFjTYvbdT82oa9vE8AuQhy--
+> +/* Handle SSIF message that will be sent to user */
+> +static ssize_t ssif_bmc_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
+> +{
+> +       struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(file);
+> +       struct ssif_msg msg;
+> +       unsigned long flags;
+> +       ssize_t ret;
+> +
+> +       mutex_lock(&ssif_bmc->file_mutex);
+
+->file_mutex is protecting the device against more than one user of
+the character device? Can you enforce that in open() instead?
+
+> +
+> +       ret = receive_ssif_bmc_request(ssif_bmc, file->f_flags & O_NONBLOCK);
+> +       if (ret < 0)
+> +               goto out;
+> +
+> +       spin_lock_irqsave(&ssif_bmc->lock, flags);
+> +       count = min_t(ssize_t, count, ssif_msg_len(&ssif_bmc->request));
+
+count is user controlled, so I assume ssif_msg_len will always be less
+than or equal to struct ssif_msg?
+
+> +       memcpy(&msg, &ssif_bmc->request, count);
+> +       ssif_bmc->request_available = false;
+> +       spin_unlock_irqrestore(&ssif_bmc->lock, flags);
+> +
+> +       ret = copy_to_user(buf, &msg, count);
+> +out:
+> +       mutex_unlock(&ssif_bmc->file_mutex);
+> +
+> +       return (ret < 0) ? ret : count;
+> +}
+> +
+> +/* Handle SSIF message that is written by user */
+> +static ssize_t ssif_bmc_write(struct file *file, const char __user *buf, size_t count,
+> +                             loff_t *ppos)
+> +{
+> +       struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(file);
+> +       struct ssif_msg msg;
+> +       unsigned long flags;
+> +       ssize_t ret;
+> +
+> +       if (count > sizeof(struct ssif_msg))
+> +               return -EINVAL;
+> +
+> +       mutex_lock(&ssif_bmc->file_mutex);
+> +
+> +       ret = copy_from_user(&msg, buf, count);
+> +       if (ret)
+> +               goto out;
+> +
+> +       spin_lock_irqsave(&ssif_bmc->lock, flags);
+> +       if (count >= ssif_msg_len(&ssif_bmc->response))
+
+Is that test correct?
+
+> +               memcpy(&ssif_bmc->response, &msg, count);
+> +       else
+> +               ret = -EINVAL;
+> +       spin_unlock_irqrestore(&ssif_bmc->lock, flags);
+> +
+> +       if (ret)
+> +               goto out;
+> +
+> +       ret = send_ssif_bmc_response(ssif_bmc, file->f_flags & O_NONBLOCK);
+> +       if (!ret && ssif_bmc->set_ssif_bmc_status)
+> +               ssif_bmc->set_ssif_bmc_status(ssif_bmc, SSIF_BMC_READY);
+> +out:
+> +       mutex_unlock(&ssif_bmc->file_mutex);
+> +
+> +       return (ret < 0) ? ret : count;
+> +}
+> +
+> +static long ssif_bmc_ioctl(struct file *file, unsigned int cmd, unsigned long param)
+> +{
+
+If you're not using this I suspect you should omit the callback.
+
+> +       return 0;
+> +}
+> +
+> +static unsigned int ssif_bmc_poll(struct file *file, poll_table *wait)
+> +{
+> +       struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(file);
+> +       unsigned int mask = 0;
+> +
+> +       mutex_lock(&ssif_bmc->file_mutex);
+> +       poll_wait(file, &ssif_bmc->wait_queue, wait);
+> +
+> +       /*
+> +        * The request message is now available so userspace application can
+> +        * get the request
+> +        */
+> +       if (ssif_bmc->request_available)
+> +               mask |= POLLIN;
+> +
+> +       mutex_unlock(&ssif_bmc->file_mutex);
+> +       return mask;
+> +}
+> +
+> +/*
+> + * System calls to device interface for user apps
+> + */
+> +static const struct file_operations ssif_bmc_fops = {
+> +       .owner          = THIS_MODULE,
+> +       .read           = ssif_bmc_read,
+> +       .write          = ssif_bmc_write,
+> +       .poll           = ssif_bmc_poll,
+> +       .unlocked_ioctl = ssif_bmc_ioctl,
+> +};
+> +
+> +/* Called with ssif_bmc->lock held. */
+> +static int handle_request(struct ssif_bmc_ctx *ssif_bmc)
+
+Could return void.
+
+> +{
+> +       if (ssif_bmc->set_ssif_bmc_status)
+> +               ssif_bmc->set_ssif_bmc_status(ssif_bmc, SSIF_BMC_BUSY);
+> +
+> +       /* Request message is available to process */
+> +       ssif_bmc->request_available = true;
+> +       /*
+> +        * This is the new READ request.
+> +        * Clear the response buffer of the previous transaction
+> +        */
+> +       memset(&ssif_bmc->response, 0, sizeof(struct ssif_msg));
+> +       wake_up_all(&ssif_bmc->wait_queue);
+> +       return 0;
+> +}
+> +
+> +/* Called with ssif_bmc->lock held. */
+> +static int complete_response(struct ssif_bmc_ctx *ssif_bmc)
+
+Could return void.
+
+> +{
+> +       /* Invalidate response in buffer to denote it having been sent. */
+> +       ssif_bmc->response.len = 0;
+> +       ssif_bmc->response_in_progress = false;
+> +       ssif_bmc->nbytes_processed = 0;
+> +       ssif_bmc->remain_len = 0;
+> +       memset(&ssif_bmc->response_buf, 0, MAX_PAYLOAD_PER_TRANSACTION);
+> +       wake_up_all(&ssif_bmc->wait_queue);
+> +       return 0;
+> +}
+> +
+> +static void set_multipart_response_buffer(struct ssif_bmc_ctx *ssif_bmc, u8 *val)
+> +{
+
+> +       default:
+> +               /* Do not expect to go to this case */
+> +               pr_err("Error: Unexpected SMBus command received 0x%x\n", ssif_bmc->smbus_cmd);
+
+Use dev_err if you can, so the message is associated with the device.
+
+> +               break;
+> +       }
+> +
+> +       ssif_bmc->nbytes_processed += response_len;
+> +}
+> +
