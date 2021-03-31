@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203DD35027E
+	by mail.lfdr.de (Postfix) with ESMTP id 9086F35027F
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbhCaOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235929AbhCaOhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:37:52 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED36EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:37:51 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id b5so9980958vsl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=PrOeyIsfmyawYZ1vfP9+xdtuKzrmy/TFXyHIZc29Pz4=;
-        b=QiAU5jH5/mT50jXgSTiJzfuK780KBW1QFUZ3qeXHNlKeCzdUw09tCxsH1RQ6q2EQ0k
-         1V5o97/ylgYLhKhm237nZmbaUsR4Dm8KN+gvELfyQ8YPwWTOZ+o5t5peavPYGcK4kwAq
-         0pCw/LsN3bmrQdbmg8hWSSaauJFIGK69ZcFdd4AvBVBKJush5VB8d7jKqwZ0AaId4IX9
-         6vvFAWGcrv7iaGi8OXXQJjS8afdSvKDBQVBnVYjKObJ7CDeOIxqyfq2sYyuFn8J8B4Bo
-         2hficOOlFDkMOM/2YUzE43LRooC2XLP8s3wQahEAz/MmZeyuEy8hnIqmkiUHJBdy1wim
-         3NJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=PrOeyIsfmyawYZ1vfP9+xdtuKzrmy/TFXyHIZc29Pz4=;
-        b=lFI6EN3Y5iNNCq3GwDUEQy+BVYnSAw8rQqoLd31r1jCkunsQko+vxU7rLe2QgT7uc9
-         9FQZ2rh4KU/HWPmdwrpHzhVZHTbI64yhoMNawsNwNtZT1i5HCfDbb0vQOgwyPmzCu3eW
-         lDKEIrJbK+OMx8J0A4g1a4X2aCIQuGCEgbx81jtNn0rLucXQjpdlUxDj+jlmvqHHVBPb
-         BH2zLVszXzvRxUm4UrLP1I/avmOrcZSOgReh79nGzV93slnJCXWyxymUjZaTvbqhdug+
-         NWnyInCxhr1x65VHk020I5MpPLGllik8mmWCYmJ9tOd+DBZ2pDWbnSyN4D0glieKZ2FK
-         pHwQ==
-X-Gm-Message-State: AOAM530luiJYnmTJZAV18LGzWk+ryw/frR7sQ5zASmoMw3YCU5G0JBe9
-        8Fmyt9/EopPf6agQLMAICu2/xLCQCg1cuaLMxiY=
-X-Google-Smtp-Source: ABdhPJzu1NiCZiPQyEPQSt+b965IJYwmPEcEv1yTdHolcdrR2cahYPy9p8RCyZeeA6O7UzdSMyRW5lk7cDUiDkh0+8Q=
-X-Received: by 2002:a67:688e:: with SMTP id d136mr1706294vsc.58.1617201465303;
- Wed, 31 Mar 2021 07:37:45 -0700 (PDT)
+        id S236128AbhCaOiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235842AbhCaOhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:37:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E945D60FF3;
+        Wed, 31 Mar 2021 14:37:50 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 10:37:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Josef Bacik <jbacik@fb.com>, linux-kernel@vger.kernel.org
+Subject: Re: User stacktrace garbage when USER_STACKTRACE_SUPPORT is not
+ enabled
+Message-ID: <20210331103749.01a7c283@gandalf.local.home>
+In-Reply-To: <your-ad-here.call-01617191565-ext-9692@work.hours>
+References: <your-ad-here.call-01617191565-ext-9692@work.hours>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Sender: missalicewarlord@gmail.com
-Received: by 2002:ab0:2358:0:0:0:0:0 with HTTP; Wed, 31 Mar 2021 07:37:44
- -0700 (PDT)
-From:   "Mrs. Nadia Emaan" <mrsnadiaemaan50@gmail.com>
-Date:   Wed, 31 Mar 2021 14:37:44 +0000
-X-Google-Sender-Auth: jM1iKF8aqbK8XTAgZFXOzqHtoOc
-Message-ID: <CAPGg-FF0XzBi23j+q7axvrqRsfxFyoMOqjJFyUYNphsFGgJvGQ@mail.gmail.com>
-Subject: HELLO MY DEAR FRIEND:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May God Bless you,
+On Wed, 31 Mar 2021 13:52:45 +0200
+Vasily Gorbik <gor@linux.ibm.com> wrote:
 
-I am contacting you through this means because I need your urgent
-assistance and also help me to carry a charity project in your
-country. I found your email address as a true child of God for past
-few days now that I have been praying to know if you are really the
-chosen one for this great charity project, according to God's
-direction, after all prayers I am convinced, and I have decided to
-contact you. Please, i want you use the funds for the Lord's work,
-with confidence, read and respond now.
+> Hi Steven,
+> 
+> At least on s390 since commit cbc3b92ce037 ("tracing: Set kernel_stack's
+> caller size properly") kernel stack trace contains 8 garbage values in the end.
+> I assume those are supposed to be filled by ftrace_trace_userstack, which is
+> only implemented on x86.
 
+You assume wrong ;-)
 
-My name is Ms. Faroul Nadia Emaan, a widow, but currently based in West
-Africa since my life with my late husband, who was a businessman in
-this country before dying some years ago. We were married to many
-years without a child. He died after a brief illness that lasted only
-six days and I myself have been suffering from an ovarian cancer
-disease. At this moment I am about to finish the race in this way
-because the disease has reached a very bad stage, without any family
-member and without children. I hope you do not expose or betray this
-trust and I am sure that I am about to trust you for the mutual
-benefit of orphans and the less privileged. I have some funds that I
-inherited from my late husband, the total sum of ($ 12,500,000.00)
-deposited at a bank here in Burkina Faso. After knowing my current
-state of health, I decided to trust you with this fund, believing that
-you will use it in the way I will instruct here.
+No, the kernel_stack trace does not do anything for user stack unless the
+architecture does something with it, and x86 does not do anything with it
+when running kernel stack.
 
 
-you will use this $12.5 Million for public benefit as follows;
+> 
+>             sshd-804   [050]  1997.252608: kernel_stack:         <stack trace>
+> => trampoline_probe_handler (549628c94)
+> => kprobe_handler (549629260)
+> => kprobe_exceptions_notify (549629370)
+> => notify_die (549686e5e)
+> => illegal_op (54960d440)
+> => __do_pgm_check (54a106b08)
+> => pgm_check_handler (54a112cc8)
+> => kretprobe_trampoline (549629438)
+> => kretprobe_trampoline (549629436)
+> => do_syscall (549611ee6)
+> => __do_syscall (54a106ccc)
+> => system_call (54a112b5a)
+> => 769010000000322
+> => 22125e4d8
+> => 22125e8f8
+> => e000054100040100
+> => _end (3220000000c)
+> => 2
+> => 20f892ec00000002
+> => 20f898b800000002  
+> 
+> kernel/trace/trace_entries.h:
+> 159 #define FTRACE_STACK_ENTRIES    8
+> 160
+> 161 FTRACE_ENTRY(kernel_stack, stack_entry,
+> 162
+> 163         TRACE_STACK,
+> 164
+> 165         F_STRUCT(
+> 166                 __field(        int,            size    )
+> 167                 __array(        unsigned long,  caller, FTRACE_STACK_ENTRIES    )
+> 168         ),
+> 
+> Is there any reason to keep those 8 extra values in the caller array if
+> CONFIG_USER_STACKTRACE_SUPPORT is not enabled? Any advice how to fix that
+> gracefully? It seems to work if I simply set FTRACE_STACK_ENTRIES to 0 when
+> CONFIG_USER_STACKTRACE_SUPPORT is not enabled.
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+Note, the above is just a holder for user space parsing. It plays no role
+in how the kernel reports the data from the /sys/kernel/tracing/trace file.
 
-You will named them after my late husband.Therefore, I need you to
-help me and claim this money and use it for charities, for orphanages
-and provide justice and help to the poor, needy and to promote the
-words of God and the effort to maintain the house of God, according to
-the bible in the book of. Jeremiah 22: 15-16, without minding our
-different religions.
+Here's the code that does the actual work (from kernel/tracing/trace.c)
 
-It will be a pleasure to compensate with 40% percent of the total
-money for your effort in handling the transaction, while 60% of the
-money will go to charity project.
+	fstack = this_cpu_ptr(ftrace_stacks.stacks) + stackidx;
+	size = ARRAY_SIZE(fstack->calls);
 
-All I need from you is sincerity and ability to complete the task of
-God without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund to your bank account in
-the country, even before I die here in the hospital, due to my current
-state of health, everything must be processed as soon as possible.
+	if (regs) {
+		nr_entries = stack_trace_save_regs(regs, fstack->calls,
+						   size, skip);
+	} else {
+		nr_entries = stack_trace_save(fstack->calls, size, skip);
+	}
 
-I am waiting for your immediate response, if you are only interested
-in obtaining more details about the transaction and execution of this
-humanitarian project for the glory and honor of God.
+	size = nr_entries * sizeof(unsigned long);
+	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
+					    sizeof(*entry) + size, trace_ctx);
+	if (!event)
+		goto out;
+	entry = ring_buffer_event_data(event);
 
-Sorry if you received this letter in your spam, is due to recent
-connection/network error here in the country.
+	memcpy(&entry->caller, fstack->calls, size);
+	entry->size = nr_entries;
 
-Please I am waiting for your urgent reply now.
+ftrace_stacks.stacks is a per cpu variable of size PAGE_SIZE and divided by
+4, so it can be used in normal, softirq, interrupt and NMI context.
+Depending on if regs is passed in (and I'll assume it is not here), then
+stack_trace_save() is called. Which looks like this:
 
-May God Bless you,
-Ms. Faroul Emaan Nadia .
+unsigned int stack_trace_save(unsigned long *store, unsigned int size,
+			      unsigned int skipnr)
+{
+	stack_trace_consume_fn consume_entry = stack_trace_consume_entry;
+	struct stacktrace_cookie c = {
+		.store	= store,
+		.size	= size,
+		.skip	= skipnr + 1,
+	};
+
+	arch_stack_walk(consume_entry, &c, current, NULL);
+	return c.len;
+}
+
+arch_stack_walk() is arch specific, and it does whatever s390 does for
+stack walks, and the number of entries is returned by c.len, and that value
+determines what is seen.
+
+But after writing all of the above, I think I found a bug! It's this:
+
+	size = nr_entries * sizeof(unsigned long);
+	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
+					    sizeof(*entry) + size, trace_ctx);
+
+
+I said the above commit did not play a role in output, but it does play a
+role in creating the struct stack_trace entry. And by making it a fixed
+array (even though it's not used) it added 8 more entries to the stack!
+
+This should fix the problem:
+
+-- Steve
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 3c605957bb5c..507a30bf26e4 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2985,7 +2985,8 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
+ 
+ 	size = nr_entries * sizeof(unsigned long);
+ 	event = __trace_buffer_lock_reserve(buffer, TRACE_STACK,
+-					    sizeof(*entry) + size, trace_ctx);
++				    (sizeof(*entry) - sizeof(entry->caller)) + size,
++				    trace_ctx);
+ 	if (!event)
+ 		goto out;
+ 	entry = ring_buffer_event_data(event);
