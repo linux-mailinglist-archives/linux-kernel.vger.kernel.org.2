@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D173506D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE063506F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235757AbhCaSwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235265AbhCaSvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:51:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B00861057;
-        Wed, 31 Mar 2021 18:51:47 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 14:51:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] ftrace: Check if pages were allocated before calling
- free_pages()
-Message-ID: <20210331145145.0e3579fa@gandalf.local.home>
-In-Reply-To: <CAHk-=wjt9b7kxQ2J=aDNKbR1QBMB3Hiqb_hYcZbKsxGRSEb+gQ@mail.gmail.com>
-References: <20210331092711.2b23fcff@gandalf.local.home>
-        <CAHk-=wjt9b7kxQ2J=aDNKbR1QBMB3Hiqb_hYcZbKsxGRSEb+gQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236055AbhCaSyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235889AbhCaSxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:53:50 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D11AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:53:49 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x16so20666392wrn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 11:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3u7Et0H7oZ1l5+ZT9yV0GYS4scsUtLZ5FCnJUgJcrYc=;
+        b=Mgm0NPTvspRnm2H/4m2momQHT290auYuLqDANl89pFpeXPjht2MQjc/9oGe/0kRF3r
+         FFfSpw6pLg7HQUNMO+FUmKd7OlPJbzAdBkLOxYHVvGKD4bpvCSd93fmeWrM5UsixRe5Q
+         FhpXRqxw19IrLrm3HlvXkMF5B74Oyn6XmtPUM9MzKL8IkLh5lxoQd6S+8Jsvv+MX2ZBy
+         OHFJcVWq89q46mVCPuTkBi5800JUenUswWCTssAgpxdylHdEaVznXTpUGm4QbKkQl/jq
+         R99EYo+OIkW5UzTANDPKCSwh+FWDFaGVPT0OyYd37kX3i5AUAfX/I2OZYTiZI/NH+yKL
+         J2QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3u7Et0H7oZ1l5+ZT9yV0GYS4scsUtLZ5FCnJUgJcrYc=;
+        b=eS1hmZ+tLejjCqJfHr78Frgs62KOAzOxm1lDUQxoC/EgAIEJim0r5ryzm5IRJo2X0S
+         tr/pOjabG/Llug3uTcsJSLEY0NCvUUZABurtiYBvluRih29Bwp6U0rh+4XCSmGwC5ye5
+         BFVNQjshf8Qi9ZHzkmSnngQUvcF4JNl3P4XYgi5nF1ItlxX2GaKfAjeABg/OYjNqKQTV
+         kaF1+vfOTg+kOG1+qhXt1S3d8VnLpLKpKisurMaFIkRgTJiY6YuhxK8DEdJB0DwKsrru
+         FqU09wsjq9kJaAXBgqH8JrQqSzIfnQKxzhD2iA0NQ5GJkQ70bQ3abH9PfkD2rUdV6bU1
+         gv7Q==
+X-Gm-Message-State: AOAM533ow2JJl/SYOMJmZKnay5+q71juz10/nc2JHnYzP00ysf7FD6Wa
+        9QLCzzI8H8TxoD1vqIdNcQOSHg==
+X-Google-Smtp-Source: ABdhPJyPqgg2NxjIPCh/BtXZYrR1Sey+m3sh2KHpQm1VyfXtUb7l7xh32RumbSLj4ZvX3qCECfmddw==
+X-Received: by 2002:adf:e34f:: with SMTP id n15mr5278586wrj.224.1617216828332;
+        Wed, 31 Mar 2021 11:53:48 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id u20sm6368269wru.6.2021.03.31.11.53.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 11:53:48 -0700 (PDT)
+Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org
+References: <20210326191720.138155-1-dima@arista.com>
+ <09e8d68d-54fe-e327-b44f-8f68543edba1@csgroup.eu>
+ <8735wby77v.fsf@mpe.ellerman.id.au>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <361ec8ba-8335-157a-53e8-38a656626519@arista.com>
+Date:   Wed, 31 Mar 2021 19:53:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8735wby77v.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 10:45:01 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On 3/31/21 10:59 AM, Michael Ellerman wrote:
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+[..]
+>>
+>>> @@ -133,7 +135,13 @@ static int __arch_setup_additional_pages(struct linux_binprm *bprm, int uses_int
+>>>   	 * install_special_mapping or the perf counter mmap tracking code
+>>>   	 * will fail to recognise it as a vDSO.
+>>>   	 */
+>>> -	mm->context.vdso = (void __user *)vdso_base + PAGE_SIZE;
+>>> +	mm->context.vdso = (void __user *)vdso_base + vvar_size;
+>>> +
+>>> +	vma = _install_special_mapping(mm, vdso_base, vvar_size,
+>>> +				       VM_READ | VM_MAYREAD | VM_IO |
+>>> +				       VM_DONTDUMP | VM_PFNMAP, &vvar_spec);
+>>> +	if (IS_ERR(vma))
+>>> +		return PTR_ERR(vma);
+>>>   
+>>>   	/*
+>>>   	 * our vma flags don't have VM_WRITE so by default, the process isn't
+>>
+>>
+>> IIUC, VM_PFNMAP is for when we have a vvar_fault handler.
+>> Allthough we will soon have one for handle TIME_NS, at the moment
+>> powerpc doesn't have that handler.
+>> Isn't it dangerous to set VM_PFNMAP then ?
 
-> On Wed, Mar 31, 2021 at 6:27 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> >                 order = get_count_order(pg->size / ENTRIES_PER_PAGE);
-> > -               free_pages((unsigned long)pg->records, order);
-> > +               if (order >= 0)
-> > +                       free_pages((unsigned long)pg->records, order);  
-> 
-> Honestly, looking at that code, every single use of
-> "get_count_order()" seems really really confusing.
-> 
-> And really confused.
-> 
-> The comments are garbage, the code is odd, it's just all very very strange.
-> 
-> See here in ftrace_allocate_records():
-> 
->         pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
->         order = get_count_order(pages);
-> 
->         /*
->          * We want to fill as much as possible. No more than a page
->          * may be empty.
->          */
->         if (!is_power_of_2(pages))
->                 order--;
-> 
-> can you actually explain what the logic is here?
-> 
-> The 'get_count_order()' function will return the smallest order that
-> the value fits in. But then if the value wasn't a power of two, you
-> subtract 1. If I understand the code correctly, that's just the same
-> as "what is the highest bit set", isn't it?
-> 
-> So afaik, what you *actually* want is just
-> 
->         pages = DIV_ROUND_UP(count, ENTRIES_PER_PAGE);
->         order = fls(pages)-1;
-> 
-> isn't it?
+I believe, it's fine, special_mapping_fault() does:
+:		if (sm->fault)
+:			return sm->fault(sm, vmf->vma, vmf);
 
-I'll have to look at this a bit more, but this could be a new improvement
-of the logic. The last one was: 
+> Some of the other flags seem odd too.
+> eg. VM_IO ? VM_DONTDUMP ?
 
-b40c6eabfcd40 ("ftrace: Simplify the calculation of page number for ftrace_page->records")
+Yeah, so:
+VM_PFNMAP | VM_IO is a protection from remote access on pages. So one
+can't access such page with ptrace(), /proc/$pid/mem or
+process_vm_write(). Otherwise, it would create COW mapping and the
+tracee will stop working with stale vvar.
 
-This happens once at boot up (and once for each module loaded) so I never
-thought about making it efficient.
+VM_DONTDUMP restricts the area from coredumping and gdb will also avoid
+accessing those[1][2].
 
-> 
-> Did I misunderstand what the code wants to do? The "No more than a
-> page may be empty" seems wrong - you really mean "no empty pages".
-
-Yeah, that could be worded better.
-
-> 
-> I dunno. Maybe I'm wrong, but that code is really confusing (which is
-> why I may be wrong). It doesn't seem to make any sense at all to use
-> "get_count_order()" and then modify the end result.
-> 
-
-The basic idea is that we are allocating a group of pages for 10s
-of thousands of records (one for every function being traced). The way the
-records are stored is by "page group" (pg). It's a link list of pages
-filled with records. The records are sorted by instruction pointer of the
-functions they represent. There are times we need to quickly search for a
-record and this is done by iterating the link list of page groups, and then
-doing a binary search of the records in the pages that are there.
-
-The more records you store in a single group, the faster this algorithm is
-(more binary searches, less iterating a link list). But since these records
-are permanently in the memory, we also do not want to allocate more than
-needed to store the records. Now because pages are only allocated in powers
-of two (1, 2, 4, 8, 16, ...) If it takes 5 pages to store all the records,
-we don't want to allocate 8 pages for it. Instead we make a link list where
-the first entry has 4 pages the second has 1.
-
-In the dmesg on boot up, you'll see something like this:
-
- ftrace: allocating 42979 entries in 168 pages
- ftrace: allocated 168 pages with 3 groups
+I agree that VM_PFNMAP was probably excessive in this patch alone and
+rather synchronized code with other architectures, but it makes more
+sense now in the new patches set by Christophe:
+https://lore.kernel.org/linux-arch/cover.1617209141.git.christophe.leroy@csgroup.eu/
 
 
-That shows that the link list is size of 3, and it used 168 pages to
-store the 42,979 records.
+[1] https://lore.kernel.org/lkml/550731AF.6080904@redhat.com/T/
+[2] https://sourceware.org/legacy-ml/gdb-patches/2015-03/msg00383.html
 
-What the logic above does is to figure out how many pages are needed to
-store all the records. If the value is not a power of two (say 5 pages),
-where the order would give use 8 pages. We subtract one from the order (to
-give us 4 pages), and store what we can there. The next time around we only
-allocate 1 page to store the rest of the records.
-
-Your fls() trick might work too (have to gawk at it more). And I should fix
-the comments. But any work on that would be for the next merge window, and
-doesn't affect that this patch fixes a possible issue.
-
--- Steve
+Thanks,
+          Dmitry
