@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA2C34FF6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A6934FF72
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235235AbhCaLZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 07:25:54 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:18494 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235140AbhCaLZn (ORCPT
+        id S235297AbhCaL01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235239AbhCaLZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 07:25:43 -0400
-X-AuditID: 0a580155-f55ff70000015057-03-60645c357ab1
-Received: from mail.kingsoft.com (localhost [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 82.14.20567.53C54606; Wed, 31 Mar 2021 19:25:41 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 31 Mar
- 2021 19:25:41 +0800
-Date:   Wed, 31 Mar 2021 19:25:40 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, "Luck, Tony" <tony.luck@intel.com>,
-        "Oscar Salvador" <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>, <sunhao2@kingsoft.com>
-Subject: [PATCH v3] mm,hwpoison: return -EHWPOISON when page already
- poisoned
-Message-ID: <20210331192540.2141052f@alex-virtual-machine>
-In-Reply-To: <20210309143534.6c1a8ec5@alex-virtual-machine>
-References: <20210304144524.795872d7@alex-virtual-machine>
-        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
-        <20210305093016.40c87375@alex-virtual-machine>
-        <20210305093656.6c262b19@alex-virtual-machine>
-        <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
-        <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
-        <3690ece2101d428fb9067fcd2a423ff8@intel.com>
-        <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
-        <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
-        <20210309100421.3d09b6b1@alex-virtual-machine>
-        <20210309060440.GA29668@hori.linux.bs1.fc.nec.co.jp>
-        <20210309143534.6c1a8ec5@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 31 Mar 2021 07:25:55 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0912AC061574;
+        Wed, 31 Mar 2021 04:25:54 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id j9so17578389wrx.12;
+        Wed, 31 Mar 2021 04:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XKemW9z1W9iahD8xhRWW3yf2hOBr43rJJBDBt1M2nFY=;
+        b=btDjiIRJcCIQsZ6Y8eRXXhmfdB2VsAVSAL3gf3HjIm9g8zreCGJgkJIcWmLA62blJv
+         urljdWP9VbXrhE0LUCPg+BEkayFtukdFbbKbWNCmqYLvMUhnn3Mx1NWOOj/EEc671NX0
+         IqUkVeOWGLUUyy/9yNz0VahjJogW92QwfnivDnSXFAT+9Nn6Q4iJ4uNIOA64NqHYV0vU
+         760t6zefFpmFyUtnNPaagI+qMm9pdgek0+FQ/r+qgp9ljml9913Q5N60rfI2RVZck90/
+         LQEaJFHPl9I9oFdDCcMwVbPfHxwYKQEMGkOWLrHkmzGcgHeLjqyjYm2SJskn+bXhArtA
+         PrEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XKemW9z1W9iahD8xhRWW3yf2hOBr43rJJBDBt1M2nFY=;
+        b=lyQ2Ohw/WPHRueZP961JqDQEtEgDJ0l00w6libwKVBF+DNCTqHsMbJ31+Ve1iLjGA2
+         u8+aa7G1PuOFC5QqXUI2JJzKLMMpGnq8L01q+S1ibAMRoUSRmMPghIqK3BGd2YXibqm0
+         LpGdAqxPQV9SB2HwqlgaKxeMhy3z0BMU+fBRVLHNR8l3pvOujp1LJ/jrjpLEaMFsLfyB
+         oSh2jrQ36KKXimH8JPtjN+gKPSj5qrnJSC8oKT1nwHvKsE+Lp71ZuwK9mpqpS79D6nUZ
+         jTIa0CkwuzzBzLF3K+nADzN1+FV1easwCTAYczH2NB7RH6NAbkAcPfUzV8H7WrvVy12Z
+         /3Rg==
+X-Gm-Message-State: AOAM532VH0mwACoUR/C1afPtVq96KQOTOy+W2x0DaqbGFq0y5F+qKns0
+        MjV3G0kZHexi96+qsXTSW3o=
+X-Google-Smtp-Source: ABdhPJw/1/SEYE3fOUEOqFB/zEgCN6nAvixmM5sifER6k6+BoM2mwyGqEqg04/NiQ9HLu6BRDiEjBQ==
+X-Received: by 2002:a05:6000:3:: with SMTP id h3mr3107372wrx.91.1617189952852;
+        Wed, 31 Mar 2021 04:25:52 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.103])
+        by smtp.gmail.com with ESMTPSA id r11sm4025675wrm.26.2021.03.31.04.25.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 04:25:52 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] software node: Introduce SOFTWARE_NODE_REFERENCE()
+ helper macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
+ <20210329151207.36619-5-andriy.shevchenko@linux.intel.com>
+ <5e76c3b8-d154-e5ca-25d8-290376469e5a@gmail.com>
+ <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <26a22d2a-fb71-1651-5ff0-8332d95e9196@gmail.com>
+Date:   Wed, 31 Mar 2021 12:25:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <YGLuyKFbDgVLU2OW@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsXCFcHor2sak5JgsO2xvMWc9WvYLL6u/8Vs
-        cXnXHDaLe2v+s1pcbDzAaHFmWpHFmwv3WBzYPRbvecnksenTJHaPEzN+s3i8uLqRxeP9vqts
-        HptPV3t83iQXwB7FZZOSmpNZllqkb5fAlXHvfgNzwRuhivWrJjA1MD7l62Lk5JAQMJHYcKmL
-        GcQWEpjOJHH5qlQXIxeQ/YpRYurK70wgCRYBVYm9v1pZQGw2IHvXvVmsIEUiAlcZJRbem8oO
-        4jAL9DFJ7Nq+nLGLkYNDWMBfYuLPUJAGXgEriaPXF4EN4hSwljhyfAozxIZWVok9r6+AreYX
-        EJPovfKfCeIke4m2LYsYIZoFJU7OfAK2mVlAR+LEqmPMELa8xPa3c6DOVpQ4vOQXO0SvksSR
-        7hlsEHasRNOBW2wTGIVnIRk1C8moWUhGLWBkXsXIUpybbrSJERIfoTsYZzR91DvEyMTBeIhR
-        goNZSYRX+EBighBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHe7w+SEoQE0hNLUrNTUwtSi2CyTByc
-        Ug1M0w+uiuasi45LFPxc96KmyCTs4erFCTxVb5pLrLM/3f+z6fXuQ4UvnJlm3Jz1N9T3RO57
-        HZ9JfBfucH6bvP7SEeuvb3eUhLnf4eXxUzgQvJubncU24innSqtPPmcsWjifsN6/3Xz/2o74
-        gr8bZ8gemaNfxM7/bQVD4x73LZuK7ev3B1dNMWFTLopcp7yrUUi3Il4hpL6jaMpXg9KtsZPV
-        vovWvNy37l4M5/Wjr+6ufeTzrczjrvPVnfPSLvRM33D/47rVx6Jmpx8RPlNjXH7QWtT5be2m
-        51VTLFtFXrVuqnyzROj5/UzjMnXrvLUMZw/d3sz4u1wnKiXq1cQcN+/1CzMmdraaPH4c5/ZZ
-        Y+nzCCWW4oxEQy3mouJEAHFYImD+AgAA
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the page is already poisoned, another memory_failure() call in the
-same page now return 0, meaning OK. For nested memory mce handling, this
-behavior may lead to one mce looping, Example:
+Hi Andy
 
-1.When LCME is enabled, and there are two processes A && B running on
-different core X && Y separately, which will access one same page, then
-the page corrupted when process A access it, a MCE will be rasied to
-core X and the error process is just underway.
+On 30/03/2021 10:26, Andy Shevchenko wrote:
+>>> +	{ .pointer = &SOFTWARE_NODE_REFERENCE(_ref_, ##__VA_ARGS__), },	\
+>> What are the .args intended to be used for? I actually had it in mind to
+>> replace this with a simple pointer to a struct software_node, because I
+>> can't see any users of them and the fact that it's actually storing a
+>> pointer to a new variable is something that confused me for a good long
+>> time when I wrote the cio2-bridge (though that's mostly due to my
+>> relative inexperience of course, but still)
+> It's to be in align with DT phandle references that can take arguments. While
+> for now, indeed, we have no users of this, it might be changed in the future
+> (I hadn't checked DesignWare DMA where I would like to transform the code to
+>  use device properties eventually and there it might be the case).
 
-2.Then B access the page and trigger another MCE to core Y, it will also
-do error process, it will see TestSetPageHWPoison be true, and 0 is
-returned.
 
-3.The kill_me_maybe will check the return:
+Ah yeah I see - haven't come across phandles before but having looked
+them up now I see what this is meant to emulate. Consistency is good; in
+that case, for this and 6/6:
 
-1244 static void kill_me_maybe(struct callback_head *cb)
-1245 {
 
-1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT,
-p->mce_whole_page);
-1257                 sync_core();
-1258                 return;
-1259         }
+Reviewed-by: Daniel Scally <djrscally@gmail.com>
 
-1267 }
+and
 
-4. The error process for B will end, and may nothing happened if
-kill-early is not set, The process B will re-excute instruction and get
-into mce again and then loop happens. And also the set_mce_nospec()
-here is not proper, may refer to commit fd0e786d9d09 ("x86/mm,
-mm/hwpoison: Don't unconditionally unmap kernel 1:1 pages").
+Tested-by: Daniel Scally <djrscally@gmail.com>
 
-For other cases which care the return value of memory_failure() should
-check why they want to process a memory error which have already been
-processed. This behavior seems reasonable.
 
-Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
----
- mm/memory-failure.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 24210c9bd843..5cd42144b67c 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1228,7 +1228,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
- 	if (TestSetPageHWPoison(head)) {
- 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
- 		       pfn);
--		return 0;
-+		return -EHWPOISON;
- 	}
- 
- 	num_poisoned_pages_inc();
-@@ -1430,7 +1430,7 @@ int memory_failure(unsigned long pfn, int flags)
- 	if (TestSetPageHWPoison(p)) {
- 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
- 			pfn);
--		return 0;
-+		return -EHWPOISON;
- 	}
- 
- 	orig_head = hpage = compound_head(p);
--- 
-2.25.1
-
+>
