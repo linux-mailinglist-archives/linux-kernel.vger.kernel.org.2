@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EAB350ABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477AB350ABF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhCaX1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:27:21 -0400
+        id S233210AbhCaX1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:27:23 -0400
 Received: from mga12.intel.com ([192.55.52.136]:4846 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhCaX0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:26:48 -0400
-IronPort-SDR: i2xRrawafQvx9+1AOGu6RzM27TjLfdmw8mNM1y/OfsuPWhrtLRgZYJM1DS60FUaU5Wh38YbIZ4
- dmUUn2wHRpYQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528086"
+        id S232001AbhCaX0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:26:50 -0400
+IronPort-SDR: t6VUOuc+d71QB1s/SemwvQmS4zDEIWZ4DZl0YIHSd0fjU9EJpbqCshbjrE9AVSZM23uDk0r2D8
+ aCC0XkT9qBvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171528090"
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="171528086"
+   d="scan'208";a="171528090"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:48 -0700
-IronPort-SDR: Sc5XF5rWEx6dHYe3EMa/6MsHwtpUHr8qKM01SU0oOLyL2FOAcuRw8Aljfrdl+pE65w0sPqT7+4
- 8+kOrkf+zOlg==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:50 -0700
+IronPort-SDR: Y65ggN80rR2uOX56y5PZu3LJH4KCdOqIZQ0K9x4l2JO9Vn7zI0Gt7ydzDMY42k8+BNF92f0ia6
+ CjOQZnYZThIA==
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="610685766"
+   d="scan'208";a="610685767"
 Received: from dfrayn-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.146.236])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:47 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 16:26:48 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Johannes Berg <johannes@sipsolutions.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 6/7] platform-msi: fix kernel-doc warnings
-Date:   Wed, 31 Mar 2021 18:26:13 -0500
-Message-Id: <20210331232614.304591-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/7] devcoredump: fix kernel-doc warning
+Date:   Wed, 31 Mar 2021 18:26:14 -0500
+Message-Id: <20210331232614.304591-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
 References: <20210331232614.304591-1-pierre-louis.bossart@linux.intel.com>
@@ -44,36 +44,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 remove make W=1 warnings
 
-drivers/base/platform-msi.c:336: warning:
-Function parameter or member 'is_tree' not described in
-'__platform_msi_create_device_domain'
+drivers/base/devcoredump.c:208: warning:
+Function parameter or member 'data' not described in
+'devcd_free_sgtable'
 
-drivers/base/platform-msi.c:336: warning:
-expecting prototype for platform_msi_create_device_domain(). Prototype
-was for __platform_msi_create_device_domain() instead
+drivers/base/devcoredump.c:208: warning:
+Excess function parameter 'table' description in 'devcd_free_sgtable'
+
+drivers/base/devcoredump.c:225: warning:
+expecting prototype for devcd_read_from_table(). Prototype was for
+devcd_read_from_sgtable() instead
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/base/platform-msi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/base/devcoredump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 2c1e2e0c1a59..0b72b134a304 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -316,10 +316,11 @@ void *platform_msi_get_host_data(struct irq_domain *domain)
+diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+index 352de5d41466..8eec0e0ddff7 100644
+--- a/drivers/base/devcoredump.c
++++ b/drivers/base/devcoredump.c
+@@ -202,7 +202,7 @@ static int devcd_match_failing(struct device *dev, const void *failing)
+  * NOTE: if two tables allocated with devcd_alloc_sgtable and then chained
+  * using the sg_chain function then that function should be called only once
+  * on the chained table
+- * @table: pointer to sg_table to free
++ * @data: pointer to sg_table to free
+  */
+ static void devcd_free_sgtable(void *data)
+ {
+@@ -210,7 +210,7 @@ static void devcd_free_sgtable(void *data)
  }
  
  /**
-- * platform_msi_create_device_domain - Create a platform-msi domain
-+ * __platform_msi_create_device_domain - Create a platform-msi domain
-  *
-  * @dev:		The device generating the MSIs
-  * @nvec:		The number of MSIs that need to be allocated
-+ * @is_tree:		flag to indicate tree hierarchy
-  * @write_msi_msg:	Callback to write an interrupt message for @dev
-  * @ops:		The hierarchy domain operations to use
-  * @host_data:		Private data associated to this domain
+- * devcd_read_from_table - copy data from sg_table to a given buffer
++ * devcd_read_from_sgtable - copy data from sg_table to a given buffer
+  * and return the number of bytes read
+  * @buffer: the buffer to copy the data to it
+  * @buf_len: the length of the buffer
 -- 
 2.25.1
 
