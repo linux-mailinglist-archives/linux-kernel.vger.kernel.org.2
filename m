@@ -2,145 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1869F34FB59
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525F334FB5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhCaISR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:18:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234098AbhCaIRy (ORCPT
+        id S234351AbhCaISx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:18:53 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:63834 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234317AbhCaISr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:17:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617178672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bTqLjMGBkNyk6LPfhvftRY7GVRzCJFKJwpWtZQvrdY=;
-        b=bxq8/UeN840xD8FxtBJr/6TeZjv63MefU0pkHwOhreGopYAL7hv1mjBogRHAlAtDO4u3MV
-        vCcIY0EoOcXmYSeee9dz4E0QiPxAN8osEItTuELSPdvarTYJDMCqxI2s1fHHZJxNDk3/nV
-        rdgPHD4IO6Bn9gYJ+41+kRcAYVxxb4I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-vV6X7zIlNfaW18iSYhKvUA-1; Wed, 31 Mar 2021 04:17:48 -0400
-X-MC-Unique: vV6X7zIlNfaW18iSYhKvUA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E33BB8710FD;
-        Wed, 31 Mar 2021 08:17:45 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 597E46A900;
-        Wed, 31 Mar 2021 08:17:40 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 10:17:39 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>, brouer@redhat.com
-Subject: Re: [RFC PATCH 0/6] Use local_lock for pcp protection and reduce
- stat overhead
-Message-ID: <20210331101739.0cc3630e@carbon>
-In-Reply-To: <20210331073805.GY3697@techsingularity.net>
-References: <20210329120648.19040-1-mgorman@techsingularity.net>
-        <20210330205154.1fe1e479@carbon>
-        <20210331073805.GY3697@techsingularity.net>
+        Wed, 31 Mar 2021 04:18:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617178727; x=1648714727;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=2nV0mXiyWztHWYThPphmbciYbzLzkc35sM0Dekg54Lk=;
+  b=qhlFR/3QUdobCaVbmN6+qy+2MNHnDq61f0no19cxtqk1A29Spx8ugIiR
+   yP6ikWNfiKpIRgSa4McjtNCx26D4jE+5dpkCvRpakkh8pZDRg2nXKCcTr
+   EdVjxa/NqZjGbsEmo9EoKdMH9edYnSBqKkBRRzL8d3dY5WtRj/Zsny5uZ
+   Unm112ziGw9i/lKisZ2a7IqB5l+Tab9RkHLH7fkC0M0EvLOj98DFpZJwh
+   bzcIRKppQZ7H4jLjWY616WNnl5dQXLuyBW6B25r3hABfu413S8nr9aL1a
+   8ef3zAR8PqIo0ZJxHMGoV2Waah8ktDsx86VJXdyQl3ajQJetjLY1ad2cO
+   g==;
+IronPort-SDR: 4EpDx81z0VAggYIKFLHNgy52EPo4trXaZJI5T2YSpChuh1AGjlgnmdZSFxxwQIqsv2i6k+LGN9
+ 1G2yAhPZsH7m862FcuZgbqm9Pu/vC1QF5dUQYUoduiPDO/HC/EFvQiZN7OxSvKIKPn7zpeTO1w
+ 4aNdmKvGPpwJm+ExeEHkXk7RbQ49jyBgGfoiLMOFvGMvBeXekGSuioAKo214wbS1rYfQcYc+u1
+ u+fnq5JAwwhdaIjWI2WIPtbHkF/fZidbQPrSg0FqLiCZiE3VAdB0VtfOb7n8UVcV1V40RZEPH3
+ d+A=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
+   d="scan'208";a="114810110"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 01:18:47 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 31 Mar 2021 01:18:44 -0700
+Received: from [10.171.246.91] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Wed, 31 Mar 2021 01:18:42 -0700
+Subject: Re: [PATCH] power: reset: at91-reset: free resources on exit path
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>, <sre@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>,
+        "Dan Carpenter" <dan.carpenter@oracle.com>
+References: <20210209110109.906034-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <b18fc346-498d-4c6f-7f06-a6148a17d216@microchip.com>
+Date:   Wed, 31 Mar 2021 10:18:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210209110109.906034-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 08:38:05 +0100
-Mel Gorman <mgorman@techsingularity.net> wrote:
+On 09/02/2021 at 12:01, Claudiu Beznea wrote:
+> Free resources on exit path (failure path of probe and remove).
 
-> On Tue, Mar 30, 2021 at 08:51:54PM +0200, Jesper Dangaard Brouer wrote:
-> > On Mon, 29 Mar 2021 13:06:42 +0100
-> > Mel Gorman <mgorman@techsingularity.net> wrote:
-> >   
-> > > This series requires patches in Andrew's tree so the series is also
-> > > available at
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v1r15
-> > > 
-> > > tldr: Jesper and Chuck, it would be nice to verify if this series helps
-> > > 	the allocation rate of the bulk page allocator. RT people, this
-> > > 	*partially* addresses some problems PREEMPT_RT has with the page
-> > > 	allocator but it needs review.  
-> > 
-> > I've run a new micro-benchmark[1] which shows:
-> > (CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
-> > 
-> > <Editting to focus on arrays>
-> > BASELINE
-> >  single_page alloc+put: 194 cycles(tsc) 54.106 ns
-> > 
-> > ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
-> > 
-> >  Per elem: 195 cycles(tsc) 54.225 ns (step:1)
-> >  Per elem: 127 cycles(tsc) 35.492 ns (step:2)
-> >  Per elem: 117 cycles(tsc) 32.643 ns (step:3)
-> >  Per elem: 111 cycles(tsc) 30.992 ns (step:4)
-> >  Per elem: 106 cycles(tsc) 29.606 ns (step:8)
-> >  Per elem: 102 cycles(tsc) 28.532 ns (step:16)
-> >  Per elem: 99 cycles(tsc) 27.728 ns (step:32)
-> >  Per elem: 98 cycles(tsc) 27.252 ns (step:64)
-> >  Per elem: 97 cycles(tsc) 27.090 ns (step:128)
-> > 
-> > This should be seen in comparison with the older micro-benchmark[2]
-> > done on branch mm-bulk-rebase-v5r9.
-> > 
-> > BASELINE
-> >  single_page alloc+put: Per elem: 199 cycles(tsc) 55.472 ns
-> > 
-> > ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
-> > 
-> >  Per elem: 202 cycles(tsc) 56.383 ns (step:1)
-> >  Per elem: 144 cycles(tsc) 40.047 ns (step:2)
-> >  Per elem: 134 cycles(tsc) 37.339 ns (step:3)
-> >  Per elem: 128 cycles(tsc) 35.578 ns (step:4)
-> >  Per elem: 120 cycles(tsc) 33.592 ns (step:8)
-> >  Per elem: 116 cycles(tsc) 32.362 ns (step:16)
-> >  Per elem: 113 cycles(tsc) 31.476 ns (step:32)
-> >  Per elem: 110 cycles(tsc) 30.633 ns (step:64)
-> >  Per elem: 110 cycles(tsc) 30.596 ns (step:128)
-> >   
-> 
-> Ok, so bulk allocation is faster than allocating single pages, no surprise
-> there. Putting the array figures for bulk allocation into tabular format
-> and comparing we get;
-> 
-> Array variant (time to allocate a page in nanoseconds, lower is better)
->         Baseline        Patched
-> 1       56.383          54.225 (+3.83%)
-> 2       40.047          35.492 (+11.38%)
-> 3       37.339          32.643 (+12.58%)
-> 4       35.578          30.992 (+12.89%)
-> 8       33.592          29.606 (+11.87%)
-> 16      32.362          28.532 (+11.85%)
-> 32      31.476          27.728 (+11.91%)
-> 64      30.633          27.252 (+11.04%)
-> 128     30.596          27.090 (+11.46%)
-> 
-> The series is 11-12% faster when allocating multiple pages.  That's a
-> fairly positive outcome and I'll include this in the series leader if
-> you have no objections.
+I'm not sure we can use this driver as a module anyway.
 
-That is fine by me to add this to the cover letter.  I like your
-tabular format as it makes is easier to compare. If you use the
-nanosec measurements and not the cycles, you should state that
-this was run on a CPU E5-1650 v4 @ 3.60GHz.  You might notice that the
-factor between cycles(tsc) and ns is very close to 3.6.
+Otherwise, it looks fine, but isn't it possible to use devm_of_iomap(), 
+even in loop, and avoid having to deal with exit path?
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>   drivers/power/reset/at91-reset.c | 25 ++++++++++++++++++++-----
+>   1 file changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-reset.c
+> index 3ff9d93a5226..2ff7833153b6 100644
+> --- a/drivers/power/reset/at91-reset.c
+> +++ b/drivers/power/reset/at91-reset.c
+> @@ -206,7 +206,8 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+>   			if (!reset->ramc_base[idx]) {
+>   				dev_err(&pdev->dev, "Could not map ram controller address\n");
+>   				of_node_put(np);
+> -				return -ENODEV;
+> +				ret = -ENODEV;
+> +				goto unmap;
+>   			}
+>   			idx++;
+>   		}
+> @@ -218,13 +219,15 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+>   	reset->args = (u32)match->data;
+>   
+>   	reset->sclk = devm_clk_get(&pdev->dev, NULL);
+> -	if (IS_ERR(reset->sclk))
+> -		return PTR_ERR(reset->sclk);
+> +	if (IS_ERR(reset->sclk)) {
+> +		ret = PTR_ERR(reset->sclk);
+> +		goto unmap;
+> +	}
+>   
+>   	ret = clk_prepare_enable(reset->sclk);
+>   	if (ret) {
+>   		dev_err(&pdev->dev, "Could not enable slow clock\n");
+> -		return ret;
+> +		goto unmap;
+>   	}
+>   
+>   	platform_set_drvdata(pdev, reset);
+> @@ -239,21 +242,33 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+>   	ret = register_restart_handler(&reset->nb);
+>   	if (ret) {
+>   		clk_disable_unprepare(reset->sclk);
+> -		return ret;
+> +		goto unmap;
+>   	}
+>   
+>   	at91_reset_status(pdev, reset->rstc_base);
+>   
+>   	return 0;
+> +
+> +unmap:
+> +	iounmap(reset->rstc_base);
+> +	for (idx = 0; idx < ARRAY_SIZE(reset->ramc_base); idx++)
+> +		iounmap(reset->ramc_base[idx]);
+
+But if we keep this loop, I have the feeling that some kind of 
+"of_node_put()" is needed as well.
+
+> +
+> +	return ret;
+>   }
+>   
+>   static int __exit at91_reset_remove(struct platform_device *pdev)
+>   {
+>   	struct at91_reset *reset = platform_get_drvdata(pdev);
+> +	int idx;
+>   
+>   	unregister_restart_handler(&reset->nb);
+>   	clk_disable_unprepare(reset->sclk);
+>   
+> +	iounmap(reset->rstc_base);
+> +	for (idx = 0; idx < ARRAY_SIZE(reset->ramc_base); idx++)
+> +		iounmap(reset->ramc_base[idx]);
+
+Ditto
+
+> +
+>   	return 0;
+>   }
+>   
+> 
+
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Nicolas Ferre
