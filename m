@@ -2,122 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F47334FEDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBF234FEE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbhCaK7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:59:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235165AbhCaK7C (ORCPT
+        id S235358AbhCaLAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:00:06 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:43894 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235086AbhCaK72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:59:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617188342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h6L2AUqo5nz2UoERmv8ppYznSIQciq71zeLTZsRCRB0=;
-        b=H+C2645TlHrCxc0nyPOvpZzOgmhGq8HRKTzcegY0e/Wuz2UHLrv0WZwpLv/H8cp88cq+RH
-        JalkyHJcENQkvxtpzbmtWp56nEiJrcRDiq3SWRA4W8e0koDkTf9k9YhJsBjqLC5QnfBbjH
-        lvxVDKkrFQDURFtOkjWdapTdQasiTWs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-hWliKZPRN5OCmyKvlfuoNw-1; Wed, 31 Mar 2021 06:58:58 -0400
-X-MC-Unique: hWliKZPRN5OCmyKvlfuoNw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E61F107ACCD;
-        Wed, 31 Mar 2021 10:58:56 +0000 (UTC)
-Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5253F6F135;
-        Wed, 31 Mar 2021 10:58:51 +0000 (UTC)
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-To:     Aili Yao <yaoaili@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKCDloIDlj6Mg55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     "tony.luck@intel.com" <tony.luck@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "inux-edac@vger.kernel.org" <inux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-References: <20210224151619.67c29731@alex-virtual-machine>
- <20210224103105.GA16368@linux> <20210225114329.4e1a41c6@alex-virtual-machine>
- <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
- <20210225113930.GA7227@localhost.localdomain>
- <20210331185637.76f863e2@alex-virtual-machine>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <0d6f0f9c-f644-1246-0530-e39656a207ca@redhat.com>
-Date:   Wed, 31 Mar 2021 12:58:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 31 Mar 2021 06:59:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617188368; x=1648724368;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=C7hxWt9DV3Pc9H4oOYS4u5rYRQhOWg1AJzI3K4Hdue4=;
+  b=wnjqqcPs9pvk2lSdpumR3fKV9uVtXzZPOQThFx/xqegraTeMHMCr0LkU
+   s/b4BQeZbZIZkIHsuVjDc+QGi06ob5VD2/9RnXUcXgl31QXNUglI0VRYG
+   JIAy3Ij3C+ZLf/M0dI1jukJqrhQX2/fIRR4M/x51w86CKlCEN7JSa6OPg
+   MBNT/fpwu6D97P9tJzea+hd3saNn4yxEJlOfqDsg5bGBZmv0ax5m4UoLd
+   Aly3ow8Gp9qBJ2UE2q2IPkCQWSXgWMGzvs9bOBD7JGr/1TbDBSj0NaaT4
+   4SbQ4BBXneUPtIbGtEXQuJS0sMkD4kx3VeIgmqWfNWnmGiVH/i5AcpWVR
+   A==;
+IronPort-SDR: L1/SHFAWK5iKH28yY22g9zFEYkSmf3Q51BSDKwyZ7clpHkOnd3opfLK4AtO5ueI8Vya7i0dAYn
+ zyLnTveCFJCNC7lmouq5cYZSsxtcqMRb+SX+11C8TAWRb6FLDvTCuqjvcvCNhn9sXUf1km0dhm
+ BdNodPMQsbdkLB0J5uYMyvq5b3CdiLedEpF8ejrKAWNu6yVT2WBIgC2JEjrQS12pRQKkSx31Uq
+ lkz3n5Ax854XNgcHEy3cRbUbCuCrYu+EU3jG10aUQ1p58S+7XFYs5zMpYGG8ZythWW9U4FjBfh
+ 3vo=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
+   d="scan'208";a="121233918"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 03:59:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 31 Mar 2021 03:59:27 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 03:59:25 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 06/24] ARM: at91: pm: use r7 instead of tmp1
+Date:   Wed, 31 Mar 2021 13:58:50 +0300
+Message-ID: <20210331105908.23027-7-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210331185637.76f863e2@alex-virtual-machine>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.03.21 12:56, Aili Yao wrote:
-> On Thu, 25 Feb 2021 12:39:30 +0100
-> Oscar Salvador <osalvador@suse.de> wrote:
-> 
->> On Thu, Feb 25, 2021 at 11:28:18AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
->>> Hi Aili,
->>>
->>> I agree that this set_mce_nospec() is not expected to be called for
->>> "already hwpoisoned" page because in the reported case the error
->>> page is already contained and no need to resort changing cache mode.
->>
->> Out of curiosity, what is the current behavour now?
->> Say we have an ongoing MCE which has marked the page as HWPoison but
->> memory_failure did not take any action on the page yet.
->> And then, we have another MCE, which ends up there.
->> set_mce_nospec might clear _PAGE_PRESENT bit.
->>
->> Does that have any impact on the first MCE?
->>
->>> It seems to me that memory_failure() does not return MF_XXX.  But yes,
->>> returning some positive value for the reported case could be a solution.
->>
->> No, you are right. I somehow managed to confuse myself.
->> I see now that MF_XXX return codes are filtered out in page_action.
->>
->>> We could use some negative value (error code) to report the reported case,
->>> then as you mentioned above, some callers need change to handle the
->>> new case, and the same is true if you use some positive value.
->>> My preference is -EHWPOISON, but other options are fine if justified well.
->>
->> -EHWPOISON seems like a good fit.
->>
-> 
-> Hi Oscar, david:
-> 
-> Long away fron this topic, but i noticed today I made a stupid mistake that EHWPOISON is already
-> been declared, so we should better return EHWPOISON for this case.
-> 
-> Really sorry for this!
-> 
-> As the patch is still under review, I will post a new version for this, if I change this, may I add
-> your review tag here please?
+Use r7 instead of tmp1 in macros. This prepares the filed for
+next commits.
 
-Just resend as v2. We will review and post our RBs there.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ arch/arm/mach-at91/pm_suspend.S | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-
+diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
+index b683c2caa40b..3d20c9880fee 100644
+--- a/arch/arm/mach-at91/pm_suspend.S
++++ b/arch/arm/mach-at91/pm_suspend.S
+@@ -31,30 +31,36 @@ tmp3	.req	r6
+ 
+ /*
+  * Wait until master oscillator has stabilized.
++ *
++ * Side effects: overwrites r7
+  */
+ 	.macro wait_moscrdy
+-1:	ldr	tmp1, [pmc, #AT91_PMC_SR]
+-	tst	tmp1, #AT91_PMC_MOSCS
++1:	ldr	r7, [pmc, #AT91_PMC_SR]
++	tst	r7, #AT91_PMC_MOSCS
+ 	beq	1b
+ 	.endm
+ 
+ /*
+  * Wait for main oscillator selection is done
++ *
++ * Side effects: overwrites r7
+  */
+ 	.macro wait_moscsels
+-1:	ldr	tmp1, [pmc, #AT91_PMC_SR]
+-	tst	tmp1, #AT91_PMC_MOSCSELS
++1:	ldr	r7, [pmc, #AT91_PMC_SR]
++	tst	r7, #AT91_PMC_MOSCSELS
+ 	beq	1b
+ 	.endm
+ 
+ /*
+  * Put the processor to enter the idle state
++ *
++ * Side effects: overwrites r7
+  */
+ 	.macro at91_cpu_idle
+ 
+ #if defined(CONFIG_CPU_V7)
+-	mov	tmp1, #AT91_PMC_PCK
+-	str	tmp1, [pmc, #AT91_PMC_SCDR]
++	mov	r7, #AT91_PMC_PCK
++	str	r7, [pmc, #AT91_PMC_SCDR]
+ 
+ 	dsb
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
