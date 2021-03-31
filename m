@@ -2,168 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AF43501F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5D23501F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236009AbhCaOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        id S235941AbhCaOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235994AbhCaOKG (ORCPT
+        with ESMTP id S235974AbhCaOK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:10:06 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:10:05 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id l123so14630482pfl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 07:10:05 -0700 (PDT)
+        Wed, 31 Mar 2021 10:10:56 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF740C061574;
+        Wed, 31 Mar 2021 07:10:55 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso1305735pjh.2;
+        Wed, 31 Mar 2021 07:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uMG7IEiavzSRE2X65Zsaw36Y4uyy2Xzq3ejd+JY938s=;
-        b=GHmHIPTSsfyLpfQNVBmNXMEoTEEoJBQCa6SHoFWfehh/SO3pVcMb35t+adcflzrdBa
-         LO1T9zk9wRSKcElAOxg9OSQEC2RkHt0uXE8zVSBp2phhiWVBPbixUGiz+NZU820xY10H
-         AJj5HoJ3R2Se45St+dHwoYNVckc34k2nMKl+duxIPGzuVCwj89B/CSR49fdI4CR5h/M9
-         XQ0OYnlhoqDUOHBMAnKRPAKC0DY2wsUMN7JZqQrH9k58dEJHPmt/LkYSSjbnnXhYTl+D
-         +NOMsjQFKhVD4a/F7GenIPOL69GnGO1oeqOTPHUgCY7VD6I9VkZUD5OhCP2QsOoAgz4f
-         rYXQ==
+        bh=92979ybVXNYMlrTlPGO1DwRC1dKfc7x85Z0GpQ4z59g=;
+        b=RlNn8dktBpHxqBPMOLCZvljcIxHrWMLCdq5wxfRawiaqitRGLf3gtyOcGrKM8sXs8G
+         euuWg04R56VIguIf/2tIOCjQesZb65VHxJd8pxk6ZVvWjAdPbj01xBArXxmERigIfw3s
+         U7FEag+biSTKjC9kgQaY/PGmruXIo3LZUOSfaG3nsjllk5JLL5jaLBpEKEVw3TdptUWN
+         SRlVUcxoo1O4skSkDM+9/dZKJ1d82xtqgPsJHKopW87jmpIfypKx8ERiI+8pHHKt3v7k
+         /T4kXIpeJCrs6Cufk3ofSa5RZ7LBDq0vmA8QxhClKBQFeO6sEr5CftwHZM6SgcbhO4nl
+         u1wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uMG7IEiavzSRE2X65Zsaw36Y4uyy2Xzq3ejd+JY938s=;
-        b=Mi7AMwwCRXnhGFQqN+kqdpec8rHTu7DOzH7ShIzHf+NKIa5nHdGub+5Qnsd0s3XuKz
-         fHpmFNCuHfFIg/RFDtFgy4mMsL6axyVRPQpYQLLuIBM9xwqC7n1Rs9BqEl81Bka+Hguz
-         mIsU/1Qo4q2ocLalX+LdIpUNPEFumk4m/wlyCoV6KZsy2LIfjoTPbckH0SvMtA3hyyBB
-         H7Wrf6LvmJNrubkYaqmFDPC60tEShkSMQalP1DeczqU0I8Fr0MYOr9ZTo3GbMIry1i4A
-         B2XdxZiOl0FcEu/58MKnhCvyOCizR0SmTxaNDw7KnyBrOG/+0qydcOWMEHmHYnR674TE
-         H/OQ==
-X-Gm-Message-State: AOAM533O9dcYX5f2KkQnjWWkHZqS+YOHioAibKVXGDaI0mma8AMIb4OG
-        u3V/tRt9hWl/ChjpA6ipbwzPHEOK30hH15JT3gStmA==
-X-Google-Smtp-Source: ABdhPJzV2NlH20rN2slIH3t2yEuNNhBQjJpDqRJFy64EHQl/Nn2Dm+/keOoqb3l/wQYM8tURyLvI1RfnId1vEWlnN2E=
-X-Received: by 2002:a62:80cf:0:b029:1f3:1959:2e42 with SMTP id
- j198-20020a6280cf0000b02901f319592e42mr3171023pfd.39.1617199804922; Wed, 31
- Mar 2021 07:10:04 -0700 (PDT)
+        bh=92979ybVXNYMlrTlPGO1DwRC1dKfc7x85Z0GpQ4z59g=;
+        b=jaF8Gxxoa5LuNHGicNr0iP/7BX8rMElS7x1/ZHxgmdlh9o3AGyOcpKyWNNZBD/o51t
+         6VPMgpFfoaYTNRRZQL2IsZ5/ZYTh+Wjoa+fBVVZRM7oOuLEqplEBElPgIxfjOvs9B81B
+         fLiCsPiBLcKHBAtBkiYoyF5qZ2l3NwPlg75L4YZ+O2GX+qVFAKPF27wBiBznRqC7Gso7
+         aLO85IBCZqEbtUx1KZ14CkMLxkKY0T+jeMn/RwF94jBVealV8w7+rqy0T5Kl/cJJYxXz
+         sunI9mLDT1tNdkdT2Q95s4DUdLRBfQaRjul3ERNLXJtsHkM2v7jQAqs0HfXCkYTMpIJH
+         Oskw==
+X-Gm-Message-State: AOAM533HrfbgW6ZHrNroXazBT/KBfi9P1N7WiuaYdIG1S1o6I7iDTqa9
+        /Ww6yfChCXVLfyrfh3VdyXFnKuzpMq+Igv3Fb1s=
+X-Google-Smtp-Source: ABdhPJwFEPTZ2hE7S2FzBTsmnnB81r/mt7SCkiqukFIVnHD73GkwHBZoekE6PYP+9rc6jOV59VlfPLIISUkv/1m2Pyw=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr3803714pjx.181.1617199855458;
+ Wed, 31 Mar 2021 07:10:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331104622.84657-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210331104622.84657-1-andriy.shevchenko@linux.intel.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 31 Mar 2021 16:09:53 +0200
-Message-ID: <CAG3jFyufem_LrhmYar==qzWmEhOp_Q3LLErchzLBJeEjfRb0Zg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] i2c: drivers: Use generic definitions for bus
- frequencies (part 2)
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Khalil Blaiech <kblaiech@nvidia.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-i2c@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>
+References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
+ <f38e80b6b439e4a9cc349a090923207865b3d3ed.1617189926.git.matthias.schiffer@ew.tq-group.com>
+ <CAHp75VeCGHUBtfZ7b+m7eA01KukWkL0n01kmv-Q00m9+6FTWQg@mail.gmail.com> <5e80dc9aeddd46d837e1c317a008e237bf0b4f8f.camel@ew.tq-group.com>
+In-Reply-To: <5e80dc9aeddd46d837e1c317a008e237bf0b4f8f.camel@ew.tq-group.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 31 Mar 2021 17:10:39 +0300
+Message-ID: <CAHp75VcMCWgNz8b7vsOL2qABkuxrZrQFkBX2gpias8tA3Q-7Pw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mfd: tqmx86: clear GPIO IRQ resource when no IRQ is set
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Andy,
+On Wed, Mar 31, 2021 at 4:24 PM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
+> On Wed, 2021-03-31 at 15:35 +0300, Andy Shevchenko wrote:
+> > On Wed, Mar 31, 2021 at 2:39 PM Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com> wrote:
 
-This patch looks good to me.
+...
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> > > +               tqmx_gpio_resources[0].flags = 0;
+> >
+> > Please set IORESOURCE_DISABLED flag in the initial structure instead.
+>
+> Is there any documentation for the correct usage of this flag? I think
+> I tried IORESOURCE_DISABLED originally, but it didn't have any effect
+> (platform_get_irq() ignored the flag and returned the resource
+> anyways). I might misremember though, I originally wrote the series
+> some time ago.
 
-On Wed, 31 Mar 2021 at 12:46, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Since we have generic definitions for bus frequencies, let's use them.
->
-> Cc: Wolfram Sang <wsa@the-dreams.de>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Khalil Blaiech <kblaiech@nvidia.com>
-> ---
-> v2: added tag (Khalil), converted one missed place in DesignWare driver
->  drivers/i2c/busses/i2c-designware-master.c |  2 +-
->  drivers/i2c/busses/i2c-mlxbf.c             | 14 ++++----------
->  drivers/i2c/busses/i2c-qcom-cci.c          |  4 ++--
->  3 files changed, 7 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index dd27b9dbe931..3f4d2124e0fc 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -78,7 +78,7 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
->          * difference is the timing parameter values since the registers are
->          * the same.
->          */
-> -       if (t->bus_freq_hz == 1000000) {
-> +       if (t->bus_freq_hz == I2C_MAX_FAST_MODE_PLUS_FREQ) {
->                 /*
->                  * Check are Fast Mode Plus parameters available. Calculate
->                  * SCL timing parameters for Fast Mode Plus if not set.
-> diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxbf.c
-> index 2fb0532d8a16..80ab831df349 100644
-> --- a/drivers/i2c/busses/i2c-mlxbf.c
-> +++ b/drivers/i2c/busses/i2c-mlxbf.c
-> @@ -172,12 +172,6 @@
->  #define MLXBF_I2C_SMBUS_THIGH_MAX_TBUF            0x14
->  #define MLXBF_I2C_SMBUS_SCL_LOW_TIMEOUT           0x18
->
-> -enum {
-> -       MLXBF_I2C_TIMING_100KHZ = 100000,
-> -       MLXBF_I2C_TIMING_400KHZ = 400000,
-> -       MLXBF_I2C_TIMING_1000KHZ = 1000000,
-> -};
-> -
->  /*
->   * Defines SMBus operating frequency and core clock frequency.
->   * According to ADB files, default values are compliant to 100KHz SMBus
-> @@ -1202,7 +1196,7 @@ static int mlxbf_i2c_init_timings(struct platform_device *pdev,
->
->         ret = device_property_read_u32(dev, "clock-frequency", &config_khz);
->         if (ret < 0)
-> -               config_khz = MLXBF_I2C_TIMING_100KHZ;
-> +               config_khz = I2C_MAX_STANDARD_MODE_FREQ;
->
->         switch (config_khz) {
->         default:
-> @@ -1210,15 +1204,15 @@ static int mlxbf_i2c_init_timings(struct platform_device *pdev,
->                 pr_warn("Illegal value %d: defaulting to 100 KHz\n",
->                         config_khz);
->                 fallthrough;
-> -       case MLXBF_I2C_TIMING_100KHZ:
-> +       case I2C_MAX_STANDARD_MODE_FREQ:
->                 config_idx = MLXBF_I2C_TIMING_CONFIG_100KHZ;
->                 break;
->
-> -       case MLXBF_I2C_TIMING_400KHZ:
-> +       case I2C_MAX_FAST_MODE_FREQ:
->                 config_idx = MLXBF_I2C_TIMING_CONFIG_400KHZ;
->                 break;
->
-> -       case MLXBF_I2C_TIMING_1000KHZ:
-> +       case I2C_MAX_FAST_MODE_PLUS_FREQ:
->                 config_idx = MLXBF_I2C_TIMING_CONFIG_1000KHZ;
->                 break;
->         }
-> diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-qcom-cci.c
-> index 1c259b5188de..c63d5545fc2a 100644
-> --- a/drivers/i2c/busses/i2c-qcom-cci.c
-> +++ b/drivers/i2c/busses/i2c-qcom-cci.c
-> @@ -569,9 +569,9 @@ static int cci_probe(struct platform_device *pdev)
->                 cci->master[idx].mode = I2C_MODE_STANDARD;
->                 ret = of_property_read_u32(child, "clock-frequency", &val);
->                 if (!ret) {
-> -                       if (val == 400000)
-> +                       if (val == I2C_MAX_FAST_MODE_FREQ)
->                                 cci->master[idx].mode = I2C_MODE_FAST;
-> -                       else if (val == 1000000)
-> +                       else if (val == I2C_MAX_FAST_MODE_PLUS_FREQ)
->                                 cci->master[idx].mode = I2C_MODE_FAST_PLUS;
->                 }
->
-> --
-> 2.30.2
->
+It seems this flag is used solely for ACPI / PNP resources...
+Hmm... I dunno how platorm_get_irq*() should respect this flag. You
+see, that in the ACPI branch it has been checked there.
+
+-- 
+With Best Regards,
+Andy Shevchenko
