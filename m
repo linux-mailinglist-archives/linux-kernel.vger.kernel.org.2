@@ -2,183 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A263504F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32113504FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhCaQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:46:52 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:39469 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbhCaQqb (ORCPT
+        id S234003AbhCaQr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:47:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234119AbhCaQrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:46:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1617209190; x=1648745190;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=kijc7mpzTmoFQUrs6cTx7Isq3P5lvw/joCkqAOfkxo0=;
-  b=pMuGuO3ycfyIlolIVmTmExgGmqWUFGYcV2VzZX4KZzNLVap+Yb/SA3kZ
-   NYqX4XSxEIhKh8IKI1K/OlsU6WLDNBxBf8iYbllZr6F/rUDeNUgD3n6Xu
-   ST9uiT3UWyfW/HFRJecslQlH8SW/SVILK+sA70XX47EO35MOQph0vpg6Z
-   lmQeObJ/OuH1bBZgMTjeS0Iz1rzadGGktOY98izJbGWj9Ci73216tkv3t
-   vI93MeV2DmZ7dJ7Qk2BPDwI3QZSBDhxuNMpIUUccnTfiCEfWZaSevx00e
-   nlkxLlxhj89vOVgpQfzx6Uq7TCO4hZU4hWd38qMBp3E6NpRONgWnVp3iG
-   A==;
-IronPort-SDR: rY+QJgqxCUX6FcEsaGRp3TSR4Fis/Le1Mzj4KY3jw3RRwrej3of7deDVsUz9xFR1UgVw43OOhO
- GHd6nXFQYgwA5P4XS91I0rI3SkRYlJL5nYTMfoiZ/miWIKoJaAYvWOQ2mbQnfk3LndKsb6dK6+
- ocCXiHAu05U4yDAAbyMPW65ti6DB6Ep5XGyoCUzgqtpnwOcVoanQc1jeNEM65yPvb5tRTni2Uj
- M+64mKs+Lwxaeug2WPFW4MWHUcVYhjlrvbexRSvlBjbf8bK/SRPvWQjPA3LTTyXSojpRquwk2e
- /JA=
-X-IronPort-AV: E=Sophos;i="5.81,293,1610380800"; 
-   d="scan'208";a="163372368"
-Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Apr 2021 00:45:11 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=liNUlopz2FMfyDNXAlaI65rezpOgr1RyE9aAE1MuOJxGk+xVOeNZg3rHhhSVN9Mz6pZtMDazWDhpXD+aoINgGtQIOU/dqc5ihEaVBlP6vrc3Z7Y6Jjbrx+NcCpS7+AxkNiDpc1f1pnyzDcDO466p+4AfcBlaZcHzBR/0kPbIrGOSypzTDOCmjaxAXikIWNjtygRy87K7Q7RWx8sqLDFvlnmiWzfoywKqI+IFsqzE90olaDA2cfyIVklvhvnaC5rTBULsg0pHMjqpGiF6NWoeDl5rX5WxiW0mfdRJmJX/tpFGSMrXCc73qgJPvBSSzX7KvuSqBzKiMlQ34/EP75joJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fpf4eQV4k7JcxnoFeHGPAm1qZf93ThRWW9Z6ZnivMIw=;
- b=aktKW/9eTeh0kzDfhe7kZ9hZ23/Uqsu1Yw5T8F5o4tctHN+tALBPkW+TbwR9JlLCkDJpkxcBnQw/3HmHtFC0ZHKvwYveQfSGcDq+BkZp/L1EaCXgmPoB+ToklQwb3AwGEpYtL8DnWVlz7NzednfQpFfC2dvJN+1nPE6jr/UMPOWVzQVVUlwRc5RiYoWhoDhW3ZQL/tZIuHZ8gccVN2WwZopLJ0HSkuuBkoftwSrYEjGMD42F2FDOBRsuGVDdmNt45mlRln+BFm9rBec6+Z6aqpXg7RnbD/hEu+P+onaV+a9FICjHnkiB6UTc4cgKqlXDCZNCcikbyzGiHxgKXaXN0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fpf4eQV4k7JcxnoFeHGPAm1qZf93ThRWW9Z6ZnivMIw=;
- b=tm6XHxrli6ebfE5KoZ3yPTFGLDQ/P1fkITgMDOF/j9j2w19+w2oPu1rm9Exuaajzo1Lepg5TVZOjkJgfLlJJmkmt3bcG/1rg971NTkVrSn/+0Fc9XYNNQKlzL4DpF8IQq/i/JfCLKXdBfOc9eTyvjcQxssF6NKRN67wk6ISwbZA=
-Received: from BL0PR04MB6564.namprd04.prod.outlook.com (2603:10b6:208:17d::11)
- by MN2PR04MB6333.namprd04.prod.outlook.com (2603:10b6:208:1a5::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Wed, 31 Mar
- 2021 16:45:04 +0000
-Received: from BL0PR04MB6564.namprd04.prod.outlook.com
- ([fe80::4c67:96fe:ee31:730a]) by BL0PR04MB6564.namprd04.prod.outlook.com
- ([fe80::4c67:96fe:ee31:730a%6]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
- 16:45:04 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Can Guo <cang@codeaurora.org>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 1/2] scsi: ufs: Fix task management request completion
- timeout
-Thread-Topic: [PATCH v4 1/2] scsi: ufs: Fix task management request completion
- timeout
-Thread-Index: AQHXJeluDHVEm07RiUyOVABPGwr9daqeTcVw
-Date:   Wed, 31 Mar 2021 16:45:04 +0000
-Message-ID: <BL0PR04MB656448E22577076A27F1EADAFC7C9@BL0PR04MB6564.namprd04.prod.outlook.com>
-References: <1617166236-39908-1-git-send-email-cang@codeaurora.org>
- <1617166236-39908-2-git-send-email-cang@codeaurora.org>
-In-Reply-To: <1617166236-39908-2-git-send-email-cang@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1f1d8bd0-c73d-47a8-2c42-08d8f4645596
-x-ms-traffictypediagnostic: MN2PR04MB6333:
-x-microsoft-antispam-prvs: <MN2PR04MB63338BD76F34D9F3265CA584FC7C9@MN2PR04MB6333.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jk75/NJjnIqwVOVL6uCikNyWd6mtnei0vhVJk2XGjyh0wct5IWClX1NugPREvqTfGDspYzhxwUNyg7VH2hc01xsmgocC1YDWMeIQT2i4azStgxKGzbGlWNAXm/WdXqfFXN4gKlWwubVsKwfoOy7C27UwUpve2rOyXIAS++bxjDeIo1qJDFIs+tDeOprIfQru+POqkaX5K3PI3TF7ZmOFKSWO2xXm/lop18Ullvnx+FS78W0CTkyQxgojcofBJsg57/zyXvpsc1cohvfz9JnOR9j73jctKCDcz4Av/erVvRCJAXgaNAGK/b3D1MBOKEV5yp/Q5sf0fYO0kjZ6RhIs3v7WKvlXkqqBPCKDYZ1wer+AHO3WDHSWB0EPFzC7pvtYYziTQsO4V7lXZ9oO42PHs3DhbLe4k2klyKlSqJl/AH00OnKaLsmP9AIB/mEN/gWpRiHfeu6hBEuB4TqcfWYYS6NudZv/Fq64wM7+hCbbswcU8yh20AaCbovD9ZcLmeq/q1m0PPGVOOLPJuEVf7NGIIotpxeiox8wFRVOpsVOX0KQdmmsBLb1OoPYZRCthPS0/RAxz6HiuE0YjDU7pDgdgRsqvmBZUupJYYU0DXx3Rocx4/KlAfjEfn6uicTzYiwfBiF8g5iN53Mp4nnf7vznzmGwkYc8QFSQb0zq8Z5Ksvk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6564.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(38100700001)(8676002)(76116006)(33656002)(316002)(71200400001)(7416002)(2906002)(186003)(66946007)(110136005)(54906003)(83380400001)(26005)(66556008)(66476007)(55016002)(66446008)(64756008)(478600001)(8936002)(52536014)(5660300002)(4326008)(7696005)(6506007)(9686003)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?fXhmZlbGA7yljta1NzovTxdelfvudOLAz+9PUBzkjPDj1Rjq5uaJvZssYITg?=
- =?us-ascii?Q?iRzM8zhFYv5jYBF6RqJKAYOPWS2d+C9eZdYxMB4YHaW1VnVJhfjiuFp6foeE?=
- =?us-ascii?Q?IVm1OsNWxQT1j8+nFHG78U+UWkqrBmVS2HJrSjWYpojRuZBEscvddEgywXO0?=
- =?us-ascii?Q?BF5FDfVQs1iqbd3mJ8WXc7v111amPpBm9dCz3MzYyb6a6ncwKomB15cRr3Q6?=
- =?us-ascii?Q?mOnGDkUkKxpd4VplsTQsB2DjwKNGXJqKtp7RVTmcKst+BUVEqfWJ5jmwUvkJ?=
- =?us-ascii?Q?AKA1TFH04YyXBdpolfpuKVZmSzvqTO02DOLsBb0m5NcRCBa/Vpt6lZ25A2ME?=
- =?us-ascii?Q?SYJkeYCBwyRG6RHRkIX9eYJIFxzzW7lkYkfVvcjJk5yOZH04UvNWji+eVuHo?=
- =?us-ascii?Q?8B+wGboiukxLwLrzr8GQ07nW3VSryBljT/cUdDDWyUGK5K8sq8UaStrGxP+x?=
- =?us-ascii?Q?lqs4MKZ/bIEI80kt2WmQAn+4ANuP5xrrc7GTGAAr3eZKHGppIIq7IafoBIKF?=
- =?us-ascii?Q?sJ7yv+X4vKlaq5TuihuPHtpqim9DfrSa9t6cd9/eWkuI9THL4NtL1U0sf7+7?=
- =?us-ascii?Q?Nz3hzPDEuJ1hlkae4U0gX4LX7Bau9n0ZNA+R4AwvdkH10bIDqqfu/+tFe6rK?=
- =?us-ascii?Q?3HKrzt89sXQz3ZNJE1JpkNXqM++dYgQMgmzDBux4T0gPFKaX/J8CL9nqhaOW?=
- =?us-ascii?Q?lOvRyRIFnNFjBsG1VltjwXaaKKa/vxXKuN2Fu3TahDIXSx29eRJXeMkGOJjN?=
- =?us-ascii?Q?0joiJWoxO3j5czLYgdfsSrlpRAq56aM97HO2KAuNmXZy9FtHfyrNBsrIia3n?=
- =?us-ascii?Q?3B5HqcGn481IL4Rbtn7B4rnofbxe7BGc+34TVkPD/ib0AIS1n1M+8+841yVi?=
- =?us-ascii?Q?iAKh9pJDT3cXgIF+buzl5ReJ9PztvGlGAlbghp34xK8TM4hvJOxShXIV0TJE?=
- =?us-ascii?Q?78Ce+9af6J+uBZBuaGqAj9lc9YqQTOMDdm08HYQU7wYLborY3iILoJNLYWZs?=
- =?us-ascii?Q?jHIByj81wfj3Fff2wZoHmtg9rqQh/hHfyFVDH9hdeQB5r+1bKVCpWHaU7+FJ?=
- =?us-ascii?Q?dIAWO8ARkjZplA2yHg02sHQcxtr5Zr3sBWRvydYB7QCQXDdCw9J1GkpKlZfH?=
- =?us-ascii?Q?d034IoFYbcm9luc+0dGiqAWwGUEadQl+Y60ZDjtY5QZsA6p9nlD/a80jY28t?=
- =?us-ascii?Q?iLuOu14K+g9Mni3YSkDZyKnydO8dvAfpQfH1z4eCLMq5pexwHndWs4U48j6N?=
- =?us-ascii?Q?moVzk2jlcySwMgdddzJVsklImduZJeOXuNFVLh8wV6GX44ZkbQ1BbRYVXDh9?=
- =?us-ascii?Q?DwEKqJ8M2VeW+fhEM+Im5YSW?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 31 Mar 2021 12:47:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617209267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ix2mfUcEg/DOypNDwaacoOT966lSJ+UT8pzFrJ6uHI=;
+        b=VTPeHIDD/uPp9CsY4tysGMAe6xtFzZpTYWx0dq2IW5mjsKc0ik6xI/z80di2ozirgxoLIx
+        yRy7fPZdZLv0MHj0BeVxgg0rTjImk8q2TzW2nIoG+JogbTZMW5Upyg4IW1FOVXn1mtZR2J
+        /3ZEI6JPQoVRtn39GxAzebkkrjrwRM4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-zqkFBXnHPcGWwPFqz0fd2g-1; Wed, 31 Mar 2021 12:47:45 -0400
+X-MC-Unique: zqkFBXnHPcGWwPFqz0fd2g-1
+Received: by mail-ej1-f72.google.com with SMTP id t21so1056484ejf.14
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:47:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0ix2mfUcEg/DOypNDwaacoOT966lSJ+UT8pzFrJ6uHI=;
+        b=kotDnPxkp3LD9aZxw1bowkHaoqzAPM/RMUYXUimpClXX+w9gVi0Ol1aGMGAZdi3Uc1
+         RntEIEw+aisdrzZwa59cCE7hI8YF88XqeK7BApA7lxL4LBFk5T1dWWyThGumi3YD1fsq
+         VvuWIuVlThTrO8chPy+TPymqiDNrSg6Cs0TDzMpG2MsVK0OfpZajC55WPQmsI9W4oLeY
+         fJ+Bypbr30DxYIAPfED/LTvnWGkjLbsNvE/8sgEf2XMPwOyUfuNtlhhIbFOGnZnFxv7I
+         Ni0zoGGRmPAjgmBfcNtOVPfcr2hXuP377dwi9yQMwKDpAuaTfkG4ca1FRcNpJCvCgSOV
+         9k4w==
+X-Gm-Message-State: AOAM530h2Qsk76fceRU1TAkW78+aS2LYzyBYqGsPos102vC9YzShxnmm
+        DGj+TNSRHSx1b3ecktwf6WjcocfwABtDONbC07wNJRPXkJILzvRnoWJ0R3hlFXFn/wxCcSU534a
+        oag9GyQ8+CvOIbWWwBG2EJrN6
+X-Received: by 2002:a17:906:1182:: with SMTP id n2mr4597696eja.234.1617209264755;
+        Wed, 31 Mar 2021 09:47:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymG2hf8oxiTqtfGgyXFzM/nXfYjs4CdYmJnVTC5zNGPoNEIpchzu0nS+pvIuCk4GHAjhT9jA==
+X-Received: by 2002:a17:906:1182:: with SMTP id n2mr4597673eja.234.1617209264605;
+        Wed, 31 Mar 2021 09:47:44 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p24sm2057269edt.5.2021.03.31.09.47.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 09:47:43 -0700 (PDT)
+Subject: Re: [PATCH 16/18] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
+References: <20210326021957.1424875-1-seanjc@google.com>
+ <20210326021957.1424875-17-seanjc@google.com>
+ <6e7dc7d0-f5dc-85d9-1c50-d23b761b5ff3@redhat.com>
+ <YGSmMeSOPcjxRwf6@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <56ea69fe-87b0-154b-e286-efce9233864e@redhat.com>
+Date:   Wed, 31 Mar 2021 18:47:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6564.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f1d8bd0-c73d-47a8-2c42-08d8f4645596
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 16:45:04.2378
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y4CGV0B5/9iaDYQsRMI/8SjMuLbB0ENKzN+L3Y6mmz5uMTo/dVYCk9ejkM6ebu5Q4cJDLQrdPd0mBO5AsesmxQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6333
+In-Reply-To: <YGSmMeSOPcjxRwf6@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn =3D
-> ufshcd_compl_tm()),
-> but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
-> and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
-> chance to run. Thus, TMR always ends up with completion timeout. Fix it b=
-y
-> calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
->=20
-> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate =
-and
-> free TMFs")
->=20
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index b49555fa..d4f8cb2 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6464,6 +6464,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
-> *hba,
->=20
->         spin_lock_irqsave(host->host_lock, flags);
->         task_tag =3D hba->nutrs + free_slot;
-> +       blk_mq_start_request(req);
-Maybe just set req->state to MQ_RQ_IN_FLIGHT
-Without all other irrelevant initializations such as add timeout etc.
+On 31/03/21 18:41, Sean Christopherson wrote:
+>> That said, the easiest way to avoid this would be to always update
+>> mmu_notifier_count.
+> Updating mmu_notifier_count requires taking mmu_lock, which would defeat the
+> purpose of these shenanigans.
 
-Thanks,
-Avri
->=20
->         treq->req_header.dword_0 |=3D cpu_to_be32(task_tag);
->=20
-> --
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a
-> Linux Foundation Collaborative Project.
+Okay; I wasn't sure if the problem was contention with page faults in 
+general, or just the long critical sections from the MMU notifier 
+callbacks.  Still updating mmu_notifier_count unconditionally is a good 
+way to break up the patch in two and keep one commit just for the rwsem 
+nastiness.
+
+>>> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+>>> +	down_write(&kvm->mmu_notifier_slots_lock);
+>>> +#endif
+>>>   	rcu_assign_pointer(kvm->memslots[as_id], slots);
+>>> +#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+>>> +	up_write(&kvm->mmu_notifier_slots_lock);
+>>> +#endif
+>> Please do this unconditionally, the cost is minimal if the rwsem is not
+>> contended (as is the case if the architecture doesn't use MMU notifiers at
+>> all).
+> It's not the cost, it's that mmu_notifier_slots_lock doesn't exist.  That's an
+> easily solved problem, but then the lock wouldn't be initialized since
+> kvm_init_mmu_notifier() is a nop.  That's again easy to solve, but IMO would
+> look rather weird.  I guess the counter argument is that __kvm_memslots()
+> wouldn't need #ifdeffery.
+
+Yep.  Less #ifdefs usually wins. :)
+
+> These are the to ideas I've come up with:
+> 
+> Option 1:
+> 	static int kvm_init_mmu_notifier(struct kvm *kvm)
+> 	{
+> 		init_rwsem(&kvm->mmu_notifier_slots_lock);
+> 
+> 	#if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+> 		kvm->mmu_notifier.ops = &kvm_mmu_notifier_ops;
+> 		return mmu_notifier_register(&kvm->mmu_notifier, current->mm);
+> 	#else
+> 		return 0;
+> 	#endif
+> 	}
+
+Option 2 is also okay I guess, but the simplest is option 1 + just init 
+it in kvm_create_vm.
+
+Paolo
 
