@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720F5350A3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F62350A42
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhCaW3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:29:24 -0400
-Received: from mga12.intel.com ([192.55.52.136]:65505 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232356AbhCaW3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:29:01 -0400
-IronPort-SDR: JcedoJInlTVCj0BsNXI2e7scTy29Fqo8AcSJZjlIQ2IiiDdirf/ej2PUl5EP22rLgb1MRl8cDD
- Carzr3NlERAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="171519342"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="171519342"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:00 -0700
-IronPort-SDR: rggyjLaZ054D0F0Tf3SJWQaFT5jD6r/HD0fsEAPJqBJ1TnF3qP+gciBG23FlV2gYGvIczOgMLH
- Iqv/OljLYUew==
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="394233606"
-Received: from sjard-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.174.17])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:00 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YGTvSvr2T2v3t3XA@google.com>
- <5d961c25-3dee-4a5d-4bba-a97d157a5a49@intel.com>
- <YGTyWUQbxVZeeko+@google.com>
- <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <ef49222a-8ffc-dacc-4f21-3bd1ef13a2ac@linux.intel.com>
-Date:   Wed, 31 Mar 2021 15:28:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232814AbhCaW37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232718AbhCaW3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:29:45 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F12FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso1951474pji.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HQnN7NHkGrBqjYvsj3wUwlnZQNzy2q4PClXlOY6uvRo=;
+        b=iMortkY8rwQv5R7gzR0AH0Oxd0HCB4DK5l1TiZ3ve7TnLIFgCiWjIpKP+NloeK+b9O
+         zSrISieAwqCV24o3jmvORHzvnF51sh0lGvseB8cKG0ukduU1iViOeOGYm+j8+q7F5Q5g
+         tgaOd7p9dRIRqoKb6qQN1etdZwuoSfZZVZmzimuk0ZdUCscdKaJ2Bq7MXY7c12nf+gPg
+         uN0Sh1HWip/Zh2/oV3ZFHVciR0KrTXGmPX0BW51K7smQgsodSeA5K4PFuUVMQhicHHhD
+         1PO/V6rZhymhCrAU+Sxc/U7WY6h6g4aFVwL5oQdzxtLBBzGAsPrZUPbIoIinHKX44LUt
+         he9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HQnN7NHkGrBqjYvsj3wUwlnZQNzy2q4PClXlOY6uvRo=;
+        b=BUd+hgn3sPVTQZDU7dSY+PZWSAWfKIX6ygjxUps7asEBT3vdyUiaMhFk+Lz7kojUr4
+         GHdLV5nnMbFesYkUaQQX6Wcef9tfFevUA+VULwImP1QuT0rwe/PPkXRylfDSa4vus3UX
+         6bDjFzI6t8pErNTi/OUzx3L3CGpehOm4QsRVwWQzA8cnt+iflX2X/vWepPplLsB2kbkU
+         jkyNAKSTH6C4Cheb3Q/nfmOPjtTO+gVumOQxZiuPXQUdad1E7iZG6WfkQGu3N26YFFO2
+         TcYFFUzxF+qiXmocsZHX5ViPtrVNSVee5VA6WX06jt0c8VU4T8lrVQZKDf7TeUlQT/4S
+         BPIA==
+X-Gm-Message-State: AOAM532o/7Pj4EydnVklIJMu0cY8wqgxgSnlAC3gbLjEYB3haiKeebrp
+        On8E3+qhB+0BdwJXPqVVzIADDQ==
+X-Google-Smtp-Source: ABdhPJyiTBSLw8Alpaud1ZG3omKJVcfMmSNJty1jR3bl8poG6iVDs95yRzpoIBXCxqUqOa62CjHuwQ==
+X-Received: by 2002:a17:90a:e656:: with SMTP id ep22mr5325358pjb.60.1617229785114;
+        Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c6sm3619564pfj.99.2021.03.31.15.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 15:29:44 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 22:29:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 13/13] KVM: x86/mmu: Tear down roots in fast invalidation
+ thread
+Message-ID: <YGT31GoDhVSXlgP4@google.com>
+References: <20210331210841.3996155-1-bgardon@google.com>
+ <20210331210841.3996155-14-bgardon@google.com>
 MIME-Version: 1.0
-In-Reply-To: <d8078f5d-735c-2b0f-98eb-663be2118762@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331210841.3996155-14-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/31/21 3:11 PM, Dave Hansen wrote:
-> On 3/31/21 3:06 PM, Sean Christopherson wrote:
->> I've no objection to a nice message in the #VE handler.  What I'm objecting to
->> is sanity checking the CPUID model provided by the TDX module.  If we don't
->> trust the TDX module to honor the spec, then there are a huge pile of things
->> that are far higher priority than MONITOR/MWAIT.
+On Wed, Mar 31, 2021, Ben Gardon wrote:
+> ---
+>  arch/x86/kvm/mmu/mmu.c     |  6 ++++
+>  arch/x86/kvm/mmu/tdp_mmu.c | 74 +++++++++++++++++++++++++++++++++++++-
+>  arch/x86/kvm/mmu/tdp_mmu.h |  1 +
+>  3 files changed, 80 insertions(+), 1 deletion(-)
 > 
-> In other words:  Don't muck with CPUID or the X86_FEATURE at all.  Don't
-> check it to comply with the spec.  If something doesn't comply, we'll
-> get a #VE at *SOME* point.  We don't need to do belt-and-suspenders
-> programming here.
-> 
-> That sounds sane to me.
-But I think there are cases (like MCE) where SEAM does not disable them because
-there will be future support for it. We should at-least suppress such features
-in kernel.
-> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 49b7097fb55b..22742619698d 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5455,6 +5455,12 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+>  	kvm_zap_obsolete_pages(kvm);
+>  
+>  	write_unlock(&kvm->mmu_lock);
+> +
+> +	if (is_tdp_mmu_enabled(kvm)) {
+> +		read_lock(&kvm->mmu_lock);
+> +		kvm_tdp_mmu_zap_all_fast(kvm);
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Purely because it exists first, I think we should follow the legacy MMU's
+terminology, i.e. kvm_tdp_mmu_zap_obsolete_pages().
+
+> +		read_unlock(&kvm->mmu_lock);
+> +	}
+>  }
