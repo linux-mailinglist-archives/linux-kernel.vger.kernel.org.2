@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEDD3501CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D55C3501D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235777AbhCaN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 09:59:56 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:23848 "EHLO pegase1.c-s.fr"
+        id S235891AbhCaODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235758AbhCaN7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:59:24 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F9Sbn1nmCz9v07Q;
-        Wed, 31 Mar 2021 15:59:17 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 3rRmCpjMfqXX; Wed, 31 Mar 2021 15:59:17 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F9Sbn0llnz9v07K;
-        Wed, 31 Mar 2021 15:59:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2CE458B82A;
-        Wed, 31 Mar 2021 15:59:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dLeeJDDL2ccw; Wed, 31 Mar 2021 15:59:18 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EAD958B829;
-        Wed, 31 Mar 2021 15:59:17 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A10F867640; Wed, 31 Mar 2021 13:59:17 +0000 (UTC)
-Message-Id: <469f37ab91984309eb68c0fb47e8438cdf5b6463.1617198956.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] selftests: timens: Fix gettime_perf to work on powerpc
-To:     Shuah Khan <shuah@kernel.org>, Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org
-Date:   Wed, 31 Mar 2021 13:59:17 +0000 (UTC)
+        id S235630AbhCaOCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:02:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 488A2608FE;
+        Wed, 31 Mar 2021 14:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617199361;
+        bh=0SCL4cotKlzm/Rg3qeRdoMYBvamEm9kL9PkMi8TuWYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H9JjzFVCzfkjAOL9OTl+PIRCB06OE3pdLPwQIFHujODcVmNEknlCzHKurpxU17VsE
+         bHeRQprPRU8TfheSh++N7O9CmElFSwa/PrN8OQeDTRKDGni7J/bkt8UWiX7oXqNT6A
+         ILI/tRX89lQz2MZ6MYeEg98DF92fPACivZ5CWOoSGkqFuec8P3c/ESmS1E67K9hRMj
+         +W5QaSmcQtx8kDMxxaOFFMYjDN3p6A+UqCLuAFmvNM4r4I2gYd+InyJskcQ2Y7A6VF
+         vAiX8cjbOalm+NmPvEDqngg0dBCZjim4veGbeJG17IYK0G2/4giarcXa2UnyUMDPMR
+         7UEC9e/D3S7AA==
+Received: by pali.im (Postfix)
+        id D09D3AF7; Wed, 31 Mar 2021 16:02:38 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 16:02:38 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Hermes Zhang <chenhui.zhang@axis.com>
+Cc:     lars@metafoo.de, Sebastian Reichel <sre@kernel.org>,
+        kernel@axis.com, Hermes Zhang <chenhuiz@axis.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: bq27xxx: Return the value instead of
+ -ENODATA
+Message-ID: <20210331140238.jl3qprpqhqave4bf@pali>
+References: <20210331135141.8063-1-chenhui.zhang@axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331135141.8063-1-chenhui.zhang@axis.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On powerpc:
-- VDSO library is named linux-vdso32.so.1 or linux-vdso64.so.1
-- clock_gettime is named __kernel_clock_gettime()
+On Wednesday 31 March 2021 21:51:41 Hermes Zhang wrote:
+> From: Hermes Zhang <chenhuiz@axis.com>
+> 
+> It might be better to return value (e.g. 65535) instead of an error
+> (e.g. No data available) for the time property.
+> 
+> Normally a common function will handle the read string and parse to
+> integer for all the properties, but will have problem when read the
+> time property because need to handle the NODATA error as non-error.
+> So it will make simple for application which indicate success when
+> read a number, otherwise as an error to handle.
+> 
+> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+> ---
+>  drivers/power/supply/bq27xxx_battery.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+> index 4c4a7b1c64c5..b75e54aa8ada 100644
+> --- a/drivers/power/supply/bq27xxx_battery.c
+> +++ b/drivers/power/supply/bq27xxx_battery.c
+> @@ -1655,9 +1655,6 @@ static int bq27xxx_battery_read_time(struct bq27xxx_device_info *di, u8 reg)
+>  		return tval;
+>  	}
+>  
+> -	if (tval == 65535)
+> -		return -ENODATA;
+> -
+>  	return tval * 60;
 
-Ensure gettime_perf tries these names before giving up.
+I'm not sure if this is correct change. If value 65535 is special which
+indicates that data are not available then driver should not return
+(converted) value 65535*60. If -ENODATA is there to indicate that data
+are not available then -ENODATA should not be used.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- tools/testing/selftests/timens/gettime_perf.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+And if there is application which does not handle -ENODATA for state
+when data are not available then it is a bug in application.
 
-diff --git a/tools/testing/selftests/timens/gettime_perf.c b/tools/testing/selftests/timens/gettime_perf.c
-index 7bf841a3967b..6b13dc277724 100644
---- a/tools/testing/selftests/timens/gettime_perf.c
-+++ b/tools/testing/selftests/timens/gettime_perf.c
-@@ -25,12 +25,20 @@ static void fill_function_pointers(void)
- 	if (!vdso)
- 		vdso = dlopen("linux-gate.so.1",
- 			      RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
-+	if (!vdso)
-+		vdso = dlopen("linux-vdso32.so.1",
-+			      RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
-+	if (!vdso)
-+		vdso = dlopen("linux-vdso64.so.1",
-+			      RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
- 	if (!vdso) {
- 		pr_err("[WARN]\tfailed to find vDSO\n");
- 		return;
- 	}
- 
- 	vdso_clock_gettime = (vgettime_t)dlsym(vdso, "__vdso_clock_gettime");
-+	if (!vdso_clock_gettime)
-+		vdso_clock_gettime = (vgettime_t)dlsym(vdso, "__kernel_clock_gettime");
- 	if (!vdso_clock_gettime)
- 		pr_err("Warning: failed to find clock_gettime in vDSO\n");
- 
--- 
-2.25.0
-
+>  }
+>  
+> -- 
+> 2.20.1
+> 
