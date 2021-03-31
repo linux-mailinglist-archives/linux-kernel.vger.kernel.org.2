@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F82C34F5AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDAC34F5AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhCaBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:03:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7087 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhCaBDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:03:02 -0400
-IronPort-SDR: c/1ZRYVTq25DESPHXSN7yC8vBE/31I0NP4KoDKN2rCVOHm9QFARkAJbpyQAKP/0c0MEM0v7Ngs
- BBmyvlhgchSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="212116462"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="212116462"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 18:03:01 -0700
-IronPort-SDR: W1H3FstvuZ72pE56Mky52VbKZbMWhYDK+3MgGyltDYYnwwU8LDJ+6sWPg9quL2uj7xLN6c8Wm4
- ClcYGJk2KMNQ==
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="411887968"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 18:02:58 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH] soundwire: intel_init: test link->cdns
-Date:   Wed, 31 Mar 2021 09:02:50 +0800
-Message-Id: <20210331010250.14151-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232777AbhCaBE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 21:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232467AbhCaBEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 21:04:25 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685CFC061574;
+        Tue, 30 Mar 2021 18:04:24 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id y2so7053101plg.5;
+        Tue, 30 Mar 2021 18:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FG5gZ0ulUfG0IDpu0Of939TdFlC1gbz7SPQvo9HF6Rs=;
+        b=WcR3+uVZC00pEsGjkzjMlB1ZPvieucyTAx6HYFK3n5Eq3VgdwY1jrm5W+ctXcwKvXn
+         imQa4hDrLauxeLX7RKJAtkTABkjzHOJtOVDNjMIGl3qxmq0eRlAv5o3EPgpKpOaePOql
+         QY13uSinoXSl/T8KNIjXRpMleFytFwv7qZhuB7zm/uuXOX41pWOeOqtsxx1yDVikkTTM
+         kDQXCRsrMK93CIzGY6SxYBBr8kjP1PtwSCOkNSo4NBA9F9yBzUDp9dgpW3z2XSlaNa55
+         9TeY585Fu1dxrhZqRbynbgkIj094HsR6jRMW6hogZY7BrXupSBS79cqIe7rIJSvJ8EMR
+         2PJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FG5gZ0ulUfG0IDpu0Of939TdFlC1gbz7SPQvo9HF6Rs=;
+        b=TJx8DwT91o7MNHPAwP/rzaxgMqnHZLspzmGO/yZLcSCwG31GjUfGwF9Bdenxa13Mdb
+         xS3KX8HxiALuuXNHVb3/WOLbV8QdNLcWKmNzC0UswmySwRW+hlLsZ48ZQnHPBnabhwmH
+         8YjlcVILa/2ZePi6nspmzJJx8HGWg7G05fpiBxrkL6Msfa2A1mWNNfeZ3XGkUp0xiCve
+         0R0wLRoiD3SSQIlKFFFQ22Fq2g9Cq785TG5yWS2lNFNRWZ2n2cvdh+lqJUoGpRg3nDnl
+         KQBatjqFqT5QQ/3yx+0/MipfmpO60C/nJqGaxVA8rNGS+S47vpr02LpNjzUR4BRYgNBM
+         BE0g==
+X-Gm-Message-State: AOAM531H6Ffv+fCvxCabSfqvyOK3cdCTuTVr2WlsJ/OaNKsuY1F8kiOz
+        YQc3WR8iARfSxz+JuUXtQFKQZQm60lVWD91p
+X-Google-Smtp-Source: ABdhPJyJdQX8ZFty6U12ktbNUWY59WHUrO+KyD9bluoctMuMAboVJ64mYQBwo6XBM2MTPtL0jbsuYA==
+X-Received: by 2002:a17:903:230d:b029:e7:1052:a94d with SMTP id d13-20020a170903230db02900e71052a94dmr958353plh.0.1617152663809;
+        Tue, 30 Mar 2021 18:04:23 -0700 (PDT)
+Received: from localhost.localdomain (123-192-91-35.dynamic.kbronet.com.tw. [123.192.91.35])
+        by smtp.gmail.com with ESMTPSA id q19sm215070pff.91.2021.03.30.18.04.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 18:04:23 -0700 (PDT)
+From:   Eric Lin <dslin1010@gmail.com>
+To:     romieu@fr.zoreil.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Cc:     gustavoars@kernel.org
+Subject: [PATCH 1/2] net: ethernet: Fix typo of 'network' in comment
+Date:   Wed, 31 Mar 2021 09:04:17 +0800
+Message-Id: <20210331010418.1632816-1-dslin1010@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-intel_link_probe() could return error and dev_get_drvdata() will return
-null in such case. So we have to test link->cdns after
-link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
-Otherwise, we will meet the "kernel NULL pointer dereference" error.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Eric Lin <dslin1010@gmail.com>
+Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/soundwire/intel_init.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/via/via-velocity.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 5b32a2ffd376..5ef5bd0defab 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -250,6 +250,15 @@ static struct sdw_intel_ctx
- 		link = &ldev->link_res;
- 		link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
- 
-+		if (!link->cdns) {
-+			dev_err(&adev->dev, "failed to get link->cdns\n");
-+			/*
-+			 * 1 will be subtracted from i in the err label, but we need to call
-+			 * intel_link_dev_unregister for this ldev, so plus 1 now
-+			 */
-+			i++;
-+			goto err;
-+		}
- 		list_add_tail(&link->list, &ctx->link_list);
- 		bus = &link->cdns->bus;
- 		/* Calculate number of slaves */
+diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
+index b65767f9e499..fecc4d7b00b0 100644
+--- a/drivers/net/ethernet/via/via-velocity.c
++++ b/drivers/net/ethernet/via/via-velocity.c
+@@ -2525,7 +2525,7 @@ static int velocity_close(struct net_device *dev)
+  *	@skb: buffer to transmit
+  *	@dev: network device
+  *
+- *	Called by the networ layer to request a packet is queued to
++ *	Called by the network layer to request a packet is queued to
+  *	the velocity. Returns zero on success.
+  */
+ static netdev_tx_t velocity_xmit(struct sk_buff *skb,
 -- 
-2.17.1
+2.25.1
 
