@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988D434FE09
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7908034FE1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhCaK05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:26:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15412 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhCaK0v (ORCPT
+        id S234878AbhCaKfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:35:04 -0400
+Received: from gli-ex.genesyslogic.com.tw ([60.251.58.171]:50696 "EHLO
+        gli-ex.genesyslogic.com.tw" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234855AbhCaKeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:26:51 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F9Mrf5lnYzlWjw;
-        Wed, 31 Mar 2021 18:25:06 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Wed, 31 Mar 2021
- 18:26:40 +0800
-Subject: Re: [PATCH v1] ata: ahci: Disable SXS for Hisilicon Kunpeng920
-To:     <axboe@kernel.dk>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <john.garry@huawei.com>,
-        <yangxingui@huawei.com>
-References: <1615544676-61926-1-git-send-email-luojiaxing@huawei.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <75e0d609-0b4c-5ede-7421-1b49422f30cc@huawei.com>
-Date:   Wed, 31 Mar 2021 18:26:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Wed, 31 Mar 2021 06:34:44 -0400
+X-Greylist: delayed 330 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Mar 2021 06:34:43 EDT
+Received: from GLI-MBX02.genesyslogic.com.tw ([fe80::a40e:dfe0:3e41:3fd8]) by
+ Gli-CASHT02.genesyslogic.com.tw ([fe80::ad9a:493d:feca:6cb7%10]) with mapi id
+ 14.02.0387.000; Wed, 31 Mar 2021 18:26:57 +0800
+From:   =?utf-8?B?UmVuaXVzQ2hlblvpmbPlu7rlro9d?= 
+        <Renius.Chen@genesyslogic.com.tw>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        =?utf-8?B?R3JlZ1R1W+adnOWVn+i7kl0=?= <Greg.Tu@genesyslogic.com.tw>,
+        "Masami Hiramatsu" <masami.hiramatsu@linaro.org>,
+        Takao Orito <orito.takao@socionext.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        =?utf-8?B?QmVuQ2h1YW5nW+iOiuaZuumHj10=?= 
+        <Ben.Chuang@genesyslogic.com.tw>,
+        Renius Chen <reniuschengl@gmail.com>
+Subject: RE: [PATCH 0/4] mmc: core: Preparations to support SD UHS-II cards
+Thread-Topic: [PATCH 0/4] mmc: core: Preparations to support SD UHS-II cards
+Thread-Index: AQHXC5hCBaLnPEhAx02zG+hoO5yy16qdiysAgACJIJA=
+Date:   Wed, 31 Mar 2021 10:26:55 +0000
+Message-ID: <FDA815A8963C6B43ABF06E8A34984F99F9B709BB@Gli-MBX02.genesyslogic.com.tw>
+References: <20210225170352.76872-1-ulf.hansson@linaro.org>
+ <CAPDyKFp0+jBDcJnxbvdkZWo6jmSa-CdT6RNbH2hmrWnXEqU0=w@mail.gmail.com>
+In-Reply-To: <CAPDyKFp0+jBDcJnxbvdkZWo6jmSa-CdT6RNbH2hmrWnXEqU0=w@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.17.107.84]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1615544676-61926-1-git-send-email-luojiaxing@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kindly ping.
-
-
-Hi, Jens,  are there any further comments from you?
-
-Two weeks from your first comment now.
-
-
-And it's a bugfix for our SoC, So the customer is asking whether this 
-patch is merged or not.
-
-They want to pull back.
-
-
-Thanks
-
-Jiaxing
-
-
-On 2021/3/12 18:24, Luo Jiaxing wrote:
-> From: Xingui Yang <yangxingui@huawei.com>
->
-> On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
-> SATA controller. In some scenarios, some ports are not external SATA ports,
-> and it cause disks connected to these ports to be identified as removable
-> disks. So disable the SXS capability on the software side to prevent users
-> from mistakenly considering non-removable disks as removable disks and
-> performing related operations.
->
-> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-> Reviewed-by: John Garry <john.garry@huawei.com>
-> ---
->   drivers/ata/ahci.c    | 5 +++++
->   drivers/ata/ahci.h    | 1 +
->   drivers/ata/libahci.c | 5 +++++
->   3 files changed, 11 insertions(+)
->
-> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> index 00ba8e5..33192a8 100644
-> --- a/drivers/ata/ahci.c
-> +++ b/drivers/ata/ahci.c
-> @@ -1772,6 +1772,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->   		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
->   
->   #ifdef CONFIG_ARM64
-> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-> +	    pdev->device == 0xa235 &&
-> +	    pdev->revision < 0x30)
-> +		hpriv->flags |= AHCI_HFLAG_NO_SXS;
-> +
->   	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
->   		hpriv->irq_handler = ahci_thunderx_irq_handler;
->   #endif
-> diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-> index 98b8baa..d1f284f 100644
-> --- a/drivers/ata/ahci.h
-> +++ b/drivers/ata/ahci.h
-> @@ -242,6 +242,7 @@ enum {
->   							suspend/resume */
->   	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
->   							from phy_power_on() */
-> +	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
->   
->   	/* ap->flags bits */
->   
-> diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-> index ea5bf5f..fec2e97 100644
-> --- a/drivers/ata/libahci.c
-> +++ b/drivers/ata/libahci.c
-> @@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
->   		cap |= HOST_CAP_ALPM;
->   	}
->   
-> +	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
-> +		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
-> +		cap &= ~HOST_CAP_SXS;
-> +	}
-> +
->   	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
->   		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
->   			 port_map, hpriv->force_port_map);
-
+SGkgVWxmLA0KDQoNCkknbSBjdXJyZW50bHkgdHJ5aW5nIHRvIHRha2Ugb3ZlciBhbmQgcmVmYWN0
+b3IgdGhlIHRhc2sgcmVmZXIgdG8geW91ciBzZXJpZXMuDQpBbmQgdGhlcmUgaGFzbid0IGJlZW4g
+bXVjaCBwcm9ncmVzcyByZWNlbnRseSBiZWNhdXNlIEknbSBidXN5IHdpdGggb3RoZXIgd29yay4N
+Cg0KDQpSZWdhcmRzLA0KDQpSZW5pdXMNCg0KPi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
+RnJvbTogVWxmIEhhbnNzb24gW21haWx0bzp1bGYuaGFuc3NvbkBsaW5hcm8ub3JnXQ0KPlNlbnQ6
+IFdlZG5lc2RheSwgTWFyY2ggMzEsIDIwMjEgNTo1NyBQTQ0KPlRvOiBCZW5DaHVhbmdb6I6K5pm6
+6YePXTsgUmVuaXVzIENoZW4NCj5DYzogQUtBU0hJIFRha2FoaXJvOyBHcmVnVHVb5p2c5ZWf6LuS
+XTsgTWFzYW1pIEhpcmFtYXRzdTsgVGFrYW8gT3JpdG87IExpbnV4DQo+S2VybmVsIE1haWxpbmcg
+TGlzdDsgVWxmIEhhbnNzb247IEFkcmlhbiBIdW50ZXI7IGxpbnV4LW1tYw0KPlN1YmplY3Q6IFJl
+OiBbUEFUQ0ggMC80XSBtbWM6IGNvcmU6IFByZXBhcmF0aW9ucyB0byBzdXBwb3J0IFNEIFVIUy1J
+SSBjYXJkcw0KPg0KPkhpIEJlbiwgUmVuaXVzLA0KPg0KPk9uIFRodSwgMjUgRmViIDIwMjEgYXQg
+MTg6MDQsIFVsZiBIYW5zc29uIDx1bGYuaGFuc3NvbkBsaW5hcm8ub3JnPiB3cm90ZToNCj4+DQo+
+PiBBIHNlcmllcyBbMV0gdGhhdCBoYXMgYmVlbiBjb2xsYWJvcmF0aXZlIHdvcmtlZCB1cG9uIGJ5
+IFRha2FoaXJvIEFrYXNoaQ0KPj4gKExpbmFybykgYW5kIEJlbiBDaHVhbmcgKEdlbmVzeXMgTG9n
+aWMpIGlzIHRhcmdldGluZyB0byBhZGQgU0QgVUhTLUlJIHN1cHBvcnQNCj4+IHRvIHRoZSBtbWMg
+c3Vic3lzdGVtLg0KPj4NCj4+IFRocm91Z2hvdXQgdGhlIHJldmlld3MsIHdlIHJlYWxpemVkIHRo
+YXQgdGhlIGNoYW5nZXMgYWZmZWN0aW5nIHRoZSBtbWMgY29yZQ0KPnRvDQo+PiBzdXBwb3J0IHRo
+ZSBVSFMtSUkgaW50ZXJmYWNlL3Byb3RvY29sIG1pZ2h0IG5vdCBiZSBlbnRpcmVseSBzdHJhaWdo
+dGZvcndhcmQgdG8NCj4+IGltcGxlbWVudC4gRXNwZWNpYWxseSwgSSBleHByZXNzZWQgc29tZSBj
+b25jZXJucyBhYm91dCB0aGUgY29kZSB0aGF0DQo+bWFuYWdlcw0KPj4gcG93ZXIgb24vb2ZmLCBp
+bml0aWFsaXphdGlvbiBhbmQgcG93ZXIgbWFuYWdlbWVudCBvZiBhIFNEIFVIUy1JSSBjYXJkLg0K
+Pj4NCj4+IFRoZXJlZm9yZSwgSSBoYXZlIHBvc3RlZCB0aGlzIHNtYWxsIHNlcmllcyB0byB0cnkg
+dG8gaGVscCB0byBwdXQgc29tZSBvZiB0aGUNCj4+IGZvdW5kYXRpb24gaW4gdGhlIG1tYyBjb3Jl
+IGluIHBsYWNlLiBIb3BlZnVsbHkgdGhpcyBjYW4gcHJvdmlkZSBzb21lDQo+Z3VpZGFuY2UNCj4+
+IGFuZCBhbiBvdmVyYWxsIHN0cnVjdHVyZSwgb2YgaG93IEkgdGhpbmsgdGhlIGNvZGUgY291bGQg
+ZXZvbHZlLg0KPj4NCj4+IE1vcmUgZGV0YWlscyBhcmUgYXZhaWxhYmxlIGluIHRoZSBjb21taXQg
+bWVzc2FnZXMgYW5kIHRocm91Z2ggY29tbWVudHMgaW4NCj50aGUNCj4+IGNvZGUsIGZvciBlYWNo
+IHBhdGguDQo+Pg0KPj4gS2luZCByZWdhcmRzDQo+PiBVZmZlDQo+DQo+SSBqdXN0IHdhbnRlZCB0
+byBnZXQgYW4gdXBkYXRlIGZyb20geW91ciBzaWRlLiBEaWQgJHN1YmplY3Qgc2VyaWVzDQo+aGVs
+cCB0byBtb3ZlIHRoaW5ncyBmb3J3YXJkPw0KPg0KPklmIHRoZXJlIGlzIGFueXRoaW5nIGVsc2Ug
+SSBjYW4gaGVscCB3aXRoLCB0aGVuIHBsZWFzZSBwaW5nIG1lLg0KPg0KPktpbmQgcmVnYXJkcw0K
+PlVmZmUNCj4NCj4+DQo+PiBbMV0NCj4+IGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzExLzUv
+MTQ3Mg0KPj4NCj4+DQo+PiBVbGYgSGFuc3NvbiAoNCk6DQo+PiAgIG1tYzogY29yZTogQ2xlYW51
+cCBwcmludGluZyBvZiBzcGVlZCBtb2RlIGF0IGNhcmQgaW5zZXJ0aW9uDQo+PiAgIG1tYzogY29y
+ZTogUHJlcGFyZSB0byBzdXBwb3J0IFNEIFVIUy1JSSBjYXJkcw0KPj4gICBtbWM6IGNvcmU6IEFu
+bm91bmNlIHN1Y2Nlc3NmdWwgaW5zZXJ0aW9uIG9mIGFuIFNEIFVIUy1JSSBjYXJkDQo+PiAgIG1t
+YzogY29yZTogRXh0ZW5kIHN1cHBvcnQgZm9yIG1tYyByZWd1bGF0b3JzIHdpdGggYSB2cW1tYzIN
+Cj4+DQo+PiAgZHJpdmVycy9tbWMvY29yZS9NYWtlZmlsZSAgICB8ICAgMiArLQ0KPj4gIGRyaXZl
+cnMvbW1jL2NvcmUvYnVzLmMgICAgICAgfCAgMzggKysrLS0NCj4+ICBkcml2ZXJzL21tYy9jb3Jl
+L2NvcmUuYyAgICAgIHwgIDE3ICsrLQ0KPj4gIGRyaXZlcnMvbW1jL2NvcmUvY29yZS5oICAgICAg
+fCAgIDEgKw0KPj4gIGRyaXZlcnMvbW1jL2NvcmUvaG9zdC5oICAgICAgfCAgIDUgKw0KPj4gIGRy
+aXZlcnMvbW1jL2NvcmUvcmVndWxhdG9yLmMgfCAgMzQgKysrKysNCj4+ICBkcml2ZXJzL21tYy9j
+b3JlL3NkX3VoczIuYyAgIHwgMjg5DQo+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCj4+ICBpbmNsdWRlL2xpbnV4L21tYy9jYXJkLmggICAgIHwgICA2ICsNCj4+ICBpbmNsdWRl
+L2xpbnV4L21tYy9ob3N0LmggICAgIHwgIDMwICsrKysNCj4+ICA5IGZpbGVzIGNoYW5nZWQsIDQw
+NCBpbnNlcnRpb25zKCspLCAxOCBkZWxldGlvbnMoLSkNCj4+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+ZHJpdmVycy9tbWMvY29yZS9zZF91aHMyLmMNCj4+DQo+PiAtLQ0KPj4gMi4yNS4xDQo+Pg0KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCg0KR2VuZXN5cyBMb2dpYyBFbWFpbCBDb25m
+aWRlbnRpYWxpdHkgTm90aWNlOg0KVGhpcyBtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNv
+bnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBjb25maWRlbnRpYWwsIHByb3ByaWV0YXJ5LCBwcml2
+aWxlZ2VkIG9yIG90aGVyd2lzZSBwcm90ZWN0ZWQgYnkgbGF3LiBUaGUgbWFpbCBpcyBpbnRlbmRl
+ZCBzb2xlbHkgZm9yIHRoZSBuYW1lZCBhZGRyZXNzZWUgKG9yIGEgcGVyc29uIHJlc3BvbnNpYmxl
+IGZvciBkZWxpdmVyaW5nIGl0IHRvIHRoZSBhZGRyZXNzZWUpLiBJZiB5b3UgYXJlIG5vdCB0aGUg
+aW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgbWFpbCwgeW91IGFyZSBub3QgYXV0aG9yaXplZCB0
+byByZWFkLCBwcmludCwgY29weSBvciBkaXNzZW1pbmF0ZSB0aGlzIG1haWwuDQoNCklmIHlvdSBo
+YXZlIHJlY2VpdmVkIHRoaXMgZW1haWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRp
+YXRlbHkgYnkgcmVwbHkgZW1haWwgYW5kIGltbWVkaWF0ZWx5IGRlbGV0ZSB0aGlzIG1lc3NhZ2Ug
+YW5kIGFueSBhdHRhY2htZW50cyBmcm9tIHlvdXIgc3lzdGVtLiBQbGVhc2UgYmUgbm90ZWQgdGhh
+dCBhbnkgdW5hdXRob3JpemVkIHVzZSwgZGlzc2VtaW5hdGlvbiwgZGlzdHJpYnV0aW9uIG9yIGNv
+cHlpbmcgb2YgdGhpcyBlbWFpbCBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLg0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18NCg==
