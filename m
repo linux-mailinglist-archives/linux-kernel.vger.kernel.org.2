@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1455C34F96B
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7013334F96F
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhCaHFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:05:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233838AbhCaHFP (ORCPT
+        id S233902AbhCaHH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:07:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:60132 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233961AbhCaHHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:05:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617174314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6N7GiVmqEJRvoV1p5fz+NmwpWE3z9J1xqGS79m5DJhc=;
-        b=Gl5QQl38QB96KsQ7qCDqKdOzqZJQhYku8QDH7BpGSk6i/gR3tiCDfidoqc6YXpDYjO2dXd
-        fPqB06d8eI5OGBh3KEfdJXQTUwZS03uKtqBQYa9Ct23cdnctoROrDQ+uf0IBoqdRJ/YHjY
-        rhDzXeyQ+0IvWqoYLEVMw1d2uyaJAfw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-vEaS9JAPNlqxBAZtOciUbQ-1; Wed, 31 Mar 2021 03:05:12 -0400
-X-MC-Unique: vEaS9JAPNlqxBAZtOciUbQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 31 Mar 2021 03:07:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617174436; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=sm1ls8xyArqaArfjAzyuTVfStFcwzACiTaflmqyCV7k=;
+ b=j/yd55ttuT18IUIIThs53Cb2svqDV1ctyHZ9tDAeJZneHD1g6KqrDmrVKbn7Z38rc/A5djiA
+ FMSOXNPoNWV0HM1zK6Wa1QCCpCS5IagNHoaK2LUtsF4SLep56lEdvWY1Y69Ib7v33tGoqoUC
+ /C866il6ay28Oi5TeoVX9BkWsIA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60641fa3197975f05e962f0c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 07:07:15
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7B062C43462; Wed, 31 Mar 2021 07:07:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBAB7817469;
-        Wed, 31 Mar 2021 07:05:10 +0000 (UTC)
-Received: from [10.36.113.60] (ovpn-113-60.ams2.redhat.com [10.36.113.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8146C5044A;
-        Wed, 31 Mar 2021 07:05:07 +0000 (UTC)
-Subject: Re: [PATCH v5] mm/gup: check page hwposion status for coredump.
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Matthew Wilcox <willy@infradead.org>
-Cc:     Aili Yao <yaoaili@kingsoft.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        "sunhao2@kingsoft.com" <sunhao2@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
- <20210318044600.GJ3420@casper.infradead.org>
- <20210318133412.12078eb7@alex-virtual-machine>
- <20210319104437.6f30e80d@alex-virtual-machine>
- <20210320003516.GC3420@casper.infradead.org>
- <20210322193318.377c9ce9@alex-virtual-machine>
- <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
- <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
- <20210331015258.GB22060@hori.linux.bs1.fc.nec.co.jp>
- <20210331060739.GW351017@casper.infradead.org>
- <20210331065341.GA28793@hori.linux.bs1.fc.nec.co.jp>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <b209732d-25ce-2974-4637-7c4fdb297fc3@redhat.com>
-Date:   Wed, 31 Mar 2021 09:05:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B053AC433C6;
+        Wed, 31 Mar 2021 07:07:14 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210331065341.GA28793@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 31 Mar 2021 12:37:14 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
+In-Reply-To: <YGMohXctT9FqiG4N@kroah.com>
+References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+ <YF3jfshT3OSolcws@kroah.com>
+ <e1afc071-57a6-5d7f-b467-92b618419b76@codeaurora.org>
+ <YGLqXI8HOaOrMq1B@kroah.com>
+ <d2348b758fa57acf53885b67f066e0a1@codeaurora.org>
+ <YGMIoM3xIZzRvU3i@kroah.com>
+ <c984ff015109ed606d2933125d385015@codeaurora.org>
+ <YGMohXctT9FqiG4N@kroah.com>
+Message-ID: <aeb3a9decd10d73cbe21533d30744507@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.03.21 08:53, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Wed, Mar 31, 2021 at 07:07:39AM +0100, Matthew Wilcox wrote:
->> On Wed, Mar 31, 2021 at 01:52:59AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
->>> If we successfully unmapped but failed in truncate_error_page() for example,
->>> the processes mapping the page would get -EFAULT as expected.  But even in
->>> this case, other processes could reach the error page via page cache and
->>> __get_user_pages_locked() for them could return the hwpoisoned page.
->>
->> How would that happen?  We check PageHWPoison before inserting a page
->> into the page tables.  See, eg, filemap_map_pages() and __do_fault().
+On 2021-03-30 19:02, Greg Kroah-Hartman wrote:
+> On Tue, Mar 30, 2021 at 06:18:43PM +0530, Sai Prakash Ranjan wrote:
+>> On 2021-03-30 16:46, Greg Kroah-Hartman wrote:
+>> > On Tue, Mar 30, 2021 at 03:25:58PM +0530, Sai Prakash Ranjan wrote:
+>> > > On 2021-03-30 14:37, Greg Kroah-Hartman wrote:
+>> > > > On Tue, Mar 30, 2021 at 02:12:04PM +0530, Sandeep Maheswaram wrote:
+>> > > > >
+>> > > > > On 3/26/2021 7:07 PM, Greg Kroah-Hartman wrote:
+>> > > > > > On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
+>> > > > > > > This patch adds a shutdown callback to USB DWC core driver to ensure that
+>> > > > > > > it is properly shutdown in reboot/shutdown path. This is required
+>> > > > > > > where SMMU address translation is enabled like on SC7180
+>> > > > > > > SoC and few others. If the hardware is still accessing memory after
+>> > > > > > > SMMU translation is disabled as part of SMMU shutdown callback in
+>> > > > > > > system reboot or shutdown path, then IOVAs(I/O virtual address)
+>> > > > > > > which it was using will go on the bus as the physical addresses which
+>> > > > > > > might result in unknown crashes (NoC/interconnect errors).
+>> > > > > > >
+>> > > > > > > Previously this was added in dwc3 qcom glue driver.
+>> > > > > > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
+>> > > > > > > But observed kernel panic as glue driver shutdown getting called after
+>> > > > > > > iommu shutdown. As we are adding iommu nodes in dwc core node
+>> > > > > > > in device tree adding shutdown callback in core driver seems correct.
+>> > > > > > So shouldn't you also remove this from the qcom glue driver at the same
+>> > > > > > time?  Please submit both as a patch series.
+>> > > > > >
+>> > > > > > thanks,
+>> > > > > >
+>> > > > > > greg k-h
+>> > > > >
+>> > > > > Hi Greg,
+>> > > > >
+>> > > > > The qcom glue driver patch is not merged yet. I have just mentioned
+>> > > > > for it for reference.
+>> > > >
+>> > > > You know that we can not add callbacks for no in-kernel user, so what
+>> > > > good is this patch for now?
+>> > > >
+>> > >
+>> > > What in-kernel user? Since when does shutdown callback need an
+>> > > in-kernel
+>> > > user? When you reboot or shutdown a system, it gets called. The reason
+>> > > why the shutdown callback is needed is provided in the commit text.
+>> >
+>> > As I can't see the patch here, I have no idea...
+>> 
+>> You are replying now to the same patch which adds this shutdown 
+>> callback :)
+>> Anyways the qcom dwc3 driver patch which is abandoned which is also
+>> mentioned
+>> in the commit text is here [1] and the new shutdown callback patch 
+>> which we
+>> are both replying to is in here [2]
+>> 
+>> [1] 
+>> https://lore.kernel.org/lkml/1605162619-10064-1-git-send-email-sanm@codeaurora.org/
+>> 
+>> [2] 
+>> https://lore.kernel.org/lkml/1616527652-7937-1-git-send-email-sanm@codeaurora.org/
 > 
-> Ah, you're right, that never happens. I misread the code.
-> Thanks for correcting me.
+> Thanks, so, what am I supposed to do here?  The patch is long gone from
+> my queue...
 > 
 
-I'm wondering if there is a small race window, if we poison a page while 
-inserting it.
+The patch was just posted about 7 days ago, maybe Sandeep can send again 
+if
+you prefer that.
+
+Thanks,
+Sai
 
 -- 
-Thanks,
-
-David / dhildenb
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
