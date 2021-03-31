@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA55B35089A
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CA83508A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhCaUzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232690AbhCaUzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D5361075;
-        Wed, 31 Mar 2021 20:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617224119;
-        bh=pJT5gjTTfqCWP+YyIpkhXwfsnZvDOF+ZqFbwATowrqM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vQrYsoDAjcr28337pzGluXdg4Hodfa27jANRxL+5PMPmPnD9gP4XfFlLQGigrLSIF
-         5M8PFYJMcyiKoSbfOKgOqw/w8svms2e4ISL3J2I9G6uEkFr4gFLgSZQPtRdli5oGNx
-         Nqb+Q3pAxOSbEPOW1Cmp8QuLHHPzOw3T5CPpmEJ/6gSwEtHOP6lYokR8uLXxobTiXJ
-         ymf9wmeBrKDgd64Zkxn/obBV9kZQDjDiHnUbORtPlsgRx/udEp6RBsl+MM4puYn4Ud
-         x2GoX/XOnhoWOVKhdFrGe5yhvbT4OW3xoy/0pYNZ0zqPhEGlzvQsgJb5R6qIsl1JpJ
-         rA/CVGbQXc+RQ==
-Date:   Wed, 31 Mar 2021 22:55:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Adding i2c-cp2615: i2c support for Silicon Labs'
- CP2615 Digital Audio Bridge
-Message-ID: <20210331205513.GA994@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210318115210.2014204-1-bence98@sch.bme.hu>
- <20210318115210.2014204-3-bence98@sch.bme.hu>
- <20210331095820.GA29323@ninjato>
- <CACCVKEHYdUgx1QuJqUz3=OettOJHQWuA1O+ve1ZUDPAWz+n0aA@mail.gmail.com>
+        id S232620AbhCaU4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:56:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232259AbhCaUzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 16:55:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617224154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mT4tluRBtnUt1Hht/N0b0oYTLjqFC49X/aal5xVWArY=;
+        b=b5GSqZ4BfURHvb+pz1cJ42KmoTg96AAUbKn+pxuT8MAahw9hBb9ZYQGbY7q+FhuAlcY6E9
+        mcCQgk0zf+W5lPbMbCwLMsgGeQTtvqDHS0IZnXhbNeOXy3LBCLIXbYpixrDU8TwOEj3e1p
+        FO0ZyYuF26Mw7lJvZkNXVOdOiVqzp18=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-73-4BfBflQfNcWGzJsvFQzhxQ-1; Wed, 31 Mar 2021 16:55:52 -0400
+X-MC-Unique: 4BfBflQfNcWGzJsvFQzhxQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 162188189F1;
+        Wed, 31 Mar 2021 20:55:50 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEC3B19C59;
+        Wed, 31 Mar 2021 20:55:40 +0000 (UTC)
+Date:   Wed, 31 Mar 2021 16:55:38 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v5] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210331205538.GJ3112383@madcap2.tricolour.ca>
+References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
+ <20210331204635.GA4634@salvia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACCVKEHYdUgx1QuJqUz3=OettOJHQWuA1O+ve1ZUDPAWz+n0aA@mail.gmail.com>
+In-Reply-To: <20210331204635.GA4634@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-31 22:46, Pablo Neira Ayuso wrote:
+> On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
+> > @@ -8006,12 +7966,65 @@ static void nft_commit_notify(struct net *net, u32 portid)
+> >  	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
+> >  }
+> >  
+> > +static int nf_tables_commit_audit_alloc(struct list_head *adl,
+> > +				 struct nft_table *table)
+> > +{
+> > +	struct nft_audit_data *adp;
+> > +
+> > +	list_for_each_entry(adp, adl, list) {
+> > +		if (adp->table == table)
+> > +			return 0;
+> > +	}
+> > +	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
+> > +	if (!adp)
+> > +		return -ENOMEM;
+> > +	adp->table = table;
+> > +	INIT_LIST_HEAD(&adp->list);
+> 
+> This INIT_LIST_HEAD is not required for an object that is going to be
+> inserted into the 'adl' list.
+> 
+> > +	list_add(&adp->list, adl);
+> 
+> If no objections, I'll amend this patch. I'll include the UAF fix and
+> remove this unnecessary INIT_LIST_HEAD.
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, so it is harmless other than being code noise and overhead, thanks again.
 
+- RGB
 
-> > drivers/i2c/busses/i2c-cp2615.c:78:5: warning: symbol 'cp2615_init_iop_msg' was not declared. Should it be static?
-> > drivers/i2c/busses/i2c-cp2615.c:96:5: warning: symbol 'cp2615_init_i2c_msg' was not declared. Should it be static?
-> > drivers/i2c/busses/i2c-cp2615.c:102:5: warning: symbol 'cp2615_check_status' was not declared. Should it be static?
-> I can forward declare these (copying from the header I used in v1 of
-> the patch), but I'm not sure I understand the rationale behind these
-> warnings...
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
-Just make them static and all is good.
-
-> > drivers/i2c/busses/i2c-cp2615.c:212:27: warning: symbol 'cp2615_i2c_quirks' was not declared. Should it be static?
-> Especially this. I think I will make this static instead, since it
-> won't ever be exported to any other module.
-
-Exactly.
-
-> > The missing 'static' are what buildbot also reported and are correct.
-> The lkp bot complained about MODULE_DEVICE_TABLE and MODULE_AUTHOR,
-> which, again, I don't see what is wrong with it.
-
-Yeah, that may be a false positive.
-
-> I will now send an updated patch, with  few additions too.
-
-Cool, thanks!
-
-
---J/dobhs11T7y2rNN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBk4a4ACgkQFA3kzBSg
-Kbazzw//aMs/GVJGCLrvn9s+1KBViH7ko8NtKI9KLzbIkMKT2YWYHHbej3w+ZNTc
-Lh0wnDo0A2g5UR3ncn1TkAVF1XJALVPfod1wC7ffD8sElw9mpf9sQZOlMo61f3k7
-SFPa+gIYEZXxbFH1AEz6OY44frroBj5f5m4nVTuggzv1zLftntC90UN5c9gyGO5f
-BTNy72vzZEoovq9ZwK5nJoEhUYkF2GrZMrOf+jpk7+g2Yf1mZs0v6iYy/YL3HzbC
-w6ifLeFECp9CyIgnpeFWJx6xFu06ZpxTi38sSc4abZQ95gE73pbXJSBoX6/CeZYD
-aX+UmUZV97cEORG4DsDof6Kui5h5JYrVHHAZrRxhyDJgQMBcV6eS/ey6bChAIoct
-Gu03pcs1GOXh458kOjlrzVEFJKfB6qbHu6f3O5fPp6Nf67grAqwvjesnYjvIYK5/
-AqN3cULx33FYfdI6HZalLHzbJt3e6p7Rc5JNwlKw9mpLwxu19r05+h0AvrBDCuFF
-vT6upSNgdSVY8yKhDuZXFIBNBUiXFJMoptYO4NG02c/Xw9ASjx3fWeIpGqklvv6y
-uSoGMdTR/FJXpJtgZwjmXL3T+teTYWPVkfLMcbBu1PSTa2KFZiWTienkY4CB66YQ
-hz6UbHWcko3Qn0ztrCschk2scEva+MLxX+7cEChm0lfIZiwysFU=
-=pTwX
------END PGP SIGNATURE-----
-
---J/dobhs11T7y2rNN--
