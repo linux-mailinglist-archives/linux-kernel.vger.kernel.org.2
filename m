@@ -2,159 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2CA350A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5353508FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhCaWQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:16:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
+        id S230253AbhCaVWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:22:06 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:58542 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232690AbhCaWQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:16:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4EC61078;
-        Wed, 31 Mar 2021 22:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617228978;
-        bh=xv2nMo0980+R4VBEMhqDRwLR+Gyzx7lAAhs5zECqVf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EP5yEiZcPdBfm84R7Erudu4P+Ykp/t3sOH86Vqr+VESINUOLK3OjOsfbdMvs8ib1n
-         vSbMEuECzJng0AkmVaTuFbbwjXURj5ETlCMyg89UVId+/1i1xnGQeahgQzTuNF5Kvl
-         64Vv6l9lBFKPHfZP77MCPS2c7cXYq7cRWVbXf0FqBifqy8pUJ3tCqvpG3FwsIg02O/
-         d7psiI+grrQF2qx6mNk1Ijl/mQLxR5ONRuhPH00NJWD5QAlGlBgVCYSCn2fYX84IjL
-         Apj0P8H+B+VcxASA0RvXbk2+FmBo4rhU5zN0eD0Dx9UP2VjpGoi40ndyv8Ph2GRMaS
-         UGUz2xA+UGeWw==
-Date:   Wed, 31 Mar 2021 16:16:20 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 2/2][next] wl3501_cs: Fix out-of-bounds warning in
- wl3501_mgmt_join
-Message-ID: <f8c3c434f6d728b63358123fb40e57386920be9f.1617223928.git.gustavoars@kernel.org>
-References: <cover.1617223928.git.gustavoars@kernel.org>
+        id S229734AbhCaVVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:21:38 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1lRiHQ-0006Uu-27; Wed, 31 Mar 2021 23:21:36 +0200
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <6f5be7a5-bf82-e857-5c81-322f2886099a@maciej.szmigiero.name>
+ <20210329152201.GA933773@rowland.harvard.edu>
+ <2c99b46a-3643-c22a-9aae-024565222794@maciej.szmigiero.name>
+ <20210331195539.GA1027699@rowland.harvard.edu>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: >20 KB URBs + EHCI = bad performance due to stalls
+Message-ID: <e3a7efbc-6f72-d276-2f86-f2a783e73f6d@maciej.szmigiero.name>
+Date:   Wed, 31 Mar 2021 23:21:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617223928.git.gustavoars@kernel.org>
+In-Reply-To: <20210331195539.GA1027699@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warning by enclosing
-some structure members into new struct req:
+On 31.03.2021 21:55, Alan Stern wrote:
+> On Wed, Mar 31, 2021 at 08:20:56PM +0200, Maciej S. Szmigiero wrote:
+>> On 29.03.2021 17:22, Alan Stern wrote:
+>>> On Sat, Mar 27, 2021 at 04:55:20PM +0100, Maciej S. Szmigiero wrote:
+>>>> Hi,
+>>>>
+>>>> Is there any specific reason that URBs without URB_SHORT_NOT_OK flag that
+>>>> span multiple EHCI qTDs have Alternate Next qTD pointer set to the dummy
+>>>> qTD in their every qTD besides the last one (instead of to the first qTD
+>>>> of the next URB to that endpoint)?
+>>>
+>>> Quick answer: I don't know.  I can't think of any good reason.  This
+>>> code was all written a long time ago.  Maybe the issue was overlooked
+>>> or the details were misunderstood.
+>>
+>> I've dug out the original EHCI driver, that landed in 2.5.2:
+>> https://marc.info/?l=linux-usb-devel&m=100875066109269&w=2
+>> https://marc.info/?l=linux-usb-devel&m=100982880716373&w=2
+>>
+>> It already had the following qTD setup code, roughly similar to what
+>> the current one does:
+>>> /* previous urb allows short rx? maybe optimize. */
+>>> if (!(last_qtd->urb->transfer_flags & USB_DISABLE_SPD)
+>>> 		&& (epnum & 0x10)) {
+>>> 	// only the last QTD for now
+>>> 	last_qtd->hw_alt_next = hw_next;
+>>
+>> The "for now" language seems to suggest that ultimately other-than-last
+>> qTDs were supposed to be set not to stall the queue, too.
+>> Just the code to handle this case was never written.
+> 
+> Probably it just slipped out of the developer's mind.
+> 
+>> It seems to me though, this should be possible with relatively few
+>> changes to the code:
+>> qh_append_tds() will need to patch these other-than-last qTDs
+>> hw_alt_next pointer to point to the (new) dummy qTD (instead of just
+>> pointing the last submitted qTD hw_next to it and adding the remaining
+>> qTDs verbatim to the qH qTD list).
+> 
+> Right.
+> 
+>> Then qh_completions() will need few changes:
+>> *
+>>>   } else if (IS_SHORT_READ (token)
+>>> 	      && !(qtd->hw_alt_next
+>>>            	   & EHCI_LIST_END(ehci))) {
+>> This branch will need to be modified not to mark the queue as stopped
+>> and request its unlinking when such type of short qTD was processed.
+> 
+> This would be a good place to introduce a macro.  For example:
+> 
+> 	} else if (IS_SHORT_READ(token) &&
+> 			EHCI_PTR_IS_SET(qtd->hw_alt_next)) {
+> 
+> or something similar.
 
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
+I agree, this certainly looks more readable.
 
-Refactor the code, accordingly:
+>> * The ACTIVE bit should be treated as unset on any qTD following the
+>> one that hits the above condition until a qTD for a different URB is
+>> encountered.
+>> Otherwise the unprocessed remaining qTDs from that short URB will be
+>> considered pending active qTDs and the code will wait forever for their
+>> processing,
+> 
+> The treatment shouldn't be exactly the same as if ACTIVE is clear.  The
+> following qTDs can be removed from the list and deallocated immediately,
+> since the hardware won't look at them.  And they shouldn't affect the
+> URB's status.
 
-$ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_join_req {
-	u16                        next_blk;             /*     0     2 */
-	u8                         sig_id;               /*     2     1 */
-	u8                         reserved;             /*     3     1 */
-	struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
-	u16                        reserved2;            /*    14     2 */
-	u16                        timeout;              /*    16     2 */
-	u16                        probe_delay;          /*    18     2 */
-	u8                         timestamp[8];         /*    20     8 */
-	u8                         local_time[8];        /*    28     8 */
-	struct {
-		u16                beacon_period;        /*    36     2 */
-		u16                dtim_period;          /*    38     2 */
-		u16                cap_info;             /*    40     2 */
-		u8                 bss_type;             /*    42     1 */
-		u8                 bssid[6];             /*    43     6 */
-		struct iw_mgmt_essid_pset ssid;          /*    49    34 */
-		/* --- cacheline 1 boundary (64 bytes) was 19 bytes ago --- */
-		struct iw_mgmt_ds_pset ds_pset;          /*    83     3 */
-		struct iw_mgmt_cf_pset cf_pset;          /*    86     8 */
-		struct iw_mgmt_ibss_pset ibss_pset;      /*    94     4 */
-		struct iw_mgmt_data_rset bss_basic_rset; /*    98    10 */
-	} req;                                           /*    36    72 */
+ From my understanding of qh_completions() if these "remaining" qTDs from
+a short read are treated as !ACTIVE then none of the conditions in
+!ACTIVE branch will hit: they don't have DBE or HALT set and they aren't
+queue-stopping short read qTDs (I am assuming here that the
+aforementioned qtd->hw_alt_next condition will be changed to exclude
+them).
 
-	/* size: 108, cachelines: 2, members: 10 */
-	/* last cacheline: 44 bytes */
-};
+So the qTD processing loop will reach "if (last_status == -EINPROGRESS)",
+this will be false since previous qTD (that one that has actually
+partially completed) had already set the last_status to -EREMOTEIO.
+Then the code will delete this qTD from qTD list and go to the next qTD
+(either next "remaining" qTD from that URB or from a different URB).
 
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). Now that a new struct _req_ enclosing all those adjacent
-members is introduced, memcpy() doesn't overrun the length of
-&sig.beacon_period, because the address of the new struct object
-_req_ is used as the destination, instead.
+Once a qTD from a different URB is encountered the special treatment of
+ACTIVE qTDs as !ACTIVE has to end.
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-avoid confusing the compiler.
+>> * The code that patches the previous qTD hw_next pointer when removing a
+>> qTD that isn't currently at the qH will need changing to also patch
+>> hw_alt_next pointers of the qTDs belonging to the previous URB in case
+>> the previous URB was one of these short-read-ok ones.
+> 
+> Yes.  Awkward but necessary.
+> 
+> Although I know nothing at all about the USB API in Windows, I suspect
+> that it manages to avoid this awkwardness entirely by not allowing URBs
+> in the middle of the queue to be unlinked.  Or perhaps allowing it only
+> for endpoint 0.  I've often wished Linux's API had been written that
+> way.
 
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/wl3501.h    | 22 ++++++++++++----------
- drivers/net/wireless/wl3501_cs.c |  4 ++--
- 2 files changed, 14 insertions(+), 12 deletions(-)
+According to Microsoft docs every IRP that might remain queued for an
+indefinite interval has to have a cancel handler.
+URBs are submitted wrapped in IRPs, so at least in theory it should be
+possible to cancel them.
+But I don't know how it works in practice.
 
-diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
-index ef9d605d8c88..774d8cac046d 100644
---- a/drivers/net/wireless/wl3501.h
-+++ b/drivers/net/wireless/wl3501.h
-@@ -389,16 +389,18 @@ struct wl3501_join_req {
- 	u16			    probe_delay;
- 	u8			    timestamp[8];
- 	u8			    local_time[8];
--	u16			    beacon_period;
--	u16			    dtim_period;
--	u16			    cap_info;
--	u8			    bss_type;
--	u8			    bssid[ETH_ALEN];
--	struct iw_mgmt_essid_pset   ssid;
--	struct iw_mgmt_ds_pset	    ds_pset;
--	struct iw_mgmt_cf_pset	    cf_pset;
--	struct iw_mgmt_ibss_pset    ibss_pset;
--	struct iw_mgmt_data_rset    bss_basic_rset;
-+	struct {
-+		u16			    beacon_period;
-+		u16			    dtim_period;
-+		u16			    cap_info;
-+		u8			    bss_type;
-+		u8			    bssid[ETH_ALEN];
-+		struct iw_mgmt_essid_pset   ssid;
-+		struct iw_mgmt_ds_pset	    ds_pset;
-+		struct iw_mgmt_cf_pset	    cf_pset;
-+		struct iw_mgmt_ibss_pset    ibss_pset;
-+		struct iw_mgmt_data_rset    bss_basic_rset;
-+	} req;
- };
- 
- struct wl3501_join_confirm {
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index 384bf84dfa51..e4f467116bab 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -589,7 +589,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 	struct wl3501_join_req sig = {
- 		.sig_id		  = WL3501_SIG_JOIN_REQ,
- 		.timeout	  = 10,
--		.ds_pset = {
-+		.req.ds_pset = {
- 			.el = {
- 				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
- 				.len = 1,
-@@ -598,7 +598,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 		},
- 	};
- 
--	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
-+	memcpy(&sig.req, &this->bss_set[stas].beacon_period, sizeof(sig.req));
- 	return wl3501_esbq_exec(this, &sig, sizeof(sig));
- }
- 
--- 
-2.27.0
+I also remember getting "warning: guest updated active QH" often when
+launching Windows VMs in QEMU.
+That does not seem like a good sign, but it might ultimately be a
+deficiency in QEMU EHCI HC emulation, not Windows.
+
+In Linux at least we could (theoretically) change the API and modify
+all the client drivers.
+But I think the benefit is not worth the cost at that point.
+
+>> That's was my quick assessment what is required to handle these
+>> transactions effectively in the EHCI driver.
+>>
+>> I suspect, however, there may be some corner cases involving
+>> non-ordinary qTD unlinking which might need fixing, too (like caused
+>> by usb_unlink_urb(), system suspend or HC removal).
+>> But I am not sure about this since I don't know this code well.
+> 
+> Those shouldn't present any difficulty.  There are inherently easier to
+> handle because the QH won't be actively running when they occur.
+
+I've meant that these can exercise a different code path than ordinary
+unlink so one has to check this, too.
+
+(...)
+>> That's what I had on mind by saying that it seems strange to me that
+>> the URB buffer size should be managed by a particular USB device driver
+>> depending on the host controller in use.
+>>
+>>> In short, the behavior you observed is a bug, resulting in a loss of
+>>> throughput (though not in any loss of data).  It needs to be fixed.
+>>>
+>>> If you would like to write and submit a patch, that would be great.
+>>> Otherwise, I'll try to find time to work on it.
+>>
+>> Unfortunately, I doubt I will be able to work on this in coming weeks
+>> due to time constraints, I'm sorry :(
+> 
+> All right, then I'll work on it when time permits.
+
+That's great, thanks.
+
+>>> I would appreciate any effort you could make toward checking the code
+>>> in qh_completions(); I suspect that the checks it does involving
+>>> EHCI_LIST_END may not be right.  At the very least, they should be
+>>> encapsulated in a macro so that they are easier to understand.
+>>
+>> I've went through the (short) URB linking and unlinking code
+>> (including qh_completions()) and I haven't found anything suspicious
+>> there, besides one thing that's actually on the URB *linking* path:
+>> in qh_append_tds() the dummy qTD that is the last qTD in that
+>> endpoint queue is being overwritten using an assignment operator.
+>>
+>> While both this dummy qTD and the source qTD that overwrites it have
+>> the HALT bit set it looks a bit uncomfortable to me to see a qTD that
+>> the HC might just be fetching (while trying to advance the queue) being
+>> overwritten.
+> 
+> I agree.  But there's no way around it; if you're going to change the
+> contents of the qTD queue while the QH is running, at some point you
+> have to overwrite something that the controller might be accessing
+> concurrently.
+
+I agree, that's a bit unfortunate.
+
+Unless one unlinks the qH temporarily (but as we have observed that's
+rather slow) or disables the async list for a moment (probably slow,
+too, and impacts other endpoints).
+
+>> Like, is C standard giving guarantees that no intermediate values are
+>> being written to a struct when that struct is a target of an assignment
+>> operator?
+> 
+> THe C standard doesn't say anything like that, but the kernel does
+> generally rely on such behavior. 
+
+I see, thanks.
+
+> However, it wouldn't hurt to mark this
+> special case by using WRITE_ONCE.
+
+I think WRITE_ONCE() at least to the hw_token would make a lot of sense
+here.
+
+>> But apparently this doesn't cause trouble, so I guess in practice
+>> this works okay.
+> 
+> Yes, it does.
+> 
+> Alan Stern
+> 
+
+Thanks,
+Maciej
 
