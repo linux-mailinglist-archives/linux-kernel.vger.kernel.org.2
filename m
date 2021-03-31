@@ -2,101 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F62350A42
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430D8350A41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhCaW37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232718AbhCaW3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:29:45 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F12FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso1951474pji.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HQnN7NHkGrBqjYvsj3wUwlnZQNzy2q4PClXlOY6uvRo=;
-        b=iMortkY8rwQv5R7gzR0AH0Oxd0HCB4DK5l1TiZ3ve7TnLIFgCiWjIpKP+NloeK+b9O
-         zSrISieAwqCV24o3jmvORHzvnF51sh0lGvseB8cKG0ukduU1iViOeOGYm+j8+q7F5Q5g
-         tgaOd7p9dRIRqoKb6qQN1etdZwuoSfZZVZmzimuk0ZdUCscdKaJ2Bq7MXY7c12nf+gPg
-         uN0Sh1HWip/Zh2/oV3ZFHVciR0KrTXGmPX0BW51K7smQgsodSeA5K4PFuUVMQhicHHhD
-         1PO/V6rZhymhCrAU+Sxc/U7WY6h6g4aFVwL5oQdzxtLBBzGAsPrZUPbIoIinHKX44LUt
-         he9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HQnN7NHkGrBqjYvsj3wUwlnZQNzy2q4PClXlOY6uvRo=;
-        b=BUd+hgn3sPVTQZDU7dSY+PZWSAWfKIX6ygjxUps7asEBT3vdyUiaMhFk+Lz7kojUr4
-         GHdLV5nnMbFesYkUaQQX6Wcef9tfFevUA+VULwImP1QuT0rwe/PPkXRylfDSa4vus3UX
-         6bDjFzI6t8pErNTi/OUzx3L3CGpehOm4QsRVwWQzA8cnt+iflX2X/vWepPplLsB2kbkU
-         jkyNAKSTH6C4Cheb3Q/nfmOPjtTO+gVumOQxZiuPXQUdad1E7iZG6WfkQGu3N26YFFO2
-         TcYFFUzxF+qiXmocsZHX5ViPtrVNSVee5VA6WX06jt0c8VU4T8lrVQZKDf7TeUlQT/4S
-         BPIA==
-X-Gm-Message-State: AOAM532o/7Pj4EydnVklIJMu0cY8wqgxgSnlAC3gbLjEYB3haiKeebrp
-        On8E3+qhB+0BdwJXPqVVzIADDQ==
-X-Google-Smtp-Source: ABdhPJyiTBSLw8Alpaud1ZG3omKJVcfMmSNJty1jR3bl8poG6iVDs95yRzpoIBXCxqUqOa62CjHuwQ==
-X-Received: by 2002:a17:90a:e656:: with SMTP id ep22mr5325358pjb.60.1617229785114;
-        Wed, 31 Mar 2021 15:29:45 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c6sm3619564pfj.99.2021.03.31.15.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 15:29:44 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 22:29:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 13/13] KVM: x86/mmu: Tear down roots in fast invalidation
- thread
-Message-ID: <YGT31GoDhVSXlgP4@google.com>
-References: <20210331210841.3996155-1-bgardon@google.com>
- <20210331210841.3996155-14-bgardon@google.com>
+        id S232746AbhCaW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:29:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:15098 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232491AbhCaW3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:29:44 -0400
+IronPort-SDR: XZ/UUiHMYtjDtenA32Am9GUKklWqen+NzTMAEc1gqxZb1iqXpIrXTIhTO+D4FmfH8TizCPkOKp
+ 1vzfsKHOYHxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192205906"
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="192205906"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:44 -0700
+IronPort-SDR: ogpceCYiYbJvyJBxi3DpVPACATYMqjGVMoLWE14Yt8/3xbuv4sVX4AhpieGWTfNE8uEXNFLm86
+ ODfvGAEt1yIw==
+X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
+   d="scan'208";a="394233987"
+Received: from sjard-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.174.17])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 15:29:43 -0700
+Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+ <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <7882ef34-416f-9627-dcbe-7bf88c866dc8@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <097b4cad-8f01-40cf-203e-1a9228450c80@linux.intel.com>
+Date:   Wed, 31 Mar 2021 15:29:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331210841.3996155-14-bgardon@google.com>
+In-Reply-To: <7882ef34-416f-9627-dcbe-7bf88c866dc8@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Ben Gardon wrote:
-> ---
->  arch/x86/kvm/mmu/mmu.c     |  6 ++++
->  arch/x86/kvm/mmu/tdp_mmu.c | 74 +++++++++++++++++++++++++++++++++++++-
->  arch/x86/kvm/mmu/tdp_mmu.h |  1 +
->  3 files changed, 80 insertions(+), 1 deletion(-)
+
+
+On 3/31/21 2:49 PM, Dave Hansen wrote:
+> On 3/31/21 2:09 PM, Kuppuswamy Sathyanarayanan wrote:
+>> As per Guest-Host Communication Interface (GHCI) Specification
+>> for Intel TDX, sec 2.4.1, TDX architecture does not support
+>> MWAIT, MONITOR and WBINVD instructions. So in non-root TDX mode,
+>> if MWAIT/MONITOR instructions are executed with CPL != 0 it will
+>> trigger #UD, and for CPL = 0 case, virtual exception (#VE) is
+>> triggered. WBINVD instruction behavior is also similar to
+>> MWAIT/MONITOR, but for CPL != 0 case, it will trigger #GP instead
+>> of #UD.
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 49b7097fb55b..22742619698d 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5455,6 +5455,12 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
->  	kvm_zap_obsolete_pages(kvm);
->  
->  	write_unlock(&kvm->mmu_lock);
-> +
-> +	if (is_tdp_mmu_enabled(kvm)) {
-> +		read_lock(&kvm->mmu_lock);
-> +		kvm_tdp_mmu_zap_all_fast(kvm);
+> Could we give it a go to try this in plain English before jumping in and
+> quoting the exact spec section?  Also, the CPL language is nice and
+> precise for talking inside Intel, but it's generally easier for me to
+> read kernel descriptions when we just talk about the kernel.
+> 
+> 	When running as a TDX guest, there are a number of existing,
+> 	privileged instructions that do not work.  If the guest kernel
+> 	uses these instructions, the hardware generates a #VE.
+I will fix it in next version.
+> 
+> Which reminds me...  The SDM says: MWAIT will "#UD ... If
+> CPUID.01H:ECX.MONITOR[bit 3] = 0".  So, is this an architectural change?
+>   The guest is *supposed* to see that CPUID bit as 0, so shouldn't it
+> also get a #UD?  Or is this all so that if SEAM *forgets* to clear the
+> CPUID bit, the guest gets #VE?
+AFAIK, we are only concerned about the case where the instruction support
+is not disabled by SEAM. For disabled case, it should get #UD.
+Sean, can you confirm it?
+> 
+> What are we *actually* mitigating here?
+we add support for #VE, when executing un-supported instruction in TD guest
+kernel.
+> 
+> Also, FWIW, MWAIT/MONITOR and WBINVD are pretty different beasts.  I
+> think this would all have been a lot more clear if this would have been
+> two patches instead of shoehorning them into one.
+Since all of them are unsupported instructions, I have grouped them
+together. Even if we split it, there should be some duplication in commit
+log (since handling is similar). But let me know if this is a desired
+approach. I can split it in two patches.
+> 
+>> To prevent TD guest from using these unsupported instructions,
+>> following measures are adapted:
+>>
+>> 1. For MWAIT/MONITOR instructions, support for these instructions
+>> are already disabled by TDX module (SEAM). So CPUID flags for
+>> these instructions should be in disabled state. Also, just to be
+>> sure that these instructions are disabled, forcefully unset
+>> X86_FEATURE_MWAIT CPU cap in OS.
+>>
+>> 2. For WBINVD instruction, we use audit to find the code that uses
+>> this instruction and disable them for TD.
+> 
+> Really?  Where are those patches?
+For MWAIT/MONITOR, the change is included in the same patch.
+For WBINVD, we have will have some patches included in next
+series.
+> 
+>> +static inline bool cpuid_has_mwait(void)
+>> +{
+>> +	if (cpuid_ecx(1) & (1 << (X86_FEATURE_MWAIT % 32)))
+>> +		return true;
+>> +
+>> +	return false;
+>> +}
+>> +
+>>   bool is_tdx_guest(void)
+>>   {
+>>   	return static_cpu_has(X86_FEATURE_TDX_GUEST);
+>> @@ -301,12 +309,25 @@ static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
+>>   	return insn.length;
+>>   }
+>>   
+>> +/* Initialize TDX specific CPU capabilities */
+>> +static void __init tdx_cpu_cap_init(void)
+>> +{
+>> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+>> +
+>> +	if (cpuid_has_mwait()) {
+>> +		WARN(1, "TDX Module failed to disable MWAIT\n");
+> 
+> WARN(1, "TDX guest enumerated support for MWAIT, disabling it").
+will fix it in next version.
+> 
+>> +		/* MWAIT is not supported in TDX platform, so suppress it */
+>> +		setup_clear_cpu_cap(X86_FEATURE_MWAIT);
+>> +	}
+>> +
+>> +}
+> 
+> Extra newline.
+> 
+>>   void __init tdx_early_init(void)
+>>   {
+>>   	if (!cpuid_has_tdx_guest())
+>>   		return;
+>>   
+>> -	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+>> +	tdx_cpu_cap_init();
+>>   
+>>   	tdg_get_info();
+>>   
+>> @@ -362,6 +383,27 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+>>   	case EXIT_REASON_EPT_VIOLATION:
+>>   		ve->instr_len = tdg_handle_mmio(regs, ve);
+>>   		break;
+>> +	case EXIT_REASON_WBINVD:
+>> +		/*
+>> +		 * TDX architecture does not support WBINVD instruction.
+>> +		 * Currently, usage of this instruction is prevented by
+>> +		 * disabling the drivers which uses it. So if we still
+>> +		 * reach here, it needs user attention.
+>> +		 */
+> 
+> This comment is awfully vague.  "TDX architecture..." what?  Any CPUs
+> supporting the TDX architecture?  TDX VMM's?  TDX Guests?
+> 
+> Let's also not waste byte on stating the obvious.  If it didn't need
+> attention we wouldn't be warning about it, eh?
+> 
+> So, let's halve the size of the comment and say:
+> 
+> 		/*
+> 		 * WBINVD is not supported inside TDX guests.  All in-
+> 		 * kernel uses should have been disabled.
+> 		 */
+ok. will fix it next version.
+> 
+>> +		pr_err("TD Guest used unsupported WBINVD instruction\n");
+>> +		BUG();
+>> +		break;
+>> +	case EXIT_REASON_MONITOR_INSTRUCTION:
+>> +	case EXIT_REASON_MWAIT_INSTRUCTION:
+>> +		/*
+>> +		 * MWAIT/MONITOR features are disabled by TDX Module (SEAM)
+>> +		 * and also re-suppressed in kernel by clearing
+>> +		 * X86_FEATURE_MWAIT CPU feature flag in tdx_early_init(). So
+>> +		 * if TD guest still executes MWAIT/MONITOR instruction with
+>> +		 * above suppression, it needs user attention.
+>> +		 */
+> 
+> Again, let's trim this down:
+> 
+> 		/*
+> 		 * Something in the kernel used MONITOR or MWAIT despite
+> 		 * X86_FEATURE_MWAIT being cleared for TDX guests.
+> 		 */
+will fix it next version.
+> 
+> Rather than naming the function, this makes it quite greppable to find
+> where it could have *possibly* been cleared.
+> 
+>> +		WARN(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
+I think WARN_ONCE is good enough for this exception. Do you agree?
+>> +		break;
+>>   	default:
+>>   		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
+>>   		return -EFAULT;
+>>
+> 
 
-Purely because it exists first, I think we should follow the legacy MMU's
-terminology, i.e. kvm_tdp_mmu_zap_obsolete_pages().
-
-> +		read_unlock(&kvm->mmu_lock);
-> +	}
->  }
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
