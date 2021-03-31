@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C338C34FA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F64534FA4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhCaHe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:34:28 -0400
-Received: from m12-17.163.com ([220.181.12.17]:47498 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234063AbhCaHeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:34:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7Vr4f
-        CiQXMgkEtD0jp2lje0Un+oKilPC7kaPBeblKvk=; b=ghyXpnAwD+6vdSKxtuNrL
-        op9yT4byz0a/TZtIl7BC0qtgrkCAIq64z3qtjK9HSsq0VKkvRQP0bAIObUITJ2G0
-        lP8NmpIUjnnI6bguFZhfafL/t8SH+TaUTviX0FpCs7yCcsGhdaq5Bnq2+SEeODyo
-        qyCeje+/irH5SbuU1LylFY=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowABHSZGUJWRgEOG7sw--.38716S2;
-        Wed, 31 Mar 2021 15:32:37 +0800 (CST)
-From:   dingsenjie@163.com
-To:     josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] block: rsxx: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Wed, 31 Mar 2021 15:31:51 +0800
-Message-Id: <20210331073151.15836-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S234112AbhCaHdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234090AbhCaHdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 03:33:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D67C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FCOeNsdqWlXJJzwZbuVskDWYiqHeP5gXynaJwTTANcc=; b=plAm4hZUpsSpsxqx+jW/gn4Fut
+        VfWup/icq2Hq38lolETXuZxVQqx6wim2ihPB+y4mYuZC394djW8lXkEvCp9sN/94GbCoVuzGa2kc+
+        uvaOqJqZTg44JOKztdY1IeGR2qMtFhSckYtLziUedc372yc99BZ5gHppUN4f0O6ptDTqpbOsEgTyN
+        W6or09iuSorZD+2WzXi5zih0SqAd2bbhPP4IWbLefT7GL57b803QfG6UFoGLx0+vaqUpsD0DeDmRp
+        Ex5KR+A0XuRyuRIG+xEe3/BV/BtpQLmOI5fKQdn7vVUcQT+SSto1r9V9pEdrc8Mi1doIJc17nz1oX
+        0VWPVhgQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRVKw-004C3H-2M; Wed, 31 Mar 2021 07:32:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 38459304B90;
+        Wed, 31 Mar 2021 09:32:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1DEB82B878558; Wed, 31 Mar 2021 09:32:21 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 09:32:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: kernel/sched/core.c:5370:37: warning: cast between incompatible
+ function types from 'long int (*)(void)' to 'int (*)(void)'
+Message-ID: <YGQlhQ9rfkKBwUKB@hirez.programming.kicks-ass.net>
+References: <202103311434.dpBaRaX7-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowABHSZGUJWRgEOG7sw--.38716S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw18Ww1fGF1DGFy3Ar1xGrg_yoW8tF1xpa
-        95uw1UAF1kAr1qkr15CayUZasav3Z3J3y8X397u34SyFn5AryagF1DJrWFyF98K3y8Jr4q
-        qan8KryUXay5tF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bYyIUUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/xtbBRRVmyFPAK05EBgAAsK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202103311434.dpBaRaX7-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+On Wed, Mar 31, 2021 at 02:15:41PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5e46d1b78a03d52306f21f77a4e4a144b6d31486
+> commit: 826bfeb37bb4302ee6042f330c4c0c757152bdb8 preempt/dynamic: Support dynamic preempt with preempt= boot option
+> date:   6 weeks ago
+> config: x86_64-randconfig-r011-20210331 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=826bfeb37bb4302ee6042f330c4c0c757152bdb8
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 826bfeb37bb4302ee6042f330c4c0c757152bdb8
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    kernel/sched/core.c: In function 'schedule_tail':
+>    kernel/sched/core.c:4252:13: warning: variable 'rq' set but not used [-Wunused-but-set-variable]
+>     4252 |  struct rq *rq;
+>          |             ^~
+>    In file included from include/linux/err.h:5,
+>                     from include/linux/kthread.h:5,
+>                     from include/trace/events/sched.h:8,
+>                     from kernel/sched/core.c:10:
+>    kernel/sched/core.c: In function 'setup_preempt_mode':
+> >> kernel/sched/core.c:5370:37: warning: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Wcast-function-type]
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+That warning is broken IMO.
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/block/rsxx/core.c | 30 ++++--------------------------
- 1 file changed, 4 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 63f5498..8979843 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -150,16 +150,6 @@ static int rsxx_attr_stats_show(struct seq_file *m, void *p)
- 	return 0;
- }
- 
--static int rsxx_attr_stats_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, rsxx_attr_stats_show, inode->i_private);
--}
--
--static int rsxx_attr_pci_regs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, rsxx_attr_pci_regs_show, inode->i_private);
--}
--
- static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
- 			      size_t cnt, loff_t *ppos)
- {
-@@ -206,21 +196,9 @@ static ssize_t rsxx_cram_write(struct file *fp, const char __user *ubuf,
- 	.write		= rsxx_cram_write,
- };
- 
--static const struct file_operations debugfs_stats_fops = {
--	.owner		= THIS_MODULE,
--	.open		= rsxx_attr_stats_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(rsxx_attr_stats);
- 
--static const struct file_operations debugfs_pci_regs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= rsxx_attr_pci_regs_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(rsxx_attr_pci_regs);
- 
- static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
- {
-@@ -234,13 +212,13 @@ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
- 
- 	debugfs_stats = debugfs_create_file("stats", 0444,
- 					    card->debugfs_dir, card,
--					    &debugfs_stats_fops);
-+					    &rsxx_attr_stats_fops);
- 	if (IS_ERR_OR_NULL(debugfs_stats))
- 		goto failed_debugfs_stats;
- 
- 	debugfs_pci_regs = debugfs_create_file("pci_regs", 0444,
- 					       card->debugfs_dir, card,
--					       &debugfs_pci_regs_fops);
-+					       &rsxx_attr_pci_regs_fops);
- 	if (IS_ERR_OR_NULL(debugfs_pci_regs))
- 		goto failed_debugfs_pci_regs;
- 
--- 
-1.9.1
-
-
+Still, I have a patch for this somewhere.. I'll try and push it out
+sometime soon.
