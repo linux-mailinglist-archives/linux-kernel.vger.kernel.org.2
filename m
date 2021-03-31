@@ -2,177 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9895F34FBC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36C734FBC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 10:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhCaIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 04:37:10 -0400
-Received: from mail-eopbgr60047.outbound.protection.outlook.com ([40.107.6.47]:45440
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230350AbhCaIg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 04:36:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJa9UpoNM5VFWjjX5zSn4+vGTLWFZLtl+yj1fm7yfYRCQNlPPaNl3nWX+CbC/sIk9sFrnlutRr/XoKb1iQm+cV3BvzY3nXoxQcBmhMUNJS8IIzNu86BNXEtlrU2BU4+2HJSCrLDdz1LKqXNTrsp6eCq3gpkmoCoqEyLV8kXEjiLxPz2/flrIP7ezzfc92dOhvEaDf5ZjXLtOZQoHXnklf+bDTMgNM+ukyM47QOzbsgW2raGgoIQ3XrQcl7CD6DGGLgheNgcnQCV17TDvV2azUY2xW3XP7wB15OgG1UDYZ0Fn75gAysUAchYNQc74o8SlP+0O7Ncx9qmp4YcmBBtabQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOkNLgUSmiYyltivefYrDX64zKWst1bwHOax64GwDJs=;
- b=UUPuABafpADn2fhbEIiz4tpXA35bPzP0rQcloD+626i5/faqu4doUOtrD6HP+W5376PocgIPbApw7hQD1g5FkVoWl3bPc8Su7jxtWpzOajVlDxaKvjwsScMFjtXxiVk/OKsy/YaSjGbbGUMTAo7rZHf3RYvC4rhqqOeR6QEdsGldJ54F316/a3KJkPBtMZQIICoMVsw2cXlYbCVyXlV1Htr/x1r9A51FRpDqkvvcBtoQnTIZDZRdiiihSgKuk5IN1RJ95EjPIba3+D1a2W1b5RlK+4eViMLs+rQ/VHMSrxnvyZjU9trGv3qPBi2q4ePJsi3aS+UmOq6Xbi2cqOXNsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOkNLgUSmiYyltivefYrDX64zKWst1bwHOax64GwDJs=;
- b=l5I25O7dyDPclErmKGtwuT2tQCgaJTOS0dO+l1KMtgtoJAyo4f7HysjHoyd3rJm/8a6csvnnlcm6uTNs0kG2k80RMP8TmJnunZw0/7WwC2xWBIcnPWWyZcpy9XsDDmKZAV7mSaGw3y2e2zSAzAtYPFNlwBozX5hCYkH270Wujgg=
-Received: from DB6PR0401MB2407.eurprd04.prod.outlook.com (2603:10a6:4:4b::7)
- by DBBPR04MB7913.eurprd04.prod.outlook.com (2603:10a6:10:1ee::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Wed, 31 Mar
- 2021 08:36:55 +0000
-Received: from DB6PR0401MB2407.eurprd04.prod.outlook.com
- ([fe80::8007:e187:6f31:719]) by DB6PR0401MB2407.eurprd04.prod.outlook.com
- ([fe80::8007:e187:6f31:719%9]) with mapi id 15.20.3999.027; Wed, 31 Mar 2021
- 08:36:55 +0000
-From:   "J.d. Yue" <jindong.yue@nxp.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "mingo@kernel.org" <mingo@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v2] tick/broadcast: Allow later registered
- device enter oneshot mode
-Thread-Topic: [EXT] Re: [PATCH v2] tick/broadcast: Allow later registered
- device enter oneshot mode
-Thread-Index: AQHXJcq7ZFUFxVdDYUCzmUhdysoTlqqdvg2AgAAHblA=
-Date:   Wed, 31 Mar 2021 08:36:55 +0000
-Message-ID: <DB6PR0401MB2407333158EC1F8525A31D4BFB7C9@DB6PR0401MB2407.eurprd04.prod.outlook.com>
-References: <20210331011045.25381-1-jindong.yue@nxp.com>
- <87ft0b6926.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87ft0b6926.ffs@nanos.tec.linutronix.de>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f6bcede5-d369-46d1-1f4b-08d8f42023f0
-x-ms-traffictypediagnostic: DBBPR04MB7913:
-x-microsoft-antispam-prvs: <DBBPR04MB7913E7FE9868D9E5E3E695E1FB7C9@DBBPR04MB7913.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4fR0i+gBaBLaauDB5PBCLOZf9PDfMXgusjwns6GwNMYtBXS2yqDosvgIlSnimTxE+MN410TnFBPWYefke+k2uSPSS6RwB2h8egI5m6xlOAvi3bqVenYVRmBjE/nrqvwR035ZeFLR/hFJPTdhpmNf5kWrKkwtkaJTc98XTLX4+dnsvyhr/OJXhvq84VlfaY7Tn3lsQw3b1mpJVGbjdM7JsZj5J0V/Hplyko+MnBBStmPrgxxvzmpR73VdrX6phJSSQLK3yVEYahQGDnFxXTNPP21aQVPrSSHjHebmecA0aF2NiJD8oP94vikFuj5lk450q6rKxJ67fOaeiidgfXZuYxjY+P5UW3aeDLuuNLxJRcwkYEkHf+tD3pAIFO3pyaOzTM2+eqkV8TkS+P2D620oTXU/y7uFcQCluKvhfEoizd+7mR6/WFiuSVWa2+cpfpxc9eyUZIqqkBIXt6D7HQ3RmwdhZ/QrB2+JhHhBTLv4MgYBYldlMIKId94vyOjsG0rB5NRPsADqbBwOydewHY87UGZO0unPLA4pUmFQyL/fj1M0tsZOWp5gPYccjTTg/WyYtjnsXcmVESwzvvJ0MAyLw5XGeSPkRHJtn/KcQQxaGPpY2dnhI/MEZf7J4R91T3TP8ZLgdZGARdH0l1w7Aihdzjkrs0Cn97Yql9yrBc27bWc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2407.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(86362001)(7696005)(66476007)(66446008)(64756008)(9686003)(66556008)(5660300002)(110136005)(71200400001)(33656002)(83380400001)(55016002)(2906002)(26005)(52536014)(4326008)(6506007)(38100700001)(8936002)(8676002)(186003)(53546011)(66946007)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CiKvZPx+lqyDGn1mjH2L09R/LvaCNnNDaKT3Gl+9ouGl7OmAs0CP6Hw8BgUc?=
- =?us-ascii?Q?uQ8s1qBp6TM9/EBa5cs5MWLBtk6O+zE1q/tfoH7XfEgmxaQ+s0BTgIRQAfpz?=
- =?us-ascii?Q?Yt11tLdefA9EqWWXGqL9J3H48eBqTxNUUfjyK9VoeEeJsNzB3/xNRiE7GbHc?=
- =?us-ascii?Q?kEAbjOA1jK9FIvT3enrNQTs9FxiOPv+Esqm6fDTSSZW6b9EHQXozeNuuNU/r?=
- =?us-ascii?Q?Ms6nord9XoQtGnCSrVZo5pR2UMbyWPbFUI5lpHw+A7YyykSIBVvnaSLS0B52?=
- =?us-ascii?Q?ZWUjSCKroncSHAGw0CdJtfp262+gDPnNDThqNyh6hJSGweNS/4Fuoi5LwMPC?=
- =?us-ascii?Q?7Q+p6n9gwmJ1S7lQ4n7CJAUkpxwI2IsWhBYgOJR52j6BEy4kdWzpghXFFUn8?=
- =?us-ascii?Q?rSvFQVJmlLMSk1Xb7nLts8MfvZfhCmDghoBA3wO+Ihr0ogqumMSbTPGwVZWt?=
- =?us-ascii?Q?LL9VMoP4JdMcGSMCtPSdIJsZwQyzNKdU/NF6apWhgoN5qVFPDNg6/Qb8jYEg?=
- =?us-ascii?Q?jiA0CtxQvbLCRe0v5fOrCi1oXBinxrMKl6zQmP9RFp/oIGRkTOrgwENXGRsE?=
- =?us-ascii?Q?X2Rs1S4X4UkN7vgvuQePvxGe5mxYh2iyX9S7gHJWz/CXsKa+aIL5xl9231cX?=
- =?us-ascii?Q?dQLpt5Q7iVcsXfvVOgaeYN+6v7Pf8vPkU05Zx+jwGtvQ7e8ABC/zs4xj8Jew?=
- =?us-ascii?Q?I2s82N8n4GIT91fOcM84DcQd5STLuYv5FW1G4WrqancIhIbqaSpJ32hg8wX0?=
- =?us-ascii?Q?2D0Fe97fin2b7H1tSAeVjCGa1+gccEJgv32Lv/yUVMW/qYiQoGqHnuh7pS8k?=
- =?us-ascii?Q?+oo3HYY3VUh3mMBULXsezEcbV302brzvys5dEgMxJ9KhY7fv6P6QdfwvuBdc?=
- =?us-ascii?Q?T2t9IfzgiDVIVqZIU5Eu+cA3YJAekJeE8QXAThFWINQlGP7bkx44qvAiLxfS?=
- =?us-ascii?Q?Vj8uA9JGj944YGfCesgv7W1TsVe/Mpb96oXkkhDQDAosEI03Wb9rER14VzCO?=
- =?us-ascii?Q?6Fu8oBH8urM5V9kiWkoDCbJxjKDqioTerz6+M+J6R+TLYQMWyR8pBs30nQyw?=
- =?us-ascii?Q?p111zDdGLD5+x3r6uYwBq2ZffMfqsyl9LpBQjUBCog+Nw5bqkVKu17lwuOG2?=
- =?us-ascii?Q?q4xfWSJhpvJlaUNXf7OTmaMGxmqehZkU+DE3rANp4l8qrL4hAoAM9aa9nn6x?=
- =?us-ascii?Q?kB29xBzl4VlOTzTSateGFMNgzaDqxuXL/OGq+G1L0ddcDy4DBm+FwI0MX9AH?=
- =?us-ascii?Q?ggb9b3Rhvk1qEePoq/QN+KZNeteSrfxgCNsV6fH6uXru2wzkysOMeQKlXQ6h?=
- =?us-ascii?Q?uPk=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234475AbhCaIiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 04:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234457AbhCaIh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:37:59 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB6AC06174A;
+        Wed, 31 Mar 2021 01:37:59 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f3so4490988pgv.0;
+        Wed, 31 Mar 2021 01:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ccaqSjNvl3ukMYGkyGN2LDQ+g0PkcsvzVn6FgeWnsB8=;
+        b=Ir1o/yyI84ELGXmN6cJWa04Z2AdEQdo4yGyXFbzdBlfpVR4511nZDnMBRir/l27Ecu
+         fbZriubFEBloqBT4fs6mmut0SwID3bETtyyXsEGYm1/TTJrJUJUvJe4eE5QH1qbCiL39
+         nBlBCLFvayJZH767OjfTN4fDyR9bbCXKenAQF4AGp4OFeS9CEcovCAo437qkZBR/WFVt
+         g+SIjATKBjaTrot+FuLWZiDlGPok9AX2/58XmhOrYrM7YzU3KnJYjeVQ1f4r/U/cVNEa
+         o7t/4r3YNHB/9U3+dEYMriYX0cLkApZ2B7w3QBNUFa/jmeKIpCA/5fg2GpCkYp9YQrwD
+         pqjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ccaqSjNvl3ukMYGkyGN2LDQ+g0PkcsvzVn6FgeWnsB8=;
+        b=GJkHLEYYcgu726Qd6JyUncYcdRejvzL2Psb6qdhUrO7jzkVGGiCK779OihnksXFX19
+         NfozrlkiCX07pN9uxRoz/sYhyadz1WRNZmoItNpruNYNIZRlp6I6uMaX6n3HrqlZ9rlb
+         XrFw+7xejxGCMQQmFxnYGOpWj4MpjUGYflKEFgN1lIaEfBb299R8wBYp4xcPttLmFhPv
+         Ok41iIV2F2yujYaZdwL/kUgLlavgsXs3RaqcBeIoeUAjo00tbZg8sg2UZ7xCXaIYmsUm
+         +Su+5V/tuBHOxWzG1/zYBxHbqNl0jBdFHT3GIZ0rzP61Lv2Ubis7TvOAl8n7WkK2U4MW
+         GLqw==
+X-Gm-Message-State: AOAM531tBApTXZfD5yy3zYNscuOkISpmQNtKRHwdmUyyxa3yT5rHxZVM
+        OGvAcPIVIrt0OhxD0ZYPc5U=
+X-Google-Smtp-Source: ABdhPJx0rU9MB8WdE3sOLqZAhyfW+WVNQVbMecQS0EfThM7L8SlkimebnQdO29EcuWsI97x0xISoTA==
+X-Received: by 2002:a62:7f45:0:b029:205:9617:a819 with SMTP id a66-20020a627f450000b02902059617a819mr1914033pfd.17.1617179878714;
+        Wed, 31 Mar 2021 01:37:58 -0700 (PDT)
+Received: from localhost ([47.8.37.177])
+        by smtp.gmail.com with ESMTPSA id x25sm1489541pfn.81.2021.03.31.01.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 01:37:58 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     xiyou.wangcong@gmail.com
+Cc:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, memxor@gmail.com,
+        netdev@vger.kernel.org, toke@redhat.com, vladbu@nvidia.com
+Subject: [PATCH net-next v3] net: sched: bump refcount for new action in ACT replace mode
+Date:   Wed, 31 Mar 2021 14:07:24 +0530
+Message-Id: <20210331083723.171150-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAM_iQpVAo+Zxus-FC59xzwcmbS7UOi6F8kNMzsrEVrBY2YRtNA@mail.gmail.com>
+References: <CAM_iQpVAo+Zxus-FC59xzwcmbS7UOi6F8kNMzsrEVrBY2YRtNA@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2407.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6bcede5-d369-46d1-1f4b-08d8f42023f0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 08:36:55.0965
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2cdewuuV/c1qlddEqSZiZxyoz6WHvMj+CYtX0fqYl2voMRsm5QR1/tuDSgQ51CrVGQLdD3C4OHzwVqiHL3qChA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7913
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, action creation using ACT API in replace mode is buggy.  When
+invoking for non-existent action index 42,
 
-> -----Original Message-----
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Sent: Wednesday, March 31, 2021 4:07 PM
-> To: J.d. Yue <jindong.yue@nxp.com>; fweisbec@gmail.com; mingo@kernel.org
-> Cc: linux-kernel@vger.kernel.org; J.d. Yue <jindong.yue@nxp.com>
-> Subject: [EXT] Re: [PATCH v2] tick/broadcast: Allow later registered devi=
-ce
-> enter oneshot mode
->=20
-> Caution: EXT Email
->=20
-> On Wed, Mar 31 2021 at 09:10, Jindong Yue wrote:
-> > --- a/kernel/time/tick-broadcast.c
-> > +++ b/kernel/time/tick-broadcast.c
-> > @@ -47,6 +47,7 @@ static inline void
-> > tick_resume_broadcast_oneshot(struct clock_event_device *bc)  static
-> > inline void tick_broadcast_oneshot_offline(unsigned int cpu) { }  #
-> > endif  #endif
-> > +static void tick_handle_oneshot_broadcast(struct clock_event_device
-> > +*dev);
->=20
-> Leftover ...
+	tc action replace action bpf obj foo.o sec <xyz> index 42
 
-Removed in v3.
+kernel creates the action, fills up the netlink response, and then just
+deletes the action while notifying userspace of success.
 
->=20
-> >  /*
-> >   * Debugging: see timer_list.c
-> > @@ -107,6 +108,19 @@ void tick_install_broadcast_device(struct
-> clock_event_device *dev)
-> >       tick_broadcast_device.evtdev =3D dev;
-> >       if (!cpumask_empty(tick_broadcast_mask))
-> >               tick_broadcast_start_periodic(dev);
-> > +
-> > +     if (!(dev->features & CLOCK_EVT_FEAT_ONESHOT))
-> > +             return;
-> > +
-> > +     /*
-> > +      * If system already runs in oneshot mode, switch new registered
->=20
-> the system .... the newly registered
->=20
-> > +      * broadcast device to oneshot mode explicitly if possiable.
->=20
-> s/possible/possiable/
->=20
-> But the 'if possible' makes no sense here. The above check for
-> CLOCK_EVT_FEAT_ONESHOT established that it _is_ possible. So just remove
-> the 'if ...'.
+	tc action show action bpf
 
-I should be more careful ...
-Please check v3 patch.
+doesn't list the action.
 
-Thanks
-Jindong
+This happens due to the following sequence when ovr = 1 (replace mode)
+is enabled:
 
->=20
-> > +      */
-> > +     if (tick_broadcast_oneshot_active()) {
-> > +             tick_broadcast_switch_to_oneshot();
-> > +             return;
-> > +     }
->=20
-> Thanks,
->=20
->         tglx
+tcf_idr_check_alloc is used to atomically check and either obtain
+reference for existing action at index, or reserve the index slot using
+a dummy entry (ERR_PTR(-EBUSY)).
+
+This is necessary as pointers to these actions will be held after
+dropping the idrinfo lock, so bumping the reference count is necessary
+as we need to insert the actions, and notify userspace by dumping their
+attributes. Finally, we drop the reference we took using the
+tcf_action_put_many call in tcf_action_add. However, for the case where
+a new action is created due to free index, its refcount remains one.
+This when paired with the put_many call leads to the kernel setting up
+the action, notifying userspace of its creation, and then tearing it
+down. For existing actions, the refcount is still held so they remain
+unaffected.
+
+Fortunately due to rtnl_lock serialization requirement, such an action
+with refcount == 1 will not be concurrently deleted by anything else, at
+best CLS API can move its refcount up and down by binding to it after it
+has been published from tcf_idr_insert_many. Since refcount is atleast
+one until put_many call, CLS API cannot delete it. Also __tcf_action_put
+release path already ensures deterministic outcome (either new action
+will be created or existing action will be reused in case CLS API tries
+to bind to action concurrently) due to idr lock serialization.
+
+We fix this by making refcount of newly created actions as 2 in ACT API
+replace mode. A relaxed store will suffice as visibility is ensured only
+after the tcf_idr_insert_many call.
+
+We also remember the new actions that we took an additional reference on,
+and relinquish the temporal reference during rollback on failure.
+
+Note that in case of creation or overwriting using CLS API only (i.e.
+bind = 1), overwriting existing action object is not allowed, and any
+such request is silently ignored (without error).
+
+The refcount bump that occurs in tcf_idr_check_alloc call there for
+existing action will pair with tcf_exts_destroy call made from the owner
+module for the same action. In case of action creation, there is no
+existing action, so no tcf_exts_destroy callback happens.
+
+This means no code changes for CLS API.
+
+Fixes: cae422f379f3 ("net: sched: use reference counting action init")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+Changelog:
+
+v2 -> v3
+Cleanup new action on rollback after raising refcount (Cong)
+
+v1 -> v2
+Remove erroneous tcf_action_put_many call in tcf_exts_validate (Vlad)
+Isolate refcount bump to ACT API in replace mode
+---
+ include/net/act_api.h |  2 +-
+ net/sched/act_api.c   | 24 ++++++++++++++++++++++--
+ net/sched/cls_api.c   |  2 +-
+ 3 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/include/net/act_api.h b/include/net/act_api.h
+index 2bf3092ae7ec..a01ff5fa641e 100644
+--- a/include/net/act_api.h
++++ b/include/net/act_api.h
+@@ -194,7 +194,7 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+ 				    struct nlattr *nla, struct nlattr *est,
+ 				    char *name, int ovr, int bind,
+ 				    struct tc_action_ops *ops, bool rtnl_held,
+-				    struct netlink_ext_ack *extack);
++				    struct netlink_ext_ack *extack, bool *ref);
+ int tcf_action_dump(struct sk_buff *skb, struct tc_action *actions[], int bind,
+ 		    int ref, bool terse);
+ int tcf_action_dump_old(struct sk_buff *skb, struct tc_action *a, int, int);
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index b919826939e0..718bc197b9a7 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -993,7 +993,7 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+ 				    struct nlattr *nla, struct nlattr *est,
+ 				    char *name, int ovr, int bind,
+ 				    struct tc_action_ops *a_o, bool rtnl_held,
+-				    struct netlink_ext_ack *extack)
++				    struct netlink_ext_ack *extack, bool *ref)
+ {
+ 	struct nla_bitfield32 flags = { 0, 0 };
+ 	u8 hw_stats = TCA_ACT_HW_STATS_ANY;
+@@ -1042,6 +1042,13 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+ 	if (err != ACT_P_CREATED)
+ 		module_put(a_o->owner);
+
++	if (!bind && ovr && err == ACT_P_CREATED) {
++		if (ref)
++			*ref = true;
++
++		refcount_set(&a->tcfa_refcnt, 2);
++	}
++
+ 	return a;
+
+ err_out:
+@@ -1062,10 +1069,13 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+ 	struct tc_action_ops *ops[TCA_ACT_MAX_PRIO] = {};
+ 	struct nlattr *tb[TCA_ACT_MAX_PRIO + 1];
+ 	struct tc_action *act;
++	u32 new_actions = 0;
+ 	size_t sz = 0;
+ 	int err;
+ 	int i;
+
++	BUILD_BUG_ON(TCA_ACT_MAX_PRIO > sizeof(new_actions) * 8);
++
+ 	err = nla_parse_nested_deprecated(tb, TCA_ACT_MAX_PRIO, nla, NULL,
+ 					  extack);
+ 	if (err < 0)
+@@ -1083,8 +1093,9 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+ 	}
+
+ 	for (i = 1; i <= TCA_ACT_MAX_PRIO && tb[i]; i++) {
++		bool ovr_new = false;
+ 		act = tcf_action_init_1(net, tp, tb[i], est, name, ovr, bind,
+-					ops[i - 1], rtnl_held, extack);
++					ops[i - 1], rtnl_held, extack, &ovr_new);
+ 		if (IS_ERR(act)) {
+ 			err = PTR_ERR(act);
+ 			goto err;
+@@ -1092,6 +1103,10 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+ 		sz += tcf_action_fill_size(act);
+ 		/* Start from index 0 */
+ 		actions[i - 1] = act;
++
++		/* remember new actions that we take a reference on */
++		if (ovr_new)
++			new_actions |= 1UL << (i - 1);
+ 	}
+
+ 	/* We have to commit them all together, because if any error happened in
+@@ -1103,6 +1118,11 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+ 	return i - 1;
+
+ err:
++	/* reset the reference back to 1 in case of error */
++	for (i = 0; i < TCA_ACT_MAX_PRIO && actions[i]; i++) {
++		if (new_actions & (1UL << i))
++			refcount_set(&actions[i]->tcfa_refcnt, 1);
++	}
+ 	tcf_action_destroy(actions, bind);
+ err_mod:
+ 	for (i = 0; i < TCA_ACT_MAX_PRIO; i++) {
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index d3db70865d66..4f4a7355b1e1 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -3052,7 +3052,7 @@ int tcf_exts_validate(struct net *net, struct tcf_proto *tp, struct nlattr **tb,
+ 			act = tcf_action_init_1(net, tp, tb[exts->police],
+ 						rate_tlv, "police", ovr,
+ 						TCA_ACT_BIND, a_o, rtnl_held,
+-						extack);
++						extack, NULL);
+ 			if (IS_ERR(act)) {
+ 				module_put(a_o->owner);
+ 				return PTR_ERR(act);
+--
+2.30.2
+
