@@ -2,122 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AEC350703
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350943506A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 20:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbhCaSzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 14:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235499AbhCaSz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:55:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC6C061574;
-        Wed, 31 Mar 2021 11:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=QhjvAwIphJQ5orJt+4iPRIVY31UtY38qCQDOplio82c=; b=Y0+DwTf4nzq1ij1vSYbU6KQO+5
-        seEXuRe0GKy5l8GHVrB+T7bfU/0F24fFPswSLVDMbbUWifh/fsUO81L/GPOWXh6/+YpqWTnNL5hRE
-        ykqJPUNQsYIM0gsX8A2sQeo120D51K9gk2S2mi+CzpJj/VZya4YDvk3NH3R75omc60+Sy6e90MtlY
-        OJ+Vu4WeC9NVAAFQXiEbBV9RmSf2FLylB1mzGJi5SNjU4hSMBcJ6HKgpY1I/djuLGq4eoeBJtmvbL
-        FAIWeGb+rpIml2+iHCHoKuQuhErYF2T9QXhDr+c+zNSXt/9SXFvosks9/U0sEFKaZmYye/fovtQpT
-        M5TWQW2Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lRfyj-004zmV-Rm; Wed, 31 Mar 2021 18:54:11 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: [PATCH v6 24/27] mm/writeback: Add wait_for_stable_folio
-Date:   Wed, 31 Mar 2021 19:47:25 +0100
-Message-Id: <20210331184728.1188084-25-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210331184728.1188084-1-willy@infradead.org>
-References: <20210331184728.1188084-1-willy@infradead.org>
+        id S235042AbhCaSrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 14:47:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63656 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234832AbhCaSr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:47:29 -0400
+IronPort-SDR: MPjX/IdaYe5cBrJjLg4bLkJXU9Q7E5M6QXvWtxsZqR3QuSft1ExOlnQ4UhBdh6koQSxMez1tiq
+ QA5pmABdBfOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192173746"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="192173746"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:47:29 -0700
+IronPort-SDR: nhzEm/WpLjQ3qSieIgLCYQuYDZ60wYt+hnbZfwjY4QU5recG3vnulsZsB9jQU5gNO4r3aG52OJ
+ DbqHWkqW3DTQ==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="394150559"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.66.43])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 11:47:28 -0700
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+To:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>
+Cc:     "Gong, Richard" <richard.gong@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <YF90y3Di4RbuJvr0@epycbox.lan>
+ <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+ <YGC619DmLM0AAQ5p@epycbox.lan>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
+Date:   Wed, 31 Mar 2021 11:47:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YGC619DmLM0AAQ5p@epycbox.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move wait_for_stable_page() into the folio compatibility file.
-wait_for_stable_folio() avoids a call to compound_head() and is 14 bytes
-smaller than wait_for_stable_page() was.  The net text size grows by 24
-bytes as a result of this patch.
+Moritz,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/pagemap.h |  1 +
- mm/folio-compat.c       |  6 ++++++
- mm/page-writeback.c     | 24 ++++++++++++++----------
- 3 files changed, 21 insertions(+), 10 deletions(-)
+On 3/28/21 10:20 AM, Moritz Fischer wrote:
+> Tom,
+>
+> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+>> On 3/27/21 11:09 AM, Moritz Fischer wrote:
+>>> Hi Richard, Russ,
+>>>
+>>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
+>>>> Hi Moritz,
+>>>>
+>>>> Sorry for asking.
+>>>>
+>>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+>>>>
+>>>> Regards,
+>>>> Richard
+>>>>
+>>>> -----Original Message-----
+>>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
+>>>> Sent: Tuesday, February 9, 2021 4:20 PM
+>>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>> Cc: Gong, Richard <richard.gong@intel.com>
+>>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+>>>>
+>>>> From: Richard Gong <richard.gong@intel.com>
+>>>>
+>>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+>>>>
+>>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+>>>>
+>>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
+>>>>
+>>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+>>>>
+>>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
+>>>>
+>>>> Richard Gong (7):
+>>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+>>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+>>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
+>>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+>>>>   fpga: of-fpga-region: add authenticate-fpga-config property
+>>>>   dt-bindings: fpga: add authenticate-fpga-config property
+>>>>   fpga: stratix10-soc: extend driver for bitstream authentication
+>>>>
+>>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+>>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
+>>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+>>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+>>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+>>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+>>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
+>>>>  7 files changed, 125 insertions(+), 18 deletions(-)
+>>>>
+>>>> --
+>>>> 2.7.4
+>>>>
+>>> Apologies for the epic delay in getting back to this, I took another
+>>> look at this patchset and Russ' patchset.
+>>>
+>>> TL;DR I'm not really a fan of using device-tree overlays for this (and
+>>> again, apologies, I should've voiced this earlier ...).
+>>>
+>>> Anyways, let's find a common API for this and Russ' work, they're trying
+>>> to achieve the same / similar thing, they should use the same API.
+>>>
+>>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
+>>> 'secure update' ops that work for both these use-cases (and I susspect
+>>> hte XRT patchset will follow with a similar requirement, right after).
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 2be3a028eb3d..001f8ec67ee7 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -834,6 +834,7 @@ int wait_on_folio_writeback_killable(struct folio *folio);
- void end_page_writeback(struct page *page);
- void end_folio_writeback(struct folio *folio);
- void wait_for_stable_page(struct page *page);
-+void wait_for_stable_folio(struct folio *folio);
- 
- void page_endio(struct page *page, bool is_write, int err);
- 
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index 6aadecc39fba..335594fe414e 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -29,3 +29,9 @@ void wait_on_page_writeback(struct page *page)
- 	return wait_on_folio_writeback(page_folio(page));
- }
- EXPORT_SYMBOL_GPL(wait_on_page_writeback);
-+
-+void wait_for_stable_page(struct page *page)
-+{
-+	return wait_for_stable_folio(page_folio(page));
-+}
-+EXPORT_SYMBOL_GPL(wait_for_stable_page);
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 8271f9b24b69..9d55ceec05c0 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2865,17 +2865,21 @@ int wait_on_folio_writeback_killable(struct folio *folio)
- EXPORT_SYMBOL_GPL(wait_on_folio_writeback_killable);
- 
- /**
-- * wait_for_stable_page() - wait for writeback to finish, if necessary.
-- * @page:	The page to wait on.
-+ * wait_for_stable_folio() - wait for writeback to finish, if necessary.
-+ * @folio: The folio to wait on.
-  *
-- * This function determines if the given page is related to a backing device
-- * that requires page contents to be held stable during writeback.  If so, then
-- * it will wait for any pending writeback to complete.
-+ * This function determines if the given folio is related to a backing
-+ * device that requires folio contents to be held stable during writeback.
-+ * If so, then it will wait for any pending writeback to complete.
-+ *
-+ * Context: Sleeps.  Must be called in process context and with
-+ * no spinlocks held.  Caller should hold a reference on the folio.
-+ * If the folio is not locked, writeback may start again after writeback
-+ * has finished.
-  */
--void wait_for_stable_page(struct page *page)
-+void wait_for_stable_folio(struct folio *folio)
- {
--	page = thp_head(page);
--	if (page->mapping->host->i_sb->s_iflags & SB_I_STABLE_WRITES)
--		wait_on_page_writeback(page);
-+	if (folio->mapping->host->i_sb->s_iflags & SB_I_STABLE_WRITES)
-+		wait_on_folio_writeback(folio);
- }
--EXPORT_SYMBOL_GPL(wait_for_stable_page);
-+EXPORT_SYMBOL_GPL(wait_for_stable_folio);
--- 
-2.30.2
+Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
+
+More to come...
+
+Thanks,
+- Russ
+
+>> The xrt patchset makes heavy use of device trees.
+>>
+>> What is the general guidance for device tree usage ?
+> I'm not generally against using device tree, it has its place. To
+> describe hardware (and hardware *changes* with overlays) :)
+>
+> What I don't like about this particular implementation w.r.t device-tree
+> usage is that it uses DT overlays as a mechanism to program the flash --
+> in place of having an API to do so.
+>
+> One could add device-nodes during the DT overlay application, while the
+> FPGA doesn't actually get programmed with a new runtime image -- meaning
+> live DT and actual hardware state diverged -- worst case it'd crash.
+>
+> So when roughly at the same time (from the same company even) we have two
+> patchsets that do similar things with radically different APIs I think
+> we should pause, and reflect on whether we can come up with something
+> that works for both :)
+>
+> TL;DR the firmware parts to authenticate the bitstream look fine to me, the
+> way we tie it into the FPGA region I'm not a fan of.
+>
+> - Moritz
 
