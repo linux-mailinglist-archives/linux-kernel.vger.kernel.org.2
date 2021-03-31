@@ -2,176 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424463508F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26BE3508FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhCaVK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:10:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47630 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233291AbhCaVKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:10:19 -0400
-IronPort-SDR: oZegbmosS8oeMsEHK6esgpfQTy3r8y45rEraGFDSs2QptKr36mAAc8MF1cR89HeTD4e9XLWRa4
- asyYncauybrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="189860375"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="189860375"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:10:11 -0700
-IronPort-SDR: SmGk/Jaofhn11Elbj0KQMbIBGFtymvgsCuuvONoHwZCDjk4HeGXve99bX775xN0fO03/0AThea
- w0cx9UQuq3AA==
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="412355353"
-Received: from sjard-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.174.17])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:10:09 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-Date:   Wed, 31 Mar 2021 14:09:59 -0700
-Message-Id: <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
+        id S229890AbhCaVNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhCaVNB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:13:01 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384FDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:13:01 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id x9so4269qto.8
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=7ZNFgcsyvkRXWIbvwYMY03RQW5khQN/vbd/frFG/nUU=;
+        b=s08LYvlJvhn6Snkowhi+e/QiTlMojStP5ZCr99DF6cd0W7h+JSpge4UyYmTjdxJlDE
+         vK2Ee5fYWroXeMzqQ9lpiz/UeppjHK+QwiHN44goCfrX5dS9Dv6sjSHKkhvI6k9FtSh5
+         utgLT/c5JquNraVvUVVBIk0pGvd/8JEboRMiTZNmc4tcXQEoNvxZYXltIY7JiBsU1ZDx
+         F20oI7K97o7OslxraIKh5/b6FE3/TIdjpsaCuRDRPzL/f+pUilTSrq6vWA9rhIEgUmAU
+         AKspx/xL86InAzl7u695FPCDrHMQ9JC7OnbUn7DqgnwMQQJQxoVRRFR6FqGS/b3EybPU
+         8ghA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=7ZNFgcsyvkRXWIbvwYMY03RQW5khQN/vbd/frFG/nUU=;
+        b=jmxoZKvsjUXzSclNzwcL/4tycqZw7DJD4iDmftNTNUHlw4m9eySjqjJf30Kd8K3g6B
+         CPk7f/Qd0Con1UEKV0tJXI8kVbJxK+5W8ko9YhFseBmX4pYiFJNUjpPKqiB5hYXSFZ/f
+         K5WYQ2qispEkI9FkzkQ9FQ/Y95y/dEa2vRTW4cvfzoO1cEmDIl99E97oAmI4ph5lSSye
+         YHUXh2KOgsIwuNdIuQhLy1xIELKHQTSnHUF+mlSpTDtqH44NfIIJgS8qBq9wmmGy/lJO
+         FoJOQjve2fBrWrPujuOOV/o6Dy2Zws99FbHv5a32cijhWrqV/39QAK9OQsJEFBwRYMZk
+         2SfQ==
+X-Gm-Message-State: AOAM5325tQV6r1wmBAgkEq2PZaLT9xtyGnHWfLNI0yJ4NSlvlo3XKYvb
+        SOo9JuCxLp+ToYRh6aeru7Lixw==
+X-Google-Smtp-Source: ABdhPJypuvcI13xS3gv2XogUYnau5xzu0OLfJoKlAsPJGfjyyA9wWQZV+IqmclZEIKYhTdv+YWlbSA==
+X-Received: by 2002:ac8:5510:: with SMTP id j16mr4224125qtq.339.1617225180064;
+        Wed, 31 Mar 2021 14:13:00 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g11sm2396778qkk.5.2021.03.31.14.12.58
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 31 Mar 2021 14:12:59 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:12:46 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Yang Shi <shy828301@gmail.com>
+cc:     Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Roman Gushchin <guro@fb.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH mmotm] mm: vmscan: fix shrinker_rwsem in
+ free_shrinker_info()
+In-Reply-To: <CAHbLzkqDAOUjhV0-M-Mv6z7yKHk-WmuHHwJse4vvo82nJscTcA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2103311340080.1201@eggly.anvils>
+References: <alpine.LSU.2.11.2103301640240.2584@eggly.anvils> <CALvZod7PQ3=1nDUKVo33o5GGh-feGNM2LyekSys-U2-kOYbrTA@mail.gmail.com> <CAHbLzkqDAOUjhV0-M-Mv6z7yKHk-WmuHHwJse4vvo82nJscTcA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per Guest-Host Communication Interface (GHCI) Specification
-for Intel TDX, sec 2.4.1, TDX architecture does not support
-MWAIT, MONITOR and WBINVD instructions. So in non-root TDX mode,
-if MWAIT/MONITOR instructions are executed with CPL != 0 it will
-trigger #UD, and for CPL = 0 case, virtual exception (#VE) is
-triggered. WBINVD instruction behavior is also similar to
-MWAIT/MONITOR, but for CPL != 0 case, it will trigger #GP instead
-of #UD.
+On Wed, 31 Mar 2021, Yang Shi wrote:
+> On Wed, Mar 31, 2021 at 6:54 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > On Tue, Mar 30, 2021 at 4:44 PM Hugh Dickins <hughd@google.com> wrote:
+> > >
+> > > Lockdep warns mm/vmscan.c: suspicious rcu_dereference_protected() usage!
+> > > when free_shrinker_info() is called from mem_cgroup_css_free(): there it
+> > > is called with no locking, whereas alloc_shrinker_info() calls it with
+> > > down_write of shrinker_rwsem - which seems appropriate.  Rearrange that
+> > > so free_shrinker_info() can manage the shrinker_rwsem for itself.
+> > >
+> > > Link: https://lkml.kernel.org/r/20210317140615.GB28839@xsang-OptiPlex-9020
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > > Cc: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > > Sorry, I've made no attempt to work out precisely where in the series
+> > > the locking went missing, nor tried to fit this in as a fix on top of
+> > > mm-vmscan-add-shrinker_info_protected-helper.patch
+> > > which Oliver reported (and which you notated in mmotm's "series" file).
+> > > This patch just adds the fix to the end of the series, after
+> > > mm-vmscan-shrink-deferred-objects-proportional-to-priority.patch
+> >
+> > The patch "mm: vmscan: add shrinker_info_protected() helper" replaces
+> > rcu_dereference_protected(shrinker_info, true) with
+> > rcu_dereference_protected(shrinker_info,
+> > lockdep_is_held(&shrinker_rwsem)).
+> >
+> > I think we don't really need shrinker_rwsem in free_shrinker_info()
+> > which is called from css_free(). The bits of the map have already been
+> > 'reparented' in css_offline. I think we can remove
+> > lockdep_is_held(&shrinker_rwsem) for free_shrinker_info().
+> 
+> Thanks, Hugh and Shakeel. I missed the report.
+> 
+> I think Shakeel is correct, shrinker_rwsem is not required in css_free
+> path so Shakeel's proposal should be able to fix it.
 
-To prevent TD guest from using these unsupported instructions,
-following measures are adapted:
+Yes, looking at it again, I am sure that Shakeel is right, and
+that my patch was overkill - no need for shrinker_rwsem there.
 
-1. For MWAIT/MONITOR instructions, support for these instructions
-are already disabled by TDX module (SEAM). So CPUID flags for
-these instructions should be in disabled state. Also, just to be
-sure that these instructions are disabled, forcefully unset
-X86_FEATURE_MWAIT CPU cap in OS.
+Whether it's RCU-safe to free the info there, I have not reviewed at
+all: but shrinker_rwsem would not help even if there were an issue.
 
-2. For WBINVD instruction, we use audit to find the code that uses
-this instruction and disable them for TD.
+> I prepared a patch:
 
-After the above mentioned preventive measures, if TD guest still
-execute these instructions, add appropriate warning messages in #VE
-handler.
+Unsigned, white-space damaged, so does not apply.
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 64bf07cc20f2..7348c26d4cac 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -251,7 +251,12 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>         for_each_node(nid) {
+>                 pn = memcg->nodeinfo[nid];
+> -               info = shrinker_info_protected(memcg, nid);
+> +               /*
+> +                * Don't use shrinker_info_protected() helper since
+> +                * free_shrinker_info() could be called by css_free()
+> +                * without holding shrinker_rwsem.
+> +                */
 
-Changes since v3:
- * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
- * Fix the commit log and comments to address review comments from
-   from Dave & Sean.
+Just because I mis-inferred from the use of shrinker_info_protected()
+that shrinker_rwsem was needed here, is no reason to add that comment:
+imagine how unhelpfully bigger the kernel source would be if we added
+a comment everywhere I had misunderstood something!
 
-Changes since v2:
- * Added BUG() for WBINVD, WARN for MONITOR instructions.
- * Fixed comments as per Dave's review.
+> +               info = rcu_dereference_protected(pn->shrinker_info, true);
+>                 kvfree(info);
+>                 rcu_assign_pointer(pn->shrinker_info, NULL);
+>         }
 
-Changes since v1:
- * Added WARN() for MWAIT #VE exception.
+That does it, but I bikeshedded with myself in the encyclopaedic
+rcupdate.h, and decided rcu_replace_pointer(pn->shrinker_info, NULL, true)
+would be best.  But now see that patch won't fit so well into your series,
+and I can't spend more time writing up a justification for it.
 
-Changes since previous series:
- * Suppressed MWAIT feature as per Andi's comment.
- * Added warning debug log for MWAIT #VE exception.
-
- arch/x86/kernel/tdx.c | 44 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index e936b2f88bf6..82b411b828a5 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -63,6 +63,14 @@ static inline bool cpuid_has_tdx_guest(void)
- 	return true;
- }
+I think Andrew should simply delete my fix patch from his queue,
+and edit out the
+@@ -232,7 +239,7 @@ void free_shrinker_info(struct mem_cgrou
  
-+static inline bool cpuid_has_mwait(void)
-+{
-+	if (cpuid_ecx(1) & (1 << (X86_FEATURE_MWAIT % 32)))
-+		return true;
-+
-+	return false;
-+}
-+
- bool is_tdx_guest(void)
- {
- 	return static_cpu_has(X86_FEATURE_TDX_GUEST);
-@@ -301,12 +309,25 @@ static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
- 	return insn.length;
- }
- 
-+/* Initialize TDX specific CPU capabilities */
-+static void __init tdx_cpu_cap_init(void)
-+{
-+	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-+
-+	if (cpuid_has_mwait()) {
-+		WARN(1, "TDX Module failed to disable MWAIT\n");
-+		/* MWAIT is not supported in TDX platform, so suppress it */
-+		setup_clear_cpu_cap(X86_FEATURE_MWAIT);
-+	}
-+
-+}
-+
- void __init tdx_early_init(void)
- {
- 	if (!cpuid_has_tdx_guest())
- 		return;
- 
--	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-+	tdx_cpu_cap_init();
- 
- 	tdg_get_info();
- 
-@@ -362,6 +383,27 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_EPT_VIOLATION:
- 		ve->instr_len = tdg_handle_mmio(regs, ve);
- 		break;
-+	case EXIT_REASON_WBINVD:
-+		/*
-+		 * TDX architecture does not support WBINVD instruction.
-+		 * Currently, usage of this instruction is prevented by
-+		 * disabling the drivers which uses it. So if we still
-+		 * reach here, it needs user attention.
-+		 */
-+		pr_err("TD Guest used unsupported WBINVD instruction\n");
-+		BUG();
-+		break;
-+	case EXIT_REASON_MONITOR_INSTRUCTION:
-+	case EXIT_REASON_MWAIT_INSTRUCTION:
-+		/*
-+		 * MWAIT/MONITOR features are disabled by TDX Module (SEAM)
-+		 * and also re-suppressed in kernel by clearing
-+		 * X86_FEATURE_MWAIT CPU feature flag in tdx_early_init(). So
-+		 * if TD guest still executes MWAIT/MONITOR instruction with
-+		 * above suppression, it needs user attention.
-+		 */
-+		WARN(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
- 		return -EFAULT;
--- 
-2.25.1
+ 	for_each_node(nid) {
+ 		pn = memcg->nodeinfo[nid];
+-		info = rcu_dereference_protected(pn->shrinker_info, true);
++		info = shrinker_info_protected(memcg, nid);
+ 		kvfree(info);
+ 		rcu_assign_pointer(pn->shrinker_info, NULL);
+ 	}
+hunk from your mm-vmscan-add-shrinker_info_protected-helper.patch
+which will then restore free_shrinker_info() to what you propose above.
 
+Thanks,
+Hugh
