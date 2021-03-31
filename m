@@ -2,86 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F65C350322
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00514350329
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236344AbhCaPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:17:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57266 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhCaPR0 (ORCPT
+        id S236101AbhCaPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:21:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:36397 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236167AbhCaPVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:17:26 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lRcay-0003ue-RA; Wed, 31 Mar 2021 15:17:24 +0000
-To:     Jaroslav Kysela <perex@perex.cz>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: ALSA: control - add layer registration routines
-Cc:     Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        alsa-devel@alsa-project.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
-Date:   Wed, 31 Mar 2021 16:17:24 +0100
+        Wed, 31 Mar 2021 11:21:11 -0400
+Received: from [192.168.1.155] ([77.4.59.177]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N6KML-1lhFle26f3-016hMd; Wed, 31 Mar 2021 17:18:31 +0200
+Subject: Re: [PATCH v1 0/3] drivers/char: remove /dev/kmem for good
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        James Troup <james.troup@canonical.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kairui Song <kasong@redhat.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rich Felker <dalias@libc.org>,
+        Robert Richter <rric@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Theodore Dubois <tblodt@icloud.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Yoshinori Sato <ysato@users.osdn.me>
+References: <20210324102351.6932-1-david@redhat.com>
+ <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <96217148-3104-410f-a765-72565ec46c9f@metux.net>
+Date:   Wed, 31 Mar 2021 17:18:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:VfyGJx6Kl38NiTptnjW3K10nVzgYxIK8cs0hHkREs3FHQJsYUzp
+ Wwx4CLOohzFUI1f1nKfkOSZwrXbXzZis2skwvyYhEeCHAspoX/OHyW23B058DaozKIutafE
+ RSAL9geaw+/9+9vrkJIUdhjYie7dIhZTPjgXgqaRg2ssWV6pq8U4x9hDZGBnqFyEkV52hu3
+ ZlT4oTDCAC9+DCSMSIg5w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:npk68NHKQ78=:22Pdn/EmXUk4GSszcJcY8V
+ ikE19qv26vOphPBgZhBKpWAZli3GdkyjclfZTMaekBwday1DA2ILKN8zX8jxNeCuqx+QSueBK
+ QXXt9Gx9yQyTPoetkWN+5JSiNmgOd8lDN4AQqFGv7Qs04vQRyWJghIE54EkIGfAx602nqw+nI
+ E3nB809vwyVp/T9Qb5Lv/ZgGQajrsWkgu+5OhKkH4EdKmNh3IGtyVUYHb+W7vQnAeSU372Lpf
+ j9OvV49plSUMrRv5Oa0F4Eee90ponbTbIwsBmGaidcFGDB8TzIwZovV10mMFbeoCto2fwt25v
+ vDT30jWTQ7gHhOWh0mq5iNkxXbbLkDxDC/TEGa9y2UMT9M+NKSLQtIMxlGfo0JyodIEBni+b2
+ BQRDqz+iD+HGK440usz3MwcXRCJD1D1xI10bs628FA73DXT9jmVlOEdfhrfLVVDEfber0j9xA
+ ydWMLwuQfCF5l9tzl0E0FdhrbQVQ/SPwcqPUVh9mlIvgam6WC/nf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 24.03.21 20:24, Andrew Morton wrote:
 
-Static analysis on linux-next with Coverity has detected a potential
-issue in the following commit:
+> We do tend to think about distros.  I bet there are a number of weird
+> embedded type systems using /dev/kmem - it's amazing what sorts of
+> hacks those people will put up with the get something out the door.
 
-commit 3f0638a0333bfdd0549985aa620f2ab69737af47
-Author: Jaroslav Kysela <perex@perex.cz>
-Date:   Wed Mar 17 18:29:41 2021 +0100
+There certainly are (seen lots of such crap), another good reason for
+kicking it out asap.
 
-    ALSA: control - add layer registration routines
+> But those systems tend to carry a lot of specialized changes anyway, so
+> they can just add "revert David's patch" to their pile.
 
-The static analysis is as follows:
+Often those kind of people aren't capable of that. If anyone finds such
+systems, report them to cert, bsi, fd, ...
 
-2072 void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
-2073 {
-2074        struct snd_ctl_layer_ops *lops2, *prev_lops2;
-2075
-2076        down_write(&snd_ctl_layer_rwsem);
 
-    assignment: Assigning: prev_lops2 = NULL.
+--mtx
 
-2077        for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2
-= lops2->next)
-2078                if (lops2 == lops) {
-
-    null: At condition prev_lops2, the value of prev_lops2 must be NULL.
-    dead_error_condition: The condition !prev_lops2 must be true.
-
-2079                        if (!prev_lops2)
-2080                                snd_ctl_layer = lops->next;
-2081                        else
-
-    'Constant' variable guards dead code (DEADCODE) dead_error_line:
-    Execution cannot reach this statement: prev_lops2->next = lops->next;.
-    Local variable prev_lops2 is assigned only once, to a constant
-value, making it effectively constant throughout its scope. If this is
-not the intent, examine the logic to see if there is a missing
-assignment that would make prev_lops2 not remain constant.
-
-2082                                prev_lops2->next = lops->next;
-2083                        break;
-2084                }
-2085        up_write(&snd_ctl_layer_rwsem);
-2086 }
-
-I couldn't quite figure out the original intent of the prev_lops use, so
-I'd thought I'd report this issue as the code does look incorrect.
-
-Colin
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
