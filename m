@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF42350A1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A69350A0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhCaWQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:16:53 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:33356 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhCaWQZ (ORCPT
+        id S232750AbhCaWNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhCaWNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:16:25 -0400
-Received: by mail-pg1-f169.google.com with SMTP id f3so321055pgv.0;
-        Wed, 31 Mar 2021 15:16:25 -0700 (PDT)
+        Wed, 31 Mar 2021 18:13:08 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2D0C061574;
+        Wed, 31 Mar 2021 15:13:07 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id s21so24571pjq.1;
+        Wed, 31 Mar 2021 15:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G0/dYIgnSX89Wncbzzni0dKPijuXuQy3ZNHTM+WWX+o=;
+        b=i/o6hDwUTHXj7cRi3sw12njdfpFH/fTCTnwowNa8u0wWBiNhPtCwIZC/aNohKv5bQb
+         SYMDgArhz4vXJRqZxxx/naDXxFULtBnWSY2kb6OBwcM93HAOPnL1GvEL3ycxh4+9rh9c
+         u7GC9htWspdKR7ZpEGB9pgbVpB/3xf8DEDgprZtSbHK7tekQA7rjU6JzZTJyJNuGUI2I
+         EAVfi/19pY3FOKxn3zV6LpiicfVJev/QJTVP7ZgM3Mw8IGp9zjKVhVIV6DbkYTern+K+
+         d/tGFfaIHPtQuuHIZI0W5hl5MNnmgR6MN0rRZKMb7nnwV4WwQa8xyLjbVJdU7VBGK4SO
+         dVNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lAfgYSpdkPzGY4sGqjGful9TAMROlVKPNJVMCA9R3EU=;
-        b=ibLALJ5PkojGG4++2sbSyobESzV2k4icIRVt8tl/tKNYqT3C62PHjcFMxKgigUlyj0
-         IpINKdAvvmiYTM2xkpxiEVlAvhPQ2NT/K4cd1VIdhMyIHQOlMxfWH6G5A38bdl6alVwk
-         MamxYSmAS4CoGI7lwvLcbhvdsJ83eC2UVC4PNhU74vYmdEtDXft+FI4jokeSIKmelF1b
-         uyF9gfPGGRyxu1lQ+J2Nn0gAfV6Wc0O86Ma6HwIZayVIA7lp+bj4gN/LoOUlR/HveX6T
-         8PviduD4pGygkJOLhrJ5ckSelLnSIZbVIDbuhhNTB2cpwlAWvJzZ4Vrdr18WDlCS5CEo
-         zLXw==
-X-Gm-Message-State: AOAM532bTkTQWxlWGT2VHd58EUs9gaObwPPwWPXFBYhqPhnPicQcokeK
-        j+FNdnFr7zS9Gap1cyBo1ikK/X0brHE=
-X-Google-Smtp-Source: ABdhPJwCocLn0BTPGo4npIQn4N6y8qUO+z0QmR4ZVHFSCy4m31+99tvlH/Ha/oT3NcZpx2bstdOJLg==
-X-Received: by 2002:a63:1c48:: with SMTP id c8mr3928144pgm.234.1617228985028;
-        Wed, 31 Mar 2021 15:16:25 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id u4sm3019505pfk.131.2021.03.31.15.16.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G0/dYIgnSX89Wncbzzni0dKPijuXuQy3ZNHTM+WWX+o=;
+        b=LNtBrdxVlMFlY6gCn8uGjibv0JvJlMSIEktc/qar5N1OiO+Y5TAWJUTSz5HqW/avpN
+         B0nLNcoAafDEN0FJ/8IM69ZB7vRyh6HlmGvh/Fxm/DdKVyXT3fxXW6NNNM9v7GqUkiax
+         /6Afrdnn9PKXkubi7KnnzZZRmtgSME/T+8Sll8xSPb5FaTc/nL7Inng6Ls0TfwocjN4Z
+         SbP49fUXvjqAmTcs9N99IVYTJ3wwV4xA2b+ju+8hFEnfn+Rqci8/Q9UBKUhJlA5JnJpJ
+         OjNN46ZhNDRvDQSa7MWQKJe+KN3eDYzkCvVM8qNfS2WebG0v+0xrEiwafSuL6FhAkP0j
+         ce0w==
+X-Gm-Message-State: AOAM530gwBWDJUiJBkk8YHjDPI6hQafn04HMo4fBUqynVW0ezMlgvLUt
+        GS0jHfPS36NC5w5i4jE/Mj12emrgevnMEg==
+X-Google-Smtp-Source: ABdhPJxwe+oiVp7tvWPLGP/ZA7PBzUUo1nBjagFv5vUKkmNvUEx8VjN8e9JniAVvPkE2IeMxJG16Lg==
+X-Received: by 2002:a17:902:d30c:b029:e3:f95:6da5 with SMTP id b12-20020a170902d30cb02900e30f956da5mr5021786plc.6.1617228787350;
+        Wed, 31 Mar 2021 15:13:07 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id j3sm3231107pfi.74.2021.03.31.15.13.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 15:16:24 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 15:16:23 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        "Gong, Richard" <richard.gong@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-Message-ID: <YGT0t/7PEemH7iAI@epycbox.lan>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
- <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
- <YGC619DmLM0AAQ5p@epycbox.lan>
- <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
+        Wed, 31 Mar 2021 15:13:06 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), Jordan Crouse <jordan@cosmicpenguin.net>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 0/4] drm/msm: Shrinker (and related) fixes
+Date:   Wed, 31 Mar 2021 15:16:25 -0700
+Message-Id: <20210331221630.488498-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c741ab7-1ee6-cbf1-94fa-818dd7f4c5c5@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russ,
-On Wed, Mar 31, 2021 at 11:47:26AM -0700, Russ Weight wrote:
-> Moritz,
-> 
-> On 3/28/21 10:20 AM, Moritz Fischer wrote:
-> > Tom,
-> >
-> > On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
-> >> On 3/27/21 11:09 AM, Moritz Fischer wrote:
-> >>> Hi Richard, Russ,
-> >>>
-> >>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
-> >>>> Hi Moritz,
-> >>>>
-> >>>> Sorry for asking.
-> >>>>
-> >>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
-> >>>>
-> >>>> Regards,
-> >>>> Richard
-> >>>>
-> >>>> -----Original Message-----
-> >>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
-> >>>> Sent: Tuesday, February 9, 2021 4:20 PM
-> >>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
-> >>>> Cc: Gong, Richard <richard.gong@intel.com>
-> >>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-> >>>>
-> >>>> From: Richard Gong <richard.gong@intel.com>
-> >>>>
-> >>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
-> >>>>
-> >>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
-> >>>>
-> >>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
-> >>>>
-> >>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
-> >>>>
-> >>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
-> >>>>
-> >>>> Richard Gong (7):
-> >>>>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
-> >>>>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
-> >>>>   firmware: stratix10-svc: extend SVC driver to get the firmware version
-> >>>>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
-> >>>>   fpga: of-fpga-region: add authenticate-fpga-config property
-> >>>>   dt-bindings: fpga: add authenticate-fpga-config property
-> >>>>   fpga: stratix10-soc: extend driver for bitstream authentication
-> >>>>
-> >>>>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
-> >>>>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
-> >>>>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
-> >>>>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
-> >>>>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
-> >>>>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
-> >>>>  include/linux/fpga/fpga-mgr.h                      |  3 ++
-> >>>>  7 files changed, 125 insertions(+), 18 deletions(-)
-> >>>>
-> >>>> --
-> >>>> 2.7.4
-> >>>>
-> >>> Apologies for the epic delay in getting back to this, I took another
-> >>> look at this patchset and Russ' patchset.
-> >>>
-> >>> TL;DR I'm not really a fan of using device-tree overlays for this (and
-> >>> again, apologies, I should've voiced this earlier ...).
-> >>>
-> >>> Anyways, let's find a common API for this and Russ' work, they're trying
-> >>> to achieve the same / similar thing, they should use the same API.
-> >>>
-> >>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
-> >>> 'secure update' ops that work for both these use-cases (and I susspect
-> >>> hte XRT patchset will follow with a similar requirement, right after).
-> 
-> Richard and I had an initial conversation today. I'll start looking at how secure operations can be integrated into the fpga manager.
-> 
-> More to come...
+From: Rob Clark <robdclark@chromium.org>
 
-Great, feel free to send RFCs ahead.
+I've been spending some time looking into how things behave under high
+memory pressure.  The first patch is a random cleanup I noticed along
+the way.  The second improves the situation significantly when we are
+getting shrinker called from many threads in parallel.  And the last
+two are $debugfs/gem fixes I needed so I could monitor the state of GEM
+objects (ie. how many are active/purgable/purged) while triggering high
+memory pressure.
 
-Cheers,
-Moritz
+We could probably go a bit further with dropping the mm_lock in the
+shrinker->scan() loop, but this is already a pretty big improvement.
+The next step is probably actually to add support to unpin/evict
+inactive objects.  (We are part way there since we have already de-
+coupled the iova lifetime from the pages lifetime, but there are a
+few sharp corners to work through.)
+
+Rob Clark (4):
+  drm/msm: Remove unused freed llist node
+  drm/msm: Avoid mutex in shrinker_count()
+  drm/msm: Fix debugfs deadlock
+  drm/msm: Improved debugfs gem stats
+
+ drivers/gpu/drm/msm/msm_debugfs.c      | 14 ++----
+ drivers/gpu/drm/msm/msm_drv.c          |  4 ++
+ drivers/gpu/drm/msm/msm_drv.h          | 10 ++++-
+ drivers/gpu/drm/msm/msm_fb.c           |  3 +-
+ drivers/gpu/drm/msm/msm_gem.c          | 61 +++++++++++++++++++++-----
+ drivers/gpu/drm/msm/msm_gem.h          | 58 +++++++++++++++++++++---
+ drivers/gpu/drm/msm/msm_gem_shrinker.c | 17 +------
+ 7 files changed, 122 insertions(+), 45 deletions(-)
+
+-- 
+2.30.2
+
