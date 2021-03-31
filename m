@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3F5350014
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D705350017
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 14:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbhCaMUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 08:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235347AbhCaMUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 08:20:04 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDAFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:20:03 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bx7so22041213edb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 05:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4C0Nob3kCxAymCSBdPGfWK0bfiuslhH1Vyz8Q3gjxRo=;
-        b=WV7syPXn9LH9fJYZqbs1RyWSEpti9lGZmZaUv5egUu2dWg4eyM2Jtm7jTPgNiXftpS
-         e1Nsy8Znn/M0En+K+NV/WdwW5T9MuHhcGjJiRB5RPLEzDs0Cu+wqP8uYWl9r6dlcPEnN
-         1rWMKD2Dm3LqAiL3f2QrWGL44stLW1Ld2G0TL1ofamr3UyJbTJYHDS9OtmHTzmUmsKPg
-         5BAM9QqqsKCgxx2O1gwh8nphdwdZbmS2SYu2h8XVSoCEY5CKcuMtuBZcte9iQf2WZrY/
-         7wLW1oa1pwS7+YpKpNgE8P7115ILpXVbfamuYVvmNu9ecxIWWEZvhNLPPjHasCPKe7Te
-         lvqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4C0Nob3kCxAymCSBdPGfWK0bfiuslhH1Vyz8Q3gjxRo=;
-        b=ZFyEFizlmSEHIF3ybdmbqFUUXRvnwBE9fHTsUGDfqTibxUvtrGsFVcwh/AsJrqVdVp
-         wABWBVNskJ1FEvWWrQZkijGZhLPNAADBJdZAT2GZ8sesDuha2Y43s3SnlJEDTaJlLvhV
-         KkXAZNqyr0uOnwTwXgCjW+L/GCpGPmHa/NK8bLOXvfjTo4TmN34wk1uecEp/KW3YdM6P
-         VueWnc0rwgePXPn3KEzhvhZ1ra8KUi88QN/qBwVqaB9HxYgxaQ8q7qlFDjz8NCzRHC0r
-         5ziEb2QlqiqLEwL0bIhVbThw62aW0ad8ZyZ5cMgWu4ypdLd0IM5o66fhj1/TvLVsEBdF
-         jm+Q==
-X-Gm-Message-State: AOAM532uI3OthewKgzCBZIzIPzex/GWkIEybEO/6jDxI8uWeovN5BR0Q
-        93oGOJl3TaLYFOcOP271rE4=
-X-Google-Smtp-Source: ABdhPJxNdqsV8z7jkT0KwLw67EgrL5lKP2qhXWZ5KRKp7FYjWebkHBniCAIBJvyMuPSzC97k35fKWA==
-X-Received: by 2002:a50:ec07:: with SMTP id g7mr3347331edr.72.1617193202749;
-        Wed, 31 Mar 2021 05:20:02 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.9])
-        by smtp.gmail.com with ESMTPSA id dg26sm1432386edb.88.2021.03.31.05.20.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 05:20:02 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 14:19:59 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     dan.carpenter@oracle.com, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/40] staging: rtl8723bs: replace RT_TRACE with public
- printk wrappers in core/rtw_eeprom.c
-Message-ID: <20210331121958.GB1599@agape.jhs>
-References: <cover.1617183374.git.fabioaiuto83@gmail.com>
- <39c2cd878bc914a00e71ea988c3cacb651670822.1617183374.git.fabioaiuto83@gmail.com>
- <YGROiD19tgF8XnK6@kroah.com>
- <20210331103630.GA1450@agape.jhs>
- <YGRTdBWseZw72rae@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGRTdBWseZw72rae@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S235511AbhCaMVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 08:21:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:10878 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235289AbhCaMU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:20:56 -0400
+IronPort-SDR: hyHlmO4d+qUvp2U8p81kHEl5/PEvTtq4K/ijcLoepbEz0iLlg4jCz4OOASBtz7lqqHhHmAbNIZ
+ gC9XX8ztgflw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="191472601"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="191472601"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 05:20:48 -0700
+IronPort-SDR: DFRP9CKn4qqWlB9oUSS6aBdCdsx/WHAppkGubpuzrtS6asZXzpH/1hOE8B8ICKbElp0stjOH8W
+ uoYqAbXZSJrQ==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="412136132"
+Received: from mwamucix-mobl3.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.24.224])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 05:20:44 -0700
+Date:   Thu, 1 Apr 2021 01:20:39 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Boris Petkov <bp@alien8.de>, <seanjc@google.com>,
+        <kvm@vger.kernel.org>, <x86@kernel.org>,
+        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jarkko@kernel.org>, <luto@kernel.org>, <dave.hansen@intel.com>,
+        <rick.p.edgecombe@intel.com>, <haitao.huang@intel.com>,
+        <pbonzini@redhat.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <hpa@zytor.com>
+Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-Id: <20210401012039.c78f02ea2ba9f1e5fd504621@intel.com>
+In-Reply-To: <20210331215345.cad098cfcfcaabf489243807@intel.com>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
+        <20210326150320.GF25229@zn.tnic>
+        <20210331141032.db59586da8ba2cccf7b46f77@intel.com>
+        <D4ECF8D3-C483-4E75-AD41-2CEFDF56B12D@alien8.de>
+        <20210331195138.2af97ec1bb4b5e4202f2600d@intel.com>
+        <3889C4C6-48E2-4C97-A074-180EB18BDA29@alien8.de>
+        <20210331215345.cad098cfcfcaabf489243807@intel.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 12:48:20PM +0200, Greg KH wrote:
-> On Wed, Mar 31, 2021 at 12:36:31PM +0200, Fabio Aiuto wrote:
-> > On Wed, Mar 31, 2021 at 12:27:20PM +0200, Greg KH wrote:
-> > > On Wed, Mar 31, 2021 at 11:39:31AM +0200, Fabio Aiuto wrote:
-> > > > replace private macro RT_TRACE for tracing with in-kernel
-> > > > pr_* printk wrappers
-> > > > 
-> > > > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > > > ---
-> > > >  drivers/staging/rtl8723bs/core/rtw_eeprom.c | 26 ++++++++++-----------
-> > > >  1 file changed, 13 insertions(+), 13 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_eeprom.c b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > > > index 3cbd65dee741..6176d741d60e 100644
-> > > > --- a/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > > > +++ b/drivers/staging/rtl8723bs/core/rtw_eeprom.c
-> > > > @@ -36,7 +36,7 @@ void shift_out_bits(_adapter *padapter, u16 data, u16 count)
-> > > >  _func_enter_;
-> > > >  
-> > > >  	if (padapter->bSurpriseRemoved == true) {
-> > > > -		RT_TRACE(_module_rtl871x_eeprom_c_, _drv_err_, ("padapter->bSurpriseRemoved==true"));
+On Wed, 31 Mar 2021 21:53:45 +1300 Kai Huang wrote:
+> On Wed, 31 Mar 2021 09:44:39 +0200 Boris Petkov wrote:
+> > On March 31, 2021 8:51:38 AM GMT+02:00, Kai Huang <kai.huang@intel.com> wrote:
+> > >How about adding explanation to Documentation/x86/sgx.rst?
 > > 
-> > I looked at this ---------------------------------------^
-> > and so I thought that pr_err was good...
+> > Sure, and then we should point users at it. The thing is also indexed by search engines so hopefully people will find it.
 > 
-> But you missed the fact that RT_TRACE() does not always spit this stuff
-> out.
+> Thanks. Will do and send out new patch for review.
 > 
-> And I don't know what _drv_err_ is, but tracing messages should never go
-> to an error log :)
+Hi Boris,
 
-ok, got it 
+Could you help to review whether below change is OK?
 
-> 
-> > my aim was remove private macros replicating component tracing and log levels...
-> 
-> That's a great goal!
-> 
-> > so what's best? Keep a simplyfied RT_TRACE encapsulating a dev_* call?
-> 
-> replace them with dev_dbg() is one way, if they really are even needed
-> at all.  At this point in time, I would strongly just recommend removing
-> them all as no one is using them for anything.
-> 
-> thanks,
-> 
-> greg k-h
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index 5ec7d17e65e0..49a840718a4d 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -236,3 +236,19 @@ As a result, when this happpens, user should stop running
+any new SGX workloads, (or just any new workloads), and migrate all valuable
+workloads. Although a machine reboot can recover all EPC, the bug should be
+reported to Linux developers.
++
++Virtual EPC
++===========
++
++Separated from SGX driver for creating and running enclaves in host, SGX core
++also supports virtual EPC driver to support KVM SGX virtualization. Unlike SGX
++driver, EPC page allocated via virtual EPC driver is "raw" EPC page and doesn't
++have specific enclave associated. This is because KVM doesn't track how guest
++uses EPC pages.
++
++As a result, SGX core page reclaimer doesn't support reclaiming EPC pages
++allocated to KVM guests via virtual EPC driver. If user wants to deploy both
++host SGX applications and KVM SGX guests on the same machine, user should
++reserve enough EPC (by taking out total virtual EPC size of all SGX VMs from
++physical EPC size) for host SGX applications so they can run with acceptable
++performance.
 
-I will remove then,
+In my local, I have squashed above change to this patch, and also added below
+paragraph to the commit message:
 
-thank you,
-
-fabio
+    Also add documenetation to explain what is virtual EPC, and suggest
+    users should be aware of virtual EPC pages are not reclaimable and take
+    this into account when deploying both host SGX applications and KVM SGX
+    guests on the same machine.
