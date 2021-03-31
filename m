@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B7C350879
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33CB35087C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhCaUqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:46:46 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:48974 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232601AbhCaUqj (ORCPT
+        id S232764AbhCaUrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232477AbhCaUqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:46:39 -0400
-Received: from us.es (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 1421463E47;
-        Wed, 31 Mar 2021 22:46:23 +0200 (CEST)
-Date:   Wed, 31 Mar 2021 22:46:35 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-Message-ID: <20210331204635.GA4634@salvia>
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
+        Wed, 31 Mar 2021 16:46:53 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA643C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:46:52 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 12so10771582wmf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 13:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mjHBwLjYUXWuRoBuiTAQj8XDaBfJIXP1bnrnlqYEHew=;
+        b=pOB+DHhSxHbiS0m4CcaSCxN8wSxuH/HrMr2Ql40fIUthow77RG+immg0bLof1FxX0C
+         cZ+eVTZkLpXDt1ot5SmjWFlqW/ofc/55/6GY0gI/tW2/hhJAQwY4yBmjoBe9RKy8ylNB
+         oEkC01G7um/qgN1LA1Euy5Vw+l7cOCBf1EEhNwawhwfk5gWKR7+FjyFCvW+f/ISbef80
+         qepb6YLAyI9pbcUCabhwGTooNQFB8Fie8SRGYVAxrpeeiUQRNMVAANh02oryeDQ26jq5
+         UpoymJZTm9RrgyVenVVYFFlV+kaVSHcn1rgCDgalNDh791IBunPBTtNFZ8LhLDc5+x3O
+         zQSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mjHBwLjYUXWuRoBuiTAQj8XDaBfJIXP1bnrnlqYEHew=;
+        b=Wxwfi3eAV2njuSH4ewekDbJFG8Y267OH2urXUizyRejHANlCmZ5u8WGcsohTBlSsFk
+         ylh9CBXV6EPIWtZlMFe/3vTeVyvN9Z8rVVzSGVyAQhzel3DI4YA6nfA1JRc96//t/yFP
+         EKb/MutvbBZENHkUwIIOdHEADJc2amtrgu9GD2shgCbBtE/x5k80JKk+k3ywFAw76yPq
+         mOq0p44L2s1wwxg0TS22MwIAW9jlczID8xyo1nD9gaGB1TKxQYmOe6wyickPmy/mY+g+
+         gjUgxSDumYB7Gh2cwP/j8ipEmKASlai9a2yl2Q732f7ACGbkicjAZ82BCowrLmcO7bWk
+         1N3g==
+X-Gm-Message-State: AOAM533pXFN4q1ratkcImdymMZnXggo7CYtZCksP55Ekvskpq4wnTyCH
+        6d2nEAykTRLmQUuCt3u4gsQVbw==
+X-Google-Smtp-Source: ABdhPJy1r1tHWLYtTSnN/+l4Vc0rdLRc8bMHH2qHR5QXXXoxzciM9Lsy6q2E8W/TiNELAhMCfUdb+Q==
+X-Received: by 2002:a1c:3d8b:: with SMTP id k133mr4829604wma.6.1617223611420;
+        Wed, 31 Mar 2021 13:46:51 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1573:1dd5:899d:6362? ([2a01:e34:ed2f:f020:1573:1dd5:899d:6362])
+        by smtp.googlemail.com with ESMTPSA id a8sm6689496wru.35.2021.03.31.13.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 13:46:50 -0700 (PDT)
+Subject: Re: [PATCH v5 2/5] powercap/drivers/dtpm: Create a registering system
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lukasz.luba@arm.com, rafael@kernel.org
+References: <20210331110048.24956-1-daniel.lezcano@linaro.org>
+ <20210331110048.24956-2-daniel.lezcano@linaro.org>
+ <YGS6NraFr6+qvzda@kroah.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <918bc42d-0bd7-753c-1132-fd19617349ed@linaro.org>
+Date:   Wed, 31 Mar 2021 22:46:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <YGS6NraFr6+qvzda@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
-> @@ -8006,12 +7966,65 @@ static void nft_commit_notify(struct net *net, u32 portid)
->  	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
->  }
->  
-> +static int nf_tables_commit_audit_alloc(struct list_head *adl,
-> +				 struct nft_table *table)
-> +{
-> +	struct nft_audit_data *adp;
-> +
-> +	list_for_each_entry(adp, adl, list) {
-> +		if (adp->table == table)
-> +			return 0;
-> +	}
-> +	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
-> +	if (!adp)
-> +		return -ENOMEM;
-> +	adp->table = table;
-> +	INIT_LIST_HEAD(&adp->list);
 
-This INIT_LIST_HEAD is not required for an object that is going to be
-inserted into the 'adl' list.
+Hi Greg,
 
-> +	list_add(&adp->list, adl);
+On 31/03/2021 20:06, Greg KH wrote:
+> On Wed, Mar 31, 2021 at 01:00:45PM +0200, Daniel Lezcano wrote:
+>> +struct dtpm *dtpm_lookup(const char *name);
+>> +
+>> +int dtpm_add(const char *name, struct dtpm *dtpm);
+>> +
+>> +void dtpm_del(const char *name);
+> 
+> You can not add new kernel apis that have no user.  How do you know if
+> they actually work or not?  We have no idea as we do not see anyone
+> using them :(
+> 
+> So no need to add things with no user, feel free to just drop this patch
+> until you have one.
 
-If no objections, I'll amend this patch. I'll include the UAF fix and
-remove this unnecessary INIT_LIST_HEAD.
+I've sent a couple of patches [1] on top of the previous series. I'm
+finishing to respin it against this new one.
+
+  -- Daniel
+
+[1] https://lkml.org/lkml/2021/3/12/1514
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
