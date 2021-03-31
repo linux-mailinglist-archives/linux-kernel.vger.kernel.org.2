@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E93D34F5F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABAB34F5CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhCaBLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 21:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbhCaBKp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 21:10:45 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCD8C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 18:10:45 -0700 (PDT)
+        id S233199AbhCaBKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 21:10:33 -0400
+Received: from ozlabs.org ([203.11.71.1]:52861 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232684AbhCaBKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 21:10:11 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4F97Xx24d3z9t0k; Wed, 31 Mar 2021 12:10:36 +1100 (AEDT)
+        id 4F97XK5m8mz9sX1; Wed, 31 Mar 2021 12:10:09 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     linuxppc-dev@lists.ozlabs.org, gregkh@linuxfoundation.org,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>, arnd@arndb.de,
-        fbarrat@linux.ibm.com, linux-kernel@vger.kernel.org,
-        ajd@linux.ibm.com
-Cc:     rdunlap@infradead.org
-In-Reply-To: <20210322023307.168754-1-unixbhaskar@gmail.com>
-References: <20210322023307.168754-1-unixbhaskar@gmail.com>
-Subject: Re: [PATCH] cxl: Fix couple of spellings
-Message-Id: <161715298060.226945.13634069948401550126.b4-ty@ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-i2c@vger.kernel.org
+In-Reply-To: <19e57d16692dcd1ca67ba880d7273a57fab416aa.1616085654.git.christophe.leroy@csgroup.eu>
+References: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu> <19e57d16692dcd1ca67ba880d7273a57fab416aa.1616085654.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/embedded6xx: Remove CONFIG_MV64X60
+Message-Id: <161715298020.226945.1588774720251975064.b4-ty@ellerman.id.au>
 Date:   Wed, 31 Mar 2021 12:09:40 +1100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -35,13 +33,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 08:03:07 +0530, Bhaskar Chowdhury wrote:
-> s/filesytem/filesystem/
-> s/symantics/semantics/
+On Thu, 18 Mar 2021 17:25:07 +0000 (UTC), Christophe Leroy wrote:
+> Commit 92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
+> moved the last selector of CONFIG_MV64X60.
+> 
+> As it is not a user selectable config, it can be removed.
 
 Applied to powerpc/next.
 
-[1/1] cxl: Fix couple of spellings
-      https://git.kernel.org/powerpc/c/e23ecdf9fd87c547a3ac55bcebaf7df28df2fab0
+[1/1] powerpc/embedded6xx: Remove CONFIG_MV64X60
+      https://git.kernel.org/powerpc/c/a329ddd472fa2af0c19a73b8658898ae7fd658ad
 
 cheers
