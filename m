@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9E234FABF
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB0E34FAC0
 	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbhCaHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhCaHuF (ORCPT
+        id S234102AbhCaHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:50:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49656 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234032AbhCaHuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:50:05 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACFFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:50:05 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i144so20238625ybg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hywtd1KIB/q90EXy+mvZhwXEbQdTlEqSmz3ryL7o6/w=;
-        b=vLQk20z5dr0eE0dUMRUz4Ku9kps5ZE3mVkEdzWhOmSfoLowIfxFDi8qbPbmtUeQV/N
-         y/97yULuDc6u/Vy6dZtwzkhDhQt5rboSukZltgFeXSIMvLfb/SouIFU7vj1+mQZp1Hcg
-         rosVO1RTLbphO8Ar9bwjD7JKzNND4GiNasrCtQKX/dN+HC8fZ4Dri8QLBvazp0yVIOil
-         JeEO/lRvQFrw7uLzcXRXzyAHl5Xisl4uScy+WykpQZFvCpyAYn6Y/3rRN7YGGkEA96jD
-         AUJ9vmzrAf4dC+JiGrYqDp91ikoI21VeErWYtu2+8l4eP5RS5J8MVPEnW7V4VyDjopLE
-         7DCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hywtd1KIB/q90EXy+mvZhwXEbQdTlEqSmz3ryL7o6/w=;
-        b=ibXmExs/l7HY1n9Vwz6p8jeGHiekqp55I7NPozIjwpZebYbUKg1t3WkIT0Z1HUZHa9
-         GuWA91ynY+CUWyiZYyMq4VTTHZY3AyHqe4BWYyBclmwf3+y4G2YEcKLamJY7UQD358bD
-         007xIKSi9NOMdTIJZTFrsmANWqAwd9bcWCcqANbo9fRJgVy0zQU/yci4416+FBRL1SnP
-         8Z3mpkoJJj/1G90DOSoqc+HRBsRlUvJ0NwA03eNYlRwItUhI3Pd8XYMEuENUVPBdwIJl
-         BNTLLJSjGI+MaDjYvBV7nt2siNkifxwgIQmIvYAVYsVFbbrF1CvWwvMr8SwoHrVc38Da
-         9h1w==
-X-Gm-Message-State: AOAM5335XstHOVRaPaGlXjmuYque1wiy1eQHRqEWYJAsUgdX2WUw+gKY
-        d4PzmUwouTgKiEWrZo/UGIVusCDcByoDQ11oBauoO7K+Ygg=
-X-Google-Smtp-Source: ABdhPJzhJOj2g9a8AD8NuPdcxlXMqoVSl3CnHu20LndCvla/SjiEhUVueYLcJnaZwR5u4jWyluvxqTnu4Z7QJEaHJBI=
-X-Received: by 2002:a25:d2d3:: with SMTP id j202mr2883936ybg.157.1617177004878;
- Wed, 31 Mar 2021 00:50:04 -0700 (PDT)
+        Wed, 31 Mar 2021 03:50:22 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617177020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RZw6jkxG2tvSevv3X2+abnTHnXCHkwF4cE7lD/cYS0c=;
+        b=jUZ1Puxo9W22AXzcFYFJ62E72Axd/SK2ZV8cEve6PHL2b0LfRU4wESftLlahc7fWxip4AM
+        BBRqghhiGBRl7jKDiWl61U/Kd8GE0BO2yzFsmrzPH5KFvgHJ3Bxb6nEqyxkwbVsMNDyC4p
+        71QTjwCX7E4m3wMy0qF1RkjLiPTthV91YEW3gFxDvP8NNM6uZ42CyhB6MesNOu0wQuu1qy
+        XPq1pF/txTA47YN+pLN3i8C8eweRc2FE3U7tq1qThEBzCMhpE9NNDxzGE0AubaVIh4W3sH
+        UgvB+tZgA6eTvr+vAKcvVXMVUOfPorneRFlwQ+GN0M68PY7bXY2FOr1ztCMdWA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617177020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RZw6jkxG2tvSevv3X2+abnTHnXCHkwF4cE7lD/cYS0c=;
+        b=MN+pzWVv1yf6pCY2oCNeGdwPONSSKq5G0kTaSCVNpA6ZRX43kxrMo6DqtDgPG5dGcxWZs+
+        +KgsgvXLPSPQFzCg==
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 4/6] x86/entry: Enable random_kstack_offset support
+In-Reply-To: <20210330205750.428816-5-keescook@chromium.org>
+References: <20210330205750.428816-1-keescook@chromium.org> <20210330205750.428816-5-keescook@chromium.org>
+Date:   Wed, 31 Mar 2021 09:50:20 +0200
+Message-ID: <87lfa369tv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210315082339.9787-1-sander@svanheule.net> <cover.1617126277.git.sander@svanheule.net>
-In-Reply-To: <cover.1617126277.git.sander@svanheule.net>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 31 Mar 2021 09:49:54 +0200
-Message-ID: <CAMpxmJWGuS_ae_cGsvWmhu3NBtsnK-ZutJeCphJSR=Xn7qKFMg@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add Realtek Otto GPIO support
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     linux-devicetree <devicetree@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bert Vermeulen <bert@biot.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 7:48 PM Sander Vanheule <sander@svanheule.net> wrote:
->
-> Add support for the GPIO controller employed by Realtek in multiple series of
-> MIPS SoCs. These include the supported RTL838x and RTL839x. The register layout
-> also matches the one found in the GPIO controller of other (Lexra-based) SoCs
-> such as RTL8196E, RTL8197D, and RTL8197F.
->
-> For the platform name 'otto', I am not aware of any official resources as to
-> what hardware this specifically applies to. However, in all of the GPL archives
-> we've received, from vendors using compatible SoCs in their design, the
-> platform under the MIPS architecture is referred to by this name.
->
-> The GPIO ports have been tested on a Zyxel GS1900-8 (RTL8380), and Zyxel
-> GS1900-48 (RTL8393). Furthermore, the GPIO ports and interrupt controller have
-> been tested on a Netgear GS110TPPv1 (RTL8381).
->
-> Changes in v6:
-> - Use devm_gpiochip_add_data()
-> - Code style for reading ngpios, header order
-> - Add Andy's Reviewed-by tag
->
-> Changes in v5:
-> - Edited code comments
-> - Fold functions that were used only once or twice (ISR/IMR accessors)
-> - Drop trivial functions for line to port/pin calculations
-> - Use gpio_irq_chip->init_hw() to initialise IRQ registers
-> - Invert GPIO_INTERRUPTS flag to GPIO_INTERRUPTS_DISABLED
-> - Support building as module
-> - Add Rob's Reviewed-by tag
->
-> Changes in v4:
-> - Fix pointer notation style
-> - Drop unused read_u16_reg() function
-> - Drop 'inline' specifier from functions
->
-> Changes in v3:
-> - Remove OF dependencies in driver probe
-> - Don't accept IRQ_TYPE_NONE as a valid interrupt type
-> - Remove (now unused) dev property from control structure
-> - Use u8/u16 port registers, instead of raw u32 registers
-> - Use 'line' name for gpiochip, 'port' and 'pin' names for hardware
-> - Renamed DT bindings file
-> - Dropped fallback-only DT compatible
-> - Various code style clean-ups
->
-> Changes in v2:
-> - Clarify structure and usage of IMR registers
-> - Added Linus' Reviewed-by tags
->
-> Sander Vanheule (2):
->   dt-bindings: gpio: Binding for Realtek Otto GPIO
->   gpio: Add Realtek Otto GPIO support
->
->  .../bindings/gpio/realtek,otto-gpio.yaml      |  78 +++++
->  drivers/gpio/Kconfig                          |  13 +
->  drivers/gpio/Makefile                         |   1 +
->  drivers/gpio/gpio-realtek-otto.c              | 325 ++++++++++++++++++
->  4 files changed, 417 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/realtek,otto-gpio.yaml
->  create mode 100644 drivers/gpio/gpio-realtek-otto.c
->
-> --
-> 2.30.2
->
+On Tue, Mar 30 2021 at 13:57, Kees Cook wrote:
 
-Series applied, thanks!
+> Allow for a randomized stack offset on a per-syscall basis, with roughly
+> 5-6 bits of entropy, depending on compiler and word size. Since the
+> method of offsetting uses macros, this cannot live in the common entry
+> code (the stack offset needs to be retained for the life of the syscall,
+> which means it needs to happen at the actual entry point).
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Bartosz
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
