@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4386634FDDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A78034FDE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 12:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhCaKOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234876AbhCaKN5 (ORCPT
+        id S234924AbhCaKRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 06:17:48 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33620 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234666AbhCaKRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:13:57 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CC7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 03:13:55 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso868873wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 03:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c4/jb/onpfRSCNwhLaXR762taSPSqHcBp79M2N1xunQ=;
-        b=Lcry5IJiXguBsfACvMyWHzG123ZxOoCByNzxSLk1knbWacziXY0gJi7W5ClFZGM5lO
-         VqnxbqBOc8M+mJGPJBWfcVI16e/+nhiXMyiZvYDtft3SEVcqofw4qWvLS4Dzbd7lGO3e
-         Vm0CJFY11UAKaGNWVWgNws/PW8+Y1Svqjx024d1cFpskjiCOhRBWSEKJ0zXaQc7DFDXk
-         q7xqTfX99kYiMga6OTpMwXYAvrWKURmhd1TwSnp18gr/4JV7+pKELYmKhcJt5nN8Csn1
-         CCqbuw5vN+abcxr94yeNaDb8oJ740jgZhEKeiKQ+Ffk8ct3/RgGuWsrCDjA9RfSCp46C
-         jk+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c4/jb/onpfRSCNwhLaXR762taSPSqHcBp79M2N1xunQ=;
-        b=SgUcJK8FFDWx9UYxUNPlQmwQ9MYAnkwlzt0QAwc5/yHoTeXt/rbVRVlhxCkv5tvO/1
-         CRMSIYgM5FcjSbnaYQDbLVnHOD34pZuL5oi6tLzwgqxq49lBh1SINgLqYrCHzg+DBZCC
-         nKUKZJnnxPtPk9nxUhoUJ4dqtV7/wuriRFrBMqJgb0NqKVijMm3ysgjjipFCo71vE/nA
-         qAx7wLayBCFsYw8dVC+psYg0U06dsCzSLLGETtncWjO8qSYU7+WzYuV+aR3gCqyZfbP/
-         R4xPkzYq0MtTyPfQSuj+Wv3yfSKEmQmrJpVLgzxtgW9E+oo+wcpHD3xln1u62q+N9hry
-         HzLg==
-X-Gm-Message-State: AOAM530ChrEcnG5Z7/yKxICja4HgxLqdUdlFptIrV/pBHRMyi1Kb4Vb6
-        v7zj9hEf89Szw+yiIHkp59M=
-X-Google-Smtp-Source: ABdhPJz/IVtF4RqfrQ3TZNSfCTUyxAjCrenQbl5KbDNp6EBM3919C7exvv1X8ZngNe2ulOqjcn0I8g==
-X-Received: by 2002:a05:600c:4f4f:: with SMTP id m15mr2454196wmq.29.1617185634230;
-        Wed, 31 Mar 2021 03:13:54 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id k4sm5483000wrd.9.2021.03.31.03.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 03:13:53 -0700 (PDT)
-Subject: Re: [RESEND PATCH 1/2] arm64: defconfig: Allow mt8173-based boards to
- boot from usb
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210331090659.4169966-1-enric.balletbo@collabora.com>
- <CAJMQK-jO=yfXDa4t1WzNVmyoQnaBkQP1t1G3HgThWCRAseWk3g@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <a36f2b08-5e23-271f-f894-911ebdd85c5a@gmail.com>
-Date:   Wed, 31 Mar 2021 12:13:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 31 Mar 2021 06:17:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12VA56Lj105206;
+        Wed, 31 Mar 2021 10:17:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+D2v2EZQvmBA+m+2IxOAxb/tWwGoJI3TuWzKUzEcgdY=;
+ b=Nfr0a2snQgrVcc6rFCtm+oAQckOYGbv/dAmXV0fRt9piLgKUM3b0MXir4NFG3vi5Hhvq
+ kATo4xUeW2spDApr4+G3nznYuYjeUTYAHGx0NMQaykypacmE6kXbxxZnPeIZjNrXkNZ0
+ gWdBeVNPIrPpLpfTnCgI5efBzydWX0k6k5mOajxk2TR7SFt18/1pgI/BgG6Hsl66/qXb
+ qb4DOGPyF5d7hYYgO4jZDPcX/JqJDM/53tzeJ3ClYSh/aK4ao8nluujNgXufh5+1RK0Y
+ UBAkw8u8SsgWeTpeUggcmwYYJqfq+f4KJu6+1ioTuEz4+RDAaPzM+zOZsQmJE3EchWxT oQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37mad9sr5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 10:17:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12VA5eCc035381;
+        Wed, 31 Mar 2021 10:17:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 37mabp7s0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Mar 2021 10:17:07 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12VAH6Jd020451;
+        Wed, 31 Mar 2021 10:17:06 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 31 Mar 2021 10:17:05 +0000
+Date:   Wed, 31 Mar 2021 13:16:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/40] staging: rtl8723bs: replace RT_TRACE with public
+ printk wrappers in core/rtw_xmit.c
+Message-ID: <20210331101658.GK2065@kadam>
+References: <cover.1617183374.git.fabioaiuto83@gmail.com>
+ <75c8a2396a0cae9ad7933577b20dfbf3a7ce6816.1617183374.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJMQK-jO=yfXDa4t1WzNVmyoQnaBkQP1t1G3HgThWCRAseWk3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75c8a2396a0cae9ad7933577b20dfbf3a7ce6816.1617183374.git.fabioaiuto83@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103300000 definitions=main-2103310073
+X-Proofpoint-ORIG-GUID: kbsi59_HsHa-91GsQHOXMTPFPRY1LkZC
+X-Proofpoint-GUID: kbsi59_HsHa-91GsQHOXMTPFPRY1LkZC
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9939 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ bulkscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0 adultscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103300000
+ definitions=main-2103310073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm sorry but we can't accept this patch.
 
+> @@ -481,12 +481,13 @@ static s32 update_attrib_sec_info(struct adapter *padapter, struct pkt_attrib *p
+>  	pattrib->mac_id = psta->mac_id;
+>  
+>  	if (psta->ieee8021x_blocked == true) {
+> -		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("\n psta->ieee8021x_blocked == true\n"));
+> +		pr_err("%s psta->ieee8021x_blocked == true\n", DRIVER_PREFIX);
 
-On 31/03/2021 11:15, Hsin-Yi Wang wrote:
-> On Wed, Mar 31, 2021 at 5:07 PM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
->>
->> Enable the option necessary to boot mt8173-based boards to boot from
->> usb devices, like its phy and the regulators needed to have proper
->> support.
->>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
-> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Here we have change debug code that's never printed into an error
+message.
 
-Both patches applied to v5.12-next/defconfig
+A bunch of the rest are technically "wrong" but harmless.
 
-Thanks!
+>  	if (!pxmitpriv->pallocated_frame_buf) {
+>  		pxmitpriv->pxmit_frame_buf = NULL;
+> -		RT_TRACE(_module_rtl871x_xmit_c_, _drv_err_, ("alloc xmit_frame fail!\n"));
+> +		pr_err("%s alloc xmit_frame fail!\n", DRIVER_PREFIX);
 
-> 
->> This is only a resend rebased on top of mainline to fix some trivial
->> conflicts.
->>
->>  arch/arm64/configs/defconfig | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index d612f633b771..7b4be3807b6d 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -448,6 +448,7 @@ CONFIG_I2C_GPIO=m
->>  CONFIG_I2C_IMX=y
->>  CONFIG_I2C_IMX_LPI2C=y
->>  CONFIG_I2C_MESON=y
->> +CONFIG_I2C_MT65XX=y
->>  CONFIG_I2C_MV64XXX=y
->>  CONFIG_I2C_OMAP=y
->>  CONFIG_I2C_OWL=y
->> @@ -594,6 +595,7 @@ CONFIG_MFD_EXYNOS_LPASS=m
->>  CONFIG_MFD_HI6421_PMIC=y
->>  CONFIG_MFD_HI655X_PMIC=y
->>  CONFIG_MFD_MAX77620=y
->> +CONFIG_MFD_MT6397=y
->>  CONFIG_MFD_SPMI_PMIC=y
->>  CONFIG_MFD_RK808=y
->>  CONFIG_MFD_SEC_CORE=y
->> @@ -611,6 +613,8 @@ CONFIG_REGULATOR_HI655X=y
->>  CONFIG_REGULATOR_MAX77620=y
->>  CONFIG_REGULATOR_MAX8973=y
->>  CONFIG_REGULATOR_MP8859=y
->> +CONFIG_REGULATOR_MT6358=y
->> +CONFIG_REGULATOR_MT6397=y
->>  CONFIG_REGULATOR_PCA9450=y
->>  CONFIG_REGULATOR_PF8X00=y
->>  CONFIG_REGULATOR_PFUZE100=y
->> @@ -787,6 +791,7 @@ CONFIG_USB_RENESAS_USBHS_HCD=m
->>  CONFIG_USB_RENESAS_USBHS=m
->>  CONFIG_USB_ACM=m
->>  CONFIG_USB_STORAGE=y
->> +CONFIG_USB_MTU3=y
->>  CONFIG_USB_MUSB_HDRC=y
->>  CONFIG_USB_MUSB_SUNXI=y
->>  CONFIG_USB_DWC3=y
->> @@ -988,6 +993,7 @@ CONFIG_OWL_PM_DOMAINS=y
->>  CONFIG_RASPBERRYPI_POWER=y
->>  CONFIG_FSL_DPAA=y
->>  CONFIG_FSL_MC_DPIO=y
->> +CONFIG_MTK_PMIC_WRAP=y
->>  CONFIG_QCOM_AOSS_QMP=y
->>  CONFIG_QCOM_COMMAND_DB=y
->>  CONFIG_QCOM_GENI_SE=y
->> @@ -1064,6 +1070,7 @@ CONFIG_PHY_HI6220_USB=y
->>  CONFIG_PHY_HISTB_COMBPHY=y
->>  CONFIG_PHY_HISI_INNO_USB2=y
->>  CONFIG_PHY_MVEBU_CP110_COMPHY=y
->> +CONFIG_PHY_MTK_TPHY=y
->>  CONFIG_PHY_QCOM_QMP=m
->>  CONFIG_PHY_QCOM_QUSB2=m
->>  CONFIG_PHY_QCOM_USB_HS=y
->> --
->> 2.30.2
->>
+We don't print warning messages for allocation failures.  Checkpatch
+is supposed to complain.
+
+I always encourage people to think about everything deeply and look at
+the context and read the error messages.  But if you send a patch which
+mindlessly deletes all these RT_TRACE() messages, then we will apply
+that.
+
+It's unfortunate that you have to re-write the first patch in a 40
+patch series.  :/
+
+regards,
+dan carpenter
+
