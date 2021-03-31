@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A29E34FCCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F72C34FCCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 11:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhCaJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 05:29:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44880 "EHLO m43-7.mailgun.net"
+        id S234712AbhCaJ3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 05:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234597AbhCaJ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:28:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617182922; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=4vN6orEVQb03fof+f7nc7emS5NS5O20RaoDcQu8ttdA=; b=XtozNFigH4lwAdM/H1ghrTMXZWKAAoPi2VRI3KS1PF7SrhSQtpIFA7ZmSe4ZghwU1iKftIXU
- ++yDd8Er9c1yMJFTgYRUNHHW3hdV8l81HEZoYX8dhEf6xo7/hpjVXokUyIGHs7Qzamx+jXsR
- VHn9pIRByDLAlx86Bjx49rSAsxs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 606440c1197975f05ef4ebe3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 09:28:33
- GMT
-Sender: vgarodia=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E13BBC43462; Wed, 31 Mar 2021 09:28:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from vgarodia-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vgarodia)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 666EBC433CA;
-        Wed, 31 Mar 2021 09:28:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 666EBC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vgarodia@codeaurora.org
-From:   Vikash Garodia <vgarodia@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>
-Subject: [PATCH] venus: helpers: keep max bandwidth when mbps exceeds the supported range
-Date:   Wed, 31 Mar 2021 14:58:22 +0530
-Message-Id: <20210331092822.5729-1-vgarodia@codeaurora.org>
-X-Mailer: git-send-email 2.31.1
+        id S230385AbhCaJ2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:28:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04CA561606;
+        Wed, 31 Mar 2021 09:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617182930;
+        bh=Y2KIGR+vQOCwkenByF8/05tg8IxGcotlykRYxJa4B7Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HalLlvoWduM+QwONzIW12DvynzvUjVAvjRpYA+RzP4smHbvZtPKvPkMUSlZQJzYc5
+         AgkNYA76ZX8DlbphlosWeakn2beANedWUdKS5BlsacO4qrgSz1T4RzpEjym/HNKEnF
+         gCyxUWhDJ6LJv240kr11HyxaeWR1nsswPE7ktzO+boJGpEwS2sx/riblCmpNh6FHO+
+         jNyQMnJIpmIaO5O96UFaA5cOycA+SU0Vxli5UFIMPmoc0RlSn+TrNd0ddTi5b8sP3R
+         wR6x2DvpXnTxntemhmle0bxHp0b1GT8jy81nzhYPJqeYxT/ytu+vEMUrv3E1rx+BNF
+         4yxmIl7kiKiFQ==
+Date:   Wed, 31 Mar 2021 10:28:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jianlin Lv <iecedge@gmail.com>
+Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf <bpf@vger.kernel.org>,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next] bpf: arm64: Redefine MOV consistent with arch
+ insn
+Message-ID: <20210331092844.GA7205@willie-the-truck>
+References: <20210330074235.525747-1-Jianlin.Lv@arm.com>
+ <20210330093149.GA5281@willie-the-truck>
+ <CAFA-uR8_N=RHbhm4PdiB-AMCBdXsoMyM-9WgaPxPQ7-ZF6ujXA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA-uR8_N=RHbhm4PdiB-AMCBdXsoMyM-9WgaPxPQ7-ZF6ujXA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the video usecase have macro blocks per sec which is  more than
-supported, keep the required bus bandwidth as the maximum supported.
+On Wed, Mar 31, 2021 at 05:22:18PM +0800, Jianlin Lv wrote:
+> On Tue, Mar 30, 2021 at 5:31 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Tue, Mar 30, 2021 at 03:42:35PM +0800, Jianlin Lv wrote:
+> > > A64_MOV is currently mapped to Add Instruction. Architecturally MOV
+> > > (register) is an alias of ORR (shifted register) and MOV (to or from SP)
+> > > is an alias of ADD (immediate).
+> > > This patch redefines A64_MOV and uses existing functionality
+> > > aarch64_insn_gen_move_reg() in insn.c to encode MOV (register) instruction.
+> > > For moving between register and stack pointer, rename macro to A64_MOV_SP.
+> >
+> > What does this gain us? There's no requirement for a BPF "MOV" to match an
+> > arm64 architectural "MOV", so what's the up-side of aligning them like this?
+> 
+> According to the description in the Arm Software Optimization Guide,
+> Arithmetic(basic) and Logical(basic) instructions have the same
+> Exec Latency and Execution Throughput.
+> This change did not bring about a performance improvement.
+> The original intention was to make the instruction map more 'natively'.
 
-Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
----
- drivers/media/platform/qcom/venus/pm_helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think we should leave the code as-is, then. Having a separate MOV_SP
+macro s confusing and, worse, I worry that somebody passing A64_SP to
+A64_MOV will end up using the zero register.
 
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index e349d01422c5..ebd7e42e31c1 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -186,7 +186,7 @@ static void mbs_to_bw(struct venus_inst *inst, u32 mbs, u32 *avg, u32 *peak)
- 		return;
- 
- 	for (i = 0; i < num_rows; i++) {
--		if (mbs > bw_tbl[i].mbs_per_sec)
-+		if (i != 0 && mbs > bw_tbl[i].mbs_per_sec)
- 			break;
- 
- 		if (inst->dpb_fmt & HFI_COLOR_FORMAT_10_BIT_BASE) {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Will
