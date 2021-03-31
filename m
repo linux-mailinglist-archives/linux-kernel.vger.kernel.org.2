@@ -2,196 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662B1350AF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0D8350AEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhCaXoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:44:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhCaXng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:43:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BBB760C3E;
-        Wed, 31 Mar 2021 23:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617234216;
-        bh=y9REhSnSTBr9I8rgkZ3Ma5J00fwbHmJxEfLgak8mJKU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QGejDCJapO204hq/HX5MNq1WHOclMyy6AqHcLAu74CLi816sbHVUXKGEW543lmu3s
-         CwFGh/wK1737ywIRXHSdQTV7RtxZX87I+r2lpHhAHk2yR03t6wd894lMFwiman1+AD
-         x/3uPUCM9z/7oRVGvxA4KuilfLQEW01bQXojpsJ83GuksxOUd77O1C84pZiquJ7HIj
-         FG/8q4agFMCKzW3BBK0SZ7eZkDz7gCdwQyFznt9CAtPRkghK2Y+TMa3Czai5e8R41O
-         OXwmWBDXzrbY3zn+2BZ/w4Ei9K2DwlE8T6y5Vlgye3vEW2r3+cvXT/DDeFqFYD6+RN
-         ZRluM44BFaWzA==
-Date:   Wed, 31 Mar 2021 17:43:38 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] scsi: ufs: Fix out-of-bounds warnings in
- ufshcd_exec_raw_upiu_cmd
-Message-ID: <20210331224338.GA347171@embeddedor>
+        id S231544AbhCaXkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhCaXj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 19:39:56 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D116C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:39:56 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id h7so282713qtx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KRXtd75gIM8o6NO9GrD5QaBIhsBoZKHXbOsv1GkYlzc=;
+        b=icAxVtUz2hwviiFNsnHwXEnvvtgXHS05bFOuzxBj120Eg5qITOkW4TAP4+E4/U0UMz
+         d7A3ZJ0+Y4PUBnaUNcXYjLti0rW3kwnyl8P5KQXebXzrO+mttpJ0a6fqoIYgezQHVNRl
+         4QQ7s0RIkQMiWoukQ36T0c2QeLGBfIfCyH4Q4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KRXtd75gIM8o6NO9GrD5QaBIhsBoZKHXbOsv1GkYlzc=;
+        b=E7IOJSyBZ4bD0dj1rVeMQ3O4gk+4p2QJW15Y/SJO6vNpzEVmVktUXdKpYISBHV9uH5
+         VbFtEBkiKoDwp8glVfS0NqYQR/59ygjWMLmVURGJn3ZL366x2at1bX7tXZJqoFrPKy1m
+         U5FiEqs+u0VyyN3Fi7Il+51R8KK7ZDOy2XqvPclblwQIZsBm1Ga9Jp2ai2OZUlx3OxHi
+         63GiFBQo9MEexdiFFanxiOT0u6TpHu/BDT0bxvmctvv96BQT5ete9zBhKmF52bc8Bab4
+         OLO94iaGfa0dGLJx/vBz7n2DbmCeqs2VJvWm7q+YozGj5GFOWhkENw8qzcaTp9uo0Ja2
+         m+5g==
+X-Gm-Message-State: AOAM532/l2ceEd6h8N7zGB5sRhhKICddW/o33Bb0R9j8Zd4IfRnBCh9s
+        ZCPCY0WgbgOi2l3Z8pdsxlF3EG+2dszASQ==
+X-Google-Smtp-Source: ABdhPJxG2vWVpE52nI95+W/4u7jRbiEh29JJoc4vAA13/Tmrk+kNGNGjbY0/B9As6h80MmI/a4jAMg==
+X-Received: by 2002:ac8:1098:: with SMTP id a24mr4538967qtj.291.1617233995369;
+        Wed, 31 Mar 2021 16:39:55 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id 19sm1350526qtt.32.2021.03.31.16.39.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Mar 2021 16:39:54 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id z1so23003984ybf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:39:54 -0700 (PDT)
+X-Received: by 2002:a5b:54a:: with SMTP id r10mr8216760ybp.476.1617233994289;
+ Wed, 31 Mar 2021 16:39:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210331221630.488498-1-robdclark@gmail.com> <20210331221630.488498-3-robdclark@gmail.com>
+ <CAD=FV=USXBm-ZLafNWbUK=Ny7_vwtyG164mQFs87SkXqim-Vpw@mail.gmail.com> <CAF6AEGutvjUQ-bQMsAYDLq5kdRo7rQ5XwWjGSRV27VT_UOuMTw@mail.gmail.com>
+In-Reply-To: <CAF6AEGutvjUQ-bQMsAYDLq5kdRo7rQ5XwWjGSRV27VT_UOuMTw@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 31 Mar 2021 16:39:42 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VLzDW93COWPALyin3N-wM=a7uKG7WgttmMCncf7qRmKQ@mail.gmail.com>
+Message-ID: <CAD=FV=VLzDW93COWPALyin3N-wM=a7uKG7WgttmMCncf7qRmKQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] drm/msm: Avoid mutex in shrinker_count()
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warnings by enclosing
-some structure members into new structure objects upiu_req
-and upiu_rsp:
+Hi,
 
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [29, 48] from the object at 'treq' is out of the bounds of referenced subobject 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [61, 80] from the object at 'treq' is out of the bounds of referenced subobject 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
-arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset [29, 48] from the object at 'treq' is out of the bounds of referenced subobject 'req_header' with type 'struct utp_upiu_header' at offset 16 [-Warray-bounds]
-arch/m68k/include/asm/string.h:72:25: warning: '__builtin_memcpy' offset [61, 80] from the object at 'treq' is out of the bounds of referenced subobject 'rsp_header' with type 'struct utp_upiu_header' at offset 48 [-Warray-bounds]
+On Wed, Mar 31, 2021 at 4:23 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Wed, Mar 31, 2021 at 3:44 PM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > @@ -818,11 +820,19 @@ static void update_inactive(struct msm_gem_object *msm_obj)
+> > >         mutex_lock(&priv->mm_lock);
+> > >         WARN_ON(msm_obj->active_count != 0);
+> > >
+> > > +       if (msm_obj->dontneed)
+> > > +               mark_unpurgable(msm_obj);
+> > > +
+> > >         list_del_init(&msm_obj->mm_list);
+> > > -       if (msm_obj->madv == MSM_MADV_WILLNEED)
+> > > +       if (msm_obj->madv == MSM_MADV_WILLNEED) {
+> > >                 list_add_tail(&msm_obj->mm_list, &priv->inactive_willneed);
+> > > -       else
+> > > +       } else if (msm_obj->madv == MSM_MADV_DONTNEED) {
+> > >                 list_add_tail(&msm_obj->mm_list, &priv->inactive_dontneed);
+> > > +               mark_purgable(msm_obj);
+> > > +       } else {
+> > > +               WARN_ON(msm_obj->madv != __MSM_MADV_PURGED);
+> > > +               list_add_tail(&msm_obj->mm_list, &priv->inactive_purged);
+> >
+> > I'm probably being dense, but what's the point of adding it to the
+> > "inactive_purged" list here? You never look at that list, right? You
+> > already did a list_del_init() on this object's list pointer
+> > ("mm_list"). I don't see how adding it to a bogus list helps with
+> > anything.
+>
+> It preserves the "every bo is in one of these lists" statement, but
+> other than that you are right we aren't otherwise doing anything with
+> that list.  (Or we could replace the list_del_init() with list_del()..
+> I tend to instinctively go for list_del_init())
 
-Refactor the code by making it more structured.
+If you really want this list, it wouldn't hurt to at least have a
+comment saying that it's not used for anything so people like me doing
+go trying to figure out what it's used for. ;-)
 
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). Now that a new struct _upiu_req_ enclosing all those adjacent
-members is introduced, memcpy() doesn't overrun the length of
-&treq.req_header, because the address of the new struct object
-_upiu_req_ is used as the destination, instead. The same problem
-is present when memcpy() overruns the length of the source
-&treq.rsp_header; in this case the address of the new struct
-object _upiu_rsp_ is used, instead.
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds
-and avoid confusing the compiler.
+> > > @@ -198,6 +203,33 @@ static inline bool is_vunmapable(struct msm_gem_object *msm_obj)
+> > >         return (msm_obj->vmap_count == 0) && msm_obj->vaddr;
+> > >  }
+> > >
+> > > +static inline void mark_purgable(struct msm_gem_object *msm_obj)
+> > > +{
+> > > +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
+> > > +
+> > > +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
+> > > +
+> > > +       if (WARN_ON(msm_obj->dontneed))
+> > > +               return;
+> >
+> > The is_purgeable() function also checks other things besides just
+> > "MSM_MADV_DONTNEED". Do we need to check those too? Specifically:
+> >
+> >  msm_obj->sgt && !msm_obj->base.dma_buf && !msm_obj->base.import_attach
+> >
+> > ...or is it just being paranoid?
+> >
+> > I guess I'm just worried that if any of those might be important then
+> > we'll consistently report back that we have a count of things that can
+> > be purged but then scan() won't find anything to do. That wouldn't be
+> > great.
+>
+> Hmm, I thought msm_gem_madvise() returned an error instead of allowing
+> MSM_MADV_DONTNEED to be set on imported/exported dma-bufs.. it
+> probably should to be complete (but userspace already knows not to
+> madvise an imported/exported buffer for other reasons.. ie. we can't
+> let a shared buffer end up in the bo cache).  I'll re-work that a bit.
+>
+> The msm_obj->sgt case is a bit more tricky.. that will be the case of
+> a freshly allocated obj that does not have backing patches yet.  But
+> it seems like enough of a corner case, that I'm happy to live with
+> it.. ie. the tricky thing is not leaking decrements of
+> priv->shrinkable_count or underflowing priv->shrinkable_count, and
+> caring about the !msm_obj->sgt case doubles the number of states an
+> object can be in, and the shrinker->count() return value is just an
+> estimate.
 
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/60640558.lsAxiK6otPwTo9rv%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/scsi/ufs/ufshcd.c | 28 ++++++++++++++++------------
- drivers/scsi/ufs/ufshci.h | 22 +++++++++++++---------
- 2 files changed, 29 insertions(+), 21 deletions(-)
+I think it's equally important to make sure that we don't constantly
+have a non-zero count and then have scan() do nothing.  If there's a
+transitory blip then it's fine, but it's not OK if it can be steady
+state. Then you end up with:
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 7539a4ee9494..324eb641e66f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -336,11 +336,15 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 		return;
- 
- 	if (str_t == UFS_TM_SEND)
--		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
--				  &descp->input_param1, UFS_TSF_TM_INPUT);
-+		trace_ufshcd_upiu(dev_name(hba->dev), str_t,
-+				  &descp->upiu_req.req_header,
-+				  &descp->upiu_req.input_param1,
-+				  UFS_TSF_TM_INPUT);
- 	else
--		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
--				  &descp->output_param1, UFS_TSF_TM_OUTPUT);
-+		trace_ufshcd_upiu(dev_name(hba->dev), str_t,
-+				  &descp->upiu_rsp.rsp_header,
-+				  &descp->upiu_rsp.output_param1,
-+				  UFS_TSF_TM_OUTPUT);
- }
- 
- static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-@@ -6420,7 +6424,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	spin_lock_irqsave(host->host_lock, flags);
- 	task_tag = hba->nutrs + free_slot;
- 
--	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
-+	treq->upiu_req.req_header.dword_0 |= cpu_to_be32(task_tag);
- 
- 	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
- 	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
-@@ -6493,16 +6497,16 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba, int lun_id, int task_id,
- 	treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
- 
- 	/* Configure task request UPIU */
--	treq.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
-+	treq.upiu_req.req_header.dword_0 = cpu_to_be32(lun_id << 8) |
- 				  cpu_to_be32(UPIU_TRANSACTION_TASK_REQ << 24);
--	treq.req_header.dword_1 = cpu_to_be32(tm_function << 16);
-+	treq.upiu_req.req_header.dword_1 = cpu_to_be32(tm_function << 16);
- 
- 	/*
- 	 * The host shall provide the same value for LUN field in the basic
- 	 * header and for Input Parameter.
- 	 */
--	treq.input_param1 = cpu_to_be32(lun_id);
--	treq.input_param2 = cpu_to_be32(task_id);
-+	treq.upiu_req.input_param1 = cpu_to_be32(lun_id);
-+	treq.upiu_req.input_param2 = cpu_to_be32(task_id);
- 
- 	err = __ufshcd_issue_tm_cmd(hba, &treq, tm_function);
- 	if (err == -ETIMEDOUT)
-@@ -6513,7 +6517,7 @@ static int ufshcd_issue_tm_cmd(struct ufs_hba *hba, int lun_id, int task_id,
- 		dev_err(hba->dev, "%s: failed, ocs = 0x%x\n",
- 				__func__, ocs_value);
- 	else if (tm_response)
--		*tm_response = be32_to_cpu(treq.output_param1) &
-+		*tm_response = be32_to_cpu(treq.upiu_rsp.output_param1) &
- 				MASK_TM_SERVICE_RESP;
- 	return err;
- }
-@@ -6693,7 +6697,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
- 		treq.header.dword_0 = cpu_to_le32(UTP_REQ_DESC_INT_CMD);
- 		treq.header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
- 
--		memcpy(&treq.req_header, req_upiu, sizeof(*req_upiu));
-+		memcpy(&treq.upiu_req, req_upiu, sizeof(*req_upiu));
- 
- 		err = __ufshcd_issue_tm_cmd(hba, &treq, tm_f);
- 		if (err == -ETIMEDOUT)
-@@ -6706,7 +6710,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
- 			break;
- 		}
- 
--		memcpy(rsp_upiu, &treq.rsp_header, sizeof(*rsp_upiu));
-+		memcpy(rsp_upiu, &treq.upiu_rsp, sizeof(*rsp_upiu));
- 
- 		break;
- 	default:
-diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
-index 6795e1f0e8f8..235236859285 100644
---- a/drivers/scsi/ufs/ufshci.h
-+++ b/drivers/scsi/ufs/ufshci.h
-@@ -482,17 +482,21 @@ struct utp_task_req_desc {
- 	struct request_desc_header header;
- 
- 	/* DW 4-11 - Task request UPIU structure */
--	struct utp_upiu_header	req_header;
--	__be32			input_param1;
--	__be32			input_param2;
--	__be32			input_param3;
--	__be32			__reserved1[2];
-+	struct {
-+		struct utp_upiu_header	req_header;
-+		__be32			input_param1;
-+		__be32			input_param2;
-+		__be32			input_param3;
-+		__be32			__reserved1[2];
-+	} upiu_req;
- 
- 	/* DW 12-19 - Task Management Response UPIU structure */
--	struct utp_upiu_header	rsp_header;
--	__be32			output_param1;
--	__be32			output_param2;
--	__be32			__reserved2[3];
-+	struct {
-+		struct utp_upiu_header	rsp_header;
-+		__be32			output_param1;
-+		__be32			output_param2;
-+		__be32			__reserved2[3];
-+	} upiu_rsp;
- };
- 
- #endif /* End of Header */
--- 
-2.27.0
+1. How many objects do you have to free? 10
+2. OK, free some. How many did you free? 0
+3. Oh. You got more to do, I'll call you again.
+4. Goto #1
 
+...and it just keeps looping, right?
+
+As long as you're confident that this case can't happen then we're
+probably fine, but good to be careful. Is there any way we can make
+sure that a "freshly allocated object" isn't ever in the "DONTNEED"
+state?
+
+
+> > > +       priv->shrinkable_count += msm_obj->base.size >> PAGE_SHIFT;
+> > > +       msm_obj->dontneed = true;
+> > > +}
+> > > +
+> > > +static inline void mark_unpurgable(struct msm_gem_object *msm_obj)
+> > > +{
+> > > +       struct msm_drm_private *priv = msm_obj->base.dev->dev_private;
+> > > +
+> > > +       WARN_ON(!mutex_is_locked(&priv->mm_lock));
+> > > +
+> > > +       if (WARN_ON(!msm_obj->dontneed))
+> > > +               return;
+> > > +
+> > > +       priv->shrinkable_count -= msm_obj->base.size >> PAGE_SHIFT;
+> > > +       WARN_ON(priv->shrinkable_count < 0);
+> >
+> > If you changed the order maybe you could make shrinkable_count
+> > "unsigned long" to match the shrinker API?
+> >
+> >  new_shrinkable = msm_obj->base.size >> PAGE_SHIFT;
+> >  WARN_ON(new_shrinkable > priv->shrinkable_count);
+> >  priv->shrinkable_count -= new_shrinkable
+> >
+>
+> True, although I've developed a preference for signed integers in
+> cases where it can underflow if you mess up
+
+Yeah, I guess it's fine since it's a count of pages and we really
+can't have _that_ many pages worth of stuff to purge. It might not
+hurt to at least declare it as a "long" instead of an "int" though to
+match the shrinker API.
+
+-Doug
