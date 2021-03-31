@@ -2,473 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686CA3501E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FFE3501E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 16:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhCaOIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 10:08:05 -0400
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:3809
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S235970AbhCaOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 10:09:11 -0400
+Received: from mail-mw2nam08on2058.outbound.protection.outlook.com ([40.107.101.58]:36961
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235114AbhCaOH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 10:07:56 -0400
+        id S235957AbhCaOIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:08:42 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RydrpjngSc0638xfLzupZepgXwKo1JTCJnm3wM0t4MMq4Q9DGbx+5Fnk9C9Y4Q3KMwSnKvoLgueH5kyv+JlTXxAel2KsXvNZlBOhkBwaPeEXrd4T5tgnnv8PZb9GoOkvLE800Vg0eN/rgGBtzmV2phY8cRd0C7hZ7Eg/N/nb3K5W+SBRxB/hSaXZkT4Mo983E3k7dDJ4+L55ljKO3Wju9Cv72Nb6UeU4rJG5tcuZ0Q8fSq6Hl4wPinwJw5Zu61kH9Kws35sVKjd88yRfI38hOSVfEEW6PPJfr2Fcb7wuAmp9pYxJoCfXcqRffPNUNkLqSepx2Py4VHKDkPzcxbGnXA==
+ b=h7Oook9JJrz9Wlx8AzRUTVebZPEm4xyCcLWwgtpY9YaHtDhhhQcZgL4wxI1LFdkL5ZsOrt4fXflgVDrwJO6U9ONjLkwWqX81RrZW4kN4KMMMfUaT2CewGCfvw3ITE5SOr+ZLOP+BzHGPLytJwiyF/rrYW81vzZ5ykBfR8IZXvYZINbMuJWn1llR5QC5B8EzU/WDEY8igOgPX88DqR+H/XVxcW29rA6x+KRvkBzmTnU38ftPCoaaHZFeALD/9BJM2Pvp4YQk+P2PwUBzlKD4dUqlurK+hXf/Hw9r8ZsogkpiBWFRF7dr1QXfspgi+UMqvrmU+Xxu9i25LkqNIcZ4MHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+bs0y7KpYLqaR51avhpg4vFOO6lzCp6keNPs26rtIRQ=;
- b=LMD0oZE97AbNvgzDj+eYG6DnG54UKR71h3J9jZXdC9jj5/dmD6eAcLdF/CWd7R5cTv19uzINUci9x05Gs1C4fZQgDRp8fv5Ax+Ktqy/pXQbKoT3UAc2IkDg1zkldQLO28PUdMQvtHDuXr9zPV+GpaHuX5U5expmQWvGj6hLax0z8rXKCQaJLqQEldRTIZKLxPiduYeru5hxsSkklPOhrHl4eFS2M0ydPMubqUrYiBwswV9f19RzUhYVYmTpVJnp4WBqDKS3gL7yFJpXoyhJvGMxQBD0DyjFa8y6qAXeNeyh7Cfk6EYnGSH7EtqKiY8URkXCETrst6WJpWGFHeDefdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=m5fQ5ObuqvA8nfqqLPa8NdaWK9MaCyXXA2R/oTYN/qY=;
+ b=AMXJp0sRvx5Ln6kNWa7OBISc6zMQwDm9Tpw8dzMSzzBwKZYo6XVGDJGuj/MeNlNku+dMc0szku9gUawv7l+po86m9ik4MmyRpUn7Bvdca8vGccS2BpY3DY5sfjEZYjfwYPAG0q0295ZM5sHlCXt/8xHHffEqiWEP6GzbhMvxFN2TWpxyBMMtFkG5liKnjVsYSkpi1hvDP+NhE45ESgOE0qhawBOeZ97Lu+Ao3lk32jgsoiqED9A1Mf5n7SVk8hzd+/LReF4v3JvkcAhQWut5jBv9xIsiDYfPETQGlCZ6U5U1EuujqeZoSmVJb3V21mobHlrEMqyz+ti7ik7U7lSmew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+bs0y7KpYLqaR51avhpg4vFOO6lzCp6keNPs26rtIRQ=;
- b=aBY2mvzsDQ7cC0B7PkyuOzL/Ryl8z3LeJjjG9TQj9I8jfwMqqtn4A6YwYIw4RPrU+sPMLPGc/GDhFoP87l4cqV60DPTtoRX+oyEhW8H+dLdrtdHhSbb7+o4qoAGwNGeJG0W4+ql+1i/ixVz8i2KxoGnRb1HbJUocPV5LIDGfBP8=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
- DM6PR12MB4700.namprd12.prod.outlook.com (2603:10b6:5:35::20) with Microsoft
+ bh=m5fQ5ObuqvA8nfqqLPa8NdaWK9MaCyXXA2R/oTYN/qY=;
+ b=dU3StDokPqUQ7mKPJI12bPF5HMmS2SQqDpdCVR9yguUwtbINwUNuU4jVKtZOOHRGfngYDnUcC4skNE/NRJr7x/ZcLN/M8l8l8LqlS7c/lmbcKEXyaX+uOJki+5FpWowqSm0loj71btonKTSEckxM/r/rHFQ52Gpk6JlIXbDKAXXCFiwL1m3Ug3PRLdJDH/Tq8wnPhXboAvs5dGN4BX+ukA+NiMLBHBzlvLHh6Z7YopB3Ff6dP4A1nDQamKvRP3jY3Dvb6m4tt2mCWmLCr5qPHW0MhChcVB7Qhfvz0tbncRCKeI9f+BUU11wQW2/sXEtkWx+TeOlqPbGKXPzLrOoccg==
+Received: from DM5PR13CA0044.namprd13.prod.outlook.com (2603:10b6:3:7b::30) by
+ MWHPR12MB1310.namprd12.prod.outlook.com (2603:10b6:300:a::21) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.29; Wed, 31 Mar 2021 14:07:54 +0000
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3977.033; Wed, 31 Mar
- 2021 14:07:54 +0000
-From:   Sanket Goswami <Sanket.Goswami@amd.com>
-To:     jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sanket Goswami <Sanket.Goswami@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Subject: [PATCH v4] i2c: designware: Add driver support for AMD NAVI GPU
-Date:   Wed, 31 Mar 2021 19:37:30 +0530
-Message-Id: <20210331140730.2058967-1-Sanket.Goswami@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MA1PR01CA0087.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00::27)
- To DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9)
+ 15.20.3977.30; Wed, 31 Mar 2021 14:08:40 +0000
+Received: from DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:7b:cafe::43) by DM5PR13CA0044.outlook.office365.com
+ (2603:10b6:3:7b::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
+ Transport; Wed, 31 Mar 2021 14:08:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT062.mail.protection.outlook.com (10.13.173.40) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Wed, 31 Mar 2021 14:08:40 +0000
+Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 31 Mar 2021 14:08:37 +0000
+References: <CAM_iQpVAo+Zxus-FC59xzwcmbS7UOi6F8kNMzsrEVrBY2YRtNA@mail.gmail.com>
+ <20210331083723.171150-1-memxor@gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+CC:     <xiyou.wangcong@gmail.com>, <davem@davemloft.net>,
+        <jhs@mojatatu.com>, <jiri@resnulli.us>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <toke@redhat.com>
+Subject: Re: [PATCH net-next v3] net: sched: bump refcount for new action in
+ ACT replace mode
+In-Reply-To: <20210331083723.171150-1-memxor@gmail.com>
+Date:   Wed, 31 Mar 2021 17:08:34 +0300
+Message-ID: <ygnh5z17h0v1.fsf@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jatayu.amd.com (165.204.156.251) by MA1PR01CA0087.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Wed, 31 Mar 2021 14:07:51 +0000
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d23063a4-97a8-4e77-29a7-08d8f44e60d3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4700:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4700D4615C98E1615DB0D41B9C7C9@DM6PR12MB4700.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 8038a667-02fd-4b23-2361-08d8f44e7c45
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1310:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1310B342E06863B0CE47005BA07C9@MWHPR12MB1310.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MZuLKz+xPLVJ2sEJrc44QTZQhlQvAbV435FqT0f7lD+7NCt0SHAF+FJLgzBbpASX6rfmPv5E5lYIXWidB0WbOD7hcLig6VlrGr+Tfkk4ZPHhr5JQ1TfXRXkKGng8tuSn3ADdArRmOFmqTU4ZEPqCvQyo/SctWFP13/cv+brYCr4iIrEdSkRPsMuvjnGQY076fkbOnew/a06ADj1RV+Cnxu1hiWLF2AIRfoAVXb3gNK+0vBGP5sY/7jzjRORCF751z2UQMncZyqUkEiJN9onWfjA4RXBJ4iSmf1ieWwPxW1QgjOB479yiaedaXQBiGdBFyYE05JCuEjKiYb3tpgPQghyQ8TT0LKBPhIdaIFZzOScFf+S/lDMz/fm0Uge9aaDujNMbNUIBpB+BSFyM71swkY751EXDZT7b4dA4lvzlFYOHHaPh1RH9RvCMytm26n69fjdPnr800IwlgIVJTqMlyE5siTBPMh3VXXJpctpWyauUdhVl+lPjHDnTc3HWfYllF5P2CPlmDuMImfRuAVSuWrQHozfP4lOwktAHIP7yZn3SF/FfliuXSXNwkX1S7kubz/8tdk/lHyQnlkorcmfVX8MIY0Yo98f7gf2f5qGtLKctg3mVSsly/4U4JaP4EiCnlZoMvrZbrBZUvTtmHLSJ4mPD2yePb20GNRt9sP5n5cg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(366004)(8936002)(38100700001)(186003)(6486002)(16526019)(52116002)(83380400001)(66946007)(316002)(478600001)(54906003)(4326008)(956004)(2616005)(8676002)(1076003)(66476007)(2906002)(6666004)(7696005)(26005)(36756003)(86362001)(66556008)(30864003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QSWEdgCZhfalaWeMGf5Qs8mo3euBaH/SG0u7fufJ8GmjQG04dtqRIvh9HfU6?=
- =?us-ascii?Q?0+iwfdJ470mqdbtQlNGwzJMOCh9jHIjobVzq0gwXEqd8txz1ptc1uS7m0tHl?=
- =?us-ascii?Q?LppL1fR+K4gqrh1xH9PJ0DShlMxj+x2T2trNn9lsaJ6V4VUl1l9FGLcdR/vU?=
- =?us-ascii?Q?QQZ5O1HIFZ/RFG/eyvb1jMqsGUmkl+QX8YCR8ZLlPWbvy3atuF/b6L2veOR9?=
- =?us-ascii?Q?fjUV/f/LeS0PnYVznRcsMokDrRHlGt402DShKh773XWxDQeueDJqrzyFDMVu?=
- =?us-ascii?Q?YXnfoDhwocLxyroIRWsdc8jF5OWUGqBA6Q9KLEgmyfRB5hWGsPX8DSBcI9lV?=
- =?us-ascii?Q?msG4sDehZW/P2k1XC0ja4Z7WgAkVXmx75Yjoxn8DCsSKwKa9c0ep/IJdHuQg?=
- =?us-ascii?Q?lkv2m64VfwvsyAxKfgNdZuAwC1EGw6OIzvYTqy9xqL8VIga6h9AUYsQ+tzL3?=
- =?us-ascii?Q?w3gOLX+YopVhhGMw5BrMHdux4T3B3oz3q2pNQDJ2rAaqYEmUl1TQqAfmAkKm?=
- =?us-ascii?Q?QcJRxbuxMw/ddbRyBCuFYT1JWH8pygL2GpDMFn386O5DgCyXSrGLilU669Z8?=
- =?us-ascii?Q?UFIn7LYLpl+cm1A1yTsyarCLxlR3ZTpAXSQLo3ZOsjDo+5ciJMvHTribu3uc?=
- =?us-ascii?Q?LyGj4vzlTmcnjdwvjZ9cDWbDiA6pgfYbYaDoWoi8HcAVXBzqKpM2zLgqVQMH?=
- =?us-ascii?Q?K4CJ/XItyc0tfCkyE/7w4kF58ms+JXYaHeECwVdkycgILUzxJGNzDVG5Hk+K?=
- =?us-ascii?Q?L2D9yGCAOQKm35tCCZcOU1vbNkYFKT5mvsrACzQzWYTBtHmXRRrNk1hm4SK6?=
- =?us-ascii?Q?vER0jduCrAhkcd4OWyIoWrcmnvdi5qhU6gwXiDYcRH8uSGyVhmK13byn+AwU?=
- =?us-ascii?Q?uAZiG05JouwUWQsXg5OQruk2wZVQD1bNSmk+gMUPrt244hi81rsYaA9VLcgc?=
- =?us-ascii?Q?+I9YsxhK58PTBRByOKzX5AAhBwIEiVUamxYuw8FtflQFNXDFHkBVYbowx+Jp?=
- =?us-ascii?Q?MA10E5zgl93lAMaTN+cAKNCodctRy33UrWwkjDr5RwcF838PWvohHOEdk1sk?=
- =?us-ascii?Q?VoOXfpGawyoGdqG8tKNBGX+z0lMg5Bb1eKhaXCDDOTQg0q3JXHK8dHp2vUZw?=
- =?us-ascii?Q?EoVZtZWG6yOYMFEFUpjFmt9hFN4I6WW+kg/WR5VWC7C+hQ2zTVNz6TYgyqBA?=
- =?us-ascii?Q?5VPqsz79l7lC7yWvlWBhf/1cNysZKIvpy19GOFjBpgTxk7nNVs1wlKB55RU9?=
- =?us-ascii?Q?Btc4VKFq4mALK+Jg2yJtjq/mB9u/b/+2RbdWbnMi/OfriiD97bXvj5Bb5dSx?=
- =?us-ascii?Q?IHI4HR0gBF8neSTtNQUxqe2a?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d23063a4-97a8-4e77-29a7-08d8f44e60d3
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 14:07:54.3242
+X-Microsoft-Antispam-Message-Info: jd9wXWMFMLK+LmByCflzxjVbcdEqkvb5TzbWW5kbLjYruSf26KWjvj6eh1C2adcRmUmzpu+NJL+ehngxwiSWudeLymTMVXG+x2coVyNbwiyRBqbdjVbuIyyRiV6X4JHwScZJUtFVKH71zhcwD7EoIeTsxvYPMfU+mTRiGn7Lb99Qz18n7JBmrt8m/1CY2hubgeex5iL0QRjYZ/hhK1AZ6ODIOkx9xQa4aNqrqELGBHrlIMggyzQ/nw1/mjE/5vBH+fIvzgPnxYXglohCE9P7YtV88d6EAj/Ah9DZvwD8irtWaBcBfBIgIgs8jusXnl3jVaEWirTV+8QyHlw3RPLHaqlV99nY5FIayHCHN0PMZUXRM8vWTDkdamfA7ss8L5DTk7VrnaKyQCPIYNbXZ6clYiW83bsYFabaGCL3sTGplOR3qa7jja4rwXk0HNtcMIItFBnpXR5MowpET3tDdpTD/L2QvmMvS8AcG246fjOvRkabz2OmOz7HXrlwcsa1Z9GrunlUo2dk8wOSsPfBauHa18shC0HRmSu5PcWNSp/aSkQ0ifnVnmGqMP5GAtsMWqAR9A8zejMUUFmJYzxfpHIhtxfK9upddzbhahkO7E6XYD5Rf3nF8eHKIH3BMSwHRvhiGxfYyaSYCXhPPLKBL1rQpVKIgIphExa+m1eaFzkIdWA=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966006)(36840700001)(6916009)(36756003)(8936002)(70586007)(316002)(8676002)(5660300002)(36906005)(356005)(82310400003)(86362001)(83380400001)(336012)(82740400003)(7636003)(4326008)(426003)(7696005)(186003)(16526019)(2616005)(26005)(47076005)(54906003)(36860700001)(2906002)(70206006)(6666004)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2021 14:08:40.1398
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t1ZpUQSDHQzl0n4lhHM5aoMimE6Nni8nFR0SQNMVZLARGwUgB85+vL4BY5gbJIYc5Wn31hEd/mVkQA2hL8tHWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4700
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8038a667-02fd-4b23-2361-08d8f44e7c45
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1310
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Latest AMD NAVI GPU card has an integrated Type-C controller and
-Designware I2C with PCI Interface. The PD controller for USB Type-C can
-be accessed over I2C. The client driver is part of the USB Type-C UCSI
-driver.
 
-Also, there exists a couple of notable IP limitations that are dealt as
-workarounds:
-- I2C transaction work on a polling mode as IP does not generate
-interrupt.
-- I2C read command sent twice to address the IP issues.
-- AMD NAVI GPU based products are already in the commercial market,
-  hence some of the I2C parameters are statically programmed as they
-  can not be part of the ACPI table.
+On Wed 31 Mar 2021 at 11:37, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> Currently, action creation using ACT API in replace mode is buggy.  When
+> invoking for non-existent action index 42,
+>
+> 	tc action replace action bpf obj foo.o sec <xyz> index 42
+>
+> kernel creates the action, fills up the netlink response, and then just
+> deletes the action while notifying userspace of success.
+>
+> 	tc action show action bpf
+>
+> doesn't list the action.
+>
+> This happens due to the following sequence when ovr = 1 (replace mode)
+> is enabled:
+>
+> tcf_idr_check_alloc is used to atomically check and either obtain
+> reference for existing action at index, or reserve the index slot using
+> a dummy entry (ERR_PTR(-EBUSY)).
+>
+> This is necessary as pointers to these actions will be held after
+> dropping the idrinfo lock, so bumping the reference count is necessary
+> as we need to insert the actions, and notify userspace by dumping their
+> attributes. Finally, we drop the reference we took using the
+> tcf_action_put_many call in tcf_action_add. However, for the case where
+> a new action is created due to free index, its refcount remains one.
+> This when paired with the put_many call leads to the kernel setting up
+> the action, notifying userspace of its creation, and then tearing it
+> down. For existing actions, the refcount is still held so they remain
+> unaffected.
+>
+> Fortunately due to rtnl_lock serialization requirement, such an action
+> with refcount == 1 will not be concurrently deleted by anything else, at
+> best CLS API can move its refcount up and down by binding to it after it
+> has been published from tcf_idr_insert_many. Since refcount is atleast
+> one until put_many call, CLS API cannot delete it. Also __tcf_action_put
+> release path already ensures deterministic outcome (either new action
+> will be created or existing action will be reused in case CLS API tries
+> to bind to action concurrently) due to idr lock serialization.
+>
+> We fix this by making refcount of newly created actions as 2 in ACT API
+> replace mode. A relaxed store will suffice as visibility is ensured only
+> after the tcf_idr_insert_many call.
+>
+> We also remember the new actions that we took an additional reference on,
+> and relinquish the temporal reference during rollback on failure.
+>
+> Note that in case of creation or overwriting using CLS API only (i.e.
+> bind = 1), overwriting existing action object is not allowed, and any
+> such request is silently ignored (without error).
+>
+> The refcount bump that occurs in tcf_idr_check_alloc call there for
+> existing action will pair with tcf_exts_destroy call made from the owner
+> module for the same action. In case of action creation, there is no
+> existing action, so no tcf_exts_destroy callback happens.
+>
+> This means no code changes for CLS API.
+>
+> Fixes: cae422f379f3 ("net: sched: use reference counting action init")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+> Changelog:
+>
+> v2 -> v3
+> Cleanup new action on rollback after raising refcount (Cong)
+>
+> v1 -> v2
+> Remove erroneous tcf_action_put_many call in tcf_exts_validate (Vlad)
+> Isolate refcount bump to ACT API in replace mode
+> ---
+>  include/net/act_api.h |  2 +-
+>  net/sched/act_api.c   | 24 ++++++++++++++++++++++--
+>  net/sched/cls_api.c   |  2 +-
+>  3 files changed, 24 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/net/act_api.h b/include/net/act_api.h
+> index 2bf3092ae7ec..a01ff5fa641e 100644
+> --- a/include/net/act_api.h
+> +++ b/include/net/act_api.h
+> @@ -194,7 +194,7 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+>  				    struct nlattr *nla, struct nlattr *est,
+>  				    char *name, int ovr, int bind,
+>  				    struct tc_action_ops *ops, bool rtnl_held,
+> -				    struct netlink_ext_ack *extack);
+> +				    struct netlink_ext_ack *extack, bool *ref);
+>  int tcf_action_dump(struct sk_buff *skb, struct tc_action *actions[], int bind,
+>  		    int ref, bool terse);
+>  int tcf_action_dump_old(struct sk_buff *skb, struct tc_action *a, int, int);
+> diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+> index b919826939e0..718bc197b9a7 100644
+> --- a/net/sched/act_api.c
+> +++ b/net/sched/act_api.c
+> @@ -993,7 +993,7 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+>  				    struct nlattr *nla, struct nlattr *est,
+>  				    char *name, int ovr, int bind,
+>  				    struct tc_action_ops *a_o, bool rtnl_held,
+> -				    struct netlink_ext_ack *extack)
+> +				    struct netlink_ext_ack *extack, bool *ref)
+>  {
+>  	struct nla_bitfield32 flags = { 0, 0 };
+>  	u8 hw_stats = TCA_ACT_HW_STATS_ANY;
+> @@ -1042,6 +1042,13 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+>  	if (err != ACT_P_CREATED)
+>  		module_put(a_o->owner);
+>
+> +	if (!bind && ovr && err == ACT_P_CREATED) {
+> +		if (ref)
+> +			*ref = true;
+> +
+> +		refcount_set(&a->tcfa_refcnt, 2);
+> +	}
+> +
 
-Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Co-developed-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
----
-Changes in v4:
-- Fixes review comments given by Andy. 
+I wonder if we are being too clever here with all the refcnt
+manipulations. Maybe it is better to just expose to the caller whether
+existing action has been overwritten or a new one has been created and
+let the user decide if they want to keep the reference? I'll send a RFC
+to gather feedback from maintainers.
 
-Changes in v3:
-- Fixes runtime PM issue.
-- Addressed review comments were given by Jarkko and Andy.
-
-Changes in v2:
-- Utilized existing functionality of i2c_dw_xfer_init to configure I2C
-  bus.
-- Removed i2c_dw_populate_client and rewrrient navi_amd_register_client
-  to deduplicate from existing drivers.
-- Addressed review comments were given by Andy.
-
- drivers/i2c/busses/i2c-designware-common.c |   3 +
- drivers/i2c/busses/i2c-designware-core.h   |   8 ++
- drivers/i2c/busses/i2c-designware-master.c | 133 +++++++++++++++++++++
- drivers/i2c/busses/i2c-designware-pcidrv.c |  61 ++++++++++
- 4 files changed, 205 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index 3c19aada4b30..fdc34d9e3702 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -150,6 +150,9 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
- 	reg = readl(dev->base + DW_IC_COMP_TYPE);
- 	i2c_dw_release_lock(dev);
- 
-+	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU)
-+		map_cfg.max_register = AMD_UCSI_INTR_REG;
-+
- 	if (reg == swab32(DW_IC_COMP_TYPE_VALUE)) {
- 		map_cfg.reg_read = dw_reg_read_swab;
- 		map_cfg.reg_write = dw_reg_write_swab;
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 5392b82f68a4..6a53f75abf7c 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -295,8 +295,16 @@ struct dw_i2c_dev {
- 
- #define MODEL_MSCC_OCELOT	BIT(8)
- #define MODEL_BAIKAL_BT1	BIT(9)
-+#define MODEL_AMD_NAVI_GPU	BIT(10)
- #define MODEL_MASK		GENMASK(11, 8)
- 
-+/*
-+ * Enable UCSI interrupt by writing 0xd at register
-+ * offset 0x474 specified in hardware specification.
-+ */
-+#define AMD_UCSI_INTR_REG	0x474
-+#define AMD_UCSI_INTR_EN	0xd
-+
- int i2c_dw_init_regmap(struct dw_i2c_dev *dev);
- u32 i2c_dw_scl_hcnt(u32 ic_clk, u32 tSYMBOL, u32 tf, int cond, int offset);
- u32 i2c_dw_scl_lcnt(u32 ic_clk, u32 tLOW, u32 tf, int offset);
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index dd27b9dbe931..e288b654cb47 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -23,6 +23,10 @@
- 
- #include "i2c-designware-core.h"
- 
-+#define AMD_TIMEOUT_MIN_US	25
-+#define AMD_TIMEOUT_MAX_US	250
-+#define AMD_MASTERCFG_MASK	GENMASK(15, 0)
-+
- static void i2c_dw_configure_fifo_master(struct dw_i2c_dev *dev)
- {
- 	/* Configure Tx/Rx FIFO threshold levels */
-@@ -259,6 +263,108 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
- 	regmap_write(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_MASTER_MASK);
- }
- 
-+static int i2c_dw_check_stopbit(struct dw_i2c_dev *dev)
-+{
-+	u32 val;
-+	int ret;
-+
-+	ret = regmap_read_poll_timeout(dev->map, DW_IC_INTR_STAT, val,
-+				       !(val & DW_IC_INTR_STOP_DET),
-+					1100, 20000);
-+	if (ret)
-+		dev_err(dev->dev, "i2c timeout error %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int i2c_dw_status(struct dw_i2c_dev *dev)
-+{
-+	int status;
-+
-+	status = i2c_dw_wait_bus_not_busy(dev);
-+	if (status)
-+		return status;
-+
-+	return i2c_dw_check_stopbit(dev);
-+}
-+
-+/*
-+ * Initiate and continue master read/write transaction with polling
-+ * based transfer routine afterward write messages into the Tx buffer.
-+ */
-+static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs, int num_msgs)
-+{
-+	struct dw_i2c_dev *dev = i2c_get_adapdata(adap);
-+	int msg_wrt_idx, msg_itr_lmt, buf_len, data_idx;
-+	int cmd = 0, status;
-+	u8 *tx_buf;
-+	u32 val;
-+
-+	/*
-+	 * In order to enable the interrupt for UCSI i.e. AMD NAVI GPU card,
-+	 * it is mandatory to set the right value in specific register
-+	 * (offset:0x474) as per the hardware IP specification.
-+	 */
-+	regmap_write(dev->map, AMD_UCSI_INTR_REG, AMD_UCSI_INTR_EN);
-+
-+	dev->msgs = msgs;
-+	dev->msgs_num = num_msgs;
-+	i2c_dw_xfer_init(dev);
-+	i2c_dw_disable_int(dev);
-+
-+	/* Initiate messages read/write transaction */
-+	for (msg_wrt_idx = 0; msg_wrt_idx < num_msgs; msg_wrt_idx++) {
-+		tx_buf = msgs[msg_wrt_idx].buf;
-+		buf_len = msgs[msg_wrt_idx].len;
-+
-+		if (!(msgs[msg_wrt_idx].flags & I2C_M_RD))
-+			regmap_write(dev->map, DW_IC_TX_TL, buf_len - 1);
-+		/*
-+		 * Initiate the i2c read/write transaction of buffer length,
-+		 * and poll for bus busy status. For the last message transfer,
-+		 * update the command with stopbit enable.
-+		 */
-+		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
-+			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
-+				cmd |= BIT(9);
-+
-+			if (msgs[msg_wrt_idx].flags & I2C_M_RD) {
-+				/* Due to hardware bug, need to write the same command twice. */
-+				regmap_write(dev->map, DW_IC_DATA_CMD, 0x100);
-+				regmap_write(dev->map, DW_IC_DATA_CMD, 0x100 | cmd);
-+				if (cmd) {
-+					regmap_write(dev->map, DW_IC_TX_TL, 2 * (buf_len - 1));
-+					regmap_write(dev->map, DW_IC_RX_TL, 2 * (buf_len - 1));
-+					/*
-+					 * Need to check the stop bit. However, it cannot be
-+					 * detected from the registers so we check it always
-+					 * when read/write the last byte.
-+					 */
-+					status = i2c_dw_status(dev);
-+					if (status)
-+						return status;
-+
-+					for (data_idx = 0; data_idx < buf_len; data_idx++) {
-+						regmap_read(dev->map, DW_IC_DATA_CMD, &val);
-+						tx_buf[data_idx] = val;
-+					}
-+					status = i2c_dw_check_stopbit(dev);
-+					if (status)
-+						return status;
-+				}
-+			} else {
-+				regmap_write(dev->map, DW_IC_DATA_CMD, *tx_buf++ | cmd);
-+				usleep_range(AMD_TIMEOUT_MIN_US, AMD_TIMEOUT_MAX_US);
-+			}
-+		}
-+		status = i2c_dw_check_stopbit(dev);
-+		if (status)
-+			return status;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Initiate (and continue) low level master read/write transaction.
-  * This function is only called from i2c_dw_isr, and pumping i2c_msg
-@@ -462,6 +568,16 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
- 
- 	pm_runtime_get_sync(dev->dev);
- 
-+	/*
-+	 * Initiate I2C message transfer when AMD NAVI GPU card is enabled,
-+	 * As it is polling based transfer mechanism, which does not support
-+	 * interrupt based functionalities of existing DesignWare driver.
-+	 */
-+	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
-+		ret = amd_i2c_dw_xfer_quirk(adap, msgs, num);
-+		goto done_nolock;
-+	}
-+
- 	if (dev_WARN_ONCE(dev->dev, dev->suspended, "Transfer while suspended\n")) {
- 		ret = -ESHUTDOWN;
- 		goto done_nolock;
-@@ -738,6 +854,20 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
- 	return 0;
- }
- 
-+static int amd_i2c_adap_quirk(struct dw_i2c_dev *dev)
-+{
-+	struct i2c_adapter *adap = &dev->adapter;
-+	int ret;
-+
-+	pm_runtime_get_noresume(dev->dev);
-+	ret = i2c_add_numbered_adapter(adap);
-+	if (ret)
-+		dev_err(dev->dev, "Failed to add adapter: %d\n", ret);
-+	pm_runtime_put_noidle(dev->dev);
-+
-+	return ret;
-+}
-+
- int i2c_dw_probe_master(struct dw_i2c_dev *dev)
- {
- 	struct i2c_adapter *adap = &dev->adapter;
-@@ -774,6 +904,9 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
- 	adap->dev.parent = dev->dev;
- 	i2c_set_adapdata(adap, dev);
- 
-+	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU)
-+		return amd_i2c_adap_quirk(dev);
-+
- 	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
- 		irq_flags = IRQF_NO_SUSPEND;
- 	} else {
-diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index 55c83a7a24f3..7ca0017883a6 100644
---- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -26,6 +26,7 @@
- #include "i2c-designware-core.h"
- 
- #define DRIVER_NAME "i2c-designware-pci"
-+#define AMD_CLK_RATE_HZ	100000
- 
- enum dw_pci_ctl_id_t {
- 	medfield,
-@@ -34,6 +35,7 @@ enum dw_pci_ctl_id_t {
- 	cherrytrail,
- 	haswell,
- 	elkhartlake,
-+	navi_amd,
- };
- 
- struct dw_scl_sda_cfg {
-@@ -78,11 +80,23 @@ static struct dw_scl_sda_cfg hsw_config = {
- 	.sda_hold = 0x9,
- };
- 
-+/* NAVI-AMD HCNT/LCNT/SDA hold time */
-+static struct dw_scl_sda_cfg navi_amd_config = {
-+	.ss_hcnt = 0x1ae,
-+	.ss_lcnt = 0x23a,
-+	.sda_hold = 0x9,
-+};
-+
- static u32 mfld_get_clk_rate_khz(struct dw_i2c_dev *dev)
- {
- 	return 25000;
- }
- 
-+static u32 navi_amd_get_clk_rate_khz(struct dw_i2c_dev *dev)
-+{
-+	return AMD_CLK_RATE_HZ;
-+}
-+
- static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
- {
- 	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
-@@ -104,6 +118,35 @@ static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
- 	return -ENODEV;
- }
- 
-+ /*
-+  * TODO find a better way how to deduplicate instantiation
-+  * of USB PD slave device from nVidia GPU driver.
-+  */
-+static int navi_amd_register_client(struct dw_i2c_dev *dev)
-+{
-+	struct i2c_board_info	info;
-+
-+	memset(&info, 0, sizeof(struct i2c_board_info));
-+	strscpy(info.type, "ccgx-ucsi", I2C_NAME_SIZE);
-+	info.addr = 0x08;
-+	info.irq = dev->irq;
-+
-+	dev->slave = i2c_new_client_device(&dev->adapter, &info);
-+	if (!dev->slave)
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int navi_amd_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
-+{
-+	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
-+
-+	dev->flags |= MODEL_AMD_NAVI_GPU;
-+	dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
-+	return 0;
-+}
-+
- static int mrfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
- {
- 	/*
-@@ -155,6 +198,12 @@ static struct dw_pci_controller dw_pci_controllers[] = {
- 		.bus_num = -1,
- 		.get_clk_rate_khz = ehl_get_clk_rate_khz,
- 	},
-+	[navi_amd] = {
-+		.bus_num = -1,
-+		.scl_sda_cfg = &navi_amd_config,
-+		.setup =  navi_amd_setup,
-+		.get_clk_rate_khz = navi_amd_get_clk_rate_khz,
-+	},
- };
- 
- #ifdef CONFIG_PM
-@@ -274,6 +323,14 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 		return r;
- 	}
- 
-+	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
-+		r = navi_amd_register_client(dev);
-+		if (r) {
-+			dev_err(dev->dev, "register client failed with %d\n", r);
-+			return r;
-+		}
-+	}
-+
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
- 	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_put_autosuspend(&pdev->dev);
-@@ -337,6 +394,10 @@ static const struct pci_device_id i2_designware_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x4bbe), elkhartlake },
- 	{ PCI_VDEVICE(INTEL, 0x4bbf), elkhartlake },
- 	{ PCI_VDEVICE(INTEL, 0x4bc0), elkhartlake },
-+	{ PCI_VDEVICE(ATI,  0x7314), navi_amd },
-+	{ PCI_VDEVICE(ATI,  0x73a4), navi_amd },
-+	{ PCI_VDEVICE(ATI,  0x73e4), navi_amd },
-+	{ PCI_VDEVICE(ATI,  0x73c4), navi_amd },
- 	{ 0,}
- };
- MODULE_DEVICE_TABLE(pci, i2_designware_pci_ids);
--- 
-2.25.1
+>  	return a;
+>
+>  err_out:
+> @@ -1062,10 +1069,13 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+>  	struct tc_action_ops *ops[TCA_ACT_MAX_PRIO] = {};
+>  	struct nlattr *tb[TCA_ACT_MAX_PRIO + 1];
+>  	struct tc_action *act;
+> +	u32 new_actions = 0;
+>  	size_t sz = 0;
+>  	int err;
+>  	int i;
+>
+> +	BUILD_BUG_ON(TCA_ACT_MAX_PRIO > sizeof(new_actions) * 8);
+> +
+>  	err = nla_parse_nested_deprecated(tb, TCA_ACT_MAX_PRIO, nla, NULL,
+>  					  extack);
+>  	if (err < 0)
+> @@ -1083,8 +1093,9 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+>  	}
+>
+>  	for (i = 1; i <= TCA_ACT_MAX_PRIO && tb[i]; i++) {
+> +		bool ovr_new = false;
+>  		act = tcf_action_init_1(net, tp, tb[i], est, name, ovr, bind,
+> -					ops[i - 1], rtnl_held, extack);
+> +					ops[i - 1], rtnl_held, extack, &ovr_new);
+>  		if (IS_ERR(act)) {
+>  			err = PTR_ERR(act);
+>  			goto err;
+> @@ -1092,6 +1103,10 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+>  		sz += tcf_action_fill_size(act);
+>  		/* Start from index 0 */
+>  		actions[i - 1] = act;
+> +
+> +		/* remember new actions that we take a reference on */
+> +		if (ovr_new)
+> +			new_actions |= 1UL << (i - 1);
+>  	}
+>
+>  	/* We have to commit them all together, because if any error happened in
+> @@ -1103,6 +1118,11 @@ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+>  	return i - 1;
+>
+>  err:
+> +	/* reset the reference back to 1 in case of error */
+> +	for (i = 0; i < TCA_ACT_MAX_PRIO && actions[i]; i++) {
+> +		if (new_actions & (1UL << i))
+> +			refcount_set(&actions[i]->tcfa_refcnt, 1);
+> +	}
+>  	tcf_action_destroy(actions, bind);
+>  err_mod:
+>  	for (i = 0; i < TCA_ACT_MAX_PRIO; i++) {
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index d3db70865d66..4f4a7355b1e1 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -3052,7 +3052,7 @@ int tcf_exts_validate(struct net *net, struct tcf_proto *tp, struct nlattr **tb,
+>  			act = tcf_action_init_1(net, tp, tb[exts->police],
+>  						rate_tlv, "police", ovr,
+>  						TCA_ACT_BIND, a_o, rtnl_held,
+> -						extack);
+> +						extack, NULL);
+>  			if (IS_ERR(act)) {
+>  				module_put(a_o->owner);
+>  				return PTR_ERR(act);
 
