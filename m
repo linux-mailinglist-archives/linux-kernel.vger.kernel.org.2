@@ -2,391 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E1834FED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC3234FF01
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 13:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235221AbhCaK7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 06:59:37 -0400
-Received: from mga05.intel.com ([192.55.52.43]:21337 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235121AbhCaK7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:59:02 -0400
-IronPort-SDR: BzGBvQJCJtxYKvpys6V9wDyKfDFo6NR8Dlgrr58pBav3FIxmBc+6PQ1TORP7Lkjynw2lwrjZUg
- XAHEwScVLlgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="277160541"
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="277160541"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 03:59:01 -0700
-IronPort-SDR: uMp5cZWzqjQ5tML07eFg+QT4IRES0/wzAtkWBgCohCN86+LNY5N2bl4j7/myzms+ZvRVkBv+EA
- dOCT8YnkU1Ow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="516844095"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 31 Mar 2021 03:59:00 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/6] usb: typec: Port mapping utility
-Date:   Wed, 31 Mar 2021 13:59:05 +0300
-Message-Id: <20210331105908.67066-4-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
-References: <20210331105908.67066-1-heikki.krogerus@linux.intel.com>
+        id S235517AbhCaLBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 07:01:07 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:40149 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235311AbhCaLAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 07:00:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617188416; x=1648724416;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ntEqB5PgwPCe/PS0yLqwZ+7nakptiiHXromZoHhD7/8=;
+  b=rOcfmdPMH/Z5/HPpZl9+D50UEfKoaT5k5WpJCD14Ezn3mswvF0FmrU63
+   ocgUnZJx75kIEPWV5+jL5fb2K9/KGCGHjF6ZGGZ5swTorAM2hPvBJZFc4
+   alH7bPrF/V5Sf8ovrotp877vuxPuf6lAzVZhwRNc1zc/Y+T4HUFZV9wrr
+   oEkQXVwtKu8WVmphhTumUSqZ9eh0qoGx4Sm7gFLMqesh3mQ5w2jbSxM1a
+   qloZQdPWaSFyOpWNJN8Bm5aujIUifprewNgINXyo67zMd/ORvedkA9dEC
+   1ZNqv8qJKd3KwEQJ4N9uROsuL2eV7vh7KvKErD/MPkieeigvMB0u7qKk+
+   A==;
+IronPort-SDR: t/WE8aXkB8EK19Rn+COffG/uB9FrigZWBwrxBAD9OnPjHyV5WpqWsK79RL9IrU+CuI2hohBM/n
+ jWvhPHAd4JqRL2W4TAIF4ukcmyLQG0FfCCe/J/uEQUe46ksZsa+xSmTvPxwyAeA+qQ4nC+5cMw
+ r840qSuNrxrDQjuevmGEvM/W1skHTqz6EYfMP+XkS3ASVgFYldZEy1frinxwgCjn922bUCUAfR
+ KjAgo3hHaCq+PcZ2JK9Ybu0NUMl712/GCV8NP6/9wXlT7KtxLvIODjd3WoHHwdDhpwmxHijqYs
+ PA0=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610434800"; 
+   d="scan'208";a="115333387"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Mar 2021 04:00:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 31 Mar 2021 04:00:08 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 31 Mar 2021 04:00:06 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
+Date:   Wed, 31 Mar 2021 13:59:06 +0300
+Message-ID: <20210331105908.23027-23-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210331105908.23027-1-claudiu.beznea@microchip.com>
+References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding functions that can be used to link/unlink ports -
-USB ports, TBT3/USB4 ports, DisplayPorts and so on - to
-the USB Type-C connectors they are attached to inside a
-system. The symlink that is created for the port device is
-named "connector".
+From: Eugen Hristev <eugen.hristev@microchip.com>
 
-Initially only ACPI is supported. ACPI port object shares
-the _PLD (Physical Location of Device) with the USB Type-C
-connector that it's attached to.
+Introduce new family of SoCs, sama7, and first SoC, sama7g5.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/usb/typec/Makefile      |   2 +-
- drivers/usb/typec/class.c       |   7 +-
- drivers/usb/typec/class.h       |   9 ++
- drivers/usb/typec/port-mapper.c | 219 ++++++++++++++++++++++++++++++++
- include/linux/usb/typec.h       |  13 ++
- 5 files changed, 248 insertions(+), 2 deletions(-)
- create mode 100644 drivers/usb/typec/port-mapper.c
+ arch/arm/mach-at91/Makefile |  1 +
+ arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
+ create mode 100644 arch/arm/mach-at91/sama7.c
 
-diff --git a/drivers/usb/typec/Makefile b/drivers/usb/typec/Makefile
-index a820e6e8c1ffc..1e1868832b8d8 100644
---- a/drivers/usb/typec/Makefile
-+++ b/drivers/usb/typec/Makefile
-@@ -3,7 +3,7 @@
- CFLAGS_tps6598x.o		:= -I$(src)
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index f565490f1b70..6cc6624cddac 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
+ obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+ obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+ obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
++obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
  
- obj-$(CONFIG_TYPEC)		+= typec.o
--typec-y				:= class.o mux.o bus.o
-+typec-y				:= class.o mux.o bus.o port-mapper.o
- obj-$(CONFIG_TYPEC)		+= altmodes/
- obj-$(CONFIG_TYPEC_TCPM)	+= tcpm/
- obj-$(CONFIG_TYPEC_UCSI)	+= ucsi/
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index d3e1002386357..ff199e2d26c7b 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -18,7 +18,7 @@
- 
- static DEFINE_IDA(typec_index_ida);
- 
--static struct class typec_class = {
-+struct class typec_class = {
- 	.name = "typec",
- 	.owner = THIS_MODULE,
- };
-@@ -1601,6 +1601,7 @@ static void typec_release(struct device *dev)
- 	ida_destroy(&port->mode_ids);
- 	typec_switch_put(port->sw);
- 	typec_mux_put(port->mux);
-+	free_pld(port->pld);
- 	kfree(port->cap);
- 	kfree(port);
- }
-@@ -1983,6 +1984,8 @@ struct typec_port *typec_register_port(struct device *parent,
- 
- 	ida_init(&port->mode_ids);
- 	mutex_init(&port->port_type_lock);
-+	mutex_init(&port->port_list_lock);
-+	INIT_LIST_HEAD(&port->port_list);
- 
- 	port->id = id;
- 	port->ops = cap->ops;
-@@ -2024,6 +2027,8 @@ struct typec_port *typec_register_port(struct device *parent,
- 		return ERR_PTR(ret);
- 	}
- 
-+	port->pld = get_pld(&port->dev);
-+
- 	return port;
- }
- EXPORT_SYMBOL_GPL(typec_register_port);
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index d414be58d122e..52294f7020a8b 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -54,6 +54,11 @@ struct typec_port {
- 
- 	const struct typec_capability	*cap;
- 	const struct typec_operations   *ops;
-+
-+	struct list_head		port_list;
-+	struct mutex			port_list_lock; /* Port list lock */
-+
-+	void				*pld;
- };
- 
- #define to_typec_port(_dev_) container_of(_dev_, struct typec_port, dev)
-@@ -72,5 +77,9 @@ extern const struct device_type typec_port_dev_type;
- #define is_typec_port(dev) ((dev)->type == &typec_port_dev_type)
- 
- extern struct class typec_mux_class;
-+extern struct class typec_class;
-+
-+void *get_pld(struct device *dev);
-+void free_pld(void *pld);
- 
- #endif /* __USB_TYPEC_CLASS__ */
-diff --git a/drivers/usb/typec/port-mapper.c b/drivers/usb/typec/port-mapper.c
+ # Power Management
+ obj-$(CONFIG_ATMEL_PM)		+= pm.o pm_suspend.o
+diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
 new file mode 100644
-index 0000000000000..5bee7a97242fe
+index 000000000000..e04cadb569ad
 --- /dev/null
-+++ b/drivers/usb/typec/port-mapper.c
-@@ -0,0 +1,219 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/arch/arm/mach-at91/sama7.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * USB Type-C Connector Class Port Mapping Utility
++ * Setup code for SAMA7
 + *
-+ * Copyright (C) 2021, Intel Corporation
-+ * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
++ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
++ *
 + */
 +
-+#include <linux/acpi.h>
-+#include <linux/usb.h>
-+#include <linux/usb/typec.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
 +
-+#include "class.h"
++#include <asm/mach/arch.h>
++#include <asm/system_misc.h>
 +
-+struct port_node {
-+	struct list_head list;
-+	struct device *dev;
-+	void *pld;
++#include "generic.h"
++
++static void __init sama7_common_init(void)
++{
++	of_platform_default_populate(NULL, NULL, NULL);
++}
++
++static void __init sama7_dt_device_init(void)
++{
++	sama7_common_init();
++}
++
++static const char *const sama7_dt_board_compat[] __initconst = {
++	"microchip,sama7",
++	NULL
 +};
 +
-+static int acpi_pld_match(const struct acpi_pld_info *pld1,
-+			  const struct acpi_pld_info *pld2)
-+{
-+	if (!pld1 || !pld2)
-+		return 0;
++DT_MACHINE_START(sama7_dt, "Microchip SAMA7")
++	/* Maintainer: Microchip */
++	.init_machine	= sama7_dt_device_init,
++	.dt_compat	= sama7_dt_board_compat,
++MACHINE_END
 +
-+	/*
-+	 * To speed things up, first checking only the group_position. It seems
-+	 * to often have the first unique value in the _PLD.
-+	 */
-+	if (pld1->group_position == pld2->group_position)
-+		return !memcmp(pld1, pld2, sizeof(struct acpi_pld_info));
++static const char *const sama7g5_dt_board_compat[] __initconst = {
++	"microchip,sama7g5",
++	NULL
++};
 +
-+	return 0;
-+}
++DT_MACHINE_START(sama7g5_dt, "Microchip SAMA7G5")
++	/* Maintainer: Microchip */
++	.init_machine	= sama7_dt_device_init,
++	.dt_compat	= sama7g5_dt_board_compat,
++MACHINE_END
 +
-+void *get_pld(struct device *dev)
-+{
-+#ifdef CONFIG_ACPI
-+	struct acpi_pld_info *pld;
-+	acpi_status status;
-+
-+	if (!has_acpi_companion(dev))
-+		return NULL;
-+
-+	status = acpi_get_physical_device_location(ACPI_HANDLE(dev), &pld);
-+	if (ACPI_FAILURE(status))
-+		return NULL;
-+
-+	return pld;
-+#else
-+	return NULL;
-+#endif
-+}
-+
-+void free_pld(void *pld)
-+{
-+#ifdef CONFIG_ACPI
-+	ACPI_FREE(pld);
-+#endif
-+}
-+
-+static int __link_port(struct typec_port *con, struct port_node *node)
-+{
-+	int ret;
-+
-+	ret = sysfs_create_link(&node->dev->kobj, &con->dev.kobj, "connector");
-+	if (ret)
-+		return ret;
-+
-+	ret = sysfs_create_link(&con->dev.kobj, &node->dev->kobj,
-+				dev_name(node->dev));
-+	if (ret) {
-+		sysfs_remove_link(&node->dev->kobj, "connector");
-+		return ret;
-+	}
-+
-+	list_add_tail(&node->list, &con->port_list);
-+
-+	return 0;
-+}
-+
-+static int link_port(struct typec_port *con, struct port_node *node)
-+{
-+	int ret;
-+
-+	mutex_lock(&con->port_list_lock);
-+	ret = __link_port(con, node);
-+	mutex_unlock(&con->port_list_lock);
-+
-+	return ret;
-+}
-+
-+static void __unlink_port(struct typec_port *con, struct port_node *node)
-+{
-+	sysfs_remove_link(&con->dev.kobj, dev_name(node->dev));
-+	sysfs_remove_link(&node->dev->kobj, "connector");
-+	list_del(&node->list);
-+}
-+
-+static void unlink_port(struct typec_port *con, struct port_node *node)
-+{
-+	mutex_lock(&con->port_list_lock);
-+	__unlink_port(con, node);
-+	mutex_unlock(&con->port_list_lock);
-+}
-+
-+static struct port_node *create_port_node(struct device *port)
-+{
-+	struct port_node *node;
-+
-+	node = kzalloc(sizeof(*node), GFP_KERNEL);
-+	if (!node)
-+		return ERR_PTR(-ENOMEM);
-+
-+	node->dev = get_device(port);
-+	node->pld = get_pld(port);
-+
-+	return node;
-+}
-+
-+static void remove_port_node(struct port_node *node)
-+{
-+	put_device(node->dev);
-+	free_pld(node->pld);
-+	kfree(node);
-+}
-+
-+static int connector_match(struct device *dev, const void *data)
-+{
-+	const struct port_node *node = data;
-+
-+	if (!is_typec_port(dev))
-+		return 0;
-+
-+	return acpi_pld_match(to_typec_port(dev)->pld, node->pld);
-+}
-+
-+static struct device *find_connector(struct port_node *node)
-+{
-+	if (!node->pld)
-+		return NULL;
-+
-+	return class_find_device(&typec_class, NULL, node, connector_match);
-+}
-+
-+/**
-+ * typec_link_port - Link a port to its connector
-+ * @port: The port device
-+ *
-+ * Find the connector of @port and create symlink named "connector" for it.
-+ * Returns 0 on success, or errno in case of a failure.
-+ *
-+ * NOTE. The function increments the reference count of @port on success.
-+ */
-+int typec_link_port(struct device *port)
-+{
-+	struct device *connector;
-+	struct port_node *node;
-+	int ret = 0;
-+
-+	node = create_port_node(port);
-+	if (IS_ERR(node))
-+		return PTR_ERR(node);
-+
-+	connector = find_connector(node);
-+	if (!connector)
-+		goto remove_node;
-+
-+	ret = link_port(to_typec_port(connector), node);
-+	if (ret)
-+		goto put_connector;
-+
-+	return 0;
-+
-+put_connector:
-+	put_device(connector);
-+remove_node:
-+	remove_port_node(node);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(typec_link_port);
-+
-+static int port_match_and_unlink(struct device *connector, void *port)
-+{
-+	struct port_node *node;
-+	struct port_node *tmp;
-+	int ret = 0;
-+
-+	if (!is_typec_port(connector))
-+		return 0;
-+
-+	mutex_lock(&to_typec_port(connector)->port_list_lock);
-+	list_for_each_entry_safe(node, tmp, &to_typec_port(connector)->port_list, list) {
-+		ret = node->dev == port;
-+		if (ret) {
-+			unlink_port(to_typec_port(connector), node);
-+			remove_port_node(node);
-+			put_device(connector);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&to_typec_port(connector)->port_list_lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * typec_unlink_port - Unlink port from its connector
-+ * @port: The port device
-+ *
-+ * Removes the symlink "connector" and decrements the reference count of @port.
-+ */
-+void typec_unlink_port(struct device *port)
-+{
-+	class_for_each_device(&typec_class, NULL, port, port_match_and_unlink);
-+}
-+EXPORT_SYMBOL_GPL(typec_unlink_port);
-diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-index 91b4303ca305c..e2714722b0c95 100644
---- a/include/linux/usb/typec.h
-+++ b/include/linux/usb/typec.h
-@@ -298,4 +298,17 @@ int typec_find_port_data_role(const char *name);
- void typec_partner_set_svdm_version(struct typec_partner *partner,
- 				    enum usb_pd_svdm_ver svdm_version);
- int typec_get_negotiated_svdm_version(struct typec_port *port);
-+
-+#if IS_REACHABLE(CONFIG_TYPEC)
-+int typec_link_port(struct device *port);
-+void typec_unlink_port(struct device *port);
-+#else
-+static inline int typec_link_port(struct device *port)
-+{
-+	return 0;
-+}
-+
-+static inline void typec_unlink_port(struct device *port) { }
-+#endif
-+
- #endif /* __LINUX_USB_TYPEC_H */
 -- 
-2.30.2
+2.25.1
 
