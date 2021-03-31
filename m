@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974A73509CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF153509D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhCaVx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        id S232362AbhCaVzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhCaVxT (ORCPT
+        with ESMTP id S231620AbhCaVy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:53:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8111DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id w10so249202pgh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
+        Wed, 31 Mar 2021 17:54:59 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB98C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:54:59 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id a12so6638958pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 14:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=MM0j2oe36X//rQQ8+GyI9vMxc0vf6Nwq2VgkiW4HgEw=;
-        b=eiEMv4/PuzRRpwJGs4ojsw2qXKVA+nsWHdR/jJo8hrb977VXco2X0B5pJTRZngZvI3
-         mj+E2o1JLGDQ7ePxR1DzidIkcOWf6HpuTaTbOkvCxVanOg7kssWTRzyJ+mq8+JF6R8bS
-         a7doki5tC3wTAMlO3vi4fNjPWeRN5Eb45UOI+quwVBHfrS4VnPKxKKON9nTfFXG871c5
-         GQFkXfw/PFnAeCso4esXRCMAxBNw1toz0booDEaSZ/55+91axgNUd47cTjH5O6+t45aN
-         IwpZC48V92xTnQiiaS8fZpgqmrdwA6lqAgUOE1pm5rBzBFfMZR2Xuz2aZCoRAseLOgiD
-         5Jvw==
+        bh=rtsfbkg65ln578BueP2qKUJ2W4TVYylDnpFNvn0AmZY=;
+        b=lFIjHUpJ6J2bChkAW6VFomn72sxkplIQywWFLHMael4kNCA63jvDhP8bxintcnt5bw
+         KQBjDW0tdgan1Mw+ew9YOivDWjvq1y/RLhovgps8HPve8vSaz1UqvITEKhuq5UCgL/Wz
+         NM80b1+1PpQm7Vs1o0Fx6Yx2NIh0Uno3lLAkY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MM0j2oe36X//rQQ8+GyI9vMxc0vf6Nwq2VgkiW4HgEw=;
-        b=QS9gjFLva/4kkhpxq5L/rNjTYBwKIRdo76cWT3DuT7JamWWcAA0SITfkjPYr+3/T0s
-         xGlv7JE7i45DG4HhsfQYKzaBxxo6qtK3lSxfFm7N0s8wJN8deRFIolmL4HUo4yHU/NyS
-         buZwBO5SG9o0zsaqY9zBHTHSjvsoxowI8BjzlP8WYCp/XJlHUBqgCDLjQOsU34diib+A
-         Hc8yFABTzFJdJG3jvVIg3q9hHOP8AbkkxoT9MmMK0IyN0t5FhBlcKqaIqeeS3vd8aUcz
-         JHRgGL/2/nVK2vuMUD+UI1wpZNU7EXw5iYCZaMIK2F48K9ngx6lavVV7iDqjeeewOiA0
-         GHFw==
-X-Gm-Message-State: AOAM532LNnPc6zReE82iq2O3lS1HWi00pBhP8ICLK0l8pH1kWE9AhXBu
-        TAxItWylE61qGQ/r86EumzzeGQ==
-X-Google-Smtp-Source: ABdhPJzxk3OvWmDbPosHgkRyAsP6nvxaf+fnOjHVCqb5cNwnBuDUp1zakhvQzQOhTHLpnCqXFcMjJQ==
-X-Received: by 2002:a62:7f45:0:b029:205:9617:a819 with SMTP id a66-20020a627f450000b02902059617a819mr4681004pfd.17.1617227598227;
-        Wed, 31 Mar 2021 14:53:18 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s22sm3172807pfe.150.2021.03.31.14.53.17
+        bh=rtsfbkg65ln578BueP2qKUJ2W4TVYylDnpFNvn0AmZY=;
+        b=DwLHlKGZO+Ul7X9Cd47Dx52RpaA2uDg1sl6jcu2GI1UrK2SOV1OzguCSFkSH57ofWQ
+         w0Z6zUE/4UDNtY4zH3qvXUxVBr2PoILIRHSpFn900rNsZI/uJ4O6l3RSX40flQqkxni2
+         TdsGWOxZ0yiR7t799HON0SAeGT4oHUCxSke85vCt/ZregEm37I7Oe0aGlTOUA1L+5kAB
+         AvMZsNUylVjhBg2Hgm+mxHlq916xm/AToLSIv6aRWpvJTmvLr1XbzOO/IRsKGojnyd9p
+         ziWnOrOqNgRZcJbEGsFg0lYXTI6yEm4v7CzTAM2+OisAnq1O8xWJdM1/WlKxbGwcJrwV
+         sSxA==
+X-Gm-Message-State: AOAM532Xf6JFwIpYUdyMQWuRPoh5TwPMXvpxLfjykHOSRHPtoXbTnEcB
+        AvoGLkRBF5ryCzELnagQDGTrhQ==
+X-Google-Smtp-Source: ABdhPJy+ITLzRDWVQZ4QLokxo3xwGBU2j8b+z7YKdSsnEN/k5kQuDOdpvQny/ml71yhjeB4NsIqJiQ==
+X-Received: by 2002:a05:6a00:22c6:b029:201:1166:fdad with SMTP id f6-20020a056a0022c6b02902011166fdadmr4839743pfj.58.1617227698663;
+        Wed, 31 Mar 2021 14:54:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y5sm3199222pfl.191.2021.03.31.14.54.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 14:53:17 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 21:53:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Wed, 31 Mar 2021 14:54:58 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:54:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-Message-ID: <YGTvSvr2T2v3t3XA@google.com>
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 3/6] stack: Optionally randomize kernel stack offset
+ each syscall
+Message-ID: <202103311453.A840B7FC5@keescook>
+References: <20210330205750.428816-1-keescook@chromium.org>
+ <20210330205750.428816-4-keescook@chromium.org>
+ <87im5769op.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <87im5769op.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021, Kuppuswamy Sathyanarayanan wrote:
-> Changes since v3:
->  * WARN user if SEAM does not disable MONITOR/MWAIT instruction.
-
-Why bother?  There are a whole pile of features that are dictated by the TDX
-module spec.  MONITOR/MWAIT is about as uninteresting as it gets, e.g. absolute
-worst case scenario is the guest kernel crashes, whereas a lot of spec violations
-would compromise the security of the guest.
-
-> +	case EXIT_REASON_MONITOR_INSTRUCTION:
-> +	case EXIT_REASON_MWAIT_INSTRUCTION:
-> +		/*
-> +		 * MWAIT/MONITOR features are disabled by TDX Module (SEAM)
-> +		 * and also re-suppressed in kernel by clearing
-> +		 * X86_FEATURE_MWAIT CPU feature flag in tdx_early_init(). So
-> +		 * if TD guest still executes MWAIT/MONITOR instruction with
-> +		 * above suppression, it needs user attention.
-> +		 */
-> +		WARN(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
-
-Why not just WARN_ONCE and call it good?
-
-> +		break;
->  	default:
->  		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
->  		return -EFAULT;
-> -- 
-> 2.25.1
+On Wed, Mar 31, 2021 at 09:53:26AM +0200, Thomas Gleixner wrote:
+> On Tue, Mar 30 2021 at 13:57, Kees Cook wrote:
+> > +/*
+> > + * Do not use this anywhere else in the kernel. This is used here because
+> > + * it provides an arch-agnostic way to grow the stack with correct
+> > + * alignment. Also, since this use is being explicitly masked to a max of
+> > + * 10 bits, stack-clash style attacks are unlikely. For more details see
+> > + * "VLAs" in Documentation/process/deprecated.rst
+> > + * The asm statement is designed to convince the compiler to keep the
+> > + * allocation around even after "ptr" goes out of scope.
 > 
+> Nit. That explanation of "ptr" might be better placed right at the
+> add_random...() macro.
+
+Ah, yes! Fixed in v9.
+
+> Other than that.
+> 
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+
+Thank you for the reviews!
+
+Do you want to take this via -tip (and leave off the arm64 patch until
+it is acked), or would you rather it go via arm64? (I've sent v9 now...)
+
+-- 
+Kees Cook
