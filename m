@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F90634F79F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F0734F7A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 05:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhCaDrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 23:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhCaDrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 23:47:13 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF5C061574;
-        Tue, 30 Mar 2021 20:47:10 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id f3so4006088pgv.0;
-        Tue, 30 Mar 2021 20:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U0ybPJ4IUj7A9WiPX6++C9vlgGXr5Xx8nEXJ1UKkhm8=;
-        b=Ovm3ccj1Gkreg3858fKpv3NAk23NEwwFzrJg8scUGuiVgd/lWz9MV0+716OM+d2wFf
-         gtcf02bbchFFt2TP6DA8kMYhX7viY9Wew0V1iC3mcNZRAsp513LCmXMy4CZpIzn0KkE1
-         qbNcE8wQd5P7SSBE1YJfEaMYr0t5Hxlrj4wFiH4lpRQgLugscp24O73O7B5pWaqjbUfi
-         XRYzC5hNE/RECINx2jT9IsZ4mb5J9PkMW5QUXqwUj2d++OodhwmXi4501PPLOUokfDua
-         c1CMXcXooDtcBxA8ELHbVp4w1hQfej39OQU9Zi7FgudIQSmHLNFBdGKBVycCiXOWx/s3
-         GRkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U0ybPJ4IUj7A9WiPX6++C9vlgGXr5Xx8nEXJ1UKkhm8=;
-        b=pfD2cWo3crhoZJGy4+P+C6TAk1r+0dgpJrC1WdypWRAgao/zZHGLlKZer4uhdDLvhu
-         bXxHoH/miXMZmWPttX1xWJIwVwiIA/29PbhiDUtrx+XtnhXjyAcMOQxswx5CAZ0HKNIm
-         nc4ocCtUl08oKQofHjOl1o8ZFg4FICspEOsWyUNHPbKDyfZAuQmjiH1NwSOWovklSO//
-         DhbgQO00PWlSalYINgJULatm9BcAUGHVtYlQGaGJ1RcHe2H5fQmVSgBU7orerjaNw8iS
-         XbVoq0mSKBVqhsm1ZJDldNT2S67/cSo34KXdk8PrD7sd85i7FKNuMTEsAsRX5eALRTXf
-         BzLQ==
-X-Gm-Message-State: AOAM531ZY/+CIuDgV/h9xAs66bWzITXtGOvt1tVZEzPegjf9s920ILk2
-        nz0KMJPMidZQ4mX8YtIQdek=
-X-Google-Smtp-Source: ABdhPJyauHHwpjyiuukvlQwcFr75L5EGfWTiT3+42JyY+XkZ0d42RuforqZEr35yuq0JFRrmYydfXQ==
-X-Received: by 2002:a65:53c8:: with SMTP id z8mr1284073pgr.340.1617162429825;
-        Tue, 30 Mar 2021 20:47:09 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id j3sm407019pfc.49.2021.03.30.20.47.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 30 Mar 2021 20:47:09 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 20:47:02 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Thomas Tai <thomas.tai@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>
-Subject: Re: [PATCH] usb: gadget: aspeed: set port_dev dma mask
-Message-ID: <20210331034701.GA3185@taoren-ubuntu-R90MNF91>
-References: <20210326070214.6719-1-rentao.bupt@gmail.com>
- <10920f34-289c-feac-79b6-71bff2aea67d@arm.com>
- <20210326120526.GA14169@lst.de>
- <20210327221759.GA2997@taoren-ubuntu-R90MNF91>
- <20210329061735.GA27510@lst.de>
+        id S233448AbhCaD4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 23:56:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230160AbhCaD4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 23:56:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A08619C9;
+        Wed, 31 Mar 2021 03:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617162962;
+        bh=ljMJHCKTY/brMzUHBRt0hpZFr+FZzYQXin8Vwl3K2iY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i7PzESZpx3fS3ILnhJ40jkn2akou/X7RkZr0IggufQYbXDcCU6ubDll+Gs1phFsxp
+         A1uKDIWJKkYkhQTFe2AcSLfvCXEM+AvPIQn16wCyrX5a9WkW/Lhc1n4zUh8gTcwN2B
+         ayc+fDYW/B63QWdf8Zar0ZcYUFVmQxBg4c0zZ8d8vBmDBp8NScc/O76nzgS6mFt4o1
+         cZ7T1SXbFRgfCL3gMveK4L0CDw18wPFl/nePZMvuvBFdstjF2Px6NGcyGqmDHosjk3
+         fK1UUtsTFA0IhvX9McHaLSQfhUsXAB2JYCg4m9Ykq4q07uYM1QGhCuI2QihLvKF9lo
+         k52w20eJUVKMw==
+Date:   Wed, 31 Mar 2021 06:55:58 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Hyunsoon Kim <h10.kim@samsung.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, dseok.yi@samsung.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: add ___GFP_NOINIT flag which disables zeroing on
+ alloc
+Message-ID: <YGPyzmM+5gnQQnlR@unreal>
+References: <CGME20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f@epcas2p3.samsung.com>
+ <1616995751-83180-1-git-send-email-h10.kim@samsung.com>
+ <YGF09yYtxeNj4Bcc@unreal>
+ <20210329101255.GA144155@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329061735.GA27510@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210329101255.GA144155@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 08:17:35AM +0200, Christoph Hellwig wrote:
-> On Sat, Mar 27, 2021 at 03:17:59PM -0700, Tao Ren wrote:
-> > On Fri, Mar 26, 2021 at 01:05:26PM +0100, Christoph Hellwig wrote:
-> > > On Fri, Mar 26, 2021 at 12:03:03PM +0000, Robin Murphy wrote:
-> > > > This might happen to work out, but is far from correct. Just wait until you 
-> > > > try it on a platform where the USB controller is behind an IOMMU...
-> > > >
-> > > > It looks like something is more fundamentally wrong here - the device 
-> > > > passed to DMA API calls must be the actual hardware device performing the 
-> > > > DMA, which in USB-land I believe means the controller's sysdev.
+On Mon, Mar 29, 2021 at 07:12:55PM +0900, Hyunsoon Kim wrote:
+> On Mon, Mar 29, 2021 at 09:34:31AM +0300, Leon Romanovsky wrote:
+> > On Mon, Mar 29, 2021 at 02:29:10PM +0900, Hyunsoon Kim wrote:
+> > > This patch allows programmer to avoid zero initialization on page
+> > > allocation even when the kernel config "CONFIG_INIT_ON_ALLOC_DEFAULT"
+> > > is enabled. The configuration is made to prevent uninitialized
+> > > heap memory flaws, and Android has applied this for security and
+> > > deterministic execution times. Please refer to below.
 > > > 
-> > > The shiny new usb_intf_get_dma_device API provides the device to use.
+> > > https://android-review.googlesource.com/c/kernel/common/+/1235132
+> > > 
+> > > However, there is a case that the zeroing page memory is unnecessary
+> > > when the page is used on specific purpose and will be zeroed
+> > > automatically by hardware that accesses the memory through DMA.
+> > > For instance, page allocation used for IP packet reception from Exynos
+> > > modem is solely used for packet reception. Although the page will be
+> > > freed eventually and reused for some other purpose, initialization at
+> > > that moment of reuse will be sufficient to avoid uninitialized heap
+> > > memory flaws. To support this kind of control, this patch creates new
+> > > gfp type called ___GFP_NOINIT, that allows no zeroing at the moment
+> > > of page allocation, called by many related APIs such as page_frag_alloc,
+> > > alloc_pages, etc.
+> > > 
+> > > Signed-off-by: Hyunsoon Kim <h10.kim@samsung.com>
+> > > ---
+> > >  include/linux/gfp.h | 2 ++
+> > >  include/linux/mm.h  | 4 +++-
+> > >  2 files changed, 5 insertions(+), 1 deletion(-)
 > > 
-> > Thanks Robin and Christoph for the feedback.
+> > Let's assume that we will use this new flag, and users are smart enough
+> > to figure when it needs to be used, what will be the performance gain?
 > > 
-> > If I understand correctly, usb_intf_get_dma_device API is mainly for usb
-> > host drivers? I just found usb_gadget_map_request_by_dev API: does it
-> > make sense to replace usb_gadget_map_request with
-> > usb_gadget_map_request_by_dev so we can pass the actual DMA-capable
-> > hardware device (aspeed-vhub platform device) to the API?
+> > Thanks
 > 
-> Oh, right you're dealing with a gadget side driver.  Not sure about
-> the API there, I'll let the relevant maintainers chime in.
+> For instance, there are four memory access (either read or write) done
+> by the system; memory write due to page allocation for reserving memory
+> for modem hardware, memory write on the page by modem hardware,
+> read and write incurred by copy_to_user operation by iperf reading
+> the incoming network data. Theoretically, we can expect 1/4 of power
+> saving on DRAM bandwidth. By performing simple iperf test with download
+> UDP 800Mbps, we saw 5-6mA power gain by disabling
+> CONFIG_INIT_ON_ALLOC_DEFAULT.
 
-Given this is not the right path, I will drop the patch and work out a
-new fix soon (by calling usb_gadget_map_request_by_dev, and with
-modified subject).
+I'm more interested to see real results.
+
+Thanks
+
+> 
+> Thanks
 
 
-Cheers,
-
-Tao
