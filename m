@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA6634FA31
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052DA34FA4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 09:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhCaHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 03:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
+        id S233720AbhCaHcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 03:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbhCaHag (ORCPT
+        with ESMTP id S234100AbhCaHcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:30:36 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9775AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:30:36 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g15so13943832pfq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=suhM1QfpnyObFdI0zpuVstsmyjlbl9DzdyUeQfv0xhk=;
-        b=Vyeg9010q8jK0TZSKz/pqaEzuB+X76J2mf/fjLBJtPn1K2bUN4r0QwbpUE6zj6nEpL
-         z/7k4TT41vQLC79PNMKqFeEbc/QIp/EdPNNrViy0bl2j26KyaUM2611CD2SGbmuoGAPc
-         PJcwYDyC1utR8x0rJ9AhF+H9uad9NYxDrmvSfl0OOMtAdVCB5XflNh2F9mYzmR4PaJpw
-         Mr1DbeFRTDmi1U2uawviymenx6BxgJ8ZBsW0HyxGKWOBweEeNTjzB9tXIm97H530THay
-         9QEstDsbup9ifmGWFyDfyYnaiwpVUZWdhP5Mb2cXgiG7Vw5NPYmSv1/xDgpnFdorMBYO
-         umQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=suhM1QfpnyObFdI0zpuVstsmyjlbl9DzdyUeQfv0xhk=;
-        b=NneKnaBi4jWFAcYDF4FkBYJkTMUV7ymXQfaiP3GivoXUcpC7hok2nPfy60iCyijCe4
-         caRa9RgRi4+suQydkW7SgReput3z1xdk+IgJ1bTfidzCs/EoTMvIn6NH361TBSN5WibM
-         ex705krH6gCmKrBJ0Lwy9mj0b4hEa/uKp9F9wzIxtt8+IDHnqaEEoeF/jm18oLNX/9EU
-         +01PMpaV9E/e0wPeJ7YUZTlglJAwpQTnNsSAGqazadw1hco0JUwjEWVcf18tcvaHjD+D
-         7ZFQXicTlllJIPxf+AfZxmdwDJnpKGnpY+HskDZ3UngfILiWjYueRTaGBYj5lPCuGat4
-         Agqw==
-X-Gm-Message-State: AOAM53083pu2aMl/hBrSB1VT6qHApOjfh2fpnUPU+iLrlI5XZ5zlk0sX
-        V66PVjR4mh/RMKqKAhQSQVWbYOmgERyg74XR+TQXtHgmr50=
-X-Google-Smtp-Source: ABdhPJyynYH0zLuS3m1ItZ25UwUMuB7N/DuJWlrrwMJx3XX2CYouYLia5lpwteqMti9GcxmHraFHSmVtLO7EXFO8GmU=
-X-Received: by 2002:a63:1a0d:: with SMTP id a13mr1962305pga.167.1617175836176;
- Wed, 31 Mar 2021 00:30:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330175126.26500-1-rppt@kernel.org> <20210330181347.GQ351017@casper.infradead.org>
-In-Reply-To: <20210330181347.GQ351017@casper.infradead.org>
-From:   Greentime Hu <green.hu@gmail.com>
-Date:   Wed, 31 Mar 2021 15:30:00 +0800
-Message-ID: <CAEbi=3ePyQwc07krUHUtXVQ=qfWFYpyMVZdx5o=T+B9yHuc=Jg@mail.gmail.com>
-Subject: Re: [PATCH] nds32: flush_dcache_page: use page_mapping_file to avoid
- races with swapoff
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
+        Wed, 31 Mar 2021 03:32:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153C7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 00:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dkzu4DMt6FWa6R1PXgA2donJuIwD/gU2RVBrtv9nBm8=; b=AJ17EukJxEHAPJnU8pTMCx5og9
+        1uaKR9zz8RZNGUewMeRVMiPTvSzED+YXIPV1lKNUvEsdww+xYt1fuU1+JathXlOAX9wedA3r1vAEx
+        43UPZMdZjHot0mUXQwe/c1qOVJRAyI8zLHZBE1HuJx5tTmfLRhvbXPXDI5UZXimlShYdxa8gAXG1d
+        Xho1MNfeLjcYMw7v17x1wTgjoYvgP7SYrkTH4qVW6vNSiHLkd50XIu8IGnFszUZnd+8mYAqaEWX8f
+        JOr9ykgMbthAejTEwvB8KuX7x9mvPQBvG96CdkqF3KN5Td6MPZNFs6tNrGTFw/A0bZxww947GjOQM
+        hUFCUqJg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lRVJH-004Bqy-TE; Wed, 31 Mar 2021 07:30:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E7D830015A;
+        Wed, 31 Mar 2021 09:30:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5FE882B85BA0B; Wed, 31 Mar 2021 09:30:38 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 09:30:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in copy_page_range
+Message-ID: <YGQlHvte0BeKx0uV@hirez.programming.kicks-ass.net>
+References: <00000000000086695705bec87c9f@google.com>
+ <CACT4Y+YuKj_f8dy3UShSmzj4=D_3CgndbgDY6kcFbhb-EYw=dw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YuKj_f8dy3UShSmzj4=D_3CgndbgDY6kcFbhb-EYw=dw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=8831=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=882:14=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Mar 30, 2021 at 08:51:26PM +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Mar 31, 2021 at 08:11:38AM +0200, Dmitry Vyukov wrote:
+> On Wed, Mar 31, 2021 at 12:26 AM syzbot
+> <syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com> wrote:
 > >
-> > Commit cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-> > updated flush_dcache_page implementations on several architectures to u=
-se
-> > page_mapping_file() in order to avoid races between page_mapping() and
-> > swapoff().
+> > Hello,
 > >
-> > This update missed arch/nds32 and there is a possibility of a race ther=
-e.
+> > syzbot found the following issue on:
 > >
-> > Replace page_mapping() with page_mapping_file() in nds32 implementation=
- of
-> > flush_dcache_page().
+> > HEAD commit:    db24726b Merge tag 'integrity-v5.12-fix' of git://git.kern..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16c16b7cd00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=1a33233ccd8201ec2322
 > >
-> > Fixes: cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+1a33233ccd8201ec2322@syzkaller.appspotmail.com
+> 
+> I think this is a LOCKDEP issue. +LOCKDEP maintainers.
+> 
+> Another bug happened on another thread ("WARNING: possible circular
+> locking dependency detected"). Lockdep disabled lock tracking
+> ("debug_locks = 0" in the report), which probably made it miss
+> rcu_unlock somewhere, but it did not turn off reporting yet and
+> produced the false positive first.
+> 
+> I think if LOCKDEP disables lock tracking, it must also disable
+> reporting of issues that require lock tracking. That would avoid false
+> positives.
 
-Acked-by: Greentiime Hu <green.hu@gmail.com>
+Still early and brain hasn't really booted yet, but features that
+require lock tracking are supposed to check debug_locks.
+
+And afaict debug_lockdep_rcu_enabled(), which is called by
+RCU_LOCKDEP_WARN(), which is called by rcu_sleep_check() does just that.
