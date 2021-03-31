@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7042A350818
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27C735081A
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 22:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhCaURt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 16:17:49 -0400
-Received: from st43p00im-ztdg10071801.me.com ([17.58.63.171]:53168 "EHLO
-        st43p00im-ztdg10071801.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236641AbhCaURV (ORCPT
+        id S236518AbhCaUR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 16:17:58 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:40264 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236529AbhCaURY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:17:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1617221840; bh=D4dih7IDfleZeM1jkz2mIoV9uzt0mlpafIv8IABeh0E=;
-        h=From:To:Subject:Date:Message-Id;
-        b=T2mR7WQ4Gx0/6kxxDvhUB4cyNhmFYBSxIgxN3ICnSS2R1wwrZZMlnKvB2VUfuLONG
-         qKQEEPTubQKA8A5BzIOzdLSxtjPyovV1KK6lojSPe+7s5N3PhFmozNSzO4NiRS3Sx5
-         1Y7v5GqIx6IdF1UzI2VZEgap2qigjKdOJbU3r2CxToJI5ppykLpRUN1BIgr2mu+noc
-         0LFpsiyCZXOH8haFUBfyt6DqLSma1XVkhTZ4ZvxBg9bZatLvgXpHEWyQk37JhXHolx
-         zgBMZflQRGGLR+tUX30lIWOo8gekIN7tbgEmsjVFDLvxg9+w+tl+cY+MT5zxU4Bjuh
-         MgoamUcRfRuUA==
-Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-ztdg10071801.me.com (Postfix) with ESMTPSA id 6BAF9540116;
-        Wed, 31 Mar 2021 20:17:19 +0000 (UTC)
-From:   Alain Volmat <avolmat@me.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
-Subject: [PATCH v4 7/7] dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
-Date:   Wed, 31 Mar 2021 22:16:32 +0200
-Message-Id: <20210331201632.24530-8-avolmat@me.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210331201632.24530-1-avolmat@me.com>
-References: <20210331201632.24530-1-avolmat@me.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_10:2021-03-31,2021-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2103310141
+        Wed, 31 Mar 2021 16:17:24 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ASC6Gq6Dx/0pOM+TlHei9sceALOonbusQ8zAX?=
+ =?us-ascii?q?/mp2TgFYddHdqtC2kJ0gpGLJoRsyeFVlo9CPP6GcXWjRnKQf3aA9NaqvNTOGhE?=
+ =?us-ascii?q?KGII1u5oPpwXnBNkTFh4hg/Ih6dawWMrHNJH17l9u/wCTQKadY/PCj8Lq0wdvY?=
+ =?us-ascii?q?1WtnVwtwa6pthj0JcTqzN01tWU17AoAkH4CX/cpNq36Yf24LB/7LfEUte8jmi5?=
+ =?us-ascii?q?n1mIn9YRgAbiRXlDWmqT+z8rb1H1y5834lMw9n+rsp/WjbnwGR3MzK2c2T8RPE?=
+ =?us-ascii?q?0n+W0pI+orTc4+FeD8+BgNV9EFjRozuvDb4OZ5Sy+Bg+quey70s2gMDByi1QR/?=
+ =?us-ascii?q?hb2jf6dmWtqRvi3GDboVQTwk6n7XXdvWHuuqXCNVUHIvsEoYpYdxfDgnBQ3+1U?=
+ =?us-ascii?q?4eZx03uerIcSJRjdhiiV3amtazha0kC9pWMrkeAVj3E3a/p6VINs?=
+X-IronPort-AV: E=Sophos;i="5.81,293,1610406000"; 
+   d="scan'208";a="500982150"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 22:17:23 +0200
+Date:   Wed, 31 Mar 2021 22:17:23 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Deborah Brouwer <deborahbrouwer3563@gmail.com>
+cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, fabioaiuto83@gmail.com,
+        dan.carpenter@oracle.com, phil@philpotter.co.uk,
+        amarjargal16@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH 1/3] staging: rtl8723bs: core: fix
+ repeated word warning
+In-Reply-To: <14c1a1f1f0a34fb821d47ddab6e7e63800ec2736.1617221075.git.deborahbrouwer3563@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2103312215430.3008@hadrien>
+References: <cover.1617221075.git.deborahbrouwer3563@gmail.com> <14c1a1f1f0a34fb821d47ddab6e7e63800ec2736.1617221075.git.deborahbrouwer3563@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New compatible are added, supporting various kind of clkgen-fsyn
-used for STiH407, STiH410 and STiH418
 
-Signed-off-by: Alain Volmat <avolmat@me.com>
----
- Documentation/devicetree/bindings/clock/st/st,quadfs.txt | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/st/st,quadfs.txt b/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-index d93d49342e60..c4ba2adb0b4f 100644
---- a/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-+++ b/Documentation/devicetree/bindings/clock/st/st,quadfs.txt
-@@ -12,6 +12,9 @@ This binding uses the common clock binding[1].
- Required properties:
- - compatible : shall be:
-   "st,quadfs"
-+  "st,quadfs-d0"
-+  "st,quadfs-d2"
-+  "st,quadfs-d3"
-   "st,quadfs-pll"
- 
- 
--- 
-2.17.1
+On Wed, 31 Mar 2021, Deborah Brouwer wrote:
 
+> Fix checkpatch warning:
+> WARNING: Possible repeated word: 'very'
+
+This is a simple but clear example of how "Fix" doesn't help one
+understand the patch.  In reading the log message, one would probably
+assume that you removed the repetition, but actually you added a comma.
+So it would be better to explain what you did and why.  It's good to
+acknowledge checkpatch, but the text of the warning message is not that
+useful.
+
+julia
+
+>
+> Signed-off-by: Deborah Brouwer <deborahbrouwer3563@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_xmit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> index 2daf5c461a4d..3878caf0b56c 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> @@ -1700,7 +1700,7 @@ Calling context:
+>  If we turn on USE_RXTHREAD, then, no need for critical section.
+>  Otherwise, we must use _enter/_exit critical to protect free_xmit_queue...
+>
+> -Must be very very cautious...
+> +Must be very, very cautious...
+>
+>  */
+>  struct xmit_frame *rtw_alloc_xmitframe(struct xmit_priv *pxmitpriv)/* _queue *pfree_xmit_queue) */
+> --
+> 2.17.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/14c1a1f1f0a34fb821d47ddab6e7e63800ec2736.1617221075.git.deborahbrouwer3563%40gmail.com.
+>
