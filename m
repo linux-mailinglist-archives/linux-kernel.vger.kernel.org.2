@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D965134F59F
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 02:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F82C34F5AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 03:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhCaAvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 30 Mar 2021 20:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhCaAug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 30 Mar 2021 20:50:36 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E6CC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:50:36 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l18so20269173edc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Mar 2021 17:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kl/VN0YgAEhgx4FFK1e1sErce6wVUQp5L+zl5YHWmRs=;
-        b=Aq93nxWWXoI+PtP+UXmi6cq6B1Mo5+tsVZddLjswYsmqBnWzY+A4iFt8gN90eQ1SpI
-         TYNbAkLLP+X1IyOqeAez1zOziqS1ArscOCfdC4rcvY66zNGZxQAMUNRAkyd1+BW4VqE5
-         /+PogSR1ChJBCLIeZzWmQg4SVVisgq3feaAL8bK8IpodM6r40Sr4zfN/7lRRPWi47Epu
-         lIviq7hpappEMj06QQPPrHwcndho7SGcutrprEV3o04tvYCg8+pc/HAKFAR6iqYz11Uf
-         YbGs2hLmxhwnLXh+isZb1SJDwQCv0Ng2ChAnTPVdNLmSbLvU2ABaPgxmtNeFX+vNQqAU
-         etSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kl/VN0YgAEhgx4FFK1e1sErce6wVUQp5L+zl5YHWmRs=;
-        b=Z5bqs4tucvIikFq9PDRkyBx490w2bsKiMBYpmotKb0HF8Wh66B/pgz4OaxiRa1f/Ma
-         pkwsnuyocTTsLZryim7G30BrZMlorvPOSrDS2eYb1TYN0ti/bZf//xXWahcufV51XEDV
-         liXM/YUyuZKewoPzT2nnn4rLuoMBnHOFkovdvqMXC98U/WjsOuDXtsdFVYnzTBVL9ZxL
-         KBTM5xuxTibdtvtUka8fAmeesIpRRsDR35oO6VZEdUof9lW3KZf5ujSroc1F45fbiXkO
-         Z1q/QZqoZ0r4SI0oBZVKRy851YV+pHHRV5VHQYUgoirOqGAu37Xtv8dBozFghdzQ6YEM
-         FxOg==
-X-Gm-Message-State: AOAM532NnjB8zPB7zJS98fblXqf92nPVWDQgBtreRSOXlXUnbBnIrgSd
-        8sYj9mLXioZFY796l6MSgZ8pg56qtT/q4a84g2fQ
-X-Google-Smtp-Source: ABdhPJw9M6RwLo3+aDyMmER1z64Dh4C0RtAwgkcFzscLWBocKqR8IJC3UZALFLB0IrXRowz5dREtEg+3nrdhbxFALbg=
-X-Received: by 2002:aa7:db4f:: with SMTP id n15mr646594edt.12.1617151834810;
- Tue, 30 Mar 2021 17:50:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
- <CAHC9VhRo62vCJL0d_YiKC-Mq9S3P5rNN3yoiF+NBu7oeeeU9rw@mail.gmail.com> <20210330225339.GA14421@salvia>
-In-Reply-To: <20210330225339.GA14421@salvia>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 30 Mar 2021 20:50:23 -0400
-Message-ID: <CAHC9VhSLQ0+_gE1OKpd5z4wQ3RY2j1dd3VjXFA0UDVieR0BMdQ@mail.gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Richard Guy Briggs <rgb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232340AbhCaBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 30 Mar 2021 21:03:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:7087 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhCaBDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 30 Mar 2021 21:03:02 -0400
+IronPort-SDR: c/1ZRYVTq25DESPHXSN7yC8vBE/31I0NP4KoDKN2rCVOHm9QFARkAJbpyQAKP/0c0MEM0v7Ngs
+ BBmyvlhgchSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="212116462"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="212116462"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 18:03:01 -0700
+IronPort-SDR: W1H3FstvuZ72pE56Mky52VbKZbMWhYDK+3MgGyltDYYnwwU8LDJ+6sWPg9quL2uj7xLN6c8Wm4
+ ClcYGJk2KMNQ==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="411887968"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 18:02:58 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH] soundwire: intel_init: test link->cdns
+Date:   Wed, 31 Mar 2021 09:02:50 +0800
+Message-Id: <20210331010250.14151-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 6:53 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Sun, Mar 28, 2021 at 08:50:45PM -0400, Paul Moore wrote:
-> [...]
-> > Netfilter folks, were you planning to pull this via your tree/netdev
-> > or would you like me to merge this via the audit tree?  If the latter,
-> > I would appreciate it if I could get an ACK from one of you; if the
-> > former, my ACK is below.
-> >
-> > Acked-by: Paul Moore <paul@paul-moore.com>
->
-> I'll merge this one into nf-next, this might simplify possible
-> conflict resolution later on.
+intel_link_probe() could return error and dev_get_drvdata() will return
+null in such case. So we have to test link->cdns after
+link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
+Otherwise, we will meet the "kernel NULL pointer dereference" error.
 
-Yep, I think that's the best choice.  Thanks.
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/intel_init.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index 5b32a2ffd376..5ef5bd0defab 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -250,6 +250,15 @@ static struct sdw_intel_ctx
+ 		link = &ldev->link_res;
+ 		link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
+ 
++		if (!link->cdns) {
++			dev_err(&adev->dev, "failed to get link->cdns\n");
++			/*
++			 * 1 will be subtracted from i in the err label, but we need to call
++			 * intel_link_dev_unregister for this ldev, so plus 1 now
++			 */
++			i++;
++			goto err;
++		}
+ 		list_add_tail(&link->list, &ctx->link_list);
+ 		bus = &link->cdns->bus;
+ 		/* Calculate number of slaves */
 -- 
-paul moore
-www.paul-moore.com
+2.17.1
+
