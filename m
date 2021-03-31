@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C87F3503B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503933503B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 17:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235780AbhCaPjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 11:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236421AbhCaPiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:38:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF1D60FED;
-        Wed, 31 Mar 2021 15:38:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617205132;
-        bh=zSKNNt8aHpVOX7T1mrGusbLW0X9P8mDEBnTRjCK5rWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kXb8HMKzNCMDmWEsyoz6cYK42VRs7763h3dgrABPa04VRqfZx0PIX+QlCr3xM30bG
-         FXGIk8u9jl0Ks0KwB4Vtqqh4HJuhOOIM2TwuZ2lLhC35GkLsZwH+tGLxETrlvB/Xbq
-         rN60C/MqtfB4tnmo9f1b3sCq8P/hOCh1F56NdYn9UWpHMpLb/Ts6vEPDWrIu7JDKfD
-         nD8lMH5xZ7mm7ZK0sSTktM/1hcsEMINzyxc2toeRFA0hogjvHlXyX6dj2xYZV13N8S
-         8hE3OIteR2wcc+0ePV3Zkros/1XNZERWRn0EhiQ/XTxMHZoNN3uXyg5zuRuYDQHm8w
-         lF9TNTJX//avw==
-Date:   Wed, 31 Mar 2021 16:38:46 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 02/10] arm64: perf: Enable PMU counter direct access
- for perf event
-Message-ID: <20210331153845.GB7815@willie-the-truck>
-References: <20210311000837.3630499-1-robh@kernel.org>
- <20210311000837.3630499-3-robh@kernel.org>
- <20210330153125.GC6567@willie-the-truck>
- <CAL_JsqKN4=T4tHofEoBoWVEZSQEj_m=561_kEdEEkz5szHszhQ@mail.gmail.com>
- <CAL_JsqKqKKb8uXSxQKT4ZMqMv8dt3ABpP+T8x+A1-zb2RKjCNA@mail.gmail.com>
+        id S235520AbhCaPlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 11:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235615AbhCaPkk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:40:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8BFC061574;
+        Wed, 31 Mar 2021 08:40:39 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v23so8103326ple.9;
+        Wed, 31 Mar 2021 08:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R6vLllu9NqucYXJnQP0Sflwu7dB317CsKp7w2fmXXOU=;
+        b=iqNHS7tFCrbcBhgDkH9R3OIxnlD/q3+u1fbyGpF47PAhllzkR+CWKoMzHvzJd9AQEc
+         NNItEbX4+t2n9J+oh/8FopoPdDgbWkzzZ3L8raSn0291kxGefxSG/RH3tyuerPO+9guV
+         j2Dtn9mNYPWDEsPqWzmcwgrVcneKUIen5J7uyRTBGS0g+OTgI5HrDRdl/2rio+K9aZkz
+         CeUYppQrihGYM2b19CgdJRQF3MwnBSwa9kyrRABFXdHR38tbWcpwYvi4XckYMiIK2xJF
+         jhtXpF+Xd5ciq9x0HPohdqrNbXg9c+vIlR5DpjJRpRA1s9LVEkIMuZUhLp0IMJXsM6w2
+         1cWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R6vLllu9NqucYXJnQP0Sflwu7dB317CsKp7w2fmXXOU=;
+        b=m0YNxpym2FWcjPfbrb2wuyZtEFYXIPXHAwZ9+e/rrq9cVrMnQtbL4aOwim7iPTvgW4
+         4WO/QUMw1qBnv9ctqsducjZDHa697qM1NZ2WNfAGQnDs1fyCvaguKqCS7VRfO2kn4LAk
+         2max/rTQQ5uoGWzY5B6qhESj0SNYpMQr9yRAtnOL8HIn23CE8qSaOpUnGf6RKFcdH6Iy
+         g2PZa1iN3bFC7AIamrlbyDb2TLVP4LDzn1fqb044FI38csMYFibsy5/NJCfkccg4rT7J
+         ypPstE8v4pxqG5nt5ZKUs+ZVfmO3aRSI33A0Q+Qchee7vFhIHzzwOwT2+ewSwj2v5iAP
+         c/uw==
+X-Gm-Message-State: AOAM532V2WGt0P0qW5JxPIDqhzp37ZuHxIJnBTukw2taYF1OCO4JBbo8
+        B4aB8pSF76GWsJAf9EETtnEnLkQLaCDR3Ra3hiQ=
+X-Google-Smtp-Source: ABdhPJwv2pyxhDNSlO7MQXhBGTADia4NSvtEr8A19JdTQLSff9QIY/yCzRKsle2Yiz/YnL7AN8zfL7P+bP08E/0vXqo=
+X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
+ z2-20020a170902ee02b02900e65397d79cmr3801793plb.21.1617205239423; Wed, 31 Mar
+ 2021 08:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKqKKb8uXSxQKT4ZMqMv8dt3ABpP+T8x+A1-zb2RKjCNA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+ <20210329174928.18816-3-henning.schild@siemens.com> <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+ <20210330135808.373c3308@md1za8fc.ad001.siemens.net> <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+ <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net> <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
+ <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 31 Mar 2021 18:40:23 +0300
+Message-ID: <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 04:08:11PM -0500, Rob Herring wrote:
-> On Tue, Mar 30, 2021 at 12:09 PM Rob Herring <robh@kernel.org> wrote:
-> > On Tue, Mar 30, 2021 at 10:31 AM Will Deacon <will@kernel.org> wrote:
-> > > The logic here feels like it
-> > > could with a bit of untangling.
+On Tue, Mar 30, 2021 at 6:33 PM Henning Schild
+<henning.schild@siemens.com> wrote:
+> Am Tue, 30 Mar 2021 15:41:53 +0300
+> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > On Tue, Mar 30, 2021 at 3:35 PM Henning Schild
+> > <henning.schild@siemens.com> wrote:
+> > > Am Tue, 30 Mar 2021 15:15:16 +0300
+> > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > > > On Tue, Mar 30, 2021 at 2:58 PM Henning Schild
+> > > > <henning.schild@siemens.com> wrote:
+> > > > > Am Tue, 30 Mar 2021 14:04:35 +0300
+> > > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+> > > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
+> > > > > > <henning.schild@siemens.com> wrote:
 > >
-> > Yes, I don't love it, but couldn't come up with anything better. It is
-> > complicated by the fact that flags have to be set before we assign the
-> > counter and can't set/change them when we assign the counter. It would
-> > take a lot of refactoring with armpmu code to fix that.
-> 
-> How's this instead?:
-> 
-> if (armv8pmu_event_want_user_access(event) || !armv8pmu_event_is_64bit(event))
->         event->hw.flags |= ARMPMU_EL0_RD_CNTR;
-> 
-> /*
-> * At this point, the counter is not assigned. If a 64-bit counter is
-> * requested, we must make sure the h/w has 64-bit counters if we set
-> * the event size to 64-bit because chaining is not supported with
-> * userspace access. This may still fail later on if the CPU cycle
-> * counter is in use.
-> */
-> if (armv8pmu_event_is_64bit(event) &&
->     (!armv8pmu_event_want_user_access(event) ||
->      armv8pmu_has_long_event(cpu_pmu) || (hw_event_id ==
-> ARMV8_PMUV3_PERFCTR_CPU_CYCLES)))
->         event->hw.flags |= ARMPMU_EVT_64BIT;
+> > > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
+> > > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
+> > > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
+> > > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
+> > > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
+> > > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
+> > > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
+> > > > > > > +       { }
+> > > > > > > +};
+> > > > > >
+> > > > > > It seems to me like poking GPIO controller registers directly.
+> > > > > > This is not good. The question still remains: Can we simply
+> > > > > > register a GPIO (pin control) driver and use an LED GPIO
+> > > > > > driver with an additional board file that instantiates it?
+> > > > >
+> > > > > I wrote about that in reply to the cover letter. My view is
+> > > > > still that it would be an abstraction with only one user, just
+> > > > > causing work and likely not ending up as generic as it might
+> > > > > eventually have to be.
+> > > > >
+> > > > > The region is reserved, not sure what the problem with the
+> > > > > "poking" is.
+> > > >
+> > > >
+> > > > > Maybe i do not understand all the benefits of such a split at
+> > > > > this point in time. At the moment i only see work with hardly
+> > > > > any benefit, not just work for me but also for maintainers. I
+> > > > > sure do not mean to be ignorant. Maybe you go into details and
+> > > > > convince me or we wait for other peoples opinions on how to
+> > > > > proceed, maybe there is a second user that i am not aware of?
+> > > > > Until i am convinced otherwise i will try to argue that a
+> > > > > single-user-abstraction is needless work/code, and should be
+> > > > > done only when actually needed.
+> > > >
+> > > > I have just read your messages (there is a cover letter and
+> > > > additional email which was sent lately).
+> > > >
+> > > > I would like to know what the CPU model number on that board is.
+> > > > Than we can continue to see what possibilities we have here.
+> > >
+> > > I guess we are talking about the one that uses memory mapped, that
+> > > is called an "IPC127E" and seems to have either Intel Atom E3940 or
+> > > E3930 which seems to be Apollo Lake.
+> >
+> > Yep. And now the question, in my patch series you should have got the
+> > apollolake-pinctrl driver loaded (if not, we have to investigate why
+> > it's not being instantiated). This will give you a read GPIO driver.
+>
+> Ok, so there is the existing driver i asked about several times. Thanks
+> for pointing it out.
 
-I thought there were some cases where we could assign cycles event to an
-event counter; does that not happen anymore?
+If you remember, I asked you about the chip twice :-)
+I assumed that we were talking about Apollo Lake and that's why I
+insisted that the driver is in the kernel source tree.
 
-Will
+
+> > So, you may use regular LED GPIO on top of it
+> > (https://elixir.bootlin.com/linux/latest/source/drivers/leds/leds-gpio.c).
+> > I would like to understand why it can't be achieved.
+>
+> Will have a look. Unfortunately this one box is missing in my personal
+> collection, but let us assume that one can be converted to that
+> existing driver.
+
+OK!
+
+> I guess that will still mean the PIO-based part of the LED driver will
+> have to stay as is.
+
+Probably yes. I haven't looked into that part and I have no idea
+what's going on on that platform(s).
+
+-- 
+With Best Regards,
+Andy Shevchenko
