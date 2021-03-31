@@ -2,239 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60443509C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51BD3509C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 23:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhCaVuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 17:50:12 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42835 "EHLO mga01.intel.com"
+        id S232404AbhCaVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 17:48:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29027 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhCaVt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:49:57 -0400
-IronPort-SDR: gCGFUi/PvMcWm2ArXO4EtixyiEB7mgmR2QhWJRJV1+XAyCZGvCy9tWGCl3uPDCTOy/9aBavQui
- oU6ofTeTe0UA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="212344031"
+        id S230239AbhCaVsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:48:25 -0400
+IronPort-SDR: vX12jxrGuq0xe3XtWkuORTItHWn5aGH+I5j6/GFF7XEHN0nV+90Sc6UN9rH3JYl57e1ILvxJTc
+ P+uZmMYbYmgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179228134"
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="212344031"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:49:56 -0700
-IronPort-SDR: wKdcba4+RyFYBInO/sjVcjCFUtfKgDtquJqEgQ2GYgat8CnVJBBvmOYH8VMWgZWjRQpibbJ/yr
- 9IOPF+ghnzwg==
+   d="scan'208";a="179228134"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:48:25 -0700
+IronPort-SDR: yk80OYLcR4tKt5SiMAstpyOv/C1XaphqzO42mvr0itegwo8WfHbIUUBa3uWqTfJN+ktLFvP/hp
+ xhWQ7ncb1NCA==
 X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="418870589"
-Received: from algolden-mobl1.amr.corp.intel.com (HELO [10.209.172.7]) ([10.209.172.7])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:49:55 -0700
-Subject: Re: [PATCH v4 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
+   d="scan'208";a="394215231"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 14:48:25 -0700
+Date:   Wed, 31 Mar 2021 14:50:56 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <2FE32855-EA5D-44E4-AACC-25E9B1476547@amacapital.net>
- <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <7882ef34-416f-9627-dcbe-7bf88c866dc8@intel.com>
-Date:   Wed, 31 Mar 2021 14:49:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210331145056.760478ca@jacob-builder>
+In-Reply-To: <20210331183324.GR1463678@nvidia.com>
+References: <20210322120300.GU2356281@nvidia.com>
+        <20210324120528.24d82dbd@jacob-builder>
+        <20210329163147.GG2356281@nvidia.com>
+        <20210329155526.2ad791a9@jacob-builder>
+        <20210330134313.GP2356281@nvidia.com>
+        <20210330171041.70f2d7d0@jacob-builder>
+        <20210331122805.GC1463678@nvidia.com>
+        <20210331093457.753512d4@jacob-builder>
+        <20210331173148.GN1463678@nvidia.com>
+        <20210331112030.174e77b0@jacob-builder>
+        <20210331183324.GR1463678@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <e62cfd0ae90de435e6819979d9027f76d835a22a.1617224710.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/31/21 2:09 PM, Kuppuswamy Sathyanarayanan wrote:
-> As per Guest-Host Communication Interface (GHCI) Specification
-> for Intel TDX, sec 2.4.1, TDX architecture does not support
-> MWAIT, MONITOR and WBINVD instructions. So in non-root TDX mode,
-> if MWAIT/MONITOR instructions are executed with CPL != 0 it will
-> trigger #UD, and for CPL = 0 case, virtual exception (#VE) is
-> triggered. WBINVD instruction behavior is also similar to
-> MWAIT/MONITOR, but for CPL != 0 case, it will trigger #GP instead
-> of #UD.
+Hi Jason,
 
-Could we give it a go to try this in plain English before jumping in and
-quoting the exact spec section?  Also, the CPL language is nice and
-precise for talking inside Intel, but it's generally easier for me to
-read kernel descriptions when we just talk about the kernel.
+On Wed, 31 Mar 2021 15:33:24 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-	When running as a TDX guest, there are a number of existing,
-	privileged instructions that do not work.  If the guest kernel
-	uses these instructions, the hardware generates a #VE.
-
-Which reminds me...  The SDM says: MWAIT will "#UD ... If
-CPUID.01H:ECX.MONITOR[bit 3] = 0".  So, is this an architectural change?
- The guest is *supposed* to see that CPUID bit as 0, so shouldn't it
-also get a #UD?  Or is this all so that if SEAM *forgets* to clear the
-CPUID bit, the guest gets #VE?
-
-What are we *actually* mitigating here?
-
-Also, FWIW, MWAIT/MONITOR and WBINVD are pretty different beasts.  I
-think this would all have been a lot more clear if this would have been
-two patches instead of shoehorning them into one.
-
-> To prevent TD guest from using these unsupported instructions,
-> following measures are adapted:
+> On Wed, Mar 31, 2021 at 11:20:30AM -0700, Jacob Pan wrote:
+> > Hi Jason,
+> > 
+> > On Wed, 31 Mar 2021 14:31:48 -0300, Jason Gunthorpe <jgg@nvidia.com>
+> > wrote: 
+> > > > > We should try to avoid hidden behind the scenes kernel
+> > > > > interconnections between subsystems.
+> > > > >     
+>  [...]  
+>  [...]  
+> > yes, this is done in this patchset.
+> >   
+>  [...]  
+> > Just to clarify, you are saying (when FREE happens before proper
+> > teardown) there is no need to proactively notify all users of the
+> > IOASID to drop their reference. Instead, just wait for the other
+> > parties to naturally close and drop their references. Am I
+> > understanding you correctly?  
 > 
-> 1. For MWAIT/MONITOR instructions, support for these instructions
-> are already disabled by TDX module (SEAM). So CPUID flags for
-> these instructions should be in disabled state. Also, just to be
-> sure that these instructions are disabled, forcefully unset
-> X86_FEATURE_MWAIT CPU cap in OS.
+> Yes. What are receivers going to do when you notify them anyhow? What
+> will a mdev do? This is how you get into they crazy locking problems.
 > 
-> 2. For WBINVD instruction, we use audit to find the code that uses
-> this instruction and disable them for TD.
+The receivers perform cleanup work similar to normal unbind. Drain/Abort
+PASID. Locking is an issue in that the atomic notifier is under IOASID
+spinlock, so I provided a common ordered workqueue to let mdev drivers
+queue cleanup work that cannot be done in atomic context. Not ideal. Also
+need to prevent nested notifications for certain cases.
 
-Really?  Where are those patches?
-
-> +static inline bool cpuid_has_mwait(void)
-> +{
-> +	if (cpuid_ecx(1) & (1 << (X86_FEATURE_MWAIT % 32)))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  bool is_tdx_guest(void)
->  {
->  	return static_cpu_has(X86_FEATURE_TDX_GUEST);
-> @@ -301,12 +309,25 @@ static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
->  	return insn.length;
->  }
->  
-> +/* Initialize TDX specific CPU capabilities */
-> +static void __init tdx_cpu_cap_init(void)
-> +{
-> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-> +
-> +	if (cpuid_has_mwait()) {
-> +		WARN(1, "TDX Module failed to disable MWAIT\n");
-
-WARN(1, "TDX guest enumerated support for MWAIT, disabling it").
-
-> +		/* MWAIT is not supported in TDX platform, so suppress it */
-> +		setup_clear_cpu_cap(X86_FEATURE_MWAIT);
-> +	}
-> +
-> +}
-
-Extra newline.
-
->  void __init tdx_early_init(void)
->  {
->  	if (!cpuid_has_tdx_guest())
->  		return;
->  
-> -	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-> +	tdx_cpu_cap_init();
->  
->  	tdg_get_info();
->  
-> @@ -362,6 +383,27 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
->  	case EXIT_REASON_EPT_VIOLATION:
->  		ve->instr_len = tdg_handle_mmio(regs, ve);
->  		break;
-> +	case EXIT_REASON_WBINVD:
-> +		/*
-> +		 * TDX architecture does not support WBINVD instruction.
-> +		 * Currently, usage of this instruction is prevented by
-> +		 * disabling the drivers which uses it. So if we still
-> +		 * reach here, it needs user attention.
-> +		 */
-
-This comment is awfully vague.  "TDX architecture..." what?  Any CPUs
-supporting the TDX architecture?  TDX VMM's?  TDX Guests?
-
-Let's also not waste byte on stating the obvious.  If it didn't need
-attention we wouldn't be warning about it, eh?
-
-So, let's halve the size of the comment and say:
-
-		/*
-		 * WBINVD is not supported inside TDX guests.  All in-
-		 * kernel uses should have been disabled.
-		 */
-
-> +		pr_err("TD Guest used unsupported WBINVD instruction\n");
-> +		BUG();
-> +		break;
-> +	case EXIT_REASON_MONITOR_INSTRUCTION:
-> +	case EXIT_REASON_MWAIT_INSTRUCTION:
-> +		/*
-> +		 * MWAIT/MONITOR features are disabled by TDX Module (SEAM)
-> +		 * and also re-suppressed in kernel by clearing
-> +		 * X86_FEATURE_MWAIT CPU feature flag in tdx_early_init(). So
-> +		 * if TD guest still executes MWAIT/MONITOR instruction with
-> +		 * above suppression, it needs user attention.
-> +		 */
-
-Again, let's trim this down:
-
-		/*
-		 * Something in the kernel used MONITOR or MWAIT despite
-		 * X86_FEATURE_MWAIT being cleared for TDX guests.
-		 */
-
-Rather than naming the function, this makes it quite greppable to find
-where it could have *possibly* been cleared.
-
-> +		WARN(1, "TD Guest used unsupported MWAIT/MONITOR instruction\n");
-> +		break;
->  	default:
->  		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
->  		return -EFAULT;
+> It is an error for userspace to shutdown like this, recover sensibly
+> and don't crash the kernel. PCIe error TLPs are expected, supress
+> them. That is what we decided on the mmu notifier discussion.
 > 
+> > I feel having the notifications can add two values:
+> > 1. Shorten the duration of errors (as you mentioned below), FD close can
+> > take a long and unpredictable time. e.g. FD shared.  
+> 
+> Only if userspace exits in some uncontrolled way. In a controlled exit
+> it can close all the FDs in the right order.
+> 
+> It is OK if userspace does something weird and ends up with disabled
+> IOASIDs. It shouldn't do that if it cares.
+> 
+Agreed.
 
+> > 2. Provide teardown ordering among PASID users. i.e. vCPU, IOMMU, mdev.
+> >  
+> 
+> This is a hard ask too, there is no natural ordering here I can see,
+> obviously we want vcpu, mdev, iommu for qemu but that doesn't seem to
+> fall out unless we explicitly hard wire it into the kernel.
+> 
+The ordering problem as I understood is that it is difficult for KVM to
+rendezvous all vCPUs before updating PASID translation table. So there
+could be in-flight enqcmd with the stale PASID after the PASID table update
+and refcount drop.
+
+If KVM is the last one to drop the PASID refcount, the PASID could be
+immediately reused and starts a new life. The in-flight enqcmd with the
+stale PASID could cause problems. The likelihood and window is very small.
+
+If we ensure KVM does PASID table update before IOMMU and mdev driver, the
+stale PASID in the in-flight enqcmd would be be drained before starting
+a new life.
+
+Perhaps Yi and Kevin can explain this better.
+
+> Doesn't kvm always kill the vCPU first based on the mmu notifier
+> shooting down all the memory? IIRC this happens before FD close?
+> 
+I don't know the answer, Kevin & Yi?
+
+> > > The duration between unmapping the ioasid and releasing all HW access
+> > > will have HW see PCIE TLP errors due to the blocked access. If
+> > > userspace messes up the order it is fine to cause this. We already had
+> > > this dicussion when talking about how to deal with process exit in the
+> > > simple SVA case.  
+> > Yes, we have disabled fault reporting during this period. The slight
+> > differences vs. the simple SVA case is that KVM is also involved and
+> > there might be an ordering requirement to stop vCPU first.  
+> 
+> KVM can continue to use the PASIDs, they are parked and DMA is
+> permanently blocked. When KVM reaches a natural point in its teardown
+> it can release them.
+> 
+> If you have to stop the vcpu from a iommu notifier you are in the
+> crazy locking world I mentioned. IMHO don't create exciting locking
+> problems just to avoid PCI errors in uncontrolled shutdown.
+> 
+> Suppress the errors instead.
+> 
+I agree, this simplify things a lot. Just need to clarify the in-flight
+enqcmd case.
+
+> Jason
+
+
+Thanks,
+
+Jacob
