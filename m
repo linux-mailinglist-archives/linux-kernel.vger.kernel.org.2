@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5656D350475
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00000350491
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 18:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhCaQ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 12:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        id S234142AbhCaQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 12:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbhCaQ0X (ORCPT
+        with ESMTP id S234124AbhCaQbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 12:26:23 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151EAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:26:23 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso19516620otp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 09:26:23 -0700 (PDT)
+        Wed, 31 Mar 2021 12:31:34 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71E64C061574;
+        Wed, 31 Mar 2021 09:31:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FbposqgapdTdAS+TUQHgC3JJ2yt1So9MQA6oTHq2HyM=;
-        b=ZZd/A3VhaWLf87FVg8P1ETQbMeM4bycDbJ6/1pg/jHN5ZUmh2n5Da+wqk6B7ZfXQq5
-         TjZba8TFJ4YiC2U86OvgIh0n6PTxMPmEapCOoACsT7Umo4ooYYa06ngCiyuMeYt7bCj4
-         QA5SmAajb8S2AAna5rS6c9UA13qFcyelWqdHL4aDt2vdAXTaRByz4GKuB6GzL+6YpEXx
-         gdeXnFsuE+P+/9hyu+uqqUPTAk9NJZAvlcBlHgRFNGndjEn2CxWjjLRPIL9xbTn6D2tL
-         7Ac0d0yNm0Q/a7e0J8Q9oYA7OACz9cTKwo0eAj36rkCPMS19Of5iHuAVBd0kwxyLe9YV
-         GRqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FbposqgapdTdAS+TUQHgC3JJ2yt1So9MQA6oTHq2HyM=;
-        b=gBvsD7nH8wdur4cKTC+mK16yykG1zROj3MPeAi5KsuZeyrdLnXIyE5N6wU3mN9yMCO
-         zlNqBJiS9iRBRUb/ctyzRkTw5zKXpI1RP8JX7OOYUx7hqhy4kcL0flsG2KqS/zIXFawd
-         IFbE96RUK0OIFRpRARMoigPeu4wmzbay3ZKY4i8CIZ/0vJxNNPPc+t3bGdIie8pVOfWf
-         XTjRIjr3uJCx9kHBLcp416gGo0Z07eFLhPK1YnXTN7PcUoEV9AQTi/Li0r1PQYaeMfhw
-         p7ckiKr1GlVBYT+BOBg6MYZzUvLYF8TiGkoE0XGDqHSXyXcCMsfxRuSEPb4ICzrNz37S
-         4qBQ==
-X-Gm-Message-State: AOAM533BvJOMxG+Z6gWk0eHZxFtYCdW1Jw/a6J9bJRAqQSncwNZQ5I5r
-        szMnNTtHjaMm3gMJ+QvbHIOoNQ==
-X-Google-Smtp-Source: ABdhPJwpuw4Dcj+wqGcEfRmuYfn1e+Gs7VXG66D29ALgKuCxRO8vT4VsmB0HRn/ZbEem/ltTw2GQoQ==
-X-Received: by 2002:a05:6830:1282:: with SMTP id z2mr3401766otp.30.1617207982514;
-        Wed, 31 Mar 2021 09:26:22 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f29sm571110ots.22.2021.03.31.09.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 09:26:22 -0700 (PDT)
-Date:   Wed, 31 Mar 2021 11:26:19 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH V2] soundwire: qcom: use signed variable for error return
-Message-ID: <20210331162619.GK904837@yoga>
-References: <20210331155520.2987823-1-vkoul@kernel.org>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=Ikp7PZAuK4fo1XgsXlr4Y+BaLjbJ/cSgtN
+        EE/K8IQMY=; b=RpJibMn2q1x3JBg0uDL3WvIWknem8AoXR8PCRtkf4CYZzIeItC
+        O52qT98r5vRu5A/TIJ2+zQfeLPvkGxzRoAZFowPQ33ho+Z+QgJ6NEHURQK0FkuAH
+        PQdK58jo6t1irJ798W33iZEKb4ZjVBsuXa/8WFSzGPO3kv3QVT+BO6gq8=
+Received: from xhacker (unknown [101.86.19.180])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXOpnWo2Rgs7x6AA--.15943S2;
+        Thu, 01 Apr 2021 00:31:18 +0800 (CST)
+Date:   Thu, 1 Apr 2021 00:26:21 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v2 3/9] riscv: Constify sys_call_table
+Message-ID: <20210401002621.409624ee@xhacker>
+In-Reply-To: <20210401002442.2fe56b88@xhacker>
+References: <20210401002442.2fe56b88@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331155520.2987823-1-vkoul@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCXOpnWo2Rgs7x6AA--.15943S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxuF4kuF1rWw17ZFyrJFb_yoW8GrWxpr
+        sxC34kKr95WF18CFyakFyxuryxJ3Z8W34agr1qkan8Cw13trZ8tws0ga4ayFyDGFZrWrW0
+        gF4I9r90kr48XFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkGb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jndbbUUU
+        UU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 31 Mar 10:55 CDT 2021, Vinod Koul wrote:
+From: Jisheng Zhang <jszhang@kernel.org>
 
-> We get warning of using a unsigned variable being compared to less than
-> zero. The comparison is correct as it checks for errors from previous
-> call to qcom_swrm_get_alert_slave_dev_num(), so we should use a signed
-> variable here.
-> 
-> While at it, drop the superfluous initialization as well
-> 
-> drivers/soundwire/qcom.c: qcom_swrm_irq_handler() warn: impossible
-> condition '(devnum < 0) => (0-255 < 0)'
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Constify the sys_call_table so that it will be placed in the .rodata
+section. This will cause attempts to modify the table to fail when
+strict page permissions are in place.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/include/asm/syscall.h  | 2 +-
+ arch/riscv/kernel/syscall_table.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  drivers/soundwire/qcom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index b08ecb9b418c..ec86c4e53fdb 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -428,7 +428,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->  	struct qcom_swrm_ctrl *swrm = dev_id;
->  	u32 value, intr_sts, intr_sts_masked, slave_status;
->  	u32 i;
-> -	u8 devnum = 0;
-> +	int devnum;
->  	int ret = IRQ_HANDLED;
->  
->  	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-> -- 
-> 2.26.3
-> 
+diff --git a/arch/riscv/include/asm/syscall.h b/arch/riscv/include/asm/syscall.h
+index 49350c8bd7b0..b933b1583c9f 100644
+--- a/arch/riscv/include/asm/syscall.h
++++ b/arch/riscv/include/asm/syscall.h
+@@ -15,7 +15,7 @@
+ #include <linux/err.h>
+ 
+ /* The array of function pointers for syscalls. */
+-extern void *sys_call_table[];
++extern void * const sys_call_table[];
+ 
+ /*
+  * Only the low 32 bits of orig_r0 are meaningful, so we return int.
+diff --git a/arch/riscv/kernel/syscall_table.c b/arch/riscv/kernel/syscall_table.c
+index f1ead9df96ca..a63c667c27b3 100644
+--- a/arch/riscv/kernel/syscall_table.c
++++ b/arch/riscv/kernel/syscall_table.c
+@@ -13,7 +13,7 @@
+ #undef __SYSCALL
+ #define __SYSCALL(nr, call)	[nr] = (call),
+ 
+-void *sys_call_table[__NR_syscalls] = {
++void * const sys_call_table[__NR_syscalls] = {
+ 	[0 ... __NR_syscalls - 1] = sys_ni_syscall,
+ #include <asm/unistd.h>
+ };
+-- 
+2.31.0
+
+
