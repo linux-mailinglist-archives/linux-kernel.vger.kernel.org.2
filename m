@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A27350531
-	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CF5350536
+	for <lists+linux-kernel@lfdr.de>; Wed, 31 Mar 2021 19:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234182AbhCaRBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 13:01:44 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24894 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCaRBI (ORCPT
+        id S230160AbhCaRDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 13:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhCaRDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 13:01:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617210066; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=luXWFbhobJVfLtmEd8Rj4gUfk+q4LQMoS+mWmZpxdgA=;
- b=ZvKP1nFymvmoxUz0tD/4qRRZrsbH1e2aBLz2q5TF+CBGTlsQlP2QZQqis6k8JCiDjafOE1zG
- g9tH6ukm6X9tpidx8kjkMHQD86wVeD681YVCBi6TgNXRD7niIaSnE4/hJLNPOjbKD628GKeX
- xMAQebQT+RItsACQMFIGM5NgMiQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6064aad1e0e9c9a6b693eebe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 17:01:05
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5EE7AC433ED; Wed, 31 Mar 2021 17:01:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D642C433C6;
-        Wed, 31 Mar 2021 17:01:04 +0000 (UTC)
+        Wed, 31 Mar 2021 13:03:36 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0A5C061574;
+        Wed, 31 Mar 2021 10:03:34 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so19580817oty.12;
+        Wed, 31 Mar 2021 10:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=icCui8rsqz/tZGuqEappDQq0xmAo0yV1kkUMAs4W6mM=;
+        b=lWkRYdwjN4R7a+YXGLKqNOjWFhOTt/d0OvDEB5z0cJe9KAne1AWbgnC2XXua+Qems8
+         3htL7bJWDd49YxdFy9ylkC7LYfhtBZzz4tDtewpMjuhoTZVKfzqMCew8WSuvdUeGg4mL
+         VBIGiKQkQxc809kXWXKLgJNWwJFyH7pxWWyjksm0K5LUt/bwvkXTntpJ/J9qAg8RH1gv
+         v8L2tiEdP9bxfLYbBdWqTPegivRiN9nXdA32vIRHX9es5hn0LncmoDFl9eJPEDGJkOhC
+         I37CuJi9mLUljjBT7XFihtmUt6oC4dFSkZMJyzb9zYiC4SvYIuZoEtAvM8cu07I9rPTk
+         PbWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=icCui8rsqz/tZGuqEappDQq0xmAo0yV1kkUMAs4W6mM=;
+        b=M714+RzHhIG06H2SaoVwaGrAZbVl+6Q3XLjgAanGqOh9LOE5XhypqXs1Ugysf9hPj1
+         X+R5J2UAEYhS/CSgMs5WsjyJSwBZh9QZFf1MxU+z6Sd7azlpiIGiUXfXkj/FN/4t/eyC
+         W6BrmQsFtRMPMxednQd8l3/uOrDx5WCvXv8sa0XbqHPhznbP50MooeDxnK5S99MHCE9W
+         aFacsKajdLFPz1hEegroKmmWIS1aqXSZ+jsZCPke25oNhCk4MErg6CvaQ/G7/sNNuhOL
+         vh2hLxKXhGDPEsMX2d6GjbLnoOAxUT/3F02R2an3YB7ail11bvssRQ25etmYf8fqxnA8
+         FiPw==
+X-Gm-Message-State: AOAM53161zk5neZt4qfb3STrD8wSaKqX7/0RTRHEX19PLuQj1KhILdXz
+        XqC11ho6QMnkL3kEUiiFcGfdC9LMcGg=
+X-Google-Smtp-Source: ABdhPJyNTGAp7fsGtz96x/wu2SORusHzRcFhma/siMAT21Wv+R0xKGHN0pBqYoy3PJsb4on0w5u/vQ==
+X-Received: by 2002:a05:6830:4121:: with SMTP id w33mr3325233ott.153.1617210214189;
+        Wed, 31 Mar 2021 10:03:34 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j4sm517394oom.11.2021.03.31.10.03.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 31 Mar 2021 10:03:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 31 Mar 2021 10:03:32 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Sebastian Oechsle <setboolean@icloud.com>, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (dell-smm) Add Dell Latitude 7440 to fan control
+ whitelist
+Message-ID: <20210331170332.GA25389@roeck-us.net>
+References: <EE8F83B0-0C39-4E2A-B5FB-B94A1389588D@icloud.com>
+ <20210331100211.jo56p4x2qm73fyed@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 31 Mar 2021 10:01:04 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org, abickett@codeaurora.org
-Subject: Re: [PATCH v1 0/7] MHI Emergency download and flash programmer
- support
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210331111644.GE15610@work>
-References: <1617067704-28850-1-git-send-email-bbhatt@codeaurora.org>
- <20210331111644.GE15610@work>
-Message-ID: <6fcd439aa759d8cbc9bab1862d1d9a57@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210331100211.jo56p4x2qm73fyed@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-On 2021-03-31 04:16 AM, Manivannan Sadhasivam wrote:
-> On Mon, Mar 29, 2021 at 06:28:17PM -0700, Bhaumik Bhatt wrote:
->> Allow handling EDL mode after SYS_ERROR occurs by reading the 
->> execution
->> environment post handling and move to power on reset state to 
->> accommodate the
->> scenario.
->> Handle EDL mode properly and wait for ready instead of just exiting 
->> from the
->> firmware load.
->> Allow use of the Flash Programmer execution environment as a mission 
->> mode
->> use case for a blank NAND power up scenario.
->> Always attempt a wait for MHI ready state as device could be waiting 
->> for the
->> host to do so after pass through execution environment is seen.
->> Introduce patch to improve state awareness and aid in debugging.
->> 
->> This patch series was tested on x86_64 architecture.
->> 
+On Wed, Mar 31, 2021 at 12:02:11PM +0200, Pali Rohár wrote:
+> On Tuesday 30 March 2021 19:02:55 Sebastian Oechsle wrote:
+> > Allow manual PWM control on Dell Latitude 7440.
+> > 
+> > Signed-off-by: Sebastian Oechsle <setboolean@icloud.com <mailto:setboolean@icloud.com>>
 > 
-> These patches were part of a different series before. It is good that
-> you splitted the patches but you should mention that here.
+> Reviewed-by: Pali Rohár <pali@kernel.org>
 > 
-> Thanks,
-> Mani
+> (Btw, in commit message is small typo, model name is E7440, not 7440)
 > 
-I will keep that in mind when submitting next time.
+> Guenter, would you take this patch?
+> 
 
->> Bhaumik Bhatt (6):
->>   bus: mhi: core: Rely on accurate method to determine EDL mode
->>   bus: mhi: core: Wait for ready after an EDL firmware download
->>   bus: mhi: core: Handle EDL mode entry appropriately
->>   bus: mhi: core: Identify Flash Programmer as a mission mode use case
->>   bus: mhi: core: Wait for MHI READY state in most scenarios
->>   bus: mhi: core: Improve state strings for debug messages
->> 
->> Carl Yin (1):
->>   bus: mhi: core: Add support for Flash Programmer execution 
->> environment
->> 
->>  drivers/bus/mhi/core/boot.c     | 13 +++++++------
->>  drivers/bus/mhi/core/init.c     | 34 
->> ++++++++++++++++++----------------
->>  drivers/bus/mhi/core/internal.h |  4 +++-
->>  drivers/bus/mhi/core/main.c     |  3 +++
->>  drivers/bus/mhi/core/pm.c       | 28 +++++++++++++++++++++++++---
->>  include/linux/mhi.h             |  4 +++-
->>  6 files changed, 59 insertions(+), 27 deletions(-)
->> 
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+I'll take it.
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Guenter
+
+> > ---
+> > drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
+> > 1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> > index 73b9db9e3aab..2970892bed82 100644
+> > --- a/drivers/hwmon/dell-smm-hwmon.c
+> > +++ b/drivers/hwmon/dell-smm-hwmon.c
+> > @@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+> > 		},
+> > 		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> > 	},
+> > +	{
+> > +		.ident = "Dell Latitude E7440",
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
+> > +		},
+> > +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> > +	},
+> > 	{ }
+> > };
+> > 
+> > --
+> > 2.31.1
