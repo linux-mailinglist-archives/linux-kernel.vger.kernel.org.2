@@ -2,131 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC4C350A9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF4D350A9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 01:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhCaXNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 19:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        id S232406AbhCaXPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 19:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhCaXN3 (ORCPT
+        with ESMTP id S232292AbhCaXOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 19:13:29 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9619C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:28 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id q3so456780qkq.12
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:28 -0700 (PDT)
+        Wed, 31 Mar 2021 19:14:49 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88379C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:14:48 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bx7so24166529edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LElCdf0KbUkyEvJs0p0IvZKV+wdmQvAnSKb7zsKMRmg=;
-        b=ZrUj57P4j3iT2bZyUGZXH+q99R315qVADdUvYGP3bBtluIJt4nmKdMib/Uqs/mIyGs
-         vZDSs0+bbbq2wo3FJQ8uyfnIkLcwgxvpwkQgtCNjfAAMxoOUi68ENAouCZBy5SHnDzyL
-         JX1T6hiVCC1hFUQS8z6gbPipWXEfvF5sBFekM=
+        bh=+h9iiR2ETy9snk4Rjw3/0FtbakmqcM90iNL/G5npVZ4=;
+        b=oDsltAsVhMfX34nC0ya4Ses+z/aSYpIGarCGUrQBWp8KhNJg4VrgfO+34voug6kVkf
+         3CLBuPVFSwQMsklZgHWBzsmpGOZQJx4gZYwWEvBfuXSy4I9Yu8R56Bp59/GcBKkPmiR+
+         C+sGFkX59EQ3tDxb2Al8NdvNlqnpuwt7ZjSPsrJ7lVEUuyJEZXnCbPCZzXfOZhYMdfbt
+         /q6h2r3OZhTZCjQW9S4/yW0dfNW0RO+Vjg8+FttpqsCA9Or0z0chfBbM6be1eNN4H+uW
+         QzBVRrfpzVD/ECfIC9Cn+LBTHcIM9xiXcQyoUje+OOx+LrTjvfT71wjfn+cfwVcwdEm2
+         Uu6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LElCdf0KbUkyEvJs0p0IvZKV+wdmQvAnSKb7zsKMRmg=;
-        b=IS7qnGxh1kv3wzrTsVWj8gBtNwx0yZPAAV3LWq8z6c1U3ht1Nr7+iSHZ27UunuR8oF
-         JLV6KBLFsN+dTnA1CvsdtT9KbbuZebx8htwtGEEd5y1vsg4wU1jWgtazCFyM00PwMm8T
-         18z3GRYjGYx5EDgcuD1QNkRIwIplcJOpqW8WESF/HqfLUbpHgxo3qJ5wjVhkYFO9OJEW
-         ktf4ymL3q9v9Yd2AtzTti/CYyHbCnHftgFskEv+dsT8RO72K/OVxBh77NEHhcRps/5Ec
-         pUkJB3W79wxrJE6LuLApzgqjfuRUNeyI+9cNwDZj+EdC7gPUuhJPxiljXkSqJY+CJGL1
-         muFw==
-X-Gm-Message-State: AOAM532/qlzmCvOBiY19pmrsEEHb8oa+uiR0pgUOh/nrgZV+U5vBW7pJ
-        n1ixltbvrJ9kvHxmWL6KDXLj3yMnLkGgOA==
-X-Google-Smtp-Source: ABdhPJxNbV//XNurPGGwzl61JIYP+GLOM6vVdmmr6RolhR4PyJexnm41UzxY4cb2cQ4pYrvE3JIAtg==
-X-Received: by 2002:a37:8905:: with SMTP id l5mr5721968qkd.321.1617232407203;
-        Wed, 31 Mar 2021 16:13:27 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id a138sm2597971qkg.29.2021.03.31.16.13.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 16:13:26 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id a143so22947143ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 16:13:25 -0700 (PDT)
-X-Received: by 2002:a25:e085:: with SMTP id x127mr1884118ybg.343.1617232405435;
- Wed, 31 Mar 2021 16:13:25 -0700 (PDT)
+        bh=+h9iiR2ETy9snk4Rjw3/0FtbakmqcM90iNL/G5npVZ4=;
+        b=gKx+Zvj+VmxignM8T8npMex2uBNx/IPmw9qVZBvez/AsRnPRYaFLEQZxjjB3arDxwx
+         jTEDSi40eGQKgXa9aQAN+aIoNtBefQs9Im8uJYdrLhrqurXCBO6P5O27bwyZsFuH4lT8
+         vGYoQ9bST30F+4QGvq48taXxfnTXH1hATvWm3Q6YVh5ihcdC2sekmJQBzighjNP8vVrY
+         jSRGPypLg94n0g4Jh2zAq5XoVbT6rjonPzTFOHTu3QPEeIfsLSRLa9MkGwAeHr41Jm9f
+         auOceq5ZE4IVGwM8UM4pNBTov1K+ye0yhwImx7cmfFk+Z1r9f7pY5FpyQbeBkvRFak08
+         8XFw==
+X-Gm-Message-State: AOAM533JNV/DG+0XI63JkiJB0fHq5o8MNFbaRndvugxnehQe3vWAgfK4
+        hv1eHCM9La7BOZJTvwgYqelOlHwJQWk4qNgVO9KHZq/g3vg=
+X-Google-Smtp-Source: ABdhPJyNAFcwBS9A1HYj+d5VqPFbHKIdG+b+86D+FZP03DVlhRYynUKUHoosRaSTO2mzV+WYKx7tQ344jJfVdJ6s/dc=
+X-Received: by 2002:a50:ef11:: with SMTP id m17mr6663973eds.151.1617232487296;
+ Wed, 31 Mar 2021 16:14:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210331221630.488498-1-robdclark@gmail.com> <20210331221630.488498-4-robdclark@gmail.com>
-In-Reply-To: <20210331221630.488498-4-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 31 Mar 2021 16:13:13 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UECYxLXQa_L572eLSVHq7pbxuA0zLvHzYHhCKy8K=9TA@mail.gmail.com>
-Message-ID: <CAD=FV=UECYxLXQa_L572eLSVHq7pbxuA0zLvHzYHhCKy8K=9TA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] drm/msm: Fix debugfs deadlock
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <alpine.LSU.2.11.2103301640240.2584@eggly.anvils>
+ <CALvZod7PQ3=1nDUKVo33o5GGh-feGNM2LyekSys-U2-kOYbrTA@mail.gmail.com>
+ <CAHbLzkqDAOUjhV0-M-Mv6z7yKHk-WmuHHwJse4vvo82nJscTcA@mail.gmail.com> <alpine.LSU.2.11.2103311340080.1201@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2103311340080.1201@eggly.anvils>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 31 Mar 2021 16:14:35 -0700
+Message-ID: <CAHbLzkqg_AxD12rcgNy0Va_X2LTJ79FRuOhuLSb=RTkfDbH+EA@mail.gmail.com>
+Subject: Re: [PATCH mmotm] mm: vmscan: fix shrinker_rwsem in free_shrinker_info()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Roman Gushchin <guro@fb.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Mar 31, 2021 at 3:14 PM Rob Clark <robdclark@gmail.com> wrote:
+On Wed, Mar 31, 2021 at 2:13 PM Hugh Dickins <hughd@google.com> wrote:
 >
-> @@ -111,23 +111,15 @@ static const struct file_operations msm_gpu_fops = {
->  static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
->  {
->         struct msm_drm_private *priv = dev->dev_private;
-> -       struct msm_gpu *gpu = priv->gpu;
->         int ret;
+> On Wed, 31 Mar 2021, Yang Shi wrote:
+> > On Wed, Mar 31, 2021 at 6:54 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > > On Tue, Mar 30, 2021 at 4:44 PM Hugh Dickins <hughd@google.com> wrote:
+> > > >
+> > > > Lockdep warns mm/vmscan.c: suspicious rcu_dereference_protected() usage!
+> > > > when free_shrinker_info() is called from mem_cgroup_css_free(): there it
+> > > > is called with no locking, whereas alloc_shrinker_info() calls it with
+> > > > down_write of shrinker_rwsem - which seems appropriate.  Rearrange that
+> > > > so free_shrinker_info() can manage the shrinker_rwsem for itself.
+> > > >
+> > > > Link: https://lkml.kernel.org/r/20210317140615.GB28839@xsang-OptiPlex-9020
+> > > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > > > Cc: Yang Shi <shy828301@gmail.com>
+> > > > ---
+> > > > Sorry, I've made no attempt to work out precisely where in the series
+> > > > the locking went missing, nor tried to fit this in as a fix on top of
+> > > > mm-vmscan-add-shrinker_info_protected-helper.patch
+> > > > which Oliver reported (and which you notated in mmotm's "series" file).
+> > > > This patch just adds the fix to the end of the series, after
+> > > > mm-vmscan-shrink-deferred-objects-proportional-to-priority.patch
+> > >
+> > > The patch "mm: vmscan: add shrinker_info_protected() helper" replaces
+> > > rcu_dereference_protected(shrinker_info, true) with
+> > > rcu_dereference_protected(shrinker_info,
+> > > lockdep_is_held(&shrinker_rwsem)).
+> > >
+> > > I think we don't really need shrinker_rwsem in free_shrinker_info()
+> > > which is called from css_free(). The bits of the map have already been
+> > > 'reparented' in css_offline. I think we can remove
+> > > lockdep_is_held(&shrinker_rwsem) for free_shrinker_info().
+> >
+> > Thanks, Hugh and Shakeel. I missed the report.
+> >
+> > I think Shakeel is correct, shrinker_rwsem is not required in css_free
+> > path so Shakeel's proposal should be able to fix it.
 >
-> -       ret = mutex_lock_interruptible(&priv->mm_lock);
-> +       ret = mutex_lock_interruptible(&priv->obj_lock);
->         if (ret)
->                 return ret;
+> Yes, looking at it again, I am sure that Shakeel is right, and
+> that my patch was overkill - no need for shrinker_rwsem there.
 >
-> -       if (gpu) {
-> -               seq_printf(m, "Active Objects (%s):\n", gpu->name);
-> -               msm_gem_describe_objects(&gpu->active_list, m);
-> -       }
-> -
-> -       seq_printf(m, "Inactive Objects:\n");
-> -       msm_gem_describe_objects(&priv->inactive_dontneed, m);
-> -       msm_gem_describe_objects(&priv->inactive_willneed, m);
-> +       msm_gem_describe_objects(&priv->objects, m);
-
-I guess we no longer sort the by Active and Inactive but that doesn't
-really matter?
-
-
-> @@ -174,7 +174,13 @@ struct msm_drm_private {
->         struct msm_rd_state *hangrd;   /* debugfs to dump hanging submits */
->         struct msm_perf_state *perf;
+> Whether it's RCU-safe to free the info there, I have not reviewed at
+> all: but shrinker_rwsem would not help even if there were an issue.
 >
-> -       /*
-> +       /**
-> +        * List of all GEM objects (mainly for debugfs, protected by obj_lock
-
-It wouldn't hurt to talk about lock ordering here? Like: "If we need
-the "obj_lock" and a "gem_lock" at the same time we always grab the
-"obj_lock" first.
-
-> @@ -60,13 +60,20 @@ struct msm_gem_object {
->          */
->         uint8_t vmap_count;
+> > I prepared a patch:
 >
-> -       /* And object is either:
-> -        *  inactive - on priv->inactive_list
-> +       /**
-> +        * Node in list of all objects (mainly for debugfs, protected by
-> +        * struct_mutex
+> Unsigned, white-space damaged, so does not apply.
+>
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 64bf07cc20f2..7348c26d4cac 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -251,7 +251,12 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+> >         for_each_node(nid) {
+> >                 pn = memcg->nodeinfo[nid];
+> > -               info = shrinker_info_protected(memcg, nid);
+> > +               /*
+> > +                * Don't use shrinker_info_protected() helper since
+> > +                * free_shrinker_info() could be called by css_free()
+> > +                * without holding shrinker_rwsem.
+> > +                */
+>
+> Just because I mis-inferred from the use of shrinker_info_protected()
+> that shrinker_rwsem was needed here, is no reason to add that comment:
+> imagine how unhelpfully bigger the kernel source would be if we added
+> a comment everywhere I had misunderstood something!
 
-Not "struct_mutex" in comment, right? Maybe "obj_lock" I think?
+Yes, I agree the comment may incur more confusion. Better remove it.
 
--Doug
+>
+> > +               info = rcu_dereference_protected(pn->shrinker_info, true);
+> >                 kvfree(info);
+> >                 rcu_assign_pointer(pn->shrinker_info, NULL);
+> >         }
+>
+> That does it, but I bikeshedded with myself in the encyclopaedic
+> rcupdate.h, and decided rcu_replace_pointer(pn->shrinker_info, NULL, true)
+> would be best.  But now see that patch won't fit so well into your series,
+> and I can't spend more time writing up a justification for it.
+>
+> I think Andrew should simply delete my fix patch from his queue,
+> and edit out the
+> @@ -232,7 +239,7 @@ void free_shrinker_info(struct mem_cgrou
+>
+>         for_each_node(nid) {
+>                 pn = memcg->nodeinfo[nid];
+> -               info = rcu_dereference_protected(pn->shrinker_info, true);
+> +               info = shrinker_info_protected(memcg, nid);
+>                 kvfree(info);
+>                 rcu_assign_pointer(pn->shrinker_info, NULL);
+>         }
+> hunk from your mm-vmscan-add-shrinker_info_protected-helper.patch
+> which will then restore free_shrinker_info() to what you propose above.
+
+Yes. I saw Andrew already had this fix in -mm tree.
+
+>
+> Thanks,
+> Hugh
