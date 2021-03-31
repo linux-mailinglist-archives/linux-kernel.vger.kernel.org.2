@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79335350A57
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377ED350A5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Apr 2021 00:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhCaWnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 31 Mar 2021 18:43:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57150 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232718AbhCaWme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:42:34 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lRjXf-00EFEU-SN; Thu, 01 Apr 2021 00:42:27 +0200
-Date:   Thu, 1 Apr 2021 00:42:27 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Grant Grundler <grundler@chromium.org>
-Cc:     Oliver Neukum <oneukum@suse.com>, Jakub Kicinski <kuba@kernel.org>,
-        Roland Dreier <roland@kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>, netdev <netdev@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv4 3/4] net: cdc_ncm: record speed in status method
-Message-ID: <YGT60zQuo1XW85wb@lunn.ch>
-References: <20210330021651.30906-1-grundler@chromium.org>
- <20210330021651.30906-4-grundler@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210330021651.30906-4-grundler@chromium.org>
+        id S232774AbhCaWnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 31 Mar 2021 18:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCaWnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:43:10 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7CDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:43:10 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id s11so74127pfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 31 Mar 2021 15:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ro3je/BBvWF7sM47Lmq+Xq0Jon+ne6ToNQmIFqDmWiY=;
+        b=hEK+hFySXLu8+oYIA1hqyF75ZfrVVL6t7J7ceUsg9icsOb09sA2C+DFnpw/xi/0/Pa
+         DaVrYEDOjkin5pJJV06x8hslITIFIiLhQMMO2gqHzpXFTCp+heLL0CDGOie63tJEhb5i
+         CYc7JNAbLqDUzEfoK+HcClNkufN/eVENTHF21VSJHqj1ZvAGUpGQgzX3Um/JVefiDxHB
+         cHN2FRBZRBLCF61HBaQY1uhs7EEHQbZ+LxrdvZBMbXu+lmOLfoiseUd8SXTCr7//mwr+
+         MDGH6m+jt8ilsNXHboGO9e3apgifCrNljhMe/Pwq5vvM5IkKPSYGtsPqsBbZIRGLdAh9
+         AgOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ro3je/BBvWF7sM47Lmq+Xq0Jon+ne6ToNQmIFqDmWiY=;
+        b=JBchXRSW2CUIo+/xpFrmvFhnsXXHSsgU4vDMyLBKOR3b9UmXQohg7vTx+1rTR061Mb
+         e1cw66gS9wiQIypbua1j8K2SrBTbzrdJNu/keESB20k2zcV72OwdeGzoGo36OzXnTlBN
+         bCwnYOrgpnlmN1zJcH6Nvwy9E5FjbCd5SmwrARgNeNC7SmkV23tmSB1FXOapUU5Ggnsq
+         3CInNPQRTs0b+Ve7QMWEQW6amTq+janUj/Qe/lfjv7XgB3+JPYGs7aP3KmMN3rImOri5
+         DSGpr7rPLNAsUjgZej2lYXTAHseqkQWuVnvmCxvEJ3cSFHWO80HL/3AoVGbt//rYV+Yr
+         xPbA==
+X-Gm-Message-State: AOAM530GrsUiSpOoviwphVvpEWzbKXPHIsQBPGoePP0pl6WeQwFzN9NE
+        Yk4b2kIzNgJJCpVoqBIi8XI=
+X-Google-Smtp-Source: ABdhPJxBJwcYeyB8UmTusLHKSMUBjiy3odcEztG2xRWtgIa5tsz4HAx2dfm3Pn35tQgOFS12HQPQ3w==
+X-Received: by 2002:aa7:94ad:0:b029:1ef:2392:4ee8 with SMTP id a13-20020aa794ad0000b02901ef23924ee8mr4985616pfl.75.1617230590087;
+        Wed, 31 Mar 2021 15:43:10 -0700 (PDT)
+Received: from djbComp.hitronhub.home (S0106ac202ecb0523.gv.shawcable.net. [70.67.120.89])
+        by smtp.gmail.com with ESMTPSA id h19sm3338830pfc.172.2021.03.31.15.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 15:43:09 -0700 (PDT)
+From:   Deborah Brouwer <deborahbrouwer3563@gmail.com>
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, fabioaiuto83@gmail.com,
+        dan.carpenter@oracle.com, phil@philpotter.co.uk,
+        amarjargal16@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com,
+        Deborah Brouwer <deborahbrouwer3563@gmail.com>
+Subject: [PATCH v2 0/3] block comment style changes
+Date:   Wed, 31 Mar 2021 15:42:28 -0700
+Message-Id: <cover.1617229359.git.deborahbrouwer3563@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 07:16:50PM -0700, Grant Grundler wrote:
-> From: Oliver Neukum <oneukum@suse.com>
-> 
-> Until very recently, the usbnet framework only had support functions
-> for devices which reported the link speed by explicitly querying the
-> PHY over a MDIO interface. However, the cdc_ncm devices send
-> notifications when the link state or link speeds change and do not
-> expose the PHY (or modem) directly.
-> 
-> Support funtions (e.g. usbnet_get_link_ksettings_internal()) to directly
-> query state recorded by the cdc_ncm driver were added in a previous patch.
-> 
-> So instead of cdc_ncm spewing the link speed into the dmesg buffer,
-> record the link speed encoded in these notifications and tell the
-> usbnet framework to use the new functions to get link speed/state.
-> Link speed/state is now available via ethtool.
-> 
-> This is especially useful given all current RTL8156 devices emit
-> a connection/speed status notification every 32ms and this would
-> fill the dmesg buffer. This implementation replaces the one
-> recently submitted in de658a195ee23ca6aaffe197d1d2ea040beea0a2 :
->    "net: usb: cdc_ncm: don't spew notifications"
-> 
-> v2: rebased on upstream
-> v3: changed variable names
-> v4: rewrote commit message
-> 
-> Signed-off-by: Oliver Neukum <oneukum@suse.com>
-> Tested-by: Roland Dreier <roland@kernel.org>
-> Signed-off-by: Grant Grundler <grundler@chromium.org>
+Style changes to block comments.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Changes since v1:
+	- all commit messages have changed to be more accurate
 
-    Andrew
+Deborah Brouwer (3):
+  staging: rtl8723bs: core: add comma within a comment
+  staging: rtl8723bs: core: add * to block comments
+  staging: rtl8723bs: core: remove empty comment
+
+ drivers/staging/rtl8723bs/core/rtw_xmit.c | 60 ++++++++++-------------
+ 1 file changed, 27 insertions(+), 33 deletions(-)
+
+--
+2.17.1
+
